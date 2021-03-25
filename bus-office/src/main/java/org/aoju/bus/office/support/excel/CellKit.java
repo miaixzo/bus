@@ -54,7 +54,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -262,7 +262,7 @@ public class CellKit {
         final Workbook wb = sheet.getWorkbook();
         final Drawing<?> drawing = sheet.createDrawingPatriarch();
         final CreationHelper factory = wb.getCreationHelper();
-        if (anchor == null) {
+        if (null == anchor) {
             anchor = factory.createClientAnchor();
             anchor.setCol1(cell.getColumnIndex() + 1);
             anchor.setCol2(cell.getColumnIndex() + 3);

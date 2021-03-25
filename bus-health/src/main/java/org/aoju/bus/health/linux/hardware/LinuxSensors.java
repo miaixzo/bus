@@ -44,7 +44,7 @@ import java.util.Map;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -154,7 +154,7 @@ final class LinuxSensors extends AbstractSensors {
             String path = sensorPath + i;
             File dir = new File(path);
             File[] matchingFiles = dir.listFiles(sensorFileFilter);
-            if (matchingFiles != null && matchingFiles.length > 0) {
+            if (null != matchingFiles && matchingFiles.length > 0) {
                 this.sensorsMap.put(sensor, String.format("%s/%s", path, sensor));
             }
             i++;
@@ -167,7 +167,7 @@ final class LinuxSensors extends AbstractSensors {
             return queryCpuTemperatureFromVcGenCmd();
         }
         String tempStr = this.sensorsMap.get(TEMP);
-        if (tempStr != null) {
+        if (null != tempStr) {
             long millidegrees = 0;
             if (tempStr.contains(HWMON)) {
                 // First attempt should be CPU temperature at index 1, if available
@@ -206,7 +206,7 @@ final class LinuxSensors extends AbstractSensors {
     public int[] queryFanSpeeds() {
         if (!IS_PI) {
             String fanStr = this.sensorsMap.get(FAN);
-            if (fanStr != null) {
+            if (null != fanStr) {
                 List<Integer> speeds = new ArrayList<>();
                 int fan = 1;
                 for (; ; ) {
@@ -236,7 +236,7 @@ final class LinuxSensors extends AbstractSensors {
             return queryCpuVoltageFromVcGenCmd();
         }
         String voltageStr = this.sensorsMap.get(VOLTAGE);
-        if (voltageStr != null) {
+        if (null != voltageStr) {
             // Should return a single line of millivolt
             return Builder.getIntFromFile(String.format("%s1_input", voltageStr)) / 1000d;
         }

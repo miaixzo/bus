@@ -33,7 +33,7 @@ import java.io.IOException;
  * 将调用转发给另一个调用的{@link Source}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class DelegateSource implements Source {
@@ -41,7 +41,9 @@ public abstract class DelegateSource implements Source {
     private final Source delegate;
 
     public DelegateSource(Source delegate) {
-        if (delegate == null) throw new IllegalArgumentException("delegate == null");
+        if (null == delegate) {
+            throw new IllegalArgumentException("delegate == null");
+        }
         this.delegate = delegate;
     }
 

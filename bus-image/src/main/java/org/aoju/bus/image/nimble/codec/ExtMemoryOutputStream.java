@@ -34,7 +34,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 final class ExtMemoryOutputStream extends MemoryCacheImageOutputStream
@@ -76,7 +76,7 @@ final class ExtMemoryOutputStream extends MemoryCacheImageOutputStream
 
     @Override
     public void flushBefore(long pos) throws IOException {
-        if (stream.getOutputStream() != null)
+        if (null != stream.getOutputStream())
             super.flushBefore(pos);
     }
 

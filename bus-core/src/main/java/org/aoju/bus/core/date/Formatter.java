@@ -64,7 +64,7 @@ import java.util.*;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Formatter {
@@ -76,7 +76,7 @@ public class Formatter {
      * @return 格式化成功返回成功后的字符串, 失败返回<b>null</b>
      */
     public static String format(Date date) {
-        if (date != null) {
+        if (null != date) {
             return Fields.NORM_DATETIME_FORMAT.format(date);
         }
         return Normal.EMPTY;
@@ -617,7 +617,7 @@ public class Formatter {
      * @see java.util.Calendar#isLenient()
      */
     public static Calendar parse(String str, Locale locale, boolean lenient, String... parsePatterns) {
-        if (str == null || parsePatterns == null) {
+        if (null == str || null == parsePatterns) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
 
@@ -723,7 +723,7 @@ public class Formatter {
      * @return 日期对象
      */
     public static DateTime parseCST(CharSequence cstString) {
-        if (cstString == null) {
+        if (null == cstString) {
             return null;
         }
 
@@ -743,7 +743,7 @@ public class Formatter {
      * @return 日期对象
      */
     public static DateTime parseUTC(String utcString) {
-        if (utcString == null) {
+        if (null == utcString) {
             return null;
         }
         int length = utcString.length();
@@ -762,11 +762,15 @@ public class Formatter {
             } else if (length == Fields.MSEC_PATTERN.length() + 2 || length == Fields.MSEC_PATTERN.length() + 3) {
                 // 格式类似：2020-01-15T05:32:30.999+0800 或 2020-01-15T05:32:30.999+08:00
                 return parse(utcString, Fields.MSEC_FORMAT);
-            } else if (length == Fields.UTC_SIMPLE_PATTERN.length() - 2) {
-                // 格式类似：2020-07-07T15:31:20
-                return parse(utcString, Fields.UTC_SIMPLE_FORMAT);
+            } else if (length == Fields.SIMPLE_PATTERN.length() - 2) {
+                // 格式类似：2018-09-13T05:34:31
+                return parse(utcString, Fields.SIMPLE_FORMAT);
+            } else if (StringKit.contains(utcString, Symbol.DOT)) {
+                // 可能为：  2021-03-17T06:31:33.99
+                return parse(utcString, Fields.SIMPLE_MS_FORMAT);
             }
         }
+
         // 没有更多匹配的时间格式
         throw new InstrumentException("No format fit for date String [{}] !", utcString);
     }
@@ -808,7 +812,7 @@ public class Formatter {
      * @see java.util.Calendar#isLenient()
      */
     public static Calendar parseByPatterns(String str, Locale locale, boolean lenient, String... parsePatterns) {
-        if (str == null || parsePatterns == null) {
+        if (null == str || null == parsePatterns) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
 

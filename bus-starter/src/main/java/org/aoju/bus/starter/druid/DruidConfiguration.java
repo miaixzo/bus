@@ -60,7 +60,7 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ConditionalOnClass(DruidDataSource.class)
@@ -147,7 +147,7 @@ public class DruidConfiguration {
      */
     private <T> Map<String, Object> beanToMap(T bean) {
         Map<String, Object> map = Maps.newHashMap();
-        if (bean != null) {
+        if (null != bean) {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
                 Object value = beanMap.get(key);

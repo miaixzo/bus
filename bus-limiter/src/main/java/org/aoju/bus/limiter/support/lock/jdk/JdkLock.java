@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 基于ConcurrentHashMap和ReentrantLock实现的一个简单的锁组件
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JdkLock extends org.aoju.bus.limiter.support.lock.Lock {
@@ -59,7 +59,7 @@ public class JdkLock extends org.aoju.bus.limiter.support.lock.Lock {
         // 对于一个良好的资源 竞态条件的不应该频繁产生
         Lock lock = new ReentrantLock();
         Lock oldLock = locks.putIfAbsent(key, lock);
-        if (oldLock != null) {
+        if (null != oldLock) {
             boolean ret = oldLock.tryLock();
             if (ret) {
                 Logger.info("acquire lock on  {}  success", key);
@@ -81,7 +81,7 @@ public class JdkLock extends org.aoju.bus.limiter.support.lock.Lock {
     @Override
     public void unlock(Object key) {
         Lock lock = locks.remove(key);
-        if (lock == null) {
+        if (null == lock) {
             throw new RuntimeException("未找到该锁！");
         }
         lock.unlock();

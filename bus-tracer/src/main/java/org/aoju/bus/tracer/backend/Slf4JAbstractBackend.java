@@ -33,7 +33,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 class Slf4JAbstractBackend extends AbstractBackend {
@@ -51,7 +51,7 @@ class Slf4JAbstractBackend extends AbstractBackend {
 
     @Override
     public boolean containsKey(String key) {
-        return key != null && TraceKeys.get().contains(key) && MDC.get(key) != null;
+        return null != key && TraceKeys.get().contains(key) && null != MDC.get(key);
     }
 
     @Override
@@ -66,7 +66,7 @@ class Slf4JAbstractBackend extends AbstractBackend {
 
     @Override
     public String get(String key) {
-        if ((key != null) && TraceKeys.get().contains(key))
+        if ((null != key) && TraceKeys.get().contains(key))
             return MDC.get(key);
         else
             return null;
@@ -74,8 +74,8 @@ class Slf4JAbstractBackend extends AbstractBackend {
 
     @Override
     public void put(String key, String value) throws IllegalArgumentException {
-        if (key == null) throw new IllegalArgumentException("null keys are not allowed.");
-        if (value == null) throw new IllegalArgumentException("null values are not allowed.");
+        if (null == key) throw new IllegalArgumentException("null keys are not allowed.");
+        if (null == value) throw new IllegalArgumentException("null values are not allowed.");
         final Set<String> registeredKeys = TraceKeys.get();
         if (!registeredKeys.contains(key)) {
             registeredKeys.add(key);
@@ -85,7 +85,7 @@ class Slf4JAbstractBackend extends AbstractBackend {
 
     @Override
     public void remove(String key) throws IllegalArgumentException {
-        if (key == null) throw new IllegalArgumentException("null keys are not allowed.");
+        if (null == key) throw new IllegalArgumentException("null keys are not allowed.");
         if (TraceKeys.get().remove(key)) {
             MDC.remove(key);
         }
@@ -112,7 +112,7 @@ class Slf4JAbstractBackend extends AbstractBackend {
         final Set<String> keys = TraceKeys.get();
         for (String TraceKey : keys) {
             final String value = MDC.get(TraceKey);
-            if (value != null) {
+            if (null != value) {
                 TraceMap.put(TraceKey, value);
             }
         }

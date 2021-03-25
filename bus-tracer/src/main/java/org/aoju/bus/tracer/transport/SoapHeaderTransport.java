@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SoapHeaderTransport {
@@ -62,7 +62,7 @@ public class SoapHeaderTransport {
     public Map<String, String> parseSoapHeader(final Element soapHeader) {
         final NodeList tpicHeaders = soapHeader.getElementsByTagNameNS(Builder.SOAP_HEADER_NAMESPACE, Builder.TPIC_HEADER);
         final HashMap<String, String> contextMap = new HashMap<>();
-        if (tpicHeaders != null && tpicHeaders.getLength() > 0) {
+        if (null != tpicHeaders && tpicHeaders.getLength() > 0) {
             final int items = tpicHeaders.getLength();
             for (int i = 0; i < items; i++) {
                 contextMap.putAll(parseTpicHeader((Element) tpicHeaders.item(i)));
@@ -81,10 +81,10 @@ public class SoapHeaderTransport {
 
     private <T> Map<String, String> parseTpicHeader(final Unmarshallable<T> unmarshallable, final T xmlContext) {
         try {
-            if (xmlContext != null) {
+            if (null != xmlContext) {
                 final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
                 final JAXBElement<TpicMap> unmarshal = unmarshallable.unmarshal(unmarshaller, xmlContext);
-                if (unmarshal != null) {
+                if (null != unmarshal) {
                     return unmarshal.getValue().unwrapValues();
                 }
             }

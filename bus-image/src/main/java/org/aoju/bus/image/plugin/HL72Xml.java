@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL72Xml {
@@ -107,7 +107,7 @@ public class HL72Xml {
             throws TransformerConfigurationException, IOException {
         SAXTransformerFactory tf = (SAXTransformerFactory)
                 TransformerFactory.newInstance();
-        if (xslt == null)
+        if (null == xslt)
             return tf.newTransformerHandler();
 
         TransformerHandler th = tf.newTransformerHandler(

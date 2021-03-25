@@ -48,7 +48,7 @@ import java.util.Iterator;
  * DCM-JPG转换
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Dcm2Jpg {
@@ -78,7 +78,7 @@ public class Dcm2Jpg {
     }
 
     private static Attributes loadDicomObject(File f) throws IOException {
-        if (f == null)
+        if (null == f)
             return null;
         ImageInputStream dis = new ImageInputStream(f);
         try {
@@ -125,9 +125,9 @@ public class Dcm2Jpg {
             throw new IllegalArgumentException(
                     MessageFormat.format("output image format: {0} not supported",
                             formatName));
-        this.suffix = suffix != null ? suffix : formatName.toLowerCase();
+        this.suffix = null != suffix ? suffix : formatName.toLowerCase();
         imageWriter = imageWriters.next();
-        if (clazz != null)
+        if (null != clazz)
             while (!clazz.equals(imageWriter.getClass().getName()))
                 if (imageWriters.hasNext())
                     imageWriter = imageWriters.next();
@@ -136,11 +136,11 @@ public class Dcm2Jpg {
                             MessageFormat.format("no Image Writer: {0} for format {1} found",
                                     clazz, formatName));
         imageWriteParam = imageWriter.getDefaultWriteParam();
-        if (compressionType != null || quality != null) {
+        if (null != compressionType || null != quality) {
             imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            if (compressionType != null)
+            if (null != compressionType)
                 imageWriteParam.setCompressionType(compressionType);
-            if (quality != null)
+            if (null != quality)
                 imageWriteParam.setCompressionQuality(quality.floatValue());
         }
     }

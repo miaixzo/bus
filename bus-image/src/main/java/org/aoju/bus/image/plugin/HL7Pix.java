@@ -39,7 +39,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL7Pix extends Device {
@@ -95,7 +95,7 @@ public class HL7Pix extends Device {
         msh.setReceivingApplicationWithFacility(receivingApplication);
         msh.setField(17, charset);
         mllp.writeMessage(qbp.getBytes(charset));
-        if (mllp.readMessage() == null)
+        if (null == mllp.readMessage())
             throw new IOException("Connection closed by receiver");
     }
 

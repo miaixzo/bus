@@ -33,7 +33,7 @@ import java.net.Proxy;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RequestLine {
@@ -63,7 +63,7 @@ public final class RequestLine {
     public static String requestPath(UnoUrl url) {
         String path = url.encodedPath();
         String query = url.encodedQuery();
-        return query != null ? (path + Symbol.C_QUESTION_MARK + query) : path;
+        return null != query ? (path + Symbol.C_QUESTION_MARK + query) : path;
     }
 
 }

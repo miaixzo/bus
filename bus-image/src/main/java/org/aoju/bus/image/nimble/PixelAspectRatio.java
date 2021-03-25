@@ -30,7 +30,7 @@ import org.aoju.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PixelAspectRatio {
@@ -50,13 +50,13 @@ public class PixelAspectRatio {
     private static float forImage(Attributes attrs, int aspectRatioTag,
                                   int... pixelSpacingTags) {
         int[] ratio = attrs.getInts(aspectRatioTag);
-        if (ratio != null && ratio.length == 2
+        if (null != ratio && ratio.length == 2
                 && ratio[0] > 0 && ratio[1] > 0)
             return (float) ratio[0] / ratio[1];
 
         for (int pixelSpacingTag : pixelSpacingTags) {
             float[] spaces = attrs.getFloats(pixelSpacingTag);
-            if (spaces != null && spaces.length == 2
+            if (null != spaces && spaces.length == 2
                     && spaces[0] > 0 && spaces[1] > 0)
                 return spaces[0] / spaces[1];
         }

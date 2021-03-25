@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public class InternationalStringBranchType extends BranchType {
     protected List<FilterType> localizedStringFilter;
 
     public List<FilterType> getLocalizedStringFilter() {
-        if (this.localizedStringFilter == null) {
+        if (null == this.localizedStringFilter) {
             this.localizedStringFilter = new ArrayList();
         }
         return this.localizedStringFilter;

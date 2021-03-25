@@ -57,7 +57,7 @@ import java.util.Map;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ResponseBodyAdvice extends BaseAdvice
@@ -93,7 +93,7 @@ public class ResponseBodyAdvice extends BaseAdvice
     private static <T> Object getValue(T entity, String field) {
         if (ReflectKit.hasField(entity, field)) {
             Object object = ReflectKit.invokeGetter(entity, field);
-            return object != null ? object.toString() : null;
+            return null != object ? object.toString() : null;
         }
         return null;
     }
@@ -198,7 +198,7 @@ public class ResponseBodyAdvice extends BaseAdvice
         Map<String, Privacy> map = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             Privacy privacy = field.getAnnotation(Privacy.class);
-            if (privacy != null) {
+            if (null != privacy) {
                 map.put(field.getName(), privacy);
             }
         }

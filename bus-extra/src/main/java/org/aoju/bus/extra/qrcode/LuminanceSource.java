@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
  * 此类同样在zxing-j2se包中也有提供
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class LuminanceSource extends com.google.zxing.LuminanceSource {
@@ -91,7 +91,7 @@ public final class LuminanceSource extends com.google.zxing.LuminanceSource {
             throw new IllegalArgumentException("Requested row is outside the image: " + y);
         }
         int width = getWidth();
-        if (row == null || row.length < width) {
+        if (null == row || row.length < width) {
             row = new byte[width];
         }
         image.getRaster().getDataElements(left, top + y, width, 1, row);

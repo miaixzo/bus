@@ -37,7 +37,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class TraceJobListener extends JobListenerSupport {
@@ -69,10 +69,9 @@ public class TraceJobListener extends JobListenerSupport {
         final TraceFilterConfig configuration = backend.getConfiguration(profile);
 
         if (configuration.shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
-            final Map<String, String> TraceContext = (Map<String, String>) context.getMergedJobDataMap().get(Builder.TPIC_HEADER);
-
-            if (TraceContext != null && !TraceContext.isEmpty()) {
-                final Map<String, String> filteredContext = configuration.filterDeniedParams(TraceContext, TraceFilterConfig.Channel.AsyncProcess);
+            final Map<String, String> traceContext = (Map<String, String>) context.getMergedJobDataMap().get(Builder.TPIC_HEADER);
+            if (null != traceContext && !traceContext.isEmpty()) {
+                final Map<String, String> filteredContext = configuration.filterDeniedParams(traceContext, TraceFilterConfig.Channel.AsyncProcess);
                 backend.putAll(filteredContext);
             }
         }

@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesConverter {
@@ -66,10 +66,10 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
 
         final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
         if (filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
-            final Map<String, String> TraceContextMap = transformToTraceContextMap(
+            final Map<String, String> traceContextMap = transformToTraceContextMap(
                     (Map<String, ?>) messageProperties.getHeaders().get(Builder.TPIC_HEADER));
-            if (TraceContextMap != null && !TraceContextMap.isEmpty()) {
-                backend.putAll(filterConfiguration.filterDeniedParams(TraceContextMap, TraceFilterConfig.Channel.AsyncProcess));
+            if (null != traceContextMap && !traceContextMap.isEmpty()) {
+                backend.putAll(filterConfiguration.filterDeniedParams(traceContextMap, TraceFilterConfig.Channel.AsyncProcess));
             }
         }
         org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
@@ -78,7 +78,7 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
 
     private Map<String, String> transformToTraceContextMap(final Map<String, ?> tpicMessageHeader) {
         final Map<String, String> TraceContext = new HashMap<>();
-        if (tpicMessageHeader != null) {
+        if (null != tpicMessageHeader) {
             for (Map.Entry<String, ?> stringObjectEntry : tpicMessageHeader.entrySet()) {
                 TraceContext.put(stringObjectEntry.getKey(), String.valueOf(stringObjectEntry.getValue()));
             }

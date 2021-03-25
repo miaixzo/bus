@@ -40,7 +40,7 @@ import java.util.List;
  * Utility to query logged in users.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -63,7 +63,7 @@ public final class Who {
         LIBC.setutxent();
         try {
             // Iterate
-            while ((ut = LIBC.getutxent()) != null) {
+            while (null != (ut = LIBC.getutxent())) {
                 if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
                     String user = Native.toString(ut.ut_user, Charset.US_ASCII);
                     String device = Native.toString(ut.ut_line, Charset.US_ASCII);

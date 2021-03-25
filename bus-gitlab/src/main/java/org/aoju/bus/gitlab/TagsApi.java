@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://docs.gitlab.com/ce/api/tags.html">Tags API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/protected_tags.html">Protected Tags API at GitLab</a>
  * @since JDK 1.8+
@@ -304,7 +304,7 @@ public class TagsApi extends AbstractApi {
     public Tag createTag(Object projectIdOrPath, String tagName, String ref, String message, File releaseNotesFile) throws GitLabApiException {
 
         String releaseNotes;
-        if (releaseNotesFile != null) {
+        if (null != releaseNotesFile) {
             try {
                 releaseNotes = readFileContents(releaseNotesFile);
             } catch (IOException ioe) {

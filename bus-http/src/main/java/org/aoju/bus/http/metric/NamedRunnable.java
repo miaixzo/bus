@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 可运行的实现，它总是设置它的线程名.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class NamedRunnable implements Runnable {

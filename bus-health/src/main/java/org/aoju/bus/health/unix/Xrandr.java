@@ -37,7 +37,7 @@ import java.util.List;
  * Utility to query xrandr
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -61,7 +61,7 @@ public final class Xrandr {
         for (String s : xrandr) {
             if (s.contains("EDID")) {
                 sb = new StringBuilder();
-            } else if (sb != null) {
+            } else if (null != sb) {
                 sb.append(s.trim());
                 if (sb.length() < 256) {
                     continue;

@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ArrayKit {
@@ -77,7 +77,7 @@ public class ArrayKit {
      * @return 是否为空
      */
     public static boolean isEmpty(Object array) {
-        if (array != null) {
+        if (null != array) {
             if (isArray(array)) {
                 return 0 == Array.getLength(array);
             }
@@ -94,7 +94,7 @@ public class ArrayKit {
      * @return 是否为空
      */
     public static <T> boolean isEmpty(T[] array) {
-        return array == null || array.length == 0;
+        return null == array || array.length == 0;
     }
 
     /**
@@ -309,11 +309,11 @@ public class ArrayKit {
      * @throws IllegalArgumentException 如果类型参数为空
      */
     public static <T> T[] nullToEmpty(final T[] array, final Class<T[]> type) {
-        if (type == null) {
+        if (null == type) {
             throw new IllegalArgumentException("The type must not be null");
         }
 
-        if (array == null) {
+        if (null == array) {
             return type.cast(Array.newInstance(type.getComponentType(), 0));
         }
         return array;
@@ -716,7 +716,7 @@ public class ArrayKit {
      * @return 数组字符串, 与集合转字符串格式相同
      */
     public static String toString(final Object array, final String stringIfNull) {
-        if (array == null) {
+        if (null == array) {
             return stringIfNull;
         }
         return new ToStringBuilder(array, ToStringStyle.SIMPLE_STYLE).append(array).toString();
@@ -798,7 +798,7 @@ public class ArrayKit {
      * @return 比输入大1的数组的新副本
      */
     private static Object clone(final Object array, final Class<?> newArrayComponentType) {
-        if (array != null) {
+        if (null != array) {
             final int arrayLength = Array.getLength(array);
             final Object newArray = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
             System.arraycopy(array, 0, newArray, 0, arrayLength);
@@ -815,7 +815,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static <T> T[] clone(final T[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -856,7 +856,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static long[] clone(final long[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -869,7 +869,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static int[] clone(final int[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -882,7 +882,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static short[] clone(final short[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -895,7 +895,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static char[] clone(final char[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -908,7 +908,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static byte[] clone(final byte[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -921,7 +921,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static double[] clone(final double[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -934,7 +934,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static float[] clone(final float[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -947,7 +947,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static boolean[] clone(final boolean[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         return array.clone();
@@ -964,7 +964,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static <T> T[] subarray(final T[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -994,7 +994,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static long[] subarray(final long[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1023,7 +1023,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static int[] subarray(final int[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1052,7 +1052,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static short[] subarray(final short[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1081,7 +1081,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static char[] subarray(final char[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1110,7 +1110,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static byte[] subarray(final byte[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1139,7 +1139,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static double[] subarray(final double[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1168,7 +1168,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static float[] subarray(final float[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1197,7 +1197,7 @@ public class ArrayKit {
      * @return 新数组
      */
     public static boolean[] subarray(final boolean[] array, int startIndex, int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         if (startIndex < 0) {
@@ -1321,7 +1321,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final Object[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1333,7 +1333,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final long[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1345,7 +1345,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final int[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1357,7 +1357,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final short[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1369,7 +1369,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final char[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1381,7 +1381,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final byte[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1393,7 +1393,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final double[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1405,7 +1405,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final float[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1417,7 +1417,7 @@ public class ArrayKit {
      * @param array 数组,会变更
      */
     public static void reverse(final boolean[] array) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         reverse(array, 0, array.length);
@@ -1429,7 +1429,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final boolean[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1449,7 +1449,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final byte[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1469,7 +1469,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final char[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1489,7 +1489,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final double[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1509,7 +1509,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final float[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1529,7 +1529,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final int[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1549,7 +1549,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final long[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1569,7 +1569,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final Object[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1589,7 +1589,7 @@ public class ArrayKit {
      * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final short[] array, final int startIndex, final int endIndex) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         int i = startIndex < 0 ? 0 : startIndex;
@@ -1610,7 +1610,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final Object[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1624,7 +1624,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final long[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1638,7 +1638,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final int[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1652,7 +1652,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final short[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1666,7 +1666,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final char[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1680,7 +1680,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final byte[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1694,7 +1694,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final double[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1708,7 +1708,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final float[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1722,7 +1722,7 @@ public class ArrayKit {
      * @param offset2 位置2
      */
     public static void swap(final boolean[] array, final int offset1, final int offset2) {
-        if (array == null || array.length == 0) {
+        if (null == array || array.length == 0) {
             return;
         }
         swap(array, offset1, offset2, 1);
@@ -1737,7 +1737,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final boolean[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1763,7 +1763,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final byte[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1789,7 +1789,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final char[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1815,7 +1815,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final double[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1841,7 +1841,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final float[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1868,7 +1868,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final int[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1894,7 +1894,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final long[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1920,7 +1920,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final Object[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1946,7 +1946,7 @@ public class ArrayKit {
      * @param len     从给定索引开始交换的元素数量
      */
     public static void swap(final short[] array, int offset1, int offset2, int len) {
-        if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
+        if (null == array || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
             return;
         }
         if (offset1 < 0) {
@@ -1973,7 +1973,7 @@ public class ArrayKit {
      * @param offset 旋转元素的位置数。如果偏移量大于*旋转的元素数，则有效偏移量将等于旋转的元素数
      */
     public static void shift(final Object[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -1986,7 +1986,7 @@ public class ArrayKit {
      * @param offset 旋转元素的位置数。如果偏移量大于*旋转的元素数，则有效偏移量将等于旋转的元素数
      */
     public static void shift(final long[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -1999,7 +1999,7 @@ public class ArrayKit {
      * @param offset 旋转元素的位置数。如果偏移量大于*旋转的元素数，则有效偏移量将等于旋转的元素数
      */
     public static void shift(final int[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -2012,7 +2012,7 @@ public class ArrayKit {
      * @param offset 偏移量
      */
     public static void shift(final short[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -2025,7 +2025,7 @@ public class ArrayKit {
      * @param offset 偏移量
      */
     public static void shift(final char[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -2038,7 +2038,7 @@ public class ArrayKit {
      * @param offset 偏移量
      */
     public static void shift(final byte[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -2051,7 +2051,7 @@ public class ArrayKit {
      * @param offset 偏移量
      */
     public static void shift(final double[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -2064,7 +2064,7 @@ public class ArrayKit {
      * @param offset 偏移量
      */
     public static void shift(final float[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -2077,7 +2077,7 @@ public class ArrayKit {
      * @param offset 偏移量
      */
     public static void shift(final boolean[] array, final int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         shift(array, 0, array.length, offset);
@@ -2092,7 +2092,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final boolean[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2139,7 +2139,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final byte[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2187,7 +2187,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final char[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2234,7 +2234,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final double[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2281,7 +2281,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final float[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2328,7 +2328,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final int[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2375,7 +2375,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final long[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2422,7 +2422,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final Object[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2469,7 +2469,7 @@ public class ArrayKit {
      * @param offset     偏移量
      */
     public static void shift(final short[] array, int startIndex, int endIndex, int offset) {
-        if (array == null) {
+        if (null == array) {
             return;
         }
         if (startIndex >= array.length - 1 || endIndex <= 0) {
@@ -2527,15 +2527,15 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final Object[] array, final Object value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
         }
-        if (value == null) {
+        if (null == value) {
             for (int i = index; i < array.length; i++) {
-                if (array[i] == null) {
+                if (null == array[i]) {
                     return i;
                 }
             }
@@ -2569,7 +2569,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final Object[] array, final Object value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2577,9 +2577,9 @@ public class ArrayKit {
         } else if (index >= array.length) {
             index = array.length - 1;
         }
-        if (value == null) {
+        if (null == value) {
             for (int i = index; i >= 0; i--) {
-                if (array[i] == null) {
+                if (null == array[i]) {
                     return i;
                 }
             }
@@ -2625,7 +2625,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final long[] array, final long value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2659,7 +2659,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final long[] array, final long value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2706,7 +2706,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final int[] array, final int value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2740,7 +2740,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final int[] array, final int value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2788,7 +2788,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final short[] array, final short value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2822,7 +2822,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final short[] array, final short value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2870,7 +2870,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final char[] array, final char value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2904,7 +2904,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final char[] array, final char value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2951,7 +2951,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final byte[] array, final byte value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -2985,7 +2985,7 @@ public class ArrayKit {
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final byte[] array, final byte value, int index) {
-        if (array == null) {
+        if (null == array) {
             return INDEX_NOT_FOUND;
         }
         if (index < 0) {
@@ -3354,7 +3354,7 @@ public class ArrayKit {
      * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static char[] toPrimitive(final Character[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_CHAR_ARRAY;
@@ -3375,7 +3375,7 @@ public class ArrayKit {
      * @return {@code Character}数组，{@code null}如果为空数组输入
      */
     public static char[] toPrimitive(final Character[] array, final char valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_CHAR_ARRAY;
@@ -3383,7 +3383,7 @@ public class ArrayKit {
         final char[] result = new char[array.length];
         for (int i = 0; i < array.length; i++) {
             final Character b = array[i];
-            result[i] = (b == null ? valueForNull : b.charValue());
+            result[i] = (null == b ? valueForNull : b.charValue());
         }
         return result;
     }
@@ -3396,7 +3396,7 @@ public class ArrayKit {
      * @return {@code Character}数组，{@code null}如果为空数组输入
      */
     public static Character[] toObject(final char[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_CHARACTER_OBJECT_ARRAY;
@@ -3416,7 +3416,7 @@ public class ArrayKit {
      * @return {@code long}数组，{@code null}如果为空数组输入
      */
     public static long[] toPrimitive(final Long[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_LONG_ARRAY;
@@ -3437,7 +3437,7 @@ public class ArrayKit {
      * @return {@code Long}数组，{@code null}如果为空数组输入
      */
     public static long[] toPrimitive(final Long[] array, final long valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_LONG_ARRAY;
@@ -3445,7 +3445,7 @@ public class ArrayKit {
         final long[] result = new long[array.length];
         for (int i = 0; i < array.length; i++) {
             final Long b = array[i];
-            result[i] = (b == null ? valueForNull : b.longValue());
+            result[i] = (null == b ? valueForNull : b.longValue());
         }
         return result;
     }
@@ -3458,7 +3458,7 @@ public class ArrayKit {
      * @return {@code Long}数组，{@code null}如果为空数组输入
      */
     public static Long[] toObject(final long[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_LONG_OBJECT_ARRAY;
@@ -3479,7 +3479,7 @@ public class ArrayKit {
      * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static int[] toPrimitive(final Integer[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_INT_ARRAY;
@@ -3500,7 +3500,7 @@ public class ArrayKit {
      * @return {@code Integer}数组，{@code null}如果为空数组输入
      */
     public static int[] toPrimitive(final Integer[] array, final int valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_INT_ARRAY;
@@ -3508,7 +3508,7 @@ public class ArrayKit {
         final int[] result = new int[array.length];
         for (int i = 0; i < array.length; i++) {
             final Integer b = array[i];
-            result[i] = (b == null ? valueForNull : b.intValue());
+            result[i] = (null == b ? valueForNull : b.intValue());
         }
         return result;
     }
@@ -3521,7 +3521,7 @@ public class ArrayKit {
      * @return {@code Integer}数组，{@code null}如果为空数组输入
      */
     public static Integer[] toObject(final int[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_INTEGER_OBJECT_ARRAY;
@@ -3541,7 +3541,7 @@ public class ArrayKit {
      * @return {@code short}数组，{@code null}如果为空数组输入
      */
     public static short[] toPrimitive(final Short[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_SHORT_ARRAY;
@@ -3562,7 +3562,7 @@ public class ArrayKit {
      * @return {@code Short}数组，{@code null}如果为空数组输入
      */
     public static short[] toPrimitive(final Short[] array, final short valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_SHORT_ARRAY;
@@ -3570,7 +3570,7 @@ public class ArrayKit {
         final short[] result = new short[array.length];
         for (int i = 0; i < array.length; i++) {
             final Short b = array[i];
-            result[i] = (b == null ? valueForNull : b.shortValue());
+            result[i] = (null == b ? valueForNull : b.shortValue());
         }
         return result;
     }
@@ -3583,7 +3583,7 @@ public class ArrayKit {
      * @return {@code Short}数组，{@code null}如果为空数组输入
      */
     public static Short[] toObject(final short[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_SHORT_OBJECT_ARRAY;
@@ -3604,7 +3604,7 @@ public class ArrayKit {
      * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static byte[] toPrimitive(final Byte[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_BYTE_ARRAY;
@@ -3625,7 +3625,7 @@ public class ArrayKit {
      * @return {@code Byte}数组，{@code null}如果为空数组输入
      */
     public static byte[] toPrimitive(final Byte[] array, final byte valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_BYTE_ARRAY;
@@ -3633,7 +3633,7 @@ public class ArrayKit {
         final byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
             final Byte b = array[i];
-            result[i] = (b == null ? valueForNull : b.byteValue());
+            result[i] = (null == b ? valueForNull : b.byteValue());
         }
         return result;
     }
@@ -3646,7 +3646,7 @@ public class ArrayKit {
      * @return {@code Byte}数组，{@code null}如果为空数组输入
      */
     public static Byte[] toObject(final byte[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_BYTE_OBJECT_ARRAY;
@@ -3667,7 +3667,7 @@ public class ArrayKit {
      * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static double[] toPrimitive(final Double[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_DOUBLE_ARRAY;
@@ -3688,7 +3688,7 @@ public class ArrayKit {
      * @return {@code Double}数组，{@code null}如果为空数组输入
      */
     public static double[] toPrimitive(final Double[] array, final double valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_DOUBLE_ARRAY;
@@ -3696,7 +3696,7 @@ public class ArrayKit {
         final double[] result = new double[array.length];
         for (int i = 0; i < array.length; i++) {
             final Double b = array[i];
-            result[i] = (b == null ? valueForNull : b.doubleValue());
+            result[i] = (null == b ? valueForNull : b.doubleValue());
         }
         return result;
     }
@@ -3709,7 +3709,7 @@ public class ArrayKit {
      * @return {@code double}数组，{@code null}如果为空数组输入
      */
     public static Double[] toObject(final double[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_DOUBLE_OBJECT_ARRAY;
@@ -3730,7 +3730,7 @@ public class ArrayKit {
      * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static float[] toPrimitive(final Float[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_FLOAT_ARRAY;
@@ -3751,7 +3751,7 @@ public class ArrayKit {
      * @return {@code float}数组，{@code null}如果为空数组输入
      */
     public static float[] toPrimitive(final Float[] array, final float valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_FLOAT_ARRAY;
@@ -3759,7 +3759,7 @@ public class ArrayKit {
         final float[] result = new float[array.length];
         for (int i = 0; i < array.length; i++) {
             final Float b = array[i];
-            result[i] = (b == null ? valueForNull : b.floatValue());
+            result[i] = (null == b ? valueForNull : b.floatValue());
         }
         return result;
     }
@@ -3772,7 +3772,7 @@ public class ArrayKit {
      * @return {@code Float}数组，{@code null}如果为空数组输入
      */
     public static Float[] toObject(final float[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_FLOAT_OBJECT_ARRAY;
@@ -3792,7 +3792,7 @@ public class ArrayKit {
      * @return 对应基元类型的数组，或原始数组
      */
     public static Object toPrimitive(final Object array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         final Class<?> ct = array.getClass().getComponentType();
@@ -3824,7 +3824,7 @@ public class ArrayKit {
      * @throws NullPointerException 如果数组内容是{@code null}
      */
     public static boolean[] toPrimitive(final Boolean[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_BOOLEAN_ARRAY;
@@ -3845,7 +3845,7 @@ public class ArrayKit {
      * @return 返回{@code boolean}数组, 如果输入为null则为{@code null}
      */
     public static boolean[] toPrimitive(final Boolean[] array, final boolean valueForNull) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_BOOLEAN_ARRAY;
@@ -3853,7 +3853,7 @@ public class ArrayKit {
         final boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             final Boolean b = array[i];
-            result[i] = (b == null ? valueForNull : b.booleanValue());
+            result[i] = (null == b ? valueForNull : b.booleanValue());
         }
         return result;
     }
@@ -3866,7 +3866,7 @@ public class ArrayKit {
      * @return 返回{@code boolean}数组, 如果输入为null则为{@code null}
      */
     public static Boolean[] toObject(final boolean[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_BOOLEAN_OBJECT_ARRAY;
@@ -4230,9 +4230,9 @@ public class ArrayKit {
      */
     public static <T> T[] add(final T[] array, final T element) {
         Class<?> type;
-        if (array != null) {
+        if (null != array) {
             type = array.getClass().getComponentType();
-        } else if (element != null) {
+        } else if (null != element) {
             type = element.getClass();
         } else {
             throw new IllegalArgumentException("Arguments cannot both be null");
@@ -4431,9 +4431,9 @@ public class ArrayKit {
      */
     public static <T> T[] add(final T[] array, final int index, final T element) {
         Class<?> clss;
-        if (array != null) {
+        if (null != array) {
             clss = array.getClass().getComponentType();
-        } else if (element != null) {
+        } else if (null != element) {
             clss = element.getClass();
         } else {
             throw new IllegalArgumentException("Array and element cannot both be null");
@@ -4621,7 +4621,7 @@ public class ArrayKit {
      * @return 包含现有元素和新元素的新数组
      */
     private static Object add(final Object array, final int index, final Object element, final Class<?> clss) {
-        if (array == null) {
+        if (null == array) {
             if (index != 0) {
                 throw new IndexOutOfBoundsException("Index: " + index + ", Length: 0");
             }
@@ -5137,7 +5137,7 @@ public class ArrayKit {
         final HashMap<T, MutableInt> occurrences = new HashMap<>(values.length);
         for (final T v : values) {
             final MutableInt count = occurrences.get(v);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(v, new MutableInt(1));
             } else {
                 count.increment();
@@ -5147,7 +5147,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final T key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5206,7 +5206,7 @@ public class ArrayKit {
         for (final byte v : values) {
             final Byte boxed = Byte.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5216,7 +5216,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final byte key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5275,7 +5275,7 @@ public class ArrayKit {
         for (final short v : values) {
             final Short boxed = Short.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5285,7 +5285,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final short key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5344,7 +5344,7 @@ public class ArrayKit {
         for (final int v : values) {
             final Integer boxed = Integer.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5354,7 +5354,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final int key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5413,7 +5413,7 @@ public class ArrayKit {
         for (final char v : values) {
             final Character boxed = Character.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5423,7 +5423,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final char key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5482,7 +5482,7 @@ public class ArrayKit {
         for (final long v : values) {
             final Long boxed = Long.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5492,7 +5492,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final long key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5551,7 +5551,7 @@ public class ArrayKit {
         for (final float v : values) {
             final Float boxed = Float.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5561,7 +5561,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final float key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5620,7 +5620,7 @@ public class ArrayKit {
         for (final double v : values) {
             final Double boxed = Double.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5630,7 +5630,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final double key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5685,7 +5685,7 @@ public class ArrayKit {
         for (final boolean v : values) {
             final Boolean boxed = Boolean.valueOf(v);
             final MutableInt count = occurrences.get(boxed);
-            if (count == null) {
+            if (null == count) {
                 occurrences.put(boxed, new MutableInt(1));
             } else {
                 count.increment();
@@ -5695,7 +5695,7 @@ public class ArrayKit {
         for (int i = 0; i < array.length; i++) {
             final boolean key = array[i];
             final MutableInt count = occurrences.get(key);
-            if (count != null) {
+            if (null != count) {
                 if (count.get() == 0) {
                     occurrences.remove(key);
                 }
@@ -5809,11 +5809,11 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static <T> boolean isSorted(final T[] array, final Comparator<T> comparator) {
-        if (comparator == null) {
+        if (null == comparator) {
             throw new IllegalArgumentException("Comparator should not be null.");
         }
 
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -5837,7 +5837,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final int[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -5861,7 +5861,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final long[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -5885,7 +5885,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final short[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -5909,7 +5909,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final double[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -5933,7 +5933,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final float[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -5957,7 +5957,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final byte[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -5981,7 +5981,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final char[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -6005,7 +6005,7 @@ public class ArrayKit {
      * @return 数组是否已排序
      */
     public static boolean isSorted(final boolean[] array) {
-        if (array == null || array.length < 2) {
+        if (null == array || array.length < 2) {
             return true;
         }
 
@@ -6274,7 +6274,7 @@ public class ArrayKit {
      * @return {@code String[]}的大小与其元素的字符串表示形式相同，{@code null}如果是空数组输入
      */
     public static String[] toStringArray(final Object[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_STRING_ARRAY;
@@ -6306,7 +6306,7 @@ public class ArrayKit {
         final String[] result = new String[array.length];
         for (int i = 0; i < array.length; i++) {
             final Object object = array[i];
-            result[i] = (object == null ? valueForNullElements : object.toString());
+            result[i] = (null == object ? valueForNullElements : object.toString());
         }
 
         return result;
@@ -6376,10 +6376,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static boolean[] insert(final int index, final boolean[] array, final boolean... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6414,10 +6414,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static byte[] insert(final int index, final byte[] array, final byte... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6452,10 +6452,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static char[] insert(final int index, final char[] array, final char... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6490,10 +6490,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static double[] insert(final int index, final double[] array, final double... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6528,10 +6528,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static float[] insert(final int index, final float[] array, final float... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6566,10 +6566,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static int[] insert(final int index, final int[] array, final int... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6604,10 +6604,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static long[] insert(final int index, final long[] array, final long... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6642,10 +6642,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static short[] insert(final int index, final short[] array, final short... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -6681,10 +6681,10 @@ public class ArrayKit {
      * @return 新数组.
      */
     public static <T> T[] insert(final int index, final T[] array, final T... values) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
-        if (values == null || values.length == 0) {
+        if (null == values || values.length == 0) {
             return clone(array);
         }
         if (index < 0 || index > array.length) {
@@ -8707,7 +8707,7 @@ public class ArrayKit {
      * @throws IllegalArgumentException 如果其中一个数组是{@code null}
      */
     public static boolean isSameType(final Object array1, final Object array2) {
-        if (array1 == null || array2 == null) {
+        if (null == array1 || null == array2) {
             throw new IllegalArgumentException("The Array must not be null");
         }
         return array1.getClass().getName().equals(array2.getClass().getName());
@@ -8809,7 +8809,7 @@ public class ArrayKit {
      * @throws IllegalArgumentException 如果对象参数不是数组
      */
     public static int getLength(final Object array) {
-        if (array == null) {
+        if (null == array) {
             return 0;
         }
         return Array.getLength(array);

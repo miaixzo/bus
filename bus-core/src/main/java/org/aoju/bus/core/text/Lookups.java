@@ -33,7 +33,7 @@ import java.util.Map;
  * 查找字符串值的字符串键.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class Lookups<V> {
@@ -108,11 +108,11 @@ public abstract class Lookups<V> {
          */
         @Override
         public String lookup(final String key) {
-            if (map == null) {
+            if (null == map) {
                 return null;
             }
             final Object obj = map.get(key);
-            if (obj == null) {
+            if (null == obj) {
                 return null;
             }
             return obj.toString();

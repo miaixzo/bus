@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Httpx {
@@ -202,7 +202,7 @@ public class Httpx {
             }
             if (ObjectKit.isNotEmpty(httpProxy)) {
                 builder.proxy(httpProxy.proxy());
-                if (httpProxy.user != null && httpProxy.password != null) {
+                if (null != httpProxy.user && null != httpProxy.password) {
                     builder.proxyAuthenticator(httpProxy.authenticator());
                 }
             }
@@ -478,7 +478,7 @@ public class Httpx {
         String result = Normal.EMPTY;
         try {
             Response response = httpd.newCall(request).execute();
-            if (response.body() != null) {
+            if (null != response.body()) {
                 byte[] bytes = response.body().bytes();
                 result = new String(bytes, Charset.DEFAULT_UTF_8);
             }
@@ -553,7 +553,7 @@ public class Httpx {
         String result = Normal.EMPTY;
         try {
             Response response = httpd.newCall(request.url(builder.url).build()).execute();
-            if (response.body() != null) {
+            if (null != response.body()) {
                 byte[] bytes = response.body().bytes();
                 result = new String(bytes, builder.responseCharset);
             }
@@ -584,7 +584,7 @@ public class Httpx {
 
             @Override
             public void onResponse(NewCall call, Response response) throws IOException {
-                if (response.body() != null) {
+                if (null != response.body()) {
                     byte[] bytes = response.body().bytes();
                     result[0] = new String(bytes, builder.responseCharset);
                     if (builder.tracer) {

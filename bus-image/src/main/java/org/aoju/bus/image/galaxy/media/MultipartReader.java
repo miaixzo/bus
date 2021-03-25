@@ -35,7 +35,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MultipartReader {
@@ -140,7 +140,7 @@ public class MultipartReader {
         }
 
         String headers = null;
-        if (headerEncoding != null) {
+        if (null != headerEncoding) {
             try {
                 headers = baos.toString(headerEncoding);
             } catch (UnsupportedEncodingException e) {
@@ -148,7 +148,7 @@ public class MultipartReader {
             }
         }
 
-        if (headers == null) {
+        if (null == headers) {
             headers = baos.toString();
         }
         return headers;

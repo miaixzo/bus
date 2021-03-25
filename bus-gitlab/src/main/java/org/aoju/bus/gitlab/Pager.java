@@ -61,7 +61,7 @@ import java.util.stream.StreamSupport;
  *
  * @param <T> the GitLab type contained in the List.
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
@@ -164,7 +164,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private String getHeaderValue(Response response, String key) {
 
         String value = response.getHeaderString(key);
-        value = (value != null ? value.trim() : null);
+        value = (null != value ? value.trim() : null);
         if (value == null || value.length() == 0) {
             return (null);
         }

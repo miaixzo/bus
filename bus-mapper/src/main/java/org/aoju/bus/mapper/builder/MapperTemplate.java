@@ -55,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通用Mapper模板类,扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class MapperTemplate {
@@ -109,9 +109,9 @@ public abstract class MapperTemplate {
      */
     public boolean supportMethod(String msId) {
         Class<?> mapperClass = Reflector.getMapperClass(msId);
-        if (mapperClass != null && this.mapperClass.isAssignableFrom(mapperClass)) {
+        if (null != mapperClass && this.mapperClass.isAssignableFrom(mapperClass)) {
             String methodName = Reflector.getMethodName(msId);
-            return methodMap.get(methodName) != null;
+            return null != methodMap.get(methodName);
         }
         return false;
     }
@@ -263,7 +263,7 @@ public abstract class MapperTemplate {
         } catch (IllegalAccessException e) {
             throw new InstrumentException(e);
         } catch (InvocationTargetException e) {
-            throw new InstrumentException(e.getTargetException() != null ? e.getTargetException() : e);
+            throw new InstrumentException(null != e.getTargetException() ? e.getTargetException() : e);
         }
     }
 

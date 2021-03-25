@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * 非线程安全
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Builder {
@@ -234,7 +234,7 @@ public class Builder {
     }
 
     private void checkProps() {
-        if (this.lastSection != null && !waitForSections.isEmpty()) {
+        if (null != this.lastSection && !waitForSections.isEmpty()) {
             while (!waitForSections.isEmpty()) {
                 final IniProperty property = waitForSections.removeLast().get();
                 property.setSection(this.lastSection);
@@ -245,7 +245,7 @@ public class Builder {
     }
 
     private void checkProps(Supplier<IniProperty> propertySupplier) {
-        if (this.lastSection == null) {
+        if (null == this.lastSection) {
             this.waitForSections.addFirst(propertySupplier);
         } else {
             checkProps();

@@ -57,7 +57,7 @@ import java.util.concurrent.Executors;
  * DCM解压缩/转换
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Dcm2Dcm {
@@ -84,7 +84,7 @@ public class Dcm2Dcm {
     public final void setTransferSyntax(String uid) {
         this.tsuid = uid;
         this.tstype = TransferSyntaxType.forUID(uid);
-        if (tstype == null) {
+        if (null == tstype) {
             throw new IllegalArgumentException(
                     "Unsupported Transfer Syntax: " + tsuid);
         }
@@ -121,7 +121,7 @@ public class Dcm2Dcm {
         for (String src : srcList) {
             mtranscode(new File(src), dest, executorService);
         }
-        if (executorService != null) {
+        if (null != executorService) {
             executorService.shutdown();
         }
     }
@@ -134,13 +134,8 @@ public class Dcm2Dcm {
             return;
         }
         final File finalDest = dest.isDirectory() ? new File(dest, src.getName()) : dest;
-        if (executer != null) {
-            executer.execute(new Runnable() {
-                @Override
-                public void run() {
-                    transcode(src, finalDest);
-                }
-            });
+        if (null != executer) {
+            executer.execute(() -> transcode(src, finalDest));
         } else {
             transcode(src, finalDest);
         }
@@ -180,7 +175,7 @@ public class Dcm2Dcm {
         ImageOutputStream dos = null;
         try {
             String tsuid = this.tsuid;
-            if (pixeldata != null) {
+            if (null != pixeldata) {
                 if (tstype.isPixeldataEncapsulated()) {
                     tsuid = adjustTransferSyntax(tsuid,
                             dataset.getInt(Tag.BitsStored, 8));
@@ -191,7 +186,7 @@ public class Dcm2Dcm {
             }
             if (nofmi)
                 fmi = null;
-            else if (retainfmi && fmi != null)
+            else if (retainfmi && null != fmi)
                 fmi.setString(Tag.TransferSyntaxUID, VR.UI, tsuid);
             else
                 fmi = dataset.createFileMetaInformation(tsuid);

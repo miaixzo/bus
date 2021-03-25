@@ -32,7 +32,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractLimiterAware implements ImportAware {
@@ -43,7 +43,7 @@ public abstract class AbstractLimiterAware implements ImportAware {
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.enableLimiter = AnnotationAttributes.fromMap(
                 importMetadata.getAnnotationAttributes(EnableLimiter.class.getName(), false));
-        if (this.enableLimiter == null) {
+        if (null == this.enableLimiter) {
             throw new IllegalArgumentException(
                     "@EnableLimiter is not present on importing class " + importMetadata.getClassName());
         }

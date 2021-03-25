@@ -45,7 +45,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageProcessor {
@@ -127,7 +127,7 @@ public class ImageProcessor {
             int segType = iterator.currentSegment(pts);
             switch (segType) {
                 case PathIterator.SEG_MOVETO:
-                    if (p != null) {
+                    if (null != p) {
                         p.fromArray(cvPts.toArray(new Point[cvPts.size()]));
                         points.add(p);
                     }
@@ -144,7 +144,7 @@ public class ImageProcessor {
             iterator.next();
         }
 
-        if (p != null) {
+        if (null != p) {
             p.fromArray(cvPts.toArray(new Point[cvPts.size()]));
             points.add(p);
         }
@@ -169,7 +169,7 @@ public class ImageProcessor {
 
         MatOfDouble mean = new MatOfDouble();
         MatOfDouble stddev = new MatOfDouble();
-        if (mask == null) {
+        if (null == mask) {
             Core.meanStdDev(srcImg, mean, stddev);
         } else {
             Core.meanStdDev(srcImg, mean, stddev, mask);
@@ -185,7 +185,7 @@ public class ImageProcessor {
         double[][] val = new double[5][channels.size()];
         for (int i = 0; i < channels.size(); i++) {
             MinMaxLocResult minMax;
-            if (mask == null) {
+            if (null == mask) {
                 minMax = Core.minMaxLoc(channels.get(i));
             } else {
                 minMax = Core.minMaxLoc(channels.get(i), mask);
@@ -196,7 +196,7 @@ public class ImageProcessor {
 
         val[2] = mean.toArray();
         val[3] = stddev.toArray();
-        if (mask == null) {
+        if (null == mask) {
             val[4][0] = srcImg.width() * (double) srcImg.height();
         } else {
             val[4][0] = Core.countNonZero(mask);
@@ -209,7 +209,7 @@ public class ImageProcessor {
         Objects.requireNonNull(source);
         Mat srcImg;
         Mat mask = null;
-        if (shape == null) {
+        if (null == shape) {
             srcImg = source;
         } else {
             Rectangle b = new Rectangle(0, 0, source.width(), source.height()).intersection(shape.getBounds());
@@ -223,8 +223,8 @@ public class ImageProcessor {
             Imgproc.fillPoly(mask, pts, new Scalar(255));
         }
 
-        if (paddingValue != null) {
-            if (paddingLimit == null) {
+        if (null != paddingValue) {
+            if (null == paddingLimit) {
                 paddingLimit = paddingValue;
             } else if (paddingLimit < paddingValue) {
                 int temp = paddingValue;
@@ -233,7 +233,7 @@ public class ImageProcessor {
             }
             Mat maskPix = new Mat(srcImg.size(), CvType.CV_8UC1, new Scalar(0));
             exludePaddingValue(srcImg, maskPix, paddingValue, paddingLimit);
-            if (mask == null) {
+            if (null == mask) {
                 mask = maskPix;
             } else {
                 Core.bitwise_and(mask, maskPix, mask);
@@ -293,7 +293,7 @@ public class ImageProcessor {
     }
 
     public static ImageCV scale(Mat source, Dimension dim, Integer interpolation) {
-        if (interpolation == null || interpolation < Imgproc.INTER_NEAREST || interpolation > Imgproc.INTER_LANCZOS4) {
+        if (null == interpolation || interpolation < Imgproc.INTER_NEAREST || interpolation > Imgproc.INTER_LANCZOS4) {
             return scale(source, dim);
         }
         if (Objects.requireNonNull(dim).width < 1 || dim.height < 1) {
@@ -465,13 +465,13 @@ public class ImageProcessor {
     }
 
     public static ImageCV warpAffine(Mat source, Mat matrix, Size boxSize, Integer interpolation) {
-        if (matrix == null) {
+        if (null == matrix) {
             return (ImageCV) source;
         }
         Mat srcImg = Objects.requireNonNull(source);
         ImageCV dstImg = new ImageCV();
 
-        if (interpolation == null) {
+        if (null == interpolation) {
             interpolation = Imgproc.INTER_LINEAR;
         }
         Imgproc.warpAffine(srcImg, dstImg, matrix, boxSize, interpolation);
@@ -486,17 +486,17 @@ public class ImageProcessor {
      * @return the object
      */
     public static MinMaxLocResult findMinMaxValues(Mat source) {
-        if (source != null) {
+        if (null != source) {
             return minMaxLoc(source, null);
         }
         return null;
     }
 
     public static MinMaxLocResult findMinMaxValues(Mat source, Integer paddingValue, Integer paddingLimit) {
-        if (source != null) {
+        if (null != source) {
             Mat mask = new Mat(source.size(), CvType.CV_8UC1, new Scalar(0));
-            if (paddingValue != null) {
-                if (paddingLimit == null) {
+            if (null != paddingValue) {
+                if (null == paddingLimit) {
                     paddingLimit = paddingValue;
                 } else if (paddingLimit < paddingValue) {
                     int temp = paddingValue;
@@ -653,13 +653,13 @@ public class ImageProcessor {
     }
 
     private static boolean delete(File fileOrDirectory) {
-        if (fileOrDirectory == null || !fileOrDirectory.exists()) {
+        if (null == fileOrDirectory || !fileOrDirectory.exists()) {
             return false;
         }
 
         if (fileOrDirectory.isDirectory()) {
             final File[] files = fileOrDirectory.listFiles();
-            if (files != null) {
+            if (null != files) {
                 for (File child : files) {
                     delete(child);
                 }

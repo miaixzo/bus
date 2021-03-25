@@ -35,7 +35,7 @@ import java.net.URL;
  * 图片合并元素
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageElement extends AbstractElement<ImageElement> {
@@ -137,7 +137,7 @@ public class ImageElement extends AbstractElement<ImageElement> {
 
 
     public BufferedImage getImage() {
-        if (this.image == null) {
+        if (null == this.image) {
             try {
                 this.image = ImageIO.read(new URL(this.imgUrl));
             } catch (Exception e) {

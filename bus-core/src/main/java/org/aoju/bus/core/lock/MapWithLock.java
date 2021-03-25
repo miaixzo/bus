@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
@@ -114,7 +114,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         try {
             Map<K, V> map = this.getObj();
             V oldValue = map.putIfAbsent(key, value);
-            if (oldValue == null) {
+            if (null == oldValue) {
                 return value;
             } else {
                 return oldValue;
@@ -133,7 +133,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
      * @param map 对象
      */
     public void putAll(Map<K, V> map) {
-        if (map == null || map.isEmpty()) {
+        if (null == map || map.isEmpty()) {
             return;
         }
 

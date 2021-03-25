@@ -30,7 +30,7 @@ import org.aoju.bus.image.galaxy.data.AttributesCoercion;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DeIdentificationCoercion implements AttributesCoercion {
@@ -44,7 +44,7 @@ public class DeIdentificationCoercion implements AttributesCoercion {
     }
 
     public static AttributesCoercion valueOf(DeIdentifier.Option[] options, AttributesCoercion next) {
-        return options != null && options.length > 0
+        return null != options && options.length > 0
                 ? new DeIdentificationCoercion(new DeIdentifier(options), next)
                 : next;
     }
@@ -52,13 +52,13 @@ public class DeIdentificationCoercion implements AttributesCoercion {
     @Override
     public String remapUID(String uid) {
         String remappedUID = deIdentifier.remapUID(uid);
-        return next != null ? next.remapUID(remappedUID) : remappedUID;
+        return null != next ? next.remapUID(remappedUID) : remappedUID;
     }
 
     @Override
     public void coerce(Attributes attrs, Attributes modified) {
         deIdentifier.deidentify(attrs);
-        if (next != null)
+        if (null != next)
             next.coerce(attrs, modified);
     }
 

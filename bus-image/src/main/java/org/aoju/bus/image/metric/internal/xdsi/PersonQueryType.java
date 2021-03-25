@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -49,7 +49,7 @@ public class PersonQueryType extends RegistryObjectQueryType {
     protected List<FilterType> emailAddressFilter;
 
     public List<FilterType> getAddressFilter() {
-        if (this.addressFilter == null) {
+        if (null == this.addressFilter) {
             this.addressFilter = new ArrayList();
         }
         return this.addressFilter;
@@ -65,14 +65,14 @@ public class PersonQueryType extends RegistryObjectQueryType {
     }
 
     public List<FilterType> getTelephoneNumberFilter() {
-        if (this.telephoneNumberFilter == null) {
+        if (null == this.telephoneNumberFilter) {
             this.telephoneNumberFilter = new ArrayList();
         }
         return this.telephoneNumberFilter;
     }
 
     public List<FilterType> getEmailAddressFilter() {
-        if (this.emailAddressFilter == null) {
+        if (null == this.emailAddressFilter) {
             this.emailAddressFilter = new ArrayList();
         }
         return this.emailAddressFilter;

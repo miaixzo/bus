@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 两个半部分,描述段如何组成这个字节字符串
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ByteBuffer extends ByteString {
@@ -81,17 +81,17 @@ public class ByteBuffer extends ByteString {
                 for (PageBuffer pageBuffer : pageBuffers) {
                     pageBuffer.tryClean();
                 }
-                if (sharedPageBuffer != null) {
+                if (null != sharedPageBuffer) {
                     sharedPageBuffer.tryClean();
                 }
             } else {
-                if (pageBuffers != null) {
+                if (null != pageBuffers) {
                     for (PageBuffer page : pageBuffers) {
                         page.release();
                     }
                     pageBuffers = null;
                 }
-                if (sharedPageBuffer != null) {
+                if (null != sharedPageBuffer) {
                     sharedPageBuffer.release();
                     sharedPageBuffer = null;
                 }
@@ -270,7 +270,9 @@ public class ByteBuffer extends ByteString {
 
     @Override
     public void write(OutputStream out) throws IOException {
-        if (out == null) throw new IllegalArgumentException("out == null");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
         int segmentOffset = 0;
         for (int s = 0, segmentCount = segments.length; s < segmentCount; s++) {
             int segmentPos = directory[segmentCount + s];
@@ -288,7 +290,7 @@ public class ByteBuffer extends ByteString {
             int nextSegmentOffset = directory[s];
             Segment segment = new Segment(segments[s], segmentPos,
                     segmentPos + nextSegmentOffset - segmentOffset, true, false);
-            if (buffer.head == null) {
+            if (null == buffer.head) {
                 buffer.head = segment.next = segment.prev = segment;
             } else {
                 buffer.head.prev.push(segment);

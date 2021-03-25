@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API users calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
  * @since JDK 1.8+
  */
@@ -751,7 +751,7 @@ public class UserApi extends AbstractApi {
         List<SshKey> keys = response.readEntity(new GenericType<List<SshKey>>() {
         });
 
-        if (keys != null) {
+        if (null != keys) {
             keys.forEach(key -> key.setUserId(userId));
         }
 
@@ -824,7 +824,7 @@ public class UserApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title).withParam("key", key);
         Response response = post(Response.Status.CREATED, formData, "users", userId, "keys");
         SshKey sshKey = response.readEntity(SshKey.class);
-        if (sshKey != null) {
+        if (null != sshKey) {
             sshKey.setUserId(userId);
         }
 

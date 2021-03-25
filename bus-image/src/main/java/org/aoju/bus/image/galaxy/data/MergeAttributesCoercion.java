@@ -27,7 +27,7 @@ package org.aoju.bus.image.galaxy.data;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MergeAttributesCoercion implements AttributesCoercion {
@@ -42,18 +42,18 @@ public class MergeAttributesCoercion implements AttributesCoercion {
 
     @Override
     public String remapUID(String uid) {
-        return next != null ? next.remapUID(uid) : uid;
+        return null != next ? next.remapUID(uid) : uid;
     }
 
     @Override
     public void coerce(Attributes attrs, Attributes modified) {
         Attributes.unifyCharacterSets(attrs, newAttrs);
-        if (modified != null) {
+        if (null != modified) {
             attrs.update(Attributes.UpdatePolicy.OVERWRITE, newAttrs, modified);
         } else {
             attrs.addAll(newAttrs);
         }
-        if (next != null)
+        if (null != next)
             next.coerce(attrs, modified);
     }
 

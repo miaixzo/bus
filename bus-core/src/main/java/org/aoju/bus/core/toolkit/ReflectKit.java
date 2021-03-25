@@ -38,7 +38,7 @@ import java.util.*;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ReflectKit {
@@ -120,7 +120,7 @@ public class ReflectKit {
             }
         }
         if (type.equals(String.class)) {
-            return obj == null ? Normal.EMPTY : obj.toString();
+            return null == obj ? Normal.EMPTY : obj.toString();
         }
         return obj;
     }
@@ -151,7 +151,7 @@ public class ReflectKit {
     public static Object invokeMethod(final Object obj, final String name, final Class<?>[] types,
                                       final Object[] args) {
         Method method = getAccessibleMethod(obj, name, types);
-        if (method == null) {
+        if (null == method) {
             throw new IllegalArgumentException("Could not find method [" + method + "] on target [" + obj + "]");
         }
 
@@ -174,7 +174,7 @@ public class ReflectKit {
      */
     public static Object invokeMethodByName(final Object obj, final String name, final Object[] args) {
         Method method = getAccessibleMethodByName(obj, name);
-        if (method == null) {
+        if (null == method) {
             throw new IllegalArgumentException("Could not find method [" + name + "] on target [" + obj + "]");
         }
 
@@ -325,9 +325,9 @@ public class ReflectKit {
 
     public static Class<?> getUserClass(Object instance) {
         Class clazz = instance.getClass();
-        if (clazz != null && clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
+        if (null != clazz && clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
             Class<?> superClass = clazz.getSuperclass();
-            if (superClass != null && !Object.class.equals(superClass)) {
+            if (null != superClass && !Object.class.equals(superClass)) {
                 return superClass;
             }
         }
@@ -362,7 +362,7 @@ public class ReflectKit {
      */
     public static boolean hasField(final Object obj, final String fieldName) {
         Field field = getAccessibleField(obj, fieldName);
-        return field != null;
+        return null != field;
 
     }
 
@@ -466,7 +466,7 @@ public class ReflectKit {
         Field[] allFields = null;
         Class<?> searchType = beanClass;
         Field[] declaredFields;
-        while (searchType != null) {
+        while (null != searchType) {
             declaredFields = searchType.getDeclaredFields();
             if (null == allFields) {
                 allFields = declaredFields;
@@ -752,7 +752,7 @@ public class ReflectKit {
         Method[] allMethods = null;
         Class<?> searchType = beanClass;
         Method[] declaredMethods;
-        while (searchType != null) {
+        while (null != searchType) {
             declaredMethods = searchType.getDeclaredMethods();
             if (null == allMethods) {
                 allMethods = declaredMethods;
@@ -772,7 +772,7 @@ public class ReflectKit {
      * @return 是否为equals方法
      */
     public static boolean isEqualsMethod(Method method) {
-        if (method == null || false == ObjectKit.equal(method.getName(), Normal.EQUALS)) {
+        if (null == method || false == ObjectKit.equal(method.getName(), Normal.EQUALS)) {
             return false;
         }
         final Class<?>[] paramTypes = method.getParameterTypes();
@@ -786,7 +786,7 @@ public class ReflectKit {
      * @return 是否为hashCode方法
      */
     public static boolean isHashCodeMethod(Method method) {
-        return (method != null && ObjectKit.equal(method.getName(), "hashCode") && method.getParameterTypes().length == 0);
+        return (null != method && ObjectKit.equal(method.getName(), "hashCode") && method.getParameterTypes().length == 0);
     }
 
     /**
@@ -796,9 +796,8 @@ public class ReflectKit {
      * @return 是否为toString方法
      */
     public static boolean isToStringMethod(Method method) {
-        return (method != null && ObjectKit.equal(method.getName(), "toString") && method.getParameterTypes().length == 0);
+        return (null != method && ObjectKit.equal(method.getName(), "toString") && method.getParameterTypes().length == 0);
     }
-
 
     /**
      * 实例化对象
@@ -929,7 +928,6 @@ public class ReflectKit {
                 }
             }
         }
-
         return invoke(obj, method, args);
     }
 

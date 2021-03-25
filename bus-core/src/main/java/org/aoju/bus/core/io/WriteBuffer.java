@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class WriteBuffer extends OutputStream {
@@ -136,7 +136,7 @@ public final class WriteBuffer extends OutputStream {
     public void writeByte(byte b) {
         lock.lock();
         try {
-            if (writeInBuf == null) {
+            if (null == writeInBuf) {
                 writeInBuf = pageBuffer.allocate(chunkSize);
             }
             writeInBuf.buffer().put(b);
@@ -153,7 +153,7 @@ public final class WriteBuffer extends OutputStream {
             return;
         }
         consumer.accept(this);
-        if (writeInBuf != null) {
+        if (null != writeInBuf) {
             writeInBuf.buffer().flip();
             VirtualBuffer buffer = writeInBuf;
             writeInBuf = null;
@@ -202,7 +202,7 @@ public final class WriteBuffer extends OutputStream {
         try {
             waitPreWriteFinish();
             do {
-                if (writeInBuf == null) {
+                if (null == writeInBuf) {
                     writeInBuf = pageBuffer.allocate(Math.max(chunkSize, len));
                 }
                 ByteBuffer writeBuffer = writeInBuf.buffer();
@@ -230,12 +230,12 @@ public final class WriteBuffer extends OutputStream {
         lock.lock();
         try {
             waitPreWriteFinish();
-            if (writeInBuf != null && !virtualBuffer.buffer().isDirect()
+            if (null != writeInBuf && !virtualBuffer.buffer().isDirect()
                     && writeInBuf.buffer().remaining() > virtualBuffer.buffer().remaining()) {
                 writeInBuf.buffer().put(virtualBuffer.buffer());
                 virtualBuffer.clean();
             } else {
-                if (writeInBuf != null) {
+                if (null != writeInBuf) {
                     flushWriteBuffer(true);
                 }
                 virtualBuffer.buffer().compact();
@@ -260,7 +260,7 @@ public final class WriteBuffer extends OutputStream {
      * 初始化8字节的缓存数值
      */
     private void initCacheBytes() {
-        if (cacheByte == null) {
+        if (null == cacheByte) {
             cacheByte = new byte[8];
         }
     }
@@ -287,7 +287,7 @@ public final class WriteBuffer extends OutputStream {
      * @throws IOException 如果发生 I/O 错误
      */
     public void writeAndFlush(byte[] b) throws IOException {
-        if (b == null) {
+        if (null == b) {
             throw new NullPointerException();
         }
         writeAndFlush(b, 0, b.length);
@@ -310,7 +310,7 @@ public final class WriteBuffer extends OutputStream {
         if (closed) {
             throw new RuntimeException("OutputStream has closed");
         }
-        if (this.count > 0 || writeInBuf != null) {
+        if (this.count > 0 || null != writeInBuf) {
             consumer.accept(this);
         }
     }
@@ -325,7 +325,7 @@ public final class WriteBuffer extends OutputStream {
             flush();
             closed = true;
             VirtualBuffer byteBuf;
-            while ((byteBuf = poll()) != null) {
+            while (null != (byteBuf = poll())) {
                 byteBuf.clean();
             }
         } finally {
@@ -339,7 +339,7 @@ public final class WriteBuffer extends OutputStream {
      * @return true:有,false:无
      */
     public boolean isEmpty() {
-        return count == 0 && writeInBuf == null;
+        return count == 0 && null == writeInBuf;
     }
 
     /**
@@ -381,7 +381,7 @@ public final class WriteBuffer extends OutputStream {
         lock.lock();
         try {
             if (count == 0) {
-                if (writeInBuf != null) {
+                if (null != writeInBuf) {
                     writeInBuf.buffer().flip();
                     VirtualBuffer buffer = writeInBuf;
                     writeInBuf = null;

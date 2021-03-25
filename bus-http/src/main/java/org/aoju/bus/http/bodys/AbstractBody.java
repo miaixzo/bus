@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractBody implements Toable {
@@ -51,7 +51,7 @@ public abstract class AbstractBody implements Toable {
 
     @Override
     public Wapper toWapper() {
-        if (taskExecutor == null) {
+        if (null == taskExecutor) {
             throw new IllegalStateException("Task executor is null!");
         }
         return taskExecutor.doMsgConvert((Convertor c) -> c.toMapper(toByteStream(), charset));
@@ -59,7 +59,7 @@ public abstract class AbstractBody implements Toable {
 
     @Override
     public Array toArray() {
-        if (taskExecutor == null) {
+        if (null == taskExecutor) {
             throw new IllegalStateException("Task executor is null!");
         }
         return taskExecutor.doMsgConvert((Convertor c) -> c.toArray(toByteStream(), charset));
@@ -67,7 +67,7 @@ public abstract class AbstractBody implements Toable {
 
     @Override
     public <T> T toBean(Class<T> type) {
-        if (taskExecutor == null) {
+        if (null == taskExecutor) {
             throw new IllegalStateException("Task executor is null!");
         }
         return taskExecutor.doMsgConvert((Convertor c) -> c.toBean(type, toByteStream(), charset));
@@ -75,7 +75,7 @@ public abstract class AbstractBody implements Toable {
 
     @Override
     public <T> List<T> toList(Class<T> type) {
-        if (taskExecutor == null) {
+        if (null == taskExecutor) {
             throw new IllegalStateException("Task executor is null!");
         }
         return taskExecutor.doMsgConvert((Convertor c) -> c.toList(type, toByteStream(), charset));

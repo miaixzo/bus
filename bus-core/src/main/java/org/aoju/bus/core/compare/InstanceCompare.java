@@ -34,7 +34,7 @@ import java.util.Comparator;
  *
  * @param <T> 用于比较的对象类型
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class InstanceCompare<T> implements Comparator<T> {
@@ -77,7 +77,7 @@ public class InstanceCompare<T> implements Comparator<T> {
      * @return 位置，未找到位置根据{@link #atEndIfMiss}取不同值，false返回-1，否则返回列表长度
      */
     private int getOrder(T object) {
-        if (object != null) {
+        if (null != object) {
             for (int i = 0; i < this.instanceOrder.length; i++) {
                 if (this.instanceOrder[i].isInstance(object)) {
                     return i;

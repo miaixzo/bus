@@ -49,7 +49,7 @@ import java.io.OutputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Decompressor {
@@ -78,17 +78,17 @@ public class Decompressor {
     protected ImageDescriptor imageDescriptor;
 
     public Decompressor(Attributes dataset, String tsuid) {
-        if (tsuid == null)
+        if (null == tsuid)
             throw new NullPointerException("tsuid");
 
         this.dataset = dataset;
         this.tsuid = tsuid;
         this.tstype = TransferSyntaxType.forUID(tsuid);
         Object pixeldata = dataset.getValue(Tag.PixelData);
-        if (pixeldata == null)
+        if (null == pixeldata)
             return;
 
-        if (tstype == null)
+        if (null == tstype)
             throw new IllegalArgumentException("Unknown Transfer Syntax: " + tsuid);
         this.rows = dataset.getInt(Tag.Rows, 0);
         this.cols = dataset.getInt(Tag.Columns, 0);
@@ -121,7 +121,7 @@ public class Decompressor {
             this.file = ((BulkData) pixeldataFragments.get(1)).getFile();
             ImageReaderFactory.ImageReaderParam param =
                     ImageReaderFactory.getImageReaderParam(tsuid);
-            if (param == null)
+            if (null == param)
                 throw new UnsupportedOperationException(
                         "Unsupported Transfer Syntax: " + tsuid);
 
@@ -225,14 +225,14 @@ public class Decompressor {
     }
 
     public void dispose() {
-        if (decompressor != null)
+        if (null != decompressor)
             decompressor.dispose();
 
         decompressor = null;
     }
 
     public boolean decompress() {
-        if (decompressor == null)
+        if (null == decompressor)
             return false;
 
         if (tstype == TransferSyntaxType.RLE)
@@ -344,7 +344,7 @@ public class Decompressor {
         SegmentedImageStream siis =
                 new SegmentedImageStream(iis, pixeldataFragments, index);
         siis.setImageDescriptor(imageDescriptor);
-        decompressor.setInput(patchJpegLS != null
+        decompressor.setInput(null != patchJpegLS
                 ? new PatchJPEGLSImageInputStream(siis, patchJpegLS)
                 : siis);
         readParam.setDestination(bi);

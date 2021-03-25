@@ -39,7 +39,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class NetAuthenticator implements Authenticator {
@@ -69,7 +69,7 @@ public final class NetAuthenticator implements Authenticator {
                         challenge.realm(), challenge.scheme(), url.url(), java.net.Authenticator.RequestorType.SERVER);
             }
 
-            if (auth != null) {
+            if (null != auth) {
                 String credential = Credentials.basic(
                         auth.getUserName(), new String(auth.getPassword()), challenge.charset());
                 return request.newBuilder()
@@ -82,7 +82,7 @@ public final class NetAuthenticator implements Authenticator {
     }
 
     private InetAddress getConnectToInetAddress(Proxy proxy, UnoUrl url) throws IOException {
-        return (proxy != null && proxy.type() != Proxy.Type.DIRECT)
+        return (null != proxy && proxy.type() != Proxy.Type.DIRECT)
                 ? ((InetSocketAddress) proxy.address()).getAddress()
                 : InetAddress.getByName(url.host());
     }

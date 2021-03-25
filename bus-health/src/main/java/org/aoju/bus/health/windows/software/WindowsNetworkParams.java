@@ -47,7 +47,7 @@ import java.util.List;
  * WindowsNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -107,7 +107,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
 
         List<String> list = new ArrayList<>();
         IPHlpAPI.IP_ADDR_STRING dns = fixedInfo.DnsServerList;
-        while (dns != null) {
+        while (null != dns) {
             // a char array of size 16.
             // This array holds an IPv4 address in dotted decimal notation.
             String addr = Native.toString(dns.IpAddress.String, Charset.US_ASCII);

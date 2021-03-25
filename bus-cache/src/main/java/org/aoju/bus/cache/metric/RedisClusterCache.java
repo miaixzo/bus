@@ -39,7 +39,7 @@ import java.util.*;
  * Redis 集群缓存支持
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RedisClusterCache implements CacheX {
@@ -141,7 +141,7 @@ public class RedisClusterCache implements CacheX {
 
     @PreDestroy
     public void tearDown() {
-        if (this.jedisCluster != null) {
+        if (null != this.jedisCluster) {
             try {
                 this.jedisCluster.close();
             } catch (IOException e) {

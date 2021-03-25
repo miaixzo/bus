@@ -29,7 +29,7 @@ import java.util.ServiceLoader;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class ElementDictionary {
@@ -49,7 +49,7 @@ public abstract class ElementDictionary {
 
     public static ElementDictionary getElementDictionary(
             String privateCreator) {
-        if (privateCreator != null)
+        if (null != privateCreator)
             synchronized (loader) {
                 for (ElementDictionary dict : loader)
                     if (privateCreator.equals(dict.getPrivateCreator()))
@@ -93,7 +93,7 @@ public abstract class ElementDictionary {
     }
 
     public int tagForKeyword(String keyword) {
-        if (tagClass != null)
+        if (null != tagClass)
             try {
                 return tagClass.getField(keyword).getInt(null);
             } catch (Exception ignore) {

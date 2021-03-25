@@ -35,7 +35,7 @@ import java.io.Writer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL7ContentHandler extends DefaultHandler {
@@ -121,7 +121,7 @@ public class HL7ContentHandler extends DefaultHandler {
         Delimiter[] values = Delimiter.values();
         for (int i = 0; i < values.length; i++) {
             String value = atts.getValue(values[i].attribute());
-            if (value != null)
+            if (null != value)
                 delimiters[i] = value.charAt(0);
         }
         this.escape[0] = this.escape[2] = delimiters[3];

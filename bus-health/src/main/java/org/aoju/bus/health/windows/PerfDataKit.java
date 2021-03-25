@@ -46,7 +46,7 @@ import org.aoju.bus.logger.Logger;
  * 帮助类来集中PDH计数器设置的样板部分，并允许应用程序轻松地添加、查询和删除计数器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -222,7 +222,7 @@ public final class PerfDataKit {
         public String getCounterPath() {
             StringBuilder sb = new StringBuilder();
             sb.append(Symbol.C_BACKSLASH).append(object);
-            if (instance != null) {
+            if (null != instance) {
                 sb.append(Symbol.C_PARENTHESE_LEFT).append(instance).append(Symbol.C_PARENTHESE_RIGHT);
             }
             sb.append(Symbol.C_BACKSLASH).append(counter);

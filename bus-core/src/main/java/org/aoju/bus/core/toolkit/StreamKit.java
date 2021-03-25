@@ -34,7 +34,7 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StreamKit {
@@ -146,7 +146,7 @@ public class StreamKit {
 
     public static String readText(InputStream in, String encoding, int bufferSize)
             throws IOException {
-        Reader reader = (encoding == null) ? new InputStreamReader(in) : new InputStreamReader(in,
+        Reader reader = null == encoding ? new InputStreamReader(in) : new InputStreamReader(in,
                 encoding);
 
         return readText(reader, bufferSize);
@@ -435,7 +435,7 @@ public class StreamKit {
      * @return 缓冲输入流
      */
     public static BufferedInputStream buff(InputStream ins) {
-        if (ins == null)
+        if (null == ins)
             throw new NullPointerException("ins is null!");
         if (ins instanceof BufferedInputStream)
             return (BufferedInputStream) ins;
@@ -450,7 +450,7 @@ public class StreamKit {
      * @return 缓冲输出流
      */
     public static BufferedOutputStream buff(OutputStream ops) {
-        if (ops == null)
+        if (null == ops)
             throw new NullPointerException("ops is null!");
         if (ops instanceof BufferedOutputStream)
             return (BufferedOutputStream) ops;
@@ -614,7 +614,7 @@ public class StreamKit {
         String line = null;
         while (br.ready()) {
             line = br.readLine();
-            if (line == null)
+            if (null == line)
                 break;
             if (StringKit.isBlank(line))
                 continue;
@@ -627,8 +627,9 @@ public class StreamKit {
             throws IOException {
         int count;
         while ((count = in.read(buf, 0, buf.length)) > 0)
-            if (out != null)
+            if (null != out) {
                 out.write(buf, 0, count);
+            }
     }
 
     public static void copy(InputStream in, OutputStream out)
@@ -698,7 +699,7 @@ public class StreamKit {
     public static InputStream openFileOrURL(String name) throws IOException {
         if (name.startsWith("resource:")) {
             URL url = FileKit.getResource(name.substring(9), StreamKit.class);
-            if (url == null)
+            if (null == url)
                 throw new FileNotFoundException(name);
             return url.openStream();
         }

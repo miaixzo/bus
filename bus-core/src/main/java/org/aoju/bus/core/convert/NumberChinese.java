@@ -26,6 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
@@ -38,10 +39,21 @@ import org.aoju.bus.core.toolkit.StringKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NumberChinese {
+
+    /**
+     * 汉字转阿拉伯数字的
+     */
+    private static final NameValue[] NAME_VALUE = {
+            new NameValue("十", 10, false),
+            new NameValue("百", 100, false),
+            new NameValue("千", 1000, false),
+            new NameValue("万", 10000, true),
+            new NameValue("亿", 100000000, true),
+    };
 
     /**
      * 阿拉伯数字转换成中文,小数点后四舍五入保留两位. 使用于整数、小数的转换.
@@ -206,6 +218,97 @@ public class NumberChinese {
             return String.valueOf(c);
         }
         return numArray[index];
+    }
+
+    /**
+     * 把中文转换为数字 如 三三零 330
+     * <ul>
+     *     <li>一百一十六 - 116</li>
+     *     <li>一千零二十四 - 1024</li>
+     * </ul>
+     *
+     * @param chinese 中文字符
+     * @return 数字
+     */
+    public static int chineseToNumber(String chinese) {
+        int pos = 0;
+        int rtn = 0;
+        int section = 0;
+        int number = 0;
+        boolean secUnit = false;
+        final int length = chinese.length();
+        while (pos < length) {
+            int num = ArrayKit.indexOf(Normal.SIMPLE_DIGITS, chinese.substring(pos, pos + 1));
+            if (num >= 0) {
+                number = num;
+                pos += 1;
+                if (pos >= length) {
+                    section += number;
+                    rtn += section;
+                    break;
+                }
+            } else {
+                int unit = 1;
+                int tmp = chineseToUnit(chinese.substring(pos, pos + 1));
+                if (tmp != -1) {
+                    unit = NAME_VALUE[tmp].value;
+                    secUnit = NAME_VALUE[tmp].secUnit;
+                }
+                if (secUnit) {
+                    section = (section + number) * unit;
+                    rtn += section;
+                    section = 0;
+                } else {
+                    section += (number * unit);
+                }
+                number = 0;
+                pos += 1;
+                if (pos >= chinese.length()) {
+                    rtn += section;
+                    break;
+                }
+            }
+        }
+        return rtn;
+    }
+
+    /**
+     * 查找对应的权
+     *
+     * @param chinese 中文权位名
+     * @return 位置
+     */
+    private static int chineseToUnit(String chinese) {
+        for (int i = 0; i < NAME_VALUE.length; i++) {
+            if (NAME_VALUE[i].name.equals(chinese)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 权位信息
+     */
+    private static class NameValue {
+        /**
+         * 中文名称
+         */
+        private final String name;
+        /**
+         * 10的倍数值
+         */
+        private final int value;
+        /**
+         * 是否为节权位
+         */
+        private final boolean secUnit;
+
+        public NameValue(String name, int value, boolean secUnit) {
+            this.name = name;
+            this.value = value;
+            this.secUnit = secUnit;
+        }
     }
 
 }

@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -53,7 +53,7 @@ public class RetrieveRenderedImagingDocumentSetResponseType {
     }
 
     public List<RenderedDocumentResponse> getRenderedDocumentResponse() {
-        if (this.renderedDocumentResponse == null) {
+        if (null == this.renderedDocumentResponse) {
             this.renderedDocumentResponse = new ArrayList();
         }
         return this.renderedDocumentResponse;

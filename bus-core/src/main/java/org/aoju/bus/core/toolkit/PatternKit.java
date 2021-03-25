@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PatternKit {
@@ -544,7 +544,7 @@ public class PatternKit {
      * @return 正则为null或者""则不检查,返回true,内容为null返回false
      */
     public static boolean isMatch(String regex, CharSequence content) {
-        if (content == null) {
+        if (null == content) {
             // 提供null的字符串为不匹配
             return false;
         }
@@ -566,7 +566,7 @@ public class PatternKit {
      * @return 正则为null或者""则不检查,返回true,内容为null返回false
      */
     public static boolean isMatch(Pattern pattern, CharSequence content) {
-        if (content == null || pattern == null) {
+        if (null == content || null == pattern) {
             // 提供null的字符串为不匹配
             return false;
         }
@@ -799,7 +799,7 @@ public class PatternKit {
             final int prime = 31;
             int result = 1;
             result = prime * result + flag;
-            result = prime * result + ((regex == null) ? 0 : regex.hashCode());
+            result = prime * result + ((null == regex) ? 0 : regex.hashCode());
             return result;
         }
 
@@ -808,7 +808,7 @@ public class PatternKit {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
+            if (null == obj) {
                 return false;
             }
             if (getClass() != obj.getClass()) {
@@ -818,8 +818,8 @@ public class PatternKit {
             if (flag != other.flag) {
                 return false;
             }
-            if (regex == null) {
-                return other.regex == null;
+            if (null == regex) {
+                return null == other.regex;
             } else return regex.equals(other.regex);
         }
 

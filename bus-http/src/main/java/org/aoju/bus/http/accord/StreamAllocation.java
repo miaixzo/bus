@@ -47,7 +47,7 @@ import java.util.List;
  * 仍然在进行中，那么取消可能会中断整个连接
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class StreamAllocation {
@@ -155,13 +155,13 @@ public final class StreamAllocation {
         Socket toClose;
         synchronized (connectionPool) {
             if (released) throw new IllegalStateException("released");
-            if (codec != null) throw new IllegalStateException("codec != null");
+            if (null != codec) throw new IllegalStateException("codec != null");
             if (canceled) throw new IOException("Canceled");
 
             // 尝试使用已分配的连接。在这里需要小心，因为已经分配的连接可能已经被限制不能创建新的流
             releasedConnection = this.connection;
             toClose = releaseIfNoNewStreams();
-            if (this.connection != null) {
+            if (null != this.connection) {
                 // 有一个已经分配的连接
                 result = this.connection;
                 releasedConnection = null;
@@ -171,10 +171,10 @@ public final class StreamAllocation {
                 releasedConnection = null;
             }
 
-            if (result == null) {
+            if (null == result) {
                 // 尝试从池中获取连接
                 Builder.instance.get(connectionPool, address, this, null);
-                if (connection != null) {
+                if (null != connection) {
                     foundPooledConnection = true;
                     result = connection;
                 } else {
@@ -184,20 +184,20 @@ public final class StreamAllocation {
         }
         IoKit.close(toClose);
 
-        if (releasedConnection != null) {
+        if (null != releasedConnection) {
             eventListener.connectionReleased(call, releasedConnection);
         }
         if (foundPooledConnection) {
             eventListener.connectionAcquired(call, result);
         }
-        if (result != null) {
+        if (null != result) {
             route = connection.route();
             return result;
         }
 
         // 如果我们需要选择路线，就选一条。这是一个阻塞操作
         boolean newRouteSelection = false;
-        if (selectedRoute == null && (routeSelection == null || !routeSelection.hasNext())) {
+        if (null == selectedRoute && (null == routeSelection || !routeSelection.hasNext())) {
             newRouteSelection = true;
             routeSelection = routeSelector.next();
         }
@@ -211,7 +211,7 @@ public final class StreamAllocation {
                 for (int i = 0, size = routes.size(); i < size; i++) {
                     Route route = routes.get(i);
                     Builder.instance.get(connectionPool, address, this, route);
-                    if (connection != null) {
+                    if (null != connection) {
                         foundPooledConnection = true;
                         result = connection;
                         this.route = route;
@@ -221,7 +221,7 @@ public final class StreamAllocation {
             }
 
             if (!foundPooledConnection) {
-                if (selectedRoute == null) {
+                if (null == selectedRoute) {
                     selectedRoute = routeSelection.next();
                 }
 
@@ -272,7 +272,7 @@ public final class StreamAllocation {
     private Socket releaseIfNoNewStreams() {
         assert (Thread.holdsLock(connectionPool));
         RealConnection allocatedConnection = this.connection;
-        if (allocatedConnection != null && allocatedConnection.noNewStreams) {
+        if (null != allocatedConnection && allocatedConnection.noNewStreams) {
             return deallocate(false, false, true);
         }
         return null;
@@ -285,7 +285,7 @@ public final class StreamAllocation {
         Connection releasedConnection;
         boolean callEnd;
         synchronized (connectionPool) {
-            if (codec == null || codec != this.codec) {
+            if (null == codec || codec != this.codec) {
                 throw new IllegalStateException("expected " + this.codec + " but was " + codec);
             }
             if (!noNewStreams) {
@@ -293,15 +293,15 @@ public final class StreamAllocation {
             }
             releasedConnection = connection;
             socket = deallocate(noNewStreams, false, true);
-            if (connection != null) releasedConnection = null;
+            if (null != connection) releasedConnection = null;
             callEnd = this.released;
         }
         IoKit.close(socket);
-        if (releasedConnection != null) {
+        if (null != releasedConnection) {
             eventListener.connectionReleased(call, releasedConnection);
         }
 
-        if (e != null) {
+        if (null != e) {
             e = Builder.instance.timeoutExit(call, e);
             eventListener.callFailed(call, e);
         } else if (callEnd) {
@@ -334,10 +334,10 @@ public final class StreamAllocation {
         synchronized (connectionPool) {
             releasedConnection = connection;
             socket = deallocate(false, true, false);
-            if (connection != null) releasedConnection = null;
+            if (null != connection) releasedConnection = null;
         }
         IoKit.close(socket);
-        if (releasedConnection != null) {
+        if (null != releasedConnection) {
             Builder.instance.timeoutExit(call, null);
             eventListener.connectionReleased(call, releasedConnection);
             eventListener.callEnd(call);
@@ -353,10 +353,10 @@ public final class StreamAllocation {
         synchronized (connectionPool) {
             releasedConnection = connection;
             socket = deallocate(true, false, false);
-            if (connection != null) releasedConnection = null;
+            if (null != connection) releasedConnection = null;
         }
         IoKit.close(socket);
-        if (releasedConnection != null) {
+        if (null != releasedConnection) {
             eventListener.connectionReleased(call, releasedConnection);
         }
     }
@@ -380,11 +380,11 @@ public final class StreamAllocation {
             this.released = true;
         }
         Socket socket = null;
-        if (connection != null) {
+        if (null != connection) {
             if (noNewStreams) {
                 connection.noNewStreams = true;
             }
-            if (this.codec == null && (this.released || connection.noNewStreams)) {
+            if (null == this.codec && (this.released || connection.noNewStreams)) {
                 release(connection);
                 if (connection.allocations.isEmpty()) {
                     connection.idleAtNanos = System.nanoTime();
@@ -406,9 +406,9 @@ public final class StreamAllocation {
             codecToCancel = codec;
             connectionToCancel = connection;
         }
-        if (codecToCancel != null) {
+        if (null != codecToCancel) {
             codecToCancel.cancel();
-        } else if (connectionToCancel != null) {
+        } else if (null != connectionToCancel) {
             connectionToCancel.cancel();
         }
     }
@@ -433,13 +433,13 @@ public final class StreamAllocation {
                     noNewStreams = true;
                     route = null;
                 }
-            } else if (connection != null
+            } else if (null != connection
                     && (!connection.isMultiplexed() || e instanceof RevisedException)) {
                 noNewStreams = true;
 
                 // 如果这条路线还没有完成一个电话，避免它为新的连接
                 if (connection.successCount == 0) {
-                    if (route != null && e != null) {
+                    if (null != route && null != e) {
                         routeSelector.connectFailed(route, e);
                     }
                     route = null;
@@ -447,11 +447,11 @@ public final class StreamAllocation {
             }
             releasedConnection = connection;
             socket = deallocate(noNewStreams, false, true);
-            if (connection != null || !reportedAcquired) releasedConnection = null;
+            if (null != connection || !reportedAcquired) releasedConnection = null;
         }
 
         IoKit.close(socket);
-        if (releasedConnection != null) {
+        if (null != releasedConnection) {
             eventListener.connectionReleased(call, releasedConnection);
         }
     }
@@ -465,7 +465,7 @@ public final class StreamAllocation {
      */
     public void acquire(RealConnection connection, boolean reportedAcquired) {
         assert (Thread.holdsLock(connectionPool));
-        if (this.connection != null) {
+        if (null != this.connection) {
             throw new IllegalStateException();
         }
 
@@ -501,7 +501,7 @@ public final class StreamAllocation {
      */
     public Socket releaseAndAcquire(RealConnection newConnection) {
         assert (Thread.holdsLock(connectionPool));
-        if (codec != null || connection.allocations.size() != 1) throw new IllegalStateException();
+        if (null != codec || connection.allocations.size() != 1) throw new IllegalStateException();
 
         // 释放旧连接
         Reference<StreamAllocation> onlyAllocation = connection.allocations.get(0);
@@ -515,15 +515,15 @@ public final class StreamAllocation {
     }
 
     public boolean hasMoreRoutes() {
-        return route != null
-                || (routeSelection != null && routeSelection.hasNext())
+        return null != route
+                || (null != routeSelection && routeSelection.hasNext())
                 || routeSelector.hasNext();
     }
 
     @Override
     public String toString() {
         RealConnection connection = connection();
-        return connection != null ? connection.toString() : address.toString();
+        return null != connection ? connection.toString() : address.toString();
     }
 
     public static final class StreamAllocationReference extends WeakReference<StreamAllocation> {

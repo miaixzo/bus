@@ -33,7 +33,7 @@ import java.util.ServiceLoader;
  * ConvertProvider 提供者
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface ConvertProvider {
@@ -41,7 +41,7 @@ public interface ConvertProvider {
     static void inject(Httpv.Builder builder) {
         for (ConvertProvider provider : ServiceLoader.load(ConvertProvider.class)) {
             Convertor convertor = provider.getConvertor();
-            if (convertor != null) {
+            if (null != convertor) {
                 builder.addMsgConvertor(new Convertor.FormConvertor(convertor));
                 builder.addMsgConvertor(convertor);
             }

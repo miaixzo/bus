@@ -35,7 +35,7 @@ import java.util.Set;
  * 混合过滤器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class MixComplex<E> implements Complex<E> {
@@ -47,7 +47,7 @@ public abstract class MixComplex<E> implements Complex<E> {
     }
 
     protected MixComplex(Collection<? extends Complex<? extends E>> filters) {
-        this.filters = filters != null ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
+        this.filters = null != filters ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
     }
 
     public boolean add(Complex<? extends E> filter) {

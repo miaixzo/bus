@@ -35,7 +35,7 @@ import java.lang.reflect.InvocationTargetException;
  * 自定义异常: 未受检异常
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -150,15 +150,17 @@ public class UncheckedException extends RuntimeException {
     }
 
     protected static Throwable unwrapThrow(Throwable e) {
-        if (e == null)
+        if (null == e) {
             return null;
+        }
         if (e instanceof InvocationTargetException) {
             InvocationTargetException itE = (InvocationTargetException) e;
-            if (itE.getTargetException() != null)
+            if (null != itE.getTargetException())
                 return unwrapThrow(itE.getTargetException());
         }
-        if (e instanceof RuntimeException && e.getCause() != null)
+        if (e instanceof RuntimeException && null != e.getCause()) {
             return unwrapThrow(e.getCause());
+        }
         return e;
     }
 

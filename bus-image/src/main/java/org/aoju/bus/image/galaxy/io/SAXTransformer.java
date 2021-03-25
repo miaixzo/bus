@@ -35,7 +35,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class SAXTransformer {
@@ -82,7 +82,7 @@ public abstract class SAXTransformer {
     private static SAXWriter getSAXWriter(TransformerHandler th, Result result,
                                           SetupTransformer setup) {
         th.setResult(result);
-        if (setup != null)
+        if (null != setup)
             setup.setup(th.getTransformer());
         return new SAXWriter(th);
     }

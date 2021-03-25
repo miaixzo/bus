@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * 所有应用程序拦截器、Httpd核心、所有网络拦截器，最后是网络调用者.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RealInterceptorChain implements Interceptor.Chain {
@@ -152,12 +152,12 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
         calls++;
 
-        if (this.httpCodec != null && !this.connection.supportsUrl(request.url())) {
+        if (null != this.httpCodec && !this.connection.supportsUrl(request.url())) {
             throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must retain the same host and port");
         }
 
-        if (this.httpCodec != null && calls > 1) {
+        if (null != this.httpCodec && calls > 1) {
             throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must call proceed() exactly once");
         }
@@ -168,16 +168,16 @@ public final class RealInterceptorChain implements Interceptor.Chain {
         Interceptor interceptor = interceptors.get(index);
         Response response = interceptor.intercept(next);
 
-        if (httpCodec != null && index + 1 < interceptors.size() && next.calls != 1) {
+        if (null != httpCodec && index + 1 < interceptors.size() && next.calls != 1) {
             throw new IllegalStateException("network interceptor " + interceptor
                     + " must call proceed() exactly once");
         }
 
-        if (response == null) {
+        if (null == response) {
             throw new NullPointerException("interceptor " + interceptor + " returned null");
         }
 
-        if (response.body() == null) {
+        if (null == response.body()) {
             throw new IllegalStateException(
                     "interceptor " + interceptor + " returned a response with no body");
         }

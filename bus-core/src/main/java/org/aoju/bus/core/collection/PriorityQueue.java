@@ -33,7 +33,7 @@ import java.util.*;
  * 按照给定的排序规则淘汰末尾元素
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
@@ -59,7 +59,7 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
     public PriorityQueue(int capacity, final Comparator<? super E> comparator) {
         super(capacity, (o1, o2) -> {
             int cResult;
-            if (comparator != null) {
+            if (null != comparator) {
                 cResult = comparator.compare(o1, o2);
             } else {
                 Comparable<E> o1c = (Comparable<E>) o1;

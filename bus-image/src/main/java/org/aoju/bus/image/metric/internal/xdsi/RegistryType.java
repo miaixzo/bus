@@ -35,7 +35,7 @@ import javax.xml.datatype.Duration;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -86,7 +86,7 @@ public class RegistryType extends RegistryObjectType {
     }
 
     public String getConformanceProfile() {
-        if (this.conformanceProfile == null) {
+        if (null == this.conformanceProfile) {
             return "registryLite";
         }
         return this.conformanceProfile;

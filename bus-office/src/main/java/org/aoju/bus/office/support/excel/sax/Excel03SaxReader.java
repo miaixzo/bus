@@ -51,7 +51,7 @@ import java.util.List;
  * Excel2003格式的事件-用户模型方式读取器,统一将此归类为Sax读取
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03SaxReader> {
@@ -193,7 +193,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             BOFRecord bofRecord = (BOFRecord) record;
             if (bofRecord.getType() == BOFRecord.TYPE_WORKSHEET) {
                 // 如果有需要，则建立子工作薄
-                if (workbookBuildingListener != null && stubWorkbook == null) {
+                if (null != workbookBuildingListener && null == stubWorkbook) {
                     stubWorkbook = workbookBuildingListener.getStubHSSFWorkbook();
                 }
                 curRid++;

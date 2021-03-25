@@ -47,7 +47,7 @@ import java.nio.charset.Charset;
  * 格式化
  *
  * @author Justubborn
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 2)

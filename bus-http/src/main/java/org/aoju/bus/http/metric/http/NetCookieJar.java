@@ -45,7 +45,7 @@ import java.util.Map;
  * 委托cookie 给{@link java.net.CookieHandler}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class NetCookieJar implements CookieJar {
@@ -58,7 +58,7 @@ public final class NetCookieJar implements CookieJar {
 
     @Override
     public void saveFromResponse(UnoUrl url, List<Cookie> cookies) {
-        if (cookieHandler != null) {
+        if (null != cookieHandler) {
             List<String> cookieStrings = new ArrayList<>();
             for (Cookie cookie : cookies) {
                 cookieStrings.add(cookie.toString(true));
@@ -90,13 +90,15 @@ public final class NetCookieJar implements CookieJar {
             if (("Cookie".equalsIgnoreCase(key) || "Cookie2".equalsIgnoreCase(key))
                     && !entry.getValue().isEmpty()) {
                 for (String header : entry.getValue()) {
-                    if (cookies == null) cookies = new ArrayList<>();
+                    if (null == cookies) {
+                        cookies = new ArrayList<>();
+                    }
                     cookies.addAll(decodeHeaderAsJavaNetCookies(url, header));
                 }
             }
         }
 
-        return cookies != null
+        return null != cookies
                 ? Collections.unmodifiableList(cookies)
                 : Collections.emptyList();
     }

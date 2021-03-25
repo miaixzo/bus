@@ -49,7 +49,7 @@ import java.util.zip.Deflater;
  * Spring-Boot JAR包解密器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry>
@@ -96,7 +96,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
             AlwaysOutputStream nos = new AlwaysOutputStream(zos);
             JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(decryptorProvider, level, filter);
             JarArchiveEntry entry;
-            while ((entry = zis.getNextJarEntry()) != null) {
+            while (null != (entry = zis.getNextJarEntry())) {
                 if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
@@ -114,7 +114,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
                     Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Boot-Main-Class");
-                    if (mainClass != null) {
+                    if (null != mainClass) {
                         attributes.putValue("Main-Class", mainClass);
                         attributes.remove(new Attributes.Name("Boot-Main-Class"));
                     }

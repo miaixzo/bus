@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * 黑名单插件,bus-socket会拒绝与黑名单中的IP建立连接
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BlackListPlugin<T> extends AbstractPlugin<T> {
@@ -51,7 +51,7 @@ public class BlackListPlugin<T> extends AbstractPlugin<T> {
         } catch (IOException e) {
             Logger.error("get remote address error.", e);
         }
-        if (inetSocketAddress == null) {
+        if (null == inetSocketAddress) {
             return channel;
         }
         for (BlackListRule rule : ipBlackList) {

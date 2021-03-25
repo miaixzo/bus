@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -73,7 +73,7 @@ public class RegistryError {
     }
 
     public String getSeverity() {
-        if (this.severity == null) {
+        if (null == this.severity) {
             return "urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error";
         }
         return this.severity;

@@ -41,7 +41,7 @@ import java.security.NoSuchAlgorithmException;
  * {@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class HashSink extends DelegateSink {
@@ -107,7 +107,7 @@ public final class HashSink extends DelegateSink {
         long hashedCount = 0;
         for (Segment s = source.head; hashedCount < byteCount; s = s.next) {
             int toHash = (int) Math.min(byteCount - hashedCount, s.limit - s.pos);
-            if (messageDigest != null) {
+            if (null != messageDigest) {
                 messageDigest.update(s.data, s.pos, toHash);
             } else {
                 mac.update(s.data, s.pos, toHash);
@@ -119,7 +119,7 @@ public final class HashSink extends DelegateSink {
     }
 
     public final ByteString hash() {
-        byte[] result = messageDigest != null ? messageDigest.digest() : mac.doFinal();
+        byte[] result = null != messageDigest ? messageDigest.digest() : mac.doFinal();
         return ByteString.of(result);
     }
 

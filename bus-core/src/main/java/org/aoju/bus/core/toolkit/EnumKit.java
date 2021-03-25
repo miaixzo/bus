@@ -34,7 +34,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class EnumKit {
@@ -327,7 +327,7 @@ public class EnumKit {
      * @return 如果枚举名有效，则为真，否则为假
      */
     public static <E extends Enum<E>> boolean isValidEnum(final Class<E> enumClass, final String enumName) {
-        return getEnum(enumClass, enumName) != null;
+        return null != getEnum(enumClass, enumName);
     }
 
     /**
@@ -339,7 +339,7 @@ public class EnumKit {
      * @return 如果枚举名有效，则为真，否则为假
      */
     public static <E extends Enum<E>> boolean isValidEnumIgnoreCase(final Class<E> enumClass, final String enumName) {
-        return getEnumIgnoreCase(enumClass, enumName) != null;
+        return null != getEnumIgnoreCase(enumClass, enumName);
     }
 
     /**
@@ -351,7 +351,7 @@ public class EnumKit {
      * @return 枚举，如果没有找到则为空
      */
     public static <E extends Enum<E>> E getEnum(final Class<E> enumClass, final String enumName) {
-        if (enumName == null) {
+        if (null == enumName) {
             return null;
         }
         try {
@@ -370,7 +370,7 @@ public class EnumKit {
      * @return 枚举，如果没有找到则为空
      */
     public static <E extends Enum<E>> E getEnumIgnoreCase(final Class<E> enumClass, final String enumName) {
-        if (enumName == null || !enumClass.isEnum()) {
+        if (null == enumName || !enumClass.isEnum()) {
             return null;
         }
         for (final E each : enumClass.getEnumConstants()) {

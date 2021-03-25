@@ -44,7 +44,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -59,13 +59,13 @@ final class MacComputerSystem extends AbstractComputerSystem {
         String serialNumber = null;
         String uuid = null;
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
-        if (platformExpert != null) {
+        if (null != platformExpert) {
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
-            if (data != null) {
+            if (null != data) {
                 manufacturer = Native.toString(data, StandardCharsets.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("model");
-            if (data != null) {
+            if (null != data) {
                 model = Native.toString(data, StandardCharsets.UTF_8);
             }
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");

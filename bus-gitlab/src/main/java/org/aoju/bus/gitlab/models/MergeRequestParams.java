@@ -36,7 +36,7 @@ import java.util.List;
  * This class provides the form parameters for creating and updating merge requests.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MergeRequestParams {
@@ -142,7 +142,7 @@ public class MergeRequestParams {
      * @return the reference to this MergeRequestParams instance
      */
     public MergeRequestParams withLabels(String[] labels) {
-        this.labels = (labels != null ? Arrays.asList(labels) : null);
+        this.labels = (null != labels ? Arrays.asList(labels) : null);
         return (this);
     }
 
@@ -250,7 +250,7 @@ public class MergeRequestParams {
                 .withParam("assignee_id", assigneeId)
                 .withParam("assignee_ids", assigneeIds)
                 .withParam("milestone_id", milestoneId)
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (null != labels ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("description", description)
                 .withParam("remove_source_branch", removeSourceBranch)
                 .withParam("squash", squash)

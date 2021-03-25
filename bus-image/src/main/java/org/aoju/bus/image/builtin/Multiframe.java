@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Multiframe {
@@ -69,12 +69,12 @@ public class Multiframe {
 
     public static String legacySOPClassUID(String mfcuid) {
         Impl impl = impls.get(mfcuid);
-        return impl != null ? impl.sfcuid : null;
+        return null != impl ? impl.sfcuid : null;
     }
 
     private static Impl implFor(String mfcuid) {
         Impl impl = impls.get(mfcuid);
-        if (impl == null)
+        if (null == impl)
             throw new IllegalArgumentException(
                     "Unsupported SOP Class: " + mfcuid);
         return impl;
@@ -103,7 +103,7 @@ public class Multiframe {
     }
 
     public final void setUIDMapper(UIDMapper uidMapper) {
-        if (uidMapper == null)
+        if (null == uidMapper)
             throw new NullPointerException();
         this.uidMapper = uidMapper;
     }
@@ -122,11 +122,11 @@ public class Multiframe {
 
     private Attributes extract(Attributes emf, int frame, String cuid) {
         Attributes sfgs = emf.getNestedDataset(Tag.SharedFunctionalGroupsSequence);
-        if (sfgs == null)
+        if (null == sfgs)
             throw new IllegalArgumentException(
                     "Missing (5200,9229) Shared Functional Groups Sequence");
         Attributes fgs = emf.getNestedDataset(Tag.PerFrameFunctionalGroupsSequence, frame);
-        if (fgs == null)
+        if (null == fgs)
             throw new IllegalArgumentException(
                     "Missing (5200,9230) Per-frame Functional Groups Sequence Item for frame #" + (frame + 1));
         Attributes dest = new Attributes(emf.size() * 2);
@@ -151,26 +151,26 @@ public class Multiframe {
 
     private void adjustReferencedImages(Attributes attrs, int sqtag) {
         Sequence sq = attrs.getSequence(sqtag);
-        if (sq == null)
+        if (null == sq)
             return;
 
         ArrayList<Attributes> newRefs = new ArrayList<Attributes>();
         for (Iterator<Attributes> itr = sq.iterator(); itr.hasNext(); ) {
             Attributes ref = itr.next();
             String cuid = legacySOPClassUID(ref.getString(Tag.ReferencedSOPClassUID));
-            if (cuid == null)
+            if (null == cuid)
                 continue;
 
             itr.remove();
             String iuid = uidMapper.get(ref.getString(Tag.ReferencedSOPInstanceUID));
             int[] frames = ref.getInts(Tag.ReferencedFrameNumber);
-            int n = frames == null ? 1 : frames.length;
+            int n = null == frames ? 1 : frames.length;
             ref.remove(Tag.ReferencedFrameNumber);
             ref.setString(Tag.ReferencedSOPClassUID, VR.UI, cuid);
             for (int i = 0; i < n; i++) {
                 Attributes newRef = new Attributes(ref);
                 newRef.setString(Tag.ReferencedSOPInstanceUID, VR.UI,
-                        iuid + Symbol.C_DOT + (frames != null ? frames[i] : (i + 1)));
+                        iuid + Symbol.C_DOT + (null != frames ? frames[i] : (i + 1)));
                 newRefs.add(newRef);
             }
         }
@@ -183,7 +183,7 @@ public class Multiframe {
         Attributes fg;
         for (int sqTag : fgs.tags())
             if (sqTag != Tag.ReferencedImageSequence
-                    && (fg = fgs.getNestedDataset(sqTag)) != null)
+                    && null != (fg = fgs.getNestedDataset(sqTag)))
                 dest.addAll(fg);
     }
 
@@ -269,16 +269,16 @@ public class Multiframe {
                 if (!"SINGLE".equals(sf.getString(Tag.SegmentedKSpaceTraversal)))
                     list.add("SK");
                 String mf = sf.getString(Tag.MagnetizationTransfer);
-                if (mf != null && !"NONE".equals(mf))
+                if (null != mf && !"NONE".equals(mf))
                     list.add("MTC");
                 String ssps = sf.getString(Tag.SteadyStatePulseSequence);
-                if (ssps != null && !"NONE".equals(ssps))
+                if (null != ssps && !"NONE".equals(ssps))
                     list.add("TIME_REVERSED".equals(ssps) ? "TRSS" : "SS");
                 String sp = sf.getString(Tag.Spoiling);
-                if (sp != null && !"NONE".equals(sp))
+                if (null != sp && !"NONE".equals(sp))
                     list.add("SP");
                 String op = sf.getString(Tag.OversamplingPhase);
-                if (op != null && !"NONE".equals(op))
+                if (null != op && !"NONE".equals(op))
                     list.add("OSP");
                 if (list.isEmpty())
                     list.add("NONE");
@@ -289,7 +289,7 @@ public class Multiframe {
             void setScanOptions(Attributes sf) {
                 List<String> list = new ArrayList<>(3);
                 String per = sf.getString(Tag.RectilinearPhaseEncodeReordering);
-                if (per != null && !"LINEAR".equals(per))
+                if (null != per && !"LINEAR".equals(per))
                     list.add("PER");
                 String frameType3 = sf.getString(Tag.ImageType, 2);
                 if ("ANGIO".equals(frameType3))
@@ -304,13 +304,13 @@ public class Multiframe {
                 if ("FREQUENCY".equals(pfd))
                     list.add("PFF");
                 String sp = sf.getString(Tag.SpatialPresaturation);
-                if (sp != null && !"NONE".equals(sp))
+                if (null != sp && !"NONE".equals(sp))
                     list.add("SP");
                 String sss = sf.getString(Tag.SpectrallySelectedSuppression);
-                if (sss != null && sss.startsWith("FAT"))
+                if (null != sss && sss.startsWith("FAT"))
                     list.add("FS");
                 String fc = sf.getString(Tag.FlowCompensation);
-                if (fc != null && !"NONE".equals(fc))
+                if (null != fc && !"NONE".equals(fc))
                     list.add("FC");
                 sf.setString(Tag.ScanOptions, VR.CS,
                         list.toArray(new String[list.size()]));

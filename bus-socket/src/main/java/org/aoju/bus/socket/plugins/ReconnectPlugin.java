@@ -35,7 +35,7 @@ import java.nio.channels.AsynchronousChannelGroup;
  * 断链重连插件
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ReconnectPlugin<T> extends AbstractPlugin<T> {
@@ -59,7 +59,7 @@ public class ReconnectPlugin<T> extends AbstractPlugin<T> {
             return;
         }
         try {
-            if (asynchronousChannelGroup == null) {
+            if (null == asynchronousChannelGroup) {
                 client.start();
             } else {
                 client.start(asynchronousChannelGroup);

@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 模拟JDK7的AIO处理方式
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSocketChannel {
@@ -86,13 +86,13 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
         } catch (IOException e) {
             exception = e;
         }
-        if (readSelectionKey != null) {
+        if (null != readSelectionKey) {
             readSelectionKey.cancel();
         }
-        if (writeSelectionKey != null) {
+        if (null != writeSelectionKey) {
             writeSelectionKey.cancel();
         }
-        if (exception != null) {
+        if (null != exception) {
             throw exception;
         }
     }
@@ -249,7 +249,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     public void doConnect() {
         try {
             // 此前通过Future调用,且触发了cancel
-            if (connectFuture != null && connectFuture.isDone()) {
+            if (null != connectFuture && connectFuture.isDone()) {
                 resetConnect();
                 return;
             }
@@ -262,7 +262,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 Object attach = connectAttachment;
                 resetConnect();
                 completionHandler.completed(null, attach);
-            } else if (writeSelectionKey == null) {
+            } else if (null == writeSelectionKey) {
                 writeWorker.addRegister(selector -> {
                     try {
                         writeSelectionKey = channel.register(selector, SelectionKey.OP_CONNECT);
@@ -290,7 +290,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     public void doRead() {
         try {
             // 此前通过Future调用,且触发了cancel
-            if (readFuture != null && readFuture.isDone()) {
+            if (null != readFuture && readFuture.isDone()) {
                 group.removeOps(readSelectionKey, SelectionKey.OP_READ);
                 resetRead();
                 return;
@@ -302,7 +302,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
             long readSize = 0;
             boolean hasRemain = true;
             if (directRead) {
-                if (scatteringReadBuffer != null) {
+                if (null != scatteringReadBuffer) {
                     readSize = channel.read(scatteringReadBuffer.getBuffers(), scatteringReadBuffer.getOffset(), scatteringReadBuffer.getLength());
                     hasRemain = hasRemaining(scatteringReadBuffer);
                 } else {
@@ -315,16 +315,16 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 Object attach = readAttachment;
                 ByteBufferArray scattering = scatteringReadBuffer;
                 resetRead();
-                if (scattering == null) {
+                if (null == scattering) {
                     completionHandler.completed((int) readSize, attach);
                 } else {
                     completionHandler.completed(readSize, attach);
                 }
 
-                if (!readPending && readSelectionKey != null) {
+                if (!readPending && null != readSelectionKey) {
                     group.removeOps(readSelectionKey, SelectionKey.OP_READ);
                 }
-            } else if (readSelectionKey == null) {
+            } else if (null == readSelectionKey) {
                 readWorker.addRegister(selector -> {
                     try {
                         readSelectionKey = channel.register(selector, SelectionKey.OP_READ);
@@ -354,7 +354,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     public void doWrite() {
         try {
             // 此前通过Future调用,且触发了cancel
-            if (writeFuture != null && writeFuture.isDone()) {
+            if (null != writeFuture && writeFuture.isDone()) {
                 resetWrite();
                 return;
             }
@@ -363,7 +363,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
             long writeSize = 0;
             boolean hasRemain = true;
             if (directWrite) {
-                if (gatheringWriteBuffer != null) {
+                if (null != gatheringWriteBuffer) {
                     writeSize = channel.write(gatheringWriteBuffer.getBuffers(), gatheringWriteBuffer.getOffset(), gatheringWriteBuffer.getLength());
                     hasRemain = hasRemaining(gatheringWriteBuffer);
                 } else {
@@ -377,12 +377,12 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 Object attach = writeAttachment;
                 ByteBufferArray scattering = gatheringWriteBuffer;
                 resetWrite();
-                if (scattering == null) {
+                if (null == scattering) {
                     completionHandler.completed((int) writeSize, attach);
                 } else {
                     completionHandler.completed(writeSize, attach);
                 }
-            } else if (writeSelectionKey == null) {
+            } else if (null == writeSelectionKey) {
                 writeWorker.addRegister(selector -> {
                     try {
                         writeSelectionKey = channel.register(selector, SelectionKey.OP_WRITE);

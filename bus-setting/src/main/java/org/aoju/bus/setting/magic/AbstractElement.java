@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
  * an abstract class for {@link IniElement}.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractElement implements IniElement {
@@ -183,7 +183,7 @@ public abstract class AbstractElement implements IniElement {
      */
     @Override
     public String toCompleteString() {
-        return comment == null ? originalValue : originalValue + Symbol.SPACE + comment;
+        return null == comment ? originalValue : originalValue + Symbol.SPACE + comment;
     }
 
     //**************** implements from String ****************//

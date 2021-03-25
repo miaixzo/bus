@@ -29,7 +29,7 @@ import org.aoju.bus.image.Device;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  * @since April 2019
  */
@@ -58,8 +58,8 @@ public class KeycloakClient {
     }
 
     public void setDevice(Device device) {
-        if (device != null) {
-            if (this.device != null)
+        if (null != device) {
+            if (null != this.device)
                 throw new IllegalStateException("already owned by " +
                         this.device.getDeviceName());
         }

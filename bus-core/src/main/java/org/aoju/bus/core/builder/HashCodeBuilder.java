@@ -64,7 +64,7 @@ import java.util.Set;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HashCodeBuilder implements Builder<Integer> {
@@ -118,7 +118,7 @@ public class HashCodeBuilder implements Builder<Integer> {
 
     static boolean isRegistered(final Object value) {
         final Set<HashKey> registry = getRegistry();
-        return registry != null && registry.contains(new HashKey(value));
+        return null != registry && registry.contains(new HashKey(value));
     }
 
     /**
@@ -190,11 +190,11 @@ public class HashCodeBuilder implements Builder<Integer> {
                                              final boolean testTransients,
                                              final Class<? super T> reflectUpToClass,
                                              final String... excludeFields) {
-        Assert.isTrue(object != null, "The object to build a hash code for must not be null");
+        Assert.isTrue(null != object, "The object to build a hash code for must not be null");
         final HashCodeBuilder builder = new HashCodeBuilder(initialNonZeroOddNumber, multiplierNonZeroOddNumber);
         Class<?> clazz = object.getClass();
         reflectionAppend(object, clazz, builder, testTransients, excludeFields);
-        while (clazz.getSuperclass() != null && clazz != reflectUpToClass) {
+        while (null != clazz.getSuperclass() && clazz != reflectUpToClass) {
             clazz = clazz.getSuperclass();
             reflectionAppend(object, clazz, builder, testTransients, excludeFields);
         }
@@ -217,7 +217,7 @@ public class HashCodeBuilder implements Builder<Integer> {
 
     private static void register(final Object value) {
         Set<HashKey> registry = getRegistry();
-        if (registry == null) {
+        if (null == registry) {
             registry = new HashSet<>();
             REGISTRY.set(registry);
         }
@@ -226,7 +226,7 @@ public class HashCodeBuilder implements Builder<Integer> {
 
     private static void unregister(final Object value) {
         final Set<HashKey> registry = getRegistry();
-        if (registry != null) {
+        if (null != registry) {
             registry.remove(new HashKey(value));
             if (registry.isEmpty()) {
                 REGISTRY.remove();
@@ -240,7 +240,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final boolean[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final boolean element : array) {
@@ -256,7 +256,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final byte[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final byte element : array) {
@@ -272,7 +272,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final char[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final char element : array) {
@@ -287,7 +287,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final double[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final double element : array) {
@@ -303,7 +303,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final float[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final float element : array) {
@@ -319,7 +319,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final int[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final int element : array) {
@@ -335,7 +335,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final long[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final long element : array) {
@@ -346,7 +346,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final Object object) {
-        if (object == null) {
+        if (null == object) {
             iTotal = iTotal * iConstant;
 
         } else {
@@ -382,7 +382,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final Object[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final Object element : array) {
@@ -398,7 +398,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final short[] array) {
-        if (array == null) {
+        if (null == array) {
             iTotal = iTotal * iConstant;
         } else {
             for (final short element : array) {

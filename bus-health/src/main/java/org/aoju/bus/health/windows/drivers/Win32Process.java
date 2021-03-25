@@ -37,7 +37,7 @@ import java.util.Set;
  * Utility to query WMI class {@code Win32_Process}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -58,7 +58,7 @@ public final class Win32Process {
      */
     public static WmiResult<CommandLineProperty> queryCommandLines(Set<Integer> pidsToQuery) {
         StringBuilder sb = new StringBuilder(WIN32_PROCESS);
-        if (pidsToQuery != null) {
+        if (null != pidsToQuery) {
             boolean first = true;
             for (Integer pid : pidsToQuery) {
                 if (first) {
@@ -82,7 +82,7 @@ public final class Win32Process {
      */
     public static WmiResult<ProcessXPProperty> queryProcesses(Collection<Integer> pids) {
         StringBuilder sb = new StringBuilder(WIN32_PROCESS);
-        if (pids != null) {
+        if (null != pids) {
             boolean first = true;
             for (Integer pid : pids) {
                 if (first) {

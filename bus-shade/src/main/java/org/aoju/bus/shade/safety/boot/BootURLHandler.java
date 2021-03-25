@@ -46,7 +46,7 @@ import java.util.Set;
  * 加密的URL处理器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BootURLHandler extends Handler {
@@ -70,7 +70,7 @@ public class BootURLHandler extends Handler {
             InputStreamReader isr = new InputStreamReader(in);
             LineNumberReader lnr = new LineNumberReader(isr);
             String name;
-            while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
+            while (null != (name = lnr.readLine())) indexes.add(classpath + name);
         }
     }
 

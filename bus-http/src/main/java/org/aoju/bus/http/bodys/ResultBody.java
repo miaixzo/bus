@@ -47,7 +47,7 @@ import java.net.URLDecoder;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ResultBody extends AbstractBody implements Body {
@@ -72,7 +72,7 @@ public class ResultBody extends AbstractBody implements Body {
     @Override
     public MimeType getType() {
         ResponseBody body = response.body();
-        if (body != null) {
+        if (null != body) {
             return body.contentType();
         }
         return null;
@@ -81,7 +81,7 @@ public class ResultBody extends AbstractBody implements Body {
     @Override
     public long getLength() {
         ResponseBody body = response.body();
-        if (body != null) {
+        if (null != body) {
             return body.contentLength();
         }
         return 0;
@@ -95,7 +95,7 @@ public class ResultBody extends AbstractBody implements Body {
 
     @Override
     public Body setOnProcess(OnBack<Process> onProcess) {
-        if (taskExecutor == null) {
+        if (null == taskExecutor) {
             throw new IllegalStateException("Task executor is null!");
         }
         if (cached) {
@@ -130,13 +130,13 @@ public class ResultBody extends AbstractBody implements Body {
             input = new ByteArrayInputStream(cacheBytes());
         } else {
             ResponseBody body = response.body();
-            if (body != null) {
+            if (null != body) {
                 input = body.byteStream();
             } else {
                 input = new ByteArrayInputStream(new byte[0]);
             }
         }
-        if (onProcess != null) {
+        if (null != onProcess) {
             long rangeStart = getRangeStart();
             long totalBytes = getLength();
             if (!rangeIgnored) {
@@ -164,11 +164,11 @@ public class ResultBody extends AbstractBody implements Body {
 
     @Override
     public Reader toCharStream() {
-        if (cached || onProcess != null) {
+        if (cached || null != onProcess) {
             return new InputStreamReader(toByteStream());
         }
         ResponseBody body = response.body();
-        if (body != null) {
+        if (null != body) {
             return body.charStream();
         }
         return new CharArrayReader(new char[]{});
@@ -176,12 +176,12 @@ public class ResultBody extends AbstractBody implements Body {
 
     @Override
     public String toString() {
-        if (cached || onProcess != null) {
+        if (cached || null != onProcess) {
             return new String(toBytes(), charset);
         }
         try {
             ResponseBody body = response.body();
-            if (body != null) {
+            if (null != body) {
                 return new String(body.bytes(), charset);
             }
         } catch (IOException e) {
@@ -202,7 +202,7 @@ public class ResultBody extends AbstractBody implements Body {
 
     @Override
     public Download toFile(File file) {
-        if (taskExecutor == null) {
+        if (null == taskExecutor) {
             throw new IllegalStateException("Task executor is null!");
         }
         if (!file.exists()) {
@@ -249,7 +249,7 @@ public class ResultBody extends AbstractBody implements Body {
 
     @Override
     public Body cache() {
-        if (onProcess != null) {
+        if (null != onProcess) {
             throw new IllegalStateException("After the cache is turned on, you cannot set a download progress callback!");
         }
         cached = true;
@@ -265,7 +265,7 @@ public class ResultBody extends AbstractBody implements Body {
 
     private byte[] cacheBytes() {
         synchronized (response) {
-            if (data == null) {
+            if (null == data) {
                 data = bodyToBytes();
             }
         }
@@ -273,7 +273,7 @@ public class ResultBody extends AbstractBody implements Body {
     }
 
     private byte[] bodyToBytes() {
-        if (onProcess != null) {
+        if (null != onProcess) {
             try (Buffer buffer = new Buffer()) {
                 return buffer.readFrom(toByteStream()).readByteArray();
             } catch (IOException e) {
@@ -283,7 +283,7 @@ public class ResultBody extends AbstractBody implements Body {
             }
         }
         ResponseBody body = response.body();
-        if (body != null) {
+        if (null != body) {
             try {
                 return body.bytes();
             } catch (IOException e) {
@@ -299,7 +299,7 @@ public class ResultBody extends AbstractBody implements Body {
             return rangeStart;
         }
         String range = response.header("Content-Range");
-        if (range != null && range.startsWith("bytes")) {
+        if (null != range && range.startsWith("bytes")) {
             int index = range.indexOf(Symbol.C_HYPHEN);
             if (index > 5) {
                 String start = range.substring(5, index).trim();
@@ -335,7 +335,7 @@ public class ResultBody extends AbstractBody implements Body {
     private String resolveFileName() {
         String fileName = response.header("Content-Disposition");
         // 通过Content-Disposition获取文件名
-        if (fileName == null || fileName.length() < 1) {
+        if (null == fileName || fileName.length() < 1) {
             fileName = response.request().url().encodedPath();
             fileName = fileName.substring(fileName.lastIndexOf(Symbol.SLASH) + 1);
         } else {

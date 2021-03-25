@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public class ValueListType {
     protected List<String> value;
 
     public List<String> getValue() {
-        if (this.value == null) {
+        if (null == this.value) {
             this.value = new ArrayList();
         }
         return this.value;

@@ -30,7 +30,7 @@ import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DateRange implements Serializable {
@@ -52,8 +52,8 @@ public class DateRange implements Serializable {
     }
 
     public boolean contains(Date when) {
-        return !(start != null && start.after(when)
-                || end != null && end.before(when));
+        return !(null != start && start.after(when)
+                || null != end && end.before(when));
     }
 
     @Override
@@ -65,20 +65,20 @@ public class DateRange implements Serializable {
             return false;
 
         DateRange other = (DateRange) obj;
-        return (start == null
-                ? other.start == null
+        return (null == start
+                ? null == other.start
                 : start.equals(other.start))
-                && (end == null
-                ? other.end == null
+                && (null == end
+                ? null == other.end
                 : end.equals(other.end));
     }
 
     @Override
     public int hashCode() {
         int code = 0;
-        if (start != null)
+        if (null != start)
             code = start.hashCode();
-        if (end != null)
+        if (null != end)
             code ^= start.hashCode();
         return code;
     }

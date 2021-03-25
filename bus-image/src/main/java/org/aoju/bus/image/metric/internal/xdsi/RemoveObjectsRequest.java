@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -61,7 +61,7 @@ public class RemoveObjectsRequest extends RegistryRequestType {
     }
 
     public String getDeletionScope() {
-        if (this.deletionScope == null) {
+        if (null == this.deletionScope) {
             return "urn:oasis:names:tc:ebxml-regrep:DeletionScopeType:DeleteAll";
         }
         return this.deletionScope;

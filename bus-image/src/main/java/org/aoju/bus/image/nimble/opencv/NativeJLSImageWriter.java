@@ -44,7 +44,7 @@ import java.nio.ByteOrder;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NativeJLSImageWriter extends ImageWriter {
@@ -60,7 +60,7 @@ public class NativeJLSImageWriter extends ImageWriter {
 
     @Override
     public void write(IIOMetadata streamMetadata, IIOImage image, ImageWriteParam param) throws IOException {
-        if (output == null) {
+        if (null == output) {
             throw new IllegalStateException("input cannot be null");
         }
 
@@ -113,7 +113,7 @@ public class NativeJLSImageWriter extends ImageWriter {
                     throw new IIOException("Native JPEG-LS encoding error: null image");
                 }
             } finally {
-                if (mat != null) {
+                if (null != mat) {
                     mat.release();
                 }
             }

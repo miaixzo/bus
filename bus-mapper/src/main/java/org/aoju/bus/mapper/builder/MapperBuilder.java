@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 处理主要逻辑,最关键的一个类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MapperBuilder {
@@ -117,13 +117,13 @@ public class MapperBuilder {
                 tempClass = provider.type();
                 methodSet.add(method.getName());
             }
-            if (templateClass == null) {
+            if (null == templateClass) {
                 templateClass = tempClass;
             } else if (templateClass != tempClass) {
                 throw new InstrumentException("一个通用Mapper中只允许存在一个MapperTemplate子类!");
             }
         }
-        if (templateClass == null || !MapperTemplate.class.isAssignableFrom(templateClass)) {
+        if (null == templateClass || !MapperTemplate.class.isAssignableFrom(templateClass)) {
             templateClass = EmptyProvider.class;
         }
         MapperTemplate mapperTemplate;
@@ -155,7 +155,7 @@ public class MapperBuilder {
         }
         //自动注册继承的接口
         Class<?>[] interfaces = mapperClass.getInterfaces();
-        if (interfaces != null && interfaces.length > 0) {
+        if (null != interfaces && interfaces.length > 0) {
             for (Class<?> anInterface : interfaces) {
                 registerMapper(anInterface);
             }
@@ -182,7 +182,7 @@ public class MapperBuilder {
      * @return the boolean
      */
     public boolean isMapperMethod(String msId) {
-        if (msIdSkip.get(msId) != null) {
+        if (null != msIdSkip.get(msId)) {
             return msIdSkip.get(msId);
         }
         for (Map.Entry<Class<?>, MapperTemplate> entry : registerMapper.entrySet()) {
@@ -238,7 +238,7 @@ public class MapperBuilder {
      */
     public void processConfiguration(Configuration configuration, Class<?> mapperInterface) {
         String prefix;
-        if (mapperInterface != null) {
+        if (null != mapperInterface) {
             prefix = mapperInterface.getCanonicalName();
         } else {
             prefix = Normal.EMPTY;
@@ -271,7 +271,7 @@ public class MapperBuilder {
      */
     public void setConfig(Config config) {
         this.config = config;
-        if (config.getMappers() != null && config.getMappers().size() > 0) {
+        if (null != config.getMappers() && config.getMappers().size() > 0) {
             for (Class mapperClass : config.getMappers()) {
                 registerMapper(mapperClass);
             }
@@ -286,7 +286,7 @@ public class MapperBuilder {
     public void setProperties(Properties properties) {
         config.setProperties(properties);
         String mapper = null;
-        if (properties != null) {
+        if (null != properties) {
             mapper = properties.getProperty("mappers");
         }
         if (Assert.isNotEmpty(mapper)) {
@@ -308,7 +308,7 @@ public class MapperBuilder {
     public void setSqlSource(MappedStatement ms) {
         MapperTemplate mapperTemplate = msIdCache.get(ms.getId());
         try {
-            if (mapperTemplate != null) {
+            if (null != mapperTemplate) {
                 mapperTemplate.setSqlSource(ms);
             }
         } catch (Exception e) {

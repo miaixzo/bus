@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  * See <a href="https://docs.gitlab.com/ee/api/discussions.html">Discussions API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DiscussionsApi extends AbstractApi {
@@ -346,7 +346,7 @@ public class DiscussionsApi extends AbstractApi {
                 .withParam("created_at", createdAt)
                 .withParam("position", positionHash);
 
-        if (position != null) {
+        if (null != position) {
             formData.withParam("position[base_sha]", position.getBaseSha(), true)
                     .withParam("position[start_sha]", position.getStartSha(), true)
                     .withParam("position[head_sha]", position.getHeadSha(), true)

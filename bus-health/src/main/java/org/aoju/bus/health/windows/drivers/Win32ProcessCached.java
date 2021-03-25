@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * Utility to query WMI class {@code Win32_Process} using cache
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -102,7 +102,7 @@ public final class Win32ProcessCached {
             // See if this process is in the cache already
             Pair<Long, String> pair = commandLineCache.get(processId);
             // Valid process must have been started before map insertion
-            if (pair != null && startTime < pair.getLeft()) {
+            if (null != pair && startTime < pair.getLeft()) {
                 // Entry is valid, return it!
                 return pair.getRight();
             } else {

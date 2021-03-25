@@ -37,7 +37,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ApplicationSettings {
@@ -103,7 +103,7 @@ public class ApplicationSettings {
     public Object addSetting(String setting, Object value) throws GitLabApiException {
 
         Setting appSetting = Setting.forValue(setting);
-        if (appSetting != null) {
+        if (null != appSetting) {
             return (addSetting(appSetting, value));
         }
 

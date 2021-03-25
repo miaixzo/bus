@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Context {
@@ -56,7 +56,7 @@ public class Context {
     }
 
     public boolean isPreventOn() {
-        return prevent != null && prevent == Switch.ON;
+        return null != prevent && prevent == Switch.ON;
     }
 
     public Map<String, CacheX> getCaches() {

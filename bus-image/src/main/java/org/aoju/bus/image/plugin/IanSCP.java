@@ -43,7 +43,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IanSCP extends Device {
@@ -85,7 +85,7 @@ public class IanSCP extends Device {
     }
 
     public void setStorageDirectory(File storageDir) {
-        if (storageDir != null)
+        if (null != storageDir)
             storageDir.mkdirs();
         this.storageDir = storageDir;
     }
@@ -96,7 +96,7 @@ public class IanSCP extends Device {
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
             throws ImageException {
-        if (storageDir == null)
+        if (null == storageDir)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);

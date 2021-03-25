@@ -35,7 +35,7 @@ import java.net.Socket;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MLLPConnection implements Closeable {
@@ -71,7 +71,7 @@ public class MLLPConnection implements Closeable {
 
     public byte[] readMessage() throws IOException {
         byte[] b = mllpIn.readMessage();
-        if (b != null)
+        if (null != b)
             log("{} >> {}", b, 0, b.length);
         return b;
     }

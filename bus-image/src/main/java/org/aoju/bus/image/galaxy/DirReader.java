@@ -41,7 +41,7 @@ import java.io.RandomAccessFile;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DirReader implements Closeable {
@@ -113,7 +113,7 @@ public class DirReader implements Closeable {
     }
 
     public File toFile(String[] fileIDs) {
-        if (fileIDs == null || fileIDs.length == 0)
+        if (null == fileIDs || fileIDs.length == 0)
             return null;
 
         return new File(file.getParent(),
@@ -190,11 +190,11 @@ public class DirReader implements Closeable {
     protected Attributes findLastLowerDirectoryRecord(Attributes rec)
             throws IOException {
         Attributes lower = readLowerDirectoryRecord(rec);
-        if (lower == null)
+        if (null == lower)
             return null;
 
         Attributes next;
-        while ((next = readNextDirectoryRecord(lower)) != null)
+        while (null != (next = readNextDirectoryRecord(lower)))
             lower = next;
         return lower;
     }
@@ -344,13 +344,13 @@ public class DirReader implements Closeable {
     private Attributes pk(String type, int tag, VR vr, String... ids) {
         Attributes pk = new Attributes(2);
         pk.setString(Tag.DirectoryRecordType, VR.CS, type);
-        if (ids != null && ids.length != 0)
+        if (null != ids && ids.length != 0)
             pk.setString(tag, vr, ids);
         return pk;
     }
 
     private Attributes pk(String... iuids) {
-        if (iuids == null || iuids.length == 0)
+        if (null == iuids || iuids.length == 0)
             return null;
 
         Attributes pk = new Attributes(1);
@@ -370,7 +370,7 @@ public class DirReader implements Closeable {
         int[] selection = recFact.getRecordKeys(RecordType.SR_DOCUMENT);
         Attributes keys = new Attributes(selection.length + 1);
         String[] iuids = keys.getStrings(Tag.SOPInstanceUID);
-        if (iuids != null && iuids.length > 0)
+        if (null != iuids && iuids.length > 0)
             keys.setString(Tag.ReferencedSOPInstanceUIDInFile, VR.CS, iuids);
         keys.addSelected(attrs, selection);
         return keys;
@@ -382,7 +382,7 @@ public class DirReader implements Closeable {
         while (offset != 0) {
             Attributes item = readRecord(offset);
             if (inUse(item) && !(ignorePrivate && isPrivate(item))
-                    && (keys == null || item.matches(keys, ignoreCaseOfPN, matchNoValue)))
+                    && (null == keys || item.matches(keys, ignoreCaseOfPN, matchNoValue)))
                 return item;
             offset = item.getInt(Tag.OffsetOfTheNextDirectoryRecord, 0);
         }
@@ -394,7 +394,7 @@ public class DirReader implements Closeable {
             return null;
 
         Attributes item = cache.get(offset);
-        if (item == null) {
+        if (null == item) {
             long off = offset & 0xffffffffL;
             raf.seek(off);
             in.setPosition(off);

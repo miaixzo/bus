@@ -39,7 +39,7 @@ import java.util.List;
  * Form请求体内容
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class FormBody extends RequestBody {
@@ -135,8 +135,12 @@ public final class FormBody extends RequestBody {
         }
 
         public Builder add(String name, String value) {
-            if (name == null) throw new NullPointerException("name == null");
-            if (value == null) throw new NullPointerException("value == null");
+            if (null == name) {
+                throw new NullPointerException("name == null");
+            }
+            if (null == value) {
+                throw new NullPointerException("value == null");
+            }
 
             names.add(UnoUrl.canonicalize(name, UnoUrl.FORM_ENCODE_SET, false, false, true, true, charset));
             values.add(UnoUrl.canonicalize(value, UnoUrl.FORM_ENCODE_SET, false, false, true, true, charset));
@@ -144,8 +148,12 @@ public final class FormBody extends RequestBody {
         }
 
         public Builder addEncoded(String name, String value) {
-            if (name == null) throw new NullPointerException("name == null");
-            if (value == null) throw new NullPointerException("value == null");
+            if (null == name) {
+                throw new NullPointerException("name == null");
+            }
+            if (null == value) {
+                throw new NullPointerException("value == null");
+            }
 
             names.add(UnoUrl.canonicalize(name, UnoUrl.FORM_ENCODE_SET, true, false, true, true, charset));
             values.add(UnoUrl.canonicalize(value, UnoUrl.FORM_ENCODE_SET, true, false, true, true, charset));

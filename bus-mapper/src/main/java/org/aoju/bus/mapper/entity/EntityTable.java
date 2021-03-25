@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * 数据库表
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class EntityTable {
@@ -81,10 +81,10 @@ public class EntityTable {
      * @return ResultMap
      */
     public ResultMap getResultMap(Configuration configuration) {
-        if (this.resultMap != null) {
+        if (null != this.resultMap) {
             return this.resultMap;
         }
-        if (entityClassColumns == null || entityClassColumns.size() == 0) {
+        if (null == entityClassColumns || entityClassColumns.size() == 0) {
             return null;
         }
         List<ResultMapping> resultMappings = new ArrayList<>();
@@ -96,10 +96,10 @@ public class EntityTable {
                 column = matcher.group(1);
             }
             ResultMapping.Builder builder = new ResultMapping.Builder(configuration, entityColumn.getProperty(), column, entityColumn.getJavaType());
-            if (entityColumn.getJdbcType() != null) {
+            if (null != entityColumn.getJdbcType()) {
                 builder.jdbcType(entityColumn.getJdbcType());
             }
-            if (entityColumn.getTypeHandler() != null) {
+            if (null != entityColumn.getTypeHandler()) {
                 try {
                     builder.typeHandler(getInstance(entityColumn.getJavaType(), entityColumn.getTypeHandler()));
                 } catch (Exception e) {
@@ -126,7 +126,7 @@ public class EntityTable {
     }
 
     public <T> TypeHandler<T> getInstance(Class<?> javaTypeClass, Class<?> typeHandlerClass) {
-        if (javaTypeClass != null) {
+        if (null != javaTypeClass) {
             try {
                 Constructor<?> c = typeHandlerClass.getConstructor(Class.class);
                 return (TypeHandler<T>) c.newInstance(javaTypeClass);
@@ -181,14 +181,14 @@ public class EntityTable {
     }
 
     public String[] getKeyColumns() {
-        if (keyColumns != null && keyColumns.size() > 0) {
+        if (null != keyColumns && keyColumns.size() > 0) {
             return keyColumns.toArray(new String[]{});
         }
         return new String[]{};
     }
 
     public void setKeyColumns(String keyColumn) {
-        if (this.keyColumns == null) {
+        if (null == this.keyColumns) {
             this.keyColumns = new ArrayList<>();
             this.keyColumns.add(keyColumn);
         } else {
@@ -201,14 +201,14 @@ public class EntityTable {
     }
 
     public String[] getKeyProperties() {
-        if (keyProperties != null && keyProperties.size() > 0) {
+        if (null != keyProperties && keyProperties.size() > 0) {
             return keyProperties.toArray(new String[]{});
         }
         return new String[]{};
     }
 
     public void setKeyProperties(String keyProperty) {
-        if (this.keyProperties == null) {
+        if (null == this.keyProperties) {
             this.keyProperties = new ArrayList<>();
             this.keyProperties.add(keyProperty);
         } else {

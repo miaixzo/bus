@@ -8,7 +8,7 @@ import org.aoju.bus.notify.provider.netease.NeteaseProvider;
  * 腾讯云短信
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK1.8+
  */
 public class QCloudSmsProvider extends NeteaseProvider<QCloudSmsProperty, Context> {

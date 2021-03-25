@@ -45,7 +45,7 @@ import java.util.Map;
  * POST请求处理
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PostRequest extends HttpRequest {
@@ -63,16 +63,16 @@ public class PostRequest extends HttpRequest {
 
     @Override
     protected RequestBody buildRequestBody() {
-        if (multipartBody != null) {
+        if (null != multipartBody) {
             return multipartBody;
-        } else if (fileInfos != null && fileInfos.size() > 0) {
+        } else if (null != fileInfos && fileInfos.size() > 0) {
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MimeType.MULTIPART_FORM_DATA_TYPE);
             addParams(builder);
             fileInfos.forEach(fileInfo -> {
                 RequestBody fileBody;
-                if (fileInfo.file != null) {
+                if (null != fileInfo.file) {
                     fileBody = RequestBody.create(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.file);
-                } else if (fileInfo.fileInputStream != null) {
+                } else if (null != fileInfo.fileInputStream) {
                     fileBody = createRequestBody(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
                 } else {
                     fileBody = RequestBody.create(MimeType.valueOf(ObjectKit.defaultIfNull(FileKit.getMimeType(fileInfo.fileName), MimeType.APPLICATION_OCTET_STREAM)),
@@ -80,11 +80,11 @@ public class PostRequest extends HttpRequest {
                 }
                 builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);
             });
-            if (body != null && body.length() > 0) {
+            if (null != body && body.length() > 0) {
                 builder.addPart(RequestBody.create(MimeType.MULTIPART_FORM_DATA_TYPE, body));
             }
             return builder.build();
-        } else if (body != null && body.length() > 0) {
+        } else if (null != body && body.length() > 0) {
             MimeType mimeType;
             if (headers.containsKey(Header.CONTENT_TYPE)) {
                 mimeType = MimeType.valueOf(headers.get(Header.CONTENT_TYPE));
@@ -105,16 +105,16 @@ public class PostRequest extends HttpRequest {
     }
 
     private void addParams(FormBody.Builder builder) {
-        if (params != null) {
+        if (null != params) {
             params.forEach((k, v) -> builder.add(k, v));
         }
-        if (encodedParams != null) {
+        if (null != encodedParams) {
             encodedParams.forEach((k, v) -> builder.addEncoded(k, v));
         }
     }
 
     private void addParams(MultipartBody.Builder builder) {
-        if (params != null && !params.isEmpty()) {
+        if (null != params && !params.isEmpty()) {
             params.forEach((k, v) -> builder.addPart(Headers.of(Header.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
                     RequestBody.create(null, v)));
         }

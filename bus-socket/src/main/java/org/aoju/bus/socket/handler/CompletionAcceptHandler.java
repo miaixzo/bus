@@ -36,7 +36,7 @@ import java.nio.channels.*;
  * 接入完成回调，单例使用
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, NioQuickServer> {
@@ -50,7 +50,7 @@ public class CompletionAcceptHandler implements CompletionHandler<ServerSocketCh
      */
     public static void registerChannel(Selector selector, SelectableChannel channel, int ops) {
         try {
-            if (channel == null) {
+            if (null == channel) {
                 return;
             }
             channel.configureBlocking(false);

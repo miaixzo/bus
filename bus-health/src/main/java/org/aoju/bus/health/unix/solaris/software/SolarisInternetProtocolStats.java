@@ -37,7 +37,7 @@ import java.util.List;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -62,7 +62,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             String[] stats = splitOnPrefix(s, "tcp");
             // Now of form tcpXX = 123
             for (String stat : stats) {
-                if (stat != null) {
+                if (null != stat) {
                     String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
@@ -121,7 +121,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             String[] stats = splitOnPrefix(s, "udp");
             // Now of form udpXX = 123
             for (String stat : stats) {
-                if (stat != null) {
+                if (null != stat) {
                     String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {

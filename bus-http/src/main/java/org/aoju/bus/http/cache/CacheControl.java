@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * 这些指令设置了哪些响应可以存储，以及哪些请求可以由存储的响应来满足的策略
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class CacheControl {
@@ -153,7 +153,7 @@ public final class CacheControl {
             String value = headers.value(i);
 
             if (name.equalsIgnoreCase(Header.CACHE_CONTROL)) {
-                if (headerValue != null) {
+                if (null != headerValue) {
                     // 多个cache-control头文件意味着不能使用原始值
                     canUseHeaderValue = false;
                 } else {
@@ -280,7 +280,7 @@ public final class CacheControl {
     @Override
     public String toString() {
         String result = headerValue;
-        return result != null ? result : (headerValue = headerValue());
+        return null != result ? result : (headerValue = headerValue());
     }
 
     private String headerValue() {

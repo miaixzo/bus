@@ -33,7 +33,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AttributesSelector implements Serializable {
@@ -86,7 +86,7 @@ public class AttributesSelector implements Serializable {
 
     static int selectNumber(String s, int fromIndex) {
         String no = select("@number=", s, fromIndex);
-        return no != null ? Integer.parseInt(no) : 0;
+        return null != no ? Integer.parseInt(no) : 0;
     }
 
     private static List<ItemPointer> itemPointersOf(String s, int endIndex) {
@@ -135,12 +135,12 @@ public class AttributesSelector implements Serializable {
 
     public String selectStringValue(Attributes attrs, int valueIndex, String defVal) {
         Attributes item = attrs.getNestedDataset(itemPointers);
-        return item != null ? item.getString(privateCreator, tag, valueIndex, defVal) : defVal;
+        return null != item ? item.getString(privateCreator, tag, valueIndex, defVal) : defVal;
     }
 
     @Override
     public String toString() {
-        if (str == null)
+        if (null == str)
             str = toStringBuilder().toString();
         return str;
     }
@@ -148,7 +148,7 @@ public class AttributesSelector implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
         AttributesSelector that = (AttributesSelector) o;
         return tag == that.tag &&
                 Objects.equals(privateCreator, that.privateCreator) &&
@@ -173,7 +173,7 @@ public class AttributesSelector implements Serializable {
 
     private StringBuilder appendTo(int tag, String privateCreator, String suffix, StringBuilder sb) {
         sb.append("DicomAttribute[@tag=\"").append(Tag.toHexString(tag));
-        if (privateCreator != null)
+        if (null != privateCreator)
             sb.append("\" and @privateCreator=\"").append(privateCreator);
         return sb.append(suffix);
     }

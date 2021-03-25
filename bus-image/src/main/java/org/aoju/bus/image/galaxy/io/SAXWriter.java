@@ -40,7 +40,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SAXWriter implements ImageInputHandler {
@@ -263,15 +263,15 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     private void addAttributes(int tag, VR vr, String privateCreator) {
-        if (privateCreator != null)
+        if (null != privateCreator)
             tag &= 0xffff00ff;
         if (includeKeyword) {
             String keyword = ElementDictionary.keywordOf(tag, privateCreator);
-            if (keyword != null && !keyword.isEmpty())
+            if (null != keyword && !keyword.isEmpty())
                 addAttribute("keyword", keyword);
         }
         addAttribute("tag", Tag.toHexString(tag));
-        if (privateCreator != null)
+        if (null != privateCreator)
             addAttribute("privateCreator", privateCreator);
         addAttribute("vr", vr.name());
     }
@@ -348,16 +348,16 @@ public class SAXWriter implements ImageInputHandler {
 
     private void writeBulkData(BulkData bulkData)
             throws SAXException {
-        if (bulkData.getUUID() != null)
+        if (null != bulkData.getUUID())
             addAttribute("uuid", bulkData.getUUID());
-        if (bulkData.getURI() != null)
+        if (null != bulkData.getURI())
             addAttribute("uri", bulkData.getURI());
         startElement("BulkData");
         endElement("BulkData");
     }
 
     private void writeElement(String qname, String s) throws SAXException {
-        if (s != null) {
+        if (null != s) {
             startElement(qname);
             char[] buf = buffer;
             for (int off = 0, totlen = s.length(); off < totlen; ) {

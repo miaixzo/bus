@@ -36,7 +36,7 @@ import java.io.*;
  * 文件下载
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Download {
@@ -208,7 +208,7 @@ public class Download {
             synchronized (lock) {
                 status = Ctrl.STATUS__ERROR;
             }
-            if (onFailure != null) {
+            if (null != onFailure) {
                 taskExecutor.execute(() -> {
                     onFailure.on(new Failure(e));
                 }, fOnIO);
@@ -223,7 +223,7 @@ public class Download {
             }
         }
         if (status == Ctrl.STATUS__DONE
-                && onSuccess != null) {
+                && null != onSuccess) {
             taskExecutor.execute(() -> onSuccess.on(file), sOnIO);
         }
     }

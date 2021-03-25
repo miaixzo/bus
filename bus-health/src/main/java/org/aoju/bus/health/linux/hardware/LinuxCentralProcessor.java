@@ -49,7 +49,7 @@ import java.util.stream.LongStream;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -343,7 +343,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // policy directories to find the system-wide policy max
         File cpufreqdir = new File(cpuFreqPath + "/cpufreq");
         File[] policies = cpufreqdir.listFiles();
-        if (policies != null) {
+        if (null != policies) {
             for (int i = 0; i < policies.length; i++) {
                 File f = policies[i];
                 if (f.getName().startsWith("policy")) {

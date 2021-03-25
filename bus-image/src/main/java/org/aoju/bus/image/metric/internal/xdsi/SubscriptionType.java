@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -55,7 +55,7 @@ public class SubscriptionType extends RegistryObjectType {
     protected Duration notificationInterval;
 
     public List<JAXBElement<? extends ActionType>> getAction() {
-        if (this.action == null) {
+        if (null == this.action) {
             this.action = new ArrayList();
         }
         return this.action;

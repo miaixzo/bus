@@ -262,7 +262,7 @@ public class NioServer {
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String request = scanner.nextLine();
-            if (request != null && request.trim().length() > 0) {
+            if (null != request && request.trim().length() > 0) {
                 client.write(BufferKit.create(request));
             }
         }

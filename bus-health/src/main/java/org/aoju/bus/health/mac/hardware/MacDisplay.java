@@ -44,7 +44,7 @@ import java.util.List;
  * A Display
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -69,16 +69,16 @@ final class MacDisplay extends AbstractDisplay {
         List<Display> displays = new ArrayList<>();
         // Iterate IO Registry IODisplayConnect
         IOIterator serviceIterator = IOKitUtil.getMatchingServices("IODisplayConnect");
-        if (serviceIterator != null) {
+        if (null != serviceIterator) {
             CFStringRef cfEdid = CFStringRef.createCFString("IODisplayEDID");
             IORegistryEntry sdService = serviceIterator.next();
-            while (sdService != null) {
+            while (null != sdService) {
                 // Display properties are in a child entry
                 IORegistryEntry properties = sdService.getChildEntry("IOService");
-                if (properties != null) {
+                if (null != properties) {
                     // look up the edid by key
                     CFTypeRef edidRaw = properties.createCFProperty(cfEdid);
-                    if (edidRaw != null) {
+                    if (null != edidRaw) {
                         CFDataRef edid = new CFDataRef(edidRaw.getPointer());
                         // Edid is a byte array of 128 bytes
                         int length = edid.getLength();

@@ -29,7 +29,7 @@ import org.aoju.bus.gitlab.JacksonJson;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Branch {
@@ -42,7 +42,7 @@ public class Branch {
     private Boolean isProtected;
 
     public static final boolean isValid(Branch branch) {
-        return (branch != null && branch.getName() != null);
+        return (null != branch && null != branch.getName());
     }
 
     public Commit getCommit() {

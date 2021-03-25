@@ -47,7 +47,7 @@ import java.util.concurrent.Executor;
  * Httpv 客户端接口
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Httpv {
@@ -112,7 +112,7 @@ public class Httpv {
     }
 
     public int cancel(String tag) {
-        if (tag == null) {
+        if (null == tag) {
             return 0;
         }
         int count = 0;
@@ -189,7 +189,7 @@ public class Httpv {
 
     public MimeType mediaType(String type) {
         String mediaType = mediaTypes.get(type);
-        if (mediaType != null) {
+        if (null != mediaType) {
             return MimeType.valueOf(mediaType);
         }
         return MimeType.valueOf(MimeType.APPLICATION_OCTET_STREAM);
@@ -228,8 +228,8 @@ public class Httpv {
 
     private String urlPath(String urlPath, boolean websocket) {
         String fullUrl;
-        if (urlPath == null) {
-            if (baseUrl != null) {
+        if (null == urlPath) {
+            if (null != baseUrl) {
                 fullUrl = baseUrl;
             } else {
                 throw new InstrumentException("Before setting BaseUrl, you must specify a specific path to initiate a request!");
@@ -241,7 +241,7 @@ public class Httpv {
                     || urlPath.startsWith(Http.WS_PREFIX);
             if (isFullPath) {
                 fullUrl = urlPath;
-            } else if (baseUrl != null) {
+            } else if (null != baseUrl) {
                 fullUrl = baseUrl + urlPath;
             } else {
                 throw new InstrumentException("Before setting BaseUrl, you must use the full path URL to initiate the request. The current URL is：" + urlPath);
@@ -340,7 +340,7 @@ public class Httpv {
                     running = false;
                 }
             }
-            if (chain != null) {
+            if (null != chain) {
                 preprocessor.doProcess(chain);
             }
         }
@@ -421,7 +421,7 @@ public class Httpv {
                 Response response = chain.proceed(request);
                 ResponseBody body = response.body();
                 String type = response.header("Content-Type");
-                if (body == null || type != null && (type.contains("octet-stream")
+                if (null == body || null != type && (type.contains("octet-stream")
                         || type.contains("image") || type.contains("video")
                         || type.contains("archive") || type.contains("word")
                         || type.contains("xls") || type.contains("pdf"))) {
@@ -472,7 +472,7 @@ public class Httpv {
          * @return Builder
          */
         public Builder mediaTypes(Map<String, String> mediaTypes) {
-            if (mediaTypes != null) {
+            if (null != mediaTypes) {
                 this.mediaTypes.putAll(mediaTypes);
             }
             return this;
@@ -486,7 +486,7 @@ public class Httpv {
          * @return Builder
          */
         public Builder mediaTypes(String key, String value) {
-            if (key != null && value != null) {
+            if (null != key && null != value) {
                 this.mediaTypes.put(key, value);
             }
             return this;
@@ -510,7 +510,7 @@ public class Httpv {
          * @return Builder
          */
         public Builder addPreprocessor(Preprocessor preprocessor) {
-            if (preprocessor != null) {
+            if (null != preprocessor) {
                 preprocessors.add(preprocessor);
             }
             return this;
@@ -523,7 +523,7 @@ public class Httpv {
          * @return Builder
          */
         public Builder addSerialPreprocessor(Preprocessor preprocessor) {
-            if (preprocessor != null) {
+            if (null != preprocessor) {
                 preprocessors.add(new SerialPreprocessor(preprocessor));
             }
             return this;
@@ -592,7 +592,7 @@ public class Httpv {
          * 添加消息转换器
          */
         public Builder addMsgConvertor(Convertor convertor) {
-            if (convertor != null) {
+            if (null != convertor) {
                 this.convertors.add(convertor);
             }
             return this;
@@ -604,7 +604,7 @@ public class Httpv {
          * 设置默认编码格式
          */
         public Builder charset(Charset charset) {
-            if (charset != null) {
+            if (null != charset) {
                 this.charset = charset;
             }
             return this;
@@ -616,7 +616,7 @@ public class Httpv {
          * 设置默认请求体类型
          */
         public Builder bodyType(String bodyType) {
-            if (bodyType != null) {
+            if (null != bodyType) {
                 this.bodyType = bodyType;
             }
             return this;
@@ -628,12 +628,12 @@ public class Httpv {
          * @return HTTP
          */
         public Httpv build() {
-            if (config != null || httpd == null) {
+            if (null != config || null == httpd) {
                 Httpd.Builder builder = new Httpd.Builder();
-                if (config != null) {
+                if (null != config) {
                     config.config(builder);
                 }
-                if (mainExecutor != null && androidSdkInt() > 24) {
+                if (null != mainExecutor && androidSdkInt() > 24) {
                     addCopyInterceptor(builder);
                 }
                 httpd = builder.build();

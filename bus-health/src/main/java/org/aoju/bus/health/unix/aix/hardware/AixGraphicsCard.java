@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  * Graphics Card info obtained from lscfg
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -78,7 +78,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 display = true;
             } else if (display && s.toLowerCase().contains("graphics")) {
                 name = s;
-            } else if (display && name != null) {
+            } else if (display && null != name) {
                 if (s.startsWith("Manufacture ID")) {
                     vendor = Builder.removeLeadingDots(s.substring(14));
                 } else if (s.contains("Level")) {

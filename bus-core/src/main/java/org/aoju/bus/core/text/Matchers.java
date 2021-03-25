@@ -36,7 +36,7 @@ import java.util.Arrays;
  * 如果这些还不够,您可以子类化并实现自己的匹配器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class Matchers {
@@ -180,7 +180,7 @@ public abstract class Matchers {
      * @return 给定字符的新匹配器[]
      */
     public static Matchers charSetMatcher(final char... chars) {
-        if (chars == null || chars.length == 0) {
+        if (null == chars || chars.length == 0) {
             return NONE_MATCHER;
         }
         if (chars.length == 1) {

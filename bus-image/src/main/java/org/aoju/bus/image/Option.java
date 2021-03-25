@@ -35,7 +35,7 @@ import java.util.EnumSet;
  * 服务请求选项
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -121,7 +121,7 @@ public class Option {
                   String truststoreURL,
                   String truststoreType,
                   String truststorePass) {
-        if (cipherSuites == null) {
+        if (null == cipherSuites) {
             throw new IllegalArgumentException("cipherSuites cannot be null");
         }
         this.cipherSuites = cipherSuites;
@@ -154,7 +154,7 @@ public class Option {
 
         public static EnumSet<Type> toOptions(ExtendedNegotiate extNeg) {
             EnumSet<Type> opts = EnumSet.noneOf(Type.class);
-            if (extNeg != null) {
+            if (null != extNeg) {
                 toOption(extNeg, Type.RELATIONAL, opts);
                 toOption(extNeg, Type.DATETIME, opts);
                 toOption(extNeg, Type.FUZZY, opts);

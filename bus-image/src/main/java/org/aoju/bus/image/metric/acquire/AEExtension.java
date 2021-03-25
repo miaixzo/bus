@@ -31,7 +31,7 @@ import java.io.Serializable;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AEExtension implements Serializable {
@@ -43,13 +43,14 @@ public class AEExtension implements Serializable {
     }
 
     public void setApplicationEntity(ApplicationEntity ae) {
-        if (ae != null && this.ae != null)
+        if (null != ae && null != this.ae)
             throw new IllegalStateException(
                     "already owned by AE: " + ae.getAETitle());
         this.ae = ae;
     }
 
     public void reconfigure(AEExtension from) {
+
     }
 
 }

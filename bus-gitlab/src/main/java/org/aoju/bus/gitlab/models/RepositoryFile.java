@@ -33,7 +33,7 @@ import java.util.Base64;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RepositoryFile {
@@ -177,7 +177,7 @@ public class RepositoryFile {
      */
     @JsonIgnore
     public void encodeAndSetContent(String content) {
-        encodeAndSetContent(content != null ? content.getBytes() : null);
+        encodeAndSetContent(null != content ? content.getBytes() : null);
     }
 
     /**

@@ -49,7 +49,7 @@ import java.util.*;
  * Windows Usb Device
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -106,7 +106,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         for (String controllerDeviceId : controllerDeviceIdList) {
             WindowsUsbDevice deviceAndChildren = getDeviceAndChildren(controllerDeviceId, "0000", "0000", deviceTreeMap,
                     deviceStringMap);
-            if (deviceAndChildren != null) {
+            if (null != deviceAndChildren) {
                 controllerDevices.add(deviceAndChildren);
             }
         }
@@ -207,7 +207,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         String vendorId = vid;
         String productId = pid;
         Pair<String, String> idPair = Builder.parsePnPDeviceIdToVendorProductId(hubDeviceId);
-        if (idPair != null) {
+        if (null != idPair) {
             vendorId = idPair.getLeft();
             productId = idPair.getRight();
         }
@@ -216,7 +216,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         for (String pnpDeviceId : pnpDeviceIds) {
             WindowsUsbDevice deviceAndChildren = getDeviceAndChildren(pnpDeviceId, vendorId, productId, deviceTreeMap,
                     deviceStringMap);
-            if (deviceAndChildren != null) {
+            if (null != deviceAndChildren) {
                 usbDevices.add(deviceAndChildren);
             }
         }

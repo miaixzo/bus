@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RealResult implements Results {
@@ -87,7 +87,7 @@ public class RealResult implements Results {
 
     @Override
     public int getStatus() {
-        if (response != null) {
+        if (null != response) {
             return response.code();
         }
         return 0;
@@ -95,7 +95,7 @@ public class RealResult implements Results {
 
     @Override
     public boolean isSuccessful() {
-        if (response != null) {
+        if (null != response) {
             return response.isSuccessful();
         }
         return false;
@@ -103,7 +103,7 @@ public class RealResult implements Results {
 
     @Override
     public Headers getHeaders() {
-        if (response != null) {
+        if (null != response) {
             return response.headers();
         }
         return null;
@@ -111,7 +111,7 @@ public class RealResult implements Results {
 
     @Override
     public List<String> getHeaders(String name) {
-        if (response != null) {
+        if (null != response) {
             return response.headers(name);
         }
         return Collections.emptyList();
@@ -119,7 +119,7 @@ public class RealResult implements Results {
 
     @Override
     public String getHeader(String name) {
-        if (response != null) {
+        if (null != response) {
             return response.header(name);
         }
         return null;
@@ -128,7 +128,7 @@ public class RealResult implements Results {
     @Override
     public long getContentLength() {
         String length = getHeader("Content-Length");
-        if (length != null) {
+        if (null != length) {
             try {
                 return Long.parseLong(length);
             } catch (Exception ignore) {
@@ -139,7 +139,7 @@ public class RealResult implements Results {
 
     @Override
     public synchronized Body getBody() {
-        if (body == null && response != null) {
+        if (null == body && null != response) {
             body = new ResultBody(coverHttp, response, taskExecutor);
         }
         return body;
@@ -159,7 +159,7 @@ public class RealResult implements Results {
         Body body = getBody();
         String str = "RealResult [\n  state: " + state + ",\n  status: " + getStatus()
                 + ",\n  headers: " + getHeaders();
-        if (body != null) {
+        if (null != body) {
             str += ",\n  contentType: " + body.getType();
         }
         return str + ",\n  error: " + error + "\n]";
@@ -167,7 +167,7 @@ public class RealResult implements Results {
 
     @Override
     public Results close() {
-        if (response != null) {
+        if (null != response) {
             response.close();
         }
         return this;

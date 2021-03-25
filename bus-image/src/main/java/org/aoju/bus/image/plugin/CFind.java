@@ -37,7 +37,7 @@ import java.text.MessageFormat;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CFind {
@@ -106,7 +106,7 @@ public class CFind {
                                  int cancelAfter,
                                  Level level,
                                  Args... keys) {
-        if (callingNode == null || calledNode == null) {
+        if (null == callingNode || null == calledNode) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 
@@ -123,7 +123,7 @@ public class CFind {
 
             findSCU.setInformationModel(getInformationModel(args), args.getTsuidOrder(),
                     args.getTypes());
-            if (level != null) {
+            if (null != level) {
                 findSCU.addLevel(level.name());
             }
 
@@ -174,7 +174,7 @@ public class CFind {
         int tag = param.getTag();
         String[] ss = param.getValues();
         VR vr = ElementDictionary.vrOf(tag, attrs.getPrivateCreator(tag));
-        if (ss == null || ss.length == 0) {
+        if (null == ss || ss.length == 0) {
             if (vr == VR.SQ) {
                 attrs.newSequence(tag, 1).add(new Attributes(0));
             } else {

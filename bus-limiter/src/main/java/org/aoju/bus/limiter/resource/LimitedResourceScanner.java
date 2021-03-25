@@ -47,7 +47,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class LimitedResourceScanner implements LimitedResourceSource {
@@ -88,9 +88,9 @@ public class LimitedResourceScanner implements LimitedResourceSource {
                         }
                         for (MethodMetadata metadata : methodMetadata) {
                             AnnotationAttributes attributes = (AnnotationAttributes) metadata.getAnnotationAttributes(parser.getSupportAnnotation().getName());
-                            if (attributes != null) {
+                            if (null != attributes) {
                                 LimitedResource limitedResource = parser.parseLimiterAnnotation(attributes);
-                                if (limitedResource != null) {
+                                if (null != limitedResource) {
                                     String key = metadata.getDeclaringClassName() + Symbol.SHAPE +
                                             metadata.getMethodName() + Symbol.AT
                                             + parser.getSupportAnnotation().getSimpleName();

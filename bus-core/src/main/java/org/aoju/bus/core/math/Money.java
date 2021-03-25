@@ -61,7 +61,7 @@ import java.util.Currency;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Money implements Serializable, Comparable<Money> {
@@ -269,7 +269,7 @@ public class Money implements Serializable, Comparable<Money> {
      * @param amount 金额数,以元为单位
      */
     public void setAmount(BigDecimal amount) {
-        if (amount != null) {
+        if (null != amount) {
             cent = rounding(amount.movePointRight(2), BigDecimal.ROUND_HALF_EVEN);
         }
     }
@@ -692,8 +692,8 @@ public class Money implements Serializable, Comparable<Money> {
 
         long total = 0;
 
-        for (int i = 0; i < ratios.length; i++) {
-            total += ratios[i];
+        for (long element : ratios) {
+            total += element;
         }
 
         long remainder = cent;

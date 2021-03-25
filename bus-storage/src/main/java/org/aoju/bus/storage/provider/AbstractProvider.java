@@ -43,7 +43,7 @@ import java.net.URL;
  * 预定义存储实现
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {
@@ -62,7 +62,7 @@ public abstract class AbstractProvider implements Provider {
                 String fileName = Normal.EMPTY;
                 String disposition = httpConn.getHeaderField("Content-Disposition");
 
-                if (disposition != null) {
+                if (null != disposition) {
                     int index = disposition.indexOf("filename=");
                     if (index > 0) {
                         fileName = disposition.substring(index + 10,
@@ -93,11 +93,11 @@ public abstract class AbstractProvider implements Provider {
             throw new InstrumentException("file download failed", e);
         } finally {
             try {
-                if (outputStream != null) outputStream.close();
+                if (null != outputStream) outputStream.close();
             } catch (Exception e2) {
             }
             try {
-                if (httpConn != null) httpConn.disconnect();
+                if (null != httpConn) httpConn.disconnect();
             } catch (Exception e2) {
             }
         }

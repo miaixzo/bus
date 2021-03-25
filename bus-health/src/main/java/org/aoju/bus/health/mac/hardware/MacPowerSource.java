@@ -44,7 +44,7 @@ import java.util.List;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -99,22 +99,22 @@ public final class MacPowerSource extends AbstractPowerSource {
         // across all IOPS entries if there are more than one.
 
         IORegistryEntry smartBattery = IOKitUtil.getMatchingService("AppleSmartBattery");
-        if (smartBattery != null) {
+        if (null != smartBattery) {
             String s = smartBattery.getStringProperty("DeviceName");
-            if (s != null) {
+            if (null != s) {
                 psDeviceName = s;
             }
             s = smartBattery.getStringProperty("Manufacturer");
-            if (s != null) {
+            if (null != s) {
                 psManufacturer = s;
             }
             s = smartBattery.getStringProperty("BatterySerialNumber");
-            if (s != null) {
+            if (null != s) {
                 psSerialNumber = s;
             }
 
             Integer temp = smartBattery.getIntegerProperty("ManufactureDate");
-            if (temp != null) {
+            if (null != temp) {
                 // Bits 0...4 => day (value 1-31; 5 bits)
                 // Bits 5...8 => month (value 1-12; 4 bits)
                 // Bits 9...15 => years since 1980 (value 0-127; 7 bits)
@@ -125,47 +125,47 @@ public final class MacPowerSource extends AbstractPowerSource {
             }
 
             temp = smartBattery.getIntegerProperty("DesignCapacity");
-            if (temp != null) {
+            if (null != temp) {
                 psDesignCapacity = temp;
             }
             temp = smartBattery.getIntegerProperty("MaxCapacity");
-            if (temp != null) {
+            if (null != temp) {
                 psMaxCapacity = temp;
             }
             temp = smartBattery.getIntegerProperty("CurrentCapacity");
-            if (temp != null) {
+            if (null != temp) {
                 psCurrentCapacity = temp;
             }
             psCapacityUnits = CapacityUnits.MAH;
 
             temp = smartBattery.getIntegerProperty("TimeRemaining");
-            if (temp != null) {
+            if (null != temp) {
                 psTimeRemainingInstant = temp * 60d;
             }
             temp = smartBattery.getIntegerProperty("CycleCount");
-            if (temp != null) {
+            if (null != temp) {
                 psCycleCount = temp;
             }
             temp = smartBattery.getIntegerProperty("Temperature");
-            if (temp != null) {
+            if (null != temp) {
                 psTemperature = temp / 100d;
             }
             temp = smartBattery.getIntegerProperty("Voltage");
-            if (temp != null) {
+            if (null != temp) {
                 psVoltage = temp / 1000d;
             }
             temp = smartBattery.getIntegerProperty("Amperage");
-            if (temp != null) {
+            if (null != temp) {
                 psAmperage = temp;
             }
             psPowerUsageRate = psVoltage * psAmperage;
 
             Boolean bool = smartBattery.getBooleanProperty("ExternalConnected");
-            if (bool != null) {
+            if (null != bool) {
                 psPowerOnLine = bool;
             }
             bool = smartBattery.getBooleanProperty("IsCharging");
-            if (bool != null) {
+            if (null != bool) {
                 psCharging = bool;
             }
             psDischarging = !psCharging;
@@ -198,14 +198,14 @@ public final class MacPowerSource extends AbstractPowerSource {
             // Get values from dictionary (See IOPSKeys.h)
             // Skip if not present
             Pointer result = dictionary.getValue(isPresentKey);
-            if (result != null) {
+            if (null != result) {
                 CFBooleanRef isPresentRef = new CFBooleanRef(result);
                 if (0 != CF.CFBooleanGetValue(isPresentRef)) {
                     // Get name
                     result = dictionary.getValue(nameKey);
                     CFStringRef cfName = new CFStringRef(result);
                     String psName = cfName.stringValue();
-                    if (psName == null) {
+                    if (null == psName) {
                         psName = Normal.UNKNOWN;
                     }
                     // Remaining Capacity = current / max

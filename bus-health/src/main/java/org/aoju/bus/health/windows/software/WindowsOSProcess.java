@@ -25,14 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.software;
 
-import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.BaseTSD.ULONG_PTRByReference;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -57,7 +55,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -223,7 +221,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
     @Override
     public long getAffinityMask() {
         final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
-        if (pHandle != null) {
+        if (null != pHandle) {
             try {
                 ULONG_PTRByReference processAffinity = new ULONG_PTRByReference();
                 ULONG_PTRByReference systemAffinity = new ULONG_PTRByReference();
@@ -244,10 +242,10 @@ public class WindowsOSProcess extends AbstractOSProcess {
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
                 .buildThreadMapFromRegistry(Collections.singleton(getProcessID()));
         // otherwise performance counters with WMI backup
-        if (threads != null) {
+        if (null != threads) {
             threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(Collections.singleton(this.getProcessID()));
         }
-        if (threads == null) {
+        if (null == threads) {
             return Collections.emptyList();
         }
         return threads.entrySet().stream()
@@ -266,7 +264,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // Get data from the registry if possible
         Map<Integer, ProcessPerformanceData.PerfCounterBlock> pcb = ProcessPerformanceData.buildProcessMapFromRegistry(null);
         // otherwise performance counters with WMI backup
-        if (pcb == null) {
+        if (null == pcb) {
             pcb = ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
         }
         Map<Integer, ProcessWtsData.WtsInfo> wts = ProcessWtsData.queryProcessWtsMap(pids);
@@ -293,7 +291,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // Get a handle to the process for various extended info. Only gets
         // current user unless running as administrator
         final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
-        if (pHandle != null) {
+        if (null != pHandle) {
             try {
                 // Test for 32-bit process on 64-bit windows
                 if (IS_VISTA_OR_GREATER && this.bitness == 64) {
@@ -312,7 +310,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                     this.state = State.INVALID;
                 } finally {
                     final WinNT.HANDLE token = phToken.getValue();
-                    if (token != null) {
+                    if (null != token) {
                         Kernel32.INSTANCE.CloseHandle(token);
                     }
                 }
@@ -338,82 +336,10 @@ public class WindowsOSProcess extends AbstractOSProcess {
         return Normal.UNKNOWN;
     }
 
-    // Temporary for debugging
-    private static Account getTokenAccount(WinNT.HANDLE hToken) {
-        // get token group information size
-        IntByReference tokenInformationLength = new IntByReference();
-        if (Advapi32.INSTANCE.GetTokenInformation(hToken, WinNT.TOKEN_INFORMATION_CLASS.TokenUser, null, 0,
-                tokenInformationLength)) {
-            throw new RuntimeException("Expected GetTokenInformation to fail with ERROR_INSUFFICIENT_BUFFER");
-        }
-        int rc = Kernel32.INSTANCE.GetLastError();
-        if (rc != W32Errors.ERROR_INSUFFICIENT_BUFFER) {
-            throw new Win32Exception(rc);
-        }
-        // get token user information
-        WinNT.TOKEN_USER user = new WinNT.TOKEN_USER(tokenInformationLength.getValue());
-        if (!Advapi32.INSTANCE.GetTokenInformation(hToken, WinNT.TOKEN_INFORMATION_CLASS.TokenUser, user,
-                tokenInformationLength.getValue(), tokenInformationLength)) {
-            throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
-        }
-        return getAccountBySid(null, user.User.Sid);
-    }
-
-    // Temporary for debugging
-    public static Account getAccountBySid(String systemName, WinNT.PSID sid) {
-        IntByReference cchName = new IntByReference();
-        IntByReference cchDomainName = new IntByReference();
-        PointerByReference peUse = new PointerByReference();
-
-        if (Advapi32.INSTANCE.LookupAccountSid(systemName, sid, null, cchName, null, cchDomainName, peUse)) {
-            throw new RuntimeException("LookupAccountSidW was expected to fail with ERROR_INSUFFICIENT_BUFFER");
-        }
-
-        int rc = Kernel32.INSTANCE.GetLastError();
-        if (cchName.getValue() == 0 || rc != W32Errors.ERROR_INSUFFICIENT_BUFFER) {
-            throw new Win32Exception(rc);
-        }
-
-        char[] domainName = new char[cchDomainName.getValue()];
-        char[] name = new char[cchName.getValue()];
-
-        if (!Advapi32.INSTANCE.LookupAccountSid(systemName, sid, name, cchName, domainName, cchDomainName, peUse)) {
-            Logger.warn("Failed LookupAccountSid: Sid={}, cchName={}, cchDomainName={}. Trying again.", sid,
-                    cchName.getValue(), cchDomainName.getValue());
-            if (Advapi32.INSTANCE.LookupAccountSid(systemName, sid, null, cchName, null, cchDomainName, peUse)) {
-                throw new RuntimeException("LookupAccountSidW was expected to fail with ERROR_INSUFFICIENT_BUFFER");
-            }
-            Logger.warn("Trying LookupAccountSid: Sid={}, cchName={}, cchDomainName={}.", sid, cchName.getValue(),
-                    cchDomainName.getValue());
-            domainName = new char[cchDomainName.getValue()];
-            name = new char[cchName.getValue()];
-            if (!Advapi32.INSTANCE.LookupAccountSid(systemName, sid, name, cchName, domainName, cchDomainName, peUse)) {
-                Logger.warn("Failed LookupAccountSid: Sid={}, cchName={}, cchDomainName={}. Bailing out.", sid,
-                        cchName.getValue(), cchDomainName.getValue());
-                throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
-            }
-        }
-
-        Account account = new Account();
-        account.accountType = peUse.getPointer().getInt(0);
-        account.name = Native.toString(name);
-
-        if (cchDomainName.getValue() > 0) {
-            account.domain = Native.toString(domainName);
-            account.fqn = account.domain + "\\" + account.name;
-        } else {
-            account.fqn = account.name;
-        }
-
-        account.sid = sid.getBytes();
-        account.sidString = Advapi32Util.convertSidToStringSid(sid);
-        return account;
-    }
-
     private Pair<String, String> queryUserInfo() {
         Pair<String, String> pair = null;
         final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
-        if (pHandle != null) {
+        if (null != pHandle) {
             final WinNT.HANDLEByReference phToken = new WinNT.HANDLEByReference();
             try {
                 if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
@@ -432,13 +358,13 @@ public class WindowsOSProcess extends AbstractOSProcess {
                         e.getMessage());
             } finally {
                 final WinNT.HANDLE token = phToken.getValue();
-                if (token != null) {
+                if (null != token) {
                     Kernel32.INSTANCE.CloseHandle(token);
                 }
                 Kernel32.INSTANCE.CloseHandle(pHandle);
             }
         }
-        if (pair == null) {
+        if (null == pair) {
             return Pair.of(Normal.UNKNOWN, Normal.UNKNOWN);
         }
         return pair;
@@ -447,7 +373,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private Pair<String, String> queryGroupInfo() {
         Pair<String, String> pair = null;
         final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
-        if (pHandle != null) {
+        if (null != pHandle) {
             final WinNT.HANDLEByReference phToken = new WinNT.HANDLEByReference();
             if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
                 Account account = Advapi32Util.getTokenPrimaryGroup(phToken.getValue());
@@ -461,12 +387,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
                 }
             }
             final WinNT.HANDLE token = phToken.getValue();
-            if (token != null) {
+            if (null != token) {
                 Kernel32.INSTANCE.CloseHandle(token);
             }
             Kernel32.INSTANCE.CloseHandle(pHandle);
         }
-        if (pair == null) {
+        if (null == pair) {
             return Pair.of(Normal.UNKNOWN, Normal.UNKNOWN);
         }
         return pair;

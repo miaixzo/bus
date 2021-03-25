@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class NotificationService {
@@ -273,10 +273,10 @@ public abstract class NotificationService {
     @JsonIgnore
     protected <T> T getProperty(String prop, T defaultValue) {
 
-        Object value = (properties != null ? properties.get(prop) : null);
+        Object value = (null != properties ? properties.get(prop) : null);
 
         // HACK: Sometimes GitLab returns "0" or "1" for true/false
-        if (value != null && Boolean.class.isInstance(defaultValue)) {
+        if (null != value && Boolean.class.isInstance(defaultValue)) {
             if ("0".equals(value)) {
                 return ((T) Boolean.FALSE);
             } else if ("1".equals(value)) {
@@ -284,7 +284,7 @@ public abstract class NotificationService {
             }
         }
 
-        return ((T) (value != null ? value : defaultValue));
+        return ((T) (null != value ? value : defaultValue));
     }
 
     protected void setProperty(String prop, Object value) {

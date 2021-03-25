@@ -46,7 +46,7 @@ import java.util.Map;
  * 实现HTTPS连接的方法是，除了特定于HTTP的内容外，所有内容都委托给HTTP连接
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class DelegatingConnection extends HttpsURLConnection {
@@ -74,13 +74,13 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public String getCipherSuite() {
         Handshake handshake = handshake();
-        return handshake != null ? handshake.cipherSuite().javaName() : null;
+        return null != handshake ? handshake.cipherSuite().javaName() : null;
     }
 
     @Override
     public Certificate[] getLocalCertificates() {
         Handshake handshake = handshake();
-        if (handshake == null) return null;
+        if (null == handshake) return null;
         List<Certificate> result = handshake.localCertificates();
         return !result.isEmpty() ? result.toArray(new Certificate[result.size()]) : null;
     }
@@ -88,7 +88,7 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public Certificate[] getServerCertificates() {
         Handshake handshake = handshake();
-        if (handshake == null) return null;
+        if (null == handshake) return null;
         List<Certificate> result = handshake.peerCertificates();
         return !result.isEmpty() ? result.toArray(new Certificate[result.size()]) : null;
     }
@@ -96,13 +96,13 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public Principal getPeerPrincipal() {
         Handshake handshake = handshake();
-        return handshake != null ? handshake.peerPrincipal() : null;
+        return null != handshake ? handshake.peerPrincipal() : null;
     }
 
     @Override
     public Principal getLocalPrincipal() {
         Handshake handshake = handshake();
-        return handshake != null ? handshake.localPrincipal() : null;
+        return null != handshake ? handshake.localPrincipal() : null;
     }
 
     @Override

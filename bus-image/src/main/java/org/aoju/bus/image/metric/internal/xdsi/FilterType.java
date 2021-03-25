@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -41,7 +41,7 @@ public class FilterType {
     protected Boolean negate;
 
     public boolean isNegate() {
-        if (this.negate == null) {
+        if (null == this.negate) {
             return false;
         }
         return this.negate.booleanValue();

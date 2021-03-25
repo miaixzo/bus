@@ -37,14 +37,14 @@ import java.util.List;
  * 代理选择器,总是返回{@link Proxy#NO_PROXY}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NullProxySelector extends ProxySelector {
 
     @Override
     public List<Proxy> select(URI uri) {
-        if (uri == null) {
+        if (null == uri) {
             throw new IllegalArgumentException("uri must not be null");
         }
         return Collections.singletonList(Proxy.NO_PROXY);

@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 任务类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Job implements Runnable {
@@ -77,7 +77,7 @@ public class Job implements Runnable {
 
     public Job configOnApplicationStart(boolean async) {
         Job job = this;
-        if (this.type != null) {
+        if (null != this.type) {
             job = new Job(target, method);
         }
         job.type = TYPE.ON_APPLICATION_START;

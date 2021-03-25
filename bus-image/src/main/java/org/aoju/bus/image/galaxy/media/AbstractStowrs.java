@@ -49,7 +49,7 @@ import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AbstractStowrs implements AutoCloseable {
@@ -147,7 +147,7 @@ public class AbstractStowrs implements AutoCloseable {
     }
 
     private static Calendar cal(TimeZone tz, Date date) {
-        Calendar cal = (tz != null)
+        Calendar cal = (null != tz)
                 ? new GregorianCalendar(tz)
                 : new GregorianCalendar();
         cal.setTime(date);
@@ -186,11 +186,11 @@ public class AbstractStowrs implements AutoCloseable {
             httpPost.setReadTimeout(60000);
             httpPost.setRequestProperty("Content-Type",
                     MimeType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
-            httpPost.setRequestProperty("User-Agent", agentName == null ? "STOWRS" : agentName);
+            httpPost.setRequestProperty("User-Agent", null == agentName ? "STOWRS" : agentName);
             httpPost.setRequestProperty("Accept",
                     contentType == MimeType.APPLICATION_DICOM_JSON ? MimeType.APPLICATION_DICOM_JSON : MimeType.APPLICATION_DICOM_XML);
 
-            if (headers != null && !headers.isEmpty()) {
+            if (null != headers && !headers.isEmpty()) {
                 for (Entry<String, String> element : headers.entrySet()) {
                     httpPost.setRequestProperty(element.getKey(), element.getValue());
                 }
@@ -256,12 +256,12 @@ public class AbstractStowrs implements AutoCloseable {
 
     protected String getContentLocation(Attributes metadata) {
         BulkData data = ((BulkData) metadata.getValue(Tag.EncapsulatedDocument));
-        if (data != null) {
+        if (null != data) {
             return data.getURI();
         }
 
         data = ((BulkData) metadata.getValue(Tag.PixelData));
-        if (data != null) {
+        if (null != data) {
             return data.getURI();
         }
         return null;

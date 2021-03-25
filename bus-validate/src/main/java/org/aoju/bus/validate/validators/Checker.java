@@ -46,7 +46,7 @@ import java.util.List;
  * 校验检查器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Checker {
@@ -91,7 +91,7 @@ public class Checker {
                     Annotation[] annotations = field.getDeclaredAnnotations();
 
                     String[] xFields = validated.getContext().getField();
-                    String[] xSkip = validated.getContext().getSkip() == null ? null : validated.getContext().getSkip();
+                    String[] xSkip = null == validated.getContext().getSkip() ? null : validated.getContext().getSkip();
 
                     // 过滤当前需跳过的属性
                     if (ArrayKit.isNotEmpty(xSkip)
@@ -107,10 +107,10 @@ public class Checker {
                     validated.getContext().setInside(false);
                     validated = new Validated(value, annotations, validated.getContext(), field.getName());
 
-                    if (value != null && Provider.isCollection(value)
+                    if (null != value && Provider.isCollection(value)
                             && hasInside(annotations)) {
                         collector.collect(doCollectionInside(validated));
-                    } else if (value != null && Provider.isArray(value)
+                    } else if (null != value && Provider.isArray(value)
                             && hasInside(annotations)) {
                         collector.collect(doArrayInside(validated));
                     }
@@ -140,7 +140,7 @@ public class Checker {
         if (ObjectKit.isEmpty(matcher)) {
             throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
                     property.getName(),
-                    property.getClazz() == null ? Normal.NULL : property.getClazz().getName()));
+                    null == property.getClazz() ? Normal.NULL : property.getClazz().getName()));
         }
         Object validatedTarget = validated.getObject();
         if (ObjectKit.isNotEmpty(validatedTarget) && property.isArray() && Provider.isArray(validatedTarget)) {

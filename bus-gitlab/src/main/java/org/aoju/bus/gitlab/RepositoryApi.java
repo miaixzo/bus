@@ -48,7 +48,7 @@ import java.util.stream.Stream;
  * <a href="https://docs.gitlab.com/ce/api/branches.html">Branches API</a>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RepositoryApi extends AbstractApi {
@@ -422,7 +422,7 @@ public class RepositoryApi extends AbstractApi {
         Form formData = new GitLabApiForm()
                 .withParam("id", getProjectIdOrPath(projectIdOrPath), true)
                 .withParam("path", filePath, false)
-                .withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref", (refName != null ? urlEncode(refName) : null), false)
+                .withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref", (null != refName ? urlEncode(refName) : null), false)
                 .withParam("recursive", recursive, false);
         return (new Pager<TreeItem>(this, TreeItem.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "tree"));

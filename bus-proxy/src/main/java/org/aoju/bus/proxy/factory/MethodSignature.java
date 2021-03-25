@@ -33,7 +33,7 @@ import java.util.List;
  * 用于捕获方法签名的类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MethodSignature {
@@ -50,7 +50,7 @@ public class MethodSignature {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (null == o || getClass() != o.getClass()) {
             return false;
         }
         final MethodSignature that = (MethodSignature) o;

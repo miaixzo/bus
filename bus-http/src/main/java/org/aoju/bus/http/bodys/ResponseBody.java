@@ -61,7 +61,7 @@ import java.io.*;
  * 或{@link #charStream()}来处理响应
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class ResponseBody implements Closeable {
@@ -79,9 +79,9 @@ public abstract class ResponseBody implements Closeable {
      */
     public static ResponseBody create(MimeType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
-        if (contentType != null) {
+        if (null != contentType) {
             charset = contentType.charset();
-            if (charset == null) {
+            if (null == charset) {
                 charset = Charset.UTF_8;
                 contentType = MimeType.valueOf(contentType + "; charset=utf-8");
             }
@@ -125,7 +125,10 @@ public abstract class ResponseBody implements Closeable {
     public static ResponseBody create(final MimeType contentType,
                                       final long contentLength,
                                       final BufferSource content) {
-        if (content == null) throw new NullPointerException("source == null");
+        if (null == content) {
+            throw new NullPointerException("source == null");
+        }
+
         return new ResponseBody() {
             @Override
             public MimeType contentType() {
@@ -175,7 +178,7 @@ public abstract class ResponseBody implements Closeable {
 
     public final Reader charStream() {
         Reader r = reader;
-        return r != null ? r : (reader = new BomAwareReader(source(), charset()));
+        return null != r ? r : (reader = new BomAwareReader(source(), charset()));
     }
 
     public final String string() throws IOException {
@@ -190,7 +193,7 @@ public abstract class ResponseBody implements Closeable {
 
     private java.nio.charset.Charset charset() {
         MimeType contentType = contentType();
-        return contentType != null ? contentType.charset(Charset.UTF_8) : Charset.UTF_8;
+        return null != contentType ? contentType.charset(Charset.UTF_8) : Charset.UTF_8;
     }
 
     @Override
@@ -215,7 +218,7 @@ public abstract class ResponseBody implements Closeable {
             if (closed) throw new IOException("Stream closed");
 
             Reader delegate = this.delegate;
-            if (delegate == null) {
+            if (null == delegate) {
                 java.nio.charset.Charset charset = Builder.bomAwareCharset(source, this.charset);
                 delegate = this.delegate = new InputStreamReader(source.inputStream(), charset);
             }
@@ -225,7 +228,7 @@ public abstract class ResponseBody implements Closeable {
         @Override
         public void close() throws IOException {
             closed = true;
-            if (delegate != null) {
+            if (null != delegate) {
                 delegate.close();
             } else {
                 source.close();

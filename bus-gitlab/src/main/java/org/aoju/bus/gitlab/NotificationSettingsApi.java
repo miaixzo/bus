@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NotificationSettingsApi extends AbstractApi {
@@ -69,7 +69,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("email", settings.getEmail());
 
         NotificationSettings.Events events = settings.getEvents();
-        if (events != null) {
+        if (null != events) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
                     .withParam("reopen_issue", events.getReopenIssue())
@@ -113,13 +113,12 @@ public class NotificationSettingsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public NotificationSettings updateGroupNotificationSettings(int groupId, NotificationSettings settings) throws GitLabApiException {
-
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("level", settings.getLevel())
                 .withParam("email", settings.getEmail());
 
         NotificationSettings.Events events = settings.getEvents();
-        if (events != null) {
+        if (null != events) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
                     .withParam("reopen_issue", events.getReopenIssue())
@@ -169,7 +168,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("email", settings.getEmail());
 
         NotificationSettings.Events events = settings.getEvents();
-        if (events != null) {
+        if (null != events) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
                     .withParam("reopen_issue", events.getReopenIssue())

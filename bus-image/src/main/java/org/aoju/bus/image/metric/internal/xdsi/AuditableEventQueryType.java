@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -49,7 +49,7 @@ public class AuditableEventQueryType extends RegistryObjectQueryType {
     protected UserQueryType userQuery;
 
     public List<RegistryObjectQueryType> getAffectedObjectQuery() {
-        if (this.affectedObjectQuery == null) {
+        if (null == this.affectedObjectQuery) {
             this.affectedObjectQuery = new ArrayList();
         }
         return this.affectedObjectQuery;

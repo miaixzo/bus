@@ -45,7 +45,7 @@ import java.util.Properties;
  * Mybatis - 通用分页拦截器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PageContext extends PageMethod implements Dialect {
@@ -59,7 +59,7 @@ public class PageContext extends PageMethod implements Dialect {
             throw new RuntimeException("Multiple paging plug-ins found, please check the system configuration!");
         }
         Page page = pageParams.getPage(parameterObject, rowBounds);
-        if (page == null) {
+        if (null == page) {
             return true;
         } else {
             // 设置默认的 count 列
@@ -109,7 +109,7 @@ public class PageContext extends PageMethod implements Dialect {
     public Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds) {
         // 这个方法即使不分页也会被执行,所以要判断 null
         AbstractSqlDialect delegate = autoDialect.getDelegate();
-        if (delegate != null) {
+        if (null != delegate) {
             return delegate.afterPage(pageList, parameterObject, rowBounds);
         }
         return pageList;
@@ -119,7 +119,7 @@ public class PageContext extends PageMethod implements Dialect {
     public void afterAll() {
         // 这个方法即使不分页也会被执行,所以要判断 null
         AbstractSqlDialect delegate = autoDialect.getDelegate();
-        if (delegate != null) {
+        if (null != delegate) {
             delegate.afterAll();
             autoDialect.clearDelegate();
         }

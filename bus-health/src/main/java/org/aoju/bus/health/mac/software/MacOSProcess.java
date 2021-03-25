@@ -51,7 +51,7 @@ import java.util.function.Supplier;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -352,12 +352,12 @@ public class MacOSProcess extends AbstractOSProcess {
         this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
         this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);
         Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
-        if (pwuid != null) {
+        if (null != pwuid) {
             this.user = pwuid.pw_name;
         }
         this.groupID = Integer.toString(taskAllInfo.pbsd.pbi_gid);
         Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
-        if (grgid != null) {
+        if (null != grgid) {
             this.group = grgid.gr_name;
         }
         this.threadCount = taskAllInfo.ptinfo.pti_threadnum;

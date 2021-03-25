@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentMap;
  * 日期格式化器缓存
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class FormatCache<F extends Format> {
@@ -61,19 +61,19 @@ public abstract class FormatCache<F extends Format> {
         final MultipartKey key = new MultipartKey(dateStyle, timeStyle, locale);
 
         String pattern = C_DATE_TIME_INSTANCE_CACHE.get(key);
-        if (pattern == null) {
+        if (null == pattern) {
             try {
                 DateFormat formatter;
-                if (dateStyle == null) {
+                if (null == dateStyle) {
                     formatter = DateFormat.getTimeInstance(timeStyle.intValue(), locale);
-                } else if (timeStyle == null) {
+                } else if (null == timeStyle) {
                     formatter = DateFormat.getDateInstance(dateStyle.intValue(), locale);
                 } else {
                     formatter = DateFormat.getDateTimeInstance(dateStyle.intValue(), timeStyle.intValue(), locale);
                 }
                 pattern = ((SimpleDateFormat) formatter).toPattern();
                 final String previous = C_DATE_TIME_INSTANCE_CACHE.putIfAbsent(key, pattern);
-                if (previous != null) {
+                if (null != previous) {
                     pattern = previous;
                 }
             } catch (final ClassCastException ex) {
@@ -103,18 +103,18 @@ public abstract class FormatCache<F extends Format> {
      */
     public F getInstance(final String pattern, TimeZone timeZone, Locale locale) {
         Assert.notBlank(pattern, "pattern must not be blank");
-        if (timeZone == null) {
+        if (null == timeZone) {
             timeZone = TimeZone.getDefault();
         }
-        if (locale == null) {
+        if (null == locale) {
             locale = Locale.getDefault();
         }
         final MultipartKey key = new MultipartKey(pattern, timeZone, locale);
         F format = cInstanceCache.get(key);
-        if (format == null) {
+        if (null == format) {
             format = createInstance(pattern, timeZone, locale);
             final F previousValue = cInstanceCache.putIfAbsent(key, format);
-            if (previousValue != null) {
+            if (null != previousValue) {
                 format = previousValue;
             }
         }
@@ -143,7 +143,7 @@ public abstract class FormatCache<F extends Format> {
      * @throws IllegalArgumentException 如果区域设置没有定义日期/时间模式
      */
     private F getDateTimeInstance(final Integer dateStyle, final Integer timeStyle, final TimeZone timeZone, Locale locale) {
-        if (locale == null) {
+        if (null == locale) {
             locale = Locale.getDefault();
         }
         final String pattern = getPatternForStyle(dateStyle, timeStyle, locale);
@@ -211,7 +211,7 @@ public abstract class FormatCache<F extends Format> {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
+            if (null == obj) {
                 return false;
             }
             if (getClass() != obj.getClass()) {
@@ -226,7 +226,7 @@ public abstract class FormatCache<F extends Format> {
             if (hashCode == 0) {
                 int rc = 0;
                 for (final Object key : keys) {
-                    if (key != null) {
+                    if (null != key) {
                         rc = rc * 7 + key.hashCode();
                     }
                 }

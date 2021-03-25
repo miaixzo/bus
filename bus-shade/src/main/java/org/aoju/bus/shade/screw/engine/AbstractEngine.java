@@ -38,7 +38,7 @@ import java.io.IOException;
  * 模板引擎抽象类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -95,7 +95,7 @@ public abstract class AbstractEngine implements TemplateEngine {
             try {
                 //获取系统信息
                 String osName = System.getProperty("os.name");
-                if (osName != null) {
+                if (null != osName) {
                     if (osName.contains(Builder.MAC)) {
                         Runtime.getRuntime().exec("open " + getEngineConfig().getFileOutputDir());
                     } else if (osName.contains(Builder.WINDOWS)) {

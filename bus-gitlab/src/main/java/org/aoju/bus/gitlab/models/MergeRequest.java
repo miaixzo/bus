@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MergeRequest {
@@ -100,7 +100,7 @@ public class MergeRequest {
     private List<User> approvedBy;
 
     public static final boolean isValid(MergeRequest mergeRequest) {
-        return (mergeRequest != null && mergeRequest.getId() != null);
+        return (null != mergeRequest && null != mergeRequest.getId());
     }
 
     public Boolean getAllowCollaboration() {

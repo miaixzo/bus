@@ -32,7 +32,7 @@ import org.aoju.bus.core.io.ByteString;
  * web socket协议信息
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class WebSocketProtocol {
@@ -145,7 +145,7 @@ public final class WebSocketProtocol {
 
     static void validateCloseCode(int code) {
         String message = closeCodeExceptionMessage(code);
-        if (message != null) throw new IllegalArgumentException(message);
+        if (null != message) throw new IllegalArgumentException(message);
     }
 
     public static String acceptHeader(String key) {

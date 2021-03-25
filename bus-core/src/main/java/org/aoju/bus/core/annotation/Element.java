@@ -39,7 +39,7 @@ import java.util.Set;
  * 核心实现使用了递归获取指定元素上的注解以及注解的注解,以实现复合注解的获取
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Element implements AnnotatedElement {
@@ -82,7 +82,7 @@ public class Element implements AnnotatedElement {
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         Annotation annotation = annotationMap.get(annotationClass);
-        return (annotation == null) ? null : (T) annotation;
+        return null == annotation ? null : (T) annotation;
     }
 
     @Override

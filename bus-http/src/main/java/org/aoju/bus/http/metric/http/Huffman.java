@@ -56,7 +56,7 @@ import java.io.IOException;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Huffman {
@@ -163,7 +163,7 @@ public class Huffman {
             while (nbits >= 8) {
                 int c = (current >>> (nbits - 8)) & 0xFF;
                 node = node.children[c];
-                if (node.children == null) {
+                if (null == node.children) {
                     // 终端节点
                     baos.write(node.symbol);
                     nbits -= node.terminalBits;
@@ -178,7 +178,7 @@ public class Huffman {
         while (nbits > 0) {
             int c = (current << (8 - nbits)) & 0xFF;
             node = node.children[c];
-            if (node.children != null || node.terminalBits > nbits) {
+            if (null != node.children || node.terminalBits > nbits) {
                 break;
             }
             baos.write(node.symbol);
@@ -202,10 +202,10 @@ public class Huffman {
         while (len > 8) {
             len -= 8;
             int i = ((code >>> len) & 0xFF);
-            if (current.children == null) {
+            if (null == current.children) {
                 throw new IllegalStateException("invalid dictionary: prefix not unique");
             }
-            if (current.children[i] == null) {
+            if (null == current.children[i]) {
                 current.children[i] = new Node();
             }
             current = current.children[i];

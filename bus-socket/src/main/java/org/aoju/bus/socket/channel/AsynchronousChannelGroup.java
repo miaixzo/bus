@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGroup {
@@ -153,7 +153,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
 
     private int getIntSystemProperty(String key, int defaultValue) {
         String value = System.getProperty(key);
-        if (value == null || value.length() == 0) {
+        if (null == value || value.length() == 0) {
             return defaultValue;
         }
         try {
@@ -223,7 +223,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         running = false;
         readExecutorService.shutdown();
         writeExecutorService.shutdown();
-        if (acceptExecutorService != null) {
+        if (null != acceptExecutorService) {
             acceptExecutorService.shutdown();
         }
         scheduledExecutor.shutdown();
@@ -234,7 +234,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         running = false;
         readExecutorService.shutdownNow();
         writeExecutorService.shutdownNow();
-        if (acceptExecutorService != null) {
+        if (null != acceptExecutorService) {
             acceptExecutorService.shutdownNow();
         }
         scheduledExecutor.shutdownNow();
@@ -300,7 +300,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
             try {
                 while (running) {
                     WorkerRegister register;
-                    while ((register = registers.poll()) != null) {
+                    while (null != (register = registers.poll())) {
                         register.callback(selector);
                     }
                     if (keySet.isEmpty() && selector.select() == 0) {

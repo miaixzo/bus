@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SshKit {
@@ -240,7 +240,7 @@ public class SshKit {
      * @throws InstrumentException 端口绑定失败异常
      */
     public static boolean bindPort(Session session, String remoteHost, int remotePort, int localPort) throws InstrumentException {
-        if (session != null && session.isConnected()) {
+        if (null != session && session.isConnected()) {
             try {
                 session.setPortForwardingL(localPort, remoteHost, remotePort);
             } catch (JSchException e) {
@@ -262,7 +262,7 @@ public class SshKit {
      * @throws InstrumentException 端口绑定失败异常
      */
     public static boolean bindRemotePort(Session session, int bindPort, String host, int port) throws InstrumentException {
-        if (session != null && session.isConnected()) {
+        if (null != session && session.isConnected()) {
             try {
                 session.setPortForwardingR(bindPort, host, port);
             } catch (JSchException e) {
@@ -300,7 +300,7 @@ public class SshKit {
      */
     public static int openAndBindPortToLocal(Connector sshConn, String remoteHost, int remotePort) throws InstrumentException {
         final Session session = openSession(sshConn.getHost(), sshConn.getPort(), sshConn.getUser(), sshConn.getPassword());
-        if (session == null) {
+        if (null == session) {
             throw new InstrumentException("Error to create SSH Session！");
         }
         final int localPort = generateLocalPort();
@@ -499,7 +499,7 @@ public class SshKit {
      * @param session SSH会话
      */
     public static void close(Session session) {
-        if (session != null && session.isConnected()) {
+        if (null != session && session.isConnected()) {
             session.disconnect();
         }
         JschSessionPool.INSTANCE.remove(session);
@@ -511,7 +511,7 @@ public class SshKit {
      * @param channel 会话通道
      */
     public static void close(Channel channel) {
-        if (channel != null && channel.isConnected()) {
+        if (null != channel && channel.isConnected()) {
             channel.disconnect();
         }
     }

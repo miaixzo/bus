@@ -43,7 +43,7 @@ import java.util.Map;
  * 网易云抽象类
  *
  * @author Justubborn
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK1.8+
  */
 public abstract class NeteaseProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
@@ -61,7 +61,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
     }
 
     private static String encode(String value) {
-        if (value == null) {
+        if (null == value) {
             return null;
         }
         try {

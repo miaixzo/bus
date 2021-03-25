@@ -33,7 +33,7 @@ import java.awt.image.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PaletteColorModel extends ColorModel {
@@ -103,7 +103,7 @@ public class PaletteColorModel extends ColorModel {
 
     private int[] lutDescriptor(Attributes ds, int descTag) {
         int[] desc = ds.getInts(descTag);
-        if (desc == null) {
+        if (null == desc) {
             throw new IllegalArgumentException("Missing LUT Descriptor!");
         }
         if (desc.length != 3) {
@@ -124,9 +124,9 @@ public class PaletteColorModel extends ColorModel {
         int len = desc[0] == 0 ? 0x10000 : desc[0];
         int bits = desc[2];
         byte[] data = ds.getSafeBytes(dataTag);
-        if (data == null) {
+        if (null == data) {
             int[] segm = ds.getInts(segmTag);
-            if (segm == null) {
+            if (null == segm) {
                 throw new IllegalArgumentException("Missing LUT Data!");
             }
             if (bits == 8) {

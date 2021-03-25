@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 这也适用于Solaris，这将影响{@link #find(ProcessQuery)}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class UnixProcessManager extends AbstractProcessManager {
@@ -60,7 +60,7 @@ public class UnixProcessManager extends AbstractProcessManager {
     @Override
     protected List<String> execute(final String[] cmdarray) throws IOException {
 
-        if (runAsArgs == null) {
+        if (null == runAsArgs) {
             return super.execute(cmdarray);
         }
 

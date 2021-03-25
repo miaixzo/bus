@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 包含处理特定文档格式所需的信息
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DocumentFormat {
@@ -194,7 +194,7 @@ public class DocumentFormat {
      * @return 包含将文档存储为这种格式时要应用的属性的映射.
      */
     public Map<String, Object> getStoreProperties(final FamilyType family) {
-        return storeProperties == null ? null : storeProperties.get(family);
+        return null == storeProperties ? null : storeProperties.get(family);
     }
 
     @Override
@@ -340,11 +340,11 @@ public class DocumentFormat {
                 final FamilyType family,
                 final String name,
                 final Object value) {
-            if (value == null) {
+            if (null == value) {
                 Optional.ofNullable(storeProperties).map(familyMap ->
                         familyMap.get(family)).ifPresent(propMap -> propMap.remove(name));
             } else {
-                if (storeProperties == null) {
+                if (null == storeProperties) {
                     storeProperties = new EnumMap<>(FamilyType.class);
                 }
                 storeProperties.computeIfAbsent(family, key -> new HashMap<>()).put(name, value);

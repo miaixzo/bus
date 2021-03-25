@@ -32,13 +32,13 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JdkSerializer extends AbstractSerializer {
 
     private static void serialize(Serializable obj, OutputStream outputStream) {
-        if (outputStream == null) {
+        if (null == outputStream) {
             throw new IllegalArgumentException("The OutputStream must not be null");
         } else {
             ObjectOutputStream out = null;
@@ -50,7 +50,7 @@ public class JdkSerializer extends AbstractSerializer {
                 throw new InstrumentException(e);
             } finally {
                 try {
-                    if (out != null) {
+                    if (null != out) {
                         out.close();
                     }
                 } catch (IOException var10) {
@@ -61,7 +61,7 @@ public class JdkSerializer extends AbstractSerializer {
     }
 
     private static Object deserialize(InputStream inputStream) {
-        if (inputStream == null) {
+        if (null == inputStream) {
             throw new IllegalArgumentException("The InputStream must not be null");
         } else {
             ObjectInputStream in = null;
@@ -74,7 +74,7 @@ public class JdkSerializer extends AbstractSerializer {
                 throw new InstrumentException(ce);
             } finally {
                 try {
-                    if (in != null) {
+                    if (null != in) {
                         in.close();
                     }
                 } catch (IOException e) {
@@ -94,7 +94,7 @@ public class JdkSerializer extends AbstractSerializer {
 
     @Override
     protected Object doDeserialize(byte[] bytes) {
-        if (bytes == null) {
+        if (null == bytes) {
             throw new IllegalArgumentException("The byte[] must not be null");
         } else {
             return deserialize(new ByteArrayInputStream(bytes));

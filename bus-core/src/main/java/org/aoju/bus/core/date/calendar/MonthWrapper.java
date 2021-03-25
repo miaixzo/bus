@@ -36,7 +36,7 @@ import java.util.List;
  * 月/Month
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -91,7 +91,7 @@ public class MonthWrapper implements Serializable {
         this.length = length;
         if (CollKit.isNotEmpty(days)) {
             DayWrapper day = days.get(0);
-            if (day != null) {
+            if (null != day) {
                 this.monthCnShort = DateKit.getMonthCnShort(day.getLocalDateTime());
                 this.monthCnLong = DateKit.getMonthCnLong(day.getLocalDateTime());
                 this.monthEnShort = DateKit.getMonthEnShort(day.getLocalDateTime());

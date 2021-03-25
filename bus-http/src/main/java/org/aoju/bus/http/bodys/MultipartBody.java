@@ -43,7 +43,7 @@ import java.util.UUID;
  * 用于复合对象
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class MultipartBody extends RequestBody {
@@ -152,7 +152,7 @@ public final class MultipartBody extends RequestBody {
             sink.write(boundary);
             sink.write(CRLF);
 
-            if (headers != null) {
+            if (null != headers) {
                 for (int h = 0, headerCount = headers.size(); h < headerCount; h++) {
                     sink.writeUtf8(headers.name(h))
                             .write(COLONSPACE)
@@ -162,7 +162,7 @@ public final class MultipartBody extends RequestBody {
             }
 
             MimeType contentType = body.contentType();
-            if (contentType != null) {
+            if (null != contentType) {
                 sink.writeUtf8("Content-Type: ")
                         .writeUtf8(contentType.toString())
                         .write(CRLF);
@@ -217,13 +217,13 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part create(Headers headers, RequestBody body) {
-            if (body == null) {
+            if (null == body) {
                 throw new NullPointerException("body == null");
             }
-            if (headers != null && headers.get(Header.CONTENT_TYPE) != null) {
+            if (null != headers && null != headers.get(Header.CONTENT_TYPE)) {
                 throw new IllegalArgumentException("Unexpected header: Content-Type");
             }
-            if (headers != null && headers.get(Header.CONTENT_LENGTH) != null) {
+            if (null != headers && null != headers.get(Header.CONTENT_LENGTH)) {
                 throw new IllegalArgumentException("Unexpected header: Content-Length");
             }
             return new Part(headers, body);
@@ -234,13 +234,13 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part createFormData(String name, String filename, RequestBody body) {
-            if (name == null) {
+            if (null == name) {
                 throw new NullPointerException("name == null");
             }
             StringBuilder disposition = new StringBuilder("form-data; name=");
             appendQuotedString(disposition, name);
 
-            if (filename != null) {
+            if (null != filename) {
                 disposition.append("; filename=");
                 appendQuotedString(disposition, filename);
             }
@@ -276,7 +276,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder setType(MimeType type) {
-            if (type == null) {
+            if (null == type) {
                 throw new NullPointerException("type == null");
             }
             if (!"multipart".equals(type.type())) {
@@ -303,7 +303,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder addPart(Part part) {
-            if (part == null) throw new NullPointerException("part == null");
+            if (null == part) throw new NullPointerException("part == null");
             parts.add(part);
             return this;
         }

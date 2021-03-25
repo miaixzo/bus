@@ -46,7 +46,7 @@ import java.util.Objects;
  * @param <L> the left element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -133,8 +133,8 @@ public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, 
 
     @Override
     public int hashCode() {
-        return (getKey() == null ? 0 : getKey().hashCode()) ^
-                (getValue() == null ? 0 : getValue().hashCode());
+        return (null == getKey() ? 0 : getKey().hashCode()) ^
+                (null == getValue() ? 0 : getValue().hashCode());
     }
 
     @Override

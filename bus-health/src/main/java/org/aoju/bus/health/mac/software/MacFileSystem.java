@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
  * in the /Volumes directory.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -151,7 +151,7 @@ public class MacFileSystem extends AbstractFileSystem {
             // with bsd names
             DASessionRef session = DiskArbitration.INSTANCE
                     .DASessionCreate(CoreFoundation.INSTANCE.CFAllocatorGetDefault());
-            if (session == null) {
+            if (null == session) {
                 Logger.error("Unable to open session to DiskArbitration framework.");
             } else {
                 CFStringRef daVolumeNameKey = CFStringRef.createCFString("DAVolumeName");
@@ -197,7 +197,7 @@ public class MacFileSystem extends AbstractFileSystem {
                             name = file.getPath();
                         }
                     }
-                    if (nameToMatch != null && !nameToMatch.equals(name)) {
+                    if (null != nameToMatch && !nameToMatch.equals(name)) {
                         continue;
                     }
 
@@ -217,14 +217,14 @@ public class MacFileSystem extends AbstractFileSystem {
                         // which has volumename
                         DADiskRef disk = DiskArbitration.INSTANCE.DADiskCreateFromBSDName(
                                 CoreFoundation.INSTANCE.CFAllocatorGetDefault(), session, volume);
-                        if (disk != null) {
+                        if (null != disk) {
                             CFDictionaryRef diskInfo = DiskArbitration.INSTANCE.DADiskCopyDescription(disk);
-                            if (diskInfo != null) {
+                            if (null != diskInfo) {
                                 // get volume name from its key
                                 Pointer result = diskInfo.getValue(daVolumeNameKey);
                                 CFStringRef volumePtr = new CFStringRef(result);
                                 name = volumePtr.stringValue();
-                                if (name == null) {
+                                if (null == name) {
                                     name = Normal.UNKNOWN;
                                 }
                                 diskInfo.release();
@@ -233,17 +233,17 @@ public class MacFileSystem extends AbstractFileSystem {
                         }
                         // Search for bsd name in IOKit registry for UUID
                         CFMutableDictionaryRef matchingDict = IOKitUtil.getBSDNameMatchingDict(bsdName);
-                        if (matchingDict != null) {
+                        if (null != matchingDict) {
                             // search for all IOservices that match the bsd name
                             IOIterator fsIter = IOKitUtil.getMatchingServices(matchingDict);
-                            if (fsIter != null) {
+                            if (null != fsIter) {
                                 // getMatchingServices releases matchingDict
                                 // Should only match one logical drive
                                 IORegistryEntry fsEntry = fsIter.next();
-                                if (fsEntry != null && fsEntry.conformsTo("IOMedia")) {
+                                if (null != fsEntry && fsEntry.conformsTo("IOMedia")) {
                                     // Now get the UUID
                                     uuid = fsEntry.getStringProperty("UUID");
-                                    if (uuid != null) {
+                                    if (null != uuid) {
                                         uuid = uuid.toLowerCase();
                                     }
                                     fsEntry.release();
@@ -254,7 +254,7 @@ public class MacFileSystem extends AbstractFileSystem {
                     }
 
                     fsList.add(new MacOSFileStore(name, volume, name, path, options.toString(),
-                            uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
+                            null == uuid ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
                             file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
                 }
                 daVolumeNameKey.release();

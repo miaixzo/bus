@@ -49,7 +49,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MppsSCU {
@@ -274,10 +274,10 @@ public class MppsSCU {
     }
 
     public final void setDiscontinuationReason(String codeValue) {
-        if (codes == null)
+        if (null == codes)
             throw new IllegalStateException("codec not initialized");
         String codeMeaning = codes.getProperty(codeValue);
-        if (codeMeaning == null)
+        if (null == codeMeaning)
             throw new IllegalArgumentException("undefined internal value: " + codeValue);
         int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
         Attributes attrs = new Attributes(3);
@@ -309,7 +309,7 @@ public class MppsSCU {
     }
 
     public void close() throws IOException, InterruptedException {
-        if (as != null) {
+        if (null != as) {
             as.waitForOutstandingRSP();
             as.release();
             as.waitForSocketClose();
@@ -353,10 +353,10 @@ public class MppsSCU {
     public boolean addInstance(Attributes inst) {
         Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
-        if (suid == null)
+        if (null == suid)
             return false;
         MppsWithIUID mppsWithIUID = map.get(suid);
-        if (mppsWithIUID == null)
+        if (null == mppsWithIUID)
             map.put(suid, mppsWithIUID = new MppsWithIUID(ppsuid(null), createMPPS(inst)));
         updateMPPS(mppsWithIUID.mpps, inst);
         return true;
@@ -368,7 +368,7 @@ public class MppsSCU {
     }
 
     private String ppsuid(String defval) {
-        if (ppsuid == null)
+        if (null == ppsuid)
             return defval;
 
         int size = map.size();
@@ -382,7 +382,7 @@ public class MppsSCU {
     }
 
     private String mkPPSID() {
-        if (ppsid != null)
+        if (null != ppsid)
             return ppsid;
         String id = ppsidFormat.format(serialNo);
         if (++serialNo < 0)
@@ -408,11 +408,11 @@ public class MppsSCU {
                 mpps.getString(Tag.PerformedProcedureStepStartTime));
         mpps.setString(Tag.PerformedProcedureStepStatus, VR.CS, finalStatus);
         Sequence dcrSeq = mpps.newSequence(Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence, 1);
-        if (discontinuationReason != null)
+        if (null != discontinuationReason)
             dcrSeq.add(new Attributes(discontinuationReason));
 
         Sequence raSeq = inst.getSequence(Tag.RequestAttributesSequence);
-        if (raSeq == null || raSeq.isEmpty()) {
+        if (null == raSeq || raSeq.isEmpty()) {
             Sequence ssaSeq =
                     mpps.newSequence(Tag.ScheduledStepAttributesSequence, 1);
             Attributes ssa = new Attributes();
@@ -438,12 +438,12 @@ public class MppsSCU {
 
     private void updateMPPS(Attributes mpps, Attributes inst) {
         String endTime = inst.getString(Tag.AcquisitionTime);
-        if (endTime == null) {
+        if (null == endTime) {
             endTime = inst.getString(Tag.ContentTime);
-            if (endTime == null)
+            if (null == endTime)
                 endTime = inst.getString(Tag.SeriesTime);
         }
-        if (endTime != null && endTime.compareTo(
+        if (null != endTime && endTime.compareTo(
                 mpps.getString(Tag.PerformedProcedureStepEndTime)) > 0)
             mpps.setString(Tag.PerformedProcedureStepEndTime, VR.TM, endTime);
         Sequence prefSeriesSeq = mpps.getSequence(Tag.PerformedSeriesSequence);
@@ -470,7 +470,7 @@ public class MppsSCU {
         prefSeries.setString(Tag.ProtocolName, VR.LO, protocolName);
         prefSeries.addSelected(inst, PERF_SERIES_ATTRS);
         prefSeries.newSequence(Tag.ReferencedImageSequence, 10);
-        if (archiveRequested != null)
+        if (null != archiveRequested)
             prefSeries.setString(Tag.ArchiveRequested, VR.CS, archiveRequested);
         return prefSeries;
     }

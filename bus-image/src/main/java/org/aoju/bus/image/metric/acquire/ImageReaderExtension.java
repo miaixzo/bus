@@ -29,7 +29,7 @@ import org.aoju.bus.image.nimble.codec.ImageReaderFactory;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageReaderExtension extends DeviceExtension {
@@ -37,7 +37,7 @@ public class ImageReaderExtension extends DeviceExtension {
     public volatile ImageReaderFactory factory;
 
     public ImageReaderExtension(ImageReaderFactory factory) {
-        if (factory == null)
+        if (null == factory)
             throw new NullPointerException();
         this.factory = factory;
     }

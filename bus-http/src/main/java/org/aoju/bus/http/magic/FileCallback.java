@@ -35,7 +35,7 @@ import java.io.*;
  * 文件-异步回调
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class FileCallback extends AbsCallback {
@@ -52,7 +52,7 @@ public abstract class FileCallback extends AbsCallback {
     @Override
     public void onResponse(NewCall newCall, HttpResponse response, int id) {
         try {
-            if (fileAbsolutePath != null && fileAbsolutePath.length() > 0) {
+            if (null != fileAbsolutePath && fileAbsolutePath.length() > 0) {
                 File file = new File(fileAbsolutePath);
                 FileOutputStream fos = new FileOutputStream(file);
                 ByteArrayInputStream bis = new ByteArrayInputStream(response.body().bytes());

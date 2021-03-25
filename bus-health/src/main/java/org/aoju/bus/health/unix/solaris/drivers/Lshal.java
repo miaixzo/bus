@@ -38,7 +38,7 @@ import java.util.Map;
  * Utility to query lshal
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -65,7 +65,7 @@ public final class Lshal {
                 diskName = udi.substring(udi.lastIndexOf(Symbol.C_SLASH) + 1);
             } else {
                 line = line.trim();
-                if (line.startsWith("block.major") && diskName != null) {
+                if (line.startsWith("block.major") && null != diskName) {
                     majorMap.put(diskName, Builder.getFirstIntValue(line));
                 }
             }

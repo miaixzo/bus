@@ -56,7 +56,7 @@ import java.util.List;
  * <p>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ReflectionToStringBuilder extends ToStringBuilder {
@@ -179,7 +179,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
 
     static String[] toNoNullStringArray(final Collection<String> collection) {
-        if (collection == null) {
+        if (null == collection) {
             return Normal.EMPTY_STRING_ARRAY;
         }
         return toNoNullStringArray(collection.toArray());
@@ -188,7 +188,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     static String[] toNoNullStringArray(final Object[] array) {
         final List<String> list = new ArrayList<>(array.length);
         for (final Object e : array) {
-            if (e != null) {
+            if (null != e) {
                 list.add(e.toString());
             }
         }
@@ -200,7 +200,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
 
     private static Object checkNotNull(final Object obj) {
-        Assert.isTrue(obj != null, "The Object passed in should not be null.");
+        Assert.isTrue(null != obj, "The Object passed in should not be null.");
         return obj;
     }
 
@@ -226,7 +226,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         if (Modifier.isStatic(field.getModifiers()) && !this.isAppendStatics()) {
             return false;
         }
-        if (this.excludeFieldNames != null
+        if (null != this.excludeFieldNames
                 && Arrays.binarySearch(this.excludeFieldNames, field.getName()) >= 0) {
             return false;
         }
@@ -250,7 +250,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
             if (this.accept(field)) {
                 try {
                     final Object fieldValue = this.getValue(field);
-                    if (!excludeNullValues || fieldValue != null) {
+                    if (!excludeNullValues || null != fieldValue) {
                         this.append(fieldName, fieldValue, !field.isAnnotationPresent(ToStringSummary.class));
                     }
                 } catch (final IllegalAccessException ex) {
@@ -265,7 +265,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
 
     public ReflectionToStringBuilder setExcludeFieldNames(final String... excludeFieldNamesParam) {
-        if (excludeFieldNamesParam == null) {
+        if (null == excludeFieldNamesParam) {
             this.excludeFieldNames = null;
         } else {
             //clone and remove nulls
@@ -280,9 +280,9 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
 
     public void setUpToClass(final Class<?> clazz) {
-        if (clazz != null) {
+        if (null != clazz) {
             final Object object = getObject();
-            if (object != null && !clazz.isInstance(object)) {
+            if (null != object && !clazz.isInstance(object)) {
                 throw new IllegalArgumentException("Specified class is not a superclass of the object");
             }
         }
@@ -324,12 +324,12 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
 
     @Override
     public String toString() {
-        if (this.getObject() == null) {
+        if (null == this.getObject()) {
             return this.getStyle().getNullText();
         }
         Class<?> clazz = this.getObject().getClass();
         this.appendFieldsIn(clazz);
-        while (clazz.getSuperclass() != null && clazz != this.getUpToClass()) {
+        while (null != clazz.getSuperclass() && clazz != this.getUpToClass()) {
             clazz = clazz.getSuperclass();
             this.appendFieldsIn(clazz);
         }

@@ -38,7 +38,7 @@ import java.util.*;
  * 通用查询对象
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Condition implements EntityTableName {
@@ -142,8 +142,8 @@ public class Condition implements EntityTableName {
      * @return Condition
      */
     public Condition excludeProperties(String... properties) {
-        if (properties != null && properties.length > 0) {
-            if (this.excludeColumns == null) {
+        if (null != properties && properties.length > 0) {
+            if (null == this.excludeColumns) {
                 this.excludeColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
@@ -164,8 +164,8 @@ public class Condition implements EntityTableName {
      * @return Condition
      */
     public Condition selectProperties(String... properties) {
-        if (properties != null && properties.length > 0) {
-            if (this.selectColumns == null) {
+        if (null != properties && properties.length > 0) {
+            if (null == this.selectColumns) {
                 this.selectColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
@@ -249,9 +249,9 @@ public class Condition implements EntityTableName {
     }
 
     public Set<String> getSelectColumns() {
-        if (selectColumns != null && selectColumns.size() > 0) {
+        if (null != selectColumns && selectColumns.size() > 0) {
             //不需要处理
-        } else if (excludeColumns != null && excludeColumns.size() > 0) {
+        } else if (null != excludeColumns && excludeColumns.size() > 0) {
             Collection<EntityColumn> entityColumns = propertyMap.values();
             selectColumns = new LinkedHashSet<>(entityColumns.size() - excludeColumns.size());
             for (EntityColumn column : entityColumns) {

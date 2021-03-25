@@ -29,7 +29,7 @@ package org.aoju.bus.core.loader;
  * 委派的资源加载器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class DelegateLoader extends ResourceLoader implements Loader {
@@ -37,7 +37,7 @@ public abstract class DelegateLoader extends ResourceLoader implements Loader {
     protected final Loader delegate;
 
     protected DelegateLoader(Loader delegate) {
-        if (delegate == null) {
+        if (null == delegate) {
             throw new IllegalArgumentException("delegate must not be null");
         }
         this.delegate = delegate;

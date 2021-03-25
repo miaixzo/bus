@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class OrderBy {
@@ -62,7 +62,7 @@ public class OrderBy {
 
     public OrderBy orderBy(String property) {
         String column = property(property);
-        if (column == null) {
+        if (null == column) {
             isProperty = false;
             return this;
         }

@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MapKit {
@@ -225,7 +225,7 @@ public class MapKit {
      * @return {@link HashMap}
      */
     public static HashMap<Object, Object> of(Object[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         final HashMap<Object, Object> map = new HashMap<>((int) (array.length * 1.5));
@@ -419,7 +419,7 @@ public class MapKit {
      * @return 数组
      */
     public static Object[][] toObjectArray(Map<?, ?> map) {
-        if (map == null) {
+        if (null == map) {
             return null;
         }
         final Object[][] result = new Object[map.size()][2];
@@ -478,7 +478,7 @@ public class MapKit {
         final StringBuilder stringBuilder = new StringBuilder();
         boolean isFirst = true;
         for (Entry<K, V> entry : map.entrySet())
-            if (false == isIgnoreNull || entry.getKey() != null && entry.getValue() != null) {
+            if (false == isIgnoreNull || null != entry.getKey() && null != entry.getValue()) {
                 if (isFirst) {
                     isFirst = false;
                 } else {
@@ -551,7 +551,7 @@ public class MapKit {
         boolean isFirst = true;
         if (isNotEmpty(map)) {
             for (Entry<K, V> entry : map.entrySet()) {
-                if (false == isIgnoreNull || entry.getKey() != null && entry.getValue() != null) {
+                if (false == isIgnoreNull || null != entry.getKey() && null != entry.getValue()) {
                     if (isFirst) {
                         isFirst = false;
                     } else {

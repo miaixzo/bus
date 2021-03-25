@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ZookeeperHitting implements Hitting {
@@ -196,7 +196,7 @@ public class ZookeeperHitting implements Hitting {
 
         // 将queue中所有的 || 前100条数据聚合到一个暂存Map中
         Map<String, AtomicLong> holdMap = new HashMap<>();
-        while ((head = queue.poll()) != null && count <= 100) {
+        while (null != (head = queue.poll()) && count <= 100) {
             holdMap
                     .computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L))
                     .addAndGet(head.getRight());
@@ -216,7 +216,7 @@ public class ZookeeperHitting implements Hitting {
 
     private long getValue(Object value) throws Exception {
         long result = 0L;
-        if (value != null) {
+        if (null != value) {
             if (value instanceof DistributedAtomicLong) {
                 result = getValue(((DistributedAtomicLong) value).get());
             } else if (value instanceof AtomicValue) {

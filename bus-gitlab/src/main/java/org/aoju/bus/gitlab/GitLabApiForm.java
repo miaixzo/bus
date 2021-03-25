@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * This class extends the standard JAX-RS Form class to make it fluent.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GitLabApiForm extends Form {
@@ -156,7 +156,7 @@ public class GitLabApiForm extends Form {
         }
 
         for (T value : values) {
-            if (value != null) {
+            if (null != value) {
                 this.param(name + "[]", value.toString());
             }
         }
@@ -185,7 +185,7 @@ public class GitLabApiForm extends Form {
 
         for (Entry<String, ?> variable : variables.entrySet()) {
             Object value = variable.getValue();
-            if (value != null) {
+            if (null != value) {
                 this.param(name + "[][key]", variable.getKey());
                 this.param(name + "[][value]", value.toString());
             }
@@ -237,7 +237,7 @@ public class GitLabApiForm extends Form {
 
         variables.forEach(v -> {
             String value = v.getValue();
-            if (value != null) {
+            if (null != value) {
                 this.param("variables[" + v.getKey() + "]", value);
             }
         });

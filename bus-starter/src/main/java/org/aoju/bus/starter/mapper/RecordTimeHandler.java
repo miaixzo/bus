@@ -59,7 +59,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Intercepts({
@@ -236,7 +236,7 @@ public class RecordTimeHandler extends AbstractSqlParserHandler implements Inter
 
     private void intoValueWithIndex(final int index, final String columnValue, Insert insert) {
         // 通过visitor设置对应的值
-        if (insert.getItemsList() == null) {
+        if (null == insert.getItemsList()) {
             insert.getSelect().getSelectBody().accept(new PlainSelectVisitor(index, columnValue));
         } else {
             insert.getItemsList().accept(new ItemsListVisitor() {
@@ -271,7 +271,7 @@ public class RecordTimeHandler extends AbstractSqlParserHandler implements Inter
         // 添加列
         insert.getColumns().add(new Column(columnName));
         // 通过visitor设置对应的值
-        if (insert.getItemsList() == null) {
+        if (null == insert.getItemsList()) {
             insert.getSelect().getSelectBody().accept(new PlainSelectVisitor(-1, columnValue));
         } else {
             insert.getItemsList().accept(new ItemsListVisitor() {

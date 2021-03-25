@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -203,7 +203,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         // Get Directories for stopped services
         File dir = new File("/etc/rc.d");
         File[] listFiles;
-        if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
+        if (dir.exists() && dir.isDirectory() && null != (listFiles = dir.listFiles())) {
             for (File f : listFiles) {
                 String name = f.getName();
                 if (!running.contains(name)) {

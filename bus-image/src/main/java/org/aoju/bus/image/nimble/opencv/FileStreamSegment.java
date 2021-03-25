@@ -36,7 +36,7 @@ import java.lang.reflect.Field;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FileStreamSegment extends StreamSegment {
@@ -61,7 +61,7 @@ public class FileStreamSegment extends StreamSegment {
     public static String getFilePath(RandomAccessFile file) {
         try {
             Field fpath = RandomAccessFile.class.getDeclaredField("path");
-            if (fpath != null) {
+            if (null != fpath) {
                 fpath.setAccessible(true);
                 return (String) fpath.get(file);
             }
@@ -74,7 +74,7 @@ public class FileStreamSegment extends StreamSegment {
     public static RandomAccessFile getRandomAccessFile(FileImageInputStream fstream) {
         try {
             Field fRaf = FileImageInputStream.class.getDeclaredField("raf");
-            if (fRaf != null) {
+            if (null != fRaf) {
                 fRaf.setAccessible(true);
                 return (RandomAccessFile) fRaf.get(fstream);
             }
@@ -87,7 +87,7 @@ public class FileStreamSegment extends StreamSegment {
     public static RandomAccessFile getRandomAccessFile(FileImageOutputStream fstream) {
         try {
             Field fRaf = FileImageOutputStream.class.getDeclaredField("raf");
-            if (fRaf != null) {
+            if (null != fRaf) {
                 fRaf.setAccessible(true);
                 return (RandomAccessFile) fRaf.get(fstream);
             }

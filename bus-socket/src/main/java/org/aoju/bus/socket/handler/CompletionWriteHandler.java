@@ -35,7 +35,7 @@ import java.nio.channels.CompletionHandler;
  * 读写事件回调处理类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
@@ -44,7 +44,7 @@ public class CompletionWriteHandler<T> implements CompletionHandler<Integer, Tcp
     public void completed(final Integer result, final TcpAioSession<T> aioSession) {
         try {
             NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (monitor != null) {
+            if (null != monitor) {
                 monitor.afterWrite(aioSession, result);
             }
             aioSession.writeCompleted();

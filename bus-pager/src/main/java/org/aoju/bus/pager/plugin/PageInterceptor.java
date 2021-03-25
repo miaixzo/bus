@@ -46,7 +46,7 @@ import java.util.Properties;
  * Mybatis - 通用分页拦截器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Intercepts(
@@ -106,7 +106,7 @@ public class PageInterceptor implements Interceptor {
             }
             return dialect.afterPage(resultList, parameter, rowBounds);
         } finally {
-            if (dialect != null) {
+            if (null != dialect) {
                 dialect.afterAll();
             }
         }
@@ -118,9 +118,9 @@ public class PageInterceptor implements Interceptor {
      * 因此这里会出现 null 的情况 fixed #26
      */
     private void checkDialectExists() {
-        if (dialect == null) {
+        if (null == dialect) {
             synchronized (default_dialect_class) {
-                if (dialect == null) {
+                if (null == dialect) {
                     setProperties(new Properties());
                 }
             }
@@ -134,12 +134,12 @@ public class PageInterceptor implements Interceptor {
         Long count;
         // 先判断是否存在手写的 count 查询
         MappedStatement countMs = CountExecutor.getExistedMappedStatement(ms.getConfiguration(), countMsId);
-        if (countMs != null) {
+        if (null != countMs) {
             count = CountExecutor.executeManualCount(executor, countMs, parameter, boundSql, resultHandler);
         } else {
             countMs = msCountMap.get(countMsId);
             // 自动创建
-            if (countMs == null) {
+            if (null == countMs) {
                 // 根据当前的 ms 创建一个返回值为 Long 类型的 ms
                 countMs = CountMappedStatement.newCountMappedStatement(ms, countMsId);
                 msCountMap.put(countMsId, countMs);

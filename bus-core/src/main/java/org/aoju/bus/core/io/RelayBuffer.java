@@ -38,7 +38,7 @@ import java.io.RandomAccessFile;
  * 这个类保留一个最近从上游读取的字节的小缓冲区。减少文件I/O和数据复制
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 final class RelayBuffer {
@@ -94,7 +94,7 @@ final class RelayBuffer {
                         long bufferMaxSize) {
         this.file = file;
         this.upstream = upstream;
-        this.complete = upstream == null;
+        this.complete = null == upstream;
         this.upstreamPos = upstreamPos;
         this.metadata = metadata;
         this.bufferMaxSize = bufferMaxSize;
@@ -186,7 +186,7 @@ final class RelayBuffer {
     }
 
     boolean isClosed() {
-        return file == null;
+        return null == file;
     }
 
     public ByteString metadata() {
@@ -201,7 +201,9 @@ final class RelayBuffer {
      */
     public Source newSource() {
         synchronized (RelayBuffer.this) {
-            if (file == null) return null;
+            if (null == file) {
+                return null;
+            }
             sourceCount++;
         }
 
@@ -223,7 +225,9 @@ final class RelayBuffer {
 
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
-            if (fileOperator == null) throw new IllegalStateException("closed");
+            if (null == fileOperator) {
+                throw new IllegalStateException("closed");
+            }
 
             long upstreamPos;
             int source;
@@ -234,7 +238,7 @@ final class RelayBuffer {
                     if (complete) return -1L;
 
                     // 另一个线程已经读取，等待
-                    if (upstreamReader != null) {
+                    if (null != upstreamReader) {
                         timeout.waitUntilNotified(RelayBuffer.this);
                         continue;
                     }
@@ -310,7 +314,9 @@ final class RelayBuffer {
 
         @Override
         public void close() throws IOException {
-            if (fileOperator == null) return;
+            if (null == fileOperator) {
+                return;
+            }
             fileOperator = null;
 
             RandomAccessFile fileToClose = null;
@@ -322,7 +328,7 @@ final class RelayBuffer {
                 }
             }
 
-            if (fileToClose != null) {
+            if (null != fileToClose) {
                 IoKit.close(fileToClose);
             }
         }

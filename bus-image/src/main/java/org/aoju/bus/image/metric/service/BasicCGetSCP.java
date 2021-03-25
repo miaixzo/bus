@@ -37,7 +37,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BasicCGetSCP extends AbstractService {
@@ -56,7 +56,7 @@ public class BasicCGetSCP extends AbstractService {
             throw new ImageException(Status.UnrecognizedOperation);
 
         Retrieve retrieve = calculateMatches(as, pc, cmd, keys);
-        if (retrieve != null)
+        if (null != retrieve)
             as.getApplicationEntity().getDevice().execute(retrieve);
         else
             as.tryWriteDimseRSP(pc, Commands.mkCGetRSP(cmd, Status.Success));

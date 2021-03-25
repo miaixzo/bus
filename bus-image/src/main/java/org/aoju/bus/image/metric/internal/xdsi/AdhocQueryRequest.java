@@ -30,7 +30,7 @@ import java.math.BigInteger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -70,7 +70,7 @@ public class AdhocQueryRequest extends RegistryRequestType {
 
     public boolean isFederated() {
 
-        if (this.federated == null) {
+        if (null == this.federated) {
             return false;
         }
         return this.federated.booleanValue();
@@ -89,7 +89,7 @@ public class AdhocQueryRequest extends RegistryRequestType {
     }
 
     public BigInteger getStartIndex() {
-        if (this.startIndex == null) {
+        if (null == this.startIndex) {
             return new BigInteger("0");
         }
         return this.startIndex;
@@ -100,7 +100,7 @@ public class AdhocQueryRequest extends RegistryRequestType {
     }
 
     public BigInteger getMaxResults() {
-        if (this.maxResults == null) {
+        if (null == this.maxResults) {
             return new BigInteger("-1");
         }
         return this.maxResults;

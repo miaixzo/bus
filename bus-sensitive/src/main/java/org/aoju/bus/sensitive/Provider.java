@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Provider<T> {
@@ -83,7 +83,7 @@ public class Provider<T> {
      * @return 是否已经脱敏了
      */
     public static boolean alreadyBeSentisived(Object object) {
-        return object == null || object.toString().indexOf(Symbol.STAR) > 0;
+        return null == object || object.toString().indexOf(Symbol.STAR) > 0;
     }
 
     /**
@@ -325,7 +325,7 @@ public class Provider<T> {
         try {
             //处理 @Field
             Shield sensitive = field.getAnnotation(Shield.class);
-            if (sensitive != null) {
+            if (null != sensitive) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
                 ConditionProvider condition = conditionClass.newInstance();
                 if (condition.valid(context)) {

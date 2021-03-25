@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @WebServiceClient(name = "DocumentRepository_Service", wsdlLocation = "/wsdl/XDS.b_DocumentRepository.wsdl", targetNamespace = "urn:ihe:iti:xds-b:2007")
@@ -48,10 +48,10 @@ public class DocumentRepositoryService extends Service {
 
     static {
         URL url = DocumentRepositoryService.class.getResource("/wsdl/XDS.b_DocumentRepository.wsdl");
-        if (url == null) {
+        if (null == url) {
             url = DocumentRepositoryService.class.getClassLoader().getResource("/wsdl/XDS.b_DocumentRepository.wsdl");
         }
-        if (url == null) {
+        if (null == url) {
             Logger.getLogger(DocumentRepositoryService.class.getName()).log(Level.INFO, "Can not initialize the default wsdl from {0}", "/wsdl/XDS.b_DocumentRepository.wsdl");
         }
         WSDL_LOCATION = url;

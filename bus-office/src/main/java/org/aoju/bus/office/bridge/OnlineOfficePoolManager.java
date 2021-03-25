@@ -37,7 +37,7 @@ import java.util.stream.IntStream;
  * {@link OfficeManager}池实现，不依赖于office安装来处理转换
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class OnlineOfficePoolManager extends AbstractOfficePoolManager {
@@ -118,7 +118,7 @@ public final class OnlineOfficePoolManager extends AbstractOfficePoolManager {
 
             Assert.notEmpty(urlConnection, "The URL connection is missing");
 
-            if (workingDir == null) {
+            if (null == workingDir) {
                 workingDir = new File(System.getProperty("java.io.tmpdir"));
             }
 

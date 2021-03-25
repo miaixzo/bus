@@ -32,7 +32,7 @@ import java.util.Calendar;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RetentionPeriod implements Comparable<RetentionPeriod> {
@@ -76,12 +76,12 @@ public class RetentionPeriod implements Comparable<RetentionPeriod> {
     }
 
     public boolean match(Calendar cal) {
-        return schedule == null || schedule.contains(cal);
+        return null == schedule || schedule.contains(cal);
     }
 
     @Override
     public int compareTo(RetentionPeriod o) {
-        return schedule != null ? o.schedule != null ? value.compareTo(o.value) : -1 : o.schedule != null ? 1 : 0;
+        return null != schedule ? null != o.schedule ? value.compareTo(o.value) : -1 : null != o.schedule ? 1 : 0;
     }
 
     public enum DeleteStudies {

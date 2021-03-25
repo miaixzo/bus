@@ -43,7 +43,7 @@ import java.util.Map;
  * backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -67,7 +67,7 @@ public final class ThreadPerformanceData {
         // Grab the data from the registry.
         Triple<List<Map<ThreadInformation.ThreadPerformanceProperty, Object>>, Long, Long> threadData = HkeyPerformance
                 .readPerfDataFromRegistry(THREAD, ThreadInformation.ThreadPerformanceProperty.class);
-        if (threadData == null) {
+        if (null == threadData) {
             return null;
         }
         List<Map<ThreadInformation.ThreadPerformanceProperty, Object>> threadInstanceMaps = threadData.getLeft();
@@ -79,7 +79,7 @@ public final class ThreadPerformanceData {
         // Iterate instances.
         for (Map<ThreadInformation.ThreadPerformanceProperty, Object> threadInstanceMap : threadInstanceMaps) {
             int pid = ((Integer) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.IDPROCESS)).intValue();
-            if ((pids == null || pids.contains(pid)) && pid > 0) {
+            if ((null == pids || pids.contains(pid)) && pid > 0) {
                 int tid = ((Integer) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.IDTHREAD)).intValue();
                 String name = (String) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.NAME);
                 long upTime = (perfTime100nSec - (Long) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.ELAPSEDTIME))
@@ -135,7 +135,7 @@ public final class ThreadPerformanceData {
         int nameIndex = 0;
         for (int inst = 0; inst < instances.size(); inst++) {
             int pid = pidList.get(inst).intValue();
-            if (pids == null || pids.contains(pid)) {
+            if (null == pids || pids.contains(pid)) {
                 int tid = tidList.get(inst).intValue();
                 String name = Integer.toString(nameIndex++);
                 long startTime = startTimeList.get(inst);

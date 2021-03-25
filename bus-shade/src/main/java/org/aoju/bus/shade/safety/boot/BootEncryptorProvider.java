@@ -54,7 +54,7 @@ import java.util.zip.Deflater;
  * Spring-Boot JAR包加密器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry>
@@ -121,7 +121,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
             JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(encryptorProvider, level, filter);
             JarArchiveEntry entry;
             Manifest manifest = null;
-            while ((entry = zis.getNextJarEntry()) != null) {
+            while (null != (entry = zis.getNextJarEntry())) {
                 if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
@@ -139,7 +139,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
-                    if (mainClass != null) {
+                    if (null != mainClass) {
                         attributes.putValue("Boot-Main-Class", mainClass);
                         attributes.putValue("Main-Class", map.get(mainClass));
                     }
@@ -206,8 +206,8 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                 zos.closeArchiveEntry();
             }
 
-            String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
-            if (mainClass != null) {
+            String mainClass = null != manifest && null != manifest.getMainAttributes() ? manifest.getMainAttributes().getValue("Main-Class") : null;
+            if (null != mainClass) {
                 Injector.inject(zos);
             }
 

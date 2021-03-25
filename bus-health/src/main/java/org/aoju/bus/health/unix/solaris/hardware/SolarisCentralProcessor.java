@@ -44,7 +44,7 @@ import java.util.*;
  * A CPU
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -110,7 +110,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         try (KstatChain kc = KstatKit.openChain()) {
             LibKstat.Kstat ksp = KstatChain.lookup(CPU_INFO, -1, null);
             // Set values
-            if (ksp != null && KstatChain.read(ksp)) {
+            if (null != ksp && KstatChain.read(ksp)) {
                 cpuVendor = KstatKit.dataLookupString(ksp, "vendor_id");
                 cpuName = KstatKit.dataLookupString(ksp, "brand");
                 cpuFamily = KstatKit.dataLookupString(ksp, "family");
@@ -134,7 +134,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
             List<LibKstat.Kstat> kstats = KstatChain.lookupAll(CPU_INFO, -1, null);
 
             for (LibKstat.Kstat ksp : kstats) {
-                if (ksp != null && KstatChain.read(ksp)) {
+                if (null != ksp && KstatChain.read(ksp)) {
                     int procId = logProcs.size(); // 0-indexed
                     String chipId = KstatKit.dataLookupString(ksp, "chip_id");
                     String coreId = KstatKit.dataLookupString(ksp, "core_id");

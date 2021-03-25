@@ -50,7 +50,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MppsSCP {
@@ -93,7 +93,7 @@ public class MppsSCP {
     }
 
     public void setStorageDirectory(File storageDir) {
-        if (storageDir != null)
+        if (null != storageDir)
             storageDir.mkdirs();
         this.storageDir = storageDir;
     }
@@ -108,12 +108,12 @@ public class MppsSCP {
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
             throws ImageException {
-        if (mppsNCreateIOD != null) {
+        if (null != mppsNCreateIOD) {
             ValidationResult result = rqAttrs.validate(mppsNCreateIOD);
             if (!result.isValid())
                 throw ImageException.valueOf(result, rqAttrs);
         }
-        if (storageDir == null)
+        if (null == storageDir)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
@@ -140,12 +140,12 @@ public class MppsSCP {
 
     private Attributes set(Association as, Attributes rq, Attributes rqAttrs)
             throws ImageException {
-        if (mppsNSetIOD != null) {
+        if (null != mppsNSetIOD) {
             ValidationResult result = rqAttrs.validate(mppsNSetIOD);
             if (!result.isValid())
                 throw ImageException.valueOf(result, rqAttrs);
         }
-        if (storageDir == null)
+        if (null == storageDir)
             return null;
         String cuid = rq.getString(Tag.RequestedSOPClassUID);
         String iuid = rq.getString(Tag.RequestedSOPInstanceUID);

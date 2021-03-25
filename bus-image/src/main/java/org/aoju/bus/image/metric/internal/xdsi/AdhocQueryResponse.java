@@ -30,7 +30,7 @@ import java.math.BigInteger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -54,7 +54,7 @@ public class AdhocQueryResponse extends RegistryResponseType {
     }
 
     public BigInteger getStartIndex() {
-        if (this.startIndex == null) {
+        if (null == this.startIndex) {
             return new BigInteger("0");
         }
         return this.startIndex;

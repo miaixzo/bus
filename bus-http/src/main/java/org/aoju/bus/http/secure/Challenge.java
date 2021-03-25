@@ -37,7 +37,7 @@ import java.util.Map.Entry;
  * RFC 7235兼容的认证
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Challenge {
@@ -53,20 +53,28 @@ public final class Challenge {
     private final Map<String, String> authParams;
 
     public Challenge(String scheme, Map<String, String> authParams) {
-        if (scheme == null) throw new NullPointerException("scheme == null");
-        if (authParams == null) throw new NullPointerException("authParams == null");
+        if (null == scheme) {
+            throw new NullPointerException("scheme == null");
+        }
+        if (null == authParams) {
+            throw new NullPointerException("authParams == null");
+        }
         this.scheme = scheme;
         Map<String, String> newAuthParams = new LinkedHashMap<>();
         for (Entry<String, String> authParam : authParams.entrySet()) {
-            String key = (authParam.getKey() == null) ? null : authParam.getKey().toLowerCase(Locale.US);
+            String key = (null == authParam.getKey()) ? null : authParam.getKey().toLowerCase(Locale.US);
             newAuthParams.put(key, authParam.getValue());
         }
         this.authParams = Collections.unmodifiableMap(newAuthParams);
     }
 
     public Challenge(String scheme, String realm) {
-        if (scheme == null) throw new NullPointerException("scheme == null");
-        if (realm == null) throw new NullPointerException("realm == null");
+        if (null == scheme) {
+            throw new NullPointerException("scheme == null");
+        }
+        if (null == realm) {
+            throw new NullPointerException("realm == null");
+        }
         this.scheme = scheme;
         this.authParams = Collections.singletonMap("realm", realm);
     }
@@ -78,7 +86,9 @@ public final class Challenge {
      * @return 返回此字符集的副本
      */
     public Challenge withCharset(java.nio.charset.Charset charset) {
-        if (charset == null) throw new NullPointerException("charset == null");
+        if (null == charset) {
+            throw new NullPointerException("charset == null");
+        }
         Map<String, String> authParams = new LinkedHashMap<>(this.authParams);
         authParams.put("charset", charset.name());
         return new Challenge(scheme, authParams);
@@ -98,7 +108,7 @@ public final class Challenge {
 
     public java.nio.charset.Charset charset() {
         String charset = authParams.get("charset");
-        if (charset != null) {
+        if (null != charset) {
             try {
                 return java.nio.charset.Charset.forName(charset);
             } catch (Exception ignore) {

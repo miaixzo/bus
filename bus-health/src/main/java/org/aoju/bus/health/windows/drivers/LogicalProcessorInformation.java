@@ -28,6 +28,7 @@ package org.aoju.bus.health.windows.drivers;
 import com.sun.jna.platform.win32.Kernel32Util;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
+import org.aoju.bus.health.windows.Kernel32Kit;
 import org.aoju.bus.health.windows.WinNT;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import java.util.List;
  * Utility to query Logical Processor Information pre-Win7
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -148,7 +149,7 @@ public final class LogicalProcessorInformation {
         // package.
         List<Long> packageMaskList = new ArrayList<>();
         List<Long> coreMaskList = new ArrayList<>();
-        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[] processors = Kernel32Util.getLogicalProcessorInformation();
+        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[] processors = Kernel32Kit.getLogicalProcessorInformation();
         for (WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION proc : processors) {
             if (proc.relationship == WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage) {
                 packageMaskList.add(proc.processorMask.longValue());

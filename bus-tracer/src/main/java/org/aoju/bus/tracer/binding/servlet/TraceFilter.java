@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @WebFilter(filterName = "TraceFilter", urlPatterns = "/*", dispatcherTypes = DispatcherType.REQUEST)
@@ -97,7 +97,7 @@ public class TraceFilter implements Filter {
     @Override
     public final void init(final FilterConfig filterConfig) {
         final String profileInitParameter = filterConfig.getInitParameter(PROFILE_INIT_PARAM);
-        if (profileInitParameter != null) {
+        if (null != profileInitParameter) {
             profile = profileInitParameter;
         }
     }

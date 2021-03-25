@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BasicRetrieve<T extends Instance> implements Retrieve {
@@ -197,7 +197,7 @@ public class BasicRetrieve<T extends Instance> implements Retrieve {
     }
 
     private void stopWritePendingRSP() {
-        if (writePendingRSP != null)
+        if (null != writePendingRSP)
             writePendingRSP.cancel(false);
     }
 

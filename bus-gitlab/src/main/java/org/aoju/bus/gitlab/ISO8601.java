@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class provides utility methods for parsing and formatting org.aoju.bus.gitlab.ISO8601 formatted dates.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ISO8601 {
@@ -183,7 +183,7 @@ public class ISO8601 {
      */
     public static Date toDate(String dateTimeString) {
         Instant instant = toInstant(dateTimeString);
-        return (instant != null ? Date.from(instant) : null);
+        return (null != instant ? Date.from(instant) : null);
     }
 
     /**

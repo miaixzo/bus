@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * represented by a drive letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -110,7 +110,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
         // Determine whether 32-bit or 64-bit handle limit, although both are
         // essentially infinite for practical purposes. See
         // https://blogs.technet.microsoft.com/markrussinovich/2009/09/29/pushing-the-limits-of-windows-handles/
-        if (System.getenv("ProgramFiles(x86)") == null) {
+        if (null == System.getenv("ProgramFiles(x86)")) {
             MAX_WINDOWS_HANDLES = 16_777_216L - 32_768L;
         } else {
             MAX_WINDOWS_HANDLES = 16_777_216L - 65_536L;
@@ -174,7 +174,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(volume, mount, BUFSIZE, null);
 
                 strMount = Native.toString(mount);
-                if (!strMount.isEmpty() && (volumeToMatch == null || volumeToMatch.equals(volume))) {
+                if (!strMount.isEmpty() && (null == volumeToMatch || volumeToMatch.equals(volume))) {
                     strName = Native.toString(name);
                     strFsType = Native.toString(fstype);
 
@@ -298,7 +298,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
         Map<HandleCountProperty, List<Long>> valueListMap = ProcessInformation.queryHandles().getRight();
         List<Long> valueList = valueListMap.get(HandleCountProperty.HANDLECOUNT);
         long descriptors = 0L;
-        if (valueList != null) {
+        if (null != valueList) {
             for (int i = 0; i < valueList.size(); i++) {
                 descriptors += valueList.get(i);
             }

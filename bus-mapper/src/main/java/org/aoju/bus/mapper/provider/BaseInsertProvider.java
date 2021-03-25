@@ -42,7 +42,7 @@ import java.util.Set;
  * BaseInsertProvider实现类,基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BaseInsertProvider extends MapperTemplate {
@@ -182,7 +182,7 @@ public class BaseInsertProvider extends MapperTemplate {
                 //如果已经存在Identity列,抛出异常
                 if (hasIdentityKey) {
                     //jdbc类型只需要添加一次
-                    if (column.getGenerator() != null && column.getGenerator().equals("JDBC")) {
+                    if (null != column.getGenerator() && column.getGenerator().equals("JDBC")) {
                         continue;
                     }
                     throw new InstrumentException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");

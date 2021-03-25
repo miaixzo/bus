@@ -35,7 +35,7 @@ import javax.security.auth.x500.X500Principal;
  * 它不支持十六进制字符串样式的值.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class DistinguishedNameParser {
@@ -318,7 +318,7 @@ public final class DistinguishedNameParser {
         chars = dn.toCharArray();
 
         String attType = nextAT();
-        if (attType == null) {
+        if (null == attType) {
             return null;
         }
         while (true) {
@@ -358,7 +358,7 @@ public final class DistinguishedNameParser {
 
             pos++;
             attType = nextAT();
-            if (attType == null) {
+            if (null == attType) {
                 throw new IllegalStateException("Malformed DN: " + dn);
             }
         }

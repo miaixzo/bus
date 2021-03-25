@@ -41,7 +41,7 @@ import java.util.regex.PatternSyntaxException;
  * The default property chain may be obtained by the {@link #loadPropertyChain()} method.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class PropertiesBasedTraceFilter implements TraceFilterConfig {
@@ -87,9 +87,9 @@ public final class PropertiesBasedTraceFilter implements TraceFilterConfig {
     }
 
     private String getProfiledOrDefaultProperty(final String propertyName) {
-        if (profileName != null && !Builder.DEFAULT.equals(profileName)) {
+        if (null != profileName && !Builder.DEFAULT.equals(profileName)) {
             final String profiledProperty = propertyChain.getProperty(PROFILED_PREFIX + profileName + Symbol.C_DOT + propertyName);
-            if (profiledProperty != null)
+            if (null != profiledProperty)
                 return profiledProperty;
         }
         return propertyChain.getProperty(Trace_DEFAULT_PROFILE_PREFIX + propertyName);
@@ -160,11 +160,11 @@ public final class PropertiesBasedTraceFilter implements TraceFilterConfig {
     }
 
     private List<Pattern> retrievePatternsForPropertyValue(final String propertyValue) {
-        if (propertyValue == null) {
+        if (null == propertyValue) {
             return Collections.emptyList();
         }
         final List<Pattern> patterns = patternCache.get(propertyValue);
-        if (patterns != null) {
+        if (null != patterns) {
             return patterns;
         }
 
@@ -174,7 +174,7 @@ public final class PropertiesBasedTraceFilter implements TraceFilterConfig {
     }
 
     List<Pattern> extractPatterns(final String propertyValue) {
-        if (propertyValue == null)
+        if (null == propertyValue)
             return Collections.emptyList();
 
         final List<Pattern> trimmedPatterns = new ArrayList<>();

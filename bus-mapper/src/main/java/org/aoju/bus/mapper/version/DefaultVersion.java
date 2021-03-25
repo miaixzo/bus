@@ -27,14 +27,14 @@ package org.aoju.bus.mapper.version;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DefaultVersion implements NextVersion {
 
     @Override
     public Object nextVersion(Object current) throws VersionException {
-        if (current == null) {
+        if (null == current) {
             throw new VersionException("当前版本号为空!");
         }
         if (current instanceof Integer) {

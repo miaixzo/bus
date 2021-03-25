@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * Utility to query geom part list
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -79,7 +79,7 @@ public final class GeomPartList {
             // Marks the DiskStore device for a partition.
             if (line.startsWith("Geom name:")) {
                 // Save any previous partition list in the map
-                if (diskName != null && !partList.isEmpty()) {
+                if (null != diskName && !partList.isEmpty()) {
                     // Store map (old diskName)
                     partitionMap.put(diskName, partList);
                     // Reset the list
@@ -89,11 +89,11 @@ public final class GeomPartList {
                 diskName = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
             }
             // If we don't have a valid store, don't bother parsing anything
-            if (diskName != null) {
+            if (null != diskName) {
                 // Marks the beginning of partition data
                 if (line.contains("Name:")) {
                     // Add the current partition to the list, if any
-                    if (partName != null) {
+                    if (null != partName) {
                         // FreeBSD Major # is 0.
                         // Minor # is filesize of /dev entry.
                         int minor = Builder
@@ -115,7 +115,7 @@ public final class GeomPartList {
                     }
                 }
                 // If we don't have a valid partition, don't parse anything until we do.
-                if (partName != null) {
+                if (null != partName) {
                     String[] split = RegEx.SPACES.split(line);
                     if (split.length >= 2) {
                         if (line.startsWith("Mediasize:")) {
@@ -129,9 +129,9 @@ public final class GeomPartList {
                 }
             }
         }
-        if (diskName != null) {
+        if (null != diskName) {
             // Process last partition
-            if (partName != null) {
+            if (null != partName) {
                 int minor = Builder.parseIntOrDefault(Executor.getFirstAnswer(STAT_FILESIZE + partName), 0);
                 partList.add(new HWPartition(identification, partName, type, uuid, size, 0, minor, mountPoint));
             }

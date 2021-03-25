@@ -46,7 +46,7 @@ import java.util.Map;
  * 必须启动所提供的office管理器才能被此转换器使用.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class LocalOfficeProvider extends AbstractProvider {
@@ -124,7 +124,7 @@ public class LocalOfficeProvider extends AbstractProvider {
      */
     LocalOfficeProvider setLoadProperties(final Map<String, Object> loadProperties) {
 
-        if (this.loadProperties == null) {
+        if (null == this.loadProperties) {
             this.loadProperties = new HashMap<>();
         }
 

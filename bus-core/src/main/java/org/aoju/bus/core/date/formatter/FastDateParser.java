@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * 用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FastDateParser extends AbstractMotd implements DateParser {
@@ -129,7 +129,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
         final Calendar definingCalendar = Calendar.getInstance(timeZone, locale);
 
         int centuryStartYear;
-        if (centuryStart != null) {
+        if (null != centuryStart) {
             definingCalendar.setTime(centuryStart);
             centuryStartYear = definingCalendar.get(Calendar.YEAR);
         } else if (locale.equals(JAPANESE_IMPERIAL)) {
@@ -207,7 +207,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
      */
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
         synchronized (CACHES) {
-            if (CACHES[field] == null) {
+            if (null == CACHES[field]) {
                 CACHES[field] = new ConcurrentHashMap<>(3);
             }
             return CACHES[field];
@@ -225,7 +225,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
         final StrategyParser fm = new StrategyParser(definingCalendar);
         for (; ; ) {
             final StrategyAndWidth field = fm.getNextStrategy();
-            if (field == null) {
+            if (null == field) {
                 break;
             }
             patterns.add(field);
@@ -255,7 +255,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
     public Date parse(final String source) throws ParseException {
         final ParsePosition pp = new ParsePosition(0);
         final Date date = parse(source, pp);
-        if (date == null) {
+        if (null == date) {
             if (locale.equals(JAPANESE_IMPERIAL)) {
                 throw new ParseException("(The " + locale + " locale does not support dates before 1868 AD)\n" + "Unparseable date: \"" + source, pp.getErrorIndex());
             }
@@ -372,10 +372,10 @@ public class FastDateParser extends AbstractMotd implements DateParser {
     private Strategy getLocaleSpecificStrategy(final int field, final Calendar definingCalendar) {
         final ConcurrentMap<Locale, Strategy> cache = getCache(field);
         Strategy strategy = cache.get(locale);
-        if (strategy == null) {
+        if (null == strategy) {
             strategy = field == Calendar.ZONE_OFFSET ? new TimeZoneStrategy(locale) : new CaseInsensitiveTextStrategy(field, definingCalendar, locale);
             final Strategy inCache = cache.putIfAbsent(locale, strategy);
-            if (inCache != null) {
+            if (null != inCache) {
                 return inCache;
             }
         }
@@ -642,7 +642,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
                             tzInfo = standard;
                             break;
                     }
-                    if (zoneNames[i] != null) {
+                    if (null != zoneNames[i]) {
                         final String key = zoneNames[i].toLowerCase(locale);
                         // 忽略附加名称中提供的与重复项关联的数据
                         if (sorted.add(key)) {

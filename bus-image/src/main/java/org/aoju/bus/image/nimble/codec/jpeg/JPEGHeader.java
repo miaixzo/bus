@@ -33,7 +33,7 @@ import org.aoju.bus.image.galaxy.data.VR;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JPEGHeader {
@@ -119,7 +119,7 @@ public class JPEGHeader {
         if (offsetSOF == -1)
             return null;
 
-        if (attrs == null)
+        if (null == attrs)
             attrs = new Attributes(10);
 
         int sof = data[offsetSOF] & 255;

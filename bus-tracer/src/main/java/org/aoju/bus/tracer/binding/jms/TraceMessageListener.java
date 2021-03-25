@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class TraceMessageListener {
@@ -76,7 +76,7 @@ public final class TraceMessageListener {
     public void beforeProcessing(final Message message) throws JMSException {
         if (backend.getConfiguration().shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
             final String encodedTraceContext = message.getStringProperty(Builder.TPIC_HEADER);
-            if (encodedTraceContext != null) {
+            if (null != encodedTraceContext) {
                 final Map<String, String> contextFromMessage = httpHeaderSerialization.parse(Collections.singletonList(encodedTraceContext));
                 backend.putAll(backend.getConfiguration().filterDeniedParams(contextFromMessage, TraceFilterConfig.Channel.AsyncProcess));
             }

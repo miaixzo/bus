@@ -44,7 +44,7 @@ import java.util.*;
  * implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -142,7 +142,7 @@ public class AixFileSystem extends AbstractFileSystem {
                     name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
                 }
 
-                if (nameToMatch != null && !nameToMatch.equals(name)) {
+                if (null != nameToMatch && !nameToMatch.equals(name)) {
                     continue;
                 }
                 File f = new File(path);

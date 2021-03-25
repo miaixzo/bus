@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractHitting implements Hitting {
@@ -124,7 +124,7 @@ public abstract class AbstractHitting implements Hitting {
 
         // gather queue's all or before 100 data to a Map
         Map<String, AtomicLong> holdMap = new HashMap<>();
-        while ((head = queue.poll()) != null && times <= 100) {
+        while (null != (head = queue.poll()) && times <= 100) {
             holdMap
                     .computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L))
                     .addAndGet(head.getRight());

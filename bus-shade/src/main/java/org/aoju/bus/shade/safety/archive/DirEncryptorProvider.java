@@ -37,7 +37,7 @@ import java.io.IOException;
  * 文件夹加密器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DirEncryptorProvider extends EntryEncryptorProvider<File> implements EncryptorProvider {
@@ -57,7 +57,7 @@ public class DirEncryptorProvider extends EntryEncryptorProvider<File> implement
             encryptor.encrypt(key, src, dest);
         } else if (src.isDirectory()) {
             File[] files = src.listFiles();
-            for (int i = 0; files != null && i < files.length; i++) {
+            for (int i = 0; null != files && i < files.length; i++) {
                 encrypt(key, files[i], new File(dest, files[i].getName()));
             }
         }

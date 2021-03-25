@@ -40,7 +40,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * ByteBuffer内存页
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PageBuffer {
@@ -105,18 +105,18 @@ public class PageBuffer {
      */
     public VirtualBuffer allocate(final int size) {
         VirtualBuffer virtualBuffer;
-        if (pagePool != null && Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
+        if (null != pagePool && Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
             virtualBuffer = pagePool[(int) (Thread.currentThread().getId() % pagePool.length)].allocate0(size);
         } else {
             virtualBuffer = allocate0(size);
         }
-        if (virtualBuffer != null) {
+        if (null != virtualBuffer) {
             return virtualBuffer;
         }
-        if (sharedPageBuffer != null) {
+        if (null != sharedPageBuffer) {
             virtualBuffer = sharedPageBuffer.allocate0(size);
         }
-        if (virtualBuffer == null) {
+        if (null == virtualBuffer) {
             virtualBuffer = new VirtualBuffer(null, allocate0(size, false), 0, 0);
         }
         return virtualBuffer;
@@ -134,16 +134,16 @@ public class PageBuffer {
         }
         idle = false;
         VirtualBuffer cleanBuffer = cleanBuffers.poll();
-        if (cleanBuffer != null && cleanBuffer.getParentLimit() - cleanBuffer.getParentPosition() >= size) {
+        if (null != cleanBuffer && cleanBuffer.getParentLimit() - cleanBuffer.getParentPosition() >= size) {
             cleanBuffer.buffer().clear();
             cleanBuffer.buffer(cleanBuffer.buffer());
             return cleanBuffer;
         }
         lock.lock();
         try {
-            if (cleanBuffer != null) {
+            if (null != cleanBuffer) {
                 clean0(cleanBuffer);
-                while ((cleanBuffer = cleanBuffers.poll()) != null) {
+                while (null != (cleanBuffer = cleanBuffers.poll())) {
                     if (cleanBuffer.getParentLimit() - cleanBuffer.getParentPosition() >= size) {
                         cleanBuffer.buffer().clear();
                         cleanBuffer.buffer(cleanBuffer.buffer());
@@ -198,7 +198,7 @@ public class PageBuffer {
             if (freeChunk == bufferChunk) {
                 iterator.remove();
             }
-            if (bufferChunk != null) {
+            if (null != bufferChunk) {
                 return bufferChunk;
             }
         }
@@ -255,7 +255,7 @@ public class PageBuffer {
         } else if (!cleanBuffers.isEmpty() && lock.tryLock()) {
             try {
                 VirtualBuffer cleanBuffer;
-                while ((cleanBuffer = cleanBuffers.poll()) != null) {
+                while (null != (cleanBuffer = cleanBuffers.poll())) {
                     clean0(cleanBuffer);
                 }
             } finally {

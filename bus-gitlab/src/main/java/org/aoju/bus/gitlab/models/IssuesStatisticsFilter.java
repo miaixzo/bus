@@ -39,7 +39,7 @@ import java.util.List;
  * This class is used to filter issues when getting issue statistics. of them.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IssuesStatisticsFilter {
@@ -133,7 +133,7 @@ public class IssuesStatisticsFilter {
     public GitLabApiForm getQueryParams() throws GitLabApiException {
 
         return (new GitLabApiForm()
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (null != labels ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("iids", iids)
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)

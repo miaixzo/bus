@@ -31,7 +31,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CacheKeys {
@@ -49,11 +49,11 @@ public class CacheKeys {
     }
 
     public Map<String, Object> getHitKeyMap() {
-        return hitKeyMap == null ? Collections.emptyMap() : hitKeyMap;
+        return null == hitKeyMap ? Collections.emptyMap() : hitKeyMap;
     }
 
     public Set<String> getMissKeySet() {
-        return missKeySet == null ? Collections.emptySet() : missKeySet;
+        return null == missKeySet ? Collections.emptySet() : missKeySet;
     }
 
 }

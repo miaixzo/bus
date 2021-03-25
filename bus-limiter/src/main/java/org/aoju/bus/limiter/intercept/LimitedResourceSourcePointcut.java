@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * 切点抽象定义
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 abstract class LimitedResourceSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {
@@ -48,7 +48,7 @@ abstract class LimitedResourceSourcePointcut extends StaticMethodMatcherPointcut
     @Override
     public boolean matches(Method method, Class<?> aClass) {
         LimitedResourceSource limitedResourceSource = this.getLimitedResourceSource();
-        boolean matched = limitedResourceSource != null && !CollKit.isEmpty(limitedResourceSource.getLimitedResource(aClass, method));
+        boolean matched = null != limitedResourceSource && !CollKit.isEmpty(limitedResourceSource.getLimitedResource(aClass, method));
         if (matched == true) {
             return matched;
         }

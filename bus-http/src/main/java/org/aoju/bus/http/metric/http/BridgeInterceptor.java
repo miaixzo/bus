@@ -45,7 +45,7 @@ import java.util.List;
  * 然后它继续调用网络。最后，它从网络响应构建用户响应
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class BridgeInterceptor implements Interceptor {
@@ -62,9 +62,9 @@ public final class BridgeInterceptor implements Interceptor {
         Request.Builder requestBuilder = userRequest.newBuilder();
 
         RequestBody body = userRequest.body();
-        if (body != null) {
+        if (null != body) {
             MimeType contentType = body.contentType();
-            if (contentType != null) {
+            if (null != contentType) {
                 requestBuilder.header(Header.CONTENT_TYPE, contentType.toString());
             }
 
@@ -78,18 +78,19 @@ public final class BridgeInterceptor implements Interceptor {
             }
         }
 
-        if (userRequest.header(Header.HOST) == null) {
+        if (null == userRequest.header(Header.HOST)) {
             requestBuilder.header(Header.HOST, Builder.hostHeader(userRequest.url(), false));
         }
 
-        if (userRequest.header(Header.CONNECTION) == null) {
+        if (null == userRequest.header(Header.CONNECTION)) {
             requestBuilder.header(Header.CONNECTION, Header.KEEP_ALIVE);
         }
 
         // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
         // the transfer stream.
         boolean transparentGzip = false;
-        if (userRequest.header(Header.ACCEPT_ENCODING) == null && userRequest.header("Range") == null) {
+        if (null == userRequest.header(Header.ACCEPT_ENCODING)
+                && null == userRequest.header("Range")) {
             transparentGzip = true;
             requestBuilder.header(Header.ACCEPT_ENCODING, "gzip");
         }
@@ -99,7 +100,7 @@ public final class BridgeInterceptor implements Interceptor {
             requestBuilder.header(Header.COOKIE, cookieHeader(cookies));
         }
 
-        if (userRequest.header(Header.USER_AGENT) == null) {
+        if (null == userRequest.header(Header.USER_AGENT)) {
             requestBuilder.header(Header.USER_AGENT, "Httpd/" + Version.all());
         }
 

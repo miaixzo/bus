@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * Common methods for OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractOSThread implements OSThread {
@@ -63,7 +63,7 @@ public abstract class AbstractOSThread implements OSThread {
 
     @Override
     public double getThreadCpuLoadBetweenTicks(OSThread priorSnapshot) {
-        if (priorSnapshot != null && owningProcessId == priorSnapshot.getOwningProcessId()
+        if (null != priorSnapshot && owningProcessId == priorSnapshot.getOwningProcessId()
                 && getThreadId() == priorSnapshot.getThreadId() && getUpTime() > priorSnapshot.getUpTime()) {
             return (getUserTime() - priorSnapshot.getUserTime() + getKernelTime() - priorSnapshot.getKernelTime())
                     / (double) (getUpTime() - priorSnapshot.getUpTime());

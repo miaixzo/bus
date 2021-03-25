@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class LimitedResourceMetadataCache {
@@ -50,7 +50,7 @@ public class LimitedResourceMetadataCache {
     public LimitedResourceMetadata getLimitedResourceMetadata(LimitedResource limitedResource, Method method, Class<?> targetClass) {
         LimitedResourceKey limitedResourceKey = new LimitedResourceKey(limitedResource, method, targetClass);
         LimitedResourceMetadata metadata = this.metadataCache.get(limitedResourceKey);
-        if (metadata == null) {
+        if (null == metadata) {
             metadata = limitedResource.createMetadata(this.beanFactory, targetClass, method);
             this.metadataCache.put(limitedResourceKey, metadata);
         }

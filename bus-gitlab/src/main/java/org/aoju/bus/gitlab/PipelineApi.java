@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * <a href="https://docs.gitlab.com/ee/api/pipeline_triggers.html">Pipeline Triggers API</a>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PipelineApi extends AbstractApi implements Constants {
@@ -138,8 +138,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Pipeline> getPipelines(Object projectIdOrPath, PipelineFilter filter, int itemsPerPage) throws GitLabApiException {
-        GitLabApiForm formData = (filter != null ? filter.getQueryParams() : new GitLabApiForm());
-        return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, formData.asMap(),
+        GitLabApiForm formData = (null != filter ? filter.getQueryParams() : new GitLabApiForm());
+        return (new Pager<>(this, Pipeline.class, itemsPerPage, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "pipelines"));
     }
 
@@ -267,7 +267,7 @@ public class PipelineApi extends AbstractApi implements Constants {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("scope", scope)
                 .withParam("status", status)
-                .withParam("ref", (ref != null ? urlEncode(ref) : null))
+                .withParam("ref", (null != ref ? urlEncode(ref) : null))
                 .withParam("yaml_errors", yamlErrors)
                 .withParam("name", name)
                 .withParam("username", username)

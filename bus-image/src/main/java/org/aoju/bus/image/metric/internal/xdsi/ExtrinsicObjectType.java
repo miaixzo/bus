@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 
@@ -55,7 +55,7 @@ public class ExtrinsicObjectType extends RegistryObjectType {
     }
 
     public String getMimeType() {
-        if (this.mimeType == null) {
+        if (null == this.mimeType) {
             return MimeType.APPLICATION_OCTET_STREAM;
         }
         return this.mimeType;
@@ -66,7 +66,7 @@ public class ExtrinsicObjectType extends RegistryObjectType {
     }
 
     public boolean isIsOpaque() {
-        if (this.isOpaque == null) {
+        if (null == this.isOpaque) {
             return false;
         }
         return this.isOpaque.booleanValue();

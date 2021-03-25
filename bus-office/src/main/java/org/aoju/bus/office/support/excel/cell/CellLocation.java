@@ -32,7 +32,7 @@ import java.util.Objects;
  * 单元格位置
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CellLocation implements Serializable {
@@ -73,7 +73,7 @@ public class CellLocation implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (null == o || getClass() != o.getClass()) {
             return false;
         }
         final CellLocation that = (CellLocation) o;

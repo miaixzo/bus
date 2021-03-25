@@ -39,7 +39,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -92,13 +92,13 @@ public final class Builder {
     }
 
     public static void generateInvocationIdIfNecessary(final Backend backend) {
-        if (backend != null && !backend.containsKey(INVOCATION_ID_KEY) && backend.getConfiguration().shouldGenerateInvocationId()) {
+        if (null != backend && !backend.containsKey(INVOCATION_ID_KEY) && backend.getConfiguration().shouldGenerateInvocationId()) {
             backend.put(INVOCATION_ID_KEY, createRandomAlphanumeric(backend.getConfiguration().generatedInvocationIdLength()));
         }
     }
 
     public static void generateSessionIdIfNecessary(final Backend backend, final String sessionId) {
-        if (backend != null && !backend.containsKey(SESSION_ID_KEY) && backend.getConfiguration().shouldGenerateSessionId()) {
+        if (null != backend && !backend.containsKey(SESSION_ID_KEY) && backend.getConfiguration().shouldGenerateSessionId()) {
             backend.put(SESSION_ID_KEY, createAlphanumericHash(sessionId, backend.getConfiguration().generatedSessionIdLength()));
         }
     }

@@ -35,7 +35,7 @@ import java.util.concurrent.TimeoutException;
  * @param <V> 泛型对象
  * @param <A> 泛型对象
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V>, Runnable {
@@ -62,7 +62,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
         synchronized (this) {
             this.notify();
         }
-        if (completionHandler != null) {
+        if (null != completionHandler) {
             completionHandler.completed(result, attach);
         }
     }
@@ -71,7 +71,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
     public void failed(Throwable exc, A attachment) {
         exception = exc;
         done = true;
-        if (completionHandler != null) {
+        if (null != completionHandler) {
             completionHandler.failed(exc, attachment);
         }
     }
@@ -102,7 +102,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
     @Override
     public synchronized V get() throws InterruptedException, ExecutionException {
         if (done) {
-            if (exception != null) {
+            if (null != exception) {
                 throw new ExecutionException(exception);
             }
             return result;

@@ -42,7 +42,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource> implements LimitedResourceMetadata<T>, Observer {
@@ -119,7 +119,7 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
             Field field = fields[i];
             field.setAccessible(true);
             if (AnnotatedElementUtils.hasAnnotation(field, LimiterParameter.class)) {
-                if (retVal == null) {
+                if (null == retVal) {
                     retVal = new HashMap<>();
                 }
                 try {

@@ -43,7 +43,7 @@ import java.util.List;
  * execution.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -126,7 +126,7 @@ public final class Executor {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while (null != (line = reader.readLine())) {
                 sa.add(line);
             }
             p.waitFor();

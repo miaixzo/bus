@@ -34,7 +34,7 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public enum VR {
@@ -100,8 +100,9 @@ public enum VR {
     public static VR valueOf(int code) {
         try {
             VR vr = VALUE_OF[code - AE.code];
-            if (vr != null)
+            if (null != vr) {
                 return vr;
+            }
         } catch (IndexOutOfBoundsException e) {
         }
         Logger.warn("Unrecognized VR internal: {}H - treat as UN", Tag.shortToHexString(code));

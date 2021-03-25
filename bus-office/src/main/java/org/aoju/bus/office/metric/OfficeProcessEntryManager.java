@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * OfficeProcessManagerPoolEntry还负责在达到每个进程的最大任务数时重新启动office进程.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
@@ -89,7 +89,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
 
                         // 在这里,我们没有预料到这种分离,必须重新启动office进程，取消可能正在运行的任何任务.
                         Logger.warn("Connection lost unexpectedly; attempting restart");
-                        if (currentFuture != null) {
+                        if (null != currentFuture) {
                             currentFuture.cancel(true);
                         }
                         officeProcessManager.restartDueToLostConnection();

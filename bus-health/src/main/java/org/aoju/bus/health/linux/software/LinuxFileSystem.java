@@ -54,7 +54,7 @@ import java.util.*;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -119,11 +119,11 @@ public class LinuxFileSystem extends AbstractFileSystem {
             String options = split[3];
 
             // If only updating for one name, skip others
-            if (nameToMatch != null && !nameToMatch.equals(name)) {
+            if (null != nameToMatch && !nameToMatch.equals(name)) {
                 continue;
             }
 
-            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
+            String uuid = null != uuidMap ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
 
             String description;
             if (volume.startsWith("/dev")) {
@@ -229,7 +229,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         Map<String, String> volumeDeviceMap = new HashMap<>();
         File devMapper = new File("/dev/mapper");
         File[] volumes = devMapper.listFiles();
-        if (volumes != null) {
+        if (null != volumes) {
             for (File volume : volumes) {
                 try {
                     volumeDeviceMap.put(volume.getCanonicalPath(), volume.getAbsolutePath());
@@ -242,7 +242,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         Map<String, String> uuidMap = new HashMap<>();
         File uuidDir = new File("/dev/disk/by-uuid");
         File[] uuids = uuidDir.listFiles();
-        if (uuids != null) {
+        if (null != uuids) {
             for (File uuid : uuids) {
                 try {
                     // Store UUID as value with path (e.g., /dev/sda1) as key and also as volumes as key

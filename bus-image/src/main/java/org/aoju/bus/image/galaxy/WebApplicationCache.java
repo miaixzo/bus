@@ -30,7 +30,7 @@ import org.aoju.bus.image.metric.WebApplication;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class WebApplicationCache extends ConfigurationCache<Configuration, WebApplication>
@@ -48,7 +48,7 @@ public class WebApplicationCache extends ConfigurationCache<Configuration, WebAp
     @Override
     public WebApplication findWebApplication(String name) throws InstrumentException {
         WebApplication webApp = get(name);
-        if (webApp == null)
+        if (null == webApp)
             throw new InstrumentException("Unknown WebApplication: " + name);
         if (!webApp.isInstalled())
             throw new InstrumentException("WebApplication: " + name + " not installed");

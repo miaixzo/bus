@@ -46,7 +46,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 日期格式化等工具
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Format extends java.text.Format {
@@ -77,11 +77,11 @@ public class Format extends java.text.Format {
     }
 
     public static Format valueOf(String s) {
-        return s != null ? new Format(s) : null;
+        return null != s ? new Format(s) : null;
     }
 
     private static Calendar cal(TimeZone tz) {
-        Calendar cal = (tz != null)
+        Calendar cal = (null != tz)
                 ? new GregorianCalendar(tz)
                 : new GregorianCalendar();
         cal.clear();
@@ -89,7 +89,7 @@ public class Format extends java.text.Format {
     }
 
     private static Calendar cal(TimeZone tz, Date date) {
-        Calendar cal = (tz != null)
+        Calendar cal = (null != tz)
                 ? new GregorianCalendar(tz)
                 : new GregorianCalendar();
         cal.setTime(date);
@@ -186,7 +186,7 @@ public class Format extends java.text.Format {
      * @return 来自UTC的时区偏移量，格式为{@code (+|i)HHMM}
      */
     public static String formatTimezoneOffsetFromUTC(TimeZone tz, Date date) {
-        return appendZZZZZ(tz.getOffset(date == null
+        return appendZZZZZ(tz.getOffset(null == date
                         ? System.currentTimeMillis() : date.getTime()),
                 new StringBuilder(5)).toString();
     }
@@ -316,18 +316,18 @@ public class Format extends java.text.Format {
 
     public static TimeZone timeZone(String s) {
         TimeZone tz;
-        if (s.length() != 5 || (tz = safeTimeZone(s)) == null)
+        if (s.length() != 5 || null == (tz = safeTimeZone(s)))
             throw new IllegalArgumentException("Illegal Timezone Offset: " + s);
         return tz;
     }
 
     private static TimeZone safeTimeZone(String s) {
         String tzid = tzid(s);
-        if (tzid == null)
+        if (null == tzid)
             return null;
 
         TimeZone tz = cachedTimeZone;
-        if (tz == null || !tz.getID().equals(tzid))
+        if (null == tz || !tz.getID().equals(tzid))
             cachedTimeZone = tz = TimeZone.getTimeZone(tzid);
 
         return tz;
@@ -354,7 +354,7 @@ public class Format extends java.text.Format {
                                DatePrecision precision) {
         int length = s.length();
         TimeZone tz1 = safeTimeZone(s);
-        if (precision.includeTimezone = tz1 != null) {
+        if (precision.includeTimezone = null != tz1) {
             length -= 5;
             tz = tz1;
         }
@@ -506,15 +506,15 @@ public class Format extends java.text.Format {
         Object[] args = new Object[tagPaths.length];
         for (int i = 0; i < args.length; i++) {
             int[] tagPath = tagPaths[i];
-            if (tagPath == null) { // now
+            if (null == tagPath) { // now
                 args[i] = types[i].toArg(attrs, 0, index[i]);
             } else {
                 int last = tagPath.length - 1;
                 Attributes item = attrs;
-                for (int j = 0; j < last && item != null; j++) {
+                for (int j = 0; j < last && null != item; j++) {
                     item = item.getNestedDataset(tagPath[j]);
                 }
-                args[i] = item != null ? types[i].toArg(item, tagPath[last], index[i]) : null;
+                args[i] = null != item ? types[i].toArg(item, tagPath[last], index[i]) : null;
             }
         }
         return args;
@@ -565,14 +565,14 @@ public class Format extends java.text.Format {
             @Override
             Object toArg(Attributes attrs, int tag, int index) {
                 String s = attrs.getString(tag, index);
-                return s != null ? Tag.toHexString(s.hashCode()) : null;
+                return null != s ? Tag.toHexString(s.hashCode()) : null;
             }
         },
         md5 {
             @Override
             Object toArg(Attributes attrs, int tag, int index) {
                 String s = attrs.getString(tag, index);
-                return s != null ? getMD5String(s) : null;
+                return null != s ? getMD5String(s) : null;
             }
         },
         urlencoded {
@@ -580,7 +580,7 @@ public class Format extends java.text.Format {
             Object toArg(Attributes attrs, int tag, int index) {
                 String s = attrs.getString(tag, index);
                 try {
-                    return s != null ? URLEncoder.encode(s, Charset.DEFAULT_UTF_8) : null;
+                    return null != s ? URLEncoder.encode(s, Charset.DEFAULT_UTF_8) : null;
                 } catch (UnsupportedEncodingException e) {
                     throw new AssertionError(e);
                 }
@@ -638,7 +638,7 @@ public class Format extends java.text.Format {
         String getMD5String(String s) {
             try {
                 MessageDigest digest = MessageDigest.getInstance(Algorithm.MD5);
-                digest.update(s == null ? new byte[0] : s.getBytes(Charset.UTF_8));
+                digest.update(null == s ? new byte[0] : s.getBytes(Charset.UTF_8));
                 return toString32(digest.digest());
             } catch (NoSuchAlgorithmException e) {
                 return s;

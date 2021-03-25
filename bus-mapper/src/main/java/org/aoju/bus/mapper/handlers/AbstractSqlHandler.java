@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * SQL 解析处理器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractSqlHandler {
@@ -63,7 +63,7 @@ public abstract class AbstractSqlHandler {
     protected static boolean getSqlParserInfo(MetaObject metaObject) {
         String id = getMappedStatement(metaObject).getId();
         Boolean value = SQL_PARSER_CACHE.get(id);
-        if (value != null) {
+        if (null != value) {
             return value;
         }
         String mapperName = id.substring(0, id.lastIndexOf(Symbol.DOT));

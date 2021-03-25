@@ -43,7 +43,7 @@ import java.util.List;
  * Graphics card info obtained by lshw
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -110,13 +110,13 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                 } else {
                     if (prefix.equals("Device")) {
                         Pair<String, String> pair = Builder.parseLspciMachineReadable(split[1].trim());
-                        if (pair != null) {
+                        if (null != pair) {
                             name = pair.getLeft();
                             deviceId = "0x" + pair.getRight();
                         }
                     } else if (prefix.equals("Vendor")) {
                         Pair<String, String> pair = Builder.parseLspciMachineReadable(split[1].trim());
-                        if (pair != null) {
+                        if (null != pair) {
                             vendor = pair.getLeft() + " (0x" + pair.getRight() + ")";
                         } else {
                             vendor = split[1].trim();

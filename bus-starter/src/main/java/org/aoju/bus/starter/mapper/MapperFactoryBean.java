@@ -37,7 +37,7 @@ import org.springframework.beans.factory.FactoryBean;
  * 增加mapperBuilder
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MapperFactoryBean<T> extends SqlSessionDaoSupport
@@ -72,7 +72,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
             }
         }
         //直接针对接口处理通用接口方法对应的 MappedStatement 是安全的,通用方法不会出现 IncompleteElementException 的情况
-        if (configuration.hasMapper(this.mapperInterface) && mapperBuilder != null && mapperBuilder.isExtendCommonMapper(this.mapperInterface)) {
+        if (configuration.hasMapper(this.mapperInterface) && null != mapperBuilder && mapperBuilder.isExtendCommonMapper(this.mapperInterface)) {
             mapperBuilder.processConfiguration(getSqlSession().getConfiguration(), this.mapperInterface);
         }
     }

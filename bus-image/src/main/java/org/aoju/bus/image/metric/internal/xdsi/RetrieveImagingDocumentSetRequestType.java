@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -44,7 +44,7 @@ public class RetrieveImagingDocumentSetRequestType {
     protected TransferSyntaxUIDList transferSyntaxUIDList;
 
     public List<StudyRequest> getStudyRequest() {
-        if (this.studyRequest == null) {
+        if (null == this.studyRequest) {
             this.studyRequest = new ArrayList();
         }
         return this.studyRequest;
@@ -69,7 +69,7 @@ public class RetrieveImagingDocumentSetRequestType {
         protected String studyInstanceUID;
 
         public List<SeriesRequest> getSeriesRequest() {
-            if (this.seriesRequest == null) {
+            if (null == this.seriesRequest) {
                 this.seriesRequest = new ArrayList();
             }
             return this.seriesRequest;
@@ -107,7 +107,7 @@ public class RetrieveImagingDocumentSetRequestType {
         protected List<String> transferSyntaxUID;
 
         public List<String> getTransferSyntaxUID() {
-            if (this.transferSyntaxUID == null) {
+            if (null == this.transferSyntaxUID) {
                 this.transferSyntaxUID = new ArrayList();
             }
             return this.transferSyntaxUID;

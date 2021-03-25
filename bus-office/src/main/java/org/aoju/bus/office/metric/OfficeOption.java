@@ -34,7 +34,7 @@ import java.util.List;
  * 包含有关正在使用的office的基本信息.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class OfficeOption {
@@ -69,7 +69,7 @@ public final class OfficeOption {
             }
         }
 
-        if (productLine != null) {
+        if (null != productLine) {
             final String[] parts = productLine.split(Symbol.SPACE);
             if (parts.length > 0) {
                 desc.product = parts[0];

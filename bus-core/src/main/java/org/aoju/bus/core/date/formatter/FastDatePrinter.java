@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentMap;
  * {@link java.text.SimpleDateFormat} 的线程安全版本,用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FastDatePrinter extends AbstractMotd implements DatePrinter {
@@ -158,11 +158,11 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
     static String getTimeZoneDisplay(final TimeZone tz, final boolean daylight, final int style, final Locale locale) {
         final TimeZoneDisplayKey key = new TimeZoneDisplayKey(tz, daylight, style, locale);
         String value = C_TIME_ZONE_DISPLAY_CACHE.get(key);
-        if (value == null) {
+        if (null == value) {
             // This is a very slow call, so cache the results.
             value = tz.getDisplayName(daylight, style, locale);
             final String prior = C_TIME_ZONE_DISPLAY_CACHE.putIfAbsent(key, value);
-            if (prior != null) {
+            if (null != prior) {
                 value = prior;
             }
         }
@@ -413,7 +413,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
         } else if (obj instanceof Long) {
             return format(((Long) obj).longValue());
         } else {
-            throw new IllegalArgumentException("Unknown class: " + (obj == null ? "<null>" : obj.getClass().getName()));
+            throw new IllegalArgumentException("Unknown class: " + (null == obj ? "<null>" : obj.getClass().getName()));
         }
     }
 

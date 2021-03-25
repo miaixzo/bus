@@ -44,7 +44,7 @@ import java.util.Map;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -97,7 +97,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
         String[] psNames = f.list();
         List<PowerSource> psList = new ArrayList<>();
         // Empty directory will give null rather than empty array, so fix
-        if (psNames != null) {
+        if (null != psNames) {
             // For each power source, output various info
             for (String name : psNames) {
                 // Skip if name is ADP* or AC* (AC power supply)

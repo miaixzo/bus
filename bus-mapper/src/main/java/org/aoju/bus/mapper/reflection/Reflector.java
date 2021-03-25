@@ -33,7 +33,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * 反射工具
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Reflector {
@@ -55,7 +55,7 @@ public class Reflector {
             if (null != cl) {
                 try {
                     mapperClass = Class.forName(mapperClassStr, true, cl);
-                    if (mapperClass != null) {
+                    if (null != mapperClass) {
                         break;
                     }
                 } catch (ClassNotFoundException e) {
@@ -63,7 +63,7 @@ public class Reflector {
                 }
             }
         }
-        if (mapperClass == null) {
+        if (null == mapperClass) {
             throw new InstrumentException("class loaders failed to locate the class " + mapperClassStr);
         }
         return mapperClass;

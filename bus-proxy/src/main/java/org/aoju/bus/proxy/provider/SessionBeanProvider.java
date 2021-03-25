@@ -42,7 +42,7 @@ import java.util.Properties;
  * 这对本地和远程会话bean都有效
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SessionBeanProvider implements Provider {
@@ -65,7 +65,7 @@ public class SessionBeanProvider implements Provider {
 
     public Object getObject() {
         try {
-            final InitialContext initialContext = properties == null ? new InitialContext() :
+            final InitialContext initialContext = null == properties ? new InitialContext() :
                     new InitialContext(properties);
             Object homeObject = PortableRemoteObject.narrow(initialContext.lookup(jndiName), clazz);
             final Method createMethod = homeObject.getClass().getMethod("create", Builder.EMPTY_ARGUMENT_TYPES);

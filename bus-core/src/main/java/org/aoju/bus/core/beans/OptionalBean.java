@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  *
  * @param <T> Bean类型
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class OptionalBean<T> {
@@ -92,7 +92,7 @@ public final class OptionalBean<T> {
      * @return OptionalBean
      */
     public static <T> OptionalBean<T> ofNullable(T value) {
-        return value == null ? empty() : of(value);
+        return null == value ? empty() : of(value);
     }
 
     /**
@@ -163,7 +163,7 @@ public final class OptionalBean<T> {
      * @param consumer 处理非空对象的函数
      */
     public void ifPresent(Consumer<? super T> consumer) {
-        if (value != null) {
+        if (null != value) {
             consumer.accept(value);
         }
     }

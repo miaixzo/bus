@@ -36,7 +36,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
@@ -47,7 +47,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     public AttributeCoercion(String commonName, String[] sopClasses,
                              Dimse dimse, TransferCapability.Role role, String[] aeTitles, String uri) {
-        if (commonName == null)
+        if (null == commonName)
             throw new NullPointerException("commonName");
         if (commonName.isEmpty())
             throw new IllegalArgumentException("commonName cannot be empty");
@@ -148,9 +148,9 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
         public Condition(String[] sopClasses, Dimse dimse, TransferCapability.Role role,
                          String[] aeTitles) {
-            if (dimse == null)
+            if (null == dimse)
                 throw new NullPointerException("dimse");
-            if (role == null)
+            if (null == role)
                 throw new NullPointerException("role");
 
             this.sopClasses = sopClasses;
@@ -162,7 +162,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         }
 
         private static boolean isEmptyOrContains(Object[] a, Object o) {
-            if (o == null || a.length == 0)
+            if (null == o || a.length == 0)
                 return true;
 
             for (int i = 0; i < a.length; i++)

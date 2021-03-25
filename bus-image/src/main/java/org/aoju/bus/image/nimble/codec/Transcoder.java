@@ -51,7 +51,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Transcoder implements Closeable {
@@ -125,7 +125,7 @@ public class Transcoder implements Closeable {
                 }
             } else {
                 dis.readValue(dis, attrs);
-                if (postPixelData != null && dis.level() == 0)
+                if (null != postPixelData && dis.level() == 0)
                     postPixelData.addSelected(attrs, attrs.getPrivateCreator(tag), tag);
             }
         }
@@ -137,7 +137,7 @@ public class Transcoder implements Closeable {
 
         @Override
         public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
-            if (dos == null) {
+            if (null == dos) {
                 if (nullifyPixelData)
                     StreamKit.skipFully(dis, dis.length());
                 else
@@ -320,18 +320,18 @@ public class Transcoder implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (decompressor != null)
+        if (null != decompressor)
             decompressor.dispose();
-        if (compressor != null)
+        if (null != compressor)
             compressor.dispose();
-        if (verifier != null)
+        if (null != verifier)
             verifier.dispose();
         if (closeInputStream)
             IoKit.close(dis);
         if (deleteBulkDataFiles)
             for (File tmpFile : dis.getBulkDataFiles())
                 tmpFile.delete();
-        if (closeOutputStream && dos != null)
+        if (closeOutputStream && null != dos)
             dos.close();
     }
 
@@ -339,21 +339,21 @@ public class Transcoder implements Closeable {
         this.handler = handler;
         dis.readAttributes(dataset, -1, -1);
 
-        if (dos == null) {
-            if (compressor != null) { // Adjust destination Transfer Syntax if no pixeldata
+        if (null == dos) {
+            if (null != compressor) { // Adjust destination Transfer Syntax if no pixeldata
                 destTransferSyntax = UID.ExplicitVRLittleEndian;
                 destTransferSyntaxType = TransferSyntaxType.NATIVE;
                 lossyCompression = false;
             }
             initOutputStream();
             writeDataset();
-        } else if (postPixelData != null)
+        } else if (null != postPixelData)
             dos.writeDataset(null, postPixelData);
     }
 
     private void initDecompressor() {
         decompressorParam = ImageReaderFactory.getImageReaderParam(srcTransferSyntax);
-        if (decompressorParam == null)
+        if (null == decompressorParam)
             throw new UnsupportedOperationException(
                     "Unsupported Transfer Syntax: " + srcTransferSyntax);
 
@@ -364,13 +364,13 @@ public class Transcoder implements Closeable {
     }
 
     private void processPixelData() throws IOException {
-        if (decompressor != null)
+        if (null != decompressor)
             initEncapsulatedPixelData();
         VR vr;
-        if (compressor != null) {
+        if (null != compressor) {
             vr = VR.OB;
             compressPixelData();
-        } else if (decompressor != null) {
+        } else if (null != decompressor) {
             vr = VR.OW;
             decompressPixelData();
         } else {
@@ -400,7 +400,7 @@ public class Transcoder implements Closeable {
 
     private void initCompressor(String tsuid) {
         compressorParam = ImageWriterFactory.getImageWriterParam(tsuid);
-        if (compressorParam == null)
+        if (null == compressorParam)
             throw new UnsupportedOperationException(
                     "Unsupported Transfer Syntax: " + tsuid);
 
@@ -429,7 +429,7 @@ public class Transcoder implements Closeable {
     private void compressPixelData() throws IOException {
         int padding = dis.length() - imageDescriptor.getLength();
         for (int i = 0; i < imageDescriptor.getFrames(); i++) {
-            if (decompressor == null)
+            if (null == decompressor)
                 readFrame();
             else
                 decompressFrame(i);
@@ -452,12 +452,12 @@ public class Transcoder implements Closeable {
     }
 
     private void setPixelDataBulkData(VR vr) {
-        if (pixelDataBulkDataURI != null)
+        if (null != pixelDataBulkDataURI)
             dataset.setValue(Tag.PixelData, vr, new BulkData(null, pixelDataBulkDataURI, false));
     }
 
     public void setCompressParams(Property... imageWriteParams) {
-        if (compressorParam == null) return;
+        if (null == compressorParam) return;
         for (Property property : imageWriteParams) {
             String name = property.getName();
             if (name.equals("maxPixelValueError"))
@@ -475,7 +475,7 @@ public class Transcoder implements Closeable {
         if (maxPixelValueError >= 0) {
             ImageReaderFactory.ImageReaderParam readerParam =
                     ImageReaderFactory.getImageReaderParam(destTransferSyntax);
-            if (readerParam == null)
+            if (null == readerParam)
                 throw new UnsupportedOperationException(
                         "Unsupported Transfer Syntax: " + destTransferSyntax);
 
@@ -524,7 +524,7 @@ public class Transcoder implements Closeable {
 
     private void adjustDataset() {
         Photometric pmi = imageDescriptor.getPhotometric();
-        if (decompressor != null) {
+        if (null != decompressor) {
             if (imageDescriptor.getSamples() == 3) {
                 if (pmi.isYBR() && TransferSyntaxType.isYBRCompression(srcTransferSyntax)) {
                     pmi = Photometric.RGB;
@@ -538,7 +538,7 @@ public class Transcoder implements Closeable {
                 }
             }
         }
-        if (compressor != null) {
+        if (null != compressor) {
             if (pmi == Photometric.PALETTE_COLOR && lossyCompression) {
                 palette2rgb = true;
                 dataset.removeSelected(cmTags);
@@ -581,7 +581,7 @@ public class Transcoder implements Closeable {
     }
 
     private BufferedImage decompressFrame(int frameIndex) throws IOException {
-        decompressor.setInput(decompressorParam.patchJPEGLS != null
+        decompressor.setInput(null != decompressorParam.patchJPEGLS
                 ? new PatchJPEGLSImageInputStream(encapsulatedPixelData, decompressorParam.patchJPEGLS)
                 : encapsulatedPixelData);
         if (srcTransferSyntaxType == TransferSyntaxType.RLE)
@@ -602,7 +602,7 @@ public class Transcoder implements Closeable {
         if (pmi == Photometric.PALETTE_COLOR
                 && !(bi.getColorModel() instanceof PaletteColorModel)) {
             ColorModel cm;
-            if (originalBi != null) {
+            if (null != originalBi) {
                 cm = originalBi.getColorModel();
             } else {
                 int bitsStored = Math.min(imageDescriptor.getBitsStored(), destTransferSyntaxType.getMaxBitsStored());
@@ -616,7 +616,7 @@ public class Transcoder implements Closeable {
 
     private void compressFrame(int frameIndex) throws IOException {
         ExtMemoryOutputStream ios = new ExtMemoryOutputStream(compressorImageDescriptor);
-        compressor.setOutput(compressorParam.patchJPEGLS != null
+        compressor.setOutput(null != compressorParam.patchJPEGLS
                 ? new PatchJPEGLSImageOutputStream(ios, compressorParam.patchJPEGLS)
                 : ios);
         long start = System.currentTimeMillis();
@@ -694,7 +694,7 @@ public class Transcoder implements Closeable {
     }
 
     private byte[] buffer() {
-        if (buffer == null)
+        if (null == buffer)
             buffer = new byte[BUFFER_SIZE];
         return buffer;
     }
@@ -805,7 +805,7 @@ public class Transcoder implements Closeable {
         if (includeFileMetaInformation) {
             if (retainFileMetaInformation)
                 fmi = dis.getFileMetaInformation();
-            if (fmi == null)
+            if (null == fmi)
                 fmi = dataset.createFileMetaInformation(destTransferSyntax);
             else
                 fmi.setString(Tag.TransferSyntaxUID, VR.UI, destTransferSyntax);
@@ -815,7 +815,7 @@ public class Transcoder implements Closeable {
     }
 
     private void initBufferedImage() {
-        if (originalBi != null)
+        if (null != originalBi)
             return;
 
         int rows = imageDescriptor.getRows();
@@ -837,7 +837,7 @@ public class Transcoder implements Closeable {
 
     private void verify(javax.imageio.stream.ImageOutputStream cache, int index)
             throws IOException {
-        if (verifier == null)
+        if (null == verifier)
             return;
 
         long prevStreamPosition = cache.getStreamPosition();

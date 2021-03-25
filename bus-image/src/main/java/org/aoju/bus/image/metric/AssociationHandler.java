@@ -32,7 +32,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AssociationHandler {
@@ -59,7 +59,7 @@ public class AssociationHandler {
                     AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_APP_CTX_NAME_NOT_SUPPORTED);
         ApplicationEntity ae = as.getApplicationEntity();
-        if (ae == null || !ae.getConnections().contains(as.getConnection())
+        if (null == ae || !ae.getConnections().contains(as.getConnection())
                 || !ae.isInstalled() || !ae.isAssociationAcceptor())
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
@@ -68,7 +68,7 @@ public class AssociationHandler {
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_CALLING_AET_NOT_RECOGNIZED);
-        IdentityAC userIdentity = getUserIdNegotiator() != null
+        IdentityAC userIdentity = null != getUserIdNegotiator()
                 ? getUserIdNegotiator().negotiate(as, rq.getIdentityRQ())
                 : null;
         if (ae.getDevice().isLimitOfAssociationsExceeded(rq))
@@ -98,7 +98,7 @@ public class AssociationHandler {
 
     protected void onClose(Association as) {
         DimseRQHandler tmp = as.getApplicationEntity().getDimseRQHandler();
-        if (tmp != null)
+        if (null != tmp)
             tmp.onClose(as);
     }
 

@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public class RetrieveDocumentSetRequestType {
     protected List<DocumentRequest> documentRequest;
 
     public List<DocumentRequest> getDocumentRequest() {
-        if (this.documentRequest == null) {
+        if (null == this.documentRequest) {
             this.documentRequest = new ArrayList();
         }
         return this.documentRequest;

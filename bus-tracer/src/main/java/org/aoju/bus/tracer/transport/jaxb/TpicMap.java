@@ -32,7 +32,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlRootElement(name = Builder.TPIC_HEADER)
@@ -59,7 +59,7 @@ public final class TpicMap {
     }
 
     public Map<String, String> unwrapValues() {
-        if (entries == null) {
+        if (null == entries) {
             return Collections.emptyMap();
         }
         final Map<String, String> map = new HashMap<>();
@@ -72,18 +72,18 @@ public final class TpicMap {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         TpicMap tpicMap = (TpicMap) o;
 
-        if (entries != null ? !entries.equals(tpicMap.entries) : tpicMap.entries != null) return false;
+        if (null != entries ? !entries.equals(tpicMap.entries) : null != tpicMap.entries) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return entries != null ? entries.hashCode() : 0;
+        return null != entries ? entries.hashCode() : 0;
     }
 
     public static final class Entry {
@@ -106,20 +106,20 @@ public final class TpicMap {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
 
             Entry entry = (Entry) o;
 
-            if (key != null ? !key.equals(entry.key) : entry.key != null) return false;
-            if (value != null ? !value.equals(entry.value) : entry.value != null) return false;
+            if (null != key ? !key.equals(entry.key) : null != entry.key) return false;
+            if (null != value ? !value.equals(entry.value) : null != entry.value) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = key != null ? key.hashCode() : 0;
-            result = 31 * result + (value != null ? value.hashCode() : 0);
+            int result = null != key ? key.hashCode() : 0;
+            result = 31 * result + (null != value ? value.hashCode() : 0);
             return result;
         }
 

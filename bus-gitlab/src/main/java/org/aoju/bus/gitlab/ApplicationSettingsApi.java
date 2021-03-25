@@ -37,7 +37,7 @@ import java.util.Iterator;
  * See <a href="https://docs.gitlab.com/ee/api/settings.html">Application Settings API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ApplicationSettingsApi extends AbstractApi {
@@ -76,7 +76,7 @@ public class ApplicationSettingsApi extends AbstractApi {
 
                 default:
                     Setting setting = Setting.forValue(fieldName);
-                    if (setting != null) {
+                    if (null != setting) {
                         appSettings.addSetting(setting, root.path(fieldName));
                     } else {
                         GitLabApi.getLogger().warning(String.format("Unknown setting: %s, type: %s",

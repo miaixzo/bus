@@ -43,7 +43,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ZipKit {
@@ -1045,7 +1045,7 @@ public class ZipKit {
 
         try {
             java.io.ByteArrayOutputStream outputStream = compressToStream(body);
-            if (outputStream != null) {
+            if (null != outputStream) {
                 // 通过解码字节将缓冲区内容转换为字符串
                 return new String(outputStream.toByteArray(), org.aoju.bus.core.lang.Charset.ISO_8859_1);
             }
@@ -1074,7 +1074,7 @@ public class ZipKit {
             org.aoju.bus.core.lang.Console.log("Compression failed, using source file", e);
         } finally {
             try {
-                if (os != null) {
+                if (null != os) {
                     os.close();
                 }
                 bos.close();
@@ -1117,10 +1117,10 @@ public class ZipKit {
             return body;
         } finally {
             try {
-                if (is != null) {
+                if (null != is) {
                     is.close();
                 }
-                if (bis != null) {
+                if (null != bis) {
                     bis.close();
                 }
             } catch (IOException e) {

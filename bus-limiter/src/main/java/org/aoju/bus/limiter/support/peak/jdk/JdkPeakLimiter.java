@@ -35,7 +35,7 @@ import java.util.concurrent.Semaphore;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JdkPeakLimiter extends PeakLimiter {
@@ -67,7 +67,7 @@ public class JdkPeakLimiter extends PeakLimiter {
     public void release(Object key, int max) {
         CacheKey cacheKey = new CacheKey(key, max);
         Semaphore semaphore = cache.getIfPresent(cacheKey);
-        if (semaphore != null) {
+        if (null != semaphore) {
             semaphore.release();
         }
     }
@@ -91,7 +91,7 @@ public class JdkPeakLimiter extends PeakLimiter {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
             CacheKey cacheKey = (CacheKey) o;
             return max == cacheKey.max &&
                     Objects.equals(key, cacheKey.key);

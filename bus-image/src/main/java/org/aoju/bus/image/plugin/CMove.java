@@ -34,7 +34,7 @@ import java.text.MessageFormat;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CMove {
@@ -70,7 +70,7 @@ public class CMove {
                                  String destinationAet,
                                  Progress progress,
                                  Args... keys) {
-        if (callingNode == null || calledNode == null || destinationAet == null) {
+        if (null == callingNode || null == calledNode || null == destinationAet) {
             throw new IllegalArgumentException("callingNode, calledNode or destinationAet cannot be null!");
         }
 

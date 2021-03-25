@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 class ThreadLocalMap<K, V> extends InheritableThreadLocal<Map<K, V>> {
@@ -42,7 +42,7 @@ class ThreadLocalMap<K, V> extends InheritableThreadLocal<Map<K, V>> {
 
     @Override
     protected final Map<K, V> childValue(Map<K, V> parentValue) {
-        if (parentValue == null) {
+        if (null == parentValue) {
             return null;
         } else {
             return new HashMap<>(parentValue);

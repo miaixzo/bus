@@ -53,7 +53,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Ftp extends AbstractFtp {
@@ -236,7 +236,7 @@ public class Ftp extends AbstractFtp {
             throw new InstrumentException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
         }
         this.client = client;
-        if (mode != null) {
+        if (null != mode) {
             setMode(mode);
         }
         return this;
@@ -286,7 +286,7 @@ public class Ftp extends AbstractFtp {
             // ignore
         }
 
-        if (pwd == null) {
+        if (null == pwd) {
             return this.init();
         }
         return this;

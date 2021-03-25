@@ -39,7 +39,7 @@ import java.util.Objects;
  * 服务器信息
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -69,7 +69,7 @@ public class Node {
         if (aet.length() > 16) {
             throw new IllegalArgumentException("AETitle has more than 16 characters");
         }
-        if (port != null && (port < 1 || port > 65535)) {
+        if (null != port && (port < 1 || port > 65535)) {
             throw new IllegalArgumentException("Port is out of bound");
         }
         this.aet = aet;
@@ -90,7 +90,7 @@ public class Node {
     public static Node buildLocalDicomNode(Association as) {
         String ip = null;
         InetAddress address = as.getSocket().getLocalAddress();
-        if (address != null) {
+        if (null != address) {
             ip = address.getHostAddress();
         }
         return new Node(as.getLocalAET(), ip, as.getSocket().getLocalPort());
@@ -99,7 +99,7 @@ public class Node {
     public static Node buildRemoteDicomNode(Association as) {
         String ip = null;
         InetAddress address = as.getSocket().getInetAddress();
-        if (address != null) {
+        if (null != address) {
             ip = address.getHostAddress();
         }
         return new Node(as.getRemoteAET(), ip, as.getSocket().getPort());
@@ -115,7 +115,7 @@ public class Node {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
         Node node = (Node) o;
         return aet.equals(node.aet) &&
                 Objects.equals(hostname, node.hostname) &&

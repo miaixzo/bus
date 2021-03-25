@@ -46,7 +46,7 @@ import java.util.stream.Stream;
  * See <a href="https://docs.gitlab.com/ce/api/repository_files.html">Repository Files API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RepositoryFileApi extends AbstractApi {
@@ -92,7 +92,7 @@ public class RepositoryFileApi extends AbstractApi {
     public RepositoryFile getFileInfo(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
 
         Form form = new Form();
-        addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
+        addFormParam(form, "ref", (null != ref ? urlEncode(ref) : null), true);
         Response response = head(Response.Status.OK, form.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath));
 
@@ -109,7 +109,7 @@ public class RepositoryFileApi extends AbstractApi {
         file.setRef(response.getHeaderString("X-Gitlab-Ref"));
 
         String sizeStr = response.getHeaderString("X-Gitlab-Size");
-        file.setSize(sizeStr != null ? Integer.valueOf(sizeStr) : -1);
+        file.setSize(null != sizeStr ? Integer.valueOf(sizeStr) : -1);
 
         return (file);
     }
@@ -193,7 +193,7 @@ public class RepositoryFileApi extends AbstractApi {
         }
 
         Form form = new Form();
-        addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
+        addFormParam(form, "ref", (null != ref ? urlEncode(ref) : null), true);
         Response response = get(Response.Status.OK, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath));
         return (response.readEntity(RepositoryFile.class));
     }
@@ -357,7 +357,7 @@ public class RepositoryFileApi extends AbstractApi {
 
         Form form = new Form();
         addFormParam(form, isApiVersion(ApiVersion.V3) ? "branch_name" : "branch",
-                (branchName != null ? urlEncode(branchName) : null), true);
+                (null != branchName ? urlEncode(branchName) : null), true);
         addFormParam(form, "commit_message", commitMessage, true);
         Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
 
@@ -450,7 +450,7 @@ public class RepositoryFileApi extends AbstractApi {
      */
     public InputStream getRawFile(Object projectIdOrPath, String ref, String filepath) throws GitLabApiException {
 
-        Form formData = new GitLabApiForm().withParam("ref", (ref != null ? ref : null), true);
+        Form formData = new GitLabApiForm().withParam("ref", (null != ref ? ref : null), true);
         if (isApiVersion(ApiVersion.V3)) {
             Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
                     "projects", getProjectIdOrPath(projectIdOrPath), "repository", "blobs", ref);

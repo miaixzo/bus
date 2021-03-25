@@ -34,7 +34,7 @@ import java.util.Objects;
  * api definition
  *
  * @author Justubborn
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -57,7 +57,7 @@ public class Assets {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
         Assets assets = (Assets) o;
         return id.equals(assets.id);
     }

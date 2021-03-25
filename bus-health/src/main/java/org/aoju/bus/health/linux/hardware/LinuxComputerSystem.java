@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from sysfs.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -55,7 +55,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryManufacturer() {
         String result;
-        if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
+        if (null == (result = Sysfs.querySystemVendor()) && null == (result = CpuInfo.queryCpuManufacturer())) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -63,8 +63,8 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryModel() {
         String result;
-        if ((result = Sysfs.queryProductModel()) == null && (result = Devicetree.queryModel()) == null
-                && (result = Lshw.queryModel()) == null) {
+        if (null == (result = Sysfs.queryProductModel()) && null == (result = Devicetree.queryModel())
+                && null == (result = Lshw.queryModel())) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -72,17 +72,21 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String querySerialNumber() {
         String result;
-        if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
-                && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
+        if (null == (result = Sysfs.queryProductSerial())
+                && null == (result = Dmidecode.querySerialNumber())
+                && null == (result = Lshal.querySerialNumber())
+                && null == (result = Lshw.querySerialNumber())) {
             return Normal.UNKNOWN;
         }
         return result;
     }
 
     private static String queryUUID() {
-        String result = null;
-        if ((result = Sysfs.queryUUID()) == null && (result = Dmidecode.queryUUID()) == null
-                && (result = Lshal.queryUUID()) == null && (result = Lshw.queryUUID()) == null) {
+        String result;
+        if (null == (result = Sysfs.queryUUID())
+                && null == (result = Dmidecode.queryUUID())
+                && null == (result = Lshal.queryUUID())
+                && null == (result = Lshw.queryUUID())) {
             return Normal.UNKNOWN;
         }
         return result;

@@ -40,7 +40,7 @@ import java.util.Base64;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CommitAction {
@@ -174,7 +174,7 @@ public class CommitAction {
 
     public CommitAction withFileContent(File file, String filePath, Encoding encoding) throws GitLabApiException {
 
-        this.encoding = (encoding != null ? encoding : Encoding.TEXT);
+        this.encoding = (null != encoding ? encoding : Encoding.TEXT);
         this.filePath = filePath;
 
         try {

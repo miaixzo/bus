@@ -36,7 +36,7 @@ import java.util.List;
  * 返回结果公用
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -57,7 +57,7 @@ public class Result<T> extends BaseEntity implements Serializable {
     }
 
     public Result(List<T> rows, int pageSize) {
-        if (rows == null || rows.isEmpty()) {
+        if (null == rows || rows.isEmpty()) {
             throw new IllegalArgumentException("data must be not empty!");
         }
         new Result<>(rows, rows.size(), pageSize);

@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API Issue calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://docs.gitlab.com/ce/api/issues.html">Issues API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issue_links.html">Issue Links API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issues_statistics.html">Issues Statistics API at GitLab</a>
@@ -355,8 +355,8 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Issue> getGroupIssues(Object groupIdOrPath, IssueFilter filter, int itemsPerPage) throws GitLabApiException {
-        GitLabApiForm formData = (filter != null ? filter.getQueryParams() : new GitLabApiForm());
-        return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(),
+        GitLabApiForm formData = (null != filter ? filter.getQueryParams() : new GitLabApiForm());
+        return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(),
                 "groups", getGroupIdOrPath(groupIdOrPath), "issues"));
     }
 
@@ -610,7 +610,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
+        String durationString = (null != duration ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
         Response response = post(Response.Status.OK, formData.asMap(),
@@ -686,7 +686,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
+        String durationString = (null != duration ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
         Response response = post(Response.Status.CREATED, formData.asMap(),

@@ -42,7 +42,7 @@ import java.util.EnumSet;
  * 请求参数信息
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -155,8 +155,8 @@ public class Args {
         this.bindCallingAet = bindCallingAet;
         this.storagePattern = storagePattern;
         this.transferCapabilityFile = transferCapabilityFile;
-        this.acceptedCallingAETitles = acceptedCallingAETitles == null ? new String[0] : acceptedCallingAETitles;
-        if (option == null && this.option != null) {
+        this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0] : acceptedCallingAETitles;
+        if (null == option && null != this.option) {
             this.option.setMaxOpsInvoked(15);
             this.option.setMaxOpsPerformed(15);
         }
@@ -174,10 +174,10 @@ public class Args {
      */
     public void configureBind(Connection connection,
                               Node callingNode) {
-        if (callingNode.getHostname() != null) {
+        if (null != callingNode.getHostname()) {
             connection.setHostname(callingNode.getHostname());
         }
-        if (callingNode.getPort() != null) {
+        if (null != callingNode.getPort()) {
             connection.setPort(callingNode.getPort());
         }
     }
@@ -186,7 +186,7 @@ public class Args {
                               Connection remote,
                               Node calledNode) {
         aAssociateRQ.setCalledAET(calledNode.getAet());
-        if (identity != null) {
+        if (null != identity) {
             aAssociateRQ.setIdentityRQ(identity);
         }
         remote.setHostname(calledNode.getHostname());
@@ -204,10 +204,10 @@ public class Args {
                               Connection connection,
                               Node callingNode) {
         applicationEntity.setAETitle(callingNode.getAet());
-        if (callingNode.getHostname() != null) {
+        if (null != callingNode.getHostname()) {
             connection.setHostname(callingNode.getHostname());
         }
-        if (callingNode.getPort() != null) {
+        if (null != callingNode.getPort()) {
             connection.setPort(callingNode.getPort());
         }
     }
@@ -218,7 +218,7 @@ public class Args {
      * @param conn 链接信息
      */
     public void configure(Connection conn) {
-        if (option != null) {
+        if (null != option) {
             conn.setBacklog(option.getBacklog());
             conn.setConnectTimeout(option.getConnectTimeout());
             conn.setRequestTimeout(option.getRequestTimeout());
@@ -247,7 +247,7 @@ public class Args {
      * @throws IOException 异常
      */
     public void configureTLS(Connection conn, Connection remote) throws IOException {
-        if (option != null) {
+        if (null != option) {
             conn.setTlsCipherSuites(option.getCipherSuites());
             conn.setTlsProtocols(option.getTlsProtocols());
             conn.setTlsNeedClientAuth(option.isTlsNeedClientAuth());
@@ -258,7 +258,7 @@ public class Args {
                         option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
                 device.setTrustManager(SSLManagerFactory.createTrustManager(option.getTruststoreType(),
                         option.getTruststoreURL(), option.getTruststorePass()));
-                if (remote != null) {
+                if (null != remote) {
                     remote.setTlsProtocols(conn.getTlsProtocols());
                     remote.setTlsCipherSuites(conn.getTlsCipherSuites());
                 }

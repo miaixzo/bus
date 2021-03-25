@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageConversion {
@@ -52,7 +52,7 @@ public class ImageConversion {
      * @return BufferedImage
      */
     public static BufferedImage toBufferedImage(Mat matrix) {
-        if (matrix == null) {
+        if (null == matrix) {
             return null;
         }
 
@@ -106,20 +106,20 @@ public class ImageConversion {
     }
 
     public static BufferedImage toBufferedImage(PlanarImage matrix) {
-        if (matrix == null) {
+        if (null == matrix) {
             return null;
         }
         return toBufferedImage(matrix.toMat());
     }
 
     public static void releaseMat(Mat mat) {
-        if (mat != null) {
+        if (null != mat) {
             mat.release();
         }
     }
 
     public static void releasePlanarImage(PlanarImage img) {
-        if (img != null) {
+        if (null != img) {
             img.release();
         }
     }
@@ -154,7 +154,7 @@ public class ImageConversion {
     }
 
     public static ImageCV toMat(RenderedImage img, Rectangle region, boolean toBGR) {
-        Raster raster = region == null ? img.getData() : img.getData(region);
+        Raster raster = null == region ? img.getData() : img.getData(region);
         DataBuffer buf = raster.getDataBuffer();
         int[] samples = raster.getSampleModel().getSampleSize();
         int[] offsets;
@@ -798,7 +798,7 @@ public class ImageConversion {
      * @return the RenderedImage
      */
     public static RenderedImage fixSignedShortDataBuffer(RenderedImage source) {
-        if (source != null && source.getSampleModel().getDataType() == DataBuffer.TYPE_USHORT) {
+        if (null != source && source.getSampleModel().getDataType() == DataBuffer.TYPE_USHORT) {
             Raster raster = source.getData();
             if (raster.getDataBuffer() instanceof DataBufferUShort) {
                 short[] s = ((DataBufferUShort) raster.getDataBuffer()).getData();
@@ -812,7 +812,7 @@ public class ImageConversion {
     }
 
     public static BufferedImage convertRenderedImage(RenderedImage img) {
-        if (img == null) {
+        if (null == img) {
             return null;
         }
         if (img instanceof BufferedImage) {
@@ -825,7 +825,7 @@ public class ImageConversion {
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         Hashtable<String, Object> properties = new Hashtable<>();
         String[] keys = img.getPropertyNames();
-        if (keys != null) {
+        if (null != keys) {
             for (int i = 0; i < keys.length; i++) {
                 properties.put(keys[i], img.getProperty(keys[i]));
             }

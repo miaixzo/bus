@@ -40,7 +40,7 @@ import java.util.Properties;
  * 通用Mapper属性配置
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Config {
@@ -110,7 +110,7 @@ public class Config {
      */
     public void setIdentity(String IDENTITY) {
         Identity identity = Identity.getDatabaseDialect(IDENTITY);
-        if (identity != null) {
+        if (null != identity) {
             this.identity = identity.getIdentityRetrievalStatement();
         } else {
             this.identity = IDENTITY;
@@ -169,7 +169,7 @@ public class Config {
     }
 
     public Style getStyle() {
-        return this.style == null ? Style.camelhump : this.style;
+        return null == this.style ? Style.camelhump : this.style;
     }
 
     public void setStyle(Style style) {
@@ -294,7 +294,7 @@ public class Config {
      * @param properties 属性
      */
     public void setProperties(Properties properties) {
-        if (properties == null) {
+        if (null == properties) {
             //默认驼峰
             this.style = Style.camelhump;
             return;

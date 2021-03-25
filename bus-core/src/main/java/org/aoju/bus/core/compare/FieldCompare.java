@@ -41,7 +41,7 @@ import java.util.Comparator;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FieldCompare<T> implements Comparator<T>, Serializable {
@@ -58,7 +58,7 @@ public class FieldCompare<T> implements Comparator<T>, Serializable {
      */
     public FieldCompare(Class<T> beanClass, String fieldName) {
         this.field = ClassKit.getDeclaredField(beanClass, fieldName);
-        if (this.field == null) {
+        if (null == this.field) {
             throw new IllegalArgumentException(StringKit.format("Field [{}] not found in Class [{}]", fieldName, beanClass.getName()));
         }
     }

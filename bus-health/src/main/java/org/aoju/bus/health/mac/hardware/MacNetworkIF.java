@@ -43,7 +43,7 @@ import java.util.Map;
  * MacNetworks class.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -69,7 +69,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     private static String queryIfDisplayName(NetworkInterface netint) {
         String name = netint.getName();
         CoreFoundation.CFArrayRef ifArray = SystemConfiguration.INSTANCE.SCNetworkInterfaceCopyAll();
-        if (ifArray != null) {
+        if (null != ifArray) {
             try {
                 int count = ifArray.getCount();
                 for (int i = 0; i < count; i++) {

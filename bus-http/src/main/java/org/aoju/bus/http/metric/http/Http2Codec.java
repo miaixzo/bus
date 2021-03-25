@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * 使用HTTP/2帧对请求和响应进行编码.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Http2Codec implements HttpCodec {
@@ -95,7 +95,7 @@ public final class Http2Codec implements HttpCodec {
         result.add(new HttpHeaders(HttpHeaders.TARGET_METHOD, request.method()));
         result.add(new HttpHeaders(HttpHeaders.TARGET_PATH, RequestLine.requestPath(request.url())));
         String host = request.header("Host");
-        if (host != null) {
+        if (null != host) {
             result.add(new HttpHeaders(HttpHeaders.TARGET_AUTHORITY, host));
         }
         result.add(new HttpHeaders(HttpHeaders.TARGET_SCHEME, request.url().scheme()));
@@ -123,7 +123,7 @@ public final class Http2Codec implements HttpCodec {
                 Builder.instance.addLenient(headersBuilder, name, value);
             }
         }
-        if (statusLine == null) throw new ProtocolException("Expected ':status' header not present");
+        if (null == statusLine) throw new ProtocolException("Expected ':status' header not present");
 
         return new Response.Builder()
                 .protocol(protocol)
@@ -139,9 +139,9 @@ public final class Http2Codec implements HttpCodec {
 
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
-        if (stream != null) return;
+        if (null != stream) return;
 
-        boolean hasRequestBody = request.body() != null;
+        boolean hasRequestBody = null != request.body();
         List<HttpHeaders> requestHeaders = http2HeadersList(request);
         stream = connection.newStream(requestHeaders, hasRequestBody);
         stream.readTimeout().timeout(chain.readTimeoutMillis(), TimeUnit.MILLISECONDS);
@@ -179,7 +179,7 @@ public final class Http2Codec implements HttpCodec {
 
     @Override
     public void cancel() {
-        if (stream != null) stream.closeLater(ErrorCode.CANCEL);
+        if (null != stream) stream.closeLater(ErrorCode.CANCEL);
     }
 
     class StreamFinishingSource extends DelegateSource {

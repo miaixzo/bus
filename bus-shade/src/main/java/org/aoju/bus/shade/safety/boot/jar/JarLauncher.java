@@ -43,7 +43,7 @@ import java.util.jar.Manifest;
  * JAR包启动器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JarLauncher {
@@ -68,9 +68,9 @@ public class JarLauncher {
         } else {
             ProtectionDomain domain = this.getClass().getProtectionDomain();
             CodeSource source = domain.getCodeSource();
-            URI location = (source == null ? null : source.getLocation().toURI());
-            String path = (location == null ? null : location.getSchemeSpecificPart());
-            if (path == null) {
+            URI location = (null == source ? null : source.getLocation().toURI());
+            String path = (null == location ? null : location.getSchemeSpecificPart());
+            if (null == path) {
                 throw new IllegalStateException("Unable to determine code source archive");
             }
             File jar = new File(path);

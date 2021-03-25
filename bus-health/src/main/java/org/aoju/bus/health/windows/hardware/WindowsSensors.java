@@ -37,7 +37,7 @@ import org.aoju.bus.logger.Logger;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -124,7 +124,7 @@ final class WindowsSensors extends AbstractSensors {
                 }
             }
             // If none found, just get the first one
-            if (cpuIdentifier == null) {
+            if (null == cpuIdentifier) {
                 cpuIdentifier = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
             }
             // Now fetch sensor

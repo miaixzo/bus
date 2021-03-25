@@ -41,7 +41,7 @@ import java.util.List;
  * 因此，我们希望所有帧的最大长度为{@link Http2#INITIAL_MAX_FRAME_SIZE}。
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Http2Reader implements Closeable {
@@ -222,7 +222,7 @@ public final class Http2Reader implements Closeable {
         if (streamId == 0) throw Http2.ioException("TYPE_RST_STREAM streamId == 0");
         int errorCodeInt = source.readInt();
         ErrorCode errorCode = ErrorCode.fromHttp2(errorCodeInt);
-        if (errorCode == null) {
+        if (null == errorCode) {
             throw Http2.ioException("TYPE_RST_STREAM unexpected error code: %d", errorCodeInt);
         }
         handler.rstStream(streamId, errorCode);
@@ -306,7 +306,7 @@ public final class Http2Reader implements Closeable {
         int errorCodeInt = source.readInt();
         int opaqueDataLength = length - 8;
         ErrorCode errorCode = ErrorCode.fromHttp2(errorCodeInt);
-        if (errorCode == null) {
+        if (null == errorCode) {
             throw Http2.ioException("TYPE_GOAWAY unexpected error code: %d", errorCodeInt);
         }
         ByteString debugData = ByteString.EMPTY;

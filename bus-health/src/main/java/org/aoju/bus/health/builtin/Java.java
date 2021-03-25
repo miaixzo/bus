@@ -35,7 +35,7 @@ import java.io.Serializable;
  * 代表Java Implementation的信息
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Java implements Serializable {
@@ -110,7 +110,7 @@ public class Java implements Serializable {
      * @return Java版本的<code>float</code>值或<code>0</code>
      */
     private float getJavaVersionAsFloat() {
-        if (JAVA_VERSION == null) {
+        if (null == JAVA_VERSION) {
             return 0f;
         }
 
@@ -129,7 +129,7 @@ public class Java implements Serializable {
      * @return Java版本的<code>int</code>值或<code>0</code>
      */
     private int getJavaVersionAsInt() {
-        if (JAVA_VERSION == null) {
+        if (null == JAVA_VERSION) {
             return 0;
         }
 
@@ -274,7 +274,7 @@ public class Java implements Serializable {
      * @return 如果版本匹配, 则返回<code>true</code>
      */
     private boolean getJavaVersionMatches(String versionPrefix) {
-        if (JAVA_VERSION == null) {
+        if (null == JAVA_VERSION) {
             return false;
         }
 

@@ -44,7 +44,7 @@ import java.util.stream.IntStream;
  * Excel中的行{@link Row}封装工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RowKit {
@@ -162,7 +162,7 @@ public class RowKit {
      * @param row 需要删除的行
      */
     public static void removeRow(Row row) {
-        if (row == null) {
+        if (null == row) {
             return;
         }
         int rowIndex = row.getRowNum();
@@ -203,7 +203,7 @@ public class RowKit {
         }
         if (rowIndex == lastRow) {
             Row removingRow = sheet.getRow(rowIndex);
-            if (removingRow != null) {
+            if (null != removingRow) {
                 sheet.removeRow(removingRow);
             }
         }

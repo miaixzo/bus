@@ -48,7 +48,7 @@ import java.util.Map;
  * 用于执行系统命令的工具
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RuntimeKit {
@@ -551,7 +551,7 @@ public class RuntimeKit {
      */
     public static Throwable getCausedBy(Throwable throwable, Class<? extends Exception>... causeClasses) {
         Throwable cause = throwable;
-        while (cause != null) {
+        while (null != cause) {
             for (Class<? extends Exception> causeClass : causeClasses) {
                 if (causeClass.isInstance(cause)) {
                     return cause;
@@ -570,7 +570,7 @@ public class RuntimeKit {
      * @return true 来自或者包含
      */
     public static boolean isFromOrSuppressedThrowable(Throwable throwable, Class<? extends Throwable> exceptionClass) {
-        return convertFromOrSuppressedThrowable(throwable, exceptionClass, true) != null;
+        return null != convertFromOrSuppressedThrowable(throwable, exceptionClass, true);
     }
 
     /**
@@ -582,7 +582,7 @@ public class RuntimeKit {
      * @return true 来自或者包含
      */
     public static boolean isFromOrSuppressedThrowable(Throwable throwable, Class<? extends Throwable> exceptionClass, boolean checkCause) {
-        return convertFromOrSuppressedThrowable(throwable, exceptionClass, checkCause) != null;
+        return null != convertFromOrSuppressedThrowable(throwable, exceptionClass, checkCause);
     }
 
     /**
@@ -607,7 +607,7 @@ public class RuntimeKit {
      * @return 结果为null 不是来自或者包含
      */
     public static <T extends Throwable> T convertFromOrSuppressedThrowable(Throwable throwable, Class<T> exceptionClass, boolean checkCause) {
-        if (throwable == null || exceptionClass == null) {
+        if (null == throwable || null == exceptionClass) {
             return null;
         }
         if (exceptionClass.isAssignableFrom(throwable.getClass())) {
@@ -615,7 +615,7 @@ public class RuntimeKit {
         }
         if (checkCause) {
             Throwable cause = throwable.getCause();
-            if (cause != null && exceptionClass.isAssignableFrom(cause.getClass())) {
+            if (null != cause && exceptionClass.isAssignableFrom(cause.getClass())) {
                 return (T) cause;
             }
         }
@@ -639,7 +639,7 @@ public class RuntimeKit {
      */
     public static List<Throwable> getThrowableList(Throwable throwable) {
         final List<Throwable> list = new ArrayList<>();
-        while (throwable != null && false == list.contains(throwable)) {
+        while (null != throwable && false == list.contains(throwable)) {
             list.add(throwable);
             throwable = throwable.getCause();
         }

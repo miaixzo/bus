@@ -54,7 +54,7 @@ import java.util.*;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -422,8 +422,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         List<Long> idleList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTPROCESSORTIME);
 
         long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
-        if (instances.isEmpty() || systemList == null || userList == null || irqList == null || softIrqList == null
-                || idleList == null) {
+        if (instances.isEmpty() || null == systemList || null == userList || null == irqList || null == softIrqList
+                || null == idleList) {
             return ticks;
         }
         for (int p = 0; p < instances.size(); p++) {

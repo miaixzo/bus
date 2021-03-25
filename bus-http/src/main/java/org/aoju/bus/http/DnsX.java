@@ -37,7 +37,7 @@ import java.util.List;
  * 选择IPv6地址、选择IPv4地址或强制使用特定的已知IP地址
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface DnsX {
@@ -47,7 +47,7 @@ public interface DnsX {
      * 查找IP地址的DNS。大多数自定义{@link DnsX}实现应该委托给这个实例.
      */
     DnsX SYSTEM = hostname -> {
-        if (hostname == null) throw new UnknownHostException("hostname == null");
+        if (null == hostname) throw new UnknownHostException("hostname == null");
         try {
             return Arrays.asList(InetAddress.getAllByName(hostname));
         } catch (NullPointerException e) {

@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 所有{@link OfficeManager}的基类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficeManager implements OfficeManager, TemporaryFileMaker {
@@ -96,7 +96,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
      * 删除临时目录
      */
     protected void deleteTempDir() {
-        if (tempDir != null) {
+        if (null != tempDir) {
             Logger.debug("Deleting temporary directory '{}'", tempDir);
             try {
                 FileKit.delete(tempDir);

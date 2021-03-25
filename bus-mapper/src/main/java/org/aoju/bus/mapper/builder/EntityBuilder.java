@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class EntityBuilder {
@@ -69,7 +69,7 @@ public class EntityBuilder {
      */
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
-        if (entityTable == null) {
+        if (null == entityTable) {
             throw new InstrumentException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
         }
         return entityTable;
@@ -83,12 +83,12 @@ public class EntityBuilder {
      */
     public static String getOrderByClause(Class<?> entityClass) {
         EntityTable table = getEntityTable(entityClass);
-        if (table.getOrderByClause() != null) {
+        if (null != table.getOrderByClause()) {
             return table.getOrderByClause();
         }
         StringBuilder orderBy = new StringBuilder();
         for (EntityColumn column : table.getEntityClassColumns()) {
-            if (column.getOrderBy() != null) {
+            if (null != column.getOrderBy()) {
                 if (orderBy.length() != 0) {
                     orderBy.append(Symbol.COMMA);
                 }
@@ -127,7 +127,7 @@ public class EntityBuilder {
      */
     public static String getSelectColumns(Class<?> entityClass) {
         EntityTable entityTable = getEntityTable(entityClass);
-        if (entityTable.getBaseSelect() != null) {
+        if (null != entityTable.getBaseSelect()) {
             return entityTable.getBaseSelect();
         }
         Set<EntityColumn> columnList = getColumns(entityClass);
@@ -157,7 +157,7 @@ public class EntityBuilder {
      * @param config      配置
      */
     public static synchronized void initEntityNameMap(Class<?> entityClass, Config config) {
-        if (entityTableMap.get(entityClass) != null) {
+        if (null != entityTableMap.get(entityClass)) {
             return;
         }
         Style style = config.getStyle();
@@ -176,7 +176,7 @@ public class EntityBuilder {
                 entityTable.setTable(table);
             }
         }
-        if (entityTable == null) {
+        if (null == entityTable) {
             entityTable = new EntityTable(entityClass);
             //可以通过stye控制
             entityTable.setName(convertByStyle(entityClass.getSimpleName(), style));
@@ -192,7 +192,7 @@ public class EntityBuilder {
         }
         for (EntityField field : fields) {
             //如果启用了简单类型,就做简单类型校验,如果不是简单类型,直接跳过
-            //6.2.1 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
+            //6.2.2 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
             if (config.isUseSimpleType() &&
                     !(SimpleType.isSimpleType(field.getJavaType())
                             ||
@@ -295,7 +295,7 @@ public class EntityBuilder {
                     if (!Normal.EMPTY.equals(generatedValue.generator())) {
                         String generator;
                         Identity identity = Identity.getDatabaseDialect(generatedValue.generator());
-                        if (identity != null) {
+                        if (null != identity) {
                             generator = identity.getIdentityRetrievalStatement();
                         } else {
                             generator = generatedValue.generator();

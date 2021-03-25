@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JiraService extends NotificationService {
@@ -179,8 +179,7 @@ public class JiraService extends NotificationService {
      * @param properties the Map holding the properties
      */
     private void fixJiraIssueTransitionId(Map<String, Object> properties) {
-
-        if (properties != null) {
+        if (null != properties) {
             Object jiraIssueTransitionId = properties.get(JIRA_ISSUE_TRANSITION_ID_PROP);
             if (jiraIssueTransitionId instanceof String) {
                 if (((String) jiraIssueTransitionId).trim().isEmpty()) {

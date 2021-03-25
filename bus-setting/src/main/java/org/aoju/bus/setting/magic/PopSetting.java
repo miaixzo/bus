@@ -60,7 +60,7 @@ import java.util.function.Consumer;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PopSetting extends AbstractSetting implements Map<String, String> {
@@ -169,7 +169,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return 成功初始化与否
      */
     public boolean init(Resource resource, java.nio.charset.Charset charset, boolean isUseVariable) {
-        if (resource == null) {
+        if (null == resource) {
             throw new NullPointerException("Null setting url define!");
         }
         this.settingUrl = resource.getUrl();
@@ -218,7 +218,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
                 public void onModify(WatchEvent<?> event, Path currentPath) {
                     boolean success = load();
                     // 如果有回调，加载完毕则执行回调
-                    if (callback != null) {
+                    if (null != callback) {
                         callback.accept(success);
                     }
                 }
@@ -665,10 +665,10 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((charset == null) ? 0 : charset.hashCode());
+        result = prime * result + ((null == charset) ? 0 : charset.hashCode());
         result = prime * result + groupMap.hashCode();
         result = prime * result + (isUseVariable ? 1231 : 1237);
-        result = prime * result + ((settingUrl == null) ? 0 : settingUrl.hashCode());
+        result = prime * result + ((null == settingUrl) ? 0 : settingUrl.hashCode());
         return result;
     }
 
@@ -677,15 +677,15 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (null == obj) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
         PopSetting other = (PopSetting) obj;
-        if (charset == null) {
-            if (other.charset != null) {
+        if (null == charset) {
+            if (null != other.charset) {
                 return false;
             }
         } else if (false == charset.equals(other.charset)) {
@@ -697,8 +697,8 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
         if (isUseVariable != other.isUseVariable) {
             return false;
         }
-        if (settingUrl == null) {
-            return other.settingUrl == null;
+        if (null == settingUrl) {
+            return null == other.settingUrl;
         } else {
             return settingUrl.equals(other.settingUrl);
         }

@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * HTTP状态
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HttpxStat {
@@ -86,7 +86,7 @@ public class HttpxStat {
         lastAccessTime = new Date();
         reqTotalCount.incrementAndGet();
         reqFailureCount.incrementAndGet();
-        if (e != null) {
+        if (null != e) {
             reqExceptionCount.incrementAndGet();
             if (errorMsgs.size() >= MAX_ERROR_MSG_COUNT) {
                 errorMsgs.removeFirst();

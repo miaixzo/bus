@@ -43,7 +43,7 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Scaner {
@@ -332,7 +332,7 @@ public class Scaner {
     private void addIfAccept(Class<?> clazz) {
         if (null != clazz) {
             Filter<Class<?>> classFilter = this.classFilter;
-            if (classFilter == null || classFilter.accept(clazz)) {
+            if (null == classFilter || classFilter.accept(clazz)) {
                 this.classes.add(clazz);
             }
         }

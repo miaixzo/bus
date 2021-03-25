@@ -44,7 +44,7 @@ import java.util.Map;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -124,7 +124,7 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         String psChemistry = psMap.getOrDefault("Type", Normal.UNKNOWN);
         String psManufacturer = psMap.getOrDefault("OEM info", Normal.UNKNOWN);
         String cap = psMap.get("Design capacity");
-        if (cap != null) {
+        if (null != cap) {
             psDesignCapacity = Builder.getFirstIntValue(cap);
             if (cap.toLowerCase().contains("mah")) {
                 psCapacityUnits = CapacityUnits.MAH;
@@ -133,14 +133,14 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
             }
         }
         cap = psMap.get("Last full capacity");
-        if (cap != null) {
+        if (null != cap) {
             psMaxCapacity = Builder.getFirstIntValue(cap);
         } else {
             psMaxCapacity = psDesignCapacity;
         }
         double psTimeRemainingInstant = psTimeRemainingEstimated;
         String time = psMap.get("Remaining time");
-        if (time != null) {
+        if (null != time) {
             String[] hhmm = time.split(Symbol.COLON);
             if (hhmm.length == 2) {
                 psTimeRemainingInstant = 3600d * Builder.parseIntOrDefault(hhmm[0], 0)
@@ -148,11 +148,11 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
             }
         }
         String rate = psMap.get("Present rate");
-        if (rate != null) {
+        if (null != rate) {
             psPowerUsageRate = Builder.getFirstIntValue(rate);
         }
         String volts = psMap.get("Present voltage");
-        if (volts != null) {
+        if (null != volts) {
             psVoltage = Builder.getFirstIntValue(volts);
             if (psVoltage != 0) {
                 psAmperage = psPowerUsageRate / psVoltage;

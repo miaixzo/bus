@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  * 工具包集合,工具类快捷方式
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class $ {
@@ -332,7 +332,7 @@ public class $ {
      * @return Object
      */
     public static Object defaultIfNull(Object object, Object defaultValue) {
-        return object != null ? object : defaultValue;
+        return null != object ? object : defaultValue;
     }
 
     /**

@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,7 +43,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
     protected List<StudyRequest> studyRequest;
 
     public List<StudyRequest> getStudyRequest() {
-        if (this.studyRequest == null) {
+        if (null == this.studyRequest) {
             this.studyRequest = new ArrayList();
         }
         return this.studyRequest;
@@ -61,7 +61,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
         protected String studyInstanceUID;
 
         public List<SeriesRequest> getSeriesRequest() {
-            if (this.seriesRequest == null) {
+            if (null == this.seriesRequest) {
                 this.seriesRequest = new ArrayList();
 
             }
@@ -91,7 +91,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
 
 
             public List<RenderedDocumentRequest> getRenderedDocumentRequest() {
-                if (this.renderedDocumentRequest == null) {
+                if (null == this.renderedDocumentRequest) {
                     this.renderedDocumentRequest = new ArrayList();
                 }
                 return this.renderedDocumentRequest;
@@ -290,7 +290,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                 }
 
                 public List<Object> getAny() {
-                    if (this.any == null) {
+                    if (null == this.any) {
                         this.any = new ArrayList();
                     }
                     return this.any;
@@ -304,7 +304,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                     protected List<String> charset;
 
                     public List<String> getCharset() {
-                        if (this.charset == null) {
+                        if (null == this.charset) {
                             this.charset = new ArrayList();
                         }
                         return this.charset;
@@ -319,7 +319,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                     protected List<String> contentType;
 
                     public List<String> getContentType() {
-                        if (this.contentType == null) {
+                        if (null == this.contentType) {
                             this.contentType = new ArrayList();
                         }
                         return this.contentType;

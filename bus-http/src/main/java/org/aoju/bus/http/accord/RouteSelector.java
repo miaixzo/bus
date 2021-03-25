@@ -41,7 +41,7 @@ import java.util.NoSuchElementException;
  * 服务器、IP地址和TLS模式。连接也可以循环使用
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RouteSelector {
@@ -83,7 +83,7 @@ public final class RouteSelector {
      */
     static String getHostString(InetSocketAddress socketAddress) {
         InetAddress address = socketAddress.getAddress();
-        if (address == null) {
+        if (null == address) {
             // InetSocketAddress是用字符串(数字IP或主机名)指定的。
             // 如果它是一个名称，那么应该尝试该名称的所有ip。
             // 如果它是一个IP地址，那么应该只尝试该IP地址
@@ -144,7 +144,7 @@ public final class RouteSelector {
      * @param failure     异常
      */
     public void connectFailed(Route failedRoute, IOException failure) {
-        if (failedRoute.proxy().type() != Proxy.Type.DIRECT && address.proxySelector() != null) {
+        if (failedRoute.proxy().type() != Proxy.Type.DIRECT && null != address.proxySelector()) {
             // 当我们无法连接到新的连接时，告诉代理选择器
             address.proxySelector().connectFailed(
                     address.url().uri(), failedRoute.proxy().address(), failure);
@@ -160,13 +160,13 @@ public final class RouteSelector {
      * @param proxy 代理信息
      */
     private void resetNextProxy(UnoUrl url, Proxy proxy) {
-        if (proxy != null) {
+        if (null != proxy) {
             // 如果用户指定了代理，那么只能尝试该操作
             proxies = Collections.singletonList(proxy);
         } else {
             // 尝试每一个ProxySelector选项，直到一个连接成功
             List<Proxy> proxiesOrNull = address.proxySelector().select(url.uri());
-            proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty()
+            proxies = null != proxiesOrNull && !proxiesOrNull.isEmpty()
                     ? Builder.immutableList(proxiesOrNull)
                     : Builder.immutableList(Proxy.NO_PROXY);
         }

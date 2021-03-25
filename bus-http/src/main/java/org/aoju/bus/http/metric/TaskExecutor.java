@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class TaskExecutor {
@@ -65,7 +65,7 @@ public final class TaskExecutor {
     }
 
     public Executor getExecutor(boolean onIo) {
-        if (onIo || mainExecutor == null) {
+        if (onIo || null == mainExecutor) {
             return ioExecutor;
         }
         return mainExecutor;
@@ -73,7 +73,7 @@ public final class TaskExecutor {
 
     public Download download(CoverHttp<?> coverHttp, File file, InputStream input, long skipBytes) {
         Download download = new Download(file, input, this, skipBytes);
-        if (coverHttp != null && downloadListener != null) {
+        if (null != coverHttp && null != downloadListener) {
             downloadListener.listen(coverHttp, download);
         }
         return download;
@@ -81,28 +81,28 @@ public final class TaskExecutor {
 
     public void execute(Runnable command, boolean onIo) {
         Executor executor = ioExecutor;
-        if (mainExecutor != null && !onIo) {
+        if (null != mainExecutor && !onIo) {
             executor = mainExecutor;
         }
         executor.execute(command);
     }
 
     public void executeOnResponse(CoverHttp<?> task, OnBack<Results> onResponse, Results result, boolean onIo) {
-        if (responseListener != null) {
-            if (responseListener.listen(task, result) && onResponse != null) {
+        if (null != responseListener) {
+            if (responseListener.listen(task, result) && null != onResponse) {
                 execute(() -> onResponse.on(result), onIo);
             }
-        } else if (onResponse != null) {
+        } else if (null != onResponse) {
             execute(() -> onResponse.on(result), onIo);
         }
     }
 
     public boolean executeOnException(CoverHttp<?> task, OnBack<IOException> onException, IOException error, boolean onIo) {
-        if (exceptionListener != null) {
-            if (exceptionListener.listen(task, error) && onException != null) {
+        if (null != exceptionListener) {
+            if (exceptionListener.listen(task, error) && null != onException) {
                 execute(() -> onException.on(error), onIo);
             }
-        } else if (onException != null) {
+        } else if (null != onException) {
             execute(() -> onException.on(error), onIo);
         } else {
             return false;
@@ -111,11 +111,11 @@ public final class TaskExecutor {
     }
 
     public void executeOnComplete(CoverHttp<?> task, OnBack<State> onComplete, State state, boolean onIo) {
-        if (completeListener != null) {
-            if (completeListener.listen(task, state) && onComplete != null) {
+        if (null != completeListener) {
+            if (completeListener.listen(task, state) && null != onComplete) {
                 execute(() -> onComplete.on(state), onIo);
             }
-        } else if (onComplete != null) {
+        } else if (null != onComplete) {
             execute(() -> onComplete.on(state), onIo);
         }
     }
@@ -129,26 +129,26 @@ public final class TaskExecutor {
         for (int i = convertors.length - 1; i >= 0; i--) {
             Convertor convertor = convertors[i];
             String mediaType = convertor.mediaType();
-            if (type != null && (mediaType == null || !mediaType.contains(type))) {
+            if (null != type && (null == mediaType || !mediaType.contains(type))) {
                 continue;
             }
-            if (callable == null && mediaType != null) {
+            if (null == callable && null != mediaType) {
                 return new Data<>(null, mediaType);
             }
             try {
-                assert callable != null;
+                assert null != callable;
                 return new Data<>(callable.apply(convertor), mediaType);
             } catch (Exception e) {
-                if (cause != null) {
+                if (null != cause) {
                     initRootCause(e, cause);
                 }
                 cause = e;
             }
         }
-        if (callable == null) {
+        if (null == callable) {
             return new Data<>(null, "application/x-www-form-urlencoded");
         }
-        if (cause != null) {
+        if (null != cause) {
             throw new InstrumentException("Conversion failed", cause);
         }
 
@@ -157,7 +157,7 @@ public final class TaskExecutor {
 
     private void initRootCause(Throwable throwable, Throwable cause) {
         Throwable lastCause = throwable.getCause();
-        if (lastCause != null) {
+        if (null != lastCause) {
             initRootCause(lastCause, cause);
         } else {
             throwable.initCause(cause);
@@ -168,10 +168,10 @@ public final class TaskExecutor {
      * 关闭线程池
      */
     public void shutdown() {
-        if (ioExecutor != null && ioExecutor instanceof ExecutorService) {
+        if (null != ioExecutor && ioExecutor instanceof ExecutorService) {
             ((ExecutorService) ioExecutor).shutdown();
         }
-        if (mainExecutor != null && mainExecutor instanceof ExecutorService) {
+        if (null != mainExecutor && mainExecutor instanceof ExecutorService) {
             ((ExecutorService) mainExecutor).shutdown();
         }
     }

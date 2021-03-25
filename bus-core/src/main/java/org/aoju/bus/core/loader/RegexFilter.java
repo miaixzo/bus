@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * 正则表达式过滤器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RegexFilter implements Filter {
@@ -44,7 +44,7 @@ public class RegexFilter implements Filter {
     }
 
     public RegexFilter(Pattern pattern) {
-        if (pattern == null) {
+        if (null == pattern) {
             throw new IllegalArgumentException("pattern must not be null");
         }
         this.pattern = pattern;

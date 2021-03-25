@@ -48,7 +48,7 @@ import java.util.zip.Deflater;
  * 普通JAR包加密器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry> implements EncryptorProvider {
@@ -105,7 +105,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
             AlwaysOutputStream nos = new AlwaysOutputStream(zos);
             JarArchiveEntry entry;
             Manifest manifest = null;
-            while ((entry = zis.getNextJarEntry()) != null) {
+            while (null != (entry = zis.getNextJarEntry())) {
                 if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
@@ -120,7 +120,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
-                    if (mainClass != null) {
+                    if (null != mainClass) {
                         attributes.putValue("Jar-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "org.aoju.bus.shade.safety.archive.jar.BootJarLauncher");
                     }
@@ -163,8 +163,8 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                 zos.closeArchiveEntry();
             }
 
-            String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
-            if (mainClass != null) {
+            String mainClass = null != manifest && null != manifest.getMainAttributes() ? manifest.getMainAttributes().getValue("Main-Class") : null;
+            if (null != mainClass) {
                 Injector.inject(zos);
             }
 

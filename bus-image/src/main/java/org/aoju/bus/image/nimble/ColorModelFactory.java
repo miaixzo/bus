@@ -37,7 +37,7 @@ import java.awt.image.ComponentColorModel;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ColorModelFactory {
@@ -93,7 +93,7 @@ public class ColorModelFactory {
     }
 
     private static ColorSpace createRGBColorSpace(byte[] iccProfile) {
-        if (iccProfile != null && iccProfile.length > 0)
+        if (null != iccProfile && iccProfile.length > 0)
             return new ICC_ColorSpace(ICC_Profile.getInstance(iccProfile));
 
         return ColorSpace.getInstance(ColorSpace.CS_sRGB);

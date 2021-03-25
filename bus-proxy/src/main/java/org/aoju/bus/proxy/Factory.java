@@ -38,7 +38,7 @@ import java.lang.reflect.Proxy;
  * {@link  CglibFactory}或 {@link  JavassistFactory}代替
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Factory {
@@ -123,7 +123,7 @@ public class Factory {
 
         public ReflectionInvocation(Object target, Method method, Object[] arguments) {
             this.method = method;
-            this.arguments = (arguments == null ? Builder.EMPTY_ARGUMENTS : arguments);
+            this.arguments = (null == arguments ? Builder.EMPTY_ARGUMENTS : arguments);
             this.target = target;
         }
 

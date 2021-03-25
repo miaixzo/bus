@@ -29,7 +29,7 @@ import org.aoju.bus.image.nimble.codec.ImageWriterFactory;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageWriterExtension extends DeviceExtension {
@@ -37,7 +37,7 @@ public class ImageWriterExtension extends DeviceExtension {
     public volatile ImageWriterFactory factory;
 
     public ImageWriterExtension(ImageWriterFactory factory) {
-        if (factory == null)
+        if (null == factory)
             throw new NullPointerException();
         this.factory = factory;
     }

@@ -30,7 +30,7 @@ package org.aoju.bus.core.io;
  * 快速缓冲,将数据存放在缓冲集中,取代以往的单一数组
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FastByteBuffer {
@@ -115,7 +115,7 @@ public class FastByteBuffer {
         int newSize = size + len;
         int remaining = len;
 
-        if (currentBuffer != null) {
+        if (null != currentBuffer) {
             // first try to fill current buffer
             int part = Math.min(remaining, currentBuffer.length - offset);
             System.arraycopy(array, end - remaining, currentBuffer, offset, part);
@@ -157,7 +157,7 @@ public class FastByteBuffer {
      * @return 快速缓冲自身 @see FastByteBuffer
      */
     public FastByteBuffer append(byte element) {
-        if ((currentBuffer == null) || (offset == currentBuffer.length)) {
+        if ((null == currentBuffer) || (offset == currentBuffer.length)) {
             needNewBuffer(size + 1);
         }
 

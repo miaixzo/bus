@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 当调用{@link #execute(MadeInOffice)}函数时，池将使用第一个{@link OfficeProcessEntryManager}来执行给定的任务
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
@@ -86,7 +86,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
             entry = acquireManager();
             entry.execute(task);
         } finally {
-            if (entry != null) {
+            if (null != entry) {
                 releaseManager(entry);
             }
         }
@@ -142,7 +142,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     private OfficeManager acquireManager() throws InstrumentException {
         try {
             final OfficeManager manager = pool.poll(config.getTaskQueueTimeout(), TimeUnit.MILLISECONDS);
-            if (manager == null) {
+            if (null == manager) {
                 throw new InstrumentException(
                         "No office manager available after " + config.getTaskQueueTimeout() + " millisec.");
             }
@@ -189,13 +189,13 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
             try {
                 manager.stop();
             } catch (InstrumentException ex) {
-                if (firstException == null) {
+                if (null == firstException) {
                     firstException = ex;
                 }
             }
         }
 
-        if (firstException != null) {
+        if (null != firstException) {
             throw firstException;
         }
 

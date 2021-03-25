@@ -33,7 +33,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface Constants {
@@ -81,7 +81,7 @@ public interface Constants {
 
         @JsonCreator
         public static Encoding forValue(String value) {
-            return enumHelper.forValue((value != null ? value.toLowerCase() : value));
+            return enumHelper.forValue((null != value ? value.toLowerCase() : value));
         }
 
         @JsonValue
@@ -596,7 +596,7 @@ public interface Constants {
             }
 
             ArchiveFormat archiveFormat = valuesMap.get(value);
-            if (archiveFormat != null) {
+            if (null != archiveFormat) {
                 return (archiveFormat);
             }
 

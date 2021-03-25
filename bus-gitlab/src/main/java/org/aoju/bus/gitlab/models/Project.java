@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Project {
@@ -102,7 +102,7 @@ public class Project {
     private Constants.BuildGitStrategy buildGitStrategy;
 
     public static final boolean isValid(Project project) {
-        return (project != null && project.getId() != null);
+        return (null != project && null != project.getId());
     }
 
     /**

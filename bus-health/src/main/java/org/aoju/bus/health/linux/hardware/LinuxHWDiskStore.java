@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -126,15 +126,15 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
             try {
                 enumerate.addMatchSubsystem(BLOCK);
                 enumerate.scanDevices();
-                for (UdevListEntry entry = enumerate.getListEntry(); entry != null; entry = entry.getNext()) {
+                for (UdevListEntry entry = enumerate.getListEntry(); null != entry; entry = entry.getNext()) {
                     String syspath = entry.getName();
                     UdevDevice device = udev.deviceNewFromSyspath(syspath);
-                    if (device != null) {
+                    if (null != device) {
                         try {
                             // devnode is what we use as name, like /dev/sda
                             String devnode = device.getDevnode();
                             // Ignore loopback and ram disks; do nothing
-                            if (devnode != null && !devnode.startsWith("/dev/loop")
+                            if (null != devnode && !devnode.startsWith("/dev/loop")
                                     && !devnode.startsWith("/dev/ram")) {
                                 if (DISK.equals(device.getDevtype())) {
                                     // Null model and serial in virtual environments
@@ -143,9 +143,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                     long devSize = Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                             * SECTORSIZE;
                                     store = new LinuxHWDiskStore(devnode,
-                                            devModel == null ? Normal.UNKNOWN : devModel,
-                                            devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
-                                    if (storeToUpdate == null) {
+                                            null == devModel ? Normal.UNKNOWN : devModel,
+                                            null == devSerial ? Normal.UNKNOWN : devSerial, devSize);
+                                    if (null == storeToUpdate) {
                                         // If getting all stores, add to the list with stats
                                         computeDiskStats(store, device.getSysattrValue(STAT));
                                         result.add(store);
@@ -160,19 +160,19 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         result.add(storeToUpdate);
                                         break;
                                     }
-                                } else if (storeToUpdate == null && store != null // only add if getting new list
+                                } else if (null == storeToUpdate && null != store // only add if getting new list
                                         && PARTITION.equals(device.getDevtype())) {
                                     // udev_device_get_parent_*() does not take a reference on the returned device,
                                     // it is automatically unref'd with the parent
                                     UdevDevice parent = device.getParentWithSubsystemDevtype(BLOCK, DISK);
-                                    if (parent != null && store.getName().equals(parent.getDevnode())) {
+                                    if (null != parent && store.getName().equals(parent.getDevnode())) {
                                         // `store` should still point to the parent HWDiskStore this partition is
                                         // attached to. If not, it's an error, so skip.
                                         String name = device.getDevnode();
                                         store.partitionList.add(new HWPartition(name, device.getSysname(),
-                                                device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
+                                                null == device.getPropertyValue(ID_FS_TYPE) ? PARTITION
                                                         : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
+                                                null == device.getPropertyValue(ID_FS_UUID) ? Normal.EMPTY
                                                         : device.getPropertyValue(ID_FS_UUID),
                                                 Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                                         * SECTORSIZE,

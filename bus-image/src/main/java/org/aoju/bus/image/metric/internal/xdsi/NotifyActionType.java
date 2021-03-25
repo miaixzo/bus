@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -43,7 +43,7 @@ public class NotifyActionType extends ActionType {
     protected String endPoint;
 
     public String getNotificationOption() {
-        if (this.notificationOption == null) {
+        if (null == this.notificationOption) {
             return "urn:oasis:names:tc:ebxml-regrep:NotificationOptionType:ObjectRefs";
         }
         return this.notificationOption;

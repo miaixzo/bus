@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-crypto</artifactId>
-    <version>6.2.1</version>
+    <version>6.2.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <bouncycastle.version>1.67</bouncycastle.version>
+        <bouncycastle.version>1.68</bouncycastle.version>
     </properties>
 
     <dependencies>

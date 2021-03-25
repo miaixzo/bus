@@ -40,7 +40,7 @@ import java.util.EnumSet;
  * Note that the semi-colon is optional.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NumericUnescaper extends CharSequenceTranslator {
@@ -81,7 +81,7 @@ public class NumericUnescaper extends CharSequenceTranslator {
      * @return whether the option is set
      */
     public boolean isSet(final OPTION option) {
-        return options != null && options.contains(option);
+        return null != options && options.contains(option);
     }
 
 

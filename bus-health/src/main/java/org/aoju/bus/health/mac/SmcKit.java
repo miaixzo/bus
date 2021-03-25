@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 提供对Mac OS上SMC调用的访问
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -82,7 +82,7 @@ public final class SmcKit {
      */
     public static IOConnect smcOpen() {
         IOService smcService = IOKitUtil.getMatchingService("AppleSMC");
-        if (smcService != null) {
+        if (null != smcService) {
             PointerByReference connPtr = new PointerByReference();
             int result = IO.IOServiceOpen(smcService, SystemB.INSTANCE.mach_task_self(), 0, connPtr);
             smcService.release();

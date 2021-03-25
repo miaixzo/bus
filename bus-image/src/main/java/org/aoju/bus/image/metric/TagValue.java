@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class TagValue {
@@ -59,9 +59,9 @@ public final class TagValue {
     }
 
     public static String getTagAttribute(XMLStreamReader xmler, String attribute, String defaultValue) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
-            if (val != null) {
+            if (null != val) {
                 return val;
             }
         }
@@ -74,9 +74,9 @@ public final class TagValue {
 
     public static String[] getStringArrayTagAttribute(XMLStreamReader xmler, String attribute, String[] defaultValue,
                                                       String separator) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
-            if (val != null) {
+            if (null != val) {
                 return val.split(Pattern.quote(separator));
             }
         }
@@ -85,10 +85,10 @@ public final class TagValue {
 
 
     public static Integer getIntegerTagAttribute(XMLStreamReader xmler, String attribute, Integer defaultValue) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
             try {
-                if (val != null) {
+                if (null != val) {
                     return Integer.valueOf(val);
                 }
             } catch (NumberFormatException e) {
@@ -104,9 +104,9 @@ public final class TagValue {
 
     public static int[] getIntArrayTagAttribute(XMLStreamReader xmler, String attribute, int[] defaultValue,
                                                 String separator) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
-            if (val != null) {
+            if (null != val) {
                 String[] strs = val.split(Pattern.quote(separator));
                 int[] vals = new int[strs.length];
                 for (int i = 0; i < strs.length; i++) {
@@ -119,10 +119,10 @@ public final class TagValue {
     }
 
     public static Double getDoubleTagAttribute(XMLStreamReader xmler, String attribute, Double defaultValue) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
             try {
-                if (val != null) {
+                if (null != val) {
                     return Double.valueOf(val);
                 }
             } catch (NumberFormatException e) {
@@ -138,9 +138,9 @@ public final class TagValue {
 
     public static double[] getDoubleArrayTagAttribute(XMLStreamReader xmler, String attribute, double[] defaultValue,
                                                       String separator) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
-            if (val != null) {
+            if (null != val) {
                 String[] strs = val.split(Pattern.quote(separator));
                 double[] vals = new double[strs.length];
                 for (int i = 0; i < strs.length; i++) {
@@ -153,10 +153,10 @@ public final class TagValue {
     }
 
     public static Float getFloatTagAttribute(XMLStreamReader xmler, String attribute, Float defaultValue) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
             try {
-                if (val != null) {
+                if (null != val) {
                     return Float.valueOf(val);
                 }
             } catch (NumberFormatException e) {
@@ -172,9 +172,9 @@ public final class TagValue {
 
     public static float[] getFloatArrayTagAttribute(XMLStreamReader xmler, String attribute, float[] defaultValue,
                                                     String separator) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
-            if (val != null) {
+            if (null != val) {
                 String[] strs = val.split(Pattern.quote(separator));
                 float[] vals = new float[strs.length];
                 for (int i = 0; i < strs.length; i++) {
@@ -188,9 +188,9 @@ public final class TagValue {
 
     public static TemporalAccessor getDateFromElement(XMLStreamReader xmler, String attribute, TagCamel.TagType type,
                                                       TemporalAccessor defaultValue) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
-            if (val != null) {
+            if (null != val) {
                 try {
                     if (TagCamel.TagType.TIME.equals(type)) {
                         return LocalTime.parse(val);
@@ -214,9 +214,9 @@ public final class TagValue {
 
     public static TemporalAccessor[] getDatesFromElement(XMLStreamReader xmler, String attribute, TagCamel.TagType type,
                                                          TemporalAccessor[] defaultValue, String separator) {
-        if (attribute != null) {
+        if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
-            if (val != null) {
+            if (null != val) {
                 String[] strs = val.split(Pattern.quote(separator));
                 TemporalAccessor[] vals = new TemporalAccessor[strs.length];
                 for (int i = 0; i < strs.length; i++) {
@@ -241,9 +241,9 @@ public final class TagValue {
 
     public static Object getTagValue(TagCamel tag, Readable... tagable) {
         for (Readable t : tagable) {
-            if (t != null) {
+            if (null != t) {
                 Object val = t.getTagValue(tag);
-                if (val != null) {
+                if (null != val) {
                     return val;
                 }
             }

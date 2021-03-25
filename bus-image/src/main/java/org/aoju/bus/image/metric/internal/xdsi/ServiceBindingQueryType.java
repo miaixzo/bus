@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -57,7 +57,7 @@ public class ServiceBindingQueryType extends RegistryObjectQueryType {
     }
 
     public List<SpecificationLinkQueryType> getSpecificationLinkQuery() {
-        if (this.specificationLinkQuery == null) {
+        if (null == this.specificationLinkQuery) {
             this.specificationLinkQuery = new ArrayList();
         }
         return this.specificationLinkQuery;

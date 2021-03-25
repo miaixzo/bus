@@ -34,7 +34,7 @@ import org.apache.ibatis.type.TypeHandler;
  * 数据库表对应的列
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class EntityColumn {
@@ -128,10 +128,10 @@ public class EntityColumn {
         if (Assert.isNotEmpty(suffix)) {
             sb.append(suffix);
         }
-        if (this.jdbcType != null) {
+        if (null != this.jdbcType) {
             sb.append(",jdbcType=");
             sb.append(this.jdbcType.toString());
-        } else if (this.typeHandler != null) {
+        } else if (null != this.typeHandler) {
             sb.append(",typeHandler=");
             sb.append(this.typeHandler.getCanonicalName());
         } else if (!this.javaType.isArray()) {//当类型为数组时,不设置javaType#103
@@ -148,39 +148,39 @@ public class EntityColumn {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         EntityColumn that = (EntityColumn) o;
 
         if (id != that.id) return false;
         if (uuid != that.uuid) return false;
         if (identity != that.identity) return false;
-        if (table != null ? !table.equals(that.table) : that.table != null) return false;
-        if (property != null ? !property.equals(that.property) : that.property != null) return false;
-        if (column != null ? !column.equals(that.column) : that.column != null) return false;
-        if (javaType != null ? !javaType.equals(that.javaType) : that.javaType != null) return false;
+        if (null != table ? !table.equals(that.table) : null != that.table) return false;
+        if (null != property ? !property.equals(that.property) : null != that.property) return false;
+        if (null != column ? !column.equals(that.column) : null != that.column) return false;
+        if (null != javaType ? !javaType.equals(that.javaType) : null != that.javaType) return false;
         if (jdbcType != that.jdbcType) return false;
-        if (typeHandler != null ? !typeHandler.equals(that.typeHandler) : that.typeHandler != null) return false;
-        if (sequenceName != null ? !sequenceName.equals(that.sequenceName) : that.sequenceName != null) return false;
-        if (generator != null ? !generator.equals(that.generator) : that.generator != null) return false;
-        return !(orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null);
+        if (null != typeHandler ? !typeHandler.equals(that.typeHandler) : null != that.typeHandler) return false;
+        if (null != sequenceName ? !sequenceName.equals(that.sequenceName) : null != that.sequenceName) return false;
+        if (null != generator ? !generator.equals(that.generator) : null != that.generator) return false;
+        return !(null != orderBy ? !orderBy.equals(that.orderBy) : null != that.orderBy);
 
     }
 
     @Override
     public int hashCode() {
-        int result = table != null ? table.hashCode() : 0;
-        result = 31 * result + (property != null ? property.hashCode() : 0);
-        result = 31 * result + (column != null ? column.hashCode() : 0);
-        result = 31 * result + (javaType != null ? javaType.hashCode() : 0);
-        result = 31 * result + (jdbcType != null ? jdbcType.hashCode() : 0);
-        result = 31 * result + (typeHandler != null ? typeHandler.hashCode() : 0);
-        result = 31 * result + (sequenceName != null ? sequenceName.hashCode() : 0);
+        int result = null != table ? table.hashCode() : 0;
+        result = 31 * result + (null != property ? property.hashCode() : 0);
+        result = 31 * result + (null != column ? column.hashCode() : 0);
+        result = 31 * result + (null != javaType ? javaType.hashCode() : 0);
+        result = 31 * result + (null != jdbcType ? jdbcType.hashCode() : 0);
+        result = 31 * result + (null != typeHandler ? typeHandler.hashCode() : 0);
+        result = 31 * result + (null != sequenceName ? sequenceName.hashCode() : 0);
         result = 31 * result + (id ? 1 : 0);
         result = 31 * result + (uuid ? 1 : 0);
         result = 31 * result + (identity ? 1 : 0);
-        result = 31 * result + (generator != null ? generator.hashCode() : 0);
-        result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
+        result = 31 * result + (null != generator ? generator.hashCode() : 0);
+        result = 31 * result + (null != orderBy ? orderBy.hashCode() : 0);
         return result;
     }
 

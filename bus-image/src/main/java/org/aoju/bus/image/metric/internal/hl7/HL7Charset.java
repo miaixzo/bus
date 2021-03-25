@@ -29,13 +29,13 @@ import org.aoju.bus.core.lang.Charset;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class HL7Charset {
 
     public static String toCharsetName(String code) {
-        if (code != null && !code.isEmpty())
+        if (null != code && !code.isEmpty())
             switch (code.charAt(code.length() - 1)) {
                 case '0':
                     if (code.equals("GB 18030-2000"))
@@ -98,7 +98,7 @@ public abstract class HL7Charset {
     }
 
     public static String toCharacterSetCode(String code) {
-        if (code != null && !code.isEmpty())
+        if (null != code && !code.isEmpty())
             switch (code.charAt(code.length() - 1)) {
                 case '0':
                     if (code.equals("GB 18030-2000"))

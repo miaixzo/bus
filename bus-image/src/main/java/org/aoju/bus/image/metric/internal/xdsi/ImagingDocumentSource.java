@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @WebServiceClient(name = "ImagingDocumentSource", wsdlLocation = "/wsdl/XDS-I.b_ImagingDocumentSource.wsdl", targetNamespace = "urn:ihe:rad:xdsi-b:2009")
@@ -48,10 +48,10 @@ public class ImagingDocumentSource extends Service {
 
     static {
         URL url = ImagingDocumentSource.class.getResource("/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");
-        if (url == null) {
+        if (null == url) {
             url = ImagingDocumentSource.class.getClassLoader().getResource("/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");
         }
-        if (url == null) {
+        if (null == url) {
             Logger.getLogger(ImagingDocumentSource.class.getName()).log(Level.INFO, "Can not initialize the default wsdl from {0}", "/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");
         }
         WSDL_LOCATION = url;

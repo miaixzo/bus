@@ -34,7 +34,7 @@ import java.util.List;
  * 规则处理
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Assert {
@@ -50,7 +50,7 @@ public class Assert {
     }
 
     public static boolean isEmpty(String str) {
-        return str == null || str.length() == 0;
+        return null == str || str.length() == 0;
     }
 
     public static boolean isNotEmpty(String str) {
@@ -264,8 +264,8 @@ public class Assert {
         }
 
         public Object[] getValues() {
-            if (value != null) {
-                if (secondValue != null) {
+            if (null != value) {
+                if (null != secondValue) {
                     return new Object[]{value, secondValue};
                 } else {
                     return new Object[]{value};

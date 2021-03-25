@@ -35,7 +35,7 @@ import java.text.MessageFormat;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Echo {
@@ -69,7 +69,7 @@ public class Echo {
     public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode) {
-        if (callingNode == null || calledNode == null) {
+        if (null == callingNode || null == calledNode) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 

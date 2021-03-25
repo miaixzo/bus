@@ -35,7 +35,7 @@ import java.util.Random;
  * 这个类不是线程安全的
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 final class WebSocketWriter {
@@ -54,8 +54,8 @@ final class WebSocketWriter {
     boolean activeWriter;
 
     WebSocketWriter(boolean isClient, BufferSink sink, Random random) {
-        if (sink == null) throw new NullPointerException("sink == null");
-        if (random == null) throw new NullPointerException("random == null");
+        if (null == sink) throw new NullPointerException("sink == null");
+        if (null == random) throw new NullPointerException("random == null");
         this.isClient = isClient;
         this.sink = sink;
         this.sinkBuffer = sink.buffer();
@@ -82,13 +82,13 @@ final class WebSocketWriter {
      */
     void writeClose(int code, ByteString reason) throws IOException {
         ByteString payload = ByteString.EMPTY;
-        if (code != 0 || reason != null) {
+        if (code != 0 || null != reason) {
             if (code != 0) {
                 WebSocketProtocol.validateCloseCode(code);
             }
             Buffer buffer = new Buffer();
             buffer.writeShort(code);
-            if (reason != null) {
+            if (null != reason) {
                 buffer.write(reason);
             }
             payload = buffer.readByteString();

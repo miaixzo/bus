@@ -34,7 +34,7 @@ import java.util.*;
  * 或Java(通过JDK 9)上不可用的密码套件
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class CipherSuite {
@@ -405,7 +405,7 @@ public final class CipherSuite {
     public final String javaName;
 
     private CipherSuite(String javaName) {
-        if (javaName == null) {
+        if (null == javaName) {
             throw new NullPointerException();
         }
         this.javaName = javaName;
@@ -418,10 +418,10 @@ public final class CipherSuite {
      */
     public static synchronized CipherSuite forJavaName(String javaName) {
         CipherSuite result = INSTANCES.get(javaName);
-        if (result == null) {
+        if (null == result) {
             result = INSTANCES.get(secondaryName(javaName));
 
-            if (result == null) {
+            if (null == result) {
                 result = new CipherSuite(javaName);
             }
 

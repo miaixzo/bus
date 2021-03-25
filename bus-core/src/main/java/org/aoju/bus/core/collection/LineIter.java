@@ -39,7 +39,7 @@ import java.util.NoSuchElementException;
  * 此对象遍历结束后,应关闭之,推荐使用方式:
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class LineIter implements Iterator<String>, Iterable<String>, Closeable, Serializable {
@@ -81,7 +81,6 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
         this.bufferedReader = IoKit.getReader(reader);
     }
 
-
     /**
      * 判断{@link Reader}是否可以存在下一行.
      *
@@ -90,7 +89,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
      */
     @Override
     public boolean hasNext() throws InstrumentException {
-        if (cachedLine != null) {
+        if (null != cachedLine) {
             return true;
         } else if (finished) {
             return false;
@@ -98,7 +97,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
             try {
                 while (true) {
                     String line = bufferedReader.readLine();
-                    if (line == null) {
+                    if (null == line) {
                         finished = true;
                         return false;
                     } else if (isValidLine(line)) {

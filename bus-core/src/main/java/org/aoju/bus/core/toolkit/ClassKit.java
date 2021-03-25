@@ -54,7 +54,7 @@ import java.util.*;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ClassKit {
@@ -585,10 +585,10 @@ public class ClassKit {
         if (!ArrayKit.isSameLength(classArray, toClassArray)) {
             return false;
         }
-        if (classArray == null) {
+        if (null == classArray) {
             classArray = Normal.EMPTY_CLASS_ARRAY;
         }
-        if (toClassArray == null) {
+        if (null == toClassArray) {
             toClassArray = Normal.EMPTY_CLASS_ARRAY;
         }
         for (int i = 0; i < classArray.length; i++) {
@@ -600,22 +600,22 @@ public class ClassKit {
     }
 
     public static boolean isAssignable(Class<?> cls, final Class<?> toClass, final boolean autoboxing) {
-        if (toClass == null) {
+        if (null == toClass) {
             return false;
         }
-        if (cls == null) {
+        if (null == cls) {
             return !toClass.isPrimitive();
         }
         if (autoboxing) {
             if (cls.isPrimitive() && !toClass.isPrimitive()) {
                 cls = primitiveToWrapper(cls);
-                if (cls == null) {
+                if (null == cls) {
                     return false;
                 }
             }
             if (toClass.isPrimitive() && !cls.isPrimitive()) {
                 cls = wrapperToPrimitive(cls);
-                if (cls == null) {
+                if (null == cls) {
                     return false;
                 }
             }
@@ -818,7 +818,7 @@ public class ClassKit {
      * @return 包名
      */
     public static String getPackage(Class<?> clazz) {
-        if (clazz == null) {
+        if (null == clazz) {
             return Normal.EMPTY;
         }
         final String className = clazz.getName();
@@ -940,7 +940,7 @@ public class ClassKit {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, final boolean isToUnderlineCase, boolean ignoreNullValue) {
-        if (bean == null) {
+        if (null == bean) {
             return null;
         }
 
@@ -964,7 +964,7 @@ public class ClassKit {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
-        if (bean == null) {
+        if (null == bean) {
             return null;
         }
 
@@ -1020,7 +1020,7 @@ public class ClassKit {
      */
     public static ClassLoader getClassLoader() {
         ClassLoader classLoader = getContextClassLoader();
-        if (classLoader == null) {
+        if (null == classLoader) {
             classLoader = ClassKit.class.getClassLoader();
             if (null == classLoader) {
                 classLoader = ClassLoader.getSystemClassLoader();
@@ -1166,10 +1166,10 @@ public class ClassKit {
 
         // 加载原始类型和缓存中的类
         Class<?> clazz = loadPrimitiveClass(name);
-        if (clazz == null) {
+        if (null == clazz) {
             clazz = CLASS_CACHE.get(name);
         }
-        if (clazz != null) {
+        if (null != clazz) {
             return clazz;
         }
 
@@ -1342,7 +1342,7 @@ public class ClassKit {
         Assert.notNull(name, "Name must not be null");
 
         Class<?> clazz = resolvePrimitiveClassName(name);
-        if (clazz != null) {
+        if (null != clazz) {
             return clazz;
         }
 
@@ -1365,7 +1365,7 @@ public class ClassKit {
         }
 
         ClassLoader clToUse = classLoader;
-        if (clToUse == null) {
+        if (null == clToUse) {
             clToUse = getDefaultClassLoader();
         }
         try {
@@ -1387,7 +1387,7 @@ public class ClassKit {
     public static Class<?> resolvePrimitiveClassName(String name) {
         Class<?> result = null;
         // 大多数类名都很长，因为它们应该放在包中，所以长度检查是值得的.
-        if (name != null && name.length() <= 8) {
+        if (null != name && name.length() <= 8) {
             // Could be a primitive - likely.
             result = PRIMITIVE_WRAPPER_MAP.get(name);
         }
@@ -1400,9 +1400,9 @@ public class ClassKit {
             cl = Thread.currentThread().getContextClassLoader();
         } catch (Throwable ex) {
         }
-        if (cl == null) {
+        if (null == cl) {
             cl = ClassKit.class.getClassLoader();
-            if (cl == null) {
+            if (null == cl) {
                 try {
                     cl = ClassLoader.getSystemClassLoader();
                 } catch (Throwable ex) {
@@ -1440,7 +1440,7 @@ public class ClassKit {
      * @return 没有包名或空值的对象的类名
      */
     public static String getShortClassName(final Object object, final String valueIfNull) {
-        if (object == null) {
+        if (null == object) {
             return valueIfNull;
         }
         return getShortClassName(object.getClass());
@@ -1453,7 +1453,7 @@ public class ClassKit {
      * @return 没有包名或空字符串的类名
      */
     public static String getShortClassName(final Class<?> cls) {
-        if (cls == null) {
+        if (null == cls) {
             return Normal.EMPTY;
         }
         return getShortClassName(cls.getName());
@@ -1501,7 +1501,7 @@ public class ClassKit {
      * @see Class#getSimpleName()
      */
     public static String getSimpleName(final Class<?> cls, String valueIfNull) {
-        return cls == null ? valueIfNull : cls.getSimpleName();
+        return null == cls ? valueIfNull : cls.getSimpleName();
     }
 
     /**
@@ -1524,7 +1524,7 @@ public class ClassKit {
      * @see Class#getSimpleName()
      */
     public static String getSimpleName(final Object object, final String valueIfNull) {
-        return object == null ? valueIfNull : object.getClass().getSimpleName();
+        return null == object ? valueIfNull : object.getClass().getSimpleName();
     }
 
     /**
@@ -1536,7 +1536,7 @@ public class ClassKit {
      */
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
         Class<?> convertedClass = cls;
-        if (cls != null && cls.isPrimitive()) {
+        if (null != cls && cls.isPrimitive()) {
             convertedClass = PRIMITIVE_WRAPPER_MAP.get(cls);
         }
         return convertedClass;
@@ -1550,7 +1550,7 @@ public class ClassKit {
      * {@code null}如果输入为空。如果传入的是空数组，则为空数组.
      */
     public static Class<?>[] primitivesToWrappers(final Class<?>... classes) {
-        if (classes == null) {
+        if (null == classes) {
             return null;
         }
 
@@ -1585,7 +1585,7 @@ public class ClassKit {
      * @see #wrapperToPrimitive(Class)
      */
     public static Class<?>[] wrappersToPrimitives(final Class<?>... classes) {
-        if (classes == null) {
+        if (null == classes) {
             return null;
         }
 
@@ -1607,7 +1607,7 @@ public class ClassKit {
      * @return 接口的{@code List}按顺序排列，{@code null}如果输入为空
      */
     public static List<Class<?>> getAllInterfaces(final Class<?> cls) {
-        if (cls == null) {
+        if (null == cls) {
             return null;
         }
 
@@ -1624,7 +1624,7 @@ public class ClassKit {
      * @param interfacesFound 类接口的{@code Set}
      */
     public static void getAllInterfaces(Class<?> cls, final HashSet<Class<?>> interfacesFound) {
-        while (cls != null) {
+        while (null != cls) {
             final Class<?>[] interfaces = cls.getInterfaces();
 
             for (final Class<?> i : interfaces) {
@@ -1644,12 +1644,12 @@ public class ClassKit {
      * @return 类的{@code List}从这个{@code null}开始，如果输入为空
      */
     public static List<Class<?>> getAllSuperclasses(final Class<?> cls) {
-        if (cls == null) {
+        if (null == cls) {
             return null;
         }
         final List<Class<?>> classes = new ArrayList<>();
         Class<?> superclass = cls.getSuperclass();
-        while (superclass != null) {
+        while (null != superclass) {
             classes.add(superclass);
             superclass = superclass.getSuperclass();
         }
@@ -1657,14 +1657,14 @@ public class ClassKit {
     }
 
     public static Class<?>[] toClass(final Object... array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         } else if (array.length == 0) {
             return Normal.EMPTY_CLASS_ARRAY;
         }
         final Class<?>[] classes = new Class[array.length];
         for (int i = 0; i < array.length; i++) {
-            classes[i] = array[i] == null ? null : array[i].getClass();
+            classes[i] = null == array[i] ? null : array[i].getClass();
         }
         return classes;
     }
@@ -1693,7 +1693,7 @@ public class ClassKit {
 
                 @Override
                 public boolean hasNext() {
-                    return next.get() != null;
+                    return null != next.get();
                 }
 
                 @Override
@@ -1769,7 +1769,7 @@ public class ClassKit {
      * {@link Long}， {@link Double}， {@link Float})，则为真..
      */
     public static boolean isPrimitiveOrWrapper(final Class<?> type) {
-        if (type == null) {
+        if (null == type) {
             return false;
         }
         return type.isPrimitive() || isPrimitiveWrapper(type);
@@ -1816,7 +1816,7 @@ public class ClassKit {
     public static List<Field> getAllFieldList(final Class clazz) {
         List<Field> fieldList = new ArrayList<>();
         Class tempClass = clazz;
-        while (tempClass != null) {
+        while (null != tempClass) {
             fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
             tempClass = tempClass.getSuperclass();
         }
@@ -1978,7 +1978,7 @@ public class ClassKit {
             messagePrefix = "No such method: ";
             method = getMatchingMethod(object.getClass(),
                     methodName, parameterTypes);
-            if (method != null && !method.isAccessible()) {
+            if (null != method && !method.isAccessible()) {
                 method.setAccessible(true);
             }
         } else {
@@ -1987,7 +1987,7 @@ public class ClassKit {
                     methodName, parameterTypes);
         }
 
-        if (method == null) {
+        if (null == method) {
             throw new NoSuchMethodException(messagePrefix
                     + methodName + "() on object: "
                     + object.getClass().getName());
@@ -2075,7 +2075,7 @@ public class ClassKit {
         parameterTypes = ArrayKit.nullToEmpty(parameterTypes);
         final Method method = getAccessibleMethod(object.getClass(), methodName,
                 parameterTypes);
-        if (method == null) {
+        if (null == method) {
             throw new NoSuchMethodException("No such accessible method: "
                     + methodName + "() on object: "
                     + object.getClass().getName());
@@ -2104,7 +2104,7 @@ public class ClassKit {
         args = ArrayKit.nullToEmpty(args);
         parameterTypes = ArrayKit.nullToEmpty(parameterTypes);
         final Method method = getAccessibleMethod(cls, methodName, parameterTypes);
-        if (method == null) {
+        if (null == method) {
             throw new NoSuchMethodException("No such accessible method: "
                     + methodName + "() on class: " + cls.getName());
         }
@@ -2153,7 +2153,7 @@ public class ClassKit {
         parameterTypes = ArrayKit.nullToEmpty(parameterTypes);
         final Method method = getMatchingAccessibleMethod(cls, methodName,
                 parameterTypes);
-        if (method == null) {
+        if (null == method) {
             throw new NoSuchMethodException("No such accessible method: "
                     + methodName + "() on class: " + cls.getName());
         }
@@ -2262,7 +2262,7 @@ public class ClassKit {
                 parameterTypes);
 
         // 检查超类链
-        if (method == null) {
+        if (null == method) {
             method = getAccessibleMethodFromSuperclass(cls, methodName,
                     parameterTypes);
         }
@@ -2281,7 +2281,7 @@ public class ClassKit {
                                                             final String methodName,
                                                             final Class<?>... parameterTypes) {
         Class<?> parentClass = cls.getSuperclass();
-        while (parentClass != null) {
+        while (null != parentClass) {
             if (Modifier.isPublic(parentClass.getModifiers())) {
                 try {
                     return parentClass.getMethod(methodName, parameterTypes);
@@ -2305,8 +2305,7 @@ public class ClassKit {
     private static Method getAccessibleMethodFromInterfaceNest(Class<?> cls,
                                                                final String methodName,
                                                                final Class<?>... parameterTypes) {
-
-        for (; cls != null; cls = cls.getSuperclass()) {
+        for (; null != cls; cls = cls.getSuperclass()) {
 
             final Class<?>[] interfaces = cls.getInterfaces();
             for (final Class<?> anInterface : interfaces) {
@@ -2320,7 +2319,7 @@ public class ClassKit {
                 }
                 final Method method = getAccessibleMethodFromInterfaceNest(anInterface,
                         methodName, parameterTypes);
-                if (method != null) {
+                if (null != method) {
                     return method;
                 }
             }
@@ -2352,7 +2351,7 @@ public class ClassKit {
             if (method.getName().equals(methodName) &&
                     isMatchingMethod(method, parameterTypes)) {
                 final Method accessibleMethod = getAccessibleMethod(method);
-                if (accessibleMethod != null && (bestMatch == null || compareMethodFit(
+                if (null != accessibleMethod && (null == bestMatch || compareMethodFit(
                         accessibleMethod,
                         bestMatch,
                         parameterTypes) < 0)) {
@@ -2360,11 +2359,11 @@ public class ClassKit {
                 }
             }
         }
-        if (bestMatch != null) {
+        if (null != bestMatch) {
             setAccessibleWorkaround(bestMatch);
         }
 
-        if (bestMatch != null && bestMatch.isVarArgs() && bestMatch.getParameterTypes().length > 0 && parameterTypes.length > 0) {
+        if (null != bestMatch && bestMatch.isVarArgs() && bestMatch.getParameterTypes().length > 0 && parameterTypes.length > 0) {
             final Class<?>[] methodParameterTypes = bestMatch.getParameterTypes();
             final Class<?> methodParameterComponentType = methodParameterTypes[methodParameterTypes.length - 1].getComponentType();
             final String methodParameterComponentTypeName = primitiveToWrapper(methodParameterComponentType).getName();
@@ -2408,7 +2407,7 @@ public class ClassKit {
                 return method;
             } else if (methodName.equals(method.getName()) &&
                     isAssignable(parameterTypes, method.getParameterTypes(), true)) {
-                if (inexactMatch == null) {
+                if (null == inexactMatch) {
                     inexactMatch = method;
                 } else if (distance(parameterTypes, method.getParameterTypes())
                         < distance(parameterTypes, inexactMatch.getParameterTypes())) {
@@ -2472,7 +2471,7 @@ public class ClassKit {
         while (hierarchy.hasNext()) {
             final Class<?> c = hierarchy.next();
             final Method m = getMatchingAccessibleMethod(c, method.getName(), parameterTypes);
-            if (m == null) {
+            if (null == m) {
                 continue;
             }
             if (Arrays.equals(m.getParameterTypes(), parameterTypes)) {
@@ -2547,15 +2546,15 @@ public class ClassKit {
                                                             final Class<? extends Annotation> annotationCls,
                                                             final boolean searchSupers,
                                                             final boolean ignoreAccess) {
-        Assert.isTrue(cls != null, "The class must not be null");
-        Assert.isTrue(annotationCls != null, "The annotation class must not be null");
+        Assert.isTrue(null != cls, "The class must not be null");
+        Assert.isTrue(null != annotationCls, "The annotation class must not be null");
         final List<Class<?>> classes = (searchSupers ? getAllSuperclassesAndInterfaces(cls) : new ArrayList<>());
         classes.add(0, cls);
         final List<Method> annotatedMethods = new ArrayList<>();
         for (final Class<?> acls : classes) {
             final Method[] methods = (ignoreAccess ? acls.getDeclaredMethods() : acls.getMethods());
             for (final Method method : methods) {
-                if (method.getAnnotation(annotationCls) != null) {
+                if (null != method.getAnnotation(annotationCls)) {
                     annotatedMethods.add(method);
                 }
             }
@@ -2578,15 +2577,15 @@ public class ClassKit {
                                                          final boolean searchSupers,
                                                          final boolean ignoreAccess) {
 
-        Assert.isTrue(method != null, "The method must not be null");
-        Assert.isTrue(annotationCls != null, "The annotation class must not be null");
+        Assert.isTrue(null != method, "The method must not be null");
+        Assert.isTrue(null != annotationCls, "The annotation class must not be null");
         if (!ignoreAccess && !isAccessible(method)) {
             return null;
         }
 
         A annotation = method.getAnnotation(annotationCls);
 
-        if (annotation == null && searchSupers) {
+        if (null == annotation && searchSupers) {
             final Class<?> mcls = method.getDeclaringClass();
             final List<Class<?>> classes = getAllSuperclassesAndInterfaces(mcls);
             for (final Class<?> acls : classes) {
@@ -2598,7 +2597,7 @@ public class ClassKit {
                     continue;
                 }
                 annotation = equivalentMethod.getAnnotation(annotationCls);
-                if (annotation != null) {
+                if (null != annotation) {
                     break;
                 }
             }
@@ -2615,7 +2614,7 @@ public class ClassKit {
      * @return 超类和接口的组合{@code List}
      */
     private static List<Class<?>> getAllSuperclassesAndInterfaces(final Class<?> cls) {
-        if (cls == null) {
+        if (null == cls) {
             return null;
         }
 
@@ -2668,11 +2667,11 @@ public class ClassKit {
     public static Field getField(final Class<?> cls,
                                  final String fieldName,
                                  final boolean forceAccess) {
-        Assert.isTrue(cls != null, "The class must not be null");
+        Assert.isTrue(null != cls, "The class must not be null");
         Assert.isTrue(StringKit.isNotBlank(fieldName), "The field name must not be blank/empty");
 
         // 检查超类层次结构
-        for (Class<?> acls = cls; acls != null; acls = acls.getSuperclass()) {
+        for (Class<?> acls = cls; null != acls; acls = acls.getSuperclass()) {
             try {
                 final Field field = acls.getDeclaredField(fieldName);
                 // getDeclaredField 也会检查非公共作用域，并返回准确的结果
@@ -2693,7 +2692,7 @@ public class ClassKit {
         for (final Class<?> class1 : ClassKit.getAllInterfaces(cls)) {
             try {
                 final Field test = class1.getField(fieldName);
-                Assert.isTrue(match == null, "Reference to field %s is ambiguous relative to %s"
+                Assert.isTrue(null == match, "Reference to field %s is ambiguous relative to %s"
                         + "; a matching field exists on two or more implemented interfaces.", fieldName, cls);
                 match = test;
             } catch (final NoSuchFieldException ex) {
@@ -2732,7 +2731,7 @@ public class ClassKit {
     public static Field getDeclaredField(final Class<?> clazz,
                                          final String fieldName,
                                          final boolean forceAccess) {
-        Assert.isTrue(clazz != null, "The class must not be null");
+        Assert.isTrue(null != clazz, "The class must not be null");
         Assert.isTrue(StringKit.isNotBlank(fieldName), "The field name must not be blank/empty");
         try {
             // 使用getDeclaredField()只考虑指定的类
@@ -2768,10 +2767,10 @@ public class ClassKit {
      * @return 字段数组(可能为空)
      */
     public static List<Field> getAllFieldsList(final Class<?> cls) {
-        Assert.isTrue(cls != null, "The class must not be null");
+        Assert.isTrue(null != cls, "The class must not be null");
         final List<Field> allFields = new ArrayList<>();
         Class<?> currentClass = cls;
-        while (currentClass != null) {
+        while (null != currentClass) {
             final Field[] declaredFields = currentClass.getDeclaredFields();
             Collections.addAll(allFields, declaredFields);
             currentClass = currentClass.getSuperclass();
@@ -2800,11 +2799,11 @@ public class ClassKit {
      * @return 字段列表(可能为空).
      */
     public static List<Field> getFieldsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
-        Assert.isTrue(annotationCls != null, "The annotation class must not be null");
+        Assert.isTrue(null != annotationCls, "The annotation class must not be null");
         final List<Field> allFields = getAllFieldsList(cls);
         final List<Field> annotatedFields = new ArrayList<>();
         for (final Field field : allFields) {
-            if (field.getAnnotation(annotationCls) != null) {
+            if (null != field.getAnnotation(annotationCls)) {
                 annotatedFields.add(field);
             }
         }
@@ -2832,7 +2831,7 @@ public class ClassKit {
      * @throws IllegalAccessException 如果字段不可访问
      */
     public static Object readStaticField(final Field field, final boolean forceAccess) throws IllegalAccessException {
-        Assert.isTrue(field != null, "The field must not be null");
+        Assert.isTrue(null != field, "The field must not be null");
         Assert.isTrue(Modifier.isStatic(field.getModifiers()), "The field '%s' is not static", field.getName());
         return readField(field, (Object) null, forceAccess);
     }
@@ -2861,7 +2860,7 @@ public class ClassKit {
      */
     public static Object readStaticField(final Class<?> cls, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
         final Field field = getField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate field '%s' on %s", fieldName, cls);
+        Assert.isTrue(null != field, "Cannot locate field '%s' on %s", fieldName, cls);
         return readStaticField(field, false);
     }
 
@@ -2889,7 +2888,7 @@ public class ClassKit {
      */
     public static Object readDeclaredStaticField(final Class<?> cls, final String fieldName, final boolean forceAccess) throws IllegalAccessException {
         final Field field = getDeclaredField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        Assert.isTrue(null != field, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
         return readStaticField(field, false);
     }
 
@@ -2916,7 +2915,7 @@ public class ClassKit {
      * @throws IllegalAccessException 如果字段不可访问
      */
     public static Object readField(final Field field, final Object target, final boolean forceAccess) throws IllegalAccessException {
-        Assert.isTrue(field != null, "The field must not be null");
+        Assert.isTrue(null != field, "The field must not be null");
         if (forceAccess && !field.isAccessible()) {
             field.setAccessible(true);
         } else {
@@ -2950,10 +2949,10 @@ public class ClassKit {
     public static Object readField(final Object target,
                                    final String fieldName,
                                    final boolean forceAccess) throws IllegalAccessException {
-        Assert.isTrue(target != null, "target object must not be null");
+        Assert.isTrue(null != target, "target object must not be null");
         final Class<?> cls = target.getClass();
         final Field field = getField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate field %s on %s", fieldName, cls);
+        Assert.isTrue(null != field, "Cannot locate field %s on %s", fieldName, cls);
         return readField(field, target, false);
     }
 
@@ -2982,10 +2981,10 @@ public class ClassKit {
     public static Object readDeclaredField(final Object target,
                                            final String fieldName,
                                            final boolean forceAccess) throws IllegalAccessException {
-        Assert.isTrue(target != null, "target object must not be null");
+        Assert.isTrue(null != target, "target object must not be null");
         final Class<?> cls = target.getClass();
         final Field field = getDeclaredField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls, fieldName);
+        Assert.isTrue(null != field, "Cannot locate declared field %s.%s", cls, fieldName);
         return readField(field, target, false);
     }
 
@@ -3012,7 +3011,7 @@ public class ClassKit {
     public static void writeStaticField(final Field field,
                                         final Object value,
                                         final boolean forceAccess) throws IllegalAccessException {
-        Assert.isTrue(field != null, "The field must not be null");
+        Assert.isTrue(null != field, "The field must not be null");
         Assert.isTrue(Modifier.isStatic(field.getModifiers()), "The field %s.%s is not static", field.getDeclaringClass().getName(),
                 field.getName());
         writeField(field, (Object) null, value, forceAccess);
@@ -3048,7 +3047,7 @@ public class ClassKit {
                                         final boolean forceAccess)
             throws IllegalAccessException {
         final Field field = getField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate field %s on %s", fieldName, cls);
+        Assert.isTrue(null != field, "Cannot locate field %s on %s", fieldName, cls);
         writeStaticField(field, value, false);
     }
 
@@ -3082,7 +3081,7 @@ public class ClassKit {
                                                 final boolean forceAccess)
             throws IllegalAccessException {
         final Field field = getDeclaredField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        Assert.isTrue(null != field, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
         writeField(field, (Object) null, value, false);
     }
 
@@ -3116,7 +3115,7 @@ public class ClassKit {
                                   final Object value,
                                   final boolean forceAccess)
             throws IllegalAccessException {
-        Assert.isTrue(field != null, "The field must not be null");
+        Assert.isTrue(null != field, "The field must not be null");
         if (forceAccess && !field.isAccessible()) {
             field.setAccessible(true);
         } else {
@@ -3144,7 +3143,7 @@ public class ClassKit {
      * @throws IllegalArgumentException 如果字段是{@code null}
      */
     public static void removeFinalModifier(final Field field, final boolean forceAccess) {
-        Assert.isTrue(field != null, "The field must not be null");
+        Assert.isTrue(null != field, "The field must not be null");
 
         try {
             if (Modifier.isFinal(field.getModifiers())) {
@@ -3194,10 +3193,10 @@ public class ClassKit {
                                   final Object value,
                                   final boolean forceAccess)
             throws IllegalAccessException {
-        Assert.isTrue(target != null, "target object must not be null");
+        Assert.isTrue(null != target, "target object must not be null");
         final Class<?> cls = target.getClass();
         final Field field = getField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        Assert.isTrue(null != field, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
         writeField(field, target, value, false);
     }
 
@@ -3230,10 +3229,10 @@ public class ClassKit {
                                           final Object value,
                                           final boolean forceAccess)
             throws IllegalAccessException {
-        Assert.isTrue(target != null, "target object must not be null");
+        Assert.isTrue(null != target, "target object must not be null");
         final Class<?> cls = target.getClass();
         final Field field = getDeclaredField(cls, fieldName, forceAccess);
-        Assert.isTrue(field != null, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
+        Assert.isTrue(null != field, "Cannot locate declared field %s.%s", cls.getName(), fieldName);
         writeField(field, target, value, false);
     }
 
@@ -3258,7 +3257,7 @@ public class ClassKit {
     public static Class<?> getUserClass(Class<?> clazz) {
         if (clazz.getName().contains(Symbol.DOLLAR + Symbol.DOLLAR)) {
             Class<?> superclass = clazz.getSuperclass();
-            if (superclass != null && superclass != Object.class) {
+            if (null != superclass && superclass != Object.class) {
                 return superclass;
             }
         }
@@ -3288,7 +3287,7 @@ public class ClassKit {
      * @return 指示对象的可访问性是否设置为true的布尔值
      */
     public static boolean setAccessibleWorkaround(final AccessibleObject accessibleObject) {
-        if (accessibleObject == null || accessibleObject.isAccessible()) {
+        if (null == accessibleObject || accessibleObject.isAccessible()) {
             return false;
         }
         final Member m = (Member) accessibleObject;
@@ -3319,7 +3318,7 @@ public class ClassKit {
      * @return the {@code true}，如果可以访问<code>member</code>
      */
     public static boolean isAccessible(final Member member) {
-        return member != null && Modifier.isPublic(member.getModifiers()) && !member.isSynthetic();
+        return null != member && Modifier.isPublic(member.getModifiers()) && !member.isSynthetic();
     }
 
     /**
@@ -3420,7 +3419,7 @@ public class ClassKit {
             return getPrimitivePromotionCost(srcClass, destClass);
         }
         float cost = 0.0f;
-        while (srcClass != null && !destClass.equals(srcClass)) {
+        while (null != srcClass && !destClass.equals(srcClass)) {
             if (destClass.isInterface() && ClassKit.isAssignable(srcClass, destClass)) {
                 cost += 0.25f;
                 break;
@@ -3428,7 +3427,7 @@ public class ClassKit {
             cost++;
             srcClass = srcClass.getSuperclass();
         }
-        if (srcClass == null) {
+        if (null == srcClass) {
             cost += 1.5f;
         }
         return cost;
@@ -3509,7 +3508,7 @@ public class ClassKit {
      * @return true为是代理类
      */
     public static boolean isCglibProxyClass(Class<?> clazz) {
-        return (clazz != null && isCglibProxyClassName(clazz.getName()));
+        return (null != clazz && isCglibProxyClassName(clazz.getName()));
     }
 
     /**
@@ -3519,7 +3518,7 @@ public class ClassKit {
      * @return true为是代理类
      */
     public static boolean isCglibProxyClassName(String className) {
-        return (className != null && className.contains(Symbol.DOLLAR + Symbol.DOLLAR));
+        return (null != className && className.contains(Symbol.DOLLAR + Symbol.DOLLAR));
     }
 
     /**

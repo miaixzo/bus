@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ConfigurationChange {
@@ -45,11 +45,11 @@ public class ConfigurationChange {
     }
 
     public static <T> T nullifyIfNotVerbose(ConfigurationChange diffs, T obj) {
-        return diffs != null && diffs.isVerbose() ? obj : null;
+        return null != diffs && diffs.isVerbose() ? obj : null;
     }
 
     public static ModifiedObject addModifiedObjectIfVerbose(ConfigurationChange diffs, String dn, ChangeType changeType) {
-        if (diffs == null || !diffs.isVerbose())
+        if (null == diffs || !diffs.isVerbose())
             return null;
 
         ModifiedObject object = new ModifiedObject(dn, changeType);
@@ -58,7 +58,7 @@ public class ConfigurationChange {
     }
 
     public static ModifiedObject addModifiedObject(ConfigurationChange diffs, String dn, ChangeType changeType) {
-        if (diffs == null)
+        if (null == diffs)
             return null;
 
         ModifiedObject object = new ModifiedObject(dn, changeType);
@@ -67,7 +67,7 @@ public class ConfigurationChange {
     }
 
     public static void removeLastIfEmpty(ConfigurationChange diffs, ModifiedObject obj) {
-        if (obj != null && obj.isEmpty())
+        if (null != obj && obj.isEmpty())
             diffs.removeLast();
     }
 
@@ -98,7 +98,7 @@ public class ConfigurationChange {
         StringBuilder sb = new StringBuilder(objects.size() * 64);
         for (ModifiedObject obj : objects) {
             sb.append(obj.changeType).append(Symbol.C_SPACE).append(obj.dn).append(Symbol.C_LF);
-            if (obj.attributes != null) {
+            if (null != obj.attributes) {
                 for (ModifiedAttribute attr : obj.attributes) {
                     sb.append(Symbol.SPACE).append(attr.name).append(": ")
                             .append(attr.removedValues).append("=>")
@@ -139,12 +139,12 @@ public class ConfigurationChange {
         }
 
         public void addValue(Object value) {
-            if (value != null && !removedValues.remove(value))
+            if (null != value && !removedValues.remove(value))
                 addedValues.add(value);
         }
 
         public void removeValue(Object value) {
-            if (value != null && !addedValues.remove(value))
+            if (null != value && !addedValues.remove(value))
                 removedValues.add(value);
         }
 

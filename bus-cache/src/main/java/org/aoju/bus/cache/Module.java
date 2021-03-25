@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Module extends AbstractModule {
@@ -68,7 +68,7 @@ public class Module extends AbstractModule {
      */
     @Override
     protected void configure() {
-        Preconditions.checkArgument(config != null, "config param can not be null.");
+        Preconditions.checkArgument(null != config, "config param can not be null.");
         Preconditions.checkArgument(CollKit.isNotEmpty(config.getCaches()), "caches param can not be empty.");
 
         bind(Context.class).toInstance(config);

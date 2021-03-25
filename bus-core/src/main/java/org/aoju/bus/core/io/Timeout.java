@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * 适用规则:关闭洗涤槽,稍后重试
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Timeout {
@@ -86,8 +86,12 @@ public class Timeout {
      * system timeouts may still apply.)
      */
     public Timeout timeout(long timeout, TimeUnit unit) {
-        if (timeout < 0) throw new IllegalArgumentException("timeout < 0: " + timeout);
-        if (unit == null) throw new IllegalArgumentException("unit == null");
+        if (timeout < 0) {
+            throw new IllegalArgumentException("timeout < 0: " + timeout);
+        }
+        if (null == unit) {
+            throw new IllegalArgumentException("unit == null");
+        }
         this.timeoutNanos = unit.toNanos(timeout);
         return this;
     }
@@ -137,8 +141,12 @@ public class Timeout {
      * Set a deadline of now plus {@code duration} time.
      */
     public final Timeout deadline(long duration, TimeUnit unit) {
-        if (duration <= 0) throw new IllegalArgumentException("duration <= 0: " + duration);
-        if (unit == null) throw new IllegalArgumentException("unit == null");
+        if (duration <= 0) {
+            throw new IllegalArgumentException("duration <= 0: " + duration);
+        }
+        if (null == unit) {
+            throw new IllegalArgumentException("unit == null");
+        }
         return deadlineNanoTime(System.nanoTime() + unit.toNanos(duration));
     }
 

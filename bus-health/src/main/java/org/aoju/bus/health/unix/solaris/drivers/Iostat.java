@@ -42,7 +42,7 @@ import java.util.Set;
  * Utility to query iostat
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -133,7 +133,7 @@ public final class Iostat {
                 if (diskSet.contains(keyValue)) {
                     // First, if we have existing output from previous,
                     // update
-                    if (diskName != null) {
+                    if (null != diskName) {
                         deviceParamMap.put(diskName, new Quintet<>(model, vendor, product, serial, size));
                     }
                     // Reset values for next iteration
@@ -164,7 +164,7 @@ public final class Iostat {
                 }
             }
             // At end of output update last entry
-            if (diskName != null) {
+            if (null != diskName) {
                 deviceParamMap.put(diskName, new Quintet<>(model, vendor, product, serial, size));
             }
         }

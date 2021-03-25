@@ -47,7 +47,7 @@ import java.net.ProtocolException;
  * 它对服务器进行网络调用
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class CallServerInterceptor implements Interceptor {
@@ -73,14 +73,14 @@ public final class CallServerInterceptor implements Interceptor {
         realChain.eventListener().requestHeadersEnd(realChain.call(), request);
 
         Response.Builder responseBuilder = null;
-        if (HttpMethod.permitsRequestBody(request.method()) && request.body() != null) {
+        if (HttpMethod.permitsRequestBody(request.method()) && null != request.body()) {
             if ("100-continue".equalsIgnoreCase(request.header("Expect"))) {
                 httpCodec.flushRequest();
                 realChain.eventListener().responseHeadersStart(realChain.call());
                 responseBuilder = httpCodec.readResponseHeaders(true);
             }
 
-            if (responseBuilder == null) {
+            if (null == responseBuilder) {
                 realChain.eventListener().requestBodyStart(realChain.call());
                 long contentLength = request.body().contentLength();
                 CountingSink requestBodyOut =
@@ -98,7 +98,7 @@ public final class CallServerInterceptor implements Interceptor {
 
         httpCodec.finishRequest();
 
-        if (responseBuilder == null) {
+        if (null == responseBuilder) {
             realChain.eventListener().responseHeadersStart(realChain.call());
             responseBuilder = httpCodec.readResponseHeaders(false);
         }

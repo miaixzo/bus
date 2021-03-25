@@ -35,7 +35,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RealSink implements BufferSink {
@@ -45,7 +45,9 @@ public final class RealSink implements BufferSink {
     boolean closed;
 
     public RealSink(Sink sink) {
-        if (sink == null) throw new NullPointerException("sink == null");
+        if (null == sink) {
+            throw new NullPointerException("sink == null");
+        }
         this.sink = sink;
     }
 
@@ -130,7 +132,9 @@ public final class RealSink implements BufferSink {
 
     @Override
     public long writeAll(Source source) throws IOException {
-        if (source == null) throw new IllegalArgumentException("source == null");
+        if (null == source) {
+            throw new IllegalArgumentException("source == null");
+        }
         long totalBytesRead = 0;
         for (long readCount; (readCount = source.read(buffer, Segment.SIZE)) != -1; ) {
             totalBytesRead += readCount;
@@ -298,11 +302,11 @@ public final class RealSink implements BufferSink {
         try {
             sink.close();
         } catch (Throwable e) {
-            if (thrown == null) thrown = e;
+            if (null == thrown) thrown = e;
         }
         closed = true;
 
-        if (thrown != null) IoKit.sneakyRethrow(thrown);
+        if (null != thrown) IoKit.sneakyRethrow(thrown);
     }
 
     @Override

@@ -33,7 +33,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImagePainter implements Painter {
@@ -274,12 +274,12 @@ public class ImagePainter implements Painter {
         }
 
         // 设置圆角
-        if (imageElement.getRoundCorner() != null) {
+        if (null != imageElement.getRoundCorner()) {
             image = makeRoundCorner(image, width, height, imageElement.getRoundCorner());
         }
 
         //高斯模糊
-        if (imageElement.getBlur() != null) {
+        if (null != imageElement.getBlur()) {
             image = makeBlur(image, imageElement.getBlur());
         }
 
@@ -290,7 +290,7 @@ public class ImagePainter implements Painter {
         }
 
         //旋转
-        if (imageElement.getRotate() != null) {
+        if (null != imageElement.getRotate()) {
             g.rotate(Math.toRadians(imageElement.getRotate()), imageElement.getX() + imageElement.getWidth() / 2, imageElement.getY() + imageElement.getHeight() / 2);
         }
 
@@ -303,7 +303,7 @@ public class ImagePainter implements Painter {
         g.drawImage(image, imageElement.getX(), imageElement.getY(), width, height, null);
 
         //绘制完后反向旋转，以免影响后续元素
-        if (imageElement.getRotate() != null) {
+        if (null != imageElement.getRotate()) {
             g.rotate(-Math.toRadians(imageElement.getRotate()), imageElement.getX() + imageElement.getWidth() / 2, imageElement.getY() + imageElement.getHeight() / 2);
         }
     }

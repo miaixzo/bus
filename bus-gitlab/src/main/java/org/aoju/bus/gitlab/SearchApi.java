@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API Search API calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
  * @since JDK 1.8+
  */
@@ -335,7 +335,7 @@ public class SearchApi extends AbstractApi {
                 .withParam("search", search, true)
                 .withParam("ref", ref, false);
 
-        if (ref != null) {
+        if (null != ref) {
             if (!scope.equals(ProjectSearchScope.BLOBS) && !scope.equals(ProjectSearchScope.WIKI_BLOBS) && !scope.equals(ProjectSearchScope.COMMITS)) {
                 throw new GitLabApiException("Ref parameter is only applicable for scopes: commits, blobs, and wiki_blobs");
             }

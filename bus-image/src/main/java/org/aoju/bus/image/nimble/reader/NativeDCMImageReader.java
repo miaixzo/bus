@@ -61,7 +61,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NativeDCMImageReader extends ImageReader implements Closeable {
@@ -143,7 +143,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                 position = start + offset + 8;
             }
             BulkData frag = new BulkData("compressedPixelData://", position, -1, false);
-            if (lastFrag != null && position != -1) {
+            if (null != lastFrag && position != -1) {
                 lastFrag.setLength(position - 8 - lastFrag.offset());
             }
             lastFrag = frag;
@@ -180,7 +180,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
     private void initPixelDataFromAttributes(Attributes ds) {
         VR.Holder holder = new VR.Holder();
         Object value = ds.getValue(Tag.PixelData, holder);
-        if (value != null) {
+        if (null != value) {
             imageDescriptor = new ImageDescriptor(ds);
             pixelDataVR = holder.vr;
             if (value instanceof BulkData) {
@@ -197,9 +197,9 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
     }
 
     private void initPixelDataFile() {
-        if (pixelData != null)
+        if (null != pixelData)
             pixelDataFile = pixelData.getFile();
-        else if (pixelDataFragments != null)
+        else if (null != pixelDataFragments)
             pixelDataFile = pixelDataFragmentsFile(pixelDataFragments);
     }
 
@@ -207,7 +207,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         File f = null;
         for (Object frag : pixelDataFragments) {
             if (frag instanceof BulkData)
-                if (f == null)
+                if (null == f)
                     f = ((BulkData) frag).getFile();
                 else if (!f.equals(((BulkData) frag).getFile()))
                     throw new UnsupportedOperationException(
@@ -242,7 +242,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         readMetadata();
         checkIndex(frameIndex);
 
-        if (decompressor == null)
+        if (null == decompressor)
             return createImageType(bitsStored, dataType, banded);
 
         if (rle)
@@ -266,7 +266,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         ImageTypeSpecifier imageType;
         if (pmi.isMonochrome())
             imageType = createImageType(8, DataBuffer.TYPE_BYTE, false);
-        else if (decompressor == null)
+        else if (null == decompressor)
             imageType = createImageType(bitsStored, dataType, banded);
         else if (rle)
             imageType = createImageType(bitsStored, dataType, true);
@@ -284,17 +284,17 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
     }
 
     private void openiis() throws IOException {
-        if (iis == null) {
-            if (pixelDataFile != null) {
+        if (null == iis) {
+            if (null != pixelDataFile) {
                 iis = new FileImageInputStream(pixelDataFile);
-            } else if (pixeldataBytes != null) {
+            } else if (null != pixeldataBytes) {
                 iis = new SegmentedImageStream(pixeldataBytes);
             }
         }
     }
 
     private void closeiis() throws IOException {
-        if ((pixelDataFile != null || pixeldataBytes != null) && iis != null) {
+        if ((null != pixelDataFile || null != pixeldataBytes) && null != iis) {
             iis.close();
             iis = null;
         }
@@ -328,7 +328,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                                            Set<String> nodeNames)
             throws IOException {
         DicomMetaData ret = getStreamMetadata();
-        if (nodeNames != null && nodeNames.contains(POST_PIXEL_DATA)) {
+        if (null != nodeNames && nodeNames.contains(POST_PIXEL_DATA)) {
             readPostPixeldata();
             return getStreamMetadata();
         }
@@ -353,7 +353,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
 
         openiis();
         try {
-            if (decompressor != null) {
+            if (null != decompressor) {
                 decompressor.setInput(iisOfFrame(frameIndex));
 
 
@@ -368,10 +368,10 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
             WritableRaster wr = Raster.createWritableRaster(
                     createSampleModel(dataType, banded), null);
             DataBuffer buf = wr.getDataBuffer();
-            if (dis != null) {
+            if (null != dis) {
                 dis.skipFully((frameIndex - flushedFrames) * frameLength);
                 flushedFrames = frameIndex + 1;
-            } else if (pixeldataBytes != null) {
+            } else if (null != pixeldataBytes) {
                 iis.setByteOrder(bigEndian()
                         ? ByteOrder.BIG_ENDIAN
                         : ByteOrder.LITTLE_ENDIAN);
@@ -385,7 +385,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
             if (buf instanceof DataBufferByte) {
                 byte[][] data = ((DataBufferByte) buf).getBankData();
                 for (byte[] bs : data)
-                    if (dis != null)
+                    if (null != dis)
                         dis.readFully(bs);
                     else
                         iis.readFully(bs);
@@ -393,7 +393,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                     ByteKit.swapShorts(data);
             } else {
                 short[] data = ((DataBufferUShort) buf).getData();
-                if (dis != null)
+                if (null != dis)
                     dis.readFully(data, 0, data.length);
                 else
                     iis.readFully(data, 0, data.length);
@@ -416,11 +416,11 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         ImageReadParam decompressParam = decompressor.getDefaultReadParam();
         ImageTypeSpecifier imageType = null;
         BufferedImage dest = null;
-        if (param != null) {
+        if (null != param) {
             imageType = param.getDestinationType();
             dest = param.getDestination();
         }
-        if (rle && imageType == null && dest == null)
+        if (rle && null == imageType && null == dest)
             imageType = createImageType(bitsStored, dataType, true);
         decompressParam.setDestinationType(imageType);
         decompressParam.setDestination(dest);
@@ -434,7 +434,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         checkIndex(frameIndex);
 
         WritableRaster raster;
-        if (decompressor != null) {
+        if (null != decompressor) {
             openiis();
             try {
                 javax.imageio.stream.ImageInputStream iisOfFrame = iisOfFrame(frameIndex);
@@ -499,17 +499,17 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
 
     public javax.imageio.stream.ImageInputStream iisOfFrame(int frameIndex) throws IOException {
         javax.imageio.stream.ImageInputStream iisOfFrame;
-        if (epdiis != null) {
+        if (null != epdiis) {
             seekFrame(frameIndex);
             iisOfFrame = epdiis;
-        } else if (pixelDataFragments == null) {
+        } else if (null == pixelDataFragments) {
             return null;
         } else {
             iisOfFrame = new SegmentedImageStream(
                     iis, pixelDataFragments, frames == 1 ? -1 : frameIndex);
             ((SegmentedImageStream) iisOfFrame).setImageDescriptor(imageDescriptor);
         }
-        return patchJpegLS != null
+        return null != patchJpegLS
                 ? new PatchJPEGLSImageInputStream(iisOfFrame, patchJpegLS)
                 : iisOfFrame;
     }
@@ -533,7 +533,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         if (param instanceof NativeDCMImageReadParam) {
             NativeDCMImageReadParam dParam = (NativeDCMImageReadParam) param;
             Attributes psAttrs = dParam.getPresentationState();
-            if (psAttrs != null) {
+            if (null != psAttrs) {
                 if (psAttrs.containsValue(Tag.OverlayData | gg0000))
                     ovlyAttrs = psAttrs;
                 grayscaleValue = Overlays.getRecommendedDisplayGrayscaleValue(
@@ -541,7 +541,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
             } else
                 grayscaleValue = dParam.getOverlayGrayscaleValue();
         }
-        Overlays.applyOverlay(ovlyData != null ? 0 : frameIndex, raster,
+        Overlays.applyOverlay(null != ovlyData ? 0 : frameIndex, raster,
                 ovlyAttrs, gg0000, grayscaleValue >>> (16 - outBits), ovlyData);
     }
 
@@ -549,7 +549,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         if (param instanceof NativeDCMImageReadParam) {
             NativeDCMImageReadParam dParam = (NativeDCMImageReadParam) param;
             Attributes psAttrs = dParam.getPresentationState();
-            if (psAttrs != null)
+            if (null != psAttrs)
                 return Overlays.getActiveOverlayGroupOffsets(psAttrs);
             else
                 return Overlays.getActiveOverlayGroupOffsets(
@@ -574,7 +574,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                 ? (NativeDCMImageReadParam) param
                 : new NativeDCMImageReadParam();
         Attributes psAttrs = dParam.getPresentationState();
-        if (psAttrs != null) {
+        if (null != psAttrs) {
             lutParam.setModalityLUT(psAttrs);
             lutParam.setVOI(
                     selectVOILUT(psAttrs,
@@ -613,32 +613,37 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                                       Attributes sharedFctGroups,
                                       Attributes frameFctGroups,
                                       int tag) {
-        if (frameFctGroups == null) {
+        if (null == frameFctGroups) {
             return imgAttrs;
         }
         Attributes group = frameFctGroups.getNestedDataset(tag);
-        if (group == null && sharedFctGroups != null) {
+        if (null == group && null != sharedFctGroups) {
             group = sharedFctGroups.getNestedDataset(tag);
         }
-        return group != null ? group : imgAttrs;
+        return null != group ? group : imgAttrs;
     }
 
     private Attributes selectVOILUT(Attributes psAttrs, String iuid, int frame) {
         Sequence voiLUTs = psAttrs.getSequence(Tag.SoftcopyVOILUTSequence);
-        if (voiLUTs != null)
+        if (null != voiLUTs)
             for (Attributes voiLUT : voiLUTs) {
                 Sequence refImgs = voiLUT.getSequence(Tag.ReferencedImageSequence);
-                if (refImgs == null || refImgs.isEmpty())
+                if (null == refImgs || refImgs.isEmpty()) {
                     return voiLUT;
+                }
+
                 for (Attributes refImg : refImgs) {
                     if (iuid.equals(refImg.getString(Tag.ReferencedSOPInstanceUID))) {
                         int[] refFrames = refImg.getInts(Tag.ReferencedFrameNumber);
-                        if (refFrames == null || refFrames.length == 0)
+                        if (null == refFrames || refFrames.length == 0) {
                             return voiLUT;
+                        }
 
-                        for (int refFrame : refFrames)
-                            if (refFrame == frame)
+                        for (int refFrame : refFrames) {
+                            if (refFrame == frame) {
                                 return voiLUT;
+                            }
+                        }
                     }
                 }
             }
@@ -646,10 +651,10 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
     }
 
     private void readMetadata() throws IOException {
-        if (metadata != null)
+        if (null != metadata)
             return;
 
-        if (dis != null) {
+        if (null != dis) {
             Attributes fmi = dis.readFileMetaInformation();
             Attributes ds = dis.readDataset(-1, Tag.PixelData);
             if (dis.tag() == Tag.PixelData) {
@@ -667,7 +672,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
             setMetadata(new DicomMetaData(fmi, ds));
             return;
         }
-        if (iis == null)
+        if (null == iis)
             throw new IllegalStateException("Input not set");
 
         ImageInputStream dis = new ImageInputStream(new ImageInputStreamAdapter(iis));
@@ -728,13 +733,13 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                 this.frameLength = pmi.frameLength(width, height, samples, bitsAllocated);
             } else {
                 Attributes fmi = metadata.getFileMetaInformation();
-                if (fmi == null)
+                if (null == fmi)
                     throw new IllegalArgumentException("Missing File Meta Information for Data Set with compressed Pixel Data");
 
                 String tsuid = fmi.getString(Tag.TransferSyntaxUID);
                 ImageReaderFactory.ImageReaderParam param =
                         ImageReaderFactory.getImageReaderParam(tsuid);
-                if (param == null)
+                if (null == param)
                     throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
                 pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid)
                         ? Photometric.RGB
@@ -774,7 +779,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         flushedFrames = 0;
         width = 0;
         height = 0;
-        if (decompressor != null) {
+        if (null != decompressor) {
             decompressor.dispose();
             decompressor = null;
         }
@@ -789,7 +794,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         if (frameIndex < 0 || frameIndex >= frames)
             throw new IndexOutOfBoundsException("imageIndex: " + frameIndex);
 
-        if (dis != null && frameIndex < flushedFrames)
+        if (null != dis && frameIndex < flushedFrames)
             throw new IllegalStateException(
                     "input stream position already after requested frame #" + (frameIndex + 1));
     }
@@ -797,7 +802,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
     public Attributes readPostPixeldata() throws IOException {
         if (frames == 0) return metadata.getAttributes();
 
-        if (dis != null) {
+        if (null != dis) {
             if (flushedFrames > frames) {
                 return metadata.getAttributes();
             }
@@ -806,7 +811,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
             return readPostAttr(dis);
         }
         long offset;
-        if (pixelData != null) {
+        if (null != pixelData) {
             offset = pixelData.offset() + pixelData.longLength();
         } else {
             SegmentedImageStream siis = (SegmentedImageStream) iisOfFrame(-1);
@@ -856,7 +861,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
 
     /**
      * @author Kimi Liu
-     * @version 6.2.1
+     * @version 6.2.2
      * @since JDK 1.8+
      */
     public static class NativeDCMImageReadParam extends ImageReadParam {

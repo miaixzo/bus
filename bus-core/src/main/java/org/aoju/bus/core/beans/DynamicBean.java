@@ -40,7 +40,7 @@ import java.util.Map;
  * 支持Map和普通Bean
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
@@ -198,7 +198,7 @@ public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((bean == null) ? 0 : bean.hashCode());
+        result = prime * result + ((null == bean) ? 0 : bean.hashCode());
         return result;
     }
 
@@ -207,16 +207,18 @@ public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (null == obj) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
         final DynamicBean other = (DynamicBean) obj;
-        if (bean == null) {
-            return other.bean == null;
-        } else return bean.equals(other.bean);
+        if (null == bean) {
+            return null == other.bean;
+        } else {
+            return bean.equals(other.bean);
+        }
     }
 
     @Override

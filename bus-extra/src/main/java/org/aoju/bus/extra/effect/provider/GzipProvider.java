@@ -37,7 +37,7 @@ import java.util.zip.GZIPOutputStream;
  * 基于gzip算法的数据解压缩
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GzipProvider implements EffectProvider {

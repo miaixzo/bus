@@ -37,7 +37,7 @@ import java.util.Map;
  * 使用查找表转换值.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class LookupTranslator extends CharSequenceTranslator {
@@ -51,7 +51,7 @@ public class LookupTranslator extends CharSequenceTranslator {
     private final int longest;
 
     public LookupTranslator(final Map<CharSequence, CharSequence> lookupMap) {
-        if (lookupMap == null) {
+        if (null == lookupMap) {
             throw new InvalidParameterException("lookupMap cannot be null");
         }
         this.lookupMap = new HashMap<>();
@@ -85,8 +85,7 @@ public class LookupTranslator extends CharSequenceTranslator {
             for (int i = max; i >= shortest; i--) {
                 final CharSequence subSeq = input.subSequence(index, index + i);
                 final String result = lookupMap.get(subSeq.toString());
-
-                if (result != null) {
+                if (null != result) {
                     out.write(result);
                     return i;
                 }

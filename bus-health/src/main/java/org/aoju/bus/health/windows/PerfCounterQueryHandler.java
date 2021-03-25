@@ -37,7 +37,7 @@ import java.util.Map;
  * 处理性能计数器查询
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @NotThreadSafe
@@ -56,7 +56,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public boolean addCounterToQuery(PerfCounter counter) {
         // 打开一个新查询或获取一个现有查询的句柄
-        if (this.queryHandle == null) {
+        if (null == this.queryHandle) {
             this.queryHandle = new WinNT.HANDLEByReference();
             if (!PerfDataKit.openQuery(this.queryHandle)) {
                 Logger.warn("Failed to open a query for PDH object: {}", counter.getObject());
@@ -84,7 +84,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         boolean success = false;
         WinNT.HANDLEByReference href = counterHandleMap.remove(counter);
         // 如果句柄不存在，则为空
-        if (href != null) {
+        if (null != href) {
             success = PerfDataKit.removeCounter(href);
         }
         if (counterHandleMap.isEmpty()) {
@@ -104,7 +104,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         }
         counterHandleMap.clear();
         // 删除所有的查询
-        if (this.queryHandle != null) {
+        if (null != this.queryHandle) {
             PerfDataKit.closeQuery(this.queryHandle);
         }
         this.queryHandle = null;
@@ -116,7 +116,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      * @return 更新所有计数器的时间戳，以从epoch开始的毫秒为单位，如果更新失败则为0
      */
     public long updateQuery() {
-        if (queryHandle == null) {
+        if (null == queryHandle) {
             Logger.warn("Query does not exist to update.");
             return 0L;
         }

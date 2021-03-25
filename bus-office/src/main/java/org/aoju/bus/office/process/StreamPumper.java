@@ -37,7 +37,7 @@ import java.util.Objects;
  * 从输入流中读取所有行.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StreamPumper extends Thread {
@@ -76,7 +76,7 @@ public class StreamPumper extends Thread {
         try (BufferedReader bufferedReader =
                      new BufferedReader(Channels.newReader(Channels.newChannel(stream), Charset.DEFAULT_UTF_8))) {
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while (null != (line = bufferedReader.readLine())) {
                 consumer.consume(line);
             }
         } catch (IOException ex) {

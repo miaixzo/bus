@@ -45,7 +45,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MoveSCU extends Device implements AutoCloseable {
@@ -89,7 +89,7 @@ public class MoveSCU extends Device implements AutoCloseable {
         if (relational) {
             rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         }
-        if (model.level != null) {
+        if (null != model.level) {
             addLevel(model.level);
         }
     }
@@ -138,7 +138,7 @@ public class MoveSCU extends Device implements AutoCloseable {
 
     @Override
     public void close() throws IOException, InterruptedException {
-        if (as != null && as.isReadyForDataTransfer()) {
+        if (null != as && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
             as.release();
         }
@@ -164,7 +164,7 @@ public class MoveSCU extends Device implements AutoCloseable {
             public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                 super.onDimseRSP(as, cmd, data);
                 Progress p = state.getProgress();
-                if (p != null) {
+                if (null != p) {
                     p.setAttributes(cmd);
                     if (p.isCancel()) {
                         try {

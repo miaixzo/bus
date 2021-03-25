@@ -61,7 +61,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * findscu只支持使用C-FIND消息的查询功能
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FindSCU extends Device implements AutoCloseable {
@@ -119,7 +119,7 @@ public class FindSCU extends Device implements AutoCloseable {
             rq.addExtendedNegotiate(
                     new ExtendedNegotiate(model.cuid, Option.Type.toExtendedNegotiationInformation(types)));
         }
-        if (model.level != null) {
+        if (null != model.level) {
             addLevel(model.level);
         }
     }
@@ -199,7 +199,7 @@ public class FindSCU extends Device implements AutoCloseable {
 
     @Override
     public void close() throws IOException, InterruptedException {
-        if (as != null && as.isReadyForDataTransfer()) {
+        if (null != as && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
             as.release();
         }
@@ -219,7 +219,7 @@ public class FindSCU extends Device implements AutoCloseable {
                 attrs = dis.readDataset(-1, -1);
             }
         }
-        if (inFilter != null) {
+        if (null != inFilter) {
             attrs = new Attributes(inFilter.length + 1);
             attrs.addSelected(attrs, inFilter);
         }
@@ -272,12 +272,12 @@ public class FindSCU extends Device implements AutoCloseable {
     private void onResult(Attributes data) {
         state.setList(data);
         int numMatches = totNumMatches.incrementAndGet();
-        if (outDir == null) {
+        if (null == outDir) {
             return;
         }
 
         try {
-            if (out == null) {
+            if (null == out) {
                 File f = new File(outDir, fname(numMatches));
                 out = new BufferedOutputStream(new FileOutputStream(f));
             }
@@ -318,16 +318,16 @@ public class FindSCU extends Device implements AutoCloseable {
 
     private TransformerHandler getTransformerHandler() throws Exception {
         SAXTransformerFactory tf = saxtf;
-        if (tf == null) {
+        if (null == tf) {
             saxtf = tf = (SAXTransformerFactory) TransformerFactory.newInstance();
             tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         }
-        if (xsltFile == null) {
+        if (null == xsltFile) {
             return tf.newTransformerHandler();
         }
 
         Templates tpls = xsltTpls;
-        if (tpls == null) {
+        if (null == tpls) {
             xsltTpls = tpls = tf.newTemplates(new StreamSource(xsltFile));
         }
 
@@ -360,7 +360,7 @@ public class FindSCU extends Device implements AutoCloseable {
         }
 
         public void adjustQueryOptions(EnumSet<Option.Type> types) {
-            if (level == null) {
+            if (null == level) {
                 types.add(Option.Type.RELATIONAL);
                 types.add(Option.Type.DATETIME);
             }

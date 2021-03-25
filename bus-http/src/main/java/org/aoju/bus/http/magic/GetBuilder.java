@@ -34,7 +34,7 @@ import java.util.Map;
  * GET参数构造器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GetBuilder extends RequestBuilder<GetBuilder> {
@@ -45,14 +45,14 @@ public class GetBuilder extends RequestBuilder<GetBuilder> {
 
     @Override
     public RequestCall build() {
-        if (params != null) {
+        if (null != params) {
             url = appendParams(url, params);
         }
         return new GetRequest(url, tag, params, headers, id).build(httpd);
     }
 
     protected String appendParams(String url, Map<String, String> params) {
-        if (url == null || params == null || params.isEmpty()) {
+        if (null == url || null == params || params.isEmpty()) {
             return url;
         }
         StringBuilder builder = new StringBuilder();

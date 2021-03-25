@@ -35,7 +35,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 2. 可以自己从写部分类等
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data

@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public class SlotListType {
     protected List<SlotType> slot;
 
     public List<SlotType> getSlot() {
-        if (this.slot == null) {
+        if (null == this.slot) {
             this.slot = new ArrayList();
         }
         return this.slot;

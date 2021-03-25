@@ -44,7 +44,7 @@ import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageReaderFactory implements Serializable {
@@ -53,18 +53,18 @@ public class ImageReaderFactory implements Serializable {
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
 
     private static String nullify(String s) {
-        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
+        return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageReaderFactory getDefault() {
-        if (defaultFactory == null)
+        if (null == defaultFactory)
             defaultFactory = initDefault();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageReaderFactory factory) {
-        if (factory == null)
+        if (null == factory)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -107,7 +107,7 @@ public class ImageReaderFactory implements Serializable {
             throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
 
         ImageReader reader = iter.next();
-        if (param.className != null) {
+        if (null != param.className) {
             while (!param.className.equals(reader.getClass().getName())) {
                 if (iter.hasNext())
                     reader = iter.next();
@@ -130,13 +130,13 @@ public class ImageReaderFactory implements Serializable {
     }
 
     private static ImageReaderSpi getImageReaderSpi(ImageReaderParam param) {
-        Iterator<ImageReaderSpi> iter = new FormatNameFilterIterator<ImageReaderSpi>(
+        Iterator<ImageReaderSpi> iter = new FormatNameFilterIterator<>(
                 ServiceLoader.load(ImageReaderSpi.class).iterator(), param.formatName);
         if (!iter.hasNext())
             throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
 
         ImageReaderSpi spi = iter.next();
-        if (param.className != null) {
+        if (null != param.className) {
             while (!param.className.equals(spi.getPluginClassName())) {
                 if (iter.hasNext())
                     spi = iter.next();
@@ -202,7 +202,7 @@ public class ImageReaderFactory implements Serializable {
         public ImageReaderParam(String formatName, String className,
                                 String patchJPEGLS, String... imageWriteParams) {
             this(formatName, className,
-                    patchJPEGLS != null && !patchJPEGLS.isEmpty()
+                    null != patchJPEGLS && !patchJPEGLS.isEmpty()
                             ? PatchJPEGLS.valueOf(patchJPEGLS)
                             : null,
                     Property.valueOf(imageWriteParams));
@@ -215,12 +215,12 @@ public class ImageReaderFactory implements Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
 
             ImageReaderParam that = (ImageReaderParam) o;
 
             if (!formatName.equals(that.formatName)) return false;
-            if (className != null ? !className.equals(that.className) : that.className != null) return false;
+            if (null != className ? !className.equals(that.className) : null != that.className) return false;
             if (patchJPEGLS != that.patchJPEGLS) return false;
             return Arrays.equals(imageReadParams, that.imageReadParams);
 
@@ -229,8 +229,8 @@ public class ImageReaderFactory implements Serializable {
         @Override
         public int hashCode() {
             int result = formatName.hashCode();
-            result = 31 * result + (className != null ? className.hashCode() : 0);
-            result = 31 * result + (patchJPEGLS != null ? patchJPEGLS.hashCode() : 0);
+            result = 31 * result + (null != className ? className.hashCode() : 0);
+            result = 31 * result + (null != patchJPEGLS ? patchJPEGLS.hashCode() : 0);
             result = 31 * result + Arrays.hashCode(imageReadParams);
             return result;
         }

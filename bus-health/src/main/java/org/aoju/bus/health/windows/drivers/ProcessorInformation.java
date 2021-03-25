@@ -40,7 +40,7 @@ import java.util.Map;
  * Utility to query Processor performance counter
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -50,7 +50,7 @@ public final class ProcessorInformation {
     private static final String PROCESSOR_INFORMATION = "Processor Information";
 
     // For Win7+ ... NAME field includes NUMA nodes
-    private static final String WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL = "Win32_PerfRawData_Counters_ProcessorInformation WHERE NOT Name LIKE\"%_Total\"";
+    private static final String WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL = "Win32_PerfRawData_Counters_ProcessorInformation WHERE NOT Name LIKE \"%_Total\"";
 
     // For Vista- ... Older systems just have processor #
     private static final String WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NOT_NAME_TOTAL = "Win32_PerfRawData_PerfOS_Processor WHERE NOT Name=\"_Total\"";
@@ -59,6 +59,7 @@ public final class ProcessorInformation {
     private static final boolean IS_WIN7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
 
     private ProcessorInformation() {
+
     }
 
     /**

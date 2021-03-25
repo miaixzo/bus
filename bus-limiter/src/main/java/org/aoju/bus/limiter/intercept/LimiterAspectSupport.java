@@ -49,7 +49,7 @@ import java.util.Collection;
  * 使用beanfactory的一些基础设施
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class LimiterAspectSupport implements BeanFactoryAware, InitializingBean, SmartInitializingSingleton {
@@ -77,7 +77,7 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
         if (this.initialized) {
             Class<?> targetClass = AopProxyUtils.ultimateTargetClass(target);
             LimitedResourceSource limitedResourceSource = getLimitedResourceSource();
-            if (limitedResourceSource != null) {
+            if (null != limitedResourceSource) {
                 Collection<LimitedResource> limitedResources = limitedResourceSource.getLimitedResource(targetClass, method);
                 if (!CollKit.isEmpty(limitedResources)) {
                     Collection<LimiterExecutionContext> contexts = getLimiterOperationContexts(limitedResources, method, args, target, targetClass);
@@ -114,7 +114,7 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
     protected LimitContextsValueWrapper limitContexts(Collection<LimiterExecutionContext> contexts) {
         Collection<LimiterExecutionContext> limited = new ArrayList<>();
         for (LimiterExecutionContext context : contexts) {
-            if (context.limit() && context.getThrowable() == null) {
+            if (context.limit() && null == context.getThrowable()) {
                 limited.add(context);
             } else {
                 releaseContexts(limited);
@@ -127,7 +127,7 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
     }
 
     protected void releaseContexts(Collection<LimiterExecutionContext> contexts) {
-        if (contexts != null && !contexts.isEmpty()) {
+        if (null != contexts && !contexts.isEmpty()) {
             for (LimiterExecutionContext context : contexts) {
                 context.release();
             }

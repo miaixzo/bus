@@ -38,7 +38,7 @@ import java.io.IOException;
  * 例如加密)
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface FileSystem {
@@ -97,7 +97,7 @@ public interface FileSystem {
         @Override
         public void deleteContents(File directory) throws IOException {
             File[] files = directory.listFiles();
-            if (files == null) {
+            if (null == files) {
                 throw new IOException("not a readable directory: " + directory);
             }
             for (File file : files) {

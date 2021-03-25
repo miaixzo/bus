@@ -37,7 +37,7 @@ import java.util.Map.Entry;
  * Jsch会话池
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public enum JschSessionPool {
@@ -105,7 +105,7 @@ public enum JschSessionPool {
      */
     public void close(String key) {
         Session session = get(key);
-        if (session != null && session.isConnected()) {
+        if (null != session && session.isConnected()) {
             session.disconnect();
         }
         this.cache.remove(key);
@@ -137,7 +137,7 @@ public enum JschSessionPool {
         Session session;
         for (Entry<String, Session> entry : this.cache) {
             session = entry.getValue();
-            if (session != null && session.isConnected()) {
+            if (null != session && session.isConnected()) {
                 session.disconnect();
             }
         }

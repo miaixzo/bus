@@ -30,7 +30,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ItemPointer implements Serializable {
@@ -60,7 +60,7 @@ public class ItemPointer implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
         ItemPointer that = (ItemPointer) o;
         return sequenceTag == that.sequenceTag &&
                 itemIndex == that.itemIndex &&

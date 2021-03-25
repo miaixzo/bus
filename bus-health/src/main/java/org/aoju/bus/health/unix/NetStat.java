@@ -41,7 +41,7 @@ import java.util.List;
  * Utility to query TCP connections
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -89,7 +89,7 @@ public final class NetStat {
                     Pair<byte[], Integer> local = parseIP(split[3]);
                     Pair<byte[], Integer> foreign = parseIP(split[4]);
                     connections.add(new InternetProtocolStats.IPConnection(type, local.getLeft(), local.getRight(), foreign.getLeft(), foreign.getRight(),
-                            state == null ? InternetProtocolStats.TcpState.NONE : InternetProtocolStats.TcpState.valueOf(state),
+                            null == state ? InternetProtocolStats.TcpState.NONE : InternetProtocolStats.TcpState.valueOf(state),
                             Builder.parseIntOrDefault(split[2], 0), Builder.parseIntOrDefault(split[1], 0), -1));
                 }
             }

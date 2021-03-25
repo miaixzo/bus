@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IODCache {
@@ -44,7 +44,7 @@ public class IODCache {
 
     public IOD get(String uri) throws IOException {
         IOD iod = map.get(uri);
-        if (iod == null)
+        if (null == iod)
             map.put(uri, iod = IOD.load(uri));
         return iod;
     }

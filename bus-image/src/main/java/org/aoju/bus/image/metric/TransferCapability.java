@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class TransferCapability implements Serializable {
@@ -65,8 +65,8 @@ public class TransferCapability implements Serializable {
     }
 
     public void setApplicationEntity(ApplicationEntity ae) {
-        if (ae != null) {
-            if (this.ae != null)
+        if (null != ae) {
+            if (null != this.ae)
                 throw new IllegalStateException("already owned by AE " +
                         this.ae.getAETitle());
         }
@@ -96,19 +96,19 @@ public class TransferCapability implements Serializable {
     }
 
     public void setRole(Role role) {
-        if (role == null)
+        if (null == role)
             throw new NullPointerException();
 
         if (this.role == role)
             return;
 
         ApplicationEntity ae = this.ae;
-        if (ae != null)
+        if (null != ae)
             ae.removeTransferCapabilityFor(sopClass, this.role);
 
         this.role = role;
 
-        if (ae != null)
+        if (null != ae)
             ae.addTransferCapability(this);
     }
 
@@ -129,12 +129,12 @@ public class TransferCapability implements Serializable {
             return;
 
         ApplicationEntity ae = this.ae;
-        if (ae != null)
+        if (null != ae)
             ae.removeTransferCapabilityFor(sopClass, this.role);
 
         this.sopClass = sopClass;
 
-        if (ae != null)
+        if (null != ae)
             ae.addTransferCapability(this);
     }
 
@@ -223,10 +223,10 @@ public class TransferCapability implements Serializable {
             sb.append(indent2).append("ts: ");
             UID.promptTo(ts, sb).append(Property.LINE_SEPARATOR);
         }
-        if (types != null)
+        if (null != types)
             sb.append(indent2).append("QueryOptions").append(types)
                     .append(Property.LINE_SEPARATOR);
-        if (storageOptions != null)
+        if (null != storageOptions)
             sb.append(indent2).append(storageOptions)
                     .append(Property.LINE_SEPARATOR);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);

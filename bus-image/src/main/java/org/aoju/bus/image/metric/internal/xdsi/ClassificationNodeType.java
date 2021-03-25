@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -48,7 +48,7 @@ public class ClassificationNodeType extends RegistryObjectType {
     protected String path;
 
     public List<ClassificationNodeType> getClassificationNode() {
-        if (this.classificationNode == null) {
+        if (null == this.classificationNode) {
             this.classificationNode = new ArrayList();
         }
         return this.classificationNode;

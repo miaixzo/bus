@@ -47,7 +47,7 @@ import java.util.Map;
  * 表示在线转换任务的默认行为.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class OnlineMadeInOffice extends AbstractOnlineOffice {
@@ -71,7 +71,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
             final Map<String, Object> properties,
             final String parameterPrefix) {
 
-        if (properties != null && !properties.isEmpty()) {
+        if (null != properties && !properties.isEmpty()) {
             for (final Map.Entry<String, Object> entry : properties.entrySet()) {
                 final String key = entry.getKey();
                 final Object value = entry.getValue();
@@ -110,7 +110,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
             final File targetFile = target.getFile();
             try {
                 MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MimeType.MULTIPART_FORM_DATA_TYPE);
-                if (targetFile != null) {
+                if (null != targetFile) {
                     // MediaType.valueOf() 里面是上传的文件类型。
                     RequestBody body = RequestBody.create(MimeType.valueOf("image/*"), sourceFile);
                     // 参数分别为， 请求key ，文件名称 ， RequestBody

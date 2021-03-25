@@ -39,7 +39,7 @@ import java.util.NoSuchElementException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BasicQuery implements Query {
@@ -80,7 +80,7 @@ public class BasicQuery implements Query {
             try {
                 while (!canceled && hasMoreMatches()) {
                     Attributes match = adjust(nextMatch());
-                    if (match != null) {
+                    if (null != match) {
                         int status = optionalKeysNotSupported
                                 ? Status.PendingWarning
                                 : Status.Pending;
@@ -113,14 +113,14 @@ public class BasicQuery implements Query {
     }
 
     protected Attributes adjust(Attributes match) {
-        if (match == null)
+        if (null == match)
             return null;
 
         Attributes filtered = new Attributes(match.size());
         // include SpecificCharacterSet also if not in keys
         if (!keys.contains(Tag.SpecificCharacterSet)) {
             String[] ss = match.getStrings(Tag.SpecificCharacterSet);
-            if (ss != null)
+            if (null != ss)
                 filtered.setString(Tag.SpecificCharacterSet, VR.CS, ss);
         }
         filtered.addSelected(match, keys);

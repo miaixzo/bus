@@ -49,7 +49,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StoreSCP extends BasicCStoreSCP {
@@ -112,7 +112,7 @@ public class StoreSCP extends BasicCStoreSCP {
     @Override
     protected void store(Association as, Presentation pc, Attributes rq, PDVInputStream data, Attributes rsp)
             throws IOException {
-        if (authorizedCallingNodes != null && !authorizedCallingNodes.isEmpty()) {
+        if (null != authorizedCallingNodes && !authorizedCallingNodes.isEmpty()) {
             Node sourceNode = Node.buildRemoteDicomNode(as);
             boolean valid = authorizedCallingNodes.stream().anyMatch(n -> n.getAet().equals(sourceNode.getAet())
                     && (!n.isValidate() || n.equalsHostname(sourceNode.getHostname())));
@@ -168,7 +168,7 @@ public class StoreSCP extends BasicCStoreSCP {
         Properties p = new Properties();
 
         try {
-            if (url != null) {
+            if (null != url) {
                 p.load(url.openStream());
             }
         } catch (IOException e) {

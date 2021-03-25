@@ -36,7 +36,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractService implements ImageService {
@@ -68,7 +68,7 @@ public abstract class AbstractService implements ImageService {
 
     private Attributes readDataset(Presentation pc, PDVInputStream data)
             throws IOException {
-        if (data == null)
+        if (null == data)
             return null;
 
         Attributes dataset = data.readDataset(pc.getTransferSyntax());

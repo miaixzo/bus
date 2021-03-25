@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class UnparsedHL7Message implements Serializable {
@@ -57,7 +57,7 @@ public class UnparsedHL7Message implements Serializable {
     }
 
     private void init() {
-        if (msh == null) {
+        if (null == msh) {
             ParsePosition pos = new ParsePosition(0);
             msh = HL7Segment.parseMSH(data, data.length, pos);
             mshLength = pos.getIndex();

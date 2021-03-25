@@ -29,7 +29,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NullifyAttributesCoercion implements AttributesCoercion {
@@ -43,14 +43,14 @@ public class NullifyAttributesCoercion implements AttributesCoercion {
     }
 
     public static AttributesCoercion valueOf(int[] nullifyTags, AttributesCoercion next) {
-        return nullifyTags != null && nullifyTags.length > 0
+        return null != nullifyTags && nullifyTags.length > 0
                 ? new NullifyAttributesCoercion(nullifyTags, next)
                 : next;
     }
 
     @Override
     public String remapUID(String uid) {
-        return next != null ? next.remapUID(uid) : uid;
+        return null != next ? next.remapUID(uid) : uid;
     }
 
     @Override
@@ -58,13 +58,13 @@ public class NullifyAttributesCoercion implements AttributesCoercion {
         VR.Holder vr = new VR.Holder();
         for (int nullifyTag : nullifyTags) {
             Object value = attrs.getValue(nullifyTag, vr);
-            if (value != null && value != Value.NULL) {
-                if (modified != null)
+            if (null != value && value != Value.NULL) {
+                if (null != modified)
                     modified.setValue(nullifyTag, vr.vr, attrs.remove(nullifyTag));
                 attrs.setNull(nullifyTag, vr.vr);
             }
         }
-        if (next != null)
+        if (null != next)
             next.coerce(attrs, modified);
     }
 

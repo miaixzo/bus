@@ -38,7 +38,7 @@ import java.util.Set;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class WindowsOSThread extends AbstractOSThread {
@@ -117,14 +117,14 @@ public class WindowsOSThread extends AbstractOSThread {
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
                 .buildThreadMapFromRegistry(pids);
         // otherwise performance counters with WMI backup
-        if (threads == null) {
+        if (null == threads) {
             threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(pids);
         }
         return updateAttributes(this.name.split(Symbol.SLASH)[0], threads.get(getThreadId()));
     }
 
     private boolean updateAttributes(String procName, ThreadPerformanceData.PerfCounterBlock pcb) {
-        if (pcb == null) {
+        if (null == pcb) {
             this.state = OSProcess.State.INVALID;
             return false;
         } else if (pcb.getName().contains(Symbol.SLASH) || procName.isEmpty()) {

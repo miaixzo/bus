@@ -30,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RingBuffer<T> {
@@ -81,7 +81,7 @@ public final class RingBuffer<T> {
             notFullSignal();
             final Node<T>[] items = this.items;
             Node<T> node = items[putIndex];
-            if (node == null) {
+            if (null == node) {
                 node = new Node<>(eventFactory.newInstance());
                 node.status = WRITEABLE;
                 items[putIndex] = node;
@@ -109,7 +109,7 @@ public final class RingBuffer<T> {
             notFullSignal();
             final Node<T>[] items = this.items;
             Node<T> node = items[putIndex];
-            if (node == null) {
+            if (null == node) {
                 node = new Node<>(eventFactory.newInstance());
                 node.status = WRITEABLE;
                 items[putIndex] = node;
@@ -156,7 +156,7 @@ public final class RingBuffer<T> {
             notFullSignal();
             final Node[] items = this.items;
             Node x = items[takeIndex];
-            if (x == null || x.status != READABLE) {
+            if (null == x || x.status != READABLE) {
                 return -1;
             }
             x.status = READING;
@@ -176,7 +176,7 @@ public final class RingBuffer<T> {
             notFullSignal();
             final Node[] items = this.items;
             Node x = items[takeIndex];
-            while (x == null || x.status != READABLE) {
+            while (null == x || x.status != READABLE) {
                 notEmpty.await();
                 notFullSignal();
                 x = items[takeIndex];

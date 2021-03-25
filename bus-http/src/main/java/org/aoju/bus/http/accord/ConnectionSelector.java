@@ -41,7 +41,7 @@ import java.util.List;
  * 可能会使用不同的协议重试连接。实例是有状态的，应该创建并用于单个连接尝试
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class ConnectionSelector {
@@ -75,7 +75,7 @@ public final class ConnectionSelector {
             }
         }
 
-        if (tlsConfiguration == null) {
+        if (null == tlsConfiguration) {
             // 这可能是第一次尝试连接，而套接字不支持任何必需的协议
             // 或者可能是重试(但此套接字支持的协议比先前的套接字所建议的少)
             throw new UnknownServiceException(

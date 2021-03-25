@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -54,7 +54,7 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();
         Memory m = BsdSysctlKit.sysctl("net.inet.tcp.stats");
-        if (m != null && m.size() >= 128) {
+        if (null != m && m.size() >= 128) {
             ft.tcps_connattempt = m.getInt(0);
             ft.tcps_accepts = m.getInt(4);
             ft.tcps_drops = m.getInt(12);
@@ -73,7 +73,7 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     private static CLibrary.BsdUdpstat queryUdpstat() {
         CLibrary.BsdUdpstat ut = new CLibrary.BsdUdpstat();
         Memory m = BsdSysctlKit.sysctl("net.inet.udp.stats");
-        if (m != null && m.size() >= 1644) {
+        if (null != m && m.size() >= 1644) {
             ut.udps_ipackets = m.getInt(0);
             ut.udps_hdrops = m.getInt(4);
             ut.udps_badsum = m.getInt(8);

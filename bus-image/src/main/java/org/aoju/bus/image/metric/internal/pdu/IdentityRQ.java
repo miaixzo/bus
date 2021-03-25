@@ -31,7 +31,7 @@ import org.aoju.bus.image.galaxy.Property;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IdentityRQ {
@@ -59,7 +59,7 @@ public class IdentityRQ {
         this.type = type;
         this.rspReq = rspReq;
         this.primaryField = primaryField.clone();
-        this.secondaryField = secondaryField != null
+        this.secondaryField = null != secondaryField
                 ? secondaryField.clone()
                 : new byte[0];
     }

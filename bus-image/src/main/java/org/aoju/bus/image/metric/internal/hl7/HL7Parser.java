@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL7Parser {
@@ -72,7 +72,7 @@ public class HL7Parser {
         startDocument();
         delimiters = Delimiter.DEFAULT;
         String line;
-        while ((line = reader.readLine()) != null) {
+        while (null != (line = reader.readLine())) {
             line = line.trim();
             if (line.length() == 0)
                 continue;
@@ -98,7 +98,7 @@ public class HL7Parser {
             while (tkindex < tks.length) {
                 String tk = tks[tkindex++];
                 Delimiter d = delimiter(tk);
-                if (d != null) {
+                if (null != d) {
                     if (d != Delimiter.escape) {
                         endElement(d);
                         startElement(d);

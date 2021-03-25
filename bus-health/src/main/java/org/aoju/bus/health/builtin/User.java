@@ -32,7 +32,7 @@ import org.aoju.bus.health.Platform;
  * OSUser class
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class User {
@@ -42,8 +42,8 @@ public class User {
     private String USER_HOME = Platform.get(System.USER_HOME, false);
     private String USER_DIR = Platform.get(System.USER_DIR, false);
     private String USER_LANGUAGE = Platform.get(System.USER_LANGUAGE, false);
-    private String USER_COUNTRY = ((Platform.get(System.USER_COUNTRY, false) == null)
-            ? Platform.get(System.USER_REGION, false) : Platform.get(System.USER_COUNTRY, false));
+    private String USER_COUNTRY = null == Platform.get(System.USER_COUNTRY, false)
+            ? Platform.get(System.USER_REGION, false) : Platform.get(System.USER_COUNTRY, false);
     private String JAVA_IO_TMPDIR = Platform.get(System.IO_TMPDIR, false);
 
     /**

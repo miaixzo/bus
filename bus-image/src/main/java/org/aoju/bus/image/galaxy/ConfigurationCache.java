@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class ConfigurationCache<C, T> {
@@ -42,7 +42,7 @@ public abstract class ConfigurationCache<C, T> {
     private long staleTimeout;
 
     public ConfigurationCache(C conf) {
-        if (conf == null)
+        if (null == conf)
             throw new NullPointerException();
         this.conf = conf;
     }
@@ -62,7 +62,7 @@ public abstract class ConfigurationCache<C, T> {
     public T get(String key) throws InstrumentException {
         long now = System.currentTimeMillis();
         CacheEntry<T> entry = cache.get(key);
-        if (entry == null
+        if (null == entry
                 || (staleTimeout != 0 && now > entry.fetchTime + staleTimeout)) {
             T value = null;
             try {

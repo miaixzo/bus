@@ -39,7 +39,7 @@ import java.util.Set;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
@@ -60,9 +60,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * @return the DynamicDataSource
      */
     public static synchronized DynamicDataSource getInstance() {
-        if (instance == null) {
+        if (null == instance) {
             synchronized (lock) {
-                if (instance == null) {
+                if (null == instance) {
                     instance = new DynamicDataSource();
                 }
             }
@@ -77,7 +77,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * @param dataSource 数据源信息
      */
     public synchronized static void addDataSource(String key, javax.sql.DataSource dataSource) {
-        if (dataSource != null && dataSource instanceof AbstractRoutingDataSource) {
+        if (null != dataSource && dataSource instanceof AbstractRoutingDataSource) {
             try {
                 Field sourceMapField = AbstractRoutingDataSource.class.getDeclaredField("resolvedDataSources");
                 sourceMapField.setAccessible(true);
@@ -111,7 +111,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         if (!keySet.contains(key)) {
             logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource", key));
         }
-        if (key == null) {
+        if (null == key) {
             Logger.info("The current datasource key ：{}", "dataSource");
         } else {
             Logger.info("The current datasource key ：{}", key);

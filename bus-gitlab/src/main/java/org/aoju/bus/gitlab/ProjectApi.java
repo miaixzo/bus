@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API project calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://docs.gitlab.com/ce/api/projects.html">Projects API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/project_statistics.html">Project statistics API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
@@ -1008,28 +1008,28 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("build_coverage_regex", project.getBuildCoverageRegex());
 
         Namespace namespace = project.getNamespace();
-        if (namespace != null && namespace.getId() != null) {
+        if (null != namespace && null != namespace.getId()) {
             formData.withParam("namespace_id", namespace.getId());
         }
 
         if (isApiVersion(ApiVersion.V3)) {
-            boolean isPublic = (project.getPublic() != null ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
+            boolean isPublic = (null != project.getPublic() ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
             formData.withParam("public", isPublic);
 
-            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
+            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
                 throw new IllegalArgumentException("GitLab API v3 does not support tag lists when creating projects");
             }
         } else {
-            Visibility visibility = (project.getVisibility() != null ? project.getVisibility() :
+            Visibility visibility = (null != project.getVisibility() ? project.getVisibility() :
                     project.getPublic() == Boolean.TRUE ? Visibility.PUBLIC : null);
             formData.withParam("visibility", visibility);
 
-            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
+            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
                 formData.withParam("tag_list", String.join(",", project.getTagList()));
             }
         }
 
-        if (project.getNamespace() != null) {
+        if (null != project.getNamespace()) {
             formData.withParam("namespace_id", project.getNamespace().getId());
         }
 
@@ -1252,18 +1252,18 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         if (isApiVersion(ApiVersion.V3)) {
             formData.withParam("visibility_level", project.getVisibilityLevel());
-            boolean isPublic = (project.getPublic() != null ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
+            boolean isPublic = (null != project.getPublic() ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
             formData.withParam("public", isPublic);
 
-            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
+            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
                 throw new IllegalArgumentException("GitLab API v3 does not support tag lists when updating projects");
             }
         } else {
-            Visibility visibility = (project.getVisibility() != null ? project.getVisibility() :
+            Visibility visibility = (null != project.getVisibility() ? project.getVisibility() :
                     project.getPublic() == Boolean.TRUE ? Visibility.PUBLIC : null);
             formData.withParam("visibility", visibility);
 
-            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
+            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
                 formData.withParam("tag_list", String.join(Symbol.COMMA, project.getTagList()));
             }
         }
@@ -1853,8 +1853,8 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<ProjectUser> getProjectUsers(Object projectIdOrPath, String search, int itemsPerPage) throws GitLabApiException {
-        MultivaluedMap<String, String> params = (search != null ? new GitLabApiForm().withParam("search", search).asMap() : null);
-        return (new Pager<ProjectUser>(this, ProjectUser.class, itemsPerPage, params,
+        MultivaluedMap<String, String> params = (null != search ? new GitLabApiForm().withParam("search", search).asMap() : null);
+        return (new Pager<>(this, ProjectUser.class, itemsPerPage, params,
                 "projects", getProjectIdOrPath(projectIdOrPath), "users"));
     }
 

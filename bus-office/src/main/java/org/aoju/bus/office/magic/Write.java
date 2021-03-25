@@ -33,7 +33,7 @@ import org.aoju.bus.office.Builder;
  * 实用程序函数，使office文本文档(Writer)更容易使用.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Write {
@@ -55,7 +55,7 @@ public final class Write {
      * @return 如果文档不是文本文档，则为null.
      */
     public static XTextDocument getTextDoc(final XComponent document) {
-        if (document == null) {
+        if (null == document) {
             return null;
         }
 

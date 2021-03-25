@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -47,7 +47,7 @@ public class LocalizedStringType {
     protected String value;
 
     public String getLang() {
-        if (this.lang == null) {
+        if (null == this.lang) {
             return "en-US";
         }
         return this.lang;
@@ -58,7 +58,7 @@ public class LocalizedStringType {
     }
 
     public String getCharset() {
-        if (this.charset == null) {
+        if (null == this.charset) {
             return Charset.DEFAULT_UTF_8;
         }
         return this.charset;

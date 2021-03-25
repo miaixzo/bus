@@ -29,7 +29,7 @@ import org.aoju.bus.logger.Logger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractSerializer implements BaseSerializer {
@@ -40,7 +40,7 @@ public abstract class AbstractSerializer implements BaseSerializer {
 
     @Override
     public <T> byte[] serialize(T obj) {
-        if (obj == null) {
+        if (null == obj) {
             return null;
         }
         try {
@@ -53,7 +53,7 @@ public abstract class AbstractSerializer implements BaseSerializer {
 
     @Override
     public <T> T deserialize(byte[] bytes) {
-        if (bytes == null) {
+        if (null == bytes) {
             return null;
         }
 

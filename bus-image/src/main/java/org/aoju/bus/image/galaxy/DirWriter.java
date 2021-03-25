@@ -46,7 +46,7 @@ import java.util.IdentityHashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DirWriter extends DirReader {
@@ -124,10 +124,10 @@ public class DirWriter extends DirReader {
                                                        File descFile, String charset) {
         Attributes fsInfo = new Attributes(7);
         fsInfo.setString(Tag.FileSetID, VR.CS, id);
-        if (descFile != null) {
+        if (null != descFile) {
             fsInfo.setString(Tag.FileSetDescriptorFileID, VR.CS,
                     toFileIDs(file, descFile));
-            if (charset != null && !charset.isEmpty())
+            if (null != charset && !charset.isEmpty())
                 fsInfo.setString(
                         Tag.SpecificCharacterSetOfFileSetDescriptorFile,
                         VR.CS, charset);
@@ -165,7 +165,7 @@ public class DirWriter extends DirReader {
     public synchronized Attributes addRootDirectoryRecord(Attributes rec)
             throws IOException {
         Attributes lastRootRecord = readLastRootDirectoryRecord();
-        if (lastRootRecord == null) {
+        if (null == lastRootRecord) {
             writeRecord(firstRecordPos, rec);
             setOffsetOfFirstRootDirectoryRecord(firstRecordPos);
         } else {
@@ -178,10 +178,10 @@ public class DirWriter extends DirReader {
     public synchronized Attributes addLowerDirectoryRecord(
             Attributes parentRec, Attributes rec) throws IOException {
         Attributes prevRec = lastChildRecords.get(parentRec);
-        if (prevRec == null)
+        if (null == prevRec)
             prevRec = findLastLowerDirectoryRecord(parentRec);
 
-        if (prevRec != null)
+        if (null != prevRec)
             addRecord(Tag.OffsetOfTheNextDirectoryRecord, prevRec, rec);
         else
             addRecord(Tag.OffsetOfReferencedLowerLevelDirectoryEntity,
@@ -193,19 +193,19 @@ public class DirWriter extends DirReader {
 
     public synchronized Attributes findOrAddPatientRecord(Attributes rec) throws IOException {
         Attributes patRec = super.findPatientRecord(rec.getString(Tag.PatientID));
-        return patRec != null ? patRec : addRootDirectoryRecord(rec);
+        return null != patRec ? patRec : addRootDirectoryRecord(rec);
     }
 
     public synchronized Attributes findOrAddStudyRecord(Attributes patRec, Attributes rec)
             throws IOException {
         Attributes studyRec = super.findStudyRecord(patRec, rec.getString(Tag.StudyInstanceUID));
-        return studyRec != null ? studyRec : addLowerDirectoryRecord(patRec, rec);
+        return null != studyRec ? studyRec : addLowerDirectoryRecord(patRec, rec);
     }
 
     public synchronized Attributes findOrAddSeriesRecord(Attributes studyRec, Attributes rec)
             throws IOException {
         Attributes seriesRec = super.findSeriesRecord(studyRec, rec.getString(Tag.SeriesInstanceUID));
-        return seriesRec != null ? seriesRec : addLowerDirectoryRecord(studyRec, rec);
+        return null != seriesRec ? seriesRec : addLowerDirectoryRecord(studyRec, rec);
     }
 
     public synchronized boolean deleteRecord(Attributes rec)
@@ -366,7 +366,7 @@ public class DirWriter extends DirReader {
 
     private boolean purge(Attributes rec, int[] count) throws IOException {
         boolean purge = true;
-        while (rec != null) {
+        while (null != rec) {
             if (purge(findLowerDirectoryRecordInUse(rec, false), count)
                     && !rec.containsValue(Tag.ReferencedFileID)) {
                 deleteRecord(rec);

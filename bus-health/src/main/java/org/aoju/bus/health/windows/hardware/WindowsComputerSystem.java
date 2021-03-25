@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from WMI.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -92,7 +92,7 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
 
     private static String querySystemSerialNumber() {
         String result;
-        if (((result = querySerialFromBios()) != null || (result = querySerialFromCsProduct()) != null)
+        if ((null != (result = querySerialFromBios()) || null != (result = querySerialFromCsProduct()))
                 && !StringKit.isBlank(result)) {
             return result;
         }

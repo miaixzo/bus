@@ -47,7 +47,7 @@ import java.net.URL;
  * 它将向LibreOffice在线服务器发送转换请求，并等待任务完成或达到配置的任务执行超时.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
@@ -83,8 +83,8 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
             final String path = resourceLocation.substring("classpath:".length());
             final String description = "class path resource [" + path + "]";
             final ClassLoader cl = ClassKit.getDefaultClassLoader();
-            final URL url = (cl != null ? cl.getResource(path) : ClassLoader.getSystemResource(path));
-            if (url == null) {
+            final URL url = (null != cl ? cl.getResource(path) : ClassLoader.getSystemResource(path));
+            if (null == url) {
                 throw new FileNotFoundException(
                         description + " cannot be resolved to absolute file path because it does not exist");
             }

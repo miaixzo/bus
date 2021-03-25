@@ -46,7 +46,7 @@ import java.util.Arrays;
  * 不可变的字节序列.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ByteString implements Serializable, Comparable<ByteString> {
@@ -65,12 +65,16 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString of(byte... data) {
-        if (data == null) throw new IllegalArgumentException("data == null");
+        if (null == data) {
+            throw new IllegalArgumentException("data == null");
+        }
         return new ByteString(data.clone());
     }
 
     public static ByteString of(byte[] data, int offset, int byteCount) {
-        if (data == null) throw new IllegalArgumentException("data == null");
+        if (null == data) {
+            throw new IllegalArgumentException("data == null");
+        }
         IoKit.checkOffsetAndCount(data.length, offset, byteCount);
 
         byte[] copy = new byte[byteCount];
@@ -79,7 +83,9 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString of(ByteBuffer data) {
-        if (data == null) throw new IllegalArgumentException("data == null");
+        if (null == data) {
+            throw new IllegalArgumentException("data == null");
+        }
 
         byte[] copy = new byte[data.remaining()];
         data.get(copy);
@@ -87,27 +93,39 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString encodeUtf8(String s) {
-        if (s == null) throw new IllegalArgumentException("s == null");
+        if (null == s) {
+            throw new IllegalArgumentException("s == null");
+        }
         ByteString byteString = new ByteString(s.getBytes(Charset.UTF_8));
         byteString.utf8 = s;
         return byteString;
     }
 
     public static ByteString encodeString(String s, java.nio.charset.Charset charset) {
-        if (s == null) throw new IllegalArgumentException("s == null");
-        if (charset == null) throw new IllegalArgumentException("charset == null");
+        if (null == s) {
+            throw new IllegalArgumentException("s == null");
+        }
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
         return new ByteString(s.getBytes(charset));
     }
 
     public static ByteString decodeBase64(String base64) {
-        if (base64 == null) throw new IllegalArgumentException("base64 == null");
+        if (null == base64) {
+            throw new IllegalArgumentException("base64 == null");
+        }
         byte[] decoded = Base64.decode(base64);
-        return decoded != null ? new ByteString(decoded) : null;
+        return null != decoded ? new ByteString(decoded) : null;
     }
 
     public static ByteString decodeHex(String hex) {
-        if (hex == null) throw new IllegalArgumentException("hex == null");
-        if (hex.length() % 2 != 0) throw new IllegalArgumentException("Unexpected hex string: " + hex);
+        if (null == hex) {
+            throw new IllegalArgumentException("hex == null");
+        }
+        if (hex.length() % 2 != 0) {
+            throw new IllegalArgumentException("Unexpected hex string: " + hex);
+        }
 
         byte[] result = new byte[hex.length() / 2];
         for (int i = 0; i < result.length; i++) {
@@ -126,8 +144,12 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString read(InputStream in, int byteCount) throws IOException {
-        if (in == null) throw new IllegalArgumentException("in == null");
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (null == in) {
+            throw new IllegalArgumentException("in == null");
+        }
+        if (byteCount < 0) {
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        }
 
         byte[] result = new byte[byteCount];
         for (int offset = 0, read; offset < byteCount; offset += read) {
@@ -155,11 +177,13 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public String utf8() {
         String result = utf8;
         // We don't care if we double-allocate in racy code.
-        return result != null ? result : (utf8 = new String(data, Charset.UTF_8));
+        return null != result ? result : (utf8 = new String(data, Charset.UTF_8));
     }
 
     public String string(java.nio.charset.Charset charset) {
-        if (charset == null) throw new IllegalArgumentException("charset == null");
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
         return new String(data, charset);
     }
 
@@ -312,7 +336,9 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public void write(OutputStream out) throws IOException {
-        if (out == null) throw new IllegalArgumentException("out == null");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
         out.write(data);
     }
 

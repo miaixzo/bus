@@ -32,7 +32,7 @@ import javax.xml.transform.Templates;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class XSLTAttributesCoercion implements AttributesCoercion {
@@ -50,7 +50,7 @@ public class XSLTAttributesCoercion implements AttributesCoercion {
 
     @Override
     public String remapUID(String uid) {
-        return next != null ? next.remapUID(uid) : uid;
+        return null != next ? next.remapUID(uid) : uid;
     }
 
     public boolean isIncludeNameSpaceDeclaration() {
@@ -101,12 +101,12 @@ public class XSLTAttributesCoercion implements AttributesCoercion {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        if (modified != null) {
+        if (null != modified) {
             attrs.update(Attributes.UpdatePolicy.OVERWRITE, newAttrs, modified);
         } else {
             attrs.addAll(newAttrs);
         }
-        if (next != null)
+        if (null != next)
             next.coerce(attrs, modified);
     }
 

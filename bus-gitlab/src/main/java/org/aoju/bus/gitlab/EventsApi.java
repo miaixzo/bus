@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab events calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class EventsApi extends AbstractApi {
@@ -84,7 +84,7 @@ public class EventsApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", null != targetType ? targetType.toValue().toLowerCase() : null)
                 .withParam("before", before)
                 .withParam("after", after)
                 .withParam("sort", sortOrder)
@@ -115,7 +115,7 @@ public class EventsApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", null != targetType ? targetType.toValue().toLowerCase() : null)
                 .withParam("before", before)
                 .withParam("after", after)
                 .withParam("sort", sortOrder);
@@ -181,7 +181,7 @@ public class EventsApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", null != targetType ? targetType.toValue().toLowerCase() : null)
                 .withParam("before", before)
                 .withParam("after", after)
                 .withParam("sort", sortOrder)
@@ -214,7 +214,7 @@ public class EventsApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", null != targetType ? targetType.toValue().toLowerCase() : null)
                 .withParam("before", before)
                 .withParam("after", after)
                 .withParam("sort", sortOrder);
@@ -282,7 +282,7 @@ public class EventsApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", null != targetType ? targetType.toValue().toLowerCase() : null)
                 .withParam("before", before)
                 .withParam("after", after)
                 .withParam("sort", sortOrder)
@@ -315,7 +315,7 @@ public class EventsApi extends AbstractApi {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", null != targetType ? targetType.toValue().toLowerCase() : null)
                 .withParam("before", before)
                 .withParam("after", after)
                 .withParam("sort", sortOrder);

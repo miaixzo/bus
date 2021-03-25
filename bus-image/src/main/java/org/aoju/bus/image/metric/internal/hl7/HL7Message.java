@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL7Message extends ArrayList<HL7Segment> {
@@ -59,8 +59,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
         String encodingCharacters = seg.getEncodingCharacters();
         String charsetName = HL7Charset.toCharsetName(seg.getField(17, defCharset));
         msg.add(seg);
-        while ((seg = HL7Segment.parse(
-                b, size, pos, fieldSeparator, encodingCharacters, charsetName)) != null)
+        while (null != (seg = HL7Segment.parse(b, size, pos, fieldSeparator, encodingCharacters, charsetName)))
             msg.add(seg);
         msg.trimToSize();
         return msg;
@@ -82,7 +81,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
         msa.setField(0, "MSA");
         msa.setField(1, ackCode);
         msa.setField(2, msh.getMessageControlID());
-        msa.setField(3, text != null && text.length() > 80 ? text.substring(0, 80) : text);
+        msa.setField(3, null != text && text.length() > 80 ? text.substring(0, 80) : text);
         HL7Message ack = new HL7Message(2);
         ack.add(ackmsh);
         ack.add(msa);
@@ -111,7 +110,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
     public static HL7Message makeACK(HL7Segment msh, HL7Exception e) {
         HL7Message ack = makeACK(msh, e.getAcknowledgmentCode(), e.getErrorMessage());
         HL7Segment err = e.getErrorSegment();
-        if (err != null)
+        if (null != err)
             ack.add(err);
         return ack;
     }
@@ -135,7 +134,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
             len += segSize - 1;
             for (int i = 0; i < segSize; i++) {
                 String s = seg.getField(i, null);
-                if (s != null)
+                if (null != s)
                     len += s.length();
             }
         }
@@ -146,7 +145,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
             int segSize = seg.size();
             for (int i = 0; i < segSize; i++) {
                 String s = seg.getField(i, null);
-                if (s != null) {
+                if (null != s) {
                     int l = s.length();
                     s.getChars(0, l, cs, off);
                     off += l;

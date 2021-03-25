@@ -37,7 +37,7 @@ import java.util.List;
  * 自动生成需要的基本信息
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -160,16 +160,16 @@ public class TableEntity implements Serializable {
             throw new RuntimeException("自动生成实体类错误：" + e.getMessage());
         } finally {
             try {
-                if (rs != null) rs.close();
+                if (null != rs) rs.close();
             } catch (SQLException se2) {
             }
             // 关闭资源
             try {
-                if (pstemt != null) pstemt.close();
+                if (null != pstemt) pstemt.close();
             } catch (SQLException se2) {
             }// 什么都不做
             try {
-                if (con != null) con.close();
+                if (null != con) con.close();
             } catch (SQLException se) {
                 se.printStackTrace();
             }

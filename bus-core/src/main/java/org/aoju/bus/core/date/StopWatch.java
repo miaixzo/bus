@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StopWatch {
@@ -205,7 +205,7 @@ public class StopWatch {
      * @see #currentTaskName()
      */
     public boolean isRunning() {
-        return (this.currentTaskName != null);
+        return null != this.currentTaskName;
     }
 
     /**
@@ -225,7 +225,7 @@ public class StopWatch {
      * @throws IllegalStateException 无任务
      */
     public long getLastTaskTimeNanos() throws IllegalStateException {
-        if (this.lastTaskInfo == null) {
+        if (null == this.lastTaskInfo) {
             throw new IllegalStateException("No tasks run: can't get last task interval");
         }
         return this.lastTaskInfo.getTimeNanos();
@@ -238,7 +238,7 @@ public class StopWatch {
      * @throws IllegalStateException 无任务
      */
     public long getLastTaskTimeMillis() throws IllegalStateException {
-        if (this.lastTaskInfo == null) {
+        if (null == this.lastTaskInfo) {
             throw new IllegalStateException("No tasks run: can't get last task interval");
         }
         return this.lastTaskInfo.getTimeMillis();
@@ -251,7 +251,7 @@ public class StopWatch {
      * @throws IllegalStateException 无任务
      */
     public String getLastTaskName() throws IllegalStateException {
-        if (this.lastTaskInfo == null) {
+        if (null == this.lastTaskInfo) {
             throw new IllegalStateException("No tasks run: can't get last task name");
         }
         return this.lastTaskInfo.getTaskName();
@@ -264,7 +264,7 @@ public class StopWatch {
      * @throws IllegalStateException 无任务
      */
     public TaskInfo getLastTaskInfo() throws IllegalStateException {
-        if (this.lastTaskInfo == null) {
+        if (null == this.lastTaskInfo) {
             throw new IllegalStateException("No tasks run: can't get last task info");
         }
         return this.lastTaskInfo;

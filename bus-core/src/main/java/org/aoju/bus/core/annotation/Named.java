@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * 注解命名
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Binding
@@ -53,7 +53,7 @@ public @interface Named {
         }
 
         public static <T> T checkNotNull(T reference, Object errorMessage) {
-            if (reference == null) {
+            if (null == reference) {
                 throw new NullPointerException(String.valueOf(errorMessage));
             } else {
                 return reference;

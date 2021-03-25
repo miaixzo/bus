@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -61,7 +61,7 @@ public class RegistryObjectQueryType extends FilterQueryType {
     protected List<AssociationQueryType> targetAssociationQuery;
 
     public List<SlotBranchType> getSlotBranch() {
-        if (this.slotBranch == null) {
+        if (null == this.slotBranch) {
             this.slotBranch = new ArrayList();
         }
         return this.slotBranch;
@@ -92,14 +92,14 @@ public class RegistryObjectQueryType extends FilterQueryType {
     }
 
     public List<ClassificationQueryType> getClassificationQuery() {
-        if (this.classificationQuery == null) {
+        if (null == this.classificationQuery) {
             this.classificationQuery = new ArrayList();
         }
         return this.classificationQuery;
     }
 
     public List<ExternalIdentifierQueryType> getExternalIdentifierQuery() {
-        if (this.externalIdentifierQuery == null) {
+        if (null == this.externalIdentifierQuery) {
             this.externalIdentifierQuery = new ArrayList();
         }
         return this.externalIdentifierQuery;
@@ -122,14 +122,14 @@ public class RegistryObjectQueryType extends FilterQueryType {
     }
 
     public List<AssociationQueryType> getSourceAssociationQuery() {
-        if (this.sourceAssociationQuery == null) {
+        if (null == this.sourceAssociationQuery) {
             this.sourceAssociationQuery = new ArrayList();
         }
         return this.sourceAssociationQuery;
     }
 
     public List<AssociationQueryType> getTargetAssociationQuery() {
-        if (this.targetAssociationQuery == null) {
+        if (null == this.targetAssociationQuery) {
             this.targetAssociationQuery = new ArrayList();
         }
         return this.targetAssociationQuery;

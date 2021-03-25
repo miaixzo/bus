@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * which can contain a User or Group instance.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ApprovedBy {
@@ -45,7 +45,7 @@ public class ApprovedBy {
     }
 
     public void setUser(User user) {
-        if (group != null) {
+        if (null != group) {
             throw new RuntimeException("ApprovedBy is already set to a group, cannot be set to a user");
         }
 
@@ -57,7 +57,7 @@ public class ApprovedBy {
     }
 
     public void setGroup(Group group) {
-        if (user != null) {
+        if (null != user) {
             throw new RuntimeException("ApprovedBy is already set to a user, cannot be set to a group");
         }
 
@@ -72,6 +72,6 @@ public class ApprovedBy {
      */
     @JsonIgnore
     public Object getApprovedBy() {
-        return (user != null ? user : group);
+        return (null != user ? user : group);
     }
 }

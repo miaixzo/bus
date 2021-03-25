@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  * such a way that it could be sub-classed and have its behavior modified.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Priority(Integer.MIN_VALUE)
@@ -148,7 +148,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         this.level = level;
         this.maxEntitySize = maxEntitySize;
 
-        if (maskedHeaderNames != null) {
+        if (null != maskedHeaderNames) {
             maskedHeaderNames.forEach(h -> this.maskedHeaderNames.add(h.toLowerCase()));
         }
     }
@@ -161,7 +161,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      */
     public void setMaskedHeaderNames(final List<String> maskedHeaderNames) {
         this.maskedHeaderNames.clear();
-        if (maskedHeaderNames != null) {
+        if (null != maskedHeaderNames) {
             maskedHeaderNames.forEach(h -> {
                 addMaskedHeaderName(h);
             });
@@ -174,7 +174,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * @param maskedHeaderName the masked header name to add
      */
     public void addMaskedHeaderName(String maskedHeaderName) {
-        if (maskedHeaderName != null) {
+        if (null != maskedHeaderName) {
             maskedHeaderName = maskedHeaderName.trim();
             if (maskedHeaderName.length() > 0) {
                 maskedHeaderNames.add(maskedHeaderName.toLowerCase());
@@ -183,7 +183,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     protected void log(final StringBuilder sb) {
-        if (logger != null) {
+        if (null != logger) {
             logger.log(level, sb.toString());
         }
     }
@@ -316,7 +316,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         }
 
         final Object requestId = requestContext.getProperty(LOGGING_ID_PROPERTY);
-        final long id = requestId != null ? (Long) requestId : _id.incrementAndGet();
+        final long id = null != requestId ? (Long) requestId : _id.incrementAndGet();
 
         final StringBuilder sb = new StringBuilder();
         printResponseLine(sb, "Received server response", id, responseContext.getStatus());

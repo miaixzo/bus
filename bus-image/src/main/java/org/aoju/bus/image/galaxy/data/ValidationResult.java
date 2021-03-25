@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ValidationResult {
@@ -57,19 +57,19 @@ public class ValidationResult {
     }
 
     public boolean hasMissingAttributes() {
-        return missingAttributes != null;
+        return null != missingAttributes;
     }
 
     public boolean hasMissingAttributeValues() {
-        return missingAttributeValues != null;
+        return null != missingAttributeValues;
     }
 
     public boolean hasInvalidAttributeValues() {
-        return invalidAttributeValues != null;
+        return null != invalidAttributeValues;
     }
 
     public boolean hasNotAllowedAttributes() {
-        return notAllowedAttributes != null;
+        return null != notAllowedAttributes;
     }
 
     public boolean isValid() {
@@ -80,13 +80,13 @@ public class ValidationResult {
     }
 
     public void addMissingAttribute(IOD.DataElement dataElement) {
-        if (missingAttributes == null)
+        if (null == missingAttributes)
             missingAttributes = new ArrayList<>();
         missingAttributes.add(dataElement);
     }
 
     public void addMissingAttributeValue(IOD.DataElement dataElement) {
-        if (missingAttributeValues == null)
+        if (null == missingAttributeValues)
             missingAttributeValues = new ArrayList<>();
         missingAttributeValues.add(dataElement);
     }
@@ -97,7 +97,7 @@ public class ValidationResult {
 
     public void addInvalidAttributeValue(IOD.DataElement dataElement,
                                          Invalid reason, ValidationResult[] itemValidationResult, IOD[] missingItems) {
-        if (invalidAttributeValues == null)
+        if (null == invalidAttributeValues)
             invalidAttributeValues = new ArrayList<>();
         invalidAttributeValues.add(
                 new InvalidAttributeValue(dataElement, reason,
@@ -105,7 +105,7 @@ public class ValidationResult {
     }
 
     public void addNotAllowedAttribute(DataElement el) {
-        if (notAllowedAttributes == null)
+        if (null == notAllowedAttributes)
             notAllowedAttributes = new ArrayList<>();
         notAllowedAttributes.add(el);
     }
@@ -124,7 +124,7 @@ public class ValidationResult {
 
     public int[] tagsOfInvalidAttributeValues() {
         ArrayList<InvalidAttributeValue> list = invalidAttributeValues;
-        if (list == null)
+        if (null == list)
             return new int[]{};
 
         int[] tags = new int[list.size()];
@@ -154,7 +154,7 @@ public class ValidationResult {
     }
 
     private int[] tagsOf(List<DataElement> list) {
-        if (list == null)
+        if (null == list)
             return new int[]{};
 
         int[] tags = new int[list.size()];
@@ -165,16 +165,16 @@ public class ValidationResult {
 
     public String getErrorComment() {
         StringBuilder sb = new StringBuilder();
-        if (notAllowedAttributes != null)
+        if (null != notAllowedAttributes)
             return errorComment(sb, "Not allowed Attribute",
                     tagsOfNotAllowedAttributes()).toString();
-        if (missingAttributes != null)
+        if (null != missingAttributes)
             return errorComment(sb, "Missing Attribute",
                     tagsOfMissingAttributes()).toString();
-        if (missingAttributeValues != null)
+        if (null != missingAttributeValues)
             return errorComment(sb, "Missing Value of Attribute",
                     tagsOfMissingAttributeValues()).toString();
-        if (invalidAttributeValues != null)
+        if (null != invalidAttributeValues)
             return errorComment(sb, "Invalid Attribute",
                     tagsOfInvalidAttributeValues()).toString();
         return null;
@@ -186,16 +186,16 @@ public class ValidationResult {
             return "VALID";
 
         StringBuilder sb = new StringBuilder();
-        if (notAllowedAttributes != null)
+        if (null != notAllowedAttributes)
             errorComment(sb, "Not allowed Attribute",
                     tagsOfNotAllowedAttributes()).append(Property.LINE_SEPARATOR);
-        if (missingAttributes != null)
+        if (null != missingAttributes)
             errorComment(sb, "Missing Attribute",
                     tagsOfMissingAttributes()).append(Property.LINE_SEPARATOR);
-        if (missingAttributeValues != null)
+        if (null != missingAttributeValues)
             errorComment(sb, "Missing Value of Attribute",
                     tagsOfMissingAttributeValues()).append(Property.LINE_SEPARATOR);
-        if (invalidAttributeValues != null)
+        if (null != invalidAttributeValues)
             errorComment(sb, "Invalid Attribute",
                     tagsOfInvalidAttributeValues()).append(Property.LINE_SEPARATOR);
 
@@ -212,13 +212,13 @@ public class ValidationResult {
     }
 
     private void appendTextTo(int level, Attributes attrs, StringBuilder sb) {
-        if (notAllowedAttributes != null)
+        if (null != notAllowedAttributes)
             appendTextTo(level, attrs, "Not allowed Attributes:", notAllowedAttributes, sb);
-        if (missingAttributes != null)
+        if (null != missingAttributes)
             appendTextTo(level, attrs, "Missing Attributes:", missingAttributes, sb);
-        if (missingAttributeValues != null)
+        if (null != missingAttributeValues)
             appendTextTo(level, attrs, "Missing Attribute Values:", missingAttributeValues, sb);
-        if (invalidAttributeValues != null)
+        if (null != invalidAttributeValues)
             appendInvalidAttributeValues(level, attrs, "Invalid Attribute Values:", sb);
     }
 
@@ -259,7 +259,7 @@ public class ValidationResult {
                 appendIODRef(iav.dataElement.getLineNumber(), sb);
             }
             sb.append(Property.LINE_SEPARATOR);
-            if (iav.missingItems != null) {
+            if (null != iav.missingItems) {
                 for (IOD iod : iav.missingItems) {
                     appendPrefixTo(level + 1, sb);
                     sb.append("Missing Item");
@@ -267,7 +267,7 @@ public class ValidationResult {
                     sb.append(Property.LINE_SEPARATOR);
                 }
             }
-            if (iav.itemValidationResults != null) {
+            if (null != iav.itemValidationResults) {
                 Sequence seq = (Sequence) value;
                 for (int i = 0; i < iav.itemValidationResults.length; i++) {
                     ValidationResult itemResult = iav.itemValidationResults[i];

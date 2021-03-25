@@ -39,7 +39,7 @@ import java.util.*;
  * 一个与RFC 2818一致的HostnameVerifier
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
@@ -65,21 +65,21 @@ public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
         List<String> result = new ArrayList<>();
         try {
             Collection<?> subjectAltNames = certificate.getSubjectAlternativeNames();
-            if (subjectAltNames == null) {
+            if (null == subjectAltNames) {
                 return Collections.emptyList();
             }
             for (Object subjectAltName : subjectAltNames) {
                 List<?> entry = (List<?>) subjectAltName;
-                if (entry == null || entry.size() < 2) {
+                if (null == entry || entry.size() < 2) {
                     continue;
                 }
                 Integer altNameType = (Integer) entry.get(0);
-                if (altNameType == null) {
+                if (null == altNameType) {
                     continue;
                 }
                 if (altNameType == type) {
                     String altName = (String) entry.get(1);
-                    if (altName != null) {
+                    if (null != altName) {
                         result.add(altName);
                     }
                 }
@@ -136,11 +136,11 @@ public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
      */
     public boolean verifyHostname(String hostname, String pattern) {
         // 基本健康检查
-        if ((hostname == null) || (hostname.length() == 0) || (hostname.startsWith(Symbol.DOT))
+        if ((null == hostname) || (hostname.length() == 0) || (hostname.startsWith(Symbol.DOT))
                 || (hostname.endsWith(Symbol.DOUBLE_DOT))) {
             return false;
         }
-        if ((pattern == null) || (pattern.length() == 0) || (pattern.startsWith(Symbol.DOT))
+        if ((null == pattern) || (pattern.length() == 0) || (pattern.startsWith(Symbol.DOT))
                 || (pattern.endsWith(Symbol.DOUBLE_DOT))) {
             return false;
         }

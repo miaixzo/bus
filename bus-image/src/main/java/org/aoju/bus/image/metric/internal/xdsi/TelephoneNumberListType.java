@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public class TelephoneNumberListType {
     protected List<TelephoneNumberType> telephoneNumber;
 
     public List<TelephoneNumberType> getTelephoneNumber() {
-        if (this.telephoneNumber == null) {
+        if (null == this.telephoneNumber) {
             this.telephoneNumber = new ArrayList();
         }
         return this.telephoneNumber;

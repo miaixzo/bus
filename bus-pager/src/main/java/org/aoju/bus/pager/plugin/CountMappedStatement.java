@@ -37,7 +37,7 @@ import java.util.List;
  * 创建新的MappedStatement,主要是Count返回值int
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CountMappedStatement {
@@ -58,7 +58,7 @@ public class CountMappedStatement {
         builder.fetchSize(ms.getFetchSize());
         builder.statementType(ms.getStatementType());
         builder.keyGenerator(ms.getKeyGenerator());
-        if (ms.getKeyProperties() != null && ms.getKeyProperties().length != 0) {
+        if (null != ms.getKeyProperties() && ms.getKeyProperties().length != 0) {
             StringBuilder keyProperties = new StringBuilder();
             for (String keyProperty : ms.getKeyProperties()) {
                 keyProperties.append(keyProperty).append(Symbol.COMMA);

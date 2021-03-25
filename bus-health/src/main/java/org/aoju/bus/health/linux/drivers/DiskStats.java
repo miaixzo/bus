@@ -40,7 +40,7 @@ import java.util.Map;
  * Utility to read disk statistics from {@code /proc/diskstats}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -71,7 +71,7 @@ public final class DiskStats {
                     statMap.put(enumArray[i], Builder.parseLongOrDefault(split[i], 0L));
                 }
             }
-            if (name != null) {
+            if (null != name) {
                 diskStatMap.put(name, statMap);
             }
         }

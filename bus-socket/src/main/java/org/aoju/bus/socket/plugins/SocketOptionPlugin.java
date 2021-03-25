@@ -38,7 +38,7 @@ import java.util.Map;
  * 用于设置Socket Option的插件
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
@@ -94,7 +94,7 @@ public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
 
     public final <V> V getOption(SocketOption<V> socketOption) {
         Object value = optionMap.get(socketOption);
-        return value == null ? null : (V) value;
+        return null == value ? null : (V) value;
     }
 
     private void put0(SocketOption socketOption, Object value) {

@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {
@@ -475,7 +475,7 @@ public abstract class AbstractProvider implements Provider {
                 if (null == name && pos != i) {
                     // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
                     addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
-                } else if (name != null) {
+                } else if (null != name) {
                     addParam(params, name, str.substring(pos, i), decode);
                     name = null;
                 }
@@ -485,12 +485,12 @@ public abstract class AbstractProvider implements Provider {
 
         // 处理结尾
         if (pos != i) {
-            if (name == null) {
+            if (null == name) {
                 addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
             } else {
                 addParam(params, name, str.substring(pos, i), decode);
             }
-        } else if (name != null) {
+        } else if (null != name) {
             addParam(params, name, Normal.EMPTY, decode);
         }
 

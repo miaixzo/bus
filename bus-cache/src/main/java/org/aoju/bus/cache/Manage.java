@@ -38,20 +38,21 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Singleton
 public class Manage {
 
-    // defaultCache和cachePool直接使用Pair实现, 减小new Object的损耗
+    /**
+     * defaultCache和cachePool直接使用Pair实现, 减小new Object的损耗
+     */
     private CachePair<String, CacheX> defaultCache;
 
     private Map<String, CachePair<String, CacheX>> cachePool = new ConcurrentHashMap<>();
 
     @Inject
     public void setCachePool(Map<String, CacheX> caches) {
-        // default cache impl
         Map.Entry<String, CacheX> entry = caches.entrySet().iterator().next();
         this.defaultCache = CachePair.of(entry.getKey(), entry.getValue());
 
@@ -76,7 +77,7 @@ public class Manage {
     }
 
     public void writeSingle(String cache, String key, Object value, int expire) {
-        if (value != null) {
+        if (null != value) {
             try {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 
@@ -111,21 +112,18 @@ public class Manage {
                 Set<String> notHitKeys = new LinkedHashSet<>();
                 for (String key : keys) {
                     Object value = cacheMap.get(key);
-
-                    if (value == null) {
+                    if (null == value) {
                         notHitKeys.add(key);
                     } else {
                         hitValueMap.put(key, value);
                     }
                 }
-
                 cacheKeys = new CacheKeys(hitValueMap, notHitKeys);
             } catch (Throwable e) {
                 Logger.error("read multi cache failed, keys: {}", keys, e);
                 cacheKeys = new CacheKeys();
             }
         }
-
         return cacheKeys;
     }
 
@@ -145,7 +143,7 @@ public class Manage {
     }
 
     public void remove(String cache, String... keys) {
-        if (keys != null && keys.length != 0) {
+        if (null != keys && keys.length != 0) {
             try {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 

@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public class QueryExpressionType {
     protected String queryLanguage;
 
     public List<Object> getContent() {
-        if (this.content == null) {
+        if (null == this.content) {
             this.content = new ArrayList();
         }
         return this.content;

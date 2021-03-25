@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -46,7 +46,7 @@ public class RegistryObjectListType {
     protected List<JAXBElement<? extends IdentifiableType>> identifiable;
 
     public List<JAXBElement<? extends IdentifiableType>> getIdentifiable() {
-        if (this.identifiable == null) {
+        if (null == this.identifiable) {
             this.identifiable = new ArrayList();
         }
         return this.identifiable;

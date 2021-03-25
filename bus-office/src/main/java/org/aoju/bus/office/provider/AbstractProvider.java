@@ -44,7 +44,7 @@ import java.io.InputStream;
  * 所有文档转换器实现的基类.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {
@@ -57,14 +57,14 @@ public abstract class AbstractProvider implements Provider {
         super();
 
         OfficeManager manager = officeManager;
-        if (manager == null) {
+        if (null == manager) {
             manager = InstalledOfficeHolder.getInstance();
-            if (manager == null) {
+            if (null == manager) {
                 throw new IllegalStateException("An office manager is required in order to build a converter.");
             }
         }
         this.officeManager = manager;
-        this.formatRegistry = formatRegistry == null ? DefaultFormatRegistry.getInstance() : formatRegistry;
+        this.formatRegistry = null == formatRegistry ? DefaultFormatRegistry.getInstance() : formatRegistry;
     }
 
     @Override
@@ -72,7 +72,7 @@ public abstract class AbstractProvider implements Provider {
         final SourceFromFileProvider specs = new SourceFromFileProvider(source);
         final DocumentFormat format =
                 formatRegistry.getFormatByExtension(FileKit.getExtension(source.getName()));
-        if (format != null) {
+        if (null != format) {
             specs.setDocumentFormat(format);
         }
         return convert(specs);

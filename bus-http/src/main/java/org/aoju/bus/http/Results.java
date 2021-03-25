@@ -38,7 +38,7 @@ import java.util.List;
  * 执行结果
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface Results {
@@ -63,7 +63,7 @@ public interface Results {
      * @return Results
      */
     static Results of(Response response, TaskExecutor taskExecutor) {
-        if (response != null) {
+        if (null != response) {
             return new RealResult(null, response, taskExecutor);
         }
         throw new IllegalArgumentException("Response cannot be empty!");

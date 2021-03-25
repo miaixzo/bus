@@ -38,7 +38,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Criteria {
@@ -83,7 +83,7 @@ public class Criteria {
     }
 
     public void addCriterion(String condition) {
-        if (condition == null) {
+        if (null == condition) {
             throw new InstrumentException("Value for condition cannot be null");
         }
         if (condition.startsWith(Normal.NULL)) {
@@ -93,35 +93,35 @@ public class Criteria {
     }
 
     public void addCriterion(String condition, Object value, String property) {
-        if (value == null) {
+        if (null == value) {
             if (notNull) {
                 throw new InstrumentException("Value for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value));
     }
 
     public void addCriterion(String condition, Object value1, Object value2, String property) {
-        if (value1 == null || value2 == null) {
+        if (null == value1 || null == value2) {
             if (notNull) {
                 throw new InstrumentException("Between values for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value1, value2));
     }
 
     public void addOrCriterion(String condition) {
-        if (condition == null) {
+        if (null == condition) {
             throw new InstrumentException("Value for condition cannot be null");
         }
         if (condition.startsWith(Normal.NULL)) {
@@ -131,28 +131,28 @@ public class Criteria {
     }
 
     public void addOrCriterion(String condition, Object value, String property) {
-        if (value == null) {
+        if (null == value) {
             if (notNull) {
                 throw new InstrumentException("Value for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value, true));
     }
 
     public void addOrCriterion(String condition, Object value1, Object value2, String property) {
-        if (value1 == null || value2 == null) {
+        if (null == value1 || null == value2) {
             if (notNull) {
                 throw new InstrumentException("Between values for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value1, value2, true));
@@ -285,10 +285,10 @@ public class Criteria {
         String[] properties = metaObject.getGetterNames();
         for (String property : properties) {
             //属性和列对应Map中有此属性
-            if (propertyMap.get(property) != null) {
+            if (null != propertyMap.get(property)) {
                 Object value = metaObject.getValue(property);
                 //属性值不为空
-                if (value != null) {
+                if (null != value) {
                     andEqualTo(property, value);
                 }
             }
@@ -307,10 +307,10 @@ public class Criteria {
         String[] properties = metaObject.getGetterNames();
         for (String property : properties) {
             //属性和列对应Map中有此属性
-            if (propertyMap.get(property) != null) {
+            if (null != propertyMap.get(property)) {
                 Object value = metaObject.getValue(property);
                 //属性值不为空
-                if (value != null) {
+                if (null != value) {
                     andEqualTo(property, value);
                 } else {
                     andIsNull(property);
@@ -440,10 +440,10 @@ public class Criteria {
         String[] properties = metaObject.getGetterNames();
         for (String property : properties) {
             //属性和列对应Map中有此属性
-            if (propertyMap.get(property) != null) {
+            if (null != propertyMap.get(property)) {
                 Object value = metaObject.getValue(property);
                 //属性值不为空
-                if (value != null) {
+                if (null != value) {
                     orEqualTo(property, value);
                 }
             }
@@ -462,10 +462,10 @@ public class Criteria {
         String[] properties = metaObject.getGetterNames();
         for (String property : properties) {
             //属性和列对应Map中有此属性
-            if (propertyMap.get(property) != null) {
+            if (null != propertyMap.get(property)) {
                 Object value = metaObject.getValue(property);
                 //属性值不为空
-                if (value != null) {
+                if (null != value) {
                     orEqualTo(property, value);
                 } else {
                     orIsNull(property);

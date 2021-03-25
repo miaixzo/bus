@@ -43,7 +43,7 @@ import java.util.Map;
  * 适配 {@link ResponseCache} 到 {@link InternalCache}.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class CacheAdapter implements InternalCache {
@@ -61,7 +61,7 @@ public final class CacheAdapter implements InternalCache {
     @Override
     public Response get(Request request) throws IOException {
         CacheResponse javaResponse = getJavaCachedResponse(request);
-        if (javaResponse == null) {
+        if (null == javaResponse) {
             return null;
         }
         return NetApiConvert.createResponseForCacheGet(request, javaResponse);
@@ -72,14 +72,14 @@ public final class CacheAdapter implements InternalCache {
         URI uri = response.request().url().uri();
         HttpURLConnection connection = NetApiConvert.createJavaUrlConnectionForCachePut(response);
         final java.net.CacheRequest request = delegate.put(uri, connection);
-        if (request == null) {
+        if (null == request) {
             return null;
         }
         return new CacheRequest() {
             @Override
             public Sink body() throws IOException {
                 OutputStream body = request.getBody();
-                return body != null ? IoKit.sink(body) : null;
+                return null != body ? IoKit.sink(body) : null;
             }
 
             @Override

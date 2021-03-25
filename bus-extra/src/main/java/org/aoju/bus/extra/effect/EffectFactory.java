@@ -35,7 +35,7 @@ import java.util.ServiceLoader;
  * 解压缩服务工厂
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public enum EffectFactory {
@@ -48,7 +48,7 @@ public enum EffectFactory {
         ServiceLoader<EffectProvider> compresses = ServiceLoader.load(EffectProvider.class);
         for (EffectProvider effectProvider : compresses) {
             SPI spi = effectProvider.getClass().getAnnotation(SPI.class);
-            if (spi != null) {
+            if (null != spi) {
                 String name = spi.value();
                 if (compressMap.containsKey(name)) {
                     throw new RuntimeException("The @SPI value(" + name

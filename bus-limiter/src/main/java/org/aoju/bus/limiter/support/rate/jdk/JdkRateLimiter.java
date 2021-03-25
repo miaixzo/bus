@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * 一个RateLimiter组件
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class JdkRateLimiter extends RateLimiter {
@@ -92,7 +92,7 @@ public class JdkRateLimiter extends RateLimiter {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
             CacheKey cacheKey = (CacheKey) o;
             return Double.compare(cacheKey.rate, rate) == 0 &&
                     capacity == cacheKey.capacity &&

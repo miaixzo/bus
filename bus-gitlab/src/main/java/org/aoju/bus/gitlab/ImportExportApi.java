@@ -45,7 +45,7 @@ import java.util.Map;
  * This class provides an entry point to all the GitLab API project import/export calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
  * @since JDK 1.8+
  */
@@ -242,7 +242,7 @@ public class ImportExportApi extends AbstractApi {
                 .withParam("namespace", namespaceIdOrPath)
                 .withParam("overwrite", overwrite);
 
-        if (overrideParams != null) {
+        if (null != overrideParams) {
             formData.withParam("default_branch", overrideParams.getDefaultBranch())
                     .withParam("description", overrideParams.getDescription())
                     .withParam("issues_enabled", overrideParams.getIssuesEnabled())

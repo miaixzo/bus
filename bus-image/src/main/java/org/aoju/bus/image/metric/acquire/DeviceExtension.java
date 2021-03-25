@@ -32,7 +32,7 @@ import java.io.Serializable;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DeviceExtension implements Serializable {
@@ -44,7 +44,7 @@ public class DeviceExtension implements Serializable {
     }
 
     public void setDevice(Device device) {
-        if (device != null && this.device != null)
+        if (null != device && null != this.device)
             throw new IllegalStateException(
                     "already owned by Device: " + device.getDeviceName());
         this.device = device;

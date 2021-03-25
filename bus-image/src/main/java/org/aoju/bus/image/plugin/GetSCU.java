@@ -49,7 +49,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GetSCU implements AutoCloseable {
@@ -78,7 +78,7 @@ public class GetSCU implements AutoCloseable {
         @Override
         protected void store(Association as, Presentation pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
-            if (storageDir == null) {
+            if (null == storageDir) {
                 return;
             }
 
@@ -160,7 +160,7 @@ public class GetSCU implements AutoCloseable {
     }
 
     public void setStorageDirectory(File storageDir) {
-        if (storageDir != null) {
+        if (null != storageDir) {
             if (storageDir.mkdirs()) {
                 Logger.info("M-WRITE " + storageDir);
             }
@@ -178,7 +178,7 @@ public class GetSCU implements AutoCloseable {
         if (relational) {
             rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         }
-        if (model.level != null) {
+        if (null != model.level) {
             addLevel(model.level);
         }
     }
@@ -210,7 +210,7 @@ public class GetSCU implements AutoCloseable {
 
     @Override
     public void close() throws IOException, InterruptedException {
-        if (as != null && as.isReadyForDataTransfer()) {
+        if (null != as && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
             as.release();
         }
@@ -271,9 +271,9 @@ public class GetSCU implements AutoCloseable {
 
     private void updateProgress(Association as, Attributes cmd) {
         Progress p = state.getProgress();
-        if (p != null) {
+        if (null != p) {
             p.setAttributes(cmd);
-            if (p.isCancel() && rspHandler != null) {
+            if (p.isCancel() && null != rspHandler) {
                 try {
                     rspHandler.cancel(as);
                 } catch (IOException e) {

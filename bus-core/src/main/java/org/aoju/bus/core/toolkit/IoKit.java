@@ -57,7 +57,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IoKit {
@@ -529,7 +529,17 @@ public class IoKit {
      * @throws InstrumentException IO异常
      */
     public static ByteArrayOutputStream read(InputStream in, boolean isClose) throws InstrumentException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ByteArrayOutputStream out;
+        if (in instanceof FileInputStream) {
+            // 文件流的长度是可预见的，此时直接读取效率更高
+            try {
+                out = new ByteArrayOutputStream(in.available());
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
+        } else {
+            out = new ByteArrayOutputStream();
+        }
         try {
             copy(in, out);
         } finally {
@@ -658,11 +668,11 @@ public class IoKit {
      * 从流中读取bytes
      *
      * @param in      {@link InputStream}
-     * @param isCLose 是否关闭输入流
+     * @param isClose 是否关闭输入流
      * @return bytes
      * @throws InstrumentException IO异常
      */
-    public static byte[] readBytes(InputStream in, boolean isCLose) throws InstrumentException {
+    public static byte[] readBytes(InputStream in, boolean isClose) throws InstrumentException {
         if (in instanceof FileInputStream) {
             // 文件流的长度是可预见的，此时直接读取效率更高
             final byte[] result;
@@ -675,11 +685,16 @@ public class IoKit {
                 }
             } catch (IOException e) {
                 throw new InstrumentException(e);
+            } finally {
+                if (isClose) {
+                    close(in);
+                }
             }
             return result;
         }
+
         // 未知bytes总量的流
-        return read(in, isCLose).toByteArray();
+        return read(in, isClose).toByteArray();
     }
 
     /**
@@ -758,7 +773,7 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static <T> T readObj(InputStream in) throws InstrumentException {
-        if (in == null) {
+        if (null == in) {
             throw new IllegalArgumentException("The InputStream must not be null");
         }
         ObjectInputStream ois;
@@ -867,7 +882,7 @@ public class IoKit {
         final BufferedReader bReader = getReader(reader);
         String line;
         try {
-            while ((line = bReader.readLine()) != null) {
+            while (null != (line = bReader.readLine())) {
                 lineHandler.handle(line);
             }
         } catch (IOException e) {
@@ -894,7 +909,7 @@ public class IoKit {
      * @return 字节流
      */
     public static ByteArrayInputStream toStream(String content, java.nio.charset.Charset charset) {
-        if (content == null) {
+        if (null == content) {
             return null;
         }
         return toStream(StringKit.bytes(content, charset));
@@ -931,7 +946,7 @@ public class IoKit {
      * @return 字节流
      */
     public static ByteArrayInputStream toStream(byte[] content) {
-        if (content == null) {
+        if (null == content) {
             return null;
         }
         return new ByteArrayInputStream(content);
@@ -944,7 +959,20 @@ public class IoKit {
      * @return {@link BufferedInputStream}
      */
     public static BufferedInputStream toBuffered(InputStream in) {
+        Assert.notNull(in, "InputStream must be not null!");
         return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in);
+    }
+
+    /**
+     * 转换为{@link BufferedInputStream}
+     *
+     * @param in         {@link InputStream}
+     * @param bufferSize buffer size
+     * @return {@link BufferedInputStream}
+     */
+    public static BufferedInputStream toBuffered(InputStream in, int bufferSize) {
+        Assert.notNull(in, "InputStream must be not null!");
+        return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in, bufferSize);
     }
 
     /**
@@ -954,7 +982,20 @@ public class IoKit {
      * @return {@link BufferedOutputStream}
      */
     public static BufferedOutputStream toBuffered(OutputStream out) {
+        Assert.notNull(out, "OutputStream must be not null!");
         return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out);
+    }
+
+    /**
+     * 转换为{@link BufferedOutputStream}
+     *
+     * @param out        {@link OutputStream}
+     * @param bufferSize buffer size
+     * @return {@link BufferedOutputStream}
+     */
+    public static BufferedOutputStream toBuffered(OutputStream out, int bufferSize) {
+        Assert.notNull(out, "OutputStream must be not null!");
+        return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out, bufferSize);
     }
 
     /**
@@ -1045,7 +1086,7 @@ public class IoKit {
         try {
             osw = getWriter(out, charset);
             for (Object content : contents) {
-                if (content != null) {
+                if (null != content) {
                     osw.write(Convert.toString(content, Normal.EMPTY));
                 }
             }
@@ -1083,7 +1124,7 @@ public class IoKit {
         try {
             osw = out instanceof ObjectOutputStream ? (ObjectOutputStream) out : new ObjectOutputStream(out);
             for (Object content : contents) {
-                if (content != null) {
+                if (null != content) {
                     osw.writeObject(content);
                     osw.flush();
                 }
@@ -1104,7 +1145,7 @@ public class IoKit {
      * @param closeable 被关闭的对象
      */
     public static void close(Closeable closeable) {
-        if (closeable != null) {
+        if (null != closeable) {
             try {
                 closeable.close();
             } catch (RuntimeException rethrown) {
@@ -1137,7 +1178,7 @@ public class IoKit {
      * @param socket 被关闭的对象
      */
     public static void close(Socket socket) {
-        if (socket != null) {
+        if (null != socket) {
             try {
                 socket.close();
             } catch (AssertionError e) {
@@ -1155,7 +1196,7 @@ public class IoKit {
      *                     如果{@code serverSocket}为空，则不执行任何操作
      */
     public static void close(ServerSocket serverSocket) {
-        if (serverSocket != null) {
+        if (null != serverSocket) {
             try {
                 serverSocket.close();
             } catch (RuntimeException rethrown) {
@@ -1169,7 +1210,7 @@ public class IoKit {
      * @param channel 需要被关闭的通道
      */
     public static void close(AsynchronousSocketChannel channel) {
-        if (channel == null) {
+        if (null == channel) {
             throw new NullPointerException();
         }
         try {
@@ -1269,11 +1310,11 @@ public class IoKit {
         try {
             String line1 = br1.readLine();
             String line2 = br2.readLine();
-            while (line1 != null && line2 != null && line1.equals(line2)) {
+            while (null != line1 && null != line2 && line1.equals(line2)) {
                 line1 = br1.readLine();
                 line2 = br2.readLine();
             }
-            return line1 == null ? line2 == null : line1.equals(line2);
+            return null == line1 ? null == line2 : line1.equals(line2);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -1354,8 +1395,12 @@ public class IoKit {
      * @return 接收器
      */
     private static Sink sink(final OutputStream out, final Timeout timeout) {
-        if (out == null) throw new IllegalArgumentException("out == null");
-        if (timeout == null) throw new IllegalArgumentException("timeout == null");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
+        if (null == timeout) {
+            throw new IllegalArgumentException("timeout == null");
+        }
 
         return new Sink() {
             @Override
@@ -1410,8 +1455,12 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Sink sink(Socket socket) throws IOException {
-        if (socket == null) throw new IllegalArgumentException("socket == null");
-        if (socket.getOutputStream() == null) throw new IOException("socket's output stream == null");
+        if (null == socket) {
+            throw new IllegalArgumentException("socket == null");
+        }
+        if (null == socket.getOutputStream()) {
+            throw new IOException("socket's output stream == null");
+        }
         AsyncTimeout timeout = timeout(socket);
         Sink sink = sink(socket.getOutputStream(), timeout);
         return timeout.sink(sink);
@@ -1435,8 +1484,12 @@ public class IoKit {
      * @return 缓冲数据
      */
     private static Source source(final InputStream in, final Timeout timeout) {
-        if (in == null) throw new IllegalArgumentException("in == null");
-        if (timeout == null) throw new IllegalArgumentException("timeout == null");
+        if (null == in) {
+            throw new IllegalArgumentException("in == null");
+        }
+        if (null == timeout) {
+            throw new IllegalArgumentException("timeout == null");
+        }
 
         return new Source() {
             @Override
@@ -1483,7 +1536,9 @@ public class IoKit {
      * @throws FileNotFoundException 文件未找到
      */
     public static Source source(File file) throws FileNotFoundException {
-        if (file == null) throw new IllegalArgumentException("file == null");
+        if (null == file) {
+            throw new IllegalArgumentException("file == null");
+        }
         return source(new FileInputStream(file));
     }
 
@@ -1496,7 +1551,9 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Source source(Path path, OpenOption... options) throws IOException {
-        if (path == null) throw new IllegalArgumentException("path == null");
+        if (null == path) {
+            throw new IllegalArgumentException("path == null");
+        }
         return source(Files.newInputStream(path, options));
     }
 
@@ -1508,7 +1565,9 @@ public class IoKit {
      * @throws FileNotFoundException 文件未找到
      */
     public static Sink sink(File file) throws FileNotFoundException {
-        if (file == null) throw new IllegalArgumentException("file == null");
+        if (null == file) {
+            throw new IllegalArgumentException("file == null");
+        }
         return sink(new FileOutputStream(file));
     }
 
@@ -1520,7 +1579,9 @@ public class IoKit {
      * @throws FileNotFoundException 文件未找到
      */
     public static Sink appendingSink(File file) throws FileNotFoundException {
-        if (file == null) throw new IllegalArgumentException("file == null");
+        if (null == file) {
+            throw new IllegalArgumentException("file == null");
+        }
         return sink(new FileOutputStream(file, true));
     }
 
@@ -1533,7 +1594,9 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Sink sink(Path path, OpenOption... options) throws IOException {
-        if (path == null) throw new IllegalArgumentException("path == null");
+        if (null == path) {
+            throw new IllegalArgumentException("path == null");
+        }
         return sink(Files.newOutputStream(path, options));
     }
 
@@ -1573,8 +1636,12 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Source source(Socket socket) throws IOException {
-        if (socket == null) throw new IllegalArgumentException("socket == null");
-        if (socket.getInputStream() == null) throw new IOException("socket's input stream == null");
+        if (null == socket) {
+            throw new IllegalArgumentException("socket == null");
+        }
+        if (null == socket.getInputStream()) {
+            throw new IOException("socket's input stream == null");
+        }
         AsyncTimeout timeout = timeout(socket);
         Source source = source(socket.getInputStream(), timeout);
         return timeout.source(source);
@@ -1585,7 +1652,7 @@ public class IoKit {
             @Override
             protected IOException newTimeoutException(IOException cause) {
                 InterruptedIOException ioe = new SocketTimeoutException("timeout");
-                if (cause != null) {
+                if (null != cause) {
                     ioe.initCause(cause);
                 }
                 return ioe;
@@ -1609,7 +1676,7 @@ public class IoKit {
     }
 
     static boolean isAndroidGetsocknameError(AssertionError e) {
-        return e.getCause() != null && e.getMessage() != null
+        return null != e.getCause() && null != e.getMessage()
                 && e.getMessage().contains("getsockname failed");
     }
 
@@ -1633,7 +1700,7 @@ public class IoKit {
      * @throws IOException 如果编码无效
      */
     public static InputStream toInputStream(String input, String encoding) throws IOException {
-        byte[] bytes = encoding != null ? input.getBytes(encoding) : input.getBytes();
+        byte[] bytes = null != encoding ? input.getBytes(encoding) : input.getBytes();
         return new ByteArrayInputStream(bytes);
     }
 
@@ -1680,7 +1747,7 @@ public class IoKit {
      */
     public static void copy(InputStream input, Writer output, String encoding)
             throws IOException {
-        if (encoding == null) {
+        if (null == encoding) {
             copy(input, output);
         } else {
             InputStreamReader in = new InputStreamReader(input, encoding);
@@ -1721,7 +1788,7 @@ public class IoKit {
      */
     public static String toString(byte[] input, String encoding)
             throws IOException {
-        if (encoding == null) {
+        if (null == encoding) {
             return new String(input);
         } else {
             return new String(input, encoding);

@@ -35,7 +35,7 @@ import java.nio.ByteBuffer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MemoryStreamSegment extends StreamSegment {
@@ -48,10 +48,10 @@ public class MemoryStreamSegment extends StreamSegment {
     }
 
     public static ByteArrayInputStream getByteArrayInputStream(MemoryCacheImageInputStream inputStream) {
-        if (inputStream != null) {
+        if (null != inputStream) {
             try {
                 Field fid = MemoryCacheImageInputStream.class.getDeclaredField("stream");
-                if (fid != null) {
+                if (null != fid) {
                     fid.setAccessible(true);
                     return (ByteArrayInputStream) fid.get(inputStream);
                 }

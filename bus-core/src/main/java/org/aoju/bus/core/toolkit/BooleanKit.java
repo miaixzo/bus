@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Normal;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BooleanKit {
@@ -450,7 +450,7 @@ public class BooleanKit {
      * @return 相反的Boolean值
      */
     public static Boolean negate(Boolean bool) {
-        if (bool == null) {
+        if (null == bool) {
             return null;
         }
         return bool ? Boolean.FALSE : Boolean.TRUE;

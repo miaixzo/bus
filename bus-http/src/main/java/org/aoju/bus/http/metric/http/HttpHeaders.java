@@ -42,7 +42,7 @@ import java.util.*;
  * Header实用工具
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class HttpHeaders {
@@ -91,7 +91,7 @@ public final class HttpHeaders {
     }
 
     private static long stringToLong(String s) {
-        if (s == null) return -1;
+        if (null == s) return -1;
         try {
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
@@ -170,17 +170,17 @@ public final class HttpHeaders {
         String peek = null;
 
         while (true) {
-            if (peek == null) {
+            if (null == peek) {
                 skipWhitespaceAndCommas(header);
                 peek = readToken(header);
-                if (peek == null) return;
+                if (null == peek) return;
             }
 
             String schemeName = peek;
 
             boolean commaPrefixed = skipWhitespaceAndCommas(header);
             peek = readToken(header);
-            if (peek == null) {
+            if (null == peek) {
                 if (!header.exhausted()) return;
                 result.add(new Challenge(schemeName, Collections.emptyMap()));
                 return;
@@ -199,7 +199,7 @@ public final class HttpHeaders {
             Map<String, String> parameters = new LinkedHashMap<>();
             eqCount += skipAll(header, (byte) Symbol.C_EQUAL);
             while (true) {
-                if (peek == null) {
+                if (null == peek) {
                     peek = readToken(header);
                     if (skipWhitespaceAndCommas(header)) break;
                     eqCount = skipAll(header, (byte) Symbol.C_EQUAL);
@@ -211,10 +211,10 @@ public final class HttpHeaders {
                 String parameterValue = !header.exhausted() && header.getByte(0) == Symbol.C_DOUBLE_QUOTES
                         ? readQuotedString(header)
                         : readToken(header);
-                if (parameterValue == null) return;
+                if (null == parameterValue) return;
                 String replaced = parameters.put(peek, parameterValue);
                 peek = null;
-                if (replaced != null) return;
+                if (null != replaced) return;
                 if (!skipWhitespaceAndCommas(header) && !header.exhausted()) return;
             }
             result.add(new Challenge(schemeName, parameters));

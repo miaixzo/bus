@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 由12个字节组成,分割如下:
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ObjectID implements Comparable<ObjectID>, Serializable {
@@ -83,7 +83,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
                 } catch (Throwable t) {
                 }
                 ClassLoader loader = ObjectID.class.getClassLoader();
-                int loaderId = loader != null ? System.identityHashCode(loader)
+                int loaderId = null != loader ? System.identityHashCode(loader)
                         : 0;
 
                 StringBuilder sb = new StringBuilder();
@@ -205,7 +205,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
      * @return true/false
      */
     public static boolean isValid(String text) {
-        if (text == null)
+        if (null == text)
             return false;
 
         final int len = text.length();
@@ -233,7 +233,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
      * @return objectid/null
      */
     public static ObjectID massageToObjectId(Object o) {
-        if (o == null)
+        if (null == o)
             return null;
 
         if (o instanceof ObjectID)
@@ -305,7 +305,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
             return true;
 
         ObjectID other = massageToObjectId(o);
-        if (other == null)
+        if (null == other)
             return false;
 
         return _time == other._time && _machine == other._machine
@@ -360,7 +360,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
     }
 
     public int compareTo(ObjectID id) {
-        if (id == null)
+        if (null == id)
             return -1;
 
         int x = _compareUnsigned(_time, id._time);

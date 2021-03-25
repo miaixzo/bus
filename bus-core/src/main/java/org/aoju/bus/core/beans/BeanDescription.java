@@ -52,7 +52,7 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class BeanDescription implements Serializable {
@@ -273,12 +273,14 @@ public class BeanDescription implements Serializable {
      * @return 是否匹配
      */
     private boolean isMatchGetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
-        // 全部转为小写，忽略大小写比较
+        final String handledFieldName;
         if (ignoreCase) {
+            // 全部转为小写，忽略大小写比较
             methodName = methodName.toLowerCase();
-            fieldName = fieldName.toLowerCase();
+            handledFieldName = fieldName.toLowerCase();
+            fieldName = handledFieldName;
         } else {
-            fieldName = StringKit.upperFirst(fieldName);
+            handledFieldName = StringKit.upperFirst(fieldName);
         }
 
         if (false == methodName.startsWith(Normal.GET) && false == methodName.startsWith(Normal.IS)) {
@@ -295,19 +297,19 @@ public class BeanDescription implements Serializable {
             if (fieldName.startsWith(Normal.IS)) {
                 // 字段已经是is开头
                 if (methodName.equals(fieldName) // isName - isName
-                        || methodName.equals(Normal.GET + fieldName)// isName - getIsName
-                        || methodName.equals(Normal.IS + fieldName)// isName - isIsName
+                        || methodName.equals(Normal.GET + handledFieldName)// isName - getIsName
+                        || methodName.equals(Normal.IS + handledFieldName)// isName - isIsName
                 ) {
                     return true;
                 }
-            } else if (methodName.equals(Normal.IS + fieldName)) {
+            } else if (methodName.equals(Normal.IS + handledFieldName)) {
                 // 字段非is开头, name -> isName
                 return true;
             }
         }
 
         // 包括boolean的任何类型只有一种匹配情况：name - getName
-        return methodName.equals(Normal.GET + fieldName);
+        return methodName.equals(Normal.GET + handledFieldName);
     }
 
     /**
@@ -328,15 +330,14 @@ public class BeanDescription implements Serializable {
      * @return 是否匹配
      */
     private boolean isMatchSetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
-        // 全部转为小写，忽略大小写比较
-        methodName = methodName.toLowerCase();
-        fieldName = fieldName.toLowerCase();
-
+        final String handledFieldName;
         if (ignoreCase) {
+            // 全部转为小写，忽略大小写比较
             methodName = methodName.toLowerCase();
-            fieldName = fieldName.toLowerCase();
+            handledFieldName = fieldName.toLowerCase();
+            fieldName = handledFieldName;
         } else {
-            fieldName = StringKit.upperFirst(fieldName);
+            handledFieldName = StringKit.upperFirst(fieldName);
         }
 
         // 非标准Setter方法跳过
@@ -348,7 +349,7 @@ public class BeanDescription implements Serializable {
         if (isBooleanField && fieldName.startsWith(Normal.IS)) {
             // 字段是is开头
             if (methodName.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS))// isName - setName
-                    || methodName.equals(Normal.SET + fieldName)// isName - setIsName
+                    || methodName.equals(Normal.SET + handledFieldName)// isName - setIsName
             ) {
                 return true;
             }

@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ScheduleExpression {
@@ -84,7 +84,7 @@ public class ScheduleExpression {
         Calendar cal2 = null;
         for (ScheduleExpression schedule : schedules) {
             Calendar cal3 = schedule.ceil(cal);
-            if (cal2 == null || cal2.compareTo(cal3) > 0)
+            if (null == cal2 || cal2.compareTo(cal3) > 0)
                 cal2 = cal3;
         }
         return cal2;
@@ -173,7 +173,7 @@ public class ScheduleExpression {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
         ScheduleExpression that = (ScheduleExpression) o;
         return hours == that.hours && dayOfWeeks == that.dayOfWeeks;
     }

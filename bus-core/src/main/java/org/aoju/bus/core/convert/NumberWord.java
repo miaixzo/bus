@@ -35,7 +35,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class NumberWord {
@@ -47,7 +47,7 @@ public class NumberWord {
      * @return 英文表达式
      */
     public static String format(Object x) {
-        if (x != null) {
+        if (null != x) {
             return format(x.toString());
         } else {
             return Normal.EMPTY;

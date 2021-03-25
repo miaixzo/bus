@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * Utility to query lspv
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -138,8 +138,8 @@ public final class Lspv {
             String type = typeMap.get(name);
             long size = ppSize * ppMap.get(name);
             Pair<Integer, Integer> majMin = majMinMap.get(name);
-            int major = majMin == null ? Builder.getFirstIntValue(name) : majMin.getLeft();
-            int minor = majMin == null ? Builder.getFirstIntValue(name) : majMin.getRight();
+            int major = null == majMin ? Builder.getFirstIntValue(name) : majMin.getLeft();
+            int minor = null == majMin ? Builder.getFirstIntValue(name) : majMin.getRight();
             partitions.add(new HWPartition(name, name, type, Normal.EMPTY, size, major, minor, mount));
         }
         return partitions;

@@ -38,7 +38,7 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FixLO2UN extends SimpleFileVisitor<Path> {
@@ -59,7 +59,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
     public FileVisitResult visitFile(Path srcFile, BasicFileAttributes attrs) throws IOException {
         Path dstFile = dest.dstFile(srcFile, srcPath, destPath);
         Path dstDir = dstFile.getParent();
-        if (dstDir != null) Files.createDirectories(dstDir);
+        if (null != dstDir) Files.createDirectories(dstDir);
         try (FileChannel ifc = (FileChannel) Files.newByteChannel(srcFile, EnumSet.of(StandardOpenOption.READ));
              FileChannel ofc = (FileChannel) Files.newByteChannel(dstFile,
                      EnumSet.of(StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW))) {

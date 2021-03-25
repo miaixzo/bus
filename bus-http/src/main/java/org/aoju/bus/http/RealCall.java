@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
  * 实际调用准备执行的请求
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RealCall implements NewCall {
@@ -111,7 +111,7 @@ public final class RealCall implements NewCall {
         try {
             client.dispatcher().executed(this);
             Response result = getResponseWithInterceptorChain();
-            if (result == null) throw new IOException("Canceled");
+            if (null == result) throw new IOException("Canceled");
             return result;
         } catch (IOException e) {
             e = timeoutExit(e);
@@ -126,7 +126,7 @@ public final class RealCall implements NewCall {
         if (!timeout.exit()) return cause;
 
         InterruptedIOException e = new InterruptedIOException("timeout");
-        if (cause != null) {
+        if (null != cause) {
             e.initCause(cause);
         }
         return e;

@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractBackend implements Backend {
@@ -51,9 +51,9 @@ public abstract class AbstractBackend implements Backend {
 
     @Override
     public final TraceFilterConfig getConfiguration(String profileName) {
-        final String lookupProfile = profileName == null ? Builder.DEFAULT : profileName;
+        final String lookupProfile = null == profileName ? Builder.DEFAULT : profileName;
         TraceFilterConfig filterConfiguration = configurationCache.get(lookupProfile);
-        if (filterConfiguration == null) {
+        if (null == filterConfiguration) {
             filterConfiguration = new PropertiesBasedTraceFilter(getPropertyChain(), lookupProfile);
             configurationCache.put(lookupProfile, filterConfiguration);
         }
@@ -71,7 +71,7 @@ public abstract class AbstractBackend implements Backend {
     }
 
     private PropertyChain getPropertyChain() {
-        if (_lazyPropertyChain == null) {
+        if (null == _lazyPropertyChain) {
             _lazyPropertyChain = PropertiesBasedTraceFilter.loadPropertyChain();
         }
         return _lazyPropertyChain;

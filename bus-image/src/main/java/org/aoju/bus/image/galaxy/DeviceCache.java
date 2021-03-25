@@ -30,7 +30,7 @@ import org.aoju.bus.image.Device;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DeviceCache extends ConfigurationCache<Configuration, Device>
@@ -48,7 +48,7 @@ public class DeviceCache extends ConfigurationCache<Configuration, Device>
     @Override
     public Device findDevice(String deviceName) throws InstrumentException {
         Device device = get(deviceName);
-        if (device == null)
+        if (null == device)
             throw new InstrumentException("Unknown Device: " + deviceName);
         if (!device.isInstalled())
             throw new InstrumentException("Device: " + deviceName + " not installed");

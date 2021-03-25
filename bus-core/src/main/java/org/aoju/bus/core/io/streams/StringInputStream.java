@@ -33,7 +33,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StringInputStream extends ByteArrayInputStream {
@@ -47,10 +47,11 @@ public class StringInputStream extends ByteArrayInputStream {
     }
 
     protected static byte[] toBytes(CharSequence str, java.nio.charset.Charset charset) {
-        if (str == null)
+        if (null == str)
             return new byte[0];
-        if (charset == null)
+        if (null == charset) {
             charset = Charset.UTF_8;
+        }
         try {
             return str.toString().getBytes(charset.name());
         } catch (UnsupportedEncodingException e) {

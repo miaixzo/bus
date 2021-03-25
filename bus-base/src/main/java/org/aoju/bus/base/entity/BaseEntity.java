@@ -40,7 +40,7 @@ import java.util.Objects;
  * Entity 基本信息.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -212,7 +212,7 @@ public class BaseEntity extends Tracer {
             return false;
         }
         Object value = ReflectKit.getFieldValue(entity, field);
-        return value != null && !Normal.EMPTY.equals(value);
+        return null != value && !Normal.EMPTY.equals(value);
     }
 
     /**
@@ -225,7 +225,7 @@ public class BaseEntity extends Tracer {
     private <T> Object getValue(T entity, String field) {
         if (ReflectKit.hasField(entity, field)) {
             Object object = ReflectKit.invokeGetter(entity, field);
-            return object != null ? object.toString() : null;
+            return null != object ? object.toString() : null;
         }
         return null;
     }

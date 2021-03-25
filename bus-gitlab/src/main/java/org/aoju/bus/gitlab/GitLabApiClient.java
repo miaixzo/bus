@@ -57,7 +57,7 @@ import java.util.logging.Logger;
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GitLabApiClient implements AutoCloseable {
@@ -229,7 +229,7 @@ public class GitLabApiClient implements AutoCloseable {
         this.tokenType = tokenType;
         this.authToken = authToken;
 
-        if (secretToken != null) {
+        if (null != secretToken) {
             secretToken = secretToken.trim();
             secretToken = (secretToken.length() > 0 ? secretToken : null);
         }
@@ -237,8 +237,7 @@ public class GitLabApiClient implements AutoCloseable {
         this.secretToken = secretToken;
 
         clientConfig = new ClientConfig();
-        if (clientConfigProperties != null) {
-
+        if (null != clientConfigProperties) {
             if (clientConfigProperties.containsKey(ClientProperties.PROXY_URI)) {
                 clientConfig.connectorProvider(new ApacheConnectorProvider());
             }
@@ -262,7 +261,7 @@ public class GitLabApiClient implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (apiClient != null) {
+        if (null != apiClient) {
             apiClient.close();
         }
     }
@@ -283,7 +282,7 @@ public class GitLabApiClient implements AutoCloseable {
         clientConfig.register(loggingFilter);
 
         // Recreate the Client instance if already created.
-        if (apiClient != null) {
+        if (null != apiClient) {
             createApiClient();
         }
     }
@@ -370,7 +369,7 @@ public class GitLabApiClient implements AutoCloseable {
     private String appendPathArgs(String url, Object... pathArgs) {
         StringBuilder urlBuilder = new StringBuilder(url);
         for (Object pathArg : pathArgs) {
-            if (pathArg != null) {
+            if (null != pathArg) {
                 urlBuilder.append("/");
                 urlBuilder.append(pathArg.toString());
             }
@@ -516,7 +515,7 @@ public class GitLabApiClient implements AutoCloseable {
     protected Response post(Form formData, URL url) {
         if (formData instanceof GitLabApiForm) {
             return (invocation(url, null).post(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
-        } else if (formData != null) {
+        } else if (null != formData) {
             return (invocation(url, null).post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
         } else {
             return (invocation(url, null).post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
@@ -612,19 +611,19 @@ public class GitLabApiClient implements AutoCloseable {
      */
     protected Response upload(String name, File fileToUpload, String mediaTypeString, Form formData, URL url) throws IOException {
 
-        MediaType mediaType = (mediaTypeString != null ? MediaType.valueOf(mediaTypeString) : null);
+        MediaType mediaType = (null != mediaTypeString ? MediaType.valueOf(mediaTypeString) : null);
         try (FormDataMultiPart multiPart = new FormDataMultiPart()) {
 
-            if (formData != null) {
+            if (null != formData) {
                 MultivaluedMap<String, String> formParams = formData.asMap();
                 formParams.forEach((key, values) -> {
-                    if (values != null) {
+                    if (null != values) {
                         values.forEach(value -> multiPart.field(key, value));
                     }
                 });
             }
 
-            FileDataBodyPart filePart = mediaType != null ?
+            FileDataBodyPart filePart = null != mediaType ?
                     new FileDataBodyPart(name, fileToUpload, mediaType) :
                     new FileDataBodyPart(name, fileToUpload);
             multiPart.bodyPart(filePart);
@@ -795,7 +794,7 @@ public class GitLabApiClient implements AutoCloseable {
         }
 
         WebTarget target = apiClient.target(url.toExternalForm()).property(ClientProperties.FOLLOW_REDIRECTS, true);
-        if (queryParams != null) {
+        if (null != queryParams) {
             for (Map.Entry<String, List<String>> param : queryParams.entrySet()) {
                 target = target.queryParam(param.getKey(), param.getValue().toArray());
             }
@@ -811,16 +810,16 @@ public class GitLabApiClient implements AutoCloseable {
         }
 
         // If sudo as ID is set add the Sudo header
-        if (sudoAsId != null && sudoAsId.intValue() > 0)
+        if (null != sudoAsId && sudoAsId.intValue() > 0)
             builder = builder.header(SUDO_HEADER, sudoAsId);
 
         // Set the per request connect timeout
-        if (connectTimeout != null) {
+        if (null != connectTimeout) {
             builder.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
         }
 
         // Set the per request read timeout
-        if (readTimeout != null) {
+        if (null != readTimeout) {
             builder.property(ClientProperties.READ_TIMEOUT, readTimeout);
         }
 

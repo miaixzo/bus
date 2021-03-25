@@ -35,7 +35,7 @@ import java.util.List;
  * This class is used to filter Projects when getting lists of projects for a specified group.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GroupFilter {

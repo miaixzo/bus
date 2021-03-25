@@ -52,7 +52,7 @@ import java.util.*;
  * 该类设计为一个独立的工具类,依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SqlServerParser {
@@ -136,10 +136,10 @@ public class SqlServerParser {
         Select pageSelect = getPageSelect((Select) stmt);
         String pageSql = pageSelect.toString();
         // 缓存移到外面了,所以不替换参数
-        if (offset != null) {
+        if (null != offset) {
             pageSql = pageSql.replace(START_ROW, String.valueOf(offset));
         }
-        if (limit != null) {
+        if (null != limit) {
             pageSql = pageSql.replace(PAGE_SIZE, String.valueOf(limit));
         }
         return pageSql;
@@ -157,7 +157,7 @@ public class SqlServerParser {
             selectBody = wrapSetOperationList((SetOperationList) selectBody);
         }
         // 这里的selectBody一定是PlainSelect
-        if (((PlainSelect) selectBody).getTop() != null) {
+        if (null != ((PlainSelect) selectBody).getTop()) {
             throw new PageException("被分页的语句已经包含了Top,不能再通过分页插件进行分页查询!");
         }
         // 获取查询列
@@ -258,7 +258,7 @@ public class SqlServerParser {
             // 别名需要特殊处理
             if (selectItem instanceof SelectExpressionItem) {
                 SelectExpressionItem selectExpressionItem = (SelectExpressionItem) selectItem;
-                if (selectExpressionItem.getAlias() != null) {
+                if (null != selectExpressionItem.getAlias()) {
                     // 直接使用别名
                     Column column = new Column(selectExpressionItem.getAlias().getName());
                     SelectExpressionItem expressionItem = new SelectExpressionItem(column);
@@ -266,7 +266,7 @@ public class SqlServerParser {
                 } else if (selectExpressionItem.getExpression() instanceof Column) {
                     Column column = (Column) selectExpressionItem.getExpression();
                     SelectExpressionItem item;
-                    if (column.getTable() != null) {
+                    if (null != column.getTable()) {
                         Column newColumn = new Column(column.getColumnName());
                         item = new SelectExpressionItem(newColumn);
                         selectItems.add(item);
@@ -330,12 +330,12 @@ public class SqlServerParser {
             processPlainSelect((PlainSelect) selectBody, level + 1);
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (withItem.getSelectBody() != null) {
+            if (null != withItem.getSelectBody()) {
                 processSelectBody(withItem.getSelectBody(), level + 1);
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;
-            if (operationList.getSelects() != null && operationList.getSelects().size() > 0) {
+            if (null != operationList.getSelects() && operationList.getSelects().size() > 0) {
                 List<SelectBody> plainSelects = operationList.getSelects();
                 for (SelectBody plainSelect : plainSelects) {
                     processSelectBody(plainSelect, level + 1);
@@ -353,18 +353,18 @@ public class SqlServerParser {
     protected void processPlainSelect(PlainSelect plainSelect, int level) {
         if (level > 1) {
             if (isNotEmptyList(plainSelect.getOrderByElements())) {
-                if (plainSelect.getTop() == null) {
+                if (null == plainSelect.getTop()) {
                     plainSelect.setTop(TOP100_PERCENT);
                 }
             }
         }
-        if (plainSelect.getFromItem() != null) {
+        if (null != plainSelect.getFromItem()) {
             processFromItem(plainSelect.getFromItem(), level + 1);
         }
-        if (plainSelect.getJoins() != null && plainSelect.getJoins().size() > 0) {
+        if (null != plainSelect.getJoins() && plainSelect.getJoins().size() > 0) {
             List<Join> joins = plainSelect.getJoins();
             for (Join join : joins) {
-                if (join.getRightItem() != null) {
+                if (null != join.getRightItem()) {
                     processFromItem(join.getRightItem(), level + 1);
                 }
             }
@@ -380,28 +380,28 @@ public class SqlServerParser {
     protected void processFromItem(FromItem fromItem, int level) {
         if (fromItem instanceof SubJoin) {
             SubJoin subJoin = (SubJoin) fromItem;
-            if (subJoin.getJoinList() != null && subJoin.getJoinList().size() > 0) {
+            if (null != subJoin.getJoinList() && subJoin.getJoinList().size() > 0) {
                 for (Join join : subJoin.getJoinList()) {
-                    if (join.getRightItem() != null) {
+                    if (null != join.getRightItem()) {
                         processFromItem(join.getRightItem(), level + 1);
                     }
                 }
             }
-            if (subJoin.getLeft() != null) {
+            if (null != subJoin.getLeft()) {
                 processFromItem(subJoin.getLeft(), level + 1);
             }
         } else if (fromItem instanceof SubSelect) {
             SubSelect subSelect = (SubSelect) fromItem;
-            if (subSelect.getSelectBody() != null) {
+            if (null != subSelect.getSelectBody()) {
                 processSelectBody(subSelect.getSelectBody(), level + 1);
             }
         } else if (fromItem instanceof ValuesList) {
 
         } else if (fromItem instanceof LateralSubSelect) {
             LateralSubSelect lateralSubSelect = (LateralSubSelect) fromItem;
-            if (lateralSubSelect.getSubSelect() != null) {
+            if (null != lateralSubSelect.getSubSelect()) {
                 SubSelect subSelect = lateralSubSelect.getSubSelect();
-                if (subSelect.getSelectBody() != null) {
+                if (null != subSelect.getSelectBody()) {
                     processSelectBody(subSelect.getSelectBody(), level + 1);
                 }
             }
@@ -409,7 +409,7 @@ public class SqlServerParser {
     }
 
     public boolean isNotEmptyList(List<?> list) {
-        if (list == null || list.size() == 0) {
+        if (null == list || list.size() == 0) {
             return false;
         }
         return true;
@@ -470,7 +470,7 @@ public class SqlServerParser {
                 selectMap.put(expItem.getExpression().toString(), expItem);
 
                 Alias alias = expItem.getAlias();
-                if (alias != null) {
+                if (null != alias) {
                     aliases.add(alias.getName());
                 }
 
@@ -488,9 +488,9 @@ public class SqlServerParser {
             orderByElement = iterator.next();
             Expression expression = orderByElement.getExpression();
             SelectExpressionItem selectExpressionItem = selectMap.get(expression.toString());
-            if (selectExpressionItem != null) { // OrderByElement 在查询列表中
+            if (null != selectExpressionItem) { // OrderByElement 在查询列表中
                 Alias alias = selectExpressionItem.getAlias();
-                if (alias != null) { // 查询列含有别名时用查询列别名
+                if (null != alias) { // 查询列含有别名时用查询列别名
                     iterator.set(cloneOrderByElement(orderByElement, alias.getName()));
 
                 } else { // 查询列不包含别名
@@ -512,9 +512,9 @@ public class SqlServerParser {
             } else { // OrderByElement 不在查询列表中,需要自动生成一个查询列
                 if (expression instanceof Column) { // OrderByElement 为普通列
                     Table table = ((Column) expression).getTable();
-                    if (table == null) { // 表名为空
+                    if (null == table) { // 表名为空
                         if (allColumns ||
-                                (allColumnsTables.size() == 1 && plainSelect.getJoins() == null) ||
+                                (allColumnsTables.size() == 1 && null == plainSelect.getJoins()) ||
                                 aliases.contains(((Column) expression).getColumnName())) {
                             // 包含`*`查询列 或者 只有一个 `t.*`列且为单表查询 或者 其实排序列是一个别名
                             // 此时排序列其实已经包含在查询列表中了,不需做任何操作

@@ -44,7 +44,7 @@ import java.net.URL;
  * delete(), get(), post() and put() that are re-used by all the sub-classes.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AbstractApi implements Constants {
@@ -73,12 +73,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Project) {
 
             Integer id = ((Project) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String path = ((Project) obj).getPathWithNamespace();
-            if (path != null && path.trim().length() > 0) {
+            if (null != path && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
 
@@ -108,12 +108,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Group) {
 
             Integer id = ((Group) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String path = ((Group) obj).getFullPath();
-            if (path != null && path.trim().length() > 0) {
+            if (null != path && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
 
@@ -143,12 +143,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof User) {
 
             Integer id = ((User) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String username = ((User) obj).getUsername();
-            if (username != null && username.trim().length() > 0) {
+            if (null != username && username.trim().length() > 0) {
                 return (urlEncode(username.trim()));
             }
 
@@ -178,12 +178,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Label) {
 
             Integer id = ((Label) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String name = ((User) obj).getName();
-            if (name != null && name.trim().length() > 0) {
+            if (null != name && name.trim().length() > 0) {
                 return (urlEncode(name.trim()));
             }
 

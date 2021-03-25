@@ -48,7 +48,7 @@ import java.util.Properties;
  * 数据库方言 sqlserver
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SqlServerDialect extends AbstractSqlDialect {
@@ -61,7 +61,7 @@ public class SqlServerDialect extends AbstractSqlDialect {
     public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
         String sql = boundSql.getSql();
         String cacheSql = CACHE_COUNTSQL.get(sql);
-        if (cacheSql != null) {
+        if (null != cacheSql) {
             return cacheSql;
         } else {
             cacheSql = sql;
@@ -106,7 +106,7 @@ public class SqlServerDialect extends AbstractSqlDialect {
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
         String cacheSql = CACHE_PAGESQL.get(sql);
-        if (cacheSql == null) {
+        if (null == cacheSql) {
             cacheSql = sql;
             cacheSql = replaceSql.replace(cacheSql);
             cacheSql = pageSql.convertToPageSql(cacheSql, null, null);

@@ -36,14 +36,14 @@ import java.io.InputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SAXReader {
 
     public static Attributes parse(String uri, Attributes attrs)
             throws ParserConfigurationException, SAXException, IOException {
-        if (attrs == null)
+        if (null == attrs)
             attrs = new Attributes();
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser parser = f.newSAXParser();
@@ -53,7 +53,7 @@ public class SAXReader {
 
     public static Attributes parse(InputStream is, Attributes attrs)
             throws ParserConfigurationException, SAXException, IOException {
-        if (attrs == null)
+        if (null == attrs)
             attrs = new Attributes();
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser parser = f.newSAXParser();

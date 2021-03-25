@@ -33,7 +33,7 @@ import java.io.File;
  * 这个类包含{@link ExternalOfficeManager}的配置.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ExternalOfficeBuilder implements OfficeManagerBuilder {
@@ -70,7 +70,7 @@ public class ExternalOfficeBuilder implements OfficeManagerBuilder {
             final long retryInterval) {
 
         this.workingDir =
-                workingDir == null ? new File(System.getProperty("java.io.tmpdir")) : workingDir;
+                null == workingDir ? new File(System.getProperty("java.io.tmpdir")) : workingDir;
         this.connectOnStart = connectOnStart;
         this.connectTimeout = connectTimeout;
         this.retryInterval = retryInterval;

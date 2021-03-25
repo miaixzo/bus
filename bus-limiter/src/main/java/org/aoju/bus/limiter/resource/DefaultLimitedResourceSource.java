@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DefaultLimitedResourceSource implements LimitedResourceSource {
@@ -63,7 +63,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
     public Collection<LimitedResource> getLimitedResource(Class<?> targetClass, Method method) {
         MethodClassKey key = new MethodClassKey(method, targetClass);
         Collection<LimitedResource> retVal = cache.get(key);
-        if (retVal != null) {
+        if (null != retVal) {
             return retVal;
         }
         retVal = computeLimitedResource(method, targetClass);
@@ -118,7 +118,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
         for (Parser parser : annotationParsers) {
             for (Annotation ai : annotations) {
                 if (ai.annotationType().equals(parser.getSupportAnnotation())) {
-                    if (retVal == null) {
+                    if (null == retVal) {
                         retVal = new ArrayList<>();
                     }
                     AnnotationAttributes attributes = AnnotationUtils.getAnnotationAttributes(ae, ai);

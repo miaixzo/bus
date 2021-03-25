@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * HTTP 媒体类型
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -342,15 +342,15 @@ public class MimeType {
     }
 
     public MimeType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
-        this.mediaType = mediaType == null ? APPLICATION_FORM_URLENCODED : mediaType;
-        this.type = type == null ? MEDIA_TYPE_WILDCARD : type;
-        this.subtype = subtype == null ? MEDIA_TYPE_WILDCARD : subtype;
-        this.charset = charset == null ? Charset.DEFAULT_UTF_8 : charset;
+        this.mediaType = null == mediaType ? APPLICATION_FORM_URLENCODED : mediaType;
+        this.type = null == type ? MEDIA_TYPE_WILDCARD : type;
+        this.subtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
+        this.charset = null == charset ? Charset.DEFAULT_UTF_8 : charset;
         if (MapKit.isNotEmpty(params)) {
             params = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
         }
-        params = params == null ? new HashMap<>() : params;
-        if (charset != null && !charset.isEmpty()) {
+        params = null == params ? new HashMap<>() : params;
+        if (null != charset && !charset.isEmpty()) {
             params.put(CHARSET_PARAMETER, charset);
         }
         this.parameters = Collections.unmodifiableMap((Map) params);
@@ -379,17 +379,19 @@ public class MimeType {
             }
 
             String name = parameter.group(1);
-            if (name == null || !name.equalsIgnoreCase("charset")) continue;
+            if (null == name || !name.equalsIgnoreCase("charset")) {
+                continue;
+            }
             String charsetParameter;
             String token = parameter.group(2);
-            if (token != null) {
+            if (null != token) {
                 charsetParameter = (token.startsWith(Symbol.SINGLE_QUOTE) && token.endsWith(Symbol.SINGLE_QUOTE) && token.length() > 2)
                         ? token.substring(1, token.length() - 1)
                         : token;
             } else {
                 charsetParameter = parameter.group(3);
             }
-            if (charset != null && !charsetParameter.equalsIgnoreCase(charset)) {
+            if (null != charset && !charsetParameter.equalsIgnoreCase(charset)) {
                 throw new IllegalArgumentException("Multiple charsets defined: " + charset + " and: " + charsetParameter + " for: " + text);
             }
             charset = charsetParameter;
@@ -400,7 +402,7 @@ public class MimeType {
 
     private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
         TreeMap<String, String> map = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
-        if (initialValues != null) {
+        if (null != initialValues) {
             Iterator i$ = initialValues.entrySet().iterator();
 
             while (i$.hasNext()) {
@@ -471,7 +473,7 @@ public class MimeType {
      */
     public java.nio.charset.Charset charset(java.nio.charset.Charset defaultValue) {
         try {
-            return charset != null ? java.nio.charset.Charset.forName(charset) : defaultValue;
+            return null != charset ? java.nio.charset.Charset.forName(charset) : defaultValue;
         } catch (IllegalArgumentException e) {
             return defaultValue;
         }
@@ -486,7 +488,7 @@ public class MimeType {
      * @return 如果类型兼容, 则为true, 否则为false.
      */
     public boolean isCompatible(MimeType mimeType) {
-        return mimeType != null
+        return null != mimeType
                 && (type.equals(MEDIA_TYPE_WILDCARD)
                 || mimeType.type.equals(MEDIA_TYPE_WILDCARD)
                 || (type.equalsIgnoreCase(mimeType.type)

@@ -45,7 +45,7 @@ import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Jpg2Dcm {
@@ -141,7 +141,7 @@ public class Jpg2Dcm {
                 dos.writeDataset(metadata.createFileMetaInformation(inFileType.getTransferSyntaxUID()), metadata);
                 dos.writeHeader(Tag.PixelData, VR.OB, -1);
                 dos.writeHeader(Tag.Item, null, 0);
-                if (jpegHeader != null && noAPPn) {
+                if (null != jpegHeader && noAPPn) {
                     int offset = jpegHeader.offsetAfterAPP();
                     itemLen -= offset - 3;
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
@@ -178,13 +178,13 @@ public class Jpg2Dcm {
         jpeg(UID.SecondaryCaptureImageStorage, UID.JPEGBaseline1) {
             @Override
             boolean parseHeader(Jpg2Dcm main) {
-                return (main.jpegHeader = new JPEGHeader(main.buffer, JPEG.SOS)).toAttributes(main.metadata) != null;
+                return null != (main.jpegHeader = new JPEGHeader(main.buffer, JPEG.SOS)).toAttributes(main.metadata);
             }
         },
         mpeg(UID.VideoPhotographicImageStorage, UID.MPEG2) {
             @Override
             boolean parseHeader(Jpg2Dcm main) {
-                return new MPEGHeader(main.buffer).toAttributes(main.metadata, main.fileLength) != null;
+                return null != (new MPEGHeader(main.buffer).toAttributes(main.metadata, main.fileLength));
             }
         };
 

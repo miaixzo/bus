@@ -33,7 +33,7 @@ import java.io.OutputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StringOutputStream extends OutputStream {
@@ -70,10 +70,12 @@ public class StringOutputStream extends OutputStream {
         if (null != baos) {
             baos.flush();
             if (baos.size() > 0) {
-                if (charset == null)
+                if (null == charset) {
                     sb.append(baos.toString());
-                else
+                } else {
                     sb.append(baos.toString(charset));
+                }
+
                 baos.reset();
             }
         }

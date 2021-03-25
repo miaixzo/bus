@@ -30,7 +30,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PropertyChain {
@@ -49,7 +49,7 @@ public class PropertyChain {
     public String getProperty(String key) {
         for (Properties properties : propertiesChain) {
             final String p = properties.getProperty(key);
-            if (p != null)
+            if (null != p)
                 return p;
         }
         return null;

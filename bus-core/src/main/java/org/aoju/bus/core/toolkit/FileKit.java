@@ -53,7 +53,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -137,7 +137,7 @@ public class FileKit {
      * @return 文件列表(包含目录)
      */
     public static File[] ls(String path) {
-        if (path == null) {
+        if (null == path) {
             return null;
         }
 
@@ -157,7 +157,7 @@ public class FileKit {
      * @return 如果为文件true
      */
     public static boolean isFile(String path) {
-        return (path != null) && file(path).isFile();
+        return (null != path) && file(path).isFile();
     }
 
     /**
@@ -167,7 +167,7 @@ public class FileKit {
      * @return 如果为文件true
      */
     public static boolean isFile(File file) {
-        return (file != null) && file.isFile();
+        return (null != file) && file.isFile();
     }
 
     /**
@@ -192,7 +192,7 @@ public class FileKit {
      * @return 如果为目录true
      */
     public static boolean isDirectory(String path) {
-        return (path != null) && file(path).isDirectory();
+        return (null != path) && file(path).isDirectory();
     }
 
     /**
@@ -213,7 +213,7 @@ public class FileKit {
      * @return 如果为目录true
      */
     public static boolean isDirectory(File file) {
-        return (file != null) && file.isDirectory();
+        return (null != file) && file.isDirectory();
     }
 
     /**
@@ -259,7 +259,7 @@ public class FileKit {
 
         File file = null;
         for (String name : names) {
-            if (file == null) {
+            if (null == file) {
                 file = file(name);
             } else {
                 file = file(file, name);
@@ -275,7 +275,7 @@ public class FileKit {
      * @return File
      */
     public static File file(URI uri) {
-        if (uri == null) {
+        if (null == uri) {
             throw new NullPointerException("File uri is null!");
         }
         return new File(uri);
@@ -480,7 +480,7 @@ public class FileKit {
      * @return 如果存在返回true
      */
     public static boolean exist(String path) {
-        return (path != null) && file(path).exists();
+        return (null != path) && file(path).exists();
     }
 
     /**
@@ -490,7 +490,7 @@ public class FileKit {
      * @return 如果存在返回true
      */
     public static boolean exist(File file) {
-        return (file != null) && file.exists();
+        return (null != file) && file.exists();
     }
 
     /**
@@ -507,7 +507,7 @@ public class FileKit {
         }
 
         final String[] fileList = file.list();
-        if (fileList == null) {
+        if (null == fileList) {
             return false;
         }
 
@@ -557,7 +557,7 @@ public class FileKit {
      * @throws InstrumentException 异常
      */
     public static File touch(String fullFilePath) throws InstrumentException {
-        if (fullFilePath == null) {
+        if (null == fullFilePath) {
             return null;
         }
         return touch(file(fullFilePath));
@@ -633,7 +633,7 @@ public class FileKit {
      * @return 创建的目录
      */
     public static File mkParentDirs(String path) {
-        if (path == null) {
+        if (null == path) {
             return null;
         }
         return mkParentDirs(file(path));
@@ -662,7 +662,7 @@ public class FileKit {
      * @throws InstrumentException IO异常
      */
     public static boolean delete(File file) throws InstrumentException {
-        if (file == null || false == file.exists()) {
+        if (null == file || false == file.exists()) {
             // 如果文件不存在或已被删除，此处返回true表示删除成功
             return true;
         }
@@ -705,7 +705,7 @@ public class FileKit {
 
                     @Override
                     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-                        if (e == null) {
+                        if (null == e) {
                             Files.delete(dir);
                             return FileVisitResult.CONTINUE;
                         } else {
@@ -745,7 +745,9 @@ public class FileKit {
      * @throws InstrumentException 异常
      */
     public static boolean clean(File directory) throws InstrumentException {
-        if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
+        if (null == directory
+                || directory.exists() == false
+                || false == directory.isDirectory()) {
             return true;
         }
 
@@ -768,7 +770,7 @@ public class FileKit {
      * @return 创建的目录
      */
     public static File mkdir(String dirPath) {
-        if (dirPath == null) {
+        if (null == dirPath) {
             return null;
         }
         final File dir = file(dirPath);
@@ -783,7 +785,7 @@ public class FileKit {
      * @return 创建的目录
      */
     public static File mkdir(File dir) {
-        if (dir == null) {
+        if (null == dir) {
             return null;
         }
         if (false == dir.exists()) {
@@ -1131,7 +1133,7 @@ public class FileKit {
      */
     public static String getAbsolutePath(String path, Class<?> baseClass) {
         String normalPath;
-        if (path == null) {
+        if (null == path) {
             normalPath = Normal.EMPTY;
         } else {
             normalPath = normalize(path);
@@ -1159,7 +1161,7 @@ public class FileKit {
      * @return 绝对路径
      */
     public static String getAbsolutePath(File file) {
-        if (file == null) {
+        if (null == file) {
             return null;
         }
 
@@ -1223,7 +1225,7 @@ public class FileKit {
             String tempString;
             String all = Normal.EMPTY;
             // 一次读入一行,直到读入null为文件结束
-            while ((tempString = reader.readLine()) != null) {
+            while (null != (tempString = reader.readLine())) {
                 // 显示行号
                 all += tempString;
             }
@@ -1232,7 +1234,7 @@ public class FileKit {
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            if (reader != null) {
+            if (null != reader) {
                 try {
                     reader.close();
                 } catch (IOException e1) {
@@ -1251,7 +1253,7 @@ public class FileKit {
      * @throws InstrumentException 异常
      */
     public static List<String> listFileNames(String path) throws InstrumentException {
-        if (path == null) {
+        if (null == path) {
             return new ArrayList<>(0);
         }
         int index = path.lastIndexOf(FileType.JAR_PATH_EXT);
@@ -1346,7 +1348,7 @@ public class FileKit {
      * @return 返回文件的扩展名或空字符串.
      */
     public static String getExtension(String filename) {
-        if (filename == null) {
+        if (null == filename) {
             return null;
         }
         int index = indexOfExtension(filename);
@@ -1364,7 +1366,7 @@ public class FileKit {
      * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
      */
     public static int indexOfExtension(String filename) {
-        if (filename == null) {
+        if (null == filename) {
             return -1;
         }
         int extensionPos = filename.lastIndexOf(Symbol.DOT);
@@ -1383,7 +1385,7 @@ public class FileKit {
      * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
      */
     public static int indexOfLastSeparator(String filename) {
-        if (filename == null) {
+        if (null == filename) {
             return -1;
         }
         int lastUnixPos = filename.lastIndexOf(Symbol.SLASH);
@@ -1647,7 +1649,7 @@ public class FileKit {
      * @return 修复后的路径
      */
     public static String normalize(String path) {
-        if (path == null) {
+        if (null == path) {
             return null;
         }
 
@@ -1991,7 +1993,7 @@ public class FileKit {
      * @return 扩展名
      */
     public static String extName(String fileName) {
-        if (fileName == null) {
+        if (null == fileName) {
             return null;
         }
         int index = fileName.lastIndexOf(Symbol.DOT);
@@ -2307,7 +2309,7 @@ public class FileKit {
      * @throws InstrumentException 异常
      */
     public static String readString(URL url, String charset) throws InstrumentException {
-        if (url == null) {
+        if (null == url) {
             throw new NullPointerException("Empty url provided!");
         }
 
@@ -2592,7 +2594,7 @@ public class FileKit {
     public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, LineHandler lineHandler) {
         String line;
         try {
-            while ((line = file.readLine()) != null) {
+            while (null != (line = file.readLine())) {
                 lineHandler.handle(Charset.convert(line, Charset.ISO_8859_1, charset));
             }
         } catch (IOException e) {
@@ -3628,7 +3630,7 @@ public class FileKit {
      * @return 文件名减去扩展名
      */
     public static String removeExtension(final String filename) {
-        if (filename == null) {
+        if (null == filename) {
             return null;
         }
 
@@ -3656,12 +3658,12 @@ public class FileKit {
      * @return 如果文件名是扩展名之一，则为true
      */
     public static boolean isExtension(final String filename, final String extension) {
-        if (filename == null) {
+        if (null == filename) {
             return false;
         }
         failIfNullBytePresent(filename);
 
-        if (extension == null || extension.isEmpty()) {
+        if (null == extension || extension.isEmpty()) {
             return indexOfExtension(filename) == -1;
         }
         final String fileExt = getExtension(filename);
@@ -3676,12 +3678,12 @@ public class FileKit {
      * @return 如果文件名是扩展名之一，则为true
      */
     public static boolean isExtension(final String filename, final String[] extensions) {
-        if (filename == null) {
+        if (null == filename) {
             return false;
         }
         failIfNullBytePresent(filename);
 
-        if (extensions == null || extensions.length == 0) {
+        if (null == extensions || extensions.length == 0) {
             return indexOfExtension(filename) == -1;
         }
         final String fileExt = getExtension(filename);
@@ -3701,12 +3703,12 @@ public class FileKit {
      * @return 如果文件名是扩展名之一，则为true
      */
     public static boolean isExtension(final String filename, final Collection<String> extensions) {
-        if (filename == null) {
+        if (null == filename) {
             return false;
         }
         failIfNullBytePresent(filename);
 
-        if (extensions == null || extensions.isEmpty()) {
+        if (null == extensions || extensions.isEmpty()) {
             return indexOfExtension(filename) == -1;
         }
         final String fileExt = getExtension(filename);
@@ -3920,7 +3922,7 @@ public class FileKit {
      */
     public static URL getResource(String resource, Class<?> baseClass) {
         URL url = (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
-        return url != null ? url : baseClass.getClassLoader().getResource(resource);
+        return null != url ? url : baseClass.getClassLoader().getResource(resource);
     }
 
     /**

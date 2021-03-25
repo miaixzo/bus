@@ -38,7 +38,7 @@ import java.util.function.Function;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IterKit {
@@ -832,7 +832,7 @@ public class IterKit {
      */
     public static int size(final Iterator<?> iterator) {
         int size = 0;
-        if (iterator != null) {
+        if (null != iterator) {
             while (iterator.hasNext()) {
                 iterator.next();
                 size++;

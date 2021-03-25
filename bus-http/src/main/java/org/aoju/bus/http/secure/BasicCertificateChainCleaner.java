@@ -37,7 +37,7 @@ import java.util.*;
  * 存在的其他机制，比如{@code AndroidCertificateChainCleaner}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class BasicCertificateChainCleaner extends CertificateChainCleaner {
@@ -68,7 +68,7 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
             // 如果此证书已由可信证书签署，请使用该证书。将受信任证书添加到链的末尾，除非它已经存在
             // (如果链中的第一个证书本身是自签名和受信任的CA证书，则会发生这种情况)
             X509Certificate trustedCert = trustRootIndex.findByIssuerAndSignature(toVerify);
-            if (trustedCert != null) {
+            if (null != trustedCert) {
                 if (result.size() > 1 || !toVerify.equals(trustedCert)) {
                     result.add(trustedCert);
                 }

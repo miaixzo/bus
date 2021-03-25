@@ -37,7 +37,7 @@ import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
  * List of settings that can be accessed via API calls</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public enum Setting {
@@ -1211,7 +1211,7 @@ public enum Setting {
         }
 
         Class<?> valueType = value.getClass();
-        if (type != null) {
+        if (null != type) {
             return (valueType == type);
         }
 

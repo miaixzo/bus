@@ -43,7 +43,7 @@ import java.security.cert.X509Certificate;
  * keytool -genkey -validity 36000 -alias www.aoju.org -keyalg RSA -keystore server.keystore
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SslService {
@@ -94,7 +94,7 @@ public class SslService {
     public void initTrust(InputStream trustInputStream, String trustPassword) {
         try {
             TrustManager[] trustManagers;
-            if (trustInputStream != null) {
+            if (null != trustInputStream) {
                 KeyStore ts = KeyStore.getInstance("JKS");
                 ts.load(trustInputStream, trustPassword.toCharArray());
                 TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
@@ -130,7 +130,7 @@ public class SslService {
             SSLEngine sslEngine = sslContext.createSSLEngine();
             SSLSession session = sslEngine.getSession();
             sslEngine.setUseClientMode(isClient);
-            if (clientAuth != null) {
+            if (null != clientAuth) {
                 switch (clientAuth) {
                     case OPTIONAL:
                         sslEngine.setWantClientAuth(true);
@@ -256,7 +256,7 @@ public class SslService {
                         break;
                     case NEED_TASK:
                         Runnable task;
-                        while ((task = engine.getDelegatedTask()) != null) {
+                        while (null != (task = engine.getDelegatedTask())) {
                             task.run();
                         }
                         break;

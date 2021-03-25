@@ -40,7 +40,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile {
@@ -92,7 +92,7 @@ public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile
         HttpURLConnection httpPost = buildConnection();
 
         setEncapsulatedDocumentAttributes(bulkDataFile.toPath(), metadata, mimeType);
-        if (metadata.getValue(Tag.EncapsulatedDocument) == null) {
+        if (null == metadata.getValue(Tag.EncapsulatedDocument)) {
             metadata.setValue(Tag.EncapsulatedDocument, VR.OB, new BulkData(null, "bulk", false));
         }
         metadata.setValue(Tag.SOPClassUID, VR.UI, sopClassUID);

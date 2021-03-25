@@ -50,7 +50,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * 2. 设备服务进程
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @lombok.Builder
@@ -105,7 +105,7 @@ public class Centre {
      */
     public synchronized void start(boolean... flag) {
         if (BooleanKit.or(flag)) {
-            if (executor == null) {
+            if (null == executor) {
                 executor = Executors.newSingleThreadExecutor();
                 scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
                 device.setExecutor(executor);
@@ -151,7 +151,7 @@ public class Centre {
         storeSCP.getApplicationEntity().setAcceptedCallingAETitles(args.getAcceptedCallingAETitles());
 
         URL transferCapabilityFile = args.getTransferCapabilityFile();
-        if (transferCapabilityFile != null) {
+        if (null != transferCapabilityFile) {
             storeSCP.loadDefaultTransferCapability(transferCapabilityFile);
         } else {
             storeSCP.getApplicationEntity()
@@ -175,7 +175,7 @@ public class Centre {
      * 停止管理器
      */
     public synchronized void stop() {
-        if (device != null) {
+        if (null != device) {
             device.unbindConnections();
         }
         Builder.shutdown(scheduledExecutor);

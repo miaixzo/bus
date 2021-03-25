@@ -39,7 +39,7 @@ import java.time.OffsetDateTime;
  * Helper class for WMI
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -153,7 +153,7 @@ public final class WmiKit {
 
     private static <T extends Enum<T>> String getStr(WbemcliUtil.WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (o == null) {
+        if (null == o) {
             return Normal.EMPTY;
         } else if (result.getVtType(property) == Variant.VT_BSTR) {
             return (String) o;
@@ -176,7 +176,7 @@ public final class WmiKit {
      */
     public static <T extends Enum<T>> long getUint64(WbemcliUtil.WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (o == null) {
+        if (null == o) {
             return 0L;
         } else if (result.getCIMType(property) == Wbemcli.CIM_UINT64 && result.getVtType(property) == Variant.VT_BSTR) {
             return Builder.parseLongOrDefault((String) o, 0L);
@@ -265,7 +265,7 @@ public final class WmiKit {
 
     private static <T extends Enum<T>> int getInt(WbemcliUtil.WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (o == null) {
+        if (null == o) {
             return 0;
         } else if (result.getVtType(property) == Variant.VT_I4) {
             return (int) o;
@@ -286,7 +286,7 @@ public final class WmiKit {
      */
     public static <T extends Enum<T>> float getFloat(WbemcliUtil.WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (o == null) {
+        if (null == o) {
             return 0f;
         } else if (result.getCIMType(property) == Wbemcli.CIM_REAL32 && result.getVtType(property) == Variant.VT_R4) {
             return (float) o;

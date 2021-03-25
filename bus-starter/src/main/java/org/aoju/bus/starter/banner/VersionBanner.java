@@ -29,7 +29,7 @@ package org.aoju.bus.starter.banner;
  * 版本旗标生成
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class VersionBanner extends AbstractBanner {
@@ -41,9 +41,9 @@ public class VersionBanner extends AbstractBanner {
 
     @Override
     protected String generateBanner(String bannerText) {
-        if (bannerText == null) {
+        if (null == bannerText) {
             String implementationVersion = resourceClass.getPackage().getImplementationVersion();
-            if (implementationVersion != null) {
+            if (null != implementationVersion) {
                 return implementationVersion;
             } else {
                 return defaultBanner;

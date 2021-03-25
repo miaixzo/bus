@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 数据库id,将它们用作忘记密码散列、邀请码、存储碎片号
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HashID {
@@ -77,7 +77,7 @@ public class HashID {
     }
 
     public HashID(String salt, int minHashLength, String alphabet) {
-        this.salt = salt != null ? salt : DEFAULT_SALT;
+        this.salt = null != salt ? salt : DEFAULT_SALT;
         this.minHashLength = minHashLength > 0 ? minHashLength : DEFAULT_MIN_HASH_LENGTH;
 
         final StringBuilder uniqueAlphabet = new StringBuilder();

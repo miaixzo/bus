@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * SimpleDocumentFormatRegistry包含office支持的文档格式集合.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SimpleFormatRegistry implements FormatRegistry {
@@ -58,12 +58,12 @@ public class SimpleFormatRegistry implements FormatRegistry {
 
     @Override
     public DocumentFormat getFormatByExtension(final String extension) {
-        return extension == null ? null : fmtsByExtension.get(StringKit.lowerCase(extension));
+        return null == extension ? null : fmtsByExtension.get(StringKit.lowerCase(extension));
     }
 
     @Override
     public DocumentFormat getFormatByMediaType(final String mediaType) {
-        return mediaType == null ? null : fmtsByMediaType.get(StringKit.lowerCase(mediaType));
+        return null == mediaType ? null : fmtsByMediaType.get(StringKit.lowerCase(mediaType));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class SimpleFormatRegistry implements FormatRegistry {
         return Optional.ofNullable(family).map(docFam -> fmtsByMediaType
                 .values()
                 .stream()
-                .filter(format -> format.getStoreProperties(docFam) != null)
+                .filter(format -> null != format.getStoreProperties(docFam))
                 .collect(Collectors.toSet()))
                 .orElse(new HashSet<>());
     }

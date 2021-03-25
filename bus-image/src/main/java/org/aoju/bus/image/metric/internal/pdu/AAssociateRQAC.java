@@ -36,7 +36,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class AAssociateRQAC {
@@ -60,12 +60,12 @@ public abstract class AAssociateRQAC {
     protected IdentityAC identityAC;
 
     public void checkCallingAET() {
-        if (callingAET == null)
+        if (null == callingAET)
             throw new IllegalStateException("Calling AET not initalized");
     }
 
     public void checkCalledAET() {
-        if (calledAET == null)
+        if (null == calledAET)
             throw new IllegalStateException("Called AET not initalized");
     }
 
@@ -113,7 +113,7 @@ public abstract class AAssociateRQAC {
     }
 
     public final void setApplicationContext(String applicationContext) {
-        if (applicationContext == null)
+        if (null == applicationContext)
             throw new NullPointerException();
 
         this.applicationContext = applicationContext;
@@ -152,7 +152,7 @@ public abstract class AAssociateRQAC {
     }
 
     public final void setImplClassUID(String implClassUID) {
-        if (implClassUID == null)
+        if (null == implClassUID)
             throw new NullPointerException();
 
         this.implClassUID = implClassUID;
@@ -280,7 +280,7 @@ public abstract class AAssociateRQAC {
         for (RoleSelection rs : roleSelMap.values()) {
             len += 4 + rs.length();
         }
-        if (implVersionName != null)
+        if (null != implVersionName)
             len += 4 + implVersionName.length();
         for (ExtendedNegotiate en : extNegMap.values()) {
             len += 4 + en.length();
@@ -288,9 +288,9 @@ public abstract class AAssociateRQAC {
         for (CommonExtended cen : commonExtNegMap.values()) {
             len += 4 + cen.length();
         }
-        if (identityRQ != null)
+        if (null != identityRQ)
             len += 4 + identityRQ.length();
-        if (identityAC != null)
+        if (null != identityAC)
             len += 4 + identityAC.length();
         return len;
     }
@@ -314,9 +314,9 @@ public abstract class AAssociateRQAC {
                 .append("  maxOpsInvoked/maxOpsPerformed: ")
                 .append(maxOpsInvoked).append(Symbol.SLASH).append(maxOpsPerformed)
                 .append(Property.LINE_SEPARATOR);
-        if (identityRQ != null)
+        if (null != identityRQ)
             identityRQ.promptTo(sb).append(Property.LINE_SEPARATOR);
-        if (identityAC != null)
+        if (null != identityAC)
             identityAC.promptTo(sb).append(Property.LINE_SEPARATOR);
         for (Presentation pc : pcs)
             pc.promptTo(sb).append(Property.LINE_SEPARATOR);

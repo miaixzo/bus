@@ -39,7 +39,7 @@ import java.util.TreeMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MultipartInputStream extends FilterInputStream {
@@ -187,7 +187,7 @@ public class MultipartInputStream extends FilterInputStream {
                 name = name.substring(0, endName);
             }
             List<String> list = map.get(name);
-            if (list == null) {
+            if (null == list) {
                 map.put(name.toLowerCase(), list = new ArrayList<>(1));
             }
             list.add(value);

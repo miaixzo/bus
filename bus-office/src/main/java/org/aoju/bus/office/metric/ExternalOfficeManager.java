@@ -40,7 +40,7 @@ import java.io.File;
  * 但是，如果外部进程是手动重新启动的，那么它将自动重新连接到外部进程
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class ExternalOfficeManager extends AbstractOfficeManager {
@@ -161,7 +161,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
 
         @Override
         public ExternalOfficeManager build() {
-            if (workingDir == null) {
+            if (null == workingDir) {
                 workingDir = new File(System.getProperty("java.io.tmpdir"));
             }
 
@@ -173,7 +173,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
                     new ExternalOfficeManager(
                             connectionProtocol == Protocol.SOCKET
                                     ? new UnoUrl(portNumber)
-                                    : pipeName != null ? new UnoUrl(pipeName) : new UnoUrl(org.aoju.bus.office.Builder.DEFAULT_PORT_NUMBER),
+                                    : null != pipeName ? new UnoUrl(pipeName) : new UnoUrl(org.aoju.bus.office.Builder.DEFAULT_PORT_NUMBER),
                             new ExternalOfficeBuilder(
                                     workingDir, connectOnStart, connectTimeout, retryInterval));
             if (install) {

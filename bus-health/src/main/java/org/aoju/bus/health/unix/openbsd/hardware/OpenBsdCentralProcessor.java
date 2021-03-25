@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * OpenBSD Central Processor implementation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
@@ -94,8 +94,8 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
      */
     private static long[] cpTimeToTicks(Memory m, boolean force64bit) {
         long longBytes = force64bit ? 8L : Native.LONG_SIZE;
-        int arraySize = m == null ? 0 : (int) (m.size() / longBytes);
-        if (force64bit && m != null) {
+        int arraySize = null == m ? 0 : (int) (m.size() / longBytes);
+        if (force64bit && null != m) {
             return m.getLongArray(0, arraySize);
         }
         long[] ticks = new long[arraySize];
@@ -125,7 +125,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         }
         mib[1] = OpenBsdLibc.HW_MACHINE;
         String machine = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
-        boolean cpu64bit = machine != null && machine.contains("64")
+        boolean cpu64bit = null != machine && machine.contains("64")
                 || Executor.getFirstAnswer("uname -m").trim().contains("64");
         String processorID = String.format("%08x%08x", cpufeature, cpuid);
 

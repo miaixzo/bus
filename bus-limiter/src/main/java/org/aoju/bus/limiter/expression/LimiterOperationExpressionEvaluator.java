@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class LimiterOperationExpressionEvaluator {
@@ -66,7 +66,7 @@ public class LimiterOperationExpressionEvaluator {
             evaluationContext.setVariable(key, injectArgs.get(key));
         }
 
-        if (beanFactory != null) {
+        if (null != beanFactory) {
             evaluationContext.setBeanResolver(new BeanFactoryResolver(beanFactory));
         }
         return evaluationContext;
@@ -80,7 +80,7 @@ public class LimiterOperationExpressionEvaluator {
 
         ExpressionKey expressionKey = new ExpressionKey(elementKey, expression);
         Expression expr = keyCache.get(expressionKey);
-        if (expr == null) {
+        if (null == expr) {
             expr = this.parser.parseExpression(expression);
             keyCache.put(expressionKey, expr);
         }

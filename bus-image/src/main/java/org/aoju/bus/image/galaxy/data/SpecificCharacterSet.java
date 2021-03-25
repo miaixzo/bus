@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SpecificCharacterSet {
@@ -60,7 +60,7 @@ public class SpecificCharacterSet {
     }
 
     public static void setDefaultCharacterSet(String code) {
-        SpecificCharacterSet cs = code != null ? valueOf(code) : ASCII;
+        SpecificCharacterSet cs = null != code ? valueOf(code) : ASCII;
         if (!cs.containsASCII())
             throw new IllegalArgumentException("Default Character Set must contain ASCII - " + code);
         DEFAULT = cs;
@@ -108,7 +108,7 @@ public class SpecificCharacterSet {
     }
 
     public static SpecificCharacterSet valueOf(String... codes) {
-        if (codes == null || codes.length == 0)
+        if (null == codes || codes.length == 0)
             return DEFAULT;
 
         if (codes.length > 1)
@@ -130,7 +130,7 @@ public class SpecificCharacterSet {
      * @return {@code true} if the code was replaced.
      */
     public static boolean trimISO2022(String[] codes) {
-        if (codes != null && codes.length == 1 && codes[0].startsWith("ISO 2022")) {
+        if (null != codes && codes.length == 1 && codes[0].startsWith("ISO 2022")) {
             switch (codes[0]) {
                 case "ISO 2022 IR 6":
                     codes[0] = Normal.EMPTY;
@@ -175,7 +175,7 @@ public class SpecificCharacterSet {
 
     private static String[] checkISO2022(String[] codes) {
         for (String code : codes) {
-            if (code != null && !code.isEmpty() && !code.startsWith("ISO 2022")) {
+            if (null != code && !code.isEmpty() && !code.startsWith("ISO 2022")) {
                 return new String[]{codes[0]};
             }
         }
@@ -186,7 +186,7 @@ public class SpecificCharacterSet {
                                    Codec codec) {
         SoftReference<Encoder> sr;
         Encoder enc;
-        if ((sr = tl.get()) == null || (enc = sr.get()) == null
+        if (null == (sr = tl.get()) || null == (enc = sr.get())
                 || enc.codec != codec)
             tl.set(new SoftReference<>(enc = new Encoder(codec)));
         return enc;
@@ -227,7 +227,7 @@ public class SpecificCharacterSet {
     @Override
     public boolean equals(Object other) {
 
-        if (other == null) {
+        if (null == other) {
             return false;
         }
         if (getClass() != other.getClass()) {
@@ -312,13 +312,13 @@ public class SpecificCharacterSet {
 
         private static Codec forCodeChecked(String code) {
             Codec codec = forCode(code, null);
-            if (codec == null)
+            if (null == codec)
                 throw new IllegalArgumentException("No such Specific Character Set Code: " + code);
             return codec;
         }
 
         private static Codec forCode(String code, Codec defCodec) {
-            switch (code != null ? code : "") {
+            switch (null != code ? code : Normal.EMPTY) {
                 case Normal.EMPTY:
                 case "ISO 2022 IR 6":
                     return SpecificCharacterSet.DEFAULT.codecs[0];
@@ -469,7 +469,7 @@ public class SpecificCharacterSet {
 
             int next = encs.length;
             while (--next >= 0) {
-                if (encs[next] == null)
+                if (null == encs[next])
                     encs[next] = new Encoder(codecs[next]);
                 if (codecs[next].getEscSeq1() != 0) {
                     if (encs[next].encode(cb, bb, codecs[next].getEscSeq1(), CodingErrorAction.REPORT)) {

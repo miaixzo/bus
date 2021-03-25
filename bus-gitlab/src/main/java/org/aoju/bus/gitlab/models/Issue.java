@@ -38,7 +38,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Issue {
@@ -154,7 +154,7 @@ public class Issue {
 
     public void setId(Integer id) {
         this.id = id;
-        if (id != null) {
+        if (null != id) {
             actualId = new IntNode(id);
             externalId = null;
         }
@@ -166,7 +166,7 @@ public class Issue {
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
-        if (externalId != null) {
+        if (null != externalId) {
             actualId = new TextNode(externalId);
             id = null;
         }

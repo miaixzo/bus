@@ -43,7 +43,7 @@ import java.util.Map;
  * 一个HTTP请求。如果该类的{@link #body}为空或自身为不可变，则该类的实例是不可变的.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Request {
@@ -109,7 +109,7 @@ public final class Request {
 
     public CacheControl cacheControl() {
         CacheControl result = cacheControl;
-        return result != null ? result : (cacheControl = CacheControl.parse(headers));
+        return null != result ? result : (cacheControl = CacheControl.parse(headers));
     }
 
     public boolean isHttps() {
@@ -151,7 +151,7 @@ public final class Request {
         }
 
         public Builder url(UnoUrl url) {
-            if (url == null) throw new NullPointerException("url == null");
+            if (null == url) throw new NullPointerException("url == null");
             this.url = url;
             return this;
         }
@@ -163,7 +163,7 @@ public final class Request {
          * @return 构造器
          */
         public Builder url(String url) {
-            if (url == null) throw new NullPointerException("url == null");
+            if (null == url) throw new NullPointerException("url == null");
 
             // 用HTTP url替换web套接字url.
             if (url.regionMatches(true, 0, "ws:", 0, 3)) {
@@ -182,7 +182,7 @@ public final class Request {
          * @return 构造器
          */
         public Builder url(URL url) {
-            if (url == null) throw new NullPointerException("url == null");
+            if (null == url) throw new NullPointerException("url == null");
             return url(UnoUrl.get(url.toString()));
         }
 
@@ -269,12 +269,12 @@ public final class Request {
         }
 
         public Builder method(String method, RequestBody body) {
-            if (method == null) throw new NullPointerException("method == null");
+            if (null == method) throw new NullPointerException("method == null");
             if (method.length() == 0) throw new IllegalArgumentException("method.length() == 0");
-            if (body != null && !HttpMethod.permitsRequestBody(method)) {
+            if (null != body && !HttpMethod.permitsRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must not have a request body.");
             }
-            if (body == null && HttpMethod.requiresRequestBody(method)) {
+            if (null == body && HttpMethod.requiresRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must have a request body.");
             }
             this.method = method;
@@ -287,9 +287,9 @@ public final class Request {
         }
 
         public <T> Builder tag(Class<? super T> type, T tag) {
-            if (type == null) throw new NullPointerException("type == null");
+            if (null == type) throw new NullPointerException("type == null");
 
-            if (tag == null) {
+            if (null == tag) {
                 tags.remove(type);
             } else {
                 if (tags.isEmpty()) tags = new LinkedHashMap<>();
@@ -300,7 +300,7 @@ public final class Request {
         }
 
         public Request build() {
-            if (url == null) throw new IllegalStateException("url == null");
+            if (null == url) throw new IllegalStateException("url == null");
             return new Request(this);
         }
     }

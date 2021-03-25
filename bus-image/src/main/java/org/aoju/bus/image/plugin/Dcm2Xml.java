@@ -48,7 +48,7 @@ import java.util.List;
  * DCM-XML转换
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Dcm2Xml {
@@ -158,7 +158,7 @@ public class Dcm2Xml {
             throws TransformerConfigurationException {
         SAXTransformerFactory tf = (SAXTransformerFactory)
                 TransformerFactory.newInstance();
-        if (xsltURL == null)
+        if (null == xsltURL)
             return tf.newTransformerHandler();
 
         TransformerHandler th = tf.newTransformerHandler(

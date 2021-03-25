@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Metaphone implements FuzzyStr {
@@ -40,7 +40,7 @@ public class Metaphone implements FuzzyStr {
 
     @Override
     public String toFuzzy(String s) {
-        if (s == null || s.length() == 0)
+        if (null == s || s.length() == 0)
             return Normal.EMPTY;
 
         char[] in = s.toUpperCase().toCharArray();

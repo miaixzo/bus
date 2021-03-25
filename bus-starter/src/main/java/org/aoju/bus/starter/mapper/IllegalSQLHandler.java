@@ -83,7 +83,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>7.where条件使用了 使用子查询</p>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -141,7 +141,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
      */
     private static void validJoins(List<Join> joins, Table table, Connection connection) {
         //允许执行join，验证jion是否使用索引等等
-        if (joins != null) {
+        if (null != joins) {
             for (Join join : joins) {
                 Table rightTable = (Table) join.getRightItem();
                 Expression expression = join.getOnExpression();
@@ -213,7 +213,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
             //如果左边表达式为Column对象，则直接获得列名
             if (leftExpression instanceof Column) {
                 Expression rightExpression = ((BinaryExpression) expression).getRightExpression();
-                if (joinTable != null && rightExpression instanceof Column) {
+                if (null != joinTable && rightExpression instanceof Column) {
                     if (Objects.equals(((Column) rightExpression).getTable().getName(), table.getAlias().getName())) {
                         validUseIndex(table, ((Column) rightExpression).getColumnName(), connection);
                         validUseIndex(joinTable, ((Column) leftExpression).getColumnName(), connection);
@@ -263,7 +263,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
         if (StringKit.isNotBlank(key)) {
             indexInfos = indexInfoMap.get(key);
         }
-        if (indexInfos == null || indexInfos.isEmpty()) {
+        if (null == indexInfos || indexInfos.isEmpty()) {
             ResultSet rs;
             try {
                 DatabaseMetaData metadata = conn.getMetaData();
@@ -332,7 +332,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
             joins = delete.getJoins();
         }
         //where条件不能为空
-        if (where == null) {
+        if (null == where) {
             throw new InstrumentException("非法SQL，必须要有where条件");
         }
         validWhere(where, table, connection);

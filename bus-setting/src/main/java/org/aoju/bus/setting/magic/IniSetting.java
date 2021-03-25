@@ -44,7 +44,7 @@ import java.util.StringJoiner;
  * 如果您想创建Ini，则可以{@link Builder}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IniSetting extends ArrayList<IniElement> {
@@ -73,7 +73,7 @@ public class IniSetting extends ArrayList<IniElement> {
             StringJoiner joiner = new StringJoiner(newLineSplit);
             for (IniElement iniElement : this) {
                 // if null, show a empty line.
-                joiner.add(iniElement == null ? Normal.EMPTY : iniElement.toString());
+                joiner.add(null == iniElement ? Normal.EMPTY : iniElement.toString());
             }
             return joiner.toString();
         }
@@ -123,7 +123,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (next.isProperty()) {
                 String pk;
                 IniProperty inip = (IniProperty) next;
-                if (delimiter != null) {
+                if (null != delimiter) {
                     pk = inip.getSection().value() + delimiter + inip.key();
                 } else {
                     pk = inip.key();
@@ -158,7 +158,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = element == null ? getNewLineSplit() :
+            str = null == element ? getNewLineSplit() :
                     withComment ? element.toString() + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
             out.write(str.getBytes(charset));
         }
@@ -192,7 +192,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = element == null ? getNewLineSplit() :
+            str = null == element ? getNewLineSplit() :
                     withComment ? element.toString() + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
             writer.write(str);
         }
@@ -211,7 +211,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = element == null ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
+            str = null == element ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
             print.println(str);
         }
         print.flush();

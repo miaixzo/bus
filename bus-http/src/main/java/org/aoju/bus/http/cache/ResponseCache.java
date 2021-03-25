@@ -41,7 +41,7 @@ import java.util.Map;
  * 统计信息的{@link java.net.ResponseCache}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ResponseCache extends java.net.ResponseCache {
@@ -73,7 +73,7 @@ public class ResponseCache extends java.net.ResponseCache {
                              Map<String, List<String>> requestHeaders) throws IOException {
         Request request = NetApiConvert.createRequest(uri, requestMethod, requestHeaders);
         Response response = delegate.internalCache.get(request);
-        if (response == null) {
+        if (null == response) {
             return null;
         }
         return NetApiConvert.createJavaCacheResponse(response);
@@ -82,12 +82,12 @@ public class ResponseCache extends java.net.ResponseCache {
     @Override
     public java.net.CacheRequest put(URI uri, URLConnection urlConnection) throws IOException {
         Response response = NetApiConvert.createResponseForCachePut(uri, urlConnection);
-        if (response == null) {
+        if (null == response) {
             return null;
         }
         CacheRequest cacheRequest =
                 delegate.internalCache.put(response);
-        if (cacheRequest == null) {
+        if (null == cacheRequest) {
             return null;
         }
         return NetApiConvert.createJavaCacheRequest(cacheRequest);

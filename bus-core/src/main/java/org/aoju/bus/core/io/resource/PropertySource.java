@@ -33,7 +33,7 @@ import java.util.Properties;
  * 配置文件源
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @FunctionalInterface
@@ -54,7 +54,7 @@ public interface PropertySource {
      */
     default String getProperty(String key) {
         String value = props().getProperty(key);
-        if (value == null) {
+        if (null == value) {
             return null;
         }
         return getPlaceholderProperty(value);
@@ -69,7 +69,7 @@ public interface PropertySource {
      */
     default String getProperty(String key, String defaultValue) {
         String value = getProperty(key);
-        if (value == null) {
+        if (null == value) {
             return defaultValue;
         }
         return value;

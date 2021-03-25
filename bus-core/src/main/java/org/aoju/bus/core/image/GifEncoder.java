@@ -48,7 +48,7 @@ import java.io.OutputStream;
  * <p>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GifEncoder {
@@ -178,7 +178,7 @@ public class GifEncoder {
      * @return true if successful.
      */
     public boolean addFrame(BufferedImage im) {
-        if ((im == null) || !started) {
+        if ((null == im) || !started) {
             return false;
         }
         boolean ok = true;
@@ -298,7 +298,9 @@ public class GifEncoder {
      * @return false if initial write failed.
      */
     public boolean start(OutputStream os) {
-        if (os == null) return false;
+        if (null == os) {
+            return false;
+        }
         boolean ok = true;
         closeStream = false;
         out = os;
@@ -363,7 +365,7 @@ public class GifEncoder {
         colorDepth = 8;
         palSize = 7;
         // get closest match to transparent color if specified
-        if (transparent != null) {
+        if (null != transparent) {
             transIndex = transparentExactMatch ? findExact(transparent) : findClosest(transparent);
         }
     }
@@ -375,7 +377,9 @@ public class GifEncoder {
      * @return index
      */
     protected int findClosest(Color c) {
-        if (colorTab == null) return -1;
+        if (null == colorTab) {
+            return -1;
+        }
         int r = c.getRed();
         int g = c.getGreen();
         int b = c.getBlue();
@@ -416,7 +420,7 @@ public class GifEncoder {
      * @return index
      */
     protected int findExact(Color c) {
-        if (colorTab == null) {
+        if (null == colorTab) {
             return -1;
         }
 
@@ -466,7 +470,7 @@ public class GifEncoder {
         out.write(0xf9); // GCE label
         out.write(4); // data block size
         int transp, disp;
-        if (transparent == null) {
+        if (null == transparent) {
             transp = 0;
             disp = 0; // dispose = no action
         } else {

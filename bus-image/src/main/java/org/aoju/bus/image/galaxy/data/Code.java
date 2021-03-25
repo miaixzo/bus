@@ -32,7 +32,7 @@ import java.io.Serializable;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Code implements Serializable {
@@ -79,11 +79,11 @@ public class Code implements Serializable {
 
     public Code(String codeValue, String codingSchemeDesignator,
                 String codingSchemeVersion, String codeMeaning) {
-        if (codeValue == null)
+        if (null == codeValue)
             throw new NullPointerException("Missing Code Value");
-        if (codingSchemeDesignator == null)
+        if (null == codingSchemeDesignator)
             throw new NullPointerException("Missing Coding Scheme Designator");
-        if (codeMeaning == null)
+        if (null == codeMeaning)
             throw new NullPointerException("Missing Code Meaning");
         this.codeValue = codeValue;
         this.codingSchemeDesignator = codingSchemeDesignator;
@@ -128,7 +128,7 @@ public class Code implements Serializable {
             result = 17;
             result = 31 * result + codeValue.hashCode();
             result = 31 * result + codingSchemeDesignator.hashCode();
-            result = 31 * result + (codingSchemeVersion != null ? codingSchemeVersion.hashCode() : 0);
+            result = 31 * result + (null != codingSchemeVersion ? codingSchemeVersion.hashCode() : 0);
             hashCode = result;
         }
         return result;
@@ -156,24 +156,24 @@ public class Code implements Serializable {
     }
 
     private boolean equals(String s1, String s2) {
-        return s1 == s2 || s1 != null && s1.equals(s2);
+        return s1 == s2 || null != s1 && s1.equals(s2);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(Symbol.C_PARENTHESE_LEFT).append(codeValue).append(", ").append(codingSchemeDesignator);
-        if (codingSchemeVersion != null)
+        if (null != codingSchemeVersion)
             sb.append(" [").append(codingSchemeVersion).append(Symbol.C_BRACKET_RIGHT);
         sb.append(", \"").append(codeMeaning).append("\")");
         return sb.toString();
     }
 
     public Attributes toItem() {
-        Attributes codeItem = new Attributes(codingSchemeVersion != null ? 4 : 3);
+        Attributes codeItem = new Attributes(null != codingSchemeVersion ? 4 : 3);
         codeItem.setString(Tag.CodeValue, VR.SH, codeValue);
         codeItem.setString(Tag.CodingSchemeDesignator, VR.SH, codingSchemeDesignator);
-        if (codingSchemeVersion != null)
+        if (null != codingSchemeVersion)
             codeItem.setString(Tag.CodingSchemeVersion, VR.SH, codingSchemeVersion);
         codeItem.setString(Tag.CodeMeaning, VR.LO, codeMeaning);
         return codeItem;

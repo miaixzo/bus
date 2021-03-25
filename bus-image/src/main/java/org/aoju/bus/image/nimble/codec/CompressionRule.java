@@ -33,7 +33,7 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CompressionRule implements Comparable<CompressionRule>, Serializable {
@@ -126,7 +126,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         }
 
         private static boolean isEmptyOrContains(Object[] a, Object o) {
-            if (o == null || a.length == 0)
+            if (null == o || a.length == 0)
                 return true;
 
             for (int i = 0; i < a.length; i++)

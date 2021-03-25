@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +45,7 @@ public class VersionInfoType {
     protected String comment;
 
     public String getVersionName() {
-        if (this.versionName == null) {
+        if (null == this.versionName) {
             return "1.1";
         }
         return this.versionName;

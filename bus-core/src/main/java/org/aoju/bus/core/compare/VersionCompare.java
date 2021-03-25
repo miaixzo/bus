@@ -39,7 +39,7 @@ import java.util.List;
  * 支持如：1.3.20.8,6.82.20160101,8.5a/8.5c等版本形式
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class VersionCompare implements Comparator<String>, Serializable {
@@ -78,11 +78,11 @@ public class VersionCompare implements Comparator<String>, Serializable {
         if (version1 == version2) {
             return 0;
         }
-        if (version1 == null && version2 == null) {
+        if (null == version1 && null == version2) {
             return 0;
-        } else if (version1 == null) {// null视为最小版本,排在前
+        } else if (null == version1) {// null视为最小版本,排在前
             return -1;
-        } else if (version2 == null) {
+        } else if (null == version2) {
             return 1;
         }
 

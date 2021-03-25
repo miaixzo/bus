@@ -42,7 +42,7 @@ import java.util.Objects;
  * {@link IniProperty }
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class DefaultFormatter implements Format {
@@ -113,7 +113,7 @@ public class DefaultFormatter implements Format {
                     IniProperty property = propertyElementFormatter.format(line, preEffectiveLineNumber);
                     // set section if exists
                     // In general it should be there, unless it's incorrectly formatted. If not, an exception is thrown.
-                    if (lastSection == null) {
+                    if (null == lastSection) {
                         throw new InstrumentException("Cannot found section for property line " + lineNumber + " : " + line);
                     }
                     // set section for property

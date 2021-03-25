@@ -38,7 +38,7 @@ import java.util.List;
  * 相关处理状态
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data
@@ -277,7 +277,7 @@ public class Status {
 
     public static Status build(Status dcmState, String timeMessage, Exception e) {
         Status state = dcmState;
-        if (state == null) {
+        if (null == state) {
             state = new Status(Status.UnableToProcess, null, null);
         }
 
@@ -287,7 +287,7 @@ public class Status {
         StringBuilder msg = new StringBuilder();
 
         boolean hasFailed = false;
-        if (p != null) {
+        if (null != p) {
             int failed = p.getNumberOfFailedSuboperations();
             int warning = p.getNumberOfWarningSuboperations();
             int remaining = p.getNumberOfRemainingSuboperations();
@@ -301,7 +301,7 @@ public class Status {
                 msg.append(String.format("%d operations has a warning status. ", warning));
             }
         }
-        if (e != null) {
+        if (null != e) {
             hasFailed = true;
             if (msg.length() > 0) {
                 msg.append(Symbol.SPACE);
@@ -309,7 +309,7 @@ public class Status {
             msg.append(e.getLocalizedMessage());
         }
 
-        if (p != null && p.getAttributes() != null) {
+        if (null != p && null != p.getAttributes()) {
             String error = p.getErrorComment();
             if (StringKit.hasText(error)) {
                 hasFailed = true;
@@ -330,7 +330,7 @@ public class Status {
         }
 
         if (!hasFailed) {
-            if (timeMessage != null) {
+            if (null != timeMessage) {
                 msg.append(timeMessage);
             }
         } else {
@@ -347,14 +347,14 @@ public class Status {
     }
 
     public int getStatus() {
-        if (progress != null && progress.getAttributes() != null) {
+        if (null != progress && null != progress.getAttributes()) {
             return progress.getStatus();
         }
         return status;
     }
 
     public void setList(Attributes attributes) {
-        if (attributes != null) {
+        if (null != attributes) {
             this.list.add(attributes);
         }
     }

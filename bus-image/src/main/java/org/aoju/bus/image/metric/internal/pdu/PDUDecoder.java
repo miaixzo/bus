@@ -50,7 +50,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PDUDecoder extends PDVInputStream {
@@ -408,7 +408,7 @@ public class PDUDecoder extends PDVInputStream {
         nextPDV(Builder.COMMAND, -1);
 
         Presentation pc = as.getPresentationContext(pcid);
-        if (pc == null) {
+        if (null == pc) {
             Logger.warn(
                     "{}: No Presentation Context with given ID - {}",
                     as, pcid);

@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class TraceClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
@@ -82,7 +82,7 @@ public final class TraceClientHttpRequestInterceptor implements ClientHttpReques
 
     private void postResponse(ClientHttpResponse response) {
         final List<String> headers = response.getHeaders().get(Builder.TPIC_HEADER);
-        if (headers != null) {
+        if (null != headers) {
             final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
 
             if (filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.IncomingResponse)) {

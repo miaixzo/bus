@@ -54,7 +54,7 @@ import java.util.Objects;
  * 访问鉴权
  *
  * @author Justubborn
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
@@ -131,7 +131,7 @@ public class AuthorizeFilter implements WebFilter {
             if (StringKit.isBlank(context.getToken())) {
                 throw new BusinessException(ErrorCode.EM_100106);
             }
-            Token access = new Token(context.getToken(),context.getChannel().getTokenType());
+            Token access = new Token(context.getToken(), context.getChannel().getTokenType());
             Delegate delegate = authorize.authorize(access);
             if (delegate.isOk()) {
                 OAuth2 auth2 = delegate.getOAuth2();

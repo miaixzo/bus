@@ -32,7 +32,7 @@ import java.nio.CharBuffer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ByteKit {
@@ -368,7 +368,7 @@ public class ByteKit {
      */
     public static int xor(byte[] bytes) {
         int temp = 0;
-        if (bytes != null) {
+        if (null != bytes) {
             for (int i = 0; i < bytes.length; i++) {
                 temp ^= bytes[i];
             }

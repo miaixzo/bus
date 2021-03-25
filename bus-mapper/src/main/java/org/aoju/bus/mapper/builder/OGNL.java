@@ -36,7 +36,7 @@ import org.aoju.bus.mapper.entity.EntityTableName;
  * OGNL静态方法
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class OGNL {
@@ -49,7 +49,8 @@ public abstract class OGNL {
      * @return the boolean
      */
     public static boolean checkEntityClass(Object parameter, String entityFullName) {
-        if (parameter != null && parameter instanceof Condition && Assert.isNotEmpty(entityFullName)) {
+        if (null != parameter
+                && parameter instanceof Condition && Assert.isNotEmpty(entityFullName)) {
             Condition condition = (Condition) parameter;
             Class<?> entityClass = condition.getEntityClass();
             if (!entityClass.getCanonicalName().equals(entityFullName)) {
@@ -67,9 +68,9 @@ public abstract class OGNL {
      * @return the boolean
      */
     public static boolean hasSelectColumns(Object parameter) {
-        if (parameter != null && parameter instanceof Condition) {
+        if (null != parameter && parameter instanceof Condition) {
             Condition condition = (Condition) parameter;
-            if (condition.getSelectColumns() != null && condition.getSelectColumns().size() > 0) {
+            if (null != condition.getSelectColumns() && condition.getSelectColumns().size() > 0) {
                 return true;
             }
         }
@@ -83,7 +84,7 @@ public abstract class OGNL {
      * @return the boolean
      */
     public static boolean hasCountColumn(Object parameter) {
-        if (parameter != null && parameter instanceof Condition) {
+        if (null != parameter && parameter instanceof Condition) {
             Condition condition = (Condition) parameter;
             return Assert.isNotEmpty(condition.getCountColumn());
         }
@@ -97,7 +98,7 @@ public abstract class OGNL {
      * @return the boolean
      */
     public static boolean hasForUpdate(Object parameter) {
-        if (parameter != null && parameter instanceof Condition) {
+        if (null != parameter && parameter instanceof Condition) {
             Condition condition = (Condition) parameter;
             return condition.isForUpdate();
         }
@@ -121,7 +122,7 @@ public abstract class OGNL {
      * @return true支持, false不支持
      */
     public static boolean isDynamicParameter(Object parameter) {
-        if (parameter != null && parameter instanceof EntityTableName) {
+        if (null != parameter && parameter instanceof EntityTableName) {
             return true;
         }
         return false;

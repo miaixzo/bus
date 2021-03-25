@@ -52,7 +52,7 @@ import java.util.function.Function;
  *
  * @param <T> 消息对象类型
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AioQuickServer<T> {
@@ -138,7 +138,7 @@ public class AioQuickServer<T> {
         checkAndResetConfig();
         try {
             aioCompletionWriteHandler = new CompletionWriteHandler<>();
-            if (bufferPool == null) {
+            if (null == bufferPool) {
                 this.bufferPool = config.getBufferFactory().create();
                 this.innerBufferPool = bufferPool;
             }
@@ -158,13 +158,13 @@ public class AioQuickServer<T> {
             });
             this.serverSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);
             // 设置socket属性
-            if (config.getSocketOptions() != null) {
+            if (null != config.getSocketOptions()) {
                 for (Map.Entry<SocketOption<Object>, Object> entry : config.getSocketOptions().entrySet()) {
                     this.serverSocketChannel.setOption(entry.getKey(), entry.getValue());
                 }
             }
             // 绑定地址
-            if (config.getHost() != null) {
+            if (null != config.getHost()) {
                 serverSocketChannel.bind(new InetSocketAddress(config.getHost(), config.getPort()), config.getBacklog());
             } else {
                 serverSocketChannel.bind(new InetSocketAddress(config.getPort()), config.getBacklog());
@@ -220,10 +220,10 @@ public class AioQuickServer<T> {
         TcpAioSession<T> session = null;
         AsynchronousSocketChannel acceptChannel = channel;
         try {
-            if (config.getMonitor() != null) {
+            if (null != config.getMonitor()) {
                 acceptChannel = config.getMonitor().shouldAccept(channel);
             }
-            if (acceptChannel != null) {
+            if (null != acceptChannel) {
                 acceptChannel.setOption(StandardSocketOptions.TCP_NODELAY, true);
                 session = aioSessionFunction.apply(acceptChannel);
                 session.initSession(readBufferFactory.newBuffer(bufferPool.allocatePageBuffer()));
@@ -233,7 +233,7 @@ public class AioQuickServer<T> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (session == null) {
+            if (null == session) {
                 IoKit.close(channel);
             } else {
                 session.close();
@@ -246,7 +246,7 @@ public class AioQuickServer<T> {
      */
     public final void shutdown() {
         try {
-            if (serverSocketChannel != null) {
+            if (null != serverSocketChannel) {
                 serverSocketChannel.close();
                 serverSocketChannel = null;
             }
@@ -266,7 +266,7 @@ public class AioQuickServer<T> {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (innerBufferPool != null) {
+        if (null != innerBufferPool) {
             innerBufferPool.release();
         }
         aioCompletionReadHandler.shutdown();

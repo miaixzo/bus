@@ -35,7 +35,7 @@ import java.util.Map;
  * 银行卡工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CardKit {
@@ -788,7 +788,7 @@ public class CardKit {
      * @return 校验位
      */
     public static char getBankCardCode(String nonCodeCardId) {
-        if (nonCodeCardId == null || nonCodeCardId.trim().length() == 0
+        if (null == nonCodeCardId || nonCodeCardId.trim().length() == 0
                 || !nonCodeCardId.matches("\\d+")) {
             //如果传的不是数据返回N
             return 'N';

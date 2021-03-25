@@ -30,7 +30,7 @@ package org.aoju.bus.core.io;
  * 这个池是一个线程安全的静态单例
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class LifeCycle {
@@ -47,7 +47,7 @@ public final class LifeCycle {
 
     public static Segment take() {
         synchronized (LifeCycle.class) {
-            if (next != null) {
+            if (null != next) {
                 Segment result = next;
                 next = result.next;
                 result.next = null;
@@ -59,7 +59,7 @@ public final class LifeCycle {
     }
 
     public static void recycle(Segment segment) {
-        if (segment.next != null || segment.prev != null) throw new IllegalArgumentException();
+        if (null != segment.next || null != segment.prev) throw new IllegalArgumentException();
         if (segment.shared) return;
         synchronized (LifeCycle.class) {
             if (byteCount + Segment.SIZE > MAX_SIZE) return;

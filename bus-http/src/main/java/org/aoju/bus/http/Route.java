@@ -34,7 +34,7 @@ import java.net.Proxy;
  * 每个路由都是这些选项的特定选择
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Route {
@@ -44,13 +44,13 @@ public final class Route {
     final InetSocketAddress inetSocketAddress;
 
     public Route(Address address, Proxy proxy, InetSocketAddress inetSocketAddress) {
-        if (address == null) {
+        if (null == address) {
             throw new NullPointerException("address == null");
         }
-        if (proxy == null) {
+        if (null == proxy) {
             throw new NullPointerException("proxy == null");
         }
-        if (inetSocketAddress == null) {
+        if (null == inetSocketAddress) {
             throw new NullPointerException("inetSocketAddress == null");
         }
         this.address = address;
@@ -71,7 +71,7 @@ public final class Route {
     }
 
     public boolean requiresTunnel() {
-        return address.sslSocketFactory != null && proxy.type() == Proxy.Type.HTTP;
+        return null != address.sslSocketFactory && proxy.type() == Proxy.Type.HTTP;
     }
 
     @Override

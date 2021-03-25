@@ -39,7 +39,7 @@ import java.text.DecimalFormat;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Emf2sf {
@@ -50,7 +50,7 @@ public class Emf2sf {
     private File outDir;
 
     private static int[] toFrames(String[] ss) throws InstrumentException {
-        if (ss == null)
+        if (null == ss)
             return null;
 
         int[] is = new int[ss.length];
@@ -87,7 +87,7 @@ public class Emf2sf {
     }
 
     private String fname(File srcFile, int frame) {
-        if (outFileFormat != null)
+        if (null != outFileFormat)
             synchronized (outFileFormat) {
                 return outFileFormat.format(frame);
             }
@@ -104,7 +104,7 @@ public class Emf2sf {
             IoKit.close(dis);
         }
         Attributes fmi = dis.getFileMetaInformation();
-        if (frames == null) {
+        if (null == frames) {
             int n = src.getInt(Tag.NumberOfFrames, 1);
             for (int frame = 0; frame < n; ++frame)
                 extract(file, fmi, src, frame);
@@ -122,7 +122,7 @@ public class Emf2sf {
         ImageOutputStream out = new ImageOutputStream(
                 new File(outDir, fname(file, frame + 1)));
         try {
-            out.writeDataset(fmi != null
+            out.writeDataset(null != fmi
                     ? sf.createFileMetaInformation(
                     fmi.getString(Tag.TransferSyntaxUID))
                     : null, sf);

@@ -33,7 +33,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PatchJPEGLSImageOutputStream extends ImageOutputStreamImpl {
@@ -45,17 +45,17 @@ public class PatchJPEGLSImageOutputStream extends ImageOutputStreamImpl {
 
     public PatchJPEGLSImageOutputStream(ImageOutputStream ios,
                                         PatchJPEGLS patchJpegLS) throws IOException {
-        if (ios == null)
+        if (null == ios)
             throw new NullPointerException("ios");
         super.streamPos = ios.getStreamPosition();
         super.flushedPos = ios.getFlushedPosition();
         this.ios = ios;
         this.patchJpegLS = patchJpegLS;
-        this.jpegheader = patchJpegLS != null ? new byte[256] : null;
+        this.jpegheader = null != patchJpegLS ? new byte[256] : null;
     }
 
     public void write(byte[] b, int off, int len) throws IOException {
-        if (jpegheader == null) {
+        if (null == jpegheader) {
             ios.write(b, off, len);
         } else {
             int len0 = Math.min(jpegheader.length - jpegheaderIndex, len);
@@ -64,7 +64,7 @@ public class PatchJPEGLSImageOutputStream extends ImageOutputStreamImpl {
             if (jpegheaderIndex >= jpegheader.length) {
                 JPEGLSCodingParam param =
                         patchJpegLS.createJPEGLSCodingParam(jpegheader);
-                if (param == null)
+                if (null == param)
                     ios.write(jpegheader);
                 else {
                     Logger.debug("Patch JPEG-LS with {}", param);
@@ -85,7 +85,7 @@ public class PatchJPEGLSImageOutputStream extends ImageOutputStreamImpl {
     }
 
     public void write(int b) throws IOException {
-        if (jpegheader == null) {
+        if (null == jpegheader) {
             ios.write(b);
             streamPos++;
         } else

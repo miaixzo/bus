@@ -43,7 +43,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @WebListener("TraceServletRequestListener to read incoming TPICs into Builder backend")
@@ -83,7 +83,7 @@ public final class TraceServletRequestListener implements ServletRequestListener
         if (configuration.shouldProcessContext(TraceFilterConfig.Channel.IncomingRequest)) {
             final Enumeration<String> headers = request.getHeaders(HTTP_HEADER_NAME);
 
-            if (headers != null && headers.hasMoreElements()) {
+            if (null != headers && headers.hasMoreElements()) {
                 final Map<String, String> contextMap = transportSerialization.parse(Collections.list(headers));
                 backend.putAll(backend.getConfiguration().filterDeniedParams(contextMap, TraceFilterConfig.Channel.IncomingRequest));
             }
@@ -92,7 +92,7 @@ public final class TraceServletRequestListener implements ServletRequestListener
         org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
 
         final HttpSession session = request.getSession(false);
-        if (session != null) {
+        if (null != session) {
             org.aoju.bus.tracer.Builder.generateSessionIdIfNecessary(backend, session.getId());
         }
     }

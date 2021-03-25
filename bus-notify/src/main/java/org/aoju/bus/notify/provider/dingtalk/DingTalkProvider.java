@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 钉钉通知
  *
  * @author Justubborn
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK1.8+
  */
 @Setter
@@ -84,7 +84,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
     }
 
     private String getToken() {
-        if (System.currentTimeMillis() - refreshTokenTime > tokenTimeOut || accessToken.get() == null) {
+        if (System.currentTimeMillis() - refreshTokenTime > tokenTimeOut || null == accessToken.get()) {
             return requestToken();
         }
         return accessToken.get();

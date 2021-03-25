@@ -96,7 +96,7 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -1675,6 +1675,44 @@ public final class Builder {
      */
     public static HMac hmacSha1() {
         return new HMac(Algorithm.HmacSHA1);
+    }
+
+    /**
+     * HmacSHA256加密器
+     * 例：
+     * HmacSHA256加密：hmacSha256(key).digest(data)
+     * HmacSHA256加密并转为16进制字符串：hmacSha256(key).digestHex(data)
+     *
+     * @param key 加密密钥，如果为{@code null}生成随机密钥
+     * @return {@link HMac}
+     */
+    public static HMac hmacSha256(String key) {
+        return hmacSha256(StringKit.bytes(key));
+    }
+
+    /**
+     * HmacSHA256加密器
+     * 例：
+     * HmacSHA256加密：hmacSha256(key).digest(data)
+     * HmacSHA256加密并转为16进制字符串：hmacSha256(key).digestHex(data)
+     *
+     * @param key 加密密钥，如果为{@code null}生成随机密钥
+     * @return {@link HMac}
+     */
+    public static HMac hmacSha256(byte[] key) {
+        return new HMac(Algorithm.HmacSHA256, key);
+    }
+
+    /**
+     * HmacSHA256加密器，生成随机KEY
+     * 例：
+     * HmacSHA256加密：hmacSha256().digest(data)
+     * HmacSHA256加密并转为16进制字符串：hmacSha256().digestHex(data)
+     *
+     * @return {@link HMac}
+     */
+    public static HMac hmacSha256() {
+        return new HMac(Algorithm.HmacSHA256);
     }
 
     /**

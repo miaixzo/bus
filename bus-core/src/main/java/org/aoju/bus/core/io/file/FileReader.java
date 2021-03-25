@@ -41,7 +41,7 @@ import java.util.List;
  * 文件读取器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class FileReader extends FileWrapper {
@@ -184,7 +184,7 @@ public class FileReader extends FileWrapper {
             String line;
             while (true) {
                 line = reader.readLine();
-                if (line == null) {
+                if (null == line) {
                     break;
                 }
                 collection.add(line);

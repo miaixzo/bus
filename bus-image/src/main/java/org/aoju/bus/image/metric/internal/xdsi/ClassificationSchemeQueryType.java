@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -46,7 +46,7 @@ public class ClassificationSchemeQueryType extends RegistryObjectQueryType {
     protected ClassificationNodeQueryType nodeTypeQuery;
 
     public List<ClassificationNodeQueryType> getChildrenQuery() {
-        if (this.childrenQuery == null) {
+        if (null == this.childrenQuery) {
             this.childrenQuery = new ArrayList();
         }
         return this.childrenQuery;

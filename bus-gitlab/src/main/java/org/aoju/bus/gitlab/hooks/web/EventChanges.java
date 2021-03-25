@@ -37,7 +37,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class EventChanges {
@@ -149,7 +149,7 @@ public abstract class EventChanges {
             try {
                 final ChangeContainer<Object> container = otherProperties.get(property);
                 // noinspection unchecked :  It's duty from caller to be sure to do that
-                return container != null ? (ChangeContainer<T>) container : null;
+                return null != container ? (ChangeContainer<T>) container : null;
             } catch (ClassCastException e) {
                 return null;
             }

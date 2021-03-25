@@ -35,7 +35,7 @@ import java.util.Map;
  * Quickly服务端/客户端配置信息 T:解码后生成的对象类型
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ServerConfig<T> {
@@ -179,7 +179,7 @@ public class ServerConfig<T> {
      * @param f            socketOption值
      */
     public void setOption(SocketOption socketOption, Object f) {
-        if (socketOptions == null) {
+        if (null == socketOptions) {
             socketOptions = new HashMap<>(4);
         }
         socketOptions.put(socketOption, f);

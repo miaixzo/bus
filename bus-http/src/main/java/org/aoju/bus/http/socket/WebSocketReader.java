@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * 这个类不是线程安全的
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 final class WebSocketReader {
@@ -58,8 +58,8 @@ final class WebSocketReader {
     boolean isControlFrame;
 
     WebSocketReader(boolean isClient, BufferSource source, FrameCallback frameCallback) {
-        if (source == null) throw new NullPointerException("source == null");
-        if (frameCallback == null) throw new NullPointerException("frameCallback == null");
+        if (null == source) throw new NullPointerException("source == null");
+        if (null == frameCallback) throw new NullPointerException("frameCallback == null");
         this.isClient = isClient;
         this.source = source;
         this.frameCallback = frameCallback;
@@ -162,7 +162,9 @@ final class WebSocketReader {
                     code = controlFrameBuffer.readShort();
                     reason = controlFrameBuffer.readUtf8();
                     String codeExceptionMessage = WebSocketProtocol.closeCodeExceptionMessage(code);
-                    if (codeExceptionMessage != null) throw new ProtocolException(codeExceptionMessage);
+                    if (null != codeExceptionMessage) {
+                        throw new ProtocolException(codeExceptionMessage);
+                    }
                 }
                 frameCallback.onReadClose(code, reason);
                 closed = true;

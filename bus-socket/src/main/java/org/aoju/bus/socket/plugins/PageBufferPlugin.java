@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 内存页监测插件
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PageBufferPlugin<T> extends AbstractPlugin {
@@ -62,7 +62,7 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
         long mills = TimeUnit.SECONDS.toMillis(seconds);
         future = QuickTimer.scheduleAtFixedRate(() -> {
             {
-                if (server == null) {
+                if (null == server) {
                     Logger.error("unKnow server or client need to monitor!");
                     shutdown();
                     return;
@@ -71,7 +71,7 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
                     Field bufferPoolField = AioQuickServer.class.getDeclaredField("bufferPool");
                     bufferPoolField.setAccessible(true);
                     ByteBuffer pagePool = (ByteBuffer) bufferPoolField.get(server);
-                    if (pagePool == null) {
+                    if (null == pagePool) {
                         Logger.error("server maybe has not started!");
                         shutdown();
                         return;
@@ -92,7 +92,7 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
     }
 
     private void shutdown() {
-        if (future != null) {
+        if (null != future) {
             future.cancel(true);
             future = null;
         }

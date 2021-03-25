@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 心跳插件
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
@@ -157,7 +157,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
                     return;
                 }
                 Long lastTime = sessionMap.get(session);
-                if (lastTime == null) {
+                if (null == lastTime) {
                     Logger.warn("session:{} timeout is null", session);
                     lastTime = System.currentTimeMillis();
                     sessionMap.put(session, lastTime);

@@ -36,7 +36,7 @@ import org.aoju.bus.proxy.Invocation;
  * 注意:这个类的实现是从HiveMind的日志拦截器中借来的
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class LoggingInterceptor implements Interceptor {
@@ -79,7 +79,7 @@ public class LoggingInterceptor implements Interceptor {
     }
 
     private void convert(StringBuffer buffer, Object input) {
-        if (input == null) {
+        if (null == input) {
             buffer.append("<null>");
             return;
         }

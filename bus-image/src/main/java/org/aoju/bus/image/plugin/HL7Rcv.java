@@ -46,7 +46,7 @@ import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL7Rcv {
@@ -101,11 +101,11 @@ public class HL7Rcv {
 
     private UnparsedHL7Message onMessage(UnparsedHL7Message msg)
             throws Exception {
-        if (storageDir != null)
+        if (null != storageDir)
             storeToFile(msg.data(), new File(
                     new File(storageDir, msg.msh().getMessageType()),
                     msg.msh().getField(9, "_NULL_")));
-        return new UnparsedHL7Message(tpls == null
+        return new UnparsedHL7Message(null == tpls
                 ? HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null)
                 : xslt(msg));
     }
@@ -129,7 +129,7 @@ public class HL7Rcv {
         Transformer t = th.getTransformer();
         t.setParameter("MessageControlID", HL7Segment.nextMessageControlID());
         t.setParameter("DateTimeOfMessage", HL7Segment.timeStamp(new Date()));
-        if (xsltParams != null)
+        if (null != xsltParams)
             for (int i = 1; i < xsltParams.length; i++, i++)
                 t.setParameter(xsltParams[i - 1], xsltParams[i]);
         th.setResult(new SAXResult(new HL7ContentHandler(

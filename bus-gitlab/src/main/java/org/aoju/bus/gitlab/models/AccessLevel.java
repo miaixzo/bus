@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public enum AccessLevel {
@@ -61,7 +61,7 @@ public enum AccessLevel {
     public static AccessLevel forValue(Integer value) {
 
         AccessLevel level = valuesMap.get(value);
-        if (level != null) {
+        if (null != level) {
             return (level);
         }
 

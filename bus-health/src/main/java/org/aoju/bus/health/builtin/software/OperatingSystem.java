@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * controls the computer.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -399,7 +399,7 @@ public interface OperatingSystem {
             this.codeName = codeName;
             this.buildNumber = buildNumber;
 
-            StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Normal.UNKNOWN);
+            StringBuilder sb = new StringBuilder(null != getVersion() ? getVersion() : Normal.UNKNOWN);
             if (!StringKit.isBlank(getCodeName())) {
                 sb.append(" (").append(getCodeName()).append(')');
             }

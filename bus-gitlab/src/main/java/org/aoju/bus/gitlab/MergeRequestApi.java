@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab merge request calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://docs.gitlab.com/ce/api/merge_requests.html">Merge requests API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/merge_request_approvals.html">Merge request approvals API at GitLab</a>
  * @since JDK 1.8+
@@ -78,11 +78,11 @@ public class MergeRequestApi extends AbstractApi {
      */
     public List<MergeRequest> getMergeRequests(MergeRequestFilter filter, int page, int perPage) throws GitLabApiException {
 
-        MultivaluedMap<String, String> queryParams = (filter != null ?
+        MultivaluedMap<String, String> queryParams = (null != filter ?
                 filter.getQueryParams(page, perPage).asMap() : getPageQueryParams(page, perPage));
         Response response;
-        if (filter != null && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
-                (filter.getIids() != null && filter.getIids().size() > 0)) {
+        if (null != filter && (null != filter.getProjectId() && filter.getProjectId().intValue() > 0) ||
+                (null != filter.getIids() && filter.getIids().size() > 0)) {
 
             if (filter.getProjectId() == null || filter.getProjectId().intValue() == 0) {
                 throw new RuntimeException("project ID cannot be null or 0");
@@ -109,9 +109,9 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<MergeRequest> getMergeRequests(MergeRequestFilter filter, int itemsPerPage) throws GitLabApiException {
 
-        MultivaluedMap<String, String> queryParams = (filter != null ? filter.getQueryParams().asMap() : null);
-        if (filter != null && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
-                (filter.getIids() != null && filter.getIids().size() > 0)) {
+        MultivaluedMap<String, String> queryParams = (null != filter ? filter.getQueryParams().asMap() : null);
+        if (filter != null && (null != filter.getProjectId() && filter.getProjectId().intValue() > 0) ||
+                (null != filter.getIids() && filter.getIids().size() > 0)) {
 
             if (filter.getProjectId() == null || filter.getProjectId().intValue() == 0) {
                 throw new RuntimeException("project ID cannot be null or 0");
@@ -659,7 +659,7 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
 
         String[] labelsArray = null;
-        if (labels != null) {
+        if (null != labels) {
             labelsArray = labels.split(Symbol.COMMA, -1);
         }
 

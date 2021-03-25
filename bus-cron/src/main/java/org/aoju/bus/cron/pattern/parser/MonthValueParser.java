@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 月份值处理
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MonthValueParser extends SimpleValueParser {

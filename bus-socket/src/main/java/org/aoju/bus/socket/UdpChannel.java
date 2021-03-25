@@ -47,7 +47,7 @@ import java.util.function.Consumer;
  * 封装UDP底层真实渠道对象,并提供通信及会话管理
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class UdpChannel<Request> {
@@ -86,7 +86,7 @@ public class UdpChannel<Request> {
             return;
         }
         responseTasks.offer(new ResponseUnit(remote, virtualBuffer));
-        if (selectionKey == null) {
+        if (null == selectionKey) {
             worker.addRegister(selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
         } else {
             if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) == 0) {
@@ -102,14 +102,14 @@ public class UdpChannel<Request> {
     void doWrite() throws IOException {
         while (true) {
             ResponseUnit responseUnit;
-            if (failResponseUnit == null) {
+            if (null == failResponseUnit) {
                 responseUnit = responseTasks.poll();
                 Logger.info("poll from writeBuffer");
             } else {
                 responseUnit = failResponseUnit;
                 failResponseUnit = null;
             }
-            if (responseUnit == null) {
+            if (null == responseUnit) {
                 writeSemaphore.release();
                 if (responseTasks.isEmpty()) {
                     selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_WRITE);
@@ -130,11 +130,11 @@ public class UdpChannel<Request> {
 
     private int send(ByteBuffer byteBuffer, SocketAddress remote) throws IOException {
         AioSession aioSession = sessionMap.get(remote);
-        if (config.getMonitor() != null) {
+        if (null != config.getMonitor()) {
             config.getMonitor().beforeWrite(aioSession);
         }
         int size = channel.send(byteBuffer, remote);
-        if (config.getMonitor() != null) {
+        if (null != config.getMonitor()) {
             config.getMonitor().afterWrite(aioSession, size);
         }
         return size;
@@ -168,7 +168,7 @@ public class UdpChannel<Request> {
         return sessionMap.computeIfAbsent(remote, s -> {
             Consumer<WriteBuffer> consumer = writeBuffer -> {
                 VirtualBuffer virtualBuffer = writeBuffer.poll();
-                if (virtualBuffer == null) {
+                if (null == virtualBuffer) {
                     return;
                 }
                 try {
@@ -191,7 +191,7 @@ public class UdpChannel<Request> {
      * 关闭当前连接
      */
     public void close() {
-        if (selectionKey != null) {
+        if (null != selectionKey) {
             Selector selector = selectionKey.selector();
             selectionKey.cancel();
             selector.wakeup();
@@ -201,7 +201,7 @@ public class UdpChannel<Request> {
             session.close();
         }
         try {
-            if (channel != null) {
+            if (null != channel) {
                 channel.close();
                 channel = null;
             }
@@ -210,10 +210,10 @@ public class UdpChannel<Request> {
         }
         // 内存回收
         ResponseUnit task;
-        while ((task = responseTasks.poll()) != null) {
+        while (null != (task = responseTasks.poll())) {
             task.response.clean();
         }
-        if (failResponseUnit != null) {
+        if (null != failResponseUnit) {
             failResponseUnit.response.clean();
         }
     }

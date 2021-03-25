@@ -37,7 +37,7 @@ import java.util.Set;
  * 一个简单的索引，包含已加载到内存中的受信任根证书
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class BasicTrustRootIndex implements TrustRootIndex {
@@ -49,7 +49,7 @@ public final class BasicTrustRootIndex implements TrustRootIndex {
         for (X509Certificate caCert : caCerts) {
             X500Principal subject = caCert.getSubjectX500Principal();
             Set<X509Certificate> subjectCaCerts = subjectToCaCerts.get(subject);
-            if (subjectCaCerts == null) {
+            if (null == subjectCaCerts) {
                 subjectCaCerts = new LinkedHashSet<>(1);
                 subjectToCaCerts.put(subject, subjectCaCerts);
             }
@@ -61,7 +61,7 @@ public final class BasicTrustRootIndex implements TrustRootIndex {
     public X509Certificate findByIssuerAndSignature(X509Certificate cert) {
         X500Principal issuer = cert.getIssuerX500Principal();
         Set<X509Certificate> subjectCaCerts = subjectToCaCerts.get(issuer);
-        if (subjectCaCerts == null) return null;
+        if (null == subjectCaCerts) return null;
 
         for (X509Certificate caCert : subjectCaCerts) {
             PublicKey publicKey = caCert.getPublicKey();

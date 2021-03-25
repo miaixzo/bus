@@ -39,7 +39,7 @@ import java.util.Set;
  * 拼常用SQL的工具类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SqlSourceBuilder {
@@ -454,7 +454,7 @@ public class SqlSourceBuilder {
         //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
-                if (versionColumn != null) {
+                if (null != versionColumn) {
                     throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段,一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;

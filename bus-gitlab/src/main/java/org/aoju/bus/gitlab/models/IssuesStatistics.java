@@ -30,7 +30,7 @@ import org.aoju.bus.gitlab.JacksonJson;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class IssuesStatistics {
@@ -47,7 +47,7 @@ public class IssuesStatistics {
 
     @JsonIgnore
     public Counts getCounts() {
-        return (statistics != null ? statistics.counts : null);
+        return (null != statistics ? statistics.counts : null);
     }
 
     @Override

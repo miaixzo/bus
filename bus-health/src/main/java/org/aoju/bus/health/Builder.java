@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -293,19 +293,19 @@ public final class Builder {
                         if (inetAddr.isSiteLocalAddress()) {
                             /** 如果是site-local地址,就是它了 */
                             return inetAddr;
-                        } else if (inetAddress == null) {
+                        } else if (null == inetAddress) {
                             /** site-local类型的地址未被发现,先记录候选地址 */
                             inetAddress = inetAddr;
                         }
                     }
                 }
             }
-            if (inetAddress != null) {
+            if (null != inetAddress) {
                 return inetAddress;
             }
             /**  如果没有发现 non-loopback地址.只能用最次选的方案 */
             inetAddress = InetAddress.getLocalHost();
-            if (inetAddress == null) {
+            if (null == inetAddress) {
                 throw new InstrumentException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
             }
             return inetAddress;
@@ -1141,13 +1141,13 @@ public final class Builder {
         Matcher m = DHMS.matcher(s);
         if (m.matches()) {
             long milliseconds = 0L;
-            if (m.group(1) != null) {
+            if (null != m.group(1)) {
                 milliseconds += parseLongOrDefault(m.group(1), 0L) * 86_400_000L;
             }
-            if (m.group(2) != null) {
+            if (null != m.group(2)) {
                 milliseconds += parseLongOrDefault(m.group(2), 0L) * 3_600_000L;
             }
-            if (m.group(3) != null) {
+            if (null != m.group(3)) {
                 milliseconds += parseLongOrDefault(m.group(3), 0L) * 60_000L;
             }
             milliseconds += parseLongOrDefault(m.group(4), 0L) * 1000L;
@@ -1239,7 +1239,7 @@ public final class Builder {
      * @return The string with all matching substrings removed
      */
     public static String removeMatchingString(final String original, final String toRemove) {
-        if (original == null || original.isEmpty() || toRemove == null || toRemove.isEmpty()) {
+        if (null == original || original.isEmpty() || null == toRemove || toRemove.isEmpty()) {
             return original;
         }
 
@@ -1793,7 +1793,7 @@ public final class Builder {
      * @return The corresponding int value
      */
     public static int hexStringToInt(String hexString, int defaultValue) {
-        if (hexString != null) {
+        if (null != hexString) {
             try {
                 if (hexString.startsWith("0x")) {
                     return new BigInteger(hexString.substring(2), 16).intValue();
@@ -1816,7 +1816,7 @@ public final class Builder {
      * @return The corresponding long value
      */
     public static long hexStringToLong(String hexString, long defaultValue) {
-        if (hexString != null) {
+        if (null != hexString) {
             try {
                 if (hexString.startsWith("0x")) {
                     return new BigInteger(hexString.substring(2), 16).longValue();
@@ -1969,7 +1969,7 @@ public final class Builder {
         }
 
         double number = parseDoubleOrDefault(mem[0], 0L);
-        if (mem.length == 2 && mem[1] != null && mem[1].length() >= 1) {
+        if (mem.length == 2 && null != mem[1] && mem[1].length() >= 1) {
             switch ((mem[1].charAt(0))) {
                 case 'T':
                     number *= 1_000_000_000_000L;

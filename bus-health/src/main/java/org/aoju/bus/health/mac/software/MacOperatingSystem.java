@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -159,7 +159,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             // is: SystemB.INT_SIZE * (pids + 1)
             if (pids[i] != 0) {
                 OSProcess proc = getProcess(pids[i]);
-                if (proc != null) {
+                if (null != proc) {
                     procs.add(proc);
                 }
             }

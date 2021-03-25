@@ -38,7 +38,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ThreadKit {
@@ -293,7 +293,7 @@ public class ThreadKit {
      * @return 被中断返回false，否则true
      */
     public static boolean sleep(Number millis) {
-        if (millis == null) {
+        if (null == millis) {
             return true;
         }
         return sleep(millis.longValue());
@@ -324,7 +324,7 @@ public class ThreadKit {
      * @see ThreadKit#sleep(Number)
      */
     public static boolean safeSleep(Number millis) {
-        if (millis == null) {
+        if (null == millis) {
             return true;
         }
 

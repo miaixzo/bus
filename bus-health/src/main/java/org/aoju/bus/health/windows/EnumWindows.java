@@ -44,7 +44,7 @@ import java.util.Map;
  * Utility to query Desktop windows
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -71,7 +71,7 @@ public final class EnumWindows {
         Map<HWND, Integer> zOrderMap = new HashMap<>();
         for (DesktopWindow window : windows) {
             HWND hWnd = window.getHWND();
-            if (hWnd != null) {
+            if (null != hWnd) {
                 boolean visible = User32.INSTANCE.IsWindowVisible(hWnd);
                 if (!visibleOnly || visible) {
                     if (!zOrderMap.containsKey(hWnd)) {
@@ -89,13 +89,13 @@ public final class EnumWindows {
     }
 
     private static void updateWindowZOrderMap(HWND hWnd, Map<HWND, Integer> zOrderMap) {
-        if (hWnd != null) {
+        if (null != hWnd) {
             int zOrder = 1;
             HWND h = new HWND(hWnd.getPointer());
             // First is highest, so decrement
             do {
                 zOrderMap.put(h, --zOrder);
-            } while ((h = User32.INSTANCE.GetWindow(h, GW_HWNDNEXT)) != null);
+            } while (null != (h = User32.INSTANCE.GetWindow(h, GW_HWNDNEXT)));
             // now add lowest value to all
             final int offset = zOrder * -1;
             zOrderMap.replaceAll((k, v) -> v + offset);

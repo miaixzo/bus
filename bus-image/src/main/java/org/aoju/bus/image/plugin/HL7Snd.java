@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL7Snd extends Device {
@@ -83,7 +83,7 @@ public class HL7Snd extends Device {
 
     private void send(byte[] data) throws IOException {
         mllp.writeMessage(data);
-        if (mllp.readMessage() == null)
+        if (null == mllp.readMessage())
             throw new IOException("Connection closed by receiver");
     }
 

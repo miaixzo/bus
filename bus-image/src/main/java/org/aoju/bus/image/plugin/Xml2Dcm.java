@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Xml2Dcm {
@@ -125,17 +125,17 @@ public class Xml2Dcm {
     public void writeTo(OutputStream out) throws IOException {
         if (nofmi)
             fmi = null;
-        else if (fmi == null
+        else if (null == fmi
                 ? withfmi
-                : tsuid != null && !tsuid.equals(
+                : null != tsuid && !tsuid.equals(
                 fmi.getString(Tag.TransferSyntaxUID, null))) {
             fmi = dataset.createFileMetaInformation(tsuid);
         }
         ImageOutputStream dos = new ImageOutputStream(
                 new BufferedOutputStream(out),
-                fmi != null
+                null != fmi
                         ? UID.ExplicitVRLittleEndian
-                        : tsuid != null
+                        : null != tsuid
                         ? tsuid
                         : UID.ImplicitVRLittleEndian);
         dos.setEncodingOptions(encOpts);
@@ -145,7 +145,7 @@ public class Xml2Dcm {
     }
 
     public void delBulkDataFiles() {
-        if (bulkDataFiles != null)
+        if (null != bulkDataFiles)
             for (File f : bulkDataFiles)
                 f.delete();
     }
@@ -163,12 +163,12 @@ public class Xml2Dcm {
     }
 
     public void mergeXML(String fname) throws Exception {
-        if (dataset == null)
+        if (null == dataset)
             dataset = new Attributes();
         ContentHandlerAdapter ch = new ContentHandlerAdapter(dataset);
         parseXML(fname, ch);
         Attributes fmi2 = ch.getFileMetaInformation();
-        if (fmi2 != null)
+        if (null != fmi2)
             fmi = fmi2;
     }
 

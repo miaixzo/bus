@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AsynchronousServerSocketChannel extends java.nio.channels.AsynchronousServerSocketChannel {
@@ -94,7 +94,7 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
     public void doAccept() {
         try {
             // 此前通过Future调用,且触发了cancel
-            if (acceptFuture != null && acceptFuture.isDone()) {
+            if (null != acceptFuture && acceptFuture.isDone()) {
                 resetAccept();
                 asynchronousChannelGroup.removeOps(selectionKey, SelectionKey.OP_ACCEPT);
                 return;
@@ -105,19 +105,19 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
             if (directAccept) {
                 socketChannel = serverSocketChannel.accept();
             }
-            if (socketChannel != null) {
+            if (null != socketChannel) {
                 AsynchronousSocketChannel asynchronousSocketChannel = new AsynchronousSocketChannel(asynchronousChannelGroup, socketChannel);
                 socketChannel.finishConnect();
                 CompletionHandler<java.nio.channels.AsynchronousSocketChannel, Object> completionHandler = acceptCompletionHandler;
                 Object attach = attachment;
                 resetAccept();
                 completionHandler.completed(asynchronousSocketChannel, attach);
-                if (!acceptPending && selectionKey != null) {
+                if (!acceptPending && null != selectionKey) {
                     asynchronousChannelGroup.removeOps(selectionKey, SelectionKey.OP_ACCEPT);
                 }
             }
             // 首次注册selector
-            else if (selectionKey == null) {
+            else if (null == selectionKey) {
                 acceptWorker.addRegister(selector -> {
                     try {
                         selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);

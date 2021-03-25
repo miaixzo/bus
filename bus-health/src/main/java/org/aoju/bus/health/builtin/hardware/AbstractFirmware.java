@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Normal;
  * 固件数据
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -60,7 +60,7 @@ public abstract class AbstractFirmware implements Firmware {
         sb.append("name=").append(getName()).append(", ");
         sb.append("description=").append(getDescription()).append(", ");
         sb.append("version=").append(getVersion()).append(", ");
-        sb.append("release date=").append(getReleaseDate() == null ? "unknown" : getReleaseDate());
+        sb.append("release date=").append(null == getReleaseDate() ? "unknown" : getReleaseDate());
         return sb.toString();
     }
 

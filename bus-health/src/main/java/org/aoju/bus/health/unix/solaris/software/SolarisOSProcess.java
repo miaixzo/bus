@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -117,7 +117,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
                         if (idxAfterForwardSlash > 0 && idxAfterForwardSlash < splitPrstat[14].length()) {
                             String threadId = splitPrstat[14].substring(idxAfterForwardSlash); // getting the thread id
                             String[] existingSplit = map.get(Integer.parseInt(threadId));
-                            if (existingSplit != null) { // if thread wasn't in ps command output
+                            if (null != existingSplit) { // if thread wasn't in ps command output
                                 existingSplit[7] = splitPrstat[10]; // voluntary context switch
                                 existingSplit[8] = splitPrstat[11]; // involuntary context switch
                             }

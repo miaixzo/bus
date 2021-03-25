@@ -38,7 +38,7 @@ import java.util.concurrent.Executor;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ProcessRequestBody extends RequestBody {
@@ -73,7 +73,7 @@ public class ProcessRequestBody extends RequestBody {
 
     @Override
     public void writeTo(BufferSink sink) throws IOException {
-        if (bufferedSink == null) {
+        if (null == bufferedSink) {
             bufferedSink = IoKit.buffer(new DelegateSink(sink) {
 
                 @Override

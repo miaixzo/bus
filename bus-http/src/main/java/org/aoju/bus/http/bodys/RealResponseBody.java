@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.MimeType;
  * 响应体只能使用一次
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RealResponseBody extends ResponseBody {
@@ -53,7 +53,7 @@ public final class RealResponseBody extends ResponseBody {
 
     @Override
     public MimeType contentType() {
-        return contentTypeString != null ? MimeType.valueOf(contentTypeString) : null;
+        return null != contentTypeString ? MimeType.valueOf(contentTypeString) : null;
     }
 
     @Override

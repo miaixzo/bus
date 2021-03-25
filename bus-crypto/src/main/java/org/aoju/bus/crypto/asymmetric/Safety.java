@@ -44,7 +44,7 @@ import java.security.PublicKey;
  *
  * @param <T> 返回自身类型
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class Safety<T extends Safety<T>> extends Keys<T> {

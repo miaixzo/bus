@@ -34,7 +34,7 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public enum StringValueType implements ValueType {
@@ -174,7 +174,7 @@ public enum StringValueType implements ValueType {
 
         @Override
         public Object toValue(float[] fs, boolean bigEndian) {
-            if (fs == null || fs.length == 0)
+            if (null == fs || fs.length == 0)
                 return Value.NULL;
 
             if (fs.length == 1)
@@ -188,7 +188,7 @@ public enum StringValueType implements ValueType {
 
         @Override
         public Object toValue(double[] ds, boolean bigEndian) {
-            if (ds == null || ds.length == 0)
+            if (null == ds || ds.length == 0)
                 return Value.NULL;
 
             return ds;
@@ -266,7 +266,7 @@ public enum StringValueType implements ValueType {
 
         @Override
         public Object toValue(int[] is, boolean bigEndian) {
-            if (is == null || is.length == 0)
+            if (null == is || is.length == 0)
                 return Value.NULL;
 
             return is;
@@ -303,7 +303,7 @@ public enum StringValueType implements ValueType {
                           StringBuilder sb) {
         int maxLength = sb.length() + maxChars;
         for (String s : ss) {
-            if (s != null)
+            if (null != s)
                 sb.append(s);
             if (sb.length() > maxLength) {
                 sb.setLength(maxLength + 1);
@@ -327,7 +327,7 @@ public enum StringValueType implements ValueType {
 
     @Override
     public boolean isTemporalType() {
-        return temporalType != null;
+        return null != temporalType;
     }
 
     @Override
@@ -374,7 +374,7 @@ public enum StringValueType implements ValueType {
 
         if (val instanceof String[]) {
             String[] ss = (String[]) val;
-            return (valueIndex < ss.length && ss[valueIndex] != null && !ss[valueIndex].isEmpty())
+            return (valueIndex < ss.length && null != ss[valueIndex] && !ss[valueIndex].isEmpty())
                     ? ss[valueIndex]
                     : defVal;
         }
@@ -437,7 +437,7 @@ public enum StringValueType implements ValueType {
     @Override
     public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil,
                        Date defVal, DatePrecision precision) {
-        if (temporalType == null)
+        if (null == temporalType)
             throw new UnsupportedOperationException();
 
         if (val instanceof String) {
@@ -447,7 +447,7 @@ public enum StringValueType implements ValueType {
         }
         if (val instanceof String[]) {
             String[] ss = (String[]) val;
-            return (valueIndex < ss.length && ss[valueIndex] != null)
+            return (valueIndex < ss.length && null != ss[valueIndex])
                     ? temporalType.parse(tz, ss[valueIndex], ceil, precision)
                     : defVal;
         }
@@ -457,7 +457,7 @@ public enum StringValueType implements ValueType {
     @Override
     public Date[] toDate(Object val, TimeZone tz, boolean ceil,
                          DatePrecision precisions) {
-        if (temporalType == null)
+        if (null == temporalType)
             throw new UnsupportedOperationException();
 
         if (val instanceof String) {
@@ -470,7 +470,7 @@ public enum StringValueType implements ValueType {
             Date[] is = new Date[ss.length];
             precisions.precisions = new DatePrecision[ss.length];
             for (int i = 0; i < is.length; i++) {
-                if (ss[i] != null) {
+                if (null != ss[i]) {
                     is[i] = temporalType.parse(tz, ss[i], ceil,
                             precisions.precisions[i] = new DatePrecision());
                 }
@@ -482,12 +482,12 @@ public enum StringValueType implements ValueType {
 
     @Override
     public Object toValue(byte[] b) {
-        return b != null && b.length > 0 ? b : Value.NULL;
+        return null != b && b.length > 0 ? b : Value.NULL;
     }
 
     @Override
     public Object toValue(String s, boolean bigEndian) {
-        if (s == null || s.isEmpty())
+        if (null == s || s.isEmpty())
             return Value.NULL;
 
         return toMultiValue(s);
@@ -499,7 +499,7 @@ public enum StringValueType implements ValueType {
 
     @Override
     public Object toValue(String[] ss, boolean bigEndian) {
-        if (ss == null || ss.length == 0)
+        if (null == ss || ss.length == 0)
             return Value.NULL;
 
         if (ss.length == 1)
@@ -525,10 +525,10 @@ public enum StringValueType implements ValueType {
 
     @Override
     public Object toValue(Date[] ds, TimeZone tz, DatePrecision precision) {
-        if (temporalType == null)
+        if (null == temporalType)
             throw new UnsupportedOperationException();
 
-        if (ds == null || ds.length == 0)
+        if (null == ds || ds.length == 0)
             return Value.NULL;
 
         if (ds.length == 1)

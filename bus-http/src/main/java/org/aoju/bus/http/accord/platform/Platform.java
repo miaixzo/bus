@@ -61,7 +61,7 @@ import java.util.List;
  * 支持Android 6.0+ {@code NetworkSecurityPolicy}
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Platform {
@@ -95,19 +95,19 @@ public class Platform {
     private static Platform findPlatform() {
         Platform android = AndroidPlatform.buildIfSupported();
 
-        if (android != null) {
+        if (null != android) {
             return android;
         }
 
         Platform jdk9 = Jdk9Platform.buildIfSupported();
 
-        if (jdk9 != null) {
+        if (null != jdk9) {
             return jdk9;
         }
 
         Platform jdkWithJettyBoot = JdkWithJettyBootPlatform.buildIfSupported();
 
-        if (jdkWithJettyBoot != null) {
+        if (null != jdkWithJettyBoot) {
             return jdkWithJettyBoot;
         }
 
@@ -141,7 +141,7 @@ public class Platform {
                 Field field = c.getDeclaredField(fieldName);
                 field.setAccessible(true);
                 Object value = field.get(instance);
-                if (value == null || !fieldType.isInstance(value)) return null;
+                if (null == value || !fieldType.isInstance(value)) return null;
                 return fieldType.cast(value);
             } catch (NoSuchFieldException ignored) {
             } catch (IllegalAccessException e) {
@@ -152,7 +152,7 @@ public class Platform {
         // 没有找到我们想要的地方。作为最后的尝试，请尝试查找委托上的值
         if (!fieldName.equals("delegate")) {
             Object delegate = readFieldOrNull(instance, Object.class, "delegate");
-            if (delegate != null) return readFieldOrNull(delegate, fieldType, fieldName);
+            if (null != delegate) return readFieldOrNull(delegate, fieldType, fieldName);
         }
 
         return null;
@@ -181,7 +181,7 @@ public class Platform {
             // 创建SSLContext对象，并使用我们指定的信任证书管理器初始化
             Class<?> sslContextClass = Class.forName("sun.security.ssl.SSLContextImpl");
             Object context = readFieldOrNull(sslSocketFactory, sslContextClass, "context");
-            if (context == null) return null;
+            if (null == context) return null;
             return readFieldOrNull(context, X509TrustManager.class, "trustManager");
         } catch (ClassNotFoundException e) {
             return null;
@@ -242,7 +242,7 @@ public class Platform {
     }
 
     public void logCloseableLeak(String message, Object stackTrace) {
-        if (stackTrace == null) {
+        if (null == stackTrace) {
             message += " To see where this was allocated, set the Httpd logger level to FINE: "
                     + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.DEBUG);";
         }
@@ -255,7 +255,7 @@ public class Platform {
 
     public CertificateChainCleaner buildCertificateChainCleaner(SSLSocketFactory sslSocketFactory) {
         X509TrustManager trustManager = trustManager(sslSocketFactory);
-        if (trustManager == null) {
+        if (null == trustManager) {
             throw new IllegalStateException("Unable to extract the trust manager on "
                     + Platform.get()
                     + ", sslSocketFactory is "

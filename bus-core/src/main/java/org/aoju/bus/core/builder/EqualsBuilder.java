@@ -43,7 +43,7 @@ import java.util.Set;
  * <p>使用方法如下：</p>
  * <pre>
  * public boolean equals(Object obj) {
- *   if (obj == null) { return false; }
+ *   if (null == obj) { return false; }
  *   if (obj == this) { return true; }
  *   if (obj.getClass() != getClass()) {
  *     return false;
@@ -63,7 +63,7 @@ import java.util.Set;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class EqualsBuilder implements Builder<Boolean> {
@@ -124,7 +124,7 @@ public class EqualsBuilder implements Builder<Boolean> {
         final Pair<HashKey, HashKey> pair = getRegisterPair(lhs, rhs);
         final Pair<HashKey, HashKey> swappedPair = Pair.of(pair.getKey(), pair.getValue());
 
-        return registry != null
+        return null != registry
                 && (registry.contains(pair) || registry.contains(swappedPair));
     }
 
@@ -137,7 +137,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      */
     static void register(final Object lhs, final Object rhs) {
         synchronized (EqualsBuilder.class) {
-            if (getRegistry() == null) {
+            if (null == getRegistry()) {
                 REGISTRY.set(new HashSet<>());
             }
         }
@@ -156,12 +156,12 @@ public class EqualsBuilder implements Builder<Boolean> {
      */
     static void unregister(final Object lhs, final Object rhs) {
         Set<Pair<HashKey, HashKey>> registry = getRegistry();
-        if (registry != null) {
+        if (null != registry) {
             final Pair<HashKey, HashKey> pair = getRegisterPair(lhs, rhs);
             registry.remove(pair);
             synchronized (EqualsBuilder.class) {
                 registry = getRegistry();
-                if (registry != null && registry.isEmpty()) {
+                if (null != registry && registry.isEmpty()) {
                     REGISTRY.remove();
                 }
             }
@@ -220,7 +220,7 @@ public class EqualsBuilder implements Builder<Boolean> {
         if (lhs == rhs) {
             return true;
         }
-        if (lhs == null || rhs == null) {
+        if (null == lhs || null == rhs) {
             return false;
         }
         final Class<?> lhsClass = lhs.getClass();
@@ -245,7 +245,7 @@ public class EqualsBuilder implements Builder<Boolean> {
                 equalsBuilder.append(lhs, rhs);
             } else {
                 reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
-                while (testClass.getSuperclass() != null && testClass != reflectUpToClass) {
+                while (null != testClass.getSuperclass() && testClass != reflectUpToClass) {
                     testClass = testClass.getSuperclass();
                     reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
                 }
@@ -328,7 +328,7 @@ public class EqualsBuilder implements Builder<Boolean> {
         if (lhs == rhs) {
             return this;
         }
-        if (lhs == null || rhs == null) {
+        if (null == lhs || null == rhs) {
             this.setEquals(false);
             return this;
         }

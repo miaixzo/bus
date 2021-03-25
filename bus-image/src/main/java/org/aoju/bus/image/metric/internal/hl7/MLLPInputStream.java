@@ -29,7 +29,7 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class MLLPInputStream extends BufferedInputStream {
@@ -81,7 +81,7 @@ public class MLLPInputStream extends BufferedInputStream {
 
     @Override
     public synchronized int read(byte[] b, int off, int len) throws IOException {
-        if (b == null)
+        if (null == b)
             throw new NullPointerException();
 
         if (off < 0 || len < 0 || len > b.length - off)

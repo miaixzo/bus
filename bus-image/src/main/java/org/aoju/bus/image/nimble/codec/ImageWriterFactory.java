@@ -43,7 +43,7 @@ import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageWriterFactory implements Serializable {
@@ -53,18 +53,18 @@ public class ImageWriterFactory implements Serializable {
     private PatchJPEGLS patchJPEGLS;
 
     private static String nullify(String s) {
-        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
+        return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageWriterFactory getDefault() {
-        if (defaultFactory == null)
+        if (null == defaultFactory)
             defaultFactory = initDefault();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageWriterFactory factory) {
-        if (factory == null)
+        if (null == factory)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -101,7 +101,7 @@ public class ImageWriterFactory implements Serializable {
             throw new RuntimeException("No Writer for format: " + param.formatName + " registered");
 
         ImageWriter writer = iter.next();
-        if (param.className != null) {
+        if (null != param.className) {
             while (!param.className.equals(writer.getClass().getName())) {
                 if (iter.hasNext())
                     writer = iter.next();
@@ -124,13 +124,13 @@ public class ImageWriterFactory implements Serializable {
     }
 
     private static ImageWriterSpi getImageWriterSpi(ImageWriterParam param) {
-        Iterator<ImageWriterSpi> iter = new FormatNameFilterIterator<ImageWriterSpi>(
+        Iterator<ImageWriterSpi> iter = new FormatNameFilterIterator<>(
                 ServiceLoader.load(ImageWriterSpi.class).iterator(), param.formatName);
         if (!iter.hasNext())
             throw new RuntimeException("No Writer for format: " + param.formatName + " registered");
 
         ImageWriterSpi spi = iter.next();
-        if (param.className != null) {
+        if (null != param.className) {
             while (!param.className.equals(spi.getPluginClassName())) {
                 if (iter.hasNext())
                     spi = iter.next();
@@ -199,7 +199,7 @@ public class ImageWriterFactory implements Serializable {
 
         public ImageWriterParam(String formatName, String className,
                                 String patchJPEGLS, String[] imageWriteParams) {
-            this(formatName, className, patchJPEGLS != null
+            this(formatName, className, null != patchJPEGLS
                     && !patchJPEGLS.isEmpty() ? PatchJPEGLS
                     .valueOf(patchJPEGLS) : null, Property
                     .valueOf(imageWriteParams));
@@ -213,12 +213,12 @@ public class ImageWriterFactory implements Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
 
             ImageWriterParam that = (ImageWriterParam) o;
 
             if (!formatName.equals(that.formatName)) return false;
-            if (className != null ? !className.equals(that.className) : that.className != null) return false;
+            if (null != className ? !className.equals(that.className) : null != that.className) return false;
             if (patchJPEGLS != that.patchJPEGLS) return false;
             return Arrays.equals(imageWriteParams, that.imageWriteParams);
 
@@ -227,8 +227,8 @@ public class ImageWriterFactory implements Serializable {
         @Override
         public int hashCode() {
             int result = formatName.hashCode();
-            result = 31 * result + (className != null ? className.hashCode() : 0);
-            result = 31 * result + (patchJPEGLS != null ? patchJPEGLS.hashCode() : 0);
+            result = 31 * result + (null != className ? className.hashCode() : 0);
+            result = 31 * result + (null != patchJPEGLS ? patchJPEGLS.hashCode() : 0);
             result = 31 * result + Arrays.hashCode(imageWriteParams);
             return result;
         }

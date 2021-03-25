@@ -45,7 +45,7 @@ import java.util.jar.JarFile;
  * 标准的资源加载器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class StdLoader extends ResourceLoader implements Loader {
@@ -53,11 +53,11 @@ public class StdLoader extends ResourceLoader implements Loader {
     private final ClassLoader classLoader;
 
     public StdLoader() {
-        this(Thread.currentThread().getContextClassLoader() != null ? Thread.currentThread().getContextClassLoader() : ClassLoader.getSystemClassLoader());
+        this(null != Thread.currentThread().getContextClassLoader() ? Thread.currentThread().getContextClassLoader() : ClassLoader.getSystemClassLoader());
     }
 
     public StdLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
+        if (null == classLoader) {
             throw new IllegalArgumentException("classLoader must not be null");
         }
         this.classLoader = classLoader;
@@ -66,7 +66,7 @@ public class StdLoader extends ResourceLoader implements Loader {
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException {
         while (path.startsWith(Symbol.SLASH)) path = path.substring(1);
         while (path.endsWith(Symbol.SLASH)) path = path.substring(0, path.length() - 1);
-        return new Enumerator(classLoader, path, recursively, filter != null ? filter : Filters.ALWAYS);
+        return new Enumerator(classLoader, path, recursively, null != filter ? filter : Filters.ALWAYS);
     }
 
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
@@ -106,7 +106,7 @@ public class StdLoader extends ResourceLoader implements Loader {
         }
 
         public boolean hasMoreElements() {
-            if (next != null) {
+            if (null != next) {
                 return true;
             } else if (!resources.hasMoreElements() && !urls.hasMoreElements()) {
                 return false;

@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -118,7 +118,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * @param stat   string to read from.
      */
     private static void getMissingDetails(Map<String, String> status, String stat) {
-        if (status == null || stat == null) {
+        if (null == status || null == stat) {
             return;
         }
 

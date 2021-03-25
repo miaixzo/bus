@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
@@ -69,7 +69,7 @@ public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
     public final void process(final HttpResponse response, final EntityDetails entityDetails, final HttpContext httpContext) {
         final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
         final Iterator<Header> headerIterator = response.headerIterator(Builder.TPIC_HEADER);
-        if (headerIterator != null && headerIterator.hasNext()
+        if (null != headerIterator && headerIterator.hasNext()
                 && filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.IncomingResponse)) {
             final List<String> stringTraceHeaders = new ArrayList<>();
             while (headerIterator.hasNext()) {

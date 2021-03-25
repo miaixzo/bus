@@ -30,7 +30,7 @@ import org.aoju.bus.image.galaxy.ConfigurationCache;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL7Application>
@@ -49,7 +49,7 @@ public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL
     public HL7Application findHL7Application(String name)
             throws InstrumentException {
         HL7Application ae = get(name);
-        if (ae == null)
+        if (null == ae)
             throw new InstrumentException("Unknown HL7 Application: " + name);
         return ae;
     }

@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -1102,9 +1102,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         public <T extends Comparable<? super T>> int compare(T c1, T c2, boolean isNullGreater) {
             if (c1 == c2) {
                 return 0;
-            } else if (c1 == null) {
+            } else if (null == c1) {
                 return isNullGreater ? 1 : -1;
-            } else if (c2 == null) {
+            } else if (null == c2) {
                 return isNullGreater ? -1 : 1;
             }
             return c1.compareTo(c2);

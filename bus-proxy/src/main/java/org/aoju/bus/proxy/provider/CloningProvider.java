@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
  * 仅对给定的{@link Cloneable}对象调用clone()(反射性地)
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class CloningProvider implements Provider {
@@ -49,7 +49,7 @@ public class CloningProvider implements Provider {
     }
 
     private synchronized Method getCloneMethod() {
-        if (cloneMethod == null) {
+        if (null == cloneMethod) {
             try {
                 cloneMethod = cloneable.getClass().getMethod("clone", Builder.EMPTY_ARGUMENT_TYPES);
             } catch (NoSuchMethodException e) {

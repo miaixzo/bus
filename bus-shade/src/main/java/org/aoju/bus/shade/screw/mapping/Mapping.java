@@ -42,7 +42,7 @@ import java.util.*;
  * 映射器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class Mapping {
@@ -177,7 +177,7 @@ public class Mapping {
         //循环处理值
         for (PropertyDescriptor pd : pds) {
             Method writeMethod = pd.getWriteMethod();
-            if (writeMethod == null) {
+            if (null == writeMethod) {
                 continue;
             }
             //获取字段

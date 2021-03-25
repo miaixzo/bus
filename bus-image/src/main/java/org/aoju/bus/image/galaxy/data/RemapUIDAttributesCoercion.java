@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class RemapUIDAttributesCoercion implements AttributesCoercion {
@@ -47,15 +47,15 @@ public class RemapUIDAttributesCoercion implements AttributesCoercion {
 
     @Override
     public String remapUID(String uid) {
-        String remappedUID = uidMap != null ? Property.maskNull(uidMap.get(uid), uid) : uid;
-        return next != null ? next.remapUID(remappedUID) : remappedUID;
+        String remappedUID = null != uidMap ? Property.maskNull(uidMap.get(uid), uid) : uid;
+        return null != next ? next.remapUID(remappedUID) : remappedUID;
     }
 
     @Override
     public void coerce(Attributes attrs, Attributes modified) {
-        if (uidMap != null && !uidMap.isEmpty())
+        if (null != uidMap && !uidMap.isEmpty())
             UID.remapUIDs(attrs, uidMap);
-        if (next != null)
+        if (null != next)
             next.coerce(attrs, modified);
     }
 

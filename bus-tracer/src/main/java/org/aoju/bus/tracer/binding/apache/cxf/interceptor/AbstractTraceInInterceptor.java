@@ -43,7 +43,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Message> {
@@ -88,11 +88,11 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
 
     private void handleHttpMessage(final Message message, final TraceFilterConfig filterConfiguration) {
         final Map<String, List<String>> requestHeaders = CastUtils.cast((Map<?, ?>) message.get(Message.PROTOCOL_HEADERS));
-        if (requestHeaders != null && !requestHeaders.isEmpty()) {
-            final List<String> TraceHeader = requestHeaders.get(Builder.TPIC_HEADER);
+        if (null != requestHeaders && !requestHeaders.isEmpty()) {
+            final List<String> traceHeader = requestHeaders.get(Builder.TPIC_HEADER);
 
-            if (TraceHeader != null && !TraceHeader.isEmpty()) {
-                final Map<String, String> parsedContext = httpJsonSerializer.parse(TraceHeader);
+            if (null != traceHeader && !traceHeader.isEmpty()) {
+                final Map<String, String> parsedContext = httpJsonSerializer.parse(traceHeader);
                 backend.putAll(filterConfiguration.filterDeniedParams(parsedContext, channel));
             }
         }
@@ -100,7 +100,7 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
 
     private void handleSoapMessage(final SoapMessage message, final TraceFilterConfig filterConfiguration) {
         final Header soapHeader = message.getHeader(Builder.SOAP_HEADER_QNAME);
-        if (soapHeader != null) {
+        if (null != soapHeader) {
             final Map<String, String> parsedContext = httpSoapSerializer.parseTpicHeader((Element) soapHeader.getObject());
             backend.putAll(filterConfiguration.filterDeniedParams(parsedContext, channel));
         }
