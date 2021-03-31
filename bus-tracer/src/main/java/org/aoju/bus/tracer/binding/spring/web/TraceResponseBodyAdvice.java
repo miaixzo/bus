@@ -26,6 +26,7 @@
 package org.aoju.bus.tracer.binding.spring.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -45,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version 6.2.2
  * @since JDK 1.8+
  */
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ControllerAdvice
 @Order()
 public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
