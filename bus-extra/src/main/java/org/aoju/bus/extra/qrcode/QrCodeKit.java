@@ -323,7 +323,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 解码二维码图片为文本
+     * 解码二维码或条形码图片为文本
      *
      * @param qrCodeInputstream 二维码输入流
      * @return 解码文本
@@ -333,7 +333,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 解码二维码图片为文本
+     * 将二维码或条形码图片解码为文本
      *
      * @param qrCodeFile 二维码文件
      * @return 解码文本
@@ -343,7 +343,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 将二维码图片解码为文本
+     * 将二维码或条形码图片解码为文本
      *
      * @param image {@link java.awt.Image} 二维码图片
      * @return 解码后的文本
@@ -353,7 +353,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 将二维码图片解码为文本
+     * 将二维码或条形码图片解码为文本
      *
      * @param image         {@link java.awt.Image} 二维码图片
      * @param isTryHarder   是否优化精度

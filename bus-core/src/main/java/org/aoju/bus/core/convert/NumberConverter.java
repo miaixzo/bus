@@ -25,10 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.toolkit.BooleanKit;
-import org.aoju.bus.core.toolkit.DateKit;
-import org.aoju.bus.core.toolkit.MathKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -106,6 +103,8 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return ((Number) value).shortValue();
             } else if (value instanceof Boolean) {
                 return BooleanKit.toShortObj((Boolean) value);
+            } else if (value instanceof byte[]) {
+                return ByteKit.getShort((byte[]) value);
             }
             final String valueStr = toStrFunc.apply((value));
             try {
@@ -124,6 +123,8 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return (int) ((Calendar) value).getTimeInMillis();
             } else if (value instanceof TemporalAccessor) {
                 return (int) DateKit.toInstant((TemporalAccessor) value).toEpochMilli();
+            } else if (value instanceof byte[]) {
+                return ByteKit.getInt((byte[]) value);
             }
             final String valueStr = toStrFunc.apply((value));
             return StringKit.isBlank(valueStr) ? null : MathKit.parseInt(valueStr);
@@ -145,6 +146,8 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return ((Calendar) value).getTimeInMillis();
             } else if (value instanceof TemporalAccessor) {
                 return DateKit.toInstant((TemporalAccessor) value).toEpochMilli();
+            } else if (value instanceof byte[]) {
+                return ByteKit.getLong((byte[]) value);
             }
             final String valueStr = toStrFunc.apply((value));
             return StringKit.isBlank(valueStr) ? null : MathKit.parseLong(valueStr);
@@ -168,6 +171,8 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return ((Number) value).floatValue();
             } else if (value instanceof Boolean) {
                 return BooleanKit.toFloatObj((Boolean) value);
+            } else if (value instanceof byte[]) {
+                return (float) ByteKit.getDouble((byte[]) value);
             }
             final String valueStr = toStrFunc.apply((value));
             return StringKit.isBlank(valueStr) ? null : MathKit.parseFloat(valueStr);
@@ -176,6 +181,8 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return ((Number) value).doubleValue();
             } else if (value instanceof Boolean) {
                 return BooleanKit.toDoubleObj((Boolean) value);
+            } else if (value instanceof byte[]) {
+                return ByteKit.getDouble((byte[]) value);
             }
             final String valueStr = toStrFunc.apply((value));
             return StringKit.isBlank(valueStr) ? null : MathKit.parseDouble(valueStr);
@@ -217,6 +224,8 @@ public class NumberConverter extends AbstractConverter<Number> {
             return MathKit.toBigDecimal((Number) value);
         } else if (value instanceof Boolean) {
             return new BigDecimal((boolean) value ? 1 : 0);
+        } else if (value instanceof byte[]) {
+            return MathKit.toBigDecimal(ByteKit.getDouble((byte[]) value));
         }
 
         return MathKit.toBigDecimal(strFunc.apply(value));
@@ -236,6 +245,8 @@ public class NumberConverter extends AbstractConverter<Number> {
             return BigInteger.valueOf((Long) value);
         } else if (value instanceof Boolean) {
             return BigInteger.valueOf((boolean) value ? 1 : 0);
+        } else if (value instanceof byte[]) {
+            return BigInteger.valueOf(ByteKit.getLong((byte[]) value));
         }
 
         return MathKit.toBigInteger(strFunc.apply(value));

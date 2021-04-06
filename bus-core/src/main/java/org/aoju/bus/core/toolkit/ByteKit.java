@@ -28,54 +28,200 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.lang.Charset;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 
 /**
+ * 对数字和字节进行转换
+ * 假设数据存储是以大端模式存储的：
+ * <ul>
+ *     <li>byte: 字节类型 占8位二进制 00000000</li>
+ *     <li>char: 字符类型 占2个字节 16位二进制 byte[0] byte[1]</li>
+ *     <li>int : 整数类型 占4个字节 32位二进制 byte[0] byte[1] byte[2] byte[3]</li>
+ *     <li>long: 长整数类型 占8个字节 64位二进制 byte[0] byte[1] byte[2] byte[3] byte[4] byte[5]</li>
+ *     <li>long: 长整数类型 占8个字节 64位二进制 byte[0] byte[1] byte[2] byte[3] byte[4] byte[5] byte[6] byte[7]</li>
+ *     <li>float: 浮点数(小数) 占4个字节 32位二进制 byte[0] byte[1] byte[2] byte[3]</li>
+ *     <li>double: 双精度浮点数(小数) 占8个字节 64位二进制 byte[0] byte[1] byte[2] byte[3] byte[4]byte[5] byte[6] byte[7]</li>
+ * </ul>
+ *
  * @author Kimi Liu
  * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ByteKit {
 
+    /**
+     * int转byte
+     *
+     * @param data int值
+     * @return byte值
+     */
+    public static byte getByte(int data) {
+        return (byte) data;
+    }
+
+    /**
+     * int转byte数组
+     * 默认以小端序转换
+     *
+     * @param data int值
+     * @return byte数组
+     */
     public static byte[] getBytes(int data) {
-        byte[] bytes = new byte[4];
-        bytes[0] = (byte) (data & 0xff);
-        bytes[1] = (byte) ((data & 0xff00) >> 8);
-        bytes[2] = (byte) ((data & 0xff0000) >> 16);
-        bytes[3] = (byte) ((data & 0xff000000) >> 24);
-        return bytes;
+        return getBytes(data, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * int转byte数组
+     * 默认以小端序转换
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] getBytes(int... data) {
+        byte[] ret = new byte[4 * data.length];
+        for (int i = 0; i < data.length; i++) {
+            intToBytesLE(data[i], ret, 4 * i);
+        }
+        return ret;
+    }
+
+    /**
+     * int转byte数组
+     * 自定义端序
+     *
+     * @param intValue  int值
+     * @param byteOrder 端序
+     * @return byte数组
+     */
+    public static byte[] getBytes(int intValue, ByteOrder byteOrder) {
+        if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
+            return new byte[]{
+                    (byte) ((intValue >> 24) & 0xFF),
+                    (byte) ((intValue >> 16) & 0xFF),
+                    (byte) ((intValue >> 8) & 0xFF),
+                    (byte) (intValue & 0xFF) //
+            };
+        } else {
+            return new byte[]{
+                    (byte) (intValue & 0xFF),
+                    (byte) ((intValue >> 8) & 0xFF),
+                    (byte) ((intValue >> 16) & 0xFF),
+                    (byte) ((intValue >> 24) & 0xFF)
+            };
+        }
+    }
+
+    /**
+     * long转byte数组
+     * 默认以小端序转换
+     *
+     * @param data long值
+     * @return byte数组
+     */
     public static byte[] getBytes(long data) {
-        byte[] bytes = new byte[8];
-        bytes[0] = (byte) (data & 0xff);
-        bytes[1] = (byte) ((data >> 8) & 0xff);
-        bytes[2] = (byte) ((data >> 16) & 0xff);
-        bytes[3] = (byte) ((data >> 24) & 0xff);
-        bytes[4] = (byte) ((data >> 32) & 0xff);
-        bytes[5] = (byte) ((data >> 40) & 0xff);
-        bytes[6] = (byte) ((data >> 48) & 0xff);
-        bytes[7] = (byte) ((data >> 56) & 0xff);
-        return bytes;
+        return getBytes(data, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * long转byte数组
+     *
+     * @param data      long值
+     * @param byteOrder 端序
+     * @return byte数组
+     */
+    public static byte[] getBytes(long data, ByteOrder byteOrder) {
+        byte[] result = new byte[Long.BYTES];
+        if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
+            for (int i = (result.length - 1); i >= 0; i--) {
+                result[i] = (byte) (data & 0xFF);
+                data >>= Byte.SIZE;
+            }
+        } else {
+            for (int i = 0; i < result.length; i++) {
+                result[i] = (byte) (data & 0xFF);
+                data >>= Byte.SIZE;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param data
+     * @return
+     */
     public static byte[] getBytes(float data) {
-        int intBits = Float.floatToIntBits(data);
-        return getBytes(intBits);
+        return getBytes(data, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * double转byte数组
+     *
+     * @param data      double值
+     * @param byteOrder 端序
+     * @return byte数组
+     */
+    public static byte[] getBytes(float data, ByteOrder byteOrder) {
+        return getBytes(Float.floatToIntBits(data), byteOrder);
+    }
+
+    /**
+     * double转byte数组
+     * 默认以小端序转换
+     *
+     * @param data double值
+     * @return byte数组
+     */
     public static byte[] getBytes(double data) {
-        long intBits = Double.doubleToLongBits(data);
-        return getBytes(intBits);
+        return getBytes(data, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * double转byte数组
+     *
+     * @param data      double值
+     * @param byteOrder 端序
+     * @return byte数组
+     */
+    public static byte[] getBytes(double data, ByteOrder byteOrder) {
+        return getBytes(Double.doubleToLongBits(data), byteOrder);
+    }
+
+    /**
+     * short转byte数组
+     * 默认以小端序转换
+     *
+     * @param data short值
+     * @return byte数组
+     */
     public static byte[] getBytes(short data) {
-        byte[] bytes = new byte[2];
-        bytes[0] = (byte) (data & 0xff);
-        bytes[1] = (byte) ((data & 0xff00) >> 8);
-        return bytes;
+        return getBytes(data, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * short转byte数组
+     * 自定义端序
+     *
+     * @param data      short值
+     * @param byteOrder 端序
+     * @return byte数组
+     */
+    public static byte[] getBytes(short data, ByteOrder byteOrder) {
+        byte[] b = new byte[Short.BYTES];
+        if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
+            b[1] = (byte) (data & 0xff);
+            b[0] = (byte) ((data >> Byte.SIZE) & 0xff);
+        } else {
+            b[0] = (byte) (data & 0xff);
+            b[1] = (byte) ((data >> Byte.SIZE) & 0xff);
+        }
+        return b;
+    }
+
+    /**
+     * @param data
+     * @return
+     */
     public static byte[] getBytes(char data) {
         byte[] bytes = new byte[2];
         bytes[0] = (byte) (data);
@@ -83,14 +229,27 @@ public class ByteKit {
         return bytes;
     }
 
+    /**
+     * @param data
+     * @return
+     */
     public static byte[] getBytes(String data) {
         return getBytes(data, Charset.DEFAULT_GBK);
     }
 
+    /**
+     * @param data
+     * @param charsetName
+     * @return
+     */
     public static byte[] getBytes(String data, String charsetName) {
         return data.getBytes(Charset.charset(charsetName));
     }
 
+    /**
+     * @param data
+     * @return
+     */
     public static byte[] getBytes(char[] data) {
         CharBuffer cb = CharBuffer.allocate(data.length);
         cb.put(data);
@@ -99,35 +258,179 @@ public class ByteKit {
         return bb.array();
     }
 
+    /**
+     * byte转无符号int
+     *
+     * @param byteValue byte值
+     * @return 无符号int值
+     */
+    public static int getInt(byte byteValue) {
+        // Java 总是把 byte 当做有符处理；我们可以通过将其和 0xFF 进行二进制与得到它的无符值
+        return byteValue & 0xFF;
+    }
+
+    /**
+     * byte[]转int值
+     * 默认以小端序转换
+     *
+     * @param bytes byte数组
+     * @return int值
+     */
     public static int getInt(byte[] bytes) {
-        return (0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)) | (0xff0000 & (bytes[2] << 16)) | (0xff000000 & (bytes[3] << 24));
+        return getInt(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte[]转int值
+     * 自定义端序
+     *
+     * @param bytes     byte数组
+     * @param byteOrder 端序
+     * @return int值
+     */
+    public static int getInt(byte[] bytes, ByteOrder byteOrder) {
+        if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
+            return bytes[3] & 0xFF |
+                    (bytes[2] & 0xFF) << 8 |
+                    (bytes[1] & 0xFF) << 16 |
+                    (bytes[0] & 0xFF) << 24;
+        } else {
+            return bytes[0] & 0xFF | //
+                    (bytes[1] & 0xFF) << 8 |
+                    (bytes[2] & 0xFF) << 16 |
+                    (bytes[3] & 0xFF) << 24;
+        }
+    }
+
+    /**
+     * byte数组转long
+     *
+     * @param bytes byte数组
+     * @return long值
+     */
     public static long getLong(byte[] bytes) {
-        return (0xffL & (long) bytes[0]) | (0xff00L & ((long) bytes[1] << 8)) | (0xff0000L & ((long) bytes[2] << 16)) | (0xff000000L & ((long) bytes[3] << 24))
-                | (0xff00000000L & ((long) bytes[4] << 32)) | (0xff0000000000L & ((long) bytes[5] << 40)) | (0xff000000000000L & ((long) bytes[6] << 48)) | (0xff00000000000000L & ((long) bytes[7] << 56));
+        return getLong(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte数组转long
+     *
+     * @param bytes     byte数组
+     * @param byteOrder 端序
+     * @return long值
+     */
+    public static long getLong(byte[] bytes, ByteOrder byteOrder) {
+        long values = 0;
+        if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
+            for (int i = 0; i < Long.BYTES; i++) {
+                values <<= Byte.SIZE;
+                values |= (bytes[i] & 0xff);
+            }
+        } else {
+            for (int i = (Long.BYTES - 1); i >= 0; i--) {
+                values <<= Byte.SIZE;
+                values |= (bytes[i] & 0xff);
+            }
+        }
+
+        return values;
+    }
+
+    /**
+     * byte数组转Double
+     * 默认以小端序转换
+     *
+     * @param bytes byte数组
+     * @return long值
+     */
     public static float getFloat(byte[] bytes) {
-        return Float.intBitsToFloat(getInt(bytes));
+        return getFloat(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte数组转double
+     * 自定义端序
+     *
+     * @param bytes     byte数组
+     * @param byteOrder 端序
+     * @return long值
+     */
+    public static float getFloat(byte[] bytes, ByteOrder byteOrder) {
+        return Float.intBitsToFloat(getInt(bytes, byteOrder));
+    }
+
+
+    /**
+     * byte数组转Double
+     * 默认以小端序转换
+     *
+     * @param bytes byte数组
+     * @return long值
+     */
     public static double getDouble(byte[] bytes) {
-        return Double.longBitsToDouble(getLong(bytes));
+        return getDouble(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte数组转double
+     * 自定义端序
+     *
+     * @param bytes     byte数组
+     * @param byteOrder 端序
+     * @return long值
+     */
+    public static double getDouble(byte[] bytes, ByteOrder byteOrder) {
+        return Double.longBitsToDouble(getLong(bytes, byteOrder));
+    }
+
+    /**
+     * byte数组转short
+     * 默认以小端序转换
+     *
+     * @param bytes byte数组
+     * @return short值
+     */
     public static short getShort(byte[] bytes) {
-        return (short) ((0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)));
+        return getShort(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte数组转short
+     * 自定义端序
+     *
+     * @param bytes     byte数组
+     * @param byteOrder 端序
+     * @return short值
+     */
+    public static short getShort(byte[] bytes, ByteOrder byteOrder) {
+        if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
+            return (short) (bytes[1] & 0xff | (bytes[0] & 0xff) << Byte.SIZE);
+        } else {
+            return (short) (bytes[0] & 0xff | (bytes[1] & 0xff) << Byte.SIZE);
+        }
+    }
+
+    /**
+     * @param bytes
+     * @return
+     */
     public static char getChar(byte[] bytes) {
         return (char) ((0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)));
     }
 
+    /**
+     * @param bytes
+     * @return
+     */
     public static String getString(byte[] bytes) {
-        return getString(bytes, "GBK");
+        return getString(bytes, Charset.DEFAULT_GBK);
     }
 
+    /**
+     * @param bytes
+     * @param charsetName
+     * @return
+     */
     public static String getString(byte[] bytes, String charsetName) {
         return new String(bytes, Charset.charset(charsetName));
     }
@@ -376,13 +679,48 @@ public class ByteKit {
         return temp;
     }
 
+    /**
+     * 将两个字节数组连接到一个新的字节数组
+     *
+     * @param buf1 字节数组
+     * @param buf2 字节数组
+     * @return the byte
+     */
+    public static byte[] concat(byte[] buf1, byte[] buf2) {
+        byte[] buffer = new byte[buf1.length + buf2.length];
+        int offset = 0;
+        System.arraycopy(buf1, 0, buffer, offset, buf1.length);
+        offset += buf1.length;
+        System.arraycopy(buf2, 0, buffer, offset, buf2.length);
+        return buffer;
+    }
+
+    /**
+     * 将{@link Number}转换为
+     *
+     * @param number 数字
+     * @return bytes
+     */
+    public static byte[] getBytes(Number number) {
+        if (number instanceof Double) {
+            return getBytes((Double) number, ByteOrder.LITTLE_ENDIAN);
+        } else if (number instanceof Long) {
+            return getBytes((Long) number, ByteOrder.LITTLE_ENDIAN);
+        } else if (number instanceof Integer) {
+            return getBytes((Integer) number, ByteOrder.LITTLE_ENDIAN);
+        } else if (number instanceof Short) {
+            return getBytes((Short) number, ByteOrder.LITTLE_ENDIAN);
+        } else {
+            return getBytes(number.doubleValue(), ByteOrder.LITTLE_ENDIAN);
+        }
+    }
+
     public static int bytesToVR(byte[] bytes, int off) {
         return bytesToUShortBE(bytes, off);
     }
 
     public static int bytesToUShort(byte[] bytes, int off, boolean bigEndian) {
-        return bigEndian ? bytesToUShortBE(bytes, off)
-                : bytesToUShortLE(bytes, off);
+        return bigEndian ? bytesToUShortBE(bytes, off) : bytesToUShortLE(bytes, off);
     }
 
     public static int bytesToUShortBE(byte[] bytes, int off) {
@@ -401,37 +739,12 @@ public class ByteKit {
         return (bytes[off + 1] << 8) + (bytes[off] & 255);
     }
 
-    public static void bytesToShortLE(byte[] b, short[] s, int off, int len) {
-        int boff = 0;
-        for (int j = 0; j < len; j++) {
-            int b0 = b[boff + 1];
-            int b1 = b[boff] & 0xff;
-            s[off + j] = (short) ((b0 << 8) | b1);
-            boff += 2;
-        }
-    }
-
-    public static void bytesToShortsBE(byte[] b, short[] s, int off, int len) {
-        int boff = 0;
-        for (int j = 0; j < len; j++) {
-            int b0 = b[boff];
-            int b1 = b[boff + 1] & 0xff;
-            s[off + j] = (short) ((b0 << 8) | b1);
-            boff += 2;
-        }
-    }
 
     public static int bytesToShort(byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? bytesToShortBE(bytes, off)
                 : bytesToShortLE(bytes, off);
     }
 
-    public static void bytesToShort(byte[] b, short[] s, int off, int len, boolean bigEndian) {
-        if (bigEndian)
-            bytesToShortsBE(b, s, off, len);
-        else
-            bytesToShortLE(b, s, off, len);
-    }
 
     public static int bytesToInt(byte[] bytes, int off, boolean bigEndian) {
         return bigEndian ? bytesToIntBE(bytes, off) : bytesToIntLE(bytes, off);
@@ -500,103 +813,224 @@ public class ByteKit {
                 + (bytes[off] & 255);
     }
 
-    public static double bytesToDouble(byte[] bytes, int off, boolean bigEndian) {
-        return bigEndian ? bytesToDoubleBE(bytes, off)
-                : bytesToDoubleLE(bytes, off);
+    /**
+     * double转byte数组
+     * 默认以: {@link ByteOrder#BIG_ENDIAN }
+     *
+     * @param data byte值
+     * @return byte数组
+     */
+    public static double bytesToDouble(byte[] data, int off, boolean bigEndian) {
+        return bigEndian ? bytesToDoubleBE(data, off)
+                : bytesToDoubleLE(data, off);
     }
 
-    public static double bytesToDoubleBE(byte[] bytes, int off) {
-        return Double.longBitsToDouble(bytesToLongBE(bytes, off));
+    /**
+     * byte数组转double
+     * 默认以: {@link ByteOrder#BIG_ENDIAN }
+     *
+     * @param data byte值
+     * @return byte数组
+     */
+    public static double bytesToDoubleBE(byte[] data, int off) {
+        return Double.longBitsToDouble(bytesToLongBE(data, off));
     }
 
-    public static double bytesToDoubleLE(byte[] bytes, int off) {
-        return Double.longBitsToDouble(bytesToLongLE(bytes, off));
+    /**
+     * byte数组转double
+     * 默认以: {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data byte值
+     * @return byte数组
+     */
+    public static double bytesToDoubleLE(byte[] data, int off) {
+        return Double.longBitsToDouble(bytesToLongLE(data, off));
     }
 
-    public static byte[] shortToBytes(int i, byte[] bytes, int off,
+    /**
+     * int转byte数组
+     * 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] shortToBytes(int data, byte[] bytes, int off,
                                       boolean bigEndian) {
-        return bigEndian ? shortToBytesBE(i, bytes, off)
-                : shortToBytesLE(i, bytes, off);
+        return bigEndian ? shortToBytesBE(data, bytes, off) : shortToBytesLE(data, bytes, off);
     }
 
-    public static byte[] shortToBytesBE(int i, byte[] bytes, int off) {
-        bytes[off] = (byte) (i >> 8);
-        bytes[off + 1] = (byte) i;
+    /**
+     * int转byte数组
+     * 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] shortToBytesBE(int data, byte[] bytes, int off) {
+        bytes[off] = (byte) (data >> 8);
+        bytes[off + 1] = (byte) data;
         return bytes;
     }
 
-    public static byte[] shortToBytesLE(int i, byte[] bytes, int off) {
-        bytes[off + 1] = (byte) (i >> 8);
-        bytes[off] = (byte) i;
+    /**
+     * int转byte数组
+     * 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] shortToBytesLE(int data, byte[] bytes, int off) {
+        bytes[off + 1] = (byte) (data >> 8);
+        bytes[off] = (byte) data;
         return bytes;
     }
 
-    public static byte[] intToBytes(int i, byte[] bytes, int off,
+    /**
+     * int转byte数组
+     * 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] intToBytes(int data, byte[] bytes, int off, boolean bigEndian) {
+        return bigEndian ? intToBytesBE(data, bytes, off) : intToBytesLE(data, bytes, off);
+    }
+
+    /**
+     * int转byte数组
+     * 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] intToBytesBE(int data, byte[] bytes, int off) {
+        bytes[off] = (byte) (data >> 24);
+        bytes[off + 1] = (byte) (data >> 16);
+        bytes[off + 2] = (byte) (data >> 8);
+        bytes[off + 3] = (byte) data;
+        return bytes;
+    }
+
+    /**
+     * int转byte数组
+     * 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] intToBytesLE(int data, byte[] bytes, int off) {
+        bytes[off + 3] = (byte) (data >> 24);
+        bytes[off + 2] = (byte) (data >> 16);
+        bytes[off + 1] = (byte) (data >> 8);
+        bytes[off] = (byte) data;
+        return bytes;
+    }
+
+    /**
+     * int转byte数组
+     * 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] tagToBytes(int data, byte[] bytes, int off,
                                     boolean bigEndian) {
-        return bigEndian ? intToBytesBE(i, bytes, off)
-                : intToBytesLE(i, bytes, off);
+        return bigEndian ? tagToBytesBE(data, bytes, off) : tagToBytesLE(data, bytes, off);
     }
 
-    public static byte[] intToBytesBE(int i, byte[] bytes, int off) {
-        bytes[off] = (byte) (i >> 24);
-        bytes[off + 1] = (byte) (i >> 16);
-        bytes[off + 2] = (byte) (i >> 8);
-        bytes[off + 3] = (byte) i;
+    /**
+     * int转byte数组
+     * 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] tagToBytesLE(int data, byte[] bytes, int off) {
+        bytes[off + 1] = (byte) (data >> 24);
+        bytes[off] = (byte) (data >> 16);
+        bytes[off + 3] = (byte) (data >> 8);
+        bytes[off + 2] = (byte) data;
         return bytes;
     }
 
-    public static byte[] intToBytesLE(int i, byte[] bytes, int off) {
-        bytes[off + 3] = (byte) (i >> 24);
-        bytes[off + 2] = (byte) (i >> 16);
-        bytes[off + 1] = (byte) (i >> 8);
-        bytes[off] = (byte) i;
-        return bytes;
+    /**
+     * int转byte数组
+     * 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] tagToBytesBE(int data, byte[] bytes, int off) {
+        return intToBytesBE(data, bytes, off);
     }
 
-    public static byte[] tagToBytes(int i, byte[] bytes, int off,
-                                    boolean bigEndian) {
-        return bigEndian ? tagToBytesBE(i, bytes, off)
-                : tagToBytesLE(i, bytes, off);
-    }
-
-    public static byte[] tagToBytesBE(int i, byte[] bytes, int off) {
-        return intToBytesBE(i, bytes, off);
-    }
-
-    public static byte[] tagToBytesLE(int i, byte[] bytes, int off) {
-        bytes[off + 1] = (byte) (i >> 24);
-        bytes[off] = (byte) (i >> 16);
-        bytes[off + 3] = (byte) (i >> 8);
-        bytes[off + 2] = (byte) i;
-        return bytes;
-    }
-
-    public static byte[] floatToBytes(float f, byte[] bytes, int off,
+    /**
+     * float转byte数组
+     * 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] floatToBytes(float data, byte[] bytes, int off,
                                       boolean bigEndian) {
-        return bigEndian ? floatToBytesBE(f, bytes, off)
-                : floatToBytesLE(f, bytes, off);
+        return bigEndian ? floatToBytesBE(data, bytes, off) : floatToBytesLE(data, bytes, off);
     }
 
-    public static byte[] floatToBytesBE(float f, byte[] bytes, int off) {
-        return intToBytesBE(Float.floatToIntBits(f), bytes, off);
+    /**
+     * float转byte数组
+     * 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] floatToBytesBE(float data, byte[] bytes, int off) {
+        return intToBytesBE(Float.floatToIntBits(data), bytes, off);
     }
 
-    public static byte[] floatToBytesLE(float f, byte[] bytes, int off) {
-        return intToBytesLE(Float.floatToIntBits(f), bytes, off);
+    /**
+     * float转byte数组
+     * 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组L
+     */
+    public static byte[] floatToBytesLE(float data, byte[] bytes, int off) {
+        return intToBytesLE(Float.floatToIntBits(data), bytes, off);
     }
 
-    public static byte[] doubleToBytes(double d, byte[] bytes, int off,
+    /**
+     * double转byte数组
+     * 排序: {@link ByteOrder#BIG_ENDIAN } or {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data int值
+     * @return byte数组
+     */
+    public static byte[] doubleToBytes(double data, byte[] bytes, int off,
                                        boolean bigEndian) {
-        return bigEndian ? doubleToBytesBE(d, bytes, off)
-                : doubleToBytesLE(d, bytes, off);
+        return bigEndian ? doubleToBytesBE(data, bytes, off)
+                : doubleToBytesLE(data, bytes, off);
     }
 
-    public static byte[] doubleToBytesBE(double d, byte[] bytes, int off) {
-        return longToBytesBE(Double.doubleToLongBits(d), bytes, off);
+    /**
+     * double转byte数组
+     * 默认排序: {@link ByteOrder#BIG_ENDIAN }
+     *
+     * @param data double值
+     * @return byte数组
+     */
+    public static byte[] doubleToBytesBE(double data, byte[] bytes, int off) {
+        return longToBytesBE(Double.doubleToLongBits(data), bytes, off);
     }
 
-    public static byte[] doubleToBytesLE(double d, byte[] bytes, int off) {
-        return longToBytesLE(Double.doubleToLongBits(d), bytes, off);
+    /**
+     * double转byte数组
+     * 默认排序: {@link ByteOrder#LITTLE_ENDIAN }
+     *
+     * @param data double值
+     * @return byte数组
+     */
+    public static byte[] doubleToBytesLE(double data, byte[] bytes, int off) {
+        return longToBytesLE(Double.doubleToLongBits(data), bytes, off);
     }
 
     public static byte[] longToBytes(long l, byte[] bytes, int off,
@@ -629,26 +1063,6 @@ public class ByteKit {
         return bytes;
     }
 
-    public static byte[][] swapShorts(byte[][] bs) {
-        int carry = 0;
-        for (int i = 0; i < bs.length; i++) {
-            byte[] b = bs[i];
-            if (carry != 0)
-                swapLastFirst(bs[i - 1], b);
-            int len = b.length - carry;
-            swapShorts(b, carry, len & ~1);
-            carry = len & 1;
-        }
-        return bs;
-    }
-
-    public static byte[] swapShorts(byte[] b, int off, int len) {
-        checkLength(len, 2);
-        for (int i = off, n = off + len; i < n; i += 2)
-            swap(b, i, i + 1);
-        return b;
-    }
-
     public static byte[] swapInts(byte[] b, int off, int len) {
         checkLength(len, 4);
         for (int i = off, n = off + len; i < n; i += 4) {
@@ -669,6 +1083,54 @@ public class ByteKit {
         return b;
     }
 
+    public static byte[][] swapShorts(byte[][] bs) {
+        int carry = 0;
+        for (int i = 0; i < bs.length; i++) {
+            byte[] b = bs[i];
+            if (carry != 0)
+                swapLastFirst(bs[i - 1], b);
+            int len = b.length - carry;
+            swapShorts(b, carry, len & ~1);
+            carry = len & 1;
+        }
+        return bs;
+    }
+
+    public static byte[] swapShorts(byte[] b, int off, int len) {
+        checkLength(len, 2);
+        for (int i = off, n = off + len; i < n; i += 2)
+            swap(b, i, i + 1);
+        return b;
+    }
+
+
+    public static void bytesToShortLE(byte[] b, short[] s, int off, int len) {
+        int boff = 0;
+        for (int j = 0; j < len; j++) {
+            int b0 = b[boff + 1];
+            int b1 = b[boff] & 0xff;
+            s[off + j] = (short) ((b0 << 8) | b1);
+            boff += 2;
+        }
+    }
+
+    public static void bytesToShortsBE(byte[] b, short[] s, int off, int len) {
+        int boff = 0;
+        for (int j = 0; j < len; j++) {
+            int b0 = b[boff];
+            int b1 = b[boff + 1] & 0xff;
+            s[off + j] = (short) ((b0 << 8) | b1);
+            boff += 2;
+        }
+    }
+
+    public static void bytesToShort(byte[] b, short[] s, int off, int len, boolean bigEndian) {
+        if (bigEndian)
+            bytesToShortsBE(b, s, off, len);
+        else
+            bytesToShortLE(b, s, off, len);
+    }
+
     private static void checkLength(int len, int numBytes) {
         if (len < 0 || (len % numBytes) != 0)
             throw new IllegalArgumentException("length: " + len);
@@ -685,30 +1147,6 @@ public class ByteKit {
         byte t = b2[0];
         b2[0] = b1[last];
         b1[last] = t;
-    }
-
-    public static byte[] intsToBytesLE(int... values) {
-        byte[] ret = new byte[4 * values.length];
-        for (int i = 0; i < values.length; i++) {
-            intToBytesLE(values[i], ret, 4 * i);
-        }
-        return ret;
-    }
-
-    /**
-     * 将两个字节数组连接到一个新的字节数组
-     *
-     * @param buf1 字节数组
-     * @param buf2 字节数组
-     * @return the byte
-     */
-    public static byte[] concat(byte[] buf1, byte[] buf2) {
-        byte[] buffer = new byte[buf1.length + buf2.length];
-        int offset = 0;
-        System.arraycopy(buf1, 0, buffer, offset, buf1.length);
-        offset += buf1.length;
-        System.arraycopy(buf2, 0, buffer, offset, buf2.length);
-        return buffer;
     }
 
 }

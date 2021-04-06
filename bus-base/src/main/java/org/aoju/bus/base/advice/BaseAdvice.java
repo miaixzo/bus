@@ -52,9 +52,9 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * @version 6.2.2
  * @since JDK 1.8+
  */
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ControllerAdvice
 @RestControllerAdvice
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class BaseAdvice extends Controller {
 
     /**

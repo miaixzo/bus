@@ -26,10 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.IterKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -156,6 +153,9 @@ public class ArrayConverter extends AbstractConverter<Object> {
             for (int i = 0; i < list.size(); i++) {
                 Array.set(result, i, converter.convert(targetComponentType, list.get(i)));
             }
+        } else if (value instanceof Number && byte.class == targetComponentType) {
+            // 用户可能想序列化指定对象
+            result = ByteKit.numberToBytes((Number) value);
         } else if (value instanceof Serializable && byte.class == targetComponentType) {
             // 用户可能想序列化指定对象
             result = ObjectKit.serialize(value);

@@ -61,10 +61,7 @@ public class ArrayKit {
      * @return 是否为数组对象, 如果为{@code null} 返回false
      */
     public static boolean isArray(Object obj) {
-        if (null == obj) {
-            return false;
-        }
-        return obj.getClass().isArray();
+        return null != obj && obj.getClass().isArray();
     }
 
     /**
@@ -674,6 +671,29 @@ public class ArrayKit {
         return Optional.empty();
     }
 
+
+    /**
+     * 去除{@code null}或者"" 元素
+     *
+     * @param <T>   数组元素类型
+     * @param array 数组
+     * @return 处理后的数组
+     */
+    public static <T extends CharSequence> T[] removeEmpty(T[] array) {
+        return filter(array, StringKit::isNotEmpty);
+    }
+
+    /**
+     * 去除{@code null}或者""或者空白字符串 元素
+     *
+     * @param <T>   数组元素类型
+     * @param array 数组
+     * @return 处理后的数组
+     */
+    public static <T extends CharSequence> T[] removeBlank(T[] array) {
+        return filter(array, StringKit::isNotBlank);
+    }
+
     /**
      * 数组或集合转String
      *
@@ -739,7 +759,9 @@ public class ArrayKit {
      * @return byte数组
      */
     public static byte[] toArray(ByteBuffer bytebuffer) {
-        if (false == bytebuffer.hasArray()) {
+        if (bytebuffer.hasArray()) {
+            return Arrays.copyOfRange(bytebuffer.array(), bytebuffer.position(), bytebuffer.limit());
+        } else {
             int oldPosition = bytebuffer.position();
             bytebuffer.position(0);
             int size = bytebuffer.limit();
@@ -747,8 +769,6 @@ public class ArrayKit {
             bytebuffer.get(buffers);
             bytebuffer.position(oldPosition);
             return buffers;
-        } else {
-            return Arrays.copyOfRange(bytebuffer.array(), bytebuffer.position(), bytebuffer.limit());
         }
     }
 
@@ -8246,35 +8266,39 @@ public class ArrayKit {
      * @return 连接后的字符串
      */
     public static String join(Object array, CharSequence conjunction) {
-        if (isArray(array)) {
-            final Class<?> componentType = array.getClass().getComponentType();
-            if (componentType.isPrimitive()) {
-                final String componentTypeName = componentType.getName();
-                switch (componentTypeName) {
-                    case "long":
-                        return join((long[]) array, conjunction);
-                    case "int":
-                        return join((int[]) array, conjunction);
-                    case "short":
-                        return join((short[]) array, conjunction);
-                    case "char":
-                        return join((char[]) array, conjunction);
-                    case "byte":
-                        return join((byte[]) array, conjunction);
-                    case "boolean":
-                        return join((boolean[]) array, conjunction);
-                    case "float":
-                        return join((float[]) array, conjunction);
-                    case "double":
-                        return join((double[]) array, conjunction);
-                    default:
-                        throw new InstrumentException("Unknown primitive type: [{}]", componentTypeName);
-                }
-            } else {
-                return join((Object[]) array, conjunction);
-            }
+        if (null == array) {
+            throw new NullPointerException("Array must be not null!");
         }
-        throw new InstrumentException(StringKit.format("[{}] is not a Array!", array.getClass()));
+        if (false == isArray(array)) {
+            throw new IllegalArgumentException(StringKit.format("[{}] is not a Array!", array.getClass()));
+        }
+
+        final Class<?> componentType = array.getClass().getComponentType();
+        if (componentType.isPrimitive()) {
+            final String componentTypeName = componentType.getName();
+            switch (componentTypeName) {
+                case "long":
+                    return join((long[]) array, conjunction);
+                case "int":
+                    return join((int[]) array, conjunction);
+                case "short":
+                    return join((short[]) array, conjunction);
+                case "char":
+                    return join((char[]) array, conjunction);
+                case "byte":
+                    return join((byte[]) array, conjunction);
+                case "boolean":
+                    return join((boolean[]) array, conjunction);
+                case "float":
+                    return join((float[]) array, conjunction);
+                case "double":
+                    return join((double[]) array, conjunction);
+                default:
+                    throw new InstrumentException("Unknown primitive type: [{}]", componentTypeName);
+            }
+        } else {
+            return join((Object[]) array, conjunction);
+        }
     }
 
     /**
@@ -8640,15 +8664,18 @@ public class ArrayKit {
      * @return 过滤后的数组
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
-        ArrayList<T> list = new ArrayList<>(array.length);
-        boolean isAccept;
+        if (null == filter) {
+            return array;
+        }
+
+        final ArrayList<T> list = new ArrayList<>(array.length);
         for (T t : array) {
-            isAccept = filter.accept(t);
-            if (isAccept) {
+            if (filter.accept(t)) {
                 list.add(t);
             }
         }
-        return list.toArray(Arrays.copyOf(array, list.size()));
+        final T[] result = newArray(array.getClass().getComponentType(), list.size());
+        return list.toArray(result);
     }
 
     /**

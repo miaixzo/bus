@@ -382,4 +382,6 @@ public class Symbol {
      */
     public static final String HTML_GT = "&gt;";
 
+    public static final String UNICODE_START_CHAR = "\\u";
+
 }

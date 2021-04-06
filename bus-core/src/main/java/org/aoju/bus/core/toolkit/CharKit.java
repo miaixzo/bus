@@ -350,10 +350,62 @@ public class CharKit {
         return cb.array();
     }
 
+    /**
+     * byte转car
+     *
+     * @param b 字节信息
+     * @return char
+     */
     public static char byteToChar(byte[] b) {
         int hi = (b[0] & 0xFF) << 8;
         int lo = b[1] & 0xFF;
         return (char) (hi | lo);
+    }
+
+    /**
+     * 将字母、数字转换为带圈的字符：
+     * <pre>
+     *     '1' -》 '①'
+     *     'A' -》 'Ⓐ'
+     *     'a' -》 'ⓐ'
+     * </pre>
+     *
+     * @param c 被转换的字符，如果字符不支持转换，返回原字符
+     * @return 转换后的字符
+     */
+    public static char toCloseChar(char c) {
+        int result = c;
+        if (c >= '1' && c <= '9') {
+            result = '①' + c - '1';
+        } else if (c >= 'A' && c <= 'Z') {
+            result = 'Ⓐ' + c - 'A';
+        } else if (c >= 'a' && c <= 'z') {
+            result = 'ⓐ' + c - 'a';
+        }
+        return (char) result;
+    }
+
+    /**
+     * 封闭式字符，英文：Enclosed Alphanumerics
+     * 将[1-20]数字转换为带圈的字符：
+     * <pre>
+     *     1 -》 '①'
+     *     12 -》 '⑫'
+     *     20 -》 '⑳'
+     * </pre>
+     *
+     * @param number 被转换的数字
+     * @return 转换后的字符
+     * @link 维基百科wikipedia-Unicode_symbols  https://en.wikipedia.org/wiki/List_of_Unicode_characters#Unicode_symbols
+     * @link 维基百科wikipedia-Unicode字符列表   https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%88%97%E8%A1%A8
+     * @link coolsymbol https://coolsymbol.com/
+     * @link 百度百科 https://baike.baidu.com/item/%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6/112715?fr=aladdin
+     */
+    public static char toCloseByNumber(int number) {
+        if (number > 20) {
+            throw new IllegalArgumentException("Number must be [1-20]");
+        }
+        return (char) ('①' + number - 1);
     }
 
 }

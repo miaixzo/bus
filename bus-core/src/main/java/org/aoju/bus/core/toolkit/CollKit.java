@@ -1567,7 +1567,7 @@ public class CollKit {
      * @return 处理后的集合
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
-        return filter(collection, (Filter<T>) t -> false == StringKit.isEmpty(t));
+        return filter(collection, StringKit::isNotEmpty);
     }
 
     /**
@@ -1578,7 +1578,7 @@ public class CollKit {
      * @return 处理后的集合
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
-        return filter(collection, (Filter<T>) t -> false == StringKit.isBlank(t));
+        return filter(collection, StringKit::isNotBlank);
     }
 
     /**

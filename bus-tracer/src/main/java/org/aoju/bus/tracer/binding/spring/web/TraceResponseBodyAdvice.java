@@ -46,9 +46,9 @@ import javax.servlet.http.HttpServletResponse;
  * @version 6.2.2
  * @since JDK 1.8+
  */
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ControllerAdvice
 @Order()
+@ControllerAdvice
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     @Autowired

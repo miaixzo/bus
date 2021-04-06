@@ -773,6 +773,9 @@ public class Validator {
      * @return 是否为URL
      */
     public static boolean isUrl(String value) {
+        if (StringKit.isBlank(value)) {
+            return false;
+        }
         try {
             new java.net.URL(value);
         } catch (MalformedURLException e) {
