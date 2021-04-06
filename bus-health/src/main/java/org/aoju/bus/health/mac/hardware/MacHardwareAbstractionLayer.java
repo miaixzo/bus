@@ -76,6 +76,11 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     @Override
+    public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
+        return MacLogicalVolumeGroup.getLogicalVolumeGroups();
+    }
+
+    @Override
     public List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces) {
         return MacNetworkIF.getNetworks(includeLocalInterfaces);
     }

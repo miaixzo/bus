@@ -90,7 +90,7 @@ public final class KstatKit {
         }
         Pointer p = KS.kstat_data_lookup(ksp, name);
         if (null == p) {
-            Logger.error("Failed lo lookup kstat value for key {}", name);
+            Logger.debug("Failed lo lookup kstat value for key {}", name);
             return Normal.EMPTY;
         }
         KstatNamed data = new KstatNamed(p);
@@ -188,8 +188,8 @@ public final class KstatKit {
             int retry = 0;
             while (0 > KS.kstat_read(KC, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
-                    if (Logger.get().isError()) {
-                        Logger.error("Failed to read kstat {}:{}:{}",
+                    if (Logger.get().isDebug()) {
+                        Logger.debug("Failed to read kstat {}:{}:{}",
                                 Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
                                 Native.toString(ksp.ks_name, Charset.US_ASCII));
                     }

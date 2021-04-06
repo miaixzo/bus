@@ -107,7 +107,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     private static List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
-        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,majflt,minflt,args";
+        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,majflt,minflt,nvscw,nivscw,args";
         if (pid >= 0) {
             psCommand += " -p " + pid;
         }
@@ -119,9 +119,9 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), 18);
+            String[] split = RegEx.SPACES.split(proc.trim(), 20);
             // Elements should match ps command order
-            if (split.length == 18) {
+            if (split.length == 20) {
                 procs.add(new FreeBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
             }
         }

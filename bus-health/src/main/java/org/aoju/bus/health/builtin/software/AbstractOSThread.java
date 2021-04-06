@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.health.builtin.software;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Memoize;
 
 import java.util.function.Supplier;
@@ -69,36 +68,6 @@ public abstract class AbstractOSThread implements OSThread {
                     / (double) (getUpTime() - priorSnapshot.getUpTime());
         }
         return getThreadCpuLoadCumulative();
-    }
-
-    @Override
-    public String getName() {
-        return Normal.EMPTY;
-    }
-
-    @Override
-    public long getStartMemoryAddress() {
-        return 0L;
-    }
-
-    @Override
-    public long getContextSwitches() {
-        return 0L;
-    }
-
-    @Override
-    public long getMinorFaults() {
-        return 0L;
-    }
-
-    @Override
-    public long getMajorFaults() {
-        return 0L;
-    }
-
-    @Override
-    public boolean updateAttributes() {
-        return false;
     }
 
     @Override

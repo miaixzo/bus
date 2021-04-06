@@ -27,6 +27,7 @@ package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,7 +69,7 @@ public interface HardwareAbstractionLayer {
      * Instantiates a list of {@link PowerSource} objects,
      * representing batteries, etc.
      *
-     * @return A list of PowerSource objects or an empty array if none are present.
+     * @return A list of PowerSource objects or an empty list if none are present.
      */
     List<PowerSource> getPowerSources();
 
@@ -79,6 +80,24 @@ public interface HardwareAbstractionLayer {
      * @return A list of HWDiskStore objects or an empty list if none are present.
      */
     List<HWDiskStore> getDiskStores();
+
+    /**
+     * Instantiates a list of {@link LogicalVolumeGroup} objects, representing a
+     * storage pool or group of devices, partitions, volumes, or other
+     * implementation specific means of file storage.
+     * <p>
+     * If not yet implemented or if logical volume groups do not exist, returns an
+     * empty list.
+     * <p>
+     * Currently implemented for Linux (LVM2), macOS (Core Storage), and Windows
+     * (Storage Spaces).
+     *
+     * @return A list of {@link LogicalVolumeGroup} objects or an empty list if none
+     * are present.
+     */
+    default List<LogicalVolumeGroup> getLogicalVolumeGroups() {
+        return Collections.emptyList();
+    }
 
     /**
      * Gets a list of non-local {@link NetworkIF} objects, representing a network
@@ -101,7 +120,7 @@ public interface HardwareAbstractionLayer {
      * Instantiates a list of {@link Display} objects, representing
      * monitors or other video output devices.
      *
-     * @return A list of Display objects or an empty array if none are present.
+     * @return A list of Display objects or an empty list if none are present.
      */
     List<Display> getDisplays();
 
@@ -127,7 +146,7 @@ public interface HardwareAbstractionLayer {
      *             {@code false} returns devices as a flat list with no connected
      *             device information.
      * @return A list of UsbDevice objects representing (optionally) the USB
-     * Controllers and devices connected to them, or an empty array if none
+     * Controllers and devices connected to them, or an empty list if none
      * are present
      */
     List<UsbDevice> getUsbDevices(boolean tree);
@@ -136,7 +155,7 @@ public interface HardwareAbstractionLayer {
      * Instantiates a list of {@link  SoundCard} objects, representing
      * the Sound cards.
      *
-     * @return A list of SoundCard objects or an empty array if none are present.
+     * @return A list of SoundCard objects or an empty list if none are present.
      */
     List<SoundCard> getSoundCards();
 
@@ -144,7 +163,7 @@ public interface HardwareAbstractionLayer {
      * Instantiates a list of {@link GraphicsCard} objects,
      * representing the Graphics cards.
      *
-     * @return A list of objects or an empty array if none are present.
+     * @return A list of objects or an empty list if none are present.
      */
     List<GraphicsCard> getGraphicsCards();
 

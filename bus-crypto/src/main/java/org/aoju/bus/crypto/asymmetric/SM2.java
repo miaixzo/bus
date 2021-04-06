@@ -412,7 +412,6 @@ public class SM2 extends Safety<SM2> {
      * 获得私钥D值（编码后的私钥）
      *
      * @return D值
-     * @since 5.5.9
      */
     public byte[] getD() {
         return this.privateKeyParams.getD().toByteArray();
@@ -423,7 +422,6 @@ public class SM2 extends Safety<SM2> {
      *
      * @param isCompressed 是否压缩
      * @return Q值
-     * @since 5.5.9
      */
     public byte[] getQ(boolean isCompressed) {
         return this.publicKeyParams.getQ().getEncoded(isCompressed);

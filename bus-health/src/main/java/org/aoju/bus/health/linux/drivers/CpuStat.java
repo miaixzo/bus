@@ -132,7 +132,7 @@ public final class CpuStat {
                 }
             }
         }
-        return -1;
+        return 0L;
     }
 
     /**
@@ -150,7 +150,7 @@ public final class CpuStat {
                 }
             }
         }
-        return -1;
+        return 0L;
     }
 
     /**

@@ -2021,7 +2021,6 @@ public final class Builder {
      * @param publicKey    {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey
      * @param isCompressed 是否压缩
      * @return 得到的Q
-     * @since 5.5.9
      */
     public static byte[] encodeECPublicKey(PublicKey publicKey, boolean isCompressed) {
         return ((BCECPublicKey) publicKey).getQ().getEncoded(isCompressed);
