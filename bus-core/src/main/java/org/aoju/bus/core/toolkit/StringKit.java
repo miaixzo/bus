@@ -1117,6 +1117,7 @@ public class StringKit {
      * </code>
      *
      * @param letter 字母，不区分大小写，'a'、'b'、'c'、'd'...'x'、'y'、'z'; 'A'、'B'...'Z'
+     * @return the string
      */
     public static String encloseAlphabetByChar(char letter) {
         if (!(letter >= 'a' && letter <= 'z' || letter >= 'A' && letter <= 'Z')) {
@@ -1127,7 +1128,7 @@ public class StringKit {
         String hexStr = toUnicode(start).substring(Symbol.UNICODE_START_CHAR.length());
         int difference = letter >= 'a' && letter <= 'z' ? (letter - (int) 'a') : (letter - (int) 'A');
         String hex = new BigInteger(hexStr, 16).add(new BigInteger(String.valueOf(difference), 10)).toString(16);
-        //
+
         String unicodeStr = Symbol.UNICODE_START_CHAR + hex;
         return toString(unicodeStr);
     }

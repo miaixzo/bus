@@ -155,7 +155,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
             }
         } else if (value instanceof Number && byte.class == targetComponentType) {
             // 用户可能想序列化指定对象
-            result = ByteKit.numberToBytes((Number) value);
+            result = ByteKit.getBytes((Number) value);
         } else if (value instanceof Serializable && byte.class == targetComponentType) {
             // 用户可能想序列化指定对象
             result = ObjectKit.serialize(value);
