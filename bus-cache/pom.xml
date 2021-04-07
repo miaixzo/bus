@@ -49,7 +49,7 @@
         <xmemcached.version>2.4.6</xmemcached.version>
         <ehcache.version>3.8.1</ehcache.version>
         <curator.version>4.3.0</curator.version>
-        <guava.version>30.0-jre</guava.version>
+        <guava.version>30.1.1-jre</guava.version>
         <yaml.version>1.26</yaml.version>
         <hession.version>4.0.63</hession.version>
         <druid.version>1.2.3</druid.version>
