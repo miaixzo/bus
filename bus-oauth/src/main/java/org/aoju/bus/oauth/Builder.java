@@ -167,7 +167,8 @@ public class Builder {
         ILLEGAL_REQUEST("5007", "Illegal request"),
         ILLEGAL_CODE("5008", "Illegal code"),
         ILLEGAL_STATUS("5009", "Illegal state"),
-        REQUIRED_REFRESH_TOKEN("5010", "The refresh token is required; it must not be null");
+        REQUIRED_REFRESH_TOKEN("5010", "The refresh token is required; it must not be null"),
+        ILLEGAL_TOKEN("5011", "Invalid token");
 
         private String code;
         private String msg;
