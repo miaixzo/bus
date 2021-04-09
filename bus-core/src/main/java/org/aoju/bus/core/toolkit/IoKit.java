@@ -250,11 +250,11 @@ public class IoKit {
             for (int readSize = -1; (readSize = in.read(buffer)) != EOF; ) {
                 out.write(buffer, 0, readSize);
                 size += readSize;
-                out.flush();
                 if (null != streamProgress) {
                     streamProgress.progress(size);
                 }
             }
+            out.flush();
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -953,6 +953,19 @@ public class IoKit {
     }
 
     /**
+     * {@link ByteArrayOutputStream}转为{@link ByteArrayInputStream}
+     *
+     * @param out {@link java.io.ByteArrayOutputStream}
+     * @return 字节流
+     */
+    public static ByteArrayInputStream toStream(ByteArrayOutputStream out) {
+        if (out == null) {
+            return null;
+        }
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    /**
      * 转换为{@link BufferedInputStream}
      *
      * @param in {@link InputStream}
@@ -1126,9 +1139,9 @@ public class IoKit {
             for (Object content : contents) {
                 if (null != content) {
                     osw.writeObject(content);
-                    osw.flush();
                 }
             }
+            osw.flush();
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {

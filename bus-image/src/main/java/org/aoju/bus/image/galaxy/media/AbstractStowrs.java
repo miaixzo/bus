@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Tag;
@@ -83,7 +83,7 @@ public class AbstractStowrs implements AutoCloseable {
         }
     }
 
-    protected static void setEncapsulatedDocumentAttributes(Path bulkDataFile, Attributes metadata, String mimeType) {
+    protected static void setEncapsulatedDocumentAttributes(Path bulkDataFile, Attributes metadata, String mdiaType) {
         metadata.setInt(Tag.InstanceNumber, VR.IS, 1);
         metadata.setString(Tag.ContentDate, VR.DA,
                 formatDA(null, new Date(bulkDataFile.toFile().lastModified())));
@@ -94,7 +94,7 @@ public class AbstractStowrs implements AutoCloseable {
         metadata.setString(Tag.BurnedInAnnotation, VR.CS, "YES");
         metadata.setNull(Tag.DocumentTitle, VR.ST);
         metadata.setNull(Tag.ConceptNameCodeSequence, VR.SQ);
-        metadata.setString(Tag.MIMETypeOfEncapsulatedDocument, VR.LO, mimeType);
+        metadata.setString(Tag.MIMETypeOfEncapsulatedDocument, VR.LO, mdiaType);
     }
 
     public static String formatDA(TimeZone tz, Date date) {
@@ -185,10 +185,10 @@ public class AbstractStowrs implements AutoCloseable {
             httpPost.setConnectTimeout(10000);
             httpPost.setReadTimeout(60000);
             httpPost.setRequestProperty("Content-Type",
-                    MimeType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
+                    MediaType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
             httpPost.setRequestProperty("User-Agent", null == agentName ? "STOWRS" : agentName);
             httpPost.setRequestProperty("Accept",
-                    contentType == MimeType.APPLICATION_DICOM_JSON ? MimeType.APPLICATION_DICOM_JSON : MimeType.APPLICATION_DICOM_XML);
+                    contentType == MediaType.APPLICATION_DICOM_JSON ? MediaType.APPLICATION_DICOM_JSON : MediaType.APPLICATION_DICOM_XML);
 
             if (null != headers && !headers.isEmpty()) {
                 for (Entry<String, String> element : headers.entrySet()) {

@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * @since JDK 1.8+
  */
 @Data
-public class MimeType {
+public class MediaType {
 
     /**
      * The media type {@code charset} parameter name.
@@ -60,244 +60,244 @@ public class MimeType {
     public static final String WILDCARD = "*/*";
 
     /**
-     * A {@link MimeType} constant representing wildcard {@value #WILDCARD} media type.
+     * A {@link MediaType} constant representing wildcard {@value #WILDCARD} media type.
      */
-    public static final MimeType WILDCARD_TYPE = new MimeType();
+    public static final MediaType WILDCARD_TYPE = new MediaType();
 
     /**
      * "application/xml"
      */
     public static final String APPLICATION_XML = "application/xml";
-    public static final MimeType APPLICATION_XML_TYPE = new MimeType("application", "xml");
+    public static final MediaType APPLICATION_XML_TYPE = new MediaType("application", "xml");
 
     /**
      * "application/atom+xml"
      */
     public static final String APPLICATION_ATOM_XML = "application/atom+xml";
-    public static final MimeType APPLICATION_ATOM_XML_TYPE = new MimeType("application", "atom+xml");
+    public static final MediaType APPLICATION_ATOM_XML_TYPE = new MediaType("application", "atom+xml");
 
     /**
      * "application/xhtml+xml"
      */
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
-    public static final MimeType APPLICATION_XHTML_XML_TYPE = new MimeType("application", "xhtml+xml");
+    public static final MediaType APPLICATION_XHTML_XML_TYPE = new MediaType("application", "xhtml+xml");
 
     /**
      * "application/svg+xml"
      */
     public static final String APPLICATION_SVG_XML = "application/svg+xml";
-    public static final MimeType APPLICATION_SVG_XML_TYPE = new MimeType("application", "svg+xml");
+    public static final MediaType APPLICATION_SVG_XML_TYPE = new MediaType("application", "svg+xml");
 
     /**
      * "application/json"
      */
     public static final String APPLICATION_JSON = "application/json";
-    public static final MimeType APPLICATION_JSON_TYPE = new MimeType("application", "json");
+    public static final MediaType APPLICATION_JSON_TYPE = new MediaType("application", "json");
 
     /**
      * "application/x-www-form-urlencoded"
      */
     public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
-    public static final MimeType APPLICATION_FORM_URLENCODED_TYPE = new MimeType("application", "x-www-form-urlencoded");
+    public static final MediaType APPLICATION_FORM_URLENCODED_TYPE = new MediaType("application", "x-www-form-urlencoded");
     /**
      * "application/octet-stream"
      */
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-    public static final MimeType APPLICATION_OCTET_STREAM_TYPE = new MimeType("application", "octet-stream");
+    public static final MediaType APPLICATION_OCTET_STREAM_TYPE = new MediaType("application", "octet-stream");
 
     /**
      * "text/plain"
      */
     public static final String TEXT_PLAIN = "text/plain";
-    public static final MimeType TEXT_PLAIN_TYPE = new MimeType("text", "plain");
+    public static final MediaType TEXT_PLAIN_TYPE = new MediaType("text", "plain");
 
     /**
      * "text/xml"
      */
     public static final String TEXT_XML = "text/xml";
-    public static final MimeType TEXT_XML_TYPE = new MimeType("text", "xml");
+    public static final MediaType TEXT_XML_TYPE = new MediaType("text", "xml");
 
     /**
      * "text/html"
      */
     public static final String TEXT_HTML = "text/html";
-    public static final MimeType TEXT_HTML_TYPE = new MimeType("text", "html");
+    public static final MediaType TEXT_HTML_TYPE = new MediaType("text", "html");
 
     /**
      * "application/dicom"
      */
     public static final String APPLICATION_DICOM = "application/dicom";
-    public static final MimeType APPLICATION_DICOM_TYPE = new MimeType("application", "dicom");
+    public static final MediaType APPLICATION_DICOM_TYPE = new MediaType("application", "dicom");
 
     /**
      * "application/dicom+xml"
      */
     public static final String APPLICATION_DICOM_XML = "application/dicom+xml";
-    public static final MimeType APPLICATION_DICOM_XML_TYPE = new MimeType("application", "dicom+xml");
+    public static final MediaType APPLICATION_DICOM_XML_TYPE = new MediaType("application", "dicom+xml");
 
     /**
      * "application/dicom+json"
      */
     public static final String APPLICATION_DICOM_JSON = "application/dicom+json";
-    public static final MimeType APPLICATION_DICOM_JSON_TYPE = new MimeType("application", "dicom+json");
+    public static final MediaType APPLICATION_DICOM_JSON_TYPE = new MediaType("application", "dicom+json");
 
     /**
      * "image/*"
      */
     public static final String IMAGE_WILDCARD = "image/*";
-    public static final MimeType IMAGE_WILDCARD_TYPE = new MimeType("image", Symbol.STAR);
+    public static final MediaType IMAGE_WILDCARD_TYPE = new MediaType("image", Symbol.STAR);
 
     /**
      * "image/gif"
      */
     public static final String IMAGE_GIF = "image/gif";
-    public static final MimeType IMAGE_GIF_TYPE = new MimeType("image", "gif");
+    public static final MediaType IMAGE_GIF_TYPE = new MediaType("image", "gif");
 
     /**
      * "image/png"
      */
     public static final String IMAGE_PNG = "image/png";
-    public static final MimeType IMAGE_PNG_TYPE = new MimeType("image", "png");
+    public static final MediaType IMAGE_PNG_TYPE = new MediaType("image", "png");
 
     /**
      * "image/bmp"
      */
     public static final String IMAGE_BMP = "image/bmp";
-    public static final MimeType IMAGE_BMP_TYPE = new MimeType("image", "bmp");
+    public static final MediaType IMAGE_BMP_TYPE = new MediaType("image", "bmp");
 
     /**
      * "image/jpeg"
      */
     public static final String IMAGE_JPEG = "image/jpeg";
-    public static final MimeType IMAGE_JPEG_TYPE = new MimeType("image", "jpeg");
+    public static final MediaType IMAGE_JPEG_TYPE = new MediaType("image", "jpeg");
 
     /**
      * "image/x-jls"
      */
     public static final String IMAGE_X_JLS = "image/x-jls";
-    public static final MimeType IMAGE_X_JLS_TYPE = new MimeType("image", "x-jls");
+    public static final MediaType IMAGE_X_JLS_TYPE = new MediaType("image", "x-jls");
 
     /**
      * "image/jp2"
      */
     public static final String IMAGE_JP2 = "image/jp2";
-    public static final MimeType IMAGE_JP2_TYPE = new MimeType("image", "jp2");
+    public static final MediaType IMAGE_JP2_TYPE = new MediaType("image", "jp2");
 
     /**
      * "image/jpx"
      */
     public static final String IMAGE_JPX = "image/jpx";
-    public static final MimeType IMAGE_JPX_TYPE = new MimeType("image", "jpx");
+    public static final MediaType IMAGE_JPX_TYPE = new MediaType("image", "jpx");
 
     /**
      * "image/dicom+rle"
      */
     public static final String IMAGE_X_DICOM_RLE = "image/x-dicom+rle";
-    public static final MimeType IMAGE_X_DICOM_RLE_TYPE = new MimeType("image", "x-dicom+rle");
+    public static final MediaType IMAGE_X_DICOM_RLE_TYPE = new MediaType("image", "x-dicom+rle");
 
     /**
      * "video/*"
      */
     public static final String VIDEO_WILDCARD = "video/*";
-    public static final MimeType VIDEO_WILDCARD_TYPE = new MimeType("video", Symbol.STAR);
+    public static final MediaType VIDEO_WILDCARD_TYPE = new MediaType("video", Symbol.STAR);
 
     /**
      * "video/mpeg"
      */
     public static final String VIDEO_MPEG = "video/mpeg";
-    public static final MimeType VIDEO_MPEG_TYPE = new MimeType("video", "mpeg");
+    public static final MediaType VIDEO_MPEG_TYPE = new MediaType("video", "mpeg");
 
     /**
      * "video/mp4"
      */
     public static final String VIDEO_MP4 = "video/mp4";
-    public static final MimeType VIDEO_MP4_TYPE = new MimeType("video", "mp4");
+    public static final MediaType VIDEO_MP4_TYPE = new MediaType("video", "mp4");
 
     /**
      * "application/pdf"
      */
     public static final String APPLICATION_PDF = "application/pdf";
-    public static final MimeType APPLICATION_PDF_TYPE = new MimeType("application", "pdf");
+    public static final MediaType APPLICATION_PDF_TYPE = new MediaType("application", "pdf");
 
     /**
      * "text/rtf"
      */
     public static final String TEXT_RTF = "text/rtf";
-    public static final MimeType TEXT_RTF_TYPE = new MimeType("text", "rtf");
+    public static final MediaType TEXT_RTF_TYPE = new MediaType("text", "rtf");
 
     /**
      * "text/csv"
      */
     public static final String TEXT_CSV = "text/csv";
-    public static final MimeType TEXT_CSV_TYPE = new MimeType("text", "csv");
+    public static final MediaType TEXT_CSV_TYPE = new MediaType("text", "csv");
 
     /**
      * "text/csv;charset=utf-8"
      */
     public static final String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
-    public static final MimeType TEXT_CSV_UTF8_TYPE = new MimeType("text", "csv", Charset.DEFAULT_UTF_8);
+    public static final MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", Charset.DEFAULT_UTF_8);
 
     /**
      * "application/zip"
      */
     public static final String APPLICATION_ZIP = "application/zip";
-    public static final MimeType APPLICATION_ZIP_TYPE = new MimeType("application", "zip");
+    public static final MediaType APPLICATION_ZIP_TYPE = new MediaType("application", "zip");
 
     /**
      * "application/x-zip-compressed"
      */
     public static final String APPLICATION_ZIP_COMPRESSED = "application/x-zip-compressed";
-    public static final MimeType APPLICATION_ZIP_COMPRESSED_TYPE = new MimeType("application", "x-zip-compressed");
+    public static final MediaType APPLICATION_ZIP_COMPRESSED_TYPE = new MediaType("application", "x-zip-compressed");
 
     /**
      * "multipart/form-data"
      */
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
-    public static final MimeType MULTIPART_FORM_DATA_TYPE = new MimeType("multipart", "form-data");
+    public static final MediaType MULTIPART_FORM_DATA_TYPE = new MediaType("multipart", "form-data");
 
     /**
      * "multipart/mixed"
      */
     public static final String MULTIPART_MIXED = "multipart/mixed";
-    public static final MimeType MULTIPART_MIXED_TYPE = new MimeType("multipart", "mixed");
+    public static final MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
 
     /**
      * "multipart/alternative"
      */
     public static final String MULTIPART_ALTERNATIVE = "multipart/alternative";
-    public static final MimeType MULTIPART_ALTERNATIVE_TYPE = new MimeType("multipart", "alternative");
+    public static final MediaType MULTIPART_ALTERNATIVE_TYPE = new MediaType("multipart", "alternative");
 
     /**
      * "multipart/digest"
      */
     public static final String MULTIPART_DIGEST = "multipart/digest";
-    public static final MimeType MULTIPART_DIGEST_TYPE = new MimeType("multipart", "digest");
+    public static final MediaType MULTIPART_DIGEST_TYPE = new MediaType("multipart", "digest");
 
     /**
      * "multipart/related"
      */
     public static final String MULTIPART_parallel = "multipart/parallel";
-    public static final MimeType MULTIPART_PARALLEL_TYPE = new MimeType("multipart", "parallel");
+    public static final MediaType MULTIPART_PARALLEL_TYPE = new MediaType("multipart", "parallel");
 
     /**
      * "multipart/related"
      */
     public static final String MULTIPART_RELATED = "multipart/related";
-    public static final MimeType MULTIPART_RELATED_TYPE = new MimeType("multipart", "related");
+    public static final MediaType MULTIPART_RELATED_TYPE = new MediaType("multipart", "related");
 
     /**
      * "multipart/related;type=application/dicom"
      */
     public final static String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
-    public static final MimeType MULTIPART_RELATED_APPLICATION_DICOM_TYPE =
-            new MimeType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
+    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE =
+            new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
 
     /**
      * "multipart/related;type=\"application/dicom+xml\""
      */
     public final static String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
-    public final static MimeType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE =
-            new MimeType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
+    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE =
+            new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
 
 
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
@@ -312,36 +312,36 @@ public class MimeType {
     public Map<String, String> parameters;
 
 
-    public MimeType() {
+    public MediaType() {
         this(null, MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD, null, null);
     }
 
-    public MimeType(String mediaType) {
+    public MediaType(String mediaType) {
         this(mediaType, MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD, null, null);
     }
 
 
-    public MimeType(String type, String subtype) {
+    public MediaType(String type, String subtype) {
         this(null, type, subtype, null, null);
     }
 
-    public MimeType(String type, String subtype, String charset) {
+    public MediaType(String type, String subtype, String charset) {
         this(null, type, subtype, charset, null);
     }
 
-    public MimeType(String mediaType, String type, String subtype, String charset) {
+    public MediaType(String mediaType, String type, String subtype, String charset) {
         this(mediaType, type, subtype, charset, null);
     }
 
-    public MimeType(String type, String subtype, Map<String, String> params) {
+    public MediaType(String type, String subtype, Map<String, String> params) {
         this(null, type, subtype, null, createParametersMap(params));
     }
 
-    public MimeType(String type, String subtype, String charset, Map<String, String> params) {
+    public MediaType(String type, String subtype, String charset, Map<String, String> params) {
         this(null, type, subtype, charset, createParametersMap(params));
     }
 
-    public MimeType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
+    public MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
         this.mediaType = null == mediaType ? APPLICATION_FORM_URLENCODED : mediaType;
         this.type = null == type ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
@@ -362,7 +362,7 @@ public class MimeType {
      * @param text 字符串
      * @return the mediaType
      */
-    public static MimeType valueOf(String text) {
+    public static MediaType valueOf(String text) {
         Matcher typeSubtype = TYPE_SUBTYPE.matcher(text);
         if (!typeSubtype.lookingAt()) {
             throw new IllegalArgumentException("No subtype found for: \"" + text + Symbol.C_DOUBLE_QUOTES);
@@ -397,7 +397,7 @@ public class MimeType {
             charset = charsetParameter;
         }
 
-        return new MimeType(text, type, subtype, charset);
+        return new MediaType(text, type, subtype, charset);
     }
 
     private static TreeMap<String, String> createParametersMap(Map<String, String> initialValues) {
@@ -414,10 +414,10 @@ public class MimeType {
     }
 
     public boolean equals(Object obj) {
-        if (!(obj instanceof MimeType)) {
+        if (!(obj instanceof MediaType)) {
             return false;
         } else {
-            MimeType other = (MimeType) obj;
+            MediaType other = (MediaType) obj;
             return this.type.equalsIgnoreCase(other.type)
                     && this.subtype.equalsIgnoreCase(other.subtype)
                     && this.parameters.equals(other.parameters);
@@ -484,18 +484,18 @@ public class MimeType {
      * 例如:image/*与image/jpeg、image/png等兼容
      * 忽略媒体类型参数 这个函数是可交换的
      *
-     * @param mimeType 要比较的媒体类型.
+     * @param mediaType 要比较的媒体类型.
      * @return 如果类型兼容, 则为true, 否则为false.
      */
-    public boolean isCompatible(MimeType mimeType) {
-        return null != mimeType
+    public boolean isCompatible(MediaType mediaType) {
+        return null != mediaType
                 && (type.equals(MEDIA_TYPE_WILDCARD)
-                || mimeType.type.equals(MEDIA_TYPE_WILDCARD)
-                || (type.equalsIgnoreCase(mimeType.type)
+                || mediaType.type.equals(MEDIA_TYPE_WILDCARD)
+                || (type.equalsIgnoreCase(mediaType.type)
                 && (subtype.equals(MEDIA_TYPE_WILDCARD)
-                || mimeType.subtype.equals(MEDIA_TYPE_WILDCARD)))
-                || (type.equalsIgnoreCase(mimeType.type)
-                && this.subtype.equalsIgnoreCase(mimeType.subtype)));
+                || mediaType.subtype.equals(MEDIA_TYPE_WILDCARD)))
+                || (type.equalsIgnoreCase(mediaType.type)
+                && this.subtype.equalsIgnoreCase(mediaType.subtype)));
     }
 
 }

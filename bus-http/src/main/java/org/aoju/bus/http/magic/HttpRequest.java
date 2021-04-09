@@ -27,7 +27,7 @@ package org.aoju.bus.http.magic;
 
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.Source;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Httpd;
@@ -90,13 +90,13 @@ public abstract class HttpRequest {
         appendHeaders();
     }
 
-    public static RequestBody createRequestBody(final MimeType contentType, final InputStream is) {
+    public static RequestBody createRequestBody(final MediaType contentType, final InputStream is) {
         if (null == is)
             throw new NullPointerException("is == null");
 
         return new RequestBody() {
             @Override
-            public MimeType contentType() {
+            public MediaType contentType() {
                 return contentType;
             }
 

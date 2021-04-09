@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
 
@@ -53,13 +53,13 @@ public abstract class RequestBody {
      * @param content     内容
      * @return 传输请求体
      */
-    public static RequestBody create(MimeType contentType, String content) {
+    public static RequestBody create(MediaType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
         if (null != contentType) {
             charset = contentType.charset();
             if (null == charset) {
                 charset = Charset.UTF_8;
-                contentType = MimeType.valueOf(contentType + "; charset=utf-8");
+                contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }
         byte[] bytes = content.getBytes(charset);
@@ -74,11 +74,11 @@ public abstract class RequestBody {
      * @return 传输请求体
      */
     public static RequestBody create(
-            final MimeType contentType,
+            final MediaType contentType,
             final ByteString content) {
         return new RequestBody() {
             @Override
-            public MimeType contentType() {
+            public MediaType contentType() {
                 return contentType;
             }
 
@@ -101,7 +101,7 @@ public abstract class RequestBody {
      * @param content     内容
      * @return 传输请求体
      */
-    public static RequestBody create(final MimeType contentType, final byte[] content) {
+    public static RequestBody create(final MediaType contentType, final byte[] content) {
         return create(contentType, content, 0, content.length);
     }
 
@@ -114,7 +114,7 @@ public abstract class RequestBody {
      * @param byteCount   当前大小
      * @return 传输请求体
      */
-    public static RequestBody create(final MimeType contentType, final byte[] content,
+    public static RequestBody create(final MediaType contentType, final byte[] content,
                                      final int offset, final int byteCount) {
         if (null == content) {
             throw new NullPointerException("content == null");
@@ -122,7 +122,7 @@ public abstract class RequestBody {
         Builder.checkOffsetAndCount(content.length, offset, byteCount);
         return new RequestBody() {
             @Override
-            public MimeType contentType() {
+            public MediaType contentType() {
                 return contentType;
             }
 
@@ -145,14 +145,14 @@ public abstract class RequestBody {
      * @param file        文件
      * @return 传输请求体
      */
-    public static RequestBody create(final MimeType contentType, final File file) {
+    public static RequestBody create(final MediaType contentType, final File file) {
         if (null == file) {
             throw new NullPointerException("file == null");
         }
 
         return new RequestBody() {
             @Override
-            public MimeType contentType() {
+            public MediaType contentType() {
                 return contentType;
             }
 
@@ -177,7 +177,7 @@ public abstract class RequestBody {
     /**
      * @return 返回此主体的媒体类型
      */
-    public abstract MimeType contentType();
+    public abstract MediaType contentType();
 
     /**
      * 返回调用{@link #writeTo}时写入{@code sink}的字节数，如果该计数未知，则返回-1

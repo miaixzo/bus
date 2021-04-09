@@ -28,7 +28,7 @@ package org.aoju.bus.http.bodys;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -70,7 +70,7 @@ public class ResultBody extends AbstractBody implements Body {
 
 
     @Override
-    public MimeType getType() {
+    public MediaType getType() {
         ResponseBody body = response.body();
         if (null != body) {
             return body.contentType();

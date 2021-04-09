@@ -3555,12 +3555,12 @@ public class FileKit {
     }
 
     /**
-     * 根据文件扩展名获得MimeType
+     * 根据文件扩展名获得MediaType
      *
      * @param path 文件路径或文件名
-     * @return MimeType
+     * @return MediaType
      */
-    public static String getMimeType(String path) {
+    public static String getMediaType(String path) {
         try {
             FileNameMap fileNameMap = URLConnection.getFileNameMap();
             String contentType = fileNameMap.getContentTypeFor(URLEncoder.encode(path, Charset.DEFAULT_UTF_8));
@@ -3579,12 +3579,12 @@ public class FileKit {
     }
 
     /**
-     * 获得文件的MimeType
+     * 获得文件的MediaType
      *
      * @param file 文件
-     * @return MimeType
+     * @return MediaType
      */
-    public static String getMimeType(Path file) {
+    public static String getMediaType(Path file) {
         try {
             return Files.probeContentType(file);
         } catch (IOException e) {

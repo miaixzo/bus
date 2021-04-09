@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Header;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Headers;
 
@@ -53,15 +53,15 @@ public final class MultipartBody extends RequestBody {
     private static final byte[] DASHDASH = {Symbol.C_HYPHEN, Symbol.C_HYPHEN};
 
     private final ByteString boundary;
-    private final MimeType originalType;
-    private final MimeType contentType;
+    private final MediaType originalType;
+    private final MediaType contentType;
     private final List<Part> parts;
     private long contentLength = -1L;
 
-    MultipartBody(ByteString boundary, MimeType type, List<Part> parts) {
+    MultipartBody(ByteString boundary, MediaType type, List<Part> parts) {
         this.boundary = boundary;
         this.originalType = type;
-        this.contentType = MimeType.valueOf(type + "; boundary=" + boundary.utf8());
+        this.contentType = MediaType.valueOf(type + "; boundary=" + boundary.utf8());
         this.parts = org.aoju.bus.http.Builder.immutableList(parts);
     }
 
@@ -88,7 +88,7 @@ public final class MultipartBody extends RequestBody {
         return target;
     }
 
-    public MimeType type() {
+    public MediaType type() {
         return originalType;
     }
 
@@ -109,7 +109,7 @@ public final class MultipartBody extends RequestBody {
     }
 
     @Override
-    public MimeType contentType() {
+    public MediaType contentType() {
         return contentType;
     }
 
@@ -161,7 +161,7 @@ public final class MultipartBody extends RequestBody {
                 }
             }
 
-            MimeType contentType = body.contentType();
+            MediaType contentType = body.contentType();
             if (null != contentType) {
                 sink.writeUtf8("Content-Type: ")
                         .writeUtf8(contentType.toString())
@@ -265,7 +265,7 @@ public final class MultipartBody extends RequestBody {
 
         private final ByteString boundary;
         private final List<Part> parts = new ArrayList<>();
-        private MimeType type = MimeType.MULTIPART_MIXED_TYPE;
+        private MediaType type = MediaType.MULTIPART_MIXED_TYPE;
 
         public Builder() {
             this(UUID.randomUUID().toString());
@@ -275,7 +275,7 @@ public final class MultipartBody extends RequestBody {
             this.boundary = ByteString.encodeUtf8(boundary);
         }
 
-        public Builder setType(MimeType type) {
+        public Builder setType(MediaType type) {
             if (null == type) {
                 throw new NullPointerException("type == null");
             }

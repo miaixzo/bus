@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import javax.xml.soap.SOAPConstants;
 import java.io.IOException;
 
 /**
@@ -71,7 +72,16 @@ public enum Protocol {
      * QUIC(快速UDP互联网连接)是一个新的多路复用和UDP之上的安全传输，
      * 从底层设计和优化的HTTP/2语义。HTTP/1.1语义是在HTTP/2上分层的
      */
-    QUIC("quic");
+    QUIC("quic"),
+
+    /**
+     * SOAP 1.1协议
+     */
+    SOAP_1_1(SOAPConstants.SOAP_1_1_PROTOCOL),
+    /**
+     * SOAP 1.2协议
+     */
+    SOAP_1_2(SOAPConstants.SOAP_1_2_PROTOCOL);
 
     private final String protocol;
 
@@ -91,6 +101,8 @@ public enum Protocol {
         if (protocol.equals(HTTP_2.protocol)) return HTTP_2;
         if (protocol.equals(SPDY_3.protocol)) return SPDY_3;
         if (protocol.equals(QUIC.protocol)) return QUIC;
+        if (protocol.equals(SOAP_1_1.protocol)) return SOAP_1_1;
+        if (protocol.equals(SOAP_1_2.protocol)) return SOAP_1_2;
         throw new IOException("Unexpected protocol: " + protocol);
     }
 

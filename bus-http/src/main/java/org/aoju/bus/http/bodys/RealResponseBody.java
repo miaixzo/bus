@@ -26,7 +26,7 @@
 package org.aoju.bus.http.bodys;
 
 import org.aoju.bus.core.io.BufferSource;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 
 /**
  * 响应体只能使用一次
@@ -52,8 +52,8 @@ public final class RealResponseBody extends ResponseBody {
     }
 
     @Override
-    public MimeType contentType() {
-        return null != contentTypeString ? MimeType.valueOf(contentTypeString) : null;
+    public MediaType contentType() {
+        return null != contentTypeString ? MediaType.valueOf(contentTypeString) : null;
     }
 
     @Override

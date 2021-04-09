@@ -28,7 +28,7 @@ package org.aoju.bus.http.metric.http;
 import org.aoju.bus.core.Version;
 import org.aoju.bus.core.io.GzipSource;
 import org.aoju.bus.core.lang.Header;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
@@ -63,7 +63,7 @@ public final class BridgeInterceptor implements Interceptor {
 
         RequestBody body = userRequest.body();
         if (null != body) {
-            MimeType contentType = body.contentType();
+            MediaType contentType = body.contentType();
             if (null != contentType) {
                 requestBuilder.header(Header.CONTENT_TYPE, contentType.toString());
             }

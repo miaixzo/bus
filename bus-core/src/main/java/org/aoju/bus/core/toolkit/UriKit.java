@@ -1386,29 +1386,29 @@ public class UriKit {
      * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
      * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
      *
-     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
-     * @param encoding 数据编码方式(US-ASCII，BASE64等)
-     * @param data     编码后的数据
+     * @param mediaType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param encoding  数据编码方式(US-ASCII，BASE64等)
+     * @param data      编码后的数据
      * @return Data URI字符串
      */
-    public static String toURL(String mimeType, String encoding, String data) {
-        return toURL(mimeType, null, encoding, data);
+    public static String toURL(String mediaType, String encoding, String data) {
+        return toURL(mediaType, null, encoding, data);
     }
 
     /**
      * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
      * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页
      *
-     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
-     * @param charset  可选项(null表示无)，源文本的字符集编码方式
-     * @param encoding 数据编码方式(US-ASCII，BASE64等)
-     * @param data     编码后的数据
+     * @param mediaType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param charset   可选项(null表示无)，源文本的字符集编码方式
+     * @param encoding  数据编码方式(US-ASCII，BASE64等)
+     * @param data      编码后的数据
      * @return Data URI字符串
      */
-    public static String toURL(String mimeType, java.nio.charset.Charset charset, String encoding, String data) {
+    public static String toURL(String mediaType, java.nio.charset.Charset charset, String encoding, String data) {
         final StringBuilder builder = StringKit.builder("data:");
-        if (StringKit.isNotBlank(mimeType)) {
-            builder.append(mimeType);
+        if (StringKit.isNotBlank(mediaType)) {
+            builder.append(mediaType);
         }
         if (null != charset) {
             builder.append(";charset=").append(charset.name());
