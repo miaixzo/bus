@@ -42,6 +42,8 @@ import java.util.List;
 
 /**
  * BaseService 接口实现
+ * 根据业务需要如无status，creator等相关属性内容
+ * 重写此类及{@link BaseEntity} 业务类继承新类
  *
  * @author Kimi Liu
  * @version 6.2.2
