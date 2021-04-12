@@ -1134,9 +1134,10 @@ public class EightChar {
             // 阳男阴女顺推，阴男阳女逆推
             Solar start = forward ? current : prev.getSolar();
             Solar end = forward ? next.getSolar() : current;
+            int endTimeZhiIndex = (end.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(end.build(false).substring(11, 16));
+            int startTimeZhiIndex = (start.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(start.build(false).substring(11, 16));
             // 时辰差
-            int hourDiff = Lunar.getTimeZhiIndex(end.build(false).substring(11, 16))
-                    - Lunar.getTimeZhiIndex(start.build(false).substring(11, 16));
+            int hourDiff = endTimeZhiIndex - startTimeZhiIndex;
             Calendar endCalendar = Calendar.getInstance();
             endCalendar.set(end.getYear(), end.getMonth() - 1, end.getDay(),
                     0, 0, 0);

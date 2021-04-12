@@ -241,16 +241,6 @@ public class SoapX<T> {
         return pretty ? XmlKit.format(messageToString) : messageToString;
     }
 
-    public static void main(String[] args) {
-        SoapX client = SoapX.create("http://www.webxml.com.cn/WebServices/IpAddressSearchWebService.asmx")
-                .setMethod("web:getCountryCityByIp", "http://WebXml.com.cn/")
-                .setCharset(org.aoju.bus.core.lang.Charset.GBK)
-                .setParam("theIpAddress", "218.21.240.106");
-
-        Console.log(client.getMsgStr(true));
-        Console.log(client.send(true));
-    }
-
     /**
      * 初始化
      *
@@ -596,15 +586,14 @@ public class SoapX<T> {
         return send(false);
     }
 
-    /**
-     * 执行Webservice请求，即发送SOAP内容
-     *
-     * @param pretty 是否格式化
-     * @return 返回结果
-     */
-    public String send(boolean pretty) {
-        final HttpResponse response = sendForResponse();
-        return pretty ? XmlKit.format(response.body().toString()) : response.body().toString();
+    public static void main(String[] args) {
+        SoapX client = SoapX.create("http://www.webxml.com.cn/WebServices/WeatherWebService.asmx")
+                .setMethod("web:getSupportCity", "http://WebXml.com.cn/")
+                .setCharset(org.aoju.bus.core.lang.Charset.GBK)
+                .setParam("byProvinceName", "58367");
+
+        Console.log(client.getMsgStr(true));
+        Console.log(client.send(true));
     }
 
     /**
@@ -617,7 +606,6 @@ public class SoapX<T> {
             return Httpz.post()
                     .url(this.url)
                     .headers(this.headers())
-                    .addParams(this)
                     .body(getMsgStr(false)).build().execute();
         } catch (Exception e) {
             throw new InstrumentException(e);
@@ -832,6 +820,26 @@ public class SoapX<T> {
             charset(Charset.forName(charset));
         }
         return (T) this;
+    }
+
+    /**
+     * 执行Webservice请求，即发送SOAP内容
+     *
+     * @param pretty 是否格式化
+     * @return 返回结果
+     */
+    public String send(boolean pretty) {
+        final HttpResponse response = sendForResponse();
+        byte[] bytes = new byte[0];
+        try {
+            bytes = response.body().bytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String result = new String(bytes, org.aoju.bus.core.lang.Charset.UTF_8);
+        Console.log(result);
+
+        return pretty ? XmlKit.format(result) : result;
     }
 
 }
