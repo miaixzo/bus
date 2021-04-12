@@ -586,16 +586,6 @@ public class SoapX<T> {
         return send(false);
     }
 
-    public static void main(String[] args) {
-        SoapX client = SoapX.create("http://www.webxml.com.cn/WebServices/WeatherWebService.asmx")
-                .setMethod("web:getSupportCity", "http://WebXml.com.cn/")
-                .setCharset(org.aoju.bus.core.lang.Charset.GBK)
-                .setParam("byProvinceName", "58367");
-
-        Console.log(client.getMsgStr(true));
-        Console.log(client.send(true));
-    }
-
     /**
      * 发送请求，获取异步响应
      *
@@ -840,6 +830,16 @@ public class SoapX<T> {
         Console.log(result);
 
         return pretty ? XmlKit.format(result) : result;
+    }
+
+    public static void main(String[] args) {
+        SoapX client = SoapX.create("http://www.webxml.com.cn/WebServices/WeatherWebService.asmx")
+                .setMethod("web:getSupportCity", "http://WebXml.com.cn/")
+                .setCharset(org.aoju.bus.core.lang.Charset.GBK)
+                .setParam("byProvinceName", "58367");
+
+        Console.log(client.getMsgStr(true));
+        Console.log(client.send(true));
     }
 
 }
