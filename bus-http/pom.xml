@@ -47,24 +47,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-logger</artifactId>
             <version>${project.version}</version>
