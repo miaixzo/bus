@@ -25,7 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import javax.xml.soap.SOAPConstants;
+import org.aoju.bus.core.lang.Http;
+
 import java.io.IOException;
 
 /**
@@ -43,45 +44,45 @@ public enum Protocol {
     /**
      * 一种过时的plaintext，默认情况下不使用持久套接字
      */
-    HTTP_1_0("http/1.0"),
+    HTTP_1_0(Http.HTTP_1_0),
 
     /**
      * 包含持久连接的plaintext
      * 此版本的Httpd实现了RFC 7230，并跟踪对该规范的修订
      */
-    HTTP_1_1("http/1.1"),
-
-    /**
-     * Chromium的二进制框架协议，包括标头压缩、在同一个套接字上多路复用多个请求和服务器推送
-     * HTTP/1.1语义在SPDY/3上分层.
-     */
-    SPDY_3("spdy/3.1"),
+    HTTP_1_1(Http.HTTP_1_1),
 
     /**
      * IETF的二进制框架协议，包括头压缩、在同一个套接字上多路复用多个请求和服务器推送
      * HTTP/1.1语义是在HTTP/2上分层的.
      */
-    HTTP_2("http/2.0"),
+    HTTP_2(Http.HTTP_2_0),
+
+    /**
+     * Chromium的二进制框架协议，包括标头压缩、在同一个套接字上多路复用多个请求和服务器推送
+     * HTTP/1.1语义在SPDY/3上分层.
+     */
+    SPDY_3(Http.SPDY_3_1),
 
     /**
      * 明文HTTP/2，没有"upgrade"往返。此选项要求客户端事先知道服务器支持明文HTTP/2
      */
-    H2_PRIOR_KNOWLEDGE("h2_prior_knowledge"),
+    H2_PRIOR_KNOWLEDGE(Http.H2_PRIOR_KNOWLEDGE),
 
     /**
      * QUIC(快速UDP互联网连接)是一个新的多路复用和UDP之上的安全传输，
      * 从底层设计和优化的HTTP/2语义。HTTP/1.1语义是在HTTP/2上分层的
      */
-    QUIC("quic"),
+    QUIC(Http.SPDY_3_1),
 
     /**
      * SOAP 1.1协议
      */
-    SOAP_1_1(SOAPConstants.SOAP_1_1_PROTOCOL),
+    SOAP_1_1(Http.SOAP_1_1),
     /**
      * SOAP 1.2协议
      */
-    SOAP_1_2(SOAPConstants.SOAP_1_2_PROTOCOL);
+    SOAP_1_2(Http.SOAP_1_2);
 
     private final String protocol;
 

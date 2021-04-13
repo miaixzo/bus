@@ -113,6 +113,16 @@ public class UriKit {
     }
 
     /**
+     * 使用URL字符串构建UriKit，当传入的URL没有协议时，按照http协议对待，编码默认使用UTF-8
+     *
+     * @param url URL字符串
+     * @return this
+     */
+    public static UriKit of(String url) {
+        return of(url, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
      * 使用URL字符串构建
      *
      * @param url     URL字符串
@@ -2080,9 +2090,23 @@ public class UriKit {
          * @return {@link Query}
          */
         public static Query of(String queryStr, java.nio.charset.Charset charset) {
-            final Query Query = new Query();
-            Query.parse(queryStr, charset);
-            return Query;
+            final Query query = new Query();
+            query.parse(queryStr, charset);
+            return query;
+        }
+
+        /**
+         * 构建Query
+         *
+         * @param queryStr       初始化的查询字符串
+         * @param charset        decode用的编码，null表示不做decode
+         * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
+         * @return {@link Query}
+         */
+        public static Query of(String queryStr, java.nio.charset.Charset charset, boolean autoRemovePath) {
+            final Query query = new Query();
+            query.parse(queryStr, charset, autoRemovePath);
+            return query;
         }
 
         /**
@@ -2136,16 +2160,30 @@ public class UriKit {
          * @return this
          */
         public Query parse(String queryStr, java.nio.charset.Charset charset) {
+            return parse(queryStr, charset, true);
+        }
+
+        /**
+         * 解析URL中的查询字符串
+         *
+         * @param queryStr       查询字符串，类似于key1=v1&amp;key2=&amp;key3=v3
+         * @param charset        decode编码，null表示不做decode
+         * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
+         * @return this
+         */
+        public Query parse(String queryStr, java.nio.charset.Charset charset, boolean autoRemovePath) {
             if (StringKit.isBlank(queryStr)) {
                 return this;
             }
 
-            // 去掉Path部分
-            int pathEndPos = queryStr.indexOf(Symbol.C_QUESTION_MARK);
-            if (pathEndPos > -1) {
-                queryStr = StringKit.subSuf(queryStr, pathEndPos + 1);
-                if (StringKit.isBlank(queryStr)) {
-                    return this;
+            if (autoRemovePath) {
+                // 去掉Path部分
+                int pathEndPos = queryStr.indexOf('?');
+                if (pathEndPos > -1) {
+                    queryStr = StringKit.subSuf(queryStr, pathEndPos + 1);
+                    if (StringKit.isBlank(queryStr)) {
+                        return this;
+                    }
                 }
             }
 

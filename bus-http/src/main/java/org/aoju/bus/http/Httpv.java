@@ -52,23 +52,42 @@ import java.util.concurrent.Executor;
  */
 public class Httpv {
 
-    // Httpd
+    /**
+     * Httpd
+     */
     Httpd httpd;
-    // 根URL
+    /**
+     * 根URL
+     */
     String baseUrl;
-    // 媒体类型
+
+    /**
+     * 媒体类型
+     */
     Map<String, String> mediaTypes;
-    // 执行器
+    /**
+     * 执行器
+     */
     TaskExecutor executor;
-    // 预处理器
+    /**
+     * 预处理器
+     */
     Preprocessor[] preprocessors;
-    // 持有标签的任务
+    /**
+     * 持有标签的任务
+     */
     List<TagTask> tagTasks;
-    // 最大预处理时间倍数（相对于普通请求的超时时间）
+    /**
+     * 最大预处理时间倍数（相对于普通请求的超时时间）
+     */
     int preprocTimeoutTimes;
-    // 编码格式
+    /**
+     * 编码格式
+     */
     Charset charset;
-    // 默认的请求体类型
+    /**
+     * 默认的请求体类型
+     */
     String bodyType;
 
     public Httpv() {
