@@ -31,6 +31,7 @@ import io.minio.Result;
 import io.minio.errors.*;
 import io.minio.messages.Item;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -39,7 +40,6 @@ import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
-import org.apache.http.entity.ContentType;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.*;
@@ -209,7 +209,7 @@ public class MinioOssProvider extends AbstractProvider {
     public Message upload(String bucket, String fileName, InputStream content) {
         try {
             this.client.putObject(bucket, fileName, content, content.available(),
-                    ContentType.APPLICATION_OCTET_STREAM.getMimeType());
+                    MediaType.APPLICATION_OCTET_STREAM);
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())

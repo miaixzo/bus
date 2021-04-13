@@ -100,7 +100,7 @@ public abstract class AbstractProvider implements Provider {
             isSupported = StringKit.isNotEmpty(context.getAgentId());
         }
         if (isSupported && Registry.CODING == complex) {
-            isSupported = StringKit.isNotEmpty(context.getCodingGroupName());
+            isSupported = StringKit.isNotEmpty(context.getPrefix());
         }
         if (isSupported && Registry.XMLY == complex) {
             isSupported = StringKit.isNotEmpty(context.getDeviceId()) && null != context.getClientOsType();

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -109,10 +109,10 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
             // 获取目标文件(如果输出目标是输出流，则该文件是临时文件).
             final File targetFile = target.getFile();
             try {
-                MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MimeType.MULTIPART_FORM_DATA_TYPE);
+                MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE);
                 if (null != targetFile) {
                     // MediaType.valueOf() 里面是上传的文件类型。
-                    RequestBody body = RequestBody.create(MimeType.valueOf("image/*"), sourceFile);
+                    RequestBody body = RequestBody.create(MediaType.valueOf("image/*"), sourceFile);
                     // 参数分别为， 请求key ，文件名称 ， RequestBody
                     requestBody.addFormDataPart("data", targetFile.getName(), body);
                 }

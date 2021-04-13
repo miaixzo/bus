@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -37,6 +38,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.ByteOrder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -973,6 +975,16 @@ public class Convert {
     }
 
     /**
+     * 转换为Byte数组
+     *
+     * @param value 被转换的值
+     * @return Byte数组
+     */
+    public static byte[] toPrimitiveByteArray(Object value) {
+        return convert(byte[].class, value);
+    }
+
+    /**
      * int转byte
      *
      * @param intValue int值
@@ -1000,7 +1012,7 @@ public class Convert {
      * @return short值
      */
     public static short bytesToShort(byte[] bytes) {
-        return (short) (bytes[1] & 0xff | (bytes[0] & 0xff) << 8);
+        return ByteKit.getShort(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
     /**
@@ -1010,10 +1022,7 @@ public class Convert {
      * @return byte数组
      */
     public static byte[] shortToBytes(short shortValue) {
-        byte[] b = new byte[2];
-        b[1] = (byte) (shortValue & 0xff);
-        b[0] = (byte) ((shortValue >> 8) & 0xff);
-        return b;
+        return ByteKit.getBytes(shortValue, ByteOrder.LITTLE_ENDIAN);
     }
 
     /**
@@ -1023,40 +1032,7 @@ public class Convert {
      * @return int值
      */
     public static int bytesToInt(byte[] bytes) {
-        return bytes[3] & 0xFF |
-                (bytes[2] & 0xFF) << 8 |
-                (bytes[1] & 0xFF) << 16 |
-                (bytes[0] & 0xFF) << 24;
-    }
-
-    /**
-     * int转byte数组
-     *
-     * @param intValue int值
-     * @return byte数组
-     */
-    public static byte[] intToBytes(int intValue) {
-        return new byte[]{
-                (byte) ((intValue >> 24) & 0xFF),
-                (byte) ((intValue >> 16) & 0xFF),
-                (byte) ((intValue >> 8) & 0xFF),
-                (byte) (intValue & 0xFF)
-        };
-    }
-
-    /**
-     * long转byte数组
-     *
-     * @param longValue long值
-     * @return byte数组
-     */
-    public static byte[] longToBytes(long longValue) {
-        final byte[] result = new byte[8];
-        for (int i = 7; i >= 0; i--) {
-            result[i] = (byte) (longValue & 0xFF);
-            longValue >>= 8;
-        }
-        return result;
+        return ByteKit.getInt(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
     /**
@@ -1066,22 +1042,27 @@ public class Convert {
      * @return long值
      */
     public static long bytesToLong(byte[] bytes) {
-        long values = 0;
-        for (int i = 0; i < 8; i++) {
-            values <<= 8;
-            values |= (bytes[i] & 0xff);
-        }
-        return values;
+        return ByteKit.getLong(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
     /**
-     * 转换为Byte数组
+     * int转byte数组
      *
-     * @param value 被转换的值
-     * @return Byte数组
+     * @param intValue int值
+     * @return byte数组
      */
-    public static byte[] toPrimitiveByteArray(Object value) {
-        return convert(byte[].class, value);
+    public static byte[] intToBytes(int intValue) {
+        return ByteKit.getBytes(intValue, ByteOrder.LITTLE_ENDIAN);
+    }
+
+    /**
+     * long转byte数组
+     *
+     * @param longValue long值
+     * @return byte数组
+     */
+    public static byte[] longToBytes(long longValue) {
+        return ByteKit.getBytes(longValue, ByteOrder.LITTLE_ENDIAN);
     }
 
 }

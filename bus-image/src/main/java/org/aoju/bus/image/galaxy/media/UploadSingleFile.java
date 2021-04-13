@@ -43,7 +43,7 @@ public interface UploadSingleFile extends AutoCloseable {
 
     void uploadDicom(Attributes metadata, String tsuid) throws IOException;
 
-    void uploadEncapsulatedDocument(Attributes metadata, File bulkDataFile, String mimeType, String sopClassUID)
+    void uploadEncapsulatedDocument(Attributes metadata, File bulkDataFile, String mdiaType, String sopClassUID)
             throws Exception;
 
     String getRequestURL();

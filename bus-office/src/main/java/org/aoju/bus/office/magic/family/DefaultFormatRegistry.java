@@ -439,11 +439,11 @@ public final class DefaultFormatRegistry {
     /**
      * 获取指定媒体类型的文档格式.
      *
-     * @param mediaType 将返回其文档格式的媒体类型.
+     * @param mimeType 将返回其文档格式的媒体类型.
      * @return 如果指定的媒体类型不存在文档格式，则使用找到的文档格式，或者使用{@code null}.
      */
-    public static DocumentFormat getFormatByMediaType(final String mediaType) {
-        return getInstance().getFormatByMediaType(mediaType);
+    public static DocumentFormat getFormatByMimeType(final String mimeType) {
+        return getInstance().getFormatByMimeType(mimeType);
     }
 
     /**

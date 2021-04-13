@@ -79,38 +79,17 @@ public class CopyOptions implements Serializable {
      */
     protected Map<String, String> fieldMapping;
     /**
-     * 反向映射表，自动生成用于反向查找
-     */
-    private Map<String, String> reversedFieldMapping;
-    /**
      * 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
      */
     protected Editor<String> fieldNameEditor;
     /**
+     * 反向映射表，自动生成用于反向查找
+     */
+    private Map<String, String> reversedFieldMapping;
+    /**
      * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
      */
     private boolean transientSupport = true;
-
-    /**
-     * 创建拷贝选项
-     *
-     * @return 拷贝选项
-     */
-    public static CopyOptions create() {
-        return new CopyOptions();
-    }
-
-    /**
-     * 创建拷贝选项
-     *
-     * @param editable         限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
-     * @param ignoreNullValue  是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
-     * @param ignoreProperties 忽略的属性列表，设置一个属性列表，不拷贝这些属性值
-     * @return 拷贝选项
-     */
-    public static CopyOptions create(Class<?> editable, boolean ignoreNullValue, String... ignoreProperties) {
-        return new CopyOptions(editable, ignoreNullValue, ignoreProperties);
-    }
 
     /**
      * 构造拷贝选项
@@ -131,6 +110,27 @@ public class CopyOptions implements Serializable {
         this.editable = editable;
         this.ignoreNullValue = ignoreNullValue;
         this.ignoreProperties = ignoreProperties;
+    }
+
+    /**
+     * 创建拷贝选项
+     *
+     * @return 拷贝选项
+     */
+    public static CopyOptions create() {
+        return new CopyOptions();
+    }
+
+    /**
+     * 创建拷贝选项
+     *
+     * @param editable         限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
+     * @param ignoreNullValue  是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
+     * @param ignoreProperties 忽略的属性列表，设置一个属性列表，不拷贝这些属性值
+     * @return 拷贝选项
+     */
+    public static CopyOptions create(Class<?> editable, boolean ignoreNullValue, String... ignoreProperties) {
+        return new CopyOptions(editable, ignoreNullValue, ignoreProperties);
     }
 
     /**

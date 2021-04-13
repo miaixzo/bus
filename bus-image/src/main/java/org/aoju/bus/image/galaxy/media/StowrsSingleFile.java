@@ -87,11 +87,11 @@ public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile
     }
 
     @Override
-    public void uploadEncapsulatedDocument(Attributes metadata, File bulkDataFile, String mimeType, String sopClassUID)
+    public void uploadEncapsulatedDocument(Attributes metadata, File bulkDataFile, String mdiaType, String sopClassUID)
             throws Exception {
         HttpURLConnection httpPost = buildConnection();
 
-        setEncapsulatedDocumentAttributes(bulkDataFile.toPath(), metadata, mimeType);
+        setEncapsulatedDocumentAttributes(bulkDataFile.toPath(), metadata, mdiaType);
         if (null == metadata.getValue(Tag.EncapsulatedDocument)) {
             metadata.setValue(Tag.EncapsulatedDocument, VR.OB, new BulkData(null, "bulk", false));
         }
@@ -114,7 +114,7 @@ public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile
             byte[] fsep = MultipartParser.Separator.FIELD.getType();
             out.write(fsep);
             out.writeBytes("Content-Type: ");
-            out.writeBytes(mimeType);
+            out.writeBytes(mdiaType);
             out.write(fsep);
             out.writeBytes("Content-Location: ");
             out.writeBytes(getContentLocation(metadata));

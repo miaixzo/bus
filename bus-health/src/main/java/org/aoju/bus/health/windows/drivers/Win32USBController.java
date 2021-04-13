@@ -42,18 +42,20 @@ public final class Win32USBController {
 
     private static final String WIN32_USB_CONTROLLER = "Win32_USBController";
 
-    private Win32USBController() {
-    }
-
     /**
      * Queries the USB Controller device IDs
      *
+     * @param h An instantiated {@link WmiQueryHandler}. User should have already
+     *          initialized COM.
      * @return Information regarding each disk drive.
      */
-    public static WmiResult<USBControllerProperty> queryUSBControllers() {
+    public static WmiResult<USBControllerProperty> queryUSBControllers(WmiQueryHandler h) {
         WmiQuery<USBControllerProperty> usbControllerQuery = new WmiQuery<>(WIN32_USB_CONTROLLER,
                 USBControllerProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(usbControllerQuery);
+        return h.queryWMI(usbControllerQuery, false);
+    }
+
+    private Win32USBController() {
     }
 
     /**

@@ -745,7 +745,7 @@ public final class Builder {
      * @return A {@link java.util.Properties} object containing the properties.
      */
     public static java.util.Properties readProperties(String fileName) {
-        return org.aoju.bus.setting.magic.Properties.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName, Builder.class);
+        return org.aoju.bus.setting.magic.Properties.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/health/" + fileName, Builder.class);
     }
 
     /**

@@ -43,7 +43,7 @@ public class DocumentFormat {
 
     public String name;
     public List<String> extensions;
-    public String mediaType;
+    public String mimeType;
     public FamilyType inputFamily;
     public Map<String, Object> loadProperties;
     public Map<FamilyType, Map<String, Object>> storeProperties;
@@ -57,7 +57,7 @@ public class DocumentFormat {
      *
      * @param name            格式的名称.
      * @param extensions      格式的文件名扩展名.
-     * @param mediaType       格式的媒体类型(mime类型).
+     * @param mimeType        格式的媒体类型(mime类型).
      * @param inputFamily     文档的DocumentFamily.
      * @param loadProperties  加载(打开)这种格式的文档所需的属性.
      * @param storeProperties 将这种格式的文档存储(保存)到另一个集合文档所需的属性.
@@ -66,7 +66,7 @@ public class DocumentFormat {
     private DocumentFormat(
             final String name,
             final Collection<String> extensions,
-            final String mediaType,
+            final String mimeType,
             final FamilyType inputFamily,
             final Map<String, Object> loadProperties,
             final Map<FamilyType, Map<String, Object>> storeProperties,
@@ -74,7 +74,7 @@ public class DocumentFormat {
 
         this.name = name;
         this.extensions = new ArrayList<>(extensions);
-        this.mediaType = mediaType;
+        this.mimeType = mimeType;
         this.inputFamily = inputFamily;
         this.loadProperties = Optional.ofNullable(loadProperties)
                 .map(HashMap<String, Object>::new)
@@ -165,8 +165,8 @@ public class DocumentFormat {
      *
      * @return 表示媒体类型的字符串.
      */
-    public String getMediaType() {
-        return mediaType;
+    public String getMimeType() {
+        return mimeType;
     }
 
     /**
@@ -207,7 +207,7 @@ public class DocumentFormat {
 
         private String name;
         private Set<String> extensions;
-        private String mediaType;
+        private String mimeType;
         private FamilyType inputFamily;
         private Map<String, Object> loadProperties;
         private Map<FamilyType, Map<String, Object>> storeProperties;
@@ -219,7 +219,7 @@ public class DocumentFormat {
 
         public DocumentFormat build() {
             return new DocumentFormat(
-                    name, extensions, mediaType, inputFamily, loadProperties, storeProperties, unmodifiable);
+                    name, extensions, mimeType, inputFamily, loadProperties, storeProperties, unmodifiable);
         }
 
         /**
@@ -231,7 +231,7 @@ public class DocumentFormat {
         public Builder from(final DocumentFormat sourceFormat) {
             this.name = sourceFormat.getName();
             this.extensions = new LinkedHashSet<>(sourceFormat.getExtensions());
-            this.mediaType = sourceFormat.getMediaType();
+            this.mimeType = sourceFormat.getMimeType();
             this.inputFamily = sourceFormat.getInputFamily();
             this.loadProperties = Optional.ofNullable(sourceFormat.getLoadProperties())
                     .map(map -> map.entrySet()
@@ -298,11 +298,11 @@ public class DocumentFormat {
         /**
          * 指定文档格式的媒体(mime)类型
          *
-         * @param mediaType 表示媒体类型的字符串不能为空.
+         * @param mimeType 表示媒体类型的字符串不能为空.
          * @return 当前构造器实例.
          */
-        public Builder mediaType(final String mediaType) {
-            this.mediaType = mediaType;
+        public Builder mimeType(final String mimeType) {
+            this.mimeType = mimeType;
             return this;
         }
 

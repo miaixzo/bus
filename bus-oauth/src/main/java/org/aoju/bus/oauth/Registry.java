@@ -80,6 +80,30 @@ public enum Registry implements Complex {
         }
     },
     /**
+     * Amazon
+     */
+    AMAZON {
+        @Override
+        public String authorize() {
+            return "https://www.amazon.com/ap/oa";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://api.amazon.com/auth/o2/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://api.amazon.com/user/profile";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://api.amazon.com/auth/o2/token";
+        }
+    },
+    /**
      * 百度
      */
     BAIDU {
@@ -200,17 +224,17 @@ public enum Registry implements Complex {
     FACEBOOK {
         @Override
         public String authorize() {
-            return "https://www.facebook.com/v9.0/dialog/oauth";
+            return "https://www.facebook.com/v10.0/dialog/oauth";
         }
 
         @Override
         public String accessToken() {
-            return "https://graph.facebook.com/v9.0/oauth/access_token";
+            return "https://graph.facebook.com/v10.0/oauth/access_token";
         }
 
         @Override
         public String userInfo() {
-            return "https://graph.facebook.com/v9.0/me";
+            return "https://graph.facebook.com/v10.0/me";
         }
     },
     /**
@@ -383,6 +407,35 @@ public enum Registry implements Complex {
         @Override
         public String refresh() {
             return "https://oauth.kujiale.com/oauth2/auth/token/refresh";
+        }
+    },
+    /**
+     * Line
+     */
+    LINE {
+        @Override
+        public String authorize() {
+            return "https://access.line.me/oauth2/v2.1/authorize";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://api.line.me/oauth2/v2.1/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://api.line.me/v2/profile";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://api.line.me/oauth2/v2.1/token";
+        }
+
+        @Override
+        public String revoke() {
+            return "https://api.line.me/oauth2/v2.1/revoke";
         }
     },
     /**
@@ -584,6 +637,34 @@ public enum Registry implements Complex {
         @Override
         public String userInfo() {
             return "https://api.stackexchange.com/2.2/me";
+        }
+    },
+    /**
+     * Slack
+     */
+    SLACK {
+        @Override
+        public String authorize() {
+            return "https://slack.com/oauth/v2/authorize";
+        }
+
+        /**
+         * 该 API 获取到的是 access token
+         * https://slack.com/api/oauth.token 获取到的是 workspace token
+         */
+        @Override
+        public String accessToken() {
+            return "https://slack.com/api/oauth.v2.access";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://slack.com/api/users.info";
+        }
+
+        @Override
+        public String revoke() {
+            return "https://slack.com/api/auth.revoke";
         }
     },
     /**

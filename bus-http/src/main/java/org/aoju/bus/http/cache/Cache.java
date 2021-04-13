@@ -28,7 +28,7 @@ package org.aoju.bus.http.cache;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
@@ -641,8 +641,8 @@ public final class Cache implements Closeable, Flushable {
         }
 
         @Override
-        public MimeType contentType() {
-            return null != contentType ? MimeType.valueOf(contentType) : null;
+        public MediaType contentType() {
+            return null != contentType ? MediaType.valueOf(contentType) : null;
         }
 
         @Override

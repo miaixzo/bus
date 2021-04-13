@@ -97,7 +97,7 @@ public class CodingProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(source.authorize())
+        return Builder.fromUrl(String.format(source.authorize(), context.getPrefix()))
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
@@ -106,6 +106,35 @@ public class CodingProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * 返回获取accessToken的url
+     *
+     * @param code 授权码
+     * @return 返回获取accessToken的url
+     */
+    @Override
+    public String accessTokenUrl(String code) {
+        return Builder.fromUrl(String.format(source.accessToken(), context.getPrefix()))
+                .queryParam("code", code)
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret())
+                .queryParam("grant_type", "authorization_code")
+                .queryParam("redirect_uri", context.getRedirectUri())
+                .build();
+    }
+
+    /**
+     * 返回获取userInfo的url
+     *
+     * @param accToken token
+     * @return 返回获取userInfo的url
+     */
+    @Override
+    public String userInfoUrl(AccToken accToken) {
+        return Builder.fromUrl(String.format(source.userInfo(), context.getPrefix()))
+                .queryParam("access_token", accToken.getAccessToken())
+                .build();
+    }
 
     /**
      * 检查响应内容是否正确

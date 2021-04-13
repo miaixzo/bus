@@ -38,7 +38,7 @@ import java.util.Map;
  * @version 6.2.2
  * @since JDK 1.8+
  */
-public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {
+public class CaseInsensitiveLinkedMap<K, V> extends CustomKeyMap<K, V> {
 
     /**
      * 构造
@@ -84,6 +84,20 @@ public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {
      */
     public CaseInsensitiveLinkedMap(int initialCapacity, float loadFactor) {
         super(new LinkedHashMap<>(initialCapacity, loadFactor));
+    }
+
+    /**
+     * 将Key转为小写
+     *
+     * @param key KEY
+     * @return 小写KEY
+     */
+    @Override
+    protected Object customKey(Object key) {
+        if (key instanceof CharSequence) {
+            key = key.toString().toLowerCase();
+        }
+        return key;
     }
 
 }

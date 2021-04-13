@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Imgcodecs {
 
-    // C++: enum DicomCompression
+    // C++: enum DicomCompression (cv.DicomCompression)
     public static final int
             DICOM_CP_UNKNOWN = 0,
             DICOM_CP_JPG = 1,
@@ -23,7 +23,7 @@ public class Imgcodecs {
             DICOM_CP_J2K = 3;
 
 
-    // C++: enum DicomFlags
+    // C++: enum DicomFlags (cv.DicomFlags)
     public static final int
             DICOM_FLAG_DEFAULT = -1,
             DICOM_FLAG_UNSIGNED = 0,
@@ -34,32 +34,59 @@ public class Imgcodecs {
             DICOM_FLAG_RLE = 32;
 
 
-    // C++: enum ImwriteEXRTypeFlags
+    // C++: enum DicomParams (cv.DicomParams)
+    public static final int
+            DICOM_PARAM_IMREAD = 0,
+            DICOM_PARAM_DCM_IMREAD = 1,
+            DICOM_PARAM_WIDTH = 2,
+            DICOM_PARAM_HEIGHT = 3,
+            DICOM_PARAM_COMPRESSION = 4,
+            DICOM_PARAM_COMPONENTS = 5,
+            DICOM_PARAM_BITS_PER_SAMPLE = 6,
+            DICOM_PARAM_INTERLEAVE_MODE = 7,
+            DICOM_PARAM_STREAM_VR = 8,
+            DICOM_PARAM_COLOR_MODEL = 9,
+            DICOM_PARAM_JPEG_MODE = 10,
+            DICOM_PARAM_JPEGLS_LOSSY_ERROR = 11,
+            DICOM_PARAM_J2K_COMPRESSION_FACTOR = 12,
+            DICOM_PARAM_JPEG_QUALITY = 13,
+            DICOM_PARAM_JPEG_PREDICTION = 14,
+            DICOM_PARAM_JPEG_PT_TRANSFORM = 15;
+
+
+    // C++: enum EJM_Mode (cv.EJM_Mode)
+    public static final int
+            JPEG_baseline = 0,
+            JPEG_sequential = 1,
+            JPEG_spectralSelection = 2,
+            JPEG_progressive = 3,
+            JPEG_lossless = 4;
+
+
+    // C++: enum ImreadModes (cv.ImreadModes)
+    public static final int
+            IMREAD_UNCHANGED = -1,
+            IMREAD_GRAYSCALE = 0,
+            IMREAD_COLOR = 1,
+            IMREAD_ANYDEPTH = 2,
+            IMREAD_ANYCOLOR = 4,
+            IMREAD_LOAD_GDAL = 8,
+            IMREAD_REDUCED_GRAYSCALE_2 = 16,
+            IMREAD_REDUCED_COLOR_2 = 17,
+            IMREAD_REDUCED_GRAYSCALE_4 = 32,
+            IMREAD_REDUCED_COLOR_4 = 33,
+            IMREAD_REDUCED_GRAYSCALE_8 = 64,
+            IMREAD_REDUCED_COLOR_8 = 65,
+            IMREAD_IGNORE_ORIENTATION = 128;
+
+
+    // C++: enum ImwriteEXRTypeFlags (cv.ImwriteEXRTypeFlags)
     public static final int
             IMWRITE_EXR_TYPE_HALF = 1,
             IMWRITE_EXR_TYPE_FLOAT = 2;
 
 
-    // C++: enum ImwritePNGFlags
-    public static final int
-            IMWRITE_PNG_STRATEGY_DEFAULT = 0,
-            IMWRITE_PNG_STRATEGY_FILTERED = 1,
-            IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY = 2,
-            IMWRITE_PNG_STRATEGY_RLE = 3,
-            IMWRITE_PNG_STRATEGY_FIXED = 4;
-
-
-    // C++: enum ImwritePAMFlags
-    public static final int
-            IMWRITE_PAM_FORMAT_NULL = 0,
-            IMWRITE_PAM_FORMAT_BLACKANDWHITE = 1,
-            IMWRITE_PAM_FORMAT_GRAYSCALE = 2,
-            IMWRITE_PAM_FORMAT_GRAYSCALE_ALPHA = 3,
-            IMWRITE_PAM_FORMAT_RGB = 4,
-            IMWRITE_PAM_FORMAT_RGB_ALPHA = 5;
-
-
-    // C++: enum ImwriteFlags
+    // C++: enum ImwriteFlags (cv.ImwriteFlags)
     public static final int
             IMWRITE_JPEG_QUALITY = 1,
             IMWRITE_JPEG_PROGRESSIVE = 2,
@@ -81,33 +108,26 @@ public class Imgcodecs {
             IMWRITE_JPEG2000_COMPRESSION_X1000 = 272;
 
 
-    // C++: enum ImreadModes
+    // C++: enum ImwritePAMFlags (cv.ImwritePAMFlags)
     public static final int
-            IMREAD_UNCHANGED = -1,
-            IMREAD_GRAYSCALE = 0,
-            IMREAD_COLOR = 1,
-            IMREAD_ANYDEPTH = 2,
-            IMREAD_ANYCOLOR = 4,
-            IMREAD_LOAD_GDAL = 8,
-            IMREAD_REDUCED_GRAYSCALE_2 = 16,
-            IMREAD_REDUCED_COLOR_2 = 17,
-            IMREAD_REDUCED_GRAYSCALE_4 = 32,
-            IMREAD_REDUCED_COLOR_4 = 33,
-            IMREAD_REDUCED_GRAYSCALE_8 = 64,
-            IMREAD_REDUCED_COLOR_8 = 65,
-            IMREAD_IGNORE_ORIENTATION = 128;
+            IMWRITE_PAM_FORMAT_NULL = 0,
+            IMWRITE_PAM_FORMAT_BLACKANDWHITE = 1,
+            IMWRITE_PAM_FORMAT_GRAYSCALE = 2,
+            IMWRITE_PAM_FORMAT_GRAYSCALE_ALPHA = 3,
+            IMWRITE_PAM_FORMAT_RGB = 4,
+            IMWRITE_PAM_FORMAT_RGB_ALPHA = 5;
 
 
-    // C++: enum EJM_Mode
+    // C++: enum ImwritePNGFlags (cv.ImwritePNGFlags)
     public static final int
-            JPEG_baseline = 0,
-            JPEG_sequential = 1,
-            JPEG_spectralSelection = 2,
-            JPEG_progressive = 3,
-            JPEG_lossless = 4;
+            IMWRITE_PNG_STRATEGY_DEFAULT = 0,
+            IMWRITE_PNG_STRATEGY_FILTERED = 1,
+            IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY = 2,
+            IMWRITE_PNG_STRATEGY_RLE = 3,
+            IMWRITE_PNG_STRATEGY_FIXED = 4;
 
 
-    // C++: enum Photometric_Interpretation
+    // C++: enum Photometric_Interpretation (cv.Photometric_Interpretation)
     public static final int
             EPI_Unknown = 0,
             EPI_Missing = 1,
@@ -123,216 +143,11 @@ public class Imgcodecs {
             EPI_YBR_Partial_422 = 11;
 
 
-    // C++: enum interleavemode
+    // C++: enum interleavemode (cv.interleavemode)
     public static final int
             ILV_NONE = 0,
             ILV_LINE = 1,
             ILV_SAMPLE = 2;
-
-
-    // C++: enum DicomParams
-    public static final int
-            DICOM_PARAM_IMREAD = 0,
-            DICOM_PARAM_DCM_IMREAD = 1,
-            DICOM_PARAM_WIDTH = 2,
-            DICOM_PARAM_HEIGHT = 3,
-            DICOM_PARAM_COMPRESSION = 4,
-            DICOM_PARAM_COMPONENTS = 5,
-            DICOM_PARAM_BITS_PER_SAMPLE = 6,
-            DICOM_PARAM_INTERLEAVE_MODE = 7,
-            DICOM_PARAM_STREAM_VR = 8,
-            DICOM_PARAM_COLOR_MODEL = 9,
-            DICOM_PARAM_JPEG_MODE = 10,
-            DICOM_PARAM_JPEGLS_LOSSY_ERROR = 11,
-            DICOM_PARAM_J2K_COMPRESSION_FACTOR = 12,
-            DICOM_PARAM_JPEG_QUALITY = 13,
-            DICOM_PARAM_JPEG_PREDICTION = 14,
-            DICOM_PARAM_JPEG_PT_TRANSFORM = 15;
-
-
-    //
-    // C++:  Mat cv::dicomJpgFileRead(String filename, vector_double segposition, vector_double seglength, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
-    //
-
-    /**
-     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     * <p>
-     * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     *
-     * @param filename    Name of file to be loaded.
-     * @param segposition A vector of double holding the position of each fragment to read.
-     * @param seglength   A vector of double holding the length of each fragment to read.
-     * @param dicomflags  specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
-     * @param flags       Flag that can take values of cv::ImreadModes.
-     * @return automatically generated
-     */
-    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, int dicomflags, int flags) {
-        Mat segposition_mat = segposition;
-        Mat seglength_mat = seglength;
-        return new Mat(dicomJpgFileRead_0(filename, segposition_mat.nativeObj, seglength_mat.nativeObj, dicomflags, flags));
-    }
-
-    /**
-     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     * <p>
-     * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     *
-     * @param filename    Name of file to be loaded.
-     * @param segposition A vector of double holding the position of each fragment to read.
-     * @param seglength   A vector of double holding the length of each fragment to read.
-     * @param dicomflags  specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
-     * @return automatically generated
-     */
-    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, int dicomflags) {
-        Mat segposition_mat = segposition;
-        Mat seglength_mat = seglength;
-        return new Mat(dicomJpgFileRead_1(filename, segposition_mat.nativeObj, seglength_mat.nativeObj, dicomflags));
-    }
-
-    /**
-     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
-     * <p>
-     * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
-     *
-     * @param filename    Name of file to be loaded.
-     * @param segposition A vector of double holding the position of each fragment to read.
-     * @param seglength   A vector of double holding the length of each fragment to read.
-     * @return automatically generated
-     */
-    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength) {
-        Mat segposition_mat = segposition;
-        Mat seglength_mat = seglength;
-        return new Mat(dicomJpgFileRead_2(filename, segposition_mat.nativeObj, seglength_mat.nativeObj));
-    }
-
-
-    //
-    // C++:  Mat cv::dicomJpgMatRead(Mat buf, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
-    //
-
-    /**
-     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     * <p>
-     * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     *
-     * @param buf        the raw byte data of jpg image (1 raw, x column).
-     * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
-     * @param flags      Flag that can take values of cv::ImreadModes.
-     * @return automatically generated
-     */
-    public static Mat dicomJpgMatRead(Mat buf, int dicomflags, int flags) {
-        return new Mat(dicomJpgMatRead_0(buf.nativeObj, dicomflags, flags));
-    }
-
-    /**
-     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     * <p>
-     * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     *
-     * @param buf        the raw byte data of jpg image (1 raw, x column).
-     * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
-     * @return automatically generated
-     */
-    public static Mat dicomJpgMatRead(Mat buf, int dicomflags) {
-        return new Mat(dicomJpgMatRead_1(buf.nativeObj, dicomflags));
-    }
-
-    /**
-     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
-     * <p>
-     * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
-     *
-     * @param buf the raw byte data of jpg image (1 raw, x column).
-     * @return automatically generated
-     */
-    public static Mat dicomJpgMatRead(Mat buf) {
-        return new Mat(dicomJpgMatRead_2(buf.nativeObj));
-    }
-
-
-    //
-    // C++:  Mat cv::dicomJpgWrite(Mat image, vector_int dicomParams, String colormodel)
-    //
-
-    /**
-     * Encodes an DICOM image into a memory buffer.
-     *
-     * @param colormodel  The image color model.
-     * @param image       automatically generated
-     * @param dicomParams automatically generated
-     * @return automatically generated
-     */
-    public static Mat dicomJpgWrite(Mat image, MatOfInt dicomParams, String colormodel) {
-        Mat dicomParams_mat = dicomParams;
-        return new Mat(dicomJpgWrite_0(image.nativeObj, dicomParams_mat.nativeObj, colormodel));
-    }
-
-
-    //
-    // C++:  Mat cv::dicomRawFileRead(String filename, vector_double segposition, vector_double seglength, vector_int dicomparams, String colormodel)
-    //
-
-    /**
-     * Loads a raw image (include RLE compressed image) from file segments.
-     * <p>
-     * The function dicomRawRead loads a DICOM image from the specified file into Mat.
-     *
-     * @param filename    Name of file to be loaded.
-     * @param segposition The position of the image to read.
-     * @param seglength   The length image to read.
-     * @param colormodel  The image color model.
-     * @param dicomparams automatically generated
-     * @return automatically generated
-     */
-    public static Mat dicomRawFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, MatOfInt dicomparams, String colormodel) {
-        Mat segposition_mat = segposition;
-        Mat seglength_mat = seglength;
-        Mat dicomparams_mat = dicomparams;
-        return new Mat(dicomRawFileRead_0(filename, segposition_mat.nativeObj, seglength_mat.nativeObj, dicomparams_mat.nativeObj, colormodel));
-    }
-
-
-    //
-    // C++:  Mat cv::dicomRawMatRead(Mat buf, vector_int dicomParams, String colormodel)
-    //
-
-    /**
-     * Loads a raw image (include RLE compressed image) from Mat.
-     * <p>
-     * The function dicomRawRead loads a DICOM image from a specified byte array into Mat.
-     *
-     * @param buf         the raw byte data of jpg image (1 raw, x column).
-     * @param dicomParams A vector of int containing the specific DICOM parameters. See DICOM_PARAM in grfmt_dcm_dicom.hpp.
-     * @param colormodel  The image color model.
-     * @return automatically generated
-     */
-    public static Mat dicomRawMatRead(Mat buf, MatOfInt dicomParams, String colormodel) {
-        Mat dicomParams_mat = dicomParams;
-        return new Mat(dicomRawMatRead_0(buf.nativeObj, dicomParams_mat.nativeObj, colormodel));
-    }
-
-
-    //
-    // C++:  Mat cv::imdecode(Mat buf, int flags)
-    //
-
-    /**
-     * Reads an image from a buffer in memory.
-     * <p>
-     * The function imdecode reads an image from the specified buffer in the memory. If the buffer is too short or
-     * contains invalid data, the function returns an empty matrix ( Mat::data==NULL ).
-     * <p>
-     * See cv::imread for the list of supported formats and flags description.
-     *
-     * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
-     *
-     * @param buf   Input array or vector of bytes.
-     * @param flags The same flags as in cv::imread, see cv::ImreadModes.
-     * @return automatically generated
-     */
-    public static Mat imdecode(Mat buf, int flags) {
-        return new Mat(imdecode_0(buf.nativeObj, flags));
-    }
 
 
     //
@@ -546,71 +361,164 @@ public class Imgcodecs {
 
 
     //
-    // C++:  bool cv::haveImageReader(String filename)
+    // C++:  Mat cv::dicomJpgFileRead(String filename, vector_double segposition, vector_double seglength, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
     //
 
     /**
-     * Returns true if the specified image can be decoded by OpenCV
-     *
-     * @param filename File name of the image
-     * @return automatically generated
-     */
-    public static boolean haveImageReader(String filename) {
-        return haveImageReader_0(filename);
-    }
-
-
-    //
-    // C++:  bool cv::haveImageWriter(String filename)
-    //
-
-    /**
-     * Returns true if an image with the specified filename can be encoded by OpenCV
-     *
-     * @param filename File name of the image
-     * @return automatically generated
-     */
-    public static boolean haveImageWriter(String filename) {
-        return haveImageWriter_0(filename);
-    }
-
-
-    //
-    // C++:  bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
-    //
-
-    /**
-     * Encodes an image into a memory buffer.
+     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
      * <p>
-     * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the
-     * result. See cv::imwrite for the list of supported formats and flags description.
+     * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
      *
-     * @param ext    File extension that defines the output format.
-     * @param img    Image to be written.
-     * @param buf    Output buffer resized to fit the compressed image.
-     * @param params Format-specific parameters. See cv::imwrite and cv::ImwriteFlags.
+     * @param filename    Name of file to be loaded.
+     * @param segposition A vector of double holding the position of each fragment to read.
+     * @param seglength   A vector of double holding the length of each fragment to read.
+     * @param dicomflags  specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
+     * @param flags       Flag that can take values of cv::ImreadModes.
      * @return automatically generated
      */
-    public static boolean imencode(String ext, Mat img, MatOfByte buf, MatOfInt params) {
-        Mat buf_mat = buf;
-        Mat params_mat = params;
-        return imencode_0(ext, img.nativeObj, buf_mat.nativeObj, params_mat.nativeObj);
+    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, int dicomflags, int flags) {
+        Mat segposition_mat = segposition;
+        Mat seglength_mat = seglength;
+        return new Mat(dicomJpgFileRead_0(filename, segposition_mat.nativeObj, seglength_mat.nativeObj, dicomflags, flags));
     }
 
     /**
-     * Encodes an image into a memory buffer.
+     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
      * <p>
-     * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the
-     * result. See cv::imwrite for the list of supported formats and flags description.
+     * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
      *
-     * @param ext File extension that defines the output format.
-     * @param img Image to be written.
-     * @param buf Output buffer resized to fit the compressed image.
+     * @param filename    Name of file to be loaded.
+     * @param segposition A vector of double holding the position of each fragment to read.
+     * @param seglength   A vector of double holding the length of each fragment to read.
+     * @param dicomflags  specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
      * @return automatically generated
      */
-    public static boolean imencode(String ext, Mat img, MatOfByte buf) {
-        Mat buf_mat = buf;
-        return imencode_1(ext, img.nativeObj, buf_mat.nativeObj);
+    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, int dicomflags) {
+        Mat segposition_mat = segposition;
+        Mat seglength_mat = seglength;
+        return new Mat(dicomJpgFileRead_1(filename, segposition_mat.nativeObj, seglength_mat.nativeObj, dicomflags));
+    }
+
+    /**
+     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from file segments.
+     * <p>
+     * The function dicomJpgRead loads a DICOM image from the specified file into Mat.
+     *
+     * @param filename    Name of file to be loaded.
+     * @param segposition A vector of double holding the position of each fragment to read.
+     * @param seglength   A vector of double holding the length of each fragment to read.
+     * @return automatically generated
+     */
+    public static Mat dicomJpgFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength) {
+        Mat segposition_mat = segposition;
+        Mat seglength_mat = seglength;
+        return new Mat(dicomJpgFileRead_2(filename, segposition_mat.nativeObj, seglength_mat.nativeObj));
+    }
+
+
+    //
+    // C++:  Mat cv::dicomJpgMatRead(Mat buf, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
+    //
+
+    /**
+     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
+     * <p>
+     * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
+     *
+     * @param buf        the raw byte data of jpg image (1 raw, x column).
+     * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
+     * @param flags      Flag that can take values of cv::ImreadModes.
+     * @return automatically generated
+     */
+    public static Mat dicomJpgMatRead(Mat buf, int dicomflags, int flags) {
+        return new Mat(dicomJpgMatRead_0(buf.nativeObj, dicomflags, flags));
+    }
+
+    /**
+     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
+     * <p>
+     * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
+     *
+     * @param buf        the raw byte data of jpg image (1 raw, x column).
+     * @param dicomflags specific DICOM Flags (signed, ybr). Default is unsigned data. See DICOM_IMREAD in grfmt_dcm_dicom.hpp.
+     * @return automatically generated
+     */
+    public static Mat dicomJpgMatRead(Mat buf, int dicomflags) {
+        return new Mat(dicomJpgMatRead_1(buf.nativeObj, dicomflags));
+    }
+
+    /**
+     * Loads a jpeg image (jpeg, jpeg-losseless, jpeg-ls and jpeg-2000) from Mat.
+     * <p>
+     * The function dicomJpgRead loads a DICOM image from a specified byte array into Mat.
+     *
+     * @param buf the raw byte data of jpg image (1 raw, x column).
+     * @return automatically generated
+     */
+    public static Mat dicomJpgMatRead(Mat buf) {
+        return new Mat(dicomJpgMatRead_2(buf.nativeObj));
+    }
+
+
+    //
+    // C++:  Mat cv::dicomRawFileRead(String filename, vector_double segposition, vector_double seglength, vector_int dicomparams, String colormodel)
+    //
+
+    /**
+     * Loads a raw image (include RLE compressed image) from file segments.
+     * <p>
+     * The function dicomRawRead loads a DICOM image from the specified file into Mat.
+     *
+     * @param filename    Name of file to be loaded.
+     * @param segposition The position of the image to read.
+     * @param seglength   The length image to read.
+     * @param colormodel  The image color model.
+     * @param dicomparams automatically generated
+     * @return automatically generated
+     */
+    public static Mat dicomRawFileRead(String filename, MatOfDouble segposition, MatOfDouble seglength, MatOfInt dicomparams, String colormodel) {
+        Mat segposition_mat = segposition;
+        Mat seglength_mat = seglength;
+        Mat dicomparams_mat = dicomparams;
+        return new Mat(dicomRawFileRead_0(filename, segposition_mat.nativeObj, seglength_mat.nativeObj, dicomparams_mat.nativeObj, colormodel));
+    }
+
+
+    //
+    // C++:  Mat cv::dicomRawMatRead(Mat buf, vector_int dicomParams, String colormodel)
+    //
+
+    /**
+     * Loads a raw image (include RLE compressed image) from Mat.
+     * <p>
+     * The function dicomRawRead loads a DICOM image from a specified byte array into Mat.
+     *
+     * @param buf         the raw byte data of jpg image (1 raw, x column).
+     * @param dicomParams A vector of int containing the specific DICOM parameters. See DICOM_PARAM in grfmt_dcm_dicom.hpp.
+     * @param colormodel  The image color model.
+     * @return automatically generated
+     */
+    public static Mat dicomRawMatRead(Mat buf, MatOfInt dicomParams, String colormodel) {
+        Mat dicomParams_mat = dicomParams;
+        return new Mat(dicomRawMatRead_0(buf.nativeObj, dicomParams_mat.nativeObj, colormodel));
+    }
+
+
+    //
+    // C++:  Mat cv::dicomJpgWrite(Mat image, vector_int dicomParams, String colormodel)
+    //
+
+    /**
+     * Encodes an DICOM image into a memory buffer.
+     *
+     * @param colormodel  The image color model.
+     * @param image       automatically generated
+     * @param dicomParams automatically generated
+     * @return automatically generated
+     */
+    public static Mat dicomJpgWrite(Mat image, MatOfInt dicomParams, String colormodel) {
+        Mat dicomParams_mat = dicomParams;
+        return new Mat(dicomJpgWrite_0(image.nativeObj, dicomParams_mat.nativeObj, colormodel));
     }
 
 
@@ -749,6 +657,119 @@ public class Imgcodecs {
     }
 
 
+    //
+    // C++:  bool cv::imwritemulti(String filename, vector_Mat img, vector_int params = std::vector<int>())
+    //
+
+    public static boolean imwritemulti(String filename, List<Mat> img, MatOfInt params) {
+        Mat img_mat = Converters.vector_Mat_to_Mat(img);
+        Mat params_mat = params;
+        return imwritemulti_0(filename, img_mat.nativeObj, params_mat.nativeObj);
+    }
+
+    public static boolean imwritemulti(String filename, List<Mat> img) {
+        Mat img_mat = Converters.vector_Mat_to_Mat(img);
+        return imwritemulti_1(filename, img_mat.nativeObj);
+    }
+
+
+    //
+    // C++:  Mat cv::imdecode(Mat buf, int flags)
+    //
+
+    /**
+     * Reads an image from a buffer in memory.
+     * <p>
+     * The function imdecode reads an image from the specified buffer in the memory. If the buffer is too short or
+     * contains invalid data, the function returns an empty matrix ( Mat::data==NULL ).
+     * <p>
+     * See cv::imread for the list of supported formats and flags description.
+     *
+     * <b>Note:</b> In the case of color images, the decoded images will have the channels stored in <b>B G R</b> order.
+     *
+     * @param buf   Input array or vector of bytes.
+     * @param flags The same flags as in cv::imread, see cv::ImreadModes.
+     * @return automatically generated
+     */
+    public static Mat imdecode(Mat buf, int flags) {
+        return new Mat(imdecode_0(buf.nativeObj, flags));
+    }
+
+
+    //
+    // C++:  bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
+    //
+
+    /**
+     * Encodes an image into a memory buffer.
+     * <p>
+     * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the
+     * result. See cv::imwrite for the list of supported formats and flags description.
+     *
+     * @param ext    File extension that defines the output format.
+     * @param img    Image to be written.
+     * @param buf    Output buffer resized to fit the compressed image.
+     * @param params Format-specific parameters. See cv::imwrite and cv::ImwriteFlags.
+     * @return automatically generated
+     */
+    public static boolean imencode(String ext, Mat img, MatOfByte buf, MatOfInt params) {
+        Mat buf_mat = buf;
+        Mat params_mat = params;
+        return imencode_0(ext, img.nativeObj, buf_mat.nativeObj, params_mat.nativeObj);
+    }
+
+    /**
+     * Encodes an image into a memory buffer.
+     * <p>
+     * The function imencode compresses the image and stores it in the memory buffer that is resized to fit the
+     * result. See cv::imwrite for the list of supported formats and flags description.
+     *
+     * @param ext File extension that defines the output format.
+     * @param img Image to be written.
+     * @param buf Output buffer resized to fit the compressed image.
+     * @return automatically generated
+     */
+    public static boolean imencode(String ext, Mat img, MatOfByte buf) {
+        Mat buf_mat = buf;
+        return imencode_1(ext, img.nativeObj, buf_mat.nativeObj);
+    }
+
+
+    //
+    // C++:  bool cv::haveImageReader(String filename)
+    //
+
+    /**
+     * Returns true if the specified image can be decoded by OpenCV
+     *
+     * @param filename File name of the image
+     * @return automatically generated
+     */
+    public static boolean haveImageReader(String filename) {
+        return haveImageReader_0(filename);
+    }
+
+
+    //
+    // C++:  bool cv::haveImageWriter(String filename)
+    //
+
+    /**
+     * Returns true if an image with the specified filename can be encoded by OpenCV
+     *
+     * @param filename File name of the image
+     * @return automatically generated
+     */
+    public static boolean haveImageWriter(String filename) {
+        return haveImageWriter_0(filename);
+    }
+
+
+    // C++:  Mat cv::imread(String filename, int flags = IMREAD_UNCHANGED)
+    private static native long imread_0(String filename, int flags);
+
+    private static native long imread_1(String filename);
+
     // C++:  Mat cv::dicomJpgFileRead(String filename, vector_double segposition, vector_double seglength, int dicomflags = 0, int flags = IMREAD_UNCHANGED)
     private static native long dicomJpgFileRead_0(String filename, long segposition_mat_nativeObj, long seglength_mat_nativeObj, int dicomflags, int flags);
 
@@ -763,33 +784,14 @@ public class Imgcodecs {
 
     private static native long dicomJpgMatRead_2(long buf_nativeObj);
 
-    // C++:  Mat cv::dicomJpgWrite(Mat image, vector_int dicomParams, String colormodel)
-    private static native long dicomJpgWrite_0(long image_nativeObj, long dicomParams_mat_nativeObj, String colormodel);
-
     // C++:  Mat cv::dicomRawFileRead(String filename, vector_double segposition, vector_double seglength, vector_int dicomparams, String colormodel)
     private static native long dicomRawFileRead_0(String filename, long segposition_mat_nativeObj, long seglength_mat_nativeObj, long dicomparams_mat_nativeObj, String colormodel);
 
     // C++:  Mat cv::dicomRawMatRead(Mat buf, vector_int dicomParams, String colormodel)
     private static native long dicomRawMatRead_0(long buf_nativeObj, long dicomParams_mat_nativeObj, String colormodel);
 
-    // C++:  Mat cv::imdecode(Mat buf, int flags)
-    private static native long imdecode_0(long buf_nativeObj, int flags);
-
-    // C++:  Mat cv::imread(String filename, int flags = IMREAD_UNCHANGED)
-    private static native long imread_0(String filename, int flags);
-
-    private static native long imread_1(String filename);
-
-    // C++:  bool cv::haveImageReader(String filename)
-    private static native boolean haveImageReader_0(String filename);
-
-    // C++:  bool cv::haveImageWriter(String filename)
-    private static native boolean haveImageWriter_0(String filename);
-
-    // C++:  bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
-    private static native boolean imencode_0(String ext, long img_nativeObj, long buf_mat_nativeObj, long params_mat_nativeObj);
-
-    private static native boolean imencode_1(String ext, long img_nativeObj, long buf_mat_nativeObj);
+    // C++:  Mat cv::dicomJpgWrite(Mat image, vector_int dicomParams, String colormodel)
+    private static native long dicomJpgWrite_0(long image_nativeObj, long dicomParams_mat_nativeObj, String colormodel);
 
     // C++:  bool cv::imreadmulti(String filename, vector_Mat& mats, int flags = IMREAD_COLOR)
     private static native boolean imreadmulti_0(String filename, long mats_mat_nativeObj, int flags);
@@ -800,5 +802,24 @@ public class Imgcodecs {
     private static native boolean imwrite_0(String filename, long img_nativeObj, long params_mat_nativeObj);
 
     private static native boolean imwrite_1(String filename, long img_nativeObj);
+
+    // C++:  bool cv::imwritemulti(String filename, vector_Mat img, vector_int params = std::vector<int>())
+    private static native boolean imwritemulti_0(String filename, long img_mat_nativeObj, long params_mat_nativeObj);
+
+    private static native boolean imwritemulti_1(String filename, long img_mat_nativeObj);
+
+    // C++:  Mat cv::imdecode(Mat buf, int flags)
+    private static native long imdecode_0(long buf_nativeObj, int flags);
+
+    // C++:  bool cv::imencode(String ext, Mat img, vector_uchar& buf, vector_int params = std::vector<int>())
+    private static native boolean imencode_0(String ext, long img_nativeObj, long buf_mat_nativeObj, long params_mat_nativeObj);
+
+    private static native boolean imencode_1(String ext, long img_nativeObj, long buf_mat_nativeObj);
+
+    // C++:  bool cv::haveImageReader(String filename)
+    private static native boolean haveImageReader_0(String filename);
+
+    // C++:  bool cv::haveImageWriter(String filename)
+    private static native boolean haveImageWriter_0(String filename);
 
 }

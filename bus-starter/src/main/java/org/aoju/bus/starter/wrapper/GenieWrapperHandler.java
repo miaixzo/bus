@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.extra.servlet.ServletKit;
 import org.aoju.bus.logger.Logger;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -48,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version 6.2.2
  * @since JDK 1.8+
  */
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Component
 public class GenieWrapperHandler implements HandlerInterceptor {
 

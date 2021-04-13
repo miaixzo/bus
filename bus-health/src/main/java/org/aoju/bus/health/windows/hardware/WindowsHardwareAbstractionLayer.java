@@ -76,6 +76,11 @@ public final class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstr
     }
 
     @Override
+    public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
+        return WindowsLogicalVolumeGroup.getLogicalVolumeGroups();
+    }
+
+    @Override
     public List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces) {
         return WindowsNetworkIF.getNetworks(includeLocalInterfaces);
     }

@@ -71,6 +71,11 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     }
 
     @Override
+    public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
+        return LinuxLogicalVolumeGroup.getLogicalVolumeGroups();
+    }
+
+    @Override
     public List<Display> getDisplays() {
         return LinuxDisplay.getDisplays();
     }

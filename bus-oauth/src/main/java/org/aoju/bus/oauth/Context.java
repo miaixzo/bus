@@ -101,9 +101,15 @@ public class Context {
     private boolean ignoreCheckState;
 
     /**
-     * 使用 Coding 登录时，需要传该值
+     * 域名前缀
+     * <p>
+     * 使用 Coding 登录和 Okta 登录时，需要传该值。
+     * <p>
+     * Coding 登录：团队域名前缀，比如以“ https://auth.coding.net ”为例，{@code prefix} = auth
+     * <p>
+     * Okta 登录：Okta 账号域名前缀，比如以“ https://auth.okta.com ”为例，{@code prefix} = auth
      */
-    private String codingGroupName;
+    private String prefix;
 
     /**
      * 支持自定义授权平台的 scope 内容
@@ -124,5 +130,10 @@ public class Context {
      * 喜马拉雅：客户端包名，如果client_os_type为1或2时必填。对Android客户端是包名，对IOS客户端是Bundle ID
      */
     private String packId;
+
+    /**
+     * 是否开启 PKCE 模式，该配置仅用于支持 PKCE 模式的平台，针对无服务应用，不推荐使用隐式授权，推荐使用 PKCE 模式
+     */
+    private boolean pkce;
 
 }

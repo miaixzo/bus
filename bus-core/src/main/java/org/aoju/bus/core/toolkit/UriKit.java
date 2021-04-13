@@ -113,6 +113,16 @@ public class UriKit {
     }
 
     /**
+     * 使用URL字符串构建UriKit，当传入的URL没有协议时，按照http协议对待，编码默认使用UTF-8
+     *
+     * @param url URL字符串
+     * @return this
+     */
+    public static UriKit of(String url) {
+        return of(url, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
      * 使用URL字符串构建
      *
      * @param url     URL字符串
@@ -1386,29 +1396,29 @@ public class UriKit {
      * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
      * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
      *
-     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
-     * @param encoding 数据编码方式(US-ASCII，BASE64等)
-     * @param data     编码后的数据
+     * @param mediaType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param encoding  数据编码方式(US-ASCII，BASE64等)
+     * @param data      编码后的数据
      * @return Data URI字符串
      */
-    public static String toURL(String mimeType, String encoding, String data) {
-        return toURL(mimeType, null, encoding, data);
+    public static String toURL(String mediaType, String encoding, String data) {
+        return toURL(mediaType, null, encoding, data);
     }
 
     /**
      * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
      * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页
      *
-     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
-     * @param charset  可选项(null表示无)，源文本的字符集编码方式
-     * @param encoding 数据编码方式(US-ASCII，BASE64等)
-     * @param data     编码后的数据
+     * @param mediaType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param charset   可选项(null表示无)，源文本的字符集编码方式
+     * @param encoding  数据编码方式(US-ASCII，BASE64等)
+     * @param data      编码后的数据
      * @return Data URI字符串
      */
-    public static String toURL(String mimeType, java.nio.charset.Charset charset, String encoding, String data) {
+    public static String toURL(String mediaType, java.nio.charset.Charset charset, String encoding, String data) {
         final StringBuilder builder = StringKit.builder("data:");
-        if (StringKit.isNotBlank(mimeType)) {
-            builder.append(mimeType);
+        if (StringKit.isNotBlank(mediaType)) {
+            builder.append(mediaType);
         }
         if (null != charset) {
             builder.append(";charset=").append(charset.name());
@@ -2080,9 +2090,23 @@ public class UriKit {
          * @return {@link Query}
          */
         public static Query of(String queryStr, java.nio.charset.Charset charset) {
-            final Query Query = new Query();
-            Query.parse(queryStr, charset);
-            return Query;
+            final Query query = new Query();
+            query.parse(queryStr, charset);
+            return query;
+        }
+
+        /**
+         * 构建Query
+         *
+         * @param queryStr       初始化的查询字符串
+         * @param charset        decode用的编码，null表示不做decode
+         * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
+         * @return {@link Query}
+         */
+        public static Query of(String queryStr, java.nio.charset.Charset charset, boolean autoRemovePath) {
+            final Query query = new Query();
+            query.parse(queryStr, charset, autoRemovePath);
+            return query;
         }
 
         /**
@@ -2136,16 +2160,30 @@ public class UriKit {
          * @return this
          */
         public Query parse(String queryStr, java.nio.charset.Charset charset) {
+            return parse(queryStr, charset, true);
+        }
+
+        /**
+         * 解析URL中的查询字符串
+         *
+         * @param queryStr       查询字符串，类似于key1=v1&amp;key2=&amp;key3=v3
+         * @param charset        decode编码，null表示不做decode
+         * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
+         * @return this
+         */
+        public Query parse(String queryStr, java.nio.charset.Charset charset, boolean autoRemovePath) {
             if (StringKit.isBlank(queryStr)) {
                 return this;
             }
 
-            // 去掉Path部分
-            int pathEndPos = queryStr.indexOf(Symbol.C_QUESTION_MARK);
-            if (pathEndPos > -1) {
-                queryStr = StringKit.subSuf(queryStr, pathEndPos + 1);
-                if (StringKit.isBlank(queryStr)) {
-                    return this;
+            if (autoRemovePath) {
+                // 去掉Path部分
+                int pathEndPos = queryStr.indexOf('?');
+                if (pathEndPos > -1) {
+                    queryStr = StringKit.subSuf(queryStr, pathEndPos + 1);
+                    if (StringKit.isBlank(queryStr)) {
+                        return this;
+                    }
                 }
             }
 

@@ -158,18 +158,6 @@ public class Solar {
      */
     public static final double J2000 = 2451545;
     /**
-     * 阳历基准年
-     */
-    public static final int BASE_YEAR = 1901;
-    /**
-     * 阳历基准月
-     */
-    public static final int BASE_MONTH = 1;
-    /**
-     * 阳历基准日
-     */
-    public static final int BASE_DAY = 1;
-    /**
      * 年
      */
     private final int year;
@@ -213,6 +201,7 @@ public class Solar {
     public Solar(Date date) {
         this.calendar = Calendar.getInstance();
         this.calendar.setTime(date);
+        calendar.set(Calendar.MILLISECOND, 0);
         this.year = calendar.get(Calendar.YEAR);
         this.month = calendar.get(Calendar.MONTH) + 1;
         this.day = calendar.get(Calendar.DATE);
@@ -227,6 +216,7 @@ public class Solar {
      * @param calendar 日历
      */
     public Solar(Calendar calendar) {
+        calendar.set(Calendar.MILLISECOND, 0);
         this.calendar = calendar;
         this.year = calendar.get(Calendar.YEAR);
         this.month = calendar.get(Calendar.MONTH) + 1;
@@ -276,6 +266,7 @@ public class Solar {
 
         this.calendar = Calendar.getInstance();
         this.calendar.set(year, month - 1, day, hour, minute, second);
+        calendar.set(Calendar.MILLISECOND, 0);
         this.year = year;
         this.month = month;
         this.day = day;
@@ -297,6 +288,7 @@ public class Solar {
     public Solar(int year, int month, int day, int hour, int minute, int second) {
         this.calendar = Calendar.getInstance();
         this.calendar.set(year, month - 1, day, hour, minute, second);
+        calendar.set(Calendar.MILLISECOND, 0);
         this.year = year;
         this.month = month;
         this.day = day;
@@ -374,7 +366,7 @@ public class Solar {
     }
 
     /**
-     * 通过八字获取阳历列表（晚子时日柱按当天）
+     * 通过八字获取阳历列表（晚子时日柱按当天，起始年为1900）
      *
      * @param yearGanZhi  年柱
      * @param monthGanZhi 月柱
@@ -387,7 +379,7 @@ public class Solar {
     }
 
     /**
-     * 通过八字获取阳历列表
+     * 通过八字获取阳历列表（起始年为1900）
      *
      * @param yearGanZhi  年柱
      * @param monthGanZhi 月柱
@@ -397,6 +389,21 @@ public class Solar {
      * @return 符合的阳历列表
      */
     public static List<Solar> from(String yearGanZhi, String monthGanZhi, String dayGanZhi, String timeGanZhi, int sect) {
+        return fromBaZi(yearGanZhi, monthGanZhi, dayGanZhi, timeGanZhi, sect, 1900);
+    }
+
+    /**
+     * 通过八字获取阳历列表（起始年为1900）
+     *
+     * @param yearGanZhi  年柱
+     * @param monthGanZhi 月柱
+     * @param dayGanZhi   日柱
+     * @param timeGanZhi  时柱
+     * @param sect        流派，2晚子时日柱按当天，1晚子时日柱按明天
+     * @param baseYear    起始年
+     * @return 符合的阳历列表
+     */
+    public static List<Solar> fromBaZi(String yearGanZhi, String monthGanZhi, String dayGanZhi, String timeGanZhi, int sect, int baseYear) {
         sect = (1 == sect) ? 1 : 2;
         Solar today = new Solar();
         Lunar lunar = today.getLunar();
@@ -413,18 +420,15 @@ public class Solar {
             }
         }
         List<Solar> list = new ArrayList<>();
-        while (startYear >= Solar.BASE_YEAR - 1) {
+        while (startYear >= baseYear) {
             int year = startYear - 1;
             int counter = 0;
             int month = 12;
             int day;
             boolean found = false;
             while (counter < 15) {
-                if (year >= Solar.BASE_YEAR) {
+                if (year >= baseYear) {
                     day = 1;
-                    if (year == Solar.BASE_YEAR && month == Solar.BASE_MONTH) {
-                        day = Solar.BASE_DAY;
-                    }
                     Solar solar = new Solar(year, month, day, hour, 0, 0);
                     lunar = solar.getLunar();
                     if (lunar.getYearInGanZhiExact().equals(yearGanZhi) && lunar.getMonthInGanZhiExact().equals(monthGanZhi)) {
@@ -447,9 +451,6 @@ public class Solar {
                     year--;
                 }
                 day = 1;
-                if (year == Solar.BASE_YEAR && month == Solar.BASE_MONTH) {
-                    day = Solar.BASE_DAY;
-                }
                 Solar solar = new Solar(year, month, day, hour, 0, 0);
                 while (counter < 61) {
                     lunar = solar.getLunar();
@@ -474,17 +475,7 @@ public class Solar {
      * @return true/false 闰年/非闰年
      */
     public static boolean isLeapYear(int year) {
-        boolean leap = false;
-        if (year % 4 == 0) {
-            leap = true;
-        }
-        if (year % 100 == 0) {
-            leap = false;
-        }
-        if (year % 400 == 0) {
-            leap = true;
-        }
-        return leap;
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
     /**
@@ -532,7 +523,7 @@ public class Solar {
     /**
      * 获取星期，1代表周日
      *
-     * @return 123456
+     * @return 1234567
      */
     public int getWeek() {
         return calendar.get(Calendar.DAY_OF_WEEK);
@@ -561,7 +552,7 @@ public class Solar {
         }
         //计算几月第几个星期几对应的节日
         int weeks = (int) Math.ceil(day / 7D);
-        //星期几，0代表星期天
+        //星期几，1代表星期天
         int week = getWeek();
         festival = Solar.WEEK_FESTIVAL.get(month + Symbol.HYPHEN + weeks + Symbol.HYPHEN + week);
         if (null != festival) {
@@ -654,15 +645,16 @@ public class Solar {
     }
 
     /**
-     * 获取往后推几天的阳历日期，如果要往前推，则天数用负数
+     * 取往后推几天的阳历日期，如果要往前推，则天数用负数
      *
      * @param days        天数
-     * @param onlyWorkday 是否仅工作日
+     * @param onlyWorkday 是否仅限工作日
      * @return {@link Solar}
      */
     public Solar next(int days, boolean onlyWorkday) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month - 1, day, hour, minute, second);
+        calendar.set(Calendar.MILLISECOND, 0);
         if (0 != days) {
             if (!onlyWorkday) {
                 calendar.add(Calendar.DATE, days);

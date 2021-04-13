@@ -127,7 +127,7 @@ public class AndroidPlatform extends Platform {
             return new AndroidPlatform(sslParametersClass, setUseSessionTickets, setHostname,
                     getAlpnSelectedProtocol, setAlpnProtocols);
         } catch (ClassNotFoundException ignored) {
-            Logger.warn("ClassNotFoundException:" + ignored.getMessage());
+            Logger.warn("Failed to load Android SSL support");
             return null;
         }
     }

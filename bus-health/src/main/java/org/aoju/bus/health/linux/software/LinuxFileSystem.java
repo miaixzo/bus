@@ -105,7 +105,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             String name = volume;
             String path = split[1].replace(UNICODE_SPACE, Symbol.SPACE);
             if (path.equals("/")) {
-                volume = "/";
+                name = "/";
             }
             String type = split[2];
 

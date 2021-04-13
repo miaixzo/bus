@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import java.io.Serializable;
+
 /**
  * 函数对象
  * 一个函数接口代表一个一个函数,用于包装一个函数为对象
@@ -36,7 +38,7 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8+
  */
 @FunctionalInterface
-public interface Func<P, R> {
+public interface Func<P, R> extends Serializable {
 
     /**
      * 执行函数
@@ -69,7 +71,7 @@ public interface Func<P, R> {
      * @param <R> 返回值类型
      */
     @FunctionalInterface
-    interface Func0<R> {
+    interface Func0<R> extends Serializable {
         /**
          * 执行函数
          *
@@ -102,7 +104,7 @@ public interface Func<P, R> {
      * @param <R> 返回值类型
      */
     @FunctionalInterface
-    interface Func1<P, R> {
+    interface Func1<P, R> extends Serializable {
 
         /**
          * 执行函数

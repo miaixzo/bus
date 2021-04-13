@@ -42,6 +42,8 @@ import java.util.*;
  */
 public final class Expression implements Serializable, Cloneable {
 
+    private static final long serialVersionUID = 1L;
+
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     protected static final int SECOND = 0;
     protected static final int MINUTE = 1;
@@ -57,7 +59,6 @@ public final class Expression implements Serializable, Cloneable {
 
     protected static final Map<String, Integer> monthMap = new HashMap<>(20);
     protected static final Map<String, Integer> dayMap = new HashMap<>(60);
-    private static final long serialVersionUID = 12423409423L;
 
     static {
         monthMap.put("JAN", 0);

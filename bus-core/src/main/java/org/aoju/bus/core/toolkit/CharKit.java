@@ -269,7 +269,11 @@ public class CharKit {
      * @see Character#isSpaceChar(int)
      */
     public static boolean isBlankChar(int c) {
-        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == '\ufeff' || c == '\u202a';
+        return Character.isWhitespace(c)
+                || Character.isSpaceChar(c)
+                || c == '\ufeff'
+                || c == '\u202a'
+                || c == '\u0000';
     }
 
     /**
@@ -350,10 +354,70 @@ public class CharKit {
         return cb.array();
     }
 
+    /**
+     * byte转car
+     *
+     * @param b 字节信息
+     * @return char
+     */
     public static char byteToChar(byte[] b) {
         int hi = (b[0] & 0xFF) << 8;
         int lo = b[1] & 0xFF;
         return (char) (hi | lo);
+    }
+
+    /**
+     * 将字母、数字转换为带圈的字符：
+     * <pre>
+     *     '1' -》 '①'
+     *     'A' -》 'Ⓐ'
+     *     'a' -》 'ⓐ'
+     * </pre>
+     * 获取带圈数字 /封闭式字母数字 ，从1-20,超过1-20报错
+     * 0	1	2	3	4	5	6	7	8	9	A	B	C	D	E	F
+     * U+246x	①	②	③	④	⑤	⑥	⑦	⑧	⑨	⑩	⑪	⑫	⑬	⑭	⑮	⑯
+     * U+247x	⑰	⑱	⑲	⑳	⑴	⑵	⑶	⑷	⑸	⑹	⑺	⑻	⑼	⑽	⑾	⑿
+     * U+248x	⒀	⒁	⒂	⒃	⒄	⒅	⒆	⒇	⒈	⒉	⒊	⒋	⒌	⒍	⒎	⒏
+     * U+249x	⒐	⒑	⒒	⒓	⒔	⒕	⒖	⒗	⒘	⒙	⒚	⒛	⒜	⒝	⒞	⒟
+     * U+24Ax	⒠	⒡	⒢	⒣	⒤	⒥	⒦	⒧	⒨	⒩	⒪	⒫	⒬	⒭	⒮	⒯
+     * U+24Bx	⒰	⒱	⒲	⒳	⒴	⒵	Ⓐ	Ⓑ	Ⓒ	Ⓓ	Ⓔ	Ⓕ	Ⓖ	Ⓗ	Ⓘ	Ⓙ
+     * U+24Cx	Ⓚ	Ⓛ	Ⓜ	Ⓝ	Ⓞ	Ⓟ	Ⓠ	Ⓡ	Ⓢ	Ⓣ	Ⓤ	Ⓥ	Ⓦ	Ⓧ	Ⓨ	Ⓩ
+     * U+24Dx	ⓐ	ⓑ	ⓒ	ⓓ	ⓔ	ⓕ	ⓖ	ⓗ	ⓘ	ⓙ	ⓚ	ⓛ	ⓜ	ⓝ	ⓞ	ⓟ
+     * U+24Ex	ⓠ	ⓡ	ⓢ	ⓣ	ⓤ	ⓥ	ⓦ	ⓧ	ⓨ	ⓩ	⓪	⓫	⓬	⓭	⓮	⓯
+     * U+24Fx	⓰	⓱	⓲	⓳	⓴	⓵	⓶	⓷	⓸	⓹	⓺	⓻	⓼	⓽	⓾	⓿
+     *
+     * @param c 被转换的字符，如果字符不支持转换，返回原字符
+     * @return 转换后的字符
+     */
+    public static char toCloseChar(char c) {
+        int result = c;
+        if (c >= '1' && c <= '9') {
+            result = '①' + c - '1';
+        } else if (c >= 'A' && c <= 'Z') {
+            result = 'Ⓐ' + c - 'A';
+        } else if (c >= 'a' && c <= 'z') {
+            result = 'ⓐ' + c - 'a';
+        }
+        return (char) result;
+    }
+
+    /**
+     * 封闭式字符，英文：Enclosed Alphanumerics
+     * 将[1-20]数字转换为带圈的字符：
+     * <pre>
+     *     1 -》 '①'
+     *     12 -》 '⑫'
+     *     20 -》 '⑳'
+     * </pre>
+     *
+     * @param number 被转换的数字
+     * @return 转换后的字符
+     */
+    public static char toCloseByNumber(int number) {
+        if (number > 20) {
+            throw new IllegalArgumentException("Number must be [1-20]");
+        }
+        return (char) ('①' + number - 1);
     }
 
 }

@@ -41,6 +41,7 @@ import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.linux.ProcPath;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,6 +68,13 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     private static final String ID_FS_UUID = "ID_FS_UUID";
     private static final String ID_MODEL = "ID_MODEL";
     private static final String ID_SERIAL_SHORT = "ID_SERIAL_SHORT";
+
+    private static final String DM_UUID = "DM_UUID";
+    private static final String DM_VG_NAME = "DM_VG_NAME";
+    private static final String DM_LV_NAME = "DM_LV_NAME";
+    private static final String LOGICAL_VOLUME_GROUP = "Logical Volume Group";
+    private static final String DEV_LOCATION = "/dev/";
+    private static final String DEV_MAPPER = DEV_LOCATION + "mapper/";
 
     private static final int SECTORSIZE = 512;
 
@@ -142,9 +150,29 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                     String devSerial = device.getPropertyValue(ID_SERIAL_SHORT);
                                     long devSize = Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                             * SECTORSIZE;
-                                    store = new LinuxHWDiskStore(devnode,
-                                            null == devModel ? Normal.UNKNOWN : devModel,
-                                            null == devSerial ? Normal.UNKNOWN : devSerial, devSize);
+                                    if (devnode.startsWith("/dev/dm")) {
+                                        devModel = LOGICAL_VOLUME_GROUP;
+                                        devSerial = device.getPropertyValue(DM_UUID);
+                                        store = new LinuxHWDiskStore(devnode, devModel,
+                                                devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
+                                        String vgName = device.getPropertyValue(DM_VG_NAME);
+                                        String lvName = device.getPropertyValue(DM_LV_NAME);
+                                        store.partitionList.add(new HWPartition(
+                                                getPartitionNameForDmDevice(vgName, lvName), device.getSysname(),
+                                                device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
+                                                        : device.getPropertyValue(ID_FS_TYPE),
+                                                device.getPropertyValue(ID_FS_UUID) == null ? ""
+                                                        : device.getPropertyValue(ID_FS_UUID),
+                                                Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
+                                                        * SECTORSIZE,
+                                                Builder.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
+                                                Builder.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
+                                                getMountPointOfDmDevice(vgName, lvName)));
+                                    } else {
+                                        store = new LinuxHWDiskStore(devnode,
+                                                devModel == null ? Normal.UNKNOWN : devModel,
+                                                devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
+                                    }
                                     if (null == storeToUpdate) {
                                         // If getting all stores, add to the list with stats
                                         computeDiskStats(store, device.getSysattrValue(STAT));
@@ -178,7 +206,8 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                                         * SECTORSIZE,
                                                 Builder.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
                                                 Builder.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
-                                                mountsMap.getOrDefault(name, Normal.EMPTY)));
+                                                mountsMap.getOrDefault(name,
+                                                        getDependentNamesFromHoldersDirectory(device.getSysname()))));
                                     }
                                 }
                             }
@@ -206,7 +235,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         List<String> mounts = FileKit.readLines(ProcPath.MOUNTS);
         for (String mount : mounts) {
             String[] split = RegEx.SPACES.split(mount);
-            if (split.length < 2 || !split[0].startsWith("/dev/")) {
+            if (split.length < 2 || !split[0].startsWith(DEV_LOCATION)) {
                 continue;
             }
             mountsMap.put(split[0], split[1]);
@@ -272,6 +301,23 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         // If this returns non-empty (the same store, but updated) then we were
         // successful in the update
         return !getDisks(this).isEmpty();
+    }
+
+    private static String getPartitionNameForDmDevice(String vgName, String lvName) {
+        return new StringBuilder().append(DEV_LOCATION).append(vgName).append('/').append(lvName).toString();
+    }
+
+    private static String getMountPointOfDmDevice(String vgName, String lvName) {
+        return new StringBuilder().append(DEV_MAPPER).append(vgName).append('-').append(lvName).toString();
+    }
+
+    private static String getDependentNamesFromHoldersDirectory(String sysPath) {
+        File holdersDir = new File(sysPath + "/holders");
+        File[] holders = holdersDir.listFiles();
+        if (holders != null) {
+            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
+        }
+        return Normal.EMPTY;
     }
 
     // Order the field is in udev stats

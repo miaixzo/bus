@@ -543,12 +543,6 @@ public class ThreadKit {
         }
     }
 
-    public static final class FastBufferThread extends Thread {
-        public FastBufferThread(Runnable target, String name) {
-            super(target, name);
-        }
-    }
-
     /**
      * 创建{@link ScheduledThreadPoolExecutor}
      *
@@ -589,6 +583,12 @@ public class ThreadKit {
         }
 
         return executor;
+    }
+
+    public static final class FastBufferThread extends Thread {
+        public FastBufferThread(Runnable target, String name) {
+            super(target, name);
+        }
     }
 
 }

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import java.io.Serializable;
+
 /**
  * 函数对象
  * 一个函数接口代表一个一个函数，用于包装一个函数为对象
@@ -37,7 +39,7 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8+
  */
 @FunctionalInterface
-public interface VoidFunc<P> {
+public interface VoidFunc<P> extends Serializable {
 
     /**
      * 执行函数
@@ -67,7 +69,7 @@ public interface VoidFunc<P> {
      * 此接口用于将一个函数包装成为一个对象，从而传递对象
      */
     @FunctionalInterface
-    interface VoidFunc0 {
+    interface VoidFunc0 extends Serializable {
 
         /**
          * 执行函数
@@ -97,7 +99,7 @@ public interface VoidFunc<P> {
      * @param <P> 参数类型
      */
     @FunctionalInterface
-    interface VoidFunc1<P> {
+    interface VoidFunc1<P> extends Serializable {
 
         /**
          * 执行函数

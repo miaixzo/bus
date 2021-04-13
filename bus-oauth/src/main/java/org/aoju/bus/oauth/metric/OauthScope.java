@@ -40,21 +40,13 @@ import java.util.stream.Collectors;
  * @since JDK 1.8+
  */
 public class OauthScope {
-
     /**
      * 百度 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Baidu implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         BASIC("basic", "用户基本权限，可以获取用户的基本信息 。", true),
         SUPER_MSG("super_msg", "往用户的百度首页上发送消息提醒，相关API任何应用都能使用，但要想将消息提醒在百度首页显示，需要第三方在注册应用时额外填写相关信息。", false),
         NETDISK("netdisk", "获取用户在个人云存储中存放的数据。", false),
@@ -68,19 +60,29 @@ public class OauthScope {
     }
 
     /**
+     * Amazon 授权范围
+     */
+    @Getter
+    @AllArgsConstructor
+    public enum Amazon implements Scope {
+
+        R_LITEPROFILE("profile", "The profile scope includes a user's name and email address", true),
+        R_EMAILADDRESS("profile:user_id", "The profile:user_id scope only includes the user_id field of the profile", true),
+        W_MEMBER_SOCIAL("postal_code", "This includes the user's zip/postal code number from their primary shipping address", true);
+
+        private final String scope;
+        private final String description;
+        private final boolean isDefault;
+
+    }
+
+    /**
      * Coding 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Coding implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         USER("user", "读取用户的基本信息", false),
         USER_EMAIL("user:email", "读取用户的邮件", false),
         USER_PHONE("user:phone", "读取用户的手机号", false),
@@ -96,30 +98,23 @@ public class OauthScope {
 
     /**
      * Facebook 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Facebook implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
-        EMAIL("email", "获取用户的邮箱", false),
-        USER_AGE_RANGE("user_age_range", "允许应用程序访问用户的年龄范围", false),
-        USER_BIRTHDAY("user_birthday", "获取用户的生日", false),
-        USER_FRIENDS("user_friends", "获取用户的好友列表", false),
-        USER_GENDER("user_gender", "获取用户的性别", false),
-        USER_HOMETOWN("user_hometown", "获取用户的家乡信息", false),
-        USER_LIKES("user_likes", "获取用户的喜欢列表", false),
-        USER_LINK("user_link", "获取用户的个人链接", false),
-        USER_LOCATION("user_location", "获取用户的位置信息", false),
-        USER_PHOTOS("user_photos", "获取用户的相册信息", false),
-        USER_POSTS("user_posts", "获取用户发布的内容", false),
-        USER_VIDEOS("user_videos", "获取用户上传的视频信息", false),
+        EMAIL("email", "获取用户的邮箱", true),
+        USER_AGE_RANGE("user_age_range", "允许应用程序访问用户的年龄范围", true),
+        USER_BIRTHDAY("user_birthday", "获取用户的生日", true),
+        USER_FRIENDS("user_friends", "获取用户的好友列表", true),
+        USER_GENDER("user_gender", "获取用户的性别", true),
+        USER_HOMETOWN("user_hometown", "获取用户的家乡信息", true),
+        USER_LIKES("user_likes", "获取用户的喜欢列表", true),
+        USER_LINK("user_link", "获取用户的个人链接", true),
+        USER_LOCATION("user_location", "获取用户的位置信息", true),
+        USER_PHOTOS("user_photos", "获取用户的相册信息", true),
+        USER_POSTS("user_posts", "获取用户发布的内容", true),
+        USER_VIDEOS("user_videos", "获取用户上传的视频信息", true),
         GROUPS_ACCESS_MEMBER_INFO("groups_access_member_info", "获取公开的群组成员信息", false),
         PUBLISH_TO_GROUPS("publish_to_groups", "授权您的应用程序代表某人将内容发布到组中，前提是他们已经授予您的应用程序访问权限", false);
 
@@ -131,18 +126,11 @@ public class OauthScope {
 
     /**
      * Gitee 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Gitee implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         USER_INFO("user_info", "访问用户的个人信息、最新动态等", true),
         PROJECTS("projects", "查看、创建、更新用户的项目", false),
         PULL_REQUESTS("pull_requests", "查看、发布、更新用户的 Pull Request", false),
@@ -163,18 +151,11 @@ public class OauthScope {
 
     /**
      * Github 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Github implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         REPO_STATUS("repo:status", "Grants read/write access to public and private repository commit statuses. This scope is only necessary to grant other users or services access to private repository commit statuses <em>without</em> granting access to the code.", false),
         REPO_DEPLOYMENT("repo_deployment", "Grants access to deployment statuses for public and private repositories. This scope is only necessary to grant other users or services access to deployment statuses, <em>without</em> granting access to the code.", false),
         PUBLIC_REPO("public_repo", "Limits access to public repositories. That includes read/write access to code, commit statuses, repository projects, collaborators, and deployment statuses for public repositories and organizations. Also required for starring public repositories.", false),
@@ -213,18 +194,11 @@ public class OauthScope {
 
     /**
      * Gitlab 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Gitlab implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         READ_USER("read_user", "Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.", true),
         OPENID("openid", "Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.", true),
         PROFILE("profile", "Grants read-only access to the user's profile data using OpenID Connect.", true),
@@ -245,18 +219,10 @@ public class OauthScope {
 
     /**
      * Google 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Google implements Scope {
-
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         USER_OPENID("openid", "Associate you with your personal info on Google", true),
         USER_EMAIL("email", "View your email address", true),
         USER_PROFILE("profile", "View your basic profile info", true),
@@ -705,18 +671,10 @@ public class OauthScope {
 
     /**
      * 华为 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Huawei implements Scope {
-
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         BASE_PROFILE("https://www.huawei.com/auth/account/base.profile", "获取用户的基本信息", true),
         MOBILE_NUMBER("https://www.huawei.com/auth/account/mobile.number", "获取用户的手机号", false),
         ACCOUNTLIST("https://www.huawei.com/auth/account/accountlist", "获取用户的账单列表", false),
@@ -744,18 +702,11 @@ public class OauthScope {
 
     /**
      * 京东 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Jd implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         SNSAPI_BASE("snsapi_base", "基础授权", true);
 
         private String scope;
@@ -766,18 +717,11 @@ public class OauthScope {
 
     /**
      * 酷家乐 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Kujiale implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         GET_USER_INFO("get_user_info", "获取用户的基本信息", true),
         GET_DESIGN("get_design", "获取指定方案详情", false),
         GET_BUDGET_LIST("get_budget_list", "获取清单预算概览数据", false);
@@ -789,19 +733,29 @@ public class OauthScope {
     }
 
     /**
+     * Line 平台 OAuth 授权范围
+     */
+    @Getter
+    @AllArgsConstructor
+    public enum Line implements Scope {
+
+        PROFILE("profile", "Get profile details", true),
+        OPENID("openid", "Get id token", true),
+        EMAIL("email", "Get email (separate authorization required)", false);
+
+        private final String scope;
+        private final String description;
+        private final boolean isDefault;
+
+    }
+
+    /**
      * 领英 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Linkedin implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         R_LITEPROFILE("r_liteprofile", "Use your name, headline, and photo", true),
         R_EMAILADDRESS("r_emailaddress", "Use the primary email address associated with your LinkedIn account", true),
         W_MEMBER_SOCIAL("w_member_social", "Post, comment and like posts on your behalf", true),
@@ -829,18 +783,11 @@ public class OauthScope {
 
     /**
      * 微软 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Microsoft implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         PROFILE("profile", "允许应用查看用户的基本个人资料（名称、图片、用户名称）", true),
         EMAIL("email", "允许应用读取用户的主电子邮件地址", true),
         OPENID("openid", "允许用户以其工作或学校帐户登录应用，并允许应用查看用户的基本个人资料信息", true),
@@ -891,18 +838,11 @@ public class OauthScope {
 
     /**
      * 小米 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Mi implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         profile("user/profile", "获取用户的基本信息", true),
         OPENID("user/openIdV2", "获取用户的OpenID", true),
         PHONE_EMAIL("user/phoneAndEmail", "获取用户的手机号和邮箱", true);
@@ -915,18 +855,11 @@ public class OauthScope {
 
     /**
      * Pinterest 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Pinterest implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         READ_PUBLIC("read_public", "Use GET method on a user’s Pins, boards.", true),
         WRITE_PUBLIC("write_public", "Use PATCH, POST and DELETE methods on a user’s Pins and boards.", false),
         READ_RELATIONSHIPS("read_relationships", "Use GET method on a user’s follows and followers (on boards, users and interests).", false),
@@ -940,18 +873,11 @@ public class OauthScope {
 
     /**
      * QQ 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Qq implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         GET_USER_INFO("get_user_info", "获取登录用户的昵称、头像、性别", true),
         /**
          * 以下 scope 需要申请：http://wiki.connect.qq.com/openapi%e6%9d%83%e9%99%90%e7%94%b3%e8%af%b7
@@ -971,18 +897,11 @@ public class OauthScope {
 
     /**
      * 人人 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Renren implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         READ_USER_BLOG("read_user_blog", "获取用户日志时需要用户授予的权限。", false),
         READ_USER_CHECKIN("read_user_checkin", "获取用户报到信息时需要用户授予的权限。", false),
         READ_USER_FEED("read_user_feed", "获取用户新鲜事时需要用户授予的权限。", false),
@@ -1021,18 +940,11 @@ public class OauthScope {
 
     /**
      * Stackoverflow 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum StackOverflow implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         read_inbox("read_inbox", "access a user's global inbox", true),
         NO_EXPIRY("no_expiry", "access_token's with this scope do not expire", false),
         WRITE_ACCESS("write_access", "perform write operations as a user", false),
@@ -1045,19 +957,118 @@ public class OauthScope {
     }
 
     /**
+     * Slack 平台 OAuth 授权范围
+     */
+    @Getter
+    @AllArgsConstructor
+    public enum Slack implements Scope {
+
+        USERS_PROFILE_READ("users.profile:read", "View profile details about people in a workspace", true),
+        USERS_READ("users:read", "View people in a workspace", true),
+        USERS_READ_EMAIL("users:read.email", "View email addresses of people in a workspace", true),
+        USERS_PROFILE_WRITE("users.profile:write", "Edit a user’s profile information and status", false),
+        USERS_PROFILE_WRITE_USER("users.profile:write:user", "Change the user's profile fields", false),
+        USERS_WRITE("users:write", "Set presence for your slack app", false),
+        ADMIN("admin", "Administer a workspace", false),
+        ADMIN_ANALYTICS_READ("admin.analytics:read", "Access analytics data about the organization", false),
+        ADMIN_APPS_READ("admin.apps:read", "View apps and app requests in a workspace", false),
+        ADMIN_APPS_WRITE("admin.apps:write", "Manage apps in a workspace", false),
+        ADMIN_BARRIERS_READ("admin.barriers:read", "Read information barriers in the organization", false),
+        ADMIN_BARRIERS_WRITE("admin.barriers:write", "Manage information barriers in the organization", false),
+        ADMIN_CONVERSATIONS_READ("admin.conversations:read", "View the channel’s member list, topic, purpose and channel name", false),
+        ADMIN_CONVERSATIONS_WRITE("admin.conversations:write", "Start a new conversation, modify a conversation and modify channel details", false),
+        ADMIN_INVITES_READ("admin.invites:read", "Gain information about invite requests in a Grid organization.", false),
+        ADMIN_INVITES_WRITE("admin.invites:write", "Approve or deny invite requests in a Grid organization.", false),
+        ADMIN_TEAMS_READ("admin.teams:read", "Access information about a workspace", false),
+        ADMIN_TEAMS_WRITE("admin.teams:write", "Make changes to a workspace", false),
+        ADMIN_USERGROUPS_READ("admin.usergroups:read", "Access information about user groups", false),
+        ADMIN_USERGROUPS_WRITE("admin.usergroups:write", "Make changes to your usergroups", false),
+        ADMIN_USERS_READ("admin.users:read", "Access a workspace’s profile information", false),
+        ADMIN_USERS_WRITE("admin.users:write", "Modify account information", false),
+        APP_MENTIONS_READ("app_mentions:read", "View messages that directly mention @your_slack_app in conversations that the app is in", false),
+        AUDITLOGS_READ("auditlogs:read", "View events from all workspaces, channels and users (Enterprise Grid only)", false),
+        BOT("bot", "Add the ability for people to direct message or mention @your_slack_app", false),
+        CALLS_READ("calls:read", "View information about ongoing and past calls", false),
+        CALLS_WRITE("calls:write", "Start and manage calls in a workspace", false),
+        CHANNELS_HISTORY("channels:history", "View messages and other content in public channels that your slack app has been added to", false),
+        CHANNELS_JOIN("channels:join", "Join public channels in a workspace", false),
+        CHANNELS_MANAGE("channels:manage", "Manage public channels that your slack app has been added to and create new ones", false),
+        CHANNELS_READ("channels:read", "View basic information about public channels in a workspace", false),
+        CHANNELS_WRITE("channels:write", "Manage a user’s public channels and create new ones on a user’s behalf", false),
+        CHAT_WRITE("chat:write", "Post messages in approved channels & conversations", false),
+        CHAT_WRITE_CUSTOMIZE("chat:write.customize", "Send messages as @your_slack_app with a customized username and avatar", false),
+        CHAT_WRITE_PUBLIC("chat:write.public", "Send messages to channels @your_slack_app isn't a member of", false),
+        CHAT_WRITE_BOT("chat:write:bot", "Send messages as your slack app", false),
+        CHAT_WRITE_USER("chat:write:user", "Send messages on a user’s behalf", false),
+        CLIENT("client", "Receive all events from a workspace in real time", false),
+        COMMANDS("commands", "Add shortcuts and/or slash commands that people can use", false),
+        CONVERSATIONS_HISTORY("conversations:history", "Deprecated: Retrieve conversation history for legacy workspace apps", false),
+        CONVERSATIONS_READ("conversations:read", "Deprecated: Retrieve information on conversations for legacy workspace apps", false),
+        CONVERSATIONS_WRITE("conversations:write", "Deprecated: Edit conversation attributes for legacy workspace apps", false),
+        DND_READ("dnd:read", "View Do Not Disturb settings for people in a workspace", false),
+        DND_WRITE("dnd:write", "Edit a user’s Do Not Disturb settings", false),
+        DND_WRITE_USER("dnd:write:user", "Change the user's Do Not Disturb settings", false),
+        EMOJI_READ("emoji:read", "View custom emoji in a workspace", false),
+        FILES_READ("files:read", "View files shared in channels and conversations that your slack app has been added to", false),
+        FILES_WRITE("files:write", "Upload, edit, and delete files as your slack app", false),
+        FILES_WRITE_USER("files:write:user", "Upload, edit, and delete files as your slack app", false),
+        GROUPS_HISTORY("groups:history", "View messages and other content in private channels that your slack app has been added to", false),
+        GROUPS_READ("groups:read", "View basic information about private channels that your slack app has been added to", false),
+        GROUPS_WRITE("groups:write", "Manage private channels that your slack app has been added to and create new ones", false),
+        IDENTIFY("identify", "View information about a user’s identity", false),
+        IDENTITY_AVATAR("identity.avatar", "View a user’s Slack avatar", false),
+        IDENTITY_AVATAR_READ_USER("identity.avatar:read:user", "View the user's profile picture", false),
+        IDENTITY_BASIC("identity.basic", "View information about a user’s identity", false),
+        IDENTITY_EMAIL("identity.email", "View a user’s email address", false),
+        IDENTITY_EMAIL_READ_USER("identity.email:read:user", "This scope is not yet described.", false),
+        IDENTITY_TEAM("identity.team", "View a user’s Slack workspace name", false),
+        IDENTITY_TEAM_READ_USER("identity.team:read:user", "View the workspace's name, domain, and icon", false),
+        IDENTITY_READ_USER("identity:read:user", "This scope is not yet described.", false),
+        IM_HISTORY("im:history", "View messages and other content in direct messages that your slack app has been added to", false),
+        IM_READ("im:read", "View basic information about direct messages that your slack app has been added to", false),
+        IM_WRITE("im:write", "Start direct messages with people", false),
+        INCOMING_WEBHOOK("incoming-webhook", "Create one-way webhooks to post messages to a specific channel", false),
+        LINKS_READ("links:read", "View  URLs in messages", false),
+        LINKS_WRITE("links:write", "Show previews of  URLs in messages", false),
+        MPIM_HISTORY("mpim:history", "View messages and other content in group direct messages that your slack app has been added to", false),
+        MPIM_READ("mpim:read", "View basic information about group direct messages that your slack app has been added to", false),
+        MPIM_WRITE("mpim:write", "Start group direct messages with people", false),
+        NONE("none", "Execute methods without needing a scope", false),
+        PINS_READ("pins:read", "View pinned content in channels and conversations that your slack app has been added to", false),
+        PINS_WRITE("pins:write", "Add and remove pinned messages and files", false),
+        POST("post", "Post messages to a workspace", false),
+        REACTIONS_READ("reactions:read", "View emoji reactions and their associated content in channels and conversations that your slack app has been added to", false),
+        REACTIONS_WRITE("reactions:write", "Add and edit emoji reactions", false),
+        READ("read", "View all content in a workspace", false),
+        REMINDERS_READ("reminders:read", "View reminders created by your slack app", false),
+        REMINDERS_READ_USER("reminders:read:user", "Access reminders created by a user or for a user", false),
+        REMINDERS_WRITE("reminders:write", "Add, remove, or mark reminders as complete", false),
+        REMINDERS_WRITE_USER("reminders:write:user", "Add, remove, or complete reminders for the user", false),
+        REMOTE_FILES_READ("remote_files:read", "View remote files added by the app in a workspace", false),
+        REMOTE_FILES_SHARE("remote_files:share", "Share remote files on a user’s behalf", false),
+        REMOTE_FILES_WRITE("remote_files:write", "Add, edit, and delete remote files on a user’s behalf", false),
+        SEARCH_READ("search:read", "Search a workspace’s content", false),
+        STARS_READ("stars:read", "View messages and files that your slack app has starred", false),
+        STARS_WRITE("stars:write", "Add or remove stars", false),
+        TEAM_READ("team:read", "View the name, email domain, and icon for workspaces your slack app is connected to", false),
+        TOKENS_BASIC("tokens.basic", "Execute methods without needing a scope", false),
+        USERGROUPS_READ("usergroups:read", "View user groups in a workspace", false),
+        USERGROUPS_WRITE("usergroups:write", "Create and manage user groups", false),
+        WORKFLOW_STEPS_EXECUTE("workflow.steps:execute", "Add steps that people can use in Workflow Builder", false);
+
+        private final String scope;
+        private final String description;
+        private final boolean isDefault;
+
+    }
+
+    /**
      * 微信公众平台 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum WechatMp implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         SNSAPI_USERINFO("snsapi_userinfo", "弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息", true),
         SNSAPI_BASE("snsapi_base", "不弹出授权页面，直接跳转，只能获取用户openid", false);
 
@@ -1069,18 +1080,11 @@ public class OauthScope {
 
     /**
      * 微博 授权范围
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     @Getter
     @AllArgsConstructor
     public enum Weibo implements Scope {
 
-        /**
-         * {@code scope} 含义，以{@code description} 为准
-         */
         ALL("all", "获取所有权限", true),
         EMAIL("email", "用户的联系邮箱，<a rel=\"nofollow\" href=\"http://open.weibo.com/wiki/2/account/profile/email\">接口文档</a>", false),
         DIRECT_MESSAGES_WRITE("direct_messages_write", "私信发送接口，<a rel=\"nofollow\" href=\"http://open.weibo.com/wiki/C/2/direct_messages/send\">接口文档</a>", false),
@@ -1099,13 +1103,8 @@ public class OauthScope {
 
     /**
      * 各个平台 scope 类的统一接口
-     *
-     * @author Kimi Liu
-     * @version 6.2.2
-     * @since JDK 1.8+
      */
     public interface Scope {
-
         /**
          * 获取字符串 {@code scope}，对应为各平台实际使用的 {@code scope}
          *

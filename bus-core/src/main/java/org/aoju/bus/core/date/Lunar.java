@@ -76,41 +76,9 @@ public class Lunar {
      */
     public static final String QI_SOLAR_SECOND = "大寒";
     /**
-     * 农历基准年
-     */
-    public static final int BASE_YEAR = 1900;
-    /**
-     * 农历基准月
-     */
-    public static final int BASE_MONTH = 11;
-    /**
-     * 农历基准日
-     */
-    public static final int BASE_DAY = 11;
-    /**
-     * 农历与阳历年偏移量
-     */
-    public static final int BASE_INDEX = 0;
-    /**
-     * 基准对应的值年九星偏移量
-     */
-    public static final int BASE_YEAR_JIU_XING_INDEX = 0;
-    /**
-     * 基准对应的年干支偏移量
-     */
-    public static final int BASE_YEAR_GANZHI_INDEX = -4;
-    /**
-     * 基准对应的日干支偏移量
-     */
-    public static final int BASE_DAY_GANZHI_INDEX = 15;
-    /**
      * 月份地支偏移量，因正月起寅
      */
     public static final int BASE_MONTH_ZHI_INDEX = 2;
-    /**
-     * 星期偏移量
-     */
-    public static final int BASE_WEEK_INDEX = 2;
     /**
      * 旬
      */
@@ -249,7 +217,6 @@ public class Lunar {
             "仓库碓外东北", "房床厕外东北", "占门炉外东北", "碓磨门外正东", "厨灶栖外正东", "仓库床外正东",
             "房床碓外正东", "占门厕外正东", "碓磨炉外东南", "仓库栖外东南", "占房床外东南", "占门碓外东南"
     };
-
     /**
      * 地支对应天神偏移下标
      */
@@ -1364,6 +1331,14 @@ public class Lunar {
         }
     };
     /**
+     * 自定义节气
+     */
+    public static final String[] JIE_QI_IN_USE = {JIE_QI_PREPEND, "冬至", "小寒", "大寒", "立春", "雨水",
+            "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑",
+            "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", JIE_QI_APPEND, JIE_APPEND_SOLAR_FIRST,
+            QI_APPEND_SOLAR_SECOND
+    };
+    /**
      * 宜忌
      */
     private static final String[] YI_JI = {
@@ -2281,31 +2256,14 @@ public class Lunar {
             "381E,070847C34=431B,6A3A0E0F48C35=41442F4B,3233467635363EC36=4A4D,3C28292A4E1257C37=" +
             "4C,545563340B725CC38=2416025D6859536045,3D5672C39=021741425E5F5345,7464566DC3A=6906," +
             "393B12C3B=581951520304050D,61626C903E6573";
-
     /**
      * 24节气表（对应阳历的准确时刻）
      */
     private final Map<String, Solar> solarTerm = new LinkedHashMap<>();
     /**
-     * 农历年
-     */
-    private final int year;
-    /**
-     * 农历月，闰月为负，即闰2月=-2
-     */
-    private final int month;
-    /**
-     * 农历日
-     */
-    private final int day;
-    /**
      * 对应阳历
      */
     private final Solar solar;
-    /**
-     * 相对于基准日的偏移天数
-     */
-    private final int dayOffset;
     /**
      * 阳历小时
      */
@@ -2318,6 +2276,18 @@ public class Lunar {
      * 阳历秒钟
      */
     private final int second;
+    /**
+     * 农历年
+     */
+    private int year;
+    /**
+     * 农历月，闰月为负，即闰2月=-2
+     */
+    private int month;
+    /**
+     * 农历日
+     */
+    private int day;
     /**
      * 时对应的天干下标，0-9
      */
@@ -2391,7 +2361,7 @@ public class Lunar {
      */
     private int yearZhiIndexExact;
     /**
-     * 周下标，0-6
+     * 周下标，1-7
      */
     private int weekIndex;
     /**
@@ -2412,53 +2382,31 @@ public class Lunar {
      * @param date 阳历日期
      */
     public Lunar(Date date) {
-        this.solar = new Solar(date);
-        int startYear, startMonth, startDay;
-        int lunarYear, lunarMonth, lunarDay;
-        if (solar.getYear() < 2000) {
-            startYear = Solar.BASE_YEAR;
-            startMonth = Solar.BASE_MONTH;
-            startDay = Solar.BASE_DAY;
-            lunarYear = BASE_YEAR;
-            lunarMonth = BASE_MONTH;
-            lunarDay = BASE_DAY;
-        } else {
-            startYear = Solar.BASE_YEAR + 99;
-            startMonth = 1;
-            startDay = 1;
-            lunarYear = BASE_YEAR + 99;
-            lunarMonth = 11;
-            lunarDay = 25;
-        }
-        int diff = 0;
-        for (int i = startYear; i < solar.getYear(); i++) {
-            diff += 365;
-            if (Solar.isLeapYear(i)) {
-                diff += 1;
+        solar = new Solar(date);
+        Calendar c = Calendar.getInstance();
+        c.set(solar.getYear(), solar.getMonth() - 1, solar.getDay(), 0, 0, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        long solarTime = c.getTimeInMillis();
+        int y = solar.getYear();
+        Year year = Year.from(y);
+        for (Month m : year.getMonths()) {
+            Calendar firstDay = Solar.from(m.getFirstJulianDay()).getCalendar();
+            firstDay.set(Calendar.HOUR_OF_DAY, 0);
+            firstDay.set(Calendar.MINUTE, 0);
+            firstDay.set(Calendar.SECOND, 0);
+            firstDay.set(Calendar.MILLISECOND, 0);
+            int days = (int) ((solarTime - firstDay.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+            if (days < m.getDayCount()) {
+                this.year = m.getYear();
+                this.month = m.getMonth();
+                this.day = days + 1;
+                break;
             }
         }
-        for (int i = startMonth; i < solar.getMonth(); i++) {
-            diff += Solar.getDaysOfMonth(solar.getYear(), i);
-        }
-        diff += solar.getDay() - startDay;
-        lunarDay += diff;
-        int lastDate = getDaysOfMonth(lunarYear, lunarMonth);
-        while (lunarDay > lastDate) {
-            lunarDay -= lastDate;
-            lunarMonth = nextMonth(lunarYear, lunarMonth);
-            if (lunarMonth == 1) {
-                lunarYear++;
-            }
-            lastDate = getDaysOfMonth(lunarYear, lunarMonth);
-        }
-        this.year = lunarYear;
-        this.month = lunarMonth;
-        this.day = lunarDay;
         this.hour = solar.getHour();
         this.minute = solar.getMinute();
         this.second = solar.getSecond();
-        this.dayOffset = computeAddDays(this.year, this.month, this.day);
-        this.initialize();
+        this.initialize(year);
     }
 
     /**
@@ -2473,58 +2421,46 @@ public class Lunar {
     /**
      * 通过农历年月日初始化
      *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到30
+     * @param year  年（农历）
+     * @param month 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param day   日（农历），1到30
      */
-    public Lunar(int lunarYear, int lunarMonth, int lunarDay) {
-        this(lunarYear, lunarMonth, lunarDay, 0, 0, 0);
+    public Lunar(int year, int month, int day) {
+        this(year, month, day, 0, 0, 0);
     }
 
     /**
      * 通过农历年月日时初始化
      *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到30
-     * @param hour       小时（阳历）
-     * @param minute     分钟（阳历）
-     * @param second     秒钟（阳历）
+     * @param year   年（农历）
+     * @param month  月（农历），1到12，闰月为负，即闰2月=-2
+     * @param day    日（农历），1到30
+     * @param hour   小时（阳历）
+     * @param minute 分钟（阳历）
+     * @param second 秒钟（阳历）
      */
-    public Lunar(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
-        int m = Math.abs(lunarMonth);
-        if (m < 1 || m > 12) {
-            throw new IllegalArgumentException("Lunar month must between 1 and 12, or negative");
+    public Lunar(int year, int month, int day, int hour, int minute, int second) {
+        Year y = Year.from(year);
+        Month m = y.getMonth(month);
+        if (null == m) {
+            throw new IllegalArgumentException(String.format("wrong lunar year %d month %d", year, month));
         }
-        if (lunarMonth < 0) {
-            int leapMonth = getLeapMonth(lunarYear);
-            if (leapMonth == 0) {
-                throw new IllegalArgumentException(String.format("No leap month in lunar year %d", lunarYear));
-            } else if (leapMonth != m) {
-                throw new IllegalArgumentException(String.format("Leap month is %d in lunar year %d", leapMonth, lunarYear));
-            }
+        if (day < 1) {
+            throw new IllegalArgumentException("lunar day must bigger than 0");
         }
-        if (lunarDay < 1 || lunarDay > 30) {
-            throw new IllegalArgumentException("Lunar day must between 1 and 30");
+        int days = m.getDayCount();
+        if (day > days) {
+            throw new IllegalArgumentException(String.format("only %d days in lunar year %d month %d", days, year, month));
         }
-        int days = getDaysOfMonth(lunarYear, lunarMonth);
-        if (lunarDay > days) {
-            throw new IllegalArgumentException(String.format("Only %d days in lunar year %d month %d", days, lunarYear, lunarMonth));
-        }
-        this.year = lunarYear;
-        this.month = lunarMonth;
-        this.day = lunarDay;
+        this.year = year;
+        this.month = month;
+        this.day = day;
         this.hour = hour;
         this.minute = minute;
         this.second = second;
-        this.dayOffset = computeAddDays(this.year, this.month, this.day);
-
-        Calendar c = Calendar.getInstance();
-        c.set(Solar.BASE_YEAR, Solar.BASE_MONTH - 1, Solar.BASE_DAY, hour, minute, second);
-        c.add(Calendar.DATE, this.dayOffset);
-
-        this.solar = new Solar(c);
-        this.initialize();
+        Solar noon = Solar.from(m.getFirstJulianDay() + day - 1);
+        this.solar = Solar.from(noon.getYear(), noon.getMonth(), noon.getDay(), hour, minute, second);
+        this.initialize(y);
     }
 
     /**
@@ -2550,87 +2486,28 @@ public class Lunar {
     /**
      * 通过指定农历年月日获取农历
      *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到31
+     * @param year  年（农历）
+     * @param month 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param day   日（农历），1到31
      * @return 农历
      */
-    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay) {
-        return new Lunar(lunarYear, lunarMonth, lunarDay);
+    public static Lunar from(int year, int month, int day) {
+        return new Lunar(year, month, day);
     }
 
     /**
      * 通过指定农历年月日获取农历
      *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到31
-     * @param hour       小时（阳历）
-     * @param minute     分钟（阳历）
-     * @param second     秒钟（阳历）
+     * @param year   年（农历）
+     * @param month  月（农历），1到12，闰月为负，即闰2月=-2
+     * @param day    日（农历），1到31
+     * @param hour   小时（阳历）
+     * @param minute 分钟（阳历）
+     * @param second 秒钟（阳历）
      * @return 农历
      */
-    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
-        return new Lunar(lunarYear, lunarMonth, lunarDay, hour, minute, second);
-    }
-
-    /**
-     * 计算指定日期距离基准日期的天数
-     *
-     * @param year  农历年
-     * @param month 农历月
-     * @param day   农历日
-     * @return 距离天数
-     */
-    public static int computeAddDays(int year, int month, int day) {
-        if (BASE_YEAR == year && BASE_MONTH == month) {
-            return day - BASE_DAY;
-        }
-        int y = BASE_YEAR;
-        int m = BASE_MONTH;
-        int diff = getDaysOfMonth(y, m) - BASE_DAY;
-        while (y != year || m != month) {
-            m = nextMonth(y, m);
-            if (m == 1) {
-                y++;
-            }
-            if (y == year && m == month) {
-                diff += day;
-            } else {
-                diff += getDaysOfMonth(y, m);
-            }
-        }
-        return diff;
-    }
-
-    /**
-     * 获取指定年份的闰月
-     *
-     * @param year 年份
-     * @return 闰月数字，1代表闰1月，0代表无闰月
-     */
-    public static int getLeapMonth(int year) {
-        int index = year - BASE_YEAR + BASE_INDEX;
-        int v = Fields.LEAP_MONTH[2 * index + 1];
-        v = (v >> 4) & 0x0F;
-        return v;
-    }
-
-    /**
-     * 获取指定年月的下一个月是第几月
-     *
-     * @param y 农历年
-     * @param m 农历月，闰月为负数
-     * @return 1到12，闰月为负数
-     */
-    public static int nextMonth(int y, int m) {
-        int n = Math.abs(m) + 1;
-        if (m > 0) {
-            if (m == getLeapMonth(y)) {
-                n = -m;
-            }
-        }
-        return 13 != n ? n : 1;
+    public static Lunar from(int year, int month, int day, int hour, int minute, int second) {
+        return new Lunar(year, month, day, hour, minute, second);
     }
 
     /**
@@ -2641,34 +2518,11 @@ public class Lunar {
      * @return 天数
      */
     public static int getDaysOfMonth(int year, int month) {
-        int index = year - BASE_YEAR + BASE_INDEX;
-        int v, l, d = 30;
-        if (1 <= month && month <= 8) {
-            v = Fields.LEAP_MONTH[2 * index];
-            l = month - 1;
-            if (((v >> l) & 0x01) == 1) {
-                d = 29;
-            }
-        } else if (9 <= month && month <= 12) {
-            v = Fields.LEAP_MONTH[2 * index + 1];
-            l = month - 9;
-            if (((v >> l) & 0x01) == 1) {
-                d = 29;
-            }
-        } else {
-            v = Fields.LEAP_MONTH[2 * index + 1];
-            v = (v >> 4) & 0x0F;
-            if (v != Math.abs(month)) {
-                d = 0;
-            } else {
-                d = 29;
-                for (int i : Fields.LEAP_YEAR) {
-                    if (i == index) {
-                        d = 30;
-                        break;
-                    }
-                }
-            }
+        int m = month - 1;
+        int d = Fields.DAYS_OF_MONTH[m];
+        //公历闰年2月多一天
+        if (m == Calendar.FEBRUARY && Solar.isLeapYear(year)) {
+            d++;
         }
         return d;
     }
@@ -3387,7 +3241,7 @@ public class Lunar {
      * @return 1234567
      */
     public int getWeek() {
-        return weekIndex + 1;
+        return weekIndex;
     }
 
     /**
@@ -3405,7 +3259,7 @@ public class Lunar {
      * @return 宿
      */
     public String getXiu() {
-        return XIU.get(getDayZhi() + getWeek());
+        return XIU.get(getDayZhi() + (getWeek() - 1));
     }
 
     /**
@@ -4009,7 +3863,7 @@ public class Lunar {
      * @return 值年九星
      */
     public NineStar getYearNineStar() {
-        int index = BASE_YEAR_JIU_XING_INDEX - (year - BASE_YEAR) % 9;
+        int index = -(year - 1900) % 9;
         if (index < 0) {
             index += 9;
         }
@@ -4253,7 +4107,7 @@ public class Lunar {
                     && d.getMonth() == solar.getMonth()
                     && d.getDay() == solar.getDay()) {
                 name = st.getKey();
-                time = " " + d.getHour() + ":" + d.getMinute() + ":" + d.getSecond();
+                time = " " + d.getHour() + Symbol.COLON + d.getMinute() + Symbol.COLON + d.getSecond();
                 break;
             }
         }
@@ -4446,49 +4300,7 @@ public class Lunar {
      * @return 农历日期
      */
     public Lunar next(int days) {
-        int y = year;
-        int m = month;
-        int d = day;
-        if (days > 0) {
-            int daysInMonth = getDaysOfMonth(y, m);
-            int rest = day + days;
-            while (daysInMonth < rest) {
-                if (m > 0) {
-                    if (getLeapMonth(y) != m) {
-                        m++;
-                    } else {
-                        m = -m;
-                    }
-                } else {
-                    m = 1 - m;
-                }
-                if (13 == m) {
-                    y++;
-                    m = 1;
-                }
-                rest -= daysInMonth;
-                daysInMonth = getDaysOfMonth(y, m);
-            }
-            d = rest;
-        } else if (days < 0) {
-            int daysInMonth = day;
-            int rest = -days;
-            while (daysInMonth <= rest) {
-                if (m > 0) {
-                    m--;
-                    if (0 == m) {
-                        y--;
-                        m = getLeapMonth(y) != 12 ? 12 : -12;
-                    }
-                } else {
-                    m = -m;
-                }
-                rest -= daysInMonth;
-                daysInMonth = getDaysOfMonth(y, m);
-            }
-            d = daysInMonth - rest;
-        }
-        return new Lunar(y, m, d, hour, minute, second);
+        return this.solar.next(days).getLunar();
     }
 
     /**
@@ -4892,8 +4704,8 @@ public class Lunar {
     /**
      * 初始化信息
      */
-    private void initialize() {
-        this.initTerm();
+    private void initialize(Year year) {
+        this.initTerm(year);
         this.initYear();
         this.initMonth();
         this.initDay();
@@ -4904,33 +4716,11 @@ public class Lunar {
     /**
      * 计算节气表
      */
-    private void initTerm() {
-        double jd = Math.floor((solar.getYear() - 2000) * 365.2422 + 180);
-        double w = Math.floor((jd - 355 + 183) / 365.2422) * 365.2422 + 355;
-        if (Galaxy.QiShuo.calc(w, "气") > jd) {
-            w -= 365.2422;
+    private void initTerm(Year year) {
+        List<Double> julianDays = year.getJieQiJulianDays();
+        for (int i = 0, j = JIE_QI_IN_USE.length; i < j; i++) {
+            this.solarTerm.put(JIE_QI_IN_USE[i], Solar.from(julianDays.get(i)));
         }
-        // 追加上一农历年末的大雪
-        double q = Galaxy.QiShuo.calc(w - 15.2184, "气");
-        solarTerm.put(JIE_QI_PREPEND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
-        int size = Fields.CN_SOLARTERM.length;
-        for (int i = 0; i < size; i++) {
-            q = Galaxy.QiShuo.calc(w + 15.2184 * i, "气");
-            solarTerm.put(Fields.CN_SOLARTERM[i], Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
-        }
-        // 追加下一农历年初的冬至
-        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(JIE_QI_APPEND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
-
-        // 追加下一阳历年初的小寒
-        size++;
-        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(JIE_APPEND_SOLAR_FIRST, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
-
-        // 追加下一阳历年初的大寒
-        size++;
-        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(QI_APPEND_SOLAR_SECOND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
     }
 
     /**
@@ -4938,8 +4728,9 @@ public class Lunar {
      */
     private void initYear() {
         // 以正月初一开始
-        yearGanIndex = (year + BASE_YEAR_GANZHI_INDEX) % 10;
-        yearZhiIndex = (year + BASE_YEAR_GANZHI_INDEX) % 12;
+        int offset = year - 4;
+        yearGanIndex = offset % 10;
+        yearZhiIndex = offset % 12;
 
         // 以立春作为新一年的开始的干支纪年
         int g = yearGanIndex;
@@ -5062,19 +4853,20 @@ public class Lunar {
      * 干支纪日计算
      */
     private void initDay() {
-        int addDays = (this.dayOffset + BASE_DAY_GANZHI_INDEX) % 60;
-        this.dayGanIndex = addDays % 10;
-        this.dayZhiIndex = addDays % 12;
+        Solar noon = Solar.from(solar.getYear(), solar.getMonth(), solar.getDay(), 12, 0, 0);
+        int offset = (int) noon.getJulianDay() - 11;
+        dayGanIndex = offset % 10;
+        dayZhiIndex = offset % 12;
 
-        int dayGanExact = this.dayGanIndex;
-        int dayZhiExact = this.dayZhiIndex;
+        int dayGanExact = dayGanIndex;
+        int dayZhiExact = dayZhiIndex;
 
         // 八字流派2，晚子时（夜子/子夜）日柱算当天
-        this.dayGanIndexExact2 = dayGanExact;
-        this.dayZhiIndexExact2 = dayZhiExact;
+        dayGanIndexExact2 = dayGanExact;
+        dayZhiIndexExact2 = dayZhiExact;
 
         // 八字流派1，晚子时（夜子/子夜）日柱算明天
-        String hm = (hour < 10 ? "0" : Normal.EMPTY) + hour + Symbol.C_COLON + (minute < 10 ? "0" : Normal.EMPTY) + minute;
+        String hm = (hour < 10 ? "0" : Normal.EMPTY) + hour + Symbol.COLON + (minute < 10 ? "0" : Normal.EMPTY) + minute;
         if (hm.compareTo("23:00") >= 0 && hm.compareTo("23:59") <= 0) {
             dayGanExact++;
             if (dayGanExact >= 10) {
@@ -5086,8 +4878,8 @@ public class Lunar {
             }
         }
 
-        this.dayGanIndexExact = dayGanExact;
-        this.dayZhiIndexExact = dayZhiExact;
+        dayGanIndexExact = dayGanExact;
+        dayZhiIndexExact = dayZhiExact;
     }
 
     /**
@@ -5103,7 +4895,7 @@ public class Lunar {
      * 星期计算
      */
     private void initWeek() {
-        weekIndex = (dayOffset + BASE_WEEK_INDEX) % 7;
+        this.weekIndex = solar.getWeek();
     }
 
     /**
@@ -5317,6 +5109,282 @@ public class Lunar {
         @Override
         public String toString() {
             return name + " 第" + index + "天";
+        }
+
+    }
+
+    /**
+     * 农历年
+     */
+    public static class Year {
+
+        /**
+         * 农历年
+         */
+        private int year;
+
+        /**
+         * 农历月们
+         */
+        private List<Month> months = new ArrayList<>();
+
+        /**
+         * 节气儒略日们
+         */
+        private List<Double> jieQiJulianDays = new ArrayList<>();
+
+        /**
+         * 初始化
+         *
+         * @param lunarYear 农历年
+         */
+        public Year(int lunarYear) {
+            this.year = lunarYear;
+            compute();
+        }
+
+        /**
+         * 通过农历年初始化
+         *
+         * @param lunarYear 农历年
+         * @return 农历年
+         */
+        public static Year from(int lunarYear) {
+            return new Year(lunarYear);
+        }
+
+        private void compute() {
+            // 节气(中午12点)
+            double[] jq = new double[25];
+            // 合朔，即每月初一(中午12点)
+            double[] hs = new double[15];
+            // 每月天数
+            int[] dayCounts = new int[hs.length - 1];
+
+            int year = this.year - 2000;
+            // 从上年的大雪到下年的大寒
+            for (int i = 0, j = JIE_QI_IN_USE.length; i < j; i++) {
+                // 精确的节气
+                double t = 36525 * Galaxy.Astronomy.s_aLon_t((year + (17 + i) * 15d / 360) * 2 * Math.PI);
+                t += 1d / 3 - Galaxy.Astronomy.dt_t(t);
+                jieQiJulianDays.add(t + Solar.J2000);
+                // 按中午12点算的节气
+                if (i > 0 && i < 26) {
+                    jq[i - 1] = Math.round(t);
+                }
+            }
+
+            // 冬至前的初一
+            double w = Galaxy.QiShuo.calc(jq[0]);
+            if (w > jq[0]) {
+                w -= 29.5306;
+            }
+            // 递推每月初一
+            for (int i = 0, j = hs.length; i < j; i++) {
+                hs[i] = Galaxy.QiShuo.calc(w + 29.5306 * i);
+            }
+            // 每月天数
+            for (int i = 0, j = dayCounts.length; i < j; i++) {
+                dayCounts[i] = (int) (hs[i + 1] - hs[i]);
+            }
+
+            int leap = -1;
+            if (hs[13] <= jq[24]) {
+                int i = 1;
+                while (hs[i + 1] > jq[2 * i] && i < 13) {
+                    i++;
+                }
+                leap = i;
+            }
+
+            int y = this.year - 1;
+            int m = 11;
+            for (int i = 0, j = dayCounts.length; i < j; i++) {
+                boolean isLeap = false;
+                if (i == leap) {
+                    isLeap = true;
+                    m--;
+                }
+                this.months.add(new Month(y, isLeap ? -m : m, dayCounts[i], hs[i] + Solar.J2000));
+                m++;
+                if (m == 13) {
+                    m = 1;
+                    y++;
+                }
+            }
+        }
+
+        /**
+         * 获取农历年
+         *
+         * @return 农历年
+         */
+        public int getYear() {
+            return year;
+        }
+
+        /**
+         * 获取农历月们
+         *
+         * @return 农历月们
+         */
+        public List<Month> getMonths() {
+            return months;
+        }
+
+        /**
+         * 获取节气儒略日们
+         *
+         * @return 节气儒略日们
+         */
+        public List<Double> getJieQiJulianDays() {
+            return jieQiJulianDays;
+        }
+
+        /**
+         * 获取农历月
+         *
+         * @param lunarMonth 月，1-12，闰月为负数，如闰2月为-2
+         * @return 农历月
+         */
+        public Month getMonth(int lunarMonth) {
+            for (Month m : months) {
+                if (m.getYear() == year && m.getMonth() == lunarMonth) {
+                    return m;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * 获取闰月
+         *
+         * @return 闰月数字，1代表闰1月，0代表无闰月
+         */
+        public int getLeapMonth() {
+            for (Month m : months) {
+                if (m.getYear() == year && m.isLeap()) {
+                    return Math.abs(m.getMonth());
+                }
+            }
+            return 0;
+        }
+
+        /**
+         * 构建字符串内容
+         *
+         * @param args 可选参数-简化输出
+         * @return 字符串内容
+         */
+        public String build(boolean... args) {
+            if (ObjectKit.isNotEmpty(args) && BooleanKit.and(args)) {
+                return this.year + "年";
+            }
+            return StringKit.toString(this.year);
+        }
+
+    }
+
+
+    /**
+     * 农历月
+     */
+    public static class Month {
+
+        /**
+         * 农历年
+         */
+        private int year;
+
+        /**
+         * 农历月：1-12，闰月为负数，如闰2月为-2
+         */
+        private int month;
+
+        /**
+         * 天数，大月30天，小月29天
+         */
+        private int dayCount;
+
+        /**
+         * 初一的儒略日
+         */
+        private double firstJulianDay;
+
+        /**
+         * 初始化
+         *
+         * @param lunarYear      农历年
+         * @param lunarMonth     农历月：1-12，闰月为负数，如闰2月为-2
+         * @param dayCount       天数
+         * @param firstJulianDay 初一的儒略日
+         */
+        public Month(int lunarYear, int lunarMonth, int dayCount, double firstJulianDay) {
+            this.year = lunarYear;
+            this.month = lunarMonth;
+            this.dayCount = dayCount;
+            this.firstJulianDay = firstJulianDay;
+        }
+
+        /**
+         * 通过农历年月初始化
+         *
+         * @param lunarYear  农历年
+         * @param lunarMonth 农历月：1-12，闰月为负数，如闰2月为-2
+         * @return 农历月
+         */
+        public static Month from(int lunarYear, int lunarMonth) {
+            return Year.from(lunarYear).getMonth(lunarMonth);
+        }
+
+        /**
+         * 获取农历年
+         *
+         * @return 农历年
+         */
+        public int getYear() {
+            return year;
+        }
+
+        /**
+         * 获取农历月
+         *
+         * @return 农历月：1-12，闰月为负数，如闰2月为-2
+         */
+        public int getMonth() {
+            return month;
+        }
+
+        /**
+         * 是否闰月
+         *
+         * @return true/false
+         */
+        public boolean isLeap() {
+            return month < 0;
+        }
+
+        /**
+         * 获取天数
+         *
+         * @return 天数
+         */
+        public int getDayCount() {
+            return dayCount;
+        }
+
+        /**
+         * 获取初一的儒略日
+         *
+         * @return 初一的儒略日
+         */
+        public double getFirstJulianDay() {
+            return firstJulianDay;
+        }
+
+        @Override
+        public String toString() {
+            return year + "年" + (isLeap() ? "闰" : Normal.EMPTY) + Fields.CN_MONTH[Math.abs(month)] + "月(" + dayCount + "天)";
         }
 
     }

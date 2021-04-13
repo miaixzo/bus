@@ -103,7 +103,8 @@ public class WmiQueryHandler {
     }
 
     /**
-     * Query WMI for values, with no timeout.
+     * Query WMI for values. Makes no assumptions on whether the user has previously
+     * initialized COM.
      *
      * @param <T>   WMI queries use an Enum to identify the fields to query, and use
      *              the enum values as keys to retrieve the results.
@@ -112,19 +113,37 @@ public class WmiQueryHandler {
      * @return a WmiResult object containing the query results, wrapping an EnumMap
      */
     public <T extends Enum<T>> WbemcliUtil.WmiResult<T> queryWMI(WbemcliUtil.WmiQuery<T> query) {
+        return queryWMI(query, true);
+    }
 
+    /**
+     * Query WMI for values.
+     *
+     * @param <T>     WMI queries use an Enum to identify the fields to query, and use
+     *                the enum values as keys to retrieve the results.
+     * @param query   A WmiQuery object encapsulating the namespace, class, and
+     *                properties
+     * @param initCom Whether to initialize COM. If {@code true}, initializes COM before
+     *                the query and uninitializes after. If {@code false}, assumes the
+     *                user has initialized COM separately. This can improve WMI query
+     *                performance.
+     * @return a WmiResult object containing the query results, wrapping an EnumMap
+     */
+    public <T extends Enum<T>> WbemcliUtil.WmiResult<T> queryWMI(WbemcliUtil.WmiQuery<T> query, boolean initCom) {
         WbemcliUtil.WmiResult<T> result = WbemcliUtil.INSTANCE.new WmiResult<>(query.getPropertyEnum());
         if (failedWmiClassNames.contains(query.getWmiClassName())) {
             return result;
         }
         boolean comInit = false;
         try {
-            comInit = initCOM();
+            if (initCom) {
+                comInit = initCOM();
+            }
             result = query.execute(wmiTimeout);
         } catch (COMException e) {
             // Ignore any exceptions with OpenHardwareMonitor
             if (!WmiKit.OHM_NAMESPACE.equals(query.getNameSpace())) {
-                final int hresult = null == e.getHresult() ? -1 : e.getHresult().intValue();
+                final int hresult = e.getHresult() == null ? -1 : e.getHresult().intValue();
                 switch (hresult) {
                     case Wbemcli.WBEM_E_INVALID_NAMESPACE:
                         Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());
@@ -142,7 +161,7 @@ public class WmiQueryHandler {
                 failedWmiClassNames.add(query.getWmiClassName());
             }
         } catch (TimeoutException e) {
-            Logger.error("WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
+            Logger.warn("WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
         }
         if (comInit) {
             unInitCOM();
