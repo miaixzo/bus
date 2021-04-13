@@ -269,7 +269,11 @@ public class CharKit {
      * @see Character#isSpaceChar(int)
      */
     public static boolean isBlankChar(int c) {
-        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == '\ufeff' || c == '\u202a';
+        return Character.isWhitespace(c)
+                || Character.isSpaceChar(c)
+                || c == '\ufeff'
+                || c == '\u202a'
+                || c == '\u0000';
     }
 
     /**
