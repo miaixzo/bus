@@ -1092,7 +1092,7 @@ public class BeanKit {
     }
 
     /**
-     * 编辑Bean的字段，static字段不会处理<br>
+     * 编辑Bean的字段，static字段不会处理
      * 例如需要对指定的字段做判空操作、null转""操作等等。
      *
      * @param bean   bean
