@@ -816,6 +816,17 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 获得指定月份的总天数
+     *
+     * @param month      月份
+     * @param isLeapYear 是否闰年
+     * @return 天
+     */
+    public static int getDayOfMonth(int month, boolean isLeapYear) {
+        return java.time.Month.of(month).length(isLeapYear);
+    }
+
+    /**
      * 获取天
      *
      * @param date Date

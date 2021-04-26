@@ -869,6 +869,18 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
+     * 设置列的默认样式
+     *
+     * @param x     列号，从0开始
+     * @param style 样式
+     * @return this
+     */
+    public ExcelWriter setColumnStyle(int x, CellStyle style) {
+        this.sheet.setDefaultColumnStyle(x, style);
+        return this;
+    }
+
+    /**
      * 创建字体
      *
      * @return 字体

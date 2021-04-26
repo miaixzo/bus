@@ -199,9 +199,7 @@ public class Solar {
      * @param date 日期
      */
     public Solar(Date date) {
-        this.calendar = Calendar.getInstance();
-        this.calendar.setTime(date);
-        calendar.set(Calendar.MILLISECOND, 0);
+        this.calendar = Kalendar.calendar(date);
         this.year = calendar.get(Calendar.YEAR);
         this.month = calendar.get(Calendar.MONTH) + 1;
         this.day = calendar.get(Calendar.DATE);
@@ -264,9 +262,8 @@ public class Solar {
         f *= 60;
         int second = (int) Math.round(f);
 
-        this.calendar = Calendar.getInstance();
-        this.calendar.set(year, month - 1, day, hour, minute, second);
-        calendar.set(Calendar.MILLISECOND, 0);
+        this.calendar = Kalendar.calendar(year, month, day, hour, minute, second);
+
         this.year = year;
         this.month = month;
         this.day = day;
@@ -505,9 +502,7 @@ public class Solar {
      */
     public static int getWeeksOfMonth(int year, int month, int start) {
         int days = getDaysOfMonth(year, month);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month - 1, 1);
-        int week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        int week = Kalendar.calendar(year, month, 1).get(Calendar.DAY_OF_WEEK) - 1;
         return (int) Math.ceil((days + week - start) * 1D / 7);
     }
 
@@ -652,9 +647,7 @@ public class Solar {
      * @return {@link Solar}
      */
     public Solar next(int days, boolean onlyWorkday) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month - 1, day, hour, minute, second);
-        calendar.set(Calendar.MILLISECOND, 0);
+        Calendar calendar = Kalendar.calendar(year, month, day, hour, minute, second);
         if (0 != days) {
             if (!onlyWorkday) {
                 calendar.add(Calendar.DATE, days);
@@ -832,8 +825,7 @@ public class Solar {
          * @param date 日期
          */
         public Year(Date date) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            Calendar calendar = Kalendar.calendar(date);
             this.year = calendar.get(Calendar.YEAR);
         }
 
@@ -916,8 +908,7 @@ public class Solar {
          * @return 阳历年
          */
         public Year next(int years) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(this.year, Calendar.JANUARY, 1);
+            Calendar calendar = Kalendar.calendar(year, 1, 1);
             calendar.add(Calendar.YEAR, years);
             return new Year(calendar);
         }
@@ -968,8 +959,7 @@ public class Solar {
          * @param date 日期
          */
         public Semester(Date date) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            Calendar calendar = Kalendar.calendar(date);
             this.year = calendar.get(Calendar.YEAR);
             this.month = calendar.get(Calendar.MONTH) + 1;
         }
@@ -1063,8 +1053,7 @@ public class Solar {
             if (0 == halfYears) {
                 return new Semester(this.year, this.month);
             }
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(this.year, this.month - 1, 1);
+            Calendar calendar = Kalendar.calendar(year, month, 1);
             calendar.add(Calendar.MONTH, MONTH_COUNT * halfYears);
             return new Semester(calendar);
         }
@@ -1129,8 +1118,7 @@ public class Solar {
          * @param date 日期
          */
         public Quarter(Date date) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            Calendar calendar = Kalendar.calendar(date);
             this.year = calendar.get(Calendar.YEAR);
             this.month = calendar.get(Calendar.MONTH) + 1;
         }
@@ -1224,8 +1212,7 @@ public class Solar {
             if (0 == seasons) {
                 return new Quarter(this.year, this.month);
             }
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(this.year, this.month - 1, 1);
+            Calendar calendar = Kalendar.calendar(year, month, 1);
             calendar.add(Calendar.MONTH, MONTH_COUNT * seasons);
             return new Quarter(calendar);
         }
@@ -1286,8 +1273,7 @@ public class Solar {
          * @param date 日期
          */
         public Month(Date date) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            Calendar calendar = Kalendar.calendar(date);
             this.year = calendar.get(Calendar.YEAR);
             this.month = calendar.get(Calendar.MONTH) + 1;
         }
@@ -1385,8 +1371,7 @@ public class Solar {
          * @return 阳历月
          */
         public Month next(int months) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(this.year, this.month - 1, 1);
+            Calendar calendar = Kalendar.calendar(year, month, 1);
             calendar.add(Calendar.MONTH, months);
             return new Month(calendar);
         }
@@ -1444,8 +1429,7 @@ public class Solar {
          * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
          */
         public Week(Date date, int start) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            Calendar calendar = Kalendar.calendar(date);
             this.year = calendar.get(Calendar.YEAR);
             this.month = calendar.get(Calendar.MONTH) + 1;
             this.day = calendar.get(Calendar.DATE);
@@ -1557,8 +1541,7 @@ public class Solar {
          * @return 周序号，从1开始
          */
         public int getIndex() {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(this.year, this.month - 1, 1);
+            Calendar calendar = Kalendar.calendar(year, month, 1);
             int firstDayWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
             if (firstDayWeek == 0) {
                 firstDayWeek = 7;
@@ -1575,40 +1558,39 @@ public class Solar {
          */
         public Week next(int weeks, boolean separateMonth) {
             if (0 == weeks) {
-                return new Week(this.year, this.month, this.day, this.start);
+                return new Week(year, month, day, start);
             }
             if (separateMonth) {
                 int n = weeks;
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(year, this.month - 1, this.day);
-                Week week = new Week(calendar, this.start);
+                Calendar c = Kalendar.calendar(year, month, day);
+                Week week = new Week(c, start);
                 int month = this.month;
                 boolean plus = n > 0;
                 while (0 != n) {
-                    calendar.add(Calendar.DATE, plus ? 7 : -7);
-                    week = new Week(calendar, this.start);
+                    c.add(Calendar.DATE, plus ? 7 : -7);
+                    week = new Week(c, start);
                     int weekMonth = week.getMonth();
                     if (month != weekMonth) {
                         int index = week.getIndex();
                         if (plus) {
                             if (1 == index) {
                                 Solar firstDay = week.getFirstDay();
-                                week = new Week(firstDay.getYear(), firstDay.getMonth(), firstDay.getDay(), this.start);
+                                week = new Week(firstDay.getYear(), firstDay.getMonth(), firstDay.getDay(), start);
                                 weekMonth = week.getMonth();
                             } else {
-                                calendar.set(week.getYear(), week.getMonth() - 1, 1);
-                                week = new Week(calendar, this.start);
+                                c = Kalendar.calendar(week.getYear(), week.getMonth(), 1);
+                                week = new Week(c, start);
                             }
                         } else {
-                            int size = getWeeksOfMonth(week.getYear(), week.getMonth(), this.start);
+                            int size = getWeeksOfMonth(week.getYear(), week.getMonth(), start);
                             if (size == index) {
                                 Solar firstDay = week.getFirstDay();
                                 Solar lastDay = firstDay.next(6);
-                                week = new Week(lastDay.getYear(), lastDay.getMonth(), lastDay.getDay(), this.start);
+                                week = new Week(lastDay.getYear(), lastDay.getMonth(), lastDay.getDay(), start);
                                 weekMonth = week.getMonth();
                             } else {
-                                calendar.set(week.getYear(), week.getMonth() - 1, getDaysOfMonth(week.getYear(), week.getMonth()));
-                                week = new Week(calendar, this.start);
+                                c = Kalendar.calendar(week.getYear(), week.getMonth(), getDaysOfMonth(week.getYear(), week.getMonth()));
+                                week = new Week(c, start);
                             }
                         }
                         month = weekMonth;
@@ -1617,10 +1599,9 @@ public class Solar {
                 }
                 return week;
             } else {
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(this.year, this.month - 1, this.day);
-                calendar.add(Calendar.DATE, weeks * 7);
-                return new Week(calendar, this.start);
+                Calendar c = Kalendar.calendar(year, month, day);
+                c.add(Calendar.DATE, weeks * 7);
+                return new Week(c, start);
             }
         }
 
@@ -1630,8 +1611,7 @@ public class Solar {
          * @return 本周第一天的阳历日期
          */
         public Solar getFirstDay() {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(year, this.month - 1, this.day);
+            Calendar calendar = Kalendar.calendar(year, month, day);
             int week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
             int prev = week - this.start;
             if (prev < 0) {

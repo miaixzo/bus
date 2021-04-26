@@ -43,6 +43,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Bean工具类
@@ -824,6 +825,24 @@ public class BeanKit {
     }
 
     /**
+     * 复制集合中的Bean属性
+     * 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中
+     *
+     * @param collection  原Bean集合
+     * @param targetType  目标Bean类型
+     * @param copyOptions 拷贝选项
+     * @param <T>         Bean类型
+     * @return the list
+     */
+    public static <T> List<T> copyToList(Collection<?> collection, Class<T> targetType, CopyOptions copyOptions) {
+        return collection.stream().map((source) -> {
+            final T target = ReflectKit.newInstanceIfPossible(targetType);
+            copyProperties(source, target, copyOptions);
+            return target;
+        }).collect(Collectors.toList());
+    }
+
+    /**
      * 给定的Bean的类名是否匹配指定类名字符串
      * 如果isSimple为{@code false},则只匹配类名而忽略包名
      * 如果isSimple为{@code true},则匹配包括包名的全类名
@@ -847,18 +866,10 @@ public class BeanKit {
      * @return 处理后的Bean对象
      */
     public static <T> T trimStrFields(T bean, String... ignoreFields) {
-        if (null == bean) {
-            return null;
-        }
-
-        final Field[] fields = ReflectKit.getFields(bean.getClass());
-        for (Field field : fields) {
-            if (isStatic(field)) {
-                continue;
-            }
-            if (null != ignoreFields && ArrayKit.containsIgnoreCase(ignoreFields, field.getName())) {
+        return edit(bean, (field) -> {
+            if (ignoreFields != null && ArrayKit.containsIgnoreCase(ignoreFields, field.getName())) {
                 // 不处理忽略的Fields
-                continue;
+                return field;
             }
             if (String.class.equals(field.getType())) {
                 // 只有String的Field才处理
@@ -871,9 +882,8 @@ public class BeanKit {
                     }
                 }
             }
-        }
-
-        return bean;
+            return field;
+        });
     }
 
     /**
@@ -1079,6 +1089,30 @@ public class BeanKit {
      */
     public static void forEach(Class<?> clazz, Consumer<? super PropertyDescription> action) {
         getBeanDesc(clazz).getProps().forEach(action);
+    }
+
+    /**
+     * 编辑Bean的字段，static字段不会处理<br>
+     * 例如需要对指定的字段做判空操作、null转""操作等等。
+     *
+     * @param bean   bean
+     * @param editor 编辑器函数
+     * @param <T>    被编辑的Bean类型
+     * @return the object
+     */
+    public static <T> T edit(T bean, Editor<Field> editor) {
+        if (bean == null) {
+            return null;
+        }
+
+        final Field[] fields = ReflectKit.getFields(bean.getClass());
+        for (Field field : fields) {
+            if (isStatic(field)) {
+                continue;
+            }
+            editor.edit(field);
+        }
+        return bean;
     }
 
     /**

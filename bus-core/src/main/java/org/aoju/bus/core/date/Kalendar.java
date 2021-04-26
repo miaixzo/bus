@@ -33,9 +33,7 @@ import org.aoju.bus.core.toolkit.CollKit;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -176,6 +174,43 @@ public class Kalendar {
             });
         }
         return new NonWrapper(CollKit.newArrayList(new YearWrapper(year, monthWrapperList)), dayMap, dayList);
+    }
+
+    /**
+     * @param year   年
+     * @param month  月
+     * @param day    日
+     * @param hour   小时
+     * @param minute 分钟
+     * @param second 秒
+     * @return {@link Calendar}
+     */
+    public static Calendar calendar(int year, int month, int day, int hour, int minute, int second) {
+        Calendar c = Calendar.getInstance();
+        c.set(year, month - 1, day, hour, minute, second);
+        c.set(Calendar.MILLISECOND, 0);
+        return c;
+    }
+
+    /**
+     * @param year  年
+     * @param month 月
+     * @param day   日
+     * @return {@link Calendar}
+     */
+    public static Calendar calendar(int year, int month, int day) {
+        return calendar(year, month, day, 0, 0, 0);
+    }
+
+    /**
+     * @param date 日期
+     * @return {@link Calendar}
+     */
+    public static Calendar calendar(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.MILLISECOND, 0);
+        return c;
     }
 
 }
