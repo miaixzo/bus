@@ -256,6 +256,23 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         store.transferTime = devstatArray[UdevStat.ACTIVE_MS.ordinal()];
     }
 
+    private static String getPartitionNameForDmDevice(String vgName, String lvName) {
+        return new StringBuilder().append(DEV_LOCATION).append(vgName).append('/').append(lvName).toString();
+    }
+
+    private static String getMountPointOfDmDevice(String vgName, String lvName) {
+        return new StringBuilder().append(DEV_MAPPER).append(vgName).append('-').append(lvName).toString();
+    }
+
+    private static String getDependentNamesFromHoldersDirectory(String sysPath) {
+        File holdersDir = new File(sysPath + "/holders");
+        File[] holders = holdersDir.listFiles();
+        if (holders != null) {
+            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
+        }
+        return Normal.EMPTY;
+    }
+
     @Override
     public long getReads() {
         return reads;
@@ -301,23 +318,6 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         // If this returns non-empty (the same store, but updated) then we were
         // successful in the update
         return !getDisks(this).isEmpty();
-    }
-
-    private static String getPartitionNameForDmDevice(String vgName, String lvName) {
-        return new StringBuilder().append(DEV_LOCATION).append(vgName).append('/').append(lvName).toString();
-    }
-
-    private static String getMountPointOfDmDevice(String vgName, String lvName) {
-        return new StringBuilder().append(DEV_MAPPER).append(vgName).append('-').append(lvName).toString();
-    }
-
-    private static String getDependentNamesFromHoldersDirectory(String sysPath) {
-        File holdersDir = new File(sysPath + "/holders");
-        File[] holders = holdersDir.listFiles();
-        if (holders != null) {
-            return Arrays.stream(holders).map(File::getName).collect(Collectors.joining(" "));
-        }
-        return Normal.EMPTY;
     }
 
     // Order the field is in udev stats

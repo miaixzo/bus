@@ -31,6 +31,7 @@ import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.*;
@@ -101,7 +102,7 @@ public final class Builder {
     /**
      * Pattern for Windows PnPDeviceID vendor and product ID
      */
-    private static final Pattern VENDOR_PRODUCT_ID = Pattern
+    private static final Pattern VENDOR_PRODUCT_ID_SERIAL = Pattern
             .compile(".*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4}).*");
     /**
      * Pattern for Linux lspci machine readable
@@ -1558,19 +1559,21 @@ public final class Builder {
     }
 
     /**
-     * Parse a Windows PnPDeviceID to get the vendor ID and product ID.
+     * Parse a Windows DeviceID to get the vendor ID, product ID, and Serial Number
      *
-     * @param pnpDeviceId The PnPDeviceID
-     * @return A {@link Pair} where the first element is the vendor ID and second
-     * element is the product ID, if parsing was successful, or {@code null}
-     * otherwise
+     * @param deviceId The DeviceID
+     * @return A {@link Triple} where the first element is the vendor ID, the
+     * second element is the product ID, and the third element is either a
+     * serial number or empty string if parsing was successful, or
+     * {@code null} otherwise
      */
-    public static Pair<String, String> parsePnPDeviceIdToVendorProductId(String pnpDeviceId) {
-        Matcher m = VENDOR_PRODUCT_ID.matcher(pnpDeviceId);
+    public static Triple<String, String, String> parseDeviceIdToVendorProductSerial(String deviceId) {
+        Matcher m = VENDOR_PRODUCT_ID_SERIAL.matcher(deviceId);
         if (m.matches()) {
             String vendorId = "0x" + m.group(1).toLowerCase();
             String productId = "0x" + m.group(2).toLowerCase();
-            return Pair.of(vendorId, productId);
+            String serial = m.group(4);
+            return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? "" : serial);
         }
         return null;
     }

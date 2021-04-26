@@ -26,8 +26,6 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,17 +66,17 @@ public abstract class AbstractUsbDevice implements UsbDevice {
      * @param indent    缩进的空格数
      */
     private static String indentUsb(UsbDevice usbDevice, int indent) {
-        String indentFmt = indent > 2 ? String.format("%%%ds|-- ", indent - 4) : String.format("%%%ds", indent);
-        StringBuilder sb = new StringBuilder(String.format(indentFmt, Normal.EMPTY));
+        String indentFmt = indent > 4 ? String.format("%%%ds|-- ", indent - 4) : String.format("%%%ds", indent);
+        StringBuilder sb = new StringBuilder(String.format(indentFmt, ""));
         sb.append(usbDevice.getName());
-        if (usbDevice.getVendor().length() > 0) {
-            sb.append(" (").append(usbDevice.getVendor()).append(Symbol.C_PARENTHESE_RIGHT);
+        if (!usbDevice.getVendor().isEmpty()) {
+            sb.append(" (").append(usbDevice.getVendor()).append(')');
         }
-        if (usbDevice.getSerialNumber().length() > 0) {
-            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(Symbol.C_BRACKET_RIGHT);
+        if (!usbDevice.getSerialNumber().isEmpty()) {
+            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(']');
         }
         for (UsbDevice connected : usbDevice.getConnectedDevices()) {
-            sb.append(Symbol.C_LF).append(indentUsb(connected, indent + 4));
+            sb.append('\n').append(indentUsb(connected, indent + 4));
         }
         return sb.toString();
     }

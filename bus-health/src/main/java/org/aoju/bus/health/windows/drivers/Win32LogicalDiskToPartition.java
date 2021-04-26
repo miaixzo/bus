@@ -42,6 +42,9 @@ public final class Win32LogicalDiskToPartition {
 
     private static final String WIN32_LOGICAL_DISK_TO_PARTITION = "Win32_LogicalDiskToPartition";
 
+    private Win32LogicalDiskToPartition() {
+    }
+
     /**
      * Queries the association between logical disk and partition.
      *
@@ -53,9 +56,6 @@ public final class Win32LogicalDiskToPartition {
         WmiQuery<DiskToPartitionProperty> diskToPartitionQuery = new WmiQuery<>(WIN32_LOGICAL_DISK_TO_PARTITION,
                 DiskToPartitionProperty.class);
         return h.queryWMI(diskToPartitionQuery, false);
-    }
-
-    private Win32LogicalDiskToPartition() {
     }
 
     /**

@@ -25,10 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.drivers;
 
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.win32.W32APIOptions;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.windows.WmiQueryHandler;
 
 /**
  * Utility to query WMI class {@code Win32_USBController}
@@ -38,31 +39,17 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class Win32USBController {
 
-    private static final String WIN32_USB_CONTROLLER = "Win32_USBController";
+public interface Cfgmgr32 extends com.sun.jna.platform.win32.Cfgmgr32 {
 
-    /**
-     * Queries the USB Controller device IDs
-     *
-     * @param h An instantiated {@link WmiQueryHandler}. User should have already
-     *          initialized COM.
-     * @return Information regarding each disk drive.
-     */
-    public static WmiResult<USBControllerProperty> queryUSBControllers(WmiQueryHandler h) {
-        WmiQuery<USBControllerProperty> usbControllerQuery = new WmiQuery<>(WIN32_USB_CONTROLLER,
-                USBControllerProperty.class);
-        return h.queryWMI(usbControllerQuery, false);
-    }
+    Cfgmgr32 INSTANCE = Native.load("cfgmgr32", Cfgmgr32.class, W32APIOptions.DEFAULT_OPTIONS);
 
-    private Win32USBController() {
-    }
+    int CM_DRP_DEVICEDESC = 0x00000001;
+    int CM_DRP_SERVICE = 0x00000005;
+    int CM_DRP_CLASS = 0x00000008;
+    int CM_DRP_MFG = 0x0000000C;
+    int CM_DRP_FRIENDLYNAME = 0x0000000D;
 
-    /**
-     * USB Controller properties
-     */
-    public enum USBControllerProperty {
-        PNPDEVICEID
-    }
-
+    boolean CM_Get_DevNode_Registry_Property(int dnDevInst, int ulProperty, IntByReference pulRegDataType,
+                                             Pointer buffer, IntByReference pulLength, int ulFlags);
 }

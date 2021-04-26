@@ -42,6 +42,9 @@ public final class Win32DiskDriveToDiskPartition {
 
     private static final String WIN32_DISK_DRIVE_TO_DISK_PARTITION = "Win32_DiskDriveToDiskPartition";
 
+    private Win32DiskDriveToDiskPartition() {
+    }
+
     /**
      * Queries the association between disk drive and partition.
      *
@@ -53,9 +56,6 @@ public final class Win32DiskDriveToDiskPartition {
         WmiQuery<DriveToPartitionProperty> driveToPartitionQuery = new WmiQuery<>(WIN32_DISK_DRIVE_TO_DISK_PARTITION,
                 DriveToPartitionProperty.class);
         return h.queryWMI(driveToPartitionQuery, false);
-    }
-
-    private Win32DiskDriveToDiskPartition() {
     }
 
     /**

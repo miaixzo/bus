@@ -86,6 +86,53 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         return ifList;
     }
 
+    private static String queryIfModel(NetworkInterface netint) {
+        String name = netint.getName();
+        Udev.UdevContext udev = Udev.INSTANCE.udev_new();
+        if (null != udev) {
+            try {
+                Udev.UdevDevice device = udev.deviceNewFromSyspath("/sys/class/net/" + name);
+                if (null != device) {
+                    try {
+                        String devVendor = device.getPropertyValue("ID_VENDOR_FROM_DATABASE");
+                        String devModel = device.getPropertyValue("ID_MODEL_FROM_DATABASE");
+                        if (!StringKit.isBlank(devModel)) {
+                            if (!StringKit.isBlank(devVendor)) {
+                                return devVendor + " " + devModel;
+                            }
+                            return devModel;
+                        }
+                    } finally {
+                        device.unref();
+                    }
+                }
+            } finally {
+                udev.unref();
+            }
+        }
+        return name;
+    }
+
+    private static IfOperStatus parseIfOperStatus(String operState) {
+        switch (operState) {
+            case "up":
+                return IfOperStatus.UP;
+            case "down":
+                return IfOperStatus.DOWN;
+            case "testing":
+                return IfOperStatus.TESTING;
+            case "dormant":
+                return IfOperStatus.DORMANT;
+            case "notpresent":
+                return IfOperStatus.NOT_PRESENT;
+            case "lowerlayerdown":
+                return IfOperStatus.LOWER_LAYER_DOWN;
+            case "unknown":
+            default:
+                return IfOperStatus.UNKNOWN;
+        }
+    }
+
     @Override
     public int getIfType() {
         return this.ifType;
@@ -198,53 +245,6 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         this.ifOperStatus = parseIfOperStatus(Builder.getStringFromFile(ifOperStatusPath));
 
         return true;
-    }
-
-    private static String queryIfModel(NetworkInterface netint) {
-        String name = netint.getName();
-        Udev.UdevContext udev = Udev.INSTANCE.udev_new();
-        if (null != udev) {
-            try {
-                Udev.UdevDevice device = udev.deviceNewFromSyspath("/sys/class/net/" + name);
-                if (null != device) {
-                    try {
-                        String devVendor = device.getPropertyValue("ID_VENDOR_FROM_DATABASE");
-                        String devModel = device.getPropertyValue("ID_MODEL_FROM_DATABASE");
-                        if (!StringKit.isBlank(devModel)) {
-                            if (!StringKit.isBlank(devVendor)) {
-                                return devVendor + " " + devModel;
-                            }
-                            return devModel;
-                        }
-                    } finally {
-                        device.unref();
-                    }
-                }
-            } finally {
-                udev.unref();
-            }
-        }
-        return name;
-    }
-
-    private static IfOperStatus parseIfOperStatus(String operState) {
-        switch (operState) {
-            case "up":
-                return IfOperStatus.UP;
-            case "down":
-                return IfOperStatus.DOWN;
-            case "testing":
-                return IfOperStatus.TESTING;
-            case "dormant":
-                return IfOperStatus.DORMANT;
-            case "notpresent":
-                return IfOperStatus.NOT_PRESENT;
-            case "lowerlayerdown":
-                return IfOperStatus.LOWER_LAYER_DOWN;
-            case "unknown":
-            default:
-                return IfOperStatus.UNKNOWN;
-        }
     }
 
 }

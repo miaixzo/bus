@@ -42,6 +42,9 @@ public final class Win32DiskPartition {
 
     private static final String WIN32_DISK_PARTITION = "Win32_DiskPartition";
 
+    private Win32DiskPartition() {
+    }
+
     /**
      * Queries the partition.
      *
@@ -53,9 +56,6 @@ public final class Win32DiskPartition {
         WmiQuery<DiskPartitionProperty> partitionQuery = new WmiQuery<>(WIN32_DISK_PARTITION,
                 DiskPartitionProperty.class);
         return h.queryWMI(partitionQuery, false);
-    }
-
-    private Win32DiskPartition() {
     }
 
     /**

@@ -158,7 +158,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
 
     private static boolean isLocalInterface(NetworkInterface networkInterface) {
         try {
-            return networkInterface.isLoopback() || null == networkInterface.getHardwareAddress();
+            // getHardwareAddress also checks for loopback
+            return networkInterface.getHardwareAddress() == null;
         } catch (SocketException e) {
             Logger.error("Socket exception when retrieving interface information for {}: {}", networkInterface,
                     e.getMessage());

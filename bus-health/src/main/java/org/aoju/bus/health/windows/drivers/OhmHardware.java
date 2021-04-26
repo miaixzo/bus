@@ -43,6 +43,9 @@ public final class OhmHardware {
 
     private static final String HARDWARE = "Hardware";
 
+    private OhmHardware() {
+    }
+
     /**
      * Queries the hardware identifiers for a monitored type.
      *
@@ -59,9 +62,6 @@ public final class OhmHardware {
         WmiQuery<IdentifierProperty> cpuIdentifierQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, sb.toString(),
                 IdentifierProperty.class);
         return h.queryWMI(cpuIdentifierQuery, false);
-    }
-
-    private OhmHardware() {
     }
 
     /**

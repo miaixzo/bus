@@ -60,6 +60,61 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     private static final String PROCESS_LIST_COMMAND = "ps -eo " + PS_FIELDS;
     private static final long BOOTTIME = querySystemBootTime();
 
+    private static long querySystemUptime() {
+        try (KstatChain kc = KstatKit.openChain()) {
+            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
+            if (null != ksp) {
+                // Snap Time is in nanoseconds; divide for seconds
+                return ksp.ks_snaptime / 1_000_000_000L;
+            }
+        }
+        return 0L;
+    }
+
+    private static List<OSProcess> queryAllProcessesFromPS() {
+        return getProcessListFromPS(PROCESS_LIST_COMMAND, -1);
+    }
+
+    private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
+        List<String> procList = pid < 0 ? Executor.runNative(psCommand)
+                : Executor.runNative(psCommand + pid);
+        List<String> procList2 = pid < 0 ? Executor.runNative("prstat -v 1 1")
+                : Executor.runNative("prstat -v -p " + pid + " 1 1");
+        Map<Integer, String[]> processMap = SolarisOSProcess.parseAndMergePSandPrstatInfo(procList, 1, 15, procList2,
+                false);
+        return processMap.entrySet().stream().map(e -> new SolarisOSProcess(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    private static long querySystemBootTime() {
+        try (KstatChain kc = KstatKit.openChain()) {
+            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
+            if (null != ksp && KstatChain.read(ksp)) {
+                return KstatKit.dataLookupLong(ksp, "boot_time");
+            }
+        }
+        return System.currentTimeMillis() / 1000L - querySystemUptime();
+    }
+
+    private static void addChildrenToDescendantSet(String parentPid, Set<String> descendantPids, boolean recurse) {
+        // Get list of children
+        Set<String> childPids = new HashSet<>();
+        for (String s : Executor.runNative("pgrep -P " + parentPid)) {
+            String pid = s.trim();
+            if (!pid.equals(parentPid) && !descendantPids.contains(pid)) {
+                childPids.add(pid);
+            }
+        }
+        // Add to descendant set
+        descendantPids.addAll(childPids);
+        // Recurse
+        if (recurse) {
+            for (String pid : childPids) {
+                addChildrenToDescendantSet(pid, descendantPids, true);
+            }
+        }
+    }
+
     @Override
     public String queryManufacturer() {
         return "Oracle";
@@ -97,32 +152,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
-    }
-
-    private static long querySystemUptime() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
-            if (null != ksp) {
-                // Snap Time is in nanoseconds; divide for seconds
-                return ksp.ks_snaptime / 1_000_000_000L;
-            }
-        }
-        return 0L;
-    }
-
-    private static List<OSProcess> queryAllProcessesFromPS() {
-        return getProcessListFromPS(PROCESS_LIST_COMMAND, -1);
-    }
-
-    private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
-        List<String> procList = pid < 0 ? Executor.runNative(psCommand)
-                : Executor.runNative(psCommand + pid);
-        List<String> procList2 = pid < 0 ? Executor.runNative("prstat -v 1 1")
-                : Executor.runNative("prstat -v -p " + pid + " 1 1");
-        Map<Integer, String[]> processMap = SolarisOSProcess.parseAndMergePSandPrstatInfo(procList, 1, 15, procList2,
-                false);
-        return processMap.entrySet().stream().map(e -> new SolarisOSProcess(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -238,35 +267,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         List<OSProcess> allProcs = queryAllProcessesFromPS();
         Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    private static long querySystemBootTime() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
-            if (null != ksp && KstatChain.read(ksp)) {
-                return KstatKit.dataLookupLong(ksp, "boot_time");
-            }
-        }
-        return System.currentTimeMillis() / 1000L - querySystemUptime();
-    }
-
-    private static void addChildrenToDescendantSet(String parentPid, Set<String> descendantPids, boolean recurse) {
-        // Get list of children
-        Set<String> childPids = new HashSet<>();
-        for (String s : Executor.runNative("pgrep -P " + parentPid)) {
-            String pid = s.trim();
-            if (!pid.equals(parentPid) && !descendantPids.contains(pid)) {
-                childPids.add(pid);
-            }
-        }
-        // Add to descendant set
-        descendantPids.addAll(childPids);
-        // Recurse
-        if (recurse) {
-            for (String pid : childPids) {
-                addChildrenToDescendantSet(pid, descendantPids, true);
-            }
-        }
     }
 
 }

@@ -51,59 +51,6 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoize.memoize(this::queryFamilyVersionInfo);
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryPlatformBitness);
 
-    @Override
-    public String getManufacturer() {
-        return manufacturer.get();
-    }
-
-    protected abstract String queryManufacturer();
-
-    @Override
-    public String getFamily() {
-        return familyVersionInfo.get().getLeft();
-    }
-
-    @Override
-    public OSVersionInfo getVersionInfo() {
-        return familyVersionInfo.get().getRight();
-    }
-
-    protected abstract Pair<String, OSVersionInfo> queryFamilyVersionInfo();
-
-    @Override
-    public int getBitness() {
-        return bitness.get();
-    }
-
-    private int queryPlatformBitness() {
-        if (Platform.is64Bit()) {
-            return 64;
-        }
-        // Initialize based on JVM Bitness. Individual OS implementations will test
-        // if 32-bit JVM running on 64-bit OS
-        int jvmBitness = System.getProperty("os.arch").indexOf("64") != -1 ? 64 : 32;
-        return queryBitness(jvmBitness);
-    }
-
-    /**
-     * Backup OS-specific query to determine bitness if previous checks fail
-     *
-     * @param jvmBitness The bitness of the JVM
-     * @return The operating system bitness
-     */
-    protected abstract int queryBitness(int jvmBitness);
-
-    @Override
-    public List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit) {
-        return queryAllProcesses().stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
-                .sorted(null == sort ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
-                .collect(Collectors.toList());
-    }
-
-    protected abstract List<OSProcess> queryAllProcesses();
-
-    protected abstract List<OSProcess> queryChildProcesses(int parentPid);
-
     /**
      * Utility method for subclasses to take a full process list as input and return
      * the children or descendants of a particular process. The process itself is
@@ -158,6 +105,59 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
                 .filter(e -> e.getValue().equals(parentPid) && !e.getKey().equals(parentPid)).map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public String getManufacturer() {
+        return manufacturer.get();
+    }
+
+    protected abstract String queryManufacturer();
+
+    @Override
+    public String getFamily() {
+        return familyVersionInfo.get().getLeft();
+    }
+
+    @Override
+    public OSVersionInfo getVersionInfo() {
+        return familyVersionInfo.get().getRight();
+    }
+
+    protected abstract Pair<String, OSVersionInfo> queryFamilyVersionInfo();
+
+    @Override
+    public int getBitness() {
+        return bitness.get();
+    }
+
+    private int queryPlatformBitness() {
+        if (Platform.is64Bit()) {
+            return 64;
+        }
+        // Initialize based on JVM Bitness. Individual OS implementations will test
+        // if 32-bit JVM running on 64-bit OS
+        int jvmBitness = System.getProperty("os.arch").indexOf("64") != -1 ? 64 : 32;
+        return queryBitness(jvmBitness);
+    }
+
+    /**
+     * Backup OS-specific query to determine bitness if previous checks fail
+     *
+     * @param jvmBitness The bitness of the JVM
+     * @return The operating system bitness
+     */
+    protected abstract int queryBitness(int jvmBitness);
+
+    @Override
+    public List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit) {
+        return queryAllProcesses().stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
+                .sorted(null == sort ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
+                .collect(Collectors.toList());
+    }
+
+    protected abstract List<OSProcess> queryAllProcesses();
+
+    protected abstract List<OSProcess> queryChildProcesses(int parentPid);
 
     @Override
     public List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,

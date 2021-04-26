@@ -70,10 +70,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
     private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
-
-    private Supplier<Pair<String, String>> userInfo = Memoize.memoize(this::queryUserInfo);
     private Supplier<Pair<String, String>> groupInfo = Memoize.memoize(this::queryGroupInfo);
     private String name;
+    private Supplier<Pair<String, String>> userInfo = Memoize.memoize(this::queryUserInfo);
     private String path;
     private String currentWorkingDirectory;
     private State state = State.INVALID;

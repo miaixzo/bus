@@ -64,6 +64,14 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
     Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());
 
+    private static long querySystemBootTimeMillis() {
+        long bootTime = Who.queryBootTime();
+        if (bootTime >= 1000L) {
+            return bootTime;
+        }
+        return System.currentTimeMillis() - Uptime.queryUpTime();
+    }
+
     @Override
     public String queryManufacturer() {
         return "IBM";
@@ -115,14 +123,6 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     public List<OSProcess> queryAllProcesses() {
         return getProcessListFromPS(
                 "ps -A -o st,pid,ppid,user,uid,group,gid,thcount,pri,vsize,rssize,etime,time,comm,pagein,args", -1);
-    }
-
-    private static long querySystemBootTimeMillis() {
-        long bootTime = Who.queryBootTime();
-        if (bootTime >= 1000L) {
-            return bootTime;
-        }
-        return System.currentTimeMillis() - Uptime.queryUpTime();
     }
 
     @Override

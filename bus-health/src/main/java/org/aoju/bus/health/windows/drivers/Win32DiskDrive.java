@@ -42,6 +42,9 @@ public final class Win32DiskDrive {
 
     private static final String WIN32_DISK_DRIVE = "Win32_DiskDrive";
 
+    private Win32DiskDrive() {
+    }
+
     /**
      * Queries the disk drive name info
      *
@@ -55,34 +58,10 @@ public final class Win32DiskDrive {
     }
 
     /**
-     * Queries the disk drive id info
-     *
-     * @param h           An instantiated {@link WmiQueryHandler}. User should have already
-     *                    initialized COM.
-     * @param whereClause WQL "WHERE" clause limiting the search
-     * @return Information regarding each disk drive's device id and serial number
-     */
-    public static WmiResult<DeviceIdProperty> queryDiskDriveId(WmiQueryHandler h, String whereClause) {
-        WmiQuery<DeviceIdProperty> deviceIdQuery = new WmiQuery<>(WIN32_DISK_DRIVE + whereClause,
-                DeviceIdProperty.class);
-        return h.queryWMI(deviceIdQuery, false);
-    }
-
-    private Win32DiskDrive() {
-    }
-
-    /**
      * Disk drive properties
      */
     public enum DiskDriveProperty {
-        INDEX, MANUFACTURER, MODEL, NAME, SERIALNUMBER, SIZE
-    }
-
-    /**
-     * DeviceID and serial properties
-     */
-    public enum DeviceIdProperty {
-        PNPDEVICEID, SERIALNUMBER
+        INDEX, MANUFACTURER, MODEL, NAME, SERIALNUMBER, SIZE;
     }
 
 }

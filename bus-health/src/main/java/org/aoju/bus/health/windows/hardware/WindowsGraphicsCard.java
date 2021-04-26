@@ -29,7 +29,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
@@ -80,7 +80,7 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
             WmiResult<Win32VideoController.VideoControllerProperty> cards = Win32VideoController.queryVideoController();
             for (int index = 0; index < cards.getResultCount(); index++) {
                 String name = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.NAME, index);
-                Pair<String, String> idPair = Builder.parsePnPDeviceIdToVendorProductId(
+                Triple<String, String, String> idPair = Builder.parseDeviceIdToVendorProductSerial(
                         WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.PNPDEVICEID, index));
                 String deviceId = null == idPair ? Normal.UNKNOWN : idPair.getRight();
                 String vendor = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.ADAPTERCOMPATIBILITY, index);
