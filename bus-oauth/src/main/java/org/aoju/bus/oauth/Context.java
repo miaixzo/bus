@@ -30,6 +30,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.aoju.bus.oauth.magic.Callback;
+import org.aoju.bus.oauth.provider.AbstractProvider;
 
 import java.util.List;
 
@@ -135,5 +136,11 @@ public class Context {
      * 是否开启 PKCE 模式，该配置仅用于支持 PKCE 模式的平台，针对无服务应用，不推荐使用隐式授权，推荐使用 PKCE 模式
      */
     private boolean pkce;
+
+    /**
+     * 忽略校验 {@code redirectUri} 参数，默认不开启。当 {@code ignoreCheckRedirectUri} 为 {@code true} 时，
+     * {@link AbstractProvider#checkContext(Context, Complex)} 将不会校验 {@code redirectUri} 的合法性。
+     */
+    private boolean ignoreCheckRedirectUri;
 
 }

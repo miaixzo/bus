@@ -3,6 +3,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -83,7 +84,7 @@ public class LineProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("nonce", state)
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Line.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Line.values())))
                 .build();
     }
 

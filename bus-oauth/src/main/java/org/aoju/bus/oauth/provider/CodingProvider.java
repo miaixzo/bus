@@ -39,7 +39,7 @@ import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
- * Cooding登录
+ * Coding登录
  *
  * @author Kimi Liu
  * @version 6.2.2

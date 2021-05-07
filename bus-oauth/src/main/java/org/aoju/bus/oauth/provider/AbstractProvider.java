@@ -89,7 +89,8 @@ public abstract class AbstractProvider implements Provider {
      * @return true or false
      */
     public static boolean isSupportedAuth(Context context, Complex complex) {
-        boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
+        boolean isSupported = StringKit.isNotEmpty(context.getAppKey())
+                && StringKit.isNotEmpty(context.getAppSecret());
         if (isSupported && Registry.ALIPAY == complex) {
             isSupported = StringKit.isNotEmpty(context.getPublicKey());
         }
@@ -109,16 +110,6 @@ public abstract class AbstractProvider implements Provider {
             }
         }
         return isSupported;
-    }
-
-    /**
-     * 是否为本地主机(域名)
-     *
-     * @param url 待验证的url
-     * @return true: 本地主机(域名), false: 非本地主机(域名)
-     */
-    public static boolean isLocalHost(String url) {
-        return StringKit.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);
     }
 
     /**
@@ -149,17 +140,24 @@ public abstract class AbstractProvider implements Provider {
      */
     public static void checkContext(Context context, Complex complex) {
         String redirectUri = context.getRedirectUri();
+        if (context.isIgnoreCheckRedirectUri()) {
+            return;
+        }
+        if (StringKit.isEmpty(redirectUri)) {
+            throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
+        }
         if (!Http.isHttp(redirectUri) && !Http.isHttps(redirectUri)) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
-        // facebook的回调地址必须为https的链接
+        // Facebook的回调地址必须为https的链接
         if (Registry.FACEBOOK == complex && !Http.isHttps(redirectUri)) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
-        // 支付宝在创建回调地址时,不允许使用localhost或者127.0.0.1
-        if (Registry.ALIPAY == complex && isLocalHost(redirectUri)) {
+        // 支付宝在创建回调地址时，不允许使用localhost或者127.0.0.1
+        if (Registry.ALIPAY == complex && Http.isLocalHost(redirectUri)) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
+
     }
 
     /**
