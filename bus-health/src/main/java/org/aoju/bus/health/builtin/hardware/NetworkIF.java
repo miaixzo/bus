@@ -70,6 +70,13 @@ public interface NetworkIF {
     String getDisplayName();
 
     /**
+     * Interface index.
+     *
+     * @return The index of the network interface.
+     */
+    int getIndex();
+
+    /**
      * The {@code ifAlias} as described in RFC 2863.
      * <p>
      * The ifAlias object allows a network manager to give one or more interfaces

@@ -26,7 +26,6 @@
 package org.aoju.bus.health.mac.drivers;
 
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.mac.CoreFoundation.*;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -103,11 +102,11 @@ public final class WindowInfo {
 
                     // Note: the Quartz name returned by this field is rarely used
                     result = windowRef.getValue(kCGWindowName); // Optional key, check for null
-                    String windowName = cfPointerToString(result);
+                    String windowName = cfPointerToString(result, false);
                     // This is the program running the window, use as name if name blank or add in
                     // parenthesis
                     result = windowRef.getValue(kCGWindowOwnerName); // Optional key, check for null
-                    String windowOwnerName = cfPointerToString(result);
+                    String windowOwnerName = cfPointerToString(result, false);
                     if (windowName.isEmpty()) {
                         windowName = windowOwnerName;
                     } else {
@@ -134,20 +133,33 @@ public final class WindowInfo {
     }
 
     /**
-     * Temporary workaround for zero length CFStrings. Should be fixed in JNA 5.7.
-     * See https://github.com/java-native-access/jna/pull/1275
+     * /** Convert a pointer to a CFString into a String.
      *
      * @param result Pointer to the CFString
-     * @return a CFString including a possible empty one, without exception.
+     * @return a CFString or "unknown" if it has no value
      */
-    private static String cfPointerToString(Pointer result) {
-        if (null != result) {
+    public static String cfPointerToString(Pointer result) {
+        return cfPointerToString(result, true);
+    }
+
+    /**
+     * Convert a pointer to a CFString into a String.
+     *
+     * @param result        Pointer to the CFString
+     * @param returnUnknown Whether to return the "unknown" string
+     * @return a CFString including a possible empty one if {@code returnUnknown} is
+     * false, or "unknown" if it is true
+     */
+    public static String cfPointerToString(Pointer result, boolean returnUnknown) {
+        String s = Normal.EMPTY;
+        if (result != null) {
             CFStringRef cfs = new CFStringRef(result);
-            if (CoreFoundation.INSTANCE.CFStringGetLength(cfs).intValue() > 0) {
-                return cfs.stringValue();
-            }
+            s = cfs.stringValue();
         }
-        return Normal.EMPTY;
+        if (returnUnknown && s.isEmpty()) {
+            return Normal.UNKNOWN;
+        }
+        return s;
     }
 
 }

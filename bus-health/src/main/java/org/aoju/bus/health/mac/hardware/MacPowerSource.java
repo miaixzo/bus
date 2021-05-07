@@ -35,6 +35,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
+import org.aoju.bus.health.mac.drivers.WindowInfo;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -203,11 +204,7 @@ public final class MacPowerSource extends AbstractPowerSource {
                 if (0 != CF.CFBooleanGetValue(isPresentRef)) {
                     // Get name
                     result = dictionary.getValue(nameKey);
-                    CFStringRef cfName = new CFStringRef(result);
-                    String psName = cfName.stringValue();
-                    if (null == psName) {
-                        psName = Normal.UNKNOWN;
-                    }
+                    String psName = WindowInfo.cfPointerToString(result);
                     // Remaining Capacity = current / max
                     double currentCapacity = 0d;
                     if (dictionary.getValueIfPresent(currentCapacityKey, null)) {

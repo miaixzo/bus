@@ -76,7 +76,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
                     Pointer pNetIf = ifArray.getValueAtIndex(i);
                     SystemConfiguration.SCNetworkInterfaceRef scNetIf = new SystemConfiguration.SCNetworkInterfaceRef(pNetIf);
                     CoreFoundation.CFStringRef cfName = SystemConfiguration.INSTANCE.SCNetworkInterfaceGetBSDName(scNetIf);
-                    if (name.equals(cfName.stringValue())) {
+                    if (cfName != null && name.equals(cfName.stringValue())) {
                         CoreFoundation.CFStringRef cfDisplayName = SystemConfiguration.INSTANCE
                                 .SCNetworkInterfaceGetLocalizedDisplayName(scNetIf);
                         return cfDisplayName.stringValue();

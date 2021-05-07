@@ -41,6 +41,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.mac.drivers.Fsstat;
+import org.aoju.bus.health.mac.drivers.WindowInfo;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
@@ -127,11 +128,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                 if (null != diskInfo) {
                     // Parse out model and size from their respective keys
                     Pointer result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_DEVICE_MODEL));
-                    CFStringRef modelPtr = new CFStringRef(result);
-                    model = modelPtr.stringValue();
-                    if (null == model) {
-                        model = Normal.UNKNOWN;
-                    }
+                    model = WindowInfo.cfPointerToString(result);
                     result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_MEDIA_SIZE));
                     CFNumberRef sizePtr = new CFNumberRef(result);
                     size = sizePtr.longValue();
@@ -371,17 +368,12 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                     if (null != diskInfo) {
                                         // get volume name from its key
                                         result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_MEDIA_NAME));
-                                        CFStringRef volumePtr = new CFStringRef(result);
-                                        type = volumePtr.stringValue();
-                                        if (null == type) {
-                                            type = Normal.UNKNOWN;
-                                        }
+                                        type = WindowInfo.cfPointerToString(result);
                                         result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_VOLUME_NAME));
-                                        if (null == result) {
+                                        if (result == null) {
                                             name = type;
                                         } else {
-                                            volumePtr.setPointer(result);
-                                            name = volumePtr.stringValue();
+                                            name = WindowInfo.cfPointerToString(result);
                                         }
                                         diskInfo.release();
                                     }

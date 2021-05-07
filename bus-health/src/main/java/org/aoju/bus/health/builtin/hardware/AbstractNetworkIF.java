@@ -56,6 +56,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private NetworkInterface networkInterface;
     private String name;
     private String displayName;
+    private int index;
     private int mtu;
     private String mac;
     private String[] ipv4;
@@ -86,6 +87,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         try {
             this.name = networkInterface.getName();
             this.displayName = displayName;
+            this.index = networkInterface.getIndex();
             // Set MTU
             this.mtu = networkInterface.getMTU();
             // Set MAC
@@ -184,6 +186,11 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     @Override
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    @Override
+    public int getIndex() {
+        return this.index;
     }
 
     @Override
