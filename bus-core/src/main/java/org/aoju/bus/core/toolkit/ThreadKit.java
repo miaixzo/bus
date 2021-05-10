@@ -554,8 +554,8 @@ public class ThreadKit {
     }
 
     /**
-     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式。
-     *
+     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式
+     * 注意：此方法的延迟和周期的单位均为毫秒
      * <ul>
      *     <li>fixedRate 模式：下一次任务等待上一次任务执行完毕后再启动</li>
      *     <li>fixedDelay模式：下一次任务不等待上一次任务，到周期自动执行</li>
@@ -563,7 +563,7 @@ public class ThreadKit {
      *
      * @param executor              定时任务线程池，{@code null}新建一个默认线程池
      * @param command               需要定时执行的逻辑
-     * @param initialDelay          初始延迟
+     * @param initialDelay          初始延迟，单位毫秒
      * @param period                执行周期，单位毫秒
      * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
      * @return {@link ScheduledThreadPoolExecutor}
@@ -573,17 +573,41 @@ public class ThreadKit {
                                                        long initialDelay,
                                                        long period,
                                                        boolean fixedRateOrFixedDelay) {
+        return schedule(executor, command, initialDelay, period, TimeUnit.MILLISECONDS, fixedRateOrFixedDelay);
+    }
+
+    /**
+     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式
+     * <ul>
+     *     <li>fixedRate 模式：下一次任务等待上一次任务执行完毕后再启动</li>
+     *     <li>fixedDelay模式：下一次任务不等待上一次任务，到周期自动执行</li>
+     * </ul>
+     *
+     * @param executor              定时任务线程池，{@code null}新建一个默认线程池
+     * @param command               需要定时执行的逻辑
+     * @param initialDelay          初始延迟
+     * @param period                执行周期
+     * @param timeUnit              时间单位
+     * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
+     * @return {@link ScheduledThreadPoolExecutor}
+     */
+    public static ScheduledThreadPoolExecutor schedule(ScheduledThreadPoolExecutor executor,
+                                                       Runnable command,
+                                                       long initialDelay,
+                                                       long period,
+                                                       TimeUnit timeUnit,
+                                                       boolean fixedRateOrFixedDelay) {
         if (null == executor) {
             executor = createScheduledExecutor(2);
         }
         if (fixedRateOrFixedDelay) {
-            executor.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.NANOSECONDS);
+            executor.scheduleAtFixedRate(command, initialDelay, period, timeUnit);
         } else {
-            executor.scheduleWithFixedDelay(command, initialDelay, period, TimeUnit.NANOSECONDS);
+            executor.scheduleWithFixedDelay(command, initialDelay, period, timeUnit);
         }
-
         return executor;
     }
+
 
     public static final class FastBufferThread extends Thread {
         public FastBufferThread(Runnable target, String name) {

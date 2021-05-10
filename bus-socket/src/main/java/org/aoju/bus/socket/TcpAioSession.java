@@ -71,10 +71,6 @@ public class TcpAioSession<T> extends AioSession {
      */
     private final AsynchronousSocketChannel channel;
     /**
-     * 是否读通道以至末尾
-     */
-    boolean eof;
-    /**
      * 输出流
      */
     private final WriteBuffer byteBuf;
@@ -94,6 +90,10 @@ public class TcpAioSession<T> extends AioSession {
      * 服务配置
      */
     private final ServerConfig<T> serverConfig;
+    /**
+     * 是否读通道以至末尾
+     */
+    boolean eof;
     /**
      * 读缓冲。
      * <p>大小取决于AioQuickClient/AioQuickServer设置的setReadBufferSize</p>

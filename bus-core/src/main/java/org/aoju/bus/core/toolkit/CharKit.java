@@ -26,6 +26,8 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.nio.ByteBuffer;
@@ -119,7 +121,6 @@ public class CharKit {
     }
 
     /**
-     * <p>
      * 判断是否为大写字母,大写字母包括A~Z
      * </p>
      *
@@ -140,7 +141,6 @@ public class CharKit {
     }
 
     /**
-     * <p>
      * 检查字符是否为小写字母,小写字母指a~z
      * </p>
      *
@@ -161,7 +161,6 @@ public class CharKit {
     }
 
     /**
-     * <p>
      * 检查是否为数字字符,数字字符指0~9
      * </p>
      *
@@ -274,6 +273,341 @@ public class CharKit {
                 || c == '\ufeff'
                 || c == '\u202a'
                 || c == '\u0000';
+    }
+
+    /**
+     * 字符串是否为空白，空白的定义如下：
+     * <ol>
+     *     <li>{@code null}</li>
+     *     <li>空字符串：{@code ""}</li>
+     *     <li>空格、全角空格、制表符、换行符，等不可见字符</li>
+     * </ol>
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.isBlank(null)     // true}</li>
+     *     <li>{@code StringKit.isBlank("")       // true}</li>
+     *     <li>{@code StringKit.isBlank(" \t\n")  // true}</li>
+     *     <li>{@code StringKit.isBlank("abc")    // false}</li>
+     * </ul>
+     * 注意：该方法与 {@link #isEmpty(CharSequence)} 的区别是：
+     * 该方法会校验空白字符，且性能相对于 {@link #isEmpty(CharSequence)} 略慢
+     * 建议：
+     * <ul>
+     *     <li>该方法建议仅对于客户端（或第三方接口）传入的参数使用该方法。</li>
+     *     <li>需要同时校验多个字符串时，建议采用 {@link #hasBlank(CharSequence...)} 或 {@link #isAllBlank(CharSequence...)}</li>
+     * </ul>
+     *
+     * @param str 被检测的字符串
+     * @return 若为空白，则返回 true
+     * @see #isEmpty(CharSequence)
+     */
+    public static boolean isBlank(CharSequence str) {
+        int length;
+
+        if ((str == null) || ((length = str.length()) == 0)) {
+            return true;
+        }
+
+        for (int i = 0; i < length; i++) {
+            // 只要有一个非空字符即为非空字符串
+            if (false == isBlankChar(str.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * 字符串是否为非空白，非空白的定义如下：
+     * <ol>
+     *     <li>不为 {@code null}</li>
+     *     <li>不为空字符串：{@code ""}</li>
+     *     <li>不为空格、全角空格、制表符、换行符，等不可见字符</li>
+     * </ol>
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.isNotBlank(null)     // false}</li>
+     *     <li>{@code StringKit.isNotBlank("")       // false}</li>
+     *     <li>{@code StringKit.isNotBlank(" \t\n")  // false}</li>
+     *     <li>{@code StringKit.isNotBlank("abc")    // true}</li>
+     * </ul>
+     * 注意：该方法与 {@link #isNotEmpty(CharSequence)} 的区别是：
+     * 该方法会校验空白字符，且性能相对于 {@link #isNotEmpty(CharSequence)} 略慢
+     * 建议：仅对于客户端（或第三方接口）传入的参数使用该方法
+     *
+     * @param str 被检测的字符串
+     * @return 是否为非空
+     * @see #isBlank(CharSequence)
+     */
+    public static boolean isNotBlank(CharSequence str) {
+        return false == isBlank(str);
+    }
+
+    /**
+     * 指定字符串数组中的元素，是否全部为空字符串
+     * 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.isAllBlank()                  // true}</li>
+     *     <li>{@code StringKit.isAllBlank("", null, " ")     // true}</li>
+     *     <li>{@code StringKit.isAllBlank("123", " ")        // false}</li>
+     *     <li>{@code StringKit.isAllBlank("123", "abc")      // false}</li>
+     * </ul>
+     * 注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：</p>
+     * <ul>
+     *     <li>{@link #hasBlank(CharSequence...)}   等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
+     *     <li>isAllBlank(CharSequence...)          等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * </ul>
+     *
+     * @param strs 字符串列表
+     * @return 所有字符串是否为空白
+     */
+    public static boolean isAllBlank(CharSequence... strs) {
+        if (ArrayKit.isEmpty(strs)) {
+            return true;
+        }
+
+        for (CharSequence str : strs) {
+            if (isNotBlank(str)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 字符串是否为空，空的定义如下：
+     * <ol>
+     *     <li>{@code null}</li>
+     *     <li>空字符串：{@code ""}</li>
+     * </ol>
+     * 例：</p>
+     * <ul>
+     *     <li>{@code StringKit.isEmpty(null)     // true}</li>
+     *     <li>{@code StringKit.isEmpty("")       // true}</li>
+     *     <li>{@code StringKit.isEmpty(" \t\n")  // false}</li>
+     *     <li>{@code StringKit.isEmpty("abc")    // false}</li>
+     * </ul>
+     * 注意：该方法与 {@link #isBlank(CharSequence)} 的区别是：该方法不校验空白字符
+     * 建议：
+     * <ul>
+     *     <li>该方法建议用于工具类或任何可以预期的方法参数的校验中</li>
+     *     <li>需要同时校验多个字符串时，建议采用 {@link #hasEmpty(CharSequence...)} 或 {@link #isAllEmpty(CharSequence...)}</li>
+     * </ul>
+     *
+     * @param str 被检测的字符串
+     * @return 是否为空
+     * @see #isBlank(CharSequence)
+     */
+    public static boolean isEmpty(CharSequence str) {
+        return str == null || str.length() == 0;
+    }
+
+    /**
+     * 字符串是否为非空白，非空白的定义如下：
+     * <ol>
+     *     <li>不为 {@code null}</li>
+     *     <li>不为空字符串：{@code ""}</li>
+     * </ol>
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.isNotEmpty(null)     // false}</li>
+     *     <li>{@code StringKit.isNotEmpty("")       // false}</li>
+     *     <li>{@code StringKit.isNotEmpty(" \t\n")  // true}</li>
+     *     <li>{@code StringKit.isNotEmpty("abc")    // true}</li>
+     * </ul>
+     * 注意：该方法与 {@link #isNotBlank(CharSequence)} 的区别是：该方法不校验空白字符
+     * 建议：该方法建议用于工具类或任何可以预期的方法参数的校验中
+     *
+     * @param str 被检测的字符串
+     * @return 是否为非空
+     * @see #isEmpty(CharSequence)
+     */
+    public static boolean isNotEmpty(CharSequence str) {
+        return false == isEmpty(str);
+    }
+
+    /**
+     * 指定字符串数组中的元素，是否全部为空字符串
+     * 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.isAllEmpty()                  // true}</li>
+     *     <li>{@code StringKit.isAllEmpty("", null)          // true}</li>
+     *     <li>{@code StringKit.isAllEmpty("123", "")         // false}</li>
+     *     <li>{@code StringKit.isAllEmpty("123", "abc")      // false}</li>
+     *     <li>{@code StringKit.isAllEmpty(" ", "\t", "\n")   // false}</li>
+     * </ul>
+     * 注意：该方法与 {@link #hasEmpty(CharSequence...)} 的区别在于：</p>
+     * <ul>
+     *     <li>{@link #hasEmpty(CharSequence...)}   等价于 {@code isEmpty(...) || isEmpty(...) || ...}</li>
+     *     <li>isAllEmpty(CharSequence...)          等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
+     * </ul>
+     *
+     * @param strs 字符串列表
+     * @return 所有字符串是否为空白
+     */
+    public static boolean isAllEmpty(CharSequence... strs) {
+        if (ArrayKit.isEmpty(strs)) {
+            return true;
+        }
+
+        for (CharSequence str : strs) {
+            if (isNotEmpty(str)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 指定字符串数组中的元素，是否都不为空字符串
+     * 如果指定的字符串数组的长度不为 0，或者所有元素都不是空字符串，则返回 true
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.isAllNotEmpty()                  // false}</li>
+     *     <li>{@code StringKit.isAllNotEmpty("", null)          // false}</li>
+     *     <li>{@code StringKit.isAllNotEmpty("123", "")         // false}</li>
+     *     <li>{@code StringKit.isAllNotEmpty("123", "abc")      // true}</li>
+     *     <li>{@code StringKit.isAllNotEmpty(" ", "\t", "\n")   // true}</li>
+     * </ul>
+     * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：</p>
+     * <ul>
+     *     <li>{@link #isAllEmpty(CharSequence...)}    等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
+     *     <li>isAllNotEmpty(CharSequence...)          等价于 {@code !isEmpty(...) && !isEmpty(...) && ...}</li>
+     * </ul>
+     *
+     * @param args 字符串数组
+     * @return 所有字符串是否都不为为空白
+     */
+    public static boolean isAllNotEmpty(CharSequence... args) {
+        return false == hasEmpty(args);
+    }
+
+    /**
+     * 是否存都不为{@code null}或空对象或空白符的对象，通过{@link #hasBlank(CharSequence...)} 判断元素
+     *
+     * @param args 被检查的对象,一个或者多个
+     * @return 是否都不为空
+     */
+    public static boolean isAllNotBlank(CharSequence... args) {
+        return false == hasBlank(args);
+    }
+
+    /**
+     * 检查字符串是否为null、“null”、“undefined”
+     *
+     * @param str 被检查的字符串
+     * @return 是否为null、“null”、“undefined”
+     */
+    public static boolean isNullOrUndefined(CharSequence str) {
+        if (null == str) {
+            return true;
+        }
+        return isNullOrUndefinedStr(str);
+    }
+
+    /**
+     * 检查字符串是否为null、“”、“null”、“undefined”
+     *
+     * @param str 被检查的字符串
+     * @return 是否为null、“”、“null”、“undefined”
+     */
+    public static boolean isEmptyOrUndefined(CharSequence str) {
+        if (isEmpty(str)) {
+            return true;
+        }
+        return isNullOrUndefinedStr(str);
+    }
+
+    /**
+     * 检查字符串是否为null、空白串、“null”、“undefined”
+     *
+     * @param str 被检查的字符串
+     * @return 是否为null、空白串、“null”、“undefined”
+     */
+    public static boolean isBlankOrUndefined(CharSequence str) {
+        if (isBlank(str)) {
+            return true;
+        }
+        return isNullOrUndefinedStr(str);
+    }
+
+    /**
+     * 是否为“null”、“undefined”，不做空指针检查
+     *
+     * @param str 字符串
+     * @return 是否为“null”、“undefined”
+     */
+    private static boolean isNullOrUndefinedStr(CharSequence str) {
+        String strString = str.toString().trim();
+        return Normal.NULL.equals(strString) || "undefined".equals(strString);
+    }
+
+    /**
+     * 指定字符串数组中，是否包含空字符串
+     * 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.hasBlank()                  // true}</li>
+     *     <li>{@code StringKit.hasBlank("", null, " ")     // true}</li>
+     *     <li>{@code StringKit.hasBlank("123", " ")        // true}</li>
+     *     <li>{@code StringKit.hasBlank("123", "abc")      // false}</li>
+     * </ul>
+     * 注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：</p>
+     * <ul>
+     *     <li>hasBlank(CharSequence...)            等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
+     *     <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * </ul>
+     *
+     * @param strs 字符串列表
+     * @return 是否包含空字符串
+     */
+    public static boolean hasBlank(CharSequence... strs) {
+        if (ArrayKit.isEmpty(strs)) {
+            return true;
+        }
+
+        for (CharSequence str : strs) {
+            if (isBlank(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否包含空字符串
+     * 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true
+     * 例：
+     * <ul>
+     *     <li>{@code StringKit.hasEmpty()                  // true}</li>
+     *     <li>{@code StringKit.hasEmpty("", null)          // true}</li>
+     *     <li>{@code StringKit.hasEmpty("123", "")         // true}</li>
+     *     <li>{@code StringKit.hasEmpty("123", "abc")      // false}</li>
+     *     <li>{@code StringKit.hasEmpty(" ", "\t", "\n")   // false}</li>
+     * </ul>
+     * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：
+     * <ul>
+     *     <li>hasEmpty(CharSequence...)            等价于 {@code isEmpty(...) || isEmpty(...) || ...}</li>
+     *     <li>{@link #isAllEmpty(CharSequence...)} 等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
+     * </ul>
+     *
+     * @param strs 字符串列表
+     * @return 是否包含空字符串
+     */
+    public static boolean hasEmpty(CharSequence... strs) {
+        if (ArrayKit.isEmpty(strs)) {
+            return true;
+        }
+
+        for (CharSequence str : strs) {
+            if (isEmpty(str)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -418,6 +752,46 @@ public class CharKit {
             throw new IllegalArgumentException("Number must be [1-20]");
         }
         return (char) ('①' + number - 1);
+    }
+
+    /**
+     * 字符串是否以(数字)开始
+     *
+     * @param str 字符串
+     * @return 是否数字开始
+     */
+    public static boolean startWithNumber(CharSequence str) {
+        return isNotBlank(str) && RegEx.NUMBERS.matcher(str.subSequence(0, 1)).find();
+    }
+
+    /**
+     * 字符串是否以(英文字母 、数字和下划线)开始
+     *
+     * @param str 字符串
+     * @return 是否英文字母 、数字和下划线开始
+     */
+    public static boolean startWithGeneral(CharSequence str) {
+        return isNotBlank(str) && RegEx.GENERAL.matcher(str.subSequence(0, 1)).find();
+    }
+
+    /**
+     * 字符串是否以(字母)开始
+     *
+     * @param str 字符串
+     * @return 是否字母开始
+     */
+    public static boolean startWithWord(CharSequence str) {
+        return isNotBlank(str) && RegEx.WORD.matcher(str.subSequence(0, 1)).find();
+    }
+
+    /**
+     * 字符串是否以(中文汉字)开始
+     *
+     * @param str 字符串
+     * @return 是否中文汉字开始
+     */
+    public static boolean startWithChinese(CharSequence str) {
+        return isNotBlank(str) && RegEx.CHINESES.matcher(str.subSequence(0, 1)).find();
     }
 
 }

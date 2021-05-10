@@ -176,7 +176,15 @@ public abstract class AbstractFtp implements Closeable {
         }
         for (String s : dirs) {
             if (StringKit.isNotEmpty(s)) {
-                if (false == cd(s)) {
+                boolean exist = true;
+                try {
+                    if (false == cd(s)) {
+                        exist = false;
+                    }
+                } catch (InstrumentException e) {
+                    exist = false;
+                }
+                if (false == exist) {
                     //目录不存在时创建
                     mkdir(s);
                     cd(s);

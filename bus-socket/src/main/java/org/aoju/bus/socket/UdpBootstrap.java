@@ -117,7 +117,7 @@ public class UdpBootstrap<R> {
         DatagramChannel channel = DatagramChannel.open();
         channel.configureBlocking(false);
         if (port > 0) {
-            InetSocketAddress inetSocketAddress =null == host ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
+            InetSocketAddress inetSocketAddress = null == host ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
             channel.socket().bind(inetSocketAddress);
         }
         UdpChannel<R> udpChannel = new UdpChannel(channel, worker, config, bufferPage);

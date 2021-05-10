@@ -204,16 +204,10 @@ public class IterKit {
     public static <T> Map<T, Integer> countMap(Iterator<T> iterator) {
         final HashMap<T, Integer> countMap = new HashMap<>();
         if (null != iterator) {
-            Integer count;
             T t;
             while (iterator.hasNext()) {
                 t = iterator.next();
-                count = countMap.get(t);
-                if (null == count) {
-                    countMap.put(t, 1);
-                } else {
-                    countMap.put(t, count + 1);
-                }
+                countMap.put(t, countMap.getOrDefault(t, 0) + 1);
             }
         }
         return countMap;

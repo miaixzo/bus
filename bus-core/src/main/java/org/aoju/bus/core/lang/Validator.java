@@ -433,6 +433,16 @@ public class Validator {
     }
 
     /**
+     * 是否包含数字
+     *
+     * @param value 当前字符串
+     * @return boolean 是否存在数字
+     */
+    public static boolean hasNumber(CharSequence value) {
+        return PatternKit.contains(RegEx.NUMBERS, value);
+    }
+
+    /**
      * 验证是否为数字
      *
      * @param value    表单值

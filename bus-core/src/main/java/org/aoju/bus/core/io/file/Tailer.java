@@ -173,6 +173,13 @@ public class Tailer implements Serializable {
     }
 
     /**
+     * 结束，此方法需在异步模式或
+     */
+    public void stop() {
+        this.executorService.shutdown();
+    }
+
+    /**
      * 预读取行
      *
      * @throws IOException IO异常
