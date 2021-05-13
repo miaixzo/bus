@@ -86,7 +86,6 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
 
     @Override
     protected OfficeProcessEntryManager[] createPoolEntries() {
-
         return Arrays.stream(unoUrls)
                 .map(officeUrl -> new OfficeProcessEntryManager(
                         officeUrl, (OfficeProcessManagerPoolBuilder) config))
@@ -99,7 +98,6 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
      * @see LocalOfficePoolManager
      */
     public static final class Builder extends AbstractOfficeManagerPoolBuilder<Builder> {
-
         // OfficeProcess
         private String[] pipeNames;
         private int[] portNumbers;

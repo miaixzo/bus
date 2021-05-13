@@ -64,7 +64,6 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
             final String connectionUrl,
             final OnlineOfficeEntryBuilder config) {
         super(config);
-
         this.connectionUrl = connectionUrl;
     }
 

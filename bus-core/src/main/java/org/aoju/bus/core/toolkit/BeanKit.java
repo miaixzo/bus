@@ -818,10 +818,7 @@ public class BeanKit {
      * @param copyOptions 拷贝选项,见 {@link CopyOptions}
      */
     public static void copyProperties(Object source, Object target, CopyOptions copyOptions) {
-        if (null == copyOptions) {
-            copyOptions = new CopyOptions();
-        }
-        BeanCopier.create(source, target, copyOptions).copy();
+        BeanCopier.create(source, target, ObjectKit.defaultIfNull(copyOptions, CopyOptions.create())).copy();
     }
 
     /**
@@ -840,6 +837,19 @@ public class BeanKit {
             copyProperties(source, target, copyOptions);
             return target;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 复制集合中的Bean属性
+     * 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中
+     *
+     * @param collection 原Bean集合
+     * @param targetType 目标Bean类型
+     * @param <T>        Bean类型
+     * @return 复制后的List
+     */
+    public static <T> List<T> copyToList(Collection<?> collection, Class<T> targetType) {
+        return copyToList(collection, targetType, CopyOptions.create());
     }
 
     /**
