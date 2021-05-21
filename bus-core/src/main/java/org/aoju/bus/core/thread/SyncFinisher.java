@@ -47,7 +47,7 @@ public class SyncFinisher {
 
     private final Set<Worker> workers;
     private final int threadSize;
-    private final ExecutorService executorService;
+    private ExecutorService executorService;
     /**
      * 启动同步器，用于保证所有worker线程同时开始
      */
@@ -126,19 +126,22 @@ public class SyncFinisher {
     }
 
     /**
-     * 开始工作
+     * 执行此方法后如果不再重复使用此对象，需调用{@link #stop()}关闭回收资源
      */
     public void start() {
         start(true);
     }
 
     /**
-     * 开始工作
+     * 执行此方法后如果不再重复使用此对象，需调用{@link #stop()}关闭回收资源
      *
      * @param sync 是否阻塞等待
      */
     public void start(boolean sync) {
         endLatch = new CountDownLatch(workers.size());
+        if (null == this.executorService || this.executorService.isShutdown()) {
+            this.executorService = ThreadKit.newExecutor(threadSize);
+        }
         for (Worker worker : workers) {
             executorService.submit(worker);
         }
@@ -152,6 +155,21 @@ public class SyncFinisher {
                 throw new InstrumentException(e);
             }
         }
+    }
+
+    /**
+     * 结束线程池。此方法执行两种情况：
+     * <ol>
+     *     <li>执行start(true)后，调用此方法结束线程池回收资源</li>
+     *     <li>执行start(false)后，用户自行判断结束点执行此方法</li>
+     * </ol>
+     */
+    public void stop() {
+        if (null != this.executorService) {
+            this.executorService.shutdown();
+        }
+        this.executorService = null;
+        clearWorker();
     }
 
     /**

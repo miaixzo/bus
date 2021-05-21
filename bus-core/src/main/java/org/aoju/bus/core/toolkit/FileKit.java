@@ -80,7 +80,7 @@ public class FileKit {
      * @return 是否为空, 当提供非目录时, 返回false
      */
     public static boolean isEmpty(File file) {
-        if (null == file) {
+        if (null == file || false == file.exists()) {
             return true;
         }
 
