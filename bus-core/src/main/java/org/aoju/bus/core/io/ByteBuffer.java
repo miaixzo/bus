@@ -66,10 +66,6 @@ public class ByteBuffer extends ByteString {
      * 内存页组
      */
     private PageBuffer[] pageBuffers;
-    /**
-     * 共享缓存页
-     */
-    private PageBuffer sharedPageBuffer;
     private boolean enabled = true;
     /**
      * 内存回收任务
@@ -81,19 +77,12 @@ public class ByteBuffer extends ByteString {
                 for (PageBuffer pageBuffer : pageBuffers) {
                     pageBuffer.tryClean();
                 }
-                if (null != sharedPageBuffer) {
-                    sharedPageBuffer.tryClean();
-                }
             } else {
                 if (null != pageBuffers) {
                     for (PageBuffer page : pageBuffers) {
                         page.release();
                     }
                     pageBuffers = null;
-                }
-                if (null != sharedPageBuffer) {
-                    sharedPageBuffer.release();
-                    sharedPageBuffer = null;
                 }
                 future.cancel(false);
             }
@@ -138,24 +127,11 @@ public class ByteBuffer extends ByteString {
      * @param isDirect 是否使用直接缓冲区
      */
     public ByteBuffer(final int pageSize, final int pageNo, final boolean isDirect) {
-        this(pageSize, pageNo, -1, isDirect);
-    }
-
-    /**
-     * @param pageSize       内存页大小
-     * @param pageNo         内存页个数
-     * @param sharedPageSize 共享内存页大小
-     * @param isDirect       是否使用直接缓冲区
-     */
-    public ByteBuffer(final int pageSize, final int pageNo, final int sharedPageSize, final boolean isDirect) {
-        if (sharedPageSize > 0) {
-            sharedPageBuffer = new PageBuffer(null, null, sharedPageSize, isDirect);
-        }
         pageBuffers = new PageBuffer[pageNo];
         for (int i = 0; i < pageNo; i++) {
-            pageBuffers[i] = new PageBuffer(pageBuffers, sharedPageBuffer, pageSize, isDirect);
+            pageBuffers[i] = new PageBuffer(pageBuffers, pageSize, isDirect);
         }
-        if ((pageNo == 0 || pageSize == 0) && sharedPageSize <= 0) {
+        if (pageNo == 0 || pageSize == 0) {
             future.cancel(false);
         }
     }

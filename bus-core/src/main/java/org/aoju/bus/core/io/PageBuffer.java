@@ -46,10 +46,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class PageBuffer {
 
     /**
-     * 共享内存页
-     */
-    private final PageBuffer sharedPageBuffer;
-    /**
      * 同组内存池中的各内存页
      */
     private final PageBuffer[] pagePool;
@@ -78,9 +74,8 @@ public class PageBuffer {
      * @param size   缓存页大小
      * @param direct 是否使用堆外内存
      */
-    PageBuffer(PageBuffer[] pagePool, PageBuffer sharedPageBuffer, int size, boolean direct) {
+    PageBuffer(PageBuffer[] pagePool, int size, boolean direct) {
         this.pagePool = pagePool;
-        this.sharedPageBuffer = sharedPageBuffer;
         availableBuffers = new LinkedList<>();
         this.buffer = allocate0(size, direct);
         availableBuffers.add(new VirtualBuffer(this, null, buffer.position(), buffer.limit()));
@@ -110,16 +105,7 @@ public class PageBuffer {
         } else {
             virtualBuffer = allocate0(size);
         }
-        if (null != virtualBuffer) {
-            return virtualBuffer;
-        }
-        if (null != sharedPageBuffer) {
-            virtualBuffer = sharedPageBuffer.allocate0(size);
-        }
-        if (null == virtualBuffer) {
-            virtualBuffer = new VirtualBuffer(null, allocate0(size, false), 0, 0);
-        }
-        return virtualBuffer;
+        return virtualBuffer == null ? new VirtualBuffer(null, allocate0(size, false), 0, 0) : virtualBuffer;
     }
 
     /**

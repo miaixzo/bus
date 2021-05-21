@@ -78,8 +78,4 @@ public class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpA
         }
     }
 
-    public void shutdown() {
-
-    }
-
 }

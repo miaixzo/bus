@@ -27,7 +27,8 @@ package org.aoju.bus.socket.handler;
 
 import org.aoju.bus.socket.TcpAioSession;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 读写事件回调处理类
@@ -43,19 +44,19 @@ public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
      */
     private final Semaphore semaphore;
 
-    private final ThreadLocal<ConcurrentReadHandler<T>> threadLocal = new ThreadLocal<>();
+    private final ThreadLocal<ConcurrentReadHandler> threadLocal = new ThreadLocal<>();
 
-    private final LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
-    private final ExecutorService executorService = new ThreadPoolExecutor(1, 1,
-            60L, TimeUnit.SECONDS, taskQueue);
+    private final ThreadPoolExecutor threadPoolExecutor;
 
-    public ConcurrentReadHandler(final Semaphore semaphore) {
+    public ConcurrentReadHandler(final Semaphore semaphore, ThreadPoolExecutor threadPoolExecutor) {
         this.semaphore = semaphore;
+        this.threadPoolExecutor = threadPoolExecutor;
     }
 
+
     @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        if (null != threadLocal.get()) {
+    public void completed(final Integer result, final TcpAioSession aioSession) {
+        if (threadLocal.get() != null) {
             super.completed(result, aioSession);
             return;
         }
@@ -64,7 +65,7 @@ public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
             //处理当前读回调任务
             super.completed(result, aioSession);
             Runnable task;
-            while (null != (task = taskQueue.poll())) {
+            while ((task = threadPoolExecutor.getQueue().poll()) != null) {
                 task.run();
             }
             semaphore.release();
@@ -72,15 +73,8 @@ public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
             return;
         }
         //线程资源不足,暂时积压任务
-        executorService.execute(() -> ConcurrentReadHandler.super.completed(result, aioSession));
+        threadPoolExecutor.execute(() -> ConcurrentReadHandler.super.completed(result, aioSession));
 
-    }
-
-    /**
-     * 停止内部线程
-     */
-    public void shutdown() {
-        executorService.shutdown();
     }
 
 }

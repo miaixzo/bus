@@ -61,7 +61,8 @@ public class UdpBootstrap<R> {
     /**
      * 缓存页
      */
-    private final PageBuffer bufferPage = new org.aoju.bus.core.io.ByteBuffer(1024 * 1024, 1, -1, true).allocatePageBuffer();
+    private final PageBuffer bufferPage = new org.aoju.bus.core.io.ByteBuffer(1024 * 1024, 1, true).allocatePageBuffer();
+
     /**
      * 服务配置
      */

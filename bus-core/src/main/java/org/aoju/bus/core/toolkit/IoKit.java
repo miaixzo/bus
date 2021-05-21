@@ -1223,9 +1223,6 @@ public class IoKit {
      * @param channel 需要被关闭的通道
      */
     public static void close(AsynchronousSocketChannel channel) {
-        if (null == channel) {
-            throw new NullPointerException();
-        }
         try {
             channel.shutdownInput();
         } catch (IOException e) {
