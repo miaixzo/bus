@@ -568,6 +568,46 @@ public class Validator {
     }
 
     /**
+     * 验证是否为手机号码（香港）
+     *
+     * @param value 手机号码
+     * @return 是否为香港手机号码
+     */
+    public static boolean isMobileHk(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.MOBILE_HK, value);
+    }
+
+    /**
+     * 验证是否为手机号码（台湾）
+     *
+     * @param value 手机号码
+     * @return 是否为台湾手机号码
+     */
+    public static boolean isMobileTw(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.MOBILE_TW, value);
+    }
+
+    /**
+     * 验证是否为手机号码（澳门）
+     *
+     * @param value 手机号码
+     * @return 是否为澳门手机号码
+     */
+    public static boolean isMobileMo(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.MOBILE_MO, value);
+    }
+
+    /**
+     * 验证是否为座机号码（中国）+ 400 + 800
+     *
+     * @param value 值
+     * @return 是否为座机号码（中国）
+     */
+    public static boolean isTel400800(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.PHONE_400_800, value);
+    }
+
+    /**
      * 验证是否为手机号码(中国)
      *
      * @param value    值

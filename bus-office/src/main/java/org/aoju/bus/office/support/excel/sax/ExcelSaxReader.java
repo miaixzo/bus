@@ -42,6 +42,11 @@ import java.io.InputStream;
 public interface ExcelSaxReader<T> {
 
     /**
+     * sheet r:Id前缀
+     */
+    String RID_PREFIX = "rId";
+
+    /**
      * 开始读取Excel
      *
      * @param file    Excel文件

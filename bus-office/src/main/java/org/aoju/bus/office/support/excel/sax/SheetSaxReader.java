@@ -102,7 +102,7 @@ public class SheetSaxReader extends DefaultHandler {
             if (StringKit.isEmpty(ridStr)) {
                 return;
             }
-            final String rid = StringKit.removePrefixIgnoreCase(ridStr, Excel07SaxReader.RID_PREFIX);
+            final String rid = StringKit.removePrefixIgnoreCase(ridStr, ExcelSaxReader.RID_PREFIX);
 
             // sheet名和rid映射
             final String name = attributes.getValue(NAME_ATTR);

@@ -1001,7 +1001,7 @@ public class MathKit {
         if (null != roundingMode) {
             decimalFormat.setRoundingMode(roundingMode);
         }
-        return decimalFormat.format(roundingMode);
+        return decimalFormat.format(value);
     }
 
     /**

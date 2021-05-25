@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.*;
@@ -64,8 +64,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * Sheet边界记录，此Record中可以获得Sheet名
      */
     private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
+    /**
+     * 行处理器
+     */
     private final RowHandler rowHandler;
-
     /**
      * 用于解析公式
      */
@@ -84,6 +86,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * 自定义需要处理的sheet编号,如果-1表示处理所有sheet
      */
     private int rid = -1;
+    /**
+     * sheet名称，主要用于使用sheet名读取的情况
+     */
+    private String sheetName;
     /**
      * 当前表索引
      */
@@ -165,6 +171,9 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @return Sheet名
      */
     public String getSheetName() {
+        if (null != this.sheetName) {
+            return this.sheetName;
+        }
         if (this.boundSheetRecords.size() > this.rid) {
             return this.boundSheetRecords.get(this.rid > -1 ? this.rid : this.curRid).getSheetname();
         }
@@ -185,7 +194,11 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
 
         if (record instanceof BoundSheetRecord) {
             // Sheet边界记录，此Record中可以获得Sheet名
-            boundSheetRecords.add((BoundSheetRecord) record);
+            final BoundSheetRecord boundSheetRecord = (BoundSheetRecord) record;
+            boundSheetRecords.add(boundSheetRecord);
+            if (this.rid < 0 && null != this.sheetName && StringKit.equals(this.sheetName, boundSheetRecord.getSheetname())) {
+                this.rid = this.boundSheetRecords.size() - 1;
+            }
         } else if (record instanceof SSTRecord) {
             // 静态字符串表
             sstRecord = (SSTRecord) record;
@@ -199,6 +212,9 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 curRid++;
             }
         } else if (record instanceof EOFRecord) {
+            if (this.rid < 0 && null != this.sheetName) {
+                throw new InstrumentException("Sheet [{}] not exist!", this.sheetName);
+            }
             processLastCellSheet();
         } else if (isProcessCurrentSheet()) {
             if (record instanceof MissingCellDummyRecord) {
@@ -272,17 +288,17 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
             case FormulaRecord.sid:
                 // 公式类型
-                FormulaRecord formulaRec = (FormulaRecord) record;
+                final FormulaRecord formulaRec = (FormulaRecord) record;
                 if (isOutputFormulaValues) {
                     if (Double.isNaN(formulaRec.getValue())) {
                         // Formula result is a string
                         // This is stored in the next record
                         isOutputNextStringRecord = true;
                     } else {
-                        value = formatListener.formatNumberDateCell(formulaRec);
+                        value = ExcelSaxKit.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
                     }
                 } else {
-                    value = StringKit.wrap(HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression()), "\"");
+                    value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
                 }
                 addToRowCellList(formulaRec, value);
                 break;
@@ -309,19 +325,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
             case NumberRecord.sid: // 数字类型
                 final NumberRecord numrec = (NumberRecord) record;
-                if (Builder.isDateFormat(formatListener.getFormatIndex(numrec), formatListener.getFormatString(numrec))) {
-                    // 可能为日期格式
-                    value = ExcelSaxKit.getDateValue(numrec.getValue());
-                } else {
-                    final double doubleValue = numrec.getValue();
-                    final long longPart = (long) doubleValue;
-                    // 对于无小数部分的数字类型，转为Long，否则保留原数字
-                    if (((double) longPart) == doubleValue) {
-                        value = longPart;
-                    } else {
-                        value = doubleValue;
-                    }
-                }
+                value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
                 // 向容器加入列值
                 addToRowCellList(numrec, value);
                 break;
@@ -355,7 +359,37 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @return 是否处理当前sheet
      */
     private boolean isProcessCurrentSheet() {
-        return this.rid < 0 || this.curRid == this.rid;
+        return (this.rid < 0 && null == this.sheetName) || this.rid == this.curRid;
+    }
+
+    /**
+     * 获取sheet索引，从0开始
+     * <ul>
+     *     <li>传入'rId'开头，直接去除rId前缀</li>
+     *     <li>传入纯数字，表示sheetIndex，直接转换为rid</li>
+     * </ul>
+     *
+     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，
+     *                           从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
+     * @return sheet索引，从0开始
+     */
+    private int getSheetIndex(String idOrRidOrSheetName) {
+        Assert.notBlank(idOrRidOrSheetName, "id or rid or sheetName must be not blank!");
+
+        // rid直接处理
+        if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
+            return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
+        }
+
+        final int sheetIndex;
+        try {
+            return Integer.parseInt(idOrRidOrSheetName);
+        } catch (NumberFormatException ignore) {
+            // 如果用于传入非数字，按照sheet名称对待
+            this.sheetName = idOrRidOrSheetName;
+        }
+
+        return -1;
     }
 
 }

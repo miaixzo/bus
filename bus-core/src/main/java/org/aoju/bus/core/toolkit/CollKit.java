@@ -1165,18 +1165,91 @@ public class CollKit {
     }
 
     /**
-     * 获取匹配规则定义中匹配到元素的所有位置
+     * 获取匹配规则定义中匹配到元素的第一个位置
+     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
+     *
+     * @param <T>        元素类型
+     * @param collection 集合
+     * @param matcher    匹配器，为空则全部匹配
+     * @return 第一个位置
+     */
+    public static <T> int indexOf(Collection<T> collection, Matcher<T> matcher) {
+        if (isNotEmpty(collection)) {
+            int index = 0;
+            for (T t : collection) {
+                if (null == matcher || matcher.match(t)) {
+                    return index;
+                }
+                index++;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 获取匹配规则定义中匹配到元素的最后位置
+     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
      *
      * @param <T>     元素类型
-     * @param list    列表
+     * @param list    List集合
      * @param matcher 匹配器，为空则全部匹配
+     * @return 最后一个位置
+     */
+    public static <T> int lastIndexOf(List<T> list, Matcher<T> matcher) {
+        if (null != list) {
+            final int size = list.size();
+            if (size > 0) {
+                for (int i = size - 1; i >= 0; i--) {
+                    if (null == matcher || matcher.match(list.get(i))) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 获取匹配规则定义中匹配到元素的最后位置
+     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
+     *
+     * @param <T>        元素类型
+     * @param collection 集合
+     * @param matcher    匹配器，为空则全部匹配
+     * @return 最后一个位置
+     */
+    public static <T> int lastIndexOf(Collection<T> collection, Matcher<T> matcher) {
+        if (collection instanceof List) {
+            // List的查找最后一个有优化算法
+            return lastIndexOf((List<T>) collection, matcher);
+        }
+        int matchIndex = -1;
+        if (isNotEmpty(collection)) {
+            int index = collection.size();
+            for (T t : collection) {
+                if (null == matcher || matcher.match(t)) {
+                    matchIndex = index;
+                }
+                index--;
+            }
+        }
+        return matchIndex;
+    }
+
+    /**
+     * 获取匹配规则定义中匹配到元素的所有位置
+     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
+     *
+     * @param <T>        元素类型
+     * @param collection 集合
+     * @param matcher    匹配器，为空则全部匹配
      * @return 位置数组
      */
-    public static <T> int[] indexOfAll(List<T> list, Matcher<T> matcher) {
+    public static <T> int[] indexOfAll(Collection<T> collection, Matcher<T> matcher) {
         final List<Integer> indexList = new ArrayList<>();
-        if (null != list) {
+        if (null != collection) {
             int index = 0;
-            for (T t : list) {
+            for (T t : collection) {
                 if (null == matcher || matcher.match(t)) {
                     indexList.add(index);
                 }
@@ -3015,29 +3088,6 @@ public class CollKit {
      */
     public static <T extends Comparable<? super T>> T min(Collection<T> coll) {
         return Collections.min(coll);
-    }
-
-    /**
-     * 获取匹配规则定义中匹配到元素的所有位置
-     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准
-     *
-     * @param <T>        元素类型
-     * @param collection 集合
-     * @param matcher    匹配器，为空则全部匹配
-     * @return 位置数组
-     */
-    public static <T> int[] indexOfAll(Collection<T> collection, Matcher<T> matcher) {
-        final List<Integer> indexList = new ArrayList<>();
-        if (null != collection) {
-            int index = 0;
-            for (T t : collection) {
-                if (null == matcher || matcher.match(t)) {
-                    indexList.add(index);
-                }
-                index++;
-            }
-        }
-        return Convert.convert(int[].class, indexList);
     }
 
     /**

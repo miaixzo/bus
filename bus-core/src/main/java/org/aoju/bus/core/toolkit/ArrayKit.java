@@ -642,14 +642,31 @@ public class ArrayKit {
      * @return 非空元素，如果不存在非空元素或数组为空，返回{@code null}
      */
     public static <T> T firstNonNull(Matcher<T> matcher, T... array) {
+        final int index = firstNonAll(matcher, array);
+        if (index < 0) {
+            return null;
+        }
+
+        return array[index];
+    }
+
+    /**
+     * 返回数组中第一个匹配规则的值的位置
+     *
+     * @param <T>     数组元素类型
+     * @param matcher 匹配接口，实现此接口自定义匹配规则
+     * @param array   数组
+     * @return 匹配到元素的位置，-1表示未匹配到
+     */
+    public static <T> int firstNonAll(Matcher<T> matcher, T... array) {
         if (isNotEmpty(array)) {
-            for (final T val : array) {
-                if (matcher.match(val)) {
-                    return val;
+            for (int i = 0; i < array.length; i++) {
+                if (matcher.match(array[i])) {
+                    return i;
                 }
             }
         }
-        return null;
+        return INDEX_NOT_FOUND;
     }
 
     /**

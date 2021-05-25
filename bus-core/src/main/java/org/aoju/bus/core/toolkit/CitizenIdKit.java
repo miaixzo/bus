@@ -136,6 +136,9 @@ public class CitizenIdKit {
      * @return 是否有效
      */
     public static boolean isValidCard(String idcard) {
+        if (StringKit.isBlank(idcard)) {
+            return false;
+        }
         idcard = idcard.trim();
         int length = idcard.length();
         switch (length) {

@@ -63,8 +63,6 @@ import java.util.List;
  */
 public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<Excel07SaxReader> {
 
-    // sheet r:Id前缀
-    public static final String RID_PREFIX = "rId";
     // 上一次的内容
     private final Builders lastContent = StringKit.builders();
     // 单元格的格式表，对应style.xml
