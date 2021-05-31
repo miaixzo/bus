@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型(扩展名)
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class FileType {
@@ -750,7 +750,7 @@ public class FileType {
             put("49492a00227105008037", "tif");
             // 16色位图(bmp)
             put("424d228c010000000000", "bmp");
-            // 24位位图(bmp)
+            // 24色位图(bmp)
             put("424d8240090000000000", "bmp");
             // 256色位图(bmp)
             put("424d8e1b030000000000", "bmp");
@@ -779,6 +779,7 @@ public class FileType {
             put("2e524d46000000120001", "rmvb");
             // flv与f4v相同
             put("464c5601050000000900", "flv");
+            put("0000001C66747970", "mp4");
             put("00000020667479706", "mp4");
             put("00000018667479706D70", "mp4");
             put("49443303000000002176", "mp3");

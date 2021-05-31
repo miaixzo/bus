@@ -31,6 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ import java.util.Map;
  * 读取{@link Sheet}为Map的List列表形式
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>>> {
@@ -66,6 +67,10 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
             throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is lower than first row index {}.", headerRowIndex, firstRowNum));
         } else if (headerRowIndex > lastRowNum) {
             throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is greater than last row index {}.", headerRowIndex, firstRowNum));
+        }
+
+        if (lastRowNum < 0) {
+            return Collections.emptyList();
         }
 
         // 读取起始行（包含）

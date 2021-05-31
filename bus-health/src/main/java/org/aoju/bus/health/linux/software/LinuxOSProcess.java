@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -265,7 +265,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     @Override
     public long getOpenFiles() {
         // subtract 1 from size for header
-        return Executor.runNative(String.format(LS_F_PROC_PID_FD, getProcessID())).size() - 1L;
+        return ProcessStat.getFileDescriptorFiles(getProcessID()).length;
     }
 
     @Override

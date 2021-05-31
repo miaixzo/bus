@@ -31,7 +31,7 @@ package org.aoju.bus.shade.beans;
  * MYSQL 数据库字段类型转换
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class MySQLTypeConvert implements TypeConvert {

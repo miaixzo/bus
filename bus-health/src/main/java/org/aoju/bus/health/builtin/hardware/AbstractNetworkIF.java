@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -56,6 +56,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private NetworkInterface networkInterface;
     private String name;
     private String displayName;
+    private int index;
     private int mtu;
     private String mac;
     private String[] ipv4;
@@ -86,6 +87,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         try {
             this.name = networkInterface.getName();
             this.displayName = displayName;
+            this.index = networkInterface.getIndex();
             // Set MTU
             this.mtu = networkInterface.getMTU();
             // Set MAC
@@ -158,7 +160,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
 
     private static boolean isLocalInterface(NetworkInterface networkInterface) {
         try {
-            return networkInterface.isLoopback() || null == networkInterface.getHardwareAddress();
+            // getHardwareAddress also checks for loopback
+            return networkInterface.getHardwareAddress() == null;
         } catch (SocketException e) {
             Logger.error("Socket exception when retrieving interface information for {}: {}", networkInterface,
                     e.getMessage());
@@ -183,6 +186,11 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     @Override
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    @Override
+    public int getIndex() {
+        return this.index;
     }
 
     @Override

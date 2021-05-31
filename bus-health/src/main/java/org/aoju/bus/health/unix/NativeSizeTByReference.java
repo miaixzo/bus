@@ -23,46 +23,51 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.windows.drivers;
+package org.aoju.bus.health.unix;
 
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.windows.WmiQueryHandler;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
+import com.sun.jna.ptr.ByReference;
 
 /**
- * Utility to query WMI class {@code Win32_USBController}
- *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
-@ThreadSafe
-public final class Win32USBController {
+public class NativeSizeTByReference extends ByReference {
 
-    private static final String WIN32_USB_CONTROLLER = "Win32_USBController";
-
-    /**
-     * Queries the USB Controller device IDs
-     *
-     * @param h An instantiated {@link WmiQueryHandler}. User should have already
-     *          initialized COM.
-     * @return Information regarding each disk drive.
-     */
-    public static WmiResult<USBControllerProperty> queryUSBControllers(WmiQueryHandler h) {
-        WmiQuery<USBControllerProperty> usbControllerQuery = new WmiQuery<>(WIN32_USB_CONTROLLER,
-                USBControllerProperty.class);
-        return h.queryWMI(usbControllerQuery, false);
+    public NativeSizeTByReference() {
+        this(new size_t());
     }
 
-    private Win32USBController() {
+    public NativeSizeTByReference(size_t value) {
+        super(Native.SIZE_T_SIZE);
+        setValue(value);
     }
 
-    /**
-     * USB Controller properties
-     */
-    public enum USBControllerProperty {
-        PNPDEVICEID
+    public size_t getValue() {
+        return new size_t(Native.SIZE_T_SIZE > 4 ? getPointer().getLong(0) : getPointer().getInt(0));
+    }
+
+    public void setValue(size_t value) {
+        if (Native.SIZE_T_SIZE > 4) {
+            getPointer().setLong(0, value.longValue());
+        } else {
+            getPointer().setInt(0, value.intValue());
+        }
+    }
+
+    @Override
+    public String toString() {
+        // Can't mix types with ternary operator
+        if (Native.SIZE_T_SIZE > 4) {
+            return String.format("size_t@0x1$%x=0x%2$x (%2$d)", Pointer.nativeValue(getPointer()),
+                    getValue().longValue());
+        } else {
+            return String.format("size_t@0x1$%x=0x%2$x (%2$d)", Pointer.nativeValue(getPointer()),
+                    getValue().intValue());
+        }
     }
 
 }

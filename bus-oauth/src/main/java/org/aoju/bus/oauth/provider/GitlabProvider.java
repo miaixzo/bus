@@ -28,6 +28,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -41,7 +42,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * Gitlab登录
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class GitlabProvider extends AbstractProvider {
@@ -112,7 +113,7 @@ public class GitlabProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes("+", false, getScopes(true, OauthScope.Gitlab.values())))
+                .queryParam("scope", this.getScopes(Symbol.PLUS, false, getScopes(true, OauthScope.Gitlab.values())))
                 .build();
     }
 

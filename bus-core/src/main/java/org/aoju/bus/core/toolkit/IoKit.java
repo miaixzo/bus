@@ -57,7 +57,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class IoKit {
@@ -1223,9 +1223,6 @@ public class IoKit {
      * @param channel 需要被关闭的通道
      */
     public static void close(AsynchronousSocketChannel channel) {
-        if (null == channel) {
-            throw new NullPointerException();
-        }
         try {
             channel.shutdownInput();
         } catch (IOException e) {

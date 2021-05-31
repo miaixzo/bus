@@ -40,13 +40,14 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -73,6 +74,8 @@ public final class PerfCounterQuery {
     @GuardeBy("failedQueryCacheLock")
     private static final Set<String> failedQueryCache = new HashSet<>();
     private static final ReentrantLock failedQueryCacheLock = new ReentrantLock();
+    // Use a map to cache localization strings
+    private static final ConcurrentHashMap<String, String> localizeCache = new ConcurrentHashMap<>();
 
     private PerfCounterQuery() {
 
@@ -208,6 +211,10 @@ public final class PerfCounterQuery {
      * string otherwise.
      */
     public static String localize(String perfObject) {
+        return localizeCache.computeIfAbsent(perfObject, k -> localizeUsingPerfIndex(k));
+    }
+
+    private static String localizeUsingPerfIndex(String perfObject) {
         String localized = perfObject;
         try {
             localized = PdhUtil.PdhLookupPerfNameByIndex(null, PdhUtil.PdhLookupPerfIndexByEnglishName(perfObject));

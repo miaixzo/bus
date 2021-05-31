@@ -33,6 +33,7 @@ import org.aoju.bus.core.lang.Symbol;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +41,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class PatternKit {
@@ -331,6 +332,43 @@ public class PatternKit {
     }
 
     /**
+     * 删除匹配的最后一个内容
+     *
+     * @param regex 正则
+     * @param str   被匹配的内容
+     * @return 删除后剩余的内容
+     */
+    public static String delLast(String regex, CharSequence str) {
+        if (StringKit.hasBlank(regex, str)) {
+            return StringKit.toString(str);
+        }
+
+        return delLast(get(regex, Pattern.DOTALL), str);
+    }
+
+    /**
+     * 删除匹配的最后一个内容
+     *
+     * @param pattern 正则
+     * @param str     被匹配的内容
+     * @return 删除后剩余的内容
+     */
+    public static String delLast(Pattern pattern, CharSequence str) {
+        if (null != pattern && StringKit.isNotBlank(str)) {
+            String last = "";
+            for (Matcher matcher = pattern.matcher(str); matcher.find(); ) {
+                last = matcher.group();
+            }
+
+            if (StringKit.isNotBlank(last)) {
+                return StringKit.subBefore(str, last, Boolean.TRUE) + StringKit.subAfter(str, last, Boolean.TRUE);
+            }
+        }
+
+        return StringKit.toString(str);
+    }
+
+    /**
      * 删除匹配的全部内容
      *
      * @param pattern 正则
@@ -514,7 +552,7 @@ public class PatternKit {
      * @param content 被查找的内容
      * @return 指定内容中是否有表达式匹配的内容
      */
-    public static boolean contains(String regex, String content) {
+    public static boolean contains(String regex, CharSequence content) {
         if (null == regex || null == content) {
             return false;
         }
@@ -529,7 +567,7 @@ public class PatternKit {
      * @param content 被查找的内容
      * @return 指定内容中是否有表达式匹配的内容
      */
-    public static boolean contains(Pattern pattern, String content) {
+    public static boolean contains(Pattern pattern, CharSequence content) {
         if (null == pattern || null == content) {
             return false;
         }
@@ -759,6 +797,75 @@ public class PatternKit {
      */
     public static Integer getFirstNumber(CharSequence StringWithNumber) {
         return Convert.toInt(get(RegEx.NUMBERS, StringWithNumber, 0), null);
+    }
+
+    /**
+     * 找到指定正则匹配到字符串的开始位置
+     *
+     * @param regex   正则
+     * @param content 字符串
+     * @return 位置，{@code null}表示未找到
+     */
+    public static MatchResult indexOf(String regex, CharSequence content) {
+        if (null == regex || null == content) {
+            return null;
+        }
+
+        final Pattern pattern = get(regex, Pattern.DOTALL);
+        return indexOf(pattern, content);
+    }
+
+    /**
+     * 找到指定模式匹配到字符串的开始位置
+     *
+     * @param pattern 模式
+     * @param content 字符串
+     * @return 位置，{@code null}表示未找到
+     */
+    public static MatchResult indexOf(Pattern pattern, CharSequence content) {
+        if (null != pattern && null != content) {
+            final Matcher matcher = pattern.matcher(content);
+            if (matcher.find()) {
+                return matcher.toMatchResult();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 找到指定正则匹配到第一个字符串的位置
+     *
+     * @param regex   正则
+     * @param content 字符串
+     * @return 位置，{@code null}表示未找到
+     */
+    public static MatchResult lastIndexOf(String regex, CharSequence content) {
+        if (null == regex || null == content) {
+            return null;
+        }
+
+        final Pattern pattern = get(regex, Pattern.DOTALL);
+        return lastIndexOf(pattern, content);
+    }
+
+    /**
+     * 找到指定模式匹配到最后一个字符串的位置
+     *
+     * @param pattern 模式
+     * @param content 字符串
+     * @return 位置，{@code null}表示未找到
+     */
+    public static MatchResult lastIndexOf(Pattern pattern, CharSequence content) {
+        MatchResult result = null;
+        if (null != pattern && null != content) {
+            final Matcher matcher = pattern.matcher(content);
+            while (matcher.find()) {
+                result = matcher.toMatchResult();
+            }
+        }
+
+        return result;
     }
 
     /**

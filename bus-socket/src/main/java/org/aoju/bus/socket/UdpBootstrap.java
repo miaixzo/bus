@@ -48,7 +48,7 @@ import java.util.function.Consumer;
  *
  * @param <R> 请求信息
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class UdpBootstrap<R> {
@@ -61,7 +61,8 @@ public class UdpBootstrap<R> {
     /**
      * 缓存页
      */
-    private final PageBuffer bufferPage = new org.aoju.bus.core.io.ByteBuffer(1024 * 1024, 1, -1, true).allocatePageBuffer();
+    private final PageBuffer bufferPage = new org.aoju.bus.core.io.ByteBuffer(1024 * 1024, 1, true).allocatePageBuffer();
+
     /**
      * 服务配置
      */
@@ -117,7 +118,7 @@ public class UdpBootstrap<R> {
         DatagramChannel channel = DatagramChannel.open();
         channel.configureBlocking(false);
         if (port > 0) {
-            InetSocketAddress inetSocketAddress =null == host ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
+            InetSocketAddress inetSocketAddress = null == host ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
             channel.socket().bind(inetSocketAddress);
         }
         UdpChannel<R> udpChannel = new UdpChannel(channel, worker, config, bufferPage);

@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class RegEx {
@@ -152,6 +152,40 @@ public class RegEx {
      */
     public static final String MOBILE_PATTERN = "(?:0|86|\\+86)?1[3-9]\\d{9}";
     public static final Pattern MOBILE = Pattern.compile(MOBILE_PATTERN);
+
+    /**
+     * 中国香港移动电话
+     * eg: 中国香港： +852 5100 4610， 三位区域码+10位数字, 中国香港手机号码8位数
+     * eg: 中国大陆： +86  178 2161 1399，2位区域码标示+13位数字
+     * 中国大陆 +86 Mainland China
+     * 中国香港 +852 Hong Kong
+     * 中国澳门 +853 Macao
+     * 中国台湾 +886 Taiwan
+     */
+    public final static String MOBILE__PATTERN = "(?:0|852|\\+852)?\\d{8}";
+    public final static Pattern MOBILE_HK = Pattern.compile(MOBILE__PATTERN);
+
+    /**
+     * 中国澳门移动电话
+     * eg: 中国台湾： +853 68 00000， 三位区域码 +号码以数字6开头 + 7位数字, 中国台湾手机号码8位数
+     * 中国澳门 +853 Macao 国际域名缩写：MO
+     */
+    public final static String MOBILE_MO_PATTERN = "(?:0|853|\\+853)?(?:|-)6\\d{7}";
+    public final static Pattern MOBILE_MO = Pattern.compile(MOBILE_MO_PATTERN);
+
+    /**
+     * 中国台湾移动电话
+     * eg: 中国台湾： +886 09 60 000000， 三位区域码+号码以数字09开头 + 8位数字, 中国台湾手机号码10位数
+     * 中国台湾 +886 Taiwan 国际域名缩写：TW
+     */
+    public final static String MOBILE_TW_PATTERN = "(?:0|886|\\+886)?(?:|-)09\\d{8}";
+    public final static Pattern MOBILE_TW = Pattern.compile(MOBILE_TW_PATTERN);
+
+    /**
+     * 座机号码+400+800电话
+     */
+    public final static String MOBILE_TEL_400_800_PATTERN = "(?:(?:0\\d{2,3}[\\- ]?[1-9]\\d{6,7})|(?:[48]00[\\- ]?[1-9]\\d{6}))";
+    public final static Pattern PHONE_400_800 = Pattern.compile(MOBILE_TEL_400_800_PATTERN);
 
     /**
      * 18位身份证号码

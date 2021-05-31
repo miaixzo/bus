@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -102,6 +102,14 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         this.maxProc = SysctlKit.sysctl("kern.maxproc", 0x1000);
     }
 
+    private static int getParentProcessPid(int pid) {
+        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
+        if (0 > SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo, taskAllInfo.size())) {
+            return 0;
+        }
+        return taskAllInfo.pbsd.pbi_ppid;
+    }
+
     @Override
     public String queryManufacturer() {
         return "Apple";
@@ -115,7 +123,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         String buildNumber = SysctlKit.sysctl("kern.osversion", Normal.EMPTY);
         return Pair.of(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
-
 
     @Override
     protected int queryBitness(int jvmBitness) {
@@ -138,14 +145,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
-    }
-
-    private static int getParentProcessPid(int pid) {
-        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
-        if (0 > SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo, taskAllInfo.size())) {
-            return 0;
-        }
-        return taskAllInfo.pbsd.pbi_ppid;
     }
 
     @Override

@@ -39,7 +39,7 @@ import java.util.concurrent.CountDownLatch;
  * 异步 Http 请求任务
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class AsyncHttp extends CoverHttp<AsyncHttp> {

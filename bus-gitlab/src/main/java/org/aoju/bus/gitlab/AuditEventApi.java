@@ -38,7 +38,7 @@ import java.util.stream.Stream;
  * See <a href="https://docs.gitlab.com/ee/api/audit_events.html">Audit Event API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class AuditEventApi extends AbstractApi {

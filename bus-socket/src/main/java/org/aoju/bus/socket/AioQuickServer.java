@@ -42,9 +42,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.security.InvalidParameterException;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.function.Function;
 
 /**
@@ -52,7 +50,7 @@ import java.util.function.Function;
  *
  * @param <T> 消息对象类型
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class AioQuickServer<T> {
@@ -73,6 +71,10 @@ public class AioQuickServer<T> {
      * 读回调事件处理
      */
     private CompletionReadHandler<T> aioCompletionReadHandler;
+    /**
+     * ConcurrentReadCompletionHandler 回调守护线程
+     */
+    private ThreadPoolExecutor concurrentReadCompletionHandlerExecutor;
     /**
      * 写回调事件处理
      */
@@ -146,7 +148,9 @@ public class AioQuickServer<T> {
             if (BUS_ASYNCHRONOUS_CHANNEL_PROVIDER.equals(System.getProperty(AIO_ASYNCHRONOUS_CHANNEL_PROVIDER))) {
                 aioCompletionReadHandler = new CompletionReadHandler<>();
             } else {
-                aioCompletionReadHandler = new ConcurrentReadHandler<>(new Semaphore(config.getThreadNum() - 1));
+                concurrentReadCompletionHandlerExecutor = new ThreadPoolExecutor(1, 1,
+                        60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+                aioCompletionReadHandler = new ConcurrentReadHandler<>(new Semaphore(config.getThreadNum() - 1), concurrentReadCompletionHandlerExecutor);
             }
             asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(config.getThreadNum(), new ThreadFactory() {
                 private byte index = 0;
@@ -269,7 +273,10 @@ public class AioQuickServer<T> {
         if (null != innerBufferPool) {
             innerBufferPool.release();
         }
-        aioCompletionReadHandler.shutdown();
+        if (concurrentReadCompletionHandlerExecutor != null) {
+            concurrentReadCompletionHandlerExecutor.shutdown();
+            concurrentReadCompletionHandlerExecutor = null;
+        }
     }
 
     /**

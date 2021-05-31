@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -117,7 +118,7 @@ public class SlackProvider extends AbstractProvider {
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("state", getRealState(state))
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(",", true, getScopes(true, OauthScope.Slack.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, true, getScopes(true, OauthScope.Slack.values())))
                 .build();
     }
 

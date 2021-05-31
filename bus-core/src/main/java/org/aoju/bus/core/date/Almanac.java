@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class Almanac extends Converter {
@@ -813,6 +813,17 @@ public class Almanac extends Converter {
      */
     public static String getDayOfMonth(int lunarDay) {
         return Fields.CN_DAY[lunarDay];
+    }
+
+    /**
+     * 获得指定月份的总天数
+     *
+     * @param month      月份
+     * @param isLeapYear 是否闰年
+     * @return 天
+     */
+    public static int getDayOfMonth(int month, boolean isLeapYear) {
+        return java.time.Month.of(month).length(isLeapYear);
     }
 
     /**

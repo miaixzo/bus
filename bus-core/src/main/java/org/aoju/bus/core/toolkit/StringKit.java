@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -5453,6 +5453,59 @@ public class StringKit {
             }
         }
         return count;
+    }
+
+    /**
+     * 统计 字符串 中单词出现次数(不排序)
+     *
+     * @param str       字符串
+     * @param separator 分隔符
+     * @return 统计次数 如: {"hello":10}
+     */
+    public static Map<String, Long> count(String str, String separator) {
+        return count(Collections.singletonList(str), separator);
+    }
+
+    /**
+     * 统计 字符串 中单词出现次数(根据value排序)
+     *
+     * @param str         字符串
+     * @param separator   分隔符
+     * @param isValueDesc 是否倒叙排列
+     * @return 统计次数 如: {"hello":10}
+     */
+    public static Map<String, Long> count(String str, String separator, boolean isValueDesc) {
+        return count(Collections.singletonList(str), separator, isValueDesc);
+    }
+
+    /**
+     * 统计list中单词出现次数(不排序)
+     *
+     * @param list      list容器
+     * @param separator 分隔符
+     * @return 统计次数
+     */
+    public static Map<String, Long> count(List<String> list, String separator) {
+        Map<String, Long> countMap = MapKit.newHashMap();
+        for (String str : list) {
+            String[] words = str.split(separator);
+            for (String word : words) {
+                countMap.put(word, countMap.getOrDefault(word, 0L) + 1);
+            }
+        }
+        return countMap;
+    }
+
+    /**
+     * 统计 字符串list 中单词出现次数(根据value排序)
+     *
+     * @param list        list容器
+     * @param separator   分隔符
+     * @param isValueDesc 是否根据value倒叙排列
+     * @return 统计次数
+     */
+    public static Map<String, Long> count(List<String> list, String separator, boolean isValueDesc) {
+        return MapKit.sort(count(list, separator), isValueDesc);
     }
 
     /**

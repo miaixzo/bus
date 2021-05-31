@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -582,13 +582,35 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     public ExcelWriter merge(int firstRow, int lastRow, int firstColumn, int lastColumn, Object content, boolean isSetHeaderStyle) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
 
-        final CellStyle style = (isSetHeaderStyle && null != this.styleSet && null != this.styleSet.headCellStyle) ? this.styleSet.headCellStyle : this.styleSet.cellStyle;
-        CellKit.mergingCells(this.sheet, firstRow, lastRow, firstColumn, lastColumn, style);
+        CellStyle style = null;
+        if (null != this.styleSet) {
+            style = (isSetHeaderStyle && null != this.styleSet.headCellStyle) ? this.styleSet.headCellStyle : this.styleSet.cellStyle;
+        }
+
+        return merge(firstRow, lastRow, firstColumn, lastColumn, content, style);
+    }
+
+    /**
+     * 合并单元格，并写入对象到单元格,使用指定的样式
+     * 指定样式传入null，则不使用任何样式
+     *
+     * @param firstRow    起始行，0开始
+     * @param lastRow     结束行，0开始
+     * @param firstColumn 起始列，0开始
+     * @param lastColumn  结束列，0开始
+     * @param content     合并单元格后的内容
+     * @param cellStyle   合并后单元格使用的样式，可以为null
+     * @return this
+     */
+    public ExcelWriter merge(int firstRow, int lastRow, int firstColumn, int lastColumn, Object content, CellStyle cellStyle) {
+        Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
+
+        CellKit.mergingCells(this.getSheet(), firstRow, lastRow, firstColumn, lastColumn, cellStyle);
 
         // 设置内容
         if (null != content) {
             final Cell cell = getOrCreateCell(firstColumn, firstRow);
-            CellKit.setCellValue(cell, content, this.styleSet, isSetHeaderStyle);
+            CellKit.setCellValue(cell, content, cellStyle);
         }
         return this;
     }
@@ -798,6 +820,37 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
+     * 写出复杂标题的第二行标题数据
+     * 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
+     * 样式为默认标题样式，可使用{@link #getHeadCellStyle()}方法调用后自定义默认样式
+     *
+     * @param rowData 一行的数据
+     * @return this
+     */
+    public ExcelWriter writeSecHeadRow(Iterable<?> rowData) {
+        final Row row = RowKit.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
+        Iterator<?> iterator = rowData.iterator();
+        if (row.getLastCellNum() != 0) {
+            for (int i = 0; i < this.workbook.getSpreadsheetVersion().getMaxColumns(); i++) {
+                Cell cell = row.getCell(i);
+                if (cell != null) {
+                    continue;
+                }
+                if (iterator.hasNext()) {
+                    cell = row.createCell(i);
+                    CellKit.setCellValue(cell, iterator.next(), this.styleSet, true);
+                } else {
+                    break;
+                }
+            }
+        } else {
+            writeHeadRow(rowData);
+        }
+        return this;
+    }
+
+    /**
      * 给指定单元格赋值,使用默认单元格样式
      *
      * @param x     X坐标,从0计数,既列号
@@ -865,6 +918,18 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter setRowStyle(int y, CellStyle style) {
         getOrCreateRow(y).setRowStyle(style);
+        return this;
+    }
+
+    /**
+     * 设置列的默认样式
+     *
+     * @param x     列号，从0开始
+     * @param style 样式
+     * @return this
+     */
+    public ExcelWriter setColumnStyle(int x, CellStyle style) {
+        this.sheet.setDefaultColumnStyle(x, style);
         return this;
     }
 

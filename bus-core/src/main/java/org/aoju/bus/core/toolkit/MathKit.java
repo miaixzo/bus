@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -687,6 +687,17 @@ public class MathKit {
     }
 
     /**
+     * 补充Math.ceilDiv() JDK8中添加了和Math.floorDiv()但却没有ceilDiv()
+     *
+     * @param v1 被除数
+     * @param v2 除数
+     * @return 两个参数的商
+     */
+    public static int ceilDiv(int v1, int v2) {
+        return (int) Math.ceil((double) v1 / v2);
+    }
+
+    /**
      * 保留固定位数小数
      * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =  123.46
@@ -943,6 +954,57 @@ public class MathKit {
     }
 
     /**
+     * 格式化double
+     * 对 {@link DecimalFormat} 做封装
+     *
+     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度
+     *                0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置
+     *                <ul>
+     *                <li>0 =》 取一位整数</li>
+     *                <li>0.00 =》 取一位整数和两位小数</li>
+     *                <li>00.000 =》 取两位整数和三位小数</li>
+     *                <li># =》 取所有整数部分</li>
+     *                <li>#.##% =》 以百分比方式计数，并取两位小数</li>
+     *                <li>#.#####E0 =》 显示为科学计数法，并取五位小数</li>
+     *                <li>,### =》 每三位以逗号进行分隔，例如：299,792,458</li>
+     *                <li>光速大小为每秒,###米 =》 将格式嵌入文本</li>
+     *                </ul>
+     * @param value   值，支持BigDecimal、BigInteger、Number等类型
+     * @return 格式化后的值
+     */
+    public static String decimalFormat(String pattern, Object value) {
+        return decimalFormat(pattern, value, null);
+    }
+
+    /**
+     * 格式化double
+     * 对 {@link DecimalFormat} 做封装
+     *
+     * @param pattern      格式 格式中主要以 # 和 0 两种占位符号来指定数字长度
+     *                     0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置
+     *                     <ul>
+     *                     <li>0 =》 取一位整数</li>
+     *                     <li>0.00 =》 取一位整数和两位小数</li>
+     *                     <li>00.000 =》 取两位整数和三位小数</li>
+     *                     <li># =》 取所有整数部分</li>
+     *                     <li>#.##% =》 以百分比方式计数，并取两位小数</li>
+     *                     <li>#.#####E0 =》 显示为科学计数法，并取五位小数</li>
+     *                     <li>,### =》 每三位以逗号进行分隔，例如：299,792,458</li>
+     *                     <li>光速大小为每秒,###米 =》 将格式嵌入文本</li>
+     *                     </ul>
+     * @param value        值，支持BigDecimal、BigInteger、Number等类型
+     * @param roundingMode 保留小数的方式枚举
+     * @return 格式化后的值
+     */
+    public static String decimalFormat(String pattern, Object value, RoundingMode roundingMode) {
+        final DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        if (null != roundingMode) {
+            decimalFormat.setRoundingMode(roundingMode);
+        }
+        return decimalFormat.format(value);
+    }
+
+    /**
      * 格式化金额输出,每三位用逗号分隔
      *
      * @param value 金额
@@ -963,6 +1025,18 @@ public class MathKit {
         final NumberFormat format = NumberFormat.getPercentInstance();
         format.setMaximumFractionDigits(scale);
         return format.format(number);
+    }
+
+    /**
+     * 求百分比(带精度)(带百分号后缀)  (3,10,0) - 30%
+     *
+     * @param num   当前num
+     * @param total 总长度
+     * @param scale 精度(保留小数点后几位)
+     * @return String 百分比(带百分号后缀)
+     */
+    public static String formatPercent(Number num, Number total, int scale) {
+        return formatPercent(num.doubleValue() / total.doubleValue(), scale);
     }
 
     /**

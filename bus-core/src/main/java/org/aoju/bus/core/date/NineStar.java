@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
  * 玄空九星、奇门九星都来源于北斗九星，九数、七色、五行、后天八卦方位都是相通的
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class NineStar {

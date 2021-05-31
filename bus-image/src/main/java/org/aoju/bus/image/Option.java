@@ -35,7 +35,7 @@ import java.util.EnumSet;
  * 服务请求选项
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @Data

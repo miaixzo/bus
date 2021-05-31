@@ -27,16 +27,17 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 
 /**
  * Sensors from coretemp
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -50,11 +51,11 @@ final class FreeBsdSensors extends AbstractSensors {
      */
     private static double queryKldloadCoretemp() {
         String name = "dev.cpu.%d.temperature";
-        IntByReference size = new IntByReference(FreeBsdLibc.INT_SIZE);
-        Pointer p = new Memory(size.getValue());
+        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        Pointer p = new Memory(size.getValue().longValue());
         int cpu = 0;
         double sumTemp = 0d;
-        while (0 == FreeBsdLibc.INSTANCE.sysctlbyname(String.format(name, cpu), p, size, null, 0)) {
+        while (0 == FreeBsdLibc.INSTANCE.sysctlbyname(String.format(name, cpu), p, size, null, LibCAPI.size_t.ZERO)) {
             sumTemp += p.getInt(0) / 10d - 273.15;
             cpu++;
         }

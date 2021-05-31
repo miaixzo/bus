@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * HTTP 相关常量
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class Http {
@@ -420,7 +420,7 @@ public class Http {
         if (StringKit.isEmpty(url)) {
             return false;
         }
-        return url.startsWith(Http.HTTP_PREFIX);
+        return url.startsWith(Http.HTTP_PREFIX) || url.startsWith("http%3A%2F%2F");
     }
 
     /**
@@ -433,7 +433,17 @@ public class Http {
         if (StringKit.isEmpty(url)) {
             return false;
         }
-        return url.startsWith(Http.HTTPS_PREFIX);
+        return url.startsWith(Http.HTTPS_PREFIX) || url.startsWith("https%3A%2F%2F");
+    }
+
+    /**
+     * 是否为本地主机（域名）
+     *
+     * @param url 待验证的url
+     * @return true: 本地主机（域名）, false: 非本地主机（域名）
+     */
+    public static boolean isLocalHost(String url) {
+        return StringKit.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);
     }
 
 }

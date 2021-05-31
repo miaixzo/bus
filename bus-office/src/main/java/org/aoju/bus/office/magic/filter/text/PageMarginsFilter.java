@@ -44,7 +44,7 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  * 此筛选器用于设置要转换的文档的页边距.
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class PageMarginsFilter implements Filter {

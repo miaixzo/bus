@@ -56,7 +56,7 @@ import java.util.*;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -231,126 +231,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             parentPidMap.put(pid, getParentPidFromProcFile(pid));
         }
         return parentPidMap;
-    }
-
-    @Override
-    public String queryManufacturer() {
-        return "GNU/Linux";
-    }
-
-    @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
-        Triple<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
-        String buildNumber = null;
-        List<String> procVersion = FileKit.readLines(ProcPath.VERSION);
-        if (!procVersion.isEmpty()) {
-            String[] split = RegEx.SPACES.split(procVersion.get(0));
-            for (String s : split) {
-                if (!"Linux".equals(s) && !"version".equals(s)) {
-                    buildNumber = s;
-                    break;
-                }
-            }
-        }
-        OSVersionInfo versionInfo = new OSVersionInfo(familyVersionCodename.getMiddle(), familyVersionCodename.getRight(),
-                buildNumber);
-        return Pair.of(familyVersionCodename.getLeft(), versionInfo);
-    }
-
-    @Override
-    protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
-            return jvmBitness;
-        }
-        return 64;
-    }
-
-    @Override
-    public FileSystem getFileSystem() {
-        return new LinuxFileSystem();
-    }
-
-    @Override
-    public InternetProtocolStats getInternetProtocolStats() {
-        return new LinuxInternetProtocolStats();
-    }
-
-    @Override
-    public List<OSSession> getSessions() {
-        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        OSProcess proc = new LinuxOSProcess(pid);
-        if (!proc.getState().equals(State.INVALID)) {
-            return proc;
-        }
-        return null;
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return queryChildProcesses(-1);
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        File[] pidFiles = ProcessStat.getPidFiles();
-        if (parentPid >= 0) {
-            // Only return descendants
-            return queryProcessList(getChildrenOrDescendants(getParentPidsFromProcFiles(pidFiles), parentPid, false));
-        }
-        Set<Integer> descendantPids = new HashSet<>();
-        // Put everything in the "descendant" set
-        for (File procFile : pidFiles) {
-            int pid = Builder.parseIntOrDefault(procFile.getName(), -2);
-            if (pid != -2) {
-                descendantPids.add(pid);
-            }
-        }
-        return queryProcessList(descendantPids);
-    }
-
-    @Override
-    public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        File[] pidFiles = ProcessStat.getPidFiles();
-        return queryProcessList(getChildrenOrDescendants(getParentPidsFromProcFiles(pidFiles), parentPid, true));
-    }
-
-    @Override
-    public int getProcessId() {
-        return LinuxLibc.INSTANCE.getpid();
-    }
-
-    @Override
-    public int getProcessCount() {
-        return ProcessStat.getPidFiles().length;
-    }
-
-    @Override
-    public int getThreadCount() {
-        try {
-            Sysinfo info = new Sysinfo();
-            if (0 != LibC.INSTANCE.sysinfo(info)) {
-                Logger.error("Failed to get process thread count. Error code: {}", Native.getLastError());
-                return 0;
-            }
-            return info.procs;
-        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-            Logger.error("Failed to get procs from sysinfo. {}", e.getMessage());
-        }
-        return 0;
-    }
-
-    @Override
-    public long getSystemUptime() {
-        return (long) UpTime.getSystemUptimeSeconds();
-    }
-
-    @Override
-    public long getSystemBootTime() {
-        return BOOTTIME;
     }
 
     private static Triple<String, String, String> queryFamilyVersionCodenameFromReleaseFiles() {
@@ -590,6 +470,126 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return Triple.of(family, versionId, codeName);
+    }
+
+    @Override
+    public String queryManufacturer() {
+        return "GNU/Linux";
+    }
+
+    @Override
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+        Triple<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
+        String buildNumber = null;
+        List<String> procVersion = FileKit.readLines(ProcPath.VERSION);
+        if (!procVersion.isEmpty()) {
+            String[] split = RegEx.SPACES.split(procVersion.get(0));
+            for (String s : split) {
+                if (!"Linux".equals(s) && !"version".equals(s)) {
+                    buildNumber = s;
+                    break;
+                }
+            }
+        }
+        OSVersionInfo versionInfo = new OSVersionInfo(familyVersionCodename.getMiddle(), familyVersionCodename.getRight(),
+                buildNumber);
+        return Pair.of(familyVersionCodename.getLeft(), versionInfo);
+    }
+
+    @Override
+    protected int queryBitness(int jvmBitness) {
+        if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
+            return jvmBitness;
+        }
+        return 64;
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return new LinuxFileSystem();
+    }
+
+    @Override
+    public InternetProtocolStats getInternetProtocolStats() {
+        return new LinuxInternetProtocolStats();
+    }
+
+    @Override
+    public List<OSSession> getSessions() {
+        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        OSProcess proc = new LinuxOSProcess(pid);
+        if (!proc.getState().equals(State.INVALID)) {
+            return proc;
+        }
+        return null;
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return queryChildProcesses(-1);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        File[] pidFiles = ProcessStat.getPidFiles();
+        if (parentPid >= 0) {
+            // Only return descendants
+            return queryProcessList(getChildrenOrDescendants(getParentPidsFromProcFiles(pidFiles), parentPid, false));
+        }
+        Set<Integer> descendantPids = new HashSet<>();
+        // Put everything in the "descendant" set
+        for (File procFile : pidFiles) {
+            int pid = Builder.parseIntOrDefault(procFile.getName(), -2);
+            if (pid != -2) {
+                descendantPids.add(pid);
+            }
+        }
+        return queryProcessList(descendantPids);
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        File[] pidFiles = ProcessStat.getPidFiles();
+        return queryProcessList(getChildrenOrDescendants(getParentPidsFromProcFiles(pidFiles), parentPid, true));
+    }
+
+    @Override
+    public int getProcessId() {
+        return LinuxLibc.INSTANCE.getpid();
+    }
+
+    @Override
+    public int getProcessCount() {
+        return ProcessStat.getPidFiles().length;
+    }
+
+    @Override
+    public int getThreadCount() {
+        try {
+            Sysinfo info = new Sysinfo();
+            if (0 != LibC.INSTANCE.sysinfo(info)) {
+                Logger.error("Failed to get process thread count. Error code: {}", Native.getLastError());
+                return 0;
+            }
+            return info.procs;
+        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
+            Logger.error("Failed to get procs from sysinfo. {}", e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public long getSystemUptime() {
+        return (long) UpTime.getSystemUptimeSeconds();
+    }
+
+    @Override
+    public long getSystemBootTime() {
+        return BOOTTIME;
     }
 
     @Override

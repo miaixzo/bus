@@ -48,7 +48,7 @@ import java.util.Map;
  * 用于执行系统命令的工具
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class RuntimeKit {
@@ -436,6 +436,23 @@ public class RuntimeKit {
      */
     public static StackTraceElement getStackElement(int layers) {
         return getStackElements()[layers];
+    }
+
+    /**
+     * 获取指定层的堆栈信息
+     *
+     * @param fqcn   指定类名为基础
+     * @param layers 指定类名的类堆栈相对层数
+     * @return 指定层的堆栈信息
+     */
+    public static StackTraceElement getStackElement(String fqcn, int layers) {
+        final StackTraceElement[] stackTraceArray = getStackElements();
+        final int index = ArrayKit.firstNonAll((ele) -> StringKit.equals(fqcn, ele.getClassName()), stackTraceArray);
+        if (index > 0) {
+            return stackTraceArray[index + layers];
+        }
+
+        return null;
     }
 
     /**

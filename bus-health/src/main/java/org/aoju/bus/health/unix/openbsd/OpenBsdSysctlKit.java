@@ -29,21 +29,25 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.mac.SystemB;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.logger.Logger;
 
 /**
  * Provides access to sysctl calls on OpenBSD
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public final class OpenBsdSysctlKit {
+
+    private static final String SYSCTL_N = "sysctl -n ";
 
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
@@ -58,9 +62,9 @@ public final class OpenBsdSysctlKit {
      * @return The int result of the call if successful; the default otherwise
      */
     public static int sysctl(int[] name, int def) {
-        IntByReference size = new IntByReference(OpenBsdLibc.INT_SIZE);
-        Pointer p = new Memory(size.getValue());
-        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(OpenBsdLibc.INT_SIZE));
+        Pointer p = new Memory(size.getValue().longValue());
+        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -75,9 +79,9 @@ public final class OpenBsdSysctlKit {
      * @return The long result of the call if successful; the default otherwise
      */
     public static long sysctl(int[] name, long def) {
-        IntByReference size = new IntByReference(OpenBsdLibc.UINT64_SIZE);
-        Pointer p = new Memory(size.getValue());
-        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference(new SystemB.size_t(OpenBsdLibc.UINT64_SIZE));
+        Pointer p = new Memory(size.getValue().longValue());
+        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, SystemB.size_t.ZERO)) {
             Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -93,14 +97,14 @@ public final class OpenBsdSysctlKit {
      */
     public static String sysctl(int[] name, String def) {
         // Call first time with null pointer to get value of size
-        IntByReference size = new IntByReference();
-        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, null, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference();
+        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, null, size, null, LibCAPI.size_t.ZERO)) {
             Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
         // Add 1 to size for null terminated string
-        Pointer p = new Memory(size.getValue() + 1L);
-        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, 0)) {
+        Pointer p = new Memory(size.getValue().longValue() + 1L);
+        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, LibCAPI.size_t.ZERO)) {
             Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -115,8 +119,8 @@ public final class OpenBsdSysctlKit {
      * @return True if structure is successfuly populated, false otherwise
      */
     public static boolean sysctl(int[] name, Structure struct) {
-        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, struct.getPointer(), new IntByReference(struct.size()),
-                null, 0)) {
+        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, struct.getPointer(),
+                new NativeSizeTByReference(new LibCAPI.size_t(struct.size())), null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return false;
         }
@@ -132,22 +136,18 @@ public final class OpenBsdSysctlKit {
      * otherwise. Its value on failure is undefined.
      */
     public static Memory sysctl(int[] name) {
-        IntByReference size = new IntByReference();
-        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, null, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference();
+        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, null, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }
-        Memory m = new Memory(size.getValue());
-        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, m, size, null, 0)) {
+        Memory m = new Memory(size.getValue().longValue());
+        if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, m, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }
         return m;
     }
-
-    /*
-     * Backup versions with command parsing
-     */
 
     /**
      * Executes a sysctl call with an int result
@@ -157,7 +157,7 @@ public final class OpenBsdSysctlKit {
      * @return The int result of the call if successful; the default otherwise
      */
     public static int sysctl(String name, int def) {
-        return Builder.parseIntOrDefault(Executor.getFirstAnswer("sysctl -n " + name), def);
+        return Builder.parseIntOrDefault(Executor.getFirstAnswer(SYSCTL_N + name), def);
     }
 
     /**
@@ -168,7 +168,7 @@ public final class OpenBsdSysctlKit {
      * @return The long result of the call if successful; the default otherwise
      */
     public static long sysctl(String name, long def) {
-        return Builder.parseLongOrDefault(Executor.getFirstAnswer("sysctl -n " + name), def);
+        return Builder.parseLongOrDefault(Executor.getFirstAnswer(SYSCTL_N + name), def);
     }
 
     /**
@@ -179,7 +179,7 @@ public final class OpenBsdSysctlKit {
      * @return The String result of the call if successful; the default otherwise
      */
     public static String sysctl(String name, String def) {
-        String v = Executor.getFirstAnswer("sysctl -n " + name);
+        String v = Executor.getFirstAnswer(SYSCTL_N + name);
         if (null == v || v.isEmpty()) {
             return def;
         }

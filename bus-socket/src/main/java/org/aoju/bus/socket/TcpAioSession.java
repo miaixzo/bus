@@ -61,7 +61,7 @@ import java.util.function.Consumer;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class TcpAioSession<T> extends AioSession {
@@ -70,10 +70,6 @@ public class TcpAioSession<T> extends AioSession {
      * 底层通信channel对象
      */
     private final AsynchronousSocketChannel channel;
-    /**
-     * 是否读通道以至末尾
-     */
-    boolean eof;
     /**
      * 输出流
      */
@@ -94,6 +90,10 @@ public class TcpAioSession<T> extends AioSession {
      * 服务配置
      */
     private final ServerConfig<T> serverConfig;
+    /**
+     * 是否读通道以至末尾
+     */
+    boolean eof;
     /**
      * 读缓冲。
      * <p>大小取决于AioQuickClient/AioQuickServer设置的setReadBufferSize</p>

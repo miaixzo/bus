@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Callback;
  * ③、如果扩展了对应枚举类时,在{@link Provider#login(Callback)}中可以通过{@code xx.toString()}获取对应的source
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public interface Complex {

@@ -29,10 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -40,15 +37,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * ByteBuffer内存页
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class PageBuffer {
 
-    /**
-     * 共享内存页
-     */
-    private final PageBuffer sharedPageBuffer;
     /**
      * 同组内存池中的各内存页
      */
@@ -78,9 +71,8 @@ public class PageBuffer {
      * @param size   缓存页大小
      * @param direct 是否使用堆外内存
      */
-    PageBuffer(PageBuffer[] pagePool, PageBuffer sharedPageBuffer, int size, boolean direct) {
-        this.pagePool = pagePool;
-        this.sharedPageBuffer = sharedPageBuffer;
+    PageBuffer(PageBuffer[] pagePool, int size, boolean direct) {
+        this.pagePool = Objects.requireNonNull(pagePool);
         availableBuffers = new LinkedList<>();
         this.buffer = allocate0(size, direct);
         availableBuffers.add(new VirtualBuffer(this, null, buffer.position(), buffer.limit()));
@@ -105,21 +97,12 @@ public class PageBuffer {
      */
     public VirtualBuffer allocate(final int size) {
         VirtualBuffer virtualBuffer;
-        if (null != pagePool && Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
+        if (Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
             virtualBuffer = pagePool[(int) (Thread.currentThread().getId() % pagePool.length)].allocate0(size);
         } else {
             virtualBuffer = allocate0(size);
         }
-        if (null != virtualBuffer) {
-            return virtualBuffer;
-        }
-        if (null != sharedPageBuffer) {
-            virtualBuffer = sharedPageBuffer.allocate0(size);
-        }
-        if (null == virtualBuffer) {
-            virtualBuffer = new VirtualBuffer(null, allocate0(size, false), 0, 0);
-        }
-        return virtualBuffer;
+        return virtualBuffer == null ? new VirtualBuffer(null, allocate0(size, false), 0, 0) : virtualBuffer;
     }
 
     /**
@@ -190,7 +173,7 @@ public class PageBuffer {
      * @return 申请到的内存块, 若空间不足则范围null
      */
     private VirtualBuffer slowAllocate(int size) {
-        Iterator<VirtualBuffer> iterator = availableBuffers.iterator();
+        Iterator<VirtualBuffer> iterator = availableBuffers.listIterator(0);
         VirtualBuffer bufferChunk;
         while (iterator.hasNext()) {
             VirtualBuffer freeChunk = iterator.next();
@@ -270,7 +253,7 @@ public class PageBuffer {
      * @param cleanBuffer 虚拟缓冲区
      */
     private void clean0(VirtualBuffer cleanBuffer) {
-        ListIterator<VirtualBuffer> iterator = availableBuffers.listIterator();
+        ListIterator<VirtualBuffer> iterator = availableBuffers.listIterator(0);
         while (iterator.hasNext()) {
             VirtualBuffer freeBuffer = iterator.next();
             //cleanBuffer在freeBuffer之前并且形成连续块

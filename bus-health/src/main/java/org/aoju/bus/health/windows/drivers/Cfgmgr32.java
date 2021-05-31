@@ -25,45 +25,31 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.drivers;
 
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.win32.W32APIOptions;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.windows.WmiQueryHandler;
 
 /**
- * Utility to query WMI class {@code Win32_PnPEntity}
+ * Utility to query WMI class {@code Win32_USBController}
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class Win32PnPEntity {
 
-    private static final String WIN32_PNP_ENTITY = "Win32_PnPEntity";
+public interface Cfgmgr32 extends com.sun.jna.platform.win32.Cfgmgr32 {
 
-    /**
-     * Queries the PnP Device id info
-     *
-     * @param h           An instantiated {@link WmiQueryHandler}. User should have already
-     *                    initialized COM.
-     * @param whereClause WQL "WHERE" clause limiting the search
-     * @return Information regarding each device
-     */
-    public static WmiResult<PnPEntityProperty> queryDeviceId(WmiQueryHandler h, String whereClause) {
-        WmiQuery<PnPEntityProperty> pnpEntityQuery = new WmiQuery<>(WIN32_PNP_ENTITY + whereClause,
-                PnPEntityProperty.class);
-        return h.queryWMI(pnpEntityQuery, false);
-    }
+    Cfgmgr32 INSTANCE = Native.load("cfgmgr32", Cfgmgr32.class, W32APIOptions.DEFAULT_OPTIONS);
 
-    private Win32PnPEntity() {
-    }
+    int CM_DRP_DEVICEDESC = 0x00000001;
+    int CM_DRP_SERVICE = 0x00000005;
+    int CM_DRP_CLASS = 0x00000008;
+    int CM_DRP_MFG = 0x0000000C;
+    int CM_DRP_FRIENDLYNAME = 0x0000000D;
 
-    /**
-     * DeviceId and name
-     */
-    public enum PnPEntityProperty {
-        NAME, MANUFACTURER, PNPDEVICEID
-    }
-
+    boolean CM_Get_DevNode_Registry_Property(int dnDevInst, int ulProperty, IntByReference pulRegDataType,
+                                             Pointer buffer, IntByReference pulLength, int ulFlags);
 }

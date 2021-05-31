@@ -40,7 +40,7 @@ import java.util.Arrays;
  * usage to ensure consistent calculations.
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -68,6 +68,13 @@ public interface NetworkIF {
      * identical to the name.
      */
     String getDisplayName();
+
+    /**
+     * Interface index.
+     *
+     * @return The index of the network interface.
+     */
+    int getIndex();
 
     /**
      * The {@code ifAlias} as described in RFC 2863.

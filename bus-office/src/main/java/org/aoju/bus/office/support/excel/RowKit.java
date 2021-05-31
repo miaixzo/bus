@@ -44,7 +44,7 @@ import java.util.stream.IntStream;
  * Excel中的行{@link Row}封装工具类
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class RowKit {
@@ -107,6 +107,16 @@ public class RowKit {
             return Collections.emptyList();
         }
         return cellValues;
+    }
+
+    /**
+     * 写一行数据，无样式，非标题
+     *
+     * @param row     行
+     * @param rowData 一行的数据
+     */
+    public static void writeRow(Row row, Iterable<?> rowData) {
+        writeRow(row, rowData, null, false);
     }
 
     /**

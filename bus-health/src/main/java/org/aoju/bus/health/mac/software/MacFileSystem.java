@@ -46,6 +46,7 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
 import org.aoju.bus.health.mac.SysctlKit;
+import org.aoju.bus.health.mac.drivers.WindowInfo;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -65,7 +66,7 @@ import java.util.stream.Collectors;
  * in the /Volumes directory.
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -222,11 +223,7 @@ public class MacFileSystem extends AbstractFileSystem {
                             if (null != diskInfo) {
                                 // get volume name from its key
                                 Pointer result = diskInfo.getValue(daVolumeNameKey);
-                                CFStringRef volumePtr = new CFStringRef(result);
-                                name = volumePtr.stringValue();
-                                if (null == name) {
-                                    name = Normal.UNKNOWN;
-                                }
+                                name = WindowInfo.cfPointerToString(result);
                                 diskInfo.release();
                             }
                             disk.release();

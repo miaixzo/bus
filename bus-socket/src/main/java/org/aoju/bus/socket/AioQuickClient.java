@@ -56,6 +56,7 @@ public class AioQuickClient<T> {
      * 调用AioQuickClient的各setXX()方法，都是为了设置config的各配置项
      */
     private final ServerConfig<T> config = new ServerConfig<>();
+    private final BufferFactory.VirtualBufferFactory readBufferFactory = bufferPage -> bufferPage.allocate(config.getReadBufferSize());
     /**
      * 网络连接的会话对象
      *
@@ -66,25 +67,20 @@ public class AioQuickClient<T> {
      * 内存池
      */
     private ByteBuffer bufferPool = null;
-
     private ByteBuffer innerBufferPool = null;
     /**
      * IO事件处理线程组
      * 作为客户端，该AsynchronousChannelGroup只需保证2个长度的线程池大小即可满足通信读写所需
      */
     private AsynchronousChannelGroup asynchronousChannelGroup;
-
     /**
      * 绑定本地地址
      */
     private SocketAddress localAddress;
-
     /**
      * 连接超时时间
      */
     private int connectTimeout;
-
-    private final BufferFactory.VirtualBufferFactory readBufferFactory = bufferPage -> bufferPage.allocate(config.getReadBufferSize());
 
     /**
      * 当前构造方法设置了启动Aio客户端的必要参数，基本实现开箱即用。
@@ -260,7 +256,7 @@ public class AioQuickClient<T> {
      * @return 当前客户端实例
      */
     public final AioQuickClient<T> bindLocal(String local, int port) {
-        localAddress =null == local ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
+        localAddress = null == local ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
         return this;
     }
 

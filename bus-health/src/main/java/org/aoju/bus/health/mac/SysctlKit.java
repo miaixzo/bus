@@ -29,8 +29,10 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.logger.Logger;
 
 
@@ -38,7 +40,7 @@ import org.aoju.bus.logger.Logger;
  * 提供对Mac OS上的sysctl调用的访问
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -92,14 +94,14 @@ public final class SysctlKit {
      */
     public static String sysctl(String name, String def) {
         // 第一次调用空指针来获取大小值
-        IntByReference size = new IntByReference();
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference();
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
         // 为空终止字符串的大小添加1
-        Pointer p = new Memory(size.getValue() + 1L);
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
+        Pointer p = new Memory(size.getValue().longValue() + 1L);
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -114,7 +116,8 @@ public final class SysctlKit {
      * @return 如果结构成功填充为真，则为假
      */
     public static boolean sysctl(String name, Structure struct) {
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), new IntByReference(struct.size()), null, 0)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(),
+                new NativeSizeTByReference(new LibCAPI.size_t(struct.size())), null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return false;
         }
@@ -130,13 +133,13 @@ public final class SysctlKit {
      * otherwise. Its value on failure is undefined.
      */
     public static Memory sysctl(String name) {
-        IntByReference size = new IntByReference();
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference();
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }
-        Memory m = new Memory(size.getValue());
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, 0)) {
+        Memory m = new Memory(size.getValue().longValue());
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }

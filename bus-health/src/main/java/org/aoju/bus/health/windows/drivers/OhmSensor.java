@@ -35,13 +35,16 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query Open Hardware Monitor WMI data for Sensors
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public final class OhmSensor {
 
     private static final String SENSOR = "Sensor";
+
+    private OhmSensor() {
+    }
 
     /**
      * Queries the sensor value of an hardware identifier and sensor type.
@@ -59,9 +62,6 @@ public final class OhmSensor {
         WmiQuery<ValueProperty> ohmSensorQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, sb.toString(),
                 ValueProperty.class);
         return h.queryWMI(ohmSensorQuery, false);
-    }
-
-    private OhmSensor() {
     }
 
     /**

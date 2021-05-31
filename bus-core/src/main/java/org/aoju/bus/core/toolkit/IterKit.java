@@ -38,7 +38,7 @@ import java.util.function.Function;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class IterKit {
@@ -204,16 +204,10 @@ public class IterKit {
     public static <T> Map<T, Integer> countMap(Iterator<T> iterator) {
         final HashMap<T, Integer> countMap = new HashMap<>();
         if (null != iterator) {
-            Integer count;
             T t;
             while (iterator.hasNext()) {
                 t = iterator.next();
-                count = countMap.get(t);
-                if (null == count) {
-                    countMap.put(t, 1);
-                } else {
-                    countMap.put(t, count + 1);
-                }
+                countMap.put(t, countMap.getOrDefault(t, 0) + 1);
             }
         }
         return countMap;

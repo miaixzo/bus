@@ -43,13 +43,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Bean工具类
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class BeanKit {
@@ -817,10 +818,38 @@ public class BeanKit {
      * @param copyOptions 拷贝选项,见 {@link CopyOptions}
      */
     public static void copyProperties(Object source, Object target, CopyOptions copyOptions) {
-        if (null == copyOptions) {
-            copyOptions = new CopyOptions();
-        }
-        BeanCopier.create(source, target, copyOptions).copy();
+        BeanCopier.create(source, target, ObjectKit.defaultIfNull(copyOptions, CopyOptions.create())).copy();
+    }
+
+    /**
+     * 复制集合中的Bean属性
+     * 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中
+     *
+     * @param collection  原Bean集合
+     * @param targetType  目标Bean类型
+     * @param copyOptions 拷贝选项
+     * @param <T>         Bean类型
+     * @return the list
+     */
+    public static <T> List<T> copyToList(Collection<?> collection, Class<T> targetType, CopyOptions copyOptions) {
+        return collection.stream().map((source) -> {
+            final T target = ReflectKit.newInstanceIfPossible(targetType);
+            copyProperties(source, target, copyOptions);
+            return target;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 复制集合中的Bean属性
+     * 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中
+     *
+     * @param collection 原Bean集合
+     * @param targetType 目标Bean类型
+     * @param <T>        Bean类型
+     * @return 复制后的List
+     */
+    public static <T> List<T> copyToList(Collection<?> collection, Class<T> targetType) {
+        return copyToList(collection, targetType, CopyOptions.create());
     }
 
     /**
@@ -847,18 +876,10 @@ public class BeanKit {
      * @return 处理后的Bean对象
      */
     public static <T> T trimStrFields(T bean, String... ignoreFields) {
-        if (null == bean) {
-            return null;
-        }
-
-        final Field[] fields = ReflectKit.getFields(bean.getClass());
-        for (Field field : fields) {
-            if (isStatic(field)) {
-                continue;
-            }
-            if (null != ignoreFields && ArrayKit.containsIgnoreCase(ignoreFields, field.getName())) {
+        return edit(bean, (field) -> {
+            if (ignoreFields != null && ArrayKit.containsIgnoreCase(ignoreFields, field.getName())) {
                 // 不处理忽略的Fields
-                continue;
+                return field;
             }
             if (String.class.equals(field.getType())) {
                 // 只有String的Field才处理
@@ -871,9 +892,8 @@ public class BeanKit {
                     }
                 }
             }
-        }
-
-        return bean;
+            return field;
+        });
     }
 
     /**
@@ -1079,6 +1099,30 @@ public class BeanKit {
      */
     public static void forEach(Class<?> clazz, Consumer<? super PropertyDescription> action) {
         getBeanDesc(clazz).getProps().forEach(action);
+    }
+
+    /**
+     * 编辑Bean的字段，static字段不会处理
+     * 例如需要对指定的字段做判空操作、null转""操作等等。
+     *
+     * @param bean   bean
+     * @param editor 编辑器函数
+     * @param <T>    被编辑的Bean类型
+     * @return the object
+     */
+    public static <T> T edit(T bean, Editor<Field> editor) {
+        if (bean == null) {
+            return null;
+        }
+
+        final Field[] fields = ReflectKit.getFields(bean.getClass());
+        for (Field field : fields) {
+            if (isStatic(field)) {
+                continue;
+            }
+            editor.edit(field);
+        }
+        return bean;
     }
 
     /**

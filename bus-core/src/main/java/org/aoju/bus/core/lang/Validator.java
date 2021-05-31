@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class Validator {
@@ -433,6 +433,16 @@ public class Validator {
     }
 
     /**
+     * 是否包含数字
+     *
+     * @param value 当前字符串
+     * @return boolean 是否存在数字
+     */
+    public static boolean hasNumber(CharSequence value) {
+        return PatternKit.contains(RegEx.NUMBERS, value);
+    }
+
+    /**
      * 验证是否为数字
      *
      * @param value    表单值
@@ -555,6 +565,46 @@ public class Validator {
      */
     public static boolean isMobile(String value) {
         return isMatchRegex(RegEx.MOBILE, value);
+    }
+
+    /**
+     * 验证是否为手机号码（香港）
+     *
+     * @param value 手机号码
+     * @return 是否为香港手机号码
+     */
+    public static boolean isMobileHk(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.MOBILE_HK, value);
+    }
+
+    /**
+     * 验证是否为手机号码（台湾）
+     *
+     * @param value 手机号码
+     * @return 是否为台湾手机号码
+     */
+    public static boolean isMobileTw(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.MOBILE_TW, value);
+    }
+
+    /**
+     * 验证是否为手机号码（澳门）
+     *
+     * @param value 手机号码
+     * @return 是否为澳门手机号码
+     */
+    public static boolean isMobileMo(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.MOBILE_MO, value);
+    }
+
+    /**
+     * 验证是否为座机号码（中国）+ 400 + 800
+     *
+     * @param value 值
+     * @return 是否为座机号码（中国）
+     */
+    public static boolean isTel400800(CharSequence value) {
+        return Validator.isMatchRegex(RegEx.PHONE_400_800, value);
     }
 
     /**

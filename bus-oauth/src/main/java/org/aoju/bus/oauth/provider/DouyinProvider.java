@@ -28,6 +28,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -37,12 +38,13 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class DouyinProvider extends AbstractProvider {
@@ -100,7 +102,7 @@ public class DouyinProvider extends AbstractProvider {
                 .queryParam("response_type", "code")
                 .queryParam("client_key", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", "user_info")
+                .queryParam("scope", this.getScopes(Symbol.COMMA, true, getScopes(true, OauthScope.Douyin.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

@@ -35,13 +35,16 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query Open Hardware Monitor WMI data for Hardware
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public final class OhmHardware {
 
     private static final String HARDWARE = "Hardware";
+
+    private OhmHardware() {
+    }
 
     /**
      * Queries the hardware identifiers for a monitored type.
@@ -59,9 +62,6 @@ public final class OhmHardware {
         WmiQuery<IdentifierProperty> cpuIdentifierQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, sb.toString(),
                 IdentifierProperty.class);
         return h.queryWMI(cpuIdentifierQuery, false);
-    }
-
-    private OhmHardware() {
     }
 
     /**

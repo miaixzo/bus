@@ -30,7 +30,7 @@ package org.aoju.bus.core.toolkit;
  * 推荐使用FNV1算法
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class HashKit {

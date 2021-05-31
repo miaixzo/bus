@@ -37,7 +37,7 @@ import java.util.Objects;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -136,6 +136,9 @@ public class CitizenIdKit {
      * @return 是否有效
      */
     public static boolean isValidCard(String idcard) {
+        if (StringKit.isBlank(idcard)) {
+            return false;
+        }
         idcard = idcard.trim();
         int length = idcard.length();
         switch (length) {
