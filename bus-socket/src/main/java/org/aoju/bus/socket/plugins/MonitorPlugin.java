@@ -43,11 +43,11 @@ import java.util.concurrent.atomic.LongAdder;
 public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
 
     /**
-     * 当前周期内消息 流量监控
+     * 当前周期内流入字节数
      */
     private final LongAdder inFlow = new LongAdder();
     /**
-     * 当前周期内消息 流量监控
+     * 当前周期内流出字节数
      */
     private final LongAdder outFlow = new LongAdder();
     /**
@@ -59,14 +59,20 @@ public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
      */
     private final LongAdder processMsgNum = new LongAdder();
     /**
-     * 新建连接数
+     * 当前周期内新建连接数
      */
     private final LongAdder newConnect = new LongAdder();
     /**
-     * 断链数
+     * 当前周期内断开连接数
      */
     private final LongAdder disConnect = new LongAdder();
+    /**
+     * 当前周期内执行 read 操作次数
+     */
     private final LongAdder readCount = new LongAdder();
+    /**
+     * 当前周期内执行 write 操作次数
+     */
     private final LongAdder writeCount = new LongAdder();
     /**
      * 任务执行频率
@@ -81,7 +87,7 @@ public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
      */
     private long totalProcessMsgNum = 0;
     /**
-     * 在线连接数
+     * 当前在线状态连接数
      */
     private long onlineCount;
 

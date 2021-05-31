@@ -28,19 +28,18 @@ package org.aoju.bus.health.mac.software;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.SystemB;
-import com.sun.jna.platform.mac.SystemB.*;
-import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.mac.SysctlKit;
+import org.aoju.bus.health.mac.SystemB;
 import org.aoju.bus.health.mac.ThreadInfo;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -128,14 +127,9 @@ public class MacOSProcess extends AbstractOSProcess {
         // Allocate memory for arguments
         int argmax = SysctlKit.sysctl("kern.argmax", 0);
         Pointer procargs = new Memory(argmax);
-        IntByReference size = new IntByReference(argmax);
+        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(argmax));
         // Fetch arguments
-        if (0 != SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, 0)) {
-            // Beginning in macOS 11, this call has become unreliable. Use ps as a backup.
-            String cmdLine = Executor.getFirstAnswer("ps -o command= -p " + getProcessID());
-            if (!cmdLine.isEmpty()) {
-                return cmdLine;
-            }
+        if (0 != SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, LibCAPI.size_t.ZERO)) {
             Logger.warn(
                     "Failed syctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
                     getProcessID(), Native.getLastError());
@@ -158,10 +152,10 @@ public class MacOSProcess extends AbstractOSProcess {
         offset += procargs.getString(offset).length();
         // Iterate character by character using offset
         // Build each arg and add to list
-        while (nargs-- > 0 && offset < size.getValue()) {
+        while (nargs-- > 0 && offset < size.getValue().longValue()) {
             // Advance through additional nulls
             while (procargs.getByte(offset) == 0) {
-                if (++offset >= size.getValue()) {
+                if (++offset >= size.getValue().longValue()) {
                     break;
                 }
             }
@@ -312,7 +306,7 @@ public class MacOSProcess extends AbstractOSProcess {
     @Override
     public boolean updateAttributes() {
         long now = System.currentTimeMillis();
-        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
+        SystemB.ProcTaskAllInfo taskAllInfo = new SystemB.ProcTaskAllInfo();
         if (0 > SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo,
                 taskAllInfo.size()) || taskAllInfo.ptinfo.pti_threadnum < 1) {
             this.state = State.INVALID;
@@ -357,12 +351,12 @@ public class MacOSProcess extends AbstractOSProcess {
         }
         this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
         this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);
-        Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
+        SystemB.Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
         if (null != pwuid) {
             this.user = pwuid.pw_name;
         }
         this.groupID = Integer.toString(taskAllInfo.pbsd.pbi_gid);
-        Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
+        SystemB.Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
         if (null != grgid) {
             this.group = grgid.gr_name;
         }
@@ -381,13 +375,13 @@ public class MacOSProcess extends AbstractOSProcess {
         this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins;
         this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
         if (this.minorVersion >= 9) {
-            RUsageInfoV2 rUsageInfoV2 = new RUsageInfoV2();
+            SystemB.RUsageInfoV2 rUsageInfoV2 = new SystemB.RUsageInfoV2();
             if (0 == SystemB.INSTANCE.proc_pid_rusage(getProcessID(), SystemB.RUSAGE_INFO_V2, rUsageInfoV2)) {
                 this.bytesRead = rUsageInfoV2.ri_diskio_bytesread;
                 this.bytesWritten = rUsageInfoV2.ri_diskio_byteswritten;
             }
         }
-        VnodePathInfo vpi = new VnodePathInfo();
+        SystemB.VnodePathInfo vpi = new SystemB.VnodePathInfo();
         if (0 < SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDVNODEPATHINFO, 0, vpi, vpi.size())) {
             int len = 0;
             for (byte b : vpi.pvi_cdir.vip_path) {

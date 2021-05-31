@@ -29,8 +29,8 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.health.unix.CLibrary;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 
 /**
  * C动态库,这个类应该被认为是非api的，因为如果/当
@@ -98,7 +98,7 @@ public interface FreeBsdLibc extends CLibrary {
      * @param newlen  要写入的信息的大小
      * @return 0成功;设置errno失败
      */
-    int sysctl(int[] name, int namelen, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
+    int sysctl(int[] name, int namelen, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
 
     /**
      * sysctlbyname()函数接受名称的ASCII表示形式，并在内部查找整数名称向量
@@ -111,7 +111,7 @@ public interface FreeBsdLibc extends CLibrary {
      * @param newlen  要写入的信息的大小
      * @return 0成功;设置errno失败
      */
-    int sysctlbyname(String name, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
+    int sysctlbyname(String name, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
 
     /**
      * sysctlnametomib()函数接受名称的ASCII表示形式，查找整数名称向量，并返回mibp指向的mib数组
@@ -125,7 +125,8 @@ public interface FreeBsdLibc extends CLibrary {
      * @param size 输入时，返回数组中的元素数;在输出时，复制的项数
      * @return 0成功;设置errno失败
      */
-    int sysctlnametomib(String name, Pointer mibp, IntByReference size);
+    int sysctlnametomib(String name, Pointer mibp, NativeSizeTByReference size);
+
 
     /**
      * Reads a line from the current file position in the utmp file. It returns a

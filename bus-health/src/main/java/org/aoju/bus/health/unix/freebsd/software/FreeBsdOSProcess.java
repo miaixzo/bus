@@ -27,7 +27,7 @@ package org.aoju.bus.health.unix.freebsd.software;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -37,6 +37,7 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.ProcstatKit;
 
@@ -225,9 +226,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         mib[3] = getProcessID();
         // Allocate memory for arguments
         Pointer abi = new Memory(32);
-        IntByReference size = new IntByReference(32);
+        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(32));
         // Fetch abi vector
-        if (0 == FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, abi, size, null, 0)) {
+        if (0 == FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, abi, size, null, LibCAPI.size_t.ZERO)) {
             String elf = abi.getString(0);
             if (elf.contains("ELF32")) {
                 return 32;

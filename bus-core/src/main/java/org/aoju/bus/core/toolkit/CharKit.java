@@ -122,7 +122,6 @@ public class CharKit {
 
     /**
      * 判断是否为大写字母,大写字母包括A~Z
-     * </p>
      *
      * <pre>
      *   CharKit.isLetterUpper('a')  = false
@@ -142,7 +141,6 @@ public class CharKit {
 
     /**
      * 检查字符是否为小写字母,小写字母指a~z
-     * </p>
      *
      * <pre>
      *   CharKit.isLetterLower('a')  = true
@@ -162,7 +160,6 @@ public class CharKit {
 
     /**
      * 检查是否为数字字符,数字字符指0~9
-     * </p>
      *
      * <pre>
      *   CharKit.isNumber('a')  = false
@@ -354,7 +351,7 @@ public class CharKit {
      *     <li>{@code StringKit.isAllBlank("123", " ")        // false}</li>
      *     <li>{@code StringKit.isAllBlank("123", "abc")      // false}</li>
      * </ul>
-     * 注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：</p>
+     * 注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：
      * <ul>
      *     <li>{@link #hasBlank(CharSequence...)}   等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
      *     <li>isAllBlank(CharSequence...)          等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
@@ -382,7 +379,7 @@ public class CharKit {
      *     <li>{@code null}</li>
      *     <li>空字符串：{@code ""}</li>
      * </ol>
-     * 例：</p>
+     * 例：
      * <ul>
      *     <li>{@code StringKit.isEmpty(null)     // true}</li>
      *     <li>{@code StringKit.isEmpty("")       // true}</li>
@@ -439,7 +436,7 @@ public class CharKit {
      *     <li>{@code StringKit.isAllEmpty("123", "abc")      // false}</li>
      *     <li>{@code StringKit.isAllEmpty(" ", "\t", "\n")   // false}</li>
      * </ul>
-     * 注意：该方法与 {@link #hasEmpty(CharSequence...)} 的区别在于：</p>
+     * 注意：该方法与 {@link #hasEmpty(CharSequence...)} 的区别在于：
      * <ul>
      *     <li>{@link #hasEmpty(CharSequence...)}   等价于 {@code isEmpty(...) || isEmpty(...) || ...}</li>
      *     <li>isAllEmpty(CharSequence...)          等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
@@ -472,7 +469,7 @@ public class CharKit {
      *     <li>{@code StringKit.isAllNotEmpty("123", "abc")      // true}</li>
      *     <li>{@code StringKit.isAllNotEmpty(" ", "\t", "\n")   // true}</li>
      * </ul>
-     * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：</p>
+     * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：
      * <ul>
      *     <li>{@link #isAllEmpty(CharSequence...)}    等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
      *     <li>isAllNotEmpty(CharSequence...)          等价于 {@code !isEmpty(...) && !isEmpty(...) && ...}</li>
@@ -555,7 +552,7 @@ public class CharKit {
      *     <li>{@code StringKit.hasBlank("123", " ")        // true}</li>
      *     <li>{@code StringKit.hasBlank("123", "abc")      // false}</li>
      * </ul>
-     * 注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：</p>
+     * 注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：
      * <ul>
      *     <li>hasBlank(CharSequence...)            等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
      *     <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
@@ -639,6 +636,61 @@ public class CharKit {
             return Character.toLowerCase(c1) == Character.toLowerCase(c2);
         }
         return c1 == c2;
+    }
+
+    /**
+     * 统计指定内容中包含指定字符串的数量<br>
+     * 参数为 {@code null} 或者 "" 返回 {@code 0}.
+     *
+     * <pre>
+     * count(null, *)       = 0
+     * count("", *)         = 0
+     * count("abba", null)  = 0
+     * count("abba", "")    = 0
+     * count("abba", "a")   = 2
+     * count("abba", "ab")  = 1
+     * count("abba", "xxx") = 0
+     * </pre>
+     *
+     * @param content      被查找的字符串
+     * @param strForSearch 需要查找的字符串
+     * @return 查找到的个数
+     */
+    public static int count(CharSequence content, CharSequence strForSearch) {
+        if (hasEmpty(content, strForSearch) || strForSearch.length() > content.length()) {
+            return 0;
+        }
+
+        int count = 0;
+        int idx = 0;
+        final String content2 = content.toString();
+        final String strForSearch2 = strForSearch.toString();
+        while ((idx = content2.indexOf(strForSearch2, idx)) > -1) {
+            count++;
+            idx += strForSearch.length();
+        }
+        return count;
+    }
+
+    /**
+     * 统计指定内容中包含指定字符的数量
+     *
+     * @param content       内容
+     * @param charForSearch 被统计的字符
+     * @return 包含数量
+     */
+    public static int count(CharSequence content, char charForSearch) {
+        int count = 0;
+        if (isEmpty(content)) {
+            return 0;
+        }
+        int contentLength = content.length();
+        for (int i = 0; i < contentLength; i++) {
+            if (charForSearch == content.charAt(i)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**

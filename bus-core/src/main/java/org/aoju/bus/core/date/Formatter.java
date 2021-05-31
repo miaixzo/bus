@@ -35,10 +35,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.MathKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.core.toolkit.PatternKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -507,7 +504,7 @@ public class Formatter {
         // 含有单个位数数字的日期时间格式
         dateStr = normalize(dateStr);
         if (PatternKit.isMatch(Fields.REGEX_NORM, dateStr)) {
-            final int colonCount = StringKit.count(dateStr, Symbol.COLON);
+            final int colonCount = CharKit.count(dateStr, Symbol.COLON);
             switch (colonCount) {
                 case 0:
                     // yyyy-MM-dd

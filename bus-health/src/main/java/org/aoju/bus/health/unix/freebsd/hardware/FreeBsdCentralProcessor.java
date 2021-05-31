@@ -28,7 +28,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -38,6 +38,7 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc.CpTime;
@@ -297,7 +298,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         Pointer p = new Memory(arraySize);
         String name = "kern.cp_times";
         // Fetch
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, new IntByReference((int) arraySize), null, 0)) {
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, new NativeSizeTByReference(new LibCAPI.size_t(arraySize)), null,
+                LibCAPI.size_t.ZERO)) {
             Logger.error("Failed syctl call: {}, Error code: {}", name, Native.getLastError());
             return ticks;
         }
@@ -319,9 +321,9 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryContextSwitches() {
         String name = "vm.stats.sys.v_swtch";
-        IntByReference size = new IntByReference(FreeBsdLibc.INT_SIZE);
-        Pointer p = new Memory(size.getValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        Pointer p = new Memory(size.getValue().longValue());
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
             return 0L;
         }
         return Builder.unsignedIntToLong(p.getInt(0));
@@ -330,9 +332,9 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryInterrupts() {
         String name = "vm.stats.sys.v_intr";
-        IntByReference size = new IntByReference(FreeBsdLibc.INT_SIZE);
-        Pointer p = new Memory(size.getValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
+        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        Pointer p = new Memory(size.getValue().longValue());
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
             return 0L;
         }
         return Builder.unsignedIntToLong(p.getInt(0));

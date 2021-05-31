@@ -439,6 +439,23 @@ public class RuntimeKit {
     }
 
     /**
+     * 获取指定层的堆栈信息
+     *
+     * @param fqcn   指定类名为基础
+     * @param layers 指定类名的类堆栈相对层数
+     * @return 指定层的堆栈信息
+     */
+    public static StackTraceElement getStackElement(String fqcn, int layers) {
+        final StackTraceElement[] stackTraceArray = getStackElements();
+        final int index = ArrayKit.firstNonAll((ele) -> StringKit.equals(fqcn, ele.getClassName()), stackTraceArray);
+        if (index > 0) {
+            return stackTraceArray[index + layers];
+        }
+
+        return null;
+    }
+
+    /**
      * 获取入口堆栈信息
      *
      * @return 入口堆栈信息

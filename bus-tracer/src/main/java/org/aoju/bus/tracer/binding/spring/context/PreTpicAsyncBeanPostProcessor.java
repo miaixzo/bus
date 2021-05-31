@@ -29,7 +29,7 @@ public class PreTpicAsyncBeanPostProcessor extends AsyncAnnotationBeanPostProces
     public void setBeanFactory(BeanFactory beanFactory) {
     }
 
-    static class TpicPreAdvisor extends AsyncAnnotationAdvisor {
+    class TpicPreAdvisor extends AsyncAnnotationAdvisor {
 
         private final Backend backend;
         private final Executor executor;
@@ -38,7 +38,7 @@ public class PreTpicAsyncBeanPostProcessor extends AsyncAnnotationBeanPostProces
             super();
             this.executor = executor;
             this.backend = backend;
-            setTaskExecutor(executor); // compatible with spring 4
+            setExecutor(executor); // compatible with spring 4
         }
 
         // use getAdvice instead of buildAdvice to be compatible with Spring 4

@@ -32,7 +32,6 @@ import org.aoju.bus.cache.serialize.Hessian2Serializer;
 import redis.clients.jedis.JedisCluster;
 
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -142,11 +141,7 @@ public class RedisClusterCache implements CacheX {
     @PreDestroy
     public void tearDown() {
         if (null != this.jedisCluster) {
-            try {
-                this.jedisCluster.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            this.jedisCluster.close();
         }
     }
 

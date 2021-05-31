@@ -34,7 +34,7 @@ public class PostTpicAsyncBeanPostProcessor extends AbstractAdvisingBeanPostProc
             super();
             this.executor = executor;
             this.backend = backend;
-            setTaskExecutor(executor); // compatible with spring 4
+            // setTaskExecutor(executor); // compatible with spring 4
         }
 
         // use getAdvice instead of buildAdvice to be compatible with Spring 4

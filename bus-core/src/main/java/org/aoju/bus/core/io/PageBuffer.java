@@ -29,10 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -75,7 +72,7 @@ public class PageBuffer {
      * @param direct 是否使用堆外内存
      */
     PageBuffer(PageBuffer[] pagePool, int size, boolean direct) {
-        this.pagePool = pagePool;
+        this.pagePool = Objects.requireNonNull(pagePool);
         availableBuffers = new LinkedList<>();
         this.buffer = allocate0(size, direct);
         availableBuffers.add(new VirtualBuffer(this, null, buffer.position(), buffer.limit()));
@@ -100,7 +97,7 @@ public class PageBuffer {
      */
     public VirtualBuffer allocate(final int size) {
         VirtualBuffer virtualBuffer;
-        if (null != pagePool && Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
+        if (Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
             virtualBuffer = pagePool[(int) (Thread.currentThread().getId() % pagePool.length)].allocate0(size);
         } else {
             virtualBuffer = allocate0(size);
@@ -176,7 +173,7 @@ public class PageBuffer {
      * @return 申请到的内存块, 若空间不足则范围null
      */
     private VirtualBuffer slowAllocate(int size) {
-        Iterator<VirtualBuffer> iterator = availableBuffers.iterator();
+        Iterator<VirtualBuffer> iterator = availableBuffers.listIterator(0);
         VirtualBuffer bufferChunk;
         while (iterator.hasNext()) {
             VirtualBuffer freeChunk = iterator.next();
@@ -256,7 +253,7 @@ public class PageBuffer {
      * @param cleanBuffer 虚拟缓冲区
      */
     private void clean0(VirtualBuffer cleanBuffer) {
-        ListIterator<VirtualBuffer> iterator = availableBuffers.listIterator();
+        ListIterator<VirtualBuffer> iterator = availableBuffers.listIterator(0);
         while (iterator.hasNext()) {
             VirtualBuffer freeBuffer = iterator.next();
             //cleanBuffer在freeBuffer之前并且形成连续块

@@ -45,9 +45,9 @@
         <spring.boot.version>2.5.0</spring.boot.version>
         <compress.version>1.19</compress.version>
         <freemarker.version>2.3.30</freemarker.version>
-        <lombok.version>1.18.18</lombok.version>
-        <druid.version>1.2.3</druid.version>
-        <mysql.version>8.0.22</mysql.version>
+        <lombok.version>1.18.20</lombok.version>
+        <druid.version>1.2.6</druid.version>
+        <mysql.version>8.0.25</mysql.version>
     </properties>
 
     <dependencies>

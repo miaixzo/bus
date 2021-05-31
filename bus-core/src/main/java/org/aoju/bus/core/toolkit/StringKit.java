@@ -5460,7 +5460,7 @@ public class StringKit {
      *
      * @param str       字符串
      * @param separator 分隔符
-     * @return Map<String, Long>    统计次数 如: {"hello":10}
+     * @return 统计次数 如: {"hello":10}
      */
     public static Map<String, Long> count(String str, String separator) {
         return count(Collections.singletonList(str), separator);
@@ -5472,7 +5472,7 @@ public class StringKit {
      * @param str         字符串
      * @param separator   分隔符
      * @param isValueDesc 是否倒叙排列
-     * @return Map<String, Long>    统计次数 如: {"hello":10}
+     * @return 统计次数 如: {"hello":10}
      */
     public static Map<String, Long> count(String str, String separator, boolean isValueDesc) {
         return count(Collections.singletonList(str), separator, isValueDesc);
@@ -5483,7 +5483,7 @@ public class StringKit {
      *
      * @param list      list容器
      * @param separator 分隔符
-     * @return Map<String, Long>    统计次数
+     * @return 统计次数
      */
     public static Map<String, Long> count(List<String> list, String separator) {
         Map<String, Long> countMap = MapKit.newHashMap();
@@ -5502,7 +5502,7 @@ public class StringKit {
      * @param list        list容器
      * @param separator   分隔符
      * @param isValueDesc 是否根据value倒叙排列
-     * @return Map<String, Long>    统计次数
+     * @return 统计次数
      */
     public static Map<String, Long> count(List<String> list, String separator, boolean isValueDesc) {
         return MapKit.sort(count(list, separator), isValueDesc);

@@ -31,6 +31,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.health.unix.CLibrary;
+import org.aoju.bus.health.unix.NativeSizeTByReference;
 
 /**
  * C library. This class should be considered non-API as it may be removed
@@ -128,5 +129,7 @@ public interface OpenBsdLibc extends CLibrary {
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
     }
+
+    int sysctl(int[] name, int namelen, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
 
 }

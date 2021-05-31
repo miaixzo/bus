@@ -1659,12 +1659,14 @@ public class FileKit {
         pathToUse = StringKit.removePrefixIgnoreCase(pathToUse, Normal.FILE_URL_PREFIX);
 
         // 识别home目录形式，并转换为绝对路径
-        if (pathToUse.startsWith(Symbol.TILDE)) {
-            pathToUse = pathToUse.replace(Symbol.TILDE, getUserHomePath());
+        if (StringKit.startWith(pathToUse, Symbol.TILDE)) {
+            pathToUse = getUserHomePath() + pathToUse.substring(1);
         }
 
         // 统一使用斜杠
-        pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH).trim();
+        pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH);
+        // 去除开头空白符，末尾空白符合法，不去除
+        pathToUse = StringKit.trim(pathToUse, -1);
         //兼容Windows下的共享目录路径（原始路径如果以\\开头，则保留这种路径）
         if (path.startsWith("\\\\")) {
             pathToUse = Symbol.BACKSLASH + pathToUse;
