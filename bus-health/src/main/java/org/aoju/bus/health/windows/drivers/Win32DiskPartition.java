@@ -34,7 +34,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query WMI class {@code Win32_DiskPartition}
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 @ThreadSafe

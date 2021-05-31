@@ -38,7 +38,7 @@ import java.io.*;
  * JDK内置加密算法的加密器
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class JdkEncryptorProvider implements EncryptorProvider {

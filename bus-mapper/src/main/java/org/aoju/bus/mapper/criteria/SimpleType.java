@@ -38,7 +38,7 @@ import java.util.Set;
  * 参考 org.apache.ibatis.type.SimpleTypeRegistry
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class SimpleType {

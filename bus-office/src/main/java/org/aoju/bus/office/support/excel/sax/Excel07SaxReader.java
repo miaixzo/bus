@@ -58,7 +58,7 @@ import java.util.List;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<Excel07SaxReader> {

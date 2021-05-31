@@ -51,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class EntityBuilder {
@@ -161,13 +161,13 @@ public class EntityBuilder {
             return;
         }
         Style style = config.getStyle();
-        //style,该注解优先于全局配置
+        // 该注解优先于全局配置
         if (entityClass.isAnnotationPresent(NameStyle.class)) {
             NameStyle nameStyle = entityClass.getAnnotation(NameStyle.class);
             style = nameStyle.value();
         }
 
-        //创建并缓存EntityTable
+        // 创建并缓存EntityTable
         EntityTable entityTable = null;
         if (entityClass.isAnnotationPresent(Table.class)) {
             Table table = entityClass.getAnnotation(Table.class);
@@ -178,12 +178,12 @@ public class EntityBuilder {
         }
         if (null == entityTable) {
             entityTable = new EntityTable(entityClass);
-            //可以通过stye控制
+            // 可以通过stye控制
             entityTable.setName(convertByStyle(entityClass.getSimpleName(), style));
         }
         entityTable.setEntityClassColumns(new LinkedHashSet<>());
         entityTable.setEntityClassPKColumns(new LinkedHashSet<>());
-        //处理所有列
+        // 处理所有列
         List<EntityField> fields;
         if (config.isEnableMethodAnnotation()) {
             fields = FieldSourceBuilder.getAll(entityClass);
@@ -191,8 +191,8 @@ public class EntityBuilder {
             fields = FieldSourceBuilder.getFields(entityClass);
         }
         for (EntityField field : fields) {
-            //如果启用了简单类型,就做简单类型校验,如果不是简单类型,直接跳过
-            //6.2.2 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
+            // 如果启用了简单类型,就做简单类型校验,如果不是简单类型,直接跳过
+            // 如果启用了枚举作为简单类型,就不会自动忽略枚举类型
             if (config.isUseSimpleType() &&
                     !(SimpleType.isSimpleType(field.getJavaType())
                             ||
@@ -201,7 +201,7 @@ public class EntityBuilder {
             }
             processField(entityTable, style, field, config.getWrapKeyword());
         }
-        //当pk.size=0的时候使用所有列作为主键
+        // 当pk.size=0的时候使用所有列作为主键
         if (entityTable.getEntityClassPKColumns().size() == 0) {
             entityTable.setEntityClassPKColumns(entityTable.getEntityClassColumns());
         }
@@ -217,18 +217,18 @@ public class EntityBuilder {
      * @param field       列信息
      */
     private static void processField(EntityTable entityTable, Style style, EntityField field, String wrapKeyword) {
-        //排除字段
+        // 排除字段
         if (field.isAnnotationPresent(Transient.class)) {
             return;
         }
-        //Id
+        // Id
         EntityColumn entityColumn = new EntityColumn(entityTable);
         //记录 field 信息,方便后续扩展使用
         entityColumn.setEntityField(field);
         if (field.isAnnotationPresent(Id.class)) {
             entityColumn.setId(true);
         }
-        //Column
+        // Column
         String columnName = null;
         if (field.isAnnotationPresent(Column.class)) {
             Column column = field.getAnnotation(Column.class);
@@ -236,7 +236,7 @@ public class EntityBuilder {
             entityColumn.setUpdatable(column.updatable());
             entityColumn.setInsertable(column.insertable());
         }
-        //ColumnType
+        // ColumnType
         if (field.isAnnotationPresent(ColumnType.class)) {
             ColumnType columnType = field.getAnnotation(ColumnType.class);
             //column可以起到别名的作用
@@ -250,18 +250,18 @@ public class EntityBuilder {
                 entityColumn.setTypeHandler(columnType.typeHandler());
             }
         }
-        //表名
+        // 表名
         if (Assert.isEmpty(columnName)) {
             columnName = convertByStyle(field.getName(), style);
         }
-        //自动处理关键字
+        // 自动处理关键字
         if (Assert.isNotEmpty(wrapKeyword) && Words.containsWord(columnName)) {
             columnName = MessageFormat.format(wrapKeyword, columnName);
         }
         entityColumn.setProperty(field.getName());
         entityColumn.setColumn(columnName);
         entityColumn.setJavaType(field.getJavaType());
-        //OrderBy
+        // OrderBy
         if (field.isAnnotationPresent(OrderBy.class)) {
             OrderBy orderBy = field.getAnnotation(OrderBy.class);
             if (Normal.EMPTY.equals(orderBy.value())) {
@@ -270,7 +270,7 @@ public class EntityBuilder {
                 entityColumn.setOrderBy(orderBy.value());
             }
         }
-        //主键策略 - Oracle序列,MySql自动增长,UUID
+        // 主键策略 - Oracle序列,MySql自动增长,UUID
         if (field.isAnnotationPresent(SequenceGenerator.class)) {
             SequenceGenerator sequenceGenerator = field.getAnnotation(SequenceGenerator.class);
             if (Normal.EMPTY.equals(sequenceGenerator.sequenceName())) {
@@ -287,8 +287,8 @@ public class EntityBuilder {
                 entityTable.setKeyProperties(entityColumn.getProperty());
                 entityTable.setKeyColumns(entityColumn.getColumn());
             } else {
-                //允许通过generator来设置获取id的sql,例如mysql=CALL IDENTITY(),hsqldb=SELECT SCOPE_IDENTITY()
-                //允许通过拦截器参数设置公共的generator
+                // 允许通过generator来设置获取id的sql,例如mysql=CALL IDENTITY(),hsqldb=SELECT SCOPE_IDENTITY()
+                // 允许通过拦截器参数设置公共的generator
                 if (generatedValue.strategy() == GenerationType.IDENTITY) {
                     //mysql的自动增长
                     entityColumn.setIdentity(true);

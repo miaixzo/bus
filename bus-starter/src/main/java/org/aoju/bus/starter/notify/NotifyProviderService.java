@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通知提供服务
  *
  * @author Justubborn
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK1.8+
  */
 public class NotifyProviderService {

@@ -68,28 +68,34 @@ public class TestController {
 
 
     //请求路径为/5.1/t/get
-    @RequestMapping(value= "/get",params = "data=tree")
+    @RequestMapping(value = "/get", params = "data=tree")
     @ApiVersion("5.1")
     //method的apiversion会优先于class上的,方便升级小版本
-    public String get2(){
+    public String get2() {
         return "新数据";
     }
 
     //以下三个请求路径都是/c，
     //通过header里的客户端类型（如果是从url参数取，修改TerminalVersionExpression即可）以及版本号路由到不同方法
     @GetMapping("/c")
-    @ClientVersion(expression = {"1>6.2.2"})
-    public String cvcheck1(){return "6.2.2以上版本的1类型";}
+    @ClientVersion(expression = {"1>6.2.3"})
+    public String cvcheck1() {
+        return "6.2.3以上版本的1类型";
+    }
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.GT,version = "6.2.2")})
-    public String cvcheck2(){return "6.2.2以上版本的2类型";}
+    @ClientVersion({@TerminalVersion(terminals = 2, op = VersionOperator.GT, version = "6.2.3")})
+    public String cvcheck2() {
+        return "6.2.3以上版本的2类型";
+    }
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.LTE,version = "6.2.2")})
-    public String cvcheck3(){return "6.2.2以下版本的2类型";}
+    @ClientVersion({@TerminalVersion(terminals = 2, op = VersionOperator.LTE, version = "6.2.3")})
+    public String cvcheck3() {
+        return "6.2.3以下版本的2类型";
+    }
 
-    public String c(){
+    public String c() {
         return "aaaa";
     }
 }
@@ -97,6 +103,7 @@ public class TestController {
 ```
 
 ```java
+
 @RestController
 @VersionMapping(value="/t",apiVersion = "5")
 public class TController {

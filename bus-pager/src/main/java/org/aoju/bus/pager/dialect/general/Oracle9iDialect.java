@@ -37,7 +37,7 @@ import java.util.Map;
  * 数据库方言 oracle 9i
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class Oracle9iDialect extends AbstractSqlDialect {

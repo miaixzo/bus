@@ -32,7 +32,7 @@ import org.apache.ibatis.session.RowBounds;
  * sqlserver2012 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.2.2
+ * @version 6.2.3
  * @since JDK 1.8+
  */
 public class SqlServer2012RowBoundsDialect extends SqlServerRowBoundsDialect {
