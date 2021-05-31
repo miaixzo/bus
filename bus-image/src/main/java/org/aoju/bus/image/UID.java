@@ -81,32 +81,32 @@ public class UID {
     public static final String JPEGBaseline1 = "1.2.840.10008.1.2.4.50";
 
     /**
-     * JPEG Extended (Process 2 & 4), TransferSyntax
+     * JPEG Extended (Process 2/4), TransferSyntax
      */
     public static final String JPEGExtended24 = "1.2.840.10008.1.2.4.51";
 
     /**
-     * JPEG Extended (Process 3 & 5) (Retired), TransferSyntax
+     * JPEG Extended (Process 3/5) (Retired), TransferSyntax
      */
     public static final String JPEGExtended35Retired = "1.2.840.10008.1.2.4.52";
 
     /**
-     * JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) (Retired), TransferSyntax
+     * JPEG Spectral Selection, Non-Hierarchical (Process 6/8) (Retired), TransferSyntax
      */
     public static final String JPEGSpectralSelectionNonHierarchical68Retired = "1.2.840.10008.1.2.4.53";
 
     /**
-     * JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) (Retired), TransferSyntax
+     * JPEG Spectral Selection, Non-Hierarchical (Process 7/9) (Retired), TransferSyntax
      */
     public static final String JPEGSpectralSelectionNonHierarchical79Retired = "1.2.840.10008.1.2.4.54";
 
     /**
-     * JPEG Full Progression, Non-Hierarchical (Process 10 & 12) (Retired), TransferSyntax
+     * JPEG Full Progression, Non-Hierarchical (Process 10/12) (Retired), TransferSyntax
      */
     public static final String JPEGFullProgressionNonHierarchical1012Retired = "1.2.840.10008.1.2.4.55";
 
     /**
-     * JPEG Full Progression, Non-Hierarchical (Process 11 & 13) (Retired), TransferSyntax
+     * JPEG Full Progression, Non-Hierarchical (Process 11/13) (Retired), TransferSyntax
      */
     public static final String JPEGFullProgressionNonHierarchical1113Retired = "1.2.840.10008.1.2.4.56";
 
@@ -121,32 +121,32 @@ public class UID {
     public static final String JPEGLosslessNonHierarchical15Retired = "1.2.840.10008.1.2.4.58";
 
     /**
-     * JPEG Extended, Hierarchical (Process 16 & 18) (Retired), TransferSyntax
+     * JPEG Extended, Hierarchical (Process 16/18) (Retired), TransferSyntax
      */
     public static final String JPEGExtendedHierarchical1618Retired = "1.2.840.10008.1.2.4.59";
 
     /**
-     * JPEG Extended, Hierarchical (Process 17 & 19) (Retired), TransferSyntax
+     * JPEG Extended, Hierarchical (Process 17/19) (Retired), TransferSyntax
      */
     public static final String JPEGExtendedHierarchical1719Retired = "1.2.840.10008.1.2.4.60";
 
     /**
-     * JPEG Spectral Selection, Hierarchical (Process 20 & 22) (Retired), TransferSyntax
+     * JPEG Spectral Selection, Hierarchical (Process 20/22) (Retired), TransferSyntax
      */
     public static final String JPEGSpectralSelectionHierarchical2022Retired = "1.2.840.10008.1.2.4.61";
 
     /**
-     * JPEG Spectral Selection, Hierarchical (Process 21 & 23) (Retired), TransferSyntax
+     * JPEG Spectral Selection, Hierarchical (Process 21/23) (Retired), TransferSyntax
      */
     public static final String JPEGSpectralSelectionHierarchical2123Retired = "1.2.840.10008.1.2.4.62";
 
     /**
-     * JPEG Full Progression, Hierarchical (Process 24 & 26) (Retired), TransferSyntax
+     * JPEG Full Progression, Hierarchical (Process 24/26) (Retired), TransferSyntax
      */
     public static final String JPEGFullProgressionHierarchical2426Retired = "1.2.840.10008.1.2.4.63";
 
     /**
-     * JPEG Full Progression, Hierarchical (Process 25 & 27) (Retired), TransferSyntax
+     * JPEG Full Progression, Hierarchical (Process 25/27) (Retired), TransferSyntax
      */
     public static final String JPEGFullProgressionHierarchical2527Retired = "1.2.840.10008.1.2.4.64";
 
