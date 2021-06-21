@@ -56,4 +56,5 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     public void afterPropertiesSet() {
         refresh();
     }
+
 }

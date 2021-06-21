@@ -55,5 +55,4 @@ public class XmlProvider implements Provider {
         return Normal.EMPTY;
     }
 
-
 }

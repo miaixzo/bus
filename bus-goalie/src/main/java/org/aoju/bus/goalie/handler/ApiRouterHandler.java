@@ -59,13 +59,9 @@ public class ApiRouterHandler {
 
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
-
         Context context = Context.get(request);
-
         Assets assets = context.getAssets();
-
         Map<String, String> params = context.getRequestMap();
-
         String baseUrl = assets.getHost() + Symbol.C_COLON + assets.getPort();
 
         WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.create(baseUrl));

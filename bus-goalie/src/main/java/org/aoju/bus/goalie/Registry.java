@@ -77,4 +77,5 @@ public interface Registry<T> {
      * @return 路由列表
      */
     T get(String id);
+
 }

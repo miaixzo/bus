@@ -31,8 +31,8 @@ import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
 import org.aoju.bus.crypto.symmetric.AES;
 import org.aoju.bus.crypto.symmetric.Symmetric;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
-import org.aoju.bus.goalie.ServerConfig;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.server.ServerWebExchange;
@@ -53,10 +53,10 @@ import java.util.Map;
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class DecryptFilter implements WebFilter {
 
-    private final ServerConfig.Decrypt decrypt;
+    private final Config.Decrypt decrypt;
     private Symmetric symmetric;
 
-    public DecryptFilter(ServerConfig.Decrypt decrypt) {
+    public DecryptFilter(Config.Decrypt decrypt) {
         this.decrypt = decrypt;
     }
 

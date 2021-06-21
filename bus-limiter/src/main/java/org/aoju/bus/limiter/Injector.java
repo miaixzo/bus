@@ -35,4 +35,5 @@ import java.util.Map;
 public interface Injector {
 
     Map<String, Object> inject(Object... args);
+
 }

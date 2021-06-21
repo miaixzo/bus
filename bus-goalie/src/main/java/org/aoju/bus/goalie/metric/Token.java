@@ -16,4 +16,5 @@ public class Token {
     String token;
 
     int channel;
+
 }

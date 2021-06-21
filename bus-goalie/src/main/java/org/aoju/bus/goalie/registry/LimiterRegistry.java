@@ -18,4 +18,5 @@ public interface LimiterRegistry extends Registry<Limiter> {
     void amendLimiter(Limiter limiter);
 
     Assets getLimiter(String ip, String nameVersion);
+
 }

@@ -64,9 +64,7 @@ public class PrimaryFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
         ServerWebExchange mutate = setDefaultContentTypeIfNecessary(exchange);
-
         Context context = Context.get(mutate);
         context.setStartTime(System.currentTimeMillis());
         ServerHttpRequest request = mutate.getRequest();

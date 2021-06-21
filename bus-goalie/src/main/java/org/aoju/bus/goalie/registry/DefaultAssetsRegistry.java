@@ -31,5 +31,6 @@ public class DefaultAssetsRegistry extends AbstractRegistry<Assets> implements A
     public void init() {
 
     }
+
 }
 

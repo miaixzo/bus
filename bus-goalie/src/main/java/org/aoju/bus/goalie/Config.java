@@ -10,7 +10,7 @@ import lombok.Data;
  * @since JDK 1.8+
  */
 @Data
-public class ServerConfig {
+public class Config {
 
     private final Encrypt encrypt = new Encrypt();
     private final Decrypt decrypt = new Decrypt();

@@ -17,4 +17,5 @@ public interface AssetsRegistry extends Registry<Assets> {
     void amendAssets(Assets assets);
 
     Assets getAssets(String method, String version);
+
 }
