@@ -91,9 +91,11 @@ public class TableEntity implements Serializable {
 
     private boolean isHump;
 
+    private String isDubbo;
+
     public TableEntity(String project, String author, String version, String dbUrl, String dbName, String dbPassword,
                        String database, String table, String agile, String entityUrl, String mapperUrl, String mapperXmlUrl,
-                       String serviceUrl, String serviceImplUrl, String controllerUrl, String isSwagger, boolean isHump) {
+                       String serviceUrl, String serviceImplUrl, String controllerUrl, String isSwagger, String isDubbo, boolean isHump) {
         super();
         this.project = project;
         this.author = author;
@@ -111,6 +113,7 @@ public class TableEntity implements Serializable {
         this.serviceImplUrl = serviceImplUrl;
         this.controllerUrl = controllerUrl;
         this.isSwagger = isSwagger;
+        this.isDubbo = isDubbo;
         this.isHump = isHump;
     }
 

@@ -24,7 +24,6 @@
 ********************************************************************************/
 package ${serviceUrl};
 
-
 import ${entityUrl}.${entityName};
 import org.aoju.bus.base.service.BaseService;
 

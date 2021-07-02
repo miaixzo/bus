@@ -274,12 +274,17 @@ public static final String MAPPER_XML_URL="mapper";
 public static final String SERVICE_URL="org.aoju.test.service";
 public static final String SERVICE_IMPL_URL="org.aoju.test.service.impl";
 public static final String CONTROLLER_URL="org.aoju.test.spring";
-//是否是Swagger配置
+//是否启用Swagger
 public static final String IS_SWAGGER="false";
+//是否启用dbuuo
+public static final String IS_DUBBO="true";
+//是否驼峰命名
+public static final boolean IS_HUMP=false;
 
 public static void main(String[]args){
         TableEntity tb=new TableEntity(PROJECT,AUTHOR,VERSION,URL,NAME,PASS,DATABASE,TABLE,AGILE,ENTITY_URL,
-        MAPPER_URL,MAPPER_XML_URL,SERVICE_URL,SERVICE_IMPL_URL,CONTROLLER_URL,IS_SWAGGER);
+        MAPPER_URL,MAPPER_XML_URL,SERVICE_URL,SERVICE_IMPL_URL,CONTROLLER_URL,IS_SWAGGER,IS_DUBBO,IS_HUMP);
+
         tb.setTable(TABLE);
         tb.setEntityName(NamingRules.getClassName(TABLE.replace("hi_","")));
         tb.setObjectName(NamingRules.changeToJavaFiled(TABLE.replace("hi_",""),true));

@@ -24,7 +24,6 @@
 ********************************************************************************/
 package ${controllerUrl};
 
-
 <#if isSwagger=="true" >
     import io.swagger.annotations.Api;
 </#if>
