@@ -57,7 +57,7 @@ public class Tracer extends OAuth2 {
      * 被调用者ID
      */
     @Transient
-    protected String x_child_Id;
+    protected String x_child_id;
 
     /**
      * 本地IP

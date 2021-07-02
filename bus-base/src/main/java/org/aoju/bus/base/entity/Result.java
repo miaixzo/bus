@@ -45,10 +45,17 @@ public class Result<T> extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 总数据
+     */
     protected int total;
+    /**
+     * 查询记录数
+     */
     protected List<T> rows;
 
     public Result() {
+
     }
 
     public Result(int total, List<T> rows) {

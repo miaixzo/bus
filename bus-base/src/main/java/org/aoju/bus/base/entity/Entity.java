@@ -50,16 +50,16 @@ public abstract class Entity implements Serializable {
     protected String id;
 
     /**
-     * 分页页码,默认值:1
+     * 当前页码
      */
     @Transient
-    protected Integer pageNo = 1;
+    protected Integer pageNo;
 
     /**
-     * 分页大小,默认值:20
+     * 分页大小
      */
     @Transient
-    protected Integer pageSize = 20;
+    protected Integer pageSize;
 
     /**
      * 排序方式,asc desc
