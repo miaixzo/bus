@@ -23,46 +23,46 @@ public class Builder {
 
 
     // ①创建实体类
-    public static Object createEntity(String url, TableEntity bi) {
-        String fileUrl = getFileUrl(url, bi.getEntityUrl(), bi.getEntityName(), ENTITY);
-        return createFile(bi, ENTITY + SUFFIX, fileUrl);
+    public static Object createEntity(String url, TableEntity tableEntity) {
+        String fileUrl = getFileUrl(url, tableEntity.getEntityUrl(), tableEntity.getEntityName(), ENTITY);
+        return createFile(tableEntity, ENTITY + SUFFIX, fileUrl);
     }
 
     // ②创建DAO
-    public static Object createMapper(String url, TableEntity bi) {
-        String fileUrl = getFileUrl(url, bi.getMapperUrl(), bi.getEntityName(), MAPPER);
-        return createFile(bi, MAPPER + SUFFIX, fileUrl);
+    public static Object createMapper(String url, TableEntity tableEntity) {
+        String fileUrl = getFileUrl(url, tableEntity.getMapperUrl(), tableEntity.getEntityName(), MAPPER);
+        return createFile(tableEntity, MAPPER + SUFFIX, fileUrl);
     }
 
     // ③创建mapper配置文件
-    public static Object createMapperXml(String url, TableEntity bi) {
-        String fileUrl = getFileUrl(url, bi.getMapperXmlUrl(), bi.getEntityName(), MAPPER_XML);
-        List<PropertyInfo> list = bi.getCis();
+    public static Object createMapperXml(String url, TableEntity tableEntity) {
+        String fileUrl = getFileUrl(url, tableEntity.getMapperXmlUrl(), tableEntity.getEntityName(), MAPPER_XML);
+        List<PropertyInfo> list = tableEntity.getCis();
         String agile = Normal.EMPTY;
         for (PropertyInfo propertyInfo : list) {
             agile = agile + propertyInfo.getColumn() + ",\n\t\t";
         }
         agile = agile.substring(0, agile.length() - 4);
-        bi.setAgile(agile);
-        return createFile(bi, MAPPER_XML + SUFFIX, fileUrl);
+        tableEntity.setAgile(agile);
+        return createFile(tableEntity, MAPPER_XML + SUFFIX, fileUrl);
     }
 
     // ④创建SERVICE
-    public static Object createService(String url, TableEntity bi) {
-        String fileUrl = getFileUrl(url, bi.getServiceUrl(), bi.getEntityName(), SERVICE);
-        return createFile(bi, SERVICE + SUFFIX, fileUrl);
+    public static Object createService(String url, TableEntity tableEntity) {
+        String fileUrl = getFileUrl(url, tableEntity.getServiceUrl(), tableEntity.getEntityName(), SERVICE);
+        return createFile(tableEntity, SERVICE + SUFFIX, fileUrl);
     }
 
     // ⑤创建SERVICE_IMPL
-    public static Object createServiceImpl(String url, TableEntity bi) {
-        String fileUrl = getFileUrl(url, bi.getServiceImplUrl(), bi.getEntityName(), SERVICE_IMPL);
-        return createFile(bi, SERVICE_IMPL + SUFFIX, fileUrl);
+    public static Object createServiceImpl(String url, TableEntity tableEntity) {
+        String fileUrl = getFileUrl(url, tableEntity.getServiceImplUrl(), tableEntity.getEntityName(), SERVICE_IMPL);
+        return createFile(tableEntity, SERVICE_IMPL + SUFFIX, fileUrl);
     }
 
     // ⑥创建CONTROLLER
-    public static Object createController(String url, TableEntity bi) {
-        String fileUrl = getFileUrl(url, bi.getControllerUrl(), bi.getEntityName(), CONTROLLER);
-        return createFile(bi, CONTROLLER + SUFFIX, fileUrl);
+    public static Object createController(String url, TableEntity tableEntity) {
+        String fileUrl = getFileUrl(url, tableEntity.getControllerUrl(), tableEntity.getEntityName(), CONTROLLER);
+        return createFile(tableEntity, CONTROLLER + SUFFIX, fileUrl);
     }
 
     // 生成文件路径和名字
@@ -87,7 +87,7 @@ public class Builder {
         return url.replace(Symbol.DOT, Symbol.SLASH) + Symbol.SLASH;
     }
 
-    private static Object createFile(TableEntity dataModel, String templateName, String filePath) {
+    private static Object createFile(TableEntity tableEntity, String templateName, String filePath) {
         FileWriter out = null;
         try {
             // 通过FreeMarker的Confuguration读取相应的模板文件
@@ -111,7 +111,7 @@ public class Builder {
             //设置输出流
             out = new FileWriter(file);
             //模板输出静态文件
-            template.process(dataModel, out);
+            template.process(tableEntity, out);
             return "create a file :" + filePath;
         } catch (Exception e) {
             e.printStackTrace();
