@@ -272,7 +272,14 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     private String parseCodeName() {
-        if (this.major >= 10) {
+        if (this.major > 10) {
+            switch (this.major) {
+                case 12:
+                    return "Monterey";
+                case 11:
+                    return "Big Sur";
+            }
+        } else if (this.major == 10) {
             switch (this.minor) {
                 case 15:
                     return "Catalina";

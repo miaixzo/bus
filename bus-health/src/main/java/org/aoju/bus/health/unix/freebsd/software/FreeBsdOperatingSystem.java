@@ -39,10 +39,7 @@ import org.aoju.bus.health.unix.freebsd.drivers.Who;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -61,9 +58,21 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     private static final long BOOTTIME = querySystemBootTime();
 
+    /**
+     * Package-private for use by FreeBsdOSProcess
+     */
+    static final List<String> PS_KEYWORDS =
+            Collections.unmodifiableList(
+                    Arrays.asList(
+                            "state", "pid", "ppid", "user", "uid", "group", "gid", "nlwp", "pri",
+                            "vsz", "rss", "etimes", "systime", "time", "comm", "majflt", "minflt",
+                            "nvcsw", "nivcsw", "args"));
+
+    static final String PS_KEYWORD_ARGS = String.join(",", PS_KEYWORDS);
+
     private static List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
-        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,majflt,minflt,nvscw,nivscw,args";
+        String psCommand = "ps -awwxo " + PS_KEYWORD_ARGS;
         if (pid >= 0) {
             psCommand += " -p " + pid;
         }
@@ -75,9 +84,9 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), 20);
+            String[] split = RegEx.SPACES.split(proc.trim(), PS_KEYWORDS.size());
             // Elements should match ps command order
-            if (split.length == 20) {
+            if (split.length == PS_KEYWORDS.size()) {
                 procs.add(new FreeBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
             }
         }
