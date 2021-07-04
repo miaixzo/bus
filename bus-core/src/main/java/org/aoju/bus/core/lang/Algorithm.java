@@ -93,6 +93,13 @@ public class Algorithm {
     public static final String SHA384withECDSA = "SHA384withECDSA";
     public static final String SHA512withECDSA = "SHA512withECDSA";
 
+    /**
+     * 需要BC库加入支持
+     */
+    public static final String SHA256withRSA_PSS = "SHA256WithRSA/PSS";
+    public static final String SHA384withRSA_PSS = "SHA384WithRSA/PSS";
+    public static final String SHA512withRSA_PSS = "SHA512WithRSA/PSS";
+
     /****************************** 摘要-算法类型 *****************************/
     public static final String MD2 = "MD2";
     public static final String MD5 = "MD5";

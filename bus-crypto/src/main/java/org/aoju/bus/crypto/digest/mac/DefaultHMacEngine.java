@@ -26,14 +26,11 @@
 package org.aoju.bus.crypto.digest.mac;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.crypto.Builder;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.Key;
 
 /**
@@ -100,30 +97,6 @@ public class DefaultHMacEngine implements MacEngine {
         return this;
     }
 
-    @Override
-    public byte[] digest(InputStream data, int bufferLength) {
-        if (bufferLength < 1) {
-            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
-        }
-        byte[] buffer = new byte[bufferLength];
-
-        byte[] result;
-        try {
-            int read = data.read(buffer, 0, bufferLength);
-
-            while (read > -1) {
-                mac.update(buffer, 0, read);
-                read = data.read(buffer, 0, bufferLength);
-            }
-            result = mac.doFinal();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            mac.reset();
-        }
-        return result;
-    }
-
     /**
      * 获得 {@link Mac}
      *
@@ -131,6 +104,26 @@ public class DefaultHMacEngine implements MacEngine {
      */
     public Mac getMac() {
         return mac;
+    }
+
+    @Override
+    public void update(byte[] in) {
+        this.mac.update(in);
+    }
+
+    @Override
+    public void update(byte[] in, int inOff, int len) {
+        this.mac.update(in, inOff, len);
+    }
+
+    @Override
+    public byte[] doFinal() {
+        return this.mac.doFinal();
+    }
+
+    @Override
+    public void reset() {
+        this.mac.reset();
     }
 
     @Override

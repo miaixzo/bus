@@ -5628,7 +5628,7 @@ public class StringKit {
      * StringKit.upperCase("aBc") = "ABC"
      * </pre>
      *
-     * @param str 以大写字母表示的字符串可以为空
+     * @param str 字符串可以为空
      * @return 大写字符串{@code null}如果输入为空字符串
      */
     public static String upperCase(final String str) {
@@ -5647,7 +5647,7 @@ public class StringKit {
      * StringKit.upperCase("aBc", Locale.ENGLISH) = "ABC"
      * </pre>
      *
-     * @param str    以大写字母表示的字符串可以为空
+     * @param str    字符串可以为空
      * @param locale 定义案例转换规则的区域设置不能为空
      * @return 大写字符串{@code null}如果输入为空字符串
      */
@@ -5667,7 +5667,7 @@ public class StringKit {
      * StringKit.lowerCase("aBc") = "abc"
      * </pre>
      *
-     * @param str 小写字符串可以为空
+     * @param str 字符串可以为空
      * @return 小写字符串{@code null}如果输入为空字符串
      */
     public static String lowerCase(final String str) {
@@ -5686,7 +5686,7 @@ public class StringKit {
      * StringKit.lowerCase("aBc", Locale.ENGLISH) = "abc"
      * </pre>
      *
-     * @param str    小写字符串可以为空
+     * @param str    字符串可以为空
      * @param locale t定义案例转换规则的区域设置不能为空
      * @return 小写字符串{@code null}如果输入为空字符串
      */

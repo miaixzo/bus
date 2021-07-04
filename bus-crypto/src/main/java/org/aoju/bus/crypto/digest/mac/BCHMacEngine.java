@@ -25,16 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest.mac;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.IoKit;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.Mac;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * BouncyCastle的HMAC算法实现引擎，使用{@link Mac} 实现摘要
@@ -81,31 +76,6 @@ public class BCHMacEngine implements MacEngine {
         return this;
     }
 
-    @Override
-    public byte[] digest(InputStream data, int bufferLength) {
-        if (bufferLength < 1) {
-            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
-        }
-        final byte[] buffer = new byte[bufferLength];
-
-        byte[] result;
-        try {
-            int read = data.read(buffer, 0, bufferLength);
-
-            while (read > -1) {
-                mac.update(buffer, 0, read);
-                read = data.read(buffer, 0, bufferLength);
-            }
-            result = new byte[this.mac.getMacSize()];
-            mac.doFinal(result, 0);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            mac.reset();
-        }
-        return result;
-    }
-
     /**
      * 获得 {@link Mac}
      *
@@ -113,6 +83,23 @@ public class BCHMacEngine implements MacEngine {
      */
     public Mac getMac() {
         return mac;
+    }
+
+    @Override
+    public void update(byte[] in, int inOff, int len) {
+        this.mac.update(in, inOff, len);
+    }
+
+    @Override
+    public byte[] doFinal() {
+        final byte[] result = new byte[getMacLength()];
+        this.mac.doFinal(result, 0);
+        return result;
+    }
+
+    @Override
+    public void reset() {
+        this.mac.reset();
     }
 
     @Override

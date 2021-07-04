@@ -33,6 +33,7 @@ import org.aoju.bus.core.thread.ThreadBuilder;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 /**
  * 线程池工具
@@ -391,6 +392,18 @@ public class ThreadKit {
         } else {
             return new ThreadLocal<>();
         }
+    }
+
+    /**
+     * 创建本地线程对象
+     *
+     * @param <T>      持有对象类型
+     * @param supplier 初始化线程对象函数
+     * @return 本地线程
+     * @see ThreadLocal#withInitial(Supplier)
+     */
+    public static <T> ThreadLocal<T> createThreadLocal(Supplier<? extends T> supplier) {
+        return ThreadLocal.withInitial(supplier);
     }
 
     /**

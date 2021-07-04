@@ -269,8 +269,11 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                 // 目标属性值被忽略或值提供者无此key时跳过
                 continue;
             }
-            final String providerKey = mappingKey(fieldReverseMapping, fieldName);
-            if (false == valueProvider.containsKey(providerKey)) {
+
+            // 对key做映射，映射后为null的忽略之
+            // 这里 copyOptions.editFieldName() 不能少，否则导致 CopyOptions setFieldNameEditor 失效
+            final String providerKey = copyOptions.editFieldName(copyOptions.getMappedFieldName(fieldName, true));
+            if (null == providerKey && false == valueProvider.containsKey(providerKey)) {
                 // 无对应值可提供
                 continue;
             }

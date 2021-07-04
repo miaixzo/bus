@@ -79,7 +79,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
 
     @Override
     public Float get() {
-        return Float.valueOf(this.value);
+        return this.value;
     }
 
     /**

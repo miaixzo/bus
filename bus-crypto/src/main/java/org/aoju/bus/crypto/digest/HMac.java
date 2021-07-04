@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.security.Key;
+import java.security.MessageDigest;
 
 /**
  * HMAC摘要算法
@@ -249,6 +250,28 @@ public class HMac implements Serializable {
      */
     public String getAlgorithm() {
         return this.engine.getAlgorithm();
+    }
+
+    /**
+     * 验证生成的摘要与给定的摘要比较是否一致
+     * 简单比较每个byte位是否相同
+     *
+     * @param digest          生成的摘要
+     * @param digestToCompare 需要比较的摘要
+     * @return 是否一致
+     * @see MessageDigest#isEqual(byte[], byte[])
+     */
+    public boolean verify(byte[] digest, byte[] digestToCompare) {
+        return MessageDigest.isEqual(digest, digestToCompare);
+    }
+
+    /**
+     * 获得MAC算法引擎
+     *
+     * @return MAC算法引擎
+     */
+    public MacEngine getEngine() {
+        return this.engine;
     }
 
 }

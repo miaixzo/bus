@@ -40,6 +40,7 @@ import org.aoju.bus.extra.ftp.AbstractFtp;
 import org.aoju.bus.extra.ftp.FtpConfig;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -318,7 +319,7 @@ public class Sftp extends AbstractFtp {
             return true;
         }
         try {
-            channel.cd(directory.replaceAll("\\\\", Symbol.SLASH));
+            channel.cd(directory.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH));
             return true;
         } catch (SftpException e) {
             throw new InstrumentException(e);
@@ -438,6 +439,16 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
+     * 下载文件到{@link OutputStream}中
+     *
+     * @param src 源文件路径，包括文件名
+     * @param out 目标流
+     */
+    public void download(String src, OutputStream out) {
+        get(src, out);
+    }
+
+    /**
      * 递归获取远程文件
      *
      * @param sourcePath 服务器目录
@@ -477,6 +488,22 @@ public class Sftp extends AbstractFtp {
     public Sftp get(String src, String dest) {
         try {
             channel.get(src, dest);
+        } catch (SftpException e) {
+            throw new InstrumentException(e);
+        }
+        return this;
+    }
+
+    /**
+     * 获取远程文件
+     *
+     * @param src 远程文件路径
+     * @param out 目标流
+     * @return this
+     */
+    public Sftp get(String src, OutputStream out) {
+        try {
+            channel.get(src, out);
         } catch (SftpException e) {
             throw new InstrumentException(e);
         }

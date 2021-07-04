@@ -27,6 +27,8 @@ package org.aoju.bus.core.key;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.NetKit;
+import org.aoju.bus.core.toolkit.RuntimeKit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -408,6 +410,48 @@ public class HashID {
 
     public String getSalt() {
         return salt;
+    }
+
+    /**
+     * 获取数据中心ID,依赖于本地网卡MAC地址
+     * <p>
+     * 此算法来自于mybatis-plus#Sequence
+     * </p>
+     *
+     * @param maxDatacenterId 最大的中心ID
+     * @return 数据中心ID
+     */
+    public static long getDataCenterId(long maxDatacenterId) {
+        long id = 1L;
+        final byte[] mac = NetKit.getLocalHardwareAddress();
+        if (null != mac) {
+            id = ((0x000000FF & (long) mac[mac.length - 2])
+                    | (0x0000FF00 & (((long) mac[mac.length - 1]) << 8))) >> 6;
+            id = id % (maxDatacenterId + 1);
+        }
+
+        return id;
+    }
+
+    /**
+     * 获取机器ID，使用进程ID配合数据中心ID生成
+     * 依赖于本进程ID或进程名的Hash值
+     * <p>
+     * 此算法来自于mybatis-plus#Sequence
+     * </p>
+     *
+     * @param datacenterId 数据中心ID
+     * @param maxWorkerId  最大的机器节点ID
+     */
+    public static long getWorkerId(long datacenterId, long maxWorkerId) {
+        final StringBuilder mpid = new StringBuilder();
+        mpid.append(datacenterId);
+        try {
+            mpid.append(RuntimeKit.getPid());
+        } catch (InstantiationError igonre) {
+        }
+        // MAC + PID 的 hashcode 获取16个低位
+        return (mpid.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
     }
 
 }

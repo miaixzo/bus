@@ -44,38 +44,6 @@ import java.util.*;
 public class Lunar {
 
     /**
-     * 节气表头部追加农历上年末的节气名(节令：大雪)，以示区分
-     */
-    public static final String JIE_QI_PREPEND = "DA_XUE";
-    /**
-     * 节气表尾部追加农历下年初的节气名(气令：冬至)，以示区分
-     */
-    public static final String JIE_QI_APPEND = "DONG_ZHI";
-    /**
-     * 农历年初节气名(气令：冬至)
-     */
-    public static final String JIE_QI_FIRST = "冬至";
-    /**
-     * 农历年末节气名(节令：大雪)
-     */
-    public static final String JIE_QI_LAST = "大雪";
-    /**
-     * 节气表尾部追加阳历下年初的第一个节气名(节令：小寒)，以示区分
-     */
-    public static final String JIE_APPEND_SOLAR_FIRST = "XIAO_HAN";
-    /**
-     * 节气表尾部追加阳历下年初的第二个节气名(气令：大寒)，以示区分
-     */
-    public static final String QI_APPEND_SOLAR_SECOND = "DA_HAN";
-    /**
-     * 阳历下年初的第一个节气名(节令：小寒)
-     */
-    public static final String JIE_SOLAR_FIRST = "小寒";
-    /**
-     * 阳历下年初的第二个节气名(气令：大寒)
-     */
-    public static final String QI_SOLAR_SECOND = "大寒";
-    /**
      * 月份地支偏移量，因正月起寅
      */
     public static final int BASE_MONTH_ZHI_INDEX = 2;
@@ -1331,12 +1299,12 @@ public class Lunar {
         }
     };
     /**
-     * 自定义节气
+     * 实际的节气表
      */
-    public static final String[] JIE_QI_IN_USE = {JIE_QI_PREPEND, "冬至", "小寒", "大寒", "立春", "雨水",
-            "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑",
-            "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", JIE_QI_APPEND, JIE_APPEND_SOLAR_FIRST,
-            QI_APPEND_SOLAR_SECOND
+    public static final String[] JIE_QI_IN_USE = {
+            "DA_XUE", "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏",
+            "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降",
+            "立冬", "小雪", "大雪", "DONG_ZHI", "XIAO_HAN", "DA_HAN", "LI_CHUN"
     };
     /**
      * 宜忌
@@ -2616,7 +2584,8 @@ public class Lunar {
                 }
             }
             if (matched) {
-                String ys = left.substring(left.indexOf(Symbol.C_COLON) + 1, left.indexOf(Symbol.COMMA));
+                String ys = left.substring(left.indexOf(Symbol.C_COLON) + 1);
+                ys = ys.substring(0, ys.indexOf(Symbol.COMMA));
                 for (int i = 0, j = ys.length(); i < j; i += 2) {
                     String m = ys.substring(i, i + 2);
                     l.add(YI_JI[Integer.parseInt(m, 16)]);
@@ -3183,29 +3152,40 @@ public class Lunar {
         return Fields.CN_SEASON[Math.abs(month)];
     }
 
+    protected String convertJieQi(String name) {
+        String jq = name;
+        if ("DONG_ZHI".equals(jq)) {
+            jq = "冬至";
+        } else if ("DA_HAN".equals(jq)) {
+            jq = "大寒";
+        } else if ("XIAO_HAN".equals(jq)) {
+            jq = "小寒";
+        } else if ("LI_CHUN".equals(jq)) {
+            jq = "立春";
+        } else if ("DA_XUE".equals(jq)) {
+            jq = "大雪";
+        }
+        return jq;
+    }
+
     /**
      * 获取节令
      *
      * @return 节令
      */
     public String getJie() {
-        for (String jie : Fields.CN_JIE) {
-            Solar d = solarTerm.get(jie);
-            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
-                return jie;
+        String jie = Normal.EMPTY;
+        for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i += 2) {
+            String key = Fields.CN_SOLARTERM[i];
+            Solar d = solarTerm.get(key);
+            if (d.getYear() == solar.getYear()
+                    && d.getMonth() == solar.getMonth()
+                    && d.getDay() == solar.getDay()) {
+                jie = key;
+                break;
             }
         }
-        // 追加的节令：大雪
-        Solar d = solarTerm.get(JIE_QI_PREPEND);
-        if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
-            return JIE_QI_LAST;
-        }
-        // 追加的节令：小寒
-        d = solarTerm.get(JIE_APPEND_SOLAR_FIRST);
-        if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
-            return JIE_SOLAR_FIRST;
-        }
-        return Normal.EMPTY;
+        return convertJieQi(jie);
     }
 
     /**
@@ -3214,23 +3194,18 @@ public class Lunar {
      * @return 气令
      */
     public String getQi() {
-        for (String qi : Fields.CN_QI) {
-            Solar d = solarTerm.get(qi);
-            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
-                return qi;
+        String qi = Normal.EMPTY;
+        for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i += 2) {
+            String key = Fields.CN_SOLARTERM[i];
+            Solar d = solarTerm.get(key);
+            if (d.getYear() == solar.getYear()
+                    && d.getMonth() == solar.getMonth()
+                    && d.getDay() == solar.getDay()) {
+                qi = key;
+                break;
             }
         }
-        // 追加的气令：冬至
-        Solar d = solarTerm.get(JIE_QI_APPEND);
-        if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
-            return JIE_QI_FIRST;
-        }
-        // 追加的气令：大寒
-        d = solarTerm.get(QI_APPEND_SOLAR_SECOND);
-        if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
-            return QI_SOLAR_SECOND;
-        }
-        return Normal.EMPTY;
+        return convertJieQi(qi);
     }
 
     /**
@@ -3324,6 +3299,9 @@ public class Lunar {
         String f = FESTIVAL.get(month + Symbol.HYPHEN + day);
         if (null != f) {
             l.add(f);
+        }
+        if (Math.abs(month) == 12 && day >= 29 && year != next(1).getYear()) {
+            l.add("除夕");
         }
         return l;
     }
@@ -3901,7 +3879,7 @@ public class Lunar {
      */
     public NineStar getDayNineStar() {
         String solarYmd = solar.build(false);
-        String dongZhi = solarTerm.get(JIE_QI_FIRST).build(false);
+        String dongZhi = solarTerm.get("冬至").build(false);
         String yuShui = solarTerm.get("雨水").build(false);
         String guYu = solarTerm.get("谷雨").build(false);
         String xiaZhi = solarTerm.get("夏至").build(false);
@@ -3945,7 +3923,7 @@ public class Lunar {
     public NineStar getTimeNineStar() {
         String solarYmd = solar.build(false);
         boolean asc = false;
-        if (solarYmd.compareTo(solarTerm.get(JIE_QI_FIRST).build(false)) >= 0
+        if (solarYmd.compareTo(solarTerm.get("冬至").build(false)) >= 0
                 && solarYmd.compareTo(solarTerm.get("夏至").build(false)) < 0) {
             asc = true;
         }
@@ -3981,7 +3959,12 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getNextJie() {
-        return getNearJieQi(true, Fields.CN_JIE);
+        int l = JIE_QI_IN_USE.length / 2;
+        String[] conditions = new String[l];
+        for (int i = 0; i < l; i++) {
+            conditions[i] = JIE_QI_IN_USE[i * 2];
+        }
+        return getNearJieQi(true, conditions);
     }
 
     /**
@@ -3990,7 +3973,12 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getPrevJie() {
-        return getNearJieQi(false, Fields.CN_JIE);
+        int l = JIE_QI_IN_USE.length / 2;
+        String[] conditions = new String[l];
+        for (int i = 0; i < l; i++) {
+            conditions[i] = JIE_QI_IN_USE[i * 2];
+        }
+        return getNearJieQi(false, conditions);
     }
 
     /**
@@ -3999,7 +3987,12 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getNextQi() {
-        return getNearJieQi(true, Fields.CN_QI);
+        int l = JIE_QI_IN_USE.length / 2;
+        String[] conditions = new String[l];
+        for (int i = 0; i < l; i++) {
+            conditions[i] = JIE_QI_IN_USE[i * 2 + 1];
+        }
+        return getNearJieQi(true, conditions);
     }
 
     /**
@@ -4008,7 +4001,12 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getPrevQi() {
-        return getNearJieQi(false, Fields.CN_QI);
+        int l = JIE_QI_IN_USE.length / 2;
+        String[] conditions = new String[l];
+        for (int i = 0; i < l; i++) {
+            conditions[i] = JIE_QI_IN_USE[i * 2 + 1];
+        }
+        return getNearJieQi(false, conditions);
     }
 
     /**
@@ -4046,19 +4044,7 @@ public class Lunar {
         boolean filter = !filters.isEmpty();
         String today = solar.build();
         for (Map.Entry<String, Solar> entry : solarTerm.entrySet()) {
-            String jq = entry.getKey();
-            if (JIE_QI_APPEND.equals(jq)) {
-                jq = JIE_QI_FIRST;
-            }
-            if (JIE_QI_PREPEND.equals(jq)) {
-                jq = JIE_QI_LAST;
-            }
-            if (JIE_APPEND_SOLAR_FIRST.equals(jq)) {
-                jq = JIE_SOLAR_FIRST;
-            }
-            if (QI_APPEND_SOLAR_SECOND.equals(jq)) {
-                jq = QI_SOLAR_SECOND;
-            }
+            String jq = convertJieQi(entry.getKey());
             if (filter) {
                 if (!filters.contains(jq)) {
                     continue;
@@ -4109,15 +4095,7 @@ public class Lunar {
                 break;
             }
         }
-        if (JIE_QI_APPEND.equals(name)) {
-            name = JIE_QI_FIRST;
-        } else if (JIE_QI_PREPEND.equals(name)) {
-            name = JIE_QI_LAST;
-        } else if (JIE_APPEND_SOLAR_FIRST.equals(name)) {
-            name = JIE_SOLAR_FIRST;
-        } else if (QI_APPEND_SOLAR_SECOND.equals(name)) {
-            name = QI_SOLAR_SECOND;
-        }
+        name = convertJieQi(name);
         if (StringKit.isNotEmpty(time) && isIncludeTime) {
             name = name + time;
         }
@@ -4470,11 +4448,11 @@ public class Lunar {
      */
     public NinePeriod getShuJiu() {
         Calendar currentCalendar = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
-        Solar start = this.solarTerm.get(JIE_QI_APPEND);
+        Solar start = solarTerm.get("DONG_ZHI");
         Calendar startCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
 
         if (currentCalendar.compareTo(startCalendar) < 0) {
-            start = this.solarTerm.get(JIE_QI_FIRST);
+            start = solarTerm.get("冬至");
             startCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
         }
 
@@ -4721,117 +4699,95 @@ public class Lunar {
         int gExact = yearGanIndex;
         int zExact = yearZhiIndex;
 
-        // 获取立春的阳历时刻
-        Solar liChun = solarTerm.get("立春");
+        int solarYear = solar.getYear();
+        String solarYmd = solar.build(false);
+        String solarYmdHms = solar.build();
 
-        // 阳历和农历年份相同代表正月初一及以后
-        if (year == solar.getYear()) {
+        //获取立春的阳历时刻
+        Solar liChun = solarTerm.get("立春");
+        if (liChun.getYear() != solarYear) {
+            liChun = solarTerm.get("LI_CHUN");
+        }
+        String liChunYmd = liChun.build(false);
+        String liChunYmdHms = liChun.build();
+
+        //阳历和阴历年份相同代表正月初一及以后
+        if (year == solarYear) {
             //立春日期判断
-            if (solar.build(false).compareTo(liChun.build(false)) < 0) {
+            if (solarYmd.compareTo(liChunYmd) < 0) {
                 g--;
                 z--;
             }
-            // 立春交接时刻判断
-            if (solar.build().compareTo(liChun.build()) < 0) {
+            //立春交接时刻判断
+            if (solarYmdHms.compareTo(liChunYmdHms) < 0) {
                 gExact--;
                 zExact--;
             }
-        } else {
-            if (solar.build(false).compareTo(liChun.build(false)) >= 0) {
+        } else if (year < solarYear) {
+            if (solarYmd.compareTo(liChunYmd) >= 0) {
                 g++;
                 z++;
             }
-            if (solar.build().compareTo(liChun.build()) >= 0) {
+            if (solarYmdHms.compareTo(liChunYmdHms) >= 0) {
                 gExact++;
                 zExact++;
             }
         }
 
-        if (g < 0) {
-            g += 10;
-        }
-        if (g >= 10) {
-            g -= 10;
-        }
-        if (z < 0) {
-            z += 12;
-        }
-        if (z >= 12) {
-            z -= 12;
-        }
-        if (gExact < 0) {
-            gExact += 10;
-        }
-        if (gExact >= 10) {
-            gExact -= 10;
-        }
-        if (zExact < 0) {
-            zExact += 12;
-        }
-        if (zExact >= 12) {
-            zExact -= 12;
-        }
+        yearGanIndexByLiChun = (g < 0 ? g + 10 : g) % 10;
+        yearZhiIndexByLiChun = (z < 0 ? z + 12 : z) % 12;
 
-        yearGanIndexByLiChun = g;
-        yearZhiIndexByLiChun = z;
-
-        yearGanIndexExact = gExact;
-        yearZhiIndexExact = zExact;
+        yearGanIndexExact = (gExact < 0 ? gExact + 10 : gExact) % 10;
+        yearZhiIndexExact = (zExact < 0 ? zExact + 12 : zExact) % 12;
     }
 
     /**
-     * 干支纪月计算
+     * 计算干支纪月
      */
     private void initMonth() {
         Solar start = null;
         Solar end;
-        //干偏移值（以立春当天起算）
-        int gOffset = ((yearGanIndexByLiChun % 5 + 1) * 2) % 10;
-        //干偏移值（以立春交接时刻起算）
-        int gOffsetExact = ((yearGanIndexExact % 5 + 1) * 2) % 10;
+        String ymd = solar.build(false);
+        String time = solar.build();
+        int size = JIE_QI_IN_USE.length;
 
-        //序号：大雪到小寒之间-2，小寒到立春之间-1，立春之后0
-        int index = -2;
-        for (String jie : Fields.CN_JIE) {
-            end = solarTerm.get(jie);
-            String ymd = solar.build(false);
+        // 序号：大雪以前-3，大雪到小寒之间-2，小寒到立春之间-1，立春之后0
+        int index = -3;
+        for (int i = 0; i < size; i += 2) {
+            end = solarTerm.get(JIE_QI_IN_USE[i]);
             String symd = null == start ? ymd : start.build(false);
-            String eymd = end.build(false);
-            if (ymd.compareTo(symd) >= 0 && ymd.compareTo(eymd) < 0) {
+            if (ymd.compareTo(symd) >= 0 && ymd.compareTo(end.build(false)) < 0) {
                 break;
             }
             start = end;
             index++;
         }
-        if (index < 0) {
-            index += 12;
-        }
 
-        monthGanIndex = (index + gOffset) % 10;
-        monthZhiIndex = (index + BASE_MONTH_ZHI_INDEX) % 12;
+        // 干偏移值（以立春当天起算）
+        int offset = (((yearGanIndexByLiChun + (index < 0 ? 1 : 0)) % 5 + 1) * 2) % 10;
+        monthGanIndex = ((index < 0 ? index + 10 : index) + offset) % 10;
+        monthZhiIndex = ((index < 0 ? index + 12 : index) + BASE_MONTH_ZHI_INDEX) % 12;
 
-        //序号：大雪到小寒之间-2，小寒到立春之间-1，立春之后0
-        int indexExact = -2;
-        for (String jie : Fields.CN_JIE) {
-            end = solarTerm.get(jie);
-            String time = solar.build();
+        start = null;
+        index = -3;
+        for (int i = 0; i < size; i += 2) {
+            end = solarTerm.get(JIE_QI_IN_USE[i]);
             String stime = null == start ? time : start.build();
-            String etime = end.build();
-            if (time.compareTo(stime) >= 0 && time.compareTo(etime) < 0) {
+            if (time.compareTo(stime) >= 0 && time.compareTo(end.build()) < 0) {
                 break;
             }
             start = end;
-            indexExact++;
+            index++;
         }
-        if (indexExact < 0) {
-            indexExact += 12;
-        }
-        monthGanIndexExact = (indexExact + gOffsetExact) % 10;
-        monthZhiIndexExact = (indexExact + BASE_MONTH_ZHI_INDEX) % 12;
+
+        // 干偏移值（以立春交接时刻起算）
+        offset = (((yearGanIndexExact + (index < 0 ? 1 : 0)) % 5 + 1) * 2) % 10;
+        monthGanIndexExact = ((index < 0 ? index + 10 : index) + offset) % 10;
+        monthZhiIndexExact = ((index < 0 ? index + 12 : index) + BASE_MONTH_ZHI_INDEX) % 12;
     }
 
     /**
-     * 干支纪日计算
+     * 计算干支纪日
      */
     private void initDay() {
         Solar noon = Solar.from(solar.getYear(), solar.getMonth(), solar.getDay(), 12, 0, 0);
@@ -4864,7 +4820,7 @@ public class Lunar {
     }
 
     /**
-     * 干支纪时计算
+     * 计算干支纪时
      */
     private void initTime() {
         String hm = (hour < 10 ? "0" : Normal.EMPTY) + hour + Symbol.C_COLON + (minute < 10 ? "0" : Normal.EMPTY) + minute;
@@ -4873,7 +4829,7 @@ public class Lunar {
     }
 
     /**
-     * 星期计算
+     * 计算星期
      */
     private void initWeek() {
         this.weekIndex = solar.getWeek();
@@ -4935,15 +4891,13 @@ public class Lunar {
          */
         public void setName(String name) {
             this.name = name;
-            for (String key : Fields.CN_JIE) {
-                if (key.equals(name)) {
-                    this.jie = true;
-                    return;
-                }
-            }
-            for (String key : Fields.CN_QI) {
-                if (key.equals(name)) {
-                    this.qi = true;
+            for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i++) {
+                if (name.equals(Fields.CN_SOLARTERM[i])) {
+                    if (i % 2 == 0) {
+                        this.qi = true;
+                    } else {
+                        this.jie = true;
+                    }
                     return;
                 }
             }
@@ -5138,12 +5092,12 @@ public class Lunar {
             // 节气(中午12点)
             double[] jq = new double[25];
             // 合朔，即每月初一(中午12点)
-            double[] hs = new double[15];
+            double[] hs = new double[16];
             // 每月天数
             int[] dayCounts = new int[hs.length - 1];
 
             int year = this.year - 2000;
-            // 从上年的大雪到下年的大寒
+            // 从上年的大雪到下年的立春
             for (int i = 0, j = JIE_QI_IN_USE.length; i < j; i++) {
                 // 精确的节气
                 double t = 36525 * Galaxy.Astronomy.s_aLon_t((year + (17 + i) * 15d / 360) * 2 * Math.PI);

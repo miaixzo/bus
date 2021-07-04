@@ -184,7 +184,7 @@ public class RegEx {
     /**
      * 座机号码+400+800电话
      */
-    public final static String MOBILE_TEL_400_800_PATTERN = "(?:(?:0\\d{2,3}[\\- ]?[1-9]\\d{6,7})|(?:[48]00[\\- ]?[1-9]\\d{6}))";
+    public final static String MOBILE_TEL_400_800_PATTERN = "0\\d{2,3}[\\- ]?[1-9]\\d{6,7}|[48]00[\\- ]?[1-9]\\d{6}";
     public final static Pattern PHONE_400_800 = Pattern.compile(MOBILE_TEL_400_800_PATTERN);
 
     /**

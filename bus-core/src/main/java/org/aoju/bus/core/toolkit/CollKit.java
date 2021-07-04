@@ -325,7 +325,7 @@ public class CollKit {
      * @param <T>   集合元素类型
      * @param coll1 集合1
      * @param coll2 集合2
-     * @return 交集的集合, 返回 {@link ArrayList}
+     * @return 并集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> intersection(final Collection<T> coll1, final Collection<T> coll2) {
         final List<T> list = new ArrayList<>();
@@ -579,7 +579,6 @@ public class CollKit {
      * @param coll1 集合1
      * @param coll2 集合2
      * @return 其中一个集合在另一个集合中是否至少包含一个元素
-     * @see #intersection
      */
     public static boolean containsAny(final Collection<?> coll1, final Collection<?> coll2) {
         if (isEmpty(coll1) || isEmpty(coll2)) {
@@ -644,6 +643,22 @@ public class CollKit {
      */
     public static <T> Map<T, Integer> countMap(Iterable<T> collection) {
         return IterKit.countMap(collection);
+    }
+
+    /**
+     * 以 conjunction 为分隔符将集合转换为字符串
+     *
+     * @param <T>         集合元素类型
+     * @param iterable    {@link Iterable}
+     * @param conjunction 分隔符
+     * @param func        集合元素转换器，将元素转换为字符串
+     * @return 连接后的字符串
+     */
+    public static <T> String join(Iterable<T> iterable, CharSequence conjunction, Function<T, ? extends CharSequence> func) {
+        if (null == iterable) {
+            return null;
+        }
+        return IterKit.join(iterable.iterator(), conjunction, func);
     }
 
     /**
@@ -747,44 +762,6 @@ public class CollKit {
             }
         }
         return currentAlaDatas;
-    }
-
-    /**
-     * 新建一个HashMap
-     *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @return HashMap对象
-     * @see MapKit#newHashMap()
-     */
-    public static <K, V> HashMap<K, V> newHashMap() {
-        return MapKit.newHashMap();
-    }
-
-    /**
-     * 新建一个HashMap
-     *
-     * @param <K>     Key类型
-     * @param <V>     Value类型
-     * @param size    初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
-     * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
-     * @return HashMap对象
-     * @see MapKit#newHashMap(int, boolean)
-     */
-    public static <K, V> HashMap<K, V> newHashMap(int size, boolean isOrder) {
-        return MapKit.newHashMap(size, isOrder);
-    }
-
-    /**
-     * 新建一个HashMap
-     *
-     * @param <K>  Key类型
-     * @param <V>  Value类型
-     * @param size 初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
-     * @return HashMap对象
-     */
-    public static <K, V> HashMap<K, V> newHashMap(int size) {
-        return MapKit.newHashMap(size);
     }
 
     /**

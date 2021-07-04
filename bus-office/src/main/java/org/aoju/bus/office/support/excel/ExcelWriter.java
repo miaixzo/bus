@@ -27,6 +27,7 @@ package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.Align;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
@@ -34,10 +35,12 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1060,6 +1063,53 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             flush();
         }
         closeWithoutFlush();
+    }
+
+    /**
+     * 获取Content-Disposition头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
+     *
+     * <pre>
+     * response.setHeader("Content-Disposition", excelWriter.getDisposition("test.xlsx", CharsetUtil.CHARSET_UTF_8));
+     * </pre>
+     *
+     * @param fileName 文件名，如果文件名没有扩展名，会自动按照生成Excel类型补齐扩展名，如果提供空，使用随机UUID
+     * @param charset  编码，null则使用默认UTF-8编码
+     * @return Content-Disposition值
+     */
+    public String getDisposition(String fileName, Charset charset) {
+        if (null == charset) {
+            charset = org.aoju.bus.core.lang.Charset.UTF_8;
+        }
+
+        if (StringKit.isBlank(fileName)) {
+            // 未提供文件名使用随机UUID作为文件名
+            fileName = org.aoju.bus.core.key.UUID.randomUUID15();
+        }
+
+        fileName = StringKit.addSuffixIfNot(UriKit.encodeAll(fileName, charset), isXlsx() ? FileType.TYPE_XLSX : FileType.TYPE_XLS);
+        return StringKit.format("attachment; filename=\"{}\"; filename*={}''{}", fileName, charset.name(), fileName);
+    }
+
+    /**
+     * 获取Content-Type头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
+     *
+     * <pre>
+     * response.setContentType(excelWriter.getContentType());
+     * </pre>
+     *
+     * @return Content-Type值
+     */
+    public String getContentType() {
+        return isXlsx() ? FileType.DOCS.get(FileType.TYPE_XLSX) : FileType.DOCS.get(FileType.TYPE_XLS);
+    }
+
+    /**
+     * 判断是否为xlsx格式的Excel表（Excel07格式）
+     *
+     * @return 是否为xlsx格式的Excel表（Excel07格式）
+     */
+    public boolean isXlsx() {
+        return this.sheet instanceof XSSFSheet || this.sheet instanceof SXSSFSheet;
     }
 
     /**

@@ -25,12 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Kimi Liu
@@ -718,6 +724,84 @@ public class StreamKit {
 
         while ((amount = in.read(buffer)) >= 0) {
             out.write(buffer, 0, amount);
+        }
+    }
+
+    public static <T> Stream<T> of(T... array) {
+        Assert.notNull(array, "Array must be not null!");
+        return Stream.of(array);
+    }
+
+    /**
+     * {@link Iterable}转换为{@link Stream}，默认非并行
+     *
+     * @param iterable 集合
+     * @param <T>      集合元素类型
+     * @return {@link Stream}
+     */
+    public static <T> Stream<T> of(Iterable<T> iterable) {
+        return of(iterable, false);
+    }
+
+    /**
+     * {@link Iterable}转换为{@link Stream}
+     *
+     * @param iterable 集合
+     * @param parallel 是否并行
+     * @param <T>      集合元素类型
+     * @return {@link Stream}
+     */
+    public static <T> Stream<T> of(Iterable<T> iterable, boolean parallel) {
+        Assert.notNull(iterable, "Iterable must be not null!");
+        return StreamSupport.stream(
+                Spliterators.spliterator(CollKit.toCollection(iterable), 0),
+                parallel);
+    }
+
+    /**
+     * 按行读取文件为{@link Stream}
+     *
+     * @param file 文件
+     * @return {@link Stream}
+     */
+    public static Stream<String> of(File file) {
+        return of(file, Charset.UTF_8);
+    }
+
+    /**
+     * 按行读取文件为{@link Stream}
+     *
+     * @param path 路径
+     * @return {@link Stream}
+     */
+    public static Stream<String> of(Path path) {
+        return of(path, Charset.UTF_8);
+    }
+
+    /**
+     * 按行读取文件为{@link Stream}
+     *
+     * @param file    文件
+     * @param charset 编码
+     * @return {@link Stream}
+     */
+    public static Stream<String> of(File file, java.nio.charset.Charset charset) {
+        Assert.notNull(file, "File must be not null!");
+        return of(file.toPath(), charset);
+    }
+
+    /**
+     * 按行读取文件为{@link Stream}
+     *
+     * @param path    路径
+     * @param charset 编码
+     * @return {@link Stream}
+     */
+    public static Stream<String> of(Path path, java.nio.charset.Charset charset) {
+        try {
+            return Files.lines(path, charset);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
         }
     }
 

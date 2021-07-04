@@ -348,6 +348,30 @@ public class IterKit {
      * @return 连接后的字符串
      */
     public static <T> String join(Iterator<T> iterator, CharSequence conjunction, String prefix, String suffix) {
+        return join(iterator, conjunction, (item) -> {
+            if (ArrayKit.isArray(item)) {
+                return ArrayKit.join(ArrayKit.wrap(item), conjunction, prefix, suffix);
+            } else if (item instanceof Iterable<?>) {
+                return join((Iterable<?>) item, conjunction, prefix, suffix);
+            } else if (item instanceof Iterator<?>) {
+                return join((Iterator<?>) item, conjunction, prefix, suffix);
+            } else {
+                return StringKit.wrap(String.valueOf(item), prefix, suffix);
+            }
+        });
+    }
+
+    /**
+     * 以 conjunction 为分隔符将集合转换为字符串
+     * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     *
+     * @param <T>         集合元素类型
+     * @param iterator    集合
+     * @param conjunction 分隔符
+     * @param func        集合元素转换器，将元素转换为字符串
+     * @return 连接后的字符串
+     */
+    public static <T> String join(Iterator<T> iterator, CharSequence conjunction, Function<T, ? extends CharSequence> func) {
         if (null == iterator) {
             return null;
         }
@@ -363,15 +387,7 @@ public class IterKit {
             }
 
             item = iterator.next();
-            if (ArrayKit.isArray(item)) {
-                sb.append(ArrayKit.join(ArrayKit.wrap(item), conjunction, prefix, suffix));
-            } else if (item instanceof Iterable<?>) {
-                sb.append(join((Iterable<?>) item, conjunction, prefix, suffix));
-            } else if (item instanceof Iterator<?>) {
-                sb.append(join((Iterator<?>) item, conjunction, prefix, suffix));
-            } else {
-                sb.append(StringKit.wrap(String.valueOf(item), prefix, suffix));
-            }
+            sb.append(func.apply(item));
         }
         return sb.toString();
     }

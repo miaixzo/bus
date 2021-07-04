@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -32,6 +33,7 @@ import org.aoju.bus.core.toolkit.*;
 
 import java.io.*;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * CSV数据写出器
@@ -197,14 +199,53 @@ public final class CsvWriter implements Closeable, Flushable {
     /**
      * 将多行写出到Writer
      *
-     * @param lines 多行数据
+     * @param lines 多行数据，每行数据可以是集合或者数组
      * @return this
-     * @throws InstrumentException IO异常
      */
-    public CsvWriter write(Collection<String[]> lines) throws InstrumentException {
+    public CsvWriter write(Collection<?> lines) {
         if (CollKit.isNotEmpty(lines)) {
-            for (final String[] values : lines) {
-                appendLine(values);
+            for (Object values : lines) {
+                appendLine(Convert.toStrArray(values));
+            }
+            flush();
+        }
+        return this;
+    }
+
+    /**
+     * 将一个 CsvData 集合写出到Writer
+     *
+     * @param csvData CsvData
+     * @return this
+     */
+    public CsvWriter write(CsvData csvData) {
+        if (csvData != null) {
+            if (CollKit.isNotEmpty(csvData.getHeader())) {
+                this.writeLine(csvData.getHeader().toArray(new String[0]));
+            }
+            this.write(csvData.getRows());
+            flush();
+        }
+        return this;
+    }
+
+    /**
+     * 将一个Bean集合写出到Writer，并自动生成表头
+     *
+     * @param beans Bean集合
+     * @return this
+     */
+    public CsvWriter writeBeans(Collection<?> beans) {
+        if (CollKit.isNotEmpty(beans)) {
+            boolean isFirst = true;
+            Map<String, Object> map;
+            for (Object bean : beans) {
+                map = BeanKit.beanToMap(bean);
+                if (isFirst) {
+                    writeLine(map.keySet().toArray(new String[0]));
+                    isFirst = false;
+                }
+                writeLine(Convert.toStrArray(map.values()));
             }
             flush();
         }

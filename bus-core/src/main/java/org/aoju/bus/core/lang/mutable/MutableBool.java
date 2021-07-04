@@ -65,7 +65,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
 
     @Override
     public Boolean get() {
-        return Boolean.valueOf(this.value);
+        return this.value;
     }
 
     /**
@@ -79,7 +79,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
 
     @Override
     public void set(final Boolean value) {
-        this.value = value.booleanValue();
+        this.value = value;
     }
 
     /**

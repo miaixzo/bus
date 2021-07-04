@@ -659,13 +659,27 @@ public class ArrayKit {
      * @return 匹配到元素的位置，-1表示未匹配到
      */
     public static <T> int firstNonAll(Matcher<T> matcher, T... array) {
+        return firstNonAll(matcher, 0, array);
+    }
+
+    /**
+     * 返回数组中第一个匹配规则的值的位置
+     *
+     * @param <T>               数组元素类型
+     * @param matcher           匹配接口，实现此接口自定义匹配规则
+     * @param beginIndexInclude 检索开始的位置
+     * @param array             数组
+     * @return 匹配到元素的位置，-1表示未匹配到
+     */
+    public static <T> int firstNonAll(Matcher<T> matcher, int beginIndexInclude, T... array) {
         if (isNotEmpty(array)) {
-            for (int i = 0; i < array.length; i++) {
+            for (int i = beginIndexInclude; i < array.length; i++) {
                 if (matcher.match(array[i])) {
                     return i;
                 }
             }
         }
+
         return INDEX_NOT_FOUND;
     }
 
@@ -8734,7 +8748,7 @@ public class ArrayKit {
         }
 
         int size = Math.min(keys.length, values.length);
-        Map<K, V> map = CollKit.newHashMap(size, isOrder);
+        Map<K, V> map = MapKit.newHashMap(size, isOrder);
         for (int i = 0; i < size; i++) {
             map.put(keys[i], values[i]);
         }

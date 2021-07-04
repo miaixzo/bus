@@ -34,11 +34,15 @@ import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Padding;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -177,7 +181,6 @@ public class Symmetric implements Serializable {
         return this;
     }
 
-
     /**
      * 加密
      *
@@ -187,16 +190,52 @@ public class Symmetric implements Serializable {
     public byte[] encrypt(byte[] data) {
         lock.lock();
         try {
-            if (null == this.params) {
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            } else {
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey, params);
-            }
+            final Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
             return cipher.doFinal(paddingDataWithZero(data, cipher.getBlockSize()));
         } catch (Exception e) {
             throw new InstrumentException(e);
         } finally {
             lock.unlock();
+        }
+    }
+
+    /**
+     * 加密，针对大数据量，可选结束后是否关闭流
+     *
+     * @param data    被加密的字符串
+     * @param out     输出流，可以是文件或网络位置
+     * @param isClose 是否关闭流
+     * @throws InstrumentException IO异常
+     */
+    public void encrypt(InputStream data, OutputStream out, boolean isClose) throws InstrumentException {
+        lock.lock();
+        CipherOutputStream cipherOutputStream = null;
+        try {
+            final Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
+            cipherOutputStream = new CipherOutputStream(out, cipher);
+            long length = IoKit.copy(data, cipherOutputStream);
+            if (this.isZeroPadding) {
+                final int blockSize = cipher.getBlockSize();
+                if (blockSize > 0) {
+                    // 按照块拆分后的数据中多余的数据
+                    final int remainLength = (int) (length % blockSize);
+                    if (remainLength > 0) {
+                        // 补充0
+                        cipherOutputStream.write(new byte[blockSize - remainLength]);
+                        cipherOutputStream.flush();
+                    }
+                }
+            }
+        } catch (InstrumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        } finally {
+            lock.unlock();
+            if (isClose) {
+                IoKit.close(data);
+                IoKit.close(cipherOutputStream);
+            }
         }
     }
 
@@ -469,11 +508,57 @@ public class Symmetric implements Serializable {
     }
 
     /**
+     * 更新数据，分组加密中间结果可以当作随机数
+     *
+     * @param data 被加密的bytes
+     * @return update之后的bytes
+     */
+    public byte[] update(byte[] data) {
+        lock.lock();
+        try {
+            final Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
+            return cipher.update(paddingDataWithZero(data, cipher.getBlockSize()));
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 更新数据，分组加密中间结果可以当作随机数
+     *
+     * @param data 被加密的bytes
+     * @return update之后的hex数据
+     */
+    public String updateHex(byte[] data) {
+        return HexKit.encodeHexStr(update(data));
+    }
+
+    /**
      * 获得加密或解密器
      *
      * @return 加密或解密
      */
     public Cipher getCipher() {
+        return cipher;
+    }
+
+    /**
+     * 初始化{@link Cipher}为加密或者解密模式
+     *
+     * @param mode 模式，见{@link Cipher#ENCRYPT_MODE} 或 {@link Cipher#DECRYPT_MODE}
+     * @return {@link Cipher}
+     * @throws InvalidKeyException                无效key
+     * @throws InvalidAlgorithmParameterException 无效算法
+     */
+    private Cipher initCipher(int mode) throws InvalidKeyException, InvalidAlgorithmParameterException {
+        final Cipher cipher = this.cipher;
+        if (null == this.params) {
+            cipher.init(mode, secretKey);
+        } else {
+            cipher.init(mode, secretKey, params);
+        }
         return cipher;
     }
 

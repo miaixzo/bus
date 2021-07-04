@@ -464,20 +464,6 @@ public class Fields {
     };
 
     /**
-     * 节
-     */
-    public static final String[] CN_JIE = {
-            "小寒", "立春", "惊蛰", "清明", "立夏", "芒种", "小暑", "立秋", "白露", "寒露", "立冬", "大雪"
-    };
-
-    /**
-     * 气
-     */
-    public static final String[] CN_QI = {
-            "大寒", "雨水", "春分", "谷雨", "小满", "夏至", "大暑", "处暑", "秋分", "霜降", "小雪", "冬至"
-    };
-
-    /**
      * 节气表，国标以冬至为首个节气
      */
     public static final String[] CN_SOLARTERM = {

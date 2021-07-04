@@ -79,7 +79,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
 
     @Override
     public Short get() {
-        return Short.valueOf(this.value);
+        return this.value;
     }
 
     /**

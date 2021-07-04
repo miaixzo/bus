@@ -138,11 +138,11 @@ public class ObjectKit {
      * 如果给定对象为{@code null}或者""或者空白符返回默认值
      *
      * <pre>
-     * ObjectKit.defaultIfEmpty(null, null)      = null
-     * ObjectKit.defaultIfEmpty(null, "")        = ""
-     * ObjectKit.defaultIfEmpty("", "zz")        = "zz"
-     * ObjectKit.defaultIfEmpty(" ", "zz")       = "zz"
-     * ObjectKit.defaultIfEmpty("abc", *)        = "abc"
+     * ObjectKit.defaultIfBlank(null, null)      = null
+     * ObjectKit.defaultIfBlank(null, "")        = ""
+     * ObjectKit.defaultIfBlank("", "zz")        = "zz"
+     * ObjectKit.defaultIfBlank(" ", "zz")       = "zz"
+     * ObjectKit.defaultIfBlank("abc", *)        = "abc"
      * </pre>
      *
      * @param <T>          对象类型(必须实现CharSequence接口)

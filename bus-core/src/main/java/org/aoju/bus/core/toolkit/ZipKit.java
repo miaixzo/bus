@@ -921,7 +921,6 @@ public class ZipKit {
     public static void get(ZipInputStream zipStream, Consumer<ZipEntry> consumer) {
         try {
             ZipEntry zipEntry;
-            File outItemFile;
             while (null != (zipEntry = zipStream.getNextEntry())) {
                 consumer.accept(zipEntry);
             }
