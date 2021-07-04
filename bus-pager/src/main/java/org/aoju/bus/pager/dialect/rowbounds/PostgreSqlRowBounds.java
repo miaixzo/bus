@@ -23,43 +23,40 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.dialect.rowbounds;
 
-import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-
-import java.util.Map;
+import org.apache.ibatis.session.RowBounds;
 
 /**
- * 数据库方言 sqlserver2012
+ * PostgreSQL 基于 RowBounds 的分页
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class SqlServer2012Dialect extends SqlServerDialect {
+public class PostgreSqlRowBounds extends AbstractRowBounds {
 
+    /**
+     * 构建PostgreSQL分页查询语句
+     */
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
-        // 处理pageKey
-        pageKey.update(page.getStartRow());
-        pageKey.update(page.getPageSize());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
-        return paramMap;
-    }
-
-    @Override
-    public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 64);
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ");
-        pageKey.update(page.getPageSize());
-        return sqlBuilder.toString();
+    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
+        StringBuilder sqlStr = new StringBuilder(sql.length() + 17);
+        sqlStr.append(sql);
+        if (rowBounds.getOffset() == 0) {
+            sqlStr.append(" LIMIT ");
+            sqlStr.append(rowBounds.getLimit());
+        } else {
+            sqlStr.append(" OFFSET ");
+            sqlStr.append(rowBounds.getOffset());
+            sqlStr.append(" LIMIT ");
+            sqlStr.append(rowBounds.getLimit());
+            pageKey.update(rowBounds.getOffset());
+        }
+        pageKey.update(rowBounds.getLimit());
+        return sqlStr.toString();
     }
 
 }

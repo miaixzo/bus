@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
+import org.aoju.bus.pager.dialect.AbstractDialect;
 import org.aoju.bus.pager.dialect.Dialect;
 import org.aoju.bus.pager.parser.CountSqlParser;
 import org.aoju.bus.pager.plugin.CountMappedStatement;
@@ -108,7 +108,7 @@ public class PageContext extends PageMethod implements Dialect {
     @Override
     public Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds) {
         // 这个方法即使不分页也会被执行,所以要判断 null
-        AbstractSqlDialect delegate = autoDialect.getDelegate();
+        AbstractDialect delegate = autoDialect.getDelegate();
         if (null != delegate) {
             return delegate.afterPage(pageList, parameterObject, rowBounds);
         }
@@ -118,7 +118,7 @@ public class PageContext extends PageMethod implements Dialect {
     @Override
     public void afterAll() {
         // 这个方法即使不分页也会被执行,所以要判断 null
-        AbstractSqlDialect delegate = autoDialect.getDelegate();
+        AbstractDialect delegate = autoDialect.getDelegate();
         if (null != delegate) {
             delegate.afterAll();
             autoDialect.clearDelegate();

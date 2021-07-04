@@ -23,32 +23,61 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.rowbounds;
+package org.aoju.bus.pager.dialect.general;
 
+import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.dialect.AbstractDialect;
+import org.aoju.bus.pager.reflect.MetaObject;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
- * sqlserver2012 基于 RowBounds 的分页
+ * 数据库方言 hsqldb
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class SqlServer2012RowBoundsDialect extends SqlServerRowBoundsDialect {
+public class Hsqldb extends AbstractDialect {
 
     @Override
-    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getPageSize());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
+        // 处理pageKey
+        pageKey.update(page.getPageSize());
+        pageKey.update(page.getStartRow());
+        // 处理参数配置
+        if (null != boundSql.getParameterMappings()) {
+            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
+            if (page.getPageSize() > 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, Integer.class).build());
+            }
+            if (page.getStartRow() > 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, Integer.class).build());
+            }
+            org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
+            metaObject.setValue("parameterMappings", newParameterMappings);
+        }
+        return paramMap;
+    }
+
+    @Override
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
         sqlBuilder.append(sql);
-        sqlBuilder.append(" OFFSET ");
-        sqlBuilder.append(rowBounds.getOffset());
-        sqlBuilder.append(" ROWS ");
-        pageKey.update(rowBounds.getOffset());
-        sqlBuilder.append(" FETCH NEXT ");
-        sqlBuilder.append(rowBounds.getLimit());
-        sqlBuilder.append(" ROWS ONLY");
-        pageKey.update(rowBounds.getLimit());
+        if (page.getPageSize() > 0) {
+            sqlBuilder.append(" LIMIT ? ");
+        }
+        if (page.getStartRow() > 0) {
+            sqlBuilder.append(" OFFSET ? ");
+        }
         return sqlBuilder.toString();
     }
 

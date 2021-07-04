@@ -26,43 +26,30 @@
 package org.aoju.bus.pager.dialect.general;
 
 import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-
-import java.util.Map;
 
 /**
- * 数据库方言 oracle
+ * 数据库方言 PostgreSQL
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class OracleDialect extends AbstractSqlDialect {
+public class PostgreSql extends MySql {
 
-    @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
-        // 处理pageKey
-        pageKey.update(page.getEndRow());
-        pageKey.update(page.getStartRow());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
-        return paramMap;
-    }
-
+    /**
+     * 构建PostgreSQ分页查询语句
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM ( ");
-        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( ");
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" ) TMP_PAGE)");
-        sqlBuilder.append(" WHERE ROW_ID <= ? AND ROW_ID > ?");
-        return sqlBuilder.toString();
+        StringBuilder sqlStr = new StringBuilder(sql.length() + 17);
+        sqlStr.append(sql);
+        if (page.getStartRow() == 0) {
+            sqlStr.append(" LIMIT ?");
+        } else {
+            sqlStr.append(" OFFSET ? LIMIT ?");
+        }
+        return sqlStr.toString();
     }
 
 }

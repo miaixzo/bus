@@ -23,29 +23,46 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.replace;
+package org.aoju.bus.pager.dialect.general;
 
-import org.aoju.bus.pager.dialect.ReplaceSql;
+import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.dialect.AbstractDialect;
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
+import java.util.Map;
 
 /**
- * 简单处理 with(nolock)
+ * 数据库方言 oracle 9i
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class SimpleWithNolockReplaceSql implements ReplaceSql {
-
-    protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
+public class Oracle9i extends AbstractDialect {
 
     @Override
-    public String replace(String sql) {
-        return sql.replaceAll("((?i)with\\s*\\(nolock\\))", WITHNOLOCK);
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
+        // 处理pageKey
+        pageKey.update(page.getEndRow());
+        pageKey.update(page.getStartRow());
+        // 处理参数配置
+        handleParameter(boundSql, ms);
+        return paramMap;
     }
 
     @Override
-    public String restore(String sql) {
-        return sql.replaceAll(WITHNOLOCK, " with(nolock)");
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
+        sqlBuilder.append("SELECT * FROM ( ");
+        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGEHELPER_ROW_ID FROM ( \n");
+        sqlBuilder.append(sql);
+        sqlBuilder.append("\n ) TMP_PAGE WHERE ROWNUM <= ? ");
+        sqlBuilder.append(" ) WHERE PAGEHELPER_ROW_ID > ? ");
+        return sqlBuilder.toString();
     }
 
 }

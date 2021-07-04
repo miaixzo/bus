@@ -23,46 +23,27 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.dialect.replace;
 
-import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-
-import java.util.Map;
+import org.aoju.bus.pager.dialect.ReplaceSql;
 
 /**
- * 数据库方言 oracle 9i
+ * 正则处理 with(nolock),转换为一个 table_PAGEWITHNOLOCK
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class Oracle9iDialect extends AbstractSqlDialect {
+public class RegexWithNolock implements ReplaceSql {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
-        // 处理pageKey
-        pageKey.update(page.getEndRow());
-        pageKey.update(page.getStartRow());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
-        return paramMap;
+    public String replace(String sql) {
+        return sql.replaceAll("((?i)\\s*(\\w+)\\s*with\\s*\\(nolock\\))", " $2_PAGEWITHNOLOCK");
     }
 
     @Override
-    public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM ( ");
-        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGEHELPER_ROW_ID FROM ( \n");
-        sqlBuilder.append(sql);
-        sqlBuilder.append("\n ) TMP_PAGE WHERE ROWNUM <= ? ");
-        sqlBuilder.append(" ) WHERE PAGEHELPER_ROW_ID > ? ");
-        return sqlBuilder.toString();
+    public String restore(String sql) {
+        return sql.replaceAll("\\s*(\\w*?)_PAGEWITHNOLOCK", " $1 WITH(NOLOCK)");
     }
 
 }

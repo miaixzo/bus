@@ -23,12 +23,17 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.rowbounds;
+package org.aoju.bus.pager.dialect.general;
 
-import org.aoju.bus.pager.dialect.AbstractRowBoundsDialect;
+import org.aoju.bus.mapper.criteria.Assert;
+import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.cache.Cache;
+import org.aoju.bus.pager.cache.CacheFactory;
+import org.aoju.bus.pager.dialect.AbstractDialect;
 import org.aoju.bus.pager.dialect.ReplaceSql;
-import org.aoju.bus.pager.dialect.replace.RegexWithNolockReplaceSql;
-import org.aoju.bus.pager.dialect.replace.SimpleWithNolockReplaceSql;
+import org.aoju.bus.pager.dialect.replace.RegexWithNolock;
+import org.aoju.bus.pager.dialect.replace.SimpleWithNolock;
+import org.aoju.bus.pager.parser.OrderByParser;
 import org.aoju.bus.pager.parser.SqlServerParser;
 import org.aoju.bus.pager.plugin.PageFromObject;
 import org.apache.ibatis.cache.CacheKey;
@@ -36,40 +41,81 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
 
+import java.util.Map;
 import java.util.Properties;
 
 /**
- * sqlserver 基于 RowBounds 的分页
+ * 数据库方言 sqlserver
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class SqlServerRowBoundsDialect extends AbstractRowBoundsDialect {
-
+public class SqlServer extends AbstractDialect {
     protected SqlServerParser pageSql = new SqlServerParser();
+    protected Cache<String, String> CACHE_COUNTSQL;
+    protected Cache<String, String> CACHE_PAGESQL;
     protected ReplaceSql replaceSql;
 
     @Override
     public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
         String sql = boundSql.getSql();
-        sql = replaceSql.replace(sql);
-        sql = countSqlParser.getSmartCountSql(sql);
-        sql = replaceSql.restore(sql);
-        return sql;
+        String cacheSql = CACHE_COUNTSQL.get(sql);
+        if (null != cacheSql) {
+            return cacheSql;
+        } else {
+            cacheSql = sql;
+        }
+        cacheSql = replaceSql.replace(cacheSql);
+        cacheSql = countSqlParser.getSmartCountSql(cacheSql);
+        cacheSql = replaceSql.restore(cacheSql);
+        CACHE_COUNTSQL.put(sql, cacheSql);
+        return cacheSql;
     }
 
     @Override
-    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        return paramMap;
+    }
+
+    /**
+     * 分页查询,pageHelper转换SQL时报错with(nolock)不识别的问题,
+     * 重写父类AbstractHelperDialect.getPageSql转换出错的方法
+     * 1. this.replaceSql.replace(sql);先转换成假的表名
+     * 2. 然后进行SQL转换
+     * 3. this.replaceSql.restore(sql);最后再恢复成真的with(nolock)
+     */
+    @Override
+    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey) {
+        String sql = boundSql.getSql();
+        Page page = this.getLocalPage();
+        String orderBy = page.getOrderBy();
+        if (Assert.isNotEmpty(orderBy)) {
+            pageKey.update(orderBy);
+            sql = this.replaceSql.replace(sql);
+            sql = OrderByParser.converToOrderBySql(sql, orderBy);
+            sql = this.replaceSql.restore(sql);
+        }
+
+        return page.isOrderByOnly() ? sql : this.getPageSql(sql, page, pageKey);
+    }
+
+    @Override
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
         // 处理pageKey
-        pageKey.update(rowBounds.getOffset());
-        pageKey.update(rowBounds.getLimit());
-        sql = replaceSql.replace(sql);
-        sql = pageSql.convertToPageSql(sql, null, null);
-        sql = replaceSql.restore(sql);
-        sql = sql.replace(String.valueOf(Long.MIN_VALUE), String.valueOf(rowBounds.getOffset()));
-        sql = sql.replace(String.valueOf(Long.MAX_VALUE), String.valueOf(rowBounds.getLimit()));
-        return sql;
+        pageKey.update(page.getStartRow());
+        pageKey.update(page.getPageSize());
+        String cacheSql = CACHE_PAGESQL.get(sql);
+        if (null == cacheSql) {
+            cacheSql = sql;
+            cacheSql = replaceSql.replace(cacheSql);
+            cacheSql = pageSql.convertToPageSql(cacheSql, null, null);
+            cacheSql = replaceSql.restore(cacheSql);
+            CACHE_PAGESQL.put(sql, cacheSql);
+        }
+        cacheSql = cacheSql.replace(String.valueOf(Long.MIN_VALUE), String.valueOf(page.getStartRow()));
+        cacheSql = cacheSql.replace(String.valueOf(Long.MAX_VALUE), String.valueOf(page.getPageSize()));
+        return cacheSql;
     }
 
     @Override
@@ -77,9 +123,9 @@ public class SqlServerRowBoundsDialect extends AbstractRowBoundsDialect {
         super.setProperties(properties);
         String replaceSql = properties.getProperty("replaceSql");
         if (PageFromObject.isEmpty(replaceSql) || "simple".equalsIgnoreCase(replaceSql)) {
-            this.replaceSql = new SimpleWithNolockReplaceSql();
+            this.replaceSql = new SimpleWithNolock();
         } else if ("regex".equalsIgnoreCase(replaceSql)) {
-            this.replaceSql = new RegexWithNolockReplaceSql();
+            this.replaceSql = new RegexWithNolock();
         } else {
             try {
                 this.replaceSql = (ReplaceSql) Class.forName(replaceSql).newInstance();
@@ -87,6 +133,14 @@ public class SqlServerRowBoundsDialect extends AbstractRowBoundsDialect {
                 throw new RuntimeException("replaceSql 参数配置的值不符合要求,可选值为 simple 和 regex,或者是实现了 "
                         + ReplaceSql.class.getCanonicalName() + " 接口的全限定类名", e);
             }
+        }
+        String sqlCacheClass = properties.getProperty("sqlCacheClass");
+        if (PageFromObject.isNotEmpty(sqlCacheClass) && !sqlCacheClass.equalsIgnoreCase("false")) {
+            CACHE_COUNTSQL = CacheFactory.createCache(sqlCacheClass, "count", properties);
+            CACHE_PAGESQL = CacheFactory.createCache(sqlCacheClass, "proxy", properties);
+        } else {
+            CACHE_COUNTSQL = CacheFactory.createCache(null, "count", properties);
+            CACHE_PAGESQL = CacheFactory.createCache(null, "proxy", properties);
         }
     }
 

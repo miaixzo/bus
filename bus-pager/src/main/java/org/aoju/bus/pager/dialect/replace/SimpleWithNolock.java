@@ -23,35 +23,29 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.rowbounds;
+package org.aoju.bus.pager.dialect.replace;
 
-import org.aoju.bus.pager.dialect.AbstractRowBoundsDialect;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.session.RowBounds;
+import org.aoju.bus.pager.dialect.ReplaceSql;
 
 /**
- * db2 基于 RowBounds 的分页
+ * 简单处理 with(nolock)
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class Db2RowBoundsDialect extends AbstractRowBoundsDialect {
+public class SimpleWithNolock implements ReplaceSql {
+
+    protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
 
     @Override
-    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        int startRow = rowBounds.getOffset() + 1;
-        int endRow = rowBounds.getOffset() + rowBounds.getLimit();
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ");
-        sqlBuilder.append(startRow);
-        sqlBuilder.append(" AND ");
-        sqlBuilder.append(endRow);
-        pageKey.update(startRow);
-        pageKey.update(endRow);
-        return sqlBuilder.toString();
+    public String replace(String sql) {
+        return sql.replaceAll("((?i)with\\s*\\(nolock\\))", WITHNOLOCK);
+    }
+
+    @Override
+    public String restore(String sql) {
+        return sql.replaceAll(WITHNOLOCK, " with(nolock)");
     }
 
 }

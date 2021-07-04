@@ -23,34 +23,59 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.rowbounds;
+package org.aoju.bus.pager.dialect.general;
 
-import org.aoju.bus.pager.dialect.AbstractRowBoundsDialect;
+import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.dialect.AbstractDialect;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.reflection.MetaObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
- * hsqldb 基于 RowBounds 的分页
+ * 数据库方言 oscar
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class HsqldbRowBoundsDialect extends AbstractRowBoundsDialect {
+public class Oscar extends AbstractDialect {
 
     @Override
-    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
-        sqlBuilder.append(sql);
-        if (rowBounds.getLimit() > 0) {
-            sqlBuilder.append(" LIMIT ");
-            sqlBuilder.append(rowBounds.getLimit());
-            pageKey.update(rowBounds.getLimit());
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getPageSize());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
+        //处理pageKey
+        pageKey.update(page.getStartRow());
+        pageKey.update(page.getPageSize());
+        //处理参数配置
+        if (boundSql.getParameterMappings() != null) {
+            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
+            if (page.getStartRow() == 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, int.class).build());
+            } else {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, int.class).build());
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
+            }
+            MetaObject metaObject = org.aoju.bus.pager.reflect.MetaObject.forObject(boundSql);
+            metaObject.setValue("parameterMappings", newParameterMappings);
         }
-        if (rowBounds.getOffset() > 0) {
-            sqlBuilder.append(" OFFSET ");
-            sqlBuilder.append(rowBounds.getOffset());
-            pageKey.update(rowBounds.getOffset());
+        return paramMap;
+    }
+
+    @Override
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
+        sqlBuilder.append(sql);
+        if (page.getStartRow() == 0) {
+            sqlBuilder.append("\n LIMIT ? ");
+        } else {
+            sqlBuilder.append("\n LIMIT ? OFFSET ? ");
         }
         return sqlBuilder.toString();
     }

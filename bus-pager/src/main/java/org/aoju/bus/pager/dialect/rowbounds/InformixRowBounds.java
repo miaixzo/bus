@@ -23,58 +23,38 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.dialect.rowbounds;
 
-import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
-import org.aoju.bus.pager.reflect.MetaObject;
+import org.aoju.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ParameterMapping;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.apache.ibatis.session.RowBounds;
 
 /**
- * 数据库方言 herddb
+ * informix 基于 RowBounds 的分页
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class HerdDBDialect extends AbstractSqlDialect {
+public class InformixRowBounds extends AbstractRowBounds {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
-        pageKey.update(page.getStartRow());
-        pageKey.update(page.getPageSize());
-        if (null != boundSql.getParameterMappings()) {
-            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
-            if (page.getStartRow() == 0) {
-                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
-            } else {
-                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, long.class).build());
-                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
-            }
-            org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
-            metaObject.setValue("parameterMappings", newParameterMappings);
+    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
+        sqlBuilder.append("SELECT ");
+        if (rowBounds.getOffset() > 0) {
+            sqlBuilder.append(" SKIP ");
+            sqlBuilder.append(rowBounds.getOffset());
+            pageKey.update(rowBounds.getOffset());
         }
-        return paramMap;
-    }
-
-    @Override
-    public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
+        if (rowBounds.getLimit() > 0) {
+            sqlBuilder.append(" FIRST ");
+            sqlBuilder.append(rowBounds.getLimit());
+            pageKey.update(rowBounds.getLimit());
+        }
+        sqlBuilder.append(" * FROM ( ");
         sqlBuilder.append(sql);
-        if (page.getStartRow() == 0) {
-            sqlBuilder.append("\n LIMIT ? ");
-        } else {
-            sqlBuilder.append("\n LIMIT ?, ? ");
-        }
+        sqlBuilder.append(" ) TEMP_T");
         return sqlBuilder.toString();
     }
 

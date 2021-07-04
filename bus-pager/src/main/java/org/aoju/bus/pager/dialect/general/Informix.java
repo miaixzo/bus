@@ -23,77 +23,66 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect;
+package org.aoju.bus.pager.dialect.general;
 
-import org.aoju.bus.pager.RowBounds;
+import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.dialect.AbstractDialect;
+import org.aoju.bus.pager.reflect.MetaObject;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 /**
- * 基于 RowBounds 的分页
+ * 数据库方言 informix
  *
  * @author Kimi Liu
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public abstract class AbstractRowBoundsDialect extends AbstractDialect {
+public class Informix extends AbstractDialect {
 
     @Override
-    public boolean skip(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
-        return rowBounds == org.apache.ibatis.session.RowBounds.DEFAULT;
-    }
-
-    @Override
-    public boolean beforeCount(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
-        if (rowBounds instanceof RowBounds) {
-            RowBounds pageRowBounds = (RowBounds) rowBounds;
-            return null == pageRowBounds.getCount() || pageRowBounds.getCount();
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
+        // 处理pageKey
+        pageKey.update(page.getStartRow());
+        pageKey.update(page.getPageSize());
+        // 处理参数配置
+        if (null != boundSql.getParameterMappings()) {
+            List<ParameterMapping> newParameterMappings = new ArrayList<>();
+            if (page.getStartRow() > 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, Integer.class).build());
+            }
+            if (page.getPageSize() > 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, Integer.class).build());
+            }
+            newParameterMappings.addAll(boundSql.getParameterMappings());
+            org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
+            metaObject.setValue("parameterMappings", newParameterMappings);
         }
-        return false;
+        return paramMap;
     }
 
     @Override
-    public boolean afterCount(long count, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
-        // 由于 beforeCount 校验,这里一定是 PageRowBounds
-        ((RowBounds) rowBounds).setTotal(count);
-        return count > 0;
-    }
-
-    @Override
-    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey) {
-        return parameterObject;
-    }
-
-    @Override
-    public boolean beforePage(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
-        return true;
-    }
-
-    @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
-        String sql = boundSql.getSql();
-        return getPageSql(sql, rowBounds, pageKey);
-    }
-
-    public abstract String getPageSql(String sql, org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey);
-
-    @Override
-    public Object afterPage(List pageList, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
-        return pageList;
-    }
-
-    @Override
-    public void afterAll() {
-
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
+        sqlBuilder.append("SELECT ");
+        if (page.getStartRow() > 0) {
+            sqlBuilder.append(" SKIP ? ");
+        }
+        if (page.getPageSize() > 0) {
+            sqlBuilder.append(" FIRST ? ");
+        }
+        sqlBuilder.append(" * FROM ( ");
+        sqlBuilder.append(sql);
+        sqlBuilder.append(" ) TEMP_T ");
+        return sqlBuilder.toString();
     }
 
 }
