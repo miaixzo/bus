@@ -153,68 +153,95 @@ public class GeneralizedHoughGuil extends GeneralizedHough {
     // C++:  void cv::GeneralizedHoughGuil::setMaxScale(double maxScale)
     //
 
-    public double getXi() {
-        return getXi_0(nativeObj);
-    }
+    // C++:  double cv::GeneralizedHoughGuil::getXi()
+    private static native double getXi_0(long nativeObj);
 
 
     //
     // C++:  double cv::GeneralizedHoughGuil::getMaxScale()
     //
 
-    public void setXi(double xi) {
-        setXi_0(nativeObj, xi);
-    }
+    // C++:  int cv::GeneralizedHoughGuil::getLevels()
+    private static native int getLevels_0(long nativeObj);
 
 
     //
     // C++:  void cv::GeneralizedHoughGuil::setScaleStep(double scaleStep)
     //
 
-    public int getLevels() {
-        return getLevels_0(nativeObj);
-    }
+    // C++:  void cv::GeneralizedHoughGuil::setAngleEpsilon(double angleEpsilon)
+    private static native void setAngleEpsilon_0(long nativeObj, double angleEpsilon);
 
 
     //
     // C++:  double cv::GeneralizedHoughGuil::getScaleStep()
     //
 
-    public void setLevels(int levels) {
-        setLevels_0(nativeObj, levels);
-    }
+    // C++:  void cv::GeneralizedHoughGuil::setAngleStep(double angleStep)
+    private static native void setAngleStep_0(long nativeObj, double angleStep);
 
 
     //
     // C++:  void cv::GeneralizedHoughGuil::setScaleThresh(int scaleThresh)
     //
 
-    public double getAngleEpsilon() {
-        return getAngleEpsilon_0(nativeObj);
-    }
+    // C++:  void cv::GeneralizedHoughGuil::setAngleThresh(int angleThresh)
+    private static native void setAngleThresh_0(long nativeObj, int angleThresh);
 
 
     //
     // C++:  int cv::GeneralizedHoughGuil::getScaleThresh()
     //
 
-    public void setAngleEpsilon(double angleEpsilon) {
-        setAngleEpsilon_0(nativeObj, angleEpsilon);
-    }
+    // C++:  void cv::GeneralizedHoughGuil::setMinScale(double minScale)
+    private static native void setMinScale_0(long nativeObj, double minScale);
 
 
     //
     // C++:  void cv::GeneralizedHoughGuil::setPosThresh(int posThresh)
     //
 
-    public double getMinAngle() {
-        return getMinAngle_0(nativeObj);
-    }
+    // C++:  void cv::GeneralizedHoughGuil::setScaleStep(double scaleStep)
+    private static native void setScaleStep_0(long nativeObj, double scaleStep);
 
 
     //
     // C++:  int cv::GeneralizedHoughGuil::getPosThresh()
     //
+
+    // C++:  void cv::GeneralizedHoughGuil::setScaleThresh(int scaleThresh)
+    private static native void setScaleThresh_0(long nativeObj, int scaleThresh);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
+    public double getXi() {
+        return getXi_0(nativeObj);
+    }
+
+    public void setXi(double xi) {
+        setXi_0(nativeObj, xi);
+    }
+
+    public int getLevels() {
+        return getLevels_0(nativeObj);
+    }
+
+    public void setLevels(int levels) {
+        setLevels_0(nativeObj, levels);
+    }
+
+    public double getAngleEpsilon() {
+        return getAngleEpsilon_0(nativeObj);
+    }
+
+    public void setAngleEpsilon(double angleEpsilon) {
+        setAngleEpsilon_0(nativeObj, angleEpsilon);
+    }
+
+    public double getMinAngle() {
+        return getMinAngle_0(nativeObj);
+    }
 
     public void setMinAngle(double minAngle) {
         setMinAngle_0(nativeObj, minAngle);
@@ -228,18 +255,9 @@ public class GeneralizedHoughGuil extends GeneralizedHough {
         setMaxAngle_0(nativeObj, maxAngle);
     }
 
-    // C++:  double cv::GeneralizedHoughGuil::getXi()
-    private static native double getXi_0(long nativeObj);
-
     public double getAngleStep() {
         return getAngleStep_0(nativeObj);
     }
-
-    // C++:  int cv::GeneralizedHoughGuil::getLevels()
-    private static native int getLevels_0(long nativeObj);
-
-    // C++:  void cv::GeneralizedHoughGuil::setAngleEpsilon(double angleEpsilon)
-    private static native void setAngleEpsilon_0(long nativeObj, double angleEpsilon);
 
     public void setAngleStep(double angleStep) {
         setAngleStep_0(nativeObj, angleStep);
@@ -261,22 +279,13 @@ public class GeneralizedHoughGuil extends GeneralizedHough {
         setMinScale_0(nativeObj, minScale);
     }
 
-    // C++:  void cv::GeneralizedHoughGuil::setAngleStep(double angleStep)
-    private static native void setAngleStep_0(long nativeObj, double angleStep);
-
     public double getMaxScale() {
         return getMaxScale_0(nativeObj);
     }
 
-    // C++:  void cv::GeneralizedHoughGuil::setAngleThresh(int angleThresh)
-    private static native void setAngleThresh_0(long nativeObj, int angleThresh);
-
     public void setMaxScale(double maxScale) {
         setMaxScale_0(nativeObj, maxScale);
     }
-
-    // C++:  void cv::GeneralizedHoughGuil::setMinScale(double minScale)
-    private static native void setMinScale_0(long nativeObj, double minScale);
 
     public double getScaleStep() {
         return getScaleStep_0(nativeObj);
@@ -290,15 +299,9 @@ public class GeneralizedHoughGuil extends GeneralizedHough {
         return getScaleThresh_0(nativeObj);
     }
 
-    // C++:  void cv::GeneralizedHoughGuil::setScaleStep(double scaleStep)
-    private static native void setScaleStep_0(long nativeObj, double scaleStep);
-
     public void setScaleThresh(int scaleThresh) {
         setScaleThresh_0(nativeObj, scaleThresh);
     }
-
-    // C++:  void cv::GeneralizedHoughGuil::setScaleThresh(int scaleThresh)
-    private static native void setScaleThresh_0(long nativeObj, int scaleThresh);
 
     public int getPosThresh() {
         return getPosThresh_0(nativeObj);
@@ -312,8 +315,5 @@ public class GeneralizedHoughGuil extends GeneralizedHough {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
 }

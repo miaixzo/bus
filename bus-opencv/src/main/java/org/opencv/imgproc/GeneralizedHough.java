@@ -123,23 +123,35 @@ public class GeneralizedHough extends Algorithm {
     // C++:  double cv::GeneralizedHough::getDp()
     //
 
-    public void setTemplate(Mat templ, Point templCenter) {
-        setTemplate_0(nativeObj, templ.nativeObj, templCenter.x, templCenter.y);
-    }
+    // C++:  void cv::GeneralizedHough::setCannyHighThresh(int cannyHighThresh)
+    private static native void setCannyHighThresh_0(long nativeObj, int cannyHighThresh);
 
 
     //
     // C++:  void cv::GeneralizedHough::setMaxBufferSize(int maxBufferSize)
     //
 
-    public void setTemplate(Mat templ) {
-        setTemplate_1(nativeObj, templ.nativeObj);
-    }
+    // C++:  void cv::GeneralizedHough::setDp(double dp)
+    private static native void setDp_0(long nativeObj, double dp);
 
 
     //
     // C++:  int cv::GeneralizedHough::getMaxBufferSize()
     //
+
+    // C++:  void cv::GeneralizedHough::setMaxBufferSize(int maxBufferSize)
+    private static native void setMaxBufferSize_0(long nativeObj, int maxBufferSize);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
+    public void setTemplate(Mat templ, Point templCenter) {
+        setTemplate_0(nativeObj, templ.nativeObj, templCenter.x, templCenter.y);
+    }
+
+    public void setTemplate(Mat templ) {
+        setTemplate_1(nativeObj, templ.nativeObj);
+    }
 
     public void setTemplate(Mat edges, Mat dx, Mat dy, Point templCenter) {
         setTemplate_2(nativeObj, edges.nativeObj, dx.nativeObj, dy.nativeObj, templCenter.x, templCenter.y);
@@ -189,9 +201,6 @@ public class GeneralizedHough extends Algorithm {
         setMinDist_0(nativeObj, minDist);
     }
 
-    // C++:  void cv::GeneralizedHough::setCannyHighThresh(int cannyHighThresh)
-    private static native void setCannyHighThresh_0(long nativeObj, int cannyHighThresh);
-
     public double getDp() {
         return getDp_0(nativeObj);
     }
@@ -204,22 +213,13 @@ public class GeneralizedHough extends Algorithm {
         return getMaxBufferSize_0(nativeObj);
     }
 
-    // C++:  void cv::GeneralizedHough::setDp(double dp)
-    private static native void setDp_0(long nativeObj, double dp);
-
     public void setMaxBufferSize(int maxBufferSize) {
         setMaxBufferSize_0(nativeObj, maxBufferSize);
     }
-
-    // C++:  void cv::GeneralizedHough::setMaxBufferSize(int maxBufferSize)
-    private static native void setMaxBufferSize_0(long nativeObj, int maxBufferSize);
 
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
 }

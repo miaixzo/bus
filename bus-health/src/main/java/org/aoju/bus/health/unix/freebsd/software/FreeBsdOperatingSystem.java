@@ -56,8 +56,6 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
-    private static final long BOOTTIME = querySystemBootTime();
-
     /**
      * Package-private for use by FreeBsdOSProcess
      */
@@ -67,8 +65,8 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
                             "state", "pid", "ppid", "user", "uid", "group", "gid", "nlwp", "pri",
                             "vsz", "rss", "etimes", "systime", "time", "comm", "majflt", "minflt",
                             "nvcsw", "nivcsw", "args"));
-
     static final String PS_KEYWORD_ARGS = String.join(",", PS_KEYWORDS);
+    private static final long BOOTTIME = querySystemBootTime();
 
     private static List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();

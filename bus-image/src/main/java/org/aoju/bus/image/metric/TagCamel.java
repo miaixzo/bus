@@ -58,12 +58,9 @@ import java.util.stream.Stream;
  */
 public class TagCamel implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     public static final String NO_VALUE = "UNKNOWN";
     public static final TagCamel UnknownTag = new TagCamel(0, "UnknownTag", "Unknown Tag", TagType.STRING);
     public static final TagCamel Group = new TagCamel("Group", "Group", TagType.STRING);
-
     public static final TagCamel PatientPseudoUID = new TagCamel("PatientPseudoUID",
             "Patient UID", TagType.STRING);
     public static final TagCamel SeriesLoading =
@@ -116,7 +113,6 @@ public class TagCamel implements Serializable {
     public static final TagCamel CurrentFolder =
             new TagCamel("CurrentFolder", "Current Folder", TagType.STRING);
     public static final TagCamel Checked = new TagCamel("Checked", TagType.BOOLEAN);
-
     public static final TagCamel SubseriesInstanceUID = new TagCamel("SubseriesInstanceUID", TagType.STRING);
     // One or more Items shall be included in this sequence
     public static final TagCamel VOILUTsExplanation = new TagCamel("VOILUTsExplanation", TagType.STRING, 1, Integer.MAX_VALUE);
@@ -130,6 +126,7 @@ public class TagCamel implements Serializable {
     public static final TagCamel PRLUTsData = new TagCamel("PRLUTsData", TagType.OBJECT);
     public static final TagCamel MonoChrome = new TagCamel("MonoChrome", TagType.BOOLEAN);
     protected static final Map<String, TagCamel> tags = Collections.synchronizedMap(new HashMap<>());
+    private static final long serialVersionUID = 1L;
     private static final AtomicInteger idCounter = new AtomicInteger(Integer.MAX_VALUE);
 
     static {

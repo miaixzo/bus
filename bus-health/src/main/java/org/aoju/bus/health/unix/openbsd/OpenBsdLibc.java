@@ -89,6 +89,8 @@ public interface OpenBsdLibc extends CLibrary {
 
     int sysctl(int[] name, int namelen, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
 
+    int sysctl(int[] name, int namelen, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
+
     /**
      * OpenBSD Cache stats for memory
      */
@@ -129,7 +131,5 @@ public interface OpenBsdLibc extends CLibrary {
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
     }
-
-    int sysctl(int[] name, int namelen, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
 
 }

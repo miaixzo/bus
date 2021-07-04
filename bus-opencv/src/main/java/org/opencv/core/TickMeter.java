@@ -71,48 +71,12 @@ public class TickMeter {
     // C++:  double cv::TickMeter::getTimeMicro()
     //
 
-    public double getTimeMicro() {
-        return getTimeMicro_0(nativeObj);
-    }
-
-
-    //
-    // C++:  double cv::TickMeter::getTimeMilli()
-    //
-
-    public double getTimeMilli() {
-        return getTimeMilli_0(nativeObj);
-    }
-
-
-    //
-    // C++:  double cv::TickMeter::getTimeSec()
-    //
-
-    public double getTimeSec() {
-        return getTimeSec_0(nativeObj);
-    }
-
-
-    //
-    // C++:  int64 cv::TickMeter::getCounter()
-    //
-
-    public long getCounter() {
-        return getCounter_0(nativeObj);
-    }
-
-
-    //
-    // C++:  double cv::TickMeter::getFPS()
-    //
-
     // C++:  double cv::TickMeter::getTimeMicro()
     private static native double getTimeMicro_0(long nativeObj);
 
 
     //
-    // C++:  double cv::TickMeter::getAvgTimeSec()
+    // C++:  double cv::TickMeter::getTimeMilli()
     //
 
     // C++:  double cv::TickMeter::getTimeMilli()
@@ -120,7 +84,7 @@ public class TickMeter {
 
 
     //
-    // C++:  double cv::TickMeter::getAvgTimeMilli()
+    // C++:  double cv::TickMeter::getTimeSec()
     //
 
     // C++:  double cv::TickMeter::getTimeSec()
@@ -128,36 +92,71 @@ public class TickMeter {
 
 
     //
-    // C++:  void cv::TickMeter::reset()
+    // C++:  int64 cv::TickMeter::getCounter()
     //
-
-    public void reset() {
-        reset_0(nativeObj);
-    }
-
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
 
     // C++:  int64 cv::TickMeter::getCounter()
     private static native long getCounter_0(long nativeObj);
 
+
+    //
+    // C++:  double cv::TickMeter::getFPS()
+    //
+
     // C++:  double cv::TickMeter::getFPS()
     private static native double getFPS_0(long nativeObj);
+
+
+    //
+    // C++:  double cv::TickMeter::getAvgTimeSec()
+    //
 
     // C++:  double cv::TickMeter::getAvgTimeSec()
     private static native double getAvgTimeSec_0(long nativeObj);
 
+
+    //
+    // C++:  double cv::TickMeter::getAvgTimeMilli()
+    //
+
     // C++:  double cv::TickMeter::getAvgTimeMilli()
     private static native double getAvgTimeMilli_0(long nativeObj);
+
+
+    //
+    // C++:  void cv::TickMeter::reset()
+    //
 
     // C++:  void cv::TickMeter::reset()
     private static native void reset_0(long nativeObj);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
+
+    public double getTimeMicro() {
+        return getTimeMicro_0(nativeObj);
+    }
+
+    public double getTimeMilli() {
+        return getTimeMilli_0(nativeObj);
+    }
+
+    public double getTimeSec() {
+        return getTimeSec_0(nativeObj);
+    }
+
+    public long getCounter() {
+        return getCounter_0(nativeObj);
+    }
+
+    public void reset() {
+        reset_0(nativeObj);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
 
     public long getNativeObjAddr() {
         return nativeObj;

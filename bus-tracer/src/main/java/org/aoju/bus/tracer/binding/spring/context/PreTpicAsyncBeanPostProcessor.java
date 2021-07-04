@@ -29,25 +29,6 @@ public class PreTpicAsyncBeanPostProcessor extends AsyncAnnotationBeanPostProces
     public void setBeanFactory(BeanFactory beanFactory) {
     }
 
-    class TpicPreAdvisor extends AsyncAnnotationAdvisor {
-
-        private final Backend backend;
-        private final Executor executor;
-
-        TpicPreAdvisor(Executor executor, Backend backend) {
-            super();
-            this.executor = executor;
-            this.backend = backend;
-            setExecutor(executor); // compatible with spring 4
-        }
-
-        // use getAdvice instead of buildAdvice to be compatible with Spring 4
-        @Override
-        public Advice getAdvice() {
-            return new DelegateTpicToAsyncInterceptor(executor, backend);
-        }
-    }
-
     static class DelegateTpicToAsyncInterceptor extends AnnotationAsyncExecutionInterceptor {
 
         private final Backend backend;
@@ -70,6 +51,25 @@ public class PreTpicAsyncBeanPostProcessor extends AsyncAnnotationBeanPostProces
         @Override
         public int getOrder() {
             return Ordered.HIGHEST_PRECEDENCE;
+        }
+    }
+
+    class TpicPreAdvisor extends AsyncAnnotationAdvisor {
+
+        private final Backend backend;
+        private final Executor executor;
+
+        TpicPreAdvisor(Executor executor, Backend backend) {
+            super();
+            this.executor = executor;
+            this.backend = backend;
+            setExecutor(executor); // compatible with spring 4
+        }
+
+        // use getAdvice instead of buildAdvice to be compatible with Spring 4
+        @Override
+        public Advice getAdvice() {
+            return new DelegateTpicToAsyncInterceptor(executor, backend);
         }
     }
 }

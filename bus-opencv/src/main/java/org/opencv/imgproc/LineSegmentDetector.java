@@ -31,6 +31,36 @@ public class LineSegmentDetector extends Algorithm {
     // C++:  void cv::LineSegmentDetector::detect(Mat _image, Mat& _lines, Mat& width = Mat(), Mat& prec = Mat(), Mat& nfa = Mat())
     //
 
+    // C++:  void cv::LineSegmentDetector::detect(Mat _image, Mat& _lines, Mat& width = Mat(), Mat& prec = Mat(), Mat& nfa = Mat())
+    private static native void detect_0(long nativeObj, long _image_nativeObj, long _lines_nativeObj, long width_nativeObj, long prec_nativeObj, long nfa_nativeObj);
+
+    private static native void detect_1(long nativeObj, long _image_nativeObj, long _lines_nativeObj, long width_nativeObj, long prec_nativeObj);
+
+    private static native void detect_2(long nativeObj, long _image_nativeObj, long _lines_nativeObj, long width_nativeObj);
+
+    private static native void detect_3(long nativeObj, long _image_nativeObj, long _lines_nativeObj);
+
+
+    //
+    // C++:  void cv::LineSegmentDetector::drawSegments(Mat& _image, Mat lines)
+    //
+
+    // C++:  void cv::LineSegmentDetector::drawSegments(Mat& _image, Mat lines)
+    private static native void drawSegments_0(long nativeObj, long _image_nativeObj, long lines_nativeObj);
+
+
+    //
+    // C++:  int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& _image = Mat())
+    //
+
+    // C++:  int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& _image = Mat())
+    private static native int compareSegments_0(long nativeObj, double size_width, double size_height, long lines1_nativeObj, long lines2_nativeObj, long _image_nativeObj);
+
+    private static native int compareSegments_1(long nativeObj, double size_width, double size_height, long lines1_nativeObj, long lines2_nativeObj);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
     /**
      * Finds lines in the input image.
      * <p>
@@ -157,11 +187,6 @@ public class LineSegmentDetector extends Algorithm {
         detect_3(nativeObj, _image.nativeObj, _lines.nativeObj);
     }
 
-
-    //
-    // C++:  void cv::LineSegmentDetector::drawSegments(Mat& _image, Mat lines)
-    //
-
     /**
      * Draws the line segments on a given image.
      *
@@ -173,36 +198,10 @@ public class LineSegmentDetector extends Algorithm {
         drawSegments_0(nativeObj, _image.nativeObj, lines.nativeObj);
     }
 
-
-    //
-    // C++:  int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& _image = Mat())
-    //
-
-    // C++:  void cv::LineSegmentDetector::detect(Mat _image, Mat& _lines, Mat& width = Mat(), Mat& prec = Mat(), Mat& nfa = Mat())
-    private static native void detect_0(long nativeObj, long _image_nativeObj, long _lines_nativeObj, long width_nativeObj, long prec_nativeObj, long nfa_nativeObj);
-
-    private static native void detect_1(long nativeObj, long _image_nativeObj, long _lines_nativeObj, long width_nativeObj, long prec_nativeObj);
-
-
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    private static native void detect_2(long nativeObj, long _image_nativeObj, long _lines_nativeObj, long width_nativeObj);
-
-    private static native void detect_3(long nativeObj, long _image_nativeObj, long _lines_nativeObj);
-
-    // C++:  void cv::LineSegmentDetector::drawSegments(Mat& _image, Mat lines)
-    private static native void drawSegments_0(long nativeObj, long _image_nativeObj, long lines_nativeObj);
-
-    // C++:  int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& _image = Mat())
-    private static native int compareSegments_0(long nativeObj, double size_width, double size_height, long lines1_nativeObj, long lines2_nativeObj, long _image_nativeObj);
-
-    private static native int compareSegments_1(long nativeObj, double size_width, double size_height, long lines1_nativeObj, long lines2_nativeObj);
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
     /**
      * Draws two groups of lines in blue and red, counting the non overlapping (mismatching) pixels.

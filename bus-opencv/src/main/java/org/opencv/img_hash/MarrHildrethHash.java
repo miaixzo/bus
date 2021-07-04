@@ -71,16 +71,6 @@ public class MarrHildrethHash extends ImgHashBase {
         return MarrHildrethHash.__fromPtr__(create_2());
     }
 
-    /**
-     * self explain
-     *
-     * @return automatically generated
-     */
-    public float getAlpha() {
-        return getAlpha_0(nativeObj);
-    }
-
-
     // C++:  float cv::img_hash::MarrHildrethHash::getAlpha()
     private static native float getAlpha_0(long nativeObj);
 
@@ -89,6 +79,18 @@ public class MarrHildrethHash extends ImgHashBase {
 
     // C++:  void cv::img_hash::MarrHildrethHash::setKernelParam(float alpha, float scale)
     private static native void setKernelParam_0(long nativeObj, float alpha, float scale);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
+    /**
+     * self explain
+     *
+     * @return automatically generated
+     */
+    public float getAlpha() {
+        return getAlpha_0(nativeObj);
+    }
 
     /**
      * self explain
@@ -113,8 +115,5 @@ public class MarrHildrethHash extends ImgHashBase {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
 }

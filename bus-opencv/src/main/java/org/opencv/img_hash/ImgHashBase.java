@@ -34,6 +34,12 @@ public class ImgHashBase extends Algorithm {
     // C++:  double cv::img_hash::ImgHashBase::compare(Mat hashOne, Mat hashTwo)
     //
 
+    // C++:  double cv::img_hash::ImgHashBase::compare(Mat hashOne, Mat hashTwo)
+    private static native double compare_0(long nativeObj, long hashOne_nativeObj, long hashTwo_nativeObj);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
     /**
      * Compare the hash value between inOne and inTwo
      *
@@ -46,17 +52,10 @@ public class ImgHashBase extends Algorithm {
         return compare_0(nativeObj, hashOne.nativeObj, hashTwo.nativeObj);
     }
 
-
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    // C++:  double cv::img_hash::ImgHashBase::compare(Mat hashOne, Mat hashTwo)
-    private static native double compare_0(long nativeObj, long hashOne_nativeObj, long hashTwo_nativeObj);
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
     /**
      * Computes hash of the input image

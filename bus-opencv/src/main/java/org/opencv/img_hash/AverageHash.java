@@ -30,17 +30,15 @@ public class AverageHash extends ImgHashBase {
         return AverageHash.__fromPtr__(create_0());
     }
 
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
-
-
     // C++: static Ptr_AverageHash cv::img_hash::AverageHash::create()
     private static native long create_0();
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
 
 }
