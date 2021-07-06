@@ -36,7 +36,7 @@ import java.util.*;
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class ListValueMap<K, V> extends CollectionValueMap<K, V> {
+public class ListValueMap<K, V> extends AbsCollValueMap<K, V, List<V>> {
 
     /**
      * 构造
@@ -57,21 +57,21 @@ public class ListValueMap<K, V> extends CollectionValueMap<K, V> {
     /**
      * 构造
      *
-     * @param map Map
+     * @param m Map
      */
-    public ListValueMap(Map<? extends K, ? extends Collection<V>> map) {
-        this(DEFAULT_LOAD_FACTOR, map);
+    public ListValueMap(Map<? extends K, ? extends Collection<V>> m) {
+        this(DEFAULT_LOAD_FACTOR, m);
     }
 
     /**
      * 构造
      *
      * @param loadFactor 加载因子
-     * @param map        Map
+     * @param m          Map
      */
-    public ListValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> map) {
-        this(map.size(), loadFactor);
-        this.putAll(map);
+    public ListValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m) {
+        this(m.size(), loadFactor);
+        this.putAllValues(m);
     }
 
     /**
@@ -85,12 +85,7 @@ public class ListValueMap<K, V> extends CollectionValueMap<K, V> {
     }
 
     @Override
-    public List<V> get(Object key) {
-        return (List<V>) super.get(key);
-    }
-
-    @Override
-    protected Collection<V> createCollction() {
+    protected List<V> createCollection() {
         return new ArrayList<>(DEFAULT_COLLCTION_INITIAL_CAPACITY);
     }
 

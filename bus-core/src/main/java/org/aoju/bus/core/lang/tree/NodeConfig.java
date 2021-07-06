@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.tree;
 
+import java.io.Serializable;
+
 /**
  * 树配置属性相关
  *
@@ -32,22 +34,26 @@ package org.aoju.bus.core.lang.tree;
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class TreeEntity {
+public class NodeConfig implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 默认属性配置对象
      */
-    public static TreeEntity DEFAULT = new TreeEntity();
-
-    // 属性名配置字段
+    public static NodeConfig DEFAULT_CONFIG = new NodeConfig();
+    /**
+     * 属性名配置字段
+     */
     private String idKey = "id";
     private String parentIdKey = "parentId";
     private String weightKey = "weight";
     private String nameKey = "name";
     private String childrenKey = "children";
-    // 可以配置递归深度 从0开始计算 默认此配置为空,即不限制
+    /**
+     * 可以配置递归深度 从0开始计算 默认此配置为空,即不限制
+     */
     private Integer deep;
-
 
     /**
      * 获取ID对应的名称
@@ -64,7 +70,7 @@ public class TreeEntity {
      * @param idKey ID对应的名称
      * @return this
      */
-    public TreeEntity setIdKey(String idKey) {
+    public NodeConfig setIdKey(String idKey) {
         this.idKey = idKey;
         return this;
     }
@@ -84,7 +90,7 @@ public class TreeEntity {
      * @param weightKey 权重对应的名称
      * @return this
      */
-    public TreeEntity setWeightKey(String weightKey) {
+    public NodeConfig setWeightKey(String weightKey) {
         this.weightKey = weightKey;
         return this;
     }
@@ -104,7 +110,7 @@ public class TreeEntity {
      * @param nameKey 节点名对应的名称
      * @return this
      */
-    public TreeEntity setNameKey(String nameKey) {
+    public NodeConfig setNameKey(String nameKey) {
         this.nameKey = nameKey;
         return this;
     }
@@ -124,7 +130,7 @@ public class TreeEntity {
      * @param childrenKey 子点对应的名称
      * @return this
      */
-    public TreeEntity setChildrenKey(String childrenKey) {
+    public NodeConfig setChildrenKey(String childrenKey) {
         this.childrenKey = childrenKey;
         return this;
     }
@@ -138,14 +144,13 @@ public class TreeEntity {
         return this.parentIdKey;
     }
 
-
     /**
      * 设置父点对应的名称
      *
      * @param parentIdKey 父点对应的名称
      * @return this
      */
-    public TreeEntity setParentIdKey(String parentIdKey) {
+    public NodeConfig setParentIdKey(String parentIdKey) {
         this.parentIdKey = parentIdKey;
         return this;
     }
@@ -165,7 +170,7 @@ public class TreeEntity {
      * @param deep 递归深度
      * @return this
      */
-    public TreeEntity setDeep(Integer deep) {
+    public NodeConfig setDeep(Integer deep) {
         this.deep = deep;
         return this;
     }

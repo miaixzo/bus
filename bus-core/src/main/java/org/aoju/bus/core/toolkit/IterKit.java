@@ -672,6 +672,39 @@ public class IterKit {
     }
 
     /**
+     * 获取集合的第一个非空元素
+     *
+     * @param <T>      集合元素类型
+     * @param iterable {@link Iterable}
+     * @return 第一个元素
+     */
+    public static <T> T getFirstNoneNull(Iterable<T> iterable) {
+        if (null == iterable) {
+            return null;
+        }
+        return getFirstNoneNull(iterable.iterator());
+    }
+
+    /**
+     * 获取集合的第一个非空元素
+     *
+     * @param <T>      集合元素类型
+     * @param iterator {@link Iterator}
+     * @return 第一个非空元素，null表示未找到
+     */
+    public static <T> T getFirstNoneNull(Iterator<T> iterator) {
+        if (null != iterator) {
+            while (iterator.hasNext()) {
+                final T next = iterator.next();
+                if (null != next) {
+                    return next;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * 获得{@link Iterable}对象的元素类型(通过第一个非空元素判断)
      * 注意,此方法至少会调用多次next方法
      *

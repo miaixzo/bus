@@ -25,8 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.tree.parser;
 
-import org.aoju.bus.core.lang.tree.TreeMap;
+import org.aoju.bus.core.lang.tree.Tree;
 import org.aoju.bus.core.lang.tree.TreeNode;
+import org.aoju.bus.core.toolkit.MapKit;
+
+import java.util.Map;
 
 /**
  * 默认的简单转换器
@@ -36,14 +39,19 @@ import org.aoju.bus.core.lang.tree.TreeNode;
  * @version 6.2.3
  * @since JDK 1.8+
  */
-public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {
+public class DefaultParser<T> implements NodeParser<TreeNode<T>, T> {
 
     @Override
-    public void parse(TreeNode<T> object, TreeMap<T> treeMapNode) {
-        treeMapNode.setId(object.getId());
-        treeMapNode.setParentId(object.getParentId());
-        treeMapNode.setWeight(object.getWeight());
-        treeMapNode.setName(object.getName());
+    public void parse(TreeNode<T> treeNode, Tree<T> tree) {
+        tree.setId(treeNode.getId());
+        tree.setParentId(treeNode.getParentId());
+        tree.setWeight(treeNode.getWeight());
+        tree.setName(treeNode.getName());
+
+        final Map<String, Object> extra = treeNode.getExtra();
+        if (MapKit.isNotEmpty(extra)) {
+            extra.forEach(tree::putExtra);
+        }
     }
 
 }
