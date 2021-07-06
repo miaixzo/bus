@@ -32,7 +32,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
  * Firmware data.
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Immutable

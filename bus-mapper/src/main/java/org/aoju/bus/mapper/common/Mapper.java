@@ -29,7 +29,7 @@ package org.aoju.bus.mapper.common;
  * 通用Mapper接口,其他接口继承该接口
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public interface Mapper<T> extends

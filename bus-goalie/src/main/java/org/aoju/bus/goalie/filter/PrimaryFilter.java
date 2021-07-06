@@ -56,7 +56,7 @@ import java.util.Objects;
  * 参数过滤/校验
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)

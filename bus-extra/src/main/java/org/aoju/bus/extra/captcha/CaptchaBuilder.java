@@ -34,7 +34,7 @@ import org.aoju.bus.extra.captcha.provider.ShearProvider;
  * 图形验证码工具
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class CaptchaBuilder {

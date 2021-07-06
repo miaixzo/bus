@@ -37,7 +37,7 @@ import java.util.*;
  * 阳历日期
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Solar {

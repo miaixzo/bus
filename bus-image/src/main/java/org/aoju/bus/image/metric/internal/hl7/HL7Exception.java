@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class HL7Exception extends Exception {

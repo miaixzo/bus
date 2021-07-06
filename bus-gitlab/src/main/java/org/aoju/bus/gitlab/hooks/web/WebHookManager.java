@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  * This class provides a handler for processing GitLab WebHook callouts.
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class WebHookManager implements HookManager {

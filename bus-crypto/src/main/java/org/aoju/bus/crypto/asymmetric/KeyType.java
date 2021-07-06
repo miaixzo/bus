@@ -29,7 +29,7 @@ package org.aoju.bus.crypto.asymmetric;
  * 密钥类型
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public enum KeyType {

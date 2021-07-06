@@ -33,7 +33,7 @@ import org.aoju.bus.shade.safety.Complex;
  * Ant表达式过规则
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E> {

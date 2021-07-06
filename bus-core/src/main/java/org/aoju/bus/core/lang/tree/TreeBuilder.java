@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @param <E> ID类型
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class TreeBuilder<E> implements Builder<Tree<E>> {

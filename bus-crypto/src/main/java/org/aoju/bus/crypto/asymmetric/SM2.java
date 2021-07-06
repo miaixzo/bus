@@ -53,7 +53,7 @@ import java.security.PublicKey;
  * SM2算法只支持公钥加密，私钥解密
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class SM2 extends Safety<SM2> {

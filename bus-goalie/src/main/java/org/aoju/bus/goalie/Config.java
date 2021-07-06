@@ -6,7 +6,7 @@ import lombok.Data;
  * 服务端配置
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Data

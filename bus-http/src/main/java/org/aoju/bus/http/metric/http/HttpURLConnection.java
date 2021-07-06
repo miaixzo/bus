@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * 此实现使用{@linkplain NewCall}发送请求和接收响应
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public final class HttpURLConnection extends java.net.HttpURLConnection implements Callback {

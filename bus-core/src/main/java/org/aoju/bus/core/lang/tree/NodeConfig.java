@@ -31,7 +31,7 @@ import java.io.Serializable;
  * 树配置属性相关
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class NodeConfig implements Serializable {

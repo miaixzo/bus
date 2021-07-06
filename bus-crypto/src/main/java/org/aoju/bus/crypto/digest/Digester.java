@@ -43,7 +43,7 @@ import java.security.Provider;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Digester implements Serializable {

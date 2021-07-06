@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 定时任务注解
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Documented

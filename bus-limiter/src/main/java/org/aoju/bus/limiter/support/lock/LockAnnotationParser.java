@@ -32,7 +32,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 
 /**
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class LockAnnotationParser extends AbstractParser<org.aoju.bus.limiter.support.lock.Lock, Lock> {

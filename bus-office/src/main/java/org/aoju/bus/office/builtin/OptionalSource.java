@@ -31,7 +31,7 @@ import org.aoju.bus.office.magic.family.DocumentFormat;
  * 具有尚未应用于转换器的可选源格式的转换作业.
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public interface OptionalSource extends JobWithSource {

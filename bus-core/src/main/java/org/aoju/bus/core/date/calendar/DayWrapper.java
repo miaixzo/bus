@@ -38,7 +38,7 @@ import java.util.Date;
  * 天/日/Day
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Data

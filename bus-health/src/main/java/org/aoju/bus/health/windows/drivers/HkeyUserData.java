@@ -44,7 +44,7 @@ import java.util.List;
  * Utility to read session data from HKEY_USERS
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @ThreadSafe

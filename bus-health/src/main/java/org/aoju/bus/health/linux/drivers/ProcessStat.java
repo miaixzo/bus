@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * Utility to read process statistics from {@code /proc/[pid]/stat}
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @ThreadSafe
