@@ -234,6 +234,7 @@ public class HashID {
      *
      * @param datacenterId 数据中心ID
      * @param maxWorkerId  最大的机器节点ID
+     * @return the long
      */
     public static long getWorkerId(long datacenterId, long maxWorkerId) {
         final StringBuilder mpid = new StringBuilder();

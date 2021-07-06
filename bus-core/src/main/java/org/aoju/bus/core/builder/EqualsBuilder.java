@@ -477,6 +477,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      * 设置<code>isEquals</code>值
      *
      * @param isEquals 设定值
+     * @return this
      */
     protected EqualsBuilder setEquals(boolean isEquals) {
         this.isEquals = isEquals;
