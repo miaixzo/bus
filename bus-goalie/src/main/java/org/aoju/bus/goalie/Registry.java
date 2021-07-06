@@ -29,7 +29,7 @@ package org.aoju.bus.goalie;
  * api registry
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public interface Registry<T> {
@@ -77,4 +77,5 @@ public interface Registry<T> {
      * @return 路由列表
      */
     T get(String id);
+
 }

@@ -96,7 +96,7 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -873,6 +873,7 @@ public final class Builder {
      * @return 主体算法名
      */
     public static String getMainAlgorithm(String algorithm) {
+        Assert.notBlank(algorithm, "Algorithm must be not blank!");
         final int slashIndex = algorithm.indexOf(Symbol.SLASH);
         if (slashIndex > 0) {
             return algorithm.substring(0, slashIndex);
@@ -1977,6 +1978,25 @@ public final class Builder {
     }
 
     /**
+     * 创建{@link Signature}
+     *
+     * @param algorithm 算法
+     * @return {@link Signature}
+     */
+    public static Signature createSignature(String algorithm) {
+        final java.security.Provider provider = Instances.singletion(Holder.class).getProvider();
+
+        Signature signature;
+        try {
+            signature = (null == provider) ? Signature.getInstance(algorithm) : Signature.getInstance(algorithm, provider);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InstrumentException(e);
+        }
+
+        return signature;
+    }
+
+    /**
      * RC4算法
      *
      * @param key 密钥
@@ -2586,7 +2606,7 @@ public final class Builder {
      * SM4解密：sm4().decrypt(data)
      * </pre>
      *
-     * @return {@link Symmetric}
+     * @return {@link SM4}
      */
     public static SM4 sm4() {
         return new SM4();
@@ -2602,9 +2622,9 @@ public final class Builder {
      * </pre>
      *
      * @param key 密钥
-     * @return {@link Symmetric}
+     * @return {@link SM4}
      */
-    public static Symmetric sm4(byte[] key) {
+    public static SM4 sm4(byte[] key) {
         return new SM4(key);
     }
 

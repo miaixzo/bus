@@ -36,7 +36,7 @@ import java.nio.charset.StandardCharsets;
  * 编码常量
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Charset {

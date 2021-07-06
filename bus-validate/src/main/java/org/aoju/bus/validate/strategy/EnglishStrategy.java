@@ -35,7 +35,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * 英文校验
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class EnglishStrategy implements Matcher<Object, English> {

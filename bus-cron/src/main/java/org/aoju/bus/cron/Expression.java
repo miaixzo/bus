@@ -37,12 +37,10 @@ import java.util.*;
  * Crontab表达式提供了指定复杂时间组合的能力
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public final class Expression implements Serializable, Cloneable {
-
-    private static final long serialVersionUID = 1L;
 
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     protected static final int SECOND = 0;
@@ -56,9 +54,9 @@ public final class Expression implements Serializable, Cloneable {
     protected static final int NO_SPEC_INT = 98; // '?'
     protected static final Integer ALL_SPEC = ALL_SPEC_INT;
     protected static final Integer NO_SPEC = NO_SPEC_INT;
-
     protected static final Map<String, Integer> monthMap = new HashMap<>(20);
     protected static final Map<String, Integer> dayMap = new HashMap<>(60);
+    private static final long serialVersionUID = 1L;
 
     static {
         monthMap.put("JAN", 0);

@@ -45,7 +45,7 @@ import java.util.jar.JarFile;
  * 标准的资源加载器
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class StdLoader extends ResourceLoader implements Loader {

@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Readers {

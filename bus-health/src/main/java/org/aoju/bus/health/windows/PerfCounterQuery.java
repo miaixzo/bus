@@ -30,14 +30,13 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.PdhUtil;
 import com.sun.jna.platform.win32.PdhUtil.PdhException;
+import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.Win32Exception;
-import org.aoju.bus.core.annotation.GuardeBy;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +46,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -70,12 +69,20 @@ public final class PerfCounterQuery {
      */
     public static final String NOT_TOTAL_INSTANCES = Symbol.CARET + TOTAL_INSTANCES;
 
-    // Use a map to cache failed pdh queries
-    @GuardeBy("failedQueryCacheLock")
-    private static final Set<String> failedQueryCache = new HashSet<>();
+    private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
     private static final ReentrantLock failedQueryCacheLock = new ReentrantLock();
-    // Use a map to cache localization strings
-    private static final ConcurrentHashMap<String, String> localizeCache = new ConcurrentHashMap<>();
+
+    /**
+     * Use a thread safe set to cache failed pdh queries
+     */
+    private static final Set<String> failedQueryCache = ConcurrentHashMap.newKeySet();
+
+    /**
+     * For XP, use a map to cache localization strings
+     */
+    private static final ConcurrentHashMap<String, String> localizeCache = IS_VISTA_OR_GREATER ? null
+            : new ConcurrentHashMap<>();
 
     private PerfCounterQuery() {
 
@@ -98,23 +105,14 @@ public final class PerfCounterQuery {
      */
     public static <T extends Enum<T>> Map<T, Long> queryValues(Class<T> propertyEnum, String perfObject,
                                                                String perfWmiClass) {
-        // Check without locking for performance
         if (!failedQueryCache.contains(perfObject)) {
-            failedQueryCacheLock.lock();
-            try {
-                // Double check lock
-                if (!failedQueryCache.contains(perfObject)) {
-                    Map<T, Long> valueMap = queryValuesFromPDH(propertyEnum, perfObject);
-                    if (!valueMap.isEmpty()) {
-                        return valueMap;
-                    }
-                    // If we are here, query failed
-                    Logger.warn("Disabling further attempts to query {}.", perfObject);
-                    failedQueryCache.add(perfObject);
-                }
-            } finally {
-                failedQueryCacheLock.unlock();
+            Map<T, Long> valueMap = queryValuesFromPDH(propertyEnum, perfObject);
+            if (!valueMap.isEmpty()) {
+                return valueMap;
             }
+            // If we are here, query failed
+            Logger.warn("Disabling further attempts to query {}.", perfObject);
+            failedQueryCache.add(perfObject);
         }
         return queryValuesFromWMI(propertyEnum, perfWmiClass);
     }
@@ -135,7 +133,8 @@ public final class PerfCounterQuery {
      */
     public static <T extends Enum<T>> Map<T, Long> queryValuesFromPDH(Class<T> propertyEnum, String perfObject) {
         T[] props = propertyEnum.getEnumConstants();
-        String perfObjectLocalized = localize(perfObject);
+        // If pre-Vista, localize the perfObject
+        String perfObjectLocalized = PerfCounterQuery.localizeIfNeeded(perfObject);
         EnumMap<T, PerfDataKit.PerfCounter> counterMap = new EnumMap<>(propertyEnum);
         EnumMap<T, Long> valueMap = new EnumMap<>(propertyEnum);
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
@@ -210,8 +209,9 @@ public final class PerfCounterQuery {
      * @return The localized string if localization successful, or the original
      * string otherwise.
      */
-    public static String localize(String perfObject) {
-        return localizeCache.computeIfAbsent(perfObject, k -> localizeUsingPerfIndex(k));
+    public static String localizeIfNeeded(String perfObject) {
+        return IS_VISTA_OR_GREATER ? perfObject
+                : localizeCache.computeIfAbsent(perfObject, PerfCounterQuery::localizeUsingPerfIndex);
     }
 
     private static String localizeUsingPerfIndex(String perfObject) {

@@ -24,7 +24,6 @@
 ********************************************************************************/
 package ${mapperUrl};
 
-
 import ${entityUrl}.${entityName};
 import org.aoju.bus.base.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;

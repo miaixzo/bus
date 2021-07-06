@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
  * 拦截响应的代理
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class PlaceHandler implements InvocationHandler {

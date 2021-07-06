@@ -41,7 +41,7 @@ import java.util.Map;
  * 统计信息的{@link java.net.ResponseCache}
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class ResponseCache extends java.net.ResponseCache {

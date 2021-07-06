@@ -55,7 +55,7 @@ import java.util.Objects;
  * 访问鉴权
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
@@ -201,4 +201,5 @@ public class AuthorizeFilter implements WebFilter {
         }
         return result;
     }
+
 }

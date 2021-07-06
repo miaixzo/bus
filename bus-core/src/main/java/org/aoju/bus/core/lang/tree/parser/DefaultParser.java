@@ -23,46 +23,35 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.core.lang.tree.parser;
 
-import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
+import org.aoju.bus.core.lang.tree.Tree;
+import org.aoju.bus.core.lang.tree.TreeNode;
+import org.aoju.bus.core.toolkit.MapKit;
 
 import java.util.Map;
 
 /**
- * 数据库方言 oracle 9i
+ * 默认的简单转换器
  *
+ * @param <T> ID类型
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class Oracle9iDialect extends AbstractSqlDialect {
+public class DefaultParser<T> implements NodeParser<TreeNode<T>, T> {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
-        // 处理pageKey
-        pageKey.update(page.getEndRow());
-        pageKey.update(page.getStartRow());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
-        return paramMap;
-    }
+    public void parse(TreeNode<T> treeNode, Tree<T> tree) {
+        tree.setId(treeNode.getId());
+        tree.setParentId(treeNode.getParentId());
+        tree.setWeight(treeNode.getWeight());
+        tree.setName(treeNode.getName());
 
-    @Override
-    public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM ( ");
-        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGEHELPER_ROW_ID FROM ( \n");
-        sqlBuilder.append(sql);
-        sqlBuilder.append("\n ) TMP_PAGE WHERE ROWNUM <= ? ");
-        sqlBuilder.append(" ) WHERE PAGEHELPER_ROW_ID > ? ");
-        return sqlBuilder.toString();
+        final Map<String, Object> extra = treeNode.getExtra();
+        if (MapKit.isNotEmpty(extra)) {
+            extra.forEach(tree::putExtra);
+        }
     }
 
 }

@@ -51,6 +51,14 @@ public class BlockMeanHash extends ImgHashBase {
         return BlockMeanHash.__fromPtr__(create_1());
     }
 
+    // C++: static Ptr_BlockMeanHash cv::img_hash::BlockMeanHash::create(int mode = BLOCK_MEAN_HASH_MODE_0)
+    private static native long create_0(int mode);
+
+    private static native long create_1();
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
     /**
      * Create BlockMeanHash object
      *
@@ -68,13 +76,5 @@ public class BlockMeanHash extends ImgHashBase {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    // C++: static Ptr_BlockMeanHash cv::img_hash::BlockMeanHash::create(int mode = BLOCK_MEAN_HASH_MODE_0)
-    private static native long create_0(int mode);
-
-    private static native long create_1();
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
 }

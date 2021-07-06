@@ -41,7 +41,7 @@ import java.util.Properties;
  * mybatis 插件启用
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class MybatisPluginBuilder {

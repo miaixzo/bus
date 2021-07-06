@@ -29,17 +29,15 @@ public class ColorMomentHash extends ImgHashBase {
         return ColorMomentHash.__fromPtr__(create_0());
     }
 
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
-
-
     // C++: static Ptr_ColorMomentHash cv::img_hash::ColorMomentHash::create()
     private static native long create_0();
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
 
 }

@@ -34,7 +34,7 @@ import javax.persistence.Transient;
  * 访问链路跟踪
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Data
@@ -57,7 +57,7 @@ public class Tracer extends OAuth2 {
      * 被调用者ID
      */
     @Transient
-    protected String x_child_Id;
+    protected String x_child_id;
 
     /**
      * 本地IP

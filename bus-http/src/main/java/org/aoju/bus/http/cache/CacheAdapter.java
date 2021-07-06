@@ -43,7 +43,7 @@ import java.util.Map;
  * 适配 {@link ResponseCache} 到 {@link InternalCache}.
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public final class CacheAdapter implements InternalCache {

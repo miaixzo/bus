@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Fields {
@@ -461,20 +461,6 @@ public class Fields {
      */
     public static final String[] CN_SEASON = {
             "孟春", "仲春", "季春", "孟夏", "仲夏", "季夏", "孟秋", "仲秋", "季秋", "孟冬", "仲冬", "季冬"
-    };
-
-    /**
-     * 节
-     */
-    public static final String[] CN_JIE = {
-            "小寒", "立春", "惊蛰", "清明", "立夏", "芒种", "小暑", "立秋", "白露", "寒露", "立冬", "大雪"
-    };
-
-    /**
-     * 气
-     */
-    public static final String[] CN_QI = {
-            "大寒", "雨水", "春分", "谷雨", "小满", "夏至", "大暑", "处暑", "秋分", "霜降", "小雪", "冬至"
     };
 
     /**

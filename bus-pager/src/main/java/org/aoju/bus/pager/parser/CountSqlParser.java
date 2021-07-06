@@ -41,7 +41,7 @@ import java.util.*;
  * sql解析类,提供更智能的count查询sql
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class CountSqlParser {
@@ -169,22 +169,22 @@ public class CountSqlParser {
     /**
      * 获取智能的countSql
      *
-     * @param sql  sql
-     * @param name 列名,默认 0
+     * @param sql    sql
+     * @param column 列名,默认 0
      * @return the string
      */
-    public String getSmartCountSql(String sql, String name) {
+    public String getSmartCountSql(String sql, String column) {
         // 解析SQL
         Statement stmt;
         // 特殊sql不需要去掉order by时,使用注释前缀
         if (sql.indexOf(KEEP_ORDERBY) >= 0) {
-            return getSimpleCountSql(sql, name);
+            return getSimpleCountSql(sql, column);
         }
         try {
             stmt = CCJSqlParserUtil.parse(sql);
         } catch (Throwable e) {
             // 无法解析的用一般方法返回count语句
-            return getSimpleCountSql(sql, name);
+            return getSimpleCountSql(sql, column);
         }
         Select select = (Select) stmt;
         SelectBody selectBody = select.getSelectBody();
@@ -193,12 +193,12 @@ public class CountSqlParser {
             processSelectBody(selectBody);
         } catch (Exception e) {
             // 当 sql 包含 group by 时,不去除 order by
-            return getSimpleCountSql(sql, name);
+            return getSimpleCountSql(sql, column);
         }
         // 处理with-去order by
         processWithItemsList(select.getWithItemsList());
         // 处理为count查询
-        sqlToCount(select, name);
+        sqlToCount(select, column);
         return select.toString();
     }
 

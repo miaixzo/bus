@@ -37,7 +37,7 @@ import java.util.Map;
  * 莫尔斯电码的编码和解码
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Morse {
@@ -136,8 +136,8 @@ public class Morse {
      * @param dict 二进制
      */
     private static void registerMorse(Character abc, String dict) {
-        ALPHABETS.put(Integer.valueOf(abc), dict);
-        DICTIONARIES.put(dict, Integer.valueOf(abc));
+        ALPHABETS.put((int) abc, dict);
+        DICTIONARIES.put(dict, (int) abc);
     }
 
     /**

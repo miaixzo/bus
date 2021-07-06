@@ -23,40 +23,31 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.convert;
+package org.aoju.bus.pager.dialect;
+
+import org.aoju.bus.pager.parser.CountSqlParser;
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.RowBounds;
 
 /**
- * 泛型枚举转换器
+ * 基于 CountSqlParser 的智能 Count 查询
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E> {
-
-    private final Class<E> enumClass;
+public abstract class AbstractPaging implements Dialect {
 
     /**
-     * 构造
-     *
-     * @param enumClass 转换成的目标Enum类
+     * 处理SQL
      */
-    public GenericEnumConverter(Class<E> enumClass) {
-        this.enumClass = enumClass;
-    }
+    protected CountSqlParser countSqlParser = new CountSqlParser();
 
     @Override
-    protected E convertInternal(Object value) {
-        E enumValue = (E) EnumConverter.tryConvertEnum(value, this.enumClass);
-        if (null == enumValue && false == value instanceof String) {
-            enumValue = Enum.valueOf(this.enumClass, convertString(value));
-        }
-        return enumValue;
-    }
-
-    @Override
-    public Class<E> getTargetType() {
-        return this.enumClass;
+    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
+        return countSqlParser.getSmartCountSql(boundSql.getSql());
     }
 
 }

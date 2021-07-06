@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang;
  * 加解密算法类型
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Algorithm {
@@ -92,6 +92,13 @@ public class Algorithm {
     public static final String SHA256withECDSA = "SHA256withECDSA";
     public static final String SHA384withECDSA = "SHA384withECDSA";
     public static final String SHA512withECDSA = "SHA512withECDSA";
+
+    /**
+     * 需要BC库加入支持
+     */
+    public static final String SHA256withRSA_PSS = "SHA256WithRSA/PSS";
+    public static final String SHA384withRSA_PSS = "SHA384WithRSA/PSS";
+    public static final String SHA512withRSA_PSS = "SHA512WithRSA/PSS";
 
     /****************************** 摘要-算法类型 *****************************/
     public static final String MD2 = "MD2";

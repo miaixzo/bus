@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * 判断是否为中文
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Documented

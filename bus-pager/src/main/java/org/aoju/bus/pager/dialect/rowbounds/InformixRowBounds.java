@@ -23,45 +23,38 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.dialect.rowbounds;
 
-import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
+import org.aoju.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-
-import java.util.Map;
+import org.apache.ibatis.session.RowBounds;
 
 /**
- * 数据库方言 oracle
+ * informix 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class OracleDialect extends AbstractSqlDialect {
+public class InformixRowBounds extends AbstractRowBounds {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
-        // 处理pageKey
-        pageKey.update(page.getEndRow());
-        pageKey.update(page.getStartRow());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
-        return paramMap;
-    }
-
-    @Override
-    public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM ( ");
-        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( ");
+    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
+        sqlBuilder.append("SELECT ");
+        if (rowBounds.getOffset() > 0) {
+            sqlBuilder.append(" SKIP ");
+            sqlBuilder.append(rowBounds.getOffset());
+            pageKey.update(rowBounds.getOffset());
+        }
+        if (rowBounds.getLimit() > 0) {
+            sqlBuilder.append(" FIRST ");
+            sqlBuilder.append(rowBounds.getLimit());
+            pageKey.update(rowBounds.getLimit());
+        }
+        sqlBuilder.append(" * FROM ( ");
         sqlBuilder.append(sql);
-        sqlBuilder.append(" ) TMP_PAGE)");
-        sqlBuilder.append(" WHERE ROW_ID <= ? AND ROW_ID > ?");
+        sqlBuilder.append(" ) TEMP_T");
         return sqlBuilder.toString();
     }
 

@@ -33,8 +33,8 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.3
- * @since JDK 1.8++
+ * @version 6.2.5
+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

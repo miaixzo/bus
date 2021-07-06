@@ -24,7 +24,6 @@
 ********************************************************************************/
 package ${serviceImplUrl};
 
-
 import ${entityUrl}.${entityName};
 import ${mapperUrl}.${entityName}Mapper;
 import ${serviceUrl}.${entityName}Service;
@@ -39,9 +38,10 @@ import org.springframework.stereotype.Service;
 * @since JDK 1.8+
 */
 @Service
-@org.apache.dubbo.config.annotation.Service
-public class ${entityName}ServiceImpl  extends BaseServiceImpl
-<${entityName}Mapper, ${entityName}>
-implements ${entityName}Service  {
+<#if isDubbo=="true" >
+    @org.apache.dubbo.config.annotation.Service
+</#if>
+public class ${entityName}ServiceImpl extends BaseServiceImpl
+<${entityName}Mapper, ${entityName}> implements ${entityName}Service  {
 
 }

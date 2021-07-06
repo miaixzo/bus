@@ -48,7 +48,7 @@ import java.util.Map;
  * 用于执行系统命令的工具
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class RuntimeKit {
@@ -279,16 +279,15 @@ public class RuntimeKit {
      * @return the int
      */
     public static int getPid() {
-        String jvmName = ManagementFactory.getRuntimeMXBean().getName();
-        String[] split = jvmName.split("@");
-        if (split.length != 2) {
-            return -1;
+        final String processName = ManagementFactory.getRuntimeMXBean().getName();
+        if (StringKit.isBlank(processName)) {
+            throw new InstrumentException("Process name is blank!");
         }
-
-        try {
-            return Integer.parseInt(split[0]);
-        } catch (Exception e) {
-            return -1;
+        final int atIndex = processName.indexOf('@');
+        if (atIndex > 0) {
+            return Integer.parseInt(processName.substring(0, atIndex));
+        } else {
+            return processName.hashCode();
         }
     }
 

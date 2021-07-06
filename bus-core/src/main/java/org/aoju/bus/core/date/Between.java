@@ -36,7 +36,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Between {

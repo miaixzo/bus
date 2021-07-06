@@ -54,7 +54,7 @@ import java.util.ArrayList;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class GifDecoder {
@@ -774,9 +774,6 @@ public class GifDecoder {
         lastRect = new Rectangle(ix, iy, iw, ih);
         lastImage = image;
         lastBgColor = bgColor;
-        int dispose = 0;
-        boolean transparency = false;
-        int delay = 0;
         lct = null;
     }
 

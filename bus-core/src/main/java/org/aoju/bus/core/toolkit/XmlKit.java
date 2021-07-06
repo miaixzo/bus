@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class XmlKit {
@@ -784,7 +784,11 @@ public class XmlKit {
     public static <T> T xmlToBean(Node node, Class<T> bean) {
         final Map<String, Object> map = xmlToMap(node);
         if (null != map && map.size() == 1) {
-            return BeanKit.toBean(map.get(bean.getSimpleName()), bean);
+            final String simpleName = bean.getSimpleName();
+            if (map.containsKey(simpleName)) {
+                // 只有key和bean的名称匹配时才做单一对象转换
+                return BeanKit.toBean(map.get(simpleName), bean);
+            }
         }
         return BeanKit.toBean(map, bean);
     }
@@ -1163,7 +1167,6 @@ public class XmlKit {
      * @param map    map 对象
      * @param buffer 返回字符
      */
-    @SuppressWarnings("unchecked")
     public static void toXml(Map<String, Object> map, StringBuffer buffer) {
         map.forEach((key, value) -> {
             if (value instanceof Map) {
@@ -1185,6 +1188,74 @@ public class XmlKit {
 
         });
 
+    }
+
+    /**
+     * JavaBean转换成xml
+     *
+     * @param bean    Bean对象
+     * @param charset 编码 eg: utf-8
+     * @param format  是否格式化输出eg: true
+     * @return 输出的XML字符串
+     */
+    public static String beanToXml(Object bean, java.nio.charset.Charset charset, boolean format) {
+        StringWriter writer;
+        try {
+            JAXBContext context = JAXBContext.newInstance(bean.getClass());
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, format);
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, charset.name());
+            writer = new StringWriter();
+            marshaller.marshal(bean, writer);
+        } catch (Exception e) {
+            throw new InstrumentException("ConvertToXml error：" + e.getMessage(), e);
+        }
+        return writer.toString();
+    }
+
+    /**
+     * xml转换成JavaBean
+     *
+     * @param <T>   Bean类型
+     * @param xml   XML字符串
+     * @param clazz Bean类型
+     * @return bean
+     */
+    public static <T> T xmlToBean(String xml, Class<T> clazz) {
+        return xmlToBean(StringKit.getReader(xml), clazz);
+    }
+
+    /**
+     * XML文件转Bean
+     *
+     * @param <T>     Bean类型
+     * @param file    文件
+     * @param charset 编码
+     * @param clazz   Bean类
+     * @return Bean
+     */
+    public static <T> T xmlToBean(File file, java.nio.charset.Charset charset, Class<T> clazz) {
+        return xmlToBean(FileKit.getReader(file, charset), clazz);
+    }
+
+    /**
+     * 从{@link Reader}中读取XML字符串，并转换为Bean
+     *
+     * @param <T>    Bean类型
+     * @param reader {@link Reader}
+     * @param clazz  Bean类
+     * @return Bean
+     */
+    public static <T> T xmlToBean(Reader reader, Class<T> clazz) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(clazz);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            return (T) unmarshaller.unmarshal(reader);
+        } catch (Exception e) {
+            throw new RuntimeException("convertToJava2 错误：" + e.getMessage(), e);
+        } finally {
+            IoKit.close(reader);
+        }
     }
 
     /**

@@ -25,32 +25,40 @@
  ********************************************************************************/
 package org.aoju.bus.pager.dialect.rowbounds;
 
-import org.aoju.bus.pager.dialect.AbstractRowBoundsDialect;
+import org.aoju.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.session.RowBounds;
 
 /**
- * hsqldb 基于 RowBounds 的分页
+ * oracle 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class HsqldbRowBoundsDialect extends AbstractRowBoundsDialect {
+public class OracleRowBounds extends AbstractRowBounds {
 
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
-        sqlBuilder.append(sql);
-        if (rowBounds.getLimit() > 0) {
-            sqlBuilder.append(" LIMIT ");
-            sqlBuilder.append(rowBounds.getLimit());
-            pageKey.update(rowBounds.getLimit());
+        int startRow = rowBounds.getOffset();
+        int endRow = rowBounds.getOffset() + rowBounds.getLimit();
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
+        if (startRow > 0) {
+            sqlBuilder.append("SELECT * FROM ( ");
         }
-        if (rowBounds.getOffset() > 0) {
-            sqlBuilder.append(" OFFSET ");
-            sqlBuilder.append(rowBounds.getOffset());
-            pageKey.update(rowBounds.getOffset());
+        if (endRow > 0) {
+            sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( ");
+        }
+        sqlBuilder.append(sql);
+        if (endRow > 0) {
+            sqlBuilder.append(" ) TMP_PAGE WHERE ROWNUM <= ");
+            sqlBuilder.append(endRow);
+            pageKey.update(endRow);
+        }
+        if (startRow > 0) {
+            sqlBuilder.append(" ) WHERE ROW_ID > ");
+            sqlBuilder.append(startRow);
+            pageKey.update(startRow);
         }
         return sqlBuilder.toString();
     }

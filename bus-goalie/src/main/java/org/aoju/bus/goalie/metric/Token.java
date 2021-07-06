@@ -7,7 +7,8 @@ import lombok.Data;
  * token参数
  *
  * @author Justubborn
- * @since 2021/3/4
+ * @version 6.2.5
+ * @since JDK 1.8+
  */
 @AllArgsConstructor
 @Data
@@ -16,4 +17,5 @@ public class Token {
     String token;
 
     int channel;
+
 }

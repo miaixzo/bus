@@ -53,7 +53,7 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Intercepts(value = {
@@ -107,7 +107,7 @@ public class NatureSQLHandler extends AbstractSqlParserHandler implements Interc
     private static String getParameterValue(Object obj) {
         String value;
         if (obj instanceof String) {
-            value = Symbol.SINGLE_QUOTE + obj.toString() + Symbol.SINGLE_QUOTE;
+            value = Symbol.SINGLE_QUOTE + obj + Symbol.SINGLE_QUOTE;
         } else if (obj instanceof Date) {
             DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
             value = Symbol.SINGLE_QUOTE + formatter.format(new Date()) + Symbol.SINGLE_QUOTE;

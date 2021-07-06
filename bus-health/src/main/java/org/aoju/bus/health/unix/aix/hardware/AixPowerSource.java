@@ -38,7 +38,7 @@ import java.util.List;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @ThreadSafe

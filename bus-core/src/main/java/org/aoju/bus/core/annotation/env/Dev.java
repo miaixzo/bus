@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 表示当前方法禁止用于生产环境,仅可用于开发测试
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Inherited

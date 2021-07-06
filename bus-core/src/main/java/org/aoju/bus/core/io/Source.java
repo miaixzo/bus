@@ -34,7 +34,7 @@ import java.io.IOException;
  * 分层以转换提供的数据,例如解压、解密或移除协议框架
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public interface Source extends Closeable {

@@ -23,33 +23,33 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.rowbounds;
+package org.aoju.bus.pager.dialect.general;
 
+import org.aoju.bus.pager.Page;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.session.RowBounds;
 
 /**
- * sqlserver2012 基于 RowBounds 的分页
+ * 数据库方言 PostgreSQL
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class SqlServer2012RowBoundsDialect extends SqlServerRowBoundsDialect {
+public class PostgreSql extends MySql {
 
+    /**
+     * 构建PostgreSQ分页查询语句
+     */
     @Override
-    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" OFFSET ");
-        sqlBuilder.append(rowBounds.getOffset());
-        sqlBuilder.append(" ROWS ");
-        pageKey.update(rowBounds.getOffset());
-        sqlBuilder.append(" FETCH NEXT ");
-        sqlBuilder.append(rowBounds.getLimit());
-        sqlBuilder.append(" ROWS ONLY");
-        pageKey.update(rowBounds.getLimit());
-        return sqlBuilder.toString();
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlStr = new StringBuilder(sql.length() + 17);
+        sqlStr.append(sql);
+        if (page.getStartRow() == 0) {
+            sqlStr.append(" LIMIT ?");
+        } else {
+            sqlStr.append(" OFFSET ? LIMIT ?");
+        }
+        return sqlStr.toString();
     }
 
 }

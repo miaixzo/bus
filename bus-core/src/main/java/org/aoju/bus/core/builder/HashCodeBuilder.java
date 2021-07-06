@@ -64,7 +64,7 @@ import java.util.Set;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class HashCodeBuilder implements Builder<Integer> {
@@ -419,7 +419,7 @@ public class HashCodeBuilder implements Builder<Integer> {
 
     @Override
     public Integer build() {
-        return Integer.valueOf(toHashCode());
+        return toHashCode();
     }
 
     @Override

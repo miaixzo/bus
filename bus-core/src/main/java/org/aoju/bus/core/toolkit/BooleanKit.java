@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Normal;
  * Boolean类型相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class BooleanKit {

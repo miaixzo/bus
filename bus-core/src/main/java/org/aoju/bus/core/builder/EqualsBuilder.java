@@ -63,7 +63,7 @@ import java.util.Set;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class EqualsBuilder implements Builder<Boolean> {
@@ -328,19 +328,16 @@ public class EqualsBuilder implements Builder<Boolean> {
         if (lhs == rhs) {
             return this;
         }
-        if (null == lhs || null == rhs) {
-            this.setEquals(false);
-            return this;
+        if (lhs == null || rhs == null) {
+            return setEquals(false);
         }
-        final Class<?> lhsClass = lhs.getClass();
-        if (false == lhsClass.isArray()) {
-            // 简单的情况，不是数组，只比较元素
-            isEquals = lhs.equals(rhs);
+        if (ArrayKit.isArray(lhs)) {
+            // 判断数组的equals
+            return setEquals(ArrayKit.equals(lhs, rhs));
         }
 
-        // 判断数组的equals
-        this.setEquals(ArrayKit.equals(lhs, rhs));
-        return this;
+        // The simple case, not an array, just test the element
+        return setEquals(lhs.equals(rhs));
     }
 
     /**
@@ -480,9 +477,11 @@ public class EqualsBuilder implements Builder<Boolean> {
      * 设置<code>isEquals</code>值
      *
      * @param isEquals 设定值
+     * @return this
      */
-    protected void setEquals(boolean isEquals) {
+    protected EqualsBuilder setEquals(boolean isEquals) {
         this.isEquals = isEquals;
+        return this;
     }
 
     /**

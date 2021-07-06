@@ -40,7 +40,7 @@ import java.util.Map;
  * Utility to read disk statistics from {@code /proc/diskstats}
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @ThreadSafe

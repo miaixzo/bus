@@ -33,7 +33,7 @@ import java.util.List;
  * Mybatis - 分页对象
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Page<E> extends ArrayList<E> implements Closeable {
@@ -119,6 +119,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         if (rowBounds[0] == 0 && rowBounds[1] == Integer.MAX_VALUE) {
             pageSizeZero = true;
             this.pageSize = 0;
+            this.pageNo = 1;
         } else {
             this.pageSize = rowBounds[1];
             this.pageNo = rowBounds[1] != 0 ? (int) (Math.ceil(((double) rowBounds[0] + rowBounds[1]) / rowBounds[1])) : 0;

@@ -41,20 +41,26 @@ import org.aoju.bus.core.loader.JarLoaders;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.System;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.URI;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 import java.util.*;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class ClassKit {
@@ -1053,7 +1059,7 @@ public class ClassKit {
         if (null == classLoader) {
             classLoader = ClassKit.class.getClassLoader();
             if (null == classLoader) {
-                classLoader = ClassLoader.getSystemClassLoader();
+                classLoader = getSystemClassLoader();
             }
         }
         return classLoader;
@@ -1131,7 +1137,29 @@ public class ClassKit {
      * @see Thread#getContextClassLoader()
      */
     public static ClassLoader getContextClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+        if (null == System.getSecurityManager()) {
+            return Thread.currentThread().getContextClassLoader();
+        } else {
+            // 绕开权限检查
+            return AccessController.doPrivileged(
+                    (PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
+        }
+    }
+
+    /**
+     * 获取系统{@link ClassLoader}
+     *
+     * @return 系统{@link ClassLoader}
+     * @see ClassLoader#getSystemClassLoader()
+     */
+    public static ClassLoader getSystemClassLoader() {
+        if (null == System.getSecurityManager()) {
+            return ClassLoader.getSystemClassLoader();
+        } else {
+            // 绕开权限检查
+            return AccessController.doPrivileged(
+                    (PrivilegedAction<ClassLoader>) ClassLoader::getSystemClassLoader);
+        }
     }
 
     /**
@@ -3643,6 +3671,51 @@ public class ClassKit {
      */
     public static <T> List<T> loadList(Class<T> clazz, ClassLoader loader) {
         return CollKit.list(false, load(clazz, loader));
+    }
+
+    /**
+     * 加载Manifest文件
+     *
+     * @param file 文件信息
+     * @return {@link Manifest}
+     */
+    public static Manifest getManifest(File file) {
+        Manifest manifest = null;
+
+        if (file.isFile()) {
+            JarFile jar = null;
+            try {
+                jar = new JarFile(file);
+                manifest = jar.getManifest();
+            } catch (final IOException ignore) {
+            } finally {
+                IoKit.close(jar);
+            }
+        } else {
+            final File metaDir = new File(file, Normal.META_DATA_INF);
+            File manifestFile = null;
+            if (metaDir.isDirectory()) {
+                String[] MANIFEST_NAMES = {"Manifest.mf", StringKit.lowerCase(Normal.META_DATA_INF), Normal.META_DATA_INF};
+                for (final String name : MANIFEST_NAMES) {
+                    final File mFile = new File(metaDir, name);
+                    if (mFile.isFile()) {
+                        manifestFile = mFile;
+                        break;
+                    }
+                }
+            }
+            if (null != manifestFile) {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(manifestFile);
+                    manifest = new Manifest(fis);
+                } catch (final IOException ignore) {
+                } finally {
+                    IoKit.close(fis);
+                }
+            }
+        }
+        return manifest;
     }
 
     public enum Interfaces {

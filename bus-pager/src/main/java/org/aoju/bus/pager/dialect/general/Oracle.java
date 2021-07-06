@@ -23,43 +23,45 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.rowbounds;
+package org.aoju.bus.pager.dialect.general;
 
-import org.aoju.bus.pager.dialect.AbstractRowBoundsDialect;
+import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.dialect.AbstractDialect;
 import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
+import java.util.Map;
 
 /**
- * oracle 基于 RowBounds 的分页
+ * 数据库方言 oracle
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class OracleRowBoundsDialect extends AbstractRowBoundsDialect {
+public class Oracle extends AbstractDialect {
 
     @Override
-    public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        int startRow = rowBounds.getOffset();
-        int endRow = rowBounds.getOffset() + rowBounds.getLimit();
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
+        // 处理pageKey
+        pageKey.update(page.getEndRow());
+        pageKey.update(page.getStartRow());
+        // 处理参数配置
+        handleParameter(boundSql, ms);
+        return paramMap;
+    }
+
+    @Override
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        if (startRow > 0) {
-            sqlBuilder.append("SELECT * FROM ( ");
-        }
-        if (endRow > 0) {
-            sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( ");
-        }
+        sqlBuilder.append("SELECT * FROM ( ");
+        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( ");
         sqlBuilder.append(sql);
-        if (endRow > 0) {
-            sqlBuilder.append(" ) TMP_PAGE WHERE ROWNUM <= ");
-            sqlBuilder.append(endRow);
-            pageKey.update(endRow);
-        }
-        if (startRow > 0) {
-            sqlBuilder.append(" ) WHERE ROW_ID > ");
-            sqlBuilder.append(startRow);
-            pageKey.update(startRow);
-        }
+        sqlBuilder.append(" ) TMP_PAGE)");
+        sqlBuilder.append(" WHERE ROW_ID <= ? AND ROW_ID > ?");
         return sqlBuilder.toString();
     }
 

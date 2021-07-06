@@ -43,7 +43,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from lsattr
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Immutable

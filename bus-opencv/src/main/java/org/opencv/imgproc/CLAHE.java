@@ -51,47 +51,36 @@ public class CLAHE extends Algorithm {
     // C++:  void cv::CLAHE::setTilesGridSize(Size tileGridSize)
     //
 
-    /**
-     * Sets size of grid for histogram equalization. Input image will be divided into
-     * equally sized rectangular tiles.
-     *
-     * @param tileGridSize defines the number of tiles in row and column.
-     */
-    public void setTilesGridSize(Size tileGridSize) {
-        setTilesGridSize_0(nativeObj, tileGridSize.width, tileGridSize.height);
-    }
-
-
-    //
-    // C++:  Size cv::CLAHE::getTilesGridSize()
-    //
-
     // C++:  void cv::CLAHE::setTilesGridSize(Size tileGridSize)
     private static native void setTilesGridSize_0(long nativeObj, double tileGridSize_width, double tileGridSize_height);
 
 
     //
-    // C++:  void cv::CLAHE::collectGarbage()
+    // C++:  Size cv::CLAHE::getTilesGridSize()
     //
-
-    public void collectGarbage() {
-        collectGarbage_0(nativeObj);
-    }
-
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
 
     // C++:  Size cv::CLAHE::getTilesGridSize()
     private static native double[] getTilesGridSize_0(long nativeObj);
+
+
+    //
+    // C++:  void cv::CLAHE::collectGarbage()
+    //
 
     // C++:  void cv::CLAHE::collectGarbage()
     private static native void collectGarbage_0(long nativeObj);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
+
+    public void collectGarbage() {
+        collectGarbage_0(nativeObj);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
 
     /**
      * Equalizes the histogram of a grayscale image using Contrast Limited Adaptive Histogram Equalization.
@@ -118,6 +107,16 @@ public class CLAHE extends Algorithm {
 
     public Size getTilesGridSize() {
         return new Size(getTilesGridSize_0(nativeObj));
+    }
+
+    /**
+     * Sets size of grid for histogram equalization. Input image will be divided into
+     * equally sized rectangular tiles.
+     *
+     * @param tileGridSize defines the number of tiles in row and column.
+     */
+    public void setTilesGridSize(Size tileGridSize) {
+        setTilesGridSize_0(nativeObj, tileGridSize.width, tileGridSize.height);
     }
 
 }

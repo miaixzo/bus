@@ -39,7 +39,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class NetKit {
@@ -65,11 +65,11 @@ public class NetKit {
         sb.append((longIP >>> 24));
         sb.append(Symbol.DOT);
         // 将高8位置0,然后右移16位
-        sb.append(((longIP & 0x00FFFFFF) >>> 16));
+        sb.append(longIP >> 16 & 0xFF);
         sb.append(Symbol.DOT);
-        sb.append(((longIP & 0x0000FFFF) >>> 8));
+        sb.append(longIP >> 8 & 0xFF);
         sb.append(Symbol.DOT);
-        sb.append((longIP & 0x000000FF));
+        sb.append(longIP & 0xFF);
         return sb.toString();
     }
 
@@ -177,6 +177,38 @@ public class NetKit {
 
         throw new InstrumentException("Could not find an available port in the range [{}, {}] after {} attempts", minPort, maxPort, maxPort - minPort);
     }
+
+    /**
+     * 获得本机物理地址
+     *
+     * @return 本机物理地址
+     */
+    public static byte[] getLocalHardwareAddress() {
+        return getHardwareAddress(getLocalhost());
+    }
+
+    /**
+     * 获得指定地址信息中的硬件地址
+     *
+     * @param inetAddress {@link InetAddress}
+     * @return 硬件地址
+     */
+    public static byte[] getHardwareAddress(InetAddress inetAddress) {
+        if (null == inetAddress) {
+            return null;
+        }
+
+        try {
+            final NetworkInterface networkInterface = NetworkInterface.getByInetAddress(inetAddress);
+            if (null != networkInterface) {
+                return networkInterface.getHardwareAddress();
+            }
+        } catch (SocketException e) {
+            throw new InstrumentException(e);
+        }
+        return null;
+    }
+
 
     /**
      * 获取多个本地可用端口

@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>float</code> 类型
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @see Float
  * @since JDK 1.8+
  */
@@ -79,7 +79,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
 
     @Override
     public Float get() {
-        return Float.valueOf(this.value);
+        return this.value;
     }
 
     /**

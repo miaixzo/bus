@@ -34,7 +34,7 @@ import javax.persistence.Transient;
  * 授权公用类
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Data
@@ -44,7 +44,7 @@ public class OAuth2 extends Entity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 当前用户ID
+     * 当前用户标识
      */
     @Transient
     protected String x_user_id;
@@ -54,21 +54,25 @@ public class OAuth2 extends Entity {
      */
     @Transient
     protected String x_user_name;
+
     /**
      * 当前用户角色
      */
     @Transient
     private String x_role_id;
+
     /**
      * 当前用户职称
      */
     @Transient
     private String x_duty_id;
+
     /**
      * 当前用户组织
      */
     @Transient
     private String x_org_id;
+
     /**
      * 当前用户设备
      */

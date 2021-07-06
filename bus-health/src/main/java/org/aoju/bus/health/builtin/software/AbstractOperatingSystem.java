@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * Common methods for OperatingSystem implementations
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {

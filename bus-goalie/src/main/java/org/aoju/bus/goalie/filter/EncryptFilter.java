@@ -33,8 +33,8 @@ import org.aoju.bus.crypto.Padding;
 import org.aoju.bus.crypto.symmetric.AES;
 import org.aoju.bus.crypto.symmetric.Symmetric;
 import org.aoju.bus.extra.json.JsonKit;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
-import org.aoju.bus.goalie.ServerConfig;
 import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -55,17 +55,17 @@ import java.nio.charset.StandardCharsets;
  * 数据加密
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class EncryptFilter implements WebFilter {
 
-    ServerConfig.Encrypt encrypt;
+    Config.Encrypt encrypt;
 
     private Symmetric symmetric;
 
-    public EncryptFilter(ServerConfig.Encrypt encrypt) {
+    public EncryptFilter(Config.Encrypt encrypt) {
         this.encrypt = encrypt;
     }
 

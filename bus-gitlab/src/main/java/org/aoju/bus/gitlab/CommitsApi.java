@@ -42,7 +42,7 @@ import java.util.stream.Stream;
  * See <a href="https://docs.gitlab.com/ce/api/commits.html">Commits API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class CommitsApi extends AbstractApi {

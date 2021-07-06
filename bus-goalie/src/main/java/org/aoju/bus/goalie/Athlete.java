@@ -33,7 +33,7 @@ import reactor.netty.http.server.HttpServer;
  * 服务端
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Athlete {
@@ -46,7 +46,6 @@ public class Athlete {
     }
 
     private void init() {
-
         disposableServer = httpServer.bindNow();
         Logger.info("reactor server start on port:{} success", disposableServer.port());
     }

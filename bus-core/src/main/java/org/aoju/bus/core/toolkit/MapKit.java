@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class MapKit {
@@ -1032,7 +1032,7 @@ public class MapKit {
      * @return 值
      */
     public static <T> T get(Map<?, ?> map, Object key, Types<T> type, T defaultValue) {
-        return null == map ? null : Convert.convert(type, map.get(key), defaultValue);
+        return null == map ? defaultValue : Convert.convert(type, map.get(key), defaultValue);
     }
 
     /**
@@ -1046,7 +1046,7 @@ public class MapKit {
      * @return 值
      */
     public static <T> T get(Map<?, ?> map, Object key, Class<T> type, T defaultValue) {
-        return null == map ? null : Convert.convert(type, map.get(key), defaultValue);
+        return null == map ? defaultValue : Convert.convert(type, map.get(key), defaultValue);
     }
 
     /**
@@ -1060,7 +1060,7 @@ public class MapKit {
      * @return 值
      */
     public static <T> T getQuietly(Map<?, ?> map, Object key, Class<T> type, T defaultValue) {
-        return null == map ? null : Convert.convertQuietly(type, map.get(key), defaultValue);
+        return null == map ? defaultValue : Convert.convertQuietly(type, map.get(key), defaultValue);
     }
 
     /**
@@ -1074,7 +1074,7 @@ public class MapKit {
      * @return 值
      */
     public static <T> T getQuietly(Map<?, ?> map, Object key, Types<T> type, T defaultValue) {
-        return null == map ? null : Convert.convertQuietly(type, map.get(key), defaultValue);
+        return null == map ? defaultValue : Convert.convertQuietly(type, map.get(key), defaultValue);
     }
 
     /**

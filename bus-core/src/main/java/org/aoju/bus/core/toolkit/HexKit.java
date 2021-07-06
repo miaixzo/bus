@@ -39,7 +39,7 @@ import java.math.BigInteger;
  * <p>
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class HexKit {
@@ -152,7 +152,7 @@ public class HexKit {
         if (StringKit.isEmpty(hexStr)) {
             return hexStr;
         }
-        return decodeHexStr(hexStr.toCharArray(), charset);
+        return StringKit.toString(decodeHex(hexStr), charset);
     }
 
     /**
@@ -190,13 +190,12 @@ public class HexKit {
         }
 
         hexData = StringKit.cleanBlank(hexData);
-
-        final int len = hexData.length();
+        int len = hexData.length();
 
         if ((len & 0x01) != 0) {
-            throw new RuntimeException("Odd number of characters.");
+            hexData = "0" + hexData;
+            len = hexData.length();
         }
-
         final byte[] out = new byte[len >> 1];
 
         // two characters form the hex value.

@@ -23,29 +23,43 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.replace;
+package org.aoju.bus.pager.dialect.general;
 
-import org.aoju.bus.pager.dialect.ReplaceSql;
+import org.aoju.bus.pager.Page;
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
+import java.util.Map;
 
 /**
- * 简单处理 with(nolock)
+ * 数据库方言 sqlserver2012
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class SimpleWithNolockReplaceSql implements ReplaceSql {
-
-    protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
+public class SqlServer2012 extends SqlServer {
 
     @Override
-    public String replace(String sql) {
-        return sql.replaceAll("((?i)with\\s*\\(nolock\\))", WITHNOLOCK);
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
+        // 处理pageKey
+        pageKey.update(page.getStartRow());
+        pageKey.update(page.getPageSize());
+        // 处理参数配置
+        handleParameter(boundSql, ms);
+        return paramMap;
     }
 
     @Override
-    public String restore(String sql) {
-        return sql.replaceAll(WITHNOLOCK, " with(nolock)");
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 64);
+        sqlBuilder.append(sql);
+        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ");
+        pageKey.update(page.getPageSize());
+        return sqlBuilder.toString();
     }
 
 }

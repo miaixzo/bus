@@ -37,7 +37,7 @@ import java.util.Map;
  * 处理性能计数器查询
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @NotThreadSafe
@@ -59,7 +59,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         if (null == this.queryHandle) {
             this.queryHandle = new WinNT.HANDLEByReference();
             if (!PerfDataKit.openQuery(this.queryHandle)) {
-                Logger.warn("Failed to open a query for PDH object: {}", counter.getObject());
+                Logger.warn("Failed to open a query for PDH counter: {}", counter.getCounterPath());
                 this.queryHandle = null;
                 return false;
             }
@@ -67,7 +67,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
         // 获取新的计数器拦截
         WinNT.HANDLEByReference p = new WinNT.HANDLEByReference();
         if (!PerfDataKit.addCounter(this.queryHandle, counter.getCounterPath(), p)) {
-            Logger.warn("Failed to add counter for PDH object: {}", counter.getObject());
+            Logger.warn("Failed to add counter for PDH counter: {}", counter.getCounterPath());
             return false;
         }
         counterHandleMap.put(counter, p);

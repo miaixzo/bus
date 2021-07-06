@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -950,6 +950,7 @@ public class MathKit {
      * @return 格式化后的值
      */
     public static String decimalFormat(String pattern, long value) {
+        Assert.isTrue(isValid(value), "value is NaN or Infinite!");
         return new DecimalFormat(pattern).format(value);
     }
 
@@ -2406,6 +2407,28 @@ public class MathKit {
             System.arraycopy(buf, off, mag, 0, length);
         }
         return new BigInteger(1, mag);
+    }
+
+    /**
+     * 检查是否为有效的数字
+     * 检查double否为无限大，或者Not a Number（NaN）
+     *
+     * @param number 被检查double
+     * @return 检查结果
+     */
+    public static boolean isValid(double number) {
+        return false == (Double.isNaN(number) || Double.isInfinite(number));
+    }
+
+    /**
+     * 检查是否为有效的数字
+     * 检查double否为无限大，或者Not a Number（NaN）
+     *
+     * @param number 被检查double
+     * @return 检查结果
+     */
+    public static boolean isValid(float number) {
+        return false == (Float.isNaN(number) || Float.isInfinite(number));
     }
 
     private static int mathSubnode(int selectNum, int minNum) {

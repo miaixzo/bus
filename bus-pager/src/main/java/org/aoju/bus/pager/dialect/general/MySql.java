@@ -26,7 +26,7 @@
 package org.aoju.bus.pager.dialect.general;
 
 import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
+import org.aoju.bus.pager.dialect.AbstractDialect;
 import org.aoju.bus.pager.reflect.MetaObject;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
@@ -38,13 +38,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 数据库方言 informix
+ * 数据库方言 mysql
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class InformixDialect extends AbstractSqlDialect {
+public class MySql extends AbstractDialect {
 
     @Override
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
@@ -55,14 +55,13 @@ public class InformixDialect extends AbstractSqlDialect {
         pageKey.update(page.getPageSize());
         // 处理参数配置
         if (null != boundSql.getParameterMappings()) {
-            List<ParameterMapping> newParameterMappings = new ArrayList<>();
-            if (page.getStartRow() > 0) {
+            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
+            if (page.getStartRow() == 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, Integer.class).build());
+            } else {
                 newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, Integer.class).build());
-            }
-            if (page.getPageSize() > 0) {
                 newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, Integer.class).build());
             }
-            newParameterMappings.addAll(boundSql.getParameterMappings());
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
             metaObject.setValue("parameterMappings", newParameterMappings);
         }
@@ -71,17 +70,13 @@ public class InformixDialect extends AbstractSqlDialect {
 
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
-        sqlBuilder.append("SELECT ");
-        if (page.getStartRow() > 0) {
-            sqlBuilder.append(" SKIP ? ");
-        }
-        if (page.getPageSize() > 0) {
-            sqlBuilder.append(" FIRST ? ");
-        }
-        sqlBuilder.append(" * FROM ( ");
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
         sqlBuilder.append(sql);
-        sqlBuilder.append(" ) TEMP_T ");
+        if (page.getStartRow() == 0) {
+            sqlBuilder.append(" LIMIT ? ");
+        } else {
+            sqlBuilder.append(" LIMIT ?, ? ");
+        }
         return sqlBuilder.toString();
     }
 

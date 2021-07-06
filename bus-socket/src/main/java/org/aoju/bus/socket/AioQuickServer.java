@@ -50,7 +50,7 @@ import java.util.function.Function;
  *
  * @param <T> 消息对象类型
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class AioQuickServer<T> {
@@ -187,13 +187,14 @@ public class AioQuickServer<T> {
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
             @Override
             public void completed(AsynchronousSocketChannel channel, Void attachment) {
-                createSession(channel);
                 try {
                     serverSocketChannel.accept(attachment, this);
                 } catch (Throwable throwable) {
                     config.getProcessor().stateEvent(null, SocketStatus.ACCEPT_EXCEPTION, throwable);
                     failed(throwable, attachment);
                     serverSocketChannel.accept(attachment, this);
+                } finally {
+                    createSession(channel);
                 }
             }
 

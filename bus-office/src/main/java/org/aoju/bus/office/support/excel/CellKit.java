@@ -54,7 +54,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -232,6 +232,13 @@ public class CellKit {
     public static void setCellValue(Cell cell, Object value) {
         if (null == cell) {
             return;
+        }
+
+        // 在使用BigWriter(SXSSF)模式写出数据时，单元格值为直接值，非引用值（is标签）
+        // 而再使用ExcelWriter(XSSF)编辑时，会写出引用值，导致失效
+        // 此处做法是先清空单元格值，再写入
+        if (CellType.BLANK != cell.getCellType()) {
+            cell.setBlank();
         }
 
         if (null == value) {

@@ -49,7 +49,7 @@ import java.util.Map;
  * 异常处理
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class GlobalExceptionHandler extends Controller implements ErrorWebExceptionHandler {
@@ -92,4 +92,5 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         return response.writeWith(Mono.just(db))
                 .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
     }
+
 }

@@ -25,15 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.tree;
 
+import org.aoju.bus.core.toolkit.ObjectKit;
+
+import java.io.Serializable;
+
 /**
- * 提供节点相关的的方法
+ * 节点接口，提供节点相关的的方法定义
  *
- * @param <T> 类型
+ * @param <T> ID类型
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public interface Node<T> extends Comparable<Node<T>> {
+public interface Node<T> extends Comparable<Node<T>>, Serializable {
 
     /**
      * 获取ID
@@ -46,7 +50,7 @@ public interface Node<T> extends Comparable<Node<T>> {
      * 设置ID
      *
      * @param id ID
-     * @return 节点ID
+     * @return this
      */
     Node<T> setId(T id);
 
@@ -61,7 +65,7 @@ public interface Node<T> extends Comparable<Node<T>> {
      * 设置父节点ID
      *
      * @param parentId 父节点ID
-     * @return 父节点ID
+     * @return this
      */
     Node<T> setParentId(T parentId);
 
@@ -95,13 +99,14 @@ public interface Node<T> extends Comparable<Node<T>> {
      */
     Node<T> setWeight(Comparable<?> weight);
 
+    @Override
     default int compareTo(Node node) {
-        final Comparable weight = this.getWeight();
-        if (null != weight) {
-            final Comparable weightOther = node.getWeight();
-            return weight.compareTo(weightOther);
+        if (null == node) {
+            return 1;
         }
-        return 0;
+        final Comparable weight = this.getWeight();
+        final Comparable weightOther = node.getWeight();
+        return ObjectKit.compare(weight, weightOther);
     }
 
 }

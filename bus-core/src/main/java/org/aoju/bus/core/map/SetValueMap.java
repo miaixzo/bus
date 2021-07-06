@@ -33,10 +33,10 @@ import java.util.*;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
+public class SetValueMap<K, V> extends AbsCollValueMap<K, V, Set<V>> {
 
     /**
      * 构造
@@ -71,7 +71,7 @@ public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
      */
     public SetValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m) {
         this(m.size(), loadFactor);
-        this.putAll(m);
+        this.putAllValues(m);
     }
 
     /**
@@ -85,12 +85,7 @@ public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
     }
 
     @Override
-    public Set<V> get(Object key) {
-        return (Set<V>) super.get(key);
-    }
-
-    @Override
-    protected Collection<V> createCollction() {
+    protected Set<V> createCollection() {
         return new LinkedHashSet<>(DEFAULT_COLLCTION_INITIAL_CAPACITY);
     }
 

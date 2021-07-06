@@ -36,7 +36,7 @@ import java.util.List;
  * 返回结果公用
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Data
@@ -45,10 +45,17 @@ public class Result<T> extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 总数据
+     */
     protected int total;
+    /**
+     * 查询记录数
+     */
     protected List<T> rows;
 
     public Result() {
+
     }
 
     public Result(int total, List<T> rows) {

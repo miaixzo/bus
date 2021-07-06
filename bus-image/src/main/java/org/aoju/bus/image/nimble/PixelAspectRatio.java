@@ -30,7 +30,7 @@ import org.aoju.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class PixelAspectRatio {

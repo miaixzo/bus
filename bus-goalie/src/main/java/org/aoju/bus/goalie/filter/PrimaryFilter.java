@@ -56,7 +56,7 @@ import java.util.Objects;
  * 参数过滤/校验
  *
  * @author Justubborn
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -64,9 +64,7 @@ public class PrimaryFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
         ServerWebExchange mutate = setDefaultContentTypeIfNecessary(exchange);
-
         Context context = Context.get(mutate);
         context.setStartTime(System.currentTimeMillis());
         ServerHttpRequest request = mutate.getRequest();

@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 class PagerSpliterator<T> implements Spliterator<T> {

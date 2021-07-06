@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * 切点抽象定义
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 abstract class LimitedResourceSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {

@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>short</code> 类型
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @see Short
  * @since JDK 1.8+
  */
@@ -79,7 +79,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
 
     @Override
     public Short get() {
-        return Short.valueOf(this.value);
+        return this.value;
     }
 
     /**

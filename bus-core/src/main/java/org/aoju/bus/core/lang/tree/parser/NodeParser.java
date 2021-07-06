@@ -25,23 +25,24 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.tree.parser;
 
-import org.aoju.bus.core.lang.tree.TreeMap;
+import org.aoju.bus.core.lang.tree.Tree;
 
 /**
- * 树节点解析器 可以参考{@link DefaultNodeParser}
+ * 树节点解析器 可以参考{@link DefaultParser}
  *
  * @param <T> 转换的实体 为数据源里的对象类型
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
+@FunctionalInterface
 public interface NodeParser<T, E> {
 
     /**
-     * @param object      源数据实体
-     * @param treeMapNode 树节点实体
+     * @param object   源数据实体
+     * @param treeNode 树节点实体
      */
-    void parse(T object, TreeMap<E> treeMapNode);
+    void parse(T object, Tree<E> treeNode);
 
 }
 

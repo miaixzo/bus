@@ -37,7 +37,7 @@ import java.util.List;
  * 自动生成需要的基本信息
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Data
@@ -87,11 +87,15 @@ public class TableEntity implements Serializable {
 
     private List<PropertyInfo> cis;
 
-    private String isSwagger = "true";
+    private String isSwagger;
+
+    private boolean isHump;
+
+    private String isDubbo;
 
     public TableEntity(String project, String author, String version, String dbUrl, String dbName, String dbPassword,
                        String database, String table, String agile, String entityUrl, String mapperUrl, String mapperXmlUrl,
-                       String serviceUrl, String serviceImplUrl, String controllerUrl, String isSwagger) {
+                       String serviceUrl, String serviceImplUrl, String controllerUrl, String isSwagger, String isDubbo, boolean isHump) {
         super();
         this.project = project;
         this.author = author;
@@ -109,18 +113,20 @@ public class TableEntity implements Serializable {
         this.serviceImplUrl = serviceImplUrl;
         this.controllerUrl = controllerUrl;
         this.isSwagger = isSwagger;
+        this.isDubbo = isDubbo;
+        this.isHump = isHump;
     }
 
-    public static TableEntity get(TableEntity bi) {
+    public static TableEntity get(TableEntity tableEntity) {
         List<PropertyInfo> columns = new ArrayList<>();
         // 创建连接
         Connection con = null;
         PreparedStatement pstemt = null;
         ResultSet rs = null;
         //sql
-        String sql = "select column_name,data_type,column_comment from information_schema.columns where table_schema='" + bi.getDatabase() + "' and table_name='" + bi.getTable() + Symbol.SINGLE_QUOTE;
+        String sql = "select column_name,data_type,column_comment from information_schema.columns where table_schema='" + tableEntity.getDatabase() + "' and table_name='" + tableEntity.getTable() + Symbol.SINGLE_QUOTE;
         try {
-            con = DriverManager.getConnection(bi.getDbUrl(), bi.getDbName(), bi.getDbPassword());
+            con = DriverManager.getConnection(tableEntity.getDbUrl(), tableEntity.getDbName(), tableEntity.getDbPassword());
             pstemt = con.prepareStatement(sql);
             rs = pstemt.executeQuery();
             while (rs.next()) {
@@ -137,16 +143,16 @@ public class TableEntity implements Serializable {
                     ci.setJdbcType(jdbcType);
                 }
                 ci.setComment(comment);
-                ci.setProperty(NamingRules.changeToJavaFiled(column, false));
+                ci.setProperty(NamingRules.changeToJavaFiled(column, tableEntity.isHump));
                 ci.setJavaType(NamingRules.jdbcTypeToJavaType(jdbcType));
                 //设置注解类型
                 if (column.equalsIgnoreCase("id")) {
-                    bi.setIdType(ci.getJavaType());
-                    bi.setIdJdbcType(ci.getJdbcType());
+                    tableEntity.setIdType(ci.getJavaType());
+                    tableEntity.setIdJdbcType(ci.getJdbcType());
                 }
                 columns.add(ci);
             }
-            bi.setCis(columns);
+            tableEntity.setCis(columns);
             // 完成后关闭
             rs.close();
             pstemt.close();
@@ -154,7 +160,7 @@ public class TableEntity implements Serializable {
             if (null == columns || columns.size() == 0) {
                 throw new RuntimeException("未能读取到表或表中的字段 请检查链接url,数据库账户,数据库密码,查询的数据名、是否正确 ");
             }
-            return bi;
+            return tableEntity;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("自动生成实体类错误：" + e.getMessage());

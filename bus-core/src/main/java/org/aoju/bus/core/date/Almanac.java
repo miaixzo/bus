@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Almanac extends Converter {
@@ -3813,7 +3813,7 @@ public class Almanac extends Converter {
      * @return 两个Calendar时间戳是否相同。如果两个时间都为
      * {@code null}返回true，否则有{@code null}返回false
      */
-    public static boolean isSameInstant(Calendar date1, Calendar date2) {
+    public static boolean isSameTime(Calendar date1, Calendar date2) {
         if (null == date1) {
             return null == date2;
         }
@@ -3822,6 +3822,18 @@ public class Almanac extends Converter {
         }
 
         return date1.getTimeInMillis() == date2.getTimeInMillis();
+    }
+
+    /**
+     * 是否为相同时间
+     * 此方法比较两个日期的时间戳是否相同
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为相同时间
+     */
+    public static boolean isSameTime(Date date1, Date date2) {
+        return date1.compareTo(date2) == 0;
     }
 
     /**

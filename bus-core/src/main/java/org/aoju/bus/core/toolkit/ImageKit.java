@@ -46,9 +46,8 @@ import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * 图片处理工具类：
@@ -56,7 +55,7 @@ import java.util.Random;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class ImageKit {
@@ -1874,6 +1873,56 @@ public class ImageKit {
      */
     public static Images merge(String imageUrl, String fileType) {
         return Images.from(null, imageUrl, fileType);
+    }
+
+    /**
+     * 获取给定图片的主色调，背景填充用
+     *
+     * @param image      {@link BufferedImage}
+     * @param rgbFilters 过滤多种颜色
+     * @return {@link String} #ffffff
+     */
+    public static String getMainColor(BufferedImage image, int[]... rgbFilters) {
+        int r, g, b;
+        Map<String, Long> countMap = new HashMap<>();
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int minx = image.getMinX();
+        int miny = image.getMinY();
+        for (int i = minx; i < width; i++) {
+            for (int j = miny; j < height; j++) {
+                int pixel = image.getRGB(i, j);
+                r = (pixel & 0xff0000) >> 16;
+                g = (pixel & 0xff00) >> 8;
+                b = (pixel & 0xff);
+                if (rgbFilters != null && rgbFilters.length > 0) {
+                    for (int[] rgbFilter : rgbFilters) {
+                        if (r == rgbFilter[0] && g == rgbFilter[1] && b == rgbFilter[2]) {
+                            break;
+                        }
+                    }
+                }
+                countMap.merge(r + "-" + g + "-" + b, 1L, Long::sum);
+            }
+        }
+        String maxColor = null;
+        long maxCount = 0;
+        for (Map.Entry<String, Long> entry : countMap.entrySet()) {
+            String key = entry.getKey();
+            Long count = entry.getValue();
+            if (count > maxCount) {
+                maxColor = key;
+                maxCount = count;
+            }
+        }
+        final String[] splitRgbStr = StringKit.splitToArray(maxColor, Symbol.C_SLASH);
+        String rHex = Integer.toHexString(Integer.parseInt(splitRgbStr[0]));
+        String gHex = Integer.toHexString(Integer.parseInt(splitRgbStr[1]));
+        String bHex = Integer.toHexString(Integer.parseInt(splitRgbStr[2]));
+        rHex = rHex.length() == 1 ? "0" + rHex : rHex;
+        gHex = gHex.length() == 1 ? "0" + gHex : gHex;
+        bHex = bHex.length() == 1 ? "0" + bHex : bHex;
+        return Symbol.SHAPE + rHex + gHex + bHex;
     }
 
 }

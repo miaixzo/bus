@@ -26,7 +26,7 @@
 package org.aoju.bus.pager.dialect.general;
 
 import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractSqlDialect;
+import org.aoju.bus.pager.dialect.AbstractDialect;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -34,21 +34,21 @@ import org.apache.ibatis.mapping.MappedStatement;
 import java.util.Map;
 
 /**
- * 数据库方言 db2
+ * 数据库方言 oracle 9i
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class Db2Dialect extends AbstractSqlDialect {
+public class Oracle9i extends AbstractDialect {
 
     @Override
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
-        paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());
+        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
         // 处理pageKey
-        pageKey.update(page.getStartRow() + 1);
         pageKey.update(page.getEndRow());
+        pageKey.update(page.getStartRow());
         // 处理参数配置
         handleParameter(boundSql, ms);
         return paramMap;
@@ -56,10 +56,12 @@ public class Db2Dialect extends AbstractSqlDialect {
 
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 140);
-        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
+        sqlBuilder.append("SELECT * FROM ( ");
+        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM PAGEHELPER_ROW_ID FROM ( \n");
         sqlBuilder.append(sql);
-        sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ? AND ?");
+        sqlBuilder.append("\n ) TMP_PAGE WHERE ROWNUM <= ? ");
+        sqlBuilder.append(" ) WHERE PAGEHELPER_ROW_ID > ? ");
         return sqlBuilder.toString();
     }
 

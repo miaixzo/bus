@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.mutable;
  * 可变 <code>boolean</code> 类型
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @see Boolean
  * @since JDK 1.8+
  */
@@ -65,7 +65,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
 
     @Override
     public Boolean get() {
-        return Boolean.valueOf(this.value);
+        return this.value;
     }
 
     /**
@@ -79,7 +79,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
 
     @Override
     public void set(final Boolean value) {
-        this.value = value.booleanValue();
+        this.value = value;
     }
 
     /**

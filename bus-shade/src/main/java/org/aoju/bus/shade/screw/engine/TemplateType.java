@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 模板类型
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public enum TemplateType implements Serializable {

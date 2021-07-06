@@ -25,36 +25,32 @@
  ********************************************************************************/
 package org.aoju.bus.pager.dialect.rowbounds;
 
-import org.aoju.bus.pager.dialect.AbstractRowBoundsDialect;
+import org.aoju.bus.pager.dialect.AbstractRowBounds;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.session.RowBounds;
 
 /**
- * informix 基于 RowBounds 的分页
+ * db2 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class InformixRowBoundsDialect extends AbstractRowBoundsDialect {
+public class Db2RowBounds extends AbstractRowBounds {
 
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);
-        sqlBuilder.append("SELECT ");
-        if (rowBounds.getOffset() > 0) {
-            sqlBuilder.append(" SKIP ");
-            sqlBuilder.append(rowBounds.getOffset());
-            pageKey.update(rowBounds.getOffset());
-        }
-        if (rowBounds.getLimit() > 0) {
-            sqlBuilder.append(" FIRST ");
-            sqlBuilder.append(rowBounds.getLimit());
-            pageKey.update(rowBounds.getLimit());
-        }
-        sqlBuilder.append(" * FROM ( ");
+        int startRow = rowBounds.getOffset() + 1;
+        int endRow = rowBounds.getOffset() + rowBounds.getLimit();
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
+        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
         sqlBuilder.append(sql);
-        sqlBuilder.append(" ) TEMP_T");
+        sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ");
+        sqlBuilder.append(startRow);
+        sqlBuilder.append(" AND ");
+        sqlBuilder.append(endRow);
+        pageKey.update(startRow);
+        pageKey.update(endRow);
         return sqlBuilder.toString();
     }
 

@@ -28,36 +28,33 @@ package org.aoju.bus.socket.security;
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.socket.channel.AsynchronousSocketChannelProxy;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLException;
 import java.io.IOException;
-import java.net.SocketAddress;
-import java.net.SocketOption;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public class SslSocketChannel extends AsynchronousSocketChannel {
+public class SslSocketChannel extends AsynchronousSocketChannelProxy {
 
     private final VirtualBuffer netWriteBuffer;
     private final VirtualBuffer netReadBuffer;
     private final VirtualBuffer appReadBuffer;
-    private final AsynchronousSocketChannel asynchronousSocketChannel;
     /**
      * 完成握手置null
      */
     private final SslService sslService;
-    private final SSLEngine sslEngine;
+    private SSLEngine sslEngine;
     /**
      * 完成握手置null
      */
@@ -69,59 +66,13 @@ public class SslSocketChannel extends AsynchronousSocketChannel {
     private int adaptiveWriteSize = -1;
 
     public SslSocketChannel(AsynchronousSocketChannel asynchronousSocketChannel, SslService sslService, PageBuffer pageBuffer) {
-        super(null);
+        super(asynchronousSocketChannel);
         this.handshakeModel = sslService.createSSLEngine(asynchronousSocketChannel, pageBuffer);
         this.sslService = sslService;
-        this.asynchronousSocketChannel = asynchronousSocketChannel;
         this.sslEngine = handshakeModel.getSslEngine();
         this.netWriteBuffer = handshakeModel.getNetWriteBuffer();
         this.netReadBuffer = handshakeModel.getNetReadBuffer();
         this.appReadBuffer = handshakeModel.getAppReadBuffer();
-    }
-
-    @Override
-    public AsynchronousSocketChannel bind(SocketAddress local) throws IOException {
-        return asynchronousSocketChannel.bind(local);
-    }
-
-    @Override
-    public <T> AsynchronousSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
-        return asynchronousSocketChannel.setOption(name, value);
-    }
-
-    @Override
-    public <T> T getOption(SocketOption<T> name) throws IOException {
-        return asynchronousSocketChannel.getOption(name);
-    }
-
-    @Override
-    public Set<SocketOption<?>> supportedOptions() {
-        return asynchronousSocketChannel.supportedOptions();
-    }
-
-    @Override
-    public AsynchronousSocketChannel shutdownInput() throws IOException {
-        return asynchronousSocketChannel.shutdownInput();
-    }
-
-    @Override
-    public AsynchronousSocketChannel shutdownOutput() throws IOException {
-        return asynchronousSocketChannel.shutdownOutput();
-    }
-
-    @Override
-    public SocketAddress getRemoteAddress() throws IOException {
-        return asynchronousSocketChannel.getRemoteAddress();
-    }
-
-    @Override
-    public <A> void connect(SocketAddress remote, A attachment, CompletionHandler<Void, ? super A> handler) {
-        asynchronousSocketChannel.connect(remote, attachment, handler);
-    }
-
-    @Override
-    public Future<Void> connect(SocketAddress remote) {
-        return asynchronousSocketChannel.connect(remote);
     }
 
     @Override
@@ -331,11 +282,6 @@ public class SslSocketChannel extends AsynchronousSocketChannel {
     @Override
     public <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment, CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public SocketAddress getLocalAddress() throws IOException {
-        return asynchronousSocketChannel.getLocalAddress();
     }
 
     @Override

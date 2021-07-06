@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.goalie;
 
 import lombok.Data;
-import org.aoju.bus.goalie.ServerConfig;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -34,14 +34,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 路由配置
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 @Data
 @ConfigurationProperties(BusXExtend.GOALIE)
 public class GoalieProperties {
 
-    private final ServerConfig server = new ServerConfig();
+    private final Config server = new Config();
     private boolean condition;
 
 

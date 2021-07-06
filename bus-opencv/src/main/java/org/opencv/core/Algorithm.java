@@ -60,6 +60,25 @@ public class Algorithm {
     // C++:  bool cv::Algorithm::empty()
     //
 
+    // C++:  void cv::Algorithm::save(String filename)
+    private static native void save_0(long nativeObj, String filename);
+
+
+    //
+    // C++:  void cv::Algorithm::save(String filename)
+    //
+
+    // C++:  String cv::Algorithm::getDefaultName()
+    private static native String getDefaultName_0(long nativeObj);
+
+
+    //
+    // C++:  String cv::Algorithm::getDefaultName()
+    //
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
     /**
      * Returns true if the Algorithm is empty (e.g. in the very beginning or after unsuccessful read
      *
@@ -68,11 +87,6 @@ public class Algorithm {
     public boolean empty() {
         return empty_0(nativeObj);
     }
-
-
-    //
-    // C++:  void cv::Algorithm::save(String filename)
-    //
 
     /**
      * Saves the algorithm to a file.
@@ -84,25 +98,10 @@ public class Algorithm {
         save_0(nativeObj, filename);
     }
 
-
-    //
-    // C++:  String cv::Algorithm::getDefaultName()
-    //
-
-    // C++:  void cv::Algorithm::save(String filename)
-    private static native void save_0(long nativeObj, String filename);
-
-
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    // C++:  String cv::Algorithm::getDefaultName()
-    private static native String getDefaultName_0(long nativeObj);
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
     public long getNativeObjAddr() {
         return nativeObj;

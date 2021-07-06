@@ -28,8 +28,14 @@ package org.aoju.bus.crypto.asymmetric;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.HexKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -40,7 +46,7 @@ import java.util.Set;
  * 签名包装，{@link Signature} 包装类
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Sign extends Keys<Sign> {
@@ -134,17 +140,128 @@ public class Sign extends Keys<Sign> {
     }
 
     /**
+     * 生成文件签名
+     *
+     * @param data    被签名数据
+     * @param charset 编码
+     * @return 签名
+     */
+    public byte[] sign(String data, Charset charset) {
+        return sign(StringKit.bytes(data, charset));
+    }
+
+    /**
+     * 生成文件签名
+     *
+     * @param data 被签名数据
+     * @return 签名
+     */
+    public byte[] sign(String data) {
+        return sign(data, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
+     * 生成文件签名，并转为16进制字符串
+     *
+     * @param data    被签名数据
+     * @param charset 编码
+     * @return 签名
+     */
+    public String signHex(String data, Charset charset) {
+        return HexKit.encodeHexStr(sign(data, charset));
+    }
+
+    /**
+     * 生成文件签名
+     *
+     * @param data 被签名数据
+     * @return 签名
+     */
+    public String signHex(String data) {
+        return signHex(data, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
      * 用私钥对信息生成数字签名
      *
      * @param data 加密数据
      * @return 签名
      */
     public byte[] sign(byte[] data) {
+        return sign(new ByteArrayInputStream(data), -1);
+    }
+
+    /**
+     * 生成签名，并转为16进制字符串
+     *
+     * @param data 被签名数据
+     * @return 签名
+     */
+    public String signHex(byte[] data) {
+        return HexKit.encodeHexStr(sign(data));
+    }
+
+    /**
+     * 生成签名，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
+     *
+     * @param data 被签名数据
+     * @return 签名
+     */
+    public String signHex(InputStream data) {
+        return HexKit.encodeHexStr(sign(data));
+    }
+
+    /**
+     * 生成签名，使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
+     *
+     * @param data {@link InputStream} 数据流
+     * @return 签名bytes
+     */
+    public byte[] sign(InputStream data) {
+        return sign(data, IoKit.DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * 生成签名，并转为16进制字符串
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
+     *
+     * @param data         被签名数据
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @return 签名
+     */
+    public String digestHex(InputStream data, int bufferLength) {
+        return HexKit.encodeHexStr(sign(data, bufferLength));
+    }
+
+    /**
+     * 生成签名
+     *
+     * @param data         {@link InputStream} 数据流
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @return 签名bytes
+     */
+    public byte[] sign(InputStream data, int bufferLength) {
+        if (bufferLength < 1) {
+            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
+        }
+
+        final byte[] buffer = new byte[bufferLength];
         lock.lock();
         try {
             signature.initSign(this.privateKey);
-            signature.update(data);
-            return signature.sign();
+            byte[] result;
+            try {
+                int read = data.read(buffer, 0, bufferLength);
+                while (read > -1) {
+                    signature.update(buffer, 0, read);
+                    read = data.read(buffer, 0, bufferLength);
+                }
+                result = signature.sign();
+            } catch (Exception e) {
+                throw new InstrumentException(e);
+            }
+            return result;
         } catch (Exception e) {
             throw new InstrumentException(e);
         } finally {

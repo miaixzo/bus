@@ -12,6 +12,21 @@ import java.util.List;
 
 public class Subdiv2D {
 
+    // C++: enum <unnamed>
+    public static final int
+            PTLOC_ERROR = -2,
+            PTLOC_OUTSIDE_RECT = -1,
+            PTLOC_INSIDE = 0,
+            PTLOC_VERTEX = 1,
+            PTLOC_ON_EDGE = 2,
+            NEXT_AROUND_ORG = 0x00,
+            NEXT_AROUND_DST = 0x22,
+            PREV_AROUND_ORG = 0x11,
+            PREV_AROUND_DST = 0x33,
+            NEXT_AROUND_LEFT = 0x13,
+            NEXT_AROUND_RIGHT = 0x31,
+            PREV_AROUND_LEFT = 0x20,
+            PREV_AROUND_RIGHT = 0x02;
     protected final long nativeObj;
 
     protected Subdiv2D(long addr) {
@@ -36,22 +51,6 @@ public class Subdiv2D {
     public Subdiv2D(Rect rect) {
         nativeObj = Subdiv2D_1(rect.x, rect.y, rect.width, rect.height);
     }
-
-    // C++: enum <unnamed>
-    public static final int
-            PTLOC_ERROR = -2,
-            PTLOC_OUTSIDE_RECT = -1,
-            PTLOC_INSIDE = 0,
-            PTLOC_VERTEX = 1,
-            PTLOC_ON_EDGE = 2,
-            NEXT_AROUND_ORG = 0x00,
-            NEXT_AROUND_DST = 0x22,
-            PREV_AROUND_ORG = 0x11,
-            PREV_AROUND_DST = 0x33,
-            NEXT_AROUND_LEFT = 0x13,
-            NEXT_AROUND_RIGHT = 0x31,
-            PREV_AROUND_LEFT = 0x20,
-            PREV_AROUND_RIGHT = 0x02;
 
 
     //
@@ -111,6 +110,108 @@ public class Subdiv2D {
     // C++:  int cv::Subdiv2D::locate(Point2f pt, int& edge, int& vertex)
     private static native int locate_0(long nativeObj, double pt_x, double pt_y, double[] edge_out, double[] vertex_out);
 
+    // C++:  int cv::Subdiv2D::findNearest(Point2f pt, Point2f* nearestPt = 0)
+    private static native int findNearest_0(long nativeObj, double pt_x, double pt_y, double[] nearestPt_out);
+
+
+    //
+    // C++:  void cv::Subdiv2D::getEdgeList(vector_Vec4f& edgeList)
+    //
+
+    private static native int findNearest_1(long nativeObj, double pt_x, double pt_y);
+
+
+    //
+    // C++:  void cv::Subdiv2D::getLeadingEdgeList(vector_int& leadingEdgeList)
+    //
+
+    // C++:  void cv::Subdiv2D::getEdgeList(vector_Vec4f& edgeList)
+    private static native void getEdgeList_0(long nativeObj, long edgeList_mat_nativeObj);
+
+
+    //
+    // C++:  void cv::Subdiv2D::getTriangleList(vector_Vec6f& triangleList)
+    //
+
+    // C++:  void cv::Subdiv2D::getLeadingEdgeList(vector_int& leadingEdgeList)
+    private static native void getLeadingEdgeList_0(long nativeObj, long leadingEdgeList_mat_nativeObj);
+
+
+    //
+    // C++:  void cv::Subdiv2D::getVoronoiFacetList(vector_int idx, vector_vector_Point2f& facetList, vector_Point2f& facetCenters)
+    //
+
+    // C++:  void cv::Subdiv2D::getTriangleList(vector_Vec6f& triangleList)
+    private static native void getTriangleList_0(long nativeObj, long triangleList_mat_nativeObj);
+
+
+    //
+    // C++:  Point2f cv::Subdiv2D::getVertex(int vertex, int* firstEdge = 0)
+    //
+
+    // C++:  void cv::Subdiv2D::getVoronoiFacetList(vector_int idx, vector_vector_Point2f& facetList, vector_Point2f& facetCenters)
+    private static native void getVoronoiFacetList_0(long nativeObj, long idx_mat_nativeObj, long facetList_mat_nativeObj, long facetCenters_mat_nativeObj);
+
+    // C++:  Point2f cv::Subdiv2D::getVertex(int vertex, int* firstEdge = 0)
+    private static native double[] getVertex_0(long nativeObj, int vertex, double[] firstEdge_out);
+
+
+    //
+    // C++:  int cv::Subdiv2D::getEdge(int edge, int nextEdgeType)
+    //
+
+    private static native double[] getVertex_1(long nativeObj, int vertex);
+
+
+    //
+    // C++:  int cv::Subdiv2D::nextEdge(int edge)
+    //
+
+    // C++:  int cv::Subdiv2D::getEdge(int edge, int nextEdgeType)
+    private static native int getEdge_0(long nativeObj, int edge, int nextEdgeType);
+
+
+    //
+    // C++:  int cv::Subdiv2D::rotateEdge(int edge, int rotate)
+    //
+
+    // C++:  int cv::Subdiv2D::nextEdge(int edge)
+    private static native int nextEdge_0(long nativeObj, int edge);
+
+
+    //
+    // C++:  int cv::Subdiv2D::symEdge(int edge)
+    //
+
+    // C++:  int cv::Subdiv2D::rotateEdge(int edge, int rotate)
+    private static native int rotateEdge_0(long nativeObj, int edge, int rotate);
+
+
+    //
+    // C++:  int cv::Subdiv2D::edgeOrg(int edge, Point2f* orgpt = 0)
+    //
+
+    // C++:  int cv::Subdiv2D::symEdge(int edge)
+    private static native int symEdge_0(long nativeObj, int edge);
+
+    // C++:  int cv::Subdiv2D::edgeOrg(int edge, Point2f* orgpt = 0)
+    private static native int edgeOrg_0(long nativeObj, int edge, double[] orgpt_out);
+
+
+    //
+    // C++:  int cv::Subdiv2D::edgeDst(int edge, Point2f* dstpt = 0)
+    //
+
+    private static native int edgeOrg_1(long nativeObj, int edge);
+
+    // C++:  int cv::Subdiv2D::edgeDst(int edge, Point2f* dstpt = 0)
+    private static native int edgeDst_0(long nativeObj, int edge, double[] dstpt_out);
+
+    private static native int edgeDst_1(long nativeObj, int edge);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
     /**
      * Finds the subdivision vertex closest to the given point.
      *
@@ -125,53 +226,6 @@ public class Subdiv2D {
     public int findNearest(Point pt) {
         return findNearest_1(nativeObj, pt.x, pt.y);
     }
-
-
-    //
-    // C++:  void cv::Subdiv2D::getEdgeList(vector_Vec4f& edgeList)
-    //
-
-    // C++:  int cv::Subdiv2D::findNearest(Point2f pt, Point2f* nearestPt = 0)
-    private static native int findNearest_0(long nativeObj, double pt_x, double pt_y, double[] nearestPt_out);
-
-
-    //
-    // C++:  void cv::Subdiv2D::getLeadingEdgeList(vector_int& leadingEdgeList)
-    //
-
-    private static native int findNearest_1(long nativeObj, double pt_x, double pt_y);
-
-
-    //
-    // C++:  void cv::Subdiv2D::getTriangleList(vector_Vec6f& triangleList)
-    //
-
-    // C++:  void cv::Subdiv2D::getEdgeList(vector_Vec4f& edgeList)
-    private static native void getEdgeList_0(long nativeObj, long edgeList_mat_nativeObj);
-
-
-    //
-    // C++:  void cv::Subdiv2D::getVoronoiFacetList(vector_int idx, vector_vector_Point2f& facetList, vector_Point2f& facetCenters)
-    //
-
-    // C++:  void cv::Subdiv2D::getLeadingEdgeList(vector_int& leadingEdgeList)
-    private static native void getLeadingEdgeList_0(long nativeObj, long leadingEdgeList_mat_nativeObj);
-
-
-    //
-    // C++:  Point2f cv::Subdiv2D::getVertex(int vertex, int* firstEdge = 0)
-    //
-
-    // C++:  void cv::Subdiv2D::getTriangleList(vector_Vec6f& triangleList)
-    private static native void getTriangleList_0(long nativeObj, long triangleList_mat_nativeObj);
-
-    // C++:  void cv::Subdiv2D::getVoronoiFacetList(vector_int idx, vector_vector_Point2f& facetList, vector_Point2f& facetCenters)
-    private static native void getVoronoiFacetList_0(long nativeObj, long idx_mat_nativeObj, long facetList_mat_nativeObj, long facetCenters_mat_nativeObj);
-
-
-    //
-    // C++:  int cv::Subdiv2D::getEdge(int edge, int nextEdgeType)
-    //
 
     /**
      * Returns one of the edges related to the given edge.
@@ -214,11 +268,6 @@ public class Subdiv2D {
         return getEdge_0(nativeObj, edge, nextEdgeType);
     }
 
-
-    //
-    // C++:  int cv::Subdiv2D::nextEdge(int edge)
-    //
-
     /**
      * Returns next edge around the edge origin.
      *
@@ -229,11 +278,6 @@ public class Subdiv2D {
     public int nextEdge(int edge) {
         return nextEdge_0(nativeObj, edge);
     }
-
-
-    //
-    // C++:  int cv::Subdiv2D::rotateEdge(int edge, int rotate)
-    //
 
     /**
      * Returns another edge of the same quad-edge.
@@ -262,22 +306,9 @@ public class Subdiv2D {
         return rotateEdge_0(nativeObj, edge, rotate);
     }
 
-
-    //
-    // C++:  int cv::Subdiv2D::symEdge(int edge)
-    //
-
     public int symEdge(int edge) {
         return symEdge_0(nativeObj, edge);
     }
-
-
-    //
-    // C++:  int cv::Subdiv2D::edgeOrg(int edge, Point2f* orgpt = 0)
-    //
-
-    // C++:  Point2f cv::Subdiv2D::getVertex(int vertex, int* firstEdge = 0)
-    private static native double[] getVertex_0(long nativeObj, int vertex, double[] firstEdge_out);
 
     /**
      * Returns the edge origin.
@@ -288,38 +319,6 @@ public class Subdiv2D {
     public int edgeOrg(int edge) {
         return edgeOrg_1(nativeObj, edge);
     }
-
-
-    //
-    // C++:  int cv::Subdiv2D::edgeDst(int edge, Point2f* dstpt = 0)
-    //
-
-    private static native double[] getVertex_1(long nativeObj, int vertex);
-
-    // C++:  int cv::Subdiv2D::getEdge(int edge, int nextEdgeType)
-    private static native int getEdge_0(long nativeObj, int edge, int nextEdgeType);
-
-    // C++:  int cv::Subdiv2D::nextEdge(int edge)
-    private static native int nextEdge_0(long nativeObj, int edge);
-
-    // C++:  int cv::Subdiv2D::rotateEdge(int edge, int rotate)
-    private static native int rotateEdge_0(long nativeObj, int edge, int rotate);
-
-    // C++:  int cv::Subdiv2D::symEdge(int edge)
-    private static native int symEdge_0(long nativeObj, int edge);
-
-    // C++:  int cv::Subdiv2D::edgeOrg(int edge, Point2f* orgpt = 0)
-    private static native int edgeOrg_0(long nativeObj, int edge, double[] orgpt_out);
-
-    private static native int edgeOrg_1(long nativeObj, int edge);
-
-    // C++:  int cv::Subdiv2D::edgeDst(int edge, Point2f* dstpt = 0)
-    private static native int edgeDst_0(long nativeObj, int edge, double[] dstpt_out);
-
-    private static native int edgeDst_1(long nativeObj, int edge);
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
     public long getNativeObjAddr() {
         return nativeObj;

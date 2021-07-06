@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.lang.Func;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,15 +38,12 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
-public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<V>> {
+public class CollectionValueMap<K, V> extends AbsCollValueMap<K, V, Collection<V>> {
 
-    /**
-     * 默认集合初始大小
-     */
-    protected static final int DEFAULT_COLLCTION_INITIAL_CAPACITY = 3;
+    private final Func.Func0<Collection<V>> collectionCreateFunc;
 
     /**
      * 构造
@@ -66,10 +64,10 @@ public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<
     /**
      * 构造
      *
-     * @param map Map
+     * @param m Map
      */
-    public CollectionValueMap(Map<? extends K, ? extends Collection<V>> map) {
-        this(DEFAULT_LOAD_FACTOR, map);
+    public CollectionValueMap(Map<? extends K, ? extends Collection<V>> m) {
+        this(DEFAULT_LOAD_FACTOR, m);
     }
 
     /**
@@ -79,8 +77,7 @@ public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<
      * @param m          Map
      */
     public CollectionValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m) {
-        this(m.size(), loadFactor);
-        this.putAll(m);
+        this(loadFactor, m, ArrayList::new);
     }
 
     /**
@@ -90,43 +87,36 @@ public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<
      * @param loadFactor      加载因子
      */
     public CollectionValueMap(int initialCapacity, float loadFactor) {
+        this(initialCapacity, loadFactor, ArrayList::new);
+    }
+
+    /**
+     * 构造
+     *
+     * @param loadFactor           加载因子
+     * @param m                    Map
+     * @param collectionCreateFunc Map中值的集合创建函数
+     */
+    public CollectionValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m, Func.Func0<Collection<V>> collectionCreateFunc) {
+        this(m.size(), loadFactor, collectionCreateFunc);
+        this.putAll(m);
+    }
+
+    /**
+     * 构造
+     *
+     * @param initialCapacity      初始大小
+     * @param loadFactor           加载因子
+     * @param collectionCreateFunc Map中值的集合创建函数
+     */
+    public CollectionValueMap(int initialCapacity, float loadFactor, Func.Func0<Collection<V>> collectionCreateFunc) {
         super(new HashMap<>(initialCapacity, loadFactor));
+        this.collectionCreateFunc = collectionCreateFunc;
     }
 
-    /**
-     * 放入Value
-     * 如果键对应值列表有值,加入,否则创建一个新列表后加入
-     *
-     * @param key   键
-     * @param value 值
-     */
-    public void putValue(K key, V value) {
-        Collection<V> collection = this.get(key);
-        if (null == collection) {
-            collection = createCollction();
-            this.put(key, collection);
-        }
-        collection.add(value);
+    @Override
+    protected Collection<V> createCollection() {
+        return collectionCreateFunc.callWithRuntimeException();
     }
-
-    /**
-     * 获取值
-     *
-     * @param key   键
-     * @param index 第几个值的索引,越界返回null
-     * @return 值或null
-     */
-    public V get(K key, int index) {
-        final Collection<V> collection = get(key);
-        return CollKit.get(collection, index);
-    }
-
-    /**
-     * 创建集合
-     * 此方法用于创建在putValue后追加值所在的集合,子类实现此方法创建不同类型的集合
-     *
-     * @return {@link Collection}
-     */
-    protected abstract Collection<V> createCollction();
 
 }

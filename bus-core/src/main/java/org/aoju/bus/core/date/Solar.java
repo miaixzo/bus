@@ -37,7 +37,7 @@ import java.util.*;
  * 阳历日期
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public class Solar {
@@ -117,7 +117,6 @@ public class Solar {
             put("5-5", Collections.nCopies(1, "马克思诞辰纪念日"));
             put("5-8", Collections.nCopies(1, "世界红十字日"));
             put("5-11", Collections.nCopies(1, "世界肥胖日"));
-            put("5-23", Collections.nCopies(1, "世界读书日"));
             put("5-27", Collections.nCopies(1, "上海解放日"));
             put("5-31", Collections.nCopies(1, "世界无烟日"));
             put("6-5", Collections.nCopies(1, "世界环境日"));

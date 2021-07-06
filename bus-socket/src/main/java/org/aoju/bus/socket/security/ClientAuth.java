@@ -29,7 +29,7 @@ package org.aoju.bus.socket.security;
  * 配置引擎请求客户端验证 此选项只对服务器模式的引擎有用
  *
  * @author Kimi Liu
- * @version 6.2.3
+ * @version 6.2.5
  * @since JDK 1.8+
  */
 public enum ClientAuth {

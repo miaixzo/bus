@@ -24,14 +24,12 @@
 ********************************************************************************/
 package ${entityUrl};
 
-
+import lombok.Data;
 import org.aoju.bus.base.entity.BaseEntity;
+import javax.persistence.Table;
 <#if isSwagger=="true" >
     import io.swagger.annotations.ApiModelProperty;
 </#if>
-import lombok.Data;
-
-import javax.persistence.Table;
 
 /**
 * ${entityComment}实体类
@@ -55,9 +53,15 @@ private static final long serialVersionUID = ${agile}L;
     && ci.property !="modified">
         <#if isSwagger=="true" >
             @ApiModelProperty(value = "${ci.comment}")
+        <#else>
+
+            /**
+            * ${ci.comment}
+            */
         </#if>
         private ${ci.javaType} ${ci.property};
     </#if>
 </#list>
+
 }
 	
