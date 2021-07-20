@@ -42,18 +42,56 @@ import java.util.Objects;
 public class Assets {
 
     private String id;
+    /**
+     * 名称
+     */
     private String name;
+    /**
+     * 服务器地址
+     */
     private String host;
+    /**
+     * 上下文路径
+     */
+    private String path;
+    /**
+     * 端口
+     */
     private int port;
+    /**
+     * 方法URL
+     */
     private String url;
+    /**
+     * 完整地址
+     */
+    private String uri;
+    /**
+     * 方法
+     */
     private String method;
-    private HttpMethod httpMethod;
+    /**
+     * 授权
+     */
     private boolean token;
+    /**
+     * 签名
+     */
     private boolean sign;
+    /**
+     * 策略
+     */
     private boolean firewall;
+    /**
+     * 版本
+     */
     private String version;
+    /**
+     * 描述
+     */
     private String description;
     private List<String> roleIds;
+    private HttpMethod httpMethod;
 
     @Override
     public boolean equals(Object o) {
