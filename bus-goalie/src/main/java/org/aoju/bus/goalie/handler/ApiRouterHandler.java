@@ -42,10 +42,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -98,13 +100,12 @@ public class ApiRouterHandler {
                 }
             }
         }
-        return bodySpec.exchange().flatMap(clientResponse -> ServerResponse.ok()
-                .headers(headers -> {
-                    clientResponse.headers().asHttpHeaders();
-                    headers.addAll(clientResponse.headers().asHttpHeaders());
+        return bodySpec.retrieve().toEntity(DataBuffer.class)
+                .flatMap(responseEntity -> ServerResponse.ok().headers(headers -> {
+                    headers.addAll(responseEntity.getHeaders());
                     headers.remove(HttpHeaders.CONTENT_LENGTH);
-                })
-                .body(clientResponse.bodyToFlux(DataBuffer.class), DataBuffer.class));
+                }).body(BodyInserters.fromDataBuffers(Flux.just(Objects.requireNonNull(responseEntity.getBody())))));
+
     }
 
 }

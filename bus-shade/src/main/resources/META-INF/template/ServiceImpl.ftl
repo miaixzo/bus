@@ -37,12 +37,11 @@ import org.springframework.stereotype.Service;
 * @author: ${author}
 * @since JDK 1.8+
 */
-<#if isDubbo=="true" >
-    @org.apache.dubbo.config.annotation.DubboService
-</#if>
 @Service
+<#if isDubbo=="true" >
+    @org.apache.dubbo.config.annotation.Service
+</#if>
 public class ${entityName}ServiceImpl extends BaseServiceImpl
-<${entityName}Mapper, ${entityName}>
-implements ${entityName}Service  {
+<${entityName}Mapper, ${entityName}> implements ${entityName}Service  {
 
 }
