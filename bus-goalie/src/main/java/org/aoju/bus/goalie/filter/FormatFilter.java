@@ -70,8 +70,8 @@ public class FormatFilter implements WebFilter {
                 Flux<? extends DataBuffer> flux = Flux.from(body);
                 return super.writeWith(DataBufferUtils.join(flux).map(dataBuffer -> {
                     exchange.getResponse().getHeaders().setContentType(context.getFormat().getMediaType());
-
                     String bodyString = Charset.defaultCharset().decode(dataBuffer.asByteBuffer()).toString();
+                    DataBufferUtils.release(dataBuffer);
                     Message message = JsonKit.toPojo(bodyString, Message.class);
                     String formatBody = context.getFormat().getProvider().serialize(message);
                     if (Logger.get().isTrace()) {
