@@ -54,7 +54,6 @@ private static final long serialVersionUID = ${agile}L;
         <#if isSwagger=="true" >
             @ApiModelProperty(value = "${ci.comment}")
         <#else>
-
             /**
             * ${ci.comment}
             */

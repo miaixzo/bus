@@ -53,18 +53,18 @@ public abstract class Entity implements Serializable {
      * 当前页码
      */
     @Transient
-    protected Integer pageNo;
+    protected transient Integer pageNo = 1;
 
     /**
      * 分页大小
      */
     @Transient
-    protected Integer pageSize;
+    protected transient Integer pageSize = 100;
 
     /**
      * 排序方式,asc desc
      */
     @Transient
-    protected String orderBy;
+    protected transient String orderBy;
 
 }
