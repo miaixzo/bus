@@ -202,8 +202,9 @@ public class BaseEntity extends Tracer {
      * @param <T>    对象
      * @param entity 反射对象
      * @param field  属性数组
+     * @return 返回对象属性值
      */
-    private <T> Object getValue(T entity, String field) {
+    public <T> Object getValue(T entity, String field) {
         if (ReflectKit.hasField(entity, field)) {
             Object object = ReflectKit.invokeGetter(entity, field);
             return null != object ? object.toString() : null;
@@ -219,7 +220,7 @@ public class BaseEntity extends Tracer {
      * @param fields 属性数组
      * @param value  值数组
      */
-    private <T> void setValue(T entity, String[] fields, Object[] value) {
+    public <T> void setValue(T entity, String[] fields, Object[] value) {
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
             if (ReflectKit.hasField(entity, field)) {

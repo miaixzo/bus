@@ -86,7 +86,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
                 method = Ansi.BgWhite.and(Ansi.Black).format(" %s ", method);
                 break;
         }
-        Logger.info("{} {} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", ServletKit.getClientIP(request), method, request.getRequestURL().toString());
+        Logger.info("{} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", ServletKit.getClientIP(request), method, request.getRequestURL().toString());
     }
 
     /**
