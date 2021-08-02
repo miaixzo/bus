@@ -639,7 +639,7 @@ public class ArrayKit {
      * @param <T>     数组元素类型
      * @param matcher 匹配接口，实现此接口自定义匹配规则
      * @param array   数组
-     * @return 非空元素，如果不存在非空元素或数组为空，返回{@code null}
+     * @return 匹配元素，如果不存在匹配元素或数组为空，返回{@code null}
      */
     public static <T> T firstNonNull(Matcher<T> matcher, T... array) {
         final int index = firstNonAll(matcher, array);

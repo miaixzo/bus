@@ -60,6 +60,14 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
+    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
+            .collect(Collectors.joining(","));
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromPS("ps -A -o " + PS_COMMAND_ARGS, -1);
+    }
+
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
     Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());
@@ -120,26 +128,20 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> queryAllProcesses() {
-        return getProcessListFromPS(
-                "ps -A -o st,pid,ppid,user,uid,group,gid,thcount,pri,vsize,rssize,etime,time,comm,pagein,args", -1);
+    public OSProcess getProcess(int pid) {
+        List<OSProcess> procs = getProcessListFromPS("ps -o " + PS_COMMAND_ARGS + " -p ", pid);
+        if (procs.isEmpty()) {
+            return null;
+        }
+        return procs.get(0);
     }
+
 
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
         Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        List<OSProcess> procs = getProcessListFromPS(
-                "ps -o st,pid,ppid,user,uid,group,gid,thcount,pri,vsize,rssize,etime,time,comm,pagein,args -p ", pid);
-        if (procs.isEmpty()) {
-            return null;
-        }
-        return procs.get(0);
     }
 
     private List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
@@ -158,14 +160,19 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         // Fill list
         List<OSProcess> procs = new ArrayList<>();
         for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), 16);
-            // Elements should match ps command order
-            if (split.length == 16) {
-                procs.add(new AixOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split, cpuMap,
-                        procCpu));
+            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
+            // Check if last (thus all) value populated
+            if (psMap.containsKey(PsKeywords.ARGS)) {
+                procs.add(new AixOSProcess(pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid,
+                        psMap, cpuMap, procCpu));
             }
         }
         return procs;
+    }
+
+    enum PsKeywords {
+        ST, PID, PPID, USER, UID, GROUP, GID, THCOUNT, PRI, VSIZE, RSSIZE, ETIME, TIME, COMM, PAGEIN, ARGS;
+        // ARGS must always be last
     }
 
     @Override

@@ -26,11 +26,11 @@
 package org.aoju.bus.health.unix.freebsd.software;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -38,12 +38,14 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.unix.NativeSizeTByReference;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.ProcstatKit;
+import org.aoju.bus.logger.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * OSProcess implemenation
@@ -55,11 +57,25 @@ import java.util.function.Supplier;
 @ThreadSafe
 public class FreeBsdOSProcess extends AbstractOSProcess {
 
+    static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
+            .map(String::toLowerCase).collect(Collectors.joining(","));
+    private static final int ARGMAX = BsdSysctlKit.sysctl("kern.argmax", 0);
+    private Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
+
+
     private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
+    private Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
+    private String commandLineBackup;
+    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
 
     private String name;
     private String path = Normal.EMPTY;
-    private String commandLine;
+
+    public FreeBsdOSProcess(int pid, Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
+        super(pid);
+        updateAttributes(psMap);
+    }
+
     private String user;
     private String userID;
     private String group;
@@ -80,9 +96,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private long majorFaults;
     private long contextSwitches;
 
-    public FreeBsdOSProcess(int pid, String[] split) {
-        super(pid);
-        updateAttributes(split);
+    @Override
+    public String getCommandLine() {
+        return this.commandLine.get();
     }
 
     @Override
@@ -95,9 +111,90 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         return this.path;
     }
 
+    private String queryCommandLine() {
+        String cl = String.join(" ", getArguments());
+        return cl.isEmpty() ? this.commandLineBackup : cl;
+    }
+
     @Override
-    public String getCommandLine() {
-        return this.commandLine;
+    public List<String> getArguments() {
+        return arguments.get();
+    }
+
+    private List<String> queryArguments() {
+        if (ARGMAX > 0) {
+            // Get arguments via sysctl(3)
+            int[] mib = new int[4];
+            mib[0] = 1; // CTL_KERN
+            mib[1] = 14; // KERN_PROC
+            mib[2] = 7; // KERN_PROC_ARGS
+            mib[3] = getProcessID();
+            // Allocate memory for arguments
+            Memory m = new Memory(ARGMAX);
+            NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
+            // Fetch arguments
+            if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, LibCAPI.size_t.ZERO) == 0) {
+                return Collections.unmodifiableList(
+                        Builder.parseByteArrayToStrings(m.getByteArray(0, size.getValue().intValue())));
+            } else {
+                Logger.warn(
+                        "Failed sysctl call for process arguments (kern.proc.args), process {} may not exist. Error code: {}",
+                        getProcessID(), Native.getLastError());
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Map<String, String> getEnvironmentVariables() {
+        return environmentVariables.get();
+    }
+
+    private Map<String, String> queryEnvironmentVariables() {
+        if (ARGMAX > 0) {
+            // Get environment variables via sysctl(3)
+            int[] mib = new int[4];
+            mib[0] = 1; // CTL_KERN
+            mib[1] = 14; // KERN_PROC
+            mib[2] = 35; // KERN_PROC_ENV
+            mib[3] = getProcessID();
+            // Allocate memory for environment variables
+            Memory m = new Memory(ARGMAX);
+            NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
+            // Fetch environment variables
+            if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, LibCAPI.size_t.ZERO) == 0) {
+                return Collections.unmodifiableMap(
+                        Builder.parseByteArrayToStringMap(m.getByteArray(0, size.getValue().intValue())));
+            } else {
+                Logger.warn(
+                        "Failed sysctl call for process environment variables (kern.proc.env), process {} may not exist. Error code: {}",
+                        getProcessID(), Native.getLastError());
+            }
+        }
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public List<OSThread> getThreadDetails() {
+        List<OSThread> threads = new ArrayList<>();
+        String psCommand = "ps -awwxo " + PS_THREAD_COLUMNS + " -H";
+        if (getProcessID() >= 0) {
+            psCommand += " -p " + getProcessID();
+        }
+        List<String> threadList = Executor.runNative(psCommand);
+        if (threadList.size() > 1) {
+            // remove header row
+            threadList.remove(0);
+            // Fill list
+            for (String thread : threadList) {
+                Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(),
+                        ' ');
+                if (threadMap.containsKey(PsThreadColumns.PRI)) {
+                    threads.add(new FreeBsdOSThread(getProcessID(), threadMap));
+                }
+            }
+        }
+        return threads;
     }
 
     @Override
@@ -240,27 +337,19 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     @Override
-    public List<OSThread> getThreadDetails() {
-        List<OSThread> threads = new ArrayList<>();
-        String psCommand = "ps -awwxo tdname,lwp,state,etimes,systime,time,tdaddr,nivcsw,nvcsw,majflt,minflt,pri -H";
-        if (getProcessID() >= 0) {
-            psCommand += " -p " + getProcessID();
-        }
-        List<String> threadList = Executor.runNative(psCommand);
-        if (threadList.isEmpty() || threadList.size() < 2) {
-            return threads;
-        }
-        // remove header row
-        threadList.remove(0);
-        // Fill list
-        for (String thread : threadList) {
-            String[] split = RegEx.SPACES.split(thread.trim(), 12);
-            // Elements should match ps command order
-            if (split.length == 10) {
-                threads.add(new FreeBsdOSThread(getProcessID(), split));
+    public boolean updateAttributes() {
+        String psCommand = "ps -awwxo " + FreeBsdOperatingSystem.PS_COMMAND_ARGS + " -p " + getProcessID();
+        List<String> procList = Executor.runNative(psCommand);
+        if (procList.size() > 1) {
+            // skip header row
+            Map<FreeBsdOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(FreeBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), ' ');
+            // Check if last (thus all) value populated
+            if (psMap.containsKey(FreeBsdOperatingSystem.PsKeywords.ARGS)) {
+                return updateAttributes(psMap);
             }
         }
-        return threads;
+        this.state = State.INVALID;
+        return false;
     }
 
     @Override
@@ -278,27 +367,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         return this.contextSwitches;
     }
 
-    @Override
-    public boolean updateAttributes() {
-        String psCommand =
-                "ps -awwxo " + FreeBsdOperatingSystem.PS_KEYWORD_ARGS + " -p " + getProcessID();
-        List<String> procList = Executor.runNative(psCommand);
-        if (procList.size() > 1) {
-            // skip header row
-            String[] split =
-                    RegEx.SPACES.split(
-                            procList.get(1).trim(), FreeBsdOperatingSystem.PS_KEYWORDS.size());
-            if (split.length == FreeBsdOperatingSystem.PS_KEYWORDS.size()) {
-                return updateAttributes(split);
-            }
-        }
-        this.state = State.INVALID;
-        return false;
-    }
-
-    private boolean updateAttributes(String[] split) {
+    private boolean updateAttributes(Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
-        switch (split[0].charAt(0)) {
+        switch (psMap.get(FreeBsdOperatingSystem.PsKeywords.STATE).charAt(0)) {
             case 'R':
                 this.state = State.RUNNING;
                 break;
@@ -321,31 +392,35 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
                 this.state = State.OTHER;
                 break;
         }
-        this.parentProcessID = Builder.parseIntOrDefault(split[2], 0);
-        this.user = split[3];
-        this.userID = split[4];
-        this.group = split[5];
-        this.groupID = split[6];
-        this.threadCount = Builder.parseIntOrDefault(split[7], 0);
-        this.priority = Builder.parseIntOrDefault(split[8], 0);
+        this.parentProcessID = Builder.parseIntOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.PPID), 0);
+        this.user = psMap.get(FreeBsdOperatingSystem.PsKeywords.USER);
+        this.userID = psMap.get(FreeBsdOperatingSystem.PsKeywords.UID);
+        this.group = psMap.get(FreeBsdOperatingSystem.PsKeywords.GROUP);
+        this.groupID = psMap.get(FreeBsdOperatingSystem.PsKeywords.GID);
+        this.threadCount = Builder.parseIntOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NLWP), 0);
+        this.priority = Builder.parseIntOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.PRI), 0);
         // These are in KB, multiply
-        this.virtualSize = Builder.parseLongOrDefault(split[9], 0) * 1024;
-        this.residentSetSize = Builder.parseLongOrDefault(split[10], 0) * 1024;
+        this.virtualSize = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.VSZ), 0) * 1024;
+        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.RSS), 0) * 1024;
         // Avoid divide by zero for processes up less than a second
-        long elapsedTime = Builder.parseDHMSOrDefault(split[11], 0L);
+        long elapsedTime = Builder.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.ETIMES), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         this.startTime = now - this.upTime;
-        this.kernelTime = Builder.parseDHMSOrDefault(split[12], 0L);
-        this.userTime = Builder.parseDHMSOrDefault(split[13], 0L) - this.kernelTime;
-        this.path = split[14];
+        this.kernelTime = Builder.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.SYSTIME), 0L);
+        this.userTime = Builder.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.TIME), 0L) - this.kernelTime;
+        this.path = psMap.get(FreeBsdOperatingSystem.PsKeywords.COMM);
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
-        this.minorFaults = Builder.parseLongOrDefault(split[15], 0L);
-        this.majorFaults = Builder.parseLongOrDefault(split[16], 0L);
-        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(split[17], 0L);
-        long voluntaryContextSwitches = Builder.parseLongOrDefault(split[18], 0L);
+        this.minorFaults = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MAJFLT), 0L);
+        this.majorFaults = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
+        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NVCSW), 0L);
+        long voluntaryContextSwitches = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NIVCSW), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
-        this.commandLine = split[19];
+        this.commandLineBackup = psMap.get(FreeBsdOperatingSystem.PsKeywords.ARGS);
         return true;
+    }
+
+    enum PsThreadColumns {
+        TDNAME, LWP, STATE, ETIMES, SYSTIME, TIME, TDADDR, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI;
     }
 
 }

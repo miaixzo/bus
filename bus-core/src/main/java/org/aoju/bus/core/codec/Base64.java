@@ -323,4 +323,41 @@ public class Base64 {
         }
     }
 
+    /**
+     * 检查是否为Base64
+     *
+     * @param base64 Base64的bytes
+     * @return 是否为Base64
+     */
+    public static boolean isBase64(CharSequence base64) {
+        return isBase64(StringKit.bytes(base64));
+    }
+
+    /**
+     * 检查是否为Base64
+     *
+     * @param base64Bytes Base64的bytes
+     * @return 是否为Base64
+     */
+    public static boolean isBase64(byte[] base64Bytes) {
+        for (byte base64Byte : base64Bytes) {
+            if (false == (Base64Decoder.isBase64Code(base64Byte) || isWhiteSpace(base64Byte))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isWhiteSpace(byte byteToCheck) {
+        switch (byteToCheck) {
+            case ' ':
+            case '\n':
+            case '\r':
+            case '\t':
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }

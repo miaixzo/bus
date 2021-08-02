@@ -64,7 +64,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
      * @param timeZone 非空时区{@link TimeZone}
      * @param locale   非空{@link Locale} 日期地理位置
      */
-    public FastDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
+    public FastDatePrinter(final String pattern, TimeZone timeZone, final Locale locale) {
         super(pattern, timeZone, locale);
         init();
     }

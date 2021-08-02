@@ -93,6 +93,9 @@ public class ByteArrayOutputStream extends OutputStream {
      */
     public void writeTo(OutputStream out) throws InstrumentException {
         final int index = buffer.index();
+        if (index < 0) {
+            return;
+        }
         byte[] buf;
         try {
             for (int i = 0; i < index; i++) {

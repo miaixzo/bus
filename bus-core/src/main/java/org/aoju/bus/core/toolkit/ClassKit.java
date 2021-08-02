@@ -46,8 +46,10 @@ import java.io.IOException;
 import java.lang.System;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.time.temporal.TemporalAccessor;
@@ -3674,28 +3676,48 @@ public class ClassKit {
     }
 
     /**
-     * 加载Manifest文件
+     * 根据 class 获取 jar 包文件的 Manifest
      *
-     * @param file 文件信息
-     * @return {@link Manifest}
+     * @param cls 类
+     * @return Manifest
      */
-    public static Manifest getManifest(File file) {
+    public static Manifest getManifest(Class<?> cls) {
+        URL url = FileKit.getResource(null, cls);
+        URLConnection connection;
+        try {
+            connection = url.openConnection();
+        } catch (final IOException e) {
+            throw new InstrumentException(e);
+        }
+
+        if (connection instanceof JarURLConnection) {
+            JarURLConnection conn = (JarURLConnection) connection;
+            return getManifest(conn);
+        }
+        return null;
+    }
+
+    /**
+     * 获取 jar 包文件或项目目录下的 Manifest
+     *
+     * @param classpathItem 文件路径
+     * @return Manifest
+     * @throws InstrumentException IO异常
+     */
+    public static Manifest getManifest(File classpathItem) throws InstrumentException {
         Manifest manifest = null;
 
-        if (file.isFile()) {
-            JarFile jar = null;
-            try {
-                jar = new JarFile(file);
-                manifest = jar.getManifest();
-            } catch (final IOException ignore) {
-            } finally {
-                IoKit.close(jar);
+        if (classpathItem.isFile()) {
+            try (JarFile jarFile = new JarFile(classpathItem)) {
+                manifest = getManifest(jarFile);
+            } catch (final IOException e) {
+                throw new InstrumentException(e);
             }
         } else {
-            final File metaDir = new File(file, Normal.META_DATA_INF);
+            final File metaDir = new File(classpathItem, "META-INF");
             File manifestFile = null;
+            final String[] MANIFEST_NAMES = {"Manifest.mf", "manifest.mf", "MANIFEST.MF"};
             if (metaDir.isDirectory()) {
-                String[] MANIFEST_NAMES = {"Manifest.mf", StringKit.lowerCase(Normal.META_DATA_INF), Normal.META_DATA_INF};
                 for (final String name : MANIFEST_NAMES) {
                     final File mFile = new File(metaDir, name);
                     if (mFile.isFile()) {
@@ -3705,17 +3727,47 @@ public class ClassKit {
                 }
             }
             if (null != manifestFile) {
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(manifestFile);
+                try (FileInputStream fis = new FileInputStream(manifestFile)) {
                     manifest = new Manifest(fis);
-                } catch (final IOException ignore) {
-                } finally {
-                    IoKit.close(fis);
+                } catch (final IOException e) {
+                    throw new InstrumentException(e);
                 }
             }
         }
+
         return manifest;
+    }
+
+    /**
+     * 根据 {@link JarURLConnection} 获取 jar 包文件的 Manifest
+     *
+     * @param connection {@link JarURLConnection}
+     * @return Manifest
+     * @throws InstrumentException IO异常
+     */
+    public static Manifest getManifest(JarURLConnection connection) throws InstrumentException {
+        final JarFile jarFile;
+        try {
+            jarFile = connection.getJarFile();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        return getManifest(jarFile);
+    }
+
+    /**
+     * 根据 {@link JarURLConnection} 获取 jar 包文件的 Manifest
+     *
+     * @param jarFile {@link JarURLConnection}
+     * @return Manifest
+     * @throws InstrumentException IO异常
+     */
+    public static Manifest getManifest(JarFile jarFile) throws InstrumentException {
+        try {
+            return jarFile.getManifest();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     public enum Interfaces {

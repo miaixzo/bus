@@ -162,6 +162,16 @@ public class Base64Decoder {
     }
 
     /**
+     * 给定的字符是否为Base64字符
+     *
+     * @param octet 被检查的字符
+     * @return 是否为Base64字符
+     */
+    public static boolean isBase64Code(byte octet) {
+        return octet == Symbol.C_EQUAL || (octet >= 0 && octet < Normal.DECODE_64_TABLE.length && Normal.DECODE_64_TABLE[octet] != -1);
+    }
+
+    /**
      * 获取下一个有效的byte字符
      *
      * @param in     输入

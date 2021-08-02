@@ -46,7 +46,7 @@ public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends Map
     /**
      * 默认集合初始大小
      */
-    protected static final int DEFAULT_COLLCTION_INITIAL_CAPACITY = 3;
+    protected static final int DEFAULT_COLLECTION_INITIAL_CAPACITY = 3;
 
     /**
      * 构造

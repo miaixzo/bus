@@ -29,12 +29,15 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.UriKit;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
+import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 
 /**
@@ -72,10 +75,12 @@ public class TaobaoProvider extends AbstractProvider {
         accToken.setUid(object.getString("taobao_user_id"));
         accToken.setOpenId(object.getString("taobao_open_uid"));
 
+        accToken = this.getAuthToken(object);
+
         String nick = UriKit.decode(object.getString("taobao_user_nick"));
         return Property.builder()
                 .rawJson(new JSONObject())
-                .uuid(object.getString("taobao_user_id"))
+                .uuid(StringKit.isEmpty(accToken.getUid()) ? accToken.getOpenId() : accToken.getUid())
                 .username(nick)
                 .nickname(nick)
                 .gender(Normal.Gender.UNKNOWN)
@@ -99,6 +104,36 @@ public class TaobaoProvider extends AbstractProvider {
                 .queryParam("view", "web")
                 .queryParam("state", getRealState(state))
                 .build();
+    }
+
+    @Override
+    public Message refresh(AccToken oldToken) {
+        String response = Httpx.post(refreshTokenUrl(oldToken.getRefreshToken()));
+        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .data(this.getAuthToken(accessTokenObject))
+                .build();
+    }
+
+    private AccToken getAuthToken(JSONObject object) {
+        this.checkResponse(object);
+
+        return AccToken.builder()
+                .accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in"))
+                .tokenType(object.getString("token_type"))
+                .idToken(object.getString("id_token"))
+                .refreshToken(object.getString("refresh_token"))
+                .uid(object.getString("taobao_user_id"))
+                .openId(object.getString("taobao_open_uid"))
+                .build();
+    }
+
+    private void checkResponse(JSONObject object) {
+        if (object.containsKey("error")) {
+            throw new AuthorizedException(object.getString("error_description"));
+        }
     }
 
 }

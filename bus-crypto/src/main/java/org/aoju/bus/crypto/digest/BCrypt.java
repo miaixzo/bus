@@ -569,7 +569,7 @@ public class BCrypt {
         try {
             try_pw = hashpw(plaintext, hashed);
         } catch (Exception ignore) {
-            // 生成密文时错误直接返回false issue#1377@Github
+            // 生成密文时错误直接返回false
             return false;
         }
 

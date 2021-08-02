@@ -100,7 +100,7 @@ public class CronTimer extends Thread {
                 thisTime = System.currentTimeMillis();
                 spawnLauncher(thisTime);
             } else {
-                // 非正常时间重新计算（issue#1224@Github）
+                // 非正常时间重新计算
                 thisTime = System.currentTimeMillis();
             }
         }

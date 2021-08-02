@@ -507,6 +507,17 @@ public final class Properties extends java.util.Properties implements BasicType<
     }
 
     /**
+     * 转换为标准的{@link java.util.Properties}对象
+     *
+     * @return {@link java.util.Properties}对象
+     */
+    public java.util.Properties toProperties() {
+        final java.util.Properties properties = new java.util.Properties();
+        properties.putAll(this);
+        return properties;
+    }
+
+    /**
      * 将配置文件转换为Bean，支持嵌套Bean
      * 支持的表达式：
      *

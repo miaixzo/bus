@@ -25,13 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
-import org.aoju.bus.core.lang.Murmur;
 import org.aoju.bus.core.toolkit.MathKit;
 import org.aoju.bus.core.toolkit.StringKit;
-
-import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 文本相似度计算,局部敏感hash,用于海量文本去重
@@ -44,48 +39,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class Similarity {
 
-    private final int bitNum = 64;
-    /**
-     * 存储段数,默认按照4段进行simhash存储
-     */
-    private final int fracCount;
-    private final int fracBitNum;
-    /**
-     * 汉明距离的衡量标准,小于此距离标准表示相似
-     */
-    private final int hammingThresh;
-
-    /**
-     * 按照分段存储simhash,查找更快速
-     */
-    private final List<Map<String, List<Long>>> storage;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    /**
-     * 构造
-     */
-    public Similarity() {
-        this(4, 3);
-    }
-
-    /**
-     * 构造
-     *
-     * @param fracCount     存储段数
-     * @param hammingThresh 汉明距离的衡量标准
-     */
-    public Similarity(int fracCount, int hammingThresh) {
-        this.fracCount = fracCount;
-        this.fracBitNum = bitNum / fracCount;
-        this.hammingThresh = hammingThresh;
-        this.storage = new ArrayList<>(fracCount);
-        for (int i = 0; i < fracCount; i++) {
-            storage.add(new HashMap<>());
-        }
-    }
-
     /**
      * 计算相似度，两个都是空串相似度为1，被认为是相同的串
+     * 比较方法为：
+     * <ul>
+     *     <li>只比较两个字符串字母、数字、汉字部分，其他符号去除</li>
+     *     <li>计算出两个字符串最大子串，除以最长的字符串，结果即为相似度</li>
+     * </ul>
      *
      * @param strA 字符串1
      * @param strB 字符串2
@@ -108,8 +68,8 @@ public class Similarity {
             return 1;
         }
 
-        int temp2 = longestCommonSubstring(newStrA, newStrB).length();
-        return MathKit.div(temp2, temp);
+        final int commonLength = longestCommonSubstringLength(newStrA, newStrB);
+        return MathKit.div(commonLength, temp);
     }
 
     /**
@@ -122,6 +82,40 @@ public class Similarity {
      */
     public static String similar(String strA, String strB, int scale) {
         return MathKit.formatPercent(similar(strA, strB), scale);
+    }
+
+    /**
+     * 最长公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
+     * 算法解析见：https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/
+     *
+     * @param strA 字符串1
+     * @param strB 字符串2
+     * @return 最长公共子串
+     */
+    public static String longestCommonSubstring(String strA, String strB) {
+        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1，
+        // 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
+        final int[][] matrix = generateMatrix(strA, strB);
+
+        int m = strA.length();
+        int n = strB.length();
+        // 矩阵中，如果matrix[m][n]的值不等于matrix[m-1][n]的值也不等于matrix[m][n-1]的值，
+        // 则matrix[m][n]对应的字符为相似字符元，并将其存入result数组中。
+        char[] result = new char[matrix[m][n]];
+        int currentIndex = result.length - 1;
+        while (matrix[m][n] != 0) {
+            if (matrix[m][n] == matrix[m][n - 1]) {
+                n--;
+            } else if (matrix[m][n] == matrix[m - 1][n]) {
+                m--;
+            } else {
+                result[currentIndex] = strA.charAt(m - 1);
+                currentIndex--;
+                n--;
+                m--;
+            }
+        }
+        return new String(result);
     }
 
     /**
@@ -165,18 +159,29 @@ public class Similarity {
      * @param strB 字符串2
      * @return 公共子串
      */
-    private static String longestCommonSubstring(String strA, String strB) {
-        char[] chars_strA = strA.toCharArray();
-        char[] chars_strB = strB.toCharArray();
-        int m = chars_strA.length;
-        int n = chars_strB.length;
+    private static int longestCommonSubstringLength(String strA, String strB) {
+        final int m = strA.length();
+        final int n = strB.length();
+        return generateMatrix(strA, strB)[m][n];
+    }
 
-        // 初始化矩阵数据,matrix[0][0]的值为0,如果字符数组chars_strA和chars_strB的对应位相同，
-        // 则matrix[i][j]的值为左上角的值加1,否则，matrix[i][j]的值等于左上方最近两个位置的较大值,矩阵中其余各点的值为0
-        int[][] matrix = new int[m + 1][n + 1];
+    /**
+     * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
+     *
+     * @param strA 字符串1
+     * @param strB 字符串2
+     * @return 公共串矩阵
+     */
+    private static int[][] generateMatrix(String strA, String strB) {
+        int m = strA.length();
+        int n = strB.length();
+
+        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1，
+        // 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
+        final int[][] matrix = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (chars_strA[i - 1] == chars_strB[j - 1]) {
+                if (strA.charAt(i - 1) == strB.charAt(j - 1)) {
                     matrix[i][j] = matrix[i - 1][j - 1] + 1;
                 } else {
                     matrix[i][j] = Math.max(matrix[i][j - 1], matrix[i - 1][j]);
@@ -184,157 +189,7 @@ public class Similarity {
             }
         }
 
-        // 矩阵中，如果matrix[m][n]的值不等于matrix[m-1][n]的值也不等于matrix[m][n-1]的值,
-        // 则matrix[m][n]对应的字符为相似字符元，并将其存入result数组中
-        char[] result = new char[matrix[m][n]];
-        int currentIndex = result.length - 1;
-        while (matrix[m][n] != 0) {
-            if (matrix[m][n] == matrix[m][n - 1]) {
-                n--;
-            } else if (matrix[m][n] == matrix[m - 1][n]) {
-                m--;
-            } else {
-                result[currentIndex] = chars_strA[m - 1];
-                currentIndex--;
-                n--;
-                m--;
-            }
-        }
-        return new String(result);
-    }
-
-    /**
-     * 指定文本计算simhash值
-     *
-     * @param segList 分词的词列表
-     * @return Hash值
-     */
-    public long hash(Collection<? extends CharSequence> segList) {
-        final int bitNum = this.bitNum;
-        // 按照词语的hash值,计算simHashWeight(低位对齐)
-        final int[] weight = new int[bitNum];
-        long wordHash;
-        for (CharSequence seg : segList) {
-            wordHash = Murmur.hash64(seg);
-            for (int i = 0; i < bitNum; i++) {
-                if (((wordHash >> i) & 1) == 1)
-                    weight[i] += 1;
-                else
-                    weight[i] -= 1;
-            }
-        }
-
-        // 计算得到Simhash值
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bitNum; i++) {
-            sb.append((weight[i] > 0) ? 1 : 0);
-        }
-
-        return new BigInteger(sb.toString(), 2).longValue();
-    }
-
-    /**
-     * 判断文本是否与已存储的数据重复
-     *
-     * @param segList 文本分词后的结果
-     * @return 是否重复
-     */
-    public boolean equals(Collection<? extends CharSequence> segList) {
-        long simhash = hash(segList);
-        final List<String> fracList = splitSimhash(simhash);
-        final int hammingThresh = this.hammingThresh;
-
-        String frac;
-        Map<String, List<Long>> fracMap;
-        final ReentrantReadWriteLock.ReadLock readLock = this.lock.readLock();
-        readLock.lock();
-        try {
-            for (int i = 0; i < fracCount; i++) {
-                frac = fracList.get(i);
-                fracMap = storage.get(i);
-                if (fracMap.containsKey(frac)) {
-                    for (Long simhash2 : fracMap.get(frac)) {
-                        // 当汉明距离小于标准时相似
-                        if (hamming(simhash, simhash2) < hammingThresh) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        } finally {
-            readLock.unlock();
-        }
-        return false;
-    }
-
-    /**
-     * 按照索引进行存储
-     *
-     * @param simhash Simhash值
-     */
-    public void store(Long simhash) {
-        final int fracCount = this.fracCount;
-        final List<Map<String, List<Long>>> storage = this.storage;
-        final List<String> lFrac = splitSimhash(simhash);
-
-        String frac;
-        Map<String, List<Long>> fracMap;
-        final ReentrantReadWriteLock.WriteLock writeLock = this.lock.writeLock();
-        writeLock.lock();
-        try {
-            for (int i = 0; i < fracCount; i++) {
-                frac = lFrac.get(i);
-                fracMap = storage.get(i);
-                if (fracMap.containsKey(frac)) {
-                    fracMap.get(frac).add(simhash);
-                } else {
-                    final List<Long> ls = new ArrayList<>();
-                    ls.add(simhash);
-                    fracMap.put(frac, ls);
-                }
-            }
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    /**
-     * 计算汉明距离
-     *
-     * @param s1 值1
-     * @param s2 值2
-     * @return 汉明距离
-     */
-    private int hamming(Long s1, Long s2) {
-        final int bitNum = this.bitNum;
-        int dis = 0;
-        for (int i = 0; i < bitNum; i++) {
-            if ((s1 >> i & 1) != (s2 >> i & 1))
-                dis++;
-        }
-        return dis;
-    }
-
-    /**
-     * 将simhash分成n段
-     *
-     * @param simhash Simhash值
-     * @return N段Simhash
-     */
-    private List<String> splitSimhash(Long simhash) {
-        final int bitNum = this.bitNum;
-        final int fracBitNum = this.fracBitNum;
-
-        final List<String> ls = new ArrayList<>();
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bitNum; i++) {
-            sb.append(simhash >> i & 1);
-            if ((i + 1) % fracBitNum == 0) {
-                ls.add(sb.toString());
-                sb.setLength(0);
-            }
-        }
-        return ls;
+        return matrix;
     }
 
 }

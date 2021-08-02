@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.freebsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -56,6 +55,33 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
+    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
+            .collect(Collectors.joining(","));
+
+    private static List<OSProcess> getProcessListFromPS(int pid) {
+        List<OSProcess> procs = new ArrayList<>();
+        String psCommand = "ps -awwxo " + PS_COMMAND_ARGS;
+        if (pid >= 0) {
+            psCommand += " -p " + pid;
+        }
+        List<String> procList = Executor.runNative(psCommand);
+        if (procList.isEmpty() || procList.size() < 2) {
+            return procs;
+        }
+        // remove header row
+        procList.remove(0);
+        // Fill list
+        for (String proc : procList) {
+            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
+            // Check if last (thus all) value populated
+            if (psMap.containsKey(PsKeywords.ARGS)) {
+                procs.add(new FreeBsdOSProcess(
+                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap));
+            }
+        }
+        return procs;
+    }
+
     /**
      * Package-private for use by FreeBsdOSProcess
      */
@@ -68,27 +94,9 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     static final String PS_KEYWORD_ARGS = String.join(",", PS_KEYWORDS);
     private static final long BOOTTIME = querySystemBootTime();
 
-    private static List<OSProcess> getProcessListFromPS(int pid) {
-        List<OSProcess> procs = new ArrayList<>();
-        String psCommand = "ps -awwxo " + PS_KEYWORD_ARGS;
-        if (pid >= 0) {
-            psCommand += " -p " + pid;
-        }
-        List<String> procList = Executor.runNative(psCommand);
-        if (procList.isEmpty() || procList.size() < 2) {
-            return procs;
-        }
-        // remove header row
-        procList.remove(0);
-        // Fill list
-        for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), PS_KEYWORDS.size());
-            // Elements should match ps command order
-            if (split.length == PS_KEYWORDS.size()) {
-                procs.add(new FreeBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
-            }
-        }
-        return procs;
+    enum PsKeywords {
+        STATE, PID, PPID, USER, UID, GROUP, GID, NLWP, PRI, VSZ, RSS, ETIMES, SYSTIME, TIME, COMM, MAJFLT, MINFLT,
+        NVCSW, NIVCSW, ARGS; // ARGS must always be last
     }
 
     private static long querySystemBootTime() {

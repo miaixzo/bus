@@ -29,6 +29,7 @@ import org.aoju.bus.core.toolkit.MapKit;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Map创建类
@@ -96,6 +97,47 @@ public class MapBuilder<K, V> implements Serializable {
      */
     public MapBuilder<K, V> put(K k, V v) {
         map.put(k, v);
+        return this;
+    }
+
+    /**
+     * 链式Map创建
+     *
+     * @param k        Key类型
+     * @param supplier Value类型结果提供方
+     * @return 当前类
+     */
+    public MapBuilder<K, V> put(K k, Supplier<V> supplier) {
+        return put(k, supplier.get());
+    }
+
+    /**
+     * 链式Map创建
+     *
+     * @param condition put条件
+     * @param k         Key类型
+     * @param v         Value类型
+     * @return 当前类
+     */
+    public MapBuilder<K, V> put(boolean condition, K k, V v) {
+        if (condition) {
+            put(k, v);
+        }
+        return this;
+    }
+
+    /**
+     * 链式Map创建
+     *
+     * @param condition put条件
+     * @param k         Key类型
+     * @param supplier  Value类型结果提供方
+     * @return 当前类
+     */
+    public MapBuilder<K, V> put(boolean condition, K k, Supplier<V> supplier) {
+        if (condition) {
+            put(k, supplier);
+        }
         return this;
     }
 

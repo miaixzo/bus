@@ -86,7 +86,7 @@ public class ListValueMap<K, V> extends AbsCollValueMap<K, V, List<V>> {
 
     @Override
     protected List<V> createCollection() {
-        return new ArrayList<>(DEFAULT_COLLCTION_INITIAL_CAPACITY);
+        return new ArrayList<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
     }
 
 }

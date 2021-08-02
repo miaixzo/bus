@@ -216,12 +216,17 @@ public class Formula {
      * @return 优先级
      */
     public boolean compare(char cur, char peek) {
-        // 如果是peek优先级高于cur，返回true，默认都是peek优先级要低
-        boolean result = false;
-        if (operatPriority[(peek) - 40] >= operatPriority[(cur) - 40]) {
-            result = true;
+        final int offset = 40;
+        if (cur == Symbol.C_PERCENT) {
+            // %优先级最高
+            cur = 47;
         }
-        return result;
+        if (peek == Symbol.C_PERCENT) {
+            // %优先级最高
+            peek = 47;
+        }
+
+        return operatPriority[(peek) - offset] >= operatPriority[(cur) - offset];
     }
 
     /**

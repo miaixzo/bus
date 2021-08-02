@@ -1450,6 +1450,7 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static void write(java.awt.Image image, File targetFile) throws InstrumentException {
+        FileKit.touch(targetFile);
         ImageOutputStream out = null;
         try {
             out = getImageOutputStream(targetFile);

@@ -764,7 +764,7 @@ public enum Registry implements Complex {
 
         @Override
         public String userInfo() {
-            return "https://api.twitter.com/1.1/users/show.json";
+            return "https://api.twitter.com/1.1/account/verify_credentials.json";
         }
     },
     /**

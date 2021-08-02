@@ -67,7 +67,7 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
 
         final List<T> beanList = new ArrayList<>(mapList.size());
         for (Map<String, Object> map : mapList) {
-            beanList.add(BeanKit.toBean(map, this.beanClass));
+            beanList.add(BeanKit.toBeanIgnoreError(map, this.beanClass));
         }
         return beanList;
     }

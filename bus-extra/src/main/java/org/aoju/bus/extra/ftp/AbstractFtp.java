@@ -120,6 +120,16 @@ public abstract class AbstractFtp implements Closeable {
     public abstract boolean mkdir(String dir);
 
     /**
+     * 判断给定路径是否为目录
+     *
+     * @param dir 被判断的路径
+     * @return 是否为目录
+     */
+    public boolean isDir(String dir) {
+        return cd(dir);
+    }
+
+    /**
      * 文件或目录是否存在
      *
      * @param path 目录

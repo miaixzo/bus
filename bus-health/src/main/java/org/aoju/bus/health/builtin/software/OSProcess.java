@@ -26,11 +26,10 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Config;
 import org.aoju.bus.health.windows.drivers.Win32ProcessCached;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a Process on the operating system, which may contain multiple
@@ -59,23 +58,33 @@ public interface OSProcess {
 
     /**
      * Gets the process command line used to start the process, including arguments
-     * if available to be determined.
+     * if available to be determined. This method generally returns the same
+     * information as {@link #getArguments()} in a more user-readable format, and is
+     * more robust to non-elevated access.
      * <p>
-     * The format of this string is platform-dependent and may require the end user
-     * to parse the result.
+     * The format of this string is platform-dependent, may be truncated, and may
+     * require the end user to parse the result. Users should generally prefer
+     * {@link #getArguments()} which already parses the results, and use this method
+     * as a backup.
      * <p>
      * On Linux and macOS systems, the string is null-character-delimited, to permit
-     * the end user to parse the executable and arguments if desired. Further, the
-     * macOS variant may include environment variables which the end user may wish
-     * to exclude from display.
+     * the end user to parse the executable and arguments if desired. This
+     * null-delimited behavior may change in future versions and should not be
+     * relied upon; use {@link #getArguments()} instead.
      * <p>
-     * On Solaris, the string is truncated to 80 characters.
+     * On AIX and Solaris, the string may be truncated to 80 characters if there was
+     * insufficient permission to read the process memory.
      * <p>
-     * On Windows, by default, performs a single WMI query for this process, with
-     * some latency. If this method will be frequently called for multiple
-     * processes, see the configuration file to enable a batch query mode leveraging
+     * On Windows, attempts to retrieve the value from process memory, which
+     * requires that the process be owned by the same user as the executing process,
+     * or elevated permissions, and additionally requires the target process to have
+     * the same bitness (e.g., this will fail on a 32-bit process if queried by
+     * 64-bit and vice versa). If reading process memory fails, by default, performs
+     * a single WMI query for this process, with some latency. If this method will
+     * be frequently called for multiple processes, see the configuration file to
+     * enable a batch query mode leveraging
      * {@link Win32ProcessCached#getCommandLine} to improve performance, or setting
-     * that parameter via {@link Config#set(String, Object)} before
+     * that parameter via {@link GlobalConfig#set(String, Object)} before
      * instantiating any {@link OSProcess} object.
      *
      * @return the process command line.
@@ -83,11 +92,31 @@ public interface OSProcess {
     String getCommandLine();
 
     /**
-     * Gets the current working directory for the process.
+     * Makes a best effort attempt to get a list of the the command-line arguments
+     * of the process. Returns the same information as {@link #getCommandLine()} but
+     * parsed to a list. May require elevated permissions or same-user ownership.
+     *
+     * @return A list of Strings representing the arguments. May return an empty
+     * list if there was a failure (for example, because the process is
+     * already dead or permission was denied).
+     */
+    List<String> getArguments();
+
+    /**
+     * Makes a best effort attempt to obtain the environment variables of the
+     * process. May require elevated permissions or same-user ownership.
+     *
+     * @return A map representing the environment variables and their values. May
+     * return an empty map if there was a failure (for example, because the
+     * process is already dead or permission was denied).
+     */
+    Map<String, String> getEnvironmentVariables();
+
+    /**
+     * Makes a best effort attempt to obtain the current working directory for the
+     * process.
      *
      * @return the process current working directory.
-     * <p>
-     * On Windows, this value is only populated for the current process.
      */
     String getCurrentWorkingDirectory();
 
@@ -95,7 +124,7 @@ public interface OSProcess {
      * Gets the user name of the process owner.
      *
      * @return the user name. On Windows systems, also returns the domain prepended
-     * to the username.
+     *         to the username.
      */
     String getUser();
 
@@ -207,7 +236,7 @@ public interface OSProcess {
      * On Linux, returns the RSS value from {@code /proc/[pid]/stat}, which may be
      * inaccurate because of a kernel-internal scalability optimization. If accurate
      * values are required, read {@code /proc/[pid]/smaps} using
-     * {@link Builder#getKeyValueMapFromFile(String, String)}.
+     * {@link FileUtil#getKeyValueMapFromFile(String, String)}.
      *
      * @return the Resident Set Size
      */
@@ -217,7 +246,7 @@ public interface OSProcess {
      * Gets kernel/system (privileged) time used by the process.
      *
      * @return the number of milliseconds the process has executed in kernel/system
-     * mode.
+     *         mode.
      */
     long getKernelTime();
 
@@ -239,7 +268,7 @@ public interface OSProcess {
      * Gets the process start time.
      *
      * @return the start time of the process in number of milliseconds since January
-     * 1, 1970 UTC.
+     *         1, 1970 UTC.
      */
     long getStartTime();
 
@@ -276,7 +305,7 @@ public interface OSProcess {
      * presented by the "top" command on Linux/Unix machines.
      *
      * @return The proportion of up time that the process was executing in kernel or
-     * user mode.
+     *         user mode.
      */
     double getProcessCpuLoadCumulative();
 
@@ -294,12 +323,14 @@ public interface OSProcess {
      * System's tick counters. A polling interval of at least a few seconds is
      * recommended.
      *
-     * @param proc An {@link OSProcess} object containing statistics for this same
-     *             process collected at a prior point in time. May be null.
+     * @param proc
+     *            An {@link OSProcess} object containing statistics for this same
+     *            process collected at a prior point in time. May be null.
+     *
      * @return If the prior snapshot is for the same process at a prior point in
-     * time, the proportion of elapsed up time between the current process
-     * snapshot and the previous one that the process was executing in
-     * kernel or user mode. Returns cumulative load otherwise.
+     *         time, the proportion of elapsed up time between the current process
+     *         snapshot and the previous one that the process was executing in
+     *         kernel or user mode. Returns cumulative load otherwise.
      */
     double getProcessCpuLoadBetweenTicks(OSProcess proc);
 
@@ -327,7 +358,7 @@ public interface OSProcess {
      * has terminated), returns zero.
      *
      * @return a bit vector in which each bit represents the processors that a
-     * process is allowed to run on.
+     *         process is allowed to run on.
      */
     long getAffinityMask();
 
@@ -336,8 +367,8 @@ public interface OSProcess {
      * which will occur if the process no longer exists.
      *
      * @return {@code true} if the update was successful, false if the update
-     * failed. In addition, on a failed update the process state will be
-     * changed to {@link State#INVALID}.
+     *         failed. In addition, on a failed update the process state will be
+     *         changed to {@link State#INVALID}.
      */
     boolean updateAttributes();
 
@@ -388,7 +419,7 @@ public interface OSProcess {
      * Not available on AIX.
      *
      * @return sum of both voluntary and involuntary context switches if available,
-     * 0 otherwise.
+     *         0 otherwise.
      */
     default long getContextSwitches() {
         return 0L;

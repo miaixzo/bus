@@ -47,7 +47,7 @@ import java.util.function.Supplier;
  * @since JDK 1.8+
  */
 @ThreadSafe
-final class LinuxGlobalMemory extends AbstractGlobalMemory {
+public final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
     public static final long PAGE_SIZE = Builder
             .parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);

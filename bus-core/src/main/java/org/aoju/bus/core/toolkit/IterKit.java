@@ -27,8 +27,10 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.CopiedIter;
 import org.aoju.bus.core.collection.EnumerationIter;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Func;
+import org.aoju.bus.core.lang.Matcher;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.util.*;
@@ -161,16 +163,7 @@ public class IterKit {
      * @return 是否全部元素为null
      */
     public static boolean isAllNull(Iterator<?> iterator) {
-        if (null == iterator) {
-            return true;
-        }
-
-        while (iterator.hasNext()) {
-            if (null != iterator.next()) {
-                return false;
-            }
-        }
-        return true;
+        return null == getFirstNoneNull(iterator);
     }
 
     /**
@@ -693,10 +686,23 @@ public class IterKit {
      * @return 第一个非空元素，null表示未找到
      */
     public static <T> T getFirstNoneNull(Iterator<T> iterator) {
+        return getFirstNoneNull(iterator, Objects::nonNull);
+    }
+
+    /**
+     * 返回{@link Iterator}中第一个匹配规则的值
+     *
+     * @param <T>      数组元素类型
+     * @param iterator {@link Iterator}
+     * @param matcher  匹配接口，实现此接口自定义匹配规则
+     * @return 匹配元素，如果不存在匹配元素或{@link Iterator}为空，返回 {@code null}
+     */
+    public static <T> T getFirstNoneNull(Iterator<T> iterator, Matcher<T> matcher) {
+        Assert.notNull(matcher, "Matcher must be not null !");
         if (null != iterator) {
             while (iterator.hasNext()) {
                 final T next = iterator.next();
-                if (null != next) {
+                if (matcher.match(next)) {
                     return next;
                 }
             }

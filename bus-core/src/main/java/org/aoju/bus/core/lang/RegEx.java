@@ -144,7 +144,7 @@ public class RegEx {
     /**
      * 固定电话
      */
-    public static final String PHONE_PATTERN = "0\\d{2,3}-[1-9]\\d{6,7}";
+    public static final String PHONE_PATTERN = "(010|02\\d|0[3-9]\\d{2})-?(\\d{6,8})";
     public static final Pattern PHONE = Pattern.compile(PHONE_PATTERN);
 
     /**

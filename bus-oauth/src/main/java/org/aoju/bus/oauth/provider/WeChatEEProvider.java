@@ -63,7 +63,7 @@ public class WeChatEEProvider extends AbstractProvider {
      */
     @Override
     public AccToken getAccessToken(Callback callback) {
-        String response = doGetAuthorizationCode(accessTokenUrl(callback.getCode()));
+        String response = doGetAuthorizationCode(accessTokenUrl(null));
 
         JSONObject object = this.checkResponse(response);
 

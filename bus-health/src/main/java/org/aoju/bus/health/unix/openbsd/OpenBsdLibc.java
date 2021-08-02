@@ -29,9 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 
 /**
  * C library. This class should be considered non-API as it may be removed
@@ -86,10 +84,6 @@ public interface OpenBsdLibc extends CLibrary {
 
     int UINT64_SIZE = Native.getNativeSize(long.class);
     int INT_SIZE = Native.getNativeSize(int.class);
-
-    int sysctl(int[] name, int namelen, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
-
-    int sysctl(int[] name, int namelen, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
 
     /**
      * OpenBSD Cache stats for memory

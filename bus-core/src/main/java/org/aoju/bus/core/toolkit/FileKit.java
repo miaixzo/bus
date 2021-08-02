@@ -30,6 +30,7 @@ import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
 import org.aoju.bus.core.io.file.*;
+import org.aoju.bus.core.io.file.visitor.DeleteVisitor;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
@@ -479,7 +480,7 @@ public class FileKit {
      * @param path 文件路径
      * @return 如果存在返回true
      */
-    public static boolean exist(String path) {
+    public static boolean exists(String path) {
         return (null != path) && file(path).exists();
     }
 
@@ -489,7 +490,7 @@ public class FileKit {
      * @param file 文件
      * @return 如果存在返回true
      */
-    public static boolean exist(File file) {
+    public static boolean exists(File file) {
         return (null != file) && file.exists();
     }
 
@@ -500,7 +501,7 @@ public class FileKit {
      * @param regexp    文件夹中所包含文件名的正则表达式
      * @return 如果存在匹配文件返回true
      */
-    public static boolean exist(String directory, String regexp) {
+    public static boolean exists(String directory, String regexp) {
         final File file = new File(directory);
         if (false == file.exists()) {
             return false;
@@ -518,6 +519,18 @@ public class FileKit {
 
         }
         return false;
+    }
+
+    /**
+     * 判断文件或目录是否存在
+     *
+     * @param path          文件
+     * @param isFollowLinks 是否跟踪软链（快捷方式）
+     * @return 是否存在
+     */
+    public static boolean exists(Path path, boolean isFollowLinks) {
+        final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+        return Files.exists(path, options);
     }
 
     /**
@@ -676,7 +689,16 @@ public class FileKit {
         }
 
         // 删除文件或清空后的目录
-        return file.delete();
+        try {
+            Files.delete(file.toPath());
+        } catch (AccessDeniedException access) {
+            // 可能遇到只读文件，无法删除.使用 file 方法删除
+            return file.delete();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+
+        return true;
     }
 
     /**
@@ -695,26 +717,14 @@ public class FileKit {
 
         try {
             if (isDirectory(path)) {
-                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-
-                    @Override
-                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                        Files.delete(file);
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
-                        if (null == e) {
-                            Files.delete(dir);
-                            return FileVisitResult.CONTINUE;
-                        } else {
-                            throw e;
-                        }
-                    }
-                });
+                Files.walkFileTree(path, DeleteVisitor.INSTANCE);
             } else {
-                Files.delete(path);
+                try {
+                    Files.delete(path);
+                } catch (AccessDeniedException access) {
+                    // 可能遇到只读文件，无法删除.使用 file 方法删除
+                    return path.toFile().delete();
+                }
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -790,6 +800,23 @@ public class FileKit {
         }
         if (false == dir.exists()) {
             dir.mkdirs();
+        }
+        return dir;
+    }
+
+    /**
+     * 创建所给目录及其父目录
+     *
+     * @param dir 目录
+     * @return 目录
+     */
+    public static Path mkdir(Path dir) {
+        if (null != dir && false == exists(dir, false)) {
+            try {
+                Files.createDirectories(dir);
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
         }
         return dir;
     }
@@ -1400,7 +1427,7 @@ public class FileKit {
      * @return 最后修改时间
      */
     public static Date lastModifiedTime(File file) {
-        if (false == exist(file)) {
+        if (false == exists(file)) {
             return null;
         }
 
@@ -1611,7 +1638,7 @@ public class FileKit {
      * @param lastModifyTime 上次的改动时间
      * @return 是否被改动
      */
-    public static boolean isModifed(File file, long lastModifyTime) {
+    public static boolean isModified(File file, long lastModifyTime) {
         if (null == file || false == file.exists()) {
             return true;
         }
@@ -1713,6 +1740,15 @@ public class FileKit {
                         pathElements.add(0, element);
                     }
                 }
+            }
+        }
+
+        if (tops > 0 && StringKit.isEmpty(prefix)) {
+            // 只有相对路径补充开头的..，绝对路径直接忽略之
+            while (tops-- > 0) {
+                //遍历完节点发现还有上级标注（即开头有一个或多个..），补充之
+                // Normal path element found.
+                pathElements.add(0, Symbol.DOUBLE_DOT);
             }
         }
 
@@ -3923,6 +3959,7 @@ public class FileKit {
      * @return {@link URL}
      */
     public static URL getResource(String resource, Class<?> baseClass) {
+        resource = StringKit.nullToEmpty(resource);
         URL url = (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
         return null != url ? url : baseClass.getClassLoader().getResource(resource);
     }

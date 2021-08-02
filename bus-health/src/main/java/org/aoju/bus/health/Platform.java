@@ -60,46 +60,9 @@ import java.util.function.Supplier;
  */
 public class Platform {
 
-    private static final OS OS_CURRENT_PLATFORM;
-
-    static {
-        if (com.sun.jna.Platform.isWindows()) {
-            OS_CURRENT_PLATFORM = OS.WINDOWS;
-        } else if (com.sun.jna.Platform.isLinux()) {
-            OS_CURRENT_PLATFORM = OS.LINUX;
-        } else if (com.sun.jna.Platform.isMac()) {
-            OS_CURRENT_PLATFORM = OS.MACOS;
-        } else if (com.sun.jna.Platform.isSolaris()) {
-            OS_CURRENT_PLATFORM = OS.SOLARIS;
-        } else if (com.sun.jna.Platform.isFreeBSD()) {
-            OS_CURRENT_PLATFORM = OS.FREEBSD;
-        } else if (com.sun.jna.Platform.isAIX()) {
-            OS_CURRENT_PLATFORM = OS.AIX;
-        } else if (com.sun.jna.Platform.isOpenBSD()) {
-            OS_CURRENT_PLATFORM = OS.OPENBSD;
-        } else {
-            OS_CURRENT_PLATFORM = OS.UNKNOWN;
-        }
-    }
-
+    private static final OS OS_CURRENT_PLATFORM = queryCurrentPlatform();
     private final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
     private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
-
-    /**
-     * Create a new instance of {@link Platform}.
-     * <p>
-     * Platform-specific Hardware and Software objects are retrieved via memoized
-     * suppliers. To conserve memory at the cost of additional processing time,
-     * create a new version of SystemInfo() for subsequent calls. To conserve
-     * processing time at the cost of additional memory usage, re-use the same
-     * {@link Platform} object for future queries.
-     */
-    public Platform() {
-        if (getCurrentPlatform().equals(OS.UNKNOWN)) {
-            throw new UnsupportedOperationException("Operating system not supported: JNA Platform type "
-                    + com.sun.jna.Platform.getOSType());
-        }
-    }
 
     /**
      * Getter for the field <code>currentPlatformEnum</code>.
@@ -108,6 +71,26 @@ public class Platform {
      */
     public static OS getCurrentPlatform() {
         return OS_CURRENT_PLATFORM;
+    }
+
+    private static OS queryCurrentPlatform() {
+        if (com.sun.jna.Platform.isWindows()) {
+            return OS.WINDOWS;
+        } else if (com.sun.jna.Platform.isLinux()) {
+            return OS.LINUX;
+        } else if (com.sun.jna.Platform.isMac()) {
+            return OS.MACOS;
+        } else if (com.sun.jna.Platform.isSolaris()) {
+            return OS.SOLARIS;
+        } else if (com.sun.jna.Platform.isFreeBSD()) {
+            return OS.FREEBSD;
+        } else if (com.sun.jna.Platform.isAIX()) {
+            return OS.AIX;
+        } else if (com.sun.jna.Platform.isOpenBSD()) {
+            return OS.OPENBSD;
+        } else {
+            return OS.UNKNOWN;
+        }
     }
 
     public static int getOSType() {

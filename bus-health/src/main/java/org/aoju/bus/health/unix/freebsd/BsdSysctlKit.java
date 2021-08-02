@@ -44,7 +44,7 @@ import org.aoju.bus.logger.Logger;
 @ThreadSafe
 public final class BsdSysctlKit {
 
-    private static final String SYSCTL_FAIL = "Failed syctl call: {}, Error code: {}";
+    private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
     private BsdSysctlKit() {
     }

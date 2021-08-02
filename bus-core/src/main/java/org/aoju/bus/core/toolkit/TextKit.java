@@ -310,6 +310,13 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      * @return this
      */
     public TextKit insert(int index, char c) {
+        if (index < 0) {
+            index = this.position + index;
+        }
+        if ((index < 0)) {
+            throw new StringIndexOutOfBoundsException(index);
+        }
+
         moveDataAfterIndex(index, 1);
         value[index] = c;
         this.position = Math.max(this.position, index) + 1;

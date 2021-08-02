@@ -94,8 +94,8 @@ public class ImageElement extends AbstractElement<ImageElement> {
      */
     public ImageElement(BufferedImage image, int x, int y) {
         this.image = image;
-        this.width = getImage().getWidth();
-        this.height = getImage().getHeight();
+        this.width = this.image.getWidth();
+        this.height = this.image.getHeight();
         this.mode = Scale.Mode.ORIGIN;
         super.setX(x);
         super.setY(y);
