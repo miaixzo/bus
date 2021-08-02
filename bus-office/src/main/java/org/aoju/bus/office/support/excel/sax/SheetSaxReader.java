@@ -26,7 +26,6 @@
 package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
@@ -37,40 +36,38 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
-public class SheetRidReader extends DefaultHandler {
+public class SheetSaxReader extends DefaultHandler {
 
     private final static String TAG_NAME = "sheet";
     private final static String RID_ATTR = "r:id";
     private final static String SHEET_ID_ATTR = "sheetId";
     private final static String NAME_ATTR = "name";
 
-    private final Map<Integer, Integer> ID_RID_MAP = new LinkedHashMap<>();
-    private final Map<String, Integer> NAME_RID_MAP = new LinkedHashMap<>();
+    private final Map<String, String> ID_RID_MAP = new HashMap<>();
+    private final Map<String, String> NAME_RID_MAP = new HashMap<>();
 
     /**
      * 读取Wordkbook的XML中sheet标签中sheetId和rid的对应关系
      *
      * @param xssfReader XSSF读取器
-     * @return this
+     * @return {@link SheetSaxReader}
      */
-    public SheetRidReader read(XSSFReader xssfReader) {
+    public SheetSaxReader read(XSSFReader xssfReader) {
         InputStream workbookData = null;
         try {
             workbookData = xssfReader.getWorkbookData();
             ExcelSaxKit.readFrom(workbookData, this);
-        } catch (InvalidFormatException e) {
-            throw new InstrumentException(e);
-        } catch (IOException e) {
+        } catch (InvalidFormatException | IOException e) {
             throw new InstrumentException(e);
         } finally {
             IoKit.close(workbookData);
@@ -79,75 +76,23 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     /**
-     * 根据sheetId获取rid，从1开始
+     * 根据sheetId获取rid
      *
-     * @param sheetId Sheet的ID，从1开始
-     * @return rid，从1开始
+     * @param sheetId Sheet的ID
+     * @return rid
      */
-    public Integer getRidBySheetId(int sheetId) {
+    public String getRidBySheetId(String sheetId) {
         return ID_RID_MAP.get(sheetId);
     }
 
     /**
-     * 根据sheetId获取rid，从0开始
-     *
-     * @param sheetId Sheet的ID，从0开始
-     * @return rid，从0开始
-     */
-    public Integer getRidBySheetIdBase0(int sheetId) {
-        final Integer rid = getRidBySheetId(sheetId + 1);
-        if (null != rid) {
-            return rid - 1;
-        }
-        return null;
-    }
-
-    /**
-     * 根据sheet name获取rid，从1开始
+     * 根据sheet name获取rid
      *
      * @param sheetName Sheet的name
-     * @return rid，从1开始
-     */
-    public Integer getRidByName(String sheetName) {
-        return NAME_RID_MAP.get(sheetName);
-    }
-
-    /**
-     * 根据sheet name获取rid，从0开始
-     *
-     * @param sheetName Sheet的name
-     * @return rid，从0开始
-     */
-    public Integer getRidByNameBase0(String sheetName) {
-        final Integer rid = getRidByName(sheetName);
-        if (null != rid) {
-            return rid - 1;
-        }
-        return null;
-    }
-
-    /**
-     * 通过sheet的序号获取rid
-     *
-     * @param index 序号，从0开始
      * @return rid
      */
-    public Integer getRidByIndex(int index) {
-        return CollKit.get(this.NAME_RID_MAP.values(), index);
-    }
-
-    /**
-     * 通过sheet的序号获取rid
-     *
-     * @param index 序号，从0开始
-     * @return rid，从0开始
-     */
-    public Integer getRidByIndexBase0(int index) {
-        final Integer rid = CollKit.get(this.NAME_RID_MAP.values(), index);
-        if (null != rid) {
-            return rid - 1;
-        }
-        return null;
+    public String getRidByName(String sheetName) {
+        return NAME_RID_MAP.get(sheetName);
     }
 
     @Override
@@ -157,7 +102,7 @@ public class SheetRidReader extends DefaultHandler {
             if (StringKit.isEmpty(ridStr)) {
                 return;
             }
-            final int rid = Integer.parseInt(StringKit.removePrefixIgnoreCase(ridStr, Excel07SaxReader.RID_PREFIX));
+            final String rid = StringKit.removePrefixIgnoreCase(ridStr, ExcelSaxReader.RID_PREFIX);
 
             // sheet名和rid映射
             final String name = attributes.getValue(NAME_ATTR);
@@ -168,7 +113,7 @@ public class SheetRidReader extends DefaultHandler {
             // sheetId和rid映射
             final String sheetIdStr = attributes.getValue(SHEET_ID_ATTR);
             if (StringKit.isNotEmpty(sheetIdStr)) {
-                ID_RID_MAP.put(Integer.parseInt(sheetIdStr), rid);
+                ID_RID_MAP.put(sheetIdStr, rid);
             }
         }
     }

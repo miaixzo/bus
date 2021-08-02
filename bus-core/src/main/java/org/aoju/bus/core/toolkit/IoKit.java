@@ -25,12 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.collection.LineIter;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.*;
-import org.aoju.bus.core.io.copier.ChannelCopier;
-import org.aoju.bus.core.io.copier.ReaderWriterCopier;
-import org.aoju.bus.core.io.copier.StreamCopier;
 import org.aoju.bus.core.io.streams.BOMInputStream;
 import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.io.streams.NullOutputStream;
@@ -43,6 +39,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.*;
@@ -60,7 +57,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class IoKit {
@@ -69,6 +66,10 @@ public class IoKit {
      * 默认缓存大小 8192
      */
     public static final int DEFAULT_BUFFER_SIZE = 2 << 12;
+    /**
+     * 默认中等缓存大小 16384
+     */
+    public static final int DEFAULT_MIDDLE_BUFFER_SIZE = 2 << 13;
     /**
      * 默认大缓存大小 32768
      */
@@ -164,7 +165,7 @@ public class IoKit {
     }
 
     /**
-     * 将Reader中的内容复制到Writer中,拷贝后不关闭Reader
+     * 将Reader中的内容复制到Writer中
      *
      * @param reader         Reader
      * @param writer         Writer
@@ -174,22 +175,28 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static long copy(Reader reader, Writer writer, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
-        return copy(reader, writer, bufferSize, -1, streamProgress);
-    }
-
-    /**
-     * 将Reader中的内容复制到Writer中,拷贝后不关闭Reader
-     *
-     * @param reader         Reader
-     * @param writer         Writer
-     * @param bufferSize     缓存大小
-     * @param count          最大长度
-     * @param streamProgress 进度处理器
-     * @return 传输的byte数
-     * @throws InstrumentException IO异常
-     */
-    public static long copy(Reader reader, Writer writer, int bufferSize, long count, StreamProgress streamProgress) throws InstrumentException {
-        return new ReaderWriterCopier(bufferSize, count, streamProgress).copy(reader, writer);
+        char[] buffer = new char[bufferSize];
+        long size = 0;
+        int readSize;
+        if (null != streamProgress) {
+            streamProgress.start();
+        }
+        try {
+            while ((readSize = reader.read(buffer, 0, bufferSize)) != EOF) {
+                writer.write(buffer, 0, readSize);
+                size += readSize;
+                writer.flush();
+                if (null != streamProgress) {
+                    streamProgress.progress(size);
+                }
+            }
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+        if (null != streamProgress) {
+            streamProgress.finish();
+        }
+        return size;
     }
 
     /**
@@ -228,22 +235,33 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
-        return copy(in, out, bufferSize, -1, streamProgress);
-    }
+        Assert.notNull(in, "InputStream is null !");
+        Assert.notNull(out, "OutputStream is null !");
+        if (bufferSize <= 0) {
+            bufferSize = DEFAULT_BUFFER_SIZE;
+        }
 
-    /**
-     * 拷贝流，拷贝后不关闭流
-     *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param count          总拷贝长度
-     * @param streamProgress 进度条
-     * @return 传输的byte数
-     * @throws InstrumentException IO异常
-     */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, int count, StreamProgress streamProgress) throws InstrumentException {
-        return new StreamCopier(bufferSize, count, streamProgress).copy(in, out);
+        byte[] buffer = new byte[bufferSize];
+        if (null != streamProgress) {
+            streamProgress.start();
+        }
+        long size = 0;
+        try {
+            for (int readSize = -1; (readSize = in.read(buffer)) != EOF; ) {
+                out.write(buffer, 0, readSize);
+                size += readSize;
+                if (null != streamProgress) {
+                    streamProgress.progress(size);
+                }
+            }
+            out.flush();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        if (null != streamProgress) {
+            streamProgress.finish();
+        }
+        return size;
     }
 
     /**
@@ -263,21 +281,6 @@ public class IoKit {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-    }
-
-    /**
-     * 拷贝流,本方法不会关闭流
-     *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param count          最大长度
-     * @param streamProgress 进度条
-     * @return 传输的byte数
-     * @throws InstrumentException IO异常
-     */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, long count, StreamProgress streamProgress) throws InstrumentException {
-        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, streamProgress);
     }
 
     /**
@@ -306,32 +309,78 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，使用NIO，不会关闭channel
+     * 拷贝流 thanks to: https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java
+     * 本方法不会关闭流
      *
-     * @param in             {@link ReadableByteChannel}
-     * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
-     * @param streamProgress {@link StreamProgress}进度处理器
-     * @return 拷贝的字节数
-     * @throws InstrumentException IO异常
+     * @param in             输入流
+     * @param out            输出流
+     * @param bufferSize     缓存大小
+     * @param streamProgress 进度条
+     * @return 传输的byte数
+     * @throws InstrumentException 异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
-        return copy(in, out, bufferSize, -1, streamProgress);
+    public static long copyByNIO(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
+        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, streamProgress);
     }
 
     /**
-     * 拷贝流，使用NIO，不会关闭channel
+     * 拷贝文件流,使用NIO
+     *
+     * @param in  输入
+     * @param out 输出
+     * @return 拷贝的字节数
+     * @throws InstrumentException 异常
+     */
+    public static long copy(FileInputStream in, FileOutputStream out) throws InstrumentException {
+        Assert.notNull(in, "FileInputStream is null!");
+        Assert.notNull(out, "FileOutputStream is null!");
+
+        final FileChannel inChannel = in.getChannel();
+        final FileChannel outChannel = out.getChannel();
+
+        try {
+            return inChannel.transferTo(0, inChannel.size(), outChannel);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 拷贝流,使用NIO,不会关闭流
      *
      * @param in             {@link ReadableByteChannel}
      * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
-     * @param count          读取总长度
+     * @param bufferSize     缓冲大小,如果小于等于0,使用默认
      * @param streamProgress {@link StreamProgress}进度处理器
      * @return 拷贝的字节数
-     * @throws InstrumentException IO异常
+     * @throws InstrumentException 异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, long count, StreamProgress streamProgress) throws InstrumentException {
-        return new ChannelCopier(bufferSize, count, streamProgress).copy(in, out);
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
+        Assert.notNull(in, "InputStream is null !");
+        Assert.notNull(out, "OutputStream is null !");
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize <= 0 ? DEFAULT_BUFFER_SIZE : bufferSize);
+        long size = 0;
+        if (null != streamProgress) {
+            streamProgress.start();
+        }
+        try {
+            while (in.read(byteBuffer) != EOF) {
+                byteBuffer.flip();// 写转读
+                size += out.write(byteBuffer);
+                byteBuffer.clear();
+                if (null != streamProgress) {
+                    streamProgress.progress(size);
+                }
+            }
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        if (null != streamProgress) {
+            streamProgress.finish();
+        }
+
+        return size;
     }
 
     /**
@@ -448,7 +497,7 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容，读取完毕后关闭流
+     * 从流中读取内容,读取完毕后并不关闭流
      *
      * @param in      输入流,读取完毕后并不关闭流
      * @param charset 字符集
@@ -461,7 +510,7 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容，读到输出流中，读取完毕后关闭流
+     * 从流中读取内容,读到输出流中
      *
      * @param in 输入流
      * @return 输出流
@@ -472,7 +521,7 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容，读到输出流中，读取完毕后可选是否关闭流
+     * 从流中读取内容，读到输出流中，读取完毕后并不关闭流
      *
      * @param in      输入流
      * @param isClose 读取完毕后是否关闭流
@@ -525,7 +574,7 @@ public class IoKit {
         final CharBuffer buffer = CharBuffer.allocate(DEFAULT_BUFFER_SIZE);
         try {
             while (-1 != reader.read(buffer)) {
-                builder.append(buffer.flip());
+                builder.append(buffer.flip().toString());
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -544,7 +593,7 @@ public class IoKit {
      * @return 内容
      * @throws InstrumentException 异常
      */
-    public static String read(FileChannel fileChannel) throws InstrumentException {
+    public static String readUtf8(FileChannel fileChannel) throws InstrumentException {
         return read(fileChannel, Charset.UTF_8);
     }
 
@@ -829,8 +878,15 @@ public class IoKit {
         Assert.notNull(reader);
         Assert.notNull(lineHandler);
 
-        for (String line : new LineIter(reader)) {
-            lineHandler.handle(line);
+        // 从返回的内容中读取所需内容
+        final BufferedReader bReader = getReader(reader);
+        String line;
+        try {
+            while (null != (line = bReader.readLine())) {
+                lineHandler.handle(line);
+            }
+        } catch (IOException e) {
+            throw new InstrumentException(e);
         }
     }
 
@@ -1167,37 +1223,20 @@ public class IoKit {
      * @param channel 需要被关闭的通道
      */
     public static void close(AsynchronousSocketChannel channel) {
-        boolean connected = true;
         try {
             channel.shutdownInput();
-        } catch (IOException ignored) {
-        } catch (NotYetConnectedException e) {
-            connected = false;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
-            if (connected) {
-                channel.shutdownOutput();
-            }
-        } catch (IOException | NotYetConnectedException ignored) {
+            channel.shutdownOutput();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
             channel.close();
-        } catch (IOException ignored) {
-        }
-    }
-
-    /**
-     * 从缓存中刷出数据
-     *
-     * @param flushable {@link Flushable}
-     */
-    public static void flush(Flushable flushable) {
-        if (null != flushable) {
-            try {
-                flushable.flush();
-            } catch (Exception e) {
-                // 静默刷出
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

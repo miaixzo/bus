@@ -30,12 +30,11 @@ import org.aoju.bus.core.io.WriteBuffer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public abstract class AioSession {
@@ -74,15 +73,8 @@ public abstract class AioSession {
     public abstract WriteBuffer writeBuffer();
 
     /**
-     * 获取读缓冲区对象
-     *
-     * @return the object
-     */
-    public abstract ByteBuffer readBuffer();
-
-    /**
-     * 强制关闭当前AIOSession
-     * 若此时还存留待输出的数据，则会导致该部分数据丢失
+     * 强制关闭当前AIOSession。
+     * <p>若此时还存留待输出的数据，则会导致该部分数据丢失</p>
      */
     public final void close() {
         close(true);
@@ -160,12 +152,12 @@ public abstract class AioSession {
     public abstract InetSocketAddress getRemoteAddress() throws IOException;
 
     /**
-     * 获得数据输入流对象
+     * 获得数据输入流对象。
      * <p>
-     * faster模式下调用该方法会触发UnsupportedOperationException异常
+     * faster模式下调用该方法会触发UnsupportedOperationException异常。
      * </p>
      * <p>
-     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常
+     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常。
      * </p>
      *
      * @return 输入流

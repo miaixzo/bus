@@ -31,15 +31,13 @@ import org.aoju.bus.core.toolkit.RandomKit;
 import org.aoju.bus.crypto.digest.HMac;
 
 /**
- * <p>HMAC-based one-time passwords (HOTP) 基于HMAC算法一次性密码生成器，
- * 规范见：<a href="https://tools.ietf.org/html/rfc4226">RFC&nbsp;4226</a></p>
- *
- * <p>基于事件同步，通过某一特定的事件次序及相同的种子值作为输入，通过HASH算法运算出一致的密码</p>
+ * HMAC-based one-time passwords (HOTP) 一次性密码生成器
+ * 规范见：<a href="https://tools.ietf.org/html/rfc4226">RFC&nbsp;4226</a>
  *
  * <p>参考：https://github.com/jchambers/java-otp</p>
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class HOTP {

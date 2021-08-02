@@ -61,7 +61,7 @@ import java.util.function.Consumer;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class TcpAioSession<T> extends AioSession {
@@ -158,7 +158,7 @@ public class TcpAioSession<T> extends AioSession {
         if (null == writeBuffer) {
             writeBuffer = byteBuf.poll();
         } else if (!writeBuffer.buffer().hasRemaining()) {
-            byteBuf.reuse(writeBuffer);
+            writeBuffer.clean();
             writeBuffer = byteBuf.poll();
         }
 
@@ -181,11 +181,6 @@ public class TcpAioSession<T> extends AioSession {
      */
     public final WriteBuffer writeBuffer() {
         return byteBuf;
-    }
-
-    @Override
-    public ByteBuffer readBuffer() {
-        return readBuffer.buffer();
     }
 
     @Override

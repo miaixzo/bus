@@ -31,8 +31,6 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.DateKit;
-import org.aoju.bus.core.toolkit.StringKit;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,7 +46,7 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Almanac extends Converter {
@@ -244,11 +242,11 @@ public class Almanac extends Converter {
             }
             map.put(beginkey,
                     calBegin.get((Calendar.YEAR))
-                            + Symbol.MINUS
+                            + Symbol.HYPHEN
                             + getMonthOfQuarter(0, Integer.parseInt(map.get(beginWkey))));
             map.put(endkey,
                     calEnd.get((Calendar.YEAR))
-                            + Symbol.MINUS
+                            + Symbol.HYPHEN
                             + getMonthOfQuarter(1, Integer.parseInt(map.get(endWkey))));
         } catch (ParseException e) {
             throw new InstrumentException(e);
@@ -1340,45 +1338,40 @@ public class Almanac extends Converter {
      *
      * @param birthDay      出生日期:yyyy-MM-dd
      * @param dateToCompare 对比日期: yyyy-MM-dd, 默认当前系统日期
-     * @return java.lang.String 返回几周岁几个月几天: 如 6 岁 3 个月 2 天
+     * @return java.lang.String 返回几周岁几个月几天: 如 6 周岁 3 个月 2 天，1 周岁差 8 天
      */
     public static String getAge(String birthDay, String dateToCompare) {
         if (null == birthDay || birthDay.trim().length() == 0) {
-            throw new IllegalArgumentException("birthDay must not be null !");
+            throw new IllegalArgumentException("birthDay must not be null");
         }
         if (null == dateToCompare || dateToCompare.trim().length() == 0) {
             dateToCompare = Fields.NORM_DATE_FORMAT.format(new Date());
         }
-        String[] data = StringKit.split(birthDay, Symbol.MINUS);
-        if (data.length < 3) {
-            throw new IllegalArgumentException("Please confirm the date format !");
+        if (birthDay.length() > 10) {
+            birthDay = birthDay.substring(0, 10);
+        }
+        if (dateToCompare.length() > 10) {
+            dateToCompare = dateToCompare.substring(0, 10);
         }
 
-        Calendar birthday = new GregorianCalendar(Integer.valueOf(data[0]),
-                Integer.valueOf(data[1]), Integer.valueOf(data[2]));
-        Calendar now = Calendar.getInstance();
-        now.setTime(DateKit.parse(dateToCompare));
+        int years = (Integer.parseInt(dateToCompare.substring(0, 4)) - Integer.parseInt(birthDay.substring(0, 4))) - 1;
+        int startMonth = Integer.parseInt(birthDay.substring(5, 7));
+        int nowMonth = Integer.parseInt(dateToCompare.substring(5, 7));
+        int startDay = Integer.parseInt(birthDay.substring(8, 10));
+        int nowDay = Integer.parseInt(dateToCompare.substring(8, 10));
 
-        // 1.日相减
-        int day = now.get(Calendar.DAY_OF_MONTH) - birthday.get(Calendar.DAY_OF_MONTH);
-        // 2.月相减
-        int month = now.get(Calendar.MONTH) + 1 - birthday.get(Calendar.MONTH);
-        // 3.年相减
-        int year = now.get(Calendar.YEAR) - birthday.get(Calendar.YEAR);
-        if (day < 0) {
-            month -= 1;
-            // 获取上个月，用来计算上个月的天数
-            now.add(Calendar.MONTH, -1);
-            day = day + now.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int months = (startMonth > nowMonth) ? (12 - startMonth + nowMonth) : (12 - nowMonth + startMonth);
+        if (months == 12) {
+            years++;
+            months = 0;
         }
-        if (month < 0) {
-            month = (month + 12) % 12;
-            year--;
+        int days = nowDay - startDay;
+
+        if (years <= 0 && months <= 0 && days < 0) {
+            throw new IllegalArgumentException("dateToCompare must be greater than birthDay");
         }
 
-        return (year > 0 ? (year + "岁") : Normal.EMPTY)
-                + (month > 0 ? (month + "个月") : Normal.EMPTY)
-                + (day > 0 ? (day + "天") : "今日出生");
+        return (years > 0 ? (years + "周岁") : Normal.EMPTY) + (months > 0 ? (months + "个月") : Normal.EMPTY) + ((days > 0) ? days : ("差" + Math.abs(days))) + "天";
     }
 
     /**
@@ -3892,7 +3885,7 @@ public class Almanac extends Converter {
      * @return boolean
      */
     public static boolean isSameMonthDay(LocalDate localDate1, String monthDayStr) {
-        return isSameMonthDay(localDate1, MonthDay.parse(Symbol.MINUS + Symbol.MINUS + monthDayStr));
+        return isSameMonthDay(localDate1, MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr));
     }
 
     /**
@@ -3977,7 +3970,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenNextSameMonthDay(LocalDate localDate, String monthDayStr) {
-        MonthDay monthDay2 = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + monthDayStr);
+        MonthDay monthDay2 = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
         return betweenNextSameMonthDay(localDate, monthDay2.getMonthValue(), monthDay2.getDayOfMonth());
     }
 
@@ -3989,7 +3982,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenNextSameMonthDay(Date date, String monthDayStr) {
-        MonthDay monthDay2 = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + monthDayStr);
+        MonthDay monthDay2 = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
         return betweenNextSameMonthDay(Converter.toLocalDate(date), monthDay2.getMonthValue(),
                 monthDay2.getDayOfMonth());
     }
@@ -4001,7 +3994,7 @@ public class Almanac extends Converter {
      * @return long
      */
     public static long betweenNextSameMonthDayOfNow(String monthDayStr) {
-        MonthDay monthDay2 = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + monthDayStr);
+        MonthDay monthDay2 = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
         return betweenNextSameMonthDay(LocalDate.now(), monthDay2.getMonthValue(),
                 monthDay2.getDayOfMonth());
     }

@@ -39,10 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 文本绘制器
- *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class TextPainter implements Painter {
@@ -82,7 +80,9 @@ public class TextPainter implements Painter {
             }
 
             //设置透明度
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, textLineElement.getAlpha()));
+            if (textLineElement.getAlpha() != 1.0f) {
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, textLineElement.getAlpha()));
+            }
 
             // 带删除线样式的文字要特殊处理
             if (textLineElement.isStrikeThrough() == true) {

@@ -37,7 +37,7 @@ import java.util.zip.DeflaterOutputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ImageOutputStream extends FilterOutputStream {

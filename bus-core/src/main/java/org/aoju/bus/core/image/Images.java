@@ -27,7 +27,6 @@ package org.aoju.bus.core.image;
 
 import org.aoju.bus.core.image.element.AbstractElement;
 import org.aoju.bus.core.image.element.ImageElement;
-import org.aoju.bus.core.image.element.RectangleElement;
 import org.aoju.bus.core.image.element.TextElement;
 import org.aoju.bus.core.image.painter.Painter;
 import org.aoju.bus.core.image.painter.PainterFactory;
@@ -35,7 +34,6 @@ import org.aoju.bus.core.image.painter.TextPainter;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
-import org.aoju.bus.core.lang.Graphics;
 import org.aoju.bus.core.lang.Scale;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
@@ -48,9 +46,7 @@ import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.CropImageFilter;
-import java.awt.image.ImageFilter;
+import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
@@ -61,7 +57,7 @@ import java.util.List;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Images implements Serializable {
@@ -313,6 +309,22 @@ public class Images implements Serializable {
     }
 
     /**
+     * 将图片绘制在背景上
+     *
+     * @param backgroundImg 背景图片
+     * @param image         要绘制的图片
+     * @param rectangle     矩形对象,表示矩形区域的x,y,width,height,x,y从背景图片中心计算
+     * @return 绘制后的背景
+     */
+    private static BufferedImage draw(BufferedImage backgroundImg, java.awt.Image image, Rectangle rectangle, float alpha) {
+        final Graphics2D g = backgroundImg.createGraphics();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
+        g.drawImage(image, rectangle.x, rectangle.y, rectangle.width, rectangle.height, null); // 绘制切割后的图
+        g.dispose();
+        return backgroundImg;
+    }
+
+    /**
      * 计算旋转后的图片尺寸
      *
      * @param width  宽度
@@ -340,25 +352,6 @@ public class Images implements Serializable {
         int des_height = height + len_dalta_height * 2;
 
         return new Rectangle(des_width, des_height);
-    }
-
-    /**
-     * 将图片绘制在背景上
-     *
-     * @param backgroundImg 背景图片
-     * @param image         要绘制的图片
-     * @param rectangle     矩形对象,表示矩形区域的x,y,width,height,x,y从背景图片中心计算
-     * @return 绘制后的背景
-     */
-    private BufferedImage draw(BufferedImage backgroundImg, java.awt.Image image, Rectangle rectangle, float alpha) {
-        final Graphics2D g = backgroundImg.createGraphics();
-        Graphics.setAlpha(g, alpha);
-
-        fixRectangle(rectangle, backgroundImg.getWidth(), backgroundImg.getHeight());
-        Graphics.drawImg(g, image, rectangle);
-
-        g.dispose();
-        return backgroundImg;
     }
 
     /**
@@ -421,19 +414,19 @@ public class Images implements Serializable {
             // 自动修正负数
             scale = -scale;
         }
-        final Image srcImg = getValidSrcImg();
+
+        final java.awt.Image srcImage = getValidSrcImg();
 
         // PNG图片特殊处理
         if (FileType.TYPE_PNG.equals(this.fileType)) {
-            // 修正float转double导致的精度丢失
-            final double scaleDouble = MathKit.toDouble(scale);
-            this.targetImage = ImageKit.filter(AffineTransform.getScaleInstance(scaleDouble, scaleDouble),
-                    ImageKit.toBufferedImage(srcImg, this.fileType));
+            final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(scale, scale), null);
+            this.targetImage = op.filter(ImageKit.toBufferedImage(srcImage), null);
         } else {
+            final String scaleStr = Float.toString(scale);
             // 缩放后的图片宽
-            final int width = MathKit.mul((Number) srcImg.getWidth(null), scale).intValue();
+            int width = MathKit.mul(Integer.toString(srcImage.getWidth(null)), scaleStr).intValue();
             // 缩放后的图片高
-            final int height = MathKit.mul((Number) srcImg.getHeight(null), scale).intValue();
+            int height = MathKit.mul(Integer.toString(srcImage.getHeight(null)), scaleStr).intValue();
             scale(width, height);
         }
         return this;
@@ -464,13 +457,12 @@ public class Images implements Serializable {
             scaleType = java.awt.Image.SCALE_DEFAULT;
         }
 
+        double sx = MathKit.div(width, srcWidth);
+        double sy = MathKit.div(height, srcHeight);
+
         if (FileType.TYPE_PNG.equals(this.fileType)) {
-            // 宽度缩放比
-            final double sx = MathKit.div(width, srcWidth);
-            // 高度缩放比
-            final double sy = MathKit.div(height, srcHeight);
-            this.targetImage = ImageKit.filter(AffineTransform.getScaleInstance(sx, sy),
-                    ImageKit.toBufferedImage(srcImage, this.fileType));
+            final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(sx, sy), null);
+            this.targetImage = op.filter(ImageKit.toBufferedImage(srcImage), null);
         } else {
             this.targetImage = srcImage.getScaledInstance(width, height, scaleType);
         }
@@ -539,7 +531,8 @@ public class Images implements Serializable {
         rectangle = fixRectangle(rectangle, srcImage.getWidth(null), srcImage.getHeight(null));
 
         final ImageFilter cropFilter = new CropImageFilter(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        this.targetImage = ImageKit.filter(cropFilter, srcImage);
+        final java.awt.Image image = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(srcImage.getSource(), cropFilter));
+        this.targetImage = ImageKit.toBufferedImage(image);
         return this;
     }
 
@@ -611,12 +604,13 @@ public class Images implements Serializable {
     }
 
     /**
-     * 彩色转为灰度
+     * 彩色转为黑白
      *
      * @return this
      */
     public Images gray() {
-        this.targetImage = ImageKit.filter(ColorSpace.getInstance(ColorSpace.CS_GRAY), getValidSrcBufferedImg());
+        final ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+        this.targetImage = op.filter(ImageKit.toBufferedImage(getValidSrcImg()), null);
         return this;
     }
 
@@ -632,6 +626,7 @@ public class Images implements Serializable {
 
     /**
      * 给图片添加文字水印
+     * 此方法并不关闭流
      *
      * @param pressText 水印文字
      * @param color     水印的字体颜色
@@ -642,7 +637,7 @@ public class Images implements Serializable {
      * @return 处理后的图像
      */
     public Images pressText(String pressText, Color color, Font font, int x, int y, float alpha) {
-        final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.fileType);
+        final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg());
         final Graphics2D g = targetImage.createGraphics();
 
         if (null == font) {
@@ -746,12 +741,11 @@ public class Images implements Serializable {
      * @return 处理过的图片
      */
     public java.awt.Image getImg() {
-        return getValidSrcImg();
+        return null == this.targetImage ? this.srcImage : this.targetImage;
     }
 
     /**
-     * 写出图像为结果设置格式
-     * 结果类型设定见{@link #setTargetImageType(String)}
+     * 写出图像
      *
      * @param out 写出到的目标流
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
@@ -762,8 +756,7 @@ public class Images implements Serializable {
     }
 
     /**
-     * 写出图像为结果设置格式
-     * 结果类型设定见{@link #setTargetImageType(String)}
+     * 写出图像为PNG格式
      *
      * @param targetImageStream 写出到的目标流
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
@@ -806,6 +799,50 @@ public class Images implements Serializable {
     }
 
     /**
+     * 获取int类型的图片类型
+     *
+     * @return 图片类型
+     * @see BufferedImage#TYPE_INT_ARGB
+     * @see BufferedImage#TYPE_INT_RGB
+     */
+    private int getTypeInt() {
+        switch (this.fileType) {
+            case FileType.TYPE_PNG:
+                return BufferedImage.TYPE_INT_ARGB;
+            default:
+                return BufferedImage.TYPE_INT_RGB;
+        }
+    }
+
+    /**
+     * 获取有效的源图片,首先检查上一次处理的结果图片,如无则使用用户传入的源图片
+     *
+     * @return 有效的源图片
+     */
+    private java.awt.Image getValidSrcImg() {
+        return ObjectKit.defaultIfNull(this.targetImage, this.srcImage);
+    }
+
+    /**
+     * 修正矩形框位置
+     *
+     * @param rectangle  矩形
+     * @param baseWidth  参考宽
+     * @param baseHeight 参考高
+     * @return 修正后的{@link Rectangle}
+     */
+    private Rectangle fixRectangle(Rectangle rectangle, int baseWidth, int baseHeight) {
+        if (this.positionBaseCentre) {
+            // 修正图片位置从背景的中心计算
+            rectangle.setLocation(//
+                    rectangle.x + (Math.abs(baseWidth - rectangle.width) / 2),
+                    rectangle.y + (Math.abs(baseHeight - rectangle.height) / 2)
+            );
+        }
+        return rectangle;
+    }
+
+    /**
      * 描边，此方法为向内描边，会覆盖图片相应的位置
      *
      * @param color 描边颜色，默认黑色
@@ -824,7 +861,7 @@ public class Images implements Serializable {
      * @return this
      */
     public Images stroke(Color color, Stroke stroke) {
-        final BufferedImage image = ImageKit.toBufferedImage(getValidSrcImg(), this.fileType);
+        final BufferedImage image = ImageKit.toBufferedImage(getValidSrcImg());
         int width = image.getWidth(null);
         int height = image.getHeight(null);
         Graphics2D g = image.createGraphics();
@@ -1051,21 +1088,6 @@ public class Images implements Serializable {
     }
 
     /**
-     * 添加矩形元素
-     *
-     * @param x      x坐标
-     * @param y      y坐标
-     * @param width  宽度
-     * @param height 高度
-     * @return the object
-     */
-    public RectangleElement addRectangleElement(int x, int y, int width, int height) {
-        RectangleElement rectangleElement = new RectangleElement(x, y, width, height);
-        this.list.add(rectangleElement);
-        return rectangleElement;
-    }
-
-    /**
      * 设置背景高斯模糊
      *
      * @param blur 模糊值
@@ -1073,59 +1095,6 @@ public class Images implements Serializable {
     public void setBackgroundBlur(int blur) {
         ImageElement bgElement = (ImageElement) list.get(0);
         bgElement.setBlur(blur);
-    }
-
-
-    /**
-     * 获取int类型的图片类型
-     *
-     * @return 图片类型
-     * @see BufferedImage#TYPE_INT_ARGB
-     * @see BufferedImage#TYPE_INT_RGB
-     */
-    private int getTypeInt() {
-        switch (this.fileType) {
-            case FileType.TYPE_PNG:
-                return BufferedImage.TYPE_INT_ARGB;
-            default:
-                return BufferedImage.TYPE_INT_RGB;
-        }
-    }
-
-    /**
-     * 获取有效的源图片,首先检查上一次处理的结果图片,如无则使用用户传入的源图片
-     *
-     * @return 有效的源图片
-     */
-    private java.awt.Image getValidSrcImg() {
-        return ObjectKit.defaultIfNull(this.targetImage, this.srcImage);
-    }
-
-    /**
-     * 获取有效的源{@link BufferedImage}图片，首先检查上一次处理的结果图片，如无则使用用户传入的源图片
-     *
-     * @return 有效的源图片
-     */
-    private BufferedImage getValidSrcBufferedImg() {
-        return ImageKit.toBufferedImage(getValidSrcImg(), this.fileType);
-    }
-
-    /**
-     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}，<br>
-     * 则坐标修正为基于图形中心，否则基于左上角
-     *
-     * @param rectangle  矩形
-     * @param baseWidth  参考宽
-     * @param baseHeight 参考高
-     * @return 修正后的{@link Rectangle}
-     */
-    private Rectangle fixRectangle(Rectangle rectangle, int baseWidth, int baseHeight) {
-        if (this.positionBaseCentre) {
-            final Point pointBaseCentre = ImageKit.getPointCentre(rectangle, baseWidth, baseHeight);
-            // 修正图片位置从背景的中心计算
-            rectangle.setLocation(pointBaseCentre.x, pointBaseCentre.y);
-        }
-        return rectangle;
     }
 
 }

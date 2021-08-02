@@ -27,7 +27,6 @@ package org.aoju.bus.socket;
 
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.socket.process.MessageProcessor;
 
@@ -49,7 +48,7 @@ import java.util.function.Consumer;
  *
  * @param <R> 请求信息
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class UdpBootstrap<R> {
@@ -151,7 +150,7 @@ public class UdpBootstrap<R> {
 
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r, "socket:udp-" + uid + Symbol.MINUS + (++i));
+                return new Thread(r, "socket:udp-" + uid + "-" + (++i));
             }
         });
         for (int i = 0; i < config.getThreadNum(); i++) {

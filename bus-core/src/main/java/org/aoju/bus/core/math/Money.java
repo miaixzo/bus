@@ -61,7 +61,7 @@ import java.util.Currency;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Money implements Serializable, Comparable<Money> {
@@ -121,11 +121,7 @@ public class Money implements Serializable, Comparable<Money> {
     public Money(long yuan, int cent, Currency currency) {
         this.currency = currency;
 
-        if (0 == yuan) {
-            this.cent = cent;
-        } else {
-            this.cent = (yuan * getCentFactor()) + (cent % getCentFactor());
-        }
+        this.cent = (yuan * getCentFactor()) + (cent % getCentFactor());
     }
 
     /**

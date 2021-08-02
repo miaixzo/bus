@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Xml2Dcm {
@@ -71,7 +71,7 @@ public class Xml2Dcm {
             throws Exception {
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser p = f.newSAXParser();
-        if (fname.equals(Symbol.MINUS)) {
+        if (fname.equals(Symbol.HYPHEN)) {
             p.parse(System.in, ch);
         } else {
             p.parse(new File(fname), ch);

@@ -38,7 +38,7 @@ import java.util.*;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ReflectKit {
@@ -526,18 +526,15 @@ public class ReflectKit {
             return null;
         }
         if (obj instanceof Class) {
-            // 静态字段获取时对象为null
             obj = null;
         }
 
-        setAccessible(field);
-        Object result;
+        field.setAccessible(true);
         try {
-            result = field.get(obj);
+            return field.get(obj);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for {}.{}", field.getDeclaringClass(), field.getName());
+            throw new InstrumentException("IllegalAccess for " + obj.getClass() + Symbol.DOT + field.getName());
         }
-        return result;
     }
 
     /**

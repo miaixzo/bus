@@ -26,7 +26,6 @@
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -42,7 +41,7 @@ import java.io.OutputStream;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Base64 {
@@ -351,7 +350,7 @@ public class Base64 {
 
     private static boolean isWhiteSpace(byte byteToCheck) {
         switch (byteToCheck) {
-            case Symbol.C_SPACE:
+            case ' ':
             case '\n':
             case '\r':
             case '\t':

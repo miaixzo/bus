@@ -29,10 +29,6 @@ import java.lang.annotation.*;
 
 /**
  * 忽略该属性
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

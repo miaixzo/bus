@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.freebsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
@@ -40,7 +39,7 @@ import java.util.Map;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -132,7 +131,7 @@ public class FreeBsdOSThread extends AbstractOSThread {
         String lwpStr = Integer.toString(this.threadId);
         for (String psOutput : threadList) {
             Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(FreeBsdOSProcess.PsThreadColumns.class, psOutput.trim(),
-                    Symbol.C_SPACE);
+                    ' ');
             if (threadMap.containsKey(FreeBsdOSProcess.PsThreadColumns.PRI) && lwpStr.equals(threadMap.get(FreeBsdOSProcess.PsThreadColumns.LWP))) {
                 return updateAttributes(threadMap);
             }

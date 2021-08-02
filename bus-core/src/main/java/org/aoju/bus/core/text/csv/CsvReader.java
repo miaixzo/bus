@@ -36,7 +36,6 @@ import org.aoju.bus.core.toolkit.StringKit;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ import java.util.Objects;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public final class CsvReader {
@@ -124,26 +123,6 @@ public final class CsvReader {
      */
     public CsvData read(File file) throws InstrumentException {
         return read(file, Charset.UTF_8);
-    }
-
-    /**
-     * 从字符串中读取CSV数据
-     *
-     * @param csvStr CSV字符串
-     * @return {@link CsvData}，包含数据列表和行信息
-     */
-    public CsvData read(String csvStr) {
-        return read(new StringReader(csvStr));
-    }
-
-    /**
-     * 从字符串中读取CSV数据
-     *
-     * @param csvStr     CSV字符串
-     * @param rowHandler 行处理器，用于一行一行的处理数据
-     */
-    public void read(String csvStr, CsvHandler rowHandler) {
-        read(parse(new StringReader(csvStr)), rowHandler);
     }
 
     /**
@@ -227,24 +206,6 @@ public final class CsvReader {
         } finally {
             IoKit.close(csvParser);
         }
-    }
-
-    /**
-     * 从字符串中读取CSV数据并转换为Bean列表，读取后关闭Reader
-     * 此方法默认识别首行为标题行。
-     *
-     * @param <T>    Bean类型
-     * @param csvStr csv字符串
-     * @param clazz  Bean类型
-     * @return Bean列表
-     */
-    public <T> List<T> read(String csvStr, Class<T> clazz) {
-        // 此方法必须包含标题
-        this.config.setContainsHeader(true);
-
-        final List<T> result = new ArrayList<>();
-        read(new StringReader(csvStr), (row) -> result.add(row.toBean(clazz)));
-        return result;
     }
 
     /**

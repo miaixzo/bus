@@ -51,7 +51,7 @@ import java.util.List;
  * Excel2003格式的事件-用户模型方式读取器,统一将此归类为Sax读取
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03SaxReader> {
@@ -196,8 +196,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             // Sheet边界记录，此Record中可以获得Sheet名
             final BoundSheetRecord boundSheetRecord = (BoundSheetRecord) record;
             boundSheetRecords.add(boundSheetRecord);
-            final String currentSheetName = boundSheetRecord.getSheetname();
-            if (null != this.sheetName && StringKit.equals(this.sheetName, currentSheetName)) {
+            if (this.rid < 0 && null != this.sheetName && StringKit.equals(this.sheetName, boundSheetRecord.getSheetname())) {
                 this.rid = this.boundSheetRecords.size() - 1;
             }
         } else if (record instanceof SSTRecord) {
@@ -376,19 +375,17 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private int getSheetIndex(String idOrRidOrSheetName) {
         Assert.notBlank(idOrRidOrSheetName, "id or rid or sheetName must be not blank!");
+
         // rid直接处理
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
             return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
-        } else if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX)) {
-            // 支持任意名称
-            this.sheetName = StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX);
-        } else {
-            try {
-                return Integer.parseInt(idOrRidOrSheetName);
-            } catch (NumberFormatException ignore) {
-                // 如果用于传入非数字，按照sheet名称对待
-                this.sheetName = idOrRidOrSheetName;
-            }
+        }
+
+        try {
+            return Integer.parseInt(idOrRidOrSheetName);
+        } catch (NumberFormatException ignore) {
+            // 如果用于传入非数字，按照sheet名称对待
+            this.sheetName = idOrRidOrSheetName;
         }
 
         return -1;

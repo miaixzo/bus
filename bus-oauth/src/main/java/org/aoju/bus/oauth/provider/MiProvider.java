@@ -47,17 +47,17 @@ import java.text.MessageFormat;
  * 小米登录
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
-public class XiaomiProvider extends AbstractProvider {
+public class MiProvider extends AbstractProvider {
 
-    public XiaomiProvider(Context context) {
-        super(context, Registry.XIAOMI);
+    public MiProvider(Context context) {
+        super(context, Registry.MI);
     }
 
-    public XiaomiProvider(Context context, ExtendCache extendCache) {
-        super(context, Registry.XIAOMI, extendCache);
+    public MiProvider(Context context, ExtendCache extendCache) {
+        super(context, Registry.MI, extendCache);
     }
 
     @Override

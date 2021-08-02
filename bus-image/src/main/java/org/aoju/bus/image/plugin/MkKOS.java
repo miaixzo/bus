@@ -44,7 +44,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class MkKOS {
@@ -151,7 +151,7 @@ public class MkKOS {
         if (null == codeMeaning)
             throw new IllegalArgumentException("undefined internal value: "
                     + codeValue);
-        int endDesignator = codeValue.indexOf(Symbol.C_MINUS);
+        int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH,
                 endDesignator >= 0

@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class MapKit {
@@ -707,19 +707,18 @@ public class MapKit {
      * @see #newTreeMap(Map, Comparator)
      */
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map, Comparator<? super K> comparator) {
-        if (null == map) {
-            return null;
-        }
-
+        TreeMap<K, V> result;
         if (map instanceof TreeMap) {
-            // 已经是可排序Map，此时只有比较器一致才返回原map
-            TreeMap<K, V> result = (TreeMap<K, V>) map;
+            // 已经是可排序Map,此时只有比较器一致才返回原map
+            result = (TreeMap<K, V>) map;
             if (null == comparator || comparator.equals(result.comparator())) {
                 return result;
             }
+        } else {
+            result = newTreeMap(map, comparator);
         }
 
-        return newTreeMap(map, comparator);
+        return result;
     }
 
     /**

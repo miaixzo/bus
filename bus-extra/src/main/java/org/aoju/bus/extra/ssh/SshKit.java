@@ -43,10 +43,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
-public class JSchKit {
+public class SshKit {
 
     /**
      * 不使用SSH的值
@@ -81,7 +81,7 @@ public class JSchKit {
      * @return SSH会话
      */
     public static Session getSession(String sshHost, int sshPort, String sshUser, String sshPass) {
-        return JSchSessionPool.INSTANCE.getSession(sshHost, sshPort, sshUser, sshPass);
+        return JschSessionPool.INSTANCE.getSession(sshHost, sshPort, sshUser, sshPass);
     }
 
     /**
@@ -95,7 +95,7 @@ public class JSchKit {
      * @return SSH会话
      */
     public static Session getSession(String sshHost, int sshPort, String sshUser, String privateKeyPath, byte[] passphrase) {
-        return JSchSessionPool.INSTANCE.getSession(sshHost, sshPort, sshUser, privateKeyPath, passphrase);
+        return JschSessionPool.INSTANCE.getSession(sshHost, sshPort, sshUser, privateKeyPath, passphrase);
     }
 
     /**
@@ -240,26 +240,11 @@ public class JSchKit {
      * @throws InstrumentException 端口绑定失败异常
      */
     public static boolean bindPort(Session session, String remoteHost, int remotePort, int localPort) throws InstrumentException {
-        return bindPort(session, remoteHost, remotePort, "127.0.0.1", localPort);
-    }
-
-    /**
-     * 绑定端口到本地。 一个会话可绑定多个端口
-     *
-     * @param session    需要绑定端口的SSH会话
-     * @param remoteHost 远程主机
-     * @param remotePort 远程端口
-     * @param localHost  本地主机
-     * @param localPort  本地端口
-     * @return 成功与否
-     * @throws InstrumentException 端口绑定失败异常
-     */
-    public static boolean bindPort(Session session, String remoteHost, int remotePort, String localHost, int localPort) throws InstrumentException {
-        if (session != null && session.isConnected()) {
+        if (null != session && session.isConnected()) {
             try {
-                session.setPortForwardingL(localHost, localPort, remoteHost, remotePort);
+                session.setPortForwardingL(localPort, remoteHost, remotePort);
             } catch (JSchException e) {
-                throw new InstrumentException("From [{}:{}] mapping to [{}:{}] error ！", remoteHost, remotePort, localHost, localPort);
+                throw new InstrumentException("From [{" + remoteHost + "}] mapping to [{" + localPort + "}] error！");
             }
             return true;
         }
@@ -276,7 +261,7 @@ public class JSchKit {
      * @return 成功与否
      * @throws InstrumentException 端口绑定失败异常
      */
-    public static boolean bindPort(Session session, int bindPort, String host, int port) throws InstrumentException {
+    public static boolean bindRemotePort(Session session, int bindPort, String host, int port) throws InstrumentException {
         if (null != session && session.isConnected()) {
             try {
                 session.setPortForwardingR(bindPort, host, port);
@@ -517,7 +502,7 @@ public class JSchKit {
         if (null != session && session.isConnected()) {
             session.disconnect();
         }
-        JSchSessionPool.INSTANCE.remove(session);
+        JschSessionPool.INSTANCE.remove(session);
     }
 
     /**
@@ -537,14 +522,14 @@ public class JSchKit {
      * @param key 主机,格式为user@host:port
      */
     public static void close(String key) {
-        JSchSessionPool.INSTANCE.close(key);
+        JschSessionPool.INSTANCE.close(key);
     }
 
     /**
      * 关闭所有SSH连接会话
      */
     public static void closeAll() {
-        JSchSessionPool.INSTANCE.closeAll();
+        JschSessionPool.INSTANCE.closeAll();
     }
 
 }

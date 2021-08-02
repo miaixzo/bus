@@ -40,7 +40,6 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.channels.spi.AsynchronousChannelProvider;
 import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -51,7 +50,7 @@ import java.util.function.Function;
  *
  * @param <T> 消息对象类型
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class AioQuickServer<T> {
@@ -146,17 +145,14 @@ public class AioQuickServer<T> {
                 this.innerBufferPool = bufferPool;
             }
             this.aioSessionFunction = aioSessionFunction;
-            AsynchronousChannelProvider provider;
-            if (config.isAioEnhance()) {
-                aioCompletionReadHandler = new CompletionReadHandler();
-                provider = new org.aoju.bus.socket.channel.AsynchronousChannelProvider();
+            if (BUS_ASYNCHRONOUS_CHANNEL_PROVIDER.equals(System.getProperty(AIO_ASYNCHRONOUS_CHANNEL_PROVIDER))) {
+                aioCompletionReadHandler = new CompletionReadHandler<>();
             } else {
                 concurrentReadCompletionHandlerExecutor = new ThreadPoolExecutor(1, 1,
                         60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-                aioCompletionReadHandler = new ConcurrentReadHandler(new Semaphore(config.getThreadNum() - 1), concurrentReadCompletionHandlerExecutor);
-                provider = AsynchronousChannelProvider.provider();
+                aioCompletionReadHandler = new ConcurrentReadHandler<>(new Semaphore(config.getThreadNum() - 1), concurrentReadCompletionHandlerExecutor);
             }
-            asynchronousChannelGroup = provider.openAsynchronousChannelGroup(config.getThreadNum(), new ThreadFactory() {
+            asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(config.getThreadNum(), new ThreadFactory() {
                 private byte index = 0;
 
                 @Override

@@ -36,7 +36,7 @@ import java.util.List;
  * 返回结果公用
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @Data
@@ -56,10 +56,6 @@ public class Result<T> extends BaseEntity implements Serializable {
 
     public Result() {
 
-    }
-
-    public Result(List<T> rows) {
-        this.rows = rows;
     }
 
     public Result(int total, List<T> rows) {

@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGroup {
@@ -47,6 +47,14 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
      * 递归回调次数上限
      */
     public static final int MAX_INVOKER = 8;
+    /**
+     * 写线程数
+     */
+    private static final String WRITE_THREAD_NUM = "org.aoju.bus.socket.writeThreadNum";
+    /**
+     * accept线程数,该线程数只可少于等于进程内启用的服务端个数，多出无效
+     */
+    private static final String ACCEPT_THREAD_NUM = "org.aoju.bus.socket.acceptThreadNum";
     /**
      * 读回调处理线程池,可用于业务处理
      */
@@ -104,8 +112,8 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         }
 
         // init threadPool for write and connect
-        final int writeThreadNum = 1;
-        final int acceptThreadNum = 1;
+        final int writeThreadNum = getIntSystemProperty(WRITE_THREAD_NUM, 1);
+        final int acceptThreadNum = getIntSystemProperty(ACCEPT_THREAD_NUM, 1);
         writeExecutorService = getThreadPoolExecutor("bus-socket:write-", writeThreadNum);
         this.writeWorkers = new Worker[writeThreadNum];
         int validSelectionKey = SelectionKey.OP_WRITE | SelectionKey.OP_CONNECT;
@@ -142,6 +150,20 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
             }
         });
     }
+
+    private int getIntSystemProperty(String key, int defaultValue) {
+        String value = System.getProperty(key);
+        if (null == value || value.length() == 0) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return defaultValue;
+    }
+
 
     /**
      * 移除关注事件

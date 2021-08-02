@@ -32,10 +32,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * 图片绘制器
- *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ImagePainter implements Painter {
@@ -297,7 +295,9 @@ public class ImagePainter implements Painter {
         }
 
         //设置透明度
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, imageElement.getAlpha()));
+        if (imageElement.getAlpha() != 1.0f) {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, imageElement.getAlpha()));
+        }
 
         // 将元素图绘制到画布
         g.drawImage(image, imageElement.getX(), imageElement.getY(), width, height, null);

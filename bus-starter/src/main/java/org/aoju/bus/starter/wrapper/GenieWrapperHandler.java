@@ -46,11 +46,11 @@ import javax.servlet.http.HttpServletResponse;
  * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
-@Component
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@Component
 public class GenieWrapperHandler implements HandlerInterceptor {
 
     /**

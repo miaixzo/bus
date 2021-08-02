@@ -32,10 +32,10 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 
 /**
- * 图片元素
+ * 图片合并元素
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ImageElement extends AbstractElement<ImageElement> {
@@ -57,7 +57,7 @@ public class ImageElement extends AbstractElement<ImageElement> {
      */
     private Integer height;
     /**
-     * 圆角大小
+     * 圆角度数
      */
     private Integer roundCorner;
     /**

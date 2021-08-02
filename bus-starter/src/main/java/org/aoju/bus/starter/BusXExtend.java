@@ -25,96 +25,86 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
-import org.aoju.bus.core.lang.Symbol;
-
 /**
  * 全局扩展配置
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class BusXExtend {
 
     /**
-     * Spring配置
-     */
-    public static final String SPRING = "spring";
-    /**
-     * 扩展配置
-     */
-    public static final String EXTEND = "extend";
-    /**
      * 数据源配置
      */
-    public static final String DATASOURCE = SPRING + Symbol.DOT + "datasource";
+    public static final String DATASOURCE = "spring.datasource";
     /**
      * 缓存配置
      */
-    public static final String CACHE = EXTEND + Symbol.DOT + "cache";
+    public static final String CACHE = "extend.cache";
     /**
      * 跨域支持
      */
-    public static final String CORS = EXTEND + Symbol.DOT + "cors";
+    public static final String CORS = "extend.cors";
     /**
      * Druid监控
      */
-    public static final String DRUID = EXTEND + Symbol.DOT + "druid";
+    public static final String DRUID = "extend.druid";
     /**
      * Druid监控
      */
-    public static final String DUBBO = EXTEND + Symbol.DOT + "dubbo";
+    public static final String DUBBO = "extend.dubbo";
     /**
      * 路由配置
      */
-    public static final String GOALIE = EXTEND + Symbol.DOT + "goalie";
+    public static final String GOALIE = "extend.goalie";
     /**
      * 国际化支持
      */
-    public static final String I18N = EXTEND + Symbol.DOT + "i18n";
+    public static final String I18N = "extend.i18n";
     /**
      * 图像解析
      */
-    public static final String IMAGE = EXTEND + Symbol.DOT + "image";
+    public static final String IMAGE = "extend.image";
     /**
      * 限流支持
      */
-    public static final String LIMITER = EXTEND + Symbol.DOT + "limiter";
+    public static final String LIMITER = "extend.limiter";
     /**
      * Mybatis/Mapper
      */
-    public static final String MYBATIS = EXTEND + Symbol.DOT + "mybatis";
+    public static final String MYBATIS = "extend.mybatis";
     /**
      * 消息通知
      */
-    public static final String NOTIFY = EXTEND + Symbol.DOT + "notify";
+    public static final String NOTIFY = "extend.notify";
     /**
      * 授权登陆
      */
-    public static final String OAUTH = EXTEND + Symbol.DOT + "oauth";
+    public static final String OAUTH = "extend.oauth";
     /**
      * 文件预览
      */
-    public static final String OFFICE = EXTEND + Symbol.DOT + "office";
+    public static final String OFFICE = "extend.office";
     /**
      * 数据脱敏
      */
-    public static final String SENSITIVE = EXTEND + Symbol.DOT + "sensitive";
+    public static final String SENSITIVE = "extend.sensitive";
     /**
      * socket
      */
-    public static final String SOCKET = EXTEND + Symbol.DOT + "socket";
+    public static final String SOCKET = "extend.socket";
     /**
      * 存储设置
      */
-    public static final String STORAGE = EXTEND + Symbol.DOT + "storage";
+    public static final String STORAGE = "extend.storage";
     /**
      * XSS/重复读取失效
      */
-    public static final String WRAPPER = EXTEND + Symbol.DOT + "wrapper";
+    public static final String WRAPPER = "extend.wrapper";
     /**
      * 工作/临时目录等
      */
-    public static final String WORK = EXTEND + Symbol.DOT + "work";
+    public static final String WORK = "extend.work";
 
 }

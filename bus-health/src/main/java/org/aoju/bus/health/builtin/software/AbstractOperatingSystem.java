@@ -26,7 +26,6 @@
 package org.aoju.bus.health.builtin.software;
 
 import com.sun.jna.Platform;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
  * Common methods for OperatingSystem implementations
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {
@@ -198,7 +197,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE).append(getVersionInfo());
+        sb.append(getManufacturer()).append(' ').append(getFamily()).append(' ').append(getVersionInfo());
         return sb.toString();
     }
 

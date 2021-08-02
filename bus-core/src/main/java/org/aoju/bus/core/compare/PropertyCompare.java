@@ -25,7 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.core.compare;
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * Bean属性排序器
@@ -33,12 +38,15 @@ import org.aoju.bus.core.toolkit.BeanKit;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
-public class PropertyCompare<T> extends FuncCompare<T> {
+public class PropertyCompare<T> implements Comparator<T>, Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private final String property;
+    private final boolean isNullGreater;
 
     /**
      * 构造
@@ -53,10 +61,41 @@ public class PropertyCompare<T> extends FuncCompare<T> {
      * 构造
      *
      * @param property      属性名
-     * @param isNullGreater null值是否排在后（从小到大排序）
+     * @param isNullGreater null值是否排在后(从小到大排序)
      */
     public PropertyCompare(String property, boolean isNullGreater) {
-        super(isNullGreater, (bean) -> BeanKit.getProperty(bean, property));
+        this.property = property;
+        this.isNullGreater = isNullGreater;
+    }
+
+    @Override
+    public int compare(T o1, T o2) {
+        if (o1 == o2) {
+            return 0;
+        } else if (null == o1) {// null 排在后面
+            return isNullGreater ? 1 : -1;
+        } else if (null == o2) {
+            return isNullGreater ? -1 : 1;
+        }
+
+        java.lang.Comparable<?> v1;
+        java.lang.Comparable<?> v2;
+        try {
+            v1 = (java.lang.Comparable<?>) BeanKit.getProperty(o1, property);
+            v2 = (java.lang.Comparable<?>) BeanKit.getProperty(o2, property);
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+
+        return compare(o1, o2, v1, v2);
+    }
+
+    private int compare(T o1, T o2, java.lang.Comparable fieldValue1, java.lang.Comparable fieldValue2) {
+        int result = ObjectKit.compare(fieldValue1, fieldValue2, isNullGreater);
+        if (0 == result) {
+            result = ObjectKit.compare(o1, o2, this.isNullGreater);
+        }
+        return result;
     }
 
 }

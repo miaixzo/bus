@@ -31,7 +31,6 @@ import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
 import org.aoju.bus.core.io.file.*;
 import org.aoju.bus.core.io.file.visitor.DeleteVisitor;
-import org.aoju.bus.core.io.file.visitor.MoveVisitor;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
@@ -55,7 +54,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -449,7 +448,7 @@ public class FileKit {
      *
      * @param start   起始路径，必须为目录
      * @param visitor {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
-     * @see Files#walkFileTree(Path, Set, int, FileVisitor)
+     * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
      */
     public static void walkFiles(Path start, FileVisitor<? super Path> visitor) {
         walkFiles(start, -1, visitor);
@@ -461,7 +460,7 @@ public class FileKit {
      * @param start    起始路径，必须为目录
      * @param maxDepth 最大遍历深度，-1表示不限制深度
      * @param visitor  {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
-     * @see Files#walkFileTree(Path, Set, int, FileVisitor)
+     * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
      */
     public static void walkFiles(Path start, int maxDepth, FileVisitor<? super Path> visitor) {
         if (maxDepth < 0) {
@@ -590,7 +589,7 @@ public class FileKit {
             return null;
         }
         if (false == file.exists()) {
-            mkdir(file.getParentFile());
+            mkParentDirs(file);
             try {
                 file.createNewFile();
             } catch (Exception e) {
@@ -624,6 +623,33 @@ public class FileKit {
      */
     public static File touch(String parent, String path) throws InstrumentException {
         return touch(file(parent, path));
+    }
+
+    /**
+     * 创建所给文件或目录的父目录
+     *
+     * @param file 文件或目录
+     * @return 父目录
+     */
+    public static File mkParentDirs(File file) {
+        final File parentFile = file.getParentFile();
+        if (null != parentFile && false == parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+        return parentFile;
+    }
+
+    /**
+     * 创建父文件夹,如果存在直接返回此文件夹
+     *
+     * @param path 文件夹路径,使用POSIX格式,无论哪个平台
+     * @return 创建的目录
+     */
+    public static File mkParentDirs(String path) {
+        if (null == path) {
+            return null;
+        }
+        return mkParentDirs(file(path));
     }
 
     /**
@@ -1085,21 +1111,13 @@ public class FileKit {
         Assert.notNull(src, "Src path must be not null !");
         Assert.notNull(target, "Target path must be not null !");
         final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
-
-        // 自动创建目标的父目录
-        mkdir(target.getParent());
+        if (isDirectory(target)) {
+            target = target.resolve(src.getFileName());
+        }
         try {
             return Files.move(src, target, options);
         } catch (IOException e) {
-            // 移动失败，可能是跨分区移动导致的，采用递归移动方式
-            try {
-                Files.walkFileTree(src, new MoveVisitor(src, target, options));
-                // 移动后空目录没有删除，
-                delete(src);
-            } catch (IOException e2) {
-                throw new InstrumentException(e2);
-            }
-            return target;
+            throw new InstrumentException(e);
         }
     }
 

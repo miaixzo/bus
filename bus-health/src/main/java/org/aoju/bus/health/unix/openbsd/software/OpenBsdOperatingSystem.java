@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.openbsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -56,7 +55,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
             .collect(Collectors.joining(","));
-    private static final long BOOTTIME = querySystemBootTime();
 
     private static List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
@@ -74,7 +72,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE);
+            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
                 procs.add(new OpenBsdOSProcess(
@@ -82,6 +80,13 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return procs;
+    }
+
+    private static final long BOOTTIME = querySystemBootTime();
+
+    enum PsKeywords {
+        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
+        ARGS; // ARGS must always be last
     }
 
     private static long querySystemBootTime() {
@@ -225,11 +230,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         List<OSProcess> allProcs = queryAllProcesses();
         Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    enum PsKeywords {
-        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
-        ARGS; // ARGS must always be last
     }
 
 }

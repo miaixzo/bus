@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChannel {
@@ -122,7 +122,7 @@ public class UnsupportedAsynchronousSocketChannel extends AsynchronousSocketChan
     }
 
     @Override
-    public SocketAddress getLocalAddress() throws IOException {
+    public SocketAddress getLocalAddress() {
         throw new UnsupportedOperationException();
     }
 

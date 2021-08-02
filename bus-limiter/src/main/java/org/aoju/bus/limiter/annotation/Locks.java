@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 锁
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})

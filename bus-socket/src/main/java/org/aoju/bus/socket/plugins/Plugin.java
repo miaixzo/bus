@@ -32,7 +32,7 @@ import org.aoju.bus.socket.process.MessageProcessor;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public interface Plugin<T> extends NetMonitor {
