@@ -57,7 +57,7 @@ import java.util.List;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Images implements Serializable {
@@ -177,7 +177,7 @@ public class Images implements Serializable {
      * @param height     背景图高度
      * @param zoomMode   缩放模式
      * @param fileType   输出图片格式
-     * @throws Exception
+     * @throws Exception 异常信息
      */
     public Images(String bgImageUrl, int width, int height, Scale.Mode zoomMode, String fileType) throws Exception {
         ImageElement bgImageElement = new ImageElement(bgImageUrl, 0, 0, width, height, zoomMode);
@@ -193,7 +193,7 @@ public class Images implements Serializable {
      * @param height   背景图高度
      * @param zoomMode 缩放模式
      * @param fileType 输出图片格式
-     * @throws Exception
+     * @throws Exception 异常信息
      */
     public Images(BufferedImage bgImage, int width, int height, Scale.Mode zoomMode, String fileType) throws Exception {
         ImageElement bgImageElement = new ImageElement(bgImage, 0, 0, width, height, zoomMode);

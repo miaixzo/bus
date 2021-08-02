@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * 注释用于确定作用域的注释.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @Target(ElementType.ANNOTATION_TYPE)

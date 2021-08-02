@@ -54,7 +54,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {
@@ -414,7 +414,7 @@ public class Sftp extends AbstractFtp {
      * @param remotePath 远程路径
      */
     public void upload(File file, String remotePath) {
-        if (false == FileKit.exist(file)) {
+        if (false == FileKit.exists(file)) {
             return;
         }
         if (file.isDirectory()) {
@@ -507,7 +507,7 @@ public class Sftp extends AbstractFtp {
                 String destinationPathFile = destPath + Symbol.SLASH + item.getFilename();
                 if (!item.getAttrs().isDir()) {
                     // 本地不存在文件或者ftp上文件有修改则下载
-                    if (!FileKit.exist(destinationPathFile)
+                    if (!FileKit.exists(destinationPathFile)
                             || (item.getAttrs().getMTime() > (FileKit.lastModifiedTime(destinationPathFile).getTime() / 1000))) {
                         // Download file from source (source filename, destination filename).
                         channel.get(sourcePathPathFile, destinationPathFile);

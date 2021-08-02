@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * 数据结构列表属性注解
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -32,7 +32,7 @@ import org.apache.ibatis.annotations.SelectProvider;
  * 通用Mapper接口,查询
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public interface SelectOneMapper<T> {

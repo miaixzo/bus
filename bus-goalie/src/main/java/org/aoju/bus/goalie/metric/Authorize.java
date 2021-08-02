@@ -4,7 +4,7 @@ package org.aoju.bus.goalie.metric;
  * 访问授权认证
  *
  * @author Justubborn
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public interface Authorize {

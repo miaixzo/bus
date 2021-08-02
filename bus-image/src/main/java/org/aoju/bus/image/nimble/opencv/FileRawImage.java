@@ -31,7 +31,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class FileRawImage {
@@ -47,7 +47,7 @@ public class FileRawImage {
     }
 
     public ImageCV read() throws IOException {
-        return ImageProcessor.readImageWithCvException(file);
+        return ImageProcessor.readImageWithCvException(file, null);
     }
 
     public boolean write(PlanarImage mat) {

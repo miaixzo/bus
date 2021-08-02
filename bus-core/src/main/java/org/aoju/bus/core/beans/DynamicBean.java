@@ -40,7 +40,7 @@ import java.util.Map;
  * 支持Map和普通Bean
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class DynamicBean extends Cloning<DynamicBean> implements Serializable {

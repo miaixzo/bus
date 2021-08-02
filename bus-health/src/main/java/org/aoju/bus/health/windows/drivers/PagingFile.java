@@ -35,7 +35,7 @@ import java.util.Map;
  * Utility to query Paging File performance counter
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe

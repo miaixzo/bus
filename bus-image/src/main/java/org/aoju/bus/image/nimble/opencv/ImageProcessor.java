@@ -45,7 +45,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ImageProcessor {
@@ -621,21 +621,24 @@ public class ImageProcessor {
         }
     }
 
-    public static ImageCV readImage(File file) {
+    public static ImageCV readImage(File file, List<String> tags) {
         try {
-            return readImageWithCvException(file);
+            return readImageWithCvException(file, tags);
         } catch (OutOfMemoryError | CvException e) {
             Logger.error("Reading image", e);
             return null;
         }
     }
 
-    public static ImageCV readImageWithCvException(File file) {
+    public static ImageCV readImageWithCvException(File file, List<String> tags) {
         if (!file.canRead()) {
             return null;
         }
-
-        Mat img = Imgcodecs.imread(file.getPath());
+        List<String> exifs = tags;
+        if (exifs == null) {
+            exifs = new ArrayList<>();
+        }
+        Mat img = Imgcodecs.imread(file.getPath(), exifs);
         if (img.width() < 1 || img.height() < 1) {
             throw new CvException("OpenCV cannot read " + file.getPath());
         }

@@ -29,7 +29,7 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class MLLPInputStream extends BufferedInputStream {

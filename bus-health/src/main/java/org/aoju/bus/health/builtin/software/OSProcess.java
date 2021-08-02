@@ -26,6 +26,8 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Config;
 import org.aoju.bus.health.windows.drivers.Win32ProcessCached;
 
 import java.util.List;
@@ -36,7 +38,7 @@ import java.util.Map;
  * threads.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -84,7 +86,7 @@ public interface OSProcess {
      * be frequently called for multiple processes, see the configuration file to
      * enable a batch query mode leveraging
      * {@link Win32ProcessCached#getCommandLine} to improve performance, or setting
-     * that parameter via {@link GlobalConfig#set(String, Object)} before
+     * that parameter via {@link Config#set(String, Object)} before
      * instantiating any {@link OSProcess} object.
      *
      * @return the process command line.
@@ -236,7 +238,7 @@ public interface OSProcess {
      * On Linux, returns the RSS value from {@code /proc/[pid]/stat}, which may be
      * inaccurate because of a kernel-internal scalability optimization. If accurate
      * values are required, read {@code /proc/[pid]/smaps} using
-     * {@link FileUtil#getKeyValueMapFromFile(String, String)}.
+     * {@link Builder#getKeyValueMapFromFile(String, String)}.
      *
      * @return the Resident Set Size
      */

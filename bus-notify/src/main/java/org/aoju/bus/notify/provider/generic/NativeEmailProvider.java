@@ -52,7 +52,7 @@ import java.util.List;
  * 电子邮件消息
  *
  * @author Justubborn
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK1.8+
  */
 public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, Context> {

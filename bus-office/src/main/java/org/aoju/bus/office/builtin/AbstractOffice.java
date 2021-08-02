@@ -31,7 +31,7 @@ import org.aoju.bus.office.provider.SourceDocumentProvider;
  * 所有office任务实现的基类.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public abstract class AbstractOffice implements MadeInOffice {

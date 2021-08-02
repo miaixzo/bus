@@ -40,7 +40,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * Pinyin4j引擎
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Pinyin4JProvider extends AbstractPinyinProvider {
