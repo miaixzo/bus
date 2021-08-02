@@ -40,7 +40,7 @@ import java.util.Optional;
  * 当转换过程不再需要源文件时，提供应用行为的接口.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class SourceFromInputStreamProvider extends AbstractSourceProvider

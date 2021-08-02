@@ -36,7 +36,7 @@ import java.util.Arrays;
  * 可复用的字符串生成器,非线程安全
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class TextKit implements CharSequence, Appendable, Serializable {
@@ -310,6 +310,13 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      * @return this
      */
     public TextKit insert(int index, char c) {
+        if (index < 0) {
+            index = this.position + index;
+        }
+        if ((index < 0)) {
+            throw new StringIndexOutOfBoundsException(index);
+        }
+
         moveDataAfterIndex(index, 1);
         value[index] = c;
         this.position = Math.max(this.position, index) + 1;

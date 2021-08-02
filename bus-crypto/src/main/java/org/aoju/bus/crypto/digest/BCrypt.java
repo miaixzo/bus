@@ -37,7 +37,7 @@ import java.security.SecureRandom;
  * 它的口令必须是8至56个字符,并将在内部被转化为448位的密钥
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class BCrypt {
@@ -569,7 +569,7 @@ public class BCrypt {
         try {
             try_pw = hashpw(plaintext, hashed);
         } catch (Exception ignore) {
-            // 生成密文时错误直接返回false issue#1377@Github
+            // 生成密文时错误直接返回false
             return false;
         }
 

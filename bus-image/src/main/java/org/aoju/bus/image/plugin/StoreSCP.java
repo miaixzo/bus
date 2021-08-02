@@ -42,6 +42,7 @@ import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
@@ -49,7 +50,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class StoreSCP extends BasicCStoreSCP {
@@ -168,8 +169,12 @@ public class StoreSCP extends BasicCStoreSCP {
         Properties p = new Properties();
 
         try {
-            if (null != url) {
-                p.load(url.openStream());
+            if (url != null) {
+                try (InputStream in = url.openStream()) {
+                    p.load(in);
+                }
+            } else {
+                p.load(this.getClass().getResourceAsStream("sop-classes.properties"));
             }
         } catch (IOException e) {
             Logger.error("Cannot read sop-classes", e);

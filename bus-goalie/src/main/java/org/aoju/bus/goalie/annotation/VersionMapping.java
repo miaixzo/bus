@@ -33,7 +33,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
 
  */
 @Target({ElementType.METHOD, ElementType.TYPE})

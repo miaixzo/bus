@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.openbsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -37,10 +36,7 @@ import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -51,19 +47,20 @@ import java.util.stream.Collectors;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
-    private static final long BOOTTIME = querySystemBootTime();
+    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
+            .collect(Collectors.joining(","));
 
     private static List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
         // https://man.openbsd.org/ps#KEYWORDS
         // missing are threadCount and kernelTime which is included in cputime
-        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,pri,vsz,rss,etime,cputime,comm,majflt,minflt,nvscw,nivscw,args";
+        String psCommand = "ps -awwxo " + PS_COMMAND_ARGS;
         if (pid >= 0) {
             psCommand += " -p " + pid;
         }
@@ -75,13 +72,21 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), 18);
-            // Elements should match ps command order
-            if (split.length == 18) {
-                procs.add(new OpenBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
+            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
+            // Check if last (thus all) value populated
+            if (psMap.containsKey(PsKeywords.ARGS)) {
+                procs.add(new OpenBsdOSProcess(
+                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap));
             }
         }
         return procs;
+    }
+
+    private static final long BOOTTIME = querySystemBootTime();
+
+    enum PsKeywords {
+        STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
+        ARGS; // ARGS must always be last
     }
 
     private static long querySystemBootTime() {

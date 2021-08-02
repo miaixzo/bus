@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.Builders;
@@ -42,7 +41,7 @@ import java.util.*;
  * CSV行解析器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public final class CsvParser implements Closeable {
@@ -72,7 +71,11 @@ public final class CsvParser implements Closeable {
     /**
      * 当前行号
      */
-    private long lineNo;
+    private long lineNo = -1;
+    /**
+     * 引号内的行数
+     */
+    private long inQuotesLineCount;
     /**
      * 第一行字段数,用于检查每行字段数是否一致
      */
@@ -181,12 +184,21 @@ public final class CsvParser implements Closeable {
     }
 
     /**
-     * 读取一行数据
+     * 读取一行数据，如果读取结束，返回size为0的List
+     * 空行是size为1的List，唯一元素是""
+     * 行号要考虑注释行和引号包装的内容中的换行
      *
      * @return 一行数据
      * @throws InstrumentException IO异常
      */
     private List<String> readLine() throws InstrumentException {
+        // 矫正行号
+        // 当一行内容包含多行数据时，记录首行行号，但是读取下一行时，需要把多行内容的行数加上
+        if (inQuotesLineCount > 0) {
+            this.lineNo += this.inQuotesLineCount;
+            this.inQuotesLineCount = 0;
+        }
+
         final List<String> currentFields = new ArrayList<>(maxFieldCount > 0 ? maxFieldCount : DEFAULT_ROW_CAPACITY);
 
         final Builders currentField = this.currentField;
@@ -231,6 +243,7 @@ public final class CsvParser implements Closeable {
             if (inComment) {
                 if (c == Symbol.C_CR || c == Symbol.C_LF) {
                     // 注释行以换行符为结尾
+                    lineNo++;
                     inComment = false;
                 }
                 // 跳过注释行中的任何字符
@@ -245,9 +258,9 @@ public final class CsvParser implements Closeable {
                     // End of quoted text
                     inQuotes = false;
                 } else {
-                    // 新行
-                    if ((c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR) {
-                        lineNo++;
+                    // 字段内容中新行
+                    if (isLineEnd(c)) {
+                        inQuotesLineCount++;
                     }
                 }
                 // 普通字段字符
@@ -296,10 +309,20 @@ public final class CsvParser implements Closeable {
 
             preChar = c;
         }
-
         this.preChar = preChar;
+        lineNo++;
 
         return currentFields;
+    }
+
+    /**
+     * 是否行结束符
+     *
+     * @param c 符号
+     * @return 是否结束
+     */
+    private boolean isLineEnd(char c) {
+        return (c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR;
     }
 
     @Override
@@ -314,10 +337,14 @@ public final class CsvParser implements Closeable {
      * @param field         字段
      */
     private void addField(List<String> currentFields, String field) {
-        field = StringKit.unWrap(field, config.textDelimiter);
-        char textDelimiter = this.config.textDelimiter;
-        field = StringKit.replace(field, Normal.EMPTY + textDelimiter + textDelimiter, textDelimiter + Normal.EMPTY);
-        currentFields.add(StringKit.unWrap(field, textDelimiter));
+        final char textDelimiter = this.config.textDelimiter;
+
+        // 忽略多余引号后的换行符
+        field = StringKit.trim(field, 1, (c -> c == Symbol.C_LF || c == Symbol.C_CR));
+
+        field = StringKit.unWrap(field, textDelimiter);
+        field = StringKit.replace(field, "" + textDelimiter + textDelimiter, textDelimiter + "");
+        currentFields.add(field);
     }
 
     /**

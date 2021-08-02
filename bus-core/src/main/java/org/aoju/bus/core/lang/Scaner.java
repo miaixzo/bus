@@ -43,7 +43,7 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Scaner {
@@ -121,26 +121,27 @@ public class Scaner {
         this.charset = charset;
     }
 
+
     /**
-     * 扫描指定包路径下所有包含指定注解的类
+     * 扫描该包路径下所有class文件，包括其他加载的jar或者类
      *
-     * @param packageName     包路径
-     * @param annotationClass 注解类
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackageByAnnotation(String packageName, final Class<? extends Annotation> annotationClass) {
-        return scanPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
+    public static Set<Class<?>> scanAllPackage() {
+        return scanAllPackage(Normal.EMPTY, null);
     }
 
     /**
-     * 扫描指定包路径下所有指定类或接口的子类或实现类
+     * 扫描包路径下和所有在classpath中加载的类，满足class过滤器条件的所有class文件，<br>
+     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException<br>
+     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理<br>
      *
-     * @param packageName 包路径
-     * @param superClass  父类或接口
+     * @param packageName 包路径 com | com. | com.abs | com.abs.
+     * @param classFilter class过滤器，过滤掉不需要的class
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackageBySuper(String packageName, final Class<?> superClass) {
-        return scanPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
+    public static Set<Class<?>> scanAllPackage(String packageName, Filter<Class<?>> classFilter) {
+        return new Scaner(packageName, classFilter).scan(true);
     }
 
     /**
@@ -176,11 +177,66 @@ public class Scaner {
     }
 
     /**
-     * 扫面包路径下满足class过滤器条件的所有class文件
+     * 扫描指定包路径下所有包含指定注解的类，包括其他加载的jar或者类
+     *
+     * @param packageName     包路径
+     * @param annotationClass 注解类
+     * @return 类集合
+     */
+    public static Set<Class<?>> scanAllPackageByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
+        return scanAllPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
+    }
+
+    /**
+     * 扫描指定包路径下所有包含指定注解的类
+     *
+     * @param packageName     包路径
+     * @param annotationClass 注解类
+     * @return 类集合
+     */
+    public static Set<Class<?>> scanPackageByAnnotation(String packageName, final Class<? extends Annotation> annotationClass) {
+        return scanPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
+    }
+
+    /**
+     * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身，包括其他加载的jar或者类
+     *
+     * @param packageName 包路径
+     * @param superClass  父类或接口（不包括）
+     * @return 类集合
+     */
+    public static Set<Class<?>> scanAllPackageBySuper(String packageName, Class<?> superClass) {
+        return scanAllPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
+    }
+
+    /**
+     * 扫描指定包路径下所有指定类或接口的子类或实现类
+     *
+     * @param packageName 包路径
+     * @param superClass  父类或接口
+     * @return 类集合
+     */
+    public static Set<Class<?>> scanPackageBySuper(String packageName, final Class<?> superClass) {
+        return scanPackage(packageName, clazz -> superClass.isAssignableFrom(clazz) && !superClass.equals(clazz));
+    }
+
+    /**
+     * 扫描包路径下满足class过滤器条件的所有class文件
+     * 此方法首先扫描指定包名下的资源目录，如果未扫描到，则扫描整个classpath中所有加载的类
      *
      * @return 类集合
      */
     public Set<Class<?>> scan() {
+        return scan(false);
+    }
+
+    /**
+     * 扫描包路径下满足class过滤器条件的所有class文件
+     *
+     * @param forceScanJavaClassPaths 是否强制扫描其他位于classpath关联jar中的类
+     * @return 类集合
+     */
+    public Set<Class<?>> scan(boolean forceScanJavaClassPaths) {
         for (URL url : FileKit.getResourceIter(this.packagePath)) {
             switch (url.getProtocol()) {
                 case "file":
@@ -192,20 +248,11 @@ public class Scaner {
             }
         }
 
-        if (CollKit.isEmpty(this.classes)) {
+        if (forceScanJavaClassPaths || CollKit.isEmpty(this.classes)) {
             scanJavaClassPaths();
         }
 
         return Collections.unmodifiableSet(this.classes);
-    }
-
-    /**
-     * 设置是否在扫描到类时初始化类
-     *
-     * @param initialize 是否初始化类
-     */
-    public void setInitialize(boolean initialize) {
-        this.initialize = initialize;
     }
 
     /**
@@ -256,7 +303,6 @@ public class Scaner {
         }
     }
 
-
     /**
      * 扫描jar包
      *
@@ -266,7 +312,7 @@ public class Scaner {
         String name;
         for (JarEntry entry : new EnumerationIter<>(jar.entries())) {
             name = StringKit.removePrefix(entry.getName(), Symbol.SLASH);
-            if (name.startsWith(this.packagePath)) {
+            if (StringKit.isEmpty(packagePath) || name.startsWith(this.packagePath)) {
                 if (name.endsWith(FileType.CLASS) && false == entry.isDirectory()) {
                     final String className = name
                             .substring(0, name.length() - 6)
@@ -275,6 +321,15 @@ public class Scaner {
                 }
             }
         }
+    }
+
+    /**
+     * 设置是否在扫描到类时初始化类
+     *
+     * @param initialize 是否初始化类
+     */
+    public void setInitialize(boolean initialize) {
+        this.initialize = initialize;
     }
 
     /**
@@ -289,11 +344,10 @@ public class Scaner {
             clazz = Class.forName(className, this.initialize, ClassKit.getClassLoader());
         } catch (NoClassDefFoundError e) {
             // 由于依赖库导致的类无法加载,直接跳过此类
-        } catch (UnsupportedClassVersionError e) {
+        } catch (UnsupportedClassVersionError | ClassNotFoundException ee) {
             // 版本导致的不兼容的类,跳过
         } catch (Exception e) {
             throw new RuntimeException(e);
-            // Console.error(e);
         }
         return clazz;
     }

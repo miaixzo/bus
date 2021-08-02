@@ -35,62 +35,206 @@ import java.util.concurrent.ConcurrentHashMap;
  * 系统响应码
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ErrorCode {
 
     /**
-     * 全局错误码
+     * 请求成功
      */
     public static String EM_SUCCESS = Symbol.ZERO;
+    /**
+     * 系统繁忙,请稍后重试
+     */
     public static String EM_FAILURE = "-1";
+    /**
+     * 请求过于频繁
+     */
     public static String EM_LIMITER = "-2";
+    /**
+     * 无效的令牌
+     */
     public static String EM_100100 = "100100";
+    /**
+     * 无效的参数
+     */
     public static String EM_100101 = "100101";
+    /**
+     * 无效的版本
+     */
     public static String EM_100102 = "100102";
+    /**
+     * 无效的方法
+     */
     public static String EM_100103 = "100103";
+    /**
+     * 无效的语言
+     */
     public static String EM_100104 = "100104";
+    /**
+     * 无效的格式化类型
+     */
     public static String EM_100105 = "100105";
+    /**
+     * 缺少token参数
+     */
     public static String EM_100106 = "100106";
+    /**
+     * 缺少version参数
+     */
     public static String EM_100107 = "100107";
+    /**
+     * 缺少method参数
+     */
     public static String EM_100108 = "100108";
+    /**
+     * 缺少language参数
+     */
     public static String EM_100109 = "100109";
+    /**
+     * 缺少fields参数
+     */
     public static String EM_100110 = "100110";
+    /**
+     * 缺少format参数
+     */
     public static String EM_100111 = "100111";
+    /**
+     * 缺少sign参数
+     */
     public static String EM_100112 = "100112";
+    /**
+     * 缺少noncestr参数
+     */
     public static String EM_100113 = "100113";
+    /**
+     * 缺少timestamp参数
+     */
     public static String EM_100114 = "100114";
+    /**
+     * 缺少sign参数
+     */
     public static String EM_100115 = "100115";
+    /**
+     * 当前令牌已过期
+     */
     public static String EM_100116 = "100116";
+    /**
+     * 当前账号已登录
+     */
     public static String EM_100117 = "100117";
+    /**
+     * 无效的签名
+     */
     public static String EM_100118 = "100118";
+    /**
+     * 请使用GET请求
+     */
     public static String EM_100200 = "100200";
+    /**
+     * 请使用POST请求
+     */
     public static String EM_100201 = "100201";
+    /**
+     * 请使用PUT请求
+     */
     public static String EM_100202 = "100202";
+    /**
+     * 请使用DELETE请求
+     */
     public static String EM_100203 = "100203";
+    /**
+     * 请使用OPTIONS请求
+     */
     public static String EM_100204 = "100204";
+    /**
+     * 请使用HEAD请求
+     */
     public static String EM_100205 = "100205";
+    /**
+     * 请使用PATCH请求
+     */
     public static String EM_100206 = "100206";
+    /**
+     * 请使用TRACE请求
+     */
     public static String EM_100207 = "100207";
+    /**
+     * 请使用CONNECT请求
+     */
     public static String EM_100208 = "100208";
+    /**
+     * 请使用HTTPS协议
+     */
     public static String EM_100209 = "100209";
+    /**
+     * 暂无数据
+     */
     public static String EM_100300 = "100300";
+    /**
+     * 转换JSON/XML错误
+     */
     public static String EM_100400 = "100400";
+    /**
+     * API未授权
+     */
     public static String EM_100500 = "100500";
+    /**
+     * 日期格式化错误
+     */
     public static String EM_100501 = "100501";
+    /**
+     * 账号已冻结
+     */
     public static String EM_100502 = "100502";
+    /**
+     * 账号已存在
+     */
     public static String EM_100503 = "100503";
+    /**
+     * 账号不存在
+     */
     public static String EM_100504 = "100504";
+    /**
+     * 密码错误
+     */
     public static String EM_100505 = "100505";
+    /**
+     * 通用函数,处理异常
+     */
     public static String EM_100506 = "100506";
+    /**
+     * 请求方法不支持
+     */
     public static String EM_100507 = "100507";
+    /**
+     * 不支持此类型
+     */
     public static String EM_100508 = "100508";
+    /**
+     * 未找到资源
+     */
     public static String EM_100509 = "100509";
+    /**
+     * 内部处理异常
+     */
     public static String EM_100510 = "100510";
+    /**
+     * 验证失败!
+     */
     public static String EM_100511 = "100511";
+    /**
+     * 数据已存在
+     */
     public static String EM_100512 = "100512";
+    /**
+     * 业务处理失败
+     */
     public static String EM_100513 = "100513";
+    /**
+     * 任务执行失败
+     */
     public static String EM_100514 = "100514";
 
     /**
@@ -117,7 +261,7 @@ public class ErrorCode {
         register(EM_100112, "缺少sign参数");
         register(EM_100113, "缺少noncestr参数");
         register(EM_100114, "缺少timestamp参数");
-        register(EM_100115, "缺少sign");
+        register(EM_100115, "缺少sign参数");
         register(EM_100116, "当前令牌已过期");
         register(EM_100117, "当前账号已登录");
         register(EM_100118, "无效的签名");

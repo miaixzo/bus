@@ -42,7 +42,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>6.2.5</version>
+    <version>6.2.6</version>
 </dependency>
 ```  
 

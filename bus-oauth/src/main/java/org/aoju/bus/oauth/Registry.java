@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.AuthorizedException;
  * 内置的各api需要的url, 用枚举类分平台类型管理
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public enum Registry implements Complex {
@@ -764,7 +764,7 @@ public enum Registry implements Complex {
 
         @Override
         public String userInfo() {
-            return "https://api.twitter.com/1.1/users/show.json";
+            return "https://api.twitter.com/1.1/account/verify_credentials.json";
         }
     },
     /**

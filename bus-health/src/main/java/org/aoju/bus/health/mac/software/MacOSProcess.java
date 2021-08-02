@@ -33,6 +33,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
@@ -42,19 +43,20 @@ import org.aoju.bus.health.mac.ThreadInfo;
 import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.logger.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class MacOSProcess extends AbstractOSProcess {
+
+    private static final int ARGMAX = SysctlKit.sysctl("kern.argmax", 0);
 
     // 64-bit flag
     private static final int P_LP64 = 0x4;
@@ -71,6 +73,7 @@ public class MacOSProcess extends AbstractOSProcess {
     private int minorVersion;
 
     private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoize.memoize(this::queryArgsAndEnvironment);
 
     private String name = Normal.EMPTY;
     private String path = Normal.EMPTY;
@@ -119,54 +122,81 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
+        return String.join("\0", getArguments());
+    }
+
+    @Override
+    public List<String> getArguments() {
+        return argsEnviron.get().getLeft();
+    }
+
+    @Override
+    public Map<String, String> getEnvironmentVariables() {
+        return argsEnviron.get().getRight();
+    }
+
+    private Pair<List<String>, Map<String, String>> queryArgsAndEnvironment() {
+        // Set up return objects
+        List<String> args = new ArrayList<>();
+        // API does not specify any particular order of entries, but it is reasonable to
+        // maintain whatever order the OS provided to the end user
+        Map<String, String> env = new LinkedHashMap<>();
+
         // Get command line via sysctl
         int[] mib = new int[3];
         mib[0] = 1; // CTL_KERN
         mib[1] = 49; // KERN_PROCARGS2
         mib[2] = getProcessID();
         // Allocate memory for arguments
-        int argmax = SysctlKit.sysctl("kern.argmax", 0);
-        Pointer procargs = new Memory(argmax);
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(argmax));
+        Memory procargs = new Memory(ARGMAX);
+        procargs.clear();
+        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
         // Fetch arguments
-        if (0 != SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, LibCAPI.size_t.ZERO)) {
-            Logger.warn(
-                    "Failed syctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
-                    getProcessID(), Native.getLastError());
-            return Normal.EMPTY;
-        }
-        // Procargs contains an int representing total # of args, followed by a
-        // null-terminated execpath string and then the arguments, each
-        // null-terminated (possible multiple consecutive nulls),
-        // The execpath string is also the first arg.
-        int nargs = procargs.getInt(0);
-        // Sanity check
-        if (nargs < 0 || nargs > 1024) {
-            Logger.error("Nonsensical number of process arguments for pid {}: {}", getProcessID(), nargs);
-            return Normal.EMPTY;
-        }
-        List<String> args = new ArrayList<>(nargs);
-        // Skip first int (containing value of nargs)
-        long offset = SystemB.INT_SIZE;
-        // Skip exec_command
-        offset += procargs.getString(offset).length();
-        // Iterate character by character using offset
-        // Build each arg and add to list
-        while (nargs-- > 0 && offset < size.getValue().longValue()) {
-            // Advance through additional nulls
-            while (procargs.getByte(offset) == 0) {
-                if (++offset >= size.getValue().longValue()) {
-                    break;
+        if (0 == SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, LibCAPI.size_t.ZERO)) {
+            // Procargs contains an int representing total # of args, followed by a
+            // null-terminated execpath string and then the arguments, each
+            // null-terminated (possible multiple consecutive nulls),
+            // The execpath string is also the first arg.
+            // Following this is an int representing total # of env, followed by
+            // null-terminated envs in similar format
+            int nargs = procargs.getInt(0);
+            // Sanity check
+            if (nargs > 0 && nargs <= 1024) {
+                // Skip first int (containing value of nargs)
+                long offset = com.sun.jna.platform.mac.SystemB.INT_SIZE;
+                // Skip exec_command, as
+                offset += procargs.getString(offset).length();
+                // Iterate character by character using offset
+                // Build each arg and add to list
+                while (offset < size.getValue().longValue()) {
+                    // Advance through additional nulls
+                    while (procargs.getByte(offset) == 0) {
+                        if (++offset >= size.getValue().longValue()) {
+                            break;
+                        }
+                    }
+                    // Grab a string. This should go until the null terminator
+                    String arg = procargs.getString(offset);
+                    if (nargs-- > 0) {
+                        // If we havent found nargs yet, it's an arg
+                        args.add(arg);
+                    } else {
+                        // otherwise it's an env
+                        int idx = arg.indexOf('=');
+                        if (idx > 0) {
+                            env.put(arg.substring(0, idx), arg.substring(idx + 1));
+                        }
+                    }
+                    // Advance offset to next null
+                    offset += arg.length();
                 }
             }
-            // Grab a string. This should go until the null terminator
-            String arg = procargs.getString(offset);
-            args.add(arg);
-            // Advance offset to next null
-            offset += arg.length();
+        } else {
+            Logger.warn(
+                    "Failed sysctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
+                    getProcessID(), Native.getLastError());
         }
-        // Return args null-delimited
-        return String.join("\0", args);
+        return Pair.of(Collections.unmodifiableList(args), Collections.unmodifiableMap(env));
     }
 
     @Override

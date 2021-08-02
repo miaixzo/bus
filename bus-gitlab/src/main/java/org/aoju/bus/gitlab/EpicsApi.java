@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * - Epics are available only in Ultimate. If epics feature is not available a 403 status code will be returned.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @see <a href="https://docs.gitlab.com/ee/api/epics.html">GitLab Epics API Documentaion</a>
  * @see <a href="https://docs.gitlab.com/ee/api/epic_issues.html">GitLab Epic Issues API Documentation</a>
  * @since JDK 1.8+

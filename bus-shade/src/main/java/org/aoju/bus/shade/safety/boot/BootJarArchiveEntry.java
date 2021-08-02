@@ -35,7 +35,7 @@ import java.util.zip.ZipException;
  * 为了兼容Spring-Boot FatJar 和普通Jar 的包内资源URL一致 所以去掉路径前面的 BOOT-INF/classes/
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class BootJarArchiveEntry extends JarArchiveEntry {

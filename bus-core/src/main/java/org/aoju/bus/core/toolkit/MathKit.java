@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.math.Arrange;
 import org.aoju.bus.core.math.Combine;
+import org.aoju.bus.core.math.Formula;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -47,7 +48,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -2429,6 +2430,20 @@ public class MathKit {
      */
     public static boolean isValid(float number) {
         return false == (Float.isNaN(number) || Float.isInfinite(number));
+    }
+
+    /**
+     * 计算数学表达式的值，只支持加减乘除和取余
+     *
+     * <pre class="code">
+     *   calculate("(0*1--3)-5/-4-(3*(-2.13))") -》 10.64
+     * </pre>
+     *
+     * @param expression 数学表达式
+     * @return 结果
+     */
+    public static double calculate(String expression) {
+        return Formula.conversion(expression);
     }
 
     private static int mathSubnode(int selectNum, int minNum) {

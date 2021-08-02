@@ -27,19 +27,19 @@ package org.aoju.bus.health.unix.freebsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -58,9 +58,9 @@ public class FreeBsdOSThread extends AbstractOSThread {
     private long upTime;
     private int priority;
 
-    public FreeBsdOSThread(int processId, String[] split) {
+    public FreeBsdOSThread(int processId, Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap) {
         super(processId);
-        updateAttributes(split);
+        updateAttributes(threadMap);
     }
 
     @Override
@@ -125,28 +125,26 @@ public class FreeBsdOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        String psCommand = "ps -awwxo tdname,lwp,state,etimes,systime,time,tdaddr,nivcsw,nvcsw,majflt,minflt,pri -H -p "
-                + getOwningProcessId();
+        List<String> threadList = Executor
+                .runNative("ps -awwxo " + FreeBsdOSProcess.PS_THREAD_COLUMNS + " -H -p " + getOwningProcessId());
         // there is no switch for thread in ps command, hence filtering.
-        List<String> threadList = Executor.runNative(psCommand);
+        String lwpStr = Integer.toString(this.threadId);
         for (String psOutput : threadList) {
-            String[] split = RegEx.SPACES.split(psOutput.trim());
-            if (split.length > 1 && this.getThreadId() == Builder.parseIntOrDefault(split[1], 0)) {
-                return updateAttributes(split);
+            Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(FreeBsdOSProcess.PsThreadColumns.class, psOutput.trim(),
+                    ' ');
+            if (threadMap.containsKey(FreeBsdOSProcess.PsThreadColumns.PRI) && lwpStr.equals(threadMap.get(FreeBsdOSProcess.PsThreadColumns.LWP))) {
+                return updateAttributes(threadMap);
             }
         }
         this.state = OSProcess.State.INVALID;
         return false;
     }
 
-    private boolean updateAttributes(String[] split) {
-        if (split.length != 12) {
-            this.state = OSProcess.State.INVALID;
-            return false;
-        }
-        this.name = split[0];
-        this.threadId = Builder.parseIntOrDefault(split[1], 0);
-        switch (split[2].charAt(0)) {
+
+    private boolean updateAttributes(Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap) {
+        this.name = threadMap.get(FreeBsdOSProcess.PsThreadColumns.TDNAME);
+        this.threadId = Builder.parseIntOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.LWP), 0);
+        switch (threadMap.get(FreeBsdOSProcess.PsThreadColumns.STATE).charAt(0)) {
             case 'R':
                 this.state = OSProcess.State.RUNNING;
                 break;
@@ -169,20 +167,20 @@ public class FreeBsdOSThread extends AbstractOSThread {
                 this.state = OSProcess.State.OTHER;
                 break;
         }
+        long elapsedTime = Builder.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.ETIMES), 0L);
         // Avoid divide by zero for processes up less than a second
-        long elapsedTime = Builder.parseDHMSOrDefault(split[3], 0L); // etimes
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         long now = System.currentTimeMillis();
         this.startTime = now - this.upTime;
-        this.kernelTime = Builder.parseDHMSOrDefault(split[4], 0L); // systime
-        this.userTime = Builder.parseDHMSOrDefault(split[5], 0L) - this.kernelTime; // time
-        this.startMemoryAddress = Builder.hexStringToLong(split[6], 0L);
-        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(split[7], 0L);
-        long voluntaryContextSwitches = Builder.parseLongOrDefault(split[8], 0L);
+        this.kernelTime = Builder.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.SYSTIME), 0L);
+        this.userTime = Builder.parseDHMSOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.TIME), 0L) - this.kernelTime;
+        this.startMemoryAddress = Builder.hexStringToLong(threadMap.get(FreeBsdOSProcess.PsThreadColumns.TDADDR), 0L);
+        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NIVCSW), 0L);
+        long voluntaryContextSwitches = Builder.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.NVCSW), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
-        this.majorFaults = Builder.parseLongOrDefault(split[9], 0L);
-        this.minorFaults = Builder.parseLongOrDefault(split[10], 0L);
-        this.priority = Builder.parseIntOrDefault(split[11], 0);
+        this.majorFaults = Builder.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.MAJFLT), 0L);
+        this.minorFaults = Builder.parseLongOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.MINFLT), 0L);
+        this.priority = Builder.parseIntOrDefault(threadMap.get(FreeBsdOSProcess.PsThreadColumns.PRI), 0);
         return true;
     }
 

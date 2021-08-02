@@ -30,7 +30,7 @@ import org.aoju.bus.extra.json.JsonKit;
 
 /**
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class FastJsonSerializer extends AbstractSerializer {

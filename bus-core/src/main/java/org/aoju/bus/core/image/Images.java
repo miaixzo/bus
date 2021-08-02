@@ -57,7 +57,7 @@ import java.util.List;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Images implements Serializable {
@@ -168,6 +168,61 @@ public class Images implements Serializable {
             this.canvasHeight = imageElement.getHeight();
         }
         this.list.add(imageElement);
+        this.fileType = fileType;
+    }
+
+    /**
+     * @param bgImageUrl 背景图片地址
+     * @param width      背景图宽度
+     * @param height     背景图高度
+     * @param zoomMode   缩放模式
+     * @param fileType   输出图片格式
+     * @throws Exception 异常信息
+     */
+    public Images(String bgImageUrl, int width, int height, Scale.Mode zoomMode, String fileType) throws Exception {
+        ImageElement bgImageElement = new ImageElement(bgImageUrl, 0, 0, width, height, zoomMode);
+        this.list.add(bgImageElement);
+        this.canvasWidth = width;
+        this.canvasHeight = height;
+        this.fileType = fileType;
+    }
+
+    /**
+     * @param bgImage  背景图片对象
+     * @param width    背景图宽度
+     * @param height   背景图高度
+     * @param zoomMode 缩放模式
+     * @param fileType 输出图片格式
+     * @throws Exception 异常信息
+     */
+    public Images(BufferedImage bgImage, int width, int height, Scale.Mode zoomMode, String fileType) throws Exception {
+        ImageElement bgImageElement = new ImageElement(bgImage, 0, 0, width, height, zoomMode);
+        // 计算画布新宽高
+        int canvasWidth = 0;
+        int canvasHeight = 0;
+
+        switch (zoomMode) {
+            case ORIGIN:
+                canvasWidth = bgImage.getWidth();
+                canvasHeight = bgImage.getHeight();
+                break;
+            case WIDTH:
+                canvasWidth = width;
+                canvasHeight = bgImage.getHeight() * canvasWidth / bgImage.getWidth();
+                break;
+            case HEIGHT:
+                canvasHeight = height;
+                canvasWidth = bgImage.getWidth() * canvasHeight / bgImage.getHeight();
+                break;
+            case OPTIONAL:
+                canvasHeight = width;
+                canvasWidth = height;
+                break;
+        }
+
+        this.list.add(bgImageElement);
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
         this.fileType = fileType;
     }
 
@@ -834,16 +889,16 @@ public class Images implements Serializable {
         this.srcImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = this.srcImage.createGraphics();
 
-        //PNG要做透明度处理，否则背景图透明部分会变黑
+        // PNG要做透明度处理，否则背景图透明部分会变黑
         if (this.fileType == FileType.TYPE_PNG) {
             this.srcImage = g.getDeviceConfiguration().createCompatibleImage(canvasWidth, canvasHeight, Transparency.TRANSLUCENT);
             g = this.srcImage.createGraphics();
         }
 
-        //抗锯齿
+        // 抗锯齿
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        //循环绘制
+        // 循环绘制
         for (AbstractElement element : this.list) {
             Painter painter = PainterFactory.newInstance(element);
             painter.draw(g, element, canvasWidth);

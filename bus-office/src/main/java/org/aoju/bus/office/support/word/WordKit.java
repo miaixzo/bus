@@ -38,7 +38,7 @@ import java.io.IOException;
  * Word工具类
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class WordKit {
@@ -51,7 +51,7 @@ public class WordKit {
      */
     public static XWPFDocument create(File file) {
         try {
-            return FileKit.exist(file) ? new XWPFDocument(OPCPackage.open(file)) : new XWPFDocument();
+            return FileKit.exists(file) ? new XWPFDocument(OPCPackage.open(file)) : new XWPFDocument();
         } catch (InvalidFormatException | IOException e) {
             throw new InstrumentException(e);
         }

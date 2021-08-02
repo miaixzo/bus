@@ -38,7 +38,7 @@ import java.io.OutputStream;
  * Base64解码实现
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Base64Decoder {
@@ -159,6 +159,16 @@ public class Base64Decoder {
                 break;
             out.write((byte) ((b3 << 6) | Normal.DECODE_64_TABLE[ch[off++]]));
         }
+    }
+
+    /**
+     * 给定的字符是否为Base64字符
+     *
+     * @param octet 被检查的字符
+     * @return 是否为Base64字符
+     */
+    public static boolean isBase64Code(byte octet) {
+        return octet == Symbol.C_EQUAL || (octet >= 0 && octet < Normal.DECODE_64_TABLE.length && Normal.DECODE_64_TABLE[octet] != -1);
     }
 
     /**

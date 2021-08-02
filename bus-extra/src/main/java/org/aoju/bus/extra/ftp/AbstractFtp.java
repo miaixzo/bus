@@ -40,7 +40,7 @@ import java.util.List;
  * 抽象FTP类,用于定义通用的FTP方法
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public abstract class AbstractFtp implements Closeable {
@@ -118,6 +118,16 @@ public abstract class AbstractFtp implements Closeable {
      * @return 是否创建成功
      */
     public abstract boolean mkdir(String dir);
+
+    /**
+     * 判断给定路径是否为目录
+     *
+     * @param dir 被判断的路径
+     * @return 是否为目录
+     */
+    public boolean isDir(String dir) {
+        return cd(dir);
+    }
 
     /**
      * 文件或目录是否存在

@@ -37,7 +37,7 @@ import java.util.Objects;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -61,7 +61,7 @@ public class CitizenIdKit {
     /**
      * 台湾身份证首字母对应数字
      */
-    private static final Map<String, Integer> AREA_TW_CODE = new HashMap<>();
+    private static final Map<Character, Integer> AREA_TW_CODE = new HashMap<>();
 
     static {
         AREA_CODE.put("11", "北京");
@@ -101,32 +101,32 @@ public class CitizenIdKit {
         AREA_CODE.put("83", "台湾");
         AREA_CODE.put("91", "国外");
 
-        AREA_TW_CODE.put("A", 10);
-        AREA_TW_CODE.put("B", 11);
-        AREA_TW_CODE.put("C", 12);
-        AREA_TW_CODE.put("D", 13);
-        AREA_TW_CODE.put("E", 14);
-        AREA_TW_CODE.put("F", 15);
-        AREA_TW_CODE.put("G", 16);
-        AREA_TW_CODE.put("H", 17);
-        AREA_TW_CODE.put("J", 18);
-        AREA_TW_CODE.put("K", 19);
-        AREA_TW_CODE.put("L", 20);
-        AREA_TW_CODE.put("M", 21);
-        AREA_TW_CODE.put("N", 22);
-        AREA_TW_CODE.put("P", 23);
-        AREA_TW_CODE.put("Q", 24);
-        AREA_TW_CODE.put("R", 25);
-        AREA_TW_CODE.put("S", 26);
-        AREA_TW_CODE.put("T", 27);
-        AREA_TW_CODE.put("U", 28);
-        AREA_TW_CODE.put("V", 29);
-        AREA_TW_CODE.put("X", 30);
-        AREA_TW_CODE.put("Y", 31);
-        AREA_TW_CODE.put("W", 32);
-        AREA_TW_CODE.put("Z", 33);
-        AREA_TW_CODE.put("I", 34);
-        AREA_TW_CODE.put("O", 35);
+        AREA_TW_CODE.put('A', 10);
+        AREA_TW_CODE.put('B', 11);
+        AREA_TW_CODE.put('C', 12);
+        AREA_TW_CODE.put('D', 13);
+        AREA_TW_CODE.put('E', 14);
+        AREA_TW_CODE.put('F', 15);
+        AREA_TW_CODE.put('G', 16);
+        AREA_TW_CODE.put('H', 17);
+        AREA_TW_CODE.put('J', 18);
+        AREA_TW_CODE.put('K', 19);
+        AREA_TW_CODE.put('L', 20);
+        AREA_TW_CODE.put('M', 21);
+        AREA_TW_CODE.put('N', 22);
+        AREA_TW_CODE.put('P', 23);
+        AREA_TW_CODE.put('Q', 24);
+        AREA_TW_CODE.put('R', 25);
+        AREA_TW_CODE.put('S', 26);
+        AREA_TW_CODE.put('T', 27);
+        AREA_TW_CODE.put('U', 28);
+        AREA_TW_CODE.put('V', 29);
+        AREA_TW_CODE.put('X', 30);
+        AREA_TW_CODE.put('Y', 31);
+        AREA_TW_CODE.put('W', 32);
+        AREA_TW_CODE.put('Z', 33);
+        AREA_TW_CODE.put('I', 34);
+        AREA_TW_CODE.put('O', 35);
     }
 
     /**
@@ -325,23 +325,24 @@ public class CitizenIdKit {
      * @return 验证码是否符合
      */
     public static boolean isValidTWCard(String idcard) {
-        if (StringKit.isEmpty(idcard)) {
+        if (null == idcard || idcard.length() != 10) {
             return false;
         }
-        String start = idcard.substring(0, 1);
-        Integer iStart = AREA_TW_CODE.get(start);
+        final Integer iStart = AREA_TW_CODE.get(idcard.charAt(0));
         if (null == iStart) {
             return false;
         }
-        String mid = idcard.substring(1, 9);
-        String end = idcard.substring(9, 10);
         int sum = iStart / 10 + (iStart % 10) * 9;
+
+        final String mid = idcard.substring(1, 9);
         final char[] chars = mid.toCharArray();
         int iflag = 8;
         for (char c : chars) {
             sum += Integer.parseInt(String.valueOf(c)) * iflag;
             iflag--;
         }
+
+        final String end = idcard.substring(9, 10);
         return (sum % 10 == 0 ? 0 : (10 - sum % 10)) == Integer.parseInt(end);
     }
 

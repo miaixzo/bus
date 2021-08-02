@@ -38,7 +38,7 @@ import java.util.Map;
  * @param <V> 值类型
  * @param <C> 集合类型
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends MapWrapper<K, C> {
@@ -46,7 +46,7 @@ public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends Map
     /**
      * 默认集合初始大小
      */
-    protected static final int DEFAULT_COLLCTION_INITIAL_CAPACITY = 3;
+    protected static final int DEFAULT_COLLECTION_INITIAL_CAPACITY = 3;
 
     /**
      * 构造

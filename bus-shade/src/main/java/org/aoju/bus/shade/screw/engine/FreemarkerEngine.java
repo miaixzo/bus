@@ -45,7 +45,7 @@ import java.util.Objects;
  * freemarker
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class FreemarkerEngine extends AbstractEngine {
@@ -59,7 +59,7 @@ public class FreemarkerEngine extends AbstractEngine {
         try {
             String path = getEngineConfig().getCustomTemplate();
             //自定义模板
-            if (StringKit.isNotBlank(path) && FileKit.exist(path)) {
+            if (StringKit.isNotBlank(path) && FileKit.exists(path)) {
                 //获取父目录
                 String parent = Objects.requireNonNull(FileKit.file(path)).getParent();
                 //设置模板加载路径
@@ -98,7 +98,7 @@ public class FreemarkerEngine extends AbstractEngine {
             Template template;
             // freemarker template
             // 如果自定义路径不为空文件也存在
-            if (StringKit.isNotBlank(path) && FileKit.exist(path)) {
+            if (StringKit.isNotBlank(path) && FileKit.exists(path)) {
                 // 文件名称
                 String fileName = new File(path).getName();
                 template = configuration.getTemplate(fileName);

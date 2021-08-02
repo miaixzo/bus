@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 公共常量
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Consts extends Normal {
@@ -65,5 +65,20 @@ public class Consts extends Normal {
     public static final String TYPE_SEVEN = Symbol.SEVEN;
     public static final String TYPE_EIGHT = Symbol.EIGHT;
     public static final String TYPE_NINE = Symbol.NINE;
+
+    /**
+     * 响应码
+     */
+    public static final String RESULT_ERRCODE = "errcode";
+
+    /**
+     * 响应码描述
+     */
+    public static final String RESULT_ERRMSG = "errmsg";
+
+    /**
+     * 返回数据
+     */
+    public static final String RESULT_DATA = "data";
 
 }

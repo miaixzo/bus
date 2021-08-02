@@ -25,19 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.openbsd.software;
 
-import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class OpenBsdOSThread extends AbstractOSThread {
@@ -55,9 +55,9 @@ public class OpenBsdOSThread extends AbstractOSThread {
     private long upTime;
     private int priority;
 
-    public OpenBsdOSThread(int processId, String[] split) {
+    public OpenBsdOSThread(int processId, Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
         super(processId);
-        updateAttributes(split);
+        updateAttributes(threadMap);
     }
 
     @Override
@@ -122,28 +122,24 @@ public class OpenBsdOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        String psCommand = "ps -aHwwxo tid,state,etime,cputime,nivcsw,nvcsw,majflt,minflt,pri,args -p "
-                + getOwningProcessId();
+        String psCommand = "ps -aHwwxo " + OpenBsdOSProcess.PS_THREAD_COLUMNS + " -p " + getOwningProcessId();
         // there is no switch for thread in ps command, hence filtering.
         List<String> threadList = Executor.runNative(psCommand);
+        String tidStr = Integer.toString(this.threadId);
         for (String psOutput : threadList) {
-            String[] split = RegEx.SPACES.split(psOutput.trim());
-            if (split.length > 1 && this.getThreadId() == Builder.parseIntOrDefault(split[1], 0)) {
-                return updateAttributes(split);
+            Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(OpenBsdOSProcess.PsThreadColumns.class, psOutput.trim(),
+                    ' ');
+            if (threadMap.containsKey(OpenBsdOSProcess.PsThreadColumns.ARGS) && tidStr.equals(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID))) {
+                return updateAttributes(threadMap);
             }
         }
         this.state = OSProcess.State.INVALID;
         return false;
     }
 
-    private boolean updateAttributes(String[] split) {
-        if (split.length != 10) {
-            this.state = OSProcess.State.INVALID;
-            return false;
-        }
-
-        this.threadId = Builder.parseIntOrDefault(split[0], 0);
-        switch (split[1].charAt(0)) {
+    private boolean updateAttributes(Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
+        this.threadId = Builder.parseIntOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID), 0);
+        switch (threadMap.get(OpenBsdOSProcess.PsThreadColumns.STATE).charAt(0)) {
             case 'R':
                 this.state = OSProcess.State.RUNNING;
                 break;
@@ -167,23 +163,21 @@ public class OpenBsdOSThread extends AbstractOSThread {
                 break;
         }
         // Avoid divide by zero for processes up less than a second
-        long elapsedTime = Builder.parseDHMSOrDefault(split[2], 0L); // etime
+        long elapsedTime = Builder.parseDHMSOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.ETIME), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         long now = System.currentTimeMillis();
         this.startTime = now - this.upTime;
         // ps does not provide kerneltime on OpenBSD
-        // this.kernelTime = Builder.parseDHMSOrDefault(split[3], 0L); // systime
         this.kernelTime = 0L;
-        this.userTime = Builder.parseDHMSOrDefault(split[3], 0L); // cputime
-        // this.startMemoryAddress = ParseUtil.hexStringToLong(split[6], 0L);
+        this.userTime = Builder.parseDHMSOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.CPUTIME), 0L);
         this.startMemoryAddress = 0L;
-        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(split[3], 0L);
-        long voluntaryContextSwitches = Builder.parseLongOrDefault(split[5], 0L);
+        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NIVCSW), 0L);
+        long voluntaryContextSwitches = Builder.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NVCSW), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
-        this.majorFaults = Builder.parseLongOrDefault(split[6], 0L);
-        this.minorFaults = Builder.parseLongOrDefault(split[7], 0L);
-        this.priority = Builder.parseIntOrDefault(split[8], 0);
-        this.name = split[9];
+        this.majorFaults = Builder.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.MAJFLT), 0L);
+        this.minorFaults = Builder.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.MINFLT), 0L);
+        this.priority = Builder.parseIntOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.PRI), 0);
+        this.name = threadMap.get(OpenBsdOSProcess.PsThreadColumns.ARGS);
         return true;
     }
 

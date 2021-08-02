@@ -36,7 +36,7 @@ import java.io.File;
  * 提供对Linux上某些/proc文件系统信息的访问
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -53,6 +53,7 @@ public final class ProcPath {
     public static final String PID_CMDLINE = PROC + "/%d/cmdline";
     public static final String PID_CWD = PROC + "/%d/cwd";
     public static final String PID_EXE = PROC + "/%d/exe";
+    public static final String PID_ENVIRON = PROC + "/%d/environ";
     public static final String PID_FD = PROC + "/%d/fd";
     public static final String PID_IO = PROC + "/%d/io";
     public static final String PID_STAT = PROC + "/%d/stat";

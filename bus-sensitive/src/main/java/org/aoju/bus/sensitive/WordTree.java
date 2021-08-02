@@ -39,7 +39,7 @@ import java.util.*;
  * 单词树使用树状结构表示一组单词
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class WordTree extends HashMap<Character, WordTree> {

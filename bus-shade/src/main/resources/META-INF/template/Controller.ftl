@@ -41,11 +41,11 @@ import org.springframework.web.bind.annotation.RestController;
 * @author: ${author}
 * @since JDK 1.8+
 */
-@RestController
-@RequestMapping("/${objectName}")
 <#if isSwagger=="true" >
     @Api(tags = "${entityComment}", value = "${entityName}Controller")
 </#if>
+@RestController
+@RequestMapping("/${objectName}")
 public class ${entityName}Controller extends BaseController
 <${entityName}Service, ${entityName}> {
 

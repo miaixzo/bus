@@ -41,9 +41,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
@@ -61,7 +59,7 @@ import java.util.*;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Formatter {
@@ -127,6 +125,20 @@ public class Formatter {
             return null;
         }
         return format.format(date);
+    }
+
+    /**
+     * 根据特定格式格式化日期
+     *
+     * @param date   被格式化的日期
+     * @param format {@link SimpleDateFormat} {@link Fields#NORM_DATETIME_FORMAT}
+     * @return 格式化后的字符串
+     */
+    public static String format(Date date, DateTimeFormatter format) {
+        if (null == format || null == date) {
+            return null;
+        }
+        return Formatter.format(date.toInstant(), format);
     }
 
     /**
@@ -249,6 +261,9 @@ public class Formatter {
             } else if (time instanceof LocalTime && e.getMessage().contains("YearOfEra")) {
                 // 用户传入LocalTime，但是要求格式化带有日期部分，转换为LocalDateTime重试
                 return formatter.format(((LocalTime) time).atDate(LocalDate.now()));
+            } else if (time instanceof Instant) {
+                // 时间戳没有时区信息，赋予默认时区
+                return formatter.format(((Instant) time).atZone(ZoneId.systemDefault()));
             }
             throw e;
         }

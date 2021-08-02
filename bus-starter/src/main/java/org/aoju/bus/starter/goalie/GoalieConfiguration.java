@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.goalie;
 
-import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.goalie.Athlete;
 import org.aoju.bus.goalie.filter.*;
 import org.aoju.bus.goalie.handler.ApiRouterHandler;
@@ -42,13 +41,18 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
-import org.springframework.web.reactive.function.server.*;
+import org.springframework.web.reactive.function.server.RequestPredicates;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.WebExceptionHandler;
 import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebHandler;
+import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import reactor.netty.http.server.HttpServer;
 
 import java.util.List;
@@ -57,7 +61,7 @@ import java.util.List;
  * 路由自动配置
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8++
  */
 @ConditionalOnWebApplication
@@ -131,20 +135,15 @@ public class GoalieConfiguration {
                 .route(RequestPredicates.path(goalieProperties.getServer().getPath())
                         .and(RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
 
-        HandlerStrategies.Builder builder = HandlerStrategies.builder();
+        ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
+        configurer.defaultCodecs().maxInMemorySize(2 * 1024 * 1024);
 
-        if (CollKit.isNotEmpty(webExceptionHandlers)) {
-            AnnotationAwareOrderComparator.sort(webExceptionHandlers);
-            webExceptionHandlers.forEach(builder::exceptionHandler);
-        }
-
-        if (CollKit.isNotEmpty(webFilters)) {
-            AnnotationAwareOrderComparator.sort(webFilters);
-            webFilters.forEach(builder::webFilter);
-        }
-        HandlerStrategies handlerStrategies = builder.build();
-
-        HttpHandler handler = RouterFunctions.toHttpHandler(routerFunction, handlerStrategies);
+        WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
+        HttpHandler handler = WebHttpHandlerBuilder.webHandler(webHandler)
+                .filters(filters -> filters.addAll(webFilters))
+                .exceptionHandlers(handlers -> handlers.addAll(webExceptionHandlers))
+                .codecConfigurer(configurer)
+                .build();
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
         HttpServer server = HttpServer.create()
                 .port(goalieProperties.getServer().getPort()).handle(adapter);

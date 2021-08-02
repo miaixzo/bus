@@ -58,7 +58,7 @@ import java.util.function.Supplier;
  * and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -70,6 +70,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     private static final int TOKENELEVATION = 0x14;
+
+    /**
+     * OSProcess code will need to know bitness of current process
+     */
+    private static final boolean X86 = isCurrentX86();
+    private static final boolean WOW = isCurrentWow();
 
     /**
      * Windows event log name
@@ -484,4 +490,63 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return jvmBitness;
     }
 
+
+    /*
+     * Package-private methods for use by WindowsOSProcess to limit process memory
+     * queries to processes with same bitness as the current one
+     */
+
+    /**
+     * Is the processor architecture x86?
+     *
+     * @return true if the processor architecture is Intel x86
+     */
+    static boolean isX86() {
+        return X86;
+    }
+
+    private static boolean isCurrentX86() {
+        WinBase.SYSTEM_INFO sysinfo = new WinBase.SYSTEM_INFO();
+        Kernel32.INSTANCE.GetNativeSystemInfo(sysinfo);
+        return (0 == sysinfo.processorArchitecture.pi.wProcessorArchitecture.intValue());
+    }
+
+    /**
+     * Is the current operating process x86 or x86-compatibility mode?
+     *
+     * @return true if the current process is 32-bit
+     */
+    static boolean isWow() {
+        return WOW;
+    }
+
+    /**
+     * Is the specified process x86 or x86-compatibility mode?
+     *
+     * @param h The handle to the processs to check
+     * @return true if the process is 32-bit
+     */
+    static boolean isWow(com.sun.jna.platform.win32.WinNT.HANDLE h) {
+        if (X86) {
+            return true;
+        }
+        IntByReference isWow = new IntByReference();
+        Kernel32.INSTANCE.IsWow64Process(h, isWow);
+        return isWow.getValue() != 0;
+    }
+
+    private static boolean isCurrentWow() {
+        if (X86) {
+            return true;
+        }
+        com.sun.jna.platform.win32.WinNT.HANDLE h = Kernel32.INSTANCE.GetCurrentProcess();
+        if (h != null) {
+            try {
+                return isWow(h);
+            } finally {
+                Kernel32.INSTANCE.CloseHandle(h);
+            }
+        }
+        return false;
+    }
 }

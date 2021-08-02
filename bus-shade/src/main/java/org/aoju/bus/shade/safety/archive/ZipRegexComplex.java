@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * Zip记录正则表达式规则
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ZipRegexComplex extends RegexComplex<ZipArchiveEntry> implements Complex<ZipArchiveEntry> {

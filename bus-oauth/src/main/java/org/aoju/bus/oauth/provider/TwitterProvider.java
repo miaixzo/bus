@@ -52,7 +52,7 @@ import java.util.TreeMap;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class TwitterProvider extends AbstractProvider {
@@ -158,26 +158,23 @@ public class TwitterProvider extends AbstractProvider {
     @Override
     public String userInfoUrl(AccToken authToken) {
         return Builder.fromUrl(source.userInfo())
-                .queryParam("user_id", authToken.getUserId())
-                .queryParam("screen_name", authToken.getScreenName())
                 .queryParam("include_entities", true)
+                .queryParam("include_email", true)
                 .build();
     }
 
     @Override
     public Property getUserInfo(AccToken accToken) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("user_id", accToken.getUserId());
-        queryParams.put("screen_name", accToken.getScreenName());
+        Map<String, String> queryParams = new HashMap<>(5);
         queryParams.put("include_entities", Boolean.toString(true));
+        queryParams.put("include_email", Boolean.toString(true));
 
         Map<String, String> oauthParams = buildOauthParams();
         oauthParams.put("oauth_token", accToken.getOauthToken());
 
         Map<String, String> params = new HashMap<>(oauthParams);
         params.putAll(queryParams);
-        oauthParams.put("oauth_signature", sign(params, "GET", source.userInfo(), context.getAppSecret(), accToken
-                .getOauthTokenSecret()));
+        oauthParams.put("oauth_signature", sign(params, "GET", source.userInfo(), context.getAppSecret(), accToken.getOauthTokenSecret()));
         String header = buildHeader(oauthParams);
 
         Map<String, String> map = new HashMap<>();
@@ -192,6 +189,7 @@ public class TwitterProvider extends AbstractProvider {
                 .nickname(object.getString("name"))
                 .remark(object.getString("description"))
                 .avatar(object.getString("profile_image_url_https"))
+                .email(object.getString("email"))
                 .blog(object.getString("url"))
                 .location(object.getString("location"))
                 .source(source.toString())

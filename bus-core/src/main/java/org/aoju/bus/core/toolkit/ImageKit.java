@@ -55,7 +55,7 @@ import java.util.*;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ImageKit {
@@ -1450,6 +1450,7 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static void write(java.awt.Image image, File targetFile) throws InstrumentException {
+        FileKit.touch(targetFile);
         ImageOutputStream out = null;
         try {
             out = getImageOutputStream(targetFile);

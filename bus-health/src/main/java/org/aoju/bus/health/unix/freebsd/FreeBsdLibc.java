@@ -26,18 +26,16 @@
 package org.aoju.bus.health.unix.freebsd;
 
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 
 /**
  * C动态库,这个类应该被认为是非api的，因为如果/当
  * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public interface FreeBsdLibc extends CLibrary {
@@ -48,96 +46,6 @@ public interface FreeBsdLibc extends CLibrary {
     int UTX_LINESIZE = 16;
     int UTX_IDSIZE = 8;
     int UTX_HOSTSIZE = 128;
-    /**
-     * 常量 <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
-     */
-    int UINT64_SIZE = Native.getNativeSize(long.class);
-    /**
-     * 常量 <code>INT_SIZE=Native.getNativeSize(int.class)</code>
-     */
-    int INT_SIZE = Native.getNativeSize(int.class);
-    /**
-     * 常量 <code>CPUSTATES=5</code>
-     */
-    int CPUSTATES = 5;
-    /**
-     * 常量 <code>CP_USER=0</code>
-     */
-    int CP_USER = 0;
-    /**
-     * 常量 <code>CP_NICE=1</code>
-     */
-    int CP_NICE = 1;
-    /**
-     * 常量 <code>CP_SYS=2</code>
-     */
-    int CP_SYS = 2;
-    /**
-     * 常量 <code>CP_INTR=3</code>
-     */
-    int CP_INTR = 3;
-    /**
-     * 常量 <code>CP_IDLE=4</code>
-     */
-    int CP_IDLE = 4;
-
-    /**
-     * 函数的作用是:检索系统信息，并允许具有适当权限的进程设置系统信息sysctl()提供的信息
-     * 包括整数、字符串和表。
-     * 状态是使用“管理信息库”(MIB)样式名来描述的，它列在name中，是一个整数的namelen长度数组.
-     * 信息被复制到oldp指定的缓冲区中。缓冲区的大小由oldlenp在调用之前指定的位置给出，该位置
-     * 给出在成功调用之后以及在返回错误代码ENOMEM的调用之后复制的数据量。如果可用的数据量大于
-     * 提供的缓冲区的大小，则调用提供与提供的缓冲区相匹配的所有数据，并返回错误代码ENOMEM
-     * 如果不需要旧值，oldp和oldlenp应该设置为NULL
-     *
-     * @param name    整数的MIB数组
-     * @param namelen MIB数组的长度
-     * @param oldp    信息检索
-     * @param oldlenp 检索到的信息的大小
-     * @param newp    待写信息
-     * @param newlen  要写入的信息的大小
-     * @return 0成功;设置errno失败
-     */
-    int sysctl(int[] name, int namelen, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
-
-    /**
-     * sysctlbyname()函数接受名称的ASCII表示形式，并在内部查找整数名称向量
-     * 除此之外，它的行为与标准的sysctl()函数相同
-     *
-     * @param name    MIB名称的ASCII表示
-     * @param oldp    信息检索
-     * @param oldlenp 检索到的信息的大小
-     * @param newp    待写信息
-     * @param newlen  要写入的信息的大小
-     * @return 0成功;设置errno失败
-     */
-    int sysctlbyname(String name, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
-
-    /**
-     * sysctlnametomib()函数接受名称的ASCII表示形式，查找整数名称向量，并返回mibp指向的mib数组
-     * 中的数字表示形式。mib数组中的元素数量由调用前sizep指定的位置给出，而该位置给出了调用成功后
-     * 复制的条目数量。在随后的sysctl()调用中，可以使用得到的mib和size来获得与所请求的ASCII名称
-     * 相关联的数据。此接口用于希望重复请求相同变量的应用程序(sysctl()函数的运行时间约为通过
-     * sysctlbyname()函数发出的相同请求的三分之一)
-     *
-     * @param name 名称的ASCII表示
-     * @param mibp 包含对应名称向量的整数数组
-     * @param size 输入时，返回数组中的元素数;在输出时，复制的项数
-     * @return 0成功;设置errno失败
-     */
-    int sysctlnametomib(String name, Pointer mibp, NativeSizeTByReference size);
-
-
-    /**
-     * Reads a line from the current file position in the utmp file. It returns a
-     * pointer to a structure containing the fields of the line.
-     * <p>
-     * Not thread safe
-     *
-     * @return a {@link FreeBsdUtmpx} on success, and NULL on failure (which
-     * includes the "record not found" case)
-     */
-    FreeBsdUtmpx getutxent();
 
     /**
      * Connection info
@@ -153,6 +61,46 @@ public interface FreeBsdLibc extends CLibrary {
         public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
         public byte[] ut_spare = new byte[64];
     }
+
+    /*
+     * Data size
+     */
+    /**
+     * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
+     */
+    int UINT64_SIZE = Native.getNativeSize(long.class);
+    /**
+     * Constant <code>INT_SIZE=Native.getNativeSize(int.class)</code>
+     */
+    int INT_SIZE = Native.getNativeSize(int.class);
+
+    /*
+     * CPU state indices
+     */
+    /**
+     * Constant <code>CPUSTATES=5</code>
+     */
+    int CPUSTATES = 5;
+    /**
+     * Constant <code>CP_USER=0</code>
+     */
+    int CP_USER = 0;
+    /**
+     * Constant <code>CP_NICE=1</code>
+     */
+    int CP_NICE = 1;
+    /**
+     * Constant <code>CP_SYS=2</code>
+     */
+    int CP_SYS = 2;
+    /**
+     * Constant <code>CP_INTR=3</code>
+     */
+    int CP_INTR = 3;
+    /**
+     * Constant <code>CP_IDLE=4</code>
+     */
+    int CP_IDLE = 4;
 
     /**
      * Return type for BSD sysctl kern.boottime
@@ -170,5 +118,16 @@ public interface FreeBsdLibc extends CLibrary {
     class CpTime extends Structure {
         public long[] cpu_ticks = new long[CPUSTATES];
     }
+
+    /**
+     * Reads a line from the current file position in the utmp file. It returns a
+     * pointer to a structure containing the fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link FreeBsdUtmpx} on success, and NULL on failure (which
+     * includes the "record not found" case)
+     */
+    FreeBsdUtmpx getutxent();
 
 }

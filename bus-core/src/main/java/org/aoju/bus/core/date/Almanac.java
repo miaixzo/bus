@@ -31,7 +31,6 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.DateKit;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -47,7 +46,7 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Almanac extends Converter {
@@ -4871,12 +4870,28 @@ public class Almanac extends Converter {
     /**
      * 修改日期
      *
-     * @param calendar {@link Calendar}
-     * @param field    日期字段，即保留到哪个日期字段
-     * @param modify   修改类型，包括舍去、四舍五入、进一等
+     * @param calendar  {@link Calendar}
+     * @param dateField 日期字段，即保留到哪个日期字段
+     * @param modify    修改类型，包括舍去、四舍五入、进一等
      * @return 修改后的{@link Calendar}
      */
-    public static Calendar ceiling(Calendar calendar, int field, Fields.Modify modify) {
+    public static Calendar ceiling(Calendar calendar, int dateField, Fields.Modify modify) {
+        return ceiling(calendar, dateField, modify, false);
+    }
+
+    /**
+     * 修改日期，取起始值或者结束值可选是否归零毫秒。
+     * 在{@link  Fields.Modify#TRUNCATE}模式下，毫秒始终要归零,
+     * 但是在{@link  Fields.Modify#CEILING}和{@link  Fields.Modify#ROUND}模式下
+     * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项
+     *
+     * @param calendar            {@link Calendar}
+     * @param field               日期字段，即保留到哪个日期字段
+     * @param modify              修改类型，包括舍去、四舍五入、进一等
+     * @param truncateMillisecond 是否归零毫秒
+     * @return 修改后的{@link Calendar}
+     */
+    public static Calendar ceiling(Calendar calendar, int field, Fields.Modify modify, boolean truncateMillisecond) {
         // AM_PM上下午特殊处理
         if (Calendar.AM_PM == field) {
             boolean isAM = isAM(calendar);
@@ -4907,8 +4922,9 @@ public class Almanac extends Converter {
                 Calendar.WEEK_OF_MONTH, // 特殊处理
                 Calendar.WEEK_OF_YEAR // WEEK_OF_MONTH体现
         };
+        final int endField = truncateMillisecond ? Calendar.SECOND : Calendar.MILLISECOND;
         // 循环处理各级字段，精确到毫秒字段
-        for (int i = field + 1; i <= Calendar.MILLISECOND; i++) {
+        for (int i = field + 1; i <= endField; i++) {
             if (ArrayKit.contains(ignoreFields, i)) {
                 // 忽略无关字段(WEEK_OF_MONTH)始终不做修改
                 continue;
@@ -4928,6 +4944,11 @@ public class Almanac extends Converter {
 
             truncate(calendar, i, modify);
         }
+
+        if (truncateMillisecond) {
+            calendar.set(Calendar.MILLISECOND, 0);
+        }
+
         return calendar;
     }
 
@@ -4968,14 +4989,14 @@ public class Almanac extends Converter {
 
         switch (modify) {
             case TRUNCATE:
-                calendar.set(field, DateKit.getBeginValue(calendar, field));
+                calendar.set(field, getBeginValue(calendar, field));
                 break;
             case CEILING:
-                calendar.set(field, DateKit.getEndValue(calendar, field));
+                calendar.set(field, getEndValue(calendar, field));
                 break;
             case ROUND:
-                int min = DateKit.getBeginValue(calendar, field);
-                int max = DateKit.getEndValue(calendar, field);
+                int min = getBeginValue(calendar, field);
+                int max = getEndValue(calendar, field);
                 int href;
                 if (Calendar.DAY_OF_WEEK == field) {
                     // 星期特殊处理，假设周一是第一天，中间的为周四

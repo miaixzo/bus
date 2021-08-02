@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.handler;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Assets;
 import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -40,17 +42,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * router handler
  *
  * @author Justubborn
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class ApiRouterHandler {
@@ -62,7 +66,10 @@ public class ApiRouterHandler {
         Context context = Context.get(request);
         Assets assets = context.getAssets();
         Map<String, String> params = context.getRequestMap();
-        String baseUrl = assets.getHost() + Symbol.C_COLON + assets.getPort();
+
+        String port = StringKit.isEmpty(Normal.EMPTY + assets.getPort()) ? Normal.EMPTY : Symbol.COLON + assets.getPort();
+        String path = StringKit.isEmpty(assets.getPath()) ? Normal.EMPTY : Symbol.SLASH + assets.getPath();
+        String baseUrl = assets.getHost() + port + path;
 
         WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.create(baseUrl));
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(assets.getUrl());
@@ -93,13 +100,12 @@ public class ApiRouterHandler {
                 }
             }
         }
-        return bodySpec.exchange().flatMap(clientResponse -> ServerResponse.ok()
-                .headers(headers -> {
-                    clientResponse.headers().asHttpHeaders();
-                    headers.addAll(clientResponse.headers().asHttpHeaders());
+        return bodySpec.retrieve().toEntity(DataBuffer.class)
+                .flatMap(responseEntity -> ServerResponse.ok().headers(headers -> {
+                    headers.addAll(responseEntity.getHeaders());
                     headers.remove(HttpHeaders.CONTENT_LENGTH);
-                })
-                .body(clientResponse.bodyToFlux(DataBuffer.class), DataBuffer.class));
+                }).body(BodyInserters.fromDataBuffers(Flux.just(Objects.requireNonNull(responseEntity.getBody())))));
+
     }
 
 }

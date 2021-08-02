@@ -49,11 +49,16 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 /**
- * 国密SM2算法实现，基于BC库
- * SM2算法只支持公钥加密，私钥解密
+ * 国密算法-SM2
+ *
+ * <ol>
+ *     <li>非对称加密和签名：SM2</li>
+ *     <li>摘要签名算法：SM3</li>
+ *     <li>对称加密：SM4</li>
+ * </ol>
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class SM2 extends Safety<SM2> {

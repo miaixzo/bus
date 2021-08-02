@@ -37,7 +37,7 @@ import java.util.Map;
  * Map值提供者
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class MapValueProvider implements ValueProvider<String> {
@@ -76,13 +76,11 @@ public class MapValueProvider implements ValueProvider<String> {
 
     @Override
     public Object value(String key, Type valueType) {
-        final String key1 = getKey(key, valueType);
-        if (null == key1) {
+        final String keys = getKey(key, valueType);
+        if (null == keys) {
             return null;
         }
-
-        final Object value = map.get(key1);
-        return Convert.convertWithCheck(valueType, value, null, this.ignoreError);
+        return Convert.convertWithCheck(valueType, map.get(keys), null, this.ignoreError);
     }
 
     @Override

@@ -25,19 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.software;
 
-import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class AixOSThread extends AbstractOSThread {
@@ -51,9 +51,9 @@ public class AixOSThread extends AbstractOSThread {
     private long upTime;
     private int priority;
 
-    public AixOSThread(int pid, String[] split) {
+    public AixOSThread(int pid, Map<AixOSProcess.PsThreadColumns, String> threadMap) {
         super(pid);
-        updateAttributes(split);
+        updateAttributes(threadMap);
     }
 
     @Override
@@ -103,15 +103,13 @@ public class AixOSThread extends AbstractOSThread {
         if (threadListInfoPs.size() > 2) {
             threadListInfoPs.remove(0); // header removed
             threadListInfoPs.remove(0); // process data removed
+            String tidStr = Integer.toString(this.getThreadId());
             for (String threadInfo : threadListInfoPs) {
-                // USER,PID,PPID,TID,ST,CP,PRI,SC,WCHAN,F,TT,BND,COMMAND
-                String[] threadInfoSplit = RegEx.SPACES.split(threadInfo.trim());
-                if (threadInfoSplit.length == 13 && threadInfoSplit[3].equals(String.valueOf(this.getThreadId()))) {
-                    String[] split = new String[3];
-                    split[0] = threadInfoSplit[3]; // tid
-                    split[1] = threadInfoSplit[4]; // state
-                    split[2] = threadInfoSplit[6]; // priority
-                    updateAttributes(split);
+                Map<AixOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(AixOSProcess.PsThreadColumns.class,
+                        threadInfo.trim(), ' ');
+                if (threadMap.containsKey(AixOSProcess.PsThreadColumns.COMMAND)
+                        && tidStr.equals(threadMap.get(AixOSProcess.PsThreadColumns.TID))) {
+                    return updateAttributes(threadMap);
                 }
             }
         }
@@ -119,10 +117,10 @@ public class AixOSThread extends AbstractOSThread {
         return false;
     }
 
-    private boolean updateAttributes(String[] split) {
-        this.threadId = Builder.parseIntOrDefault(split[0], 0);
-        this.state = AixOSProcess.getStateFromOutput(split[1].charAt(0));
-        this.priority = Builder.parseIntOrDefault(split[2], 0);
+    private boolean updateAttributes(Map<AixOSProcess.PsThreadColumns, String> threadMap) {
+        this.threadId = Builder.parseIntOrDefault(threadMap.get(AixOSProcess.PsThreadColumns.TID), 0);
+        this.state = AixOSProcess.getStateFromOutput(threadMap.get(AixOSProcess.PsThreadColumns.ST).charAt(0));
+        this.priority = Builder.parseIntOrDefault(threadMap.get(AixOSProcess.PsThreadColumns.PRI), 0);
         return true;
     }
 

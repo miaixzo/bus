@@ -44,7 +44,7 @@ import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
  * hardware, low-level user input events, and the windowing system.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public interface CoreGraphics extends Library {

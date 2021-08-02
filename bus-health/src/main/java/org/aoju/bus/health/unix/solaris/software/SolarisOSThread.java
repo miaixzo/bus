@@ -33,13 +33,12 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -55,9 +54,9 @@ public class SolarisOSThread extends AbstractOSThread {
     private long upTime;
     private int priority;
 
-    public SolarisOSThread(int pid, String[] split) {
+    public SolarisOSThread(int pid, Map<SolarisOSProcess.PsThreadColumns, String> psMap, Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap) {
         super(pid);
-        updateAttributes(split);
+        updateAttributes(psMap, prstatMap);
     }
 
     @Override
@@ -107,35 +106,49 @@ public class SolarisOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        List<String> threadListInfo1 = Executor.runNative("ps -o lwp,s,etime,stime,time,addr,pri -p " + getOwningProcessId());
-        List<String> threadListInfo2 = Executor.runNative("prstat -L -v -p " + getOwningProcessId() + " 1 1");
-        Map<Integer, String[]> threadMap = SolarisOSProcess.parseAndMergePSandPrstatInfo(threadListInfo1, 0, 7,
-                threadListInfo2, true);
-        if (threadMap.keySet().size() > 1) {
-            Optional<String[]> split = threadMap.entrySet().stream()
-                    .filter(entry -> entry.getKey() == this.getThreadId()).map(Map.Entry::getValue).findFirst();
-            if (split.isPresent()) {
-                return updateAttributes(split.get());
+        int pid = getOwningProcessId();
+        List<String> threadList = Executor
+                .runNative("ps -o " + SolarisOSProcess.PS_THREAD_COLUMNS + " -p " + pid);
+        if (threadList.size() > 1) {
+            // there is no switch for thread in ps command, hence filtering.
+            String lwpStr = Integer.toString(this.threadId);
+            for (String psOutput : threadList) {
+                Map<SolarisOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(SolarisOSProcess.PsThreadColumns.class,
+                        psOutput.trim(), ' ');
+                if (threadMap.containsKey(SolarisOSProcess.PsThreadColumns.PRI) && lwpStr.equals(threadMap.get(SolarisOSProcess.PsThreadColumns.LWP))) {
+                    List<String> prstatList = Executor.runNative("prstat -L -v -p " + pid + " 1 1");
+                    String prstatRow = "";
+                    for (String s : prstatList) {
+                        String row = s.trim();
+                        if (row.endsWith("/" + lwpStr)) {
+                            prstatRow = row;
+                            break;
+                        }
+                    }
+                    Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap = Builder.stringToEnumMap(SolarisOperatingSystem.PrstatKeywords.class, prstatRow,
+                            ' ');
+                    return updateAttributes(threadMap, prstatMap);
+                }
             }
         }
         this.state = OSProcess.State.INVALID;
         return false;
     }
 
-    private boolean updateAttributes(String[] split) {
-        this.threadId = Builder.parseIntOrDefault(split[0], 0);
-        this.state = SolarisOSProcess.getStateFromOutput(split[1].charAt(0));
+    private boolean updateAttributes(Map<SolarisOSProcess.PsThreadColumns, String> psMap, Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap) {
+        this.threadId = Builder.parseIntOrDefault(psMap.get(SolarisOSProcess.PsThreadColumns.LWP), 0);
+        this.state = SolarisOSProcess.getStateFromOutput(psMap.get(SolarisOSProcess.PsThreadColumns.S).charAt(0));
         // Avoid divide by zero for processes up less than a second
-        long elapsedTime = Builder.parseDHMSOrDefault(split[2], 0L); // etimes
+        long elapsedTime = Builder.parseDHMSOrDefault(psMap.get(SolarisOSProcess.PsThreadColumns.ETIME), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         long now = System.currentTimeMillis();
         this.startTime = now - this.upTime;
-        this.kernelTime = Builder.parseDHMSOrDefault(split[3], 0L); // systime
-        this.userTime = Builder.parseDHMSOrDefault(split[4], 0L) - this.kernelTime; // time
-        this.startMemoryAddress = Builder.hexStringToLong(split[5], 0L);
-        this.priority = Builder.parseIntOrDefault(split[6], 0);
-        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(split[7], 0L);
-        long voluntaryContextSwitches = Builder.parseLongOrDefault(split[8], 0L);
+        this.kernelTime = 0L;
+        this.userTime = Builder.parseDHMSOrDefault(psMap.get(SolarisOSProcess.PsThreadColumns.TIME), 0L);
+        this.startMemoryAddress = Builder.hexStringToLong(psMap.get(SolarisOSProcess.PsThreadColumns.ADDR), 0L);
+        this.priority = Builder.parseIntOrDefault(psMap.get(SolarisOSProcess.PsThreadColumns.PRI), 0);
+        long nonVoluntaryContextSwitches = Builder.parseLongOrDefault(prstatMap.get(SolarisOperatingSystem.PrstatKeywords.ICX), 0L);
+        long voluntaryContextSwitches = Builder.parseLongOrDefault(prstatMap.get(SolarisOperatingSystem.PrstatKeywords.VCX), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
         return true;
     }

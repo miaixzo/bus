@@ -22,7 +22,7 @@ import java.util.Map;
  * 6、代码简洁轻量无额外依赖
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class TreeKit {

@@ -41,7 +41,7 @@ import java.io.OutputStream;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Base64 {
@@ -320,6 +320,43 @@ public class Base64 {
             Base64Decoder.decode(ch, off, len, out);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 检查是否为Base64
+     *
+     * @param base64 Base64的bytes
+     * @return 是否为Base64
+     */
+    public static boolean isBase64(CharSequence base64) {
+        return isBase64(StringKit.bytes(base64));
+    }
+
+    /**
+     * 检查是否为Base64
+     *
+     * @param base64Bytes Base64的bytes
+     * @return 是否为Base64
+     */
+    public static boolean isBase64(byte[] base64Bytes) {
+        for (byte base64Byte : base64Bytes) {
+            if (false == (Base64Decoder.isBase64Code(base64Byte) || isWhiteSpace(base64Byte))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isWhiteSpace(byte byteToCheck) {
+        switch (byteToCheck) {
+            case ' ':
+            case '\n':
+            case '\r':
+            case '\t':
+                return true;
+            default:
+                return false;
         }
     }
 

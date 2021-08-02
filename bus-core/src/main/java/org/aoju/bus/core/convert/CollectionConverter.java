@@ -36,7 +36,7 @@ import java.util.Collection;
  * 各种集合类转换器
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class CollectionConverter implements Converter<Collection<?>> {

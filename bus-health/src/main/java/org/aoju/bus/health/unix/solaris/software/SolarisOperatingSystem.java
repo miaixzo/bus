@@ -49,11 +49,50 @@ import java.util.stream.Collectors;
  * after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
+
+    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
+            .collect(Collectors.joining(","));
+
+    private static List<OSProcess> queryAllProcessesFromPS() {
+        return getProcessListFromPS("ps -eo " + PS_COMMAND_ARGS, -1);
+    }
+
+    private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
+        List<OSProcess> procs = new ArrayList<>();
+        List<String> procList = Executor.runNative(psCommand);
+        if (procList.size() > 1) {
+            // Get a map by pid of prstat output
+            List<String> prstatList = pid < 0 ? Executor.runNative("prstat -v 1 1")
+                    : Executor.runNative("prstat -v -p " + pid + " 1 1");
+            Map<String, String> prstatRowMap = new HashMap<>();
+            for (String s : prstatList) {
+                String row = s.trim();
+                int idx = row.indexOf(' ');
+                if (idx > 0) {
+                    prstatRowMap.put(row.substring(0, idx), row);
+                }
+            }
+            // remove header row and iterate proc list
+            procList.remove(0);
+            for (String proc : procList) {
+                Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
+                // Check if last (thus all) value populated
+                if (psMap.containsKey(PsKeywords.ARGS)) {
+                    String pidStr = psMap.get(PsKeywords.PID);
+                    Map<PrstatKeywords, String> prstatMap = Builder.stringToEnumMap(PrstatKeywords.class,
+                            prstatRowMap.getOrDefault(pidStr, ""), ' ');
+                    procs.add(new SolarisOSProcess(pid < 0 ? Builder.parseIntOrDefault(pidStr, 0) : pid, psMap,
+                            prstatMap));
+                }
+            }
+        }
+        return procs;
+    }
 
     private static final String PS_FIELDS = "s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args";
     private static final String PROCESS_LIST_FOR_PID_COMMAND = "ps -o " + PS_FIELDS + " -p ";
@@ -71,19 +110,17 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         return 0L;
     }
 
-    private static List<OSProcess> queryAllProcessesFromPS() {
-        return getProcessListFromPS(PROCESS_LIST_COMMAND, -1);
+    @Override
+    public OSProcess getProcess(int pid) {
+        List<OSProcess> procs = getProcessListFromPS("ps -o " + PS_COMMAND_ARGS + " -p " + pid, pid);
+        if (procs.isEmpty()) {
+            return null;
+        }
+        return procs.get(0);
     }
 
-    private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
-        List<String> procList = pid < 0 ? Executor.runNative(psCommand)
-                : Executor.runNative(psCommand + pid);
-        List<String> procList2 = pid < 0 ? Executor.runNative("prstat -v 1 1")
-                : Executor.runNative("prstat -v -p " + pid + " 1 1");
-        Map<Integer, String[]> processMap = SolarisOSProcess.parseAndMergePSandPrstatInfo(procList, 1, 15, procList2,
-                false);
-        return processMap.entrySet().stream().map(e -> new SolarisOSProcess(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+    enum PsKeywords {
+        S, PID, PPID, USER, UID, GROUP, GID, NLWP, PRI, VSZ, RSS, ETIME, TIME, COMM, ARGS; // ARGS must always be last
     }
 
     private static long querySystemBootTime() {
@@ -241,13 +278,8 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         return services.toArray(new OSService[0]);
     }
 
-    @Override
-    public OSProcess getProcess(int pid) {
-        List<OSProcess> procs = getProcessListFromPS(PROCESS_LIST_FOR_PID_COMMAND, pid);
-        if (procs.isEmpty()) {
-            return null;
-        }
-        return procs.get(0);
+    enum PrstatKeywords {
+        PID, USERNAME, USR, SYS, TRP, TFL, DFL, LCK, SLP, LAT, VCX, ICX, SCL, SIG, PROCESS_NLWP; // prstat -v
     }
 
     @Override

@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class WeChatEEProvider extends AbstractProvider {
@@ -63,7 +63,7 @@ public class WeChatEEProvider extends AbstractProvider {
      */
     @Override
     public AccToken getAccessToken(Callback callback) {
-        String response = doGetAuthorizationCode(accessTokenUrl(callback.getCode()));
+        String response = doGetAuthorizationCode(accessTokenUrl(null));
 
         JSONObject object = this.checkResponse(response);
 

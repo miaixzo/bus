@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型(扩展名)
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class FileType {
@@ -831,17 +831,17 @@ public class FileType {
     /**
      * 文件类型
      */
-    public static Map<String, String> fileTypeMap;
+    public static Map<String, String> FILE_TYPE;
 
     static {
-        fileTypeMap = new ConcurrentHashMap<>();
-        fileTypeMap.putAll(PICS);
-        fileTypeMap.putAll(DOCS);
-        fileTypeMap.putAll(ZIPDOCS);
-        fileTypeMap.putAll(VIDEOS);
-        fileTypeMap.putAll(AUDIOS);
-        fileTypeMap.putAll(OTHER);
-        fileTypeMap.putAll(IHDR);
+        FILE_TYPE = new ConcurrentHashMap<>();
+        FILE_TYPE.putAll(PICS);
+        FILE_TYPE.putAll(DOCS);
+        FILE_TYPE.putAll(ZIPDOCS);
+        FILE_TYPE.putAll(VIDEOS);
+        FILE_TYPE.putAll(AUDIOS);
+        FILE_TYPE.putAll(OTHER);
+        FILE_TYPE.putAll(IHDR);
     }
 
     private FileType() {
@@ -857,7 +857,7 @@ public class FileType {
      * @return 之前已经存在的文件扩展名
      */
     public static String putFileType(String fileStreamHexHead, String extName) {
-        return fileTypeMap.put(fileStreamHexHead.toLowerCase(), extName);
+        return FILE_TYPE.put(fileStreamHexHead.toLowerCase(), extName);
     }
 
     /**
@@ -867,7 +867,7 @@ public class FileType {
      * @return 移除的文件扩展名
      */
     public static String removeFileType(String fileStreamHexHead) {
-        return fileTypeMap.remove(fileStreamHexHead.toLowerCase());
+        return FILE_TYPE.remove(fileStreamHexHead.toLowerCase());
     }
 
     /**
@@ -877,7 +877,7 @@ public class FileType {
      * @return 文件类型, 未找到为<code>null</code>
      */
     public static String getType(String fileStreamHexHead) {
-        for (Map.Entry<String, String> fileTypeEntry : fileTypeMap.entrySet()) {
+        for (Map.Entry<String, String> fileTypeEntry : FILE_TYPE.entrySet()) {
             if (StringKit.startWithIgnoreCase(fileStreamHexHead, fileTypeEntry.getKey())) {
                 return fileTypeEntry.getValue();
             }
@@ -941,7 +941,7 @@ public class FileType {
                 typeName = "msi";
             }
         } else if ("zip".equals(typeName)) {
-            // zip可能为docx、xlsx、pptx、jar、war等格式，扩展名辅助判断
+            // zip可能为docx、xlsx、pptx、jar、war、ofd等格式，扩展名辅助判断
             final String extName = FileKit.extName(filename);
             if ("docx".equalsIgnoreCase(extName)) {
                 typeName = "docx";
@@ -953,6 +953,14 @@ public class FileType {
                 typeName = "jar";
             } else if ("war".equalsIgnoreCase(extName)) {
                 typeName = "war";
+            } else if ("ofd".equalsIgnoreCase(extName)) {
+                typeName = "ofd";
+            }
+        } else if ("jar".equals(typeName)) {
+            // wps编辑过的.xlsx文件与.jar的开头相同,通过扩展名判断
+            final String extName = FileKit.extName(filename);
+            if ("xlsx".equalsIgnoreCase(extName)) {
+                typeName = "xlsx";
             }
         }
         return typeName;

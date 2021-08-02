@@ -37,7 +37,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 脱敏规则：180****1120
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class PhoneStrategy extends AbstractProvider {

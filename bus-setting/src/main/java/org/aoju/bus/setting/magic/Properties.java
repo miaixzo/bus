@@ -57,7 +57,7 @@ import java.util.Map;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public final class Properties extends java.util.Properties implements BasicType<String>, OptBasicType<String> {
@@ -504,6 +504,17 @@ public final class Properties extends java.util.Properties implements BasicType<
             }
         }
         return (String) value;
+    }
+
+    /**
+     * 转换为标准的{@link java.util.Properties}对象
+     *
+     * @return {@link java.util.Properties}对象
+     */
+    public java.util.Properties toProperties() {
+        final java.util.Properties properties = new java.util.Properties();
+        properties.putAll(this);
+        return properties;
     }
 
     /**

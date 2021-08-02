@@ -31,7 +31,7 @@ import java.io.Serializable;
  * CSV读取配置项
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class CsvReadConfig extends CsvConfig implements Serializable {
@@ -50,6 +50,14 @@ public class CsvReadConfig extends CsvConfig implements Serializable {
      * 每行字段个数不同时是否抛出异常,默认false
      */
     protected boolean errorOnDifferentFieldCount;
+    /**
+     * 定义开始的行（包括），此处为原始文件行号
+     */
+    protected long beginLineNo;
+    /**
+     * 结束的行（包括），此处为原始文件行号
+     */
+    protected long endLineNo = Long.MAX_VALUE - 1;
 
     /**
      * 默认配置
@@ -85,6 +93,28 @@ public class CsvReadConfig extends CsvConfig implements Serializable {
      */
     public void setErrorOnDifferentFieldCount(boolean errorOnDifferentFieldCount) {
         this.errorOnDifferentFieldCount = errorOnDifferentFieldCount;
+    }
+
+    /**
+     * 设置开始的行（包括），默认0，此处为原始文件行号
+     *
+     * @param beginLineNo 开始的行号（包括）
+     * @return this
+     */
+    public CsvReadConfig setBeginLineNo(long beginLineNo) {
+        this.beginLineNo = beginLineNo;
+        return this;
+    }
+
+    /**
+     * 设置结束的行（包括），默认不限制，此处为原始文件行号
+     *
+     * @param endLineNo 结束的行号（包括）
+     * @return this
+     */
+    public CsvReadConfig setEndLineNo(long endLineNo) {
+        this.endLineNo = endLineNo;
+        return this;
     }
 
 }

@@ -25,12 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.extra.ssh;
 
-import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
-import com.jcraft.jsch.SftpProgressMonitor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -57,7 +54,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {
@@ -298,12 +295,30 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public boolean mkdir(String dir) {
+        if (isDir(dir)) {
+            // 目录已经存在，创建直接返回
+            return true;
+        }
         try {
             this.channel.mkdir(dir);
             return true;
         } catch (SftpException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    @Override
+    public boolean isDir(String dir) {
+        final SftpATTRS sftpATTRS;
+        try {
+            sftpATTRS = this.channel.stat(dir);
+        } catch (SftpException e) {
+            if (e.getMessage().contains("No such file")) {
+                return false;
+            }
+            throw new InstrumentException(e);
+        }
+        return sftpATTRS.isDir();
     }
 
     /**
@@ -393,6 +408,35 @@ public class Sftp extends AbstractFtp {
     }
 
     /**
+     * 将本地文件或者文件夹同步（覆盖）上传到远程路径
+     *
+     * @param file       文件或者文件夹
+     * @param remotePath 远程路径
+     */
+    public void upload(File file, String remotePath) {
+        if (false == FileKit.exists(file)) {
+            return;
+        }
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files == null) {
+                return;
+            }
+            for (File fileItem : files) {
+                if (fileItem.isDirectory()) {
+                    String mkdir = FileKit.normalize(remotePath + "/" + fileItem.getName());
+                    this.upload(fileItem, mkdir);
+                } else {
+                    this.upload(fileItem, remotePath);
+                }
+            }
+        } else {
+            this.mkDirs(remotePath);
+            this.upload(remotePath, file);
+        }
+    }
+
+    /**
      * 将本地文件上传到目标服务器,目标文件名为destPath,若destPath为目录,则目标文件名将与srcFilePath文件名相同 覆盖模式
      *
      * @param srcFilePath 本地文件路径
@@ -463,7 +507,7 @@ public class Sftp extends AbstractFtp {
                 String destinationPathFile = destPath + Symbol.SLASH + item.getFilename();
                 if (!item.getAttrs().isDir()) {
                     // 本地不存在文件或者ftp上文件有修改则下载
-                    if (!FileKit.exist(destinationPathFile)
+                    if (!FileKit.exists(destinationPathFile)
                             || (item.getAttrs().getMTime() > (FileKit.lastModifiedTime(destinationPathFile).getTime() / 1000))) {
                         // Download file from source (source filename, destination filename).
                         channel.get(sourcePathPathFile, destinationPathFile);

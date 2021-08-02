@@ -53,7 +53,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class Ftp extends AbstractFtp {
@@ -369,7 +369,7 @@ public class Ftp extends AbstractFtp {
         String pwd = null;
         if (StringKit.isNotBlank(path)) {
             pwd = pwd();
-            if (false == cd(path)) {
+            if (false == isDir(path)) {
                 throw new InstrumentException("Change dir to [{}] error, maybe path not exist!", path);
             }
         }
@@ -655,7 +655,7 @@ public class Ftp extends AbstractFtp {
 
             if (!ftpFile.isDirectory()) {
                 // 本地不存在文件或者ftp上文件有变更则下载
-                if (!FileKit.exist(destinationPathFile)
+                if (!FileKit.exists(destinationPathFile)
                         || (ftpFile.getTimestamp().getTimeInMillis() > FileKit.lastModifiedTime(destinationPathFile).getTime())) {
                     download(sourcePathPathFile, FileKit.file(destinationPathFile));
                 }

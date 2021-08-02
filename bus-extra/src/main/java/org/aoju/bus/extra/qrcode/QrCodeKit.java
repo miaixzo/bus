@@ -45,9 +45,13 @@ import java.util.Map;
 
 /**
  * 基于Zxing的二维码工具类
+ * <ul>
+ *     <li>二维码生成和识别，见{@link BarcodeFormat#QR_CODE}</li>
+ *     <li>条形码生成和识别，见{@link BarcodeFormat#CODE_39}等很多标准格式</li>
+ * </ul>
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public class QrCodeKit {

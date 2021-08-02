@@ -36,6 +36,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Types;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -44,6 +45,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -66,7 +68,7 @@ import java.util.TimeZone;
  * 设置相关系统参数信息.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @Component
@@ -202,14 +204,15 @@ public class SpringBuilder {
         return ArrayKit.isNotEmpty(activeProfiles) ? activeProfiles[0] : null;
     }
 
-
-    public static void register(Class clazz) {
-        ConfigurableApplicationContext context = getContext();
-        if (null != context) {
-            DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
-            String beanName = StringKit.lowerFirst(clazz.getSimpleName());
-            beanFactory.registerBeanDefinition(beanName, BeanDefinitionBuilder.rootBeanDefinition(clazz).getBeanDefinition());
-        }
+    /**
+     * 动态向Spring注册Bean
+     *
+     * @param clazz 类型
+     */
+    public static void registerBeanDefinition(Class clazz) {
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) getBeanFactory();
+        beanFactory.registerBeanDefinition(StringKit.lowerFirst(clazz.getSimpleName()),
+                BeanDefinitionBuilder.rootBeanDefinition(clazz).getBeanDefinition());
     }
 
     /**
@@ -235,11 +238,24 @@ public class SpringBuilder {
      * @param bean  对象
      */
     public static void registerSingleton(Class clazz, Object bean) {
-        ConfigurableApplicationContext context = getContext();
-        if (null != context) {
-            DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
-            String beanName = StringKit.lowerFirst(clazz.getSimpleName());
-            beanFactory.registerSingleton(beanName, bean);
+        final ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) getBeanFactory();
+        factory.autowireBean(bean);
+        factory.registerSingleton(StringKit.lowerFirst(clazz.getSimpleName()), bean);
+    }
+
+    /**
+     * 注销bean
+     * 将Spring中的bean注销，请谨慎使用
+     *
+     * @param beanName bean名称
+     */
+    public static void unRegisterSingleton(String beanName) {
+        final ConfigurableListableBeanFactory factory = (ConfigurableListableBeanFactory) getBeanFactory();
+        if (factory instanceof DefaultSingletonBeanRegistry) {
+            DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) factory;
+            registry.destroySingleton(beanName);
+        } else {
+            throw new InstrumentException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
         }
     }
 

@@ -38,6 +38,7 @@ import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.ProcessStat;
 import org.aoju.bus.health.linux.drivers.UserGroup;
+import org.aoju.bus.health.linux.hardware.LinuxGlobalMemory;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -49,6 +50,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -58,19 +60,13 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class LinuxOSProcess extends AbstractOSProcess {
 
-    private static final String LS_F_PROC_PID_FD = "ls -f " + ProcPath.PID_FD;
-    // Resident Set Size is the number of pages the process has in real memory. To
-    // get the actual size in bytes we need to multiply that with page size.
-    private static final int PAGE_SIZE = Builder
-            .parseIntOrDefault(Executor.getFirstAnswer("getconf PAGESIZE"), 4096);
-
-    // Get a list of orders to pass to Builder
+    // Get a list of orders to pass to ParseUtil
     private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
 
     static {
@@ -81,10 +77,13 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
-    private String name;
-    private String path = Normal.EMPTY;
     private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
-    private String commandLine;
+    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
+    private Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
+
+    private String name;
+    private String path = "";
     private String user;
     private String userID;
     private String group;
@@ -107,7 +106,6 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     public LinuxOSProcess(int pid) {
         super(pid);
-        this.commandLine = Builder.getStringFromFile(String.format(ProcPath.PID_CMDLINE, pid));
         updateAttributes();
     }
 
@@ -150,7 +148,31 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     @Override
     public String getCommandLine() {
-        return this.commandLine;
+        return commandLine.get();
+    }
+
+    private String queryCommandLine() {
+        return Builder.getStringFromFile(String.format(ProcPath.PID_CMDLINE, getProcessID()));
+    }
+
+    @Override
+    public List<String> getArguments() {
+        return arguments.get();
+    }
+
+    private List<String> queryArguments() {
+        return Collections.unmodifiableList(Builder
+                .parseByteArrayToStrings(Builder.readAllBytes(String.format(ProcPath.PID_CMDLINE, getProcessID()))));
+    }
+
+    @Override
+    public Map<String, String> getEnvironmentVariables() {
+        return environmentVariables.get();
+    }
+
+    private Map<String, String> queryEnvironmentVariables() {
+        return Collections.unmodifiableMap(Builder
+                .parseByteArrayToStringMap(Builder.readAllBytes(String.format(ProcPath.PID_ENVIRON, getProcessID()))));
     }
 
     @Override
@@ -363,7 +385,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.threadCount = (int) statArray[ProcPidStat.THREAD_COUNT.ordinal()];
         this.priority = (int) statArray[ProcPidStat.PRIORITY.ordinal()];
         this.virtualSize = statArray[ProcPidStat.VSZ.ordinal()];
-        this.residentSetSize = statArray[ProcPidStat.RSS.ordinal()] * PAGE_SIZE;
+        this.residentSetSize = statArray[ProcPidStat.RSS.ordinal()] * LinuxGlobalMemory.PAGE_SIZE;
         this.kernelTime = statArray[ProcPidStat.KERNEL_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.userTime = statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.minorFaults = statArray[ProcPidStat.MINOR_FAULTS.ordinal()];

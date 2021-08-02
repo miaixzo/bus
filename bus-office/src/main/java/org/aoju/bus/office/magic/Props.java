@@ -37,7 +37,7 @@ import java.util.Optional;
  * 实用程序函数，使office属性更易于使用.
  *
  * @author Kimi Liu
- * @version 6.2.5
+ * @version 6.2.6
  * @since JDK 1.8+
  */
 public final class Props {
