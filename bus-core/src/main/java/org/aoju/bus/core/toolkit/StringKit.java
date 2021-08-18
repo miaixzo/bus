@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 
 /**
  * 字符串处理类
- * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
  * @version 6.2.6
@@ -4755,9 +4754,9 @@ public class StringKit {
         if (isEmpty(str) || ArrayKit.isEmpty(testStrs)) {
             return null;
         }
-        for (CharSequence checkStr : testStrs) {
-            if (str.toString().contains(checkStr)) {
-                return checkStr.toString();
+        for (CharSequence val : testStrs) {
+            if (val.toString().contains(str)) {
+                return val.toString();
             }
         }
         return null;

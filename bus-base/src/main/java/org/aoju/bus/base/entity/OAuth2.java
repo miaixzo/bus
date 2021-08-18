@@ -80,9 +80,9 @@ public class OAuth2 extends Entity {
     private String x_device_id;
 
     /**
-     * 可选参数信息
+     * 扩展参数信息
      */
     @Transient
-    private String x_extract;
+    private String x_extension;
 
 }

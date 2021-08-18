@@ -49,8 +49,8 @@ import javax.servlet.http.HttpServletResponse;
  * @version 6.2.6
  * @since JDK 1.8+
  */
-@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Component
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class GenieWrapperHandler implements HandlerInterceptor {
 
     /**

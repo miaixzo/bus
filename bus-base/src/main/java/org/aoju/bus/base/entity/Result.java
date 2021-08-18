@@ -58,6 +58,10 @@ public class Result<T> extends BaseEntity implements Serializable {
 
     }
 
+    public Result(List<T> rows) {
+        this.rows = rows;
+    }
+
     public Result(int total, List<T> rows) {
         this.total = total;
         this.rows = rows;

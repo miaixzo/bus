@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.pager.plugin;
 
-import org.aoju.bus.logger.Logger;
 import org.aoju.bus.pager.PageException;
 import org.aoju.bus.pager.dialect.Dialect;
 import org.apache.ibatis.cache.CacheKey;
@@ -87,7 +86,7 @@ public abstract class CountExecutor {
         try {
             mappedStatement = configuration.getMappedStatement(msId, false);
         } catch (Throwable t) {
-            Logger.warn(t.getMessage());
+            // ignore
         }
         return mappedStatement;
     }
