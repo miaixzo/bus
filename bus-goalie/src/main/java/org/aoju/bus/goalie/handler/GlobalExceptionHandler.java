@@ -29,7 +29,7 @@ import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.goalie.Consts;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.goalie.Provider;
 import org.aoju.bus.logger.Logger;
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         Map<String, String> map = context.getRequestMap();
         String method = null;
         if (null != map) {
-            method = map.get(Consts.METHOD);
+            method = map.get(Config.METHOD);
         }
         Logger.error("traceId:{},request: {},error:{}", exchange.getLogPrefix(), method, ex.getMessage());
         Logger.error(ex);

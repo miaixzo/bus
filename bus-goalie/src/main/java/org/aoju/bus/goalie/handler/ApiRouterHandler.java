@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Assets;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -75,7 +76,7 @@ public class ApiRouterHandler {
         WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer.defaultCodecs()
-                                .maxInMemorySize(2 * 1024 * 1024)).build())
+                                .maxInMemorySize(Config.MAX_INMEMORY_SIZE)).build())
                 .baseUrl(baseUrl).build());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(assets.getUrl());
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();

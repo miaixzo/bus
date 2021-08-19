@@ -26,6 +26,7 @@
 package org.aoju.bus.starter.goalie;
 
 import org.aoju.bus.goalie.Athlete;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.filter.*;
 import org.aoju.bus.goalie.handler.ApiRouterHandler;
 import org.aoju.bus.goalie.handler.ApiWebMvcRegistrations;
@@ -136,7 +137,7 @@ public class GoalieConfiguration {
                         .and(RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
 
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
-        configurer.defaultCodecs().maxInMemorySize(2 * 1024 * 1024);
+        configurer.defaultCodecs().maxInMemorySize(Config.MAX_INMEMORY_SIZE);
 
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
         HttpHandler handler = WebHttpHandlerBuilder.webHandler(webHandler)

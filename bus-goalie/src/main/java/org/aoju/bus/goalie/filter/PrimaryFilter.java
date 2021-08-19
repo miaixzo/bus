@@ -29,7 +29,7 @@ import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.extra.json.JsonKit;
-import org.aoju.bus.goalie.Consts;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.logger.Logger;
 import org.springframework.core.Ordered;
@@ -118,20 +118,20 @@ public class PrimaryFilter implements WebFilter {
         Context context = Context.get(exchange);
         Map<String, String> params = context.getRequestMap();
 
-        if (StringKit.isBlank(params.get(Consts.METHOD))) {
+        if (StringKit.isBlank(params.get(Config.METHOD))) {
             throw new BusinessException(ErrorCode.EM_100108);
         }
-        if (StringKit.isBlank(params.get(Consts.VERSION))) {
+        if (StringKit.isBlank(params.get(Config.VERSION))) {
             throw new BusinessException(ErrorCode.EM_100107);
         }
-        if (StringKit.isBlank(params.get(Consts.FORMAT))) {
+        if (StringKit.isBlank(params.get(Config.FORMAT))) {
             throw new BusinessException(ErrorCode.EM_100111);
         }
 
-        if (StringKit.isNotBlank(params.get(Consts.SIGN))) {
+        if (StringKit.isNotBlank(params.get(Config.SIGN))) {
             context.setNeedDecrypt(true);
         }
-        Logger.info("traceId:{},method:{},req =>{}", exchange.getLogPrefix(), params.get(Consts.METHOD), JsonKit.toJsonString(context.getRequestMap()));
+        Logger.info("traceId:{},method:{},req =>{}", exchange.getLogPrefix(), params.get(Config.METHOD), JsonKit.toJsonString(context.getRequestMap()));
     }
 
     /**
