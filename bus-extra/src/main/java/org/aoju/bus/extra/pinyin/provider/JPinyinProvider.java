@@ -40,7 +40,9 @@ import org.aoju.bus.core.toolkit.ArrayKit;
  */
 public class JPinyinProvider extends AbstractPinyinProvider {
 
-    //设置汉子拼音输出的格式
+    /**
+     * 设置汉子拼音输出的格式
+     */
     PinyinFormat format;
 
     public JPinyinProvider() {
