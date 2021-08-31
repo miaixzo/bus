@@ -25,8 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.compress.Deflate;
+import org.aoju.bus.core.compress.Gzip;
+import org.aoju.bus.core.compress.ZipReader;
+import org.aoju.bus.core.compress.ZipWriter;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -34,16 +37,18 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.zip.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ZipKit {
@@ -188,11 +193,7 @@ public class ZipKit {
     public static File zip(File zipFile, java.nio.charset.Charset charset, boolean withSrcDir, FileFilter filter, File... srcFiles) throws InstrumentException {
         validateFiles(zipFile, srcFiles);
 
-        try (ZipOutputStream out = getZipOutputStream(zipFile, charset)) {
-            zip(out, charset, withSrcDir, filter, srcFiles);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
+        ZipWriter.of(zipFile, charset).add(withSrcDir, filter, srcFiles).close();
         return zipFile;
     }
 
@@ -206,7 +207,7 @@ public class ZipKit {
      * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      */
     public static void zip(OutputStream out, java.nio.charset.Charset charset, boolean withSrcDir, FileFilter filter, File... srcFiles) {
-        zip(getZipOutputStream(out, charset), withSrcDir, filter, srcFiles);
+        ZipWriter.of(out, charset).add(withSrcDir, filter, srcFiles).close();
     }
 
     /**
@@ -218,25 +219,8 @@ public class ZipKit {
      * @param srcFiles        要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      */
     public static void zip(ZipOutputStream zipOutputStream, boolean withSrcDir, FileFilter filter, File... srcFiles) {
-        String srcRootDir;
-        try {
-            for (File srcFile : srcFiles) {
-                if (null == srcFile) {
-                    continue;
-                }
-                // 如果只是压缩一个文件，则需要截取该文件的父目录
-                srcRootDir = srcFile.getCanonicalPath();
-                if (srcFile.isFile() || withSrcDir) {
-                    // 若是文件，则将父目录完整路径都截取掉；若设置包含目录，则将上级目录全部截取掉，保留本目录名
-                    srcRootDir = srcFile.getCanonicalFile().getParentFile().getCanonicalPath();
-                }
-                // 调用递归压缩方法进行目录或文件压缩
-                zip(srcFile, srcRootDir, zipOutputStream, filter);
-                zipOutputStream.flush();
-            }
-            zipOutputStream.finish();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
+        try (final ZipWriter zipWriter = new ZipWriter(zipOutputStream)) {
+            zipWriter.add(withSrcDir, filter, srcFiles);
         }
     }
 
@@ -321,12 +305,17 @@ public class ZipKit {
      * @throws InstrumentException IO异常
      */
     public static File zip(File zipFile, String[] paths, InputStream[] ins, java.nio.charset.Charset charset) throws InstrumentException {
-        ZipOutputStream out = null;
-        try {
-            out = getZipOutputStream(zipFile, charset);
-            zip(out, paths, ins);
-        } finally {
-            IoKit.close(out);
+        if (ArrayKit.isEmpty(paths) || ArrayKit.isEmpty(ins)) {
+            throw new IllegalArgumentException("Paths or ins is empty !");
+        }
+        if (paths.length != ins.length) {
+            throw new IllegalArgumentException("Paths length is not equals to ins length !");
+        }
+
+        try (final ZipWriter zipWriter = ZipWriter.of(zipFile, charset)) {
+            for (int i = 0; i < paths.length; i++) {
+                zipWriter.add(paths[i], ins[i]);
+            }
         }
         return zipFile;
     }
@@ -339,12 +328,17 @@ public class ZipKit {
      * @param ins   要压缩的源，添加完成后自动关闭流
      */
     public static void zip(OutputStream out, String[] paths, InputStream[] ins) {
-        ZipOutputStream zipOutputStream = null;
-        try {
-            zipOutputStream = getZipOutputStream(out, DEFAULT_CHARSET);
-            zip(zipOutputStream, paths, ins);
-        } finally {
-            IoKit.close(zipOutputStream);
+        if (ArrayKit.isEmpty(paths) || ArrayKit.isEmpty(ins)) {
+            throw new IllegalArgumentException("Paths or ins is empty !");
+        }
+        if (paths.length != ins.length) {
+            throw new IllegalArgumentException("Paths length is not equals to ins length !");
+        }
+
+        try (final ZipWriter zipWriter = ZipWriter.of(out, DEFAULT_CHARSET)) {
+            for (int i = 0; i < paths.length; i++) {
+                zipWriter.add(paths[i], ins[i]);
+            }
         }
     }
 
@@ -363,8 +357,11 @@ public class ZipKit {
         if (paths.length != ins.length) {
             throw new IllegalArgumentException("Paths length is not equals to ins length !");
         }
-        for (int i = 0; i < paths.length; i++) {
-            addFile(ins[i], paths[i], zipOutputStream);
+
+        try (final ZipWriter zipWriter = new ZipWriter(zipOutputStream)) {
+            for (int i = 0; i < paths.length; i++) {
+                zipWriter.add(paths[i], ins[i]);
+            }
         }
     }
 
@@ -379,15 +376,7 @@ public class ZipKit {
      * @throws InstrumentException IO异常
      */
     public static File zip(File zipFile, Charset charset, Resource... resources) throws InstrumentException {
-        ZipOutputStream out = null;
-        try {
-            out = getZipOutputStream(zipFile, charset);
-            for (Resource resource : resources) {
-                addFile(resource.getStream(), resource.getName(), out);
-            }
-        } finally {
-            IoKit.close(out);
-        }
+        ZipWriter.of(zipFile, charset).add(resources).close();
         return zipFile;
     }
 
@@ -497,20 +486,13 @@ public class ZipKit {
      */
     public static File unzip(ZipFile zipFile, File outFile) {
         if (outFile.exists() && outFile.isFile()) {
-            throw new InstrumentException("Target path [{}] exist!", outFile.getAbsolutePath());
+            throw new IllegalArgumentException(
+                    StringKit.format("Target path [{}] exist!", outFile.getAbsolutePath()));
         }
-        get(zipFile, (zipEntry) -> {
-            // FileUtil.file会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
-            File outItemFile = FileKit.file(outFile, zipEntry.getName());
-            if (zipEntry.isDirectory()) {
-                // 创建对应目录
-                //noinspection ResultOfMethodCallIgnored
-                outItemFile.mkdirs();
-            } else {
-                // 写出文件
-                write(zipFile, zipEntry, outItemFile);
-            }
-        });
+
+        try (final ZipReader reader = new ZipReader(zipFile)) {
+            reader.readTo(outFile);
+        }
 
         return outFile;
     }
@@ -540,15 +522,9 @@ public class ZipKit {
      * @return 解压的目录
      */
     public static File unzip(ZipInputStream zipStream, File outFile) {
-        get(zipStream, (zipEntry) -> {
-            // FileKit.file会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
-            File outItemFile = FileKit.file(outFile, zipEntry.getName());
-            if (zipEntry.isDirectory()) {
-                outItemFile.mkdirs();
-            } else {
-                FileKit.writeFromStream(zipStream, outItemFile, false);
-            }
-        });
+        try (final ZipReader reader = new ZipReader(zipStream)) {
+            reader.readTo(outFile);
+        }
         return outFile;
     }
 
@@ -595,21 +571,9 @@ public class ZipKit {
      * @return 文件内容bytes
      */
     public static byte[] unzipFileBytes(File zipFile, java.nio.charset.Charset charset, String name) {
-        ZipFile zipFileObj = null;
-        try {
-            zipFileObj = zipFile(zipFile, charset);
-            final Enumeration<ZipEntry> em = (Enumeration<ZipEntry>) zipFileObj.entries();
-            ZipEntry zipEntry;
-            while (em.hasMoreElements()) {
-                zipEntry = em.nextElement();
-                if ((false == zipEntry.isDirectory()) && name.equals(zipEntry.getName())) {
-                    return IoKit.readBytes(get(zipFileObj, zipEntry));
-                }
-            }
-        } finally {
-            IoKit.close(zipFileObj);
+        try (final ZipReader reader = ZipReader.of(zipFile, charset)) {
+            return IoKit.readBytes(reader.get(name));
         }
-        return null;
     }
 
     /**
@@ -672,17 +636,8 @@ public class ZipKit {
      * @throws InstrumentException IO异常
      */
     public static byte[] gzip(InputStream in, int length) throws InstrumentException {
-        final java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream(length);
-        GZIPOutputStream gos = null;
-        try {
-            gos = new GZIPOutputStream(bos);
-            IoKit.copy(in, gos);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            IoKit.close(gos);
-        }
-        // 返回必须在关闭gos后进行,因为关闭时会自动执行finish()方法,保证数据全部写出
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
+        Gzip.of(in, bos).gzip().close();
         return bos.toByteArray();
     }
 
@@ -729,18 +684,8 @@ public class ZipKit {
      * @throws InstrumentException IO异常
      */
     public static byte[] unGzip(InputStream in, int length) throws InstrumentException {
-        GZIPInputStream gzi = null;
-        org.aoju.bus.core.io.streams.ByteArrayOutputStream bos;
-        try {
-            gzi = (in instanceof GZIPInputStream) ? (GZIPInputStream) in : new GZIPInputStream(in);
-            bos = new org.aoju.bus.core.io.streams.ByteArrayOutputStream(length);
-            IoKit.copy(gzi, bos);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            IoKit.close(gzi);
-        }
-        // 返回必须在关闭gos后进行，因为关闭时会自动执行finish()方法，保证数据全部写出
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
+        Gzip.of(in, bos).unGzip().close();
         return bos.toByteArray();
     }
 
@@ -805,7 +750,7 @@ public class ZipKit {
      */
     public static byte[] zlib(InputStream in, int level, int length) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
-        deflater(in, out, level, false);
+        Deflate.of(in, out, false).deflater(level);
         return out.toByteArray();
     }
 
@@ -849,7 +794,7 @@ public class ZipKit {
      */
     public static byte[] unZlib(InputStream in, int length) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
-        inflater(in, out, false);
+        Deflate.of(in, out, false).inflater();
         return out.toByteArray();
     }
 
@@ -902,13 +847,8 @@ public class ZipKit {
      * @param consumer {@link ZipEntry}处理器
      */
     public static void get(ZipFile zipFile, Consumer<ZipEntry> consumer) {
-        try {
-            final Enumeration<? extends ZipEntry> em = zipFile.entries();
-            while (em.hasMoreElements()) {
-                consumer.accept(em.nextElement());
-            }
-        } finally {
-            IoKit.close(zipFile);
+        try (final ZipReader reader = new ZipReader(zipFile)) {
+            reader.read(consumer);
         }
     }
 
@@ -919,27 +859,9 @@ public class ZipKit {
      * @param consumer  {@link ZipEntry}处理器
      */
     public static void get(ZipInputStream zipStream, Consumer<ZipEntry> consumer) {
-        try {
-            ZipEntry zipEntry;
-            while (null != (zipEntry = zipStream.getNextEntry())) {
-                consumer.accept(zipEntry);
-            }
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            IoKit.close(zipStream);
+        try (final ZipReader reader = new ZipReader(zipStream)) {
+            reader.read(consumer);
         }
-    }
-
-    /**
-     * 获得 {@link ZipOutputStream}
-     *
-     * @param zipFile 压缩文件
-     * @param charset 编码
-     * @return {@link ZipOutputStream}
-     */
-    private static ZipOutputStream getZipOutputStream(File zipFile, java.nio.charset.Charset charset) {
-        return getZipOutputStream(FileKit.getOutputStream(zipFile), charset);
     }
 
     /**
@@ -949,46 +871,11 @@ public class ZipKit {
      * @param charset 编码
      * @return {@link ZipOutputStream}
      */
-    private static ZipOutputStream getZipOutputStream(OutputStream out, Charset charset) {
+    private static ZipOutputStream get(OutputStream out, Charset charset) {
         if (out instanceof ZipOutputStream) {
             return (ZipOutputStream) out;
         }
         return new ZipOutputStream(out, ObjectKit.defaultIfNull(charset, DEFAULT_CHARSET));
-    }
-
-    /**
-     * 递归压缩文件夹
-     * srcRootDir决定了路径截取的位置,例如：
-     * file的路径为/data/a/b/c/d.txt,srcRootDir为/data/a/b,则压缩后的文件与目录为结构为c/d.txt
-     *
-     * @param out        压缩文件存储对象
-     * @param srcRootDir 被压缩的文件夹根目录
-     * @param file       当前递归压缩的文件或目录对象
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
-     * @throws InstrumentException IO异常
-     */
-    private static void zip(File file, String srcRootDir, ZipOutputStream out, FileFilter filter) throws InstrumentException {
-        if (null == file || (null != filter && false == filter.accept(file))) {
-            return;
-        }
-
-        // 获取文件相对于压缩文件夹根目录的子路径
-        final String subPath = FileKit.subPath(srcRootDir, file);
-        // 如果是目录，则压缩压缩目录中的文件或子目录
-        if (file.isDirectory()) {
-            final File[] files = file.listFiles();
-            if (ArrayKit.isEmpty(files)) {
-                // 加入目录，只有空目录时才加入目录，非空时会在创建文件时自动添加父级目录
-                addDir(subPath, out);
-            } else {
-                // 压缩目录下的子文件或目录
-                for (File childFile : files) {
-                    zip(childFile, srcRootDir, out, filter);
-                }
-            }
-        } else {// 如果是文件或其它符号，则直接压缩该文件
-            addFile(file, subPath, out);
-        }
     }
 
     /**
@@ -1033,160 +920,6 @@ public class ZipKit {
         return fileNames;
     }
 
-
-    /**
-     * 压缩字符串
-     *
-     * @param body 压缩的字符串
-     * @return 压缩后的字符串
-     */
-    public static String compress(String body) {
-        if (StringKit.isEmpty(body)) {
-            return body;
-        }
-
-        try {
-            java.io.ByteArrayOutputStream outputStream = compressToStream(body);
-            if (null != outputStream) {
-                // 通过解码字节将缓冲区内容转换为字符串
-                return new String(outputStream.toByteArray(), org.aoju.bus.core.lang.Charset.ISO_8859_1);
-            }
-        } catch (Exception e) {
-            Console.log("GZIP compress 压缩失败，使用源文件", e);
-        }
-
-        return body;
-    }
-
-    /**
-     * 压缩字符串
-     *
-     * @param body 压缩的字符串
-     * @return 压缩后的字符串
-     */
-    public static java.io.ByteArrayOutputStream compressToStream(String body) {
-        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
-        GZIPOutputStream os = null;
-        try {
-            os = new GZIPOutputStream(bos);
-            // 写入输出流
-            os.write(body.getBytes());
-            return bos;
-        } catch (IOException e) {
-            org.aoju.bus.core.lang.Console.log("Compression failed, using source file", e);
-        } finally {
-            try {
-                if (null != os) {
-                    os.close();
-                }
-                bos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 解压缩字符串
-     *
-     * @param body 解压缩的字符串
-     * @return 解压后的字符串
-     */
-    public static String decompress(String body) {
-
-        if (StringKit.isEmpty(body)) {
-            return body;
-        }
-
-        byte[] buf = new byte[1024];
-        ByteArrayInputStream bis = null;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        GZIPInputStream is = null;
-        try {
-            bis = new ByteArrayInputStream(body.getBytes(org.aoju.bus.core.lang.Charset.ISO_8859_1));
-            is = new GZIPInputStream(bis);
-            int len;
-            // 将未压缩数据读入字节数组
-            while ((len = is.read(buf)) != -1) {
-                // 将指定 byte 数组中从偏移量 off 开始的 len 个字节写入此byte数组输出流
-                bos.write(buf, 0, len);
-            }
-            // 通过解码字节将缓冲区内容转换为字符串
-            return new String(bos.toByteArray());
-        } catch (Exception e) {
-            Console.log("Decompress failed, using source file", e);
-            return body;
-        } finally {
-            try {
-                if (null != is) {
-                    is.close();
-                }
-                if (null != bis) {
-                    bis.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 添加文件到压缩包
-     *
-     * @param file 需要压缩的文件
-     * @param path 在压缩文件中的路径
-     * @param out  压缩文件存储对象
-     * @throws InstrumentException IO异常
-     */
-    private static void addFile(File file, String path, ZipOutputStream out) throws InstrumentException {
-        addFile(FileKit.getInputStream(file), path, out);
-    }
-
-    /**
-     * 添加文件流到压缩包,不关闭输入流
-     *
-     * @param in   需要压缩的输入流
-     * @param path 压缩的路径
-     * @param out  压缩文件存储对象
-     * @throws InstrumentException IO异常
-     */
-    private static void addFile(InputStream in, String path, ZipOutputStream out) throws InstrumentException {
-        if (null == in) {
-            return;
-        }
-        try {
-            out.putNextEntry(new ZipEntry(path));
-            IoKit.copy(in, out);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            IoKit.close(in);
-            closeEntry(out);
-        }
-    }
-
-    /**
-     * 在压缩包中新建目录
-     *
-     * @param path 压缩的路径
-     * @param out  压缩文件存储对象
-     * @throws InstrumentException IO异常
-     */
-    private static void addDir(String path, ZipOutputStream out) throws InstrumentException {
-        if (StringKit.isEmpty(path)) {
-            return;
-        }
-        path = StringKit.addSuffixIfNot(path, Symbol.SLASH);
-        try {
-            out.putNextEntry(new ZipEntry(path));
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            closeEntry(out);
-        }
-    }
-
     /**
      * 判断压缩文件保存的路径是否为源文件路径的子文件夹,如果是,则抛出异常(防止无限递归压缩的发生)
      *
@@ -1220,19 +953,6 @@ public class ZipKit {
     }
 
     /**
-     * 关闭当前Entry,继续下一个Entry
-     *
-     * @param out ZipOutputStream
-     */
-    private static void closeEntry(ZipOutputStream out) {
-        try {
-            out.closeEntry();
-        } catch (IOException e) {
-            // ignore
-        }
-    }
-
-    /**
      * 从Zip中读取文件流并写出到文件
      *
      * @param zipFile     Zip文件
@@ -1242,70 +962,6 @@ public class ZipKit {
      */
     private static void write(ZipFile zipFile, ZipEntry zipEntry, File outItemFile) throws InstrumentException {
         FileKit.writeFromStream(get(zipFile, zipEntry), outItemFile);
-    }
-
-    /**
-     * 将Zlib流解压到out中
-     *
-     * @param in     zlib数据流
-     * @param out    输出
-     * @param nowrap true表示兼容Gzip压缩
-     */
-    private static void inflater(InputStream in, OutputStream out, boolean nowrap) {
-        final InflaterOutputStream ios = (out instanceof InflaterOutputStream) ? (InflaterOutputStream) out : new InflaterOutputStream(out, new Inflater(nowrap));
-        IoKit.copy(in, ios);
-        try {
-            ios.finish();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 将普通数据流压缩成zlib到out中
-     *
-     * @param in     zlib数据流
-     * @param out    输出
-     * @param level  压缩级别，0~9
-     * @param nowrap true表示兼容Gzip压缩
-     */
-    private static void deflater(InputStream in, OutputStream out, int level, boolean nowrap) {
-        final DeflaterOutputStream ios = (out instanceof DeflaterOutputStream) ? (DeflaterOutputStream) out : new DeflaterOutputStream(out, new Deflater(level, nowrap));
-        IoKit.copy(in, ios);
-        try {
-            ios.finish();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 根据压缩包中的路径构建目录结构,在Win下直接构建,在Linux下拆分路径单独构建
-     *
-     * @param outFile  最外部路径
-     * @param fileName 文件名,可以包含路径
-     * @return 文件或目录
-     */
-    private static File buildFile(File outFile, String fileName) {
-        // 替换Windows路径分隔符为Linux路径分隔符，便于统一处理
-        fileName = fileName.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH);
-        if (false == FileKit.isWindows()
-                // 检查文件名中是否包含"/"，不考虑以"/"结尾的情况
-                && fileName.lastIndexOf(Symbol.SLASH, fileName.length() - 2) > 0) {
-            // 在Linux下多层目录创建存在问题，/会被当成文件名的一部分，此处做处理
-            // 使用/拆分路径（zip中无\），级联创建父目录
-            final List<String> pathParts = StringKit.split(fileName, Symbol.C_SLASH, false, true);
-            final int lastPartIndex = pathParts.size() - 1;//目录个数
-            for (int i = 0; i < lastPartIndex; i++) {
-                //由于路径拆分，slip不检查，在最后一步检查
-                outFile = new File(outFile, pathParts.get(i));
-            }
-            //noinspection ResultOfMethodCallIgnored
-            outFile.mkdirs();
-            // 最后一个部分如果非空，作为文件名
-            fileName = pathParts.get(lastPartIndex);
-        }
-        return FileKit.file(outFile, fileName);
     }
 
 }

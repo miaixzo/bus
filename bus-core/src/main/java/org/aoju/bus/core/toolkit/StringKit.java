@@ -29,6 +29,7 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.Builders;
+import org.aoju.bus.core.text.Naming;
 import org.aoju.bus.core.text.Similarity;
 
 import java.io.StringReader;
@@ -44,10 +45,9 @@ import java.util.regex.Pattern;
 
 /**
  * 字符串处理类
- * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -1394,7 +1394,6 @@ public class StringKit {
                 }
             }
         }
-        // append the characters following the last {} pair.
         //加入最后一个占位符后所有的字符
         sbuf.append(val, handledPosition, val.length());
 
@@ -2556,7 +2555,7 @@ public class StringKit {
      */
     public static int indexOf(final CharSequence str, char searchChar, int start, int end) {
         if (isEmpty(str)) {
-            return Symbol.C_HYPHEN + Symbol.C_ONE;
+            return Symbol.C_MINUS + Symbol.C_ONE;
         }
         final int len = str.length();
         if (start < 0 || start > len) {
@@ -3121,33 +3120,7 @@ public class StringKit {
      * @return 转换后下划线大写方式命名的字符串
      */
     public static String toUnderlineCase(CharSequence camelCaseStr) {
-        if (null == camelCaseStr) {
-            return null;
-        }
-
-        final int length = camelCaseStr.length();
-        StringBuilder sb = new StringBuilder();
-        char c;
-        boolean isPreUpperCase = false;
-        for (int i = 0; i < length; i++) {
-            c = camelCaseStr.charAt(i);
-            boolean isNextUpperCase = true;
-            if (i < (length - 1)) {
-                isNextUpperCase = Character.isUpperCase(camelCaseStr.charAt(i + 1));
-            }
-            if (Character.isUpperCase(c)) {
-                if (!isPreUpperCase || !isNextUpperCase) {
-                    if (i > 0) {
-                        sb.append(Symbol.UNDERLINE);
-                    }
-                }
-                isPreUpperCase = true;
-            } else {
-                isPreUpperCase = false;
-            }
-            sb.append(Character.toLowerCase(c));
-        }
-        return sb.toString();
+        return Naming.toUnderlineCase(camelCaseStr);
     }
 
     /**
@@ -3159,56 +3132,7 @@ public class StringKit {
      * @return 转换后符号连接方式命名的字符串
      */
     public static String toSymbolCase(CharSequence str, char symbol) {
-        if (null == str) {
-            return null;
-        }
-
-        final int length = str.length();
-        final Builders sb = new Builders();
-        char c;
-        for (int i = 0; i < length; i++) {
-            c = str.charAt(i);
-            if (Character.isUpperCase(c)) {
-                final Character preChar = (i > 0) ? str.charAt(i - 1) : null;
-                final Character nextChar = (i < str.length() - 1) ? str.charAt(i + 1) : null;
-
-                if (null != preChar) {
-                    if (symbol == preChar) {
-                        // 前一个为分隔符
-                        if (null == nextChar || Character.isLowerCase(nextChar)) {
-                            //普通首字母大写，如_Abb -> _abb
-                            c = Character.toLowerCase(c);
-                        }
-                        //后一个为大写，按照专有名词对待，如_AB -> _AB
-                    } else if (Character.isLowerCase(preChar)) {
-                        // 前一个为小写
-                        sb.append(symbol);
-                        if (null == nextChar || Character.isLowerCase(nextChar)) {
-                            //普通首字母大写，如aBcc -> a_bcc
-                            c = Character.toLowerCase(c);
-                        }
-                        // 后一个为大写，按照专有名词对待，如aBC -> a_BC
-                    } else {
-                        //前一个为大写
-                        if (null == nextChar || Character.isLowerCase(nextChar)) {
-                            // 普通首字母大写，如ABcc -> A_bcc
-                            sb.append(symbol);
-                            c = Character.toLowerCase(c);
-                        }
-                        // 后一个为大写，按照专有名词对待，如ABC -> ABC
-                    }
-                } else {
-                    // 首字母，需要根据后一个判断是否转为小写
-                    if (null == nextChar || Character.isLowerCase(nextChar)) {
-                        // 普通首字母大写，如Abc -> abc
-                        c = Character.toLowerCase(c);
-                    }
-                    // 后一个为大写，按照专有名词对待，如ABC -> ABC
-                }
-            }
-            sb.append(c);
-        }
-        return sb.toString();
+        return Naming.toSymbolCase(str, symbol);
     }
 
     /**
@@ -3216,34 +3140,11 @@ public class StringKit {
      * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串
      * 例如：hello_world= helloWorld
      *
-     * @param name 转换前的下划线大写方式命名的字符串
+     * @param str 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串
      */
-    public static String toCamelCase(CharSequence name) {
-        if (null == name) {
-            return null;
-        }
-
-        String name2 = name.toString();
-        if (name2.contains(Symbol.UNDERLINE)) {
-            final StringBuilder sb = new StringBuilder(name2.length());
-            boolean upperCase = false;
-            for (int i = 0; i < name2.length(); i++) {
-                char c = name2.charAt(i);
-
-                if (c == Symbol.C_UNDERLINE) {
-                    upperCase = true;
-                } else if (upperCase) {
-                    sb.append(Character.toUpperCase(c));
-                    upperCase = false;
-                } else {
-                    sb.append(Character.toLowerCase(c));
-                }
-            }
-            return sb.toString();
-        } else {
-            return name2;
-        }
+    public static String toCamelCase(CharSequence str) {
+        return Naming.toCamelCase(str);
     }
 
     /**
@@ -4015,6 +3916,36 @@ public class StringKit {
     }
 
     /**
+     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
+     * replaceFun可以通过{@link Matcher}提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
+     *
+     * <pre class="code">
+     *     replace(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
+     *     // 结果为："ZZZaaabbbccc中文-1234-"
+     * </pre>
+     *
+     * @param str        要替换的字符串
+     * @param pattern    用于匹配的正则式
+     * @param replaceFun 决定如何替换的函数
+     * @return 替换后的字符串
+     */
+    public static String replace(CharSequence str, java.util.regex.Pattern pattern, Func.Func1<Matcher, String> replaceFun) {
+        return PatternKit.replaceAll(str, pattern, replaceFun);
+    }
+
+    /**
+     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
+     *
+     * @param str        要替换的字符串
+     * @param regex      用于匹配的正则式
+     * @param replaceFun 决定如何替换的函数
+     * @return 替换后的字符串
+     */
+    public static String replace(CharSequence str, String regex, Func.Func1<Matcher, String> replaceFun) {
+        return PatternKit.replaceAll(str, regex, replaceFun);
+    }
+
+    /**
      * 替换指定字符串的指定区间内字符为固定字符
      *
      * @param str          字符串
@@ -4755,9 +4686,9 @@ public class StringKit {
         if (isEmpty(str) || ArrayKit.isEmpty(testStrs)) {
             return null;
         }
-        for (CharSequence checkStr : testStrs) {
-            if (str.toString().contains(checkStr)) {
-                return checkStr.toString();
+        for (CharSequence val : testStrs) {
+            if (val.toString().contains(str)) {
+                return val.toString();
             }
         }
         return null;

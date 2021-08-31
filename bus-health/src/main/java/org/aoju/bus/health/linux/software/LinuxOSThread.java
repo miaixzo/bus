@@ -38,7 +38,7 @@ import java.util.Map;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class LinuxOSThread extends AbstractOSThread {

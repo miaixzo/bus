@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Fields {
@@ -355,6 +355,15 @@ public class Fields {
     public final static String WITH_ZONE_OFFSET_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     /**
+     * UTC时间：yyyy-MM-dd'T'HH:mm:ssXXX
+     */
+    public static final String WITH_XXX_OFFSET_PATTERN = "yyyy-MM-dd'T'HH:mm:ssXXX";
+    /**
+     * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ssXXX
+     */
+    public static final FormatBuilder WITH_XXX_OFFSET_FORMAT = FormatBuilder.getInstance(WITH_XXX_OFFSET_PATTERN);
+
+    /**
      * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ssZ
      */
     public final static FormatBuilder WITH_ZONE_OFFSET_FORMAT = FormatBuilder.getInstance(WITH_ZONE_OFFSET_PATTERN, TimeZone.getTimeZone("UTC"));
@@ -368,7 +377,7 @@ public class Fields {
      *     yyyy-MM-dd
      * </pre>
      */
-    public static final Pattern REGEX_NORM = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}(\\s\\d{1,2}:\\d{1,2}(:\\d{1,2})?)?(.\\d{1,3})?");
+    public static final Pattern REGEX_NORM = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}(\\s\\d{1,2}:\\d{1,2}(:\\d{1,2})?)?(.\\d{1,6})?");
 
     /**
      * java.util.Date EEE MMM zzz 缩写数组
@@ -1399,7 +1408,7 @@ public class Fields {
          * @return this
          */
         public static Zodiac getZodiacByMonthDay(String monthDayStr) {
-            MonthDay monthDay = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
+            MonthDay monthDay = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + monthDayStr);
             for (Zodiac zodiac : Zodiac.values()) {
                 if (zodiac.startDate.equals(monthDayStr) || zodiac.endDate.equals(monthDayStr)) {
                     return zodiac;
@@ -1407,8 +1416,8 @@ public class Fields {
                 if (isCapricorn(monthDay)) {
                     return Zodiac.Capricorn;
                 }
-                MonthDay monthDayStart = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + zodiac.startDate);
-                MonthDay monthDayEnd = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + zodiac.endDate);
+                MonthDay monthDayStart = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + zodiac.startDate);
+                MonthDay monthDayEnd = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + zodiac.endDate);
                 if (monthDay.isAfter(monthDayStart) && monthDay.isBefore(monthDayEnd)) {
                     return zodiac;
                 }
@@ -1423,8 +1432,8 @@ public class Fields {
          * @return true/false
          */
         private static boolean isCapricorn(MonthDay monthDay) {
-            MonthDay capricorn_start = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + "12-22");
-            MonthDay capricorn_end = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + "01-19");
+            MonthDay capricorn_start = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + "12-22");
+            MonthDay capricorn_end = MonthDay.parse(Symbol.MINUS + Symbol.MINUS + "01-19");
             if (capricorn_start.equals(monthDay) || capricorn_end.equals(monthDay)) {
                 return true;
             }

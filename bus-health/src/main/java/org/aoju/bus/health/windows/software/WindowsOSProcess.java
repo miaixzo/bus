@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -76,16 +76,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     // track the OperatingSystem object that created this
     private final WindowsOperatingSystem os;
-
-    private Supplier<Pair<String, String>> userInfo = Memoize.memoize(this::queryUserInfo);
     private Supplier<Pair<String, String>> groupInfo = Memoize.memoize(this::queryGroupInfo);
     private Supplier<Triple<String, String, Map<String, String>>> cwdCmdEnv = Memoize.memoize(
             this::queryCwdCommandlineEnvironment);
     private Supplier<String> currentWorkingDirectory = Memoize.memoize(this::queryCwd);
-    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
-    private Supplier<List<String>> args = Memoize.memoize(this::queryArguments);
-
     private String name;
+    private Supplier<Pair<String, String>> userInfo = Memoize.memoize(this::queryUserInfo);
     private String path;
     private State state = State.INVALID;
     private int parentProcessID;
@@ -96,6 +92,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private long kernelTime;
     private long userTime;
     private long startTime;
+    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private Supplier<List<String>> args = Memoize.memoize(this::queryArguments);
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
@@ -114,6 +112,24 @@ public class WindowsOSProcess extends AbstractOSProcess {
         updateAttributes(processMap.get(pid), processWtsMap.get(pid), threadMap);
     }
 
+    private static String readUnicodeString(WinNT.HANDLE h, UNICODE_STRING s) {
+        IntByReference nRead = new IntByReference();
+        if (s.Length > 0) {
+            // Add space for null terminator
+            Memory m = new Memory(s.Length + 2L);
+            m.clear(); // really only need null in last 2 bytes but this is easier
+            Kernel32.INSTANCE.ReadProcessMemory(h, s.Buffer, m, s.Length, nRead);
+            if (nRead.getValue() > 0) {
+                return m.getWideString(0);
+            }
+        }
+        return "";
+    }
+
+    private static Triple<String, String, Map<String, String>> defaultCwdCommandlineEnvironment() {
+        return Triple.of("", "", Collections.emptyMap());
+    }
+
     @Override
     public String getName() {
         return this.name;
@@ -127,20 +143,6 @@ public class WindowsOSProcess extends AbstractOSProcess {
     @Override
     public String getCommandLine() {
         return this.commandLine.get();
-    }
-
-    private static String readUnicodeString(WinNT.HANDLE h, UNICODE_STRING s) {
-        IntByReference nRead = new IntByReference();
-        if (s.Length > 0) {
-            // Add space for null terminator
-            Memory m = new Memory(s.Length + 2L);
-            m.clear(); // really only need null in last 2 bytes but this is easier
-            Kernel32.INSTANCE.ReadProcessMemory(h, s.Buffer, m, s.Length, nRead);
-            if (nRead.getValue() > 0) {
-                return m.getWideString(0);
-            }
-        }
-        return "";
     }
 
     @Override
@@ -555,10 +557,6 @@ public class WindowsOSProcess extends AbstractOSProcess {
             }
         }
         return defaultCwdCommandlineEnvironment();
-    }
-
-    private Triple<String, String, Map<String, String>> defaultCwdCommandlineEnvironment() {
-        return Triple.of("", "", Collections.emptyMap());
     }
 
 }

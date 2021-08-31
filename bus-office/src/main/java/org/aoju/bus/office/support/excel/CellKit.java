@@ -26,26 +26,22 @@
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
-import org.aoju.bus.office.support.excel.cell.FormulaCellValue;
+import org.aoju.bus.office.support.excel.cell.CellSetter;
 import org.aoju.bus.office.support.excel.cell.NullCell;
+import org.aoju.bus.office.support.excel.cell.setters.CellSetterFactory;
+import org.aoju.bus.office.support.excel.cell.values.ErrorCellValue;
+import org.aoju.bus.office.support.excel.cell.values.NumericCellValue;
 import org.aoju.bus.office.support.excel.editors.TrimEditor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.ss.util.SheetUtil;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,7 +50,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -136,7 +132,7 @@ public class CellKit {
         Object value;
         switch (cellType) {
             case NUMERIC:
-                value = getNumericValue(cell);
+                value = new NumericCellValue(cell).getValue();
                 break;
             case BOOLEAN:
                 value = cell.getBooleanCellValue();
@@ -149,8 +145,7 @@ public class CellKit {
                 value = Normal.EMPTY;
                 break;
             case ERROR:
-                final FormulaError error = FormulaError.forInt(cell.getErrorCellValue());
-                value = (null == error) ? Normal.EMPTY : error.getString();
+                value = new ErrorCellValue(cell).getValue();
                 break;
             default:
                 value = cell.getStringCellValue();
@@ -210,15 +205,12 @@ public class CellKit {
      * @param style 自定义样式，null表示无样式
      */
     public static void setCellValue(Cell cell, Object value, CellStyle style) {
-        if (null == cell) {
-            return;
-        }
-
-        if (null != style) {
-            cell.setCellStyle(style);
-        }
-
-        setCellValue(cell, value);
+        setCellValue(cell, (CellSetter) cell1 -> {
+            if (null != style) {
+                cell1.setCellStyle(style);
+                setCellValue(cell, value);
+            }
+        });
     }
 
     /**
@@ -241,32 +233,7 @@ public class CellKit {
             cell.setBlank();
         }
 
-        if (null == value) {
-            cell.setCellValue(Normal.EMPTY);
-        } else if (value instanceof FormulaCellValue) {
-            // 公式
-            cell.setCellFormula(((FormulaCellValue) value).getValue());
-        } else if (value instanceof Date) {
-            cell.setCellValue((Date) value);
-        } else if (value instanceof TemporalAccessor) {
-            if (value instanceof Instant) {
-                cell.setCellValue(Date.from((Instant) value));
-            } else if (value instanceof LocalDateTime) {
-                cell.setCellValue((LocalDateTime) value);
-            } else if (value instanceof LocalDate) {
-                cell.setCellValue((LocalDate) value);
-            }
-        } else if (value instanceof Calendar) {
-            cell.setCellValue((Calendar) value);
-        } else if (value instanceof Boolean) {
-            cell.setCellValue((Boolean) value);
-        } else if (value instanceof RichTextString) {
-            cell.setCellValue((RichTextString) value);
-        } else if (value instanceof Number) {
-            cell.setCellValue(((Number) value).doubleValue());
-        } else {
-            cell.setCellValue(value.toString());
-        }
+        CellSetterFactory.createCellSetter(value).setValue(cell);
     }
 
     /**
@@ -490,37 +457,6 @@ public class CellKit {
             }
         }
         return null;
-    }
-
-    /**
-     * 获取数字类型的单元格值
-     *
-     * @param cell 单元格
-     * @return 单元格值, 可能为Long、Double、Date
-     */
-    private static Object getNumericValue(Cell cell) {
-        final double value = cell.getNumericCellValue();
-
-        final CellStyle style = cell.getCellStyle();
-        if (null != style) {
-            // 判断是否为日期
-            if (Builder.isDateFormat(cell)) {
-                return DateKit.date(cell.getDateCellValue());
-            }
-
-            final String format = style.getDataFormatString();
-            // 普通数字
-            if (null != format && format.indexOf(Symbol.C_DOT) < 0) {
-                final long longPart = (long) value;
-                if (((double) longPart) == value) {
-                    // 对于无小数部分的数字类型，转为Long
-                    return longPart;
-                }
-            }
-        }
-
-        // 某些Excel单元格值为double计算结果，可能导致精度问题，通过转换解决精度问题
-        return Double.parseDouble(NumberToTextConverter.toText(value));
     }
 
 }

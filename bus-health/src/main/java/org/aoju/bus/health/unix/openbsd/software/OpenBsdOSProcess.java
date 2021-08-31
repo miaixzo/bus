@@ -31,6 +31,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
@@ -50,7 +51,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -321,7 +322,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         // Fill list
         for (String thread : threadList) {
             Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(),
-                    ' ');
+                    Symbol.C_SPACE);
             if (threadMap.containsKey(PsThreadColumns.ARGS)) {
                 threads.add(new OpenBsdOSThread(getProcessID(), threadMap));
             }
@@ -358,7 +359,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            Map<OpenBsdOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(OpenBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), ' ');
+            Map<OpenBsdOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(OpenBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(OpenBsdOperatingSystem.PsKeywords.ARGS)) {
                 updateThreadCount();
@@ -436,10 +437,6 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         return true;
     }
 
-    enum PsThreadColumns {
-        TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS;
-    }
-
     private void updateThreadCount() {
         List<String> threadList = Executor.runNative("ps -axHo tid -p " + getProcessID());
         if (!threadList.isEmpty()) {
@@ -447,6 +444,10 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             this.threadCount = threadList.size() - 1;
         }
         this.threadCount = 1;
+    }
+
+    enum PsThreadColumns {
+        TID, STATE, ETIME, CPUTIME, NIVCSW, NVCSW, MAJFLT, MINFLT, PRI, ARGS;
     }
 
 }

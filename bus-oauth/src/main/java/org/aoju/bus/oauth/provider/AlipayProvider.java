@@ -50,7 +50,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 支付宝登录
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class AlipayProvider extends AbstractProvider {
@@ -65,8 +65,8 @@ public class AlipayProvider extends AbstractProvider {
 
     public AlipayProvider(Context context, ExtendCache extendCache) {
         super(context, Registry.ALIPAY, extendCache);
-        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(), "json", Charset.DEFAULT_UTF_8, context
-                .getPublicKey(), "RSA2");
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(),
+                "json", "UTF-8", context.getPublicKey(), "RSA2");
     }
 
     public AlipayProvider(Context context, ExtendCache extendCache, String proxyHost, Integer proxyPort) {

@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -77,13 +77,12 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
-    private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
     private Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
-
     private String name;
     private String path = "";
+    private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private String user;
     private String userID;
     private String group;

@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API Issue calls.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/issues.html">Issues API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issue_links.html">Issue Links API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issues_statistics.html">Issues Statistics API at GitLab</a>

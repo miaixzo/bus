@@ -55,7 +55,7 @@ import java.util.function.Supplier;
  * 操作系统信息支持
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Platform {
@@ -249,7 +249,7 @@ public class Platform {
                 if (space != -1) {
                     osPrefix = osPrefix.substring(0, space);
                 }
-                osPrefix += Symbol.HYPHEN + arch;
+                osPrefix += Symbol.MINUS + arch;
                 break;
         }
         return osPrefix;

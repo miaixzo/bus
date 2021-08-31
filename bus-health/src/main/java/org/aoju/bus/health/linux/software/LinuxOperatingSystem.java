@@ -56,7 +56,7 @@ import java.util.*;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -291,7 +291,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // If we've gotten this far with no match, use the distrib-release
         // filename (defaults will eventually give "Unknown")
         String family = filenameToFamily(etcDistribRelease.replace("/etc/", Normal.EMPTY).replace("release", Normal.EMPTY)
-                .replace("version", Normal.EMPTY).replace(Symbol.HYPHEN, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY));
+                .replace("version", Normal.EMPTY).replace(Symbol.MINUS, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY));
         return Triple.of(family, Normal.UNKNOWN, Normal.UNKNOWN);
     }
 

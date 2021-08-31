@@ -54,7 +54,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {
@@ -138,7 +138,7 @@ public class Sftp extends AbstractFtp {
      * @param charset 编码
      */
     public void init(String sshHost, int sshPort, String sshUser, String sshPass, Charset charset) {
-        init(SshKit.getSession(sshHost, sshPort, sshUser, sshPass), charset);
+        init(JSchKit.getSession(sshHost, sshPort, sshUser, sshPass), charset);
     }
 
     /**
@@ -165,7 +165,7 @@ public class Sftp extends AbstractFtp {
      */
     public void init(Session session, Charset charset) {
         this.session = session;
-        init(SshKit.openSftp(session, (int) this.ftpConfig.getConnectionTimeout()), charset);
+        init(JSchKit.openSftp(session, (int) this.ftpConfig.getConnectionTimeout()), charset);
     }
 
     /**
@@ -556,8 +556,8 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public void close() {
-        SshKit.close(this.channel);
-        SshKit.close(this.session);
+        JSchKit.close(this.channel);
+        JSchKit.close(this.session);
     }
 
     /**

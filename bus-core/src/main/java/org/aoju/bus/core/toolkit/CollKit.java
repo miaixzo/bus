@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -1477,6 +1477,45 @@ public class CollKit {
     }
 
     /**
+     * 将集合平均分成多个list，返回这个集合的列表
+     * <pre>
+     *     CollKit.splitAvg(null, 3);	// [[], [], []]
+     *     CollKit.splitAvg(Arrays.asList(1, 2, 3, 4), 2);	// [[1, 2], [3, 4]]
+     *     CollKit.splitAvg(Arrays.asList(1, 2, 3), 5);	// [[1], [2], [3], [], []]
+     *     CollKit.splitAvg(Arrays.asList(1, 2, 3), 2);	// [[1, 2], [3]]
+     * </pre>
+     *
+     * @param <T>   集合元素类型
+     * @param list  集合
+     * @param limit 要均分成几个集合
+     * @return 分段列表
+     */
+    public static <T> List<List<T>> splitAvg(List<T> list, int limit) {
+        final List<List<T>> result = new ArrayList<>();
+        if (isEmpty(list)) {
+            for (int i = 0; i < limit; i++) {
+                result.add(new ArrayList<>());
+            }
+            return result;
+        }
+        int remainder = list.size() % limit;
+        int number = list.size() / limit;
+        int offset = 0;
+        for (int i = 0; i < limit; i++) {
+            List<T> value;
+            if (remainder > 0) {
+                value = list.subList(i * number + offset, (i + 1) * number + offset + 1);
+                remainder--;
+                offset++;
+            } else {
+                value = list.subList(i * number + offset, (i + 1) * number + offset);
+            }
+            result.add(value);
+        }
+        return result;
+    }
+
+    /**
      * 过滤
      * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
      *
@@ -2483,6 +2522,9 @@ public class CollKit {
      * @see Collections#sort(List, Comparator)
      */
     public static <T> List<T> sort(List<T> list, Comparator<? super T> c) {
+        if (isEmpty(list)) {
+            return list;
+        }
         list.sort(c);
         return list;
     }

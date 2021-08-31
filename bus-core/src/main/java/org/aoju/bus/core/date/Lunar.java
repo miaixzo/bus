@@ -38,7 +38,7 @@ import java.util.*;
  * 农历日期
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Lunar {
@@ -3296,7 +3296,7 @@ public class Lunar {
      */
     public List<String> getFestivals() {
         List<String> l = new ArrayList<>();
-        String f = FESTIVAL.get(month + Symbol.HYPHEN + day);
+        String f = FESTIVAL.get(month + Symbol.MINUS + day);
         if (null != f) {
             l.add(f);
         }
@@ -3313,7 +3313,7 @@ public class Lunar {
      */
     public List<String> getOtherFestivals() {
         List<String> l = new ArrayList<>();
-        List<String> fs = OTHER_FESTIVAL.get(month + Symbol.HYPHEN + day);
+        List<String> fs = OTHER_FESTIVAL.get(month + Symbol.MINUS + day);
         if (null != fs) {
             l.addAll(fs);
         }

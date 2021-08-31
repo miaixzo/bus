@@ -36,7 +36,7 @@ import java.awt.image.BufferedImage;
  * 扭曲干扰验证码
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ShearProvider extends AbstractProvider {
@@ -77,7 +77,7 @@ public class ShearProvider extends AbstractProvider {
     @Override
     public Image createImage(String code) {
         final BufferedImage image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g = org.aoju.bus.core.image.Graphics.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
+        final Graphics2D g = org.aoju.bus.core.lang.Graphics.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
 
         // 画字符串
         drawString(g, code);
@@ -101,7 +101,7 @@ public class ShearProvider extends AbstractProvider {
         if (null != this.textAlpha) {
             g.setComposite(this.textAlpha);
         }
-        org.aoju.bus.core.image.Graphics.drawStringColourful(g, code, this.font, this.width, this.height);
+        org.aoju.bus.core.lang.Graphics.drawStringColourful(g, code, this.font, this.width, this.height);
     }
 
     /**

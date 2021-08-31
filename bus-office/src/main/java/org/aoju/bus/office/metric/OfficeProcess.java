@@ -49,7 +49,7 @@ import java.util.List;
  * 表示正在执行的office程序的实例.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class OfficeProcess {
@@ -212,7 +212,7 @@ public class OfficeProcess {
         return new File(
                 config.getWorkingDir(),
                 ".converter_"
-                        + unoUrl.getConnectionAndParametersAsString().replace(Symbol.C_COMMA, Symbol.C_UNDERLINE).replace(Symbol.C_EQUAL, Symbol.C_HYPHEN));
+                        + unoUrl.getConnectionAndParametersAsString().replace(Symbol.C_COMMA, Symbol.C_UNDERLINE).replace(Symbol.C_EQUAL, Symbol.C_MINUS));
     }
 
     /**
@@ -257,7 +257,7 @@ public class OfficeProcess {
         }
 
         final String execPath = executable.getAbsolutePath();
-        final String prefix = descriptor.useLongOptionNameGnuStyle() ? Symbol.HYPHEN + Symbol.HYPHEN : Symbol.HYPHEN;
+        final String prefix = descriptor.useLongOptionNameGnuStyle() ? Symbol.MINUS + Symbol.MINUS : Symbol.MINUS;
         command.add(execPath);
         command.add(prefix + "accept=" + acceptString);
         command.add(prefix + "headless");
@@ -355,7 +355,7 @@ public class OfficeProcess {
             return;
         }
 
-        final String prefix = descriptor.useLongOptionNameGnuStyle() ? Symbol.HYPHEN + Symbol.HYPHEN : Symbol.HYPHEN;
+        final String prefix = descriptor.useLongOptionNameGnuStyle() ? Symbol.MINUS + Symbol.MINUS : Symbol.MINUS;
 
         command.add(execPath);
         command.add(prefix + "invisible");

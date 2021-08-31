@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * 用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class FastDateParser extends AbstractMotd implements DateParser {
@@ -661,7 +661,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
 
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
-            if (value.charAt(0) == Symbol.C_PLUS || value.charAt(0) == Symbol.C_HYPHEN) {
+            if (value.charAt(0) == Symbol.C_PLUS || value.charAt(0) == Symbol.C_MINUS) {
                 final TimeZone tz = TimeZone.getTimeZone("GMT" + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {

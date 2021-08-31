@@ -32,7 +32,7 @@ import org.apache.ibatis.cache.CacheKey;
  * 数据库方言 PostgreSQL
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class PostgreSql extends MySql {

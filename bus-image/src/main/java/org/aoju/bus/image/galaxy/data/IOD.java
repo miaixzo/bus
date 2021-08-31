@@ -44,7 +44,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class IOD extends ArrayList<IOD.DataElement> {
@@ -606,7 +606,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             String vm = vr == VR.SQ ? items : vmStr;
             if (null != vm) {
                 try {
-                    String[] ss = Property.split(vm, Symbol.C_HYPHEN);
+                    String[] ss = Property.split(vm, Symbol.C_MINUS);
                     if (ss[0].charAt(0) != 'n') {
                         minVM = Integer.parseInt(ss[0]);
                         if (ss.length > 1) {

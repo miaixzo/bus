@@ -38,7 +38,7 @@ import java.util.List;
  * 节假日
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Holiday {
@@ -264,17 +264,17 @@ public class Holiday {
      * @param target 关联的节日
      */
     public Holiday(String day, String name, boolean work, String target) {
-        if (!day.contains(Symbol.HYPHEN)) {
-            this.day = day.substring(0, 4) + Symbol.HYPHEN
-                    + day.substring(4, 6) + Symbol.HYPHEN + day.substring(6);
+        if (!day.contains(Symbol.MINUS)) {
+            this.day = day.substring(0, 4) + Symbol.MINUS
+                    + day.substring(4, 6) + Symbol.MINUS + day.substring(6);
         } else {
             this.day = day;
         }
         this.name = name;
         this.work = work;
-        if (!target.contains(Symbol.HYPHEN)) {
-            this.target = target.substring(0, 4) + Symbol.HYPHEN
-                    + target.substring(4, 6) + Symbol.HYPHEN + target.substring(6);
+        if (!target.contains(Symbol.MINUS)) {
+            this.target = target.substring(0, 4) + Symbol.MINUS
+                    + target.substring(4, 6) + Symbol.MINUS + target.substring(6);
         } else {
             this.target = target;
         }
@@ -383,7 +383,7 @@ public class Holiday {
      * @return 节假日
      */
     public static Holiday getHoliday(String ymd) {
-        List<Holiday> list = findHolidaysForward(ymd.replace(Symbol.HYPHEN, Normal.EMPTY));
+        List<Holiday> list = findHolidaysForward(ymd.replace(Symbol.MINUS, Normal.EMPTY));
         return CollKit.isEmpty(list) ? null : list.get(0);
     }
 
@@ -415,7 +415,7 @@ public class Holiday {
      * @return 节假日列表
      */
     public static List<Holiday> getHolidays(String ymd) {
-        return findHolidaysForward(ymd.replace(Symbol.HYPHEN, Normal.EMPTY));
+        return findHolidaysForward(ymd.replace(Symbol.MINUS, Normal.EMPTY));
     }
 
     /**
@@ -425,7 +425,7 @@ public class Holiday {
      * @return 节假日列表
      */
     public static List<Holiday> getHolidaysByTarget(String ymd) {
-        return findHolidaysBackward(ymd.replace(Symbol.HYPHEN, Normal.EMPTY));
+        return findHolidaysBackward(ymd.replace(Symbol.MINUS, Normal.EMPTY));
     }
 
     /**
@@ -473,7 +473,7 @@ public class Holiday {
                 if (nameIndex > -1) {
                     String old = day + (char) (nameIndex + Symbol.C_ZERO)
                             + (holiday.isWork() ? Symbol.C_ZERO : '1')
-                            + holiday.getTarget().replace(Symbol.HYPHEN, Normal.EMPTY);
+                            + holiday.getTarget().replace(Symbol.MINUS, Normal.EMPTY);
                     DATA_IN_HOLIDAY = DATA_IN_HOLIDAY.replace(old, segment);
                 }
             }

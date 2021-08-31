@@ -34,7 +34,7 @@ import javax.persistence.Transient;
  * 授权公用类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Data
@@ -80,9 +80,9 @@ public class OAuth2 extends Entity {
     private String x_device_id;
 
     /**
-     * 可选参数信息
+     * 扩展参数信息
      */
     @Transient
-    private String x_extract;
+    private String x_extension;
 
 }

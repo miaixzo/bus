@@ -62,7 +62,7 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -161,7 +161,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 随机生成ID
      */
     public static String randomUUID32() {
-        return java.util.UUID.randomUUID().toString().replace(Symbol.HYPHEN, Normal.EMPTY);
+        return java.util.UUID.randomUUID().toString().replace(Symbol.MINUS, Normal.EMPTY);
     }
 
     /**
@@ -256,7 +256,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * @throws IllegalArgumentException 如果 name 与 {@link #toString} 中描述的字符串表示形式不符抛出此异常
      */
     public static UUID fromString(String name) {
-        String[] components = name.split(Symbol.HYPHEN);
+        String[] components = name.split(Symbol.MINUS);
         if (components.length != 5) {
             throw new IllegalArgumentException("Invalid UUID string: " + name);
         }
@@ -321,7 +321,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
         char firstChar = str.charAt(0);
         if (firstChar < '0') {
-            if (firstChar == Symbol.C_HYPHEN) {
+            if (firstChar == Symbol.C_MINUS) {
                 negative = true;
                 limit = Long.MIN_VALUE;
             } else if (firstChar != Symbol.C_PLUS) {
@@ -513,22 +513,22 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         // time_low
         builder.append(digits(mostSigBits >> 32, 8));
         if (false == isSimple) {
-            builder.append(Symbol.C_HYPHEN);
+            builder.append(Symbol.C_MINUS);
         }
         // time_mid
         builder.append(digits(mostSigBits >> 16, 4));
         if (false == isSimple) {
-            builder.append(Symbol.C_HYPHEN);
+            builder.append(Symbol.C_MINUS);
         }
         // time_high_and_version
         builder.append(digits(mostSigBits, 4));
         if (false == isSimple) {
-            builder.append(Symbol.C_HYPHEN);
+            builder.append(Symbol.C_MINUS);
         }
         // variant_and_sequence
         builder.append(digits(leastSigBits >> 48, 4));
         if (false == isSimple) {
-            builder.append(Symbol.C_HYPHEN);
+            builder.append(Symbol.C_MINUS);
         }
         // node
         builder.append(digits(leastSigBits, 12));

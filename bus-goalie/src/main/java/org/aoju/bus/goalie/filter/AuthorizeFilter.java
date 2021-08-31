@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Assets;
-import org.aoju.bus.goalie.Consts;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.goalie.metric.Authorize;
 import org.aoju.bus.goalie.metric.Delegate;
@@ -55,7 +55,7 @@ import java.util.Objects;
  * 访问鉴权
  *
  * @author Justubborn
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
@@ -75,12 +75,12 @@ public class AuthorizeFilter implements WebFilter {
         Context context = Context.get(exchange);
         Map<String, String> params = context.getRequestMap();
 
-        context.setFormat(Context.Format.valueOf(params.get(Consts.FORMAT)));
-        context.setChannel(Context.Channel.getChannel(params.get(Consts.X_REMOTE_CHANNEL)));
-        context.setToken(exchange.getRequest().getHeaders().getFirst(Consts.X_ACCESS_TOKEN));
+        context.setFormat(Context.Format.valueOf(params.get(Config.FORMAT)));
+        context.setChannel(Context.Channel.getChannel(params.get(Config.X_REMOTE_CHANNEL)));
+        context.setToken(exchange.getRequest().getHeaders().getFirst(Config.X_ACCESS_TOKEN));
 
-        String method = params.get(Consts.METHOD);
-        String version = params.get(Consts.VERSION);
+        String method = params.get(Config.METHOD);
+        String version = params.get(Config.VERSION);
         Assets assets = registry.getAssets(method, version);
 
         if (null == assets) {
@@ -155,10 +155,10 @@ public class AuthorizeFilter implements WebFilter {
      * @param params 参数
      */
     private void cleanParam(Map<String, String> params) {
-        params.remove(Consts.METHOD);
-        params.remove(Consts.FORMAT);
-        params.remove(Consts.VERSION);
-        params.remove(Consts.SIGN);
+        params.remove(Config.METHOD);
+        params.remove(Config.FORMAT);
+        params.remove(Config.VERSION);
+        params.remove(Config.SIGN);
     }
 
     /**

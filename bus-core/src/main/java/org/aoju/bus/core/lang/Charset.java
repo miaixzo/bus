@@ -31,12 +31,13 @@ import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 
 /**
  * 编码常量
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Charset {
@@ -204,6 +205,38 @@ public class Charset {
     public static File convert(final File file, final java.nio.charset.Charset srcCharset, final java.nio.charset.Charset destCharset) {
         final String str = FileKit.readString(file, srcCharset);
         return FileKit.writeString(str, file, destCharset);
+    }
+
+    /**
+     * 解析字符串编码为Charset对象，解析失败返回系统默认编码
+     *
+     * @param charsetName 字符集，为空则返回默认字符集
+     * @return Charset
+     */
+    public static java.nio.charset.Charset parse(String charsetName) {
+        return parse(charsetName, java.nio.charset.Charset.defaultCharset());
+    }
+
+    /**
+     * 解析字符串编码为Charset对象，解析失败返回默认编码
+     *
+     * @param charsetName    字符集，为空则返回默认字符集
+     * @param defaultCharset 解析失败使用的默认编码
+     * @return Charset
+     */
+    public static java.nio.charset.Charset parse(String charsetName, java.nio.charset.Charset defaultCharset) {
+        if (StringKit.isBlank(charsetName)) {
+            return defaultCharset;
+        }
+
+        java.nio.charset.Charset result;
+        try {
+            result = java.nio.charset.Charset.forName(charsetName);
+        } catch (UnsupportedCharsetException e) {
+            result = defaultCharset;
+        }
+
+        return result;
     }
 
 }

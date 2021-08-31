@@ -31,7 +31,7 @@ import com.github.promeg.pinyinhelper.Pinyin;
  * TinyPinyin引擎
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class TinyPinyinProvider extends AbstractPinyinProvider {
@@ -40,6 +40,7 @@ public class TinyPinyinProvider extends AbstractPinyinProvider {
      * 构造
      */
     public TinyPinyinProvider() {
+        this(null);
     }
 
     /**

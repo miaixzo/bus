@@ -43,14 +43,14 @@ import java.util.UUID;
  * 用于复合对象
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class MultipartBody extends RequestBody {
 
     private static final byte[] COLONSPACE = {Symbol.C_COLON, Symbol.C_SPACE};
     private static final byte[] CRLF = {Symbol.C_CR, Symbol.C_LF};
-    private static final byte[] DASHDASH = {Symbol.C_HYPHEN, Symbol.C_HYPHEN};
+    private static final byte[] DASHDASH = {Symbol.C_MINUS, Symbol.C_MINUS};
 
     private final ByteString boundary;
     private final MediaType originalType;

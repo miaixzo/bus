@@ -47,7 +47,7 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
@@ -528,7 +528,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                     }
                     value *= 10;
                     value += digit;
-                } else if (b == Symbol.C_HYPHEN && seen == 0) {
+                } else if (b == Symbol.C_MINUS && seen == 0) {
                     negative = true;
                     overflowDigit -= 1;
                 } else {
@@ -1359,7 +1359,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             v /= 10;
         }
         if (negative) {
-            data[--pos] = Symbol.C_HYPHEN;
+            data[--pos] = Symbol.C_MINUS;
         }
 
         tail.limit += width;

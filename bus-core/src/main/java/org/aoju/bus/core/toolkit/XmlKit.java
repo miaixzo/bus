@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class XmlKit {
@@ -597,6 +597,16 @@ public class XmlKit {
     }
 
     /**
+     * 获取节点所在的Document
+     *
+     * @param node 节点
+     * @return {@link Document}
+     */
+    public static Document getElement(Node node) {
+        return (node instanceof Document) ? (Document) node : node.getOwnerDocument();
+    }
+
+    /**
      * 根据节点名获得第一个子节点
      *
      * @param element 节点
@@ -1108,6 +1118,38 @@ public class XmlKit {
     }
 
     /**
+     * 追加数据子节点，可以是Map、集合、文本
+     *
+     * @param node 节点
+     * @param data 数据
+     */
+    public static void append(Node node, Object data) {
+        append(getElement(node), node, data);
+    }
+
+    /**
+     * 追加数据子节点，可以是Map、集合、文本
+     *
+     * @param doc  {@link Document}
+     * @param node 节点
+     * @param data 数据
+     */
+    private static void append(Document doc, Node node, Object data) {
+        if (data instanceof Map) {
+            // 如果值依旧为map，递归继续
+            appendMap(doc, node, (Map) data);
+        } else if (data instanceof Iterator) {
+            // 如果值依旧为map，递归继续
+            appendIterator(doc, node, (Iterator) data);
+        } else if (data instanceof Iterable) {
+            // 如果值依旧为map，递归继续
+            appendIterator(doc, node, ((Iterable) data).iterator());
+        } else {
+            appendText(doc, node, data.toString());
+        }
+    }
+
+    /**
      * 在已有节点上创建子节点
      *
      * @param node    节点
@@ -1115,10 +1157,87 @@ public class XmlKit {
      * @return 子节点
      */
     public static Element appendChild(Node node, String tagName) {
-        Document doc = (node instanceof Document) ? (Document) node : node.getOwnerDocument();
-        Element child = doc.createElement(tagName);
+        return appendChild(node, tagName, null);
+    }
+
+    /**
+     * 在已有节点上创建子节点
+     *
+     * @param node      节点
+     * @param tagName   标签名
+     * @param namespace 命名空间，无传null
+     * @return 子节点
+     */
+    public static Element appendChild(Node node, String tagName, String namespace) {
+        final Document doc = getElement(node);
+        final Element child = (null == namespace) ? doc.createElement(tagName) : doc.createElementNS(namespace, tagName);
         node.appendChild(child);
         return child;
+    }
+
+    /**
+     * 创建文本子节点
+     *
+     * @param node 节点
+     * @param text 文本
+     * @return 子节点
+     */
+    public static Node appendText(Node node, CharSequence text) {
+        return appendText(getElement(node), node, text);
+    }
+
+    /**
+     * 追加文本节点
+     *
+     * @param doc  {@link Document}
+     * @param node 节点
+     * @param text 文本内容
+     * @return 增加的子节点，即Text节点
+     */
+    private static Node appendText(Document doc, Node node, CharSequence text) {
+        return node.appendChild(doc.createTextNode(StringKit.toString(text)));
+    }
+
+    /**
+     * 追加Map数据子节点
+     *
+     * @param doc  {@link Document}
+     * @param node 当前节点
+     * @param data Map类型数据
+     */
+    private static void appendMap(Document doc, Node node, Map data) {
+        data.forEach((key, value) -> {
+            if (null != key) {
+                final Element child = appendChild(node, key.toString());
+                if (null != value) {
+                    append(doc, child, value);
+                }
+            }
+        });
+    }
+
+    /**
+     * 追加集合节点
+     *
+     * @param doc  {@link Document}
+     * @param node 节点
+     * @param data 数据
+     */
+    private static void appendIterator(Document doc, Node node, Iterator data) {
+        final Node parentNode = node.getParentNode();
+        boolean isFirst = true;
+        Object eleData;
+        while (data.hasNext()) {
+            eleData = data.next();
+            if (isFirst) {
+                append(doc, node, eleData);
+                isFirst = false;
+            } else {
+                final Node cloneNode = node.cloneNode(false);
+                parentNode.appendChild(cloneNode);
+                append(doc, cloneNode, eleData);
+            }
+        }
     }
 
     /**

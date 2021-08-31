@@ -46,7 +46,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 日期格式化等工具
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Format extends java.text.Format {
@@ -158,7 +158,7 @@ public class Format extends java.text.Format {
     private static StringBuilder appendZZZZZ(int offset, StringBuilder sb) {
         if (offset < 0) {
             offset = -offset;
-            sb.append(Symbol.C_HYPHEN);
+            sb.append(Symbol.C_MINUS);
         } else
             sb.append(Symbol.C_PLUS);
         int min = offset / 60000;
@@ -339,7 +339,7 @@ public class Format extends java.text.Format {
             char[] tzid = {'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0};
             s.getChars(length - 5, length - 2, tzid, 3);
             s.getChars(length - 2, length, tzid, 7);
-            if ((tzid[3] == Symbol.C_PLUS || tzid[3] == Symbol.C_HYPHEN)
+            if ((tzid[3] == Symbol.C_PLUS || tzid[3] == Symbol.C_MINUS)
                     && Character.isDigit(tzid[4])
                     && Character.isDigit(tzid[5])
                     && Character.isDigit(tzid[7])

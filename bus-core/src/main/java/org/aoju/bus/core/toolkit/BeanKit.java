@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class BeanKit {
@@ -456,13 +456,14 @@ public class BeanKit {
     /**
      * 解析Bean中的属性值
      *
+     * @param <T>        对象信息
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @return Bean属性值
      * @see PathExpression#get(Object)
      */
-    public static Object getProperty(Object bean, String expression) {
-        return PathExpression.create(expression).get(bean);
+    public static <T> T getProperty(Object bean, String expression) {
+        return (T) PathExpression.create(expression).get(bean);
     }
 
     /**
@@ -832,6 +833,12 @@ public class BeanKit {
      * @return the list
      */
     public static <T> List<T> copyToList(Collection<?> collection, Class<T> targetType, CopyOptions copyOptions) {
+        if (null == collection) {
+            return null;
+        }
+        if (collection.isEmpty()) {
+            return new ArrayList<>(0);
+        }
         return collection.stream().map((source) -> {
             final T target = ReflectKit.newInstanceIfPossible(targetType);
             copyProperties(source, target, copyOptions);

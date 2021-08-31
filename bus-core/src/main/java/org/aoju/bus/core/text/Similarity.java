@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 在hash之后,仍然能保持这种相似性,就称之为局部敏感hash
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Similarity {

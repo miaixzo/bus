@@ -35,27 +35,30 @@ import java.nio.file.attribute.BasicFileAttributes;
  * 文件拷贝的FileVisitor实现，用于递归遍历拷贝目录
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class CopyVisitor extends SimpleFileVisitor<Path> {
 
     private final Path source;
     private final Path target;
+    private final CopyOption[] copyOptions;
     private boolean isTargetCreated;
 
     /**
      * 构造
      *
-     * @param source 源Path
-     * @param target 目标Path
+     * @param source      源Path
+     * @param target      目标Path
+     * @param copyOptions 拷贝选项，如跳过已存在等
      */
-    public CopyVisitor(Path source, Path target) {
+    public CopyVisitor(Path source, Path target, CopyOption... copyOptions) {
         if (FileKit.exists(target, false) && false == FileKit.isDirectory(target)) {
             throw new IllegalArgumentException("Target must be a directory");
         }
         this.source = source;
         this.target = target;
+        this.copyOptions = copyOptions;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
         // 将当前目录相对于源路径转换为相对于目标路径
         final Path targetDir = target.resolve(source.relativize(dir));
         try {
-            Files.copy(dir, targetDir);
+            Files.copy(dir, targetDir, copyOptions);
         } catch (FileAlreadyExistsException e) {
             if (false == Files.isDirectory(targetDir))
                 throw e;
@@ -77,7 +80,7 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
             throws IOException {
         initTarget();
-        Files.copy(file, target.resolve(source.relativize(file)));
+        Files.copy(file, target.resolve(source.relativize(file)), copyOptions);
         return FileVisitResult.CONTINUE;
     }
 

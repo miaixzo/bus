@@ -37,7 +37,7 @@ import java.util.Map;
  * 莫尔斯电码的编码和解码
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Morse {
@@ -98,7 +98,7 @@ public class Morse {
         registerMorse(Symbol.C_SEMICOLON, "101010");
         registerMorse(Symbol.C_EQUAL, "10001");
         registerMorse(Symbol.C_PLUS, "01010");
-        registerMorse(Symbol.C_HYPHEN, "100001");
+        registerMorse(Symbol.C_MINUS, "100001");
         registerMorse(Symbol.C_UNDERLINE, "001101");
         registerMorse(Symbol.C_DOUBLE_QUOTES, "010010");
         registerMorse(Symbol.C_DOLLAR, "0001001");
@@ -113,7 +113,7 @@ public class Morse {
      * 构造
      */
     public Morse() {
-        this(Symbol.C_DOT, Symbol.C_HYPHEN, Symbol.C_SLASH);
+        this(Symbol.C_DOT, Symbol.C_MINUS, Symbol.C_SLASH);
     }
 
     /**
