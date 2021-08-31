@@ -44,7 +44,7 @@ import java.util.Map;
  * count 查询
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public abstract class CountExecutor {
@@ -108,6 +108,9 @@ public abstract class CountExecutor {
         CacheKey countKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, boundSql);
         BoundSql countBoundSql = countMs.getBoundSql(parameter);
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
+        if (null == countResultList || ((List) countResultList).isEmpty()) {
+            return 0L;
+        }
         return ((Number) ((List) countResultList).get(0)).longValue();
     }
 
@@ -140,7 +143,10 @@ public abstract class CountExecutor {
         }
         // 执行 count 查询
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
-        return (Long) ((List) countResultList).get(0);
+        if (countResultList == null || ((List) countResultList).isEmpty()) {
+            return 0L;
+        }
+        return ((Number) ((List) countResultList).get(0)).longValue();
     }
 
     /**

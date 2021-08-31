@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.LongAdder;
  * 服务器运行状态监控插件
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {

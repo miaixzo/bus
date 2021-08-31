@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class MultipartParser {
@@ -160,14 +160,14 @@ public class MultipartParser {
     }
 
     public void parse(InputStream in, Handler handler) throws IOException {
-        new MultipartInputStream(in, Symbol.HYPHEN + Symbol.HYPHEN + boundary).skipAll();
+        new MultipartInputStream(in, Symbol.MINUS + Symbol.MINUS + boundary).skipAll();
         for (int i = 1; ; i++) {
             int ch1 = in.read();
             int ch2 = in.read();
             if ((ch1 | ch2) < 0)
                 throw new EOFException();
 
-            if (ch1 == Symbol.C_HYPHEN && ch2 == Symbol.C_HYPHEN)
+            if (ch1 == Symbol.C_MINUS && ch2 == Symbol.C_MINUS)
                 break;
 
             if (ch1 != Symbol.C_CR || ch2 != Symbol.C_LF)

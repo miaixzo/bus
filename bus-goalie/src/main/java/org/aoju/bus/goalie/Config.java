@@ -6,7 +6,7 @@ import lombok.Data;
  * 服务端配置
  *
  * @author Justubborn
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Data
@@ -42,7 +42,7 @@ public class Config {
     /**
      * 默认数据大小
      */
-    public static final Integer MAX_INMEMORY_SIZE = 2 * 1024 * 1024;
+    public static final Integer MAX_INMEMORY_SIZE = 2 * 1024 * 2048;
 
     private final Encrypt encrypt = new Encrypt();
     private final Decrypt decrypt = new Decrypt();

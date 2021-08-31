@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.Builders;
 import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -41,7 +42,7 @@ import java.util.*;
  * CSV行解析器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class CsvParser implements Closeable {
@@ -174,7 +175,11 @@ public final class CsvParser implements Closeable {
     private void initHeader(final List<String> currentFields) {
         final Map<String, Integer> localHeaderMap = new LinkedHashMap<>(currentFields.size());
         for (int i = 0; i < currentFields.size(); i++) {
-            final String field = currentFields.get(i);
+            String field = currentFields.get(i);
+            if (MapKit.isNotEmpty(this.config.headerAlias)) {
+                // 自定义别名
+                field = ObjectKit.defaultIfNull(this.config.headerAlias.get(field), field);
+            }
             if (StringKit.isNotEmpty(field) && false == localHeaderMap.containsKey(field)) {
                 localHeaderMap.put(field, i);
             }

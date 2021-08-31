@@ -32,7 +32,7 @@ import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Badge {

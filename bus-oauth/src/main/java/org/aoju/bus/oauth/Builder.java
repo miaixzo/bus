@@ -29,8 +29,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.aoju.bus.core.key.ID;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
 
@@ -43,7 +45,7 @@ import java.util.Map;
  * 构造URL
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Setter
@@ -269,7 +271,7 @@ public class Builder {
             }
             // 简单uuid (不带下划线)
             if (TOKEN_STYLE_SIMPLE_UUID.equals(style)) {
-                return org.aoju.bus.core.key.UUID.randomUUID().toString().replaceAll("-", "");
+                return ID.randomUUID().replaceAll(Symbol.MINUS, Normal.EMPTY);
             }
             // 32位随机字符串
             if (TOKEN_STYLE_RANDOM_32.equals(style)) {

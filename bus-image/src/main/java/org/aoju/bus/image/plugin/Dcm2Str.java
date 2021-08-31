@@ -41,7 +41,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  * DCM-JPG转换
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Dcm2Str extends SimpleFileVisitor<Path> {

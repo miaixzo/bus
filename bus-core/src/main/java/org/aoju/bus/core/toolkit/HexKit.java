@@ -39,7 +39,7 @@ import java.math.BigInteger;
  * <p>
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class HexKit {
@@ -53,7 +53,7 @@ public class HexKit {
      * @return 是否为16进制
      */
     public static boolean isHexNumber(String value) {
-        int index = (value.startsWith(Symbol.HYPHEN) ? 1 : 0);
+        int index = (value.startsWith(Symbol.MINUS) ? 1 : 0);
         return (value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith(Symbol.SHAPE, index));
     }
 

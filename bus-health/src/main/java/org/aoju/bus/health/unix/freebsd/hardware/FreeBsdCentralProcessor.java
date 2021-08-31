@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  * A CPU
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe

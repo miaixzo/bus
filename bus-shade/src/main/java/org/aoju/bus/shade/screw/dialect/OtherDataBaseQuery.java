@@ -40,7 +40,7 @@ import java.util.List;
  * 其他数据库 暂未支持系列
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class OtherDataBaseQuery extends AbstractDatabaseQuery {

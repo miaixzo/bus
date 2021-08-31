@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -1328,7 +1328,7 @@ public final class Builder {
                     parsed[parsedIndex] += (c - '0') * Builder.POWERS_OF_TEN[power++];
                 }
                 delimCurrent = false;
-            } else if (c == Symbol.C_HYPHEN) {
+            } else if (c == Symbol.C_MINUS) {
                 parsed[parsedIndex] *= -1L;
                 delimCurrent = false;
                 dashSeen = true;
@@ -1404,7 +1404,7 @@ public final class Builder {
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
                 delimCurrent = false;
-            } else if (c == Symbol.C_HYPHEN) {
+            } else if (c == Symbol.C_MINUS) {
                 delimCurrent = false;
                 dashSeen = true;
             } else {
@@ -1594,7 +1594,7 @@ public final class Builder {
             // Remove prefix
             if (r.startsWith("memory:")) {
                 // Split to low and high
-                String[] mem = r.substring(7).split(Symbol.HYPHEN);
+                String[] mem = r.substring(7).split(Symbol.MINUS);
                 if (mem.length == 2) {
                     try {
                         // Parse the hex strings
@@ -1649,7 +1649,7 @@ public final class Builder {
     public static List<Integer> parseHyphenatedIntList(String str) {
         List<Integer> result = new ArrayList<>();
         for (String s : RegEx.SPACES.split(str)) {
-            if (s.contains(Symbol.HYPHEN)) {
+            if (s.contains(Symbol.MINUS)) {
                 int first = getFirstIntValue(s);
                 int last = getNthIntValue(s, 2);
                 for (int i = first; i <= last; i++) {

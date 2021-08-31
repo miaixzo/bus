@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.openbsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
@@ -37,7 +38,7 @@ import java.util.*;
  * OpenBsd Usb Device
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Immutable
@@ -109,7 +110,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                         // 0 = vid:pid vendor
                         String vendorStr = split[0].trim();
                         int idx1 = vendorStr.indexOf(':');
-                        int idx2 = vendorStr.indexOf(' ');
+                        int idx2 = vendorStr.indexOf(Symbol.C_SPACE);
                         if (idx1 >= 0 && idx2 >= 0) {
                             vendorIdMap.put(key, vendorStr.substring(0, idx1));
                             productIdMap.put(key, vendorStr.substring(idx1 + 1, idx2));

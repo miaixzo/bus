@@ -47,7 +47,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API job calls.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class JobApi extends AbstractApi implements Constants {

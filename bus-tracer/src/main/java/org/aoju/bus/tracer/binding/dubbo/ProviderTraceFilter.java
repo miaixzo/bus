@@ -33,7 +33,7 @@ import org.apache.dubbo.rpc.Result;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Activate(group = CommonConstants.PROVIDER)

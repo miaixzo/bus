@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.software;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
@@ -37,7 +38,7 @@ import java.util.Map;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class AixOSThread extends AbstractOSThread {
@@ -106,7 +107,7 @@ public class AixOSThread extends AbstractOSThread {
             String tidStr = Integer.toString(this.getThreadId());
             for (String threadInfo : threadListInfoPs) {
                 Map<AixOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(AixOSProcess.PsThreadColumns.class,
-                        threadInfo.trim(), ' ');
+                        threadInfo.trim(), Symbol.C_SPACE);
                 if (threadMap.containsKey(AixOSProcess.PsThreadColumns.COMMAND)
                         && tidStr.equals(threadMap.get(AixOSProcess.PsThreadColumns.TID))) {
                     return updateAttributes(threadMap);

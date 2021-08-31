@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ObjectKit {
@@ -67,7 +67,7 @@ public class ObjectKit {
      * @return 是否为null
      */
     public static boolean isNotNull(Object obj) {
-        return null != obj && false == obj.equals(null);
+        return false == isNull(obj);
     }
 
     /**

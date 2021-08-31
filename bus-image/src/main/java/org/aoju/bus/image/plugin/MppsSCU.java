@@ -49,7 +49,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class MppsSCU {
@@ -279,7 +279,7 @@ public class MppsSCU {
         String codeMeaning = codes.getProperty(codeValue);
         if (null == codeMeaning)
             throw new IllegalArgumentException("undefined internal value: " + codeValue);
-        int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
+        int endDesignator = codeValue.indexOf(Symbol.C_MINUS);
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH,
                 endDesignator >= 0

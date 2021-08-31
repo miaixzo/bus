@@ -37,7 +37,7 @@ import java.util.List;
  * 组合相关类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Combine {
@@ -62,11 +62,8 @@ public class Combine {
      * @return 组合数
      */
     public static long count(int n, int m) {
-        if (0 == m) {
+        if (0 == m || n == m) {
             return 1;
-        }
-        if (n == m) {
-            return MathKit.factorial(n) / MathKit.factorial(m);
         }
         return (n > m) ? MathKit.factorial(n, n - m) / MathKit.factorial(m) : 0;
     }

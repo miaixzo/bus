@@ -11,7 +11,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-notify</artifactId>
-    <version>6.2.6</version>
+    <version>6.2.8</version>
 </dependency>
 ```
 

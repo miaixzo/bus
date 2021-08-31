@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型(扩展名)
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class FileType {
@@ -104,6 +104,16 @@ public class FileType {
      * 纯文本文件
      */
     public static final String TYPE_CSV = "csv";
+
+    /**
+     * PDF文件
+     */
+    public static final String TYPE_PDF = "pdf";
+
+    /**
+     * 影像文件
+     */
+    public static final String TYPE_DCM = "dcm";
 
     /**
      * 图片
@@ -961,6 +971,8 @@ public class FileType {
             final String extName = FileKit.extName(filename);
             if ("xlsx".equalsIgnoreCase(extName)) {
                 typeName = "xlsx";
+            } else if ("docx".equalsIgnoreCase(extName)) {
+                typeName = "docx";
             }
         }
         return typeName;

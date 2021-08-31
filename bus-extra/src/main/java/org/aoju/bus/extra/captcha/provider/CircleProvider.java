@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.captcha.provider;
 
+import org.aoju.bus.core.lang.Graphics;
 import org.aoju.bus.core.toolkit.ImageKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.RandomKit;
@@ -37,7 +38,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 圆圈干扰验证码
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class CircleProvider extends AbstractProvider {
@@ -78,7 +79,7 @@ public class CircleProvider extends AbstractProvider {
     @Override
     public Image createImage(String code) {
         final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g = ImageKit.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
+        final Graphics2D g = Graphics.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
 
         // 随机画干扰圈圈
         drawInterfere(g);
@@ -100,7 +101,7 @@ public class CircleProvider extends AbstractProvider {
         if (null != this.textAlpha) {
             g.setComposite(this.textAlpha);
         }
-        org.aoju.bus.core.image.Graphics.drawStringColourful(g, code, this.font, this.width, this.height);
+        Graphics.drawStringColourful(g, code, this.font, this.width, this.height);
     }
 
     /**

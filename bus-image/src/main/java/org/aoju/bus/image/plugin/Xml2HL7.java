@@ -35,7 +35,7 @@ import java.io.OutputStreamWriter;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Xml2HL7 {
@@ -45,7 +45,7 @@ public class Xml2HL7 {
         SAXParser p = f.newSAXParser();
         HL7ContentHandler ch = new HL7ContentHandler(
                 new OutputStreamWriter(System.out));
-        if (fname.equals(Symbol.HYPHEN)) {
+        if (fname.equals(Symbol.MINUS)) {
             p.parse(System.in, ch);
         } else {
             p.parse(new File(fname), ch);

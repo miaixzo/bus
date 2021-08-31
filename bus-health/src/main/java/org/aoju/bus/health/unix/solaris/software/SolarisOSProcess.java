@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -83,11 +83,6 @@ public class SolarisOSProcess extends AbstractOSProcess {
     public SolarisOSProcess(int pid, Map<SolarisOperatingSystem.PsKeywords, String> psMap, Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap) {
         super(pid);
         updateAttributes(psMap, prstatMap);
-    }
-
-    @Override
-    public String getCommandLine() {
-        return this.commandLine.get();
     }
 
     /**
@@ -228,6 +223,11 @@ public class SolarisOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public String getCommandLine() {
+        return this.commandLine.get();
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
@@ -276,12 +276,12 @@ public class SolarisOSProcess extends AbstractOSProcess {
             threadList.remove(0);
             for (String thread : threadList) {
                 Map<PsThreadColumns, String> psMap = Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(),
-                        ' ');
+                        Symbol.C_SPACE);
                 // Check if last (thus all) value populated
                 if (psMap.containsKey(PsThreadColumns.PRI)) {
                     String lwpStr = psMap.get(PsThreadColumns.LWP);
                     Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap = Builder.stringToEnumMap(SolarisOperatingSystem.PrstatKeywords.class,
-                            prstatRowMap.getOrDefault(lwpStr, ""), ' ');
+                            prstatRowMap.getOrDefault(lwpStr, ""), Symbol.C_SPACE);
                     threads.add(new SolarisOSThread(getProcessID(), psMap, prstatMap));
                 }
             }
@@ -442,7 +442,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
         List<String> procList = Executor
                 .runNative("ps -o " + SolarisOperatingSystem.PS_COMMAND_ARGS + " -p " + pid);
         if (procList.size() > 1) {
-            Map<SolarisOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(SolarisOperatingSystem.PsKeywords.class, procList.get(1).trim(), ' ');
+            Map<SolarisOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(SolarisOperatingSystem.PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(SolarisOperatingSystem.PsKeywords.ARGS)) {
                 String pidStr = psMap.get(SolarisOperatingSystem.PsKeywords.PID);
@@ -455,7 +455,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
                         break;
                     }
                 }
-                Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap = Builder.stringToEnumMap(SolarisOperatingSystem.PrstatKeywords.class, prstatRow, ' ');
+                Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap = Builder.stringToEnumMap(SolarisOperatingSystem.PrstatKeywords.class, prstatRow, Symbol.C_SPACE);
                 return updateAttributes(psMap, prstatMap);
             }
         }

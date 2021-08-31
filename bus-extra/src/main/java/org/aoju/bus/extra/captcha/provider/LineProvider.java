@@ -37,7 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 普通干扰线验证码
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class LineProvider extends AbstractProvider {
@@ -69,7 +69,7 @@ public class LineProvider extends AbstractProvider {
     public Image createImage(String code) {
         // 图像buffer
         final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g = org.aoju.bus.core.image.Graphics.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
+        final Graphics2D g = org.aoju.bus.core.lang.Graphics.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
 
         // 干扰线
         drawInterfere(g);
@@ -91,7 +91,7 @@ public class LineProvider extends AbstractProvider {
         if (null != this.textAlpha) {
             g.setComposite(this.textAlpha);
         }
-        org.aoju.bus.core.image.Graphics.drawStringColourful(g, code, this.font, this.width, this.height);
+        org.aoju.bus.core.lang.Graphics.drawStringColourful(g, code, this.font, this.width, this.height);
     }
 
     /**

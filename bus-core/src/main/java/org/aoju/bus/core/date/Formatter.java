@@ -59,7 +59,7 @@ import java.util.*;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Formatter {
@@ -468,6 +468,7 @@ public class Formatter {
      * <li>HH时mm分ss秒</li>
      * <li>yyyy-MM-dd HH:mm</li>
      * <li>yyyy-MM-dd HH:mm:ss.SSS</li>
+     * <li>yyyy-MM-dd HH:mm:ss.SSSSSS</li>
      * <li>yyyyMMddHHmmss</li>
      * <li>yyyyMMddHHmmssSSS</li>
      * <li>yyyyMMdd</li>
@@ -528,8 +529,14 @@ public class Formatter {
                     // yyyy-MM-dd HH:mm
                     return parse(dateStr, Fields.NORM_DATETIME_MINUTE_FORMAT);
                 case 2:
-                    if (StringKit.contains(dateStr, Symbol.DOT)) {
-                        // yyyy-MM-dd HH:mm:ss.SSS
+                    final int indexOfDot = StringKit.indexOf(dateStr, Symbol.C_DOT);
+                    if (indexOfDot > 0) {
+                        final int length1 = dateStr.length();
+                        // yyyy-MM-dd HH:mm:ss.SSS 或者 yyyy-MM-dd HH:mm:ss.SSSSSS
+                        if (length1 - indexOfDot > 4) {
+                            // 类似yyyy-MM-dd HH:mm:ss.SSSSSS，采取截断操作
+                            dateStr = StringKit.subPre(dateStr, indexOfDot + 4);
+                        }
                         return parse(dateStr, Fields.NORM_DATETIME_MS_FORMAT);
                     }
                     // yyyy-MM-dd HH:mm:ss
@@ -749,6 +756,8 @@ public class Formatter {
      * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</li>
      * <li>yyyy-MM-dd'T'HH:mm:ssZ</li>
      * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss+0800</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss+08:00</li>
      * </ol>
      *
      * @param utcString UTC时间
@@ -771,18 +780,32 @@ public class Formatter {
             if (length <= patternLength - 4 && length >= patternLength - 6) {
                 return parse(utcString, Fields.OUTPUT_MSEC_FORMAT);
             }
+        } else if (StringKit.contains(utcString, Symbol.C_PLUS)) {
+            // 去除类似2021-08-17T19:45:43 +08:00加号前的空格
+            utcString = utcString.replace(Symbol.SPACE + Symbol.PLUS, Symbol.PLUS);
+            final String zoneOffset = StringKit.subAfter(utcString, Symbol.C_PLUS, true);
+            if (StringKit.isBlank(zoneOffset)) {
+                throw new InstrumentException("Invalid format: [{}]", utcString);
+            }
+            if (false == StringKit.contains(zoneOffset, Symbol.C_COLON)) {
+                // +0800转换为+08:00
+                final String pre = StringKit.subBefore(utcString, Symbol.C_PLUS, true);
+                utcString = pre + Symbol.PLUS + zoneOffset.substring(0, 2) + Symbol.C_COLON + Symbol.ZERO + Symbol.ZERO;
+            }
+
+            if (StringKit.contains(utcString, Symbol.DOT)) {
+                // 带毫秒，格式类似：2021-08-17T05:34:31.999+08:00
+                return parse(utcString, Fields.WITH_XXX_OFFSET_FORMAT);
+            } else {
+                // 格式类似：2021-08-17T05:30:21+08:00
+                return parse(utcString, Fields.WITH_XXX_OFFSET_FORMAT);
+            }
         } else {
-            if (length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 2 || length == Fields.WITH_ZONE_OFFSET_PATTERN.length() + 3) {
-                // 格式类似：2020-01-15T05:32:30+0800 或 2020-01-15T05:32:30+08:00
-                return parse(utcString, FormatBuilder.getInstance("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC")));
-            } else if (length == Fields.MSEC_PATTERN.length() + 2 || length == Fields.MSEC_PATTERN.length() + 3) {
-                // 格式类似：2020-01-15T05:32:30.999+0800 或 2020-01-15T05:32:30.999+08:00
-                return parse(utcString, Fields.MSEC_FORMAT);
-            } else if (length == Fields.SIMPLE_PATTERN.length() - 2) {
-                // 格式类似：2020-09-13T05:34:31
+            if (length == Fields.SIMPLE_PATTERN.length() - 2) {
+                // 格式类似：2021-08-13T05:30:21
                 return parse(utcString, Fields.SIMPLE_FORMAT);
             } else if (StringKit.contains(utcString, Symbol.DOT)) {
-                // 可能为：  2021-03-17T06:31:33.99
+                // 可能为：  2021-08-17T06:31:33.99
                 return parse(utcString, Fields.SIMPLE_MS_FORMAT);
             }
         }
@@ -931,7 +954,7 @@ public class Formatter {
         final StringBuilder builder = StringKit.builder();
 
         // 日期部分("\"、"/"、"."、"年"、"月"都替换为"-")
-        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.HYPHEN);
+        String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.MINUS);
         datePart = StringKit.removeSuffix(datePart, "日");
         builder.append(datePart);
 

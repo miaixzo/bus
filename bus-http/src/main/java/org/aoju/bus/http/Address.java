@@ -47,7 +47,7 @@ import java.util.List;
  * 共享相同的{@code Address}的HTTP请求也可能共享相同的{@link Connection}
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class Address {

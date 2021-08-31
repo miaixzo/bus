@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/tags.html">Tags API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/protected_tags.html">Protected Tags API at GitLab</a>
  * @since JDK 1.8+

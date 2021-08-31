@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class WriteBuffer extends OutputStream {
@@ -48,15 +48,13 @@ public final class WriteBuffer extends OutputStream {
     /**
      * 同步锁
      */
-    private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock readLock = new ReentrantLock();
+    private final ReentrantLock writeLock = new ReentrantLock();
     /**
      * Condition for waiting puts
      */
-    private final Condition notFull = lock.newCondition();
-    /**
-     * 当缓冲队列已满时，触发线程阻塞条件
-     */
-    private final Condition waiting = lock.newCondition();
+    private final Condition notFull = readLock.newCondition();
+
     /**
      * 为当前 WriteBuffer 提供数据存放功能的缓存页
      */
@@ -69,10 +67,6 @@ public final class WriteBuffer extends OutputStream {
      * 默认内存块大小
      */
     private final int chunkSize;
-    /**
-     * 当时是否符合wait条件
-     */
-    private volatile boolean isWaiting = false;
     /**
      * items 读索引位
      */
@@ -134,18 +128,16 @@ public final class WriteBuffer extends OutputStream {
      * @see #write(int)
      */
     public void writeByte(byte b) {
-        lock.lock();
+        writeLock.lock();
         try {
-            if (null == writeInBuf) {
+            if (writeInBuf == null) {
                 writeInBuf = pageBuffer.allocate(chunkSize);
             }
             writeInBuf.buffer().put(b);
             flushWriteBuffer(false);
         } finally {
-            lock.unlock();
+            writeLock.unlock();
         }
-
-        consumer.accept(this);
     }
 
     private void flushWriteBuffer(boolean forceFlush) {
@@ -153,11 +145,32 @@ public final class WriteBuffer extends OutputStream {
             return;
         }
         consumer.accept(this);
-        if (null != writeInBuf) {
-            writeInBuf.buffer().flip();
-            VirtualBuffer buffer = writeInBuf;
-            writeInBuf = null;
-            this.put(buffer);
+        if (writeInBuf == null || writeInBuf.buffer().position() == 0) {
+            return;
+        }
+        writeInBuf.buffer().flip();
+        VirtualBuffer virtualBuffer = writeInBuf;
+        writeInBuf = null;
+        readLock.lock();
+        try {
+            while (count == items.length) {
+                notFull.await();
+                // 防止因close诱发内存泄露
+                if (closed) {
+                    virtualBuffer.clean();
+                    return;
+                }
+            }
+
+            items[putIndex] = virtualBuffer;
+            if (++putIndex == items.length) {
+                putIndex = 0;
+            }
+            count++;
+        } catch (InterruptedException e1) {
+            throw new RuntimeException(e1);
+        } finally {
+            readLock.unlock();
         }
     }
 
@@ -198,85 +211,59 @@ public final class WriteBuffer extends OutputStream {
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        lock.lock();
+        writeLock.lock();
         try {
-            waitPreWriteFinish();
-            do {
-                if (null == writeInBuf) {
+            while (len > 0) {
+                if (writeInBuf == null) {
                     writeInBuf = pageBuffer.allocate(Math.max(chunkSize, len));
                 }
                 ByteBuffer writeBuffer = writeInBuf.buffer();
                 if (closed) {
                     writeInBuf.clean();
+                    writeInBuf = null;
                     throw new IOException("writeBuffer has closed");
                 }
-                int minSize = Math.min(writeBuffer.remaining(), len);
-                writeBuffer.put(b, off, minSize);
-                off += minSize;
-                len -= minSize;
+                int writeSize = Math.min(writeBuffer.remaining(), len);
+                writeBuffer.put(b, off, writeSize);
+                off += writeSize;
+                len -= writeSize;
                 flushWriteBuffer(false);
-            } while (len > 0);
-            notifyWaiting();
+            }
         } finally {
-            lock.unlock();
+            writeLock.unlock();
         }
     }
 
-    public void write(ByteBuffer buffer) throws IOException {
+
+    public void write(ByteBuffer buffer) {
         write(VirtualBuffer.wrap(buffer));
     }
 
-    public void write(VirtualBuffer virtualBuffer) throws IOException {
-        lock.lock();
+    public void write(VirtualBuffer virtualBuffer) {
+        writeLock.lock();
         try {
-            waitPreWriteFinish();
-            if (null != writeInBuf && !virtualBuffer.buffer().isDirect()
-                    && writeInBuf.buffer().remaining() > virtualBuffer.buffer().remaining()) {
+            if (writeInBuf != null && !virtualBuffer.buffer().isDirect() && writeInBuf.buffer().remaining() > virtualBuffer.buffer().remaining()) {
                 writeInBuf.buffer().put(virtualBuffer.buffer());
                 virtualBuffer.clean();
             } else {
-                if (null != writeInBuf) {
+                if (writeInBuf != null) {
                     flushWriteBuffer(true);
                 }
                 virtualBuffer.buffer().compact();
                 writeInBuf = virtualBuffer;
             }
             flushWriteBuffer(false);
-            notifyWaiting();
         } finally {
-            lock.unlock();
+            writeLock.unlock();
         }
-    }
-
-    /**
-     * 唤醒处于waiting状态的线程
-     */
-    private void notifyWaiting() {
-        isWaiting = false;
-        waiting.signal();
     }
 
     /**
      * 初始化8字节的缓存数值
      */
     private void initCacheBytes() {
-        if (null == cacheByte) {
+        if (cacheByte == null) {
             cacheByte = new byte[8];
-        }
-    }
-
-    /**
-     * 确保数据输出有序性
-     *
-     * @throws IOException 如果发生 I/O 错误
-     */
-    private void waitPreWriteFinish() throws IOException {
-        while (isWaiting) {
-            try {
-                waiting.await();
-            } catch (InterruptedException e) {
-                throw new IOException(e);
-            }
         }
     }
 
@@ -287,7 +274,7 @@ public final class WriteBuffer extends OutputStream {
      * @throws IOException 如果发生 I/O 错误
      */
     public void writeAndFlush(byte[] b) throws IOException {
-        if (null == b) {
+        if (b == null) {
             throw new NullPointerException();
         }
         writeAndFlush(b, 0, b.length);
@@ -310,7 +297,7 @@ public final class WriteBuffer extends OutputStream {
         if (closed) {
             throw new RuntimeException("OutputStream has closed");
         }
-        if (this.count > 0 || null != writeInBuf) {
+        if (this.count > 0 || (writeInBuf != null && writeInBuf.buffer().position() > 0)) {
             consumer.accept(this);
         }
     }
@@ -320,52 +307,51 @@ public final class WriteBuffer extends OutputStream {
         if (closed) {
             return;
         }
-        lock.lock();
-        try {
-            flush();
-            closed = true;
-            VirtualBuffer byteBuf;
-            while (null != (byteBuf = poll())) {
-                byteBuf.clean();
+        flush();
+        closed = true;
+        if (writeInBuf != null) {
+            writeLock.lock();
+            try {
+                if (writeInBuf != null) {
+                    writeInBuf.clean();
+                    writeInBuf = null;
+                }
+            } finally {
+                writeLock.unlock();
             }
-        } finally {
-            lock.unlock();
+        }
+        VirtualBuffer byteBuf;
+        while ((byteBuf = poll()) != null) {
+            byteBuf.clean();
         }
     }
+
 
     /**
      * 是否存在待输出的数据
      *
      * @return true:有,false:无
      */
-    public boolean isEmpty() {
-        return count == 0 && null == writeInBuf;
+    boolean isEmpty() {
+        return count == 0 && (writeInBuf == null || writeInBuf.buffer().position() == 0);
     }
 
-    /**
-     * 存储缓冲区至队列中以备输出
-     *
-     * @param virtualBuffer 缓存对象
-     */
-    public void put(VirtualBuffer virtualBuffer) {
-        try {
-            while (count == items.length) {
-                isWaiting = true;
-                notFull.await();
-                //防止因close诱发内存泄露
-                if (closed) {
-                    virtualBuffer.clean();
-                    return;
+    void reuse(VirtualBuffer buffer) {
+        boolean clean = true;
+        if (writeInBuf == null && writeLock.tryLock()) {
+            try {
+                if (writeInBuf == null) {
+                    writeInBuf = buffer;
+                    writeInBuf.buffer().clear();
+                    clean = false;
                 }
+            } finally {
+                writeLock.unlock();
             }
+        }
 
-            items[putIndex] = virtualBuffer;
-            if (++putIndex == items.length) {
-                putIndex = 0;
-            }
-            count++;
-        } catch (InterruptedException e1) {
-            throw new RuntimeException(e1);
+        if (clean) {
+            buffer.clean();
         }
     }
 
@@ -374,23 +360,12 @@ public final class WriteBuffer extends OutputStream {
      *
      * @return 待输出的VirtualBuffer
      */
-    public VirtualBuffer poll() {
-        if (isEmpty()) {
+    VirtualBuffer pollQueue() {
+        if (count == 0) {
             return null;
         }
-        lock.lock();
+        readLock.lock();
         try {
-            if (count == 0) {
-                if (null != writeInBuf) {
-                    writeInBuf.buffer().flip();
-                    VirtualBuffer buffer = writeInBuf;
-                    writeInBuf = null;
-                    return buffer;
-                } else {
-                    return null;
-                }
-            }
-
             VirtualBuffer x = items[takeIndex];
             items[takeIndex] = null;
             if (++takeIndex == items.length) {
@@ -401,7 +376,36 @@ public final class WriteBuffer extends OutputStream {
             }
             return x;
         } finally {
-            lock.unlock();
+            readLock.unlock();
+        }
+    }
+
+    /**
+     * 获取并移除当前缓冲队列中头部的VirtualBuffer
+     *
+     * @return 待输出的VirtualBuffer
+     */
+    VirtualBuffer poll() {
+        if (count > 0) {
+            return pollQueue();
+        }
+        if (writeInBuf == null || !writeLock.tryLock()) {
+            return null;
+        }
+        try {
+            if (count > 0) {
+                return pollQueue();
+            }
+            if (writeInBuf != null && writeInBuf.buffer().position() > 0) {
+                writeInBuf.buffer().flip();
+                VirtualBuffer buffer = writeInBuf;
+                writeInBuf = null;
+                return buffer;
+            } else {
+                return null;
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 

@@ -5,6 +5,8 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Httpx;
+import org.aoju.bus.http.Httpz;
+import org.aoju.bus.http.magic.HttpResponse;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -29,7 +31,26 @@ public class LineProvider extends AbstractProvider {
 
     @Override
     protected AccToken getAccessToken(Callback callback) {
-        return this.getToken(accessTokenUrl(callback.getCode()));
+        JSONObject object = null;
+        try {
+            HttpResponse response = Httpz.post().url(source.accessToken())
+                    .addParams("grant_type", "authorization_code")
+                    .addParams("code", callback.getCode())
+                    .addParams("redirect_uri", context.getRedirectUri())
+                    .addParams("client_id", context.getAppKey())
+                    .addParams("client_secret", context.getAppSecret()).build().execute();
+            object = JSONObject.parseObject(response.body().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AccToken.builder()
+                .accessToken(object.getString("access_token"))
+                .refreshToken(object.getString("refresh_token"))
+                .expireIn(object.getIntValue("expires_in"))
+                .idToken(object.getString("id_token"))
+                .scope(object.getString("scope"))
+                .tokenType(object.getString("token_type"))
+                .build();
     }
 
     @Override

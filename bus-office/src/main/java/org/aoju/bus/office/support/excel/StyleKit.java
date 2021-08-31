@@ -32,7 +32,7 @@ import org.apache.poi.ss.usermodel.*;
  * Excel样式工具类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class StyleKit {
@@ -131,7 +131,7 @@ public class StyleKit {
      * @param workbook {@link Workbook}
      * @param color    字体颜色
      * @param fontSize 字体大小
-     * @param fontName 字体名称,可以为null使用默认字体
+     * @param fontName 字体名称，可以为null使用默认字体
      * @return {@link Font}
      */
     public static Font createFont(Workbook workbook, short color, short fontSize, String fontName) {
@@ -145,7 +145,7 @@ public class StyleKit {
      * @param font     字体{@link Font}
      * @param color    字体颜色
      * @param fontSize 字体大小
-     * @param fontName 字体名称,可以为null使用默认字体
+     * @param fontName 字体名称，可以为null使用默认字体
      * @return {@link Font}
      */
     public static Font setFontStyle(Font font, short color, short fontSize, String fontName) {
@@ -162,11 +162,25 @@ public class StyleKit {
     }
 
     /**
+     * 创建单元格样式
+     *
+     * @param workbook {@link Workbook} 工作簿
+     * @return {@link CellStyle}
+     * @see Workbook#createCellStyle()
+     */
+    public static CellStyle createCellStyle(Workbook workbook) {
+        if (null == workbook) {
+            return null;
+        }
+        return workbook.createCellStyle();
+    }
+
+    /**
      * 创建默认普通单元格样式
      *
      * <pre>
      * 1. 文字上下左右居中
-     * 2. 细边框,黑色
+     * 2. 细边框，黑色
      * </pre>
      *
      * @param workbook {@link Workbook} 工作簿
@@ -194,23 +208,20 @@ public class StyleKit {
     }
 
     /**
-     * 创建单元格样式
+     * 给定样式是否为null（无样式）或默认样式，默认样式为{@code workbook.getCellStyleAt(0)}
      *
-     * @param workbook {@link Workbook} 工作簿
-     * @return {@link CellStyle}
-     * @see Workbook#createCellStyle()
+     * @param workbook 工作簿
+     * @param style    被检查的样式
+     * @return 是否为null（无样式）或默认样式
      */
-    public static CellStyle createCellStyle(Workbook workbook) {
-        if (null == workbook) {
-            return null;
-        }
-        return workbook.createCellStyle();
+    public static boolean isNullOrDefaultStyle(Workbook workbook, CellStyle style) {
+        return (null == style) || style.equals(workbook.getCellStyleAt(0));
     }
 
     /**
      * 创建数据格式并获取格式
      *
-     * @param workbook 工作簿
+     * @param workbook {@link Workbook}
      * @param format   数据格式
      * @return 数据格式
      */

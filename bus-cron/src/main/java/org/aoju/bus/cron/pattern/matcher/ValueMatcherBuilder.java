@@ -41,7 +41,7 @@ import java.util.List;
  * {@link ValueMatcher} 构建器,用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ValueMatcherBuilder {
@@ -181,7 +181,7 @@ public class ValueMatcherBuilder {
         }
 
         //Range模式
-        List<String> parts = StringKit.split(value, Symbol.C_HYPHEN);
+        List<String> parts = StringKit.split(value, Symbol.C_MINUS);
         int size = parts.size();
         if (size == 1) {// 普通值
             final int v1 = parser.parse(value);

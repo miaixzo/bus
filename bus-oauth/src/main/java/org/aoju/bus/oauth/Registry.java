@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.AuthorizedException;
  * 内置的各api需要的url, 用枚举类分平台类型管理
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public enum Registry implements Complex {
@@ -513,7 +513,7 @@ public enum Registry implements Complex {
     /**
      * 小米
      */
-    MI {
+    XIAOMI {
         @Override
         public String authorize() {
             return "https://account.xiaomi.com/oauth2/authorize";

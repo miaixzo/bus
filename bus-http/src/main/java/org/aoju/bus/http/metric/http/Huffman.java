@@ -56,7 +56,7 @@ import java.io.IOException;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Huffman {

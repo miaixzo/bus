@@ -37,7 +37,7 @@ import java.util.*;
  * Crontab表达式提供了指定复杂时间组合的能力
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class Expression implements Serializable, Cloneable {
@@ -324,7 +324,7 @@ public final class Expression implements Serializable, Cloneable {
                 }
                 if (s.length() > i + 3) {
                     c = s.charAt(i + 3);
-                    if (c == Symbol.C_HYPHEN) {
+                    if (c == Symbol.C_MINUS) {
                         i += 4;
                         sub = s.substring(i, i + 3);
                         eval = getMonthNumber(sub) + 1;
@@ -341,7 +341,7 @@ public final class Expression implements Serializable, Cloneable {
                 }
                 if (s.length() > i + 3) {
                     c = s.charAt(i + 3);
-                    if (c == Symbol.C_HYPHEN) {
+                    if (c == Symbol.C_MINUS) {
                         i += 4;
                         sub = s.substring(i, i + 3);
                         eval = getDayOfWeekNumber(sub);
@@ -446,7 +446,7 @@ public final class Expression implements Serializable, Cloneable {
             }
             if (type == DAY_OF_MONTH && s.length() > i) {
                 c = s.charAt(i);
-                if (c == Symbol.C_HYPHEN) {
+                if (c == Symbol.C_MINUS) {
                     ValueSet vs = getValue(0, s, i + 1);
                     lastdayOffset = vs.value;
                     if (lastdayOffset > 30)
@@ -559,7 +559,7 @@ public final class Expression implements Serializable, Cloneable {
             return i;
         }
 
-        if (c == Symbol.C_HYPHEN) {
+        if (c == Symbol.C_MINUS) {
             i++;
             c = s.charAt(i);
             int v = Integer.parseInt(String.valueOf(c));

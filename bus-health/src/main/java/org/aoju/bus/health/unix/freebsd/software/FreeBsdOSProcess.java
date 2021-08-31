@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -70,12 +70,6 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
 
     private String name;
     private String path = Normal.EMPTY;
-
-    public FreeBsdOSProcess(int pid, Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
-        super(pid);
-        updateAttributes(psMap);
-    }
-
     private String user;
     private String userID;
     private String group;
@@ -95,6 +89,11 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private long minorFaults;
     private long majorFaults;
     private long contextSwitches;
+
+    public FreeBsdOSProcess(int pid, Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
+        super(pid);
+        updateAttributes(psMap);
+    }
 
     @Override
     public String getCommandLine() {
@@ -188,7 +187,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
             // Fill list
             for (String thread : threadList) {
                 Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(),
-                        ' ');
+                        Symbol.C_SPACE);
                 if (threadMap.containsKey(PsThreadColumns.PRI)) {
                     threads.add(new FreeBsdOSThread(getProcessID(), threadMap));
                 }
@@ -342,7 +341,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            Map<FreeBsdOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(FreeBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), ' ');
+            Map<FreeBsdOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(FreeBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(FreeBsdOperatingSystem.PsKeywords.ARGS)) {
                 return updateAttributes(psMap);

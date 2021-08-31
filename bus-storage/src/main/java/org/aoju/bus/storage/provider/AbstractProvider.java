@@ -43,7 +43,7 @@ import java.net.URL;
  * 预定义存储实现
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {

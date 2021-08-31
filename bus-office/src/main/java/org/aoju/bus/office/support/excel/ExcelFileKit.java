@@ -36,7 +36,7 @@ import java.io.InputStream;
  * Excel文件工具类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ExcelFileKit {
@@ -71,7 +71,6 @@ public class ExcelFileKit {
      *
      * @param file excel文件
      * @return 是否为XLSX格式的Excel文件（XSSF）
-
      */
     public static boolean isXlsx(File file) {
         try {

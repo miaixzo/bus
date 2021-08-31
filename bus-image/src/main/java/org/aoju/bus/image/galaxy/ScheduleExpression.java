@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ScheduleExpression {
@@ -142,7 +142,7 @@ public class ScheduleExpression {
             return -1;
         int result = -1 << m;
         for (String s1 : Property.split(s, Symbol.C_COMMA)) {
-            String[] range = Property.split(s1, Symbol.C_HYPHEN);
+            String[] range = Property.split(s1, Symbol.C_MINUS);
             if (range.length > 2)
                 throw new IllegalArgumentException(s);
             try {

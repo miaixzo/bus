@@ -30,10 +30,11 @@ import org.aoju.bus.core.io.WriteBuffer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.ByteBuffer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class UdpAioSession extends AioSession {
@@ -54,6 +55,11 @@ public class UdpAioSession extends AioSession {
     @Override
     public WriteBuffer writeBuffer() {
         return writeBuffer;
+    }
+
+    @Override
+    public ByteBuffer readBuffer() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

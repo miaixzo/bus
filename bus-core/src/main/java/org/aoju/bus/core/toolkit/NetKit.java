@@ -25,9 +25,16 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.collection.EnumerationIter;
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.InitialDirContext;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.*;
@@ -39,7 +46,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class NetKit {
@@ -555,7 +562,7 @@ public class NetKit {
      * @return MAC地址, 用-分隔
      */
     public static String getMacAddress(InetAddress inetAddress) {
-        return getMacAddress(inetAddress, Symbol.HYPHEN);
+        return getMacAddress(inetAddress, Symbol.MINUS);
     }
 
     /**
@@ -758,6 +765,82 @@ public class NetKit {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * 获取DNS信息，如TXT信息：
+     *
+     * <pre class="code">
+     *     NetKit.attrNames("aoju.org", "TXT")
+     * </pre>
+     *
+     * @param hostName  主机域名
+     * @param attrNames 属性
+     * @return DNS信息
+     */
+    public static List<String> getDnsInfo(String hostName, String... attrNames) {
+        final String uri = StringKit.addPrefixIfNot(hostName, "dns:");
+        final Attributes attributes = getAttributes(uri, attrNames);
+
+        final List<String> infos = new ArrayList<>();
+        for (Attribute attribute : new EnumerationIter<>(attributes.getAll())) {
+            try {
+                infos.add((String) attribute.get());
+            } catch (NamingException ignore) {
+                //ignore
+            }
+        }
+        return infos;
+    }
+
+    /**
+     * 创建{@link InitialDirContext}
+     *
+     * @param environment 环境参数，{code null}表示无参数
+     * @return {@link InitialDirContext}
+     */
+    public static InitialDirContext createInitialDirContext(Map<String, String> environment) {
+        try {
+            if (MapKit.isEmpty(environment)) {
+                return new InitialDirContext();
+            }
+            return new InitialDirContext(Convert.convert(Hashtable.class, environment));
+        } catch (NamingException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 创建{@link InitialContext}
+     *
+     * @param environment 环境参数，{code null}表示无参数
+     * @return {@link InitialContext}
+     */
+    public static InitialContext createInitialContext(Map<String, String> environment) {
+        try {
+            if (MapKit.isEmpty(environment)) {
+                return new InitialContext();
+            }
+            return new InitialContext(Convert.convert(Hashtable.class, environment));
+        } catch (NamingException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 获取指定容器环境的对象的属性<br>
+     * 如获取DNS属性，则URI为类似：dns:hutool.cn
+     *
+     * @param uri     URI字符串，格式为[scheme:][name]/[domain]
+     * @param attrIds 需要获取的属性ID名称
+     * @return {@link Attributes}
+     */
+    public static Attributes getAttributes(String uri, String... attrIds) {
+        try {
+            return createInitialDirContext(null).getAttributes(uri, attrIds);
+        } catch (NamingException e) {
+            throw new InstrumentException(e);
         }
     }
 

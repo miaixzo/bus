@@ -32,6 +32,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.math.Arrange;
 import org.aoju.bus.core.math.Combine;
 import org.aoju.bus.core.math.Formula;
+import org.aoju.bus.core.math.Money;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -48,7 +49,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -1058,7 +1059,7 @@ public class MathKit {
         boolean allowSigns = false;
         boolean foundDigit = false;
         // deal with any possible sign up front
-        int start = (chars[0] == Symbol.C_HYPHEN) ? 1 : 0;
+        int start = (chars[0] == Symbol.C_MINUS) ? 1 : 0;
         if (sz > start + 1) {
             if (chars[start] == Symbol.C_ZERO && chars[start + 1] == 'x') {
                 int i = start + 2;
@@ -1101,7 +1102,7 @@ public class MathKit {
                 }
                 hasExp = true;
                 allowSigns = true;
-            } else if (chars[i] == Symbol.C_PLUS || chars[i] == Symbol.C_HYPHEN) {
+            } else if (chars[i] == Symbol.C_PLUS || chars[i] == Symbol.C_MINUS) {
                 if (!allowSigns) {
                     return false;
                 }
@@ -2079,7 +2080,7 @@ public class MathKit {
         int pos = 0; // 数字字符串位置
         int radix = 10;
         boolean negate = false; // 负数与否
-        if (str.startsWith(Symbol.HYPHEN)) {
+        if (str.startsWith(Symbol.MINUS)) {
             negate = true;
             pos = 1;
         }
@@ -2674,6 +2675,21 @@ public class MathKit {
     }
 
     /**
+     * Number值转换为double
+     * float强制转换存在精度问题，此方法避免精度丢失
+     *
+     * @param value 被转换的float值
+     * @return double值
+     */
+    public static double toDouble(Number value) {
+        if (value instanceof Float) {
+            return Double.parseDouble(value.toString());
+        } else {
+            return value.doubleValue();
+        }
+    }
+
+    /**
      * 将字符转换为byte类型
      *
      * <pre>
@@ -2890,7 +2906,7 @@ public class MathKit {
         if (StringKit.isBlank(str)) {
             throw new NumberFormatException("A blank string is not a valid number");
         }
-        if (str.trim().startsWith(Symbol.HYPHEN + Symbol.HYPHEN)) {
+        if (str.trim().startsWith(Symbol.MINUS + Symbol.MINUS)) {
             throw new NumberFormatException(str + " is not a valid number.");
         }
         return new BigDecimal(str);
@@ -3172,6 +3188,28 @@ public class MathKit {
             }
         }
         return suffix;
+    }
+
+    /**
+     * 金额元转换为分
+     *
+     * @param yuan 金额，单位元
+     * @return 金额，单位分
+     */
+    public static long yuanToCent(double yuan) {
+        return new Money(yuan).getCent();
+    }
+
+    /**
+     * 金额分转换为元
+     *
+     * @param cent 金额，单位分
+     * @return 金额，单位元
+     */
+    public static double centToYuan(long cent) {
+        long yuan = cent / 100;
+        int centPart = (int) (cent % 100);
+        return new Money(yuan, centPart).getAmount().doubleValue();
     }
 
     /**

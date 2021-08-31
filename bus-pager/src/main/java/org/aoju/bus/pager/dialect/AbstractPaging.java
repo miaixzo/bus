@@ -35,7 +35,7 @@ import org.apache.ibatis.session.RowBounds;
  * 基于 CountSqlParser 的智能 Count 查询
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public abstract class AbstractPaging implements Dialect {

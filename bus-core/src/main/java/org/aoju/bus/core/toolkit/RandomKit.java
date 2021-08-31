@@ -44,7 +44,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class RandomKit {
@@ -349,7 +349,7 @@ public class RandomKit {
      */
     public static <T> List<T> randomEleList(List<T> source, int count) {
         if (count >= source.size()) {
-            return source;
+            return CollKit.toList(source);
         }
         int[] randomList = ArrayKit.sub(randomInts(source.size()), 0, count);
         List<T> result = new ArrayList<>();

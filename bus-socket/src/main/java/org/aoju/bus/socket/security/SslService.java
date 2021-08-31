@@ -43,13 +43,14 @@ import java.security.cert.X509Certificate;
  * keytool -genkey -validity 36000 -alias www.aoju.org -keyalg RSA -keystore server.keystore
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class SslService {
 
     private final boolean isClient;
     private final ClientAuth clientAuth;
+    private SSLContext sslContext;
     private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
         @Override
         public void completed(Integer result, HandshakeModel attachment) {
@@ -67,8 +68,6 @@ public class SslService {
             attachment.getHandshakeCallback().callback();
         }
     };
-    private SSLContext sslContext;
-
     public SslService(boolean isClient, ClientAuth clientAuth) {
         this.isClient = isClient;
         this.clientAuth = clientAuth;
@@ -278,5 +277,6 @@ public class SslService {
             handshakeModel.getHandshakeCallback().callback();
         }
     }
+
 
 }

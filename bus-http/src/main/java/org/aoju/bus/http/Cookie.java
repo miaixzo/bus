@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 这个类不支持cookies上的附加属性，比如Chromium的Priority=HIGH extension
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class Cookie {
@@ -331,7 +331,7 @@ public final class Cookie {
         } catch (NumberFormatException e) {
             // 检查值是否是一个整数(正的或负的)
             if (s.matches("-?\\d+")) {
-                return s.startsWith(Symbol.HYPHEN) ? Long.MIN_VALUE : Long.MAX_VALUE;
+                return s.startsWith(Symbol.MINUS) ? Long.MIN_VALUE : Long.MAX_VALUE;
             }
             throw e;
         }
