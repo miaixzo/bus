@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <spring.boot.version>2.5.3</spring.boot.version>
-        <compress.version>1.19</compress.version>
+        <compress.version>1.21</compress.version>
         <freemarker.version>2.3.30</freemarker.version>
         <lombok.version>1.18.20</lombok.version>
         <druid.version>1.2.6</druid.version>
