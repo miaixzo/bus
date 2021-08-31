@@ -75,6 +75,8 @@ public abstract class AioSession {
 
     /**
      * 获取读缓冲区对象
+     *
+     * @return the object
      */
     public abstract ByteBuffer readBuffer();
 

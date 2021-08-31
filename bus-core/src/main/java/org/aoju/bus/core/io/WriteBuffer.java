@@ -332,11 +332,11 @@ public final class WriteBuffer extends OutputStream {
      *
      * @return true:有,false:无
      */
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return count == 0 && (writeInBuf == null || writeInBuf.buffer().position() == 0);
     }
 
-    void reuse(VirtualBuffer buffer) {
+    public void reuse(VirtualBuffer buffer) {
         boolean clean = true;
         if (writeInBuf == null && writeLock.tryLock()) {
             try {
@@ -385,7 +385,7 @@ public final class WriteBuffer extends OutputStream {
      *
      * @return 待输出的VirtualBuffer
      */
-    VirtualBuffer poll() {
+    public VirtualBuffer poll() {
         if (count > 0) {
             return pollQueue();
         }
