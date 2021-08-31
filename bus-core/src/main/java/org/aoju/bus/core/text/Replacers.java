@@ -34,7 +34,7 @@ import java.util.*;
  * 按值替换字符串中的变量.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Replacers {
@@ -50,7 +50,7 @@ public class Replacers {
     /**
      * 默认值分隔符.
      */
-    public static final Matchers DEFAULT_VALUE_DELIMITER = Matchers.stringMatcher(Symbol.COLON + Symbol.HYPHEN);
+    public static final Matchers DEFAULT_VALUE_DELIMITER = Matchers.stringMatcher(Symbol.COLON + Symbol.MINUS);
 
     /**
      * 存储转义字符.

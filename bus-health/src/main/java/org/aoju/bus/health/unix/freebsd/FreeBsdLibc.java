@@ -35,7 +35,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public interface FreeBsdLibc extends CLibrary {
@@ -46,41 +46,26 @@ public interface FreeBsdLibc extends CLibrary {
     int UTX_LINESIZE = 16;
     int UTX_IDSIZE = 8;
     int UTX_HOSTSIZE = 128;
-
     /**
-     * Connection info
+     * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
      */
-    @FieldOrder({"ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare"})
-    class FreeBsdUtmpx extends Structure {
-        public short ut_type; // type of entry
-        public Timeval ut_tv; // time entry was made
-        public byte[] ut_id = new byte[UTX_IDSIZE]; // etc/inittab id (usually line #)
-        public int ut_pid; // process id
-        public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
-        public byte[] ut_line = new byte[UTX_LINESIZE]; // device name
-        public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
-        public byte[] ut_spare = new byte[64];
-    }
+    int UINT64_SIZE = Native.getNativeSize(long.class);
 
     /*
      * Data size
      */
     /**
-     * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
-     */
-    int UINT64_SIZE = Native.getNativeSize(long.class);
-    /**
      * Constant <code>INT_SIZE=Native.getNativeSize(int.class)</code>
      */
     int INT_SIZE = Native.getNativeSize(int.class);
-
-    /*
-     * CPU state indices
-     */
     /**
      * Constant <code>CPUSTATES=5</code>
      */
     int CPUSTATES = 5;
+
+    /*
+     * CPU state indices
+     */
     /**
      * Constant <code>CP_USER=0</code>
      */
@@ -103,6 +88,32 @@ public interface FreeBsdLibc extends CLibrary {
     int CP_IDLE = 4;
 
     /**
+     * Reads a line from the current file position in the utmp file. It returns a
+     * pointer to a structure containing the fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link FreeBsdUtmpx} on success, and NULL on failure (which
+     * includes the "record not found" case)
+     */
+    FreeBsdUtmpx getutxent();
+
+    /**
+     * Connection info
+     */
+    @FieldOrder({"ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare"})
+    class FreeBsdUtmpx extends Structure {
+        public short ut_type; // type of entry
+        public Timeval ut_tv; // time entry was made
+        public byte[] ut_id = new byte[UTX_IDSIZE]; // etc/inittab id (usually line #)
+        public int ut_pid; // process id
+        public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
+        public byte[] ut_line = new byte[UTX_LINESIZE]; // device name
+        public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
+        public byte[] ut_spare = new byte[64];
+    }
+
+    /**
      * Return type for BSD sysctl kern.boottime
      */
     @FieldOrder({"tv_sec", "tv_usec"})
@@ -118,16 +129,5 @@ public interface FreeBsdLibc extends CLibrary {
     class CpTime extends Structure {
         public long[] cpu_ticks = new long[CPUSTATES];
     }
-
-    /**
-     * Reads a line from the current file position in the utmp file. It returns a
-     * pointer to a structure containing the fields of the line.
-     * <p>
-     * Not thread safe
-     *
-     * @return a {@link FreeBsdUtmpx} on success, and NULL on failure (which
-     * includes the "record not found" case)
-     */
-    FreeBsdUtmpx getutxent();
 
 }

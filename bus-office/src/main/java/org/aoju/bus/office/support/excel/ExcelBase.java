@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -113,6 +114,42 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
         }
         return result;
     }
+
+    /**
+     * 重命名当前sheet
+     *
+     * @param newName 新名字
+     * @return this
+     * @see Workbook#setSheetName(int, String)
+     */
+    public T renameSheet(String newName) {
+        this.workbook.setSheetName(this.workbook.getSheetIndex(this.sheet), newName);
+        return (T) this;
+    }
+
+    /**
+     * 复制当前sheet为新sheet
+     *
+     * @param sheetIndex        sheet位置
+     * @param newSheetName      新sheet名
+     * @param setAsCurrentSheet 是否切换为当前sheet
+     * @return this
+     */
+    public T cloneSheet(int sheetIndex, String newSheetName, boolean setAsCurrentSheet) {
+        Sheet sheet;
+        if (this.workbook instanceof XSSFWorkbook) {
+            XSSFWorkbook workbook = (XSSFWorkbook) this.workbook;
+            sheet = workbook.cloneSheet(sheetIndex, newSheetName);
+        } else {
+            sheet = this.workbook.cloneSheet(sheetIndex);
+            this.workbook.setSheetName(sheetIndex, newSheetName);
+        }
+        if (setAsCurrentSheet) {
+            this.sheet = sheet;
+        }
+        return (T) this;
+    }
+
 
     /**
      * 获取当前Sheet

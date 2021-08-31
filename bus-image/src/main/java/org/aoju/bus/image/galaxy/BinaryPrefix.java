@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Symbol;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public enum BinaryPrefix {
@@ -54,7 +54,7 @@ public enum BinaryPrefix {
 
     public static long parse(String s) {
         int unitEnd = s.length();
-        if (unitEnd > 0 && s.charAt(0) != Symbol.C_HYPHEN)
+        if (unitEnd > 0 && s.charAt(0) != Symbol.C_MINUS)
             try {
                 if (s.charAt(unitEnd - 1) == 'B')
                     unitEnd--;

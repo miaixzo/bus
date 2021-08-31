@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * platforms.
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -62,12 +62,6 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
 
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
             .collect(Collectors.joining(","));
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return getProcessListFromPS("ps -A -o " + PS_COMMAND_ARGS, -1);
-    }
-
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
     Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());
@@ -78,6 +72,11 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             return bootTime;
         }
         return System.currentTimeMillis() - Uptime.queryUpTime();
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromPS("ps -A -o " + PS_COMMAND_ARGS, -1);
     }
 
     @Override
@@ -160,7 +159,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         // Fill list
         List<OSProcess> procs = new ArrayList<>();
         for (String proc : procList) {
-            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
+            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
                 procs.add(new AixOSProcess(pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid,
@@ -168,11 +167,6 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return procs;
-    }
-
-    enum PsKeywords {
-        ST, PID, PPID, USER, UID, GROUP, GID, THCOUNT, PRI, VSIZE, RSSIZE, ETIME, TIME, COMM, PAGEIN, ARGS;
-        // ARGS must always be last
     }
 
     @Override
@@ -266,6 +260,11 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         List<OSProcess> allProcs = queryAllProcesses();
         Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    enum PsKeywords {
+        ST, PID, PPID, USER, UID, GROUP, GID, THCOUNT, PRI, VSIZE, RSSIZE, ETIME, TIME, COMM, PAGEIN, ARGS;
+        // ARGS must always be last
     }
 
 }

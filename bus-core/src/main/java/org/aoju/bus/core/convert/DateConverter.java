@@ -38,7 +38,7 @@ import java.util.Date;
  * 日期转换器
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class DateConverter extends AbstractConverter<Date> {
@@ -89,6 +89,10 @@ public class DateConverter extends AbstractConverter<Date> {
 
     @Override
     protected Date convertInternal(Object value) {
+        if (value == null || (value instanceof CharSequence
+                && StringKit.isBlank(value.toString()))) {
+            return null;
+        }
         if (value instanceof TemporalAccessor) {
             return wrap(DateKit.date((TemporalAccessor) value));
         } else if (value instanceof Calendar) {

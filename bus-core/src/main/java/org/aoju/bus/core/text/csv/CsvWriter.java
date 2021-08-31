@@ -33,13 +33,14 @@ import org.aoju.bus.core.toolkit.*;
 
 import java.io.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
  * CSV数据写出器
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class CsvWriter implements Closeable, Flushable {
@@ -220,9 +221,12 @@ public final class CsvWriter implements Closeable, Flushable {
      */
     public CsvWriter write(CsvData csvData) {
         if (csvData != null) {
-            if (CollKit.isNotEmpty(csvData.getHeader())) {
-                this.writeLine(csvData.getHeader().toArray(new String[0]));
+            // 1、写header
+            final List<String> header = csvData.getHeader();
+            if (CollKit.isNotEmpty(header)) {
+                this.writeHeaderLine(header.toArray(new String[0]));
             }
+            // 2、写内容
             this.write(csvData.getRows());
             flush();
         }
@@ -313,6 +317,28 @@ public final class CsvWriter implements Closeable, Flushable {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 写出一行头部行，支持标题别名
+     *
+     * @param fields 字段列表 ({@code null} 值会被做为空值追加
+     * @return this
+     * @throws InstrumentException IO异常
+     */
+    public CsvWriter writeHeaderLine(String... fields) throws InstrumentException {
+        final Map<String, String> headerAlias = this.config.headerAlias;
+        if (MapKit.isNotEmpty(headerAlias)) {
+            // 标题别名替换
+            String alias;
+            for (int i = 0; i < fields.length; i++) {
+                alias = headerAlias.get(fields[i]);
+                if (null != alias) {
+                    fields[i] = alias;
+                }
+            }
+        }
+        return writeLine(fields);
     }
 
     /**

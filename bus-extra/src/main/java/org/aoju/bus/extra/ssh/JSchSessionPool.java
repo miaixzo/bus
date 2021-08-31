@@ -37,10 +37,10 @@ import java.util.Map.Entry;
  * Jsch会话池
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
-public enum JschSessionPool {
+public enum JSchSessionPool {
 
     INSTANCE;
 
@@ -70,7 +70,7 @@ public enum JschSessionPool {
      */
     public Session getSession(String sshHost, int sshPort, String sshUser, String sshPass) {
         final String key = StringKit.format("{}@{}:{}", sshUser, sshHost, sshPort);
-        return this.cache.get(key, () -> SshKit.openSession(sshHost, sshPort, sshUser, sshPass));
+        return this.cache.get(key, Session::isConnected, () -> JSchKit.openSession(sshHost, sshPort, sshUser, sshPass));
     }
 
     /**
@@ -85,7 +85,7 @@ public enum JschSessionPool {
      */
     public Session getSession(String sshHost, int sshPort, String sshUser, String prvkey, byte[] passphrase) {
         final String key = StringKit.format("{}@{}:{}", sshUser, sshHost, sshPort);
-        return this.cache.get(key, () -> SshKit.openSession(sshHost, sshPort, sshUser, prvkey, passphrase));
+        return this.cache.get(key, Session::isConnected, () -> JSchKit.openSession(sshHost, sshPort, sshUser, prvkey, passphrase));
     }
 
     /**

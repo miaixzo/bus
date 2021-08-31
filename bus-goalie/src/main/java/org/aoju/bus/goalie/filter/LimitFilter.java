@@ -18,7 +18,7 @@ import java.util.Set;
  * 限流
  *
  * @author Justubborn
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)

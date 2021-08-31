@@ -48,58 +48,76 @@ import java.util.Date;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Snowflake implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * workerId占用的位数5（表示只允许workId的范围为：0-1023）
+     */
+    private static final long WORKER_ID_BITS = 5L;
+    /**
+     * dataCenterId占用的位数：5
+     */
+    private static final long DATA_CENTER_ID_BITS = 5L;
+    /**
+     * workerId可以使用的最大数值：31,0~31一共32个
+     */
+    private static final long MAX_WORKER_ID = -1L ^ (-1L << WORKER_ID_BITS);
+    /**
+     * dataCenterId可以使用的最大数值：31,0~31一共32个
+     */
+    private static final long MAX_DATA_CENTER_ID = -1L ^ (-1L << DATA_CENTER_ID_BITS);
+    /**
+     * 序列号占用的位数：12（表示只允许workId的范围为：0-4095）
+     */
+    private static final long SEQUENCE_BITS = 12L;
+    /**
+     * 机器节点左移12位
+     */
+    private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
+    /**
+     * 数据中心节点左移17位
+     */
+    private static final long DATA_CENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
+    /**
+     * 时间毫秒数左移22位
+     */
+    private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATA_CENTER_ID_BITS;
+    /**
+     * 用mask防止溢出:位与运算保证计算的结果范围始终是 0-4095
+     * 序列掩码，用于限定序列最大值不能超过4095
+     */
+    private static final long SEQUENCE_MASK = -1L ^ (-1L << SEQUENCE_BITS);
+
     /**
      * 起始时间戳，用于用当前时间戳减去这个时间戳，算出偏移量
      */
     private final long startTime;
-    /**
-     * workerId占用的位数5（表示只允许workId的范围为：0-1023）
-     */
-    private final long workerIdBits = 5L;
-    /**
-     * dataCenterId占用的位数：5
-     */
-    private final long dataCenterIdBits = 5L;
-    /**
-     * workerId可以使用的最大数值：31,0~31一共32个
-     */
-    private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
-    /**
-     * dataCenterId可以使用的最大数值：31,0~31一共32个
-     */
-    private final long maxDataCenterId = -1L ^ (-1L << dataCenterIdBits);
-    /**
-     * 序列号占用的位数：12（表示只允许workId的范围为：0-4095）
-     */
-    private final long sequenceBits = 12L;
-    /**
-     * 机器节点左移12位
-     */
-    private final long workerIdShift = sequenceBits;
-    /**
-     * 数据中心节点左移17位
-     */
-    private final long dataCenterIdShift = sequenceBits + workerIdBits;
-    /**
-     * 时间毫秒数左移22位
-     */
-    private final long timestampLeftShift = sequenceBits + workerIdBits + dataCenterIdBits;
-    /**
-     * 用mask防止溢出:位与运算保证计算的结果范围始终是 0-4095
-     */
-    private final long sequenceMask = -1L ^ (-1L << sequenceBits);
-
     private final long workerId;
     private final long dataCenterId;
     private final boolean isClock;
     private long sequence = 0L;
     private long lastTimestamp = -1L;
+
+    /**
+     * 构造，使用自动生成的工作节点ID和数据中心ID
+     */
+    public Snowflake() {
+        this(ID.getWorkerId(ID.getDataCenterId(MAX_DATA_CENTER_ID), MAX_WORKER_ID));
+    }
+
+    /**
+     * 构造
+     *
+     * @param workerId 终端ID
+     */
+    public Snowflake(long workerId) {
+        this(workerId, ID.getDataCenterId(MAX_DATA_CENTER_ID));
+    }
 
     /**
      * 构造
@@ -134,11 +152,11 @@ public class Snowflake implements Serializable {
         } else {
             this.startTime = 1288834974657L;
         }
-        if (workerId > maxWorkerId || workerId < 0) {
-            throw new IllegalArgumentException(StringKit.format("worker Id can't be greater than {} or less than 0", maxWorkerId));
+        if (workerId > MAX_WORKER_ID || workerId < 0) {
+            throw new IllegalArgumentException(StringKit.format("worker Id can't be greater than {} or less than 0", MAX_WORKER_ID));
         }
-        if (dataCenterId > maxDataCenterId || dataCenterId < 0) {
-            throw new IllegalArgumentException(StringKit.format("datacenter Id can't be greater than {} or less than 0", maxDataCenterId));
+        if (dataCenterId > MAX_DATA_CENTER_ID || dataCenterId < 0) {
+            throw new IllegalArgumentException(StringKit.format("datacenter Id can't be greater than {} or less than 0", MAX_DATA_CENTER_ID));
         }
         this.workerId = workerId;
         this.dataCenterId = dataCenterId;
@@ -152,7 +170,7 @@ public class Snowflake implements Serializable {
      * @return 所属机器的id
      */
     public long getWorkerId(long id) {
-        return id >> workerIdShift & ~(-1L << workerIdBits);
+        return id >> WORKER_ID_SHIFT & ~(-1L << WORKER_ID_BITS);
     }
 
     /**
@@ -162,7 +180,7 @@ public class Snowflake implements Serializable {
      * @return 所属数据中心
      */
     public long getDataCenterId(long id) {
-        return id >> dataCenterIdShift & ~(-1L << dataCenterIdBits);
+        return id >> DATA_CENTER_ID_SHIFT & ~(-1L << DATA_CENTER_ID_BITS);
     }
 
     /**
@@ -172,7 +190,7 @@ public class Snowflake implements Serializable {
      * @return 生成的时间
      */
     public long getGenerateDateTime(long id) {
-        return (id >> timestampLeftShift & ~(-1L << 41L)) + this.startTime;
+        return (id >> TIMESTAMP_LEFT_SHIFT & ~(-1L << 41L)) + this.startTime;
     }
 
     /**
@@ -197,7 +215,7 @@ public class Snowflake implements Serializable {
         // 解决跨毫秒生成ID序列号始终为偶数的缺陷:如果是同一时间生成的，则进行毫秒内序列
         if (timestamp == lastTimestamp) {
             // 通过位与运算保证计算的结果范围始终是 0-4095
-            sequence = (sequence + 1) & sequenceMask;
+            sequence = (sequence + 1) & SEQUENCE_MASK;
             if (sequence == 0) {
                 timestamp = tilNextMillis(lastTimestamp);
             }
@@ -213,9 +231,9 @@ public class Snowflake implements Serializable {
          * 2.然后对每个左移后的值(la、lb、lc、sequence)做位或运算，是为了把各个短的数据合并起来，合并成一个二进制数
          * 3.最后转换成10进制，就是最终生成的id
          */
-        return ((timestamp - startTime) << timestampLeftShift) |
-                (dataCenterId << dataCenterIdShift) |
-                (workerId << workerIdShift) |
+        return ((timestamp - startTime) << TIMESTAMP_LEFT_SHIFT) |
+                (dataCenterId << DATA_CENTER_ID_SHIFT) |
+                (workerId << WORKER_ID_SHIFT) |
                 sequence;
     }
 

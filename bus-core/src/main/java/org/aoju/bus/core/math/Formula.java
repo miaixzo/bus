@@ -37,7 +37,7 @@ import java.util.Stack;
  * 数学表达式
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Formula {
@@ -78,13 +78,13 @@ public class Formula {
         expression = StringKit.removeSuffix(expression, Symbol.EQUAL);
         final char[] arr = expression.toCharArray();
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == Symbol.C_HYPHEN) {
+            if (arr[i] == Symbol.C_MINUS) {
                 if (i == 0) {
                     arr[i] = Symbol.C_TILDE;
                 } else {
                     char c = arr[i - 1];
                     if (c == Symbol.C_PLUS
-                            || c == Symbol.C_HYPHEN
+                            || c == Symbol.C_MINUS
                             || c == Symbol.C_STAR
                             || c == Symbol.C_SLASH
                             || c == Symbol.C_PARENTHESE_LEFT
@@ -95,7 +95,7 @@ public class Formula {
             }
         }
         if (arr[0] == Symbol.C_TILDE || (arr.length > 1 && arr[1] == Symbol.C_PARENTHESE_LEFT)) {
-            arr[0] = Symbol.C_HYPHEN;
+            arr[0] = Symbol.C_MINUS;
             return Symbol.ZERO + new String(arr);
         } else {
             return new String(arr);
@@ -119,7 +119,7 @@ public class Formula {
             currentValue = postfixStack.pop();
             // 如果不是运算符则存入操作数栈中
             if (false == isOperator(currentValue.charAt(0))) {
-                currentValue = currentValue.replace(Symbol.TILDE, Symbol.HYPHEN);
+                currentValue = currentValue.replace(Symbol.TILDE, Symbol.MINUS);
                 resultStack.push(currentValue);
             } else {
                 // 如果是运算符则从操作数栈中取两个值和该数值一起参与运算
@@ -127,8 +127,8 @@ public class Formula {
                 firstValue = resultStack.pop();
 
                 // 将负数标记符改为负号
-                firstValue = firstValue.replace(Symbol.TILDE, Symbol.HYPHEN);
-                secondValue = secondValue.replace(Symbol.TILDE, Symbol.HYPHEN);
+                firstValue = firstValue.replace(Symbol.TILDE, Symbol.MINUS);
+                secondValue = secondValue.replace(Symbol.TILDE, Symbol.MINUS);
 
                 BigDecimal tempResult = calculate(firstValue, secondValue, currentValue.charAt(0));
                 resultStack.push(tempResult.toString());
@@ -201,7 +201,7 @@ public class Formula {
      */
     private boolean isOperator(char c) {
         return c == Symbol.C_PLUS
-                || c == Symbol.C_HYPHEN
+                || c == Symbol.C_MINUS
                 || c == Symbol.C_STAR
                 || c == Symbol.C_SLASH
                 || c == Symbol.C_PARENTHESE_LEFT
@@ -243,7 +243,7 @@ public class Formula {
             case Symbol.C_PLUS:
                 result = MathKit.add(firstValue, secondValue);
                 break;
-            case Symbol.C_HYPHEN:
+            case Symbol.C_MINUS:
                 result = MathKit.sub(firstValue, secondValue);
                 break;
             case Symbol.C_STAR:

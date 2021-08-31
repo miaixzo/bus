@@ -35,7 +35,7 @@ import java.util.Map;
  * Quickly服务端/客户端配置信息 T:解码后生成的对象类型
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ServerConfig<T> {
@@ -90,6 +90,11 @@ public class ServerConfig<T> {
      * 内存池工厂
      */
     private BufferFactory bufferFactory = BufferFactory.DISABLED_BUFFER_FACTORY;
+
+    /**
+     * 启用 aio 增强
+     */
+    private boolean aioEnhance = true;
 
     /**
      * 获取默认内存块大小
@@ -217,19 +222,30 @@ public class ServerConfig<T> {
         this.backlog = backlog;
     }
 
+    public boolean isAioEnhance() {
+        return aioEnhance;
+    }
+
+    public void setAioEnhance(boolean aioEnhance) {
+        this.aioEnhance = aioEnhance;
+    }
+
     @Override
     public String toString() {
         return "ServerConfig{" +
                 "readBufferSize=" + readBufferSize +
-                ", writeQueueCapacity=" + writeBufferCapacity +
+                ", writeBufferSize=" + writeBufferSize +
+                ", writeBufferCapacity=" + writeBufferCapacity +
                 ", host='" + host + '\'' +
                 ", monitor=" + monitor +
                 ", port=" + port +
+                ", backlog=" + backlog +
                 ", processor=" + processor +
                 ", protocol=" + protocol +
                 ", socketOptions=" + socketOptions +
                 ", threadNum=" + threadNum +
-                ", writeBufferSize=" + writeBufferSize +
+                ", bufferFactory=" + bufferFactory +
+                ", aioEnhance=" + aioEnhance +
                 '}';
     }
 

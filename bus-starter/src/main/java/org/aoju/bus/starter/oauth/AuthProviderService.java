@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 授权服务提供
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class AuthProviderService {
@@ -122,16 +122,14 @@ public class AuthProviderService {
             return new MeituanProvider(context, extendCache);
         } else if (Registry.MICROSOFT.equals(type)) {
             return new MicrosoftProvider(context, extendCache);
-        } else if (Registry.MI.equals(type)) {
-            return new MiProvider(context, extendCache);
+        } else if (Registry.XIAOMI.equals(type)) {
+            return new XiaomiProvider(context, extendCache);
         } else if (Registry.OSCHINA.equals(type)) {
             return new OschinaProvider(context, extendCache);
         } else if (Registry.PINTEREST.equals(type)) {
             return new PinterestProvider(context, extendCache);
         } else if (Registry.QQ.equals(type)) {
             return new QqProvider(context, extendCache);
-        } else if (Registry.RENREN.equals(type)) {
-            return new RenrenProvider(context, extendCache);
         } else if (Registry.STACKOVERFLOW.equals(type)) {
             return new StackOverflowProvider(context, extendCache);
         } else if (Registry.TAOBAO.equals(type)) {

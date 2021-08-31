@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class RealSource implements BufferSource {
@@ -357,7 +357,7 @@ public final class RealSource implements BufferSource {
 
         for (int pos = 0; request(pos + 1); pos++) {
             byte b = buffer.getByte(pos);
-            if ((b < Symbol.C_ZERO || b > Symbol.C_NINE) && (pos != 0 || b != Symbol.C_HYPHEN)) {
+            if ((b < Symbol.C_ZERO || b > Symbol.C_NINE) && (pos != 0 || b != Symbol.C_MINUS)) {
                 // Non-digit, or non-leading negative sign.
                 if (pos == 0) {
                     throw new NumberFormatException(String.format(

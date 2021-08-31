@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {
@@ -95,6 +95,11 @@ public final class DiskLruCache implements Closeable, Flushable {
      * 当前用于在此缓存中存储值的字节数
      */
     private long size = 0;
+    /**
+     * 为了区分旧快照和当前快照，每次提交编辑时都会给每个条目一个序列号。
+     * 如果快照的序列号不等于其条目的序列号，则该快照将失效
+     */
+    private long nextSequenceNumber = 0;
     private final Runnable cleanupRunnable = new Runnable() {
         public void run() {
             synchronized (DiskLruCache.this) {
@@ -120,12 +125,6 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
     };
-    /**
-     * 为了区分旧快照和当前快照，每次提交编辑时都会给每个条目一个序列号。
-     * 如果快照的序列号不等于其条目的序列号，则该快照将失效
-     */
-    private long nextSequenceNumber = 0;
-
     DiskLruCache(FileSystem fileSystem, File directory, int appVersion, int valueCount, long maxSize,
                  Executor executor) {
         this.fileSystem = fileSystem;
@@ -965,5 +964,6 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
     }
+
 
 }

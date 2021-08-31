@@ -40,7 +40,7 @@ import java.util.jar.JarFile;
  * URL相关工具
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class UriKit {
@@ -1764,7 +1764,7 @@ public class UriKit {
         SCHEME {
             @Override
             public boolean isAllowed(int c) {
-                return isAlpha(c) || isDigit(c) || Symbol.C_PLUS == c || Symbol.C_HYPHEN == c || Symbol.C_DOT == c;
+                return isAlpha(c) || isDigit(c) || Symbol.C_PLUS == c || Symbol.C_MINUS == c || Symbol.C_DOT == c;
             }
         },
         AUTHORITY {
@@ -1862,7 +1862,7 @@ public class UriKit {
         }
 
         protected boolean isUnreserved(int c) {
-            return (isAlpha(c) || isDigit(c) || Symbol.C_HYPHEN == c || Symbol.C_DOT == c || Symbol.C_UNDERLINE == c || Symbol.C_TILDE == c);
+            return (isAlpha(c) || isDigit(c) || Symbol.C_MINUS == c || Symbol.C_DOT == c || Symbol.C_UNDERLINE == c || Symbol.C_TILDE == c);
         }
 
         protected boolean isPchar(int c) {

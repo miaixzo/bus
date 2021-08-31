@@ -8,7 +8,7 @@ import org.aoju.bus.notify.provider.netease.NeteaseProvider;
  * 七牛云短信
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK1.8+
  */
 public class QiniuSmsProvider extends NeteaseProvider<QiniuSmsProperty, Context> {

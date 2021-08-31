@@ -33,10 +33,10 @@ import java.io.Serializable;
  * CSV写出配置项
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
-public class CsvWriteConfig extends CsvConfig implements Serializable {
+public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,18 +62,23 @@ public class CsvWriteConfig extends CsvConfig implements Serializable {
      * 设置是否始终使用文本分隔符,文本包装符,默认false,按需添加
      *
      * @param alwaysDelimitText 是否始终使用文本分隔符,文本包装符,默认false,按需添加
+     * @return this
      */
-    public void setAlwaysDelimitText(boolean alwaysDelimitText) {
+    public CsvWriteConfig setAlwaysDelimitText(boolean alwaysDelimitText) {
         this.alwaysDelimitText = alwaysDelimitText;
+        return this;
     }
 
     /**
      * 设置换行符
      *
      * @param lineDelimiter 换行符
+     * @return this
      */
-    public void setLineDelimiter(char[] lineDelimiter) {
+    public CsvWriteConfig setLineDelimiter(char[] lineDelimiter) {
         this.lineDelimiter = lineDelimiter;
+        return this;
     }
 
 }
+

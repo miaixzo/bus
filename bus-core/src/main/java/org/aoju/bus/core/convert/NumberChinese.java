@@ -26,6 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -39,20 +40,34 @@ import org.aoju.bus.core.toolkit.StringKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class NumberChinese {
 
     /**
+     * 中文形式，奇数位置是简体，偶数位置是记账繁体，0共用
+     * 使用混合数组提高效率和数组复用
+     **/
+    private static final char[] CHINESE_DIGITS_VALUE = {
+            Symbol.C_UL_ZERO, Symbol.C_L_ONE, Symbol.C_U_ONE, Symbol.C_L_TWO, Symbol.C_U_TWO, Symbol.C_L_THREE, Symbol.C_U_THREE,
+            Symbol.C_L_FOUR, Symbol.C_U_FOUR, Symbol.C_L_FIVE, Symbol.C_U_FIVE, Symbol.C_L_SIX, Symbol.C_U_SIX, Symbol.C_L_SEVEN,
+            Symbol.C_U_SEVEN, Symbol.C_L_EIGHT, Symbol.C_U_EIGHT, Symbol.C_L_NINE, Symbol.C_U_NINE
+    };
+
+    /**
      * 汉字转阿拉伯数字的
      */
-    private static final NameValue[] NAME_VALUE = {
-            new NameValue("十", 10, false),
-            new NameValue("百", 100, false),
-            new NameValue("千", 1000, false),
-            new NameValue("万", 10000, true),
-            new NameValue("亿", 100000000, true),
+    private static final NameValue[] CHINESE_NAME_VALUE = {
+            new NameValue(Symbol.C_SPACE, 1, false),
+            new NameValue(Symbol.C_L_TEN, 10, false),
+            new NameValue(Symbol.C_U_TEN, 10, false),
+            new NameValue('百', 100, false),
+            new NameValue('佰', 100, false),
+            new NameValue('千', 1000, false),
+            new NameValue('仟', 1000, false),
+            new NameValue('万', 1_0000, true),
+            new NameValue('亿', 1_0000_0000, true),
     };
 
     /**
@@ -75,133 +90,48 @@ public class NumberChinese {
      * @return 中文
      */
     public static String format(double amount, boolean isUseTraditional, boolean isMoneyMode) {
-        final String[] numArray = isUseTraditional ? Normal.TRADITIONAL_DIGITS : Normal.SIMPLE_DIGITS;
-
-        if (amount > 99999999999999.99 || amount < -99999999999999.99) {
+        if (amount > 99_9999_9999_9999.99 || amount < -99999999999999.99) {
             throw new IllegalArgumentException("Number support only: (-99999999999999.99 ～ 99999999999999.99)！");
         }
 
+        // 负数
         boolean negative = false;
         if (amount < 0) {
             negative = true;
             amount = -amount;
         }
 
+        // 分和角
         long temp = Math.round(amount * 100);
-        int numFen = (int) (temp % 10);
+
+        final int numFen = (int) (temp % 10);
         temp = temp / 10;
-        int numJiao = (int) (temp % 10);
+        final int numJiao = (int) (temp % 10);
         temp = temp / 10;
 
-        //将数字以万为单位分为多份
-        int[] parts = new int[20];
-        int numParts = 0;
-        for (int i = 0; temp != 0; i++) {
-            int part = (int) (temp % 10000);
-            parts[i] = part;
-            numParts++;
-            temp = temp / 10000;
-        }
-
-        boolean beforeWanIsZero = true; // 标志“万”下面一级是不是 0
-
-        StringBuilder val = new StringBuilder();
-        for (int i = 0; i < numParts; i++) {
-            String partChinese = toChinese(parts[i], isUseTraditional);
-            if (i % 2 == 0) {
-                beforeWanIsZero = StringKit.isEmpty(partChinese);
-            }
-
-            if (i != 0) {
-                if (i % 2 == 0) {
-                    val.insert(0, "亿");
-                } else {
-                    if (Normal.EMPTY.equals(partChinese) && false == beforeWanIsZero) {
-                        // 如果“万”对应的 part 为 0,而“万”下面一级不为 0,则不加“万”,而加“零”
-                        val.insert(0, "零");
-                    } else {
-                        if (parts[i - 1] < 1000 && parts[i - 1] > 0) {
-                            // 如果"万"的部分不为 0, 而"万"前面的部分小于 1000 大于 0, 则万后面应该跟“零”
-                            val.insert(0, "零");
-                        }
-                        if (parts[i] > 0) {
-                            // 如果"万"的部分不为 0 则增加万
-                            val.insert(0, "万");
-                        }
-                    }
-                }
-            }
-            val.insert(0, partChinese);
-        }
-
-        // 整数部分为 0, 则表达为"零"
-        if (Normal.EMPTY.equals(val.toString())) {
-            val = new StringBuilder(numArray[0]);
-        }
+        final StringBuilder chineseStr = new StringBuilder(toChinese(temp, isUseTraditional));
         //负数
         if (negative) { // 整数部分不为 0
-            val.insert(0, "负");
+            chineseStr.insert(0, "负");
         }
 
         // 小数部分
         if (numFen != 0 || numJiao != 0) {
             if (numFen == 0) {
-                val.append(isMoneyMode ? "元" : "点").append(numArray[numJiao]).append(isMoneyMode ? "角" : Normal.EMPTY);
+                chineseStr.append(isMoneyMode ? "元" : "点").append(numberToChinese(numJiao, isUseTraditional)).append(isMoneyMode ? "角" : "");
             } else { // “分”数不为 0
                 if (numJiao == 0) {
-                    val.append(isMoneyMode ? "元零" : "点零")
-                            .append(numArray[numFen])
-                            .append(isMoneyMode ? "分" : Normal.EMPTY);
+                    chineseStr.append(isMoneyMode ? "元零" : "点零").append(numberToChinese(numFen, isUseTraditional)).append(isMoneyMode ? "分" : "");
                 } else {
-                    val.append(isMoneyMode ? "元" : "点")
-                            .append(numArray[numJiao])
-                            .append(isMoneyMode ? "角" : Normal.EMPTY)
-                            .append(numArray[numFen])
-                            .append(isMoneyMode ? "分" : Normal.EMPTY);
+                    chineseStr.append(isMoneyMode ? "元" : "点").append(numberToChinese(numJiao, isUseTraditional)).append(isMoneyMode ? "角" : "").append(numberToChinese(numFen, isUseTraditional)).append(isMoneyMode ? "分" : "");
                 }
             }
         } else if (isMoneyMode) {
             //无小数部分的金额结尾
-            val.append("元整");
+            chineseStr.append("元整");
         }
 
-        return val.toString();
-    }
-
-    /**
-     * 把一个 0~9999 之间的整数转换为汉字的字符串,如果是 0 则返回 ""
-     *
-     * @param amountPart       数字部分
-     * @param isUseTraditional 是否使用繁体单位
-     * @return 转换后的汉字
-     */
-    private static String toChinese(int amountPart, boolean isUseTraditional) {
-        String[] numArray = isUseTraditional ? Normal.TRADITIONAL_DIGITS : Normal.SIMPLE_DIGITS;
-        String[] units = isUseTraditional ? Normal.TRADITIONAL_UNITS : Normal.SIMPLE_UNITS;
-
-        int temp = amountPart;
-
-        String chineseStr = Normal.EMPTY;
-        boolean lastIsZero = true; // 在从低位往高位循环时,记录上一位数字是不是 0
-        for (int i = 0; temp > 0; i++) {
-            if (temp == 0) {
-                // 高位已无数据
-                break;
-            }
-            int digit = temp % 10;
-            if (digit == 0) { // 取到的数字为 0
-                if (false == lastIsZero) {
-                    // 前一个数字不是 0,则在当前汉字串前加“零”字;
-                    chineseStr = "零" + chineseStr;
-                }
-                lastIsZero = true;
-            } else { // 取到的数字不是 0
-                chineseStr = numArray[digit] + units[i] + chineseStr;
-                lastIsZero = false;
-            }
-            temp = temp / 10;
-        }
-        return chineseStr;
+        return chineseStr.toString();
     }
 
     /**
@@ -212,102 +142,301 @@ public class NumberChinese {
      * @return 中文字符
      */
     public static String toChinese(char c, boolean isUseTraditional) {
-        String[] numArray = isUseTraditional ? Normal.TRADITIONAL_DIGITS : Normal.SIMPLE_DIGITS;
-        int index = c - 48;
-        if (index < 0 || index >= numArray.length) {
+        if (c < '0' || c > '9') {
             return String.valueOf(c);
         }
-        return numArray[index];
+        return String.valueOf(numberToChinese(c - '0', isUseTraditional));
     }
 
     /**
-     * 把中文转换为数字 如 三三零 330
+     * 阿拉伯数字整数部分转换成中文，只支持正数
+     *
+     * @param amount           数字
+     * @param isUseTraditional 是否使用繁体
+     * @return 中文
+     */
+    private static String toChinese(long amount, boolean isUseTraditional) {
+        if (0 == amount) {
+            return "零";
+        }
+
+        //将数字以万为单位分为多份
+        int[] parts = new int[4];
+        for (int i = 0; amount != 0; i++) {
+            parts[i] = (int) (amount % 10000);
+            amount = amount / 10000;
+        }
+
+        final StringBuilder chineseStr = new StringBuilder();
+        int partValue;
+        String partChinese;
+
+        // 千
+        partValue = parts[0];
+        if (partValue > 0) {
+            partChinese = toChinese(partValue, isUseTraditional);
+            chineseStr.insert(0, partChinese);
+
+            if (partValue < 1000) {
+                // 和万位之间空0，则补零，如一万零三百
+                addPreZero(chineseStr);
+            }
+        }
+
+        // 万
+        partValue = parts[1];
+        if (partValue > 0) {
+            if ((partValue % 10 == 0 && parts[0] > 0)) {
+                // 如果"万"的个位是0，则补零，如十万零八千
+                addPreZero(chineseStr);
+            }
+            partChinese = toChinese(partValue, isUseTraditional);
+            chineseStr.insert(0, partChinese + "万");
+
+            if (partValue < 1000) {
+                // 和亿位之间空0，则补零，如一亿零三百万
+                addPreZero(chineseStr);
+            }
+        } else {
+            addPreZero(chineseStr);
+        }
+
+        // 亿
+        partValue = parts[2];
+        if (partValue > 0) {
+            if ((partValue % 10 == 0 && parts[1] > 0)) {
+                // 如果"万"的个位是0，则补零，如十万零八千
+                addPreZero(chineseStr);
+            }
+
+            partChinese = toChinese(partValue, isUseTraditional);
+            chineseStr.insert(0, partChinese + "亿");
+
+            if (partValue < 1000) {
+                // 和万亿位之间空0，则补零，如一万亿零三百亿
+                addPreZero(chineseStr);
+            }
+        } else {
+            addPreZero(chineseStr);
+        }
+
+        // 万亿
+        partValue = parts[3];
+        if (partValue > 0) {
+            if (parts[2] == 0) {
+                chineseStr.insert(0, "亿");
+            }
+            partChinese = toChinese(partValue, isUseTraditional);
+            chineseStr.insert(0, partChinese + "万");
+        }
+
+        if (StringKit.isNotEmpty(chineseStr) && '零' == chineseStr.charAt(0)) {
+            return chineseStr.substring(1);
+        }
+
+        return chineseStr.toString();
+    }
+
+    /**
+     * 把一个 0~9999 之间的整数转换为汉字的字符串，如果是 0 则返回 ""
+     *
+     * @param amountPart       数字部分
+     * @param isUseTraditional 是否使用繁体单位
+     * @return 转换后的汉字
+     */
+    private static String toChinese(int amountPart, boolean isUseTraditional) {
+        int temp = amountPart;
+
+        StringBuilder chineseStr = new StringBuilder();
+        boolean lastIsZero = true; // 在从低位往高位循环时，记录上一位数字是不是 0
+        for (int i = 0; temp > 0; i++) {
+            int digit = temp % 10;
+            if (digit == 0) { // 取到的数字为 0
+                if (false == lastIsZero) {
+                    // 前一个数字不是 0，则在当前汉字串前加“零”字;
+                    chineseStr.insert(0, "零");
+                }
+                lastIsZero = true;
+            } else { // 取到的数字不是 0
+                chineseStr.insert(0, numberToChinese(digit, isUseTraditional) + getUnitName(i, isUseTraditional));
+                lastIsZero = false;
+            }
+            temp = temp / 10;
+        }
+        return chineseStr.toString();
+    }
+
+    /**
+     * 把中文转换为数字 如 二百二十 220
+     * 见：https://www.d5.nz/read/sfdlq/text-part0000_split_030.html
      * <ul>
-     *     <li>一百一十六 - 116</li>
-     *     <li>一千零二十四 - 1024</li>
+     *     <li>一百一十二 -》 112</li>
+     *     <li>一千零一十二 -》 1012</li>
      * </ul>
      *
      * @param chinese 中文字符
      * @return 数字
      */
     public static int chineseToNumber(String chinese) {
-        int pos = 0;
-        int rtn = 0;
+        final int length = chinese.length();
+        int result = 0;
+
+        // 节总和
         int section = 0;
         int number = 0;
-        boolean secUnit = false;
-        final int length = chinese.length();
-        while (pos < length) {
-            int num = ArrayKit.indexOf(Normal.SIMPLE_DIGITS, chinese.substring(pos, pos + 1));
+        NameValue unit = null;
+        char c;
+        for (int i = 0; i < length; i++) {
+            c = chinese.charAt(i);
+            final int num = chineseToNumber(c);
             if (num >= 0) {
+                if (num == 0) {
+                    // 遇到零时节结束，权位失效，比如两万二零一十
+                    if (number > 0 && null != unit) {
+                        section += number * (unit.value / 10);
+                    }
+                    unit = null;
+                } else if (number > 0) {
+                    // 多个数字同时出现，报错
+                    throw new IllegalArgumentException(StringKit.format("Bad number '{}{}' at: {}", chinese.charAt(i - 1), c, i));
+                }
+                // 普通数字
                 number = num;
-                pos += 1;
-                if (pos >= length) {
-                    section += number;
-                    rtn += section;
-                    break;
-                }
             } else {
-                int unit = 1;
-                int tmp = chineseToUnit(chinese.substring(pos, pos + 1));
-                if (tmp != -1) {
-                    unit = NAME_VALUE[tmp].value;
-                    secUnit = NAME_VALUE[tmp].secUnit;
+                unit = chineseToUnit(c);
+                if (null == unit) {
+                    // 出现非法字符
+                    throw new IllegalArgumentException(StringKit.format("Unknown unit '{}' at: {}", c, i));
                 }
-                if (secUnit) {
-                    section = (section + number) * unit;
-                    rtn += section;
+
+                //单位
+                if (unit.unit) {
+                    // 节单位，按照节求和
+                    section = (section + number) * unit.value;
+                    result += section;
                     section = 0;
                 } else {
-                    section += (number * unit);
+                    // 非节单位，和单位前的单数字组合为值
+                    int unitNumber = number;
+                    if (0 == number && 0 == i) {
+                        // issue#1726，对于单位开头的数组，默认赋予1
+                        // 十二 -> 一十二
+                        // 百二 -> 一百二
+                        unitNumber = 1;
+                    }
+                    section += (unitNumber * unit.value);
                 }
                 number = 0;
-                pos += 1;
-                if (pos >= chinese.length()) {
-                    rtn += section;
-                    break;
-                }
             }
         }
-        return rtn;
+
+        if (number > 0 && null != unit) {
+            number = number * (unit.value / 10);
+        }
+
+        return result + section + number;
     }
 
     /**
-     * 查找对应的权
+     * 查找对应的权对象
      *
      * @param chinese 中文权位名
-     * @return 位置
+     * @return 权对象
      */
-    private static int chineseToUnit(String chinese) {
-        for (int i = 0; i < NAME_VALUE.length; i++) {
-            if (NAME_VALUE[i].name.equals(chinese)) {
-                return i;
+    private static NameValue chineseToUnit(char chinese) {
+        for (NameValue chineseNameValue : CHINESE_NAME_VALUE) {
+            if (chineseNameValue.name == chinese) {
+                return chineseNameValue;
             }
         }
-        return -1;
+        return null;
     }
 
     /**
-     * 权位信息
+     * 将汉字单个数字转换为int类型数字
+     *
+     * @param chinese 汉字数字，支持简体和繁体
+     * @return 数字，-1表示未找到
+     */
+    private static int chineseToNumber(char chinese) {
+        if ('两' == chinese) {
+            // 口语纠正
+            chinese = '二';
+        }
+        final int i = ArrayKit.indexOf(CHINESE_DIGITS_VALUE, chinese);
+        if (i > 0) {
+            return (i + 1) / 2;
+        }
+        return i;
+    }
+
+    /**
+     * 单个数字转汉字
+     *
+     * @param number           数字
+     * @param isUseTraditional 是否使用繁体
+     * @return 汉字
+     */
+    private static char numberToChinese(int number, boolean isUseTraditional) {
+        if (0 == number) {
+            return CHINESE_DIGITS_VALUE[0];
+        }
+        return CHINESE_DIGITS_VALUE[number * 2 - (isUseTraditional ? 0 : 1)];
+    }
+
+    /**
+     * 获取对应级别的单位
+     *
+     * @param index            级别，0表示各位，1表示十位，2表示百位，以此类推
+     * @param isUseTraditional 是否使用繁体
+     * @return 单位
+     */
+    private static String getUnitName(int index, boolean isUseTraditional) {
+        if (0 == index) {
+            return Normal.EMPTY;
+        }
+        return String.valueOf(CHINESE_NAME_VALUE[index * 2 - (isUseTraditional ? 0 : 1)].name);
+    }
+
+    private static void addPreZero(StringBuilder chineseStr) {
+        if (StringKit.isEmpty(chineseStr)) {
+            return;
+        }
+        final char c = chineseStr.charAt(0);
+        if (Symbol.C_UL_ZERO != c) {
+            chineseStr.insert(0, Symbol.C_UL_ZERO);
+        }
+    }
+
+    /**
+     * 权位
      */
     private static class NameValue {
         /**
-         * 中文名称
+         * 中文权名称
          */
-        private final String name;
+        private final char name;
         /**
          * 10的倍数值
          */
         private final int value;
         /**
-         * 是否为节权位
+         * 是否为节权位，它不是与之相邻的数字的倍数，而是整个小节的倍数
+         * 例如二十三万，万是节权位，与三无关，而和二十三关联
          */
-        private final boolean secUnit;
+        private final boolean unit;
 
-        public NameValue(String name, int value, boolean secUnit) {
+        /**
+         * 构造
+         *
+         * @param name  名称
+         * @param value 值，即10的倍数
+         * @param unit  是否为节权位
+         */
+        public NameValue(char name, int value, boolean unit) {
             this.name = name;
             this.value = value;
-            this.secUnit = secUnit;
+            this.unit = unit;
         }
     }
 

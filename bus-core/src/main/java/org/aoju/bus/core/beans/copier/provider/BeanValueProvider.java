@@ -41,7 +41,7 @@ import java.util.Map;
  * Bean的值提供者
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class BeanValueProvider implements ValueProvider<String> {

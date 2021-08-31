@@ -29,13 +29,17 @@ import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.sax.*;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.record.CellValueRecordInterface;
+import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.ExcelNumberFormat;
 import org.apache.poi.util.XMLHelper;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -52,7 +56,7 @@ import java.io.InputStream;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ExcelSaxKit {
@@ -261,6 +265,56 @@ public class ExcelSaxKit {
             return (long) numValue;
         }
         return numValue;
+    }
+
+    public static boolean isDateFormat(Cell cell) {
+        return isDateFormat(cell, null);
+    }
+
+    /**
+     * 判断是否日期格式
+     *
+     * @param cell        单元格
+     * @param cfEvaluator {@link ConditionalFormattingEvaluator}
+     * @return 是否日期格式
+     */
+    public static boolean isDateFormat(Cell cell, ConditionalFormattingEvaluator cfEvaluator) {
+        final ExcelNumberFormat nf = ExcelNumberFormat.from(cell, cfEvaluator);
+        return isDateFormat(nf);
+    }
+
+    /**
+     * 判断是否日期格式
+     *
+     * @param numFmt {@link ExcelNumberFormat}
+     * @return 是否日期格式
+     */
+    public static boolean isDateFormat(ExcelNumberFormat numFmt) {
+        return isDateFormat(numFmt.getIdx(), numFmt.getFormat());
+    }
+
+    /**
+     * 判断日期格式
+     *
+     * @param formatIndex  格式索引，一般用于内建格式
+     * @param formatString 格式字符串
+     * @return 是否为日期格式
+     */
+    public static boolean isDateFormat(int formatIndex, String formatString) {
+        int[] formats = new int[]{28, 30, 31, 32, 33, 55, 56, 57, 58};
+        if (ArrayKit.contains(formats, formatIndex)) {
+            return true;
+        }
+
+        // 自定义格式判断
+        if (StringKit.isNotEmpty(formatString) &&
+                StringKit.containsAny(formatString, "周", "星期", "aa")) {
+            // aa  -> 周一
+            // aaa -> 星期一
+            return true;
+        }
+
+        return org.apache.poi.ss.usermodel.DateUtil.isADateFormat(formatIndex, formatString);
     }
 
 }

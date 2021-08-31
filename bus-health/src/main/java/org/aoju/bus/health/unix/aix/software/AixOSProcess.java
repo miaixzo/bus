@@ -29,6 +29,7 @@ import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -46,7 +47,7 @@ import java.util.function.Supplier;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -60,14 +61,6 @@ public class AixOSProcess extends AbstractOSProcess {
 
     private String name;
     private String path = Normal.EMPTY;
-
-    public AixOSProcess(int pid, Map<AixOperatingSystem.PsKeywords, String> psMap, Map<Integer, Pair<Long, Long>> cpuMap,
-                        Supplier<Perfstat.perfstat_process_t[]> procCpu) {
-        super(pid);
-        this.procCpu = procCpu;
-        updateAttributes(psMap, cpuMap);
-    }
-
     private String user;
     private String userID;
     private String group;
@@ -85,13 +78,14 @@ public class AixOSProcess extends AbstractOSProcess {
     private long bytesRead;
     private long bytesWritten;
     private long majorFaults;
-
     // Memoized copy from OperatingSystem
     private Supplier<Perfstat.perfstat_process_t[]> procCpu;
 
-    @Override
-    public String getCommandLine() {
-        return this.commandLine.get();
+    public AixOSProcess(int pid, Map<AixOperatingSystem.PsKeywords, String> psMap, Map<Integer, Pair<Long, Long>> cpuMap,
+                        Supplier<Perfstat.perfstat_process_t[]> procCpu) {
+        super(pid);
+        this.procCpu = procCpu;
+        updateAttributes(psMap, cpuMap);
     }
 
     /***
@@ -130,6 +124,11 @@ public class AixOSProcess extends AbstractOSProcess {
                 break;
         }
         return state;
+    }
+
+    @Override
+    public String getCommandLine() {
+        return this.commandLine.get();
     }
 
     @Override
@@ -174,7 +173,7 @@ public class AixOSProcess extends AbstractOSProcess {
             processAffinityInfoList.remove(0); // remove process row
             for (String processAffinityInfo : processAffinityInfoList) { // affinity information is in thread row
                 Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class,
-                        processAffinityInfo.trim(), ' ');
+                        processAffinityInfo.trim(), Symbol.C_SPACE);
                 if (threadMap.containsKey(PsThreadColumns.COMMAND)
                         && threadMap.get(PsThreadColumns.ST).charAt(0) != 'Z') { // only non-zombie threads
                     String bnd = threadMap.get(PsThreadColumns.BND);
@@ -309,7 +308,7 @@ public class AixOSProcess extends AbstractOSProcess {
             threadListInfoPs.remove(0); // process data removed
             for (String threadInfo : threadListInfoPs) {
                 Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class,
-                        threadInfo.trim(), ' ');
+                        threadInfo.trim(), Symbol.C_SPACE);
                 if (threadMap.containsKey(PsThreadColumns.COMMAND)) {
                     threads.add(new AixOSThread(getProcessID(), threadMap));
                 }

@@ -26,10 +26,8 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.Holder;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -41,7 +39,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class PatternKit {
@@ -613,47 +611,12 @@ public class PatternKit {
 
     /**
      * 正则替换指定值
-     * 通过正则查找到字符串,然后把匹配到的字符串加入到replacementTemplate中,$1表示分组1的字符串
-     *
-     * @param content             文本
-     * @param regex               正则
-     * @param replacementTemplate 替换的文本模板,可以使用$1类似的变量提取正则匹配出的内容
-     * @return 处理后的文本
-     */
-    public static String replaceAll(String content, String regex, String replacementTemplate) {
-        final Pattern pattern = get(regex, Pattern.DOTALL);
-        return replaceAll(content, pattern, replacementTemplate);
-    }
-
-    /**
-     * 正则替换指定值
-     * 通过正则查找到字符串,然后把匹配到的字符串加入到replacementTemplate中,$1表示分组1的字符串
-     *
-     * @param content             文本
-     * @param pattern             {@link Pattern}
-     * @param replacementTemplate 替换的文本模板,可以使用$1类似的变量提取正则匹配出的内容
-     * @return 处理后的文本
-     */
-    public static String replaceAll(String content, Pattern pattern, String replacementTemplate) {
-        if (StringKit.isEmpty(content)) {
-            return content;
-        }
-
-        final Matcher matcher = pattern.matcher(content);
-        return matcher.replaceAll(replacementTemplate);
-    }
-
-    /**
-     * 正则替换指定值
      * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
-     *
-     * <p>
      * 例如：原字符串是：中文1234，我想把1234换成(1234)，则可以：
      *
      * <pre>
-     * ReUtil.replaceAll("中文1234", "(\\d+)", "($1)"))
-     *
-     * 结果：中文(1234)
+     *      replaceAll("中文1234", "(\\d+)", "($1)"))
+     *      结果：中文(1234)
      * </pre>
      *
      * @param content             文本
@@ -698,6 +661,56 @@ public class PatternKit {
             return sb.toString();
         }
         return StringKit.toString(content);
+    }
+
+    /**
+     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
+     * replaceFun可以通过{@link Matcher}提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
+     *
+     * <pre class="code">
+     *     replaceAll(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
+     *     结果："ZZZaaabbbccc中文-1234-"
+     * </pre>
+     *
+     * @param str        要替换的字符串
+     * @param regex      用于匹配的正则式
+     * @param replaceFun 决定如何替换的函数
+     * @return 替换后的文本
+     */
+    public static String replaceAll(CharSequence str, String regex, Func.Func1<Matcher, String> replaceFun) {
+        return replaceAll(str, Pattern.compile(regex), replaceFun);
+    }
+
+    /**
+     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
+     * replaceFun可以通过{@link Matcher}提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
+     *
+     * <pre class="code">
+     *     replaceAll(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
+     *     结果："ZZZaaabbbccc中文-1234-"
+     * </pre>
+     *
+     * @param str        要替换的字符串
+     * @param pattern    用于匹配的正则式
+     * @param replaceFun 决定如何替换的函数,可能被多次调用（当有多个匹配时）
+     * @return 替换后的字符串
+     */
+    public static String replaceAll(CharSequence str, Pattern pattern, Func.Func1<Matcher, String> replaceFun) {
+        if (StringKit.isEmpty(str)) {
+            return StringKit.toString(str);
+        }
+
+        final Matcher matcher = pattern.matcher(str);
+        final StringBuffer buffer = new StringBuffer();
+        while (matcher.find()) {
+            try {
+                matcher.appendReplacement(buffer, replaceFun.call(matcher));
+            } catch (Exception e) {
+                throw new InstrumentException(e);
+            }
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
     }
 
     /**

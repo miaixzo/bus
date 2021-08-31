@@ -27,17 +27,28 @@ package org.aoju.bus.core.image.painter;
 
 import org.aoju.bus.core.image.element.AbstractElement;
 import org.aoju.bus.core.image.element.ImageElement;
+import org.aoju.bus.core.image.element.RectangleElement;
 import org.aoju.bus.core.image.element.TextElement;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class PainterFactory {
 
+    /**
+     * 图片绘制器
+     */
     private static ImagePainter imagePainter;
+    /**
+     * 文本绘制器
+     */
     private static TextPainter textPainter;
+    /**
+     * 矩形绘制器
+     */
+    private static RectanglePainter rectanglePainter;
 
     public static Painter newInstance(AbstractElement element) throws Exception {
         // 考虑到性能，这里用单件，先不lock了
@@ -51,6 +62,11 @@ public class PainterFactory {
                 textPainter = new TextPainter();
             }
             return textPainter;
+        } else if (element instanceof RectangleElement) {
+            if (rectanglePainter == null) {
+                rectanglePainter = new RectanglePainter();
+            }
+            return rectanglePainter;
         } else {
             throw new Exception("不支持的Painter类型");
         }

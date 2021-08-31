@@ -28,6 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.image.Images;
+import org.aoju.bus.core.image.Removal;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
@@ -38,12 +39,11 @@ import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.RenderedImage;
+import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.util.List;
@@ -55,7 +55,7 @@ import java.util.*;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ImageKit {
@@ -1159,7 +1159,7 @@ public class ImageKit {
      */
     public static BufferedImage copyImage(java.awt.Image image, int imageType, Color backgroundColor) {
         final BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), imageType);
-        final Graphics2D bGr = org.aoju.bus.core.image.Graphics.createGraphics(bimage, backgroundColor);
+        final Graphics2D bGr = org.aoju.bus.core.lang.Graphics.createGraphics(bimage, backgroundColor);
         bGr.drawImage(image, 0, 0, null);
         bGr.dispose();
 
@@ -1295,62 +1295,6 @@ public class ImageKit {
                 new FontRenderContext(AffineTransform.getScaleInstance(1, 1),
                         false,
                         false));
-    }
-
-    /**
-     * 根据文件创建字体
-     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体,此类字体无效则创建{@link Font#TYPE1_FONT}
-     *
-     * @param fontFile 字体文件
-     * @return {@link Font}
-     */
-    public static Font createFont(File fontFile) {
-        try {
-            return Font.createFont(Font.TRUETYPE_FONT, fontFile);
-        } catch (FontFormatException e) {
-            // True Type字体无效时使用Type1字体
-            try {
-                return Font.createFont(Font.TYPE1_FONT, fontFile);
-            } catch (Exception e1) {
-                throw new InstrumentException(e);
-            }
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 根据文件创建字体
-     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体,此类字体无效则创建{@link Font#TYPE1_FONT}
-     *
-     * @param fontStream 字体流
-     * @return {@link Font}
-     */
-    public static Font createFont(InputStream fontStream) {
-        try {
-            return Font.createFont(Font.TRUETYPE_FONT, fontStream);
-        } catch (FontFormatException e) {
-            // True Type字体无效时使用Type1字体
-            try {
-                return Font.createFont(Font.TYPE1_FONT, fontStream);
-            } catch (Exception e1) {
-                throw new InstrumentException(e1);
-            }
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 创建{@link Graphics2D}
-     *
-     * @param image {@link BufferedImage}
-     * @param color {@link Color}背景颜色以及当前画笔颜色
-     * @return {@link Graphics2D}
-     * @see org.aoju.bus.core.image.Graphics#createGraphics(BufferedImage, Color)
-     */
-    public static Graphics2D createGraphics(BufferedImage image, Color color) {
-        return org.aoju.bus.core.image.Graphics.createGraphics(image, color);
     }
 
     /**
@@ -1739,6 +1683,22 @@ public class ImageKit {
     }
 
     /**
+     * RGB颜色值转换成十六进制颜色码
+     *
+     * @param r 红(R)
+     * @param g 绿(G)
+     * @param b 蓝(B)
+     * @return 返回字符串形式的 十六进制颜色码 如
+     */
+    public static String toHex(int r, int g, int b) {
+        // rgb 小于 255
+        if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
+            throw new IllegalArgumentException("RGB must be 0~255!");
+        }
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
+
+    /**
      * 16进制的颜色值转换为Color对象,例如#fcf6d6
      *
      * @param hex 16进制的颜色值,例如#fcf6d6
@@ -1903,7 +1863,7 @@ public class ImageKit {
                         }
                     }
                 }
-                countMap.merge(r + "-" + g + "-" + b, 1L, Long::sum);
+                countMap.merge(r + Symbol.MINUS + g + Symbol.MINUS + b, 1L, Long::sum);
             }
         }
         String maxColor = null;
@@ -1924,6 +1884,159 @@ public class ImageKit {
         gHex = gHex.length() == 1 ? "0" + gHex : gHex;
         bHex = bHex.length() == 1 ? "0" + bHex : bHex;
         return Symbol.SHAPE + rHex + gHex + bHex;
+    }
+
+    /**
+     * 背景移除
+     * 图片去底工具
+     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
+     * 将纯色背景的图片转成矢量图
+     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
+     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
+     *
+     * @param inputPath  要处理图片的路径
+     * @param outputPath 输出图片的路径
+     * @param tolerance  容差值[根据图片的主题色,加入容差值,值的范围在0~255之间]
+     * @return 返回处理结果 true:图片处理完成 false:图片处理失败
+     */
+    public static boolean remove(String inputPath, String outputPath, int tolerance) {
+        return Removal.remove(inputPath, outputPath, tolerance);
+    }
+
+    /**
+     * 背景移除
+     * 图片去底工具
+     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
+     * 将纯色背景的图片转成矢量图
+     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
+     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
+     *
+     * @param input     需要进行操作的图片
+     * @param output    最后输出的文件
+     * @param tolerance 容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
+     * @return 返回处理结果 true:图片处理完成 false:图片处理失败
+     */
+    public static boolean remove(File input, File output, int tolerance) {
+        return Removal.remove(input, output, tolerance);
+    }
+
+    /**
+     * 背景移除
+     * 图片去底工具
+     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
+     * 将纯色背景的图片转成矢量图
+     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
+     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
+     *
+     * @param input     需要进行操作的图片
+     * @param output    最后输出的文件
+     * @param override  指定替换成的背景颜色 为null时背景为透明
+     * @param tolerance 容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
+     * @return 返回处理结果 true:图片处理完成 false:图片处理失败
+     */
+    public static boolean remove(File input, File output, Color override, int tolerance) {
+        return Removal.remove(input, output, override, tolerance);
+    }
+
+    /**
+     * 背景移除
+     * 图片去底工具
+     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
+     * 将纯色背景的图片转成矢量图
+     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
+     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
+     *
+     * @param bufferedImage 需要进行处理的图片流
+     * @param override      指定替换成的背景颜色 为null时背景为透明
+     * @param tolerance     容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
+     * @return 返回处理好的图片流
+     */
+    public static BufferedImage remove(BufferedImage bufferedImage, Color override, int tolerance) {
+        return Removal.remove(bufferedImage, override, tolerance);
+    }
+
+    /**
+     * 背景移除
+     * 图片去底工具
+     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
+     * 将纯色背景的图片转成矢量图
+     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
+     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
+     *
+     * @param outputStream 需要进行处理的图片字节数组流
+     * @param override     指定替换成的背景颜色 为null时背景为透明
+     * @param tolerance    容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
+     * @return 返回处理好的图片流
+     */
+    public static BufferedImage remove(ByteArrayOutputStream outputStream, Color override, int tolerance) {
+        return Removal.remove(outputStream, override, tolerance);
+    }
+
+    /**
+     * 图片颜色转换
+     * 可以使用灰度 (gray)等
+     *
+     * @param colorSpace 颜色模式，如灰度等
+     * @param image      被转换的图片
+     * @return 转换后的图片
+     */
+    public static BufferedImage filter(ColorSpace colorSpace, BufferedImage image) {
+        return filter(new ColorConvertOp(colorSpace, null), image);
+    }
+
+    /**
+     * 转换图片
+     * 可以使用一系列平移 (translation)、缩放 (scale)、翻转 (flip)、旋转 (rotation) 和错切 (shear) 来构造仿射变换。
+     *
+     * @param xform 2D仿射变换，它执行从 2D 坐标到其他 2D 坐标的线性映射，保留了线的“直线性”和“平行性”。
+     * @param image 被转换的图片
+     * @return 转换后的图片
+     */
+    public static BufferedImage filter(AffineTransform xform, BufferedImage image) {
+        return filter(new AffineTransformOp(xform, null), image);
+    }
+
+    /**
+     * 图片过滤转换
+     *
+     * @param op    过滤操作实现，如二维转换可传入{@link AffineTransformOp}
+     * @param image 原始图片
+     * @return 过滤后的图片
+     */
+    public static BufferedImage filter(BufferedImageOp op, BufferedImage image) {
+        return op.filter(image, null);
+    }
+
+    /**
+     * 图片滤镜，借助 {@link ImageFilter}实现，实现不同的图片滤镜
+     *
+     * @param filter 滤镜实现
+     * @param image  图片
+     * @return 滤镜后的图片
+     */
+    public static Image filter(ImageFilter filter, Image image) {
+        return Toolkit.getDefaultToolkit().createImage(
+                new FilteredImageSource(image.getSource(), filter));
+    }
+
+    /**
+     * 获得修正后的矩形坐标位置，变为以背景中心为基准坐标（即x,y == 0,0时，处于背景正中）
+     *
+     * @param rectangle        矩形
+     * @param backgroundWidth  参考宽（背景宽）
+     * @param backgroundHeight 参考高（背景高）
+     * @return 修正后的{@link Point}
+     */
+    public static Point getPointCentre(Rectangle rectangle, int backgroundWidth, int backgroundHeight) {
+        return new Point(
+                rectangle.x + (Math.abs(backgroundWidth - rectangle.width) / 2),
+                rectangle.y + (Math.abs(backgroundHeight - rectangle.height) / 2)
+        );
     }
 
 }

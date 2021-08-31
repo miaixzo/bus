@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.BeanKit;
 
@@ -34,7 +35,7 @@ import java.util.*;
  * CSV中一行的表示
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class CsvRow implements List<String> {
@@ -53,8 +54,7 @@ public final class CsvRow implements List<String> {
      * @param headerMap          标题Map
      * @param fields             数据列表
      */
-    public CsvRow(final long originalLineNumber, final Map<String, Integer> headerMap, final List<String> fields) {
-
+    public CsvRow(long originalLineNumber, Map<String, Integer> headerMap, List<String> fields) {
         this.originalLineNumber = originalLineNumber;
         this.headerMap = headerMap;
         this.fields = fields;
@@ -77,12 +77,10 @@ public final class CsvRow implements List<String> {
      * @throws IllegalStateException CSV文件无标题行抛出此异常
      */
     public String getByName(final String name) {
-        if (null == headerMap) {
-            throw new IllegalStateException("No header available");
-        }
+        Assert.notNull(this.headerMap, "No header available!");
 
         final Integer col = headerMap.get(name);
-        if (null != col) {
+        if (col != null) {
             return get(col);
         }
         return null;

@@ -45,7 +45,7 @@ import java.util.Set;
  * Map代理,提供各种getXXX方法,并提供默认值支持
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, InvocationHandler, Serializable {
@@ -176,6 +176,10 @@ public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, Inv
                 final String fieldName = StringKit.removePreAndLowerFirst(methodName, 3);
                 if (StringKit.isNotBlank(fieldName)) {
                     this.put(fieldName, args[0]);
+                    final Class<?> returnType = method.getReturnType();
+                    if (returnType.isInstance(proxy)) {
+                        return proxy;
+                    }
                 }
             } else if (Normal.EQUALS.equals(methodName)) {
                 return this.equals(args[0]);

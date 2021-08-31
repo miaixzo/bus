@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class HL7Snd extends Device {
@@ -70,7 +70,7 @@ public class HL7Snd extends Device {
 
     public void sendFiles(List<String> pathnames) throws IOException {
         for (String pathname : pathnames)
-            if (pathname.equals(Symbol.HYPHEN))
+            if (pathname.equals(Symbol.MINUS))
                 send(readFromStdIn());
             else {
                 Path path = Paths.get(pathname);

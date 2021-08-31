@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 未初始化异常
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class NotInitedException extends UncheckedException {
@@ -56,6 +56,10 @@ public class NotInitedException extends UncheckedException {
 
     public NotInitedException(String errcode, String errmsg) {
         super(errcode, errmsg);
+    }
+
+    public NotInitedException(String message, Throwable throwable, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, throwable, enableSuppression, writableStackTrace);
     }
 
 }

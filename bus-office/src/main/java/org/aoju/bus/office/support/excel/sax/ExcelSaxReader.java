@@ -36,7 +36,7 @@ import java.io.InputStream;
  *
  * @param <T> 子对象类型,用于标记返回值this
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public interface ExcelSaxReader<T> {
@@ -45,6 +45,10 @@ public interface ExcelSaxReader<T> {
      * sheet r:Id前缀
      */
     String RID_PREFIX = "rId";
+    /**
+     * sheet name前缀
+     */
+    String SHEET_NAME_PREFIX = "sheetName:";
 
     /**
      * 开始读取Excel

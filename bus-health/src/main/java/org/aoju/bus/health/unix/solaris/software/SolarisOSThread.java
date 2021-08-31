@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.solaris.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
@@ -38,7 +39,7 @@ import java.util.Map;
  * OSThread implementation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -114,7 +115,7 @@ public class SolarisOSThread extends AbstractOSThread {
             String lwpStr = Integer.toString(this.threadId);
             for (String psOutput : threadList) {
                 Map<SolarisOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(SolarisOSProcess.PsThreadColumns.class,
-                        psOutput.trim(), ' ');
+                        psOutput.trim(), Symbol.C_SPACE);
                 if (threadMap.containsKey(SolarisOSProcess.PsThreadColumns.PRI) && lwpStr.equals(threadMap.get(SolarisOSProcess.PsThreadColumns.LWP))) {
                     List<String> prstatList = Executor.runNative("prstat -L -v -p " + pid + " 1 1");
                     String prstatRow = "";
@@ -126,7 +127,7 @@ public class SolarisOSThread extends AbstractOSThread {
                         }
                     }
                     Map<SolarisOperatingSystem.PrstatKeywords, String> prstatMap = Builder.stringToEnumMap(SolarisOperatingSystem.PrstatKeywords.class, prstatRow,
-                            ' ');
+                            Symbol.C_SPACE);
                     return updateAttributes(threadMap, prstatMap);
                 }
             }

@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang;
  * 标点符号常量
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Symbol {
@@ -39,60 +39,106 @@ public class Symbol {
      */
     public static final char C_ZERO = '0';
     public static final String ZERO = Normal.EMPTY + C_ZERO;
+    public static final char C_UL_ZERO = '零';
+    public static final String UL_ZERO = Normal.EMPTY + C_UL_ZERO;
 
     /**
      * 符号: 1
      */
     public static final char C_ONE = '1';
     public static final String ONE = Normal.EMPTY + C_ONE;
+    public static final char C_L_ONE = '一';
+    public static final String L_ONE = Normal.EMPTY + C_L_ONE;
+    public static final char C_U_ONE = '壹';
+    public static final String U_ONE = Normal.EMPTY + C_U_ONE;
 
     /**
      * 符号: 2
      */
     public static final char C_TWO = '2';
     public static final String TWO = Normal.EMPTY + C_TWO;
-
+    public static final char C_L_TWO = '二';
+    public static final String S_TWO = Normal.EMPTY + C_L_TWO;
+    public static final char C_U_TWO = '贰';
+    public static final String T_TWO = Normal.EMPTY + C_U_TWO;
     /**
      * 符号: 3
      */
     public static final char C_THREE = '3';
     public static final String THREE = Normal.EMPTY + C_THREE;
+    public static final char C_L_THREE = '三';
+    public static final String S_THREE = Normal.EMPTY + C_L_THREE;
+    public static final char C_U_THREE = '叁';
+    public static final String T_THREE = Normal.EMPTY + C_U_THREE;
 
     /**
      * 符号: 4
      */
     public static final char C_FOUR = '4';
     public static final String FOUR = Normal.EMPTY + C_FOUR;
+    public static final char C_L_FOUR = '四';
+    public static final String S_FOUR = Normal.EMPTY + C_L_FOUR;
+    public static final char C_U_FOUR = '肆';
+    public static final String T_FOUR = Normal.EMPTY + C_U_FOUR;
 
     /**
      * 符号: 5
      */
     public static final char C_FIVE = '5';
     public static final String FIVE = Normal.EMPTY + C_FIVE;
-
+    public static final char C_L_FIVE = '五';
+    public static final String S_FIVE = Normal.EMPTY + C_L_FIVE;
+    public static final char C_U_FIVE = '伍';
+    public static final String T_FIVE = Normal.EMPTY + C_U_FIVE;
     /**
      * 符号: 6
      */
     public static final char C_SIX = '6';
     public static final String SIX = Normal.EMPTY + C_SIX;
+    public static final char C_L_SIX = '六';
+    public static final String L_SIX = Normal.EMPTY + C_L_SIX;
+    public static final char C_U_SIX = '陆';
+    public static final String U_SIX = Normal.EMPTY + C_U_SIX;
 
     /**
      * 符号: 7
      */
     public static final char C_SEVEN = '7';
     public static final String SEVEN = Normal.EMPTY + C_SEVEN;
+    public static final char C_L_SEVEN = '七';
+    public static final String L_SEVEN = Normal.EMPTY + C_L_SEVEN;
+    public static final char C_U_SEVEN = '柒';
+    public static final String U_SEVEN = Normal.EMPTY + C_U_SEVEN;
 
     /**
      * 符号: 8
      */
     public static final char C_EIGHT = '8';
     public static final String EIGHT = Normal.EMPTY + C_EIGHT;
+    public static final char C_L_EIGHT = '八';
+    public static final String L_EIGHT = Normal.EMPTY + C_L_EIGHT;
+    public static final char C_U_EIGHT = '捌';
+    public static final String U_EIGHT = Normal.EMPTY + C_U_EIGHT;
 
     /**
      * 符号: 9
      */
     public static final char C_NINE = '9';
     public static final String NINE = Normal.EMPTY + C_NINE;
+    public static final char C_L_NINE = '九';
+    public static final String L_NINE = Normal.EMPTY + C_L_NINE;
+    public static final char C_U_NINE = '玖';
+    public static final String U_NINE = Normal.EMPTY + C_U_NINE;
+
+    /**
+     * 符号: 10
+     */
+    public static final char C_TEN = '\10';
+    public static final String TEN = Normal.EMPTY + C_TEN;
+    public static final char C_L_TEN = '十';
+    public static final String L_TEN = Normal.EMPTY + C_L_TEN;
+    public static final char C_U_TEN = '拾';
+    public static final String U_TEN = Normal.EMPTY + C_U_TEN;
 
     /**
      * 符号: 逗号
@@ -218,8 +264,8 @@ public class Symbol {
     /**
      * 符号: 减号
      */
-    public static final char C_HYPHEN = '-';
-    public static final String HYPHEN = Normal.EMPTY + C_HYPHEN;
+    public static final char C_MINUS = '-';
+    public static final String MINUS = Normal.EMPTY + C_MINUS;
 
     /**
      * 符号: 加号

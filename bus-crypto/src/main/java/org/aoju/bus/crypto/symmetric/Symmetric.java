@@ -54,7 +54,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Symmetric implements Serializable {
@@ -117,9 +117,7 @@ public class Symmetric implements Serializable {
      */
     public Symmetric(String algorithm, SecretKey key, AlgorithmParameterSpec paramsSpec) {
         init(algorithm, key);
-        if (null != paramsSpec) {
-            setParams(paramsSpec);
-        }
+        initParams(algorithm, paramsSpec);
     }
 
     /**
@@ -132,11 +130,6 @@ public class Symmetric implements Serializable {
     public Symmetric init(String algorithm, SecretKey key) {
         Assert.notBlank(algorithm, "'algorithm' must be not blank !");
         this.secretKey = key;
-
-        // 对于PBE算法使用随机数加盐
-        if (algorithm.startsWith("PBE")) {
-            this.params = new PBEParameterSpec(RandomKit.randomBytes(8), 100);
-        }
 
         // 检查是否为ZeroPadding，是则替换为NoPadding，并标记以便单独处理
         if (algorithm.contains(Padding.ZeroPadding.name())) {
@@ -542,6 +535,39 @@ public class Symmetric implements Serializable {
      */
     public Cipher getCipher() {
         return cipher;
+    }
+
+    /**
+     * 初始化加密解密参数，如IV等
+     *
+     * @param algorithm  算法
+     * @param paramsSpec 用户定义的{@link AlgorithmParameterSpec}
+     * @return this
+     */
+    private Symmetric initParams(String algorithm, AlgorithmParameterSpec paramsSpec) {
+        if (null == paramsSpec) {
+            byte[] iv = null;
+            final Cipher cipher = this.cipher;
+            if (null != cipher) {
+                iv = cipher.getIV();
+            }
+
+            // 随机IV
+            if (StringKit.startWithIgnoreCase(algorithm, "PBE")) {
+                // 对于PBE算法使用随机数加盐
+                if (null == iv) {
+                    iv = RandomKit.randomBytes(8);
+                }
+                paramsSpec = new PBEParameterSpec(iv, 100);
+            } else if (StringKit.startWithIgnoreCase(algorithm, "AES")) {
+                if (null != iv) {
+                    //AES使用Cipher默认的随机盐
+                    paramsSpec = new IvParameterSpec(iv);
+                }
+            }
+        }
+
+        return setParams(paramsSpec);
     }
 
     /**

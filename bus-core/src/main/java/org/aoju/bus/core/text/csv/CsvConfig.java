@@ -28,15 +28,17 @@ package org.aoju.bus.core.text.csv;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * CSV基础配置项
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
-public class CsvConfig implements Serializable {
+public class CsvConfig<T extends CsvConfig<?>> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -52,32 +54,76 @@ public class CsvConfig implements Serializable {
      * 注释符号，用于区分注释行，默认'#'
      */
     protected char commentCharacter = Symbol.C_SHAPE;
+    /**
+     * 标题别名
+     */
+    protected Map<String, String> headerAlias = new LinkedHashMap<>();
 
     /**
      * 设置字段分隔符,默认逗号
      *
      * @param fieldSeparator 字段分隔符,默认逗号
+     * @return this
      */
-    public void setFieldSeparator(final char fieldSeparator) {
+    public T setFieldSeparator(final char fieldSeparator) {
         this.fieldSeparator = fieldSeparator;
+        return (T) this;
     }
 
     /**
      * 设置 文本分隔符,文本包装符,默认双引号
      *
      * @param textDelimiter 文本分隔符,文本包装符,默认双引号
+     * @return this
      */
-    public void setTextDelimiter(char textDelimiter) {
+    public T setTextDelimiter(char textDelimiter) {
         this.textDelimiter = textDelimiter;
+        return (T) this;
     }
 
     /**
      * 设置 注释符号，用于区分注释行
      *
      * @param commentCharacter 注释符号，用于区分注释行
+     * @return this
      */
-    public void setCommentCharacter(char commentCharacter) {
+    public T setCommentCharacter(char commentCharacter) {
         this.commentCharacter = commentCharacter;
+        return (T) this;
+    }
+
+    /**
+     * 设置标题行的别名Map
+     *
+     * @param headerAlias 别名Map
+     * @return this
+     */
+    public T setHeaderAlias(Map<String, String> headerAlias) {
+        this.headerAlias = headerAlias;
+        return (T) this;
+    }
+
+    /**
+     * 增加标题别名
+     *
+     * @param header 标题
+     * @param alias  别名
+     * @return this
+     */
+    public T addHeaderAlias(String header, String alias) {
+        this.headerAlias.put(header, alias);
+        return (T) this;
+    }
+
+    /**
+     * 去除标题别名
+     *
+     * @param header 标题
+     * @return this
+     */
+    public T removeHeaderAlias(String header) {
+        this.headerAlias.remove(header);
+        return (T) this;
     }
 
 }

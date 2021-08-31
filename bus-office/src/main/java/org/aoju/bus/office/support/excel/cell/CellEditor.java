@@ -29,16 +29,18 @@ import org.apache.poi.ss.usermodel.Cell;
 
 /**
  * 单元格编辑器接口
+ * 在读取Excel值时，有时我们需要针对所有单元格统一处理结果值（如null转默认值）的情况
+ * 实现接口并调用reader.setCellEditor()设置编辑器
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @FunctionalInterface
 public interface CellEditor {
 
     /**
-     * 编辑
+     * 编辑，根据单元格信息处理结果值，返回处理后的结果
      *
      * @param cell  单元格对象,可以获取单元格行、列样式等信息
      * @param value 单元格值

@@ -26,13 +26,14 @@
 package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class JacksonJsonEnumHelper<E extends Enum<E>> {
@@ -83,7 +84,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
                         if (camelCased) {
                             nextCharIsCapitalized = true;
                         } else {
-                            nameBuf.append(' ');
+                            nameBuf.append(Symbol.C_SPACE);
                         }
                     }
                 } else if (nextCharIsCapitalized) {

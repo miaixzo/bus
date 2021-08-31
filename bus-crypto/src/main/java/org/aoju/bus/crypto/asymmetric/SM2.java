@@ -58,7 +58,7 @@ import java.security.PublicKey;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class SM2 extends Safety<SM2> {
@@ -189,12 +189,29 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * 加密，SM2非对称加密的结果由C1,C2,C3三部分组成，其中：
+     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
      *
      * <pre>
      * C1 生成随机数的计算出的椭圆曲线点
-     * C2 密文数据
      * C3 SM3的摘要值
+     * C2 密文数据
+     * </pre>
+     *
+     * @param data 被加密的bytes
+     * @return 加密后的bytes
+     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public byte[] encrypt(byte[] data) throws InstrumentException {
+        return encrypt(data, KeyType.PublicKey);
+    }
+
+    /**
+     * 加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     *
+     * <pre>
+     * C1 生成随机数的计算出的椭圆曲线点
+     * C3 SM3的摘要值
+     * C2 密文数据
      * </pre>
      *
      * @param data    被加密的bytes
@@ -207,11 +224,28 @@ public class SM2 extends Safety<SM2> {
         if (KeyType.PublicKey != keyType) {
             throw new IllegalArgumentException("Encrypt is only support by public key");
         }
+        return encrypt(data, new ParametersWithRandom(getCipherParameters(keyType)));
+    }
 
+    /**
+     * 加密，SM2非对称加密的结果由C1,C2,C3三部分组成，其中：
+     *
+     * <pre>
+     * C1 生成随机数的计算出的椭圆曲线点
+     * C2 密文数据
+     * C3 SM3的摘要值
+     * </pre>
+     *
+     * @param data             被加密的bytes
+     * @param pubKeyParameters 公钥参数
+     * @return 加密后的bytes
+     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public byte[] encrypt(byte[] data, CipherParameters pubKeyParameters) throws InstrumentException {
         lock.lock();
         final SM2Engine engine = getEngine();
         try {
-            engine.init(true, new ParametersWithRandom(getCipherParameters(keyType)));
+            engine.init(true, pubKeyParameters);
             return engine.processBlock(data, 0, data.length);
         } catch (InvalidCipherTextException e) {
             throw new InstrumentException(e);
@@ -221,22 +255,45 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
+     * 使用私钥解密
+     *
+     * @param data SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
+     * @return 加密后的bytes
+     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public byte[] decrypt(byte[] data) throws InstrumentException {
+        return decrypt(data, KeyType.PrivateKey);
+    }
+
+    /**
      * 解密
      *
      * @param data    SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 加密后的bytes
+     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
      */
     @Override
-    public byte[] decrypt(byte[] data, KeyType keyType) {
+    public byte[] decrypt(byte[] data, KeyType keyType) throws InstrumentException {
         if (KeyType.PrivateKey != keyType) {
             throw new IllegalArgumentException("Decrypt is only support by private key");
         }
+        return decrypt(data, getCipherParameters(keyType));
+    }
 
+    /**
+     * 解密
+     *
+     * @param data                 SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
+     * @param privateKeyParameters 私钥参数
+     * @return 加密后的bytes
+     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public byte[] decrypt(byte[] data, CipherParameters privateKeyParameters) throws InstrumentException {
         lock.lock();
         final SM2Engine engine = getEngine();
         try {
-            engine.init(false, getCipherParameters(keyType));
+            engine.init(false, privateKeyParameters);
             return engine.processBlock(data, 0, data.length);
         } catch (InvalidCipherTextException e) {
             throw new InstrumentException(e);

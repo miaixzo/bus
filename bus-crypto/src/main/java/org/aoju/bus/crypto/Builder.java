@@ -38,11 +38,11 @@ import org.aoju.bus.crypto.digest.mac.BCHMacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
 import org.aoju.bus.crypto.symmetric.*;
 import org.aoju.bus.logger.Logger;
-import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.gm.GMNamedCurves;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.sec.ECPrivateKey;
+import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -96,7 +96,7 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -3052,6 +3052,84 @@ public final class Builder {
         }
 
         return toPublicParams(publicKey);
+    }
+
+    /**
+     * 编码为DER格式
+     *
+     * @param elements ASN.1元素
+     * @return 编码后的bytes
+     */
+    public static byte[] encodeDer(ASN1Encodable... elements) {
+        return encode(ASN1Encoding.DER, elements);
+    }
+
+    /**
+     * 编码为指定ASN1格式
+     *
+     * @param asn1Encoding 编码格式，见{@link ASN1Encoding}，可选DER、BER或DL
+     * @param elements     ASN.1元素
+     * @return 编码后的bytes
+     */
+    public static byte[] encode(String asn1Encoding, ASN1Encodable... elements) {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        encodeTo(asn1Encoding, out, elements);
+        return out.toByteArray();
+    }
+
+    /**
+     * 编码为指定ASN1格式
+     *
+     * @param asn1Encoding 编码格式，见{@link ASN1Encoding}，可选DER、BER或DL
+     * @param out          输出流
+     * @param elements     ASN.1元素
+     */
+    public static void encodeTo(String asn1Encoding, OutputStream out, ASN1Encodable... elements) {
+        ASN1Sequence sequence;
+        switch (asn1Encoding) {
+            case ASN1Encoding.DER:
+                sequence = new DERSequence(elements);
+                break;
+            case ASN1Encoding.BER:
+                sequence = new BERSequence(elements);
+                break;
+            case ASN1Encoding.DL:
+                sequence = new DLSequence(elements);
+                break;
+            default:
+                throw new InstrumentException("Unsupported ASN1 encoding: {}", asn1Encoding);
+        }
+        try {
+            sequence.encodeTo(out);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 读取ASN.1数据流为{@link ASN1Object}
+     *
+     * @param in ASN.1数据
+     * @return {@link ASN1Object}
+     */
+    public static ASN1Object decode(InputStream in) {
+        final ASN1InputStream asn1In = new ASN1InputStream(in);
+        try {
+            return asn1In.readObject();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 获取ASN1格式的导出格式，一般用于调试
+     *
+     * @param in ASN.1数据
+     * @return {@link ASN1Object}的字符串表示形式
+     * @see ASN1Dump#dumpAsString(Object)
+     */
+    public static String getDumpStr(InputStream in) {
+        return ASN1Dump.dumpAsString(decode(in));
     }
 
     /**

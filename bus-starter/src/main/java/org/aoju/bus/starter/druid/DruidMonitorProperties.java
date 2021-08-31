@@ -33,7 +33,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Druid 监控配置项
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @Data

@@ -50,7 +50,7 @@ import java.util.function.Supplier;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -71,10 +71,8 @@ public class MacOSProcess extends AbstractOSProcess {
     private static final int SSTOP = 6; // process being traced
 
     private int minorVersion;
-
-    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoize.memoize(this::queryArgsAndEnvironment);
-
+    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private String name = Normal.EMPTY;
     private String path = Normal.EMPTY;
     private String currentWorkingDirectory;

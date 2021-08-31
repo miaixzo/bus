@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Assets;
+import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,7 @@ import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -54,7 +56,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * router handler
  *
  * @author Justubborn
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class ApiRouterHandler {
@@ -71,7 +73,11 @@ public class ApiRouterHandler {
         String path = StringKit.isEmpty(assets.getPath()) ? Normal.EMPTY : Symbol.SLASH + assets.getPath();
         String baseUrl = assets.getHost() + port + path;
 
-        WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.create(baseUrl));
+        WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer.defaultCodecs()
+                                .maxInMemorySize(Config.MAX_INMEMORY_SIZE)).build())
+                .baseUrl(baseUrl).build());
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(assets.getUrl());
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.setAll(params);

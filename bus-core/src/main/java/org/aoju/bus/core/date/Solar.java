@@ -37,7 +37,7 @@ import java.util.*;
  * 阳历日期
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class Solar {
@@ -540,7 +540,7 @@ public class Solar {
     public List<String> getFestivals() {
         List<String> list = new ArrayList<>();
         //获取几月几日对应的节日
-        String festival = Solar.FESTIVAL.get(month + Symbol.HYPHEN + day);
+        String festival = Solar.FESTIVAL.get(month + Symbol.MINUS + day);
         if (null != festival) {
             list.add(festival);
         }
@@ -548,7 +548,7 @@ public class Solar {
         int weeks = (int) Math.ceil(day / 7D);
         //星期几，1代表星期天
         int week = getWeek();
-        festival = Solar.WEEK_FESTIVAL.get(month + Symbol.HYPHEN + weeks + Symbol.HYPHEN + week);
+        festival = Solar.WEEK_FESTIVAL.get(month + Symbol.MINUS + weeks + Symbol.MINUS + week);
         if (null != festival) {
             list.add(festival);
         }
@@ -562,7 +562,7 @@ public class Solar {
      */
     public List<String> getOtherFestivals() {
         List<String> list = new ArrayList<>();
-        List<String> fs = Solar.OTHER_FESTIVAL.get(month + Symbol.HYPHEN + day);
+        List<String> fs = Solar.OTHER_FESTIVAL.get(month + Symbol.MINUS + day);
         if (null != fs) {
             list.addAll(fs);
         }
@@ -758,8 +758,8 @@ public class Solar {
      */
     public String build(boolean... args) {
         // 年月日
-        String strYmd = this.year + Symbol.HYPHEN
-                + (this.month < 10 ? "0" : Normal.EMPTY) + this.month + Symbol.HYPHEN
+        String strYmd = this.year + Symbol.MINUS
+                + (this.month < 10 ? "0" : Normal.EMPTY) + this.month + Symbol.MINUS
                 + (this.day < 10 ? "0" : Normal.EMPTY) + this.day;
 
         // 年月日时分秒
@@ -1385,7 +1385,7 @@ public class Solar {
             if (ObjectKit.isNotEmpty(args) && BooleanKit.and(args)) {
                 return this.year + "年" + this.month + "月";
             }
-            return this.year + Symbol.HYPHEN + this.month;
+            return this.year + Symbol.MINUS + this.month;
         }
 
     }

@@ -44,7 +44,7 @@ import java.util.Objects;
  * @param <M> the middle element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe

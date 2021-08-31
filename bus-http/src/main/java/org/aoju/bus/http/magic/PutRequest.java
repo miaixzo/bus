@@ -42,7 +42,7 @@ import java.util.Map;
  * PUT请求处理
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public class PutRequest extends HttpRequest {
@@ -113,8 +113,8 @@ public class PutRequest extends HttpRequest {
         if (null != params && !params.isEmpty()) {
             params.forEach((k, v) ->
                     builder.addPart(Headers.of(
-                            Header.CONTENT_DISPOSITION,
-                            "form-data; name=" + k + Symbol.DOUBLE_QUOTES),
+                                    Header.CONTENT_DISPOSITION,
+                                    "form-data; name=" + k + Symbol.DOUBLE_QUOTES),
                             RequestBody.create(null, v)
                     )
             );

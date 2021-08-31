@@ -41,7 +41,7 @@ import java.io.Serializable;
  * 数据库类型
  *
  * @author Kimi Liu
- * @version 6.2.6
+ * @version 6.2.8
  * @since JDK 1.8+
  */
 public enum DatabaseType implements Serializable {
