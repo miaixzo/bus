@@ -25,18 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest.mac;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.crypto.Builder;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
  * 默认的HMAC算法实现引擎，使用{@link Mac} 实现摘要
  * 当引入BouncyCastle库时自动使用其作为Provider
- *
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
@@ -50,9 +50,10 @@ public class DefaultHMacEngine implements MacEngine {
      *
      * @param algorithm 算法
      * @param key       密钥
+
      */
     public DefaultHMacEngine(String algorithm, byte[] key) {
-        init(algorithm, key);
+        this(algorithm, (null == key) ? null : new SecretKeySpec(key, algorithm));
     }
 
     /**
@@ -62,7 +63,18 @@ public class DefaultHMacEngine implements MacEngine {
      * @param key       密钥
      */
     public DefaultHMacEngine(String algorithm, Key key) {
-        init(algorithm, key);
+        this(algorithm, key, null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param algorithm 算法
+     * @param key       密钥
+     * @param spec      {@link AlgorithmParameterSpec}
+     */
+    public DefaultHMacEngine(String algorithm, Key key, AlgorithmParameterSpec spec) {
+        init(algorithm, key, spec);
     }
 
     /**
@@ -82,17 +94,34 @@ public class DefaultHMacEngine implements MacEngine {
      * @param algorithm 算法
      * @param key       密钥 {@link SecretKey}
      * @return this
-     * @throws InstrumentException Cause by IOException
+     * @throws CryptoException Cause by IOException
      */
     public DefaultHMacEngine init(String algorithm, Key key) {
+        return init(algorithm, key, null);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param algorithm 算法
+     * @param key       密钥 {@link SecretKey}
+     * @param spec      {@link AlgorithmParameterSpec}
+     * @return this
+     * @throws CryptoException Cause by IOException
+     */
+    public DefaultHMacEngine init(String algorithm, Key key, AlgorithmParameterSpec spec) {
         try {
             mac = Builder.createMac(algorithm);
             if (null == key) {
                 key = Builder.generateKey(algorithm);
             }
-            mac.init(key);
+            if (null != spec) {
+                mac.init(key, spec);
+            } else {
+                mac.init(key);
+            }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         }
         return this;
     }

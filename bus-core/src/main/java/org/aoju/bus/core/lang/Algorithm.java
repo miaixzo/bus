@@ -32,121 +32,148 @@ package org.aoju.bus.core.lang;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class Algorithm {
+public enum Algorithm {
 
     /****************************** 非对称-算法类型 *****************************/
 
     /**
      * RSA算法
      */
-    public static final String RSA = "RSA";
+    RSA("RSA"),
+    /**
+     * RSA2算法
+     */
+    RSA2("RSA2"),
     /**
      * RSA算法，此算法用了默认补位方式为RSA/ECB/PKCS1Padding
      */
-    public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding";
+    RSA_ECB_PKCS1("RSA/ECB/PKCS1Padding"),
     /**
      * RSA算法，此算法用了默认补位方式为RSA/ECB/NoPadding
      */
-    public static final String RSA_ECB = "RSA/ECB/NoPadding";
+    RSA_ECB("RSA/ECB/NoPadding"),
     /**
      * RSA算法，此算法用了RSA/None/NoPadding
      */
-    public static final String RSA_None = "RSA/None/NoPadding";
-    /**
-     * EC(Elliptic Curve)算法
-     */
-    public static final String EC = "EC";
-    public static final String ECDSA = "ECDSA";
+    EC("EC"),
+
+    ECDSA("ECDSA"),
 
     /***************************** 非对称-签名算法 *****************************/
 
     /**
      * RSA签名算法
      */
-    public static final String NONEwithRSA = "NONEwithRSA";
+    NONEWITHRSA("NONEwithRSA"),
     /**
      * MD2/MD5带有RSA加密签名算法
      */
-    public static final String MD2withRSA = "MD2withRSA";
-    public static final String MD5withRSA = "MD5withRSA";
+    MD2WITHRSA("MD2withRSA"),
+    MD5withRSA("MD5withRSA"),
+
     /**
      * 使用SHA-*和RSA的签名算法
      */
-    public static final String SHA1withRSA = "SHA1withRSA";
-    public static final String SHA256withRSA = "SHA256withRSA";
-    public static final String SHA384withRSA = "SHA384withRSA";
-    public static final String SHA512withRSA = "SHA512withRSA";
+    SHA1WITHRSA("SHA1withRSA"),
+    SHA256WITHRSA("SHA256withRSA"),
+    SHA384WITHRSA("SHA384withRSA"),
+    SHA512WITHRSA("SHA512withRSA"),
+
     /**
      * 数字签名算法
      */
-    public static final String NONEwithDSA = "NONEwithDSA";
+    NONEWITHDSA("NONEwithDSA"),
     /**
      * 采用SHA-1签名算法的DSA
      */
-    public static final String SHA1withDSA = "SHA1withDSA";
+    SHA1WITHDSA("SHA1withDSA"),
+
     /**
      * ECDSA签名算法
      */
-    public static final String NONEwithECDSA = "NONEwithECDSA";
-    public static final String SHA1withECDSA = "SHA1withECDSA";
-    public static final String SHA256withECDSA = "SHA256withECDSA";
-    public static final String SHA384withECDSA = "SHA384withECDSA";
-    public static final String SHA512withECDSA = "SHA512withECDSA";
+    NONEWITHECDSA("NONEwithECDSA"),
+    SHA1WITHECDSA("SHA1withECDSA"),
+    SHA256WITHECDSA("SHA256withECDSA"),
+    SHA384WITHECDSA("SHA384withECDSA"),
+    SHA512WITHECDSA("SHA512withECDSA"),
 
     /**
      * 需要BC库加入支持
      */
-    public static final String SHA256withRSA_PSS = "SHA256WithRSA/PSS";
-    public static final String SHA384withRSA_PSS = "SHA384WithRSA/PSS";
-    public static final String SHA512withRSA_PSS = "SHA512WithRSA/PSS";
+    SHA256WITHRSA_PSS("SHA256WithRSA/PSS"),
+    SHA384WITHRSA_PSS("SHA384WithRSA/PSS"),
+    SHA512WITHRSA_PSS("SHA512WithRSA/PSS"),
 
     /****************************** 摘要-算法类型 *****************************/
-    public static final String MD2 = "MD2";
-    public static final String MD5 = "MD5";
-    public static final String SHA1 = "SHA-1";
-    public static final String SHA256 = "SHA-256";
-    public static final String SHA384 = "SHA-384";
-    public static final String SHA512 = "SHA-512";
-    public static final String SHAPRNG = "SHA1PRNG";
+
+    MD2("MD2"),
+    MD5("MD5"),
+    SHA1("SHA-1"),
+    SHA256("SHA-256"),
+    SHA384("SHA-384"),
+    SHA512("SHA-512"),
+    SHA1PRNG("SHA1PRNG"),
 
     /***************************** 摘要-HMAC算法 *****************************/
-    public static final String HmacMD5 = "HmacMD5";
-    public static final String HmacSHA1 = "HmacSHA1";
-    public static final String HmacSHA256 = "HmacSHA256";
-    public static final String HmacSHA384 = "HmacSHA384";
-    public static final String HmacSHA512 = "HmacSHA512";
+
+    HmacMD5("HmacMD5"),
+    HmacSHA1("HmacSHA1"),
+    HmacSHA256("HmacSHA256"),
+    HmacSHA384("HmacSHA384"),
+    HmacSHA512("HmacSHA512"),
     /**
      * HmacSM3算法实现，需要BouncyCastle库支持
      */
-    public static final String HmacSM3 = "HmacSM3";
+    HmacSM3("HmacSM3"),
 
     /***************************** 对称-算法类型 *****************************/
 
     /**
-     * 默认的AES加密方式：AES/CBC/PKCS5Padding
+     * 默认的AES加密方式：AES/ECB/PKCS5Padding
      */
-    public static final String AES = "AES";
-    public static final String ARCFOUR = "ARCFOUR";
-    public static final String Blowfish = "Blowfish";
+    AES("AES"),
+    ARCFOUR("ARCFOUR"),
+    Blowfish("Blowfish"),
     /**
      * 默认的DES加密方式：DES/ECB/PKCS5Padding
      */
-    public static final String DES = "DES";
+    DES("DES"),
     /**
      * 3DES算法，默认实现为：DESede/CBC/PKCS5Padding
      */
-    public static final String DESede = "DESede";
-    public static final String RC2 = "RC2";
-    public static final String RC4 = "RC4";
-    public static final String PBEWithMD5AndDES = "PBEWithMD5AndDES";
-    public static final String PBEWithSHA1AndDESede = "PBEWithSHA1AndDESede";
-    public static final String PBEWithSHA1AndRC2_40 = "PBEWithSHA1AndRC2_40";
+    DESede("DESede"),
+    RC2("RC2"),
+    RC4("RC4"),
+
+    PBEWithMD5AndDES("PBEWithMD5AndDES"),
+    PBEWithSHA1AndDESede("PBEWithSHA1AndDESede"),
+    PBEWithSHA1AndRC2_40("PBEWithSHA1AndRC2_40"),
 
     /******************************* 国密算法 *******************************/
 
-    public static final String SM1 = "SM1";
-    public static final String SM2 = "SM2";
-    public static final String SM3 = "SM3";
-    public static final String SM4 = "SM4";
+    SM1("SM1"),
+    SM2("SM2"),
+    SM3("SM3"),
+    SM4("SM4");
+
+    private final String value;
+
+    /**
+     * 构造
+     *
+     * @param value 算法字符表示，区分大小写
+     */
+    Algorithm(String value) {
+        this.value = value;
+    }
+
+    /**
+     * 获取算法字符串表示，区分大小写
+     *
+     * @return 算法字符串表示
+     */
+    public String getValue() {
+        return this.value;
+    }
 
 }

@@ -23,33 +23,37 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.windows.drivers;
+package org.aoju.bus.health.linux.drivers;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.win32.W32APIOptions;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.health.Builder;
 
 /**
- * Utility to query WMI class {@code Win32_USBController}
+ * Utility to read info from the devicetree
  *
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
  */
 @ThreadSafe
+public final class DeviceTree {
 
-public interface Cfgmgr32 extends com.sun.jna.platform.win32.Cfgmgr32 {
+    private DeviceTree() {
 
-    Cfgmgr32 INSTANCE = Native.load("cfgmgr32", Cfgmgr32.class, W32APIOptions.DEFAULT_OPTIONS);
+    }
 
-    int CM_DRP_DEVICEDESC = 0x00000001;
-    int CM_DRP_SERVICE = 0x00000005;
-    int CM_DRP_CLASS = 0x00000008;
-    int CM_DRP_MFG = 0x0000000C;
-    int CM_DRP_FRIENDLYNAME = 0x0000000D;
+    /**
+     * Query the model from the devicetree
+     *
+     * @return The model if available, null otherwise
+     */
+    public static String queryModel() {
+        String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
+        if (!modelStr.isEmpty()) {
+            return modelStr.replace("Machine: ", Normal.EMPTY);
+        }
+        return null;
+    }
 
-    boolean CM_Get_DevNode_Registry_Property(int dnDevInst, int ulProperty, IntByReference pulRegDataType,
-                                             Pointer buffer, IntByReference pulLength, int ulFlags);
 }

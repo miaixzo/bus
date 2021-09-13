@@ -107,7 +107,7 @@ public class ElemeProvider extends AbstractProvider {
      */
     private static String md5(String str) {
         try {
-            MessageDigest md = MessageDigest.getInstance(Algorithm.MD5);
+            MessageDigest md = MessageDigest.getInstance(Algorithm.MD5.getValue());
             md.update(str.getBytes(Charset.UTF_8));
             byte[] byteData = md.digest();
             StringBuilder buffer = new StringBuilder();

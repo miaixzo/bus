@@ -38,7 +38,6 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.health.unix.openbsd.FstatKit;
 import org.aoju.bus.health.unix.openbsd.OpenBsdLibc;
 import org.aoju.bus.logger.Logger;
@@ -66,7 +65,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         mib[0] = 1; // CTL_KERN
         mib[1] = 8; // KERN_ARGMAX
         Memory m = new Memory(Integer.BYTES);
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(Integer.BYTES));
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(Integer.BYTES));
         if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, LibCAPI.size_t.ZERO) == 0) {
             ARGMAX = m.getInt(0);
         } else {
@@ -145,7 +144,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             mib[3] = 1; // KERN_PROC_ARGV
             // Allocate memory for arguments
             Memory m = new Memory(ARGMAX);
-            NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
+            LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(ARGMAX));
             // Fetch arguments
             if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, LibCAPI.size_t.ZERO) == 0) {
                 // Returns a null-terminated list of pointers to the actual data
@@ -154,7 +153,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
                 long offset = 0;
                 // Get the data base address to calculate offsets
                 long baseAddr = Pointer.nativeValue(m);
-                long maxAddr = baseAddr + size.getValue().longValue();
+                long maxAddr = baseAddr + size.longValue();
                 // Get the address of the data. If null (0) we're done iterating
                 long argAddr = Pointer.nativeValue(m.getPointer(offset));
                 while (argAddr > baseAddr && argAddr < maxAddr) {
@@ -182,7 +181,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         mib[3] = 3; // KERN_PROC_ENV
         // Allocate memory for environment variables
         Memory m = new Memory(ARGMAX);
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(ARGMAX));
         // Fetch environment variables
         if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, LibCAPI.size_t.ZERO) == 0) {
             // Returns a null-terminated list of pointers to the actual data
@@ -191,7 +190,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             long offset = 0;
             // Get the data base address to calculate offsets
             long baseAddr = Pointer.nativeValue(m);
-            long maxAddr = baseAddr + size.getValue().longValue();
+            long maxAddr = baseAddr + size.longValue();
             // Get the address of the data. If null (0) we're done iterating
             long argAddr = Pointer.nativeValue(m.getPointer(offset));
             while (argAddr > baseAddr && argAddr < maxAddr) {

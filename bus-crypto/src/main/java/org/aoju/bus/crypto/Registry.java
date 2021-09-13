@@ -49,12 +49,12 @@ public final class Registry {
     private static Map<String, Provider> ALGORITHM_CACHE = new ConcurrentHashMap<>();
 
     static {
-        register(Algorithm.AES, new AESProvider());
-        register(Algorithm.DES, new DESProvider());
-        register(Algorithm.RC4, new RC4Provider());
-        register(Algorithm.RSA, new RSAProvider());
-        register(Algorithm.SM2, new SM2Provider());
-        register(Algorithm.SM4, new SM4Provider());
+        register(Algorithm.AES.getValue(), new AESProvider());
+        register(Algorithm.DES.getValue(), new DESProvider());
+        register(Algorithm.RC4.getValue(), new RC4Provider());
+        register(Algorithm.RSA.getValue(), new RSAProvider());
+        register(Algorithm.SM2.getValue(), new SM2Provider());
+        register(Algorithm.SM4.getValue(), new SM4Provider());
     }
 
     /**
@@ -65,11 +65,11 @@ public final class Registry {
      */
     public static void register(String name, Provider object) {
         if (ALGORITHM_CACHE.containsKey(name)) {
-            throw new InstrumentException("重复注册同名称的组件：" + name);
+            throw new InstrumentException("Repeat registration of components with the same name：" + name);
         }
         Class<?> clazz = object.getClass();
         if (ALGORITHM_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new InstrumentException("重复注册同类型的组件：" + clazz);
+            throw new InstrumentException("Repeat registration of components with the same name：" + clazz);
         }
         ALGORITHM_CACHE.putIfAbsent(name, object);
     }
@@ -83,7 +83,7 @@ public final class Registry {
     public static Provider require(String name) {
         Provider object = ALGORITHM_CACHE.get(name);
         if (ObjectKit.isEmpty(object)) {
-            throw new IllegalArgumentException("none provider be found!, type:" + name);
+            throw new IllegalArgumentException("None provider be found!, type:" + name);
         }
         return object;
     }

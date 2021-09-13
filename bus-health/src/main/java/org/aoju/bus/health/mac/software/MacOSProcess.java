@@ -40,7 +40,6 @@ import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.mac.SystemB;
 import org.aoju.bus.health.mac.ThreadInfo;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
@@ -148,9 +147,9 @@ public class MacOSProcess extends AbstractOSProcess {
         // Allocate memory for arguments
         Memory procargs = new Memory(ARGMAX);
         procargs.clear();
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(ARGMAX);
         // Fetch arguments
-        if (0 == SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 == com.sun.jna.platform.mac.SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, LibCAPI.size_t.ZERO)) {
             // Procargs contains an int representing total # of args, followed by a
             // null-terminated execpath string and then the arguments, each
             // null-terminated (possible multiple consecutive nulls),
@@ -166,10 +165,10 @@ public class MacOSProcess extends AbstractOSProcess {
                 offset += procargs.getString(offset).length();
                 // Iterate character by character using offset
                 // Build each arg and add to list
-                while (offset < size.getValue().longValue()) {
+                while (offset < size.longValue()) {
                     // Advance through additional nulls
                     while (procargs.getByte(offset) == 0) {
-                        if (++offset >= size.getValue().longValue()) {
+                        if (++offset >= size.longValue()) {
                             break;
                         }
                     }

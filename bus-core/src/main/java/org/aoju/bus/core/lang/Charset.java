@@ -63,6 +63,16 @@ public class Charset {
     public static final String DEFAULT_GBK = "GBK";
     public static final java.nio.charset.Charset GBK = java.nio.charset.Charset.forName(DEFAULT_GBK);
     /**
+     * GB2312 转换格式
+     */
+    public static final String DEFAULT_GB_2312 = "GB2312";
+    public static final java.nio.charset.Charset GB_2312 = java.nio.charset.Charset.forName(DEFAULT_GB_2312);
+    /**
+     * GB18030 编码
+     */
+    public static final String DEFAULT_GB_18030 = "GB18030";
+    public static final java.nio.charset.Charset GB_18030 = java.nio.charset.Charset.forName(DEFAULT_GB_18030);
+    /**
      * 8位UCS转换格式
      */
     public static final String DEFAULT_UTF_8 = "UTF-8";

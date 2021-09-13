@@ -61,7 +61,7 @@ public class Launcher {
 
     public Launcher(String... args) throws Exception {
         this.args = args;
-        String algorithm = Algorithm.AES;
+        String algorithm = Algorithm.AES.getValue();
         int keysize = Builder.DEFAULT_KEYSIZE;
         int ivsize = Builder.DEFAULT_IVSIZE;
         String password = null;

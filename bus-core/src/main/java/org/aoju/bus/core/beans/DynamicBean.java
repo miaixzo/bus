@@ -137,7 +137,7 @@ public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
         if (Map.class.isAssignableFrom(beanClass)) {
             return (T) ((Map<?, ?>) bean).get(fieldName);
         } else {
-            final PropertyDescription prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
+            final PropertyDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
             if (null == prop) {
                 throw new InstrumentException("No public field or get method for {}", fieldName);
             }
@@ -156,7 +156,7 @@ public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
         if (Map.class.isAssignableFrom(beanClass)) {
             ((Map) bean).put(fieldName, value);
         } else {
-            final PropertyDescription prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
+            final PropertyDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
             if (null == prop) {
                 throw new InstrumentException("No public field or set method for {}", fieldName);
             }

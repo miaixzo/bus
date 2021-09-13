@@ -29,10 +29,10 @@ import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
 
 import java.security.Key;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
  * {@link MacEngine} 实现工厂类
- *
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
@@ -47,11 +47,23 @@ public class MacEngineFactory {
      * @return {@link MacEngine}
      */
     public static MacEngine createEngine(String algorithm, Key key) {
-        if (Algorithm.HmacSM3.equalsIgnoreCase(algorithm)) {
-            // HmacSM3算法是BC库实现的
+        return createEngine(algorithm, key, null);
+    }
+
+    /**
+     * 根据给定算法和密钥生成对应的{@link MacEngine}
+     *
+     * @param algorithm 算法，见{@link Algorithm}
+     * @param key       密钥
+     * @param spec      spec
+     * @return {@link MacEngine}
+     */
+    public static MacEngine createEngine(String algorithm, Key key, AlgorithmParameterSpec spec) {
+        if (algorithm.equalsIgnoreCase(Algorithm.HmacSM3.getValue())) {
+            // HmacSM3算法是BC库实现的，忽略加盐
             return Builder.createHmacSm3Engine(key.getEncoded());
         }
-        return new DefaultHMacEngine(algorithm, key);
+        return new DefaultHMacEngine(algorithm, key, spec);
     }
 
 }

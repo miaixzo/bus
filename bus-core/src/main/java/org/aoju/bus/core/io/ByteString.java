@@ -192,19 +192,19 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public ByteString md5() {
-        return digest(Algorithm.MD5);
+        return digest(Algorithm.MD5.getValue());
     }
 
     public ByteString sha1() {
-        return digest(Algorithm.SHA1);
+        return digest(Algorithm.SHA1.getValue());
     }
 
     public ByteString sha256() {
-        return digest(Algorithm.SHA256);
+        return digest(Algorithm.SHA256.getValue());
     }
 
     public ByteString sha512() {
-        return digest(Algorithm.SHA512);
+        return digest(Algorithm.SHA512.getValue());
     }
 
     private ByteString digest(String algorithm) {
@@ -216,15 +216,15 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public ByteString hmacSha1(ByteString key) {
-        return hmac(Algorithm.HmacSHA1, key);
+        return hmac(Algorithm.HmacSHA1.getValue(), key);
     }
 
     public ByteString hmacSha256(ByteString key) {
-        return hmac(Algorithm.HmacSHA256, key);
+        return hmac(Algorithm.HmacSHA256.getValue(), key);
     }
 
     public ByteString hmacSha512(ByteString key) {
-        return hmac(Algorithm.HmacSHA512, key);
+        return hmac(Algorithm.HmacSHA512.getValue(), key);
     }
 
     private ByteString hmac(String algorithm, ByteString key) {

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,51 +23,49 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix;
+package org.aoju.bus.crypto.symmetric;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
-import com.sun.jna.ptr.ByReference;
+import org.aoju.bus.core.toolkit.RandomKit;
+import org.aoju.bus.crypto.Builder;
+
+import javax.crypto.spec.IvParameterSpec;
 
 /**
+ * ChaCha20算法实现
+ * ChaCha系列流密码，作为salsa密码的改良版，具有更强的抵抗密码分析攻击的特性，“20”表示该算法有20轮的加密计算
+ *
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class NativeSizeTByReference extends ByReference {
+public class ChaCha20 extends Crypto {
 
-    public NativeSizeTByReference() {
-        this(new size_t());
+    public static final String ALGORITHM_NAME = "ChaCha20";
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 构造
+     *
+     * @param key 密钥
+     * @param iv  加盐，12bytes（64bit）
+     */
+    public ChaCha20(byte[] key, byte[] iv) {
+        super(ALGORITHM_NAME,
+                Builder.generateKey(ALGORITHM_NAME, key),
+                generateIvParam(iv));
     }
 
-    public NativeSizeTByReference(size_t value) {
-        super(Native.SIZE_T_SIZE);
-        setValue(value);
-    }
-
-    public size_t getValue() {
-        return new size_t(Native.SIZE_T_SIZE > 4 ? getPointer().getLong(0) : getPointer().getInt(0));
-    }
-
-    public void setValue(size_t value) {
-        if (Native.SIZE_T_SIZE > 4) {
-            getPointer().setLong(0, value.longValue());
-        } else {
-            getPointer().setInt(0, value.intValue());
+    /**
+     * 生成加盐参数
+     *
+     * @param iv 加盐
+     * @return {@link IvParameterSpec}
+     */
+    private static IvParameterSpec generateIvParam(byte[] iv) {
+        if (null == iv) {
+            iv = RandomKit.randomBytes(12);
         }
-    }
-
-    @Override
-    public String toString() {
-        // Can't mix types with ternary operator
-        if (Native.SIZE_T_SIZE > 4) {
-            return String.format("size_t@0x1$%x=0x%2$x (%2$d)", Pointer.nativeValue(getPointer()),
-                    getValue().longValue());
-        } else {
-            return String.format("size_t@0x1$%x=0x%2$x (%2$d)", Pointer.nativeValue(getPointer()),
-                    getValue().intValue());
-        }
+        return new IvParameterSpec(iv);
     }
 
 }

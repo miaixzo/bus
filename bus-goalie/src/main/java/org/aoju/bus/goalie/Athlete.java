@@ -39,13 +39,7 @@ import reactor.netty.http.server.HttpServer;
 public class Athlete {
 
     private final HttpServer httpServer;
-    String METHOD = "method";
-    String VERSION = "v";
-    String FORMAT = "format";
-    String SIGN = "sign";
-    String X_ACCESS_TOKEN = "X-Access-Token";
-    String X_REMOTE_CHANNEL = "x_remote_channel";
-    Integer MAX_INMEMORY_SIZE = 2 * 1024 * 1024;
+
     private DisposableServer disposableServer;
 
     public Athlete(HttpServer httpServer) {

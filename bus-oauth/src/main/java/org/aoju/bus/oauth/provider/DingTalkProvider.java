@@ -120,7 +120,7 @@ public class DingTalkProvider extends AbstractProvider {
         // 根据timestamp, appSecret计算签名值
         String timestamp = System.currentTimeMillis() + Normal.EMPTY;
 
-        byte[] signData = sign(context.getAppSecret().getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HmacSHA256);
+        byte[] signData = sign(context.getAppSecret().getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HmacSHA256.getValue());
         String urlEncodeSignature = UriKit.encode(new String(Base64.encode(signData, false)));
 
         return Builder.fromUrl(source.userInfo())

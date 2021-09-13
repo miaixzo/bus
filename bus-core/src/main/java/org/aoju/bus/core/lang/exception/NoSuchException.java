@@ -34,6 +34,8 @@ package org.aoju.bus.core.lang.exception;
  */
 public class NoSuchException extends UncheckedException {
 
+    private static final long serialVersionUID = 1L;
+
     public NoSuchException() {
         super();
     }

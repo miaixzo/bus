@@ -25,19 +25,20 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.symmetric;
 
-import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.Builder;
+import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
 
-import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEParameterSpec;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -49,7 +50,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 对称加密算法
- * 在对称加密算法中，数据发信方将明文(原始数据)和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
+ * 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
  * 收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。
  * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
  *
@@ -57,10 +58,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class Symmetric implements Serializable {
+public class Crypto implements Encryptor, Decryptor, Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final Lock lock = new ReentrantLock();
     /**
      * SecretKey 负责保存对称密钥
      */
@@ -68,7 +70,7 @@ public class Symmetric implements Serializable {
     /**
      * Cipher负责完成加密或解密工作
      */
-    private Cipher cipher;
+    private javax.crypto.Cipher cipher;
     /**
      * 加密解密参数
      */
@@ -77,15 +79,43 @@ public class Symmetric implements Serializable {
      * 是否0填充
      */
     private boolean isZeroPadding;
-    private Lock lock = new ReentrantLock();
+
+    /**
+     * 构造，使用随机密钥
+     *
+     * @param algorithm {@link Algorithm}
+     */
+    public Crypto(Algorithm algorithm) {
+        this(algorithm, (byte[]) null);
+    }
 
     /**
      * 构造，使用随机密钥
      *
      * @param algorithm 算法，可以是"algorithm/mode/padding"或者"algorithm"
      */
-    public Symmetric(String algorithm) {
+    public Crypto(String algorithm) {
         this(algorithm, (byte[]) null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param algorithm 算法 {@link Algorithm}
+     * @param key       自定义KEY
+     */
+    public Crypto(Algorithm algorithm, byte[] key) {
+        this(algorithm.getValue(), key);
+    }
+
+    /**
+     * 构造
+     *
+     * @param algorithm 算法 {@link Algorithm}
+     * @param key       自定义KEY
+     */
+    public Crypto(Algorithm algorithm, SecretKey key) {
+        this(algorithm.getValue(), key);
     }
 
     /**
@@ -94,7 +124,7 @@ public class Symmetric implements Serializable {
      * @param algorithm 算法
      * @param key       密钥
      */
-    public Symmetric(String algorithm, byte[] key) {
+    public Crypto(String algorithm, byte[] key) {
         this(algorithm, Builder.generateKey(algorithm, key));
     }
 
@@ -104,7 +134,7 @@ public class Symmetric implements Serializable {
      * @param algorithm 算法
      * @param key       密钥
      */
-    public Symmetric(String algorithm, SecretKey key) {
+    public Crypto(String algorithm, SecretKey key) {
         this(algorithm, key, null);
     }
 
@@ -115,20 +145,59 @@ public class Symmetric implements Serializable {
      * @param key        密钥
      * @param paramsSpec 算法参数，例如加盐等
      */
-    public Symmetric(String algorithm, SecretKey key, AlgorithmParameterSpec paramsSpec) {
+    public Crypto(String algorithm, SecretKey key, AlgorithmParameterSpec paramsSpec) {
         init(algorithm, key);
         initParams(algorithm, paramsSpec);
+    }
+
+    /**
+     * 拷贝解密后的流
+     *
+     * @param in        {@link CipherInputStream}
+     * @param out       输出流
+     * @param blockSize 块大小
+     * @throws IOException IO异常
+     */
+    private static void copyForZeroPadding(CipherInputStream in, OutputStream out, int blockSize) throws IOException {
+        int n = 1;
+        if (IoKit.DEFAULT_BUFFER_SIZE > blockSize) {
+            n = Math.max(n, IoKit.DEFAULT_BUFFER_SIZE / blockSize);
+        }
+        // 此处缓存buffer使用blockSize的整数倍，方便读取时可以正好将补位的0读在一个buffer中
+        final int bufSize = blockSize * n;
+        final byte[] preBuffer = new byte[bufSize];
+        final byte[] buffer = new byte[bufSize];
+
+        boolean isFirst = true;
+        int preReadSize = 0;
+        for (int readSize; (readSize = in.read(buffer)) != IoKit.EOF; ) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                // 将前一批数据写出
+                out.write(preBuffer, 0, preReadSize);
+            }
+            ArrayKit.copy(buffer, preBuffer, readSize);
+            preReadSize = readSize;
+        }
+        // 去掉末尾所有的补位0
+        int i = preReadSize - 1;
+        while (i >= 0 && 0 == preBuffer[i]) {
+            i--;
+        }
+        out.write(preBuffer, 0, i + 1);
+        out.flush();
     }
 
     /**
      * 初始化
      *
      * @param algorithm 算法
-     * @param key       密钥，如果为<code>null</code>自动生成一个key
-     * @return {@link Symmetric}的子对象，即子对象自身
+     * @param key       密钥，如果为{@code null}自动生成一个key
+     * @return Crypto的子对象，即子对象自身
      */
-    public Symmetric init(String algorithm, SecretKey key) {
-        Assert.notBlank(algorithm, "'algorithm' must be not blank !");
+    public Crypto init(String algorithm, SecretKey key) {
+        Assert.notBlank(algorithm, "'Algorithm' must be not blank !");
         this.secretKey = key;
 
         // 检查是否为ZeroPadding，是则替换为NoPadding，并标记以便单独处理
@@ -142,12 +211,30 @@ public class Symmetric implements Serializable {
     }
 
     /**
+     * 获得对称密钥
+     *
+     * @return 获得对称密钥
+     */
+    public SecretKey getSecretKey() {
+        return secretKey;
+    }
+
+    /**
+     * 获得加密或解密器
+     *
+     * @return 加密或解密
+     */
+    public javax.crypto.Cipher getCipher() {
+        return cipher;
+    }
+
+    /**
      * 设置 {@link AlgorithmParameterSpec}，通常用于加盐或偏移向量
      *
      * @param params {@link AlgorithmParameterSpec}
      * @return 自身
      */
-    public Symmetric setParams(AlgorithmParameterSpec params) {
+    public Crypto setParams(AlgorithmParameterSpec params) {
         this.params = params;
         return this;
     }
@@ -158,7 +245,7 @@ public class Symmetric implements Serializable {
      * @param iv {@link IvParameterSpec}偏移向量
      * @return 自身
      */
-    public Symmetric setIv(IvParameterSpec iv) {
+    public Crypto setIv(IvParameterSpec iv) {
         setParams(iv);
         return this;
     }
@@ -169,42 +256,77 @@ public class Symmetric implements Serializable {
      * @param iv 偏移向量，加盐
      * @return 自身
      */
-    public Symmetric setIv(byte[] iv) {
+    public Crypto setIv(byte[] iv) {
         setIv(new IvParameterSpec(iv));
         return this;
     }
 
     /**
-     * 加密
+     * 初始化模式并清空数据
      *
-     * @param data 被加密的bytes
-     * @return 加密后的bytes
+     * @param mode 模式枚举
+     * @return this
      */
-    public byte[] encrypt(byte[] data) {
+    public Crypto setMode(Mode.Cipher mode) {
         lock.lock();
         try {
-            final Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
-            return cipher.doFinal(paddingDataWithZero(data, cipher.getBlockSize()));
+            initMode(mode.getValue());
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
+        } finally {
+            lock.unlock();
+        }
+        return this;
+    }
+
+    /**
+     * 更新数据，分组加密中间结果可以当作随机数
+     * 第一次更新数据前需要调用{@link #setMode(Mode.Cipher)}初始化加密或解密模式，然后每次更新数据都是累加模式
+     *
+     * @param data 被加密的bytes
+     * @return update之后的bytes
+     */
+    public byte[] update(byte[] data) {
+        lock.lock();
+        try {
+            return cipher.update(paddingDataWithZero(data, cipher.getBlockSize()));
+        } catch (Exception e) {
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
     }
 
     /**
-     * 加密，针对大数据量，可选结束后是否关闭流
+     * 更新数据，分组加密中间结果可以当作随机数
+     * 第一次更新数据前需要调用{@link #setMode(Mode.Cipher)}初始化加密或解密模式，然后每次更新数据都是累加模式
      *
-     * @param data    被加密的字符串
-     * @param out     输出流，可以是文件或网络位置
-     * @param isClose 是否关闭流
-     * @throws InstrumentException IO异常
+     * @param data 被加密的bytes
+     * @return update之后的hex数据
      */
-    public void encrypt(InputStream data, OutputStream out, boolean isClose) throws InstrumentException {
+    public String updateHex(byte[] data) {
+        return HexKit.encodeHexStr(update(data));
+    }
+
+    @Override
+    public byte[] encrypt(byte[] data) {
+        lock.lock();
+        try {
+            final javax.crypto.Cipher cipher = initMode(javax.crypto.Cipher.ENCRYPT_MODE);
+            return cipher.doFinal(paddingDataWithZero(data, cipher.getBlockSize()));
+        } catch (Exception e) {
+            throw new CryptoException(e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void encrypt(InputStream data, OutputStream out, boolean isClose) throws CryptoException {
         lock.lock();
         CipherOutputStream cipherOutputStream = null;
         try {
-            final Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
+            final javax.crypto.Cipher cipher = initMode(javax.crypto.Cipher.ENCRYPT_MODE);
             cipherOutputStream = new CipherOutputStream(out, cipher);
             long length = IoKit.copy(data, cipherOutputStream);
             if (this.isZeroPadding) {
@@ -219,10 +341,10 @@ public class Symmetric implements Serializable {
                     }
                 }
             }
-        } catch (InstrumentException e) {
+        } catch (CryptoException e) {
             throw e;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
             if (isClose) {
@@ -232,174 +354,18 @@ public class Symmetric implements Serializable {
         }
     }
 
-    /**
-     * 加密
-     *
-     * @param data 数据
-     * @return 加密后的Hex
-     */
-    public String encryptHex(byte[] data) {
-        return HexKit.encodeHexStr(encrypt(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 数据
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(byte[] data) {
-        return Base64.encode(encrypt(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的bytes
-     */
-    public byte[] encrypt(String data, String charset) {
-        return encrypt(StringKit.bytes(data, charset));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的bytes
-     */
-    public byte[] encrypt(String data, java.nio.charset.Charset charset) {
-        return encrypt(StringKit.bytes(data, charset));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的Hex
-     */
-    public String encryptHex(String data, String charset) {
-        return HexKit.encodeHexStr(encrypt(data, charset));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的Hex
-     */
-    public String encryptHex(String data, java.nio.charset.Charset charset) {
-        return HexKit.encodeHexStr(encrypt(data, charset));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(String data, String charset) {
-        return Base64.encode(encrypt(data, charset));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(String data, java.nio.charset.Charset charset) {
-        return Base64.encode(encrypt(data, charset));
-    }
-
-    /**
-     * 加密，使用UTF-8编码
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的bytes
-     */
-    public byte[] encrypt(String data) {
-        return encrypt(StringKit.bytes(data, Charset.UTF_8));
-    }
-
-    /**
-     * 加密，使用UTF-8编码
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的Hex
-     */
-    public String encryptHex(String data) {
-        return HexKit.encodeHexStr(encrypt(data));
-    }
-
-    /**
-     * 加密，使用UTF-8编码
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(String data) {
-        return Base64.encode(encrypt(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的bytes
-     * @throws InstrumentException IO异常
-     */
-    public byte[] encrypt(InputStream data) throws InstrumentException {
-        return encrypt(IoKit.readBytes(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的Hex
-     */
-    public String encryptHex(InputStream data) {
-        return HexKit.encodeHexStr(encrypt(data));
-    }
-
-    /**
-     * 加密
-     *
-     * @param data 被加密的字符串
-     * @return 加密后的Base64
-     */
-    public String encryptBase64(InputStream data) {
-        return Base64.encode(encrypt(data));
-    }
-
-    /**
-     * 解密
-     *
-     * @param bytes 被解密的bytes
-     * @return 解密后的bytes
-     */
+    @Override
     public byte[] decrypt(byte[] bytes) {
         final int blockSize;
         final byte[] decryptData;
 
         lock.lock();
         try {
-            if (null == this.params) {
-                cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            } else {
-                cipher.init(Cipher.DECRYPT_MODE, secretKey, params);
-            }
+            final javax.crypto.Cipher cipher = initMode(javax.crypto.Cipher.DECRYPT_MODE);
             blockSize = cipher.getBlockSize();
             decryptData = cipher.doFinal(bytes);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
@@ -407,134 +373,34 @@ public class Symmetric implements Serializable {
         return removePadding(decryptData, blockSize);
     }
 
-    /**
-     * 解密为字符串
-     *
-     * @param bytes   被解密的bytes
-     * @param charset 解密后的charset
-     * @return 解密后的String
-     */
-    public String decryptStr(byte[] bytes, java.nio.charset.Charset charset) {
-        return StringKit.toString(decrypt(bytes), charset);
-    }
-
-    /**
-     * 解密为字符串，默认UTF-8编码
-     *
-     * @param bytes 被解密的bytes
-     * @return 解密后的String
-     */
-    public String decryptStr(byte[] bytes) {
-        return decryptStr(bytes, Charset.UTF_8);
-    }
-
-    /**
-     * 解密Hex(16进制)或Base64表示的字符串
-     *
-     * @param data 被解密的String，必须为16进制字符串或Base64表示形式
-     * @return 解密后的bytes
-     */
-    public byte[] decrypt(String data) {
-        return decrypt(Builder.decode(data));
-    }
-
-    /**
-     * 解密Hex(16进制)或Base64表示的字符串
-     *
-     * @param data    被解密的String
-     * @param charset 解密后的charset
-     * @return 解密后的String
-     */
-    public String decryptStr(String data, java.nio.charset.Charset charset) {
-        return StringKit.toString(decrypt(data), charset);
-    }
-
-    /**
-     * 解密Hex表示的字符串，默认UTF-8编码
-     *
-     * @param data 被解密的String
-     * @return 解密后的String
-     */
-    public String decryptStr(String data) {
-        return decryptStr(data, Charset.UTF_8);
-    }
-
-    /**
-     * 解密，不会关闭流
-     *
-     * @param data 被解密的bytes
-     * @return 解密后的bytes
-     * @throws InstrumentException IO异常
-     */
-    public byte[] decrypt(InputStream data) throws InstrumentException {
-        return decrypt(IoKit.readBytes(data));
-    }
-
-    /**
-     * 解密，不会关闭流
-     *
-     * @param data    被解密的InputStream
-     * @param charset 解密后的charset
-     * @return 解密后的String
-     */
-    public String decryptStr(InputStream data, java.nio.charset.Charset charset) {
-        return StringKit.toString(decrypt(data), charset);
-    }
-
-    /**
-     * 解密
-     *
-     * @param data 被解密的InputStream
-     * @return 解密后的String
-     */
-    public String decryptStr(InputStream data) {
-        return decryptStr(data, Charset.UTF_8);
-    }
-
-    /**
-     * 获得对称密钥
-     *
-     * @return 获得对称密钥
-     */
-    public SecretKey getSecretKey() {
-        return secretKey;
-    }
-
-    /**
-     * 更新数据，分组加密中间结果可以当作随机数
-     *
-     * @param data 被加密的bytes
-     * @return update之后的bytes
-     */
-    public byte[] update(byte[] data) {
+    @Override
+    public void decrypt(InputStream data, OutputStream out, boolean isClose) throws CryptoException {
         lock.lock();
+        CipherInputStream cipherInputStream = null;
         try {
-            final Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
-            return cipher.update(paddingDataWithZero(data, cipher.getBlockSize()));
+            final javax.crypto.Cipher cipher = initMode(javax.crypto.Cipher.DECRYPT_MODE);
+            cipherInputStream = new CipherInputStream(data, cipher);
+            if (this.isZeroPadding) {
+                final int blockSize = cipher.getBlockSize();
+                if (blockSize > 0) {
+                    copyForZeroPadding(cipherInputStream, out, blockSize);
+                    return;
+                }
+            }
+            IoKit.copy(cipherInputStream, out);
+        } catch (IOException e) {
+            throw new CryptoException(e);
+        } catch (CryptoException e) {
+            throw e;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
+            if (isClose) {
+                IoKit.close(data);
+                IoKit.close(cipherInputStream);
+            }
         }
-    }
-
-    /**
-     * 更新数据，分组加密中间结果可以当作随机数
-     *
-     * @param data 被加密的bytes
-     * @return update之后的hex数据
-     */
-    public String updateHex(byte[] data) {
-        return HexKit.encodeHexStr(update(data));
-    }
-
-    /**
-     * 获得加密或解密器
-     *
-     * @return 加密或解密
-     */
-    public Cipher getCipher() {
-        return cipher;
     }
 
     /**
@@ -544,10 +410,10 @@ public class Symmetric implements Serializable {
      * @param paramsSpec 用户定义的{@link AlgorithmParameterSpec}
      * @return this
      */
-    private Symmetric initParams(String algorithm, AlgorithmParameterSpec paramsSpec) {
+    private Crypto initParams(String algorithm, AlgorithmParameterSpec paramsSpec) {
         if (null == paramsSpec) {
             byte[] iv = null;
-            final Cipher cipher = this.cipher;
+            final javax.crypto.Cipher cipher = this.cipher;
             if (null != cipher) {
                 iv = cipher.getIV();
             }
@@ -559,9 +425,9 @@ public class Symmetric implements Serializable {
                     iv = RandomKit.randomBytes(8);
                 }
                 paramsSpec = new PBEParameterSpec(iv, 100);
-            } else if (StringKit.startWithIgnoreCase(algorithm, "AES")) {
+            } else if (StringKit.startWithIgnoreCase(algorithm, Algorithm.AES.getValue())) {
                 if (null != iv) {
-                    //AES使用Cipher默认的随机盐
+                    // AES使用Cipher默认的随机盐
                     paramsSpec = new IvParameterSpec(iv);
                 }
             }
@@ -571,15 +437,15 @@ public class Symmetric implements Serializable {
     }
 
     /**
-     * 初始化{@link Cipher}为加密或者解密模式
+     * 初始化{@link javax.crypto.Cipher}为加密或者解密模式
      *
-     * @param mode 模式，见{@link Cipher#ENCRYPT_MODE} 或 {@link Cipher#DECRYPT_MODE}
-     * @return {@link Cipher}
+     * @param mode 模式，见{@link javax.crypto.Cipher#ENCRYPT_MODE} 或 {@link javax.crypto.Cipher#DECRYPT_MODE}
+     * @return {@link javax.crypto.Cipher}
      * @throws InvalidKeyException                无效key
      * @throws InvalidAlgorithmParameterException 无效算法
      */
-    private Cipher initCipher(int mode) throws InvalidKeyException, InvalidAlgorithmParameterException {
-        final Cipher cipher = this.cipher;
+    private javax.crypto.Cipher initMode(int mode) throws InvalidKeyException, InvalidAlgorithmParameterException {
+        final javax.crypto.Cipher cipher = this.cipher;
         if (null == this.params) {
             cipher.init(mode, secretKey);
         } else {
@@ -590,11 +456,7 @@ public class Symmetric implements Serializable {
 
     /**
      * 数据按照blockSize的整数倍长度填充填充0
-     *
-     * <p>
      * 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
-     *
-     * <p>
      * 见：https://blog.csdn.net/OrangeJack/article/details/82913804
      *
      * @param data      数据
@@ -616,16 +478,14 @@ public class Symmetric implements Serializable {
 
     /**
      * 数据按照blockSize去除填充部分，用于解密
-     *
-     * <p>
      * 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
      *
      * @param data      数据
-     * @param blockSize 块大小
+     * @param blockSize 块大小，必须大于0
      * @return 去除填充后的数据，如果isZeroPadding为false或长度刚好，返回原数据
      */
     private byte[] removePadding(byte[] data, int blockSize) {
-        if (this.isZeroPadding) {
+        if (this.isZeroPadding && blockSize > 0) {
             final int length = data.length;
             final int remainLength = length % blockSize;
             if (remainLength == 0) {

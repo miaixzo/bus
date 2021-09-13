@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
+import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -49,7 +50,8 @@ import java.util.Set;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class Sign extends Keys<Sign> {
+public class Sign extends Asymmetric<Sign> {
+    private static final long serialVersionUID = 1L;
 
     /**
      * 签名，用于签名和验证
@@ -59,21 +61,78 @@ public class Sign extends Keys<Sign> {
     /**
      * 构造，创建新的私钥公钥对
      *
+     * @param algorithm {@link Algorithm}
+     */
+    public Sign(Algorithm algorithm) {
+        this(algorithm, null, (byte[]) null);
+    }
+
+    /**
+     * 构造，创建新的私钥公钥对
+     *
      * @param algorithm 算法
      */
     public Sign(String algorithm) {
-        this(algorithm, (byte[]) null, null);
+        this(algorithm, null, (byte[]) null);
     }
 
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm 算法，见{@link Algorithm}
-     * @param keyPair   密钥对(包括公钥和私钥)
+     * @param algorithm     {@link Algorithm}
+     * @param privateKeyStr 私钥Hex或Base64表示
+     * @param publicKeyStr  公钥Hex或Base64表示
      */
-    public Sign(String algorithm, KeyPair keyPair) {
-        super(algorithm, keyPair.getPrivate(), keyPair.getPublic());
+    public Sign(Algorithm algorithm, String privateKeyStr, String publicKeyStr) {
+        this(algorithm.getValue(), Builder.decode(privateKeyStr), Builder.decode(publicKeyStr));
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  {@link Algorithm}
+     * @param privateKey 私钥
+     * @param publicKey  公钥
+     */
+    public Sign(Algorithm algorithm, byte[] privateKey, byte[] publicKey) {
+        this(algorithm.getValue(), privateKey, publicKey);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm {@link Algorithm}
+     * @param keyPair   密钥对（包括公钥和私钥）
+     */
+    public Sign(Algorithm algorithm, KeyPair keyPair) {
+        this(algorithm.getValue(), keyPair);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  {@link Algorithm}
+     * @param privateKey 私钥
+     * @param publicKey  公钥
+     */
+    public Sign(Algorithm algorithm, PrivateKey privateKey, PublicKey publicKey) {
+        this(algorithm.getValue(), privateKey, publicKey);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm        非对称加密算法
+     * @param privateKeyBase64 私钥Base64
+     * @param publicKeyBase64  公钥Base64
+     */
+    public Sign(String algorithm, String privateKeyBase64, String publicKeyBase64) {
+        this(algorithm, Base64.decode(privateKeyBase64), Base64.decode(publicKeyBase64));
     }
 
     /**
@@ -87,7 +146,7 @@ public class Sign extends Keys<Sign> {
      * @param publicKey  公钥
      */
     public Sign(String algorithm, byte[] privateKey, byte[] publicKey) {
-        super(algorithm,
+        this(algorithm,
                 Builder.generatePrivateKey(algorithm, privateKey),
                 Builder.generatePublicKey(algorithm, publicKey)
         );
@@ -97,12 +156,25 @@ public class Sign extends Keys<Sign> {
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
+     * @param algorithm 算法，见{@link Algorithm}
+     * @param keyPair   密钥对（包括公钥和私钥）
      */
-    public Sign(String algorithm, String privateKey, String publicKey) {
-        this(algorithm, Builder.decode(privateKey), Builder.decode(publicKey));
+    public Sign(String algorithm, KeyPair keyPair) {
+        this(algorithm, keyPair.getPrivate(), keyPair.getPublic());
+    }
+
+    /**
+     * 构造
+     * <p>
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  算法
+     * @param privateKey 私钥
+     * @param publicKey  公钥
+     */
+    public Sign(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
+        super(algorithm, privateKey, publicKey);
     }
 
     /**
@@ -115,11 +187,7 @@ public class Sign extends Keys<Sign> {
      */
     @Override
     public Sign init(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
-        try {
-            signature = Signature.getInstance(algorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
-        }
+        signature = Builder.createSignature(algorithm);
         super.init(algorithm, privateKey, publicKey);
         return this;
     }
@@ -134,7 +202,7 @@ public class Sign extends Keys<Sign> {
         try {
             this.signature.setParameter(params);
         } catch (InvalidAlgorithmParameterException e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         }
         return this;
     }
@@ -259,11 +327,11 @@ public class Sign extends Keys<Sign> {
                 }
                 result = signature.sign();
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new CryptoException(e);
             }
             return result;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
@@ -283,7 +351,7 @@ public class Sign extends Keys<Sign> {
             signature.update(data);
             return signature.verify(sign);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
@@ -302,7 +370,7 @@ public class Sign extends Keys<Sign> {
      * 设置签名
      *
      * @param signature 签名对象 {@link Signature}
-     * @return 自身 {@link Asymmetric}
+     * @return 自身 {@link Crypto}
      */
     public Sign setSignature(Signature signature) {
         this.signature = signature;
@@ -328,8 +396,8 @@ public class Sign extends Keys<Sign> {
             if (CollKit.isNotEmpty(critSet) && critSet.contains("2.5.29.15")) {
                 final boolean[] keyUsageInfo = cert.getKeyUsage();
                 // keyUsageInfo[0] 是数字签名
-                if ((null != keyUsageInfo) && (keyUsageInfo[0] == false)) {
-                    throw new InstrumentException("Wrong key usage");
+                if ((keyUsageInfo != null) && (keyUsageInfo[0] == false)) {
+                    throw new CryptoException("Wrong key usage");
                 }
             }
         }

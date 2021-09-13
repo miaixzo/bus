@@ -39,26 +39,26 @@ public enum BeanCache {
 
     INSTANCE;
 
-    private final SimpleCache<Class<?>, BeanDescription> bdCache = new SimpleCache<>();
+    private final SimpleCache<Class<?>, BeanDesc> bdCache = new SimpleCache<>();
 
     /**
-     * 获得属性名和{@link BeanDescription}Map映射
+     * 获得属性名和{@link BeanDesc}Map映射
      *
      * @param beanClass Bean的类
-     * @return 属性名和 {@link BeanDescription} 映射
+     * @return 属性名和 {@link BeanDesc} 映射
      */
-    public BeanDescription getBeanDesc(Class<?> beanClass) {
+    public BeanDesc getBeanDesc(Class<?> beanClass) {
         return bdCache.get(beanClass);
     }
 
     /**
      * 加入缓存
      *
-     * @param beanClass       Bean的类
-     * @param BeanDescription 属性名和{@link BeanDescription}映射
+     * @param beanClass Bean的类
+     * @param BeanDesc  属性名和{@link BeanDesc}映射
      */
-    public void putBeanDesc(Class<?> beanClass, BeanDescription BeanDescription) {
-        bdCache.put(beanClass, BeanDescription);
+    public void putBeanDesc(Class<?> beanClass, BeanDesc BeanDesc) {
+        bdCache.put(beanClass, BeanDesc);
     }
 
 }

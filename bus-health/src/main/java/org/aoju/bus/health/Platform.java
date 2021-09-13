@@ -60,9 +60,10 @@ import java.util.function.Supplier;
  */
 public class Platform {
 
-    private static final OS OS_CURRENT_PLATFORM = queryCurrentPlatform();
+    private static final OS OS_CURRENT_PLATFORM = OS.getValue(getOSType());
     private final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
     private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
+    private static final String NOT_SUPPORTED = "Operating system not supported: ";
 
     /**
      * Getter for the field <code>currentPlatformEnum</code>.
@@ -71,26 +72,6 @@ public class Platform {
      */
     public static OS getCurrentPlatform() {
         return OS_CURRENT_PLATFORM;
-    }
-
-    private static OS queryCurrentPlatform() {
-        if (com.sun.jna.Platform.isWindows()) {
-            return OS.WINDOWS;
-        } else if (com.sun.jna.Platform.isLinux()) {
-            return OS.LINUX;
-        } else if (com.sun.jna.Platform.isMac()) {
-            return OS.MACOS;
-        } else if (com.sun.jna.Platform.isSolaris()) {
-            return OS.SOLARIS;
-        } else if (com.sun.jna.Platform.isFreeBSD()) {
-            return OS.FREEBSD;
-        } else if (com.sun.jna.Platform.isAIX()) {
-            return OS.AIX;
-        } else if (com.sun.jna.Platform.isOpenBSD()) {
-            return OS.OPENBSD;
-        } else {
-            return OS.UNKNOWN;
-        }
     }
 
     public static int getOSType() {
@@ -470,7 +451,7 @@ public class Platform {
             case OPENBSD:
                 return new OpenBsdOperatingSystem();
             default:
-                return null;
+                throw new UnsupportedOperationException(NOT_SUPPORTED + OS_CURRENT_PLATFORM.getName());
         }
     }
 
@@ -491,7 +472,7 @@ public class Platform {
             case OPENBSD:
                 return new OpenBsdHardwareAbstractionLayer();
             default:
-                return null;
+                throw new UnsupportedOperationException(NOT_SUPPORTED + OS_CURRENT_PLATFORM.getName());
         }
     }
 
@@ -520,37 +501,97 @@ public class Platform {
      */
     public enum OS {
         /**
-         * Microsoft Windows
+         * macOS
          */
-        WINDOWS,
+        MACOS("macOS"),
         /**
          * A flavor of Linux
          */
-        LINUX,
+        LINUX("Linux"),
         /**
-         * Mac OS
+         * Microsoft Windows
          */
-        MACOS,
+        WINDOWS("Windows"),
         /**
          * Solaris (SunOS)
          */
-        SOLARIS,
-        /**
-         * IBM AIX
-         */
-        AIX,
+        SOLARIS("Solaris"),
         /**
          * FreeBSD
          */
-        FREEBSD,
+        FREEBSD("FreeBSD"),
         /**
          * OpenBSD
          */
-        OPENBSD,
+        OPENBSD("OpenBSD"),
         /**
-         * OpenBSD, WindowsCE, or an unspecified system
+         * Windows Embedded Compact
          */
-        UNKNOWN
+        WINDOWSCE("Windows CE"),
+        /**
+         * IBM AIX
+         */
+        AIX("AIX"),
+        /**
+         * Android
+         */
+        ANDROID("Android"),
+        /**
+         * GNU operating system
+         */
+        GNU("GNU"),
+        /**
+         * Debian GNU/kFreeBSD
+         */
+        KFREEBSD("kFreeBSD"),
+        /**
+         * NetBSD
+         */
+        NETBSD("NetBSD"),
+        /**
+         * An unspecified system
+         */
+        UNKNOWN("Unknown");
+
+        private String name;
+
+        OS(String name) {
+            this.name = name;
+        }
+
+        /**
+         * Gets the friendly name of the specified JNA Platform type
+         *
+         * @param osType The constant returned from JNA's
+         *               {@link com.sun.jna.Platform#getOSType()} method.
+         * @return the friendly name of the specified JNA Platform type
+         */
+        public static String getName(int osType) {
+            return getValue(osType).getName();
+        }
+
+        /**
+         * Gets the value corresponding to the specified JNA Platform type
+         *
+         * @param osType The constant returned from JNA's
+         *               {@link com.sun.jna.Platform#getOSType()} method.
+         * @return the value corresponding to the specified JNA Platform type
+         */
+        public static OS getValue(int osType) {
+            if (osType < 0 || osType >= UNKNOWN.ordinal()) {
+                return UNKNOWN;
+            }
+            return values()[osType];
+        }
+
+        /**
+         * Gets the friendly name of the platform
+         *
+         * @return the friendly name of the platform
+         */
+        public String getName() {
+            return this.name;
+        }
     }
 
 }

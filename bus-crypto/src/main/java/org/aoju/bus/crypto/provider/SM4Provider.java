@@ -28,9 +28,8 @@ package org.aoju.bus.crypto.provider;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
-import org.aoju.bus.crypto.symmetric.Symmetric;
+import org.aoju.bus.crypto.symmetric.SM4;
 
 /**
  * 高级加密标准,是下一代的加密算法标准,速度快,安全级别高；
@@ -56,7 +55,7 @@ public class SM4Provider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        Symmetric sm4 = Builder.sm4(HexKit.decodeHex(key));
+        SM4 sm4 = new SM4(HexKit.decodeHex(key));
         return sm4.encrypt(content);
     }
 
@@ -71,7 +70,7 @@ public class SM4Provider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        Symmetric sm4 = Builder.sm4(HexKit.decodeHex(key));
+        SM4 sm4 = new SM4(HexKit.decodeHex(key));
         return sm4.decrypt(content);
     }
 

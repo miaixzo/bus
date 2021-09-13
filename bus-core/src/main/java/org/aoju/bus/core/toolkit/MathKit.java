@@ -1995,12 +1995,23 @@ public class MathKit {
      * @return {@link BigDecimal}
      */
     public static BigDecimal toBigDecimal(String number) {
+        if (StringKit.isBlank(number)) {
+            return BigDecimal.ZERO;
+        }
+
         try {
-            number = parseNumber(number).toString();
+            // 支持类似于 1,234.55 格式的数字
+            final Number parseNumber = parseNumber(number);
+            if (parseNumber instanceof BigDecimal) {
+                return (BigDecimal) parseNumber;
+            } else {
+                return new BigDecimal(parseNumber.toString());
+            }
         } catch (Exception ignore) {
             // 忽略解析错误
         }
-        return StringKit.isBlank(number) ? BigDecimal.ZERO : new BigDecimal(number);
+
+        return new BigDecimal(number);
     }
 
     /**

@@ -26,10 +26,7 @@
 package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.Memory;
-import com.sun.jna.platform.win32.Cfgmgr32Util;
-import com.sun.jna.platform.win32.Guid;
-import com.sun.jna.platform.win32.SetupApi;
-import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.*;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Quintet;

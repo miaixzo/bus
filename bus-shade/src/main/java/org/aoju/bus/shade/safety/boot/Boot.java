@@ -234,7 +234,7 @@ public class Boot {
      * @throws Exception 加密异常
      */
     public static void encrypt(String src, String dest, String password) throws Exception {
-        encrypt(src, dest, password, Algorithm.AES);
+        encrypt(src, dest, password, Algorithm.AES.getValue());
     }
 
     /**
@@ -288,7 +288,7 @@ public class Boot {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, String password) throws Exception {
-        encrypt(src, dest, password, Algorithm.AES);
+        encrypt(src, dest, password, Algorithm.AES.getValue());
     }
 
     /**
@@ -347,7 +347,7 @@ public class Boot {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, String password) throws Exception {
-        encrypt(in, out, password, Algorithm.AES);
+        encrypt(in, out, password, Algorithm.AES.getValue());
     }
 
     /**
@@ -404,7 +404,7 @@ public class Boot {
      * @throws Exception 加密异常
      */
     public static void encrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        encrypt(src, dest, password, Algorithm.AES, filter);
+        encrypt(src, dest, password, Algorithm.AES.getValue(), filter);
     }
 
     /**
@@ -462,7 +462,7 @@ public class Boot {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        encrypt(src, dest, password, Algorithm.AES, filter);
+        encrypt(src, dest, password, Algorithm.AES.getValue(), filter);
     }
 
     /**
@@ -525,7 +525,7 @@ public class Boot {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        encrypt(in, out, password, Algorithm.AES, filter);
+        encrypt(in, out, password, Algorithm.AES.getValue(), filter);
     }
 
     /**
@@ -671,7 +671,7 @@ public class Boot {
      * @throws Exception 解密异常
      */
     public static void decrypt(String src, String dest, String password) throws Exception {
-        decrypt(src, dest, password, Algorithm.AES);
+        decrypt(src, dest, password, Algorithm.AES.getValue());
     }
 
     /**
@@ -725,7 +725,7 @@ public class Boot {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, String password) throws Exception {
-        decrypt(src, dest, password, Algorithm.AES);
+        decrypt(src, dest, password, Algorithm.AES.getValue());
     }
 
     /**
@@ -784,7 +784,7 @@ public class Boot {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, String password) throws Exception {
-        decrypt(in, out, password, Algorithm.AES);
+        decrypt(in, out, password, Algorithm.AES.getValue());
     }
 
     /**
@@ -841,7 +841,7 @@ public class Boot {
      * @throws Exception 解密异常
      */
     public static void decrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        decrypt(src, dest, password, Algorithm.AES, filter);
+        decrypt(src, dest, password, Algorithm.AES.getValue(), filter);
     }
 
     /**
@@ -899,7 +899,7 @@ public class Boot {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        decrypt(src, dest, password, Algorithm.AES, filter);
+        decrypt(src, dest, password, Algorithm.AES.getValue(), filter);
     }
 
     /**
@@ -962,7 +962,7 @@ public class Boot {
      * @throws Exception 解密异常
      */
     public static void decrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter) throws Exception {
-        decrypt(in, out, password, Algorithm.AES, filter);
+        decrypt(in, out, password, Algorithm.AES.getValue(), filter);
     }
 
     /**

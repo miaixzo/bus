@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,36 +23,34 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.linux.drivers;
+package org.aoju.bus.crypto.asymmetric;
 
-import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.health.Builder;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 /**
- * Utility to read info from the devicetree
+ * 抽象的非对称加密对象，包装了加密和解密为Hex和Base64的封装
  *
+ * @param <T> 返回自身类型
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
  */
-@ThreadSafe
-public final class Devicetree {
+public abstract class AbstractCrypto<T extends AbstractCrypto<T>> extends Asymmetric<T>
+        implements Encryptor, Decryptor {
 
-    private Devicetree() {
-    }
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Query the model from the devicetree
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @return The model if available, null otherwise
+     * @param algorithm  算法
+     * @param privateKey 私钥
+     * @param publicKey  公钥
      */
-    public static String queryModel() {
-        String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
-        if (!modelStr.isEmpty()) {
-            return modelStr.replace("Machine: ", Normal.EMPTY);
-        }
-        return null;
+    public AbstractCrypto(String algorithm, PrivateKey privateKey, PublicKey publicKey) {
+        super(algorithm, privateKey, publicKey);
     }
 
 }

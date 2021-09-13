@@ -1,0 +1,39 @@
+package org.aoju.bus.core.lang.exception;
+
+import org.aoju.bus.core.toolkit.StringKit;
+
+/**
+ * 加解密异常
+ *
+ * @author Kimi Liu
+ * @version 6.2.8
+ * @since JDK 1.8+
+ */
+public class CryptoException extends UncheckedException {
+
+    private static final long serialVersionUID = 1L;
+
+    public CryptoException(Throwable e) {
+        super(e);
+    }
+
+    public CryptoException(String message) {
+        super(message);
+    }
+
+    public CryptoException(String messageTemplate, Object... params) {
+        super(StringKit.format(messageTemplate, params));
+    }
+
+    public CryptoException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
+
+    public CryptoException(String message, Throwable throwable, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, throwable, enableSuppression, writableStackTrace);
+    }
+
+    public CryptoException(Throwable throwable, String messageTemplate, Object... params) {
+        super(StringKit.format(messageTemplate, params), throwable);
+    }
+}

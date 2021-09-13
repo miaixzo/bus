@@ -43,6 +43,8 @@ import java.lang.reflect.InvocationTargetException;
 @EqualsAndHashCode(callSuper = false)
 public class UncheckedException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 错误码
      */

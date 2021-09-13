@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
-import org.aoju.bus.core.beans.PropertyDescription;
+import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.beans.copier.provider.BeanValueProvider;
 import org.aoju.bus.core.beans.copier.provider.MapValueProvider;
 import org.aoju.bus.core.convert.Convert;
@@ -190,14 +190,14 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param targetMap 目标的Map
      */
     private void beanToMap(Object bean, Map targetMap) {
-        final Collection<PropertyDescription> props = BeanKit.getBeanDesc(bean.getClass()).getProps();
+        final Collection<PropertyDesc> props = BeanKit.getBeanDesc(bean.getClass()).getProps();
         final HashSet<String> ignoreSet = (null != copyOptions.ignoreProperties) ? CollKit.newHashSet(copyOptions.ignoreProperties) : null;
         final CopyOptions copyOptions = this.copyOptions;
 
         String key;
         Method getter;
         Object value;
-        for (PropertyDescription prop : props) {
+        for (PropertyDesc prop : props) {
             key = prop.getFieldName();
             // 过滤class属性
             // 得到property对应的getter方法
@@ -253,15 +253,14 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
             actualEditable = copyOptions.editable;
         }
         final HashSet<String> ignoreSet = (null != copyOptions.ignoreProperties) ? CollKit.newHashSet(copyOptions.ignoreProperties) : null;
-        final Map<String, String> fieldReverseMapping = copyOptions.getReversedMapping();
 
-        final Collection<PropertyDescription> props = BeanKit.getBeanDesc(actualEditable).getProps();
+        final Collection<PropertyDesc> props = BeanKit.getBeanDesc(actualEditable).getProps();
         Field field;
         String fieldName;
         Object value;
         Method setterMethod;
         Class<?> propClass;
-        for (PropertyDescription prop : props) {
+        for (PropertyDesc prop : props) {
             // 获取值
             field = prop.getField();
             fieldName = prop.getFieldName();

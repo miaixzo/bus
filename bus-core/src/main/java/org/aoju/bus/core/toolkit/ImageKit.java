@@ -1106,9 +1106,10 @@ public class ImageKit {
             if (imageType != bufferedImage.getType()) {
                 bufferedImage = copyImage(image, imageType);
             }
-        } else {
-            bufferedImage = copyImage(image, imageType);
+            return bufferedImage;
         }
+
+        bufferedImage = copyImage(image, imageType);
         return bufferedImage;
     }
 

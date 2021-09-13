@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
+import javax.crypto.Cipher;
+
 /**
  * 密钥类型
  *
@@ -33,7 +35,37 @@ package org.aoju.bus.crypto.asymmetric;
  * @since JDK 1.8+
  */
 public enum KeyType {
+    /**
+     * 公钥
+     */
+    PublicKey(Cipher.PUBLIC_KEY),
+    /**
+     * 私钥
+     */
+    PrivateKey(Cipher.PRIVATE_KEY),
+    /**
+     * 密钥
+     */
+    SecretKey(Cipher.SECRET_KEY);
 
-    PrivateKey, PublicKey
+    private final int value;
+
+    /**
+     * 构造
+     *
+     * @param value 见{@link Cipher}
+     */
+    KeyType(int value) {
+        this.value = value;
+    }
+
+    /**
+     * 获取枚举值对应的int表示
+     *
+     * @return 枚举值对应的int表示
+     */
+    public int getValue() {
+        return this.value;
+    }
 
 }

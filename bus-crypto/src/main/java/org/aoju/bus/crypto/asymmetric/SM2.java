@@ -27,11 +27,10 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.crypto.Builder;
 import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.digests.SM3Digest;
@@ -61,16 +60,19 @@ import java.security.PublicKey;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class SM2 extends Safety<SM2> {
+public class SM2 extends AbstractCrypto<SM2> {
+
+    private static final long serialVersionUID = 1L;
 
     protected SM2Engine engine;
     protected SM2Signer signer;
 
-    private SM2Engine.Mode mode = SM2Engine.Mode.C1C3C2;
     private ECPrivateKeyParameters privateKeyParams;
     private ECPublicKeyParameters publicKeyParams;
+
     private DSAEncoding encoding = StandardDSAEncoding.INSTANCE;
     private Digest digest = new SM3Digest();
+    private SM2Engine.Mode mode = SM2Engine.Mode.C1C3C2;
 
     /**
      * 构造，生成新的私钥公钥对
@@ -96,8 +98,8 @@ public class SM2 extends Safety<SM2> {
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param privateKey 私钥，必须使用PKCS#8规范
-     * @param publicKey  公钥，必须使用X509规范
+     * @param privateKey 私钥，可以使用PKCS#8、D值或PKCS#1规范
+     * @param publicKey  公钥，可以使用X509、Q值或PKCS#1规范
      */
     public SM2(byte[] privateKey, byte[] publicKey) {
         this(
@@ -155,11 +157,11 @@ public class SM2 extends Safety<SM2> {
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param privateKeyParams 私钥
-     * @param publicKeyParams  公钥
+     * @param privateKeyParams 私钥，可以为null
+     * @param publicKeyParams  公钥，可以为null
      */
     public SM2(ECPrivateKeyParameters privateKeyParams, ECPublicKeyParameters publicKeyParams) {
-        super(Algorithm.SM2, null, null);
+        super(Algorithm.SM2.getValue(), null, null);
         this.privateKeyParams = privateKeyParams;
         this.publicKeyParams = publicKeyParams;
         this.init();
@@ -168,7 +170,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 初始化
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密(签名)或者解密(校验)
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @return this
      */
@@ -199,9 +201,9 @@ public class SM2 extends Safety<SM2> {
      *
      * @param data 被加密的bytes
      * @return 加密后的bytes
-     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
      */
-    public byte[] encrypt(byte[] data) throws InstrumentException {
+    public byte[] encrypt(byte[] data) throws CryptoException {
         return encrypt(data, KeyType.PublicKey);
     }
 
@@ -217,10 +219,10 @@ public class SM2 extends Safety<SM2> {
      * @param data    被加密的bytes
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 加密后的bytes
-     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
      */
     @Override
-    public byte[] encrypt(byte[] data, KeyType keyType) throws InstrumentException {
+    public byte[] encrypt(byte[] data, KeyType keyType) throws CryptoException {
         if (KeyType.PublicKey != keyType) {
             throw new IllegalArgumentException("Encrypt is only support by public key");
         }
@@ -239,16 +241,16 @@ public class SM2 extends Safety<SM2> {
      * @param data             被加密的bytes
      * @param pubKeyParameters 公钥参数
      * @return 加密后的bytes
-     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
      */
-    public byte[] encrypt(byte[] data, CipherParameters pubKeyParameters) throws InstrumentException {
+    public byte[] encrypt(byte[] data, CipherParameters pubKeyParameters) throws CryptoException {
         lock.lock();
         final SM2Engine engine = getEngine();
         try {
             engine.init(true, pubKeyParameters);
             return engine.processBlock(data, 0, data.length);
         } catch (InvalidCipherTextException e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
@@ -259,9 +261,9 @@ public class SM2 extends Safety<SM2> {
      *
      * @param data SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
      * @return 加密后的bytes
-     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
      */
-    public byte[] decrypt(byte[] data) throws InstrumentException {
+    public byte[] decrypt(byte[] data) throws CryptoException {
         return decrypt(data, KeyType.PrivateKey);
     }
 
@@ -271,10 +273,10 @@ public class SM2 extends Safety<SM2> {
      * @param data    SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 加密后的bytes
-     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
      */
     @Override
-    public byte[] decrypt(byte[] data, KeyType keyType) throws InstrumentException {
+    public byte[] decrypt(byte[] data, KeyType keyType) throws CryptoException {
         if (KeyType.PrivateKey != keyType) {
             throw new IllegalArgumentException("Decrypt is only support by private key");
         }
@@ -287,16 +289,16 @@ public class SM2 extends Safety<SM2> {
      * @param data                 SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
      * @param privateKeyParameters 私钥参数
      * @return 加密后的bytes
-     * @throws InstrumentException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
      */
-    public byte[] decrypt(byte[] data, CipherParameters privateKeyParameters) throws InstrumentException {
+    public byte[] decrypt(byte[] data, CipherParameters privateKeyParameters) throws CryptoException {
         lock.lock();
         final SM2Engine engine = getEngine();
         try {
             engine.init(false, privateKeyParameters);
             return engine.processBlock(data, 0, data.length);
         } catch (InvalidCipherTextException e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
@@ -308,12 +310,13 @@ public class SM2 extends Safety<SM2> {
      * @param dataHex 被签名的数据数据
      * @return 签名
      */
-    public String sign(String dataHex) {
-        return sign(dataHex, null);
+    public String signHex(String dataHex) {
+        return signHex(dataHex, null);
     }
 
     /**
-     * 用私钥对信息生成数字签名
+     * 用私钥对信息生成数字签名，签名格式为ASN1
+     * * 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
      *
      * @param data 加密数据
      * @return 签名
@@ -329,12 +332,13 @@ public class SM2 extends Safety<SM2> {
      * @param idHex   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
      * @return 签名
      */
-    public String sign(String dataHex, String idHex) {
+    public String signHex(String dataHex, String idHex) {
         return HexKit.encodeHexStr(sign(HexKit.decodeHex(dataHex), HexKit.decodeHex(idHex)));
     }
 
     /**
-     * 用私钥对信息生成数字签名
+     * 用私钥对信息生成数字签名，签名格式为ASN1
+     * 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
      *
      * @param data 被签名的数据数据
      * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
@@ -345,14 +349,14 @@ public class SM2 extends Safety<SM2> {
         final SM2Signer signer = getSigner();
         try {
             CipherParameters param = new ParametersWithRandom(getCipherParameters(KeyType.PrivateKey));
-            if (null != id) {
+            if (id != null) {
                 param = new ParametersWithID(param, id);
             }
             signer.init(true, param);
             signer.update(data, 0, data.length);
             return signer.generateSignature();
-        } catch (CryptoException e) {
-            throw new InstrumentException(e);
+        } catch (org.bouncycastle.crypto.CryptoException e) {
+            throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
@@ -365,8 +369,8 @@ public class SM2 extends Safety<SM2> {
      * @param signHex 签名
      * @return 是否验证通过
      */
-    public boolean verify(String dataHex, String signHex) {
-        return verify(dataHex, signHex, null);
+    public boolean verifyHex(String dataHex, String signHex) {
+        return verifyHex(dataHex, signHex, null);
     }
 
     /**
@@ -388,7 +392,7 @@ public class SM2 extends Safety<SM2> {
      * @param idHex   ID的Hex值
      * @return 是否验证通过
      */
-    public boolean verify(String dataHex, String signHex, String idHex) {
+    public boolean verifyHex(String dataHex, String signHex, String idHex) {
         return verify(HexKit.decodeHex(dataHex), HexKit.decodeHex(signHex), HexKit.decodeHex(idHex));
     }
 
@@ -405,7 +409,7 @@ public class SM2 extends Safety<SM2> {
         final SM2Signer signer = getSigner();
         try {
             CipherParameters param = getCipherParameters(KeyType.PublicKey);
-            if (null != id) {
+            if (id != null) {
                 param = new ParametersWithID(param, id);
             }
             signer.init(false, param);
@@ -459,7 +463,41 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * 设置加密类型
+     * 设置DSA signatures的编码为PlainDSAEncoding
+     *
+     * @return this
+     */
+    public SM2 usePlainEncoding() {
+        return setEncoding(PlainDSAEncoding.INSTANCE);
+    }
+
+    /**
+     * 设置DSA signatures的编码
+     *
+     * @param encoding {@link DSAEncoding}实现
+     * @return this
+     */
+    public SM2 setEncoding(DSAEncoding encoding) {
+        this.encoding = encoding;
+        this.signer = null;
+        return this;
+    }
+
+    /**
+     * 设置Hash算法
+     *
+     * @param digest {@link Digest}实现
+     * @return this
+     */
+    public SM2 setDigest(Digest digest) {
+        this.digest = digest;
+        this.engine = null;
+        this.signer = null;
+        return this;
+    }
+
+    /**
+     * 设置SM2模式，旧版是C1C2C3，新版本是C1C3C2
      *
      * @param mode {@link SM2Engine.Mode}
      * @return this
@@ -490,64 +528,6 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * 获取{@link SM2Engine}，此对象为懒加载模式
-     *
-     * @return {@link SM2Engine}
-     */
-    private SM2Engine getEngine() {
-        if (null == this.engine) {
-            this.engine = new SM2Engine(this.digest, this.mode);
-        }
-        return this.engine;
-    }
-
-    /**
-     * 获取{@link SM2Signer}，此对象为懒加载模式
-     *
-     * @return {@link SM2Signer}
-     */
-    private SM2Signer getSigner() {
-        if (null == this.signer) {
-            this.signer = new SM2Signer(this.encoding, this.digest);
-        }
-        return this.signer;
-    }
-
-    /**
-     * 设置DSA signatures的编码为PlainDSAEncoding
-     *
-     * @return this
-     */
-    public SM2 setEncoding() {
-        return setEncoding(PlainDSAEncoding.INSTANCE);
-    }
-
-    /**
-     * 设置DSA signatures的编码
-     *
-     * @param encoding {@link DSAEncoding}实现
-     * @return this
-     */
-    public SM2 setEncoding(DSAEncoding encoding) {
-        this.encoding = encoding;
-        this.signer = null;
-        return this;
-    }
-
-    /**
-     * 设置Hash算法
-     *
-     * @param digest {@link Digest}实现
-     * @return this
-     */
-    public SM2 setDigest(Digest digest) {
-        this.digest = digest;
-        this.engine = null;
-        this.signer = null;
-        return this;
-    }
-
-    /**
      * 获取密钥类型对应的加密参数对象{@link CipherParameters}
      *
      * @param keyType Key类型枚举，包括私钥或公钥
@@ -564,6 +544,34 @@ public class SM2 extends Safety<SM2> {
         }
 
         return null;
+    }
+
+    /**
+     * 获取{@link SM2Engine}，此对象为懒加载模式
+     *
+     * @return {@link SM2Engine}
+     */
+    private SM2Engine getEngine() {
+        if (null == this.engine) {
+            Assert.notNull(this.digest, "digest must be not null !");
+            this.engine = new SM2Engine(this.digest, this.mode);
+        }
+        this.digest.reset();
+        return this.engine;
+    }
+
+    /**
+     * 获取{@link SM2Signer}，此对象为懒加载模式
+     *
+     * @return {@link SM2Signer}
+     */
+    private SM2Signer getSigner() {
+        if (null == this.signer) {
+            Assert.notNull(this.digest, "digest must be not null !");
+            this.signer = new SM2Signer(this.encoding, this.digest);
+        }
+        this.digest.reset();
+        return this.signer;
     }
 
 }

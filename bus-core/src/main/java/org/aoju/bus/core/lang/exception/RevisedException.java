@@ -34,6 +34,8 @@ package org.aoju.bus.core.lang.exception;
  */
 public class RevisedException extends RelevantException {
 
+    private static final long serialVersionUID = 1L;
+
     public RevisedException() {
         super();
     }

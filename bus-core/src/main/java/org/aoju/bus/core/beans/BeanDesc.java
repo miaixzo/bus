@@ -55,7 +55,7 @@ import java.util.Map;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class BeanDescription implements Serializable {
+public class BeanDesc implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,14 +66,14 @@ public class BeanDescription implements Serializable {
     /**
      * 属性Map
      */
-    private final Map<String, PropertyDescription> propMap = new LinkedHashMap<>();
+    private final Map<String, PropertyDesc> propMap = new LinkedHashMap<>();
 
     /**
      * 构造
      *
      * @param beanClass Bean类
      */
-    public BeanDescription(Class<?> beanClass) {
+    public BeanDesc(Class<?> beanClass) {
         Assert.notNull(beanClass);
         this.beanClass = beanClass;
         init();
@@ -103,16 +103,16 @@ public class BeanDescription implements Serializable {
      * @param ignoreCase 是否忽略大小写,true为忽略,false不忽略
      * @return 字段名-字段属性Map
      */
-    public Map<String, PropertyDescription> getPropMap(boolean ignoreCase) {
+    public Map<String, PropertyDesc> getPropMap(boolean ignoreCase) {
         return ignoreCase ? new CaseInsensitiveMap<>(1, this.propMap) : this.propMap;
     }
 
     /**
      * 获取字段属性列表
      *
-     * @return {@link PropertyDescription} 列表
+     * @return {@link PropertyDesc} 列表
      */
-    public Collection<PropertyDescription> getProps() {
+    public Collection<PropertyDesc> getProps() {
         return this.propMap.values();
     }
 
@@ -120,9 +120,9 @@ public class BeanDescription implements Serializable {
      * 获取属性,如果不存在返回null
      *
      * @param fieldName 字段名
-     * @return {@link PropertyDescription}
+     * @return {@link PropertyDesc}
      */
-    public PropertyDescription getProp(String fieldName) {
+    public PropertyDesc getProp(String fieldName) {
         return this.propMap.get(fieldName);
     }
 
@@ -133,7 +133,7 @@ public class BeanDescription implements Serializable {
      * @return 字段值
      */
     public Field getField(String fieldName) {
-        final PropertyDescription desc = this.propMap.get(fieldName);
+        final PropertyDesc desc = this.propMap.get(fieldName);
         return null == desc ? null : desc.getField();
     }
 
@@ -144,7 +144,7 @@ public class BeanDescription implements Serializable {
      * @return Getter方法
      */
     public Method getGetter(String fieldName) {
-        final PropertyDescription desc = this.propMap.get(fieldName);
+        final PropertyDesc desc = this.propMap.get(fieldName);
         return null == desc ? null : desc.getGetter();
     }
 
@@ -155,7 +155,7 @@ public class BeanDescription implements Serializable {
      * @return Setter方法
      */
     public Method getSetter(String fieldName) {
-        final PropertyDescription desc = this.propMap.get(fieldName);
+        final PropertyDesc desc = this.propMap.get(fieldName);
         return null == desc ? null : desc.getSetter();
     }
 
@@ -165,9 +165,9 @@ public class BeanDescription implements Serializable {
      *
      * @return this
      */
-    private BeanDescription init() {
+    private BeanDesc init() {
         final Method[] methods = ReflectKit.getMethods(this.beanClass);
-        PropertyDescription prop;
+        PropertyDesc prop;
         for (Field field : ReflectKit.getFields(this.beanClass)) {
             if (false == BeanKit.isStatic(field)) {
                 //只针对非static属性
@@ -191,13 +191,13 @@ public class BeanDescription implements Serializable {
      *
      * @param field   字段
      * @param methods 类中所有的方法
-     * @return {@link PropertyDescription}
+     * @return {@link PropertyDesc}
      */
-    private PropertyDescription createProp(Field field, Method[] methods) {
-        final PropertyDescription prop = findProp(field, methods, false);
+    private PropertyDesc createProp(Field field, Method[] methods) {
+        final PropertyDesc prop = findProp(field, methods, false);
         // 忽略大小写重新匹配一次
         if (null == prop.getter || null == prop.setter) {
-            final PropertyDescription propIgnoreCase = findProp(field, methods, true);
+            final PropertyDesc propIgnoreCase = findProp(field, methods, true);
             if (null == prop.getter) {
                 prop.getter = propIgnoreCase.getter;
             }
@@ -217,7 +217,7 @@ public class BeanDescription implements Serializable {
      * @param ignoreCase 是否忽略大小写匹配
      * @return PropDesc
      */
-    private PropertyDescription findProp(Field field, Method[] methods, boolean ignoreCase) {
+    private PropertyDesc findProp(Field field, Method[] methods, boolean ignoreCase) {
         final String fieldName = field.getName();
         final Class<?> fieldType = field.getType();
         final boolean isBooleanField = BooleanKit.isBoolean(fieldType);
@@ -250,7 +250,7 @@ public class BeanDescription implements Serializable {
             }
         }
 
-        return new PropertyDescription(field, getter, setter);
+        return new PropertyDesc(field, getter, setter);
     }
 
     /**

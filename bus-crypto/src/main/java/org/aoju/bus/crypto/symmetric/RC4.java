@@ -26,19 +26,23 @@
 package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.crypto.Builder;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 /**
  * RC4加密解密算法实现
+ * 注意：由于安全问题，已经基本不在HTTPS中使用了
+ * 来自：https://github.com/xSAVIKx/RC4-cipher/blob/master/src/main/java/com/github/xsavikx/rc4/RC4.java
  *
+ * @author Iurii Sergiichuk
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
@@ -53,15 +57,18 @@ public class RC4 implements Serializable {
      */
     private static final int KEY_MIN_LENGTH = 5;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    /**
+     * Sbox
+     */
     private int[] sbox;
 
     /**
      * 构造
      *
      * @param key 密钥
-     * @throws InstrumentException key长度小于5或者大于255抛出此异常
+     * @throws CryptoException key长度小于5或者大于255抛出此异常
      */
-    public RC4(String key) throws InstrumentException {
+    public RC4(String key) throws CryptoException {
         setKey(key);
     }
 
@@ -71,9 +78,9 @@ public class RC4 implements Serializable {
      * @param message 消息
      * @param charset 编码
      * @return 密文
-     * @throws InstrumentException key长度小于5或者大于255抛出此异常
+     * @throws CryptoException key长度小于5或者大于255抛出此异常
      */
-    public byte[] encrypt(String message, java.nio.charset.Charset charset) throws InstrumentException {
+    public byte[] encrypt(String message, Charset charset) throws CryptoException {
         return crypt(StringKit.bytes(message, charset));
     }
 
@@ -82,10 +89,10 @@ public class RC4 implements Serializable {
      *
      * @param message 消息
      * @return 密文
-     * @throws InstrumentException key长度小于5或者大于255抛出此异常
+     * @throws CryptoException key长度小于5或者大于255抛出此异常
      */
-    public byte[] encrypt(String message) throws InstrumentException {
-        return encrypt(message, Charset.UTF_8);
+    public byte[] encrypt(String message) throws CryptoException {
+        return encrypt(message, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -115,8 +122,18 @@ public class RC4 implements Serializable {
      * @param charset 编码
      * @return 加密后的Hex
      */
-    public String encryptHex(String data, java.nio.charset.Charset charset) {
+    public String encryptHex(String data, Charset charset) {
         return HexKit.encodeHexStr(encrypt(data, charset));
+    }
+
+    /**
+     * 加密，使用UTF-8编码
+     *
+     * @param data 被加密的字符串
+     * @return 加密后的Hex
+     */
+    public String encryptHex(String data) {
+        return HexKit.encodeHexStr(encrypt(data));
     }
 
     /**
@@ -126,8 +143,19 @@ public class RC4 implements Serializable {
      * @param charset 编码
      * @return 加密后的Base64
      */
-    public String encryptBase64(String data, java.nio.charset.Charset charset) {
+    public String encryptBase64(String data, Charset charset) {
         return Base64.encode(encrypt(data, charset));
+    }
+
+
+    /**
+     * 加密，使用UTF-8编码
+     *
+     * @param data 被加密的字符串
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(String data) {
+        return Base64.encode(encrypt(data));
     }
 
     /**
@@ -136,9 +164,9 @@ public class RC4 implements Serializable {
      * @param message 消息
      * @param charset 编码
      * @return 明文
-     * @throws InstrumentException key长度小于5或者大于255抛出此异常
+     * @throws CryptoException key长度小于5或者大于255抛出此异常
      */
-    public String decrypt(byte[] message, java.nio.charset.Charset charset) throws InstrumentException {
+    public String decrypt(byte[] message, Charset charset) throws CryptoException {
         return StringKit.toString(crypt(message), charset);
     }
 
@@ -147,11 +175,33 @@ public class RC4 implements Serializable {
      *
      * @param message 消息
      * @return 明文
-     * @throws InstrumentException key长度小于5或者大于255抛出此异常
+     * @throws CryptoException key长度小于5或者大于255抛出此异常
      */
-    public String decrypt(byte[] message) throws InstrumentException {
-        return decrypt(message, Charset.UTF_8);
+    public String decrypt(byte[] message) throws CryptoException {
+        return decrypt(message, org.aoju.bus.core.lang.Charset.UTF_8);
     }
+
+    /**
+     * 解密Hex（16进制）或Base64表示的字符串，使用默认编码UTF-8
+     *
+     * @param message 消息
+     * @return 明文
+     */
+    public String decrypt(String message) {
+        return decrypt(Builder.decode(message));
+    }
+
+    /**
+     * 解密Hex（16进制）或Base64表示的字符串
+     *
+     * @param message 明文
+     * @param charset 解密后的charset
+     * @return 明文
+     */
+    public String decrypt(String message, Charset charset) {
+        return StringKit.toString(decrypt(message), charset);
+    }
+
 
     /**
      * 加密或解密指定值，调用此方法前需初始化密钥
@@ -161,8 +211,8 @@ public class RC4 implements Serializable {
      */
     public byte[] crypt(final byte[] msg) {
         final ReadLock readLock = this.lock.readLock();
-        readLock.lock();
         byte[] code;
+        readLock.lock();
         try {
             final int[] sbox = this.sbox.clone();
             code = new byte[msg.length];
@@ -185,12 +235,12 @@ public class RC4 implements Serializable {
      * 设置密钥
      *
      * @param key 密钥
-     * @throws InstrumentException key长度小于5或者大于255抛出此异常
+     * @throws CryptoException key长度小于5或者大于255抛出此异常
      */
-    public void setKey(String key) throws InstrumentException {
+    public void setKey(String key) throws CryptoException {
         final int length = key.length();
         if (length < KEY_MIN_LENGTH || length >= SBOX_LENGTH) {
-            throw new InstrumentException("Key length has to be between {} and {}", KEY_MIN_LENGTH, (SBOX_LENGTH - 1));
+            throw new CryptoException("Key length has to be between {} and {}", KEY_MIN_LENGTH, (SBOX_LENGTH - 1));
         }
 
         final WriteLock writeLock = this.lock.writeLock();

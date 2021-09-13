@@ -36,8 +36,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * 国密算法-SM4
- *
+ * 国密对称堆成加密算法SM4实现
+ * 国密算法包括：
  * <ol>
  *     <li>非对称加密和签名：SM2</li>
  *     <li>摘要签名算法：SM3</li>
@@ -48,15 +48,17 @@ import javax.crypto.spec.IvParameterSpec;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class SM4 extends Symmetric {
+public class SM4 extends Crypto {
 
     private static final long serialVersionUID = 1L;
+
+    public static final String ALGORITHM_NAME = Algorithm.SM4.name();
 
     /**
      * 构造，使用随机密钥
      */
     public SM4() {
-        super(Algorithm.SM4);
+        super(ALGORITHM_NAME);
     }
 
     /**
@@ -65,7 +67,7 @@ public class SM4 extends Symmetric {
      * @param key 密钥
      */
     public SM4(byte[] key) {
-        super(Algorithm.SM4, key);
+        super(ALGORITHM_NAME, key);
     }
 
     /**
@@ -121,7 +123,7 @@ public class SM4 extends Symmetric {
      * @param iv      偏移向量，加盐
      */
     public SM4(Mode mode, Padding padding, SecretKey key, byte[] iv) {
-        this(mode, padding, key, ArrayKit.isEmpty(iv) ? ((IvParameterSpec) null) : new IvParameterSpec(iv));
+        this(mode, padding, key, ArrayKit.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 
     /**
@@ -167,7 +169,7 @@ public class SM4 extends Symmetric {
      */
     public SM4(String mode, String padding, byte[] key, byte[] iv) {
         this(mode, padding,
-                Builder.generateKey(Algorithm.SM4, key),
+                Builder.generateKey(ALGORITHM_NAME, key),
                 ArrayKit.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 

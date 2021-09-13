@@ -179,6 +179,15 @@ public class SpringAware implements ApplicationContextAware {
     }
 
     /**
+     * 获取应用程序名称
+     *
+     * @return 应用程序名称
+     */
+    public static String getApplicationName() {
+        return getProperty(BusXBuilder.BUS_NAME);
+    }
+
+    /**
      * 当前是否开发/测试模式
      *
      * @return true|false

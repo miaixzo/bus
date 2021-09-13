@@ -75,7 +75,7 @@ public final class Builder {
 
     public static String createAlphanumericHash(final String str, final int length) {
         try {
-            final MessageDigest md = MessageDigest.getInstance(Algorithm.SHA256);
+            final MessageDigest md = MessageDigest.getInstance(Algorithm.SHA256.getValue());
             final byte[] digest = md.digest(str.getBytes(Charset.UTF_8));
             final StringBuilder sb = new StringBuilder();
             for (final byte b : digest) {

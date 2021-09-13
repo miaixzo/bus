@@ -236,7 +236,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     public static UUID nameUUIDFromBytes(byte[] name) {
         MessageDigest md;
         try {
-            md = MessageDigest.getInstance(Algorithm.MD5);
+            md = MessageDigest.getInstance(Algorithm.MD5.getValue());
         } catch (NoSuchAlgorithmException nsae) {
             throw new InternalError("MD5 not supported");
         }

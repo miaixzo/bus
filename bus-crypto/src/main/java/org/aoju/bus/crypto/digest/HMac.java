@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest;
 
+import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -40,15 +40,17 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.MessageDigest;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
  * HMAC摘要算法
  * HMAC，全称为“Hash Message Authentication Code”，中文名“散列消息鉴别码”
- * 主要是利用哈希算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出。
- * 一般的，消息鉴别码用于验证传输于两个共 同享有一个密钥的单位之间的消息。
- * HMAC 可以与任何迭代散列函数捆绑使用。MD5 和 SHA-1 就是这种散列函数。HMAC 还可以使用一个用于计算和确认消息鉴别值的密钥。
+ * 主要是利用哈希算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出
+ * 一般的，消息鉴别码用于验证传输于两个共 同享有一个密钥的单位之间的消息
+ * HMAC 可以与任何迭代散列函数捆绑使用MD5 和 SHA-1 就是这种散列函数HMAC 还可以使用一个用于计算和确认消息鉴别值的密钥
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
@@ -59,15 +61,35 @@ public class HMac implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private MacEngine engine;
+    private final MacEngine engine;
 
     /**
      * 构造，自动生成密钥
      *
      * @param algorithm 算法 {@link Algorithm}
      */
-    public HMac(String algorithm) {
+    public HMac(Algorithm algorithm) {
         this(algorithm, (Key) null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param algorithm 算法 {@link Algorithm}
+     * @param key       密钥
+     */
+    public HMac(Algorithm algorithm, byte[] key) {
+        this(algorithm.getValue(), key);
+    }
+
+    /**
+     * 构造
+     *
+     * @param algorithm 算法 {@link Algorithm}
+     * @param key       密钥
+     */
+    public HMac(Algorithm algorithm, Key key) {
+        this(algorithm.getValue(), key);
     }
 
     /**
@@ -87,7 +109,18 @@ public class HMac implements Serializable {
      * @param key       密钥
      */
     public HMac(String algorithm, Key key) {
-        this(MacEngineFactory.createEngine(algorithm, key));
+        this(algorithm, key, null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param algorithm 算法
+     * @param key       密钥
+     * @param spec      {@link AlgorithmParameterSpec}
+     */
+    public HMac(String algorithm, Key key, AlgorithmParameterSpec spec) {
+        this(MacEngineFactory.createEngine(algorithm, key, spec));
     }
 
     /**
@@ -100,13 +133,22 @@ public class HMac implements Serializable {
     }
 
     /**
+     * 获得MAC算法引擎
+     *
+     * @return MAC算法引擎
+     */
+    public MacEngine getEngine() {
+        return this.engine;
+    }
+
+    /**
      * 生成文件摘要
      *
      * @param data    被摘要数据
      * @param charset 编码
      * @return 摘要
      */
-    public byte[] digest(String data, String charset) {
+    public byte[] digest(String data, Charset charset) {
         return digest(StringKit.bytes(data, charset));
     }
 
@@ -117,7 +159,30 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, Charset.DEFAULT_UTF_8);
+        return digest(data, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
+     * 生成文件摘要，并转为Base64
+     *
+     * @param data      被摘要数据
+     * @param isUrlSafe 是否使用URL安全字符
+     * @return 摘要
+     */
+    public String digestBase64(String data, boolean isUrlSafe) {
+        return digestBase64(data, org.aoju.bus.core.lang.Charset.UTF_8, isUrlSafe);
+    }
+
+    /**
+     * 生成文件摘要，并转为Base64
+     *
+     * @param data      被摘要数据
+     * @param charset   编码
+     * @param isUrlSafe 是否使用URL安全字符
+     * @return 摘要
+     */
+    public String digestBase64(String data, Charset charset, boolean isUrlSafe) {
+        return StringKit.toString(Base64.encode(digest(data, charset), false, isUrlSafe));
     }
 
     /**
@@ -127,7 +192,7 @@ public class HMac implements Serializable {
      * @param charset 编码
      * @return 摘要
      */
-    public String digestHex(String data, String charset) {
+    public String digestHex(String data, Charset charset) {
         return HexKit.encodeHexStr(digest(data, charset));
     }
 
@@ -138,7 +203,7 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, Charset.DEFAULT_UTF_8);
+        return digestHex(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -147,9 +212,9 @@ public class HMac implements Serializable {
      *
      * @param file 被摘要文件
      * @return 摘要bytes
-     * @throws InstrumentException Cause by IOException
+     * @throws CryptoException Cause by IOException
      */
-    public byte[] digest(File file) throws InstrumentException {
+    public byte[] digest(File file) throws CryptoException {
         InputStream in = null;
         try {
             in = FileKit.getInputStream(file);
@@ -235,6 +300,19 @@ public class HMac implements Serializable {
     }
 
     /**
+     * 验证生成的摘要与给定的摘要比较是否一致
+     * 简单比较每个byte位是否相同
+     *
+     * @param digest          生成的摘要
+     * @param digestToCompare 需要比较的摘要
+     * @return 是否一致
+     * @see MessageDigest#isEqual(byte[], byte[])
+     */
+    public boolean verify(byte[] digest, byte[] digestToCompare) {
+        return MessageDigest.isEqual(digest, digestToCompare);
+    }
+
+    /**
      * 获取MAC算法块长度
      *
      * @return MAC算法块长度
@@ -250,28 +328,6 @@ public class HMac implements Serializable {
      */
     public String getAlgorithm() {
         return this.engine.getAlgorithm();
-    }
-
-    /**
-     * 验证生成的摘要与给定的摘要比较是否一致
-     * 简单比较每个byte位是否相同
-     *
-     * @param digest          生成的摘要
-     * @param digestToCompare 需要比较的摘要
-     * @return 是否一致
-     * @see MessageDigest#isEqual(byte[], byte[])
-     */
-    public boolean verify(byte[] digest, byte[] digestToCompare) {
-        return MessageDigest.isEqual(digest, digestToCompare);
-    }
-
-    /**
-     * 获得MAC算法引擎
-     *
-     * @return MAC算法引擎
-     */
-    public MacEngine getEngine() {
-        return this.engine;
     }
 
 }
