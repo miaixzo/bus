@@ -27,10 +27,10 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.http.magic.HttpResponse;
-import org.aoju.bus.logger.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -189,71 +189,6 @@ public class SoapX {
     }
 
     /**
-     * 设置方法参数
-     *
-     * @param ele    方法节点
-     * @param name   参数名
-     * @param value  参数值
-     * @param prefix 命名空间前缀
-     * @return {@link SOAPElement}子节点
-     */
-    private static SOAPElement param(SOAPElement ele, String name, Object value, String prefix) {
-        final SOAPElement childEle;
-        try {
-            if (StringKit.isNotBlank(prefix)) {
-                childEle = ele.addChildElement(name, prefix);
-            } else {
-                childEle = ele.addChildElement(name);
-            }
-        } catch (SOAPException e) {
-            throw new InstrumentException(e);
-        }
-
-        if (null != value) {
-            if (value instanceof SOAPElement) {
-                // 单个子节点
-                try {
-                    ele.addChildElement((SOAPElement) value);
-                } catch (SOAPException e) {
-                    throw new InstrumentException(e);
-                }
-            } else if (value instanceof Map) {
-                // 多个字节点
-                Map.Entry entry;
-                for (Object obj : ((Map) value).entrySet()) {
-                    entry = (Map.Entry) obj;
-                    param(childEle, entry.getKey().toString(), entry.getValue(), prefix);
-                }
-            } else {
-                // 单个值
-                childEle.setValue(value.toString());
-            }
-        }
-
-        return childEle;
-    }
-
-    /**
-     * {@link SOAPMessage} 转为字符串
-     *
-     * @param message SOAP消息对象
-     * @param format  是否格式化
-     * @param charset 编码
-     * @return SOAP XML字符串
-     */
-    public static String toString(SOAPMessage message, boolean format, String charset) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String result;
-        try {
-            message.writeTo(out);
-            result = out.toString(charset);
-        } catch (SOAPException | IOException e) {
-            throw new InstrumentException(e);
-        }
-        return format ? XmlKit.format(result) : result;
-    }
-
-    /**
      * 设置Webservice请求地址
      *
      * @param url Webservice请求地址
@@ -327,7 +262,7 @@ public class SoapX {
 
     /**
      * 设置请求方法
-     * 方法名自动识别前缀，前缀和方法名使用“:”分隔
+     * 方法名自动识别前缀，前缀和方法名使用':'分隔
      * 当识别到前缀后，自动添加xmlns属性，关联到传入的namespaceURI
      *
      * @param methodName   方法名（可有前缀也可无）
@@ -335,7 +270,7 @@ public class SoapX {
      * @return this
      */
     public SoapX method(String methodName, String namespaceURI) {
-        final List<String> methodNameList = StringKit.split(methodName, ':');
+        final List<String> methodNameList = StringKit.split(methodName, Symbol.C_COLON);
         final QName qName;
         if (2 == methodNameList.size()) {
             qName = new QName(namespaceURI, methodNameList.get(1), methodNameList.get(0));
@@ -410,6 +345,50 @@ public class SoapX {
     }
 
     /**
+     * 设置方法参数
+     *
+     * @param ele    方法节点
+     * @param name   参数名
+     * @param value  参数值
+     * @param prefix 命名空间前缀
+     * @return {@link SOAPElement}子节点
+     */
+    public SOAPElement param(SOAPElement ele, String name, Object value, String prefix) {
+        final SOAPElement childEle;
+        try {
+            if (StringKit.isNotBlank(prefix)) {
+                childEle = ele.addChildElement(name, prefix);
+            } else {
+                childEle = ele.addChildElement(name);
+            }
+        } catch (SOAPException e) {
+            throw new InstrumentException(e);
+        }
+
+        if (null != value) {
+            if (value instanceof SOAPElement) {
+                // 单个子节点
+                try {
+                    ele.addChildElement((SOAPElement) value);
+                } catch (SOAPException e) {
+                    throw new InstrumentException(e);
+                }
+            } else if (value instanceof Map) {
+                // 多个字节点
+                Map.Entry entry;
+                for (Object obj : ((Map) value).entrySet()) {
+                    entry = (Map.Entry) obj;
+                    param(childEle, entry.getKey().toString(), entry.getValue(), prefix);
+                }
+            } else {
+                // 单个值
+                childEle.setValue(value.toString());
+            }
+        }
+        return childEle;
+    }
+
+    /**
      * 返回http版本
      *
      * @return String
@@ -446,6 +425,15 @@ public class SoapX {
             }
         }
         return this;
+    }
+
+    /**
+     * 获取headers
+     *
+     * @return Headers Map
+     */
+    public Map<String, String> headers() {
+        return Collections.unmodifiableMap(headers);
     }
 
     /**
@@ -569,12 +557,23 @@ public class SoapX {
     }
 
     /**
-     * 获取headers
+     * {@link SOAPMessage} 转为字符串
      *
-     * @return Headers Map
+     * @param message SOAP消息对象
+     * @param format  是否格式化
+     * @param charset 编码
+     * @return SOAP XML字符串
      */
-    public Map<String, String> headers() {
-        return Collections.unmodifiableMap(headers);
+    public String toString(SOAPMessage message, boolean format, String charset) {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        String result;
+        try {
+            message.writeTo(out);
+            result = out.toString(charset);
+        } catch (SOAPException | IOException e) {
+            throw new InstrumentException(e);
+        }
+        return format ? XmlKit.format(result) : result;
     }
 
     /**
@@ -614,6 +613,16 @@ public class SoapX {
     }
 
     /**
+     * 获取SOAP请求消息
+     *
+     * @param format 是否格式化
+     * @return 消息字符串
+     */
+    public String getMessage(boolean format) {
+        return toString(this.message, format, this.charset);
+    }
+
+    /**
      * 移除一个头信息
      *
      * @param name Header名
@@ -642,28 +651,23 @@ public class SoapX {
     }
 
     /**
-     * 获取SOAP请求消息
+     * 执行Webservice请求，即发送SOAP内容
      *
-     * @param format 是否格式化
-     * @return 消息字符串
+     * @return 返回结果
      */
-    public String getMessage(boolean format) {
-        return toString(this.message, format, this.charset);
-    }
-
-    /**
-     * 获取请求的Content-Type，附加编码信息
-     *
-     * @return 请求的Content-Type
-     */
-    private String getContentType() {
-        switch (this.protocol) {
-            case SOAP_1_1:
-                return CONTENT_TYPE_SOAP11_TEXT_XML.concat(this.charset);
-            case SOAP_1_2:
-                return CONTENT_TYPE_SOAP12_SOAP_XML.concat(this.charset);
-            default:
-                throw new InstrumentException("Unsupported protocol: " + this.protocol);
+    public SOAPMessage send() {
+        try {
+            final HttpResponse res = transpond();
+            final MimeHeaders headers = new MimeHeaders();
+            for (Map.Entry<String, List<String>> entry : res.headers().toMultimap().entrySet()) {
+                if (StringKit.isNotEmpty(entry.getKey())) {
+                    headers.setHeader(entry.getKey(), CollKit.get(entry.getValue(), 0));
+                }
+            }
+            this.message = this.factory.createMessage(headers, res.body().byteStream());
+            return this.message;
+        } catch (IOException | SOAPException e) {
+            throw new InstrumentException(e);
         }
     }
 
@@ -676,19 +680,49 @@ public class SoapX {
     public String send(boolean format) {
         String result = Normal.EMPTY;
         try {
-            this.headers("Content-Type", getContentType());
-            final HttpResponse response = Httpz.post()
-                    .url(this.url)
-                    .headers(this.headers)
-                    .body(getMessage(false)).build().execute();
+            final HttpResponse response = transpond();
             if (null != response.body()) {
                 byte[] bytes = response.body().bytes();
                 result = new String(bytes, this.charset);
             }
-        } catch (Exception e) {
-            Logger.error(e, ">>>>>>>>Builder[{}] Error<<<<<<<<", getMessage(true));
+        } catch (IOException e) {
+            throw new InstrumentException(e);
         }
         return format ? XmlKit.format(result) : result;
+    }
+
+
+    /**
+     * 执行Webservice请求，即发送SOAP内容
+     *
+     * @return 返回结果
+     */
+    public HttpResponse transpond() {
+        try {
+            this.headers("Content-Type", getContentType());
+            return Httpz.post()
+                    .url(this.url)
+                    .headers(this.headers)
+                    .body(getMessage(false)).build().execute();
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 获取请求的Content-Type，附加编码信息
+     *
+     * @return 请求的Content-Type
+     */
+    public String getContentType() {
+        switch (this.protocol) {
+            case SOAP_1_1:
+                return CONTENT_TYPE_SOAP11_TEXT_XML.concat(this.charset);
+            case SOAP_1_2:
+                return CONTENT_TYPE_SOAP12_SOAP_XML.concat(this.charset);
+            default:
+                throw new InstrumentException("Unsupported protocol: " + this.protocol);
+        }
     }
 
 }
