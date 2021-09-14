@@ -27,15 +27,12 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
+import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Badge {
+
+    private String name;
 
     private Integer id;
     private String linkUrl;
@@ -43,6 +40,14 @@ public class Badge {
     private String renderedLinkUrl;
     private String renderedImageUrl;
     private BadgeKind kind;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;

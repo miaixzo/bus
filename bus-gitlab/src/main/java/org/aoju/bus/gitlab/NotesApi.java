@@ -33,66 +33,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class NotesApi extends AbstractApi {
 
     public NotesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
-    }
-
-    /**
-     * Get a list of the issues's notes.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param issueIid        the issue ID to get the notes for
-     * @return a list of the issues's notes
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated As of release 4.7.0, replaced by {@link #getIssueNotes(Object, Integer)}
-     */
-    @Deprecated
-    public List<Note> getNotes(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
-        return (getIssueNotes(projectIdOrPath, issueIid));
-    }
-
-    /**
-     * Get a list of the issue's notes using the specified page and per page settings.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to get the notes for
-     * @param page            the page to get
-     * @param perPage         the number of notes per page
-     * @return the list of notes in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated As of release 4.7.0, replaced by {@link #getIssueNotes(Object, Integer, int, int)}
-     */
-    @Deprecated
-    public List<Note> getNotes(Object projectIdOrPath, Integer issueIid, int page, int perPage) throws GitLabApiException {
-        return (getIssueNotes(projectIdOrPath, issueIid, page, perPage));
-    }
-
-    /**
-     * Get a Pager of issues's notes.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid/notes</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param issueIid        the issue IID to get the notes for
-     * @param itemsPerPage    the number of notes per page
-     * @return the list of notes in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated As of release 4.7.0, replaced by {@link #getIssueNotes(Object, Integer, int)}
-     */
-    @Deprecated
-    public Pager<Note> getNotes(Object projectIdOrPath, Integer issueIid, int itemsPerPage) throws GitLabApiException {
-        return (getIssueNotes(projectIdOrPath, issueIid, itemsPerPage));
     }
 
     /**
@@ -462,5 +406,4 @@ public class NotesApi extends AbstractApi {
         delete(expectedStatus, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "notes", noteId);
     }
-
 }

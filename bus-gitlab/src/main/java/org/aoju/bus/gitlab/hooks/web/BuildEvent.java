@@ -25,18 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.web;
 
-import org.aoju.bus.gitlab.JacksonJson;
 import org.aoju.bus.gitlab.models.User;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
 /**
  * The documentation at: <a href="https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#job-events">
  * Job Events</a> is incorrect, this class represents the actual content of the Job Hook event.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class BuildEvent extends AbstractEvent {
 

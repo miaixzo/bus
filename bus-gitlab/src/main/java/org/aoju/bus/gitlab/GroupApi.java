@@ -27,6 +27,7 @@ package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
+import org.aoju.bus.gitlab.support.ISO8601;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -40,13 +41,11 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab groups calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/groups.html">Groups API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/access_requests.html">Group and project access requests API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_badges.html">Group badges API</a>
- * @since JDK 1.8+
+ * @see <a href="https://docs.gitlab.com/ee/api/audit_events.html#retrieve-all-group-audit-events">Group audit events API</a>
  */
 public class GroupApi extends AbstractApi {
 
@@ -642,85 +641,6 @@ public class GroupApi extends AbstractApi {
     }
 
     /**
-     * Creates a new project group. Available only for users who can create groups.
-     *
-     * <pre><code>GitLab Endpoint: POST /groups</code></pre>
-     *
-     * @param name                      the name of the group to add
-     * @param path                      the path for the group
-     * @param description               (optional) - The group's description
-     * @param membershipLock            (optional, boolean) - Prevent adding new members to project membership within this group
-     * @param shareWithGroupLock        (optional, boolean) - Prevent sharing a project with another group within this group
-     * @param visibility                (optional) - The group's visibility. Can be private, internal, or public.
-     * @param lfsEnabled                (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
-     * @param requestAccessEnabled      (optional) - Allow users to request member access.
-     * @param parentId                  (optional) - The parent group id for creating nested group.
-     * @param sharedRunnersMinutesLimit (optional) - (admin-only) Pipeline minutes quota for this group
-     * @return the created Group instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #addGroup(String, String, String, Visibility,
-     * Boolean, Boolean, Integer)}
-     */
-    public Group addGroup(String name, String path, String description, Boolean membershipLock,
-                          Boolean shareWithGroupLock, Visibility visibility, Boolean lfsEnabled, Boolean requestAccessEnabled,
-                          Integer parentId, Integer sharedRunnersMinutesLimit) throws GitLabApiException {
-
-        Form formData = new GitLabApiForm()
-                .withParam("name", name)
-                .withParam("path", path)
-                .withParam("description", description)
-                .withParam("membership_lock", membershipLock)
-                .withParam("share_with_group_lock", shareWithGroupLock)
-                .withParam("visibility", visibility)
-                .withParam("lfs_enabled", lfsEnabled)
-                .withParam("request_access_enabled", requestAccessEnabled)
-                .withParam("parent_id", parentId)
-                .withParam("shared_runners_minutes_limit", sharedRunnersMinutesLimit);
-        Response response = post(Response.Status.CREATED, formData, "groups");
-        return (response.readEntity(Group.class));
-    }
-
-    /**
-     * Updates a project group. Available only for users who can create groups.
-     *
-     * <pre><code>GitLab Endpoint: PUT /groups</code></pre>
-     *
-     * @param groupIdOrPath             the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param name                      the name of the group to add
-     * @param path                      the path for the group
-     * @param description               (optional) - The group's description
-     * @param membershipLock            (optional, boolean) - Prevent adding new members to project membership within this group
-     * @param shareWithGroupLock        (optional, boolean) - Prevent sharing a project with another group within this group
-     * @param visibility                (optional) - The group's visibility. Can be private, internal, or public.
-     * @param lfsEnabled                (optional) - Enable/disable Large File Storage (LFS) for the projects in this group
-     * @param requestAccessEnabled      (optional) - Allow users to request member access
-     * @param parentId                  (optional) - The parent group id for creating nested group
-     * @param sharedRunnersMinutesLimit (optional) - (admin-only) Pipeline minutes quota for this group
-     * @return the updated Group instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #updateGroup(Object, String, String, String,
-     * Visibility, Boolean, Boolean, Integer)}
-     */
-    public Group updateGroup(Object groupIdOrPath, String name, String path, String description, Boolean membershipLock,
-                             Boolean shareWithGroupLock, Visibility visibility, Boolean lfsEnabled, Boolean requestAccessEnabled,
-                             Integer parentId, Integer sharedRunnersMinutesLimit) throws GitLabApiException {
-
-        Form formData = new GitLabApiForm()
-                .withParam("name", name)
-                .withParam("path", path)
-                .withParam("description", description)
-                .withParam("membership_lock", membershipLock)
-                .withParam("share_with_group_lock", shareWithGroupLock)
-                .withParam("visibility", visibility)
-                .withParam("lfs_enabled", lfsEnabled)
-                .withParam("request_access_enabled", requestAccessEnabled)
-                .withParam("parent_id", parentId)
-                .withParam("shared_runners_minutes_limit", sharedRunnersMinutesLimit);
-        Response response = put(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath));
-        return (response.readEntity(Group.class));
-    }
-
-    /**
      * Removes group with all projects inside.
      *
      * <pre><code>GitLab Endpoint: DELETE /groups/:id</code></pre>
@@ -874,29 +794,6 @@ public class GroupApi extends AbstractApi {
      */
     public List<Member> getAllMembers(Object groupIdOrPath) throws GitLabApiException {
         return (getAllMembers(groupIdOrPath, null, null));
-    }
-
-    /**
-     * Gets a list of group members viewable by the authenticated user, including inherited members
-     * through ancestor groups. Returns multiple times the same user (with different member attributes)
-     * when the user is a member of the group and of one or more ancestor group.
-     *
-     * <pre><code>GitLab Endpoint: GET /groups/:id/members/all</code></pre>
-     *
-     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
-     * @param page          the page to get
-     * @param perPage       the number of Member instances per page
-     * @return a list of group members viewable by the authenticated user, including inherited members
-     * through ancestor groups in the specified page range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0
-     */
-    @Deprecated
-    public List<Member> getAllMembers(Object groupIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
-                "groups", getGroupIdOrPath(groupIdOrPath), "members", "all");
-        return (response.readEntity(new GenericType<List<Member>>() {
-        }));
     }
 
     /**
@@ -1332,9 +1229,28 @@ public class GroupApi extends AbstractApi {
      */
     public Variable createVariable(Object groupIdOrPath, String key, String value, Boolean isProtected) throws GitLabApiException {
 
+        return createVariable(groupIdOrPath, key, value, isProtected, false);
+    }
+
+    /**
+     * Create a new group variable.
+     *
+     * <pre><code>GitLab Endpoint: POST /groups/:id/variables</code></pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
+     * @param key           the key of a variable; must have no more than 255 characters; only A-Z, a-z, 0-9, and _ are allowed, required
+     * @param value         the value for the variable, required
+     * @param isProtected   whether the variable is protected, optional
+     * @param masked        whether the variable is masked, optional
+     * @return a Variable instance with the newly created variable
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Variable createVariable(Object groupIdOrPath, String key, String value, Boolean isProtected, Boolean masked) throws GitLabApiException {
+
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("key", key, true)
                 .withParam("value", value, true)
+                .withParam("masked", masked)
                 .withParam("protected", isProtected);
         Response response = post(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath), "variables");
         return (response.readEntity(Variable.class));
@@ -1354,8 +1270,27 @@ public class GroupApi extends AbstractApi {
      */
     public Variable updateVariable(Object groupIdOrPath, String key, String value, Boolean isProtected) throws GitLabApiException {
 
+        return updateVariable(groupIdOrPath, key, value, isProtected, false);
+    }
+
+    /**
+     * Update a group variable.
+     *
+     * <pre><code>GitLab Endpoint: PUT /groups/:id/variables/:key</code></pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
+     * @param key           the key of an existing variable, required
+     * @param value         the value for the variable, required
+     * @param isProtected   whether the variable is protected, optional
+     * @param masked        whether the variable is masked, optional
+     * @return a Variable instance with the updated variable
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Variable updateVariable(Object groupIdOrPath, String key, String value, Boolean isProtected, Boolean masked) throws GitLabApiException {
+
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("value", value, true)
+                .withParam("masked", masked)
                 .withParam("protected", isProtected);
         Response response = putWithFormData(Response.Status.CREATED, formData, "groups", getGroupIdOrPath(groupIdOrPath), "variables", key);
         return (response.readEntity(Variable.class));
@@ -1381,7 +1316,7 @@ public class GroupApi extends AbstractApi {
      *
      * @param groupIdOrPath   the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @return the transfered Project instance
+     * @return the transferred Project instance
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Project transferProject(Object groupIdOrPath, Object projectIdOrPath) throws GitLabApiException {
@@ -1676,7 +1611,6 @@ public class GroupApi extends AbstractApi {
         return (response.readEntity(Group.class));
     }
 
-
     /**
      * Share group with another group. Returns 200 and the group details on success.
      *
@@ -1711,5 +1645,4 @@ public class GroupApi extends AbstractApi {
         delete(Response.Status.NO_CONTENT, null,
                 "groups", getGroupIdOrPath(groupIdOrPath), "share", sharedWithGroupId);
     }
-
 }

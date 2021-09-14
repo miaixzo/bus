@@ -27,11 +27,6 @@ package org.aoju.bus.gitlab.hooks.web;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public abstract class AbstractEvent implements Event {
 
     private String requestUrl;

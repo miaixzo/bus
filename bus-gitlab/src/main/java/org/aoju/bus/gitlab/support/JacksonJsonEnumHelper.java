@@ -23,19 +23,13 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab;
+package org.aoju.bus.gitlab.support;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.aoju.bus.core.lang.Symbol;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class JacksonJsonEnumHelper<E extends Enum<E>> {
 
     private Map<String, E> valuesMap;
@@ -84,7 +78,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
                         if (camelCased) {
                             nextCharIsCapitalized = true;
                         } else {
-                            nameBuf.append(Symbol.C_SPACE);
+                            nameBuf.append(' ');
                         }
                     }
                 } else if (nextCharIsCapitalized) {
@@ -126,5 +120,4 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
     public String toString(E e) {
         return (namesMap.get(e));
     }
-
 }

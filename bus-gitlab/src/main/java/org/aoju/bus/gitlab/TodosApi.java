@@ -33,10 +33,6 @@ import java.util.stream.Stream;
 
 /**
  * This class implements the client side API for the GitLab Todos API.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class TodosApi extends AbstractApi {
 
@@ -209,5 +205,4 @@ public class TodosApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm();
         post(Response.Status.NO_CONTENT, formData, "todos", "mark_as_done");
     }
-
 }

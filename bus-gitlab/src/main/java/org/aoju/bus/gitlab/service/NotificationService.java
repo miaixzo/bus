@@ -26,19 +26,13 @@
 package org.aoju.bus.gitlab.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.gitlab.GitLabApiForm;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public abstract class NotificationService {
 
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";
@@ -64,10 +58,12 @@ public abstract class NotificationService {
 
     private Integer id;
     private String title;
+    private String slug;
     private Date createdAt;
     private Date updatedAt;
     private Boolean active;
 
+    private Boolean commitEvents;
     private Boolean pushEvents;
     private Boolean issuesEvents;
     private Boolean confidentialIssuesEvents;
@@ -89,6 +85,14 @@ public abstract class NotificationService {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public String getTitle() {
@@ -126,6 +130,19 @@ public abstract class NotificationService {
     // *******************************************************************************
     // The following methods can be used to configure the notification service
     // *******************************************************************************
+
+    public Boolean getCommitEvents() {
+        return commitEvents;
+    }
+
+    public void setCommitEvents(Boolean commitEvents) {
+        this.commitEvents = commitEvents;
+    }
+
+    protected <T> T withCommitEvents(Boolean commitEvents, T derivedInstance) {
+        this.commitEvents = commitEvents;
+        return (derivedInstance);
+    }
 
     public Boolean getPushEvents() {
         return pushEvents;
@@ -267,16 +284,17 @@ public abstract class NotificationService {
 
     @JsonIgnore
     protected String getProperty(String prop) {
-        return getProperty(prop, Normal.EMPTY);
+        return (getProperty(prop, ""));
     }
 
     @JsonIgnore
+    @SuppressWarnings("unchecked")
     protected <T> T getProperty(String prop, T defaultValue) {
 
-        Object value = (null != properties ? properties.get(prop) : null);
+        Object value = (properties != null ? properties.get(prop) : null);
 
         // HACK: Sometimes GitLab returns "0" or "1" for true/false
-        if (null != value && Boolean.class.isInstance(defaultValue)) {
+        if (value != null && Boolean.class.isInstance(defaultValue)) {
             if ("0".equals(value)) {
                 return ((T) Boolean.FALSE);
             } else if ("1".equals(value)) {
@@ -284,7 +302,7 @@ public abstract class NotificationService {
             }
         }
 
-        return ((T) (null != value ? value : defaultValue));
+        return ((T) (value != null ? value : defaultValue));
     }
 
     protected void setProperty(String prop, Object value) {
@@ -299,4 +317,14 @@ public abstract class NotificationService {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
+    public enum BranchesToBeNotified {
+        ALL, DEFAULT, PROTECTED, DEFAULT_AND_PROTECTED;
+
+        @Override
+        public String toString() {
+            return (name().toLowerCase());
+        }
+    }
+
 }

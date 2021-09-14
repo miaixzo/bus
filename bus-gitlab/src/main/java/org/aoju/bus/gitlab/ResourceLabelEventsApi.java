@@ -36,10 +36,7 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the GitLab Resource label events API
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/resource_label_events.html">Resource label events API at GitLab</a>
- * @since JDK 1.8+
  */
 public class ResourceLabelEventsApi extends AbstractApi {
 
@@ -117,9 +114,10 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @param issueIid             the IID of the issue
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
+     * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalIssueLabelEvent(Object projectIdOrPath,
-                                                           Integer issueIid, Integer resourceLabelEventId) {
+                                                           Integer issueIid, Integer resourceLabelEventId) throws GitLabApiException {
 
         try {
             return (Optional.ofNullable(getIssueLabelEvent(projectIdOrPath, issueIid, resourceLabelEventId)));
@@ -198,9 +196,10 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @param epicId               the ID of the epic
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
+     * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalEpicLabelEvent(Object projectIdOrPath,
-                                                          Integer epicId, Integer resourceLabelEventId) {
+                                                          Integer epicId, Integer resourceLabelEventId) throws GitLabApiException {
 
         try {
             return (Optional.ofNullable(getEpicLabelEvent(projectIdOrPath, epicId, resourceLabelEventId)));
@@ -290,5 +289,4 @@ public class ResourceLabelEventsApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
-
 }

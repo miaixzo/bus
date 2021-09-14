@@ -27,19 +27,14 @@ package org.aoju.bus.gitlab.hooks.web;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
-import org.aoju.bus.gitlab.JacksonJson;
 import org.aoju.bus.gitlab.models.Assignee;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public abstract class EventChanges {
 
     private ChangeContainer<Integer> authorId;
@@ -143,13 +138,14 @@ public abstract class EventChanges {
         this.totalTimeSpent = totalTimeSpent;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> ChangeContainer<T> get(String property) {
 
         if (otherProperties.containsKey(property)) {
             try {
                 final ChangeContainer<Object> container = otherProperties.get(property);
                 // noinspection unchecked :  It's duty from caller to be sure to do that
-                return null != container ? (ChangeContainer<T>) container : null;
+                return container != null ? (ChangeContainer<T>) container : null;
             } catch (ClassCastException e) {
                 return null;
             }

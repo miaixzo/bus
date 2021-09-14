@@ -35,10 +35,7 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the GitLab API license calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/license.html">License API</a>
- * @since JDK 1.8+
  */
 public class LicenseApi extends AbstractApi {
 
@@ -140,5 +137,4 @@ public class LicenseApi extends AbstractApi {
         Response response = delete(Response.Status.OK, null, "license", licenseId);
         return (response.readEntity(License.class));
     }
-
 }

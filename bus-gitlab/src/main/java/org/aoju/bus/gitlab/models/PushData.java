@@ -25,15 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.aoju.bus.gitlab.Constants.ActionType;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class PushData {
 
     private Integer commitCount;
@@ -43,18 +37,6 @@ public class PushData {
     private String commitTo;
     private String ref;
     private String commitTitle;
-
-    @Deprecated
-    @JsonIgnore
-    public Integer getCommit_count() {
-        return commitCount;
-    }
-
-    @Deprecated
-    @JsonIgnore
-    public void setCommit_count(Integer commit_count) {
-        this.commitCount = commit_count;
-    }
 
     public Integer getCommitCount() {
         return commitCount;

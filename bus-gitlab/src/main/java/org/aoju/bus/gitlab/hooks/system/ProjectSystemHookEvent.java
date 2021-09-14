@@ -25,16 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.system;
 
-import org.aoju.bus.gitlab.JacksonJson;
 import org.aoju.bus.gitlab.models.Visibility;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
 
     public static final String PROJECT_CREATE_EVENT = "project_create";

@@ -39,11 +39,8 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab milestones calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/milestones.html">Project milestones API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_milestones.html">Group milestones API</a>
- * @since JDK 1.8+
  */
 public class MilestonesApi extends AbstractApi {
 
@@ -650,5 +647,4 @@ public class MilestonesApi extends AbstractApi {
     public void deleteMilestone(Object projectIdOrPath, Integer milestoneId) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "milestones", milestoneId);
     }
-
 }

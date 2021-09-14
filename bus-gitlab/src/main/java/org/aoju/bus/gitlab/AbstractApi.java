@@ -26,6 +26,7 @@
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.core.toolkit.UriKit;
+import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.Group;
 import org.aoju.bus.gitlab.models.Label;
 import org.aoju.bus.gitlab.models.Project;
@@ -42,10 +43,6 @@ import java.net.URL;
 /**
  * This class is the base class for all the sub API classes. It provides implementations of
  * delete(), get(), post() and put() that are re-used by all the sub-classes.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public abstract class AbstractApi implements Constants {
 
@@ -73,12 +70,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Project) {
 
             Integer id = ((Project) obj).getId();
-            if (null != id && id.intValue() > 0) {
+            if (id != null && id.intValue() > 0) {
                 return (id);
             }
 
             String path = ((Project) obj).getPathWithNamespace();
-            if (null != path && path.trim().length() > 0) {
+            if (path != null && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
 
@@ -108,12 +105,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Group) {
 
             Integer id = ((Group) obj).getId();
-            if (null != id && id.intValue() > 0) {
+            if (id != null && id.intValue() > 0) {
                 return (id);
             }
 
             String path = ((Group) obj).getFullPath();
-            if (null != path && path.trim().length() > 0) {
+            if (path != null && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
 
@@ -143,12 +140,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof User) {
 
             Integer id = ((User) obj).getId();
-            if (null != id && id.intValue() > 0) {
+            if (id != null && id.intValue() > 0) {
                 return (id);
             }
 
             String username = ((User) obj).getUsername();
-            if (null != username && username.trim().length() > 0) {
+            if (username != null && username.trim().length() > 0) {
                 return (urlEncode(username.trim()));
             }
 
@@ -178,12 +175,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Label) {
 
             Integer id = ((Label) obj).getId();
-            if (null != id && id.intValue() > 0) {
+            if (id != null && id.intValue() > 0) {
                 return (id);
             }
 
-            String name = ((User) obj).getName();
-            if (null != name && name.trim().length() > 0) {
+            String name = ((Label) obj).getName();
+            if (name != null && name.trim().length() > 0) {
                 return (urlEncode(name.trim()));
             }
 
@@ -195,11 +192,11 @@ public abstract class AbstractApi implements Constants {
         }
     }
 
-    protected GitLabApi.ApiVersion getApiVersion() {
+    protected ApiVersion getApiVersion() {
         return (gitLabApi.getApiVersion());
     }
 
-    protected boolean isApiVersion(GitLabApi.ApiVersion apiVersion) {
+    protected boolean isApiVersion(ApiVersion apiVersion) {
         return (gitLabApi.getApiVersion() == apiVersion);
     }
 
@@ -743,5 +740,4 @@ public abstract class AbstractApi implements Constants {
 
         return (form.asMap());
     }
-
 }

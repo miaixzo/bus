@@ -25,17 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ProjectSharedGroup {
 
     private Integer groupId;
     private String groupName;
+    private String groupFullPath;
     private AccessLevel groupAccessLevel;
 
     public int getGroupId() {
@@ -60,6 +56,14 @@ public class ProjectSharedGroup {
 
     public void setGroupAccessLevel(AccessLevel accessLevel) {
         this.groupAccessLevel = accessLevel;
+    }
+
+    public String getGroupFullPath() {
+        return groupFullPath;
+    }
+
+    public void setGroupFullPath(String groupFullPath) {
+        this.groupFullPath = groupFullPath;
     }
 
     @Override

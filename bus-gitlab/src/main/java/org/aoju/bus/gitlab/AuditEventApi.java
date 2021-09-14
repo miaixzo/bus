@@ -26,6 +26,7 @@
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.AuditEvent;
+import org.aoju.bus.gitlab.support.ISO8601;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
@@ -36,10 +37,6 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab Instance Audit Event API.
  * See <a href="https://docs.gitlab.com/ee/api/audit_events.html">Audit Event API at GitLab</a> for more information.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class AuditEventApi extends AbstractApi {
 
@@ -114,5 +111,4 @@ public class AuditEventApi extends AbstractApi {
         Response response = get(Response.Status.OK, null, "audit_events", auditEventId);
         return (response.readEntity(AuditEvent.class));
     }
-
 }

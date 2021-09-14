@@ -27,11 +27,6 @@ package org.aoju.bus.gitlab.hooks.web;
 
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class IssueChanges extends EventChanges {
 
     private ChangeContainer<Date> dueDate;

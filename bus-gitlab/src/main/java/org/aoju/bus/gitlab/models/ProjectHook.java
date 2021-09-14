@@ -25,15 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ProjectHook {
 
     private Boolean buildEvents;
@@ -56,6 +51,9 @@ public class ProjectHook {
     private Boolean confidentialIssuesEvents;
     private Boolean confidentialNoteEvents;
     private String pushEventsBranchFilter;
+
+    private Boolean deploymentEvents;
+    private Boolean releasesEvents;
 
     public Boolean getBuildEvents() {
         return buildEvents;
@@ -185,6 +183,22 @@ public class ProjectHook {
         this.repositoryUpdateEvents = repositoryUpdateEvents;
     }
 
+    public Boolean getDeploymentEvents() {
+        return deploymentEvents;
+    }
+
+    public void setDeploymentEvents(Boolean releasesEvents) {
+        this.deploymentEvents = releasesEvents;
+    }
+
+    public Boolean getReleasesEvents() {
+        return releasesEvents;
+    }
+
+    public void setReleasesEvents(Boolean releasesEvents) {
+        this.releasesEvents = releasesEvents;
+    }
+
     public Boolean getConfidentialIssuesEvents() {
         return confidentialIssuesEvents;
     }
@@ -266,6 +280,16 @@ public class ProjectHook {
 
     public ProjectHook withPushEventsBranchFilter(String pushEventsBranchFilter) {
         this.pushEventsBranchFilter = pushEventsBranchFilter;
+        return (this);
+    }
+
+    public ProjectHook withDeploymentEvents(Boolean deploymentEvents) {
+        this.deploymentEvents = deploymentEvents;
+        return (this);
+    }
+
+    public ProjectHook withReleasesEvents(Boolean releasesEvents) {
+        this.releasesEvents = releasesEvents;
         return (this);
     }
 

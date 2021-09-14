@@ -27,14 +27,12 @@ package org.aoju.bus.gitlab.hooks.system;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.HookManager;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.HttpRequest;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -43,10 +41,6 @@ import java.util.logging.Logger;
 
 /**
  * This class provides a handler for processing GitLab System Hook callouts.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class SystemHookManager implements HookManager {
 
@@ -55,7 +49,7 @@ public class SystemHookManager implements HookManager {
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for System Hook events.
-    private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<>();
+    private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<SystemHookListener>();
 
     private String secretToken;
 
@@ -73,25 +67,6 @@ public class SystemHookManager implements HookManager {
      */
     public SystemHookManager(String secretToken) {
         this.secretToken = secretToken;
-    }
-
-    /**
-     * Reads the POST data from a request into a String and returns it.
-     *
-     * @param request the HTTP request containing the POST data
-     * @return the POST data as a String instance
-     * @throws IOException if any error occurs while reading the POST data
-     */
-    public static String getPostDataAsString(HttpServletRequest request) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), Charset.DEFAULT_UTF_8)) {
-            int count;
-            final char[] buffer = new char[2048];
-            final StringBuilder out = new StringBuilder();
-            while ((count = reader.read(buffer, 0, buffer.length)) >= 0) {
-                out.append(buffer, 0, count);
-            }
-            return (out.toString());
-        }
     }
 
     /**
@@ -160,7 +135,8 @@ public class SystemHookManager implements HookManager {
         try {
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                String postData = getPostDataAsString(request);
+                LOGGER.fine(HttpRequest.getShortRequestDump("System Hook", true, request));
+                String postData = HttpRequest.getPostDataAsString(request);
                 LOGGER.fine("Raw POST data:\n" + postData);
                 tree = jacksonJson.readTree(postData);
             } else {
@@ -197,11 +173,11 @@ public class SystemHookManager implements HookManager {
 
             event = jacksonJson.unmarshal(SystemHookEvent.class, tree);
             if (LOGGER.isLoggable(Level.FINE)) {
-                LOGGER.fine(event.getEventName() + Symbol.LF + jacksonJson.marshal(event) + Symbol.LF);
+                LOGGER.fine(event.getEventName() + "\n" + jacksonJson.marshal(event) + "\n");
             }
 
             StringBuffer requestUrl = request.getRequestURL();
-            event.setRequestUrl(null != requestUrl ? requestUrl.toString() : null);
+            event.setRequestUrl(requestUrl != null ? requestUrl.toString() : null);
             event.setRequestQueryString(request.getQueryString());
 
             String secretToken = request.getHeader("X-Gitlab-Token");
@@ -232,7 +208,7 @@ public class SystemHookManager implements HookManager {
      * @throws GitLabApiException if the event is not supported
      */
     public void handleEvent(SystemHookEvent event) throws GitLabApiException {
-        if (null != event) {
+        if (event != null) {
             LOGGER.info("handleEvent:" + event.getClass().getSimpleName() + ", eventName=" + event.getEventName());
             fireEvent(event);
         } else {
@@ -355,5 +331,4 @@ public class SystemHookManager implements HookManager {
             listener.onMergeRequestEvent(event);
         }
     }
-
 }

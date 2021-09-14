@@ -27,15 +27,10 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.aoju.bus.gitlab.Constants.Encoding;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Base64;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class RepositoryFile {
 
     private String fileName; // file name only, Ex. class.rb
@@ -177,7 +172,7 @@ public class RepositoryFile {
      */
     @JsonIgnore
     public void encodeAndSetContent(String content) {
-        encodeAndSetContent(null != content ? content.getBytes() : null);
+        encodeAndSetContent(content != null ? content.getBytes() : null);
     }
 
     /**

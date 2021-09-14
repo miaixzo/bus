@@ -23,8 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab;
+package org.aoju.bus.gitlab.support;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -38,11 +39,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * This class provides utility methods for parsing and formatting org.aoju.bus.gitlab.ISO8601 formatted dates.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
+ * This class provides utility methods for parsing and formatting ISO8601 formatted dates.
  */
 public class ISO8601 {
 
@@ -66,9 +63,9 @@ public class ISO8601 {
             .toFormatter();
 
     /**
-     * Get a org.aoju.bus.gitlab.ISO8601 formatted string for the current date and time.
+     * Get a ISO8601 formatted string for the current date and time.
      *
-     * @return a org.aoju.bus.gitlab.ISO8601 formatted string for the current date and time
+     * @return a ISO8601 formatted string for the current date and time
      */
     public static String getTimestamp() {
         return (SafeDateFormatter.getDateFormat(PATTERN).format(new Date()));
@@ -78,7 +75,7 @@ public class ISO8601 {
      * Get a ISO8601formatted string for the current date and time.
      *
      * @param withMsec flag indicating whether to include milliseconds
-     * @return a org.aoju.bus.gitlab.ISO8601 formatted string for the current date and time
+     * @return a ISO8601 formatted string for the current date and time
      */
     public static String getTimestamp(boolean withMsec) {
         return (withMsec ? SafeDateFormatter.getDateFormat(PATTERN_MSEC).format(new Date()) :
@@ -86,10 +83,10 @@ public class ISO8601 {
     }
 
     /**
-     * Get a org.aoju.bus.gitlab.ISO8601 formatted string for the provided Calendar instance.
+     * Get a ISO8601 formatted string for the provided Calendar instance.
      *
-     * @param cal the Calendar instance to get the org.aoju.bus.gitlab.ISO8601 formatted string for
-     * @return a org.aoju.bus.gitlab.ISO8601 formatted string for the provided Calendar instance, or null if call is null
+     * @param cal the Calendar instance to get the ISO8601 formatted string for
+     * @return a ISO8601 formatted string for the provided Calendar instance, or null if call is null
      */
     public static String toString(Calendar cal) {
 
@@ -101,11 +98,11 @@ public class ISO8601 {
     }
 
     /**
-     * Get a org.aoju.bus.gitlab.ISO8601 formatted string for the provided Date instance.
+     * Get a ISO8601 formatted string for the provided Date instance.
      *
-     * @param date     the Date instance to get the org.aoju.bus.gitlab.ISO8601 formatted string for
+     * @param date     the Date instance to get the ISO8601 formatted string for
      * @param withMsec flag indicating whether to include milliseconds
-     * @return a org.aoju.bus.gitlab.ISO8601 formatted string for the provided Date instance, or null if date is null
+     * @return a ISO8601 formatted string for the provided Date instance, or null if date is null
      */
     public static String toString(Date date, boolean withMsec) {
 
@@ -135,22 +132,23 @@ public class ISO8601 {
     }
 
     /**
-     * Get a org.aoju.bus.gitlab.ISO8601 formatted string for the provided Date instance.
+     * Get a ISO8601 formatted string for the provided Date instance.
      *
-     * @param date the Date instance to get the org.aoju.bus.gitlab.ISO8601 formatted string for
-     * @return a org.aoju.bus.gitlab.ISO8601 formatted string for the provided Date instance, or null if date is null
+     * @param date the Date instance to get the ISO8601 formatted string for
+     * @return a ISO8601 formatted string for the provided Date instance, or null if date is null
      */
     public static String toString(Date date) {
         return (toString(date, true));
     }
 
     /**
-     * Parses an org.aoju.bus.gitlab.ISO8601 formatted string a returns an Instant instance.
+     * Parses an ISO8601 formatted string a returns an Instant instance.
      *
-     * @param dateTimeString the org.aoju.bus.gitlab.ISO8601 formatted string
-     * @return an Instant instance for the org.aoju.bus.gitlab.ISO8601 formatted string
+     * @param dateTimeString the ISO8601 formatted string
+     * @return an Instant instance for the ISO8601 formatted string
+     * @throws ParseException if the provided string is not in the proper format
      */
-    public static Instant toInstant(String dateTimeString) {
+    public static Instant toInstant(String dateTimeString) throws ParseException {
 
         if (dateTimeString == null) {
             return (null);
@@ -176,23 +174,25 @@ public class ISO8601 {
     }
 
     /**
-     * Parses an org.aoju.bus.gitlab.ISO8601 formatted string a returns a Date instance.
+     * Parses an ISO8601 formatted string a returns a Date instance.
      *
-     * @param dateTimeString the org.aoju.bus.gitlab.ISO8601 formatted string
-     * @return a Date instance for the org.aoju.bus.gitlab.ISO8601 formatted string
+     * @param dateTimeString the ISO8601 formatted string
+     * @return a Date instance for the ISO8601 formatted string
+     * @throws ParseException if the provided string is not in the proper format
      */
-    public static Date toDate(String dateTimeString) {
+    public static Date toDate(String dateTimeString) throws ParseException {
         Instant instant = toInstant(dateTimeString);
-        return (null != instant ? Date.from(instant) : null);
+        return (instant != null ? Date.from(instant) : null);
     }
 
     /**
-     * Parses an org.aoju.bus.gitlab.ISO8601 formatted string a returns a Calendar instance.
+     * Parses an ISO8601 formatted string a returns a Calendar instance.
      *
-     * @param dateTimeString the org.aoju.bus.gitlab.ISO8601 formatted string
-     * @return a Calendar instance for the org.aoju.bus.gitlab.ISO8601 formatted string
+     * @param dateTimeString the ISO8601 formatted string
+     * @return a Calendar instance for the ISO8601 formatted string
+     * @throws ParseException if the provided string is not in the proper format
      */
-    public static Calendar toCalendar(String dateTimeString) {
+    public static Calendar toCalendar(String dateTimeString) throws ParseException {
 
         Date date = toDate(dateTimeString);
         if (date == null) {
@@ -207,7 +207,13 @@ public class ISO8601 {
     // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
     private static final class SafeDateFormatter {
 
-        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal.withInitial(() -> (new ConcurrentHashMap<>()));
+        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = new ThreadLocal<Map<String, SimpleDateFormat>>() {
+
+            @Override
+            public Map<String, SimpleDateFormat> initialValue() {
+                return (new ConcurrentHashMap<>());
+            }
+        };
 
         private static SimpleDateFormat getDateFormat(String formatSpec) {
 
@@ -223,5 +229,4 @@ public class ISO8601 {
             return (format);
         }
     }
-
 }

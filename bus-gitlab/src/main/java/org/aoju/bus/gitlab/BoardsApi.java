@@ -40,10 +40,7 @@ import java.util.stream.Stream;
  * NOTE: If a user is not a member of a group and the group is private,
  * a GET request on that group will result to a 404 status code.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/boards.html">GitLab Issue Boards API Documentaion</a>
- * @since JDK 1.8+
  */
 public class BoardsApi extends AbstractApi {
 
@@ -93,7 +90,7 @@ public class BoardsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Board> getBoards(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Board.class, itemsPerPage, null,
+        return (new Pager<Board>(this, Board.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "boards"));
     }
 
@@ -355,5 +352,4 @@ public class BoardsApi extends AbstractApi {
     public void deleteBoardList(Object projectIdOrPath, Integer boardId, Integer listId) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "boards", boardId, "lists", listId);
     }
-
 }

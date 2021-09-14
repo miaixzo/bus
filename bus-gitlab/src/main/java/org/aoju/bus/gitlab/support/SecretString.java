@@ -23,81 +23,67 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab;
+package org.aoju.bus.gitlab.support;
 
-import org.aoju.bus.core.lang.Charset;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
-import java.io.*;
+import java.util.Arrays;
 
 /**
- * This StreamingOutput implementation is utilized to send a OAuth2 token request
- * in a secure manner.  The password is never copied to a String, instead it is
- * contained in a SecretString that is cleared when an instance of this class is finalized.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
+ * This class implements a CharSequence that can be cleared of it's contained characters.
+ * This class is utilized to pass around secrets (passwords) instead of a String instance.
  */
-public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseable {
+public class SecretString implements CharSequence, AutoCloseable {
 
-    private final String username;
-    private final SecretString password;
+    private final char[] chars;
 
-    public Oauth2LoginStreamingOutput(String username, CharSequence password) {
-        this.username = username;
-        this.password = new SecretString(password);
+    public SecretString(CharSequence charSequence) {
+
+        int length = charSequence.length();
+        chars = new char[length];
+        for (int i = 0; i < length; i++) {
+            chars[i] = charSequence.charAt(i);
+        }
     }
 
-    public Oauth2LoginStreamingOutput(String username, char[] password) {
-        this.username = username;
-        this.password = new SecretString(password);
+    public SecretString(char[] chars) {
+        this(chars, 0, chars.length);
+    }
+
+    public SecretString(char[] chars, int start, int end) {
+        this.chars = new char[end - start];
+        System.arraycopy(chars, start, this.chars, 0, this.chars.length);
     }
 
     @Override
-    public void write(OutputStream output) throws IOException, WebApplicationException {
-        Writer writer = new BufferedWriter(new OutputStreamWriter(output, Charset.UTF_8));
-        writer.write("{ ");
-        writer.write("\"grant_type\": \"password\", ");
-        writer.write("\"username\": \"" + username + "\", ");
-        writer.write("\"password\": ");
-
-        // Output the quoted password
-        writer.write('"');
-        for (int i = 0, length = password.length(); i < length; i++) {
-
-            char c = password.charAt(i);
-            if (c == '"' || c == '\\') {
-                writer.write('\\');
-            }
-
-            writer.write(c);
-        }
-
-        writer.write('"');
-
-        writer.write(" }");
-        writer.flush();
-        writer.close();
-    }
-
-    /**
-     * Clears the contained password's data.
-     */
-    public void clearPassword() {
-        password.clear();
+    public char charAt(int index) {
+        return chars[index];
     }
 
     @Override
     public void close() {
-        clearPassword();
+        clear();
+    }
+
+    @Override
+    public int length() {
+        return chars.length;
+    }
+
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return new SecretString(this.chars, start, end);
+    }
+
+    /**
+     * Clear the contents of this SecretString instance by setting each character to 0.
+     * This is automatically done in the finalize() method.
+     */
+    public void clear() {
+        Arrays.fill(chars, '\0');
     }
 
     @Override
     public void finalize() throws Throwable {
-        clearPassword();
+        clear();
         super.finalize();
     }
-
 }

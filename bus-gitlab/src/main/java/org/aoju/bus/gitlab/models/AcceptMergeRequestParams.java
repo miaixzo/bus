@@ -27,11 +27,6 @@ package org.aoju.bus.gitlab.models;
 
 import org.aoju.bus.gitlab.GitLabApiForm;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class AcceptMergeRequestParams {
 
     private String mergeCommitMessage;

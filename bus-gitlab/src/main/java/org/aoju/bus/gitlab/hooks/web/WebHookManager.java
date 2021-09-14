@@ -25,14 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.web;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.HookManager;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.HttpRequest;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -41,10 +39,6 @@ import java.util.logging.Logger;
 
 /**
  * This class provides a handler for processing GitLab WebHook callouts.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class WebHookManager implements HookManager {
 
@@ -52,7 +46,7 @@ public class WebHookManager implements HookManager {
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for WebHook events.
-    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<>();
+    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<WebHookListener>();
 
     private String secretToken;
 
@@ -70,25 +64,6 @@ public class WebHookManager implements HookManager {
      */
     public WebHookManager(String secretToken) {
         this.secretToken = secretToken;
-    }
-
-    /**
-     * Reads the POST data from a request into a String and returns it.
-     *
-     * @param request the HTTP request containing the POST data
-     * @return the POST data as a String instance
-     * @throws IOException if any error occurs while reading the POST data
-     */
-    public static String getPostDataAsString(HttpServletRequest request) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), Charset.DEFAULT_UTF_8)) {
-            int count;
-            final char[] buffer = new char[2048];
-            final StringBuilder out = new StringBuilder();
-            while ((count = reader.read(buffer, 0, buffer.length)) >= 0) {
-                out.append(buffer, 0, count);
-            }
-            return (out.toString());
-        }
     }
 
     /**
@@ -166,10 +141,11 @@ public class WebHookManager implements HookManager {
         try {
 
             if (LOGGER.isLoggable(Level.FINE)) {
-                String postData = getPostDataAsString(request);
+                LOGGER.fine(HttpRequest.getShortRequestDump(eventName + " webhook", true, request));
+                String postData = HttpRequest.getPostDataAsString(request);
                 LOGGER.fine("Raw POST data:\n" + postData);
                 event = jacksonJson.unmarshal(Event.class, postData);
-                LOGGER.fine(event.getObjectKind() + " event:" + Symbol.LF + jacksonJson.marshal(event) + Symbol.LF);
+                LOGGER.fine(event.getObjectKind() + " event:\n" + jacksonJson.marshal(event) + "\n");
             } else {
                 InputStreamReader reader = new InputStreamReader(request.getInputStream());
                 event = jacksonJson.unmarshal(Event.class, reader);
@@ -355,5 +331,4 @@ public class WebHookManager implements HookManager {
             listener.onWikiPageEvent(wikiPageEvent);
         }
     }
-
 }

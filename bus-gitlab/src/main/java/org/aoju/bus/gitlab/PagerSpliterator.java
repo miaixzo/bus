@@ -30,11 +30,6 @@ import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 class PagerSpliterator<T> implements Spliterator<T> {
 
     private Pager<T> pager;
@@ -60,8 +55,10 @@ class PagerSpliterator<T> implements Spliterator<T> {
             return true;
         } else if (pager.hasNext()) {
             elements = pager.next().iterator();
-            action.accept(elements.next());
-            return true;
+            if (elements.hasNext()) {
+                action.accept(elements.next());
+                return true;
+            }
         }
         return false;
     }
@@ -80,5 +77,4 @@ class PagerSpliterator<T> implements Spliterator<T> {
     public int characteristics() {
         return SIZED | NONNULL;
     }
-
 }

@@ -25,19 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.web;
 
-import org.aoju.bus.gitlab.JacksonJson;
 import org.aoju.bus.gitlab.models.Job;
 import org.aoju.bus.gitlab.models.User;
 import org.aoju.bus.gitlab.models.Variable;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class PipelineEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Pipeline Hook";

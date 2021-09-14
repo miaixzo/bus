@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.StateEvent;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
@@ -34,10 +33,6 @@ import java.util.List;
 
 /**
  * This class provides the form parameters for creating and updating merge requests.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class MergeRequestParams {
 
@@ -46,6 +41,7 @@ public class MergeRequestParams {
     private String title;
     private Integer assigneeId;
     private List<Integer> assigneeIds;
+    private List<Integer> reviewerIds;
     private Integer milestoneId;
     private List<String> labels;
     private String description;
@@ -114,6 +110,18 @@ public class MergeRequestParams {
     }
 
     /**
+     * The ID of the user(s) to assign to the review of the merge request. Set to 0 or provide
+     * an empty value to unassign all reviewers.
+     *
+     * @param reviewerIds the reviewerIds to set
+     * @return the reference to this MergeRequestParams instance
+     */
+    public MergeRequestParams withReviewerIds(List<Integer> reviewerIds) {
+        this.reviewerIds = reviewerIds;
+        return (this);
+    }
+
+    /**
      * Set the milestone ID field value.
      *
      * @param milestoneId the milestoneId to set
@@ -142,7 +150,7 @@ public class MergeRequestParams {
      * @return the reference to this MergeRequestParams instance
      */
     public MergeRequestParams withLabels(String[] labels) {
-        this.labels = (null != labels ? Arrays.asList(labels) : null);
+        this.labels = (labels != null ? Arrays.asList(labels) : null);
         return (this);
     }
 
@@ -249,8 +257,9 @@ public class MergeRequestParams {
                 .withParam("title", title, isCreate)
                 .withParam("assignee_id", assigneeId)
                 .withParam("assignee_ids", assigneeIds)
+                .withParam("reviewer_ids", reviewerIds)
                 .withParam("milestone_id", milestoneId)
-                .withParam("labels", (null != labels ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("description", description)
                 .withParam("remove_source_branch", removeSourceBranch)
                 .withParam("squash", squash)

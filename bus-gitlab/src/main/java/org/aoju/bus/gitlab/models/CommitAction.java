@@ -29,8 +29,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.aoju.bus.gitlab.Constants.Encoding;
 import org.aoju.bus.gitlab.GitLabApiException;
-import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
+import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,11 +38,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class CommitAction {
 
     private Action action;
@@ -74,6 +69,20 @@ public class CommitAction {
         } else {
             return (new String(Files.readAllBytes(file.toPath())));
         }
+    }
+
+    public CommitAction withFileContent(File file, String filePath, Encoding encoding) throws GitLabApiException {
+
+        this.encoding = (encoding != null ? encoding : Encoding.TEXT);
+        this.filePath = filePath;
+
+        try {
+            content = getFileContentAsString(file, this.encoding);
+        } catch (IOException e) {
+            throw new GitLabApiException(e);
+        }
+
+        return (this);
     }
 
     public Action getAction() {
@@ -170,20 +179,6 @@ public class CommitAction {
     public CommitAction withFileContent(String filePath, Encoding encoding) throws GitLabApiException {
         File file = new File(filePath);
         return (withFileContent(file, filePath, encoding));
-    }
-
-    public CommitAction withFileContent(File file, String filePath, Encoding encoding) throws GitLabApiException {
-
-        this.encoding = (null != encoding ? encoding : Encoding.TEXT);
-        this.filePath = filePath;
-
-        try {
-            content = getFileContentAsString(file, this.encoding);
-        } catch (IOException e) {
-            throw new GitLabApiException(e);
-        }
-
-        return (this);
     }
 
     @Override

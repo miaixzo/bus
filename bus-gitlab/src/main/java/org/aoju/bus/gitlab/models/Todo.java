@@ -36,16 +36,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.aoju.bus.gitlab.Constants.TodoAction;
 import org.aoju.bus.gitlab.Constants.TodoState;
 import org.aoju.bus.gitlab.Constants.TodoType;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.io.IOException;
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Todo {
 
     private Integer id;

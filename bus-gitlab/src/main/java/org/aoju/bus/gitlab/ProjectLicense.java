@@ -25,11 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
+import org.aoju.bus.gitlab.support.JacksonJson;
+
 public class ProjectLicense {
 
     private String key;
@@ -82,5 +79,4 @@ public class ProjectLicense {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
-
 }

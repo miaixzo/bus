@@ -25,13 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Namespace {
 
     private Integer id;
@@ -39,6 +34,8 @@ public class Namespace {
     private String path;
     private String kind;
     private String fullPath;
+    private String avatarUrl;
+    private String webUrl;
 
     public Integer getId() {
         return this.id;
@@ -103,6 +100,22 @@ public class Namespace {
     public Namespace withFullPath(String fullPath) {
         this.fullPath = fullPath;
         return this;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
     }
 
     @Override

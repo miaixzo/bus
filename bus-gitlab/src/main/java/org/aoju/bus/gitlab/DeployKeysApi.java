@@ -36,10 +36,6 @@ import java.util.stream.Stream;
 
 /**
  * This class implements the client side API for the GitLab Deploy Keys API calls.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class DeployKeysApi extends AbstractApi {
 
@@ -287,5 +283,4 @@ public class DeployKeysApi extends AbstractApi {
                 "projects", getProjectIdOrPath(projectIdOrPath), "deploy_keys", keyId, "enable");
         return (response.readEntity(DeployKey.class));
     }
-
 }

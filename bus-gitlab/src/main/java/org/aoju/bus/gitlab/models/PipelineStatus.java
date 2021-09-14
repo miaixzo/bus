@@ -33,16 +33,22 @@ import java.util.Map;
 
 /**
  * Enum for the various Pipeline status values.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public enum PipelineStatus {
 
-    RUNNING, PENDING, SUCCESS, FAILED, CANCELED, SKIPPED, MANUAL;
+    CREATED,
+    WAITING_FOR_RESOURCE,
+    PREPARING,
+    PENDING,
+    RUNNING,
+    SUCCESS,
+    FAILED,
+    CANCELED,
+    SKIPPED,
+    MANUAL,
+    SCHEDULED;
 
-    private static Map<String, PipelineStatus> valuesMap = new HashMap<>(6);
+    private static Map<String, PipelineStatus> valuesMap = new HashMap<>(11);
 
     static {
         for (PipelineStatus status : PipelineStatus.values())

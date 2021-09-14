@@ -27,6 +27,7 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -59,10 +60,7 @@ import java.util.stream.StreamSupport;
  *   }
  * </pre>
  *
- * @param <T> the GitLab type contained in the List.
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
+ * @param <T> the GitLab4J type contained in the List.
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
 
@@ -73,19 +71,19 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private int totalItems;
     private int currentPage;
     private int kaminariNextPage;
-    private List<String> pageParam;
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
     private AbstractApi api;
     private MultivaluedMap<String, String> queryParams;
     private Object[] pathArgs;
+    private List<String> pageParam = new ArrayList<>(1);
     private JavaType javaType;
 
     /**
      * Creates a Pager instance to access the API through the specified path and query parameters.
      *
      * @param api          the AbstractApi implementation to communicate through
-     * @param type         the GitLab type that will be contained in the List
+     * @param type         the GitLab4J type that will be contained in the List
      * @param itemsPerPage items per page
      * @param queryParams  HTTP query params
      * @param pathArgs     HTTP path arguments
@@ -160,11 +158,12 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param response the Response instance to get the value from
      * @param key      the HTTP header key to get the value for
      * @return the specified header value from the Response instance, or null if the header is not present
+     * @throws GitLabApiException if any error occurs
      */
-    private String getHeaderValue(Response response, String key) {
+    private String getHeaderValue(Response response, String key) throws GitLabApiException {
 
         String value = response.getHeaderString(key);
-        value = (null != value ? value.trim() : null);
+        value = (value != null ? value.trim() : null);
         if (value == null || value.length() == 0) {
             return (null);
         }
@@ -276,8 +275,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the first page of List. Will rewind the iterator.
      *
      * @return the first page of List
+     * @throws GitLabApiException if any error occurs
      */
-    public List<T> first() {
+    public List<T> first() throws GitLabApiException {
         return (page(1));
     }
 
@@ -300,8 +300,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the previous page of List. Will set the iterator to the previous page.
      *
      * @return the previous page of List
+     * @throws GitLabApiException if any error occurs
      */
-    public List<T> previous() {
+    public List<T> previous() throws GitLabApiException {
         return (page(currentPage - 1));
     }
 
@@ -309,8 +310,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the current page of List.
      *
      * @return the current page of List
+     * @throws GitLabApiException if any error occurs
      */
-    public List<T> current() {
+    public List<T> current() throws GitLabApiException {
         return (page(currentPage));
     }
 
@@ -324,12 +326,6 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      */
     public List<T> page(int pageNumber) {
 
-        if (pageNumber > totalPages && pageNumber > kaminariNextPage) {
-            throw new NoSuchElementException();
-        } else if (pageNumber < 1) {
-            throw new NoSuchElementException();
-        }
-
         if (currentPage == 0 && pageNumber == 1) {
             currentPage = 1;
             return (currentItems);
@@ -337,6 +333,12 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         if (currentPage == pageNumber) {
             return (currentItems);
+        }
+
+        if (pageNumber > totalPages && pageNumber > kaminariNextPage) {
+            throw new NoSuchElementException();
+        } else if (pageNumber < 1) {
+            throw new NoSuchElementException();
         }
 
         try {
@@ -361,8 +363,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Gets all the items from each page as a single List instance.
      *
      * @return all the items from each page as a single List instance
+     * @throws GitLabApiException if any error occurs
      */
-    public List<T> all() {
+    public List<T> all() throws GitLabApiException {
 
         // Make sure that current page is 0, this will ensure the whole list is fetched
         // regardless of what page the instance is currently on.
@@ -382,8 +385,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return a Stream instance which is pre-populated with all items from all pages
      * @throws IllegalStateException if Stream has already been issued
+     * @throws GitLabApiException    if any other error occurs
      */
-    public Stream<T> stream() throws IllegalStateException {
+    public Stream<T> stream() throws GitLabApiException, IllegalStateException {
 
         if (pagerStream == null) {
             synchronized (this) {
@@ -427,7 +431,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     // regardless of what page the instance is currently on.
                     currentPage = 0;
 
-                    pagerStream = StreamSupport.stream(new PagerSpliterator<>(this), false);
+                    pagerStream = StreamSupport.stream(new PagerSpliterator<T>(this), false);
                     return (pagerStream);
                 }
             }

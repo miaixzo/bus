@@ -30,11 +30,6 @@ import org.aoju.bus.gitlab.GitLabApiForm;
 
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class JiraService extends NotificationService {
 
     public static final String URL_PROP = "url";
@@ -179,7 +174,8 @@ public class JiraService extends NotificationService {
      * @param properties the Map holding the properties
      */
     private void fixJiraIssueTransitionId(Map<String, Object> properties) {
-        if (null != properties) {
+
+        if (properties != null) {
             Object jiraIssueTransitionId = properties.get(JIRA_ISSUE_TRANSITION_ID_PROP);
             if (jiraIssueTransitionId instanceof String) {
                 if (((String) jiraIssueTransitionId).trim().isEmpty()) {

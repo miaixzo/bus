@@ -27,15 +27,11 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public interface Constants {
 
     /**
@@ -82,7 +78,7 @@ public interface Constants {
      * Used to specify the type of authentication token.
      */
     public enum TokenType {
-        ACCESS, OAUTH2_ACCESS, PRIVATE
+        ACCESS, OAUTH2_ACCESS, PRIVATE;
     }
 
     /**
@@ -95,7 +91,7 @@ public interface Constants {
 
         @JsonCreator
         public static Encoding forValue(String value) {
-            return enumHelper.forValue((null != value ? value.toLowerCase() : value));
+            return enumHelper.forValue((value != null ? value.toLowerCase() : value));
         }
 
         @JsonValue
@@ -293,6 +289,30 @@ public interface Constants {
 
         @JsonCreator
         public static TagOrderBy forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for ordering the results of getDeployments.
+     */
+    public static enum DeploymentOrderBy {
+
+        ID, IID, CREATED_AT, UPDATED_AT, REF;
+        private static JacksonJsonEnumHelper<DeploymentOrderBy> enumHelper = new JacksonJsonEnumHelper<>(DeploymentOrderBy.class);
+
+        @JsonCreator
+        public static DeploymentOrderBy forValue(String value) {
             return enumHelper.forValue(value);
         }
 
@@ -562,7 +582,7 @@ public interface Constants {
 
         ISSUE, MILESTONE, MERGE_REQUEST, NOTE, PROJECT, SNIPPET, USER;
 
-        private static final JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class, true, false, true);
+        private static JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class, true, false, true);
 
         @JsonCreator
         public static TargetType forValue(String value) {
@@ -637,7 +657,7 @@ public interface Constants {
 
         BZ2, TAR, TAR_BZ2, TAR_GZ, TB2, TBZ, TBZ2, ZIP;
 
-        private static final Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
+        private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
 
         static {
             for (ArchiveFormat archiveFormat : ArchiveFormat.values())
@@ -657,7 +677,7 @@ public interface Constants {
             }
 
             ArchiveFormat archiveFormat = valuesMap.get(value);
-            if (null != archiveFormat) {
+            if (archiveFormat != null) {
                 return (archiveFormat);
             }
 
@@ -908,7 +928,9 @@ public interface Constants {
      * Enum to use for specifying the status of a deployment.
      */
     public enum DeploymentStatus {
-
+        /**
+         * After some tests, {@link #CREATED} value is not a valid value.
+         */
         CREATED, RUNNING, SUCCESS, FAILED, CANCELED;
 
         private static JacksonJsonEnumHelper<DeploymentStatus> enumHelper = new JacksonJsonEnumHelper<>(DeploymentStatus.class);
@@ -956,11 +978,36 @@ public interface Constants {
     /**
      * Enum for the build_git_strategy of the project instance.
      */
+    enum SquashOption {
+
+        NEVER, ALWAYS, DEFAULT_ON, DEFAULT_OFF;
+
+        private static JacksonJsonEnumHelper<SquashOption> enumHelper = new JacksonJsonEnumHelper<>(SquashOption.class);
+
+        @JsonCreator
+        public static SquashOption forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum for the build_git_strategy of the project instance.
+     */
     enum BuildGitStrategy {
 
         FETCH, CLONE;
 
-        private static final JacksonJsonEnumHelper<BuildGitStrategy> enumHelper = new JacksonJsonEnumHelper<>(BuildGitStrategy.class);
+        private static JacksonJsonEnumHelper<BuildGitStrategy> enumHelper = new JacksonJsonEnumHelper<>(BuildGitStrategy.class);
 
         @JsonCreator
         public static BuildGitStrategy forValue(String value) {
@@ -978,5 +1025,25 @@ public interface Constants {
         }
     }
 
+    enum AutoDevopsDeployStrategy {
+        CONTINUOUS, MANUAL, TIMED_INCREMENTAL;
+
+        private static JacksonJsonEnumHelper<AutoDevopsDeployStrategy> enumHelper = new JacksonJsonEnumHelper<>(AutoDevopsDeployStrategy.class);
+
+        @JsonCreator
+        public static AutoDevopsDeployStrategy forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
 }
 

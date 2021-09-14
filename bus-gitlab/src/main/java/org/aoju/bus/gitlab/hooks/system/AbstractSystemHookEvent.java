@@ -27,11 +27,6 @@ package org.aoju.bus.gitlab.hooks.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
     private String requestUrl;
@@ -70,5 +65,4 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
     public void setRequestSecretToken(String requestSecretToken) {
         this.requestSecretToken = requestSecretToken;
     }
-
 }

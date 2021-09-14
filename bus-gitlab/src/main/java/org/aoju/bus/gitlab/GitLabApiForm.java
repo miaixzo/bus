@@ -27,6 +27,7 @@ package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.AccessLevel;
 import org.aoju.bus.gitlab.models.Variable;
+import org.aoju.bus.gitlab.support.ISO8601;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -37,10 +38,6 @@ import java.util.Map.Entry;
 
 /**
  * This class extends the standard JAX-RS Form class to make it fluent.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class GitLabApiForm extends Form {
 
@@ -61,7 +58,7 @@ public class GitLabApiForm extends Form {
     public GitLabApiForm(int page, int perPage) {
         super();
         withParam(AbstractApi.PAGE_PARAM, page);
-        withParam(AbstractApi.PER_PAGE_PARAM, perPage);
+        withParam(AbstractApi.PER_PAGE_PARAM, (Integer) perPage);
     }
 
     /**
@@ -156,7 +153,7 @@ public class GitLabApiForm extends Form {
         }
 
         for (T value : values) {
-            if (null != value) {
+            if (value != null) {
                 this.param(name + "[]", value.toString());
             }
         }
@@ -185,7 +182,7 @@ public class GitLabApiForm extends Form {
 
         for (Entry<String, ?> variable : variables.entrySet()) {
             Object value = variable.getValue();
-            if (null != value) {
+            if (value != null) {
                 this.param(name + "[][key]", variable.getKey());
                 this.param(name + "[][value]", value.toString());
             }
@@ -237,12 +234,11 @@ public class GitLabApiForm extends Form {
 
         variables.forEach(v -> {
             String value = v.getValue();
-            if (null != value) {
+            if (value != null) {
                 this.param("variables[" + v.getKey() + "]", value);
             }
         });
 
         return (this);
     }
-
 }

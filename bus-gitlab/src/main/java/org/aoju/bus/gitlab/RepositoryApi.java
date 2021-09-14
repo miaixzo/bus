@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
 
@@ -46,10 +45,6 @@ import java.util.stream.Stream;
  *
  * <a href="https://docs.gitlab.com/ce/api/repositories.html">Repositories API</a>
  * <a href="https://docs.gitlab.com/ce/api/branches.html">Branches API</a>
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class RepositoryApi extends AbstractApi {
 
@@ -202,8 +197,9 @@ public class RepositoryApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param branchName      the name of the branch to get
      * @return an Optional instance with the info for the specified project ID/branch name pair as the value
+     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Branch> getOptionalBranch(Object projectIdOrPath, String branchName) {
+    public Optional<Branch> getOptionalBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
         try {
             return (Optional.ofNullable(getBranch(projectIdOrPath, branchName)));
         } catch (GitLabApiException glae) {
@@ -422,7 +418,7 @@ public class RepositoryApi extends AbstractApi {
         Form formData = new GitLabApiForm()
                 .withParam("id", getProjectIdOrPath(projectIdOrPath), true)
                 .withParam("path", filePath, false)
-                .withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref", (null != refName ? urlEncode(refName) : null), false)
+                .withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref", (refName != null ? urlEncode(refName) : null), false)
                 .withParam("recursive", recursive, false);
         return (new Pager<TreeItem>(this, TreeItem.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "tree"));
@@ -525,7 +521,7 @@ public class RepositoryApi extends AbstractApi {
          */
         Form formData = new GitLabApiForm().withParam("sha", sha);
         Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + Symbol.DOT + format.toString());
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format.toString());
         return (response.readEntity(InputStream.class));
     }
 
@@ -610,7 +606,7 @@ public class RepositoryApi extends AbstractApi {
          */
         Form formData = new GitLabApiForm().withParam("sha", sha);
         Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + Symbol.DOT + format.toString());
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format.toString());
 
         try {
 
@@ -760,8 +756,9 @@ public class RepositoryApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param refs            a List of 2 or more refs (commit SHAs, branch names or tags)
      * @return an Optional instance with the Commit instance containing the common ancestor as the value
+     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Commit> getOptionalMergeBase(Object projectIdOrPath, List<String> refs) {
+    public Optional<Commit> getOptionalMergeBase(Object projectIdOrPath, List<String> refs) throws GitLabApiException {
         try {
             return (Optional.ofNullable(getMergeBase(projectIdOrPath, refs)));
         } catch (GitLabApiException glae) {
@@ -781,6 +778,33 @@ public class RepositoryApi extends AbstractApi {
     public void deleteMergedBranches(Object projectIdOrPath) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "merged_branches");
+    }
+
+    /**
+     * Generate changelog data based on commits in a repository.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/repository/changelog</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param version         the version to generate the changelog for
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void generateChangelog(Object projectIdOrPath, String version) throws GitLabApiException {
+        generateChangelog(projectIdOrPath, new ChangelogPayload(version));
+    }
+
+    /**
+     * Generate changelog data based on commits in a repository.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/repository/changelog</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param payload         the payload to generate the changelog for
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void generateChangelog(Object projectIdOrPath, ChangelogPayload payload) throws GitLabApiException {
+        post(Response.Status.OK, payload.getFormData(), "projects",
+                getProjectIdOrPath(projectIdOrPath), "repository", "changelog");
     }
 
 }

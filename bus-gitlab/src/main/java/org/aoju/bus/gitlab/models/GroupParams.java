@@ -32,13 +32,10 @@ import org.aoju.bus.gitlab.GroupApi;
  * This class is utilized by the {@link GroupApi#createGroup(GroupParams)}
  * and {@link GroupApi#updateGroup(Object, GroupParams)} methods to set
  * the parameters for the call to the GitLab API.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class GroupParams {
 
+    private DefaultBranchProtectionLevel defaultBranchProtection;
     private String name;
     private String path;
     private String description;
@@ -57,7 +54,6 @@ public class GroupParams {
     private Integer extraSharedRunnersMinutesLimit;
     private Boolean membershipLock;
     private Integer fileTemplateProjectId;
-    private DefaultBranchProtectionLevel defaultBranchProtection;
 
     /**
      * The parent group ID for creating nested group. For create only.
@@ -199,7 +195,6 @@ public class GroupParams {
                 .withParam("extra_shared_runners_minutes_limit", extraSharedRunnersMinutesLimit)
                 .withParam("default_branch_protection", defaultBranchProtection);
 
-
         if (isCreate) {
             form.withParam("parent_id", parentId);
         } else {
@@ -239,7 +234,7 @@ public class GroupParams {
 
         private final int value;
 
-        DefaultBranchProtectionLevel(int value) {
+        private DefaultBranchProtectionLevel(int value) {
             this.value = value;
         }
 
@@ -247,5 +242,4 @@ public class GroupParams {
             return Integer.toString(value);
         }
     }
-
 }

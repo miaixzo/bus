@@ -33,10 +33,7 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the GitLab API Search API calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
- * @since JDK 1.8+
  */
 public class SearchApi extends AbstractApi {
 
@@ -97,34 +94,34 @@ public class SearchApi extends AbstractApi {
 
         switch (scope) {
             case BLOBS:
-                return (new Pager<>(this, SearchBlob.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<SearchBlob>(this, SearchBlob.class, itemsPerPage, formData.asMap(), "search"));
 
             case COMMITS:
-                return (new Pager<>(this, Commit.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<Commit>(this, Commit.class, itemsPerPage, formData.asMap(), "search"));
 
             case PROJECTS:
-                return (new Pager<>(this, Project.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<Project>(this, Project.class, itemsPerPage, formData.asMap(), "search"));
 
             case ISSUES:
-                return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(), "search"));
 
             case MERGE_REQUESTS:
-                return (new Pager<>(this, MergeRequest.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, formData.asMap(), "search"));
 
             case MILESTONES:
-                return (new Pager<>(this, Milestone.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<Milestone>(this, Milestone.class, itemsPerPage, formData.asMap(), "search"));
 
             case SNIPPET_TITLES:
-                return (new Pager<>(this, Snippet.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<Snippet>(this, Snippet.class, itemsPerPage, formData.asMap(), "search"));
 
             case SNIPPET_BLOBS:
-                return (new Pager<>(this, Snippet.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<Snippet>(this, Snippet.class, itemsPerPage, formData.asMap(), "search"));
 
             case USERS:
-                return (new Pager<>(this, User.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<User>(this, User.class, itemsPerPage, formData.asMap(), "search"));
 
             case WIKI_BLOBS:
-                return (new Pager<>(this, SearchBlob.class, itemsPerPage, formData.asMap(), "search"));
+                return (new Pager<SearchBlob>(this, SearchBlob.class, itemsPerPage, formData.asMap(), "search"));
 
             default:
                 throw new GitLabApiException("Invalid SearchScope [" + scope + "]");
@@ -190,23 +187,23 @@ public class SearchApi extends AbstractApi {
 
         switch (scope) {
             case PROJECTS:
-                return (new Pager<>(this, Project.class, itemsPerPage, formData.asMap(),
+                return (new Pager<Project>(this, Project.class, itemsPerPage, formData.asMap(),
                         "groups", getGroupIdOrPath(groupIdOrPath), "search"));
 
             case ISSUES:
-                return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(),
+                return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(),
                         "groups", getGroupIdOrPath(groupIdOrPath), "search"));
 
             case MERGE_REQUESTS:
-                return (new Pager<>(this, MergeRequest.class, itemsPerPage, formData.asMap(),
+                return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, formData.asMap(),
                         "groups", getGroupIdOrPath(groupIdOrPath), "search"));
 
             case MILESTONES:
-                return (new Pager<>(this, Milestone.class, itemsPerPage, formData.asMap(),
+                return (new Pager<Milestone>(this, Milestone.class, itemsPerPage, formData.asMap(),
                         "groups", getGroupIdOrPath(groupIdOrPath), "search"));
 
             case USERS:
-                return (new Pager<>(this, User.class, itemsPerPage, formData.asMap(),
+                return (new Pager<User>(this, User.class, itemsPerPage, formData.asMap(),
                         "groups", getGroupIdOrPath(groupIdOrPath), "search"));
 
             default:
@@ -335,7 +332,7 @@ public class SearchApi extends AbstractApi {
                 .withParam("search", search, true)
                 .withParam("ref", ref, false);
 
-        if (null != ref) {
+        if (ref != null) {
             if (!scope.equals(ProjectSearchScope.BLOBS) && !scope.equals(ProjectSearchScope.WIKI_BLOBS) && !scope.equals(ProjectSearchScope.COMMITS)) {
                 throw new GitLabApiException("Ref parameter is only applicable for scopes: commits, blobs, and wiki_blobs");
             }
@@ -343,40 +340,39 @@ public class SearchApi extends AbstractApi {
 
         switch (scope) {
             case BLOBS:
-                return (new Pager<>(this, SearchBlob.class, itemsPerPage, formData.asMap(),
+                return (new Pager<SearchBlob>(this, SearchBlob.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             case COMMITS:
-                return (new Pager<>(this, Commit.class, itemsPerPage, formData.asMap(),
+                return (new Pager<Commit>(this, Commit.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             case ISSUES:
-                return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(),
+                return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             case MERGE_REQUESTS:
-                return (new Pager<>(this, MergeRequest.class, itemsPerPage, formData.asMap(),
+                return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             case MILESTONES:
-                return (new Pager<>(this, Milestone.class, itemsPerPage, formData.asMap(),
+                return (new Pager<Milestone>(this, Milestone.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             case NOTES:
-                return (new Pager<>(this, Note.class, itemsPerPage, formData.asMap(),
+                return (new Pager<Note>(this, Note.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             case WIKI_BLOBS:
-                return (new Pager<>(this, SearchBlob.class, itemsPerPage, formData.asMap(),
+                return (new Pager<SearchBlob>(this, SearchBlob.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             case USERS:
-                return (new Pager<>(this, User.class, itemsPerPage, formData.asMap(),
+                return (new Pager<User>(this, User.class, itemsPerPage, formData.asMap(),
                         "projects", getProjectIdOrPath(projectIdOrPath), "search"));
 
             default:
                 throw new GitLabApiException("Invalid ProjectSearchScope [" + scope + "]");
         }
     }
-
 }

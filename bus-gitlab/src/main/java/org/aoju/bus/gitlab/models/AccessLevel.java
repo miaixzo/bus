@@ -32,14 +32,9 @@ import org.aoju.bus.gitlab.GitLabApi;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public enum AccessLevel {
 
-    INVALID(-1), NONE(0), GUEST(10), REPORTER(20), DEVELOPER(30), @Deprecated MASTER(40), MAINTAINER(40), OWNER(50), ADMIN(60);
+    INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), MAINTAINER(40), OWNER(50), ADMIN(60);
 
     private static Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
 
@@ -61,7 +56,7 @@ public enum AccessLevel {
     public static AccessLevel forValue(Integer value) {
 
         AccessLevel level = valuesMap.get(value);
-        if (null != level) {
+        if (level != null) {
             return (level);
         }
 

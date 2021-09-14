@@ -25,16 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Pipeline {
 
     private Integer id;
@@ -157,86 +151,6 @@ public class Pipeline {
 
     public void setCommittedAt(Date committed_at) {
         this.committedAt = committed_at;
-    }
-
-    /**
-     * @return the updated at Date
-     * @deprecated Replaced by {@link #getUpdatedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getUpdated_at() {
-        return updatedAt;
-    }
-
-    /**
-     * @param updatedAt new updated at value
-     * @deprecated Replaced by {@link #setUpdatedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setUpdated_at(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    /**
-     * @return the started at Date
-     * @deprecated Replaced by {@link #getStartedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getStarted_at() {
-        return startedAt;
-    }
-
-    /**
-     * @param startedAt new started at value
-     * @deprecated Replaced by {@link #setStartedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setStarted_at(Date startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    /**
-     * @return the finished at Date
-     * @deprecated Replaced by {@link #getFinishedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getFinished_at() {
-        return finishedAt;
-    }
-
-    /**
-     * @param finishedAt new finished at value
-     * @deprecated Replaced by {@link #setFinishedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setFinished_at(Date finishedAt) {
-        this.finishedAt = finishedAt;
-    }
-
-    /**
-     * @return the committed at Date
-     * @deprecated Replaced by {@link #getCommittedAt()}
-     */
-    @Deprecated
-    @JsonIgnore
-    public Date getCommitted_at() {
-        return committedAt;
-    }
-
-    /**
-     * @param committedAt new committed at value
-     * @deprecated Replaced by {@link #setCommittedAt(Date)}
-     */
-    @Deprecated
-    @JsonIgnore
-    public void setCommitted_at(Date committedAt) {
-        this.committedAt = committedAt;
     }
 
     public String getCoverage() {
