@@ -1718,7 +1718,6 @@ public class FileKit {
                         // 有上级目录标记时按照个数依次跳过
                         tops--;
                     } else {
-                        // Normal path element found.
                         pathElements.add(0, element);
                     }
                 }
@@ -1729,7 +1728,6 @@ public class FileKit {
             // 只有相对路径补充开头的..，绝对路径直接忽略之
             while (tops-- > 0) {
                 //遍历完节点发现还有上级标注（即开头有一个或多个..），补充之
-                // Normal path element found.
                 pathElements.add(0, Symbol.DOUBLE_DOT);
             }
         }
@@ -4013,6 +4011,46 @@ public class FileKit {
     public static Path toAbsNormal(Path path) {
         Assert.notNull(path);
         return path.toAbsolutePath().normalize();
+    }
+
+    /**
+     * 向文件头部添加版权等内容
+     *
+     * @param dir     地址
+     * @param content 内容
+     */
+    public static void addContent(File dir, String content) {
+        File[] files = dir.listFiles();
+        if (files == null || files.length == 0) {
+            return;
+        }
+
+        for (File file : files) {
+            if (file.isFile()) {
+                try {
+                    BufferedReader br = new BufferedReader(new java.io.FileReader(file));
+                    String line;
+                    String text = Normal.EMPTY;
+                    // 读取一行,一定要加上换行符
+                    String lineSeperator = System.getProperty(org.aoju.bus.core.lang.System.LINE_SEPARATOR);
+                    while ((line = br.readLine()) != null) {
+                        text += line + lineSeperator;
+                    }
+                    br.close();
+                    // 把拼接后的字符串写回去
+                    java.io.FileWriter fileWriter = new java.io.FileWriter(file);
+                    fileWriter.write(content);
+                    fileWriter.write(text);
+                    fileWriter.close();
+                } catch (FileNotFoundException e) {
+                    throw new InstrumentException("File NotFound !");
+                } catch (IOException ex) {
+                    throw new InstrumentException("I/O exception of some sort has occurred");
+                }
+            } else {
+                addContent(file, content);
+            }
+        }
     }
 
     /**

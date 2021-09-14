@@ -1436,12 +1436,6 @@ public final class Expression implements Serializable, Cloneable {
         }
     }
 
-    @Override
-    @Deprecated
-    public Object clone() {
-        return new Expression(this);
-    }
-
     class ValueSet {
         public int value;
 

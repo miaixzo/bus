@@ -43,10 +43,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -1341,9 +1338,9 @@ public class CollKit {
      *
      * @param <T>        集合元素类型
      * @param collection 集合
-     * @return {@link ArrayList}
+     * @return {@link List}
      */
-    public static <T> ArrayList<T> distinct(Collection<T> collection) {
+    public static <T> List<T> distinct(Collection<T> collection) {
         if (isEmpty(collection)) {
             return new ArrayList<>();
         } else if (collection instanceof Set) {
@@ -1351,6 +1348,18 @@ public class CollKit {
         } else {
             return new ArrayList<>(new LinkedHashSet<>(collection));
         }
+    }
+
+    /**
+     * 去重集合
+     * 按照元素的某个字段去重
+     *
+     * @param key 集合中元素属性
+     * @param <T> 集合元素类型
+     * @return {@link List}
+     */
+    public static <T> Predicate<T> distinct(Function<? super T, ?> key) {
+        return t -> ConcurrentHashMap.newKeySet().add(key.apply(t));
     }
 
     /**
