@@ -50,7 +50,7 @@ public class URIConverter extends AbstractConverter<URI> {
             }
             return new URI(convertString(value));
         } catch (Exception e) {
-            // Ignore Exception
+            // ignore
         }
         return null;
     }

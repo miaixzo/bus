@@ -21,8 +21,8 @@ public class CryptoException extends UncheckedException {
         super(message);
     }
 
-    public CryptoException(String messageTemplate, Object... params) {
-        super(StringKit.format(messageTemplate, params));
+    public CryptoException(String messageTemplate, Object... args) {
+        super(StringKit.format(messageTemplate, args));
     }
 
     public CryptoException(String message, Throwable throwable) {

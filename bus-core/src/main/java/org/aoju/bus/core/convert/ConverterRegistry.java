@@ -27,7 +27,7 @@ package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.Types;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.ConvertException;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
@@ -166,9 +166,9 @@ public class ConverterRegistry {
      * @param defaultValue  默认值
      * @param isCustomFirst 是否自定义转换器优先
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public <T> T convert(Type type, Object value, T defaultValue, boolean isCustomFirst) throws InstrumentException {
+    public <T> T convert(Type type, Object value, T defaultValue, boolean isCustomFirst) throws ConvertException {
         if (TypeKit.isUnknow(type) && null == defaultValue) {
             // 对于用户不指定目标类型的情况，返回原值
             return (T) value;
@@ -212,7 +212,7 @@ public class ConverterRegistry {
         }
 
         // 无法转换
-        throw new InstrumentException("No Converter for type [{}]", rowType.getName());
+        throw new ConvertException("No Converter for type [{}]", rowType.getName());
     }
 
     /**
@@ -224,9 +224,9 @@ public class ConverterRegistry {
      * @param value        值
      * @param defaultValue 默认值
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertExceptions 转换器不存在
      */
-    public <T> T convert(Type type, Object value, T defaultValue) throws InstrumentException {
+    public <T> T convert(Type type, Object value, T defaultValue) throws ConvertException {
         return convert(type, value, defaultValue, true);
     }
 
@@ -237,9 +237,9 @@ public class ConverterRegistry {
      * @param type  类型
      * @param value 值
      * @return 转换后的值, 默认为<code>null</code>
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public <T> T convert(Type type, Object value) throws InstrumentException {
+    public <T> T convert(Type type, Object value) throws ConvertException {
         return convert(type, value, null);
     }
 
