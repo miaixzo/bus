@@ -224,7 +224,7 @@ public class ConverterRegistry {
      * @param value        值
      * @param defaultValue 默认值
      * @return 转换后的值
-     * @throws ConvertExceptions 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
     public <T> T convert(Type type, Object value, T defaultValue) throws ConvertException {
         return convert(type, value, defaultValue, true);

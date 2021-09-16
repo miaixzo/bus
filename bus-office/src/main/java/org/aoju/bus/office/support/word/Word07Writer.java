@@ -162,10 +162,10 @@ public class Word07Writer implements Closeable {
      */
     public Word07Writer addPicture(File picFile, int width, int height) {
         final String fileName = picFile.getName();
-        final String extName = FileKit.extName(fileName).toUpperCase();
+        final String suffix = FileKit.getSuffix(fileName).toUpperCase();
         PicType picType;
         try {
-            picType = PicType.valueOf(extName);
+            picType = PicType.valueOf(suffix);
         } catch (IllegalArgumentException e) {
             // 默认值
             picType = PicType.JPEG;

@@ -1048,7 +1048,7 @@ public class CollKit {
     }
 
     /**
-     * 新建一个ArrayList
+     * 新建一个List
      * 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>      集合元素类型

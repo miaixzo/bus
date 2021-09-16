@@ -787,7 +787,7 @@ public class Images implements Serializable {
      * @throws InstrumentException IO异常
      */
     public boolean write(File targetFile) throws InstrumentException {
-        final String formatName = FileKit.extName(targetFile);
+        final String formatName = FileKit.getSuffix(targetFile);
         if (StringKit.isNotBlank(formatName)) {
             this.fileType = formatName;
         }

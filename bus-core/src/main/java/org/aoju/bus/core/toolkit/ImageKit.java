@@ -106,7 +106,7 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static void scale(java.awt.Image srcImage, File destFile, float scale) throws InstrumentException {
-        Images.from(srcImage).setTargetImageType(FileKit.extName(destFile)).scale(scale).write(destFile);
+        Images.from(srcImage).setTargetImageType(FileKit.getSuffix(destFile)).scale(scale).write(destFile);
     }
 
     /**
@@ -472,9 +472,9 @@ public class ImageKit {
         Assert.notNull(destImageFile);
         Assert.isFalse(srcImageFile.equals(destImageFile), "Src file is equals to dest file!");
 
-        final String srcExtName = FileKit.extName(srcImageFile);
-        final String destExtName = FileKit.extName(destImageFile);
-        if (StringKit.equalsIgnoreCase(srcExtName, destExtName)) {
+        final String srcSuffix = FileKit.getSuffix(srcImageFile);
+        final String destSuffix = FileKit.getSuffix(destImageFile);
+        if (StringKit.equalsIgnoreCase(srcSuffix, destSuffix)) {
             // 扩展名相同直接复制文件
             FileKit.copy(srcImageFile, destImageFile, true);
         }
@@ -482,7 +482,7 @@ public class ImageKit {
         ImageOutputStream imageOutputStream = null;
         try {
             imageOutputStream = getImageOutputStream(destImageFile);
-            convert(read(srcImageFile), destExtName, imageOutputStream, StringKit.equalsIgnoreCase(FileType.TYPE_PNG, srcExtName));
+            convert(read(srcImageFile), destSuffix, imageOutputStream, StringKit.equalsIgnoreCase(FileType.TYPE_PNG, srcSuffix));
         } finally {
             IoKit.close(imageOutputStream);
         }
@@ -1399,7 +1399,7 @@ public class ImageKit {
         ImageOutputStream out = null;
         try {
             out = getImageOutputStream(targetFile);
-            write(image, FileKit.extName(targetFile), out);
+            write(image, FileKit.getSuffix(targetFile), out);
         } finally {
             IoKit.close(out);
         }

@@ -105,8 +105,8 @@ public class Builder {
      */
     public static Properties getProperties(String name) {
         return CACHE_PROPS.computeIfAbsent(name, (filePath) -> {
-            final String extName = FileKit.extName(filePath);
-            if (StringKit.isEmpty(extName)) {
+            final String suffix = FileKit.getSuffix(filePath);
+            if (StringKit.isEmpty(suffix)) {
                 filePath = filePath + ".properties";
             }
             return new Properties(filePath);

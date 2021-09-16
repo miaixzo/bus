@@ -103,7 +103,7 @@ public class ZipKit {
      * @throws InstrumentException IO异常
      */
     public static File zip(File srcFile, java.nio.charset.Charset charset) throws InstrumentException {
-        final File zipFile = FileKit.file(srcFile.getParentFile(), FileKit.mainName(srcFile) + ".zip");
+        final File zipFile = FileKit.file(srcFile.getParentFile(), FileKit.getPrefix(srcFile) + ".zip");
         zip(zipFile, charset, false, srcFile);
         return zipFile;
     }
@@ -423,7 +423,7 @@ public class ZipKit {
      * @throws InstrumentException IO异常
      */
     public static File unzip(File zipFile, java.nio.charset.Charset charset) throws InstrumentException {
-        return unzip(zipFile, FileKit.file(zipFile.getParentFile(), FileKit.mainName(zipFile)), charset);
+        return unzip(zipFile, FileKit.file(zipFile.getParentFile(), FileKit.getPrefix(zipFile)), charset);
     }
 
     /**

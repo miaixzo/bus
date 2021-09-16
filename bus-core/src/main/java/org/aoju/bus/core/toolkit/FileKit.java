@@ -1052,9 +1052,9 @@ public class FileKit {
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
-            final String extName = extName(file);
-            if (StringKit.isNotBlank(extName)) {
-                newName = newName.concat(Symbol.DOT).concat(extName);
+            final String suffix = getSuffix(file);
+            if (StringKit.isNotBlank(suffix)) {
+                newName = newName.concat(Symbol.DOT).concat(suffix);
             }
         }
         return rename(file.toPath(), newName, isOverride).toFile();
@@ -1341,40 +1341,12 @@ public class FileKit {
     }
 
     /**
-     * 获取文件名的扩展名.
-     * <p>
-     * 此方法返回文件名最后一个点之后的文本部分,点后面必须没有目录分隔符.
-     * <pre>
-     * foo.txt      -- "txt"
-     * a/b/c.jpg    -- "jpg"
-     * a/b.txt/c    -- ""
-     * a/b/c        -- ""
-     * </pre>
-     * <p>
-     * 不管运行代码的操作系统是什么，输出结果都是一样的.
-     *
-     * @param filename 检索的扩展名的文件名.
-     * @return 返回文件的扩展名或空字符串.
-     */
-    public static String getExtension(String filename) {
-        if (null == filename) {
-            return null;
-        }
-        int index = indexOfExtension(filename);
-        if (index == -1) {
-            return Normal.EMPTY;
-        } else {
-            return filename.substring(index + 1);
-        }
-    }
-
-    /**
      * 返回最后一个扩展分隔符的索引点.
      *
      * @param filename 查找最后一个路径分隔符的文件名
      * @return 最后一个分隔符字符的索引，如果没有这样的字符，则为-1
      */
-    public static int indexOfExtension(String filename) {
+    public static int indexOfSuffix(String filename) {
         if (null == filename) {
             return -1;
         }
@@ -1893,16 +1865,52 @@ public class FileKit {
     }
 
     /**
+     * 获取文件后缀名，扩展名不带“.”
+     *
+     * @param file 文件
+     * @return 扩展名
+     */
+    public static String getSuffix(File file) {
+        if (null == file) {
+            return null;
+        }
+        if (file.isDirectory()) {
+            return null;
+        }
+        return getSuffix(file.getName());
+    }
+
+    /**
+     * 获得文件后缀名，扩展名不带“.”
+     *
+     * @param fileName 文件名
+     * @return 扩展名
+     */
+    public static String getSuffix(String fileName) {
+        if (null == fileName) {
+            return null;
+        }
+        int index = fileName.lastIndexOf(Symbol.DOT);
+        if (index == -1) {
+            return Normal.EMPTY;
+        } else {
+            String ext = fileName.substring(index + 1);
+            // 扩展名中不能包含路径相关的符号
+            return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;
+        }
+    }
+
+    /**
      * 返回主文件名
      *
      * @param file 文件
      * @return 主文件名
      */
-    public static String mainName(File file) {
+    public static String getPrefix(File file) {
         if (file.isDirectory()) {
             return file.getName();
         }
-        return mainName(file.getName());
+        return getPrefix(file.getName());
     }
 
     /**
@@ -1911,7 +1919,7 @@ public class FileKit {
      * @param fileName 完整文件名
      * @return 主文件名
      */
-    public static String mainName(String fileName) {
+    public static String getPrefix(String fileName) {
         if (null == fileName) {
             return fileName;
         }
@@ -1945,86 +1953,6 @@ public class FileKit {
     }
 
     /**
-     * 获取文件后缀名，扩展名不带“.”
-     *
-     * @param file 文件
-     * @return 扩展名
-     * @see #extName(File)
-     */
-    public static String getSuffix(File file) {
-        return extName(file);
-    }
-
-    /**
-     * 获得文件后缀名，扩展名不带“.”
-     *
-     * @param fileName 文件名
-     * @return 扩展名
-     * @see #extName(File)
-     */
-    public static String getSuffix(String fileName) {
-        return extName(fileName);
-    }
-
-    /**
-     * 返回主文件名
-     *
-     * @param file 文件
-     * @return 主文件名
-     * @see #mainName(File)
-     */
-    public static String getPrefix(File file) {
-        return mainName(file);
-    }
-
-    /**
-     * 返回主文件名
-     *
-     * @param fileName 完整文件名
-     * @return 主文件名
-     * @see #mainName(File)
-     */
-    public static String getPrefix(String fileName) {
-        return mainName(fileName);
-    }
-
-    /**
-     * 获取文件扩展名,扩展名不带“.”
-     *
-     * @param file 文件
-     * @return 扩展名
-     */
-    public static String extName(File file) {
-        if (null == file) {
-            return null;
-        }
-        if (file.isDirectory()) {
-            return null;
-        }
-        return extName(file.getName());
-    }
-
-    /**
-     * 获得文件的扩展名,扩展名不带“.”
-     *
-     * @param fileName 文件名
-     * @return 扩展名
-     */
-    public static String extName(String fileName) {
-        if (null == fileName) {
-            return null;
-        }
-        int index = fileName.lastIndexOf(Symbol.DOT);
-        if (index == -1) {
-            return Normal.EMPTY;
-        } else {
-            String ext = fileName.substring(index + 1);
-            // 扩展名中不能包含路径相关的符号
-            return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;
-        }
-    }
-
-    /**
      * 判断文件路径是否有指定后缀,忽略大小写
      * 常用语判断扩展名
      *
@@ -2032,7 +1960,7 @@ public class FileKit {
      * @param suffix 后缀
      * @return 是否有指定后缀
      */
-    public static boolean pathEndsWith(File file, String suffix) {
+    public static boolean endsWith(File file, String suffix) {
         return file.getPath().toLowerCase().endsWith(suffix);
     }
 
@@ -3576,7 +3504,7 @@ public class FileKit {
      * 根据文件扩展名获得MediaType
      *
      * @param path 文件路径或文件名
-     * @return MediaType
+     * @return the string {@link MediaType}
      */
     public static String getMediaType(String path) {
         try {
@@ -3600,7 +3528,7 @@ public class FileKit {
      * 获得文件的MediaType
      *
      * @param file 文件
-     * @return MediaType
+     * @return the string {@link MediaType}
      */
     public static String getMediaType(Path file) {
         try {
@@ -3608,26 +3536,6 @@ public class FileKit {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-    }
-
-    /**
-     * 从完整的文件名中获取基名减去完整路径和扩展名.
-     * <p>
-     * 此方法将处理Unix或Windows格式的文件.
-     * 最后一个正斜杠或反斜杠后面，最后一个点之前的文本.
-     * <pre>
-     * a/b/c.txt --&gt; c
-     * a.txt     --&gt; a
-     * a/b/c     --&gt; c
-     * a/b/c/    --&gt; ""
-     * </pre>
-     * <p>
-     *
-     * @param filename 要查询的文件名null返回null
-     * @return 没有路径的文件名，如果不存在空字符串，则为空字符串
-     */
-    public static String getBaseName(final String filename) {
-        return removeExtension(getName(filename));
     }
 
     /**
@@ -3647,7 +3555,7 @@ public class FileKit {
      * @param filename 要查询的文件名null返回null
      * @return 文件名减去扩展名
      */
-    public static String removeExtension(final String filename) {
+    public static String removeSuffix(final String filename) {
         if (null == filename) {
             return null;
         }
@@ -3660,7 +3568,7 @@ public class FileKit {
             }
         }
 
-        final int index = indexOfExtension(filename);
+        final int index = indexOfSuffix(filename);
         if (index == -1) {
             return filename;
         } else {
@@ -3671,42 +3579,42 @@ public class FileKit {
     /**
      * 检查文件名的扩展名是否指定的扩展名
      *
-     * @param filename  要查询的文件名，null返回false
-     * @param extension 要检查的扩展名，null检查是否没有扩展名
+     * @param filename 要查询的文件名，null返回false
+     * @param suffix   要检查的扩展名，null检查是否没有扩展名
      * @return 如果文件名是扩展名之一，则为true
      */
-    public static boolean isExtension(final String filename, final String extension) {
+    public static boolean isSuffix(final String filename, final String suffix) {
         if (null == filename) {
             return false;
         }
         failIfNullBytePresent(filename);
 
-        if (null == extension || extension.isEmpty()) {
-            return indexOfExtension(filename) == -1;
+        if (null == suffix || suffix.isEmpty()) {
+            return indexOfSuffix(filename) == -1;
         }
-        final String fileExt = getExtension(filename);
-        return fileExt.equals(extension);
+        final String fileSuffix = getSuffix(filename);
+        return fileSuffix.equals(suffix);
     }
 
     /**
      * 检查文件名的扩展名是否为指定的扩展名之一
      *
-     * @param filename   要查询的文件名，null返回false
-     * @param extensions 要检查的扩展名，null检查是否没有扩展名
+     * @param filename 要查询的文件名，null返回false
+     * @param suffixs  要检查的扩展名，null检查是否没有扩展名
      * @return 如果文件名是扩展名之一，则为true
      */
-    public static boolean isExtension(final String filename, final String[] extensions) {
+    public static boolean isSuffix(final String filename, final String[] suffixs) {
         if (null == filename) {
             return false;
         }
         failIfNullBytePresent(filename);
 
-        if (null == extensions || extensions.length == 0) {
-            return indexOfExtension(filename) == -1;
+        if (null == suffixs || suffixs.length == 0) {
+            return indexOfSuffix(filename) == -1;
         }
-        final String fileExt = getExtension(filename);
-        for (final String extension : extensions) {
-            if (fileExt.equals(extension)) {
+        final String fileSuffix = getSuffix(filename);
+        for (final String suffix : suffixs) {
+            if (fileSuffix.equals(suffix)) {
                 return true;
             }
         }
@@ -3716,22 +3624,22 @@ public class FileKit {
     /**
      * 检查文件名的扩展名是否为指定的扩展名之一
      *
-     * @param filename   要查询的文件名，null返回false
-     * @param extensions 要检查的扩展名，null检查是否没有扩展名
+     * @param filename 要查询的文件名，null返回false
+     * @param suffixs  要检查的扩展名，null检查是否没有扩展名
      * @return 如果文件名是扩展名之一，则为true
      */
-    public static boolean isExtension(final String filename, final Collection<String> extensions) {
+    public static boolean isSuffix(final String filename, final Collection<String> suffixs) {
         if (null == filename) {
             return false;
         }
         failIfNullBytePresent(filename);
 
-        if (null == extensions || extensions.isEmpty()) {
-            return indexOfExtension(filename) == -1;
+        if (null == suffixs || suffixs.isEmpty()) {
+            return indexOfSuffix(filename) == -1;
         }
-        final String fileExt = getExtension(filename);
-        for (final String extension : extensions) {
-            if (fileExt.equals(extension)) {
+        final String fileSuffix = getSuffix(filename);
+        for (final String suffix : suffixs) {
+            if (fileSuffix.equals(suffix)) {
                 return true;
             }
         }
@@ -3959,11 +3867,11 @@ public class FileKit {
      * 根据文件名检查文件类型，忽略大小写
      *
      * @param fileName 文件名，例如bus.png
-     * @param extNames 被检查的扩展名数组，同一文件类型可能有多种扩展名，扩展名不带“.”
+     * @param suffix   被检查的扩展名数组，同一文件类型可能有多种扩展名，扩展名不带“.”
      * @return 是否是指定扩展名的类型
      */
-    public static boolean isType(String fileName, String... extNames) {
-        return StringKit.equalsAnyIgnoreCase(extName(fileName), extNames);
+    public static boolean isType(String fileName, String... suffix) {
+        return StringKit.equalsAnyIgnoreCase(getSuffix(fileName), suffix);
     }
 
     /**
