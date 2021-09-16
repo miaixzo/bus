@@ -37,7 +37,6 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.ProcstatKit;
@@ -130,7 +129,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
             mib[3] = getProcessID();
             // Allocate memory for arguments
             Memory m = new Memory(ARGMAX);
-            NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
+            LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(ARGMAX));
             // Fetch arguments
             if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, LibCAPI.size_t.ZERO) == 0) {
                 return Collections.unmodifiableList(
@@ -159,7 +158,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
             mib[3] = getProcessID();
             // Allocate memory for environment variables
             Memory m = new Memory(ARGMAX);
-            NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(ARGMAX));
+            LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(ARGMAX));
             // Fetch environment variables
             if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, LibCAPI.size_t.ZERO) == 0) {
                 return Collections.unmodifiableMap(
@@ -322,7 +321,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         mib[3] = getProcessID();
         // Allocate memory for arguments
         Pointer abi = new Memory(32);
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(32));
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(32));
         // Fetch abi vector
         if (0 == FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, abi, size, null, LibCAPI.size_t.ZERO)) {
             String elf = abi.getString(0);

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier.provider;
 
-import org.aoju.bus.core.beans.PropertyDescription;
+import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
@@ -46,7 +46,7 @@ import java.util.Map;
  */
 public class BeanValueProvider implements ValueProvider<String> {
 
-    final Map<String, PropertyDescription> sourcePdMap;
+    final Map<String, PropertyDesc> sourcePdMap;
     private final Object source;
     private final boolean ignoreError;
 
@@ -65,7 +65,7 @@ public class BeanValueProvider implements ValueProvider<String> {
 
     @Override
     public Object value(String key, Type valueType) {
-        PropertyDescription sourcePd = sourcePdMap.get(key);
+        PropertyDesc sourcePd = sourcePdMap.get(key);
         if (null == sourcePd && (Boolean.class == valueType || boolean.class == valueType)) {
             // boolean类型字段字段名支持两种方式
             sourcePd = sourcePdMap.get(StringKit.upperFirstAndAddPre(key, Normal.IS));

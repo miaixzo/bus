@@ -25,19 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class User extends AbstractUser<User> {
 
     private String bio;
+    private Boolean bot;
     private Boolean canCreateGroup;
     private Boolean canCreateProject;
     private Integer colorSchemeId;
@@ -73,6 +69,14 @@ public class User extends AbstractUser<User> {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public Boolean getBot() {
+        return bot;
+    }
+
+    public void setBot(Boolean bot) {
+        this.bot = bot;
     }
 
     public Boolean getCanCreateGroup() {
@@ -442,32 +446,6 @@ public class User extends AbstractUser<User> {
     public User withCustomAttributes(List<CustomAttribute> customAttributes) {
         this.customAttributes = customAttributes;
         return this;
-    }
-
-    /**
-     * Fluent method to set the projects_limit setting.
-     *
-     * @param projectsLimit the value for the projects_limit setting
-     * @return the value of this instance
-     * @see #withProjectsLimit(Integer)
-     * @deprecated Replaced by {@link #withProjectsLimit(Integer)}
-     */
-    @Deprecated
-    public User withProjectLimit(Integer projectsLimit) {
-        return withProjectsLimit(projectsLimit);
-    }
-
-    /**
-     * Fluent method to set the shared_projects_minutes_limit setting.
-     *
-     * @param sharedRunnersMinuteLimit the value for the shared_projects_minutes_limit setting
-     * @return the value of this instance
-     * @see #withSharedRunnersMinutesLimit(Integer)
-     * @deprecated Replaced by {@link #withSharedRunnersMinutesLimit(Integer)}
-     */
-    @Deprecated
-    public User withSharedRunnersMinuteLimit(Integer sharedRunnersMinuteLimit) {
-        return withSharedRunnersMinutesLimit(sharedRunnersMinuteLimit);
     }
 
     @Override

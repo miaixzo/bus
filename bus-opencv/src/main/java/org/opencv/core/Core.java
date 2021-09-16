@@ -5194,45 +5194,6 @@ public class Core {
         return getNumThreads_0();
     }
 
-
-    //
-    // C++:  int cv::getThreadNum()
-    //
-
-    /**
-     * Returns the index of the currently executed thread within the current parallel region. Always
-     * returns 0 if called outside of parallel region.
-     *
-     * @deprecated Current implementation doesn't corresponding to this documentation.
-     *
-     * The exact meaning of the return value depends on the threading framework used by OpenCV library:
-     * <ul>
-     *   <li>
-     *  {@code TBB} - Unsupported with current 4.1 TBB release. Maybe will be supported in future.
-     *   </li>
-     *   <li>
-     *  {@code OpenMP} - The thread number, within the current team, of the calling thread.
-     *   </li>
-     *   <li>
-     *  {@code Concurrency} - An ID for the virtual processor that the current context is executing on (0
-     *   for master thread and unique number for others, but not necessary 1,2,3,...).
-     *   </li>
-     *   <li>
-     *  {@code GCD} - System calling thread's ID. Never returns 0 inside parallel region.
-     *   </li>
-     *   <li>
-     *  {@code C=} - The index of the current parallel task.
-     * SEE: setNumThreads, getNumThreads
-     *   </li>
-     * </ul>
-     * @return automatically generated
-     */
-    @Deprecated
-    public static int getThreadNum() {
-        return getThreadNum_0();
-    }
-
-
     //
     // C++:  String cv::getBuildInformation()
     //

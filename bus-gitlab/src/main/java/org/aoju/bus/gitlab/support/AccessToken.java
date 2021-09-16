@@ -23,13 +23,11 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab;
+package org.aoju.bus.gitlab.support;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.gitlab.GitLabApiException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,14 +49,10 @@ import java.util.regex.Pattern;
  *
  * <p>NOTE: This relies on HTML scraping and has been tested on GitLab-CE 11.0.0 to 11.10.1 for
  * proper functionality.  It may not work on earlier or later versions.</p>
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public final class AccessToken {
 
-    protected static final String USER_AGENT = "GitLab Client";
+    protected static final String USER_AGENT = "GitLab4J Client";
     protected static final String COOKIES_HEADER = "Set-Cookie";
     protected static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
     protected static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
@@ -157,7 +151,7 @@ public final class AccessToken {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
+            connection.setRequestProperty("Charset", "utf-8");
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
@@ -168,9 +162,9 @@ public final class AccessToken {
             StringBuilder formData = new StringBuilder();
             addFormData(formData, "authenticity_token", csrfToken);
             addFormData(formData, "personal_access_token[name]", tokenName);
-            addFormData(formData, "personal_access_token[expires_at]", Normal.EMPTY);
+            addFormData(formData, "personal_access_token[expires_at]", "");
 
-            if (null != scopes && scopes.size() > 0) {
+            if (scopes != null && scopes.size() > 0) {
                 for (Scope scope : scopes) {
                     addFormData(formData, "personal_access_token[scopes][]", scope.toString());
                 }
@@ -217,7 +211,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (null != cookies) {
+            if (cookies != null) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -321,8 +315,8 @@ public final class AccessToken {
             }
 
             content = content.substring(0, indexOfLinkEnd);
-            String scopesText = Normal.EMPTY;
-            if (null != scopes && scopes.size() > 0) {
+            String scopesText = "";
+            if (scopes != null && scopes.size() > 0) {
                 final StringJoiner joiner = new StringJoiner(", ");
                 scopes.forEach(s -> joiner.add(s.toString()));
                 scopesText = joiner.toString();
@@ -342,7 +336,7 @@ public final class AccessToken {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
+            connection.setRequestProperty("Charset", "utf-8");
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
@@ -384,7 +378,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (null != cookies) {
+            if (cookies != null) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -457,7 +451,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (null != cookies) {
+            if (cookies != null) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -530,7 +524,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (null != cookies) {
+            if (cookies != null) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -603,7 +597,7 @@ public final class AccessToken {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
+            connection.setRequestProperty("Charset", "utf-8");
 
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
@@ -720,9 +714,9 @@ public final class AccessToken {
         }
 
         formData.append(name);
-        formData.append(Symbol.EQUAL);
+        formData.append("=");
         try {
-            formData.append(URLEncoder.encode(value, Charset.DEFAULT_UTF_8));
+            formData.append(URLEncoder.encode(value, "UTF-8"));
             return (formData);
         } catch (Exception e) {
             throw new GitLabApiException(e);

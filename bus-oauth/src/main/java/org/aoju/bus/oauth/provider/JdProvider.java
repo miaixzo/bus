@@ -77,7 +77,7 @@ public class JdProvider extends AbstractProvider {
      */
     private static String md5(String source) {
         try {
-            MessageDigest md = MessageDigest.getInstance(Algorithm.MD5);
+            MessageDigest md = MessageDigest.getInstance(Algorithm.MD5.getValue());
             byte[] bytes = md.digest(source.getBytes(Charset.UTF_8));
             StringBuilder sign = new StringBuilder();
             for (int i = 0; i < bytes.length; i++) {

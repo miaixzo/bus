@@ -42,6 +42,8 @@ import java.lang.reflect.InvocationTargetException;
 @EqualsAndHashCode(callSuper = false)
 public class RelevantException extends IOException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 错误码
      */

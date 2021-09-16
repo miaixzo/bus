@@ -26,21 +26,15 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.io.IOException;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class HealthCheckInfo {
 
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
@@ -135,7 +129,7 @@ public class HealthCheckInfo {
 
         @Override
         public HealthCheckItem deserialize(JsonParser jsonParser, DeserializationContext ctx)
-                throws IOException, JsonProcessingException {
+                throws IOException {
 
             HealthCheckItem healthCheckItem = null;
             JsonNode tree = jsonParser.readValueAsTree();
@@ -149,4 +143,5 @@ public class HealthCheckInfo {
             return (healthCheckItem);
         }
     }
+
 }

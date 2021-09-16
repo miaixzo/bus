@@ -30,11 +30,11 @@ import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.Mac;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
 
 /**
  * BouncyCastle的HMAC算法实现引擎，使用{@link Mac} 实现摘要
  * 当引入BouncyCastle库时自动使用其作为Provider
- *
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
@@ -42,6 +42,17 @@ import org.bouncycastle.crypto.params.KeyParameter;
 public class BCHMacEngine implements MacEngine {
 
     private Mac mac;
+
+    /**
+     * 构造
+     *
+     * @param digest 摘要算法，为{@link Digest} 的接口实现
+     * @param key    密钥
+     * @param iv     加盐
+     */
+    public BCHMacEngine(Digest digest, byte[] key, byte[] iv) {
+        this(digest, new ParametersWithIV(new KeyParameter(key), iv));
+    }
 
     /**
      * 构造

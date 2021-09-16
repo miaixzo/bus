@@ -50,15 +50,13 @@ public class Configurable implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment,
                                        SpringApplication application) {
-        /**
-         * 环境信息
-         */
+        // 系统时区
+        System.setProperty("user.timezone", "Asia/Shanghai");
+        // 环境信息
         PropertiesPropertySource propertySource = new PropertiesPropertySource(
                 BusXBuilder.BUS_BOOT_PROPERTIES, getProperties());
         environment.getPropertySources().addLast(propertySource);
-        /**
-         * 必要参数
-         */
+        // 必要参数
         environment.setRequiredProperties(BusXBuilder.BUS_NAME);
     }
 

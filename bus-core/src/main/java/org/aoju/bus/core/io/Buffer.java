@@ -1735,28 +1735,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 128-bit MD5 hash of this buffer.
      */
     public final ByteString md5() {
-        return digest(Algorithm.MD5);
+        return digest(Algorithm.MD5.getValue());
     }
 
     /**
      * @return the 160-bit SHA-1 hash of this buffer.
      */
     public final ByteString sha1() {
-        return digest(Algorithm.SHA1);
+        return digest(Algorithm.SHA1.getValue());
     }
 
     /**
      * @return the 256-bit SHA-256 hash of this buffer.
      */
     public final ByteString sha256() {
-        return digest(Algorithm.SHA256);
+        return digest(Algorithm.SHA256.getValue());
     }
 
     /**
      * @return the 512-bit SHA-512 hash of this buffer.
      */
     public final ByteString sha512() {
-        return digest(Algorithm.SHA512);
+        return digest(Algorithm.SHA512.getValue());
     }
 
     private ByteString digest(String algorithm) {
@@ -1779,7 +1779,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 160-bit SHA-1 HMAC of this buffer.
      */
     public final ByteString hmacSha1(ByteString key) {
-        return hmac(Algorithm.HmacSHA1, key);
+        return hmac(Algorithm.HmacSHA1.getValue(), key);
     }
 
     /**
@@ -1787,7 +1787,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 256-bit SHA-256 HMAC of this buffer.
      */
     public final ByteString hmacSha256(ByteString key) {
-        return hmac(Algorithm.HmacSHA256, key);
+        return hmac(Algorithm.HmacSHA256.getValue(), key);
     }
 
     /**
@@ -1795,7 +1795,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 512-bit SHA-512 HMAC of this buffer.
      */
     public final ByteString hmacSha512(ByteString key) {
-        return hmac(Algorithm.HmacSHA512, key);
+        return hmac(Algorithm.HmacSHA512.getValue(), key);
     }
 
     private ByteString hmac(String algorithm, ByteString key) {

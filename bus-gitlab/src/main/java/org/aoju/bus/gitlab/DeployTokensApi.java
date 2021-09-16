@@ -35,20 +35,14 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab Deploy Tokens API calls.
  * See https://docs.gitlab.com/ee/api/deploy_tokens.html
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
+ * <p>
+ * Since GitLab 12.9
  */
 public class DeployTokensApi extends AbstractApi {
 
     public DeployTokensApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
-
-    /* ************************************************************************************************
-     * Global Deploy Token API
-     */
 
     /**
      * Get a list of all deploy tokens across the GitLab instance. This endpoint requires admin access.

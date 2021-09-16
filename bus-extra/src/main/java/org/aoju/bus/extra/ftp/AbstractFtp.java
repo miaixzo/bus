@@ -59,28 +59,6 @@ public abstract class AbstractFtp implements Closeable {
     }
 
     /**
-     * 是否包含指定字符串,忽略大小写
-     *
-     * @param names      文件或目录名列表
-     * @param nameToFind 要查找的文件或目录名
-     * @return 是否包含
-     */
-    private static boolean containsIgnoreCase(List<String> names, String nameToFind) {
-        if (CollKit.isEmpty(names)) {
-            return false;
-        }
-        if (StringKit.isEmpty(nameToFind)) {
-            return false;
-        }
-        for (String name : names) {
-            if (nameToFind.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * 如果连接超时的话,重新进行连接
      *
      * @return this
@@ -229,5 +207,60 @@ public abstract class AbstractFtp implements Closeable {
      * @param destPath   本地目录
      */
     public abstract void download(String sourcePath, String destPath);
+
+    /**
+     * 是否包含指定字符串,忽略大小写
+     *
+     * @param names      文件或目录名列表
+     * @param nameToFind 要查找的文件或目录名
+     * @return 是否包含
+     */
+    private static boolean containsIgnoreCase(List<String> names, String nameToFind) {
+        if (CollKit.isEmpty(names)) {
+            return false;
+        }
+        if (StringKit.isEmpty(nameToFind)) {
+            return false;
+        }
+        for (String name : names) {
+            if (nameToFind.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 下载文件-避免未完成的文件
+     * 此方法原理是先在目标文件同级目录下创建临时文件，等下载完毕后重命名，避免因下载错误导致的文件不完整。
+     *
+     * @param path           文件路径
+     * @param outFile        输出文件或目录
+     * @param tempFileSuffix 临时文件后缀，默认".temp"
+     */
+    public void download(String path, File outFile, String tempFileSuffix) {
+        if (StringKit.isBlank(tempFileSuffix)) {
+            tempFileSuffix = ".temp";
+        } else {
+            tempFileSuffix = StringKit.addPrefixIfNot(tempFileSuffix, Symbol.DOT);
+        }
+
+        // 目标文件真实名称
+        final String fileName = outFile.isDirectory() ? FileKit.getName(path) : outFile.getName();
+        // 临时文件名称
+        final String tempFileName = fileName + tempFileSuffix;
+
+        // 临时文件
+        outFile = new File(outFile.isDirectory() ? outFile : outFile.getParentFile(), tempFileName);
+        try {
+            download(path, outFile);
+            // 重命名下载好的临时文件
+            FileKit.rename(outFile, fileName, true);
+        } catch (Throwable e) {
+            // 异常则删除临时文件
+            FileKit.delete(outFile);
+            throw new InstrumentException(e);
+        }
+    }
 
 }

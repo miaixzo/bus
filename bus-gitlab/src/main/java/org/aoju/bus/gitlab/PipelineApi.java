@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.gitlab.models.*;
 
 import javax.ws.rs.core.GenericType;
@@ -42,10 +41,6 @@ import java.util.stream.Stream;
  * <a href="https://docs.gitlab.com/ee/api/pipelines.html">Pipelines API</a>
  * <a href="https://docs.gitlab.com/ee/api/pipeline_schedules.html">Pipeline Schedules API</a>
  * <a href="https://docs.gitlab.com/ee/api/pipeline_triggers.html">Pipeline Triggers API</a>
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class PipelineApi extends AbstractApi implements Constants {
 
@@ -138,8 +133,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Pipeline> getPipelines(Object projectIdOrPath, PipelineFilter filter, int itemsPerPage) throws GitLabApiException {
-        GitLabApiForm formData = (null != filter ? filter.getQueryParams() : new GitLabApiForm());
-        return (new Pager<>(this, Pipeline.class, itemsPerPage, formData.asMap(),
+        GitLabApiForm formData = (filter != null ? filter.getQueryParams() : new GitLabApiForm());
+        return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "pipelines"));
     }
 
@@ -267,7 +262,7 @@ public class PipelineApi extends AbstractApi implements Constants {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("scope", scope)
                 .withParam("status", status)
-                .withParam("ref", (null != ref ? urlEncode(ref) : null))
+                .withParam("ref", (ref != null ? urlEncode(ref) : null))
                 .withParam("yaml_errors", yamlErrors)
                 .withParam("name", name)
                 .withParam("username", username)
@@ -348,8 +343,9 @@ public class PipelineApi extends AbstractApi implements Constants {
         // The create pipeline REST API expects the variable data in an unusual format, this
         // class is used to create the JSON for the POST data.
         class CreatePipelineForm {
-
+            @SuppressWarnings("unused")
             public String ref;
+            @SuppressWarnings("unused")
             public List<Variable> variables;
 
             CreatePipelineForm(String ref, List<Variable> variables) {
@@ -569,7 +565,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public PipelineSchedule takeOwnershipPipelineSchedule(Object projectIdOrPath, Integer pipelineScheduleId) throws GitLabApiException {
 
-        Response response = post(Response.Status.OK, Normal.EMPTY, "projects", getProjectIdOrPath(projectIdOrPath), "pipeline_schedules", pipelineScheduleId, "take_ownership");
+        Response response = post(Response.Status.OK, "", "projects", getProjectIdOrPath(projectIdOrPath), "pipeline_schedules", pipelineScheduleId, "take_ownership");
         return (response.readEntity(PipelineSchedule.class));
     }
 
@@ -870,5 +866,4 @@ public class PipelineApi extends AbstractApi implements Constants {
     public Stream<Variable> getPipelineVariablesStream(Object projectIdOrPath, Integer pipelineId) throws GitLabApiException {
         return (getPipelineVariables(projectIdOrPath, pipelineId, getDefaultPerPage()).stream());
     }
-
 }

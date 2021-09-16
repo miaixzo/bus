@@ -28,6 +28,8 @@ package org.aoju.bus.gitlab;
 import org.aoju.bus.gitlab.models.Job;
 import org.aoju.bus.gitlab.models.JobStatus;
 import org.aoju.bus.gitlab.models.Runner;
+import org.aoju.bus.gitlab.models.Runner.RunnerStatus;
+import org.aoju.bus.gitlab.models.Runner.RunnerType;
 import org.aoju.bus.gitlab.models.RunnerDetail;
 
 import javax.ws.rs.core.GenericType;
@@ -37,10 +39,6 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API repository files calls.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class RunnersApi extends AbstractApi {
 
@@ -109,7 +107,7 @@ public class RunnersApi extends AbstractApi {
      * @return List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getRunners(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public List<Runner> getRunners(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getRunners(type, status, getDefaultPerPage()).all());
     }
 
@@ -125,7 +123,7 @@ public class RunnersApi extends AbstractApi {
      * @return List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getRunners(Runner.RunnerType type, Runner.RunnerStatus status, int page, int perPage) throws GitLabApiException {
+    public List<Runner> getRunners(RunnerType type, RunnerStatus status, int page, int perPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(page, perPage)
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -145,7 +143,7 @@ public class RunnersApi extends AbstractApi {
      * @return a Pager containing the Runners for the user
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Runner> getRunners(Runner.RunnerType type, Runner.RunnerStatus status, int itemsPerPage) throws GitLabApiException {
+    public Pager<Runner> getRunners(RunnerType type, RunnerStatus status, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -162,7 +160,7 @@ public class RunnersApi extends AbstractApi {
      * @return Stream of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Runner> getRunnersStream(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public Stream<Runner> getRunnersStream(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getRunners(type, status, getDefaultPerPage()).stream());
     }
 
@@ -227,7 +225,7 @@ public class RunnersApi extends AbstractApi {
      * @return a List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getAllRunners(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public List<Runner> getAllRunners(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getAllRunners(type, status, getDefaultPerPage()).all());
     }
 
@@ -243,7 +241,7 @@ public class RunnersApi extends AbstractApi {
      * @return List of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Runner> getAllRunners(Runner.RunnerType type, Runner.RunnerStatus status, int page, int perPage) throws GitLabApiException {
+    public List<Runner> getAllRunners(RunnerType type, RunnerStatus status, int page, int perPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm(page, perPage)
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -263,7 +261,7 @@ public class RunnersApi extends AbstractApi {
      * @return a Pager containing the Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Runner> getAllRunners(Runner.RunnerType type, Runner.RunnerStatus status, int itemsPerPage) throws GitLabApiException {
+    public Pager<Runner> getAllRunners(RunnerType type, RunnerStatus status, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("type", type, false)
                 .withParam("status", status, false);
@@ -280,7 +278,7 @@ public class RunnersApi extends AbstractApi {
      * @return a Stream of Runners
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Runner> getAllRunnersStream(Runner.RunnerType type, Runner.RunnerStatus status) throws GitLabApiException {
+    public Stream<Runner> getAllRunnersStream(RunnerType type, RunnerStatus status) throws GitLabApiException {
         return (getAllRunners(type, status, getDefaultPerPage()).stream());
     }
 
@@ -561,5 +559,4 @@ public class RunnersApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("token", token, true);
         delete(Response.Status.NO_CONTENT, formData.asMap(), "runners");
     }
-
 }

@@ -23,9 +23,8 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab;
+package org.aoju.bus.gitlab.support;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.glassfish.jersey.message.MessageUtils;
 
 import javax.annotation.Priority;
@@ -54,10 +53,6 @@ import java.util.logging.Logger;
  * <p>
  * This class was patterned after org.glassfish.jersey.logging.LoggingInterceptor, but written in
  * such a way that it could be sub-classed and have its behavior modified.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 @Priority(Integer.MIN_VALUE)
 public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
@@ -148,7 +143,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         this.level = level;
         this.maxEntitySize = maxEntitySize;
 
-        if (null != maskedHeaderNames) {
+        if (maskedHeaderNames != null) {
             maskedHeaderNames.forEach(h -> this.maskedHeaderNames.add(h.toLowerCase()));
         }
     }
@@ -161,7 +156,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      */
     public void setMaskedHeaderNames(final List<String> maskedHeaderNames) {
         this.maskedHeaderNames.clear();
-        if (null != maskedHeaderNames) {
+        if (maskedHeaderNames != null) {
             maskedHeaderNames.forEach(h -> {
                 addMaskedHeaderName(h);
             });
@@ -174,7 +169,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * @param maskedHeaderName the masked header name to add
      */
     public void addMaskedHeaderName(String maskedHeaderName) {
-        if (null != maskedHeaderName) {
+        if (maskedHeaderName != null) {
             maskedHeaderName = maskedHeaderName.trim();
             if (maskedHeaderName.length() > 0) {
                 maskedHeaderNames.add(maskedHeaderName.toLowerCase());
@@ -183,13 +178,13 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     protected void log(final StringBuilder sb) {
-        if (null != logger) {
+        if (logger != null) {
             logger.log(level, sb.toString());
         }
     }
 
     protected StringBuilder appendId(final StringBuilder sb, final long id) {
-        sb.append(id).append(Symbol.C_SPACE);
+        sb.append(Long.toString(id)).append(' ');
         return (sb);
     }
 
@@ -197,22 +192,22 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         appendId(sb, id).append(SECTION_PREFIX)
                 .append(note)
                 .append(" on thread ").append(Thread.currentThread().getName())
-                .append(Symbol.C_LF);
-        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(Symbol.C_SPACE)
-                .append(uri.toASCIIString()).append(Symbol.C_LF);
+                .append('\n');
+        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(' ')
+                .append(uri.toASCIIString()).append('\n');
     }
 
     protected void printResponseLine(final StringBuilder sb, final String note, final long id, final int status) {
         appendId(sb, id).append(SECTION_PREFIX)
                 .append(note)
-                .append(" on thread ").append(Thread.currentThread().getName()).append(Symbol.C_LF);
+                .append(" on thread ").append(Thread.currentThread().getName()).append('\n');
         appendId(sb, id).append(RESPONSE_PREFIX)
-                .append(status)
-                .append(Symbol.C_LF);
+                .append(Integer.toString(status))
+                .append('\n');
     }
 
     protected Set<Entry<String, List<String>>> getSortedHeaders(final Set<Entry<String, List<String>>> headers) {
-        final TreeSet<Entry<String, List<String>>> sortedHeaders = new TreeSet<>(
+        final TreeSet<Entry<String, List<String>>> sortedHeaders = new TreeSet<Entry<String, List<String>>>(
                 (Entry<String, List<String>> o1, Entry<String, List<String>> o2) -> o1.getKey().compareToIgnoreCase(o2.getKey()));
         sortedHeaders.addAll(headers);
         return sortedHeaders;
@@ -240,7 +235,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
             if (values.size() == 1) {
                 String value = (isMaskedHeader ? "********" : values.get(0).toString());
-                appendId(sb, id).append(prefix).append(header).append(": ").append(value).append(Symbol.C_LF);
+                appendId(sb, id).append(prefix).append(header).append(": ").append(value).append('\n');
             } else {
 
                 final StringBuilder headerBuf = new StringBuilder();
@@ -252,7 +247,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
                     headerBuf.append(isMaskedHeader ? "********" : value.toString());
                 }
 
-                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append(Symbol.C_LF);
+                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append('\n');
             }
         });
     }
@@ -264,7 +259,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             sb.append("...more...");
         }
 
-        sb.append(Symbol.C_LF);
+        sb.append('\n');
     }
 
     private InputStream logResponseEntity(final StringBuilder sb, InputStream stream, final Charset charset) throws IOException {
@@ -286,7 +281,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     @Override
-    public void filter(ClientRequestContext requestContext) {
+    public void filter(ClientRequestContext requestContext) throws IOException {
 
         if (!logger.isLoggable(level)) {
             return;
@@ -316,7 +311,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         }
 
         final Object requestId = requestContext.getProperty(LOGGING_ID_PROPERTY);
-        final long id = null != requestId ? (Long) requestId : _id.incrementAndGet();
+        final long id = requestId != null ? (Long) requestId : _id.incrementAndGet();
 
         final StringBuilder sb = new StringBuilder();
         printResponseLine(sb, "Received server response", id, responseContext.getStatus());
@@ -377,5 +372,4 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             out.write(i);
         }
     }
-
 }

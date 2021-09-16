@@ -285,8 +285,8 @@ public class SpecificCharacterSet {
         }
 
         private static String[] resetCharsetNames(String[] charsetNames) {
-            charsetNames[0] = "US-ASCII";
-            charsetNames[1] = "ISO-8859-1";
+            charsetNames[0] = org.aoju.bus.core.lang.Charset.DEFAULT_US_ASCII;
+            charsetNames[1] = org.aoju.bus.core.lang.Charset.DEFAULT_ISO_8859_1;
             charsetNames[2] = "ISO-8859-2";
             charsetNames[3] = "ISO-8859-3";
             charsetNames[4] = "ISO-8859-4";
@@ -300,9 +300,9 @@ public class SpecificCharacterSet {
             charsetNames[12] = "x-JIS0208";
             charsetNames[13] = "JIS_X0212-1990";
             charsetNames[14] = "EUC-KR";
-            charsetNames[15] = "GB2312";
-            charsetNames[16] = "UTF-8";
-            charsetNames[17] = "GB18030";
+            charsetNames[15] = org.aoju.bus.core.lang.Charset.DEFAULT_GB_2312;
+            charsetNames[16] = org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8;
+            charsetNames[17] = org.aoju.bus.core.lang.Charset.DEFAULT_GB_18030;
             return charsetNames;
         }
 

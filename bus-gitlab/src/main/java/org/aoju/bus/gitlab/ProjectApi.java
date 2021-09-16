@@ -25,10 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
+import org.aoju.bus.gitlab.support.ISO8601;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -43,16 +42,15 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the GitLab API project calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/projects.html">Projects API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/project_statistics.html">Project statistics API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/access_requests.html#group-and-project-access-requests-api">Group and project access requests API</a>
  * @see <a href="https://docs.gitlab.com/ee/api/project_badges.html">Project badges API</a>
- * @see <a href="https://docs.gitlab.com/ce/api/merge_request_approvals.html">
- * Merge request approvals API (Project-level) at GitLab</a>
- * @since JDK 1.8+
+ * @see <a href="https://docs.gitlab.com/ce/api/merge_request_approvals.html">Merge request approvals API (Project-level) at GitLab</a>
+ * @see <a href="https://docs.gitlab.com/ce/api/audit_events.html#retrieve-all-project-audit-events">Project audit events API</a>
+ * @see <a href="https://docs.gitlab.com/ce/api/custom_attributes.html">Custom Attributes API</a>
+ * @see <a href="https://docs.gitlab.com/ce/api/remote_mirrors.html">Project remote mirrors API</a>
  */
 public class ProjectApi extends AbstractApi implements Constants {
 
@@ -84,9 +82,8 @@ public class ProjectApi extends AbstractApi implements Constants {
      *
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
      * @return an Optional instance with the value for the project fetch statistics for the last 30 day
-     * @throws GitLabApiException if any exception occurs during execution
      */
-    public Optional<ProjectFetches> getOptionalProjectStatistics(Object projectIdOrPath) throws GitLabApiException {
+    public Optional<ProjectFetches> getOptionalProjectStatistics(Object projectIdOrPath) {
         try {
             return (Optional.ofNullable(getProjectStatistics(projectIdOrPath)));
         } catch (GitLabApiException glae) {
@@ -156,38 +153,6 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Stream<Project> getProjectsStream() throws GitLabApiException {
         return (getProjects(getDefaultPerPage()).stream());
-    }
-
-    /**
-     * Get a list of projects accessible by the authenticated user and matching the supplied filter parameters.
-     * All filter parameters are optional.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects</code></pre>
-     *
-     * @param archived   limit by archived status
-     * @param visibility limit by visibility public, internal, or private
-     * @param orderBy    return projects ordered by id, name, path, created_at, updated_at, or last_activity_at fields, default is created_at
-     * @param sort       return projects sorted in asc or desc order. Default is desc
-     * @param search     return list of projects matching the search criteria
-     * @param simple     return only the ID, URL, name, and path of each project
-     * @param owned      limit by projects owned by the current user
-     * @param membership limit by projects that the current user is a member of
-     * @param starred    limit by projects starred by the current user
-     * @param statistics include project statistics
-     * @return a list of projects accessible by the authenticated user and matching the supplied parameters
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #getProjects(Boolean, Visibility,
-     * Constants.ProjectOrderBy, Constants.SortOrder, String, Boolean, Boolean, Boolean, Boolean, Boolean)}
-     */
-    @Deprecated
-    public List<Project> getProjects(Boolean archived, Visibility visibility, String orderBy,
-                                     String sort, String search, Boolean simple, Boolean owned, Boolean membership,
-                                     Boolean starred, Boolean statistics) throws GitLabApiException {
-
-        ProjectOrderBy projectOrderBy = ProjectOrderBy.valueOf(orderBy);
-        SortOrder sortOrder = SortOrder.valueOf(sort);
-        return (getProjects(archived, visibility, projectOrderBy, sortOrder, search, simple,
-                owned, membership, starred, statistics, getDefaultPerPage()).all());
     }
 
     /**
@@ -778,7 +743,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String projectPath = null;
         try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, Charset.DEFAULT_UTF_8);
+            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
             throw (new GitLabApiException(uee));
         }
@@ -827,7 +792,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String projectPath = null;
         try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, Charset.DEFAULT_UTF_8);
+            projectPath = URLEncoder.encode(namespace + "/" + project, "UTF-8");
         } catch (UnsupportedEncodingException uee) {
             throw (new GitLabApiException(uee));
         }
@@ -960,6 +925,9 @@ public class ProjectApi extends AbstractApi implements Constants {
      * resolveOutdatedDiffDiscussions (optional) - Automatically resolve merge request diffs discussions on lines changed with a push
      * initialize_with_readme (optional) - Initialize project with README file
      * packagesEnabled (optional) - Enable or disable mvn packages repository feature
+     * buildGitStrategy (optional) - set the build git strategy
+     * buildCoverageRegex (optional) - set build coverage regex
+     * squashOption (optional) - set squash option for merge requests
      *
      * @param project   the Project instance with the configuration for the new project
      * @param importUrl the URL to import the repository from
@@ -1005,32 +973,31 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("initialize_with_readme", project.getInitializeWithReadme())
                 .withParam("packages_enabled", project.getPackagesEnabled())
                 .withParam("build_git_strategy", project.getBuildGitStrategy())
-                .withParam("build_coverage_regex", project.getBuildCoverageRegex());
+                .withParam("build_coverage_regex", project.getBuildCoverageRegex())
+                .withParam("suggestion_commit_message", project.getSuggestionCommitMessage())
+                .withParam("remove_source_branch_after_merge", project.getRemoveSourceBranchAfterMerge())
+                .withParam("squash_option", project.getSquashOption());
 
         Namespace namespace = project.getNamespace();
-        if (null != namespace && null != namespace.getId()) {
+        if (namespace != null && namespace.getId() != null) {
             formData.withParam("namespace_id", namespace.getId());
         }
 
         if (isApiVersion(ApiVersion.V3)) {
-            boolean isPublic = (null != project.getPublic() ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
+            boolean isPublic = (project.getPublic() != null ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
             formData.withParam("public", isPublic);
 
-            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
+            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
                 throw new IllegalArgumentException("GitLab API v3 does not support tag lists when creating projects");
             }
         } else {
-            Visibility visibility = (null != project.getVisibility() ? project.getVisibility() :
+            Visibility visibility = (project.getVisibility() != null ? project.getVisibility() :
                     project.getPublic() == Boolean.TRUE ? Visibility.PUBLIC : null);
             formData.withParam("visibility", visibility);
 
-            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
+            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
                 formData.withParam("tag_list", String.join(",", project.getTagList()));
             }
-        }
-
-        if (null != project.getNamespace()) {
-            formData.withParam("namespace_id", project.getNamespace().getId());
         }
 
         Response response = post(Response.Status.CREATED, formData, "projects");
@@ -1055,12 +1022,6 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project createProject(String name, Integer namespaceId, String description, Boolean issuesEnabled, Boolean mergeRequestsEnabled,
                                  Boolean wikiEnabled, Boolean snippetsEnabled, Visibility visibility, Integer visibilityLevel, String importUrl) throws GitLabApiException {
-
-        if (isApiVersion(ApiVersion.V3)) {
-            Boolean isPublic = Visibility.PUBLIC == visibility;
-            return (createProject(name, namespaceId, description, issuesEnabled, mergeRequestsEnabled,
-                    wikiEnabled, snippetsEnabled, isPublic, visibilityLevel, importUrl));
-        }
 
         if (name == null || name.trim().length() == 0) {
             return (null);
@@ -1103,12 +1064,6 @@ public class ProjectApi extends AbstractApi implements Constants {
                                  Boolean wikiEnabled, Boolean snippetsEnabled, Visibility visibility, Integer visibilityLevel,
                                  Boolean printingMergeRequestLinkEnabled, String importUrl) throws GitLabApiException {
 
-        if (isApiVersion(ApiVersion.V3)) {
-            Boolean isPublic = Visibility.PUBLIC == visibility;
-            return (createProject(name, namespaceId, description, issuesEnabled, mergeRequestsEnabled,
-                    wikiEnabled, snippetsEnabled, isPublic, visibilityLevel, importUrl));
-        }
-
         if (name == null || name.trim().length() == 0) {
             return (null);
         }
@@ -1125,53 +1080,6 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("visibility", visibility)
                 .withParam("printing_merge_request_link_enabled", printingMergeRequestLinkEnabled)
                 .withParam("import_url", importUrl);
-
-        Response response = post(Response.Status.CREATED, formData, "projects");
-        return (response.readEntity(Project.class));
-    }
-
-    /**
-     * Creates a Project
-     *
-     * @param name                 The name of the project
-     * @param namespaceId          The Namespace for the new project, otherwise null indicates to use the GitLab default (user)
-     * @param description          A description for the project, null otherwise
-     * @param issuesEnabled        Whether Issues should be enabled, otherwise null indicates to use GitLab default
-     * @param mergeRequestsEnabled Whether Merge Requests should be enabled, otherwise null indicates to use GitLab default
-     * @param wikiEnabled          Whether a Wiki should be enabled, otherwise null indicates to use GitLab default
-     * @param snippetsEnabled      Whether Snippets should be enabled, otherwise null indicates to use GitLab default
-     * @param isPublic             Whether the project is public or private, if true same as setting visibilityLevel = 20, otherwise null indicates to use GitLab default
-     * @param visibilityLevel      The visibility level of the project, otherwise null indicates to use GitLab default
-     * @param importUrl            The Import URL for the project, otherwise null
-     * @return the GitLab Project
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated As of release 4.2.0, replaced by {@link #createProject(String, Integer, String, Boolean, Boolean,
-     * Boolean, Boolean, Visibility, Integer, String)}
-     */
-    @Deprecated
-    public Project createProject(String name, Integer namespaceId, String description, Boolean issuesEnabled, Boolean mergeRequestsEnabled,
-                                 Boolean wikiEnabled, Boolean snippetsEnabled, Boolean isPublic, Integer visibilityLevel, String importUrl) throws GitLabApiException {
-
-        if (name == null || name.trim().length() == 0) {
-            return (null);
-        }
-
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("name", name, true)
-                .withParam("namespace_id", namespaceId)
-                .withParam("description", description)
-                .withParam("issues_enabled", issuesEnabled)
-                .withParam("merge_requests_enabled", mergeRequestsEnabled)
-                .withParam("wiki_enabled", wikiEnabled)
-                .withParam("snippets_enabled", snippetsEnabled)
-                .withParam("visibility_level", visibilityLevel)
-                .withParam("import_url", importUrl);
-
-        if (isApiVersion(ApiVersion.V3)) {
-            formData.withParam("public", isPublic);
-        } else if (isPublic) {
-            formData.withParam("visibility", Visibility.PUBLIC);
-        }
 
         Response response = post(Response.Status.CREATED, formData, "projects");
         return (response.readEntity(Project.class));
@@ -1205,6 +1113,9 @@ public class ProjectApi extends AbstractApi implements Constants {
      * printingMergeRequestLinkEnabled (optional) - Show link to create/view merge request when pushing from the command line
      * resolveOutdatedDiffDiscussions (optional) - Automatically resolve merge request diffs discussions on lines changed with a push
      * packagesEnabled (optional) - Enable or disable mvn packages repository feature
+     * buildGitStrategy (optional) - set the build git strategy
+     * buildCoverageRegex (optional) - set build coverage regex
+     * squashOption (optional) - set squash option for merge requests
      * <p>
      * NOTE: The following parameters specified by the GitLab API edit project are not supported:
      * import_url
@@ -1248,23 +1159,29 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("approvals_before_merge", project.getApprovalsBeforeMerge())
                 .withParam("printing_merge_request_link_enabled", project.getPrintingMergeRequestLinkEnabled())
                 .withParam("resolve_outdated_diff_discussions", project.getResolveOutdatedDiffDiscussions())
-                .withParam("packages_enabled", project.getPackagesEnabled());
+                .withParam("packages_enabled", project.getPackagesEnabled())
+                .withParam("build_git_strategy", project.getBuildGitStrategy())
+                .withParam("build_coverage_regex", project.getBuildCoverageRegex())
+                .withParam("merge_method", project.getMergeMethod())
+                .withParam("suggestion_commit_message", project.getSuggestionCommitMessage())
+                .withParam("remove_source_branch_after_merge", project.getRemoveSourceBranchAfterMerge())
+                .withParam("squash_option", project.getSquashOption());
 
         if (isApiVersion(ApiVersion.V3)) {
             formData.withParam("visibility_level", project.getVisibilityLevel());
-            boolean isPublic = (null != project.getPublic() ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
+            boolean isPublic = (project.getPublic() != null ? project.getPublic() : project.getVisibility() == Visibility.PUBLIC);
             formData.withParam("public", isPublic);
 
-            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
+            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
                 throw new IllegalArgumentException("GitLab API v3 does not support tag lists when updating projects");
             }
         } else {
-            Visibility visibility = (null != project.getVisibility() ? project.getVisibility() :
+            Visibility visibility = (project.getVisibility() != null ? project.getVisibility() :
                     project.getPublic() == Boolean.TRUE ? Visibility.PUBLIC : null);
             formData.withParam("visibility", visibility);
 
-            if (null != project.getTagList() && !project.getTagList().isEmpty()) {
-                formData.withParam("tag_list", String.join(Symbol.COMMA, project.getTagList()));
+            if (project.getTagList() != null && !project.getTagList().isEmpty()) {
+                formData.withParam("tag_list", String.join(",", project.getTagList()));
             }
         }
 
@@ -1411,7 +1328,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Member> getMembers(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Member>(this, Member.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "members"));
+        return (new Pager<>(this, Member.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "members"));
     }
 
     /**
@@ -1441,29 +1358,6 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public List<Member> getAllMembers(Object projectIdOrPath) throws GitLabApiException {
         return (getAllMembers(projectIdOrPath, null, null));
-    }
-
-    /**
-     * Gets a list of project members viewable by the authenticated user,
-     * including inherited members through ancestor groups. Returns multiple
-     * times the same user (with different member attributes) when the user is
-     * a member of the project/group and of one or more ancestor group.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/members</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of Member instances per page
-     * @return the project members viewable by the authenticated user, including inherited members through ancestor groups
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0
-     */
-    @Deprecated
-    public List<Member> getAllMembers(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
-                "projects", getProjectIdOrPath(projectIdOrPath), "members", "all");
-        return (response.readEntity(new GenericType<List<Member>>() {
-        }));
     }
 
     /**
@@ -1853,7 +1747,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<ProjectUser> getProjectUsers(Object projectIdOrPath, String search, int itemsPerPage) throws GitLabApiException {
-        MultivaluedMap<String, String> params = (null != search ? new GitLabApiForm().withParam("search", search).asMap() : null);
+        MultivaluedMap<String, String> params = (search != null ? new GitLabApiForm().withParam("search", search).asMap() : null);
         return (new Pager<>(this, ProjectUser.class, itemsPerPage, params,
                 "projects", getProjectIdOrPath(projectIdOrPath), "users"));
     }
@@ -1914,7 +1808,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Event> getProjectEvents(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Event>(this, Event.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "events"));
+        return (new Pager<>(this, Event.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "events"));
     }
 
     /**
@@ -1971,7 +1865,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<ProjectHook> getHooks(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<ProjectHook>(this, ProjectHook.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "hooks"));
+        return (new Pager<>(this, ProjectHook.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "hooks"));
     }
 
     /**
@@ -2047,9 +1941,11 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("confidential_note_events", enabledHooks.getConfidentialNoteEvents(), false)
                 .withParam("job_events", enabledHooks.getJobEvents(), false)
                 .withParam("pipeline_events", enabledHooks.getPipelineEvents(), false)
-                .withParam("wiki_events", enabledHooks.getWikiPageEvents(), false)
+                .withParam("wiki_page_events", enabledHooks.getWikiPageEvents(), false)
                 .withParam("enable_ssl_verification", enableSslVerification, false)
                 .withParam("repository_update_events", enabledHooks.getRepositoryUpdateEvents(), false)
+                .withParam("deployment_events", enabledHooks.getDeploymentEvents(), false)
+                .withParam("releases_events", enabledHooks.getReleasesEvents(), false)
                 .withParam("token", secretToken, false);
         Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "hooks");
         return (response.readEntity(ProjectHook.class));
@@ -2127,110 +2023,12 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("note_events", hook.getNoteEvents(), false)
                 .withParam("job_events", hook.getJobEvents(), false)
                 .withParam("pipeline_events", hook.getPipelineEvents(), false)
-                .withParam("wiki_events", hook.getWikiPageEvents(), false)
+                .withParam("wiki_page_events", hook.getWikiPageEvents(), false)
                 .withParam("enable_ssl_verification", hook.getEnableSslVerification(), false)
                 .withParam("token", hook.getToken(), false);
 
         Response response = put(Response.Status.OK, formData.asMap(), "projects", hook.getProjectId(), "hooks", hook.getId());
         return (response.readEntity(ProjectHook.class));
-    }
-
-    /**
-     * Get a list of the project's issues.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @return a list of project's issues
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object)}
-     */
-    @Deprecated
-    public List<Issue> getIssues(Object projectIdOrPath) throws GitLabApiException {
-        return (getIssues(projectIdOrPath, getDefaultPerPage()).all());
-    }
-
-    /**
-     * Get a list of project's issues using the specified page and per page settings.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param page            the page to get
-     * @param perPage         the number of issues per page
-     * @return the list of issues in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object, int, int)}
-     */
-    @Deprecated
-    public List<Issue> getIssues(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects", getProjectIdOrPath(projectIdOrPath), "issues");
-        return (response.readEntity(new GenericType<List<Issue>>() {
-        }));
-    }
-
-    /**
-     * Get a Pager of project's issues.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param itemsPerPage    the number of issues per page
-     * @return the list of issues in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object, int)}
-     */
-    @Deprecated
-    public Pager<Issue> getIssues(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Issue>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
-    }
-
-    /**
-     * Get a Stream of the project's issues.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @return a Stream of the project's issues
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object)}
-     */
-    @Deprecated
-    public Stream<Issue> getIssuesStream(Object projectIdOrPath) throws GitLabApiException {
-        return (getIssues(projectIdOrPath, getDefaultPerPage()).stream());
-    }
-
-    /**
-     * Get a single project issue.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param issueId         the internal ID of a project's issue
-     * @return the specified Issue instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssue(Object, Integer)}
-     */
-    @Deprecated
-    public Issue getIssue(Object projectIdOrPath, Integer issueId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getDefaultPerPageParam(), "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueId);
-        return (response.readEntity(Issue.class));
-    }
-
-    /**
-     * Delete a project issue.
-     *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param issueId         the internal ID of a project's issue
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#deleteIssue(Object, Integer)}
-     */
-    @Deprecated
-    public void deleteIssue(Object projectIdOrPath, Integer issueId) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
-        delete(expectedStatus, getDefaultPerPageParam(), "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueId);
     }
 
     /**
@@ -2893,7 +2691,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Variable> getVariables(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Variable>(this, Variable.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "variables"));
+        return (new Pager<>(this, Variable.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "variables"));
     }
 
     /**
@@ -2954,7 +2752,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Variable createVariable(Object projectIdOrPath, String key, String value, Boolean isProtected) throws GitLabApiException {
-        return (createVariable(projectIdOrPath, key, value, isProtected, (String) null));
+        return (createVariable(projectIdOrPath, key, value, isProtected, null));
     }
 
     /**
@@ -3151,7 +2949,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<AccessRequest> getAccessRequests(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<AccessRequest>(this, AccessRequest.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "access_requests"));
+        return (new Pager<>(this, AccessRequest.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "access_requests"));
     }
 
     /**
@@ -3402,7 +3200,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Pager<ApprovalRule> getApprovalRules(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
 
-        return (new Pager<ApprovalRule>(this, ApprovalRule.class, itemsPerPage, null,
+        return (new Pager<>(this, ApprovalRule.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "approval_rules"));
     }
 
@@ -3505,7 +3303,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<CustomAttribute> getCustomAttributes(final Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<CustomAttribute>(this, CustomAttribute.class, itemsPerPage, null,
+        return (new Pager<>(this, CustomAttribute.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "custom_attributes"));
     }
 

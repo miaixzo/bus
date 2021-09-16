@@ -307,18 +307,18 @@ public class BeanKit {
     }
 
     /**
-     * 获取{@link BeanDescription} Bean描述信息
+     * 获取{@link BeanDesc} Bean描述信息
      *
      * @param clazz Bean类
-     * @return {@link BeanDescription}
+     * @return {@link BeanDesc}
      */
-    public static BeanDescription getBeanDesc(Class<?> clazz) {
-        BeanDescription beanDescription = BeanCache.INSTANCE.getBeanDesc(clazz);
-        if (null == beanDescription) {
-            beanDescription = new BeanDescription(clazz);
-            BeanCache.INSTANCE.putBeanDesc(clazz, beanDescription);
+    public static BeanDesc getBeanDesc(Class<?> clazz) {
+        BeanDesc beanDesc = BeanCache.INSTANCE.getBeanDesc(clazz);
+        if (null == beanDesc) {
+            beanDesc = new BeanDesc(clazz);
+            BeanCache.INSTANCE.putBeanDesc(clazz, beanDesc);
         }
-        return beanDescription;
+        return beanDesc;
     }
 
     /**
@@ -744,12 +744,12 @@ public class BeanKit {
             return null;
         }
 
-        final Collection<PropertyDescription> props = BeanKit.getBeanDesc(bean.getClass()).getProps();
+        final Collection<PropertyDesc> props = BeanKit.getBeanDesc(bean.getClass()).getProps();
 
         String key;
         Method getter;
         Object value;
-        for (PropertyDescription prop : props) {
+        for (PropertyDesc prop : props) {
             key = prop.getFieldName();
             // 过滤class属性
             // 得到property对应的getter方法
@@ -1104,7 +1104,7 @@ public class BeanKit {
      * @param clazz  Bean类
      * @param action 每个元素的处理类
      */
-    public static void forEach(Class<?> clazz, Consumer<? super PropertyDescription> action) {
+    public static void forEach(Class<?> clazz, Consumer<? super PropertyDesc> action) {
         getBeanDesc(clazz).getProps().forEach(action);
     }
 

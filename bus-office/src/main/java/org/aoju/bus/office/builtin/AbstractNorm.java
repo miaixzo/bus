@@ -74,7 +74,7 @@ public abstract class AbstractNorm implements OptionalSource {
     public AbstractJob to(final File target) {
         final TargetFromFileProvider specs = new TargetFromFileProvider(target);
         final DocumentFormat format =
-                formatRegistry.getFormatByExtension(FileKit.getExtension(target.getName()));
+                formatRegistry.getFormatByExtension(FileKit.getSuffix(target.getName()));
         if (null != format) {
             specs.setDocumentFormat(format);
         }

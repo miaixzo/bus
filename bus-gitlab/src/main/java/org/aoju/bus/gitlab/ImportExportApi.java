@@ -44,10 +44,7 @@ import java.util.Map;
 /**
  * This class provides an entry point to all the GitLab API project import/export calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
- * @since JDK 1.8+
  */
 public class ImportExportApi extends AbstractApi {
 
@@ -242,7 +239,7 @@ public class ImportExportApi extends AbstractApi {
                 .withParam("namespace", namespaceIdOrPath)
                 .withParam("overwrite", overwrite);
 
-        if (null != overrideParams) {
+        if (overrideParams != null) {
             formData.withParam("default_branch", overrideParams.getDefaultBranch())
                     .withParam("description", overrideParams.getDescription())
                     .withParam("issues_enabled", overrideParams.getIssuesEnabled())
@@ -266,7 +263,8 @@ public class ImportExportApi extends AbstractApi {
                     .withParam("initialize_with_readme", overrideParams.getInitializeWithReadme())
                     .withParam("packages_enabled", overrideParams.getPackagesEnabled())
                     .withParam("build_git_strategy", overrideParams.getBuildGitStrategy())
-                    .withParam("build_coverage_regex", overrideParams.getBuildCoverageRegex());
+                    .withParam("build_coverage_regex", overrideParams.getBuildCoverageRegex())
+                    .withParam("squash_option", overrideParams.getSquashOption());
         }
 
         Response response = upload(Response.Status.CREATED, "file", exportFile, null, formData, url);
@@ -286,5 +284,4 @@ public class ImportExportApi extends AbstractApi {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "import");
         return (response.readEntity(ImportStatus.class));
     }
-
 }

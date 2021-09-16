@@ -279,7 +279,7 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException 没有该密钥算法
      */
     public static Key key(String password) throws NoSuchAlgorithmException {
-        return key(Algorithm.AES, DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
+        return key(Algorithm.AES.getValue(), DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
     }
 
     /**
@@ -318,7 +318,7 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException 没有该密钥算法
      */
     public static Key key(String algorithm, int keysize, int ivsize, String password) throws NoSuchAlgorithmException {
-        MessageDigest sha512 = MessageDigest.getInstance(Algorithm.SHA512);
+        MessageDigest sha512 = MessageDigest.getInstance(Algorithm.SHA512.getValue());
         byte[] seed = sha512.digest(password.getBytes());
         KeyGenerator generator = KeyGenerator.getInstance(algorithm.split("[/]")[0]);
         SecureRandom random = new SecureRandom(seed);

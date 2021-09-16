@@ -26,7 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.ConvertException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.XmlKit;
 
@@ -58,7 +58,7 @@ public class StringConverter extends AbstractConverter<String> {
             reader = clob.getCharacterStream();
             return IoKit.read(reader);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new ConvertException(e);
         } finally {
             IoKit.close(reader);
         }
@@ -76,7 +76,7 @@ public class StringConverter extends AbstractConverter<String> {
             in = blob.getBinaryStream();
             return IoKit.read(in, Charset.UTF_8);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new ConvertException(e);
         } finally {
             IoKit.close(in);
         }

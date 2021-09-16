@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
 
 import javax.ws.rs.core.Form;
@@ -40,11 +38,8 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab merge request calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/merge_requests.html">Merge requests API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/merge_request_approvals.html">Merge request approvals API at GitLab</a>
- * @since JDK 1.8+
  */
 public class MergeRequestApi extends AbstractApi {
 
@@ -78,11 +73,11 @@ public class MergeRequestApi extends AbstractApi {
      */
     public List<MergeRequest> getMergeRequests(MergeRequestFilter filter, int page, int perPage) throws GitLabApiException {
 
-        MultivaluedMap<String, String> queryParams = (null != filter ?
+        MultivaluedMap<String, String> queryParams = (filter != null ?
                 filter.getQueryParams(page, perPage).asMap() : getPageQueryParams(page, perPage));
         Response response;
-        if (null != filter && (null != filter.getProjectId() && filter.getProjectId().intValue() > 0) ||
-                (null != filter.getIids() && filter.getIids().size() > 0)) {
+        if (filter != null && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
+                (filter.getIids() != null && filter.getIids().size() > 0)) {
 
             if (filter.getProjectId() == null || filter.getProjectId().intValue() == 0) {
                 throw new RuntimeException("project ID cannot be null or 0");
@@ -109,9 +104,9 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<MergeRequest> getMergeRequests(MergeRequestFilter filter, int itemsPerPage) throws GitLabApiException {
 
-        MultivaluedMap<String, String> queryParams = (null != filter ? filter.getQueryParams().asMap() : null);
-        if (filter != null && (null != filter.getProjectId() && filter.getProjectId().intValue() > 0) ||
-                (null != filter.getIids() && filter.getIids().size() > 0)) {
+        MultivaluedMap<String, String> queryParams = (filter != null ? filter.getQueryParams().asMap() : null);
+        if (filter != null && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
+                (filter.getIids() != null && filter.getIids().size() > 0)) {
 
             if (filter.getProjectId() == null || filter.getProjectId().intValue() == 0) {
                 throw new RuntimeException("project ID cannot be null or 0");
@@ -659,8 +654,8 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
 
         String[] labelsArray = null;
-        if (null != labels) {
-            labelsArray = labels.split(Symbol.COMMA, -1);
+        if (labels != null) {
+            labelsArray = labels.split(",", -1);
         }
 
         MergeRequestParams params = new MergeRequestParams()
@@ -696,7 +691,7 @@ public class MergeRequestApi extends AbstractApi {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid);
     }
 
@@ -807,7 +802,7 @@ public class MergeRequestApi extends AbstractApi {
         Form formData = new GitLabApiForm()
                 .withParam("merge_commit_message", mergeCommitMessage)
                 .withParam("should_remove_source_branch", shouldRemoveSourceBranch)
-                .withParam((isApiVersion(ApiVersion.V3) ?
+                .withParam((isApiVersion(GitLabApi.ApiVersion.V3) ?
                                 "merge_when_build_succeeds" : "merge_when_pipeline_succeeds"),
                         mergeWhenPipelineSucceeds)
                 .withParam("sha", sha);
@@ -1334,5 +1329,4 @@ public class MergeRequestApi extends AbstractApi {
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "pipelines");
         return (response.readEntity(Pipeline.class));
     }
-
 }

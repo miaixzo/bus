@@ -31,9 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * This class is used by various models to represent the approved_by property,
  * which can contain a User or Group instance.
  *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
+ * @since 4.19.0
  */
 public class ApprovedBy {
 
@@ -45,7 +43,7 @@ public class ApprovedBy {
     }
 
     public void setUser(User user) {
-        if (null != group) {
+        if (group != null) {
             throw new RuntimeException("ApprovedBy is already set to a group, cannot be set to a user");
         }
 
@@ -57,7 +55,7 @@ public class ApprovedBy {
     }
 
     public void setGroup(Group group) {
-        if (null != user) {
+        if (user != null) {
             throw new RuntimeException("ApprovedBy is already set to a user, cannot be set to a group");
         }
 
@@ -72,6 +70,6 @@ public class ApprovedBy {
      */
     @JsonIgnore
     public Object getApprovedBy() {
-        return (null != user ? user : group);
+        return (user != null ? user : group);
     }
 }

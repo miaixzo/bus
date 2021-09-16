@@ -349,6 +349,9 @@ public final class CsvParser implements Closeable {
 
         field = StringKit.unWrap(field, textDelimiter);
         field = StringKit.replace(field, "" + textDelimiter + textDelimiter, textDelimiter + "");
+        if (this.config.trimField) {
+            field = StringKit.trim(field);
+        }
         currentFields.add(field);
     }
 

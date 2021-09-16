@@ -80,12 +80,13 @@ public final class ProcessPerformanceData {
         Map<Integer, PerfCounterBlock> processMap = new HashMap<>();
         // Iterate instances.
         for (Map<ProcessInformation.ProcessPerformanceProperty, Object> processInstanceMap : processInstanceMaps) {
-            int pid = ((Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PROCESSID)).intValue();
+            int pid = ((Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.IDPROCESS)).intValue();
             String name = (String) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.NAME);
-            if ((null == pids || pids.contains(pid)) && !"_Total".equals(name)) {
+            if ((pids == null || pids.contains(pid)) && !"_Total".equals(name)) {
+                // Field name is elapsed time but the value is the process start time
+                long ctime = (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.ELAPSEDTIME);
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
-                long ctime = (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.CREATIONDATE);
                 if (ctime > now) {
                     ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
                 }
@@ -95,11 +96,11 @@ public final class ProcessPerformanceData {
                 }
                 processMap.put(pid,
                         new PerfCounterBlock(name,
-                                (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PARENTPROCESSID),
-                                (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIORITY),
-                                (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIVATEPAGECOUNT), ctime,
-                                upTime, (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.READTRANSFERCOUNT),
-                                (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.WRITETRANSFERCOUNT),
+                                (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.CREATINGPROCESSID),
+                                (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIORITYBASE),
+                                (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIVATEBYTES), ctime, upTime,
+                                (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.IOREADBYTESPERSEC),
+                                (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.IOWRITEBYTESPERSEC),
                                 (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PAGEFAULTSPERSEC)));
             }
         }
@@ -121,21 +122,22 @@ public final class ProcessPerformanceData {
         long now = System.currentTimeMillis(); // 1970 epoch
         List<String> instances = instanceValues.getLeft();
         Map<ProcessInformation.ProcessPerformanceProperty, List<Long>> valueMap = instanceValues.getRight();
-        List<Long> pidList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.PROCESSID);
-        List<Long> ppidList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.PARENTPROCESSID);
-        List<Long> priorityList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.PRIORITY);
-        List<Long> ioReadList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.READTRANSFERCOUNT);
-        List<Long> ioWriteList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.WRITETRANSFERCOUNT);
-        List<Long> workingSetSizeList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.PRIVATEPAGECOUNT);
-        List<Long> creationTimeList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.CREATIONDATE);
+        List<Long> pidList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.IDPROCESS);
+        List<Long> ppidList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.CREATINGPROCESSID);
+        List<Long> priorityList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.PRIORITYBASE);
+        List<Long> ioReadList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.IOREADBYTESPERSEC);
+        List<Long> ioWriteList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.IOWRITEBYTESPERSEC);
+        List<Long> workingSetSizeList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.PRIVATEBYTES);
+        List<Long> elapsedTimeList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.ELAPSEDTIME);
         List<Long> pageFaultsList = valueMap.get(ProcessInformation.ProcessPerformanceProperty.PAGEFAULTSPERSEC);
 
         for (int inst = 0; inst < instances.size(); inst++) {
             int pid = pidList.get(inst).intValue();
-            if (null == pids || pids.contains(pid)) {
+            if (pids == null || pids.contains(pid)) {
+                // Field name is elapsed time but the value is the process start time
+                long ctime = elapsedTimeList.get(inst);
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
-                long ctime = creationTimeList.get(inst);
                 if (ctime > now) {
                     ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
                 }

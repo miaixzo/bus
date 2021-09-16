@@ -26,12 +26,10 @@
 package org.aoju.bus.health.mac;
 
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 
 /**
  * 系统类。这个类应该被认为是非api的，因为如果/当
@@ -72,12 +70,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     MacUtmpx getutxent();
 
     int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
-
-    int sysctl(int[] name, int namelen, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
-
-    int sysctlbyname(String name, Pointer oldp, NativeSizeTByReference oldlenp, Pointer newp, size_t newlen);
-
-    int sysctlnametomib(String name, Pointer mibp, NativeSizeTByReference sizep);
 
     /**
      * Mac connection info

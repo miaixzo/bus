@@ -27,14 +27,9 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
+import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Position {
 
     private String baseSha;

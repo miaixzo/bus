@@ -34,10 +34,6 @@ import java.util.Date;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified user.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class ProjectFilter {
 
@@ -256,18 +252,6 @@ public class ProjectFilter {
     }
 
     /**
-     * Limit by current user minimal access level
-     *
-     * @param minAccessLevel limit by current user minimal access level
-     * @return the reference to this ProjectFilter instance
-     * @deprecated Replaced by {@link #withMinAccessLevel(AccessLevel) getComponentAt}
-     */
-    public ProjectFilter minAccessLevel(AccessLevel minAccessLevel) {
-        this.minAccessLevel = minAccessLevel;
-        return (this);
-    }
-
-    /**
      * Limit by current user minimal access level.
      *
      * @param minAccessLevel limit by current user minimal access level
@@ -370,7 +354,7 @@ public class ProjectFilter {
                 .withParam("with_programming_language", withProgrammingLanguage)
                 .withParam("wiki_checksum_failed", wikiChecksumFailed)
                 .withParam("repository_checksum_failed", repositoryChecksumFailed)
-                .withParam("min_access_level", (null != minAccessLevel ? minAccessLevel.toValue() : null))
+                .withParam("min_access_level", (minAccessLevel != null ? minAccessLevel.toValue() : null))
                 .withParam("id_after", idAfter)
                 .withParam("id_before", idBefore)
                 .withParam("last_activity_after", lastActivityAfter)
@@ -378,5 +362,4 @@ public class ProjectFilter {
                 .withParam("repository_storage", repositoryStorage)
         );
     }
-
 }

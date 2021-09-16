@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,51 +23,35 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix;
+package org.aoju.bus.gitlab.support;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
-import com.sun.jna.ptr.ByReference;
+import java.util.regex.Pattern;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
-public class NativeSizeTByReference extends ByReference {
+public class EmailChecker {
 
-    public NativeSizeTByReference() {
-        this(new size_t());
-    }
+    /**
+     * Java regular expression for validating an email address.
+     */
+    public static final String EMAIL_REGEX =
+            "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
+                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" +
+                    "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:" +
+                    "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:" +
+                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
-    public NativeSizeTByReference(size_t value) {
-        super(Native.SIZE_T_SIZE);
-        setValue(value);
-    }
+    /**
+     * Java Pattern instance for validating an email address.
+     */
+    public static final Pattern EMAIL_REGEX_PATTERN = Pattern.compile(EMAIL_REGEX);
 
-    public size_t getValue() {
-        return new size_t(Native.SIZE_T_SIZE > 4 ? getPointer().getLong(0) : getPointer().getInt(0));
-    }
-
-    public void setValue(size_t value) {
-        if (Native.SIZE_T_SIZE > 4) {
-            getPointer().setLong(0, value.longValue());
-        } else {
-            getPointer().setInt(0, value.intValue());
-        }
-    }
-
-    @Override
-    public String toString() {
-        // Can't mix types with ternary operator
-        if (Native.SIZE_T_SIZE > 4) {
-            return String.format("size_t@0x1$%x=0x%2$x (%2$d)", Pointer.nativeValue(getPointer()),
-                    getValue().longValue());
-        } else {
-            return String.format("size_t@0x1$%x=0x%2$x (%2$d)", Pointer.nativeValue(getPointer()),
-                    getValue().intValue());
-        }
+    /**
+     * Returns true if the provided String is a valid email address.
+     *
+     * @param email the email address to check for validity
+     * @return true if the provided String is a valid email address, otherwise return false
+     */
+    public static final boolean isValidEmail(final String email) {
+        return (email == null ? false : EMAIL_REGEX_PATTERN.matcher(email).matches());
     }
 
 }

@@ -39,10 +39,6 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab Discussions API.
  * See <a href="https://docs.gitlab.com/ee/api/discussions.html">Discussions API at GitLab</a> for more information.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class DiscussionsApi extends AbstractApi {
 
@@ -99,7 +95,7 @@ public class DiscussionsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Discussion> getIssueDiscussionsPager(Object projectIdOrPath, Integer issueIid, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Discussion.class, itemsPerPage, null,
+        return (new Pager<Discussion>(this, Discussion.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "discussions"));
     }
 
@@ -167,7 +163,7 @@ public class DiscussionsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Discussion> getSnippetDiscussionsPager(Object projectIdOrPath, Integer snippetId, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Discussion.class, itemsPerPage, null,
+        return (new Pager<Discussion>(this, Discussion.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "snippets", snippetId, "discussions"));
     }
 
@@ -236,7 +232,7 @@ public class DiscussionsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Discussion> getEpicDiscussionsPager(Object projectIdOrPath, Integer epicId, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Discussion.class, itemsPerPage, null,
+        return (new Pager<Discussion>(this, Discussion.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "epics", epicId, "discussions"));
     }
 
@@ -304,7 +300,7 @@ public class DiscussionsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Discussion> getMergeRequestDiscussionsPager(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Discussion.class, itemsPerPage, null,
+        return (new Pager<Discussion>(this, Discussion.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "discussions"));
     }
 
@@ -346,7 +342,7 @@ public class DiscussionsApi extends AbstractApi {
                 .withParam("created_at", createdAt)
                 .withParam("position", positionHash);
 
-        if (null != position) {
+        if (position != null) {
             formData.withParam("position[base_sha]", position.getBaseSha(), true)
                     .withParam("position[start_sha]", position.getStartSha(), true)
                     .withParam("position[head_sha]", position.getHeadSha(), true)
@@ -400,7 +396,7 @@ public class DiscussionsApi extends AbstractApi {
     public void deleteMergeRequestDiscussionNote(Object projectIdOrPath, Integer mergeRequestIid,
                                                  String discussionId, Integer noteId) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "merge_requests", mergeRequestIid, "discussions", noteId);
+                "merge_requests", mergeRequestIid, "discussions", discussionId, "notes", noteId);
     }
 
     /**
@@ -452,7 +448,7 @@ public class DiscussionsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Discussion> getCommitDiscussionsPager(Object projectIdOrPath, String commitSha, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Discussion.class, itemsPerPage, null,
+        return (new Pager<Discussion>(this, Discussion.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", commitSha, "discussions"));
     }
 
@@ -636,7 +632,7 @@ public class DiscussionsApi extends AbstractApi {
     public void deleteCommitDiscussionNote(Object projectIdOrPath, String commitSha,
                                            String discussionId, Integer noteId) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", commitSha, "discussions", discussionId, "notes", noteId);
+                "repository", "commits", commitSha, "discussions", discussionId, "notes", noteId);
     }
 
     /**

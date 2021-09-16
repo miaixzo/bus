@@ -28,20 +28,19 @@ package org.aoju.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.aoju.bus.gitlab.Constants;
-import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
+import org.aoju.bus.gitlab.Constants.AutoDevopsDeployStrategy;
+import org.aoju.bus.gitlab.Constants.BuildGitStrategy;
+import org.aoju.bus.gitlab.Constants.SquashOption;
 import org.aoju.bus.gitlab.ProjectLicense;
+import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Project {
+
+    private String buildCoverageRegex;
 
     private Integer approvalsBeforeMerge;
     private Boolean archived;
@@ -96,13 +95,23 @@ public class Project {
     private String licenseUrl;
     private ProjectLicense license;
     private List<CustomAttribute> customAttributes;
+    private BuildGitStrategy buildGitStrategy;
+    private String readmeUrl;
+    private Boolean canCreateMergeRequestIn;
+    private ImportStatus.Status importStatus;
+    private Integer ciDefaultGitDepth;
+    private Boolean removeSourceBranchAfterMerge;
+    private Boolean autoDevopsEnabled;
+    private AutoDevopsDeployStrategy autoDevopsDeployStrategy;
+    private Boolean autocloseReferencedIssues;
+    private Boolean emailsDisabled;
+    private String suggestionCommitMessage;
+    private SquashOption squashOption;
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
-    private String buildCoverageRegex;
-    private Constants.BuildGitStrategy buildGitStrategy;
 
     public static final boolean isValid(Project project) {
-        return (null != project && null != project.getId());
+        return (project != null && project.getId() != null);
     }
 
     /**
@@ -709,6 +718,19 @@ public class Project {
         this.customAttributes = customAttributes;
     }
 
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    public BuildGitStrategy getBuildGitStrategy() {
+        return buildGitStrategy;
+    }
+
+    public void setBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
+        this.buildGitStrategy = buildGitStrategy;
+    }
+
     public String getBuildCoverageRegex() {
         return buildCoverageRegex;
     }
@@ -722,22 +744,117 @@ public class Project {
         return this;
     }
 
-    public Constants.BuildGitStrategy getBuildGitStrategy() {
-        return buildGitStrategy;
-    }
-
-    public void setBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
-        this.buildGitStrategy = buildGitStrategy;
-    }
-
-    public Project withBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
+    public Project withBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
         this.buildGitStrategy = buildGitStrategy;
         return this;
     }
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
+    public String getReadmeUrl() {
+        return readmeUrl;
+    }
+
+    public void setReadmeUrl(String readmeUrl) {
+        this.readmeUrl = readmeUrl;
+    }
+
+    public Boolean getCanCreateMergeRequestIn() {
+        return canCreateMergeRequestIn;
+    }
+
+    public void setCanCreateMergeRequestIn(Boolean canCreateMergeRequestIn) {
+        this.canCreateMergeRequestIn = canCreateMergeRequestIn;
+    }
+
+    public ImportStatus.Status getImportStatus() {
+        return importStatus;
+    }
+
+    public void setImportStatus(ImportStatus.Status importStatus) {
+        this.importStatus = importStatus;
+    }
+
+    public Integer getCiDefaultGitDepth() {
+        return ciDefaultGitDepth;
+    }
+
+    public void setCiDefaultGitDepth(Integer ciDefaultGitDepth) {
+        this.ciDefaultGitDepth = ciDefaultGitDepth;
+    }
+
+    public Boolean getRemoveSourceBranchAfterMerge() {
+        return removeSourceBranchAfterMerge;
+    }
+
+    public void setRemoveSourceBranchAfterMerge(Boolean removeSourceBranchAfterMerge) {
+        this.removeSourceBranchAfterMerge = removeSourceBranchAfterMerge;
+    }
+
+    public Project withRemoveSourceBranchAfterMerge(Boolean removeSourceBranchAfterMerge) {
+        this.removeSourceBranchAfterMerge = removeSourceBranchAfterMerge;
+        return this;
+    }
+
+    public Boolean getAutoDevopsEnabled() {
+        return autoDevopsEnabled;
+    }
+
+    public void setAutoDevopsEnabled(Boolean autoDevopsEnabled) {
+        this.autoDevopsEnabled = autoDevopsEnabled;
+    }
+
+    public AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
+        return autoDevopsDeployStrategy;
+    }
+
+    public void setAutoDevopsDeployStrategy(AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
+        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
+    }
+
+    public Boolean getAutocloseReferencedIssues() {
+        return autocloseReferencedIssues;
+    }
+
+    public void setAutocloseReferencedIssues(Boolean autocloseReferencedIssues) {
+        this.autocloseReferencedIssues = autocloseReferencedIssues;
+    }
+
+    public Boolean getEmailsDisabled() {
+        return emailsDisabled;
+    }
+
+    public void setEmailsDisabled(Boolean emailsDisabled) {
+        this.emailsDisabled = emailsDisabled;
+    }
+
+    public Project withEmailsDisabled(Boolean emailsDisabled) {
+        this.emailsDisabled = emailsDisabled;
+        return this;
+    }
+
+    public String getSuggestionCommitMessage() {
+        return this.suggestionCommitMessage;
+    }
+
+    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
+        this.suggestionCommitMessage = suggestionCommitMessage;
+    }
+
+    public Project withSuggestionCommitMessage(String suggestionCommitMessage) {
+        this.suggestionCommitMessage = suggestionCommitMessage;
+        return this;
+    }
+
+    public SquashOption getSquashOption() {
+        return squashOption;
+    }
+
+    public void setSquashOption(SquashOption squashOption) {
+        this.squashOption = squashOption;
+    }
+
+    public Project withSquashOption(SquashOption squashOption) {
+        this.squashOption = squashOption;
+        return this;
     }
 
     // Enum for the merge_method of the Project instance.
@@ -762,5 +879,4 @@ public class Project {
             return (enumHelper.toString(this));
         }
     }
-
 }

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
+import org.aoju.bus.core.lang.exception.ConvertException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.lang.reflect.Method;
@@ -70,7 +71,7 @@ public class EnumConverter extends AbstractConverter<Object> {
             try {
                 enumResult = Enum.valueOf(enumClass, (String) value);
             } catch (IllegalArgumentException e) {
-                //ignore
+                // ignore
             }
         }
 
@@ -114,10 +115,15 @@ public class EnumConverter extends AbstractConverter<Object> {
     protected Object convertInternal(Object value) {
         Enum enumValue = tryConvertEnum(value, this.enumClass);
         if (null == enumValue && false == value instanceof String) {
-            // 最后尝试valueOf转换
+            // 最后尝试先将value转String，再valueOf转换
             enumValue = Enum.valueOf(this.enumClass, convertString(value));
         }
-        return enumValue;
+
+        if (null != enumValue) {
+            return enumValue;
+        }
+
+        throw new ConvertException("Can not convert {} to {}", value, this.enumClass);
     }
 
     @Override

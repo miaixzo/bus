@@ -38,7 +38,6 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc.CpTime;
@@ -298,7 +297,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         Pointer p = new Memory(arraySize);
         String name = "kern.cp_times";
         // Fetch
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, new NativeSizeTByReference(new LibCAPI.size_t(arraySize)), null,
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, new LibCAPI.size_t.ByReference(new LibCAPI.size_t(arraySize)), null,
                 LibCAPI.size_t.ZERO)) {
             Logger.error("Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
             return ticks;
@@ -321,8 +320,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryContextSwitches() {
         String name = "vm.stats.sys.v_swtch";
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
-        Pointer p = new Memory(size.getValue().longValue());
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        Pointer p = new Memory(size.longValue());
         if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
             return 0L;
         }
@@ -332,8 +331,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryInterrupts() {
         String name = "vm.stats.sys.v_intr";
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
-        Pointer p = new Memory(size.getValue().longValue());
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        Pointer p = new Memory(size.longValue());
         if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
             return 0L;
         }

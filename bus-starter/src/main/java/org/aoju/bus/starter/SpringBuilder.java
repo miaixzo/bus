@@ -25,44 +25,25 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.PackageVersion;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 
 /**
  * 设置相关系统参数信息.
@@ -279,33 +260,40 @@ public class SpringBuilder {
         }
     }
 
-    class TimeZoneBuilder {
+    /**
+     * 获取应用程序名称
+     *
+     * @return 应用程序名称
+     */
+    public static String getApplicationName() {
+        return getProperty(BusXBuilder.BUS_NAME);
+    }
 
-        @Value("${spring.jackson.date-format:yyyy-MM-dd HH:mm:ss}")
-        private String pattern;
+    /**
+     * 当前是否开发/测试模式
+     *
+     * @return true|false
+     */
+    public static boolean isDemoMode() {
+        return isTestMode() || isDevMode();
+    }
 
-        @Bean
-        public Jackson2ObjectMapperBuilderCustomizer customizer() {
-            return builder -> {
-                builder.locale(Locale.CHINA);
-                builder.timeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
-                builder.simpleDateFormat(pattern);
-                builder.modules(new JavaTimeModule());
-            };
-        }
+    /**
+     * 当前是否开发环境
+     *
+     * @return true|false
+     */
+    public static boolean isDevMode() {
+        return "dev".equalsIgnoreCase(getActiveProfile());
+    }
 
-        class JavaTimeModule extends SimpleModule {
-            JavaTimeModule() {
-                super(PackageVersion.VERSION);
-                this.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(Fields.NORM_DATETIME_PATTERN)));
-                this.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(Fields.NORM_DATE_PATTERN)));
-                this.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(Fields.NORM_TIME_PATTERN)));
-                this.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(Fields.NORM_DATETIME_PATTERN)));
-                this.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(Fields.NORM_DATE_PATTERN)));
-                this.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(Fields.NORM_TIME_PATTERN)));
-            }
-        }
-
+    /**
+     * 当前是否测试环境
+     *
+     * @return true|false
+     */
+    public static boolean isTestMode() {
+        return "test".equalsIgnoreCase(getActiveProfile());
     }
 
 }

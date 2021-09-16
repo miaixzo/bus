@@ -25,15 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ApprovalRule {
 
     private Integer id;
@@ -45,7 +40,6 @@ public class ApprovalRule {
     private List<User> users;
     private List<Group> groups;
     private Boolean containsHiddenGroups;
-
     private List<User> approvedBy;
     private Boolean approved;
 

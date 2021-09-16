@@ -25,15 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ProtectedBranch {
 
     private String name;
@@ -43,7 +38,7 @@ public class ProtectedBranch {
     private Boolean codeOwnerApprovalRequired;
 
     public static final boolean isValid(ProtectedBranch branch) {
-        return (null != branch && null != branch.getName());
+        return (branch != null && branch.getName() != null);
     }
 
     public String getName() {

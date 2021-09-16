@@ -29,10 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface provides a base class handler for processing GitLab Web Hook and System Hook callouts.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public interface HookManager {
 
@@ -58,7 +54,7 @@ public interface HookManager {
      * @param secretToken the token to validate
      * @return true if the secret token is valid or there is no reference secret token to validate against
      */
-    default boolean isValidSecretToken(String secretToken) {
+    default public boolean isValidSecretToken(String secretToken) {
         String ourSecretToken = getSecretToken();
         return (ourSecretToken == null ||
                 ourSecretToken.trim().isEmpty() ||
@@ -73,9 +69,9 @@ public interface HookManager {
      * @param request the HTTP request to verify the secret token
      * @return true if the secret token is valid or there is no reference secret token to validate against
      */
-    default boolean isValidSecretToken(HttpServletRequest request) {
+    default public boolean isValidSecretToken(HttpServletRequest request) {
 
-        if (null != getSecretToken()) {
+        if (getSecretToken() != null) {
             String secretToken = request.getHeader("X-Gitlab-Token");
             return (isValidSecretToken(secretToken));
         }
@@ -90,6 +86,5 @@ public interface HookManager {
      * @param request the HttpServletRequest to read the Event instance from
      * @throws GitLabApiException if the parsed event is not supported
      */
-    void handleEvent(HttpServletRequest request) throws GitLabApiException;
-
+    public void handleEvent(HttpServletRequest request) throws GitLabApiException;
 }

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest.otp;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.time.Duration;
@@ -79,7 +80,7 @@ public class TOTP extends HOTP {
      * @param key            共享密码，RFC 4226要求最少128位
      */
     public TOTP(Duration timeStep, int passwordLength, byte[] key) {
-        this(timeStep, passwordLength, HOTP_HMAC_ALGORITHM, key);
+        this(timeStep, passwordLength, Algorithm.HmacSHA1, key);
     }
 
     /**
@@ -90,7 +91,7 @@ public class TOTP extends HOTP {
      * @param algorithm      HMAC算法枚举
      * @param key            共享密码，RFC 4226要求最少128位
      */
-    public TOTP(Duration timeStep, int passwordLength, String algorithm, byte[] key) {
+    public TOTP(Duration timeStep, int passwordLength, Algorithm algorithm, byte[] key) {
         super(passwordLength, algorithm, key);
         this.timeStep = timeStep;
     }
@@ -99,7 +100,7 @@ public class TOTP extends HOTP {
      * 生成谷歌认证器的字符串（扫码字符串）
      * 基于时间的，计数器不适合
      *
-     * @param account  账户名。
+     * @param account  账户名
      * @param numBytes 将生成的种子字节数量
      * @return 共享密钥
      */

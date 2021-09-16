@@ -44,7 +44,6 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.windows.NtDll;
 import org.aoju.bus.health.windows.NtDll.UNICODE_STRING;
-import org.aoju.bus.health.windows.Shell32;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.logger.Logger;
@@ -405,16 +404,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private List<String> queryArguments() {
         String cl = getCommandLine();
         if (!cl.isEmpty()) {
-            IntByReference nargs = new IntByReference();
-            Pointer strArr = Shell32.INSTANCE.CommandLineToArgvW(cl, nargs);
-            if (strArr != null) {
-                try {
-                    String[] argv = strArr.getWideStringArray(0);
-                    return Collections.unmodifiableList(Arrays.asList(argv));
-                } finally {
-                    Kernel32.INSTANCE.LocalFree(strArr);
-                }
-            }
+            return Arrays.asList(Shell32Util.CommandLineToArgv(cl));
         }
         return Collections.emptyList();
     }

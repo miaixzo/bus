@@ -30,9 +30,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.platform.unix.LibCAPI;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.logger.Logger;
 
 
@@ -59,10 +57,10 @@ public final class SysctlKit {
      * @return 如果调用成功，则调用的int结果;否则默认
      */
     public static int sysctl(String name, int def) {
-        IntByReference size = new IntByReference(SystemB.INT_SIZE);
-        Pointer p = new Memory(size.getValue());
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
-            Logger.error("Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(com.sun.jna.platform.mac.SystemB.INT_SIZE);
+        Pointer p = new Memory(size.longValue());
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
+            Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
         return p.getInt(0);
@@ -76,9 +74,9 @@ public final class SysctlKit {
      * @return 如果调用成功，则调用返回的长整型结果;否则默认
      */
     public static long sysctl(String name, long def) {
-        IntByReference size = new IntByReference(SystemB.UINT64_SIZE);
-        Pointer p = new Memory(size.getValue());
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(com.sun.jna.platform.mac.SystemB.UINT64_SIZE);
+        Pointer p = new Memory(size.longValue());
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -94,13 +92,13 @@ public final class SysctlKit {
      */
     public static String sysctl(String name, String def) {
         // 第一次调用空指针来获取大小值
-        NativeSizeTByReference size = new NativeSizeTByReference();
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference();
         if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
         // 为空终止字符串的大小添加1
-        Pointer p = new Memory(size.getValue().longValue() + 1L);
+        Pointer p = new Memory(size.longValue() + 1L);
         if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
@@ -116,8 +114,8 @@ public final class SysctlKit {
      * @return 如果结构成功填充为真，则为假
      */
     public static boolean sysctl(String name, Structure struct) {
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(),
-                new NativeSizeTByReference(new LibCAPI.size_t(struct.size())), null, LibCAPI.size_t.ZERO)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), new LibCAPI.size_t.ByReference(struct.size()), null,
+                LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return false;
         }
@@ -133,12 +131,12 @@ public final class SysctlKit {
      * otherwise. Its value on failure is undefined.
      */
     public static Memory sysctl(String name) {
-        NativeSizeTByReference size = new NativeSizeTByReference();
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference();
         if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }
-        Memory m = new Memory(size.getValue().longValue());
+        Memory m = new Memory(size.longValue());
         if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, LibCAPI.size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;

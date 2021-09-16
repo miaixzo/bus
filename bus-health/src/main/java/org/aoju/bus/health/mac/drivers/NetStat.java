@@ -30,7 +30,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.IFmsgHdr;
 import com.sun.jna.platform.mac.SystemB.IFmsgHdr2;
-import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.logger.Logger;
@@ -70,13 +70,13 @@ public final class NetStat {
         Map<Integer, IFdata> data = new HashMap<>();
         // Get buffer of all interface information
         int[] mib = {CTL_NET, PF_ROUTE, 0, 0, NET_RT_IFLIST2, 0};
-        IntByReference len = new IntByReference();
-        if (0 != SystemB.INSTANCE.sysctl(mib, 6, null, len, null, 0)) {
+        LibCAPI.size_t.ByReference len = new LibCAPI.size_t.ByReference();
+        if (0 != SystemB.INSTANCE.sysctl(mib, 6, null, len, null, LibCAPI.size_t.ZERO)) {
             Logger.error("Didn't get buffer length for IFLIST2");
             return data;
         }
-        Memory buf = new Memory(len.getValue());
-        if (0 != SystemB.INSTANCE.sysctl(mib, 6, buf, len, null, 0)) {
+        Memory buf = new Memory(len.longValue());
+        if (0 != SystemB.INSTANCE.sysctl(mib, 6, buf, len, null, LibCAPI.size_t.ZERO)) {
             Logger.error("Didn't get buffer for IFLIST2");
             return data;
         }

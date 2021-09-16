@@ -63,7 +63,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryModel() {
         String result;
-        if (null == (result = Sysfs.queryProductModel()) && null == (result = Devicetree.queryModel())
+        if (null == (result = Sysfs.queryProductModel()) && null == (result = DeviceTree.queryModel())
                 && null == (result = Lshw.queryModel())) {
             return Normal.UNKNOWN;
         }

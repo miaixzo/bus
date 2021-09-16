@@ -22,13 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  *                                                                               *
- ********************************************************************************/
+ ********************************************************************************//*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2017 Greg Messner <greg@messners.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.WikiAttachment;
 import org.aoju.bus.gitlab.models.WikiPage;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
@@ -40,10 +61,6 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab Wikis API.
  * See <a href="https://docs.gitlab.com/ce/api/wikis.html">Wikis API at GitLab</a> for more information.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class WikisApi extends AbstractApi {
 
@@ -89,25 +106,6 @@ public class WikisApi extends AbstractApi {
      */
     public Stream<WikiPage> getPagesStream(Object projectIdOrPath) throws GitLabApiException {
         return (getPages(projectIdOrPath, false, getDefaultPerPage()).stream());
-    }
-
-    /**
-     * Get a list of pages in project wiki for the specified page.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/wikis</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of wiki-pages per page
-     * @return a list of pages in project's wiki for the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in a future release, use {@link #getPages(Object, boolean, int)}
-     */
-    public List<WikiPage> getPages(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
-                "projects", getProjectIdOrPath(projectIdOrPath), "wikis");
-        return response.readEntity(new GenericType<List<WikiPage>>() {
-        });
     }
 
     /**
@@ -285,5 +283,4 @@ public class WikisApi extends AbstractApi {
         Response response = upload(Response.Status.CREATED, "file", fileToUpload, null, formData, url);
         return (response.readEntity(WikiAttachment.class));
     }
-
 }

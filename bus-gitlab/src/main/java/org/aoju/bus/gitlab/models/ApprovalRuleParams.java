@@ -29,11 +29,6 @@ import org.aoju.bus.gitlab.GitLabApiForm;
 
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ApprovalRuleParams {
 
     private String name;

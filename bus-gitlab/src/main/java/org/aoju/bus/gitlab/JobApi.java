@@ -45,10 +45,6 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API job calls.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class JobApi extends AbstractApi implements Constants {
 
@@ -468,22 +464,6 @@ public class JobApi extends AbstractApi implements Constants {
      * @param jobId           the ID to cancel job
      * @return job instance which just canceled
      * @throws GitLabApiException if any exception occurs during execution
-     * @deprecated replaced by {@link #cancelJob(Object, Integer)}
-     */
-    @Deprecated
-    public Job cancleJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
-        return (cancelJob(projectIdOrPath, jobId));
-    }
-
-    /**
-     * Cancel specified job in a project.
-     *
-     * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/cancel</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param jobId           the ID to cancel job
-     * @return job instance which just canceled
-     * @throws GitLabApiException if any exception occurs during execution
      */
     public Job cancelJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
         GitLabApiForm formData = null;
@@ -567,5 +547,4 @@ public class JobApi extends AbstractApi implements Constants {
     public void deleteArtifacts(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
         delete(Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts");
     }
-
 }

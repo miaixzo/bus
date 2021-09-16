@@ -27,16 +27,11 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class MergeRequest {
 
     private Boolean allowCollaboration;
@@ -44,6 +39,7 @@ public class MergeRequest {
     private Integer approvalsBeforeMerge;
     private Assignee assignee;
     private List<Assignee> assignees;
+    private List<Reviewer> reviewers;
     private Author author;
     private Boolean blockingDiscussionsResolved;
     private List<Diff> changes;
@@ -100,7 +96,7 @@ public class MergeRequest {
     private List<User> approvedBy;
 
     public static final boolean isValid(MergeRequest mergeRequest) {
-        return (null != mergeRequest && null != mergeRequest.getId());
+        return (mergeRequest != null && mergeRequest.getId() != null);
     }
 
     public Boolean getAllowCollaboration() {
@@ -575,6 +571,14 @@ public class MergeRequest {
 
     public void setRebaseInProgress(Boolean rebaseInProgress) {
         this.rebaseInProgress = rebaseInProgress;
+    }
+
+    public List<Reviewer> getReviewers() {
+        return reviewers;
+    }
+
+    public void setReviewers(List<Reviewer> reviewers) {
+        this.reviewers = reviewers;
     }
 
     @Override

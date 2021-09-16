@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest.mac;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -39,49 +39,6 @@ import java.io.InputStream;
  * @since JDK 1.8+
  */
 public interface MacEngine {
-
-    /**
-     * 生成摘要
-     *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link  IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
-     * @return 摘要bytes
-     */
-    default byte[] digest(InputStream data, int bufferLength) {
-        if (bufferLength < 1) {
-            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
-        }
-
-        final byte[] buffer = new byte[bufferLength];
-        byte[] result;
-        try {
-            int read = data.read(buffer, 0, bufferLength);
-            while (read > -1) {
-                update(buffer, 0, read);
-                read = data.read(buffer, 0, bufferLength);
-            }
-            result = doFinal();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } finally {
-            reset();
-        }
-        return result;
-    }
-
-    /**
-     * 获取MAC算法块大小
-     *
-     * @return MAC算法块大小
-     */
-    int getMacLength();
-
-    /**
-     * 获取当前算法
-     *
-     * @return 算法
-     */
-    String getAlgorithm();
 
     /**
      * 加入需要被摘要的内容
@@ -112,5 +69,50 @@ public interface MacEngine {
      * 重置
      */
     void reset();
+
+    /**
+     * 生成摘要
+     *
+     * @param data         {@link InputStream} 数据流
+     * @param bufferLength 缓存长度，不足1使用 {@link  IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @return 摘要bytes
+     */
+    default byte[] digest(InputStream data, int bufferLength) {
+        if (bufferLength < 1) {
+            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
+        }
+
+        final byte[] buffer = new byte[bufferLength];
+
+        byte[] result;
+        try {
+            int read = data.read(buffer, 0, bufferLength);
+
+            while (read > -1) {
+                update(buffer, 0, read);
+                read = data.read(buffer, 0, bufferLength);
+            }
+            result = doFinal();
+        } catch (IOException e) {
+            throw new CryptoException(e);
+        } finally {
+            reset();
+        }
+        return result;
+    }
+
+    /**
+     * 获取MAC算法块大小
+     *
+     * @return MAC算法块大小
+     */
+    int getMacLength();
+
+    /**
+     * 获取当前算法
+     *
+     * @return 算法
+     */
+    String getAlgorithm();
 
 }

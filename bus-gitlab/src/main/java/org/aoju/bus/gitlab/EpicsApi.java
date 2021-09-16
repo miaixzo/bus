@@ -43,11 +43,8 @@ import java.util.stream.Stream;
  * - If a user is not a member of a group and the group is private, a GET request on that group will result to a 404 status code.
  * - Epics are available only in Ultimate. If epics feature is not available a 403 status code will be returned.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ee/api/epics.html">GitLab Epics API Documentaion</a>
  * @see <a href="https://docs.gitlab.com/ee/api/epic_issues.html">GitLab Epic Issues API Documentation</a>
- * @since JDK 1.8+
  */
 public class EpicsApi extends AbstractApi {
 
@@ -186,7 +183,7 @@ public class EpicsApi extends AbstractApi {
                 .withParam("order_by", orderBy)
                 .withParam("sort", sortOrder)
                 .withParam("search", search);
-        return (new Pager<>(this, Epic.class, itemsPerPage, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath), "epics"));
+        return (new Pager<Epic>(this, Epic.class, itemsPerPage, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath), "epics"));
     }
 
     /**
@@ -414,7 +411,7 @@ public class EpicsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Epic> getEpicIssues(Object groupIdOrPath, Integer epicIid, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Epic.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath), "epics", epicIid, "issues"));
+        return (new Pager<Epic>(this, Epic.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath), "epics", epicIid, "issues"));
     }
 
     /**
@@ -487,5 +484,4 @@ public class EpicsApi extends AbstractApi {
                 "groups", getGroupIdOrPath(groupIdOrPath), "epics", epicIid, "issues", issueIid);
         return (response.readEntity(EpicIssue.class));
     }
-
 }

@@ -57,7 +57,7 @@ public class LocaleConverter extends AbstractConverter<Locale> {
             }
             return new Locale(items[0], items[1], items[2]);
         } catch (Exception e) {
-            // Ignore Exception
+            // ignore
         }
         return null;
     }

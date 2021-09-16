@@ -27,11 +27,6 @@ package org.aoju.bus.gitlab.models;
 
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class AccessRequest extends AbstractUser<AccessRequest> {
 
     private Date requestedAt;

@@ -23,22 +23,37 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.windows;
+package org.aoju.bus.health.linux.drivers;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.win32.W32APIOptions;
+import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.health.Builder;
 
 /**
+ * Utility to read info from the devicetree
+ *
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public interface Shell32 extends com.sun.jna.platform.win32.Shell32 {
+@ThreadSafe
+public final class DeviceTree {
 
-    Shell32 INSTANCE = Native.load("shell32", Shell32.class, W32APIOptions.DEFAULT_OPTIONS);
+    private DeviceTree() {
 
-    Pointer CommandLineToArgvW(String lpCmdLine, IntByReference pNumArgs);
+    }
+
+    /**
+     * Query the model from the devicetree
+     *
+     * @return The model if available, null otherwise
+     */
+    public static String queryModel() {
+        String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
+        if (!modelStr.isEmpty()) {
+            return modelStr.replace("Machine: ", Normal.EMPTY);
+        }
+        return null;
+    }
 
 }

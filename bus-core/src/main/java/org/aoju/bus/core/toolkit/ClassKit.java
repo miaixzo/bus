@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.beans.BeanDescription;
+import org.aoju.bus.core.beans.BeanDesc;
 import org.aoju.bus.core.beans.NullWrapper;
-import org.aoju.bus.core.beans.PropertyDescription;
+import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
@@ -1006,12 +1006,12 @@ public class ClassKit {
             return null;
         }
 
-        final Collection<PropertyDescription> props = getBeanDesc(bean.getClass()).getProps();
+        final Collection<PropertyDesc> props = getBeanDesc(bean.getClass()).getProps();
 
         String key;
         Method getter;
         Object value;
-        for (PropertyDescription prop : props) {
+        for (PropertyDesc prop : props) {
             key = prop.getFieldName();
             // 过滤class属性
             // 得到property对应的getter方法
@@ -1035,13 +1035,13 @@ public class ClassKit {
     }
 
     /**
-     * 获取{@link BeanDescription} Bean描述信息
+     * 获取{@link BeanDesc} Bean描述信息
      *
      * @param clazz Bean类
      * @return the object
      */
-    public static BeanDescription getBeanDesc(Class<?> clazz) {
-        return new BeanDescription(clazz);
+    public static BeanDesc getBeanDesc(Class<?> clazz) {
+        return new BeanDesc(clazz);
     }
 
     /**

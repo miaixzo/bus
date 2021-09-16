@@ -103,7 +103,7 @@ public class TwitterProvider extends AbstractProvider {
         String str = Builder.parseMapToString(map, true);
         String baseStr = method.toUpperCase() + Symbol.AND + UriKit.encode(baseUrl) + Symbol.AND + UriKit.encode(str);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? Normal.EMPTY : tokenSecret);
-        byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1);
+        byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1.getValue());
 
         return new String(Base64.encode(signature, false));
     }

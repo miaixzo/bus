@@ -72,23 +72,23 @@ public final class HashSource extends DelegateSource {
     }
 
     public static HashSource md5(Source source) {
-        return new HashSource(source, Algorithm.MD5);
+        return new HashSource(source, Algorithm.MD5.getValue());
     }
 
     public static HashSource sha1(Source source) {
-        return new HashSource(source, Algorithm.SHA1);
+        return new HashSource(source, Algorithm.SHA1.getValue());
     }
 
     public static HashSource sha256(Source source) {
-        return new HashSource(source, Algorithm.SHA256);
+        return new HashSource(source, Algorithm.SHA256.getValue());
     }
 
     public static HashSource hmacSha1(Source source, ByteString key) {
-        return new HashSource(source, key, Algorithm.HmacSHA1);
+        return new HashSource(source, key, Algorithm.HmacSHA1.getValue());
     }
 
     public static HashSource hmacSha256(Source source, ByteString key) {
-        return new HashSource(source, key, Algorithm.HmacSHA256);
+        return new HashSource(source, key, Algorithm.HmacSHA256.getValue());
     }
 
     @Override

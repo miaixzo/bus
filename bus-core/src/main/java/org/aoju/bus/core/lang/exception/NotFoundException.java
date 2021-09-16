@@ -34,6 +34,8 @@ package org.aoju.bus.core.lang.exception;
  */
 public class NotFoundException extends UncheckedException {
 
+    private static final long serialVersionUID = 1L;
+
     public NotFoundException() {
         super();
     }

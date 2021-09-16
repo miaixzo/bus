@@ -2,6 +2,7 @@ package org.aoju.bus.shade.beans;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
@@ -95,7 +96,7 @@ public class Builder {
             // 设置模板路径
             configuration.setClassForTemplateLoading(org.aoju.bus.shade.screw.Builder.class, Symbol.C_SLASH + Normal.META_DATA_INF + "/template");
             // 设置默认字体
-            configuration.setDefaultEncoding("utf-8");
+            configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);
             // 获取模板
             Template template = configuration.getTemplate(templateName);
             File file = new File(filePath);

@@ -48,7 +48,7 @@ public class SM3 extends Digester {
      * 构造
      */
     public SM3() {
-        super(Algorithm.SM3);
+        super(Algorithm.SM3.getValue());
     }
 
     /**

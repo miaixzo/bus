@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Types;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.ConvertException;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.HexKit;
@@ -598,9 +598,9 @@ public class Convert {
      * @param className 类的字符串表示
      * @param value     值
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public static <T> T convertByClassName(String className, Object value) throws InstrumentException {
+    public static <T> T convertByClassName(String className, Object value) throws ConvertException {
         return convert(ClassKit.loadClass(className), value);
     }
 
@@ -611,9 +611,9 @@ public class Convert {
      * @param type  类型
      * @param value 值
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public static <T> T convert(Class<T> type, Object value) throws InstrumentException {
+    public static <T> T convert(Class<T> type, Object value) throws ConvertException {
         return convert((Type) type, value);
     }
 
@@ -624,9 +624,9 @@ public class Convert {
      * @param reference 类型参考，用于持有转换后的泛型类型
      * @param value     值
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public static <T> T convert(Types<T> reference, Object value) throws InstrumentException {
+    public static <T> T convert(Types<T> reference, Object value) throws ConvertException {
         return convert(reference.getType(), value, null);
     }
 
@@ -637,9 +637,9 @@ public class Convert {
      * @param type  类型
      * @param value 值
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public static <T> T convert(Type type, Object value) throws InstrumentException {
+    public static <T> T convert(Type type, Object value) throws ConvertException {
         return convert(type, value, null);
     }
 
@@ -651,9 +651,9 @@ public class Convert {
      * @param value        值
      * @param defaultValue 默认值
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public static <T> T convert(Class<T> type, Object value, T defaultValue) throws InstrumentException {
+    public static <T> T convert(Class<T> type, Object value, T defaultValue) throws ConvertException {
         return convert((Type) type, value, defaultValue);
     }
 
@@ -665,9 +665,9 @@ public class Convert {
      * @param value        值
      * @param defaultValue 默认值
      * @return 转换后的值
-     * @throws InstrumentException 转换器不存在
+     * @throws ConvertException 转换器不存在
      */
-    public static <T> T convert(Type type, Object value, T defaultValue) throws InstrumentException {
+    public static <T> T convert(Type type, Object value, T defaultValue) throws ConvertException {
         return convertWithCheck(type, value, defaultValue, false);
     }
 

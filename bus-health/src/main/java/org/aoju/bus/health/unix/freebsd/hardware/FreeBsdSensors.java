@@ -30,7 +30,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
-import org.aoju.bus.health.unix.NativeSizeTByReference;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 
 /**
@@ -43,7 +42,7 @@ import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 @ThreadSafe
 final class FreeBsdSensors extends AbstractSensors {
 
-    /*
+    /**
      * If user has loaded coretemp module via kldload coretemp, sysctl call will
      * return temperature
      *
@@ -51,8 +50,8 @@ final class FreeBsdSensors extends AbstractSensors {
      */
     private static double queryKldloadCoretemp() {
         String name = "dev.cpu.%d.temperature";
-        NativeSizeTByReference size = new NativeSizeTByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
-        Pointer p = new Memory(size.getValue().longValue());
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        Pointer p = new Memory(size.longValue());
         int cpu = 0;
         double sumTemp = 0d;
         while (0 == FreeBsdLibc.INSTANCE.sysctlbyname(String.format(name, cpu), p, size, null, LibCAPI.size_t.ZERO)) {

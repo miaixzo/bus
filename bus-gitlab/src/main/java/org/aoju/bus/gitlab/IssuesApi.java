@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
 
 import javax.ws.rs.core.GenericType;
@@ -39,12 +38,9 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the GitLab API Issue calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/issues.html">Issues API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issue_links.html">Issue Links API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issues_statistics.html">Issues Statistics API at GitLab</a>
- * @since JDK 1.8+
  */
 public class IssuesApi extends AbstractApi implements Constants {
 
@@ -147,7 +143,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Issue> getIssues(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
+        return (new Pager<Issue>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
     }
 
     /**
@@ -209,7 +205,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public Pager<Issue> getIssues(Object projectIdOrPath, IssueFilter filter, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = filter.getQueryParams();
-        return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
+        return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
     }
 
     /**
@@ -355,8 +351,8 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Issue> getGroupIssues(Object groupIdOrPath, IssueFilter filter, int itemsPerPage) throws GitLabApiException {
-        GitLabApiForm formData = (null != filter ? filter.getQueryParams() : new GitLabApiForm());
-        return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(),
+        GitLabApiForm formData = (filter != null ? filter.getQueryParams() : new GitLabApiForm());
+        return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(),
                 "groups", getGroupIdOrPath(groupIdOrPath), "issues"));
     }
 
@@ -559,7 +555,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, getDefaultPerPageParam(), "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid);
     }
 
@@ -610,7 +606,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        String durationString = (null != duration ? Duration.toString(duration.getSeconds(), false) : null);
+        String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
         Response response = post(Response.Status.OK, formData.asMap(),
@@ -686,7 +682,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        String durationString = (null != duration ? Duration.toString(duration.getSeconds(), false) : null);
+        String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
         Response response = post(Response.Status.CREATED, formData.asMap(),
@@ -1010,6 +1006,22 @@ public class IssuesApi extends AbstractApi implements Constants {
     }
 
     /**
+     * Gets issues count statistics for given project.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:projectId/issues_statistics</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
+     * @param filter          {@link IssuesStatisticsFilter} a IssuesStatisticsFilter instance with the filter settings.
+     * @return an IssuesStatistics instance with the statistics for the matched issues
+     * @throws GitLabApiException if any exception occurs
+     */
+    public IssuesStatistics geProjectIssuesStatistics(Object projectIdOrPath, IssuesStatisticsFilter filter) throws GitLabApiException {
+        GitLabApiForm formData = filter.getQueryParams();
+        Response response = get(Response.Status.OK, formData.asMap(), "projects", this.getProjectIdOrPath(projectIdOrPath), "issues_statistics");
+        return (response.readEntity(IssuesStatistics.class));
+    }
+
+    /**
      * <p>Moves an issue to a different project. If the target project equals the source project or
      * the user has insufficient permissions to move an issue, error 400 together with an
      * explaining error message is returned.</p>
@@ -1031,5 +1043,4 @@ public class IssuesApi extends AbstractApi implements Constants {
                 "projects", this.getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "move");
         return (response.readEntity(Issue.class));
     }
-
 }

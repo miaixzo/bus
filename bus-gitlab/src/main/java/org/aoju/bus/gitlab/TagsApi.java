@@ -44,11 +44,8 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/tags.html">Tags API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/protected_tags.html">Protected Tags API at GitLab</a>
- * @since JDK 1.8+
  */
 public class TagsApi extends AbstractApi {
 
@@ -304,7 +301,7 @@ public class TagsApi extends AbstractApi {
     public Tag createTag(Object projectIdOrPath, String tagName, String ref, String message, File releaseNotesFile) throws GitLabApiException {
 
         String releaseNotes;
-        if (null != releaseNotesFile) {
+        if (releaseNotesFile != null) {
             try {
                 releaseNotes = readFileContents(releaseNotesFile);
             } catch (IOException ioe) {
@@ -470,7 +467,7 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public ProtectedTag protectTag(Object projectIdOrPath, String name, AccessLevel createAccessLevel) throws GitLabApiException {
-        Form formData = new GitLabApiForm().withParam("name", name, true).withParam("create_access_Level", createAccessLevel);
+        Form formData = new GitLabApiForm().withParam("name", name, true).withParam("create_access_level", createAccessLevel);
         Response response = post(Response.Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath), "protected_tags");
         return (response.readEntity(ProtectedTag.class));
     }

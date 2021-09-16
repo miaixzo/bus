@@ -27,17 +27,12 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.core.lang.Symbol;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * This class represents a duration in time.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class Duration {
 
@@ -51,7 +46,6 @@ public class Duration {
             1
     };
     private static Pattern durationPattern = Pattern.compile("(\\s*(\\d+)(mo|[wdhms]))");
-
     private int seconds;
     private String durationString;
 
@@ -61,8 +55,8 @@ public class Duration {
      * @param durationString a duration in human readable format
      */
     public Duration(String durationString) {
-        seconds = Duration.parse(durationString);
-        this.durationString = (seconds == 0 ? "0m" : Duration.toString(seconds));
+        seconds = parse(durationString);
+        this.durationString = (seconds == 0 ? "0m" : toString(seconds));
     }
 
     /**
@@ -72,7 +66,7 @@ public class Duration {
      */
     public Duration(int seconds) {
         this.seconds = seconds;
-        durationString = (seconds == 0 ? "0m" : Duration.toString(seconds));
+        durationString = (seconds == 0 ? "0m" : toString(seconds));
     }
 
     @JsonCreator
@@ -87,7 +81,7 @@ public class Duration {
      * @return a human readable string representing the duration
      */
     public static final String toString(int durationSeconds) {
-        return Duration.toString(durationSeconds, true);
+        return toString(durationSeconds, true);
     }
 
     /**
@@ -171,7 +165,7 @@ public class Duration {
             }
 
         } else {
-            buf.append(Symbol.C_SPACE).append(seconds).append('s');
+            buf.append(' ').append(seconds).append('s');
         }
 
         return (buf.toString());

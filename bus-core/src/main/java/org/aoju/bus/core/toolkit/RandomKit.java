@@ -94,7 +94,7 @@ public class RandomKit {
 
         SecureRandom random;
         try {
-            random = SecureRandom.getInstance(Algorithm.SHAPRNG);
+            random = SecureRandom.getInstance(Algorithm.SHA1PRNG.getValue());
         } catch (NoSuchAlgorithmException e) {
             throw new InstrumentException(e);
         }

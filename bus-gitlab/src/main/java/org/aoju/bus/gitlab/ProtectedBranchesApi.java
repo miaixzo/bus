@@ -38,10 +38,7 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the Protected Branches API calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ee/api/protected_branches.html">Protected branches API at GitLab</a>
- * @since JDK 1.8+
  */
 public class ProtectedBranchesApi extends AbstractApi {
 
@@ -250,16 +247,15 @@ public class ProtectedBranchesApi extends AbstractApi {
                 .withParam("name", branchName, true)
                 .withParam("code_owner_approval_required", codeOwnerApprovalRequired);
 
-        if (null != allowedToPush)
+        if (allowedToPush != null)
             allowedToPush.getForm(formData, "allowed_to_push");
-        if (null != allowedToMerge)
+        if (allowedToMerge != null)
             allowedToMerge.getForm(formData, "allowed_to_merge");
-        if (null != allowedToUnprotect)
+        if (allowedToUnprotect != null)
             allowedToUnprotect.getForm(formData, "allowed_to_unprotect");
 
         Response response = post(Response.Status.CREATED, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "protected_branches");
         return (response.readEntity(ProtectedBranch.class));
     }
-
 }

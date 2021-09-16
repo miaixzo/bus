@@ -17,7 +17,7 @@
 
 ```java
     // 得到输入流
-    InputStream iniInput = Test.class.getClassLoader().getResourceAsStream("test.ini");
+    InputStream iniInput = this.class.getClassLoader().getResourceAsStream("test.ini");
     
     // 通过默认的bufferedIniReader类读取ini文件
     Readers ir = new BufferedIniReader();

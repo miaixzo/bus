@@ -27,6 +27,8 @@ package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
+import org.aoju.bus.gitlab.models.ImpersonationToken.Scope;
+import org.aoju.bus.gitlab.support.EmailChecker;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -36,43 +38,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API users calls.
  *
- * @author Kimi Liu
- * @version 6.2.8
  * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
- * @since JDK 1.8+
  */
 public class UserApi extends AbstractApi {
-
-    /**
-     * Java regular expression for validating an email address.
-     */
-    public static final String EMAIL_REGEX =
-            "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
-                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" +
-                    "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:" +
-                    "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:" +
-                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
     private boolean customAttributesEnabled = false;
 
     public UserApi(GitLabApi gitLabApi) {
         super(gitLabApi);
-    }
-
-    /**
-     * Returns true if the provided String is a valid email address.
-     *
-     * @param email the email address to check for validity
-     * @return true if the provided String is a valid email address, otherwise return false
-     */
-    public static final boolean isValidEmail(final String email) {
-        return (email == null ? false : Pattern.compile(EMAIL_REGEX).matcher(email).matches());
     }
 
     /**
@@ -393,7 +371,7 @@ public class UserApi extends AbstractApi {
      */
     public User getUserByEmail(String email) throws GitLabApiException {
 
-        if (!isValidEmail(email)) {
+        if (!EmailChecker.isValidEmail(email)) {
             throw new IllegalArgumentException("email is not valid");
         }
 
@@ -524,48 +502,6 @@ public class UserApi extends AbstractApi {
 
     /**
      * <p>Creates a new user. Note only administrators can create new users.
-     * Either password or reset_password should be specified (reset_password takes priority).</p>
-     *
-     * <p>If both the User object's projectsLimit and the parameter projectsLimit is specified
-     * the parameter will take precedence.</p>
-     *
-     * <pre><code>GitLab Endpoint: POST /users</code></pre>
-     *
-     * <p>The following properties of the provided User instance can be set during creation:<pre><code> email (required) - Email
-     * username (required) - Username
-     * name (required) - Name
-     * skype (optional) - Skype ID
-     * linkedin (optional) - LinkedIn
-     * twitter (optional) - Twitter account
-     * websiteUrl (optional) - Website URL
-     * organization (optional) - Organization name
-     * projectsLimit (optional) - Number of projects user can create
-     * externUid (optional) - External UID
-     * provider (optional) - External provider name
-     * bio (optional) - User's biography
-     * location (optional) - User's location
-     * admin (optional) - User is admin - true or false (default)
-     * canCreateGroup (optional) - User can create groups - true or false
-     * skipConfirmation (optional) - Skip confirmation - true or false (default)
-     * external (optional) - Flags the user as external - true or false(default)
-     * sharedRunnersMinutesLimit (optional) - Pipeline minutes quota for this user
-     * </code></pre>
-     *
-     * @param user          the User instance with the user info to create
-     * @param password      the password for the new user
-     * @param projectsLimit the maximum number of project
-     * @return created User instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #createUser(User, CharSequence, boolean)}
-     */
-    public User createUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
-        Form formData = userToForm(user, projectsLimit, password, null, true);
-        Response response = post(Response.Status.CREATED, formData, "users");
-        return (response.readEntity(User.class));
-    }
-
-    /**
-     * <p>Creates a new user. Note only administrators can create new users.
      * Either password or resetPassword should be specified (resetPassword takes priority).</p>
      *
      * <pre><code>GitLab Endpoint: POST /users</code></pre>
@@ -634,45 +570,6 @@ public class UserApi extends AbstractApi {
      */
     public User updateUser(User user, CharSequence password) throws GitLabApiException {
         Form form = userToForm(user, null, password, false, false);
-        Response response = put(Response.Status.OK, form.asMap(), "users", user.getId());
-        return (response.readEntity(User.class));
-    }
-
-    /**
-     * Modifies an existing user. Only administrators can change attributes of a user.
-     *
-     * <pre><code>GitLab Endpoint: PUT /users/:id</code></pre>
-     *
-     * <p>The following properties of the provided User instance can be set during update:<pre><code> email (required) - Email
-     * username (required) - Username
-     * name (required) - Name
-     * skype (optional) - Skype ID
-     * linkedin (optional) - LinkedIn
-     * twitter (optional) - Twitter account
-     * websiteUrl (optional) - Website URL
-     * organization (optional) - Organization name
-     * projectsLimit (optional) - Number of projects user can create
-     * externUid (optional) - External UID
-     * provider (optional) - External provider name
-     * bio (optional) - User's biography
-     * location (optional) - User's location
-     * admin (optional) - User is admin - true or false (default)
-     * canCreateGroup (optional) - User can create groups - true or false
-     * skipConfirmation (optional) - Skip confirmation - true or false (default)
-     * external (optional) - Flags the user as external - true or false(default)
-     * sharedRunnersMinutesLimit (optional) - Pipeline minutes quota for this user
-     * </code></pre>
-     *
-     * @param user          the User instance with the user info to modify
-     * @param password      the new password for the user
-     * @param projectsLimit the maximum number of project
-     * @return the modified User instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #updateUser(User, CharSequence)}
-     */
-    @Deprecated
-    public User modifyUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
-        Form form = userToForm(user, projectsLimit, password, false, false);
         Response response = put(Response.Status.OK, form.asMap(), "users", user.getId());
         return (response.readEntity(User.class));
     }
@@ -751,7 +648,7 @@ public class UserApi extends AbstractApi {
         List<SshKey> keys = response.readEntity(new GenericType<List<SshKey>>() {
         });
 
-        if (null != keys) {
+        if (keys != null) {
             keys.forEach(key -> key.setUserId(userId));
         }
 
@@ -824,7 +721,7 @@ public class UserApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title).withParam("key", key);
         Response response = post(Response.Status.CREATED, formData, "users", userId, "keys");
         SshKey sshKey = response.readEntity(SshKey.class);
-        if (null != sshKey) {
+        if (sshKey != null) {
             sshKey.setUserId(userId);
         }
 
@@ -950,7 +847,7 @@ public class UserApi extends AbstractApi {
      * @return the created ImpersonationToken instance
      * @throws GitLabApiException if any exception occurs
      */
-    public ImpersonationToken createImpersonationToken(Object userIdOrUsername, String name, Date expiresAt, ImpersonationToken.Scope[] scopes) throws GitLabApiException {
+    public ImpersonationToken createImpersonationToken(Object userIdOrUsername, String name, Date expiresAt, Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -960,7 +857,7 @@ public class UserApi extends AbstractApi {
                 .withParam("name", name, true)
                 .withParam("expires_at", expiresAt);
 
-        for (ImpersonationToken.Scope scope : scopes) {
+        for (Scope scope : scopes) {
             formData.withParam("scopes[]", scope.toString());
         }
 
@@ -1264,4 +1161,107 @@ public class UserApi extends AbstractApi {
         delete(Response.Status.NO_CONTENT, null, "users", getUserIdOrUsername(userIdOrUsername), "emails", emailId);
     }
 
+    /**
+     * Get all GPG keys for the current user.
+     *
+     * <pre><code>GitLab Endpoint: GET /user/gpg_keys</code></pre>
+     *
+     * @return the list
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<GpgKey> listGpgKeys() throws GitLabApiException {
+        Response response = get(Response.Status.OK, null, "user", "gpg_keys");
+        return (response.readEntity(new GenericType<List<GpgKey>>() {
+        }));
+    }
+
+    /**
+     * Add a GPG key for the current user
+     *
+     * <pre><code>GitLab Endpoint: POST /user/gpg_keys</code></pre>
+     *
+     * @param key the ASCII-armored exported public GPG key to add
+     * @return the object
+     * @throws GitLabApiException if any exception occurs
+     */
+    public GpgKey addGpgKey(final String key) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("key", key, true);
+        Response response = post(Response.Status.CREATED, formData, "user", "gpg_keys");
+        return (response.readEntity(GpgKey.class));
+    }
+
+    /**
+     * Remove a specific GPG key for the current user
+     *
+     * <pre><code>GitLab Endpoint: DELETE /user/gpg_keys/:keyId</code></pre>
+     *
+     * @param keyId the key ID  in the form if an Integer(ID)
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void deleteGpgKey(final Integer keyId) throws GitLabApiException {
+        delete(Response.Status.NO_CONTENT, null, "user", "gpg_keys", keyId);
+    }
+
+    /**
+     * Get all GPG keys for a given user.
+     *
+     * <pre><code>GitLab Endpoint: GET /users/:id/gpg_keys</code></pre>
+     *
+     * @param userId the user in the form of an Integer(ID)
+     * @return the list
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<GpgKey> listGpgKeys(final Integer userId) throws GitLabApiException {
+        Response response = get(Response.Status.OK, null, "users", userId, "gpg_keys");
+        return (response.readEntity(new GenericType<List<GpgKey>>() {
+        }));
+    }
+
+    /**
+     * Add a GPG key for a specific user
+     *
+     * <pre><code>GitLab Endpoint: POST /users/:id/gpg_keys</code></pre>
+     *
+     * @param userId the user in the form of an Integer(ID)
+     * @param key    the ASCII-armored exported public GPG key to add
+     * @return the object
+     * @throws GitLabApiException if any exception occurs
+     */
+    public GpgKey addGpgKey(final Integer userId, final String key) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("key", key, true);
+        Response response = post(Response.Status.CREATED, formData, "users", userId, "gpg_keys");
+        return (response.readEntity(GpgKey.class));
+    }
+
+    /**
+     * Remove a specific GPG key for a specific user
+     *
+     * <pre><code>GitLab Endpoint: DELETE /users/:id/gpg_keys/:keyId</code></pre>
+     *
+     * @param userId the user in the form of an Integer(ID)
+     * @param keyId  the key ID  in the form if an Integer(ID)
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void deleteGpgKey(final Integer userId, final Integer keyId) throws GitLabApiException {
+        delete(Response.Status.NO_CONTENT, null, "users", userId, "gpg_keys", keyId);
+    }
+
+    /**
+     * Lists all projects and groups a user is a member of. (admin only)
+     *
+     * <pre><code>GitLab Endpoint: GET /users/:id/memberships</code></pre>
+     *
+     * @param userId the ID of the user to get the memberships for
+     * @return the list of memberships of the given user
+     * @throws GitLabApiException if any exception occurs
+     * @since GitLab 12.8
+     */
+    public List<Membership> getMemberships(Integer userId) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm();
+        Response response = get(Response.Status.OK, formData.asMap(), "users", userId, "memberships");
+        return (response.readEntity(new GenericType<List<Membership>>() {
+        }));
+    }
 }

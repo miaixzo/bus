@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.ConvertException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -95,7 +95,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
             return Convert.convert(Boolean.class, value);
         }
 
-        throw new InstrumentException("Unsupported target type: {}", primitiveClass);
+        throw new ConvertException("Unsupported target type: {}", primitiveClass);
     }
 
     @Override

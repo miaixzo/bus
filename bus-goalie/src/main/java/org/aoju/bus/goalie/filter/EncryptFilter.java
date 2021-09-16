@@ -26,12 +26,10 @@
 package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.entity.Message;
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.crypto.Mode;
-import org.aoju.bus.crypto.Padding;
-import org.aoju.bus.crypto.symmetric.AES;
-import org.aoju.bus.crypto.symmetric.Symmetric;
+import org.aoju.bus.crypto.symmetric.Crypto;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
@@ -63,7 +61,7 @@ public class EncryptFilter implements WebFilter {
 
     Config.Encrypt encrypt;
 
-    private Symmetric symmetric;
+    private Crypto crypto;
 
     public EncryptFilter(Config.Encrypt encrypt) {
         this.encrypt = encrypt;
@@ -71,8 +69,8 @@ public class EncryptFilter implements WebFilter {
 
     @PostConstruct
     public void init() {
-        if ("AES".equals(encrypt.getType())) {
-            symmetric = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
+        if (Algorithm.AES.getValue().equals(encrypt.getType())) {
+            // crypto = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
         }
     }
 
@@ -94,8 +92,8 @@ public class EncryptFilter implements WebFilter {
      */
     private void doEncrypt(Message message) {
         if (ObjectKit.isNotNull(message.getData())) {
-            if ("AES".equals(encrypt.getType())) {
-                message.setData(symmetric.encryptBase64(JsonKit.toJsonString(message.getData()), Charset.UTF_8));
+            if (Algorithm.AES.getValue().equals(encrypt.getType())) {
+                message.setData(crypto.encryptBase64(JsonKit.toJsonString(message.getData()), Charset.UTF_8));
             }
 
         }

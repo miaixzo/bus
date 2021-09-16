@@ -67,7 +67,7 @@ public final class Properties extends java.util.Properties implements BasicType<
     /**
      * 属性文件的URL
      */
-    private URL propertiesFileUrl;
+    private Resource resource;
     private WatchMonitor watchMonitor;
     /**
      * properties文件编码
@@ -283,10 +283,8 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param resource {@link Resource}
      */
     public void load(Resource resource) {
-        this.propertiesFileUrl = resource.getUrl();
-        if (null == this.propertiesFileUrl) {
-            throw new InstrumentException("Can not find properties file: [{}]", resource);
-        }
+        Assert.notNull(resource, "Props resource must be not null!");
+        this.resource = resource;
 
         try (final BufferedReader reader = resource.getReader(charset)) {
             super.load(reader);
@@ -299,7 +297,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      * 重新加载配置文件
      */
     public void load() {
-        this.load(this.propertiesFileUrl);
+        this.load(this.resource);
     }
 
     /**
@@ -309,12 +307,12 @@ public final class Properties extends java.util.Properties implements BasicType<
      */
     public void autoLoad(boolean autoReload) {
         if (autoReload) {
-            Assert.notNull(this.propertiesFileUrl, "Properties URL is null !");
+            Assert.notNull(this.resource, "Properties resource must be not null!");
             if (null != this.watchMonitor) {
                 // 先关闭之前的监听
                 this.watchMonitor.close();
             }
-            this.watchMonitor = WatchKit.createModify(this.propertiesFileUrl, new SimpleWatcher() {
+            this.watchMonitor = WatchKit.createModify(this.resource.getUrl(), new SimpleWatcher() {
                 @Override
                 public void onModify(WatchEvent<?> event, Path currentPath) {
                     load();

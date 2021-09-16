@@ -28,53 +28,16 @@ package org.aoju.bus.gitlab;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.service.*;
 
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 
 /**
  * Access for the services API.  Currently only the gitlab-ci, HipChatService, Slack, and JIRA service are supported.
  * See <a href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/services.md">GitLab documentation</a> for more info.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class ServicesApi extends AbstractApi {
 
     public ServicesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
-    }
-
-    /**
-     * Activates the gitlab-ci service for a project.
-     *
-     * <pre><code>GitLab Endpoint: PUT /projects/:id/services/gitlab-ci</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param token           for authentication
-     * @param projectCIUrl    URL of the GitLab-CI project
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated No longer supported
-     */
-    public void setGitLabCI(Object projectIdOrPath, String token, String projectCIUrl) throws GitLabApiException {
-        final Form formData = new Form();
-        formData.param("token", token);
-        formData.param("project_url", projectCIUrl);
-        put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services", "gitlab-ci");
-    }
-
-    /**
-     * Deletes the gitlab-ci service for a project.
-     *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/services/gitlab-ci</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated No longer supported
-     */
-    public void deleteGitLabCI(Object projectIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
-        delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "gitlab-ci");
     }
 
     /**
@@ -123,39 +86,6 @@ public class ServicesApi extends AbstractApi {
         GitLabApiForm formData = hipChat.servicePropertiesForm();
         Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services", "hipchat");
         return (response.readEntity(HipChatService.class));
-    }
-
-    /**
-     * Activates HipChatService notifications.
-     *
-     * <pre><code>GitLab Endpoint: PUT /projects/:id/services/hipchat</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param token           for authentication
-     * @param room            HipChatService Room
-     * @param server          HipChatService Server URL
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated replaced with {@link #updateHipChatService(Object, HipChatService) updateHipChat} method
-     */
-    public void setHipChat(Object projectIdOrPath, String token, String room, String server) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("token", token)
-                .withParam("room", room)
-                .withParam("server", server);
-        put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services", "hipchat");
-    }
-
-    /**
-     * Deletes the HipChatService service for a project.
-     *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/services/hipchat</code></pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated replaced with {@link #deleteHipChatService(Object) updateHipChat} method
-     */
-    public void deleteHipChat(Object projectIdOrPath) throws GitLabApiException {
-        deleteHipChatService(projectIdOrPath);
     }
 
     /**
@@ -514,6 +444,61 @@ public class ServicesApi extends AbstractApi {
      */
     public void deleteCustomIssueTrackerService(Object projectIdOrPath) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "custom-issue-tracker");
+
+    }
+
+    /**
+     * Get Emails on push service settings for a project.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/services/emails-on-push</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @return a EmailOnPushService instance holding the Email on push settings
+     * @throws GitLabApiException if any exception occurs
+     */
+    public EmailOnPushService getEmailOnPushService(Object projectIdOrPath) throws GitLabApiException {
+        Response response = this.get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "emails-on-push");
+        return (response.readEntity(EmailOnPushService.class));
+    }
+
+    /**
+     * Updates the EmailsOnPush service settings for a project.
+     *
+     * <pre><code>GitLab Endpoint: PUT /projects/:id/services/emails-on-push</code></pre>
+     * <p>
+     * The following properties on the EmailOnPushService instance are utilized in the update of the settings:
+     * <p>
+     * recipients (required), Emails separated by whitespace
+     * disable_diffs (optional), Disable code diffs
+     * send_from_committer_email (optional), Send from committer
+     * push_events (optional), Enable notifications for push events
+     * tag_push_events(optional), Enable notifications for tag push events
+     * branches_to_be_notified (optional), Branches to send notifications for. Valid options are "all", "default",
+     * "protected", and "default_and_protected". Notifications are always fired
+     * for tag pushes. The default value is "all"
+     * </p>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param emailsOnPush    the EmailOnPushService instance holding the settings
+     * @return a EmailOnPushService instance holding the newly updated settings
+     * @throws GitLabApiException if any exception occurs
+     */
+    public EmailOnPushService updateEmailOnPushService(Object projectIdOrPath, EmailOnPushService emailsOnPush) throws GitLabApiException {
+        GitLabApiForm formData = emailsOnPush.servicePropertiesForm();
+        Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services", "emails-on-push");
+        return (response.readEntity(EmailOnPushService.class));
+    }
+
+    /**
+     * Deletes the Emails on push service for a project.
+     *
+     * <pre><code>GitLab Endpoint: DELETE /projects/:id/services/emails-on-push</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void deleteEmailonPushService(Object projectIdOrPath) throws GitLabApiException {
+        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "emails-on-push");
 
     }
 

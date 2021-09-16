@@ -34,6 +34,8 @@ package org.aoju.bus.core.lang.exception;
  */
 public class HttpUncheckException extends UncheckedException {
 
+    private static final long serialVersionUID = 1L;
+
     public HttpUncheckException() {
         super();
     }

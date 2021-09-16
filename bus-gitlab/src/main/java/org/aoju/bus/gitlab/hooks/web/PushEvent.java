@@ -25,13 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.web;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class PushEvent extends AbstractPushEvent implements Event {
 
     public static final String X_GITLAB_EVENT = "Push Hook";

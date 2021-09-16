@@ -25,13 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Branch {
 
     private Commit commit;
@@ -40,9 +35,12 @@ public class Branch {
     private Boolean merged;
     private String name;
     private Boolean isProtected;
+    private Boolean isDefault;
+    private Boolean canPush;
+    private String webUrl;
 
     public static final boolean isValid(Branch branch) {
-        return (null != branch && null != branch.getName());
+        return (branch != null && branch.getName() != null);
     }
 
     public Commit getCommit() {
@@ -93,6 +91,31 @@ public class Branch {
         this.isProtected = isProtected;
     }
 
+    public Boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    public Boolean getCanPush() {
+        return canPush;
+    }
+
+    public void setCanPush(Boolean canPush) {
+        this.canPush = canPush;
+    }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
+    }
+
+
     public Branch withCommit(Commit commit) {
         this.commit = commit;
         return this;
@@ -108,7 +131,7 @@ public class Branch {
         return this;
     }
 
-    public Branch withDerged(Boolean merged) {
+    public Branch withMerged(Boolean merged) {
         this.merged = merged;
         return this;
     }

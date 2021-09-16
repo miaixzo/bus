@@ -43,7 +43,7 @@ import java.lang.reflect.Type;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class PropertyDescription {
+public class PropertyDesc {
 
     /**
      * 字段
@@ -66,7 +66,7 @@ public class PropertyDescription {
      * @param getter get方法
      * @param setter set方法
      */
-    public PropertyDescription(Field field, Method getter, Method setter) {
+    public PropertyDesc(Field field, Method getter, Method setter) {
         this.field = field;
         this.getter = ClassKit.setAccessible(getter);
         this.setter = ClassKit.setAccessible(setter);
@@ -239,7 +239,7 @@ public class PropertyDescription {
      * @param value 值，必须与字段值类型匹配
      * @return this
      */
-    public PropertyDescription setValue(Object bean, Object value) {
+    public PropertyDesc setValue(Object bean, Object value) {
         if (null != this.setter) {
             ReflectKit.invoke(bean, this.setter, value);
         } else if (BeanKit.isPublic(this.field)) {
@@ -257,7 +257,7 @@ public class PropertyDescription {
      * @param ignoreError 是否忽略错误，包括转换错误和注入错误
      * @return this
      */
-    public PropertyDescription setValue(Object bean, Object value, boolean ignoreNull, boolean ignoreError) {
+    public PropertyDesc setValue(Object bean, Object value, boolean ignoreNull, boolean ignoreError) {
         if (ignoreNull && null == value) {
             return this;
         }

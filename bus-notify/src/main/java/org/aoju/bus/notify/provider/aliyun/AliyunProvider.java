@@ -27,6 +27,7 @@ package org.aoju.bus.notify.provider.aliyun;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.extra.json.JsonKit;
@@ -78,7 +79,7 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
                     .replace(Symbol.STAR, "%2A")
                     .replace("%7E", Symbol.TILDE);
         } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException("aliyun specialUrlEncode error");
+            throw new InstrumentException("Aliyun specialUrlEncode error");
         }
     }
 
@@ -104,7 +105,7 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
         }
         // 去除第一个多余的&符号
         String sortedQueryString = sortQueryStringTmp.substring(1);
-        String stringToSign = "GET" + Symbol.AND +
+        String stringToSign = Http.GET + Symbol.AND +
                 specialUrlEncode(Symbol.SLASH) + Symbol.AND +
                 specialUrlEncode(sortedQueryString);
         return sign(stringToSign);
@@ -118,12 +119,12 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
      */
     protected String sign(String stringToSign) {
         try {
-            Mac mac = Mac.getInstance(Algorithm.HmacSHA1);
-            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HmacSHA1));
+            Mac mac = Mac.getInstance(Algorithm.HmacSHA1.getValue());
+            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HmacSHA1.getValue()));
             byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new InstrumentException("aliyun specialUrlEncode error");
+            throw new InstrumentException("Aliyun specialUrlEncode error");
         }
     }
 

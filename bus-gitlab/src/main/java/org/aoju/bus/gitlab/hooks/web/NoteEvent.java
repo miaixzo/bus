@@ -27,18 +27,13 @@ package org.aoju.bus.gitlab.hooks.web;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
 import org.aoju.bus.gitlab.models.Diff;
 import org.aoju.bus.gitlab.models.User;
+import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class NoteEvent extends AbstractEvent {
 
     public static final String X_GITLAB_EVENT = "Note Hook";
@@ -165,6 +160,8 @@ public class NoteEvent extends AbstractEvent {
 
         private Integer id;
         private String note;
+        private String discussionId;
+        private String type;
         private NoteableType noteableType;
         private Integer authorId;
         private Date createdAt;
@@ -192,6 +189,22 @@ public class NoteEvent extends AbstractEvent {
 
         public void setNote(String note) {
             this.note = note;
+        }
+
+        public String getDiscussionId() {
+            return discussionId;
+        }
+
+        public void setDiscussionId(String discussionId) {
+            this.discussionId = discussionId;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
         }
 
         public NoteableType getNoteableType() {

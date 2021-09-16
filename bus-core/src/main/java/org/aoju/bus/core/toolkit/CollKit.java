@@ -198,6 +198,30 @@ public class CollKit {
     }
 
     /**
+     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
+     * 空集合使用{@link Collections#emptySet()}
+     *
+     * @param <T> 集合元素类型
+     * @param set 提供的集合，可能为null
+     * @return 原集合，若为null返回空集合
+     */
+    public static <T> Set<T> emptyIfNull(Set<T> set) {
+        return (null == set) ? Collections.emptySet() : set;
+    }
+
+    /**
+     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
+     * 空集合使用{@link Collections#emptyList()}
+     *
+     * @param <T>  集合元素类型
+     * @param list 提供的集合，可能为null
+     * @return 原集合，若为null返回空集合
+     */
+    public static <T> List<T> emptyIfNull(List<T> list) {
+        return (null == list) ? Collections.emptyList() : list;
+    }
+
+    /**
      * 两个集合的并集
      * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留最多的个数
      * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
@@ -1024,7 +1048,7 @@ public class CollKit {
     }
 
     /**
-     * 新建一个ArrayList
+     * 新建一个List
      * 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>      集合元素类型
@@ -1317,9 +1341,9 @@ public class CollKit {
      *
      * @param <T>        集合元素类型
      * @param collection 集合
-     * @return {@link ArrayList}
+     * @return {@link List}
      */
-    public static <T> ArrayList<T> distinct(Collection<T> collection) {
+    public static <T> List<T> distinct(Collection<T> collection) {
         if (isEmpty(collection)) {
             return new ArrayList<>();
         } else if (collection instanceof Set) {
@@ -1327,6 +1351,38 @@ public class CollKit {
         } else {
             return new ArrayList<>(new LinkedHashSet<>(collection));
         }
+    }
+
+    /**
+     * 根据指定对象属性去除重复对象
+     *
+     * @param <T>        集合元素类型
+     * @param collection 集合
+     * @param field      指定的去重属性名称
+     * @return {@link List}
+     */
+    public static <T> List<T> distinct(Collection<T> collection, String field) {
+        if (isEmpty(collection)) {
+            return null;
+        }
+        // 根据属性值进行去重
+        Set<T> sets = new TreeSet<>((o1, o2) -> {
+            try {
+                Field field1 = o1.getClass().getDeclaredField(field);
+                Field field2 = o2.getClass().getDeclaredField(field);
+                field1.setAccessible(true);
+                field2.setAccessible(true);
+                Object obj1 = field1.get(o1);
+                Object obj2 = field2.get(o2);
+                // 根据指定属性进行去重
+                return obj1.toString().compareTo(obj2.toString());
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        });
+        sets.addAll(collection);
+        return new ArrayList(sets);
     }
 
     /**

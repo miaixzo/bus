@@ -34,6 +34,8 @@ package org.aoju.bus.core.lang.exception;
  */
 public class SocketException extends UncheckedException {
 
+    private static final long serialVersionUID = 1L;
+
     public SocketException() {
         super();
     }

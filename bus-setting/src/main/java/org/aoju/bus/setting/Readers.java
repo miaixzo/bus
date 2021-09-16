@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.setting;
 
-import org.aoju.bus.core.io.resource.UriResource;
+import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
@@ -125,15 +125,17 @@ public class Readers {
      * @param resource 配置文件URL
      * @return 加载是否成功
      */
-    public boolean load(UriResource resource) {
+    public boolean load(Resource resource) {
         if (null == resource) {
             throw new NullPointerException("Null setting url define!");
         }
+        Logger.debug("Load setting file [{}]", resource);
         InputStream settingStream;
         try {
             settingStream = resource.getStream();
             load(settingStream);
         } catch (Exception e) {
+            Logger.error(e, "Load setting error!");
             return false;
         }
         return true;
@@ -142,15 +144,15 @@ public class Readers {
     /**
      * 加载设置文件  此方法不会关闭流对象
      *
-     * @param settingStream 文件流
+     * @param inputStream 文件流
      * @return 加载成功与否
      * @throws IOException IO异常
      */
-    public boolean load(InputStream settingStream) throws IOException {
+    public boolean load(InputStream inputStream) throws IOException {
         this.groupMap.clear();
         BufferedReader reader = null;
         try {
-            reader = IoKit.getReader(settingStream, this.charset);
+            reader = IoKit.getReader(inputStream, this.charset);
             // 分组
             String group = null;
 

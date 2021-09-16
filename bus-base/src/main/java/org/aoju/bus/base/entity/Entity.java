@@ -28,7 +28,6 @@ package org.aoju.bus.base.entity;
 import lombok.Data;
 
 import javax.persistence.Id;
-import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -48,23 +47,5 @@ public abstract class Entity implements Serializable {
      */
     @Id
     protected String id;
-
-    /**
-     * 当前页码
-     */
-    @Transient
-    protected transient Integer pageNo = 1;
-
-    /**
-     * 分页大小
-     */
-    @Transient
-    protected transient Integer pageSize = 100;
-
-    /**
-     * 排序方式,asc desc
-     */
-    @Transient
-    protected transient String orderBy;
 
 }

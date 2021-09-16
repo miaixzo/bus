@@ -26,60 +26,14 @@
 package org.aoju.bus.gitlab.models;
 
 import org.aoju.bus.gitlab.Constants.ArchiveFormat;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.List;
 
 /**
  * This class is part of the Release class model.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class Assets {
-
-    private Integer count;
-    private List<Source> sources;
-    private List<Link> links;
-    private String evidenceFilePath;
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public List<Source> getSources() {
-        return sources;
-    }
-
-    public void setSources(List<Source> sources) {
-        this.sources = sources;
-    }
-
-    public List<Link> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<Link> links) {
-        this.links = links;
-    }
-
-    public String getEvidenceFilePath() {
-        return evidenceFilePath;
-    }
-
-    public void setEvidenceFilePath(String evidenceFilePath) {
-        this.evidenceFilePath = evidenceFilePath;
-    }
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
 
     public static class Source {
 
@@ -151,6 +105,48 @@ public class Assets {
         public String toString() {
             return (JacksonJson.toJsonString(this));
         }
+    }
+
+    private Integer count;
+    private List<Source> sources;
+    private List<Link> links;
+    private String evidenceFilePath;
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public List<Source> getSources() {
+        return sources;
+    }
+
+    public void setSources(List<Source> sources) {
+        this.sources = sources;
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
+    public String getEvidenceFilePath() {
+        return evidenceFilePath;
+    }
+
+    public void setEvidenceFilePath(String evidenceFilePath) {
+        this.evidenceFilePath = evidenceFilePath;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 }
 

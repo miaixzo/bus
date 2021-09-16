@@ -27,11 +27,6 @@ package org.aoju.bus.gitlab.service;
 
 import org.aoju.bus.gitlab.GitLabApiForm;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ExternalWikiService extends NotificationService {
 
     public static final String WIKIURL_KEY_PROP = "external_wiki_url";

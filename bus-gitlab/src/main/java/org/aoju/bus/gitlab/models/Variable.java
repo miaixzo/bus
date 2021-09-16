@@ -28,18 +28,13 @@ package org.aoju.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
+import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Variable {
 
     private String key;
@@ -50,7 +45,6 @@ public class Variable {
     @JsonProperty("masked")
     private Boolean isMasked;
     private String environmentScope;
-
     public Variable() {
     }
 

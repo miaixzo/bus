@@ -37,10 +37,6 @@ import java.util.Map;
 
 /**
  * This class provides convenience methods to create ClientConfig properties so GitLabApi can use a proxy server.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class ProxyClientConfig {
 
@@ -69,11 +65,11 @@ public class ProxyClientConfig {
         Map<String, Object> clientConfig = new HashMap<>();
         clientConfig.put(ClientProperties.PROXY_URI, proxyUri);
 
-        if (null != username && username.trim().length() > 0) {
+        if (username != null && username.trim().length() > 0) {
             clientConfig.put(ClientProperties.PROXY_USERNAME, username);
         }
 
-        if (null != password && password.trim().length() > 0) {
+        if (password != null && password.trim().length() > 0) {
             clientConfig.put(ClientProperties.PROXY_PASSWORD, password);
         }
 
@@ -103,5 +99,4 @@ public class ProxyClientConfig {
 
         return (clientConfig);
     }
-
 }

@@ -348,7 +348,8 @@ public class Ftp extends AbstractFtp {
         String fileName;
         for (FTPFile ftpFile : ftpFiles) {
             fileName = ftpFile.getName();
-            if (false == StringKit.equals(".", fileName) && false == StringKit.equals("..", fileName)) {
+            if (false == StringKit.equals(Symbol.DOT, fileName)
+                    && false == StringKit.equals(Symbol.DOT + Symbol.DOT, fileName)) {
                 if (null == filter || filter.accept(ftpFile)) {
                     result.add(ftpFile);
                 }
@@ -565,8 +566,8 @@ public class Ftp extends AbstractFtp {
     /**
      * 下载文件
      *
-     * @param path    文件路径
-     * @param outFile 输出文件或目录
+     * @param path    文件路径，包含文件名
+     * @param outFile 输出文件或目录，当为目录时，使用服务端的文件名
      */
     @Override
     public void download(String path, File outFile) {
@@ -578,9 +579,9 @@ public class Ftp extends AbstractFtp {
     /**
      * 下载文件
      *
-     * @param path     文件路径
+     * @param path     文件所在路径（远程目录），不包含文件名
      * @param fileName 文件名
-     * @param outFile  输出文件或目录
+     * @param outFile  输出文件或目录，当为目录时使用服务端文件名
      */
     public void download(String path, String fileName, File outFile) {
         if (outFile.isDirectory()) {
@@ -610,10 +611,10 @@ public class Ftp extends AbstractFtp {
     /**
      * 下载文件到输出流
      *
-     * @param path     文件路径
-     * @param fileName 文件名
-     * @param out      输出位置
-     * @param charset  字符编码
+     * @param path     服务端的文件路径
+     * @param fileName 服务端的文件名
+     * @param out      输出流，下载的文件写出到这个流中
+     * @param charset  文件名编码，通过此编码转换文件名编码为ISO8859-1
      */
     public void download(String path, String fileName, OutputStream out, java.nio.charset.Charset charset) {
         String pwd = null;

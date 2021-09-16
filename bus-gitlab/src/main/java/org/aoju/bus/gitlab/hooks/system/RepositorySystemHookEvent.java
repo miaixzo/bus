@@ -25,16 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.system;
 
-import org.aoju.bus.gitlab.JacksonJson;
 import org.aoju.bus.gitlab.hooks.web.EventProject;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 
     public static final String REPOSITORY_UPDATE_EVENT = "repository_update";

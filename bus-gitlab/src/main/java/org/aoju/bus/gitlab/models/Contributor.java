@@ -28,10 +28,6 @@ package org.aoju.bus.gitlab.models;
 /**
  * This class models the object for a repository contributor.
  * See <a href="https://docs.gitlab.com/ee/api/repositories.html#contributors">Contributors at GitLab</a>.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class Contributor extends AbstractUser<Contributor> {
 

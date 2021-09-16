@@ -28,10 +28,6 @@ package org.aoju.bus.gitlab.hooks.web;
 /**
  * This interface defines an event listener for the event fired when
  * a WebHook notification has been received from a GitLab server.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public interface WebHookListener extends java.util.EventListener {
 

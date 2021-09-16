@@ -25,15 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class SystemHook {
 
     private Integer id;
@@ -43,6 +38,7 @@ public class SystemHook {
     private Boolean tagPushEvents;
     private Boolean enableSslVerification;
     private Boolean repositoryUpdateEvents;
+    private Boolean mergeRequestsEvents;
 
     public Integer getId() {
         return id;
@@ -100,6 +96,14 @@ public class SystemHook {
         this.repositoryUpdateEvents = repositoryUpdateEvents;
     }
 
+    public Boolean getMergeRequestsEvents() {
+        return mergeRequestsEvents;
+    }
+
+    public void setMergeRequestsEvents(Boolean mergeRequestsEvents) {
+        this.mergeRequestsEvents = mergeRequestsEvents;
+    }
+
     public SystemHook withId(Integer id) {
         this.id = id;
         return (this);
@@ -132,6 +136,11 @@ public class SystemHook {
 
     public SystemHook withRepositoryUpdateEvents(Boolean repositoryUpdateEvents) {
         this.repositoryUpdateEvents = repositoryUpdateEvents;
+        return (this);
+    }
+
+    public SystemHook withMergeRequestsEvents(Boolean mergeRequestsEvents) {
+        this.mergeRequestsEvents = mergeRequestsEvents;
         return (this);
     }
 

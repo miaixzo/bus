@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.Builder;
 
@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -41,7 +42,6 @@ import java.security.Provider;
 /**
  * 摘要算法
  * 注意：此对象实例化后为非线程安全！
- *
  * @author Kimi Liu
  * @version 6.2.8
  * @since JDK 1.8+
@@ -75,6 +75,25 @@ public class Digester implements Serializable {
     /**
      * 构造
      *
+     * @param algorithm 算法枚举
+     */
+    public Digester(Algorithm algorithm) {
+        this(algorithm.getValue());
+    }
+
+    /**
+     * 构造
+     *
+     * @param algorithm 算法
+     * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
+     */
+    public Digester(Algorithm algorithm, Provider provider) {
+        init(algorithm.getValue(), provider);
+    }
+
+    /**
+     * 构造
+     *
      * @param algorithm 算法
      * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
      */
@@ -87,8 +106,8 @@ public class Digester implements Serializable {
      *
      * @param algorithm 算法
      * @param provider  算法提供者，null表示JDK默认，可以引入Bouncy Castle等来提供更多算法支持
-     * @return {@link Digester}
-     * @throws InstrumentException Cause by IOException
+     * @return Digester
+     * @throws CryptoException Cause by IOException
      */
     public Digester init(String algorithm, Provider provider) {
         if (null == provider) {
@@ -97,7 +116,7 @@ public class Digester implements Serializable {
             try {
                 this.digest = MessageDigest.getInstance(algorithm, provider);
             } catch (NoSuchAlgorithmException e) {
-                throw new InstrumentException(e);
+                throw new CryptoException(e);
             }
         }
         return this;
@@ -165,7 +184,7 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public byte[] digest(String data, String charsetName) {
-        return digest(data, Charset.charset(charsetName));
+        return digest(data, org.aoju.bus.core.lang.Charset.charset(charsetName));
     }
 
     /**
@@ -175,7 +194,7 @@ public class Digester implements Serializable {
      * @param charset 编码
      * @return 摘要
      */
-    public byte[] digest(String data, java.nio.charset.Charset charset) {
+    public byte[] digest(String data, Charset charset) {
         return digest(StringKit.bytes(data, charset));
     }
 
@@ -186,7 +205,7 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, Charset.UTF_8);
+        return digest(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -197,7 +216,7 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data, String charsetName) {
-        return digestHex(data, Charset.charset(charsetName));
+        return digestHex(data, org.aoju.bus.core.lang.Charset.charset(charsetName));
     }
 
     /**
@@ -207,7 +226,7 @@ public class Digester implements Serializable {
      * @param charset 编码
      * @return 摘要
      */
-    public String digestHex(String data, java.nio.charset.Charset charset) {
+    public String digestHex(String data, Charset charset) {
         return HexKit.encodeHexStr(digest(data, charset));
     }
 
@@ -218,7 +237,7 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, Charset.DEFAULT_UTF_8);
+        return digestHex(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -227,9 +246,9 @@ public class Digester implements Serializable {
      *
      * @param file 被摘要文件
      * @return 摘要bytes
-     * @throws InstrumentException Cause by IOException
+     * @throws CryptoException Cause by IOException
      */
-    public byte[] digest(File file) throws InstrumentException {
+    public byte[] digest(File file) throws CryptoException {
         InputStream in = null;
         try {
             in = FileKit.getInputStream(file);
@@ -315,9 +334,9 @@ public class Digester implements Serializable {
      * @param data         {@link InputStream} 数据流
      * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
-     * @throws InstrumentException IO异常
+     * @throws CryptoException IO异常
      */
-    public byte[] digest(InputStream data, int bufferLength) throws InstrumentException {
+    public byte[] digest(InputStream data, int bufferLength) throws CryptoException {
         if (bufferLength < 1) {
             bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
         }
@@ -330,7 +349,7 @@ public class Digester implements Serializable {
                 result = digestWithSalt(data, bufferLength);
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new CryptoException(e);
         }
 
         return resetAndRepeatDigest(result);

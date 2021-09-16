@@ -26,17 +26,15 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Group {
+
+    private Date createdAt;
+
 
     private Integer id;
     private String name;
@@ -56,7 +54,6 @@ public class Group {
     private List<Project> sharedProjects;
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
-    private Date createdAt;
 
     public Integer getId() {
         return this.id;
@@ -288,7 +285,6 @@ public class Group {
     }
 
     public class Statistics {
-
         private Long storageSize;
         private Long repositorySize;
         private Long lfsObjectsSize;
@@ -326,5 +322,4 @@ public class Group {
             this.jobArtifactsSize = jobArtifactsSize;
         }
     }
-
 }

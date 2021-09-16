@@ -26,7 +26,6 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.Constants.*;
 import org.aoju.bus.gitlab.GitLabApiForm;
@@ -34,12 +33,11 @@ import org.aoju.bus.gitlab.GitLabApiForm;
 import java.util.Date;
 import java.util.List;
 
+import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ALL;
+import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
+
 /**
  * This class is used to filter merge requests when getting lists of them.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class MergeRequestFilter {
 
@@ -357,8 +355,8 @@ public class MergeRequestFilter {
                 .withParam("order_by", orderBy)
                 .withParam("sort", sort)
                 .withParam("milestone", milestone)
-                .withParam("view", (null != simpleView && simpleView ? "simple" : null))
-                .withParam("labels", (null != labels ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("view", (simpleView != null && simpleView ? "simple" : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("created_after", createdAfter)
                 .withParam("created_before", createdBefore)
                 .withParam("updated_after", updatedAfter)
@@ -372,8 +370,7 @@ public class MergeRequestFilter {
                 .withParam("in", in)
                 .withParam("wip", (wip == null ? null : wip ? "yes" : "no"));
 
-        if (null != authorId && (scope == Constants.MergeRequestScope.ALL
-                || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
+        if (authorId != null && (scope == ALL || scope == ASSIGNED_TO_ME)) {
             params.withParam("author_id", authorId);
         }
         return params;

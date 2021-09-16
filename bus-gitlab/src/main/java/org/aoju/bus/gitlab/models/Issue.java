@@ -31,16 +31,11 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import org.aoju.bus.gitlab.Constants.IssueState;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class Issue {
 
     private Assignee assignee;
@@ -154,7 +149,7 @@ public class Issue {
 
     public void setId(Integer id) {
         this.id = id;
-        if (null != id) {
+        if (id != null) {
             actualId = new IntNode(id);
             externalId = null;
         }
@@ -166,7 +161,7 @@ public class Issue {
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
-        if (null != externalId) {
+        if (externalId != null) {
             actualId = new TextNode(externalId);
             id = null;
         }

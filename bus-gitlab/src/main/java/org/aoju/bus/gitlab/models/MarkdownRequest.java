@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,36 +23,30 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.linux.drivers;
+package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.health.Builder;
+public class MarkdownRequest {
+    private String text;
+    private boolean gfm;
 
-/**
- * Utility to read info from the devicetree
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
-@ThreadSafe
-public final class Devicetree {
-
-    private Devicetree() {
+    public MarkdownRequest(String text, boolean gfm) {
+        this.text = text;
+        this.gfm = gfm;
     }
 
-    /**
-     * Query the model from the devicetree
-     *
-     * @return The model if available, null otherwise
-     */
-    public static String queryModel() {
-        String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
-        if (!modelStr.isEmpty()) {
-            return modelStr.replace("Machine: ", Normal.EMPTY);
-        }
-        return null;
+    public String getText() {
+        return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public boolean isGfm() {
+        return gfm;
+    }
+
+    public void setGfm(boolean gfm) {
+        this.gfm = gfm;
+    }
 }

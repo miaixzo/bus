@@ -27,7 +27,7 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Holder;
 
@@ -44,7 +44,7 @@ import java.security.spec.RSAPublicKeySpec;
  * RSA公钥/私钥/签名加密解密
  * </p>
  * <p>
- * 罗纳德·李维斯特(Ron [R]ivest)、阿迪·萨莫尔(Adi [S]hamir)和伦纳德·阿德曼(Leonard [A]dleman)
+ * 罗纳德·李维斯特（Ron [R]ivest）、阿迪·萨莫尔（Adi [S]hamir）和伦纳德·阿德曼（Leonard [A]dleman）
  * </p>
  * <p>
  * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，
@@ -55,7 +55,9 @@ import java.security.spec.RSAPublicKeySpec;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class RSA extends Asymmetric {
+public class RSA extends Crypto {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 构造，生成新的私钥公钥对
@@ -156,7 +158,7 @@ public class RSA extends Asymmetric {
      * @return {@link PrivateKey}
      */
     public static PrivateKey generatePrivateKey(BigInteger modulus, BigInteger privateExponent) {
-        return Builder.generatePrivateKey(Algorithm.RSA_ECB_PKCS1, new RSAPrivateKeySpec(modulus, privateExponent));
+        return Builder.generatePrivateKey(Algorithm.RSA_ECB_PKCS1.getValue(), new RSAPrivateKeySpec(modulus, privateExponent));
     }
 
     /**
@@ -167,7 +169,7 @@ public class RSA extends Asymmetric {
      * @return {@link PublicKey}
      */
     public static PublicKey generatePublicKey(BigInteger modulus, BigInteger publicExponent) {
-        return Builder.generatePublicKey(Algorithm.RSA_ECB_PKCS1, new RSAPublicKeySpec(modulus, publicExponent));
+        return Builder.generatePublicKey(Algorithm.RSA_ECB_PKCS1.getValue(), new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     @Override
@@ -194,11 +196,11 @@ public class RSA extends Asymmetric {
     protected void initCipher() {
         try {
             super.initCipher();
-        } catch (InstrumentException e) {
+        } catch (CryptoException e) {
             final Throwable cause = e.getCause();
             if (cause instanceof NoSuchAlgorithmException) {
                 // 在Linux下，未引入BC库可能会导致RSA/ECB/PKCS1Padding算法无法找到，此时使用默认算法
-                this.algorithm = Algorithm.RSA;
+                this.algorithm = Algorithm.RSA.getValue();
                 super.initCipher();
             }
             throw e;

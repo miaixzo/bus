@@ -26,8 +26,7 @@
 package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -38,10 +37,6 @@ import java.util.Map.Entry;
 /**
  * This is the exception that will be thrown if any exception occurs while communicating
  * with a GitLab API endpoint.
- *
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
  */
 public class GitLabApiException extends Exception {
 
@@ -79,21 +74,29 @@ public class GitLabApiException extends Exception {
      * @param response the JAX-RS response that caused the exception
      */
     public GitLabApiException(Response response) {
+
         super();
         statusInfo = response.getStatusInfo();
         httpStatus = response.getStatus();
+
         if (response.hasEntity()) {
+
             try {
+
                 String message = response.readEntity(String.class);
                 this.message = message;
+
                 // Determine what is in the content of the response and process it accordingly
                 MediaType mediaType = response.getMediaType();
-                if (null != mediaType && "json".equals(mediaType.getSubtype())) {
+                if (mediaType != null && "json".equals(mediaType.getSubtype())) {
+
                     JsonNode json = JacksonJson.toJsonNode(message);
+
                     // First see if it is a "message", if so it is either a simple message,
                     // or a Map<String, List<String>> of validation errors
                     JsonNode jsonMessage = json.get("message");
-                    if (null != jsonMessage) {
+                    if (jsonMessage != null) {
+
                         // If the node is an object, then it is validation errors
                         if (jsonMessage.isObject()) {
 
@@ -101,6 +104,7 @@ public class GitLabApiException extends Exception {
                             validationErrors = new HashMap<>();
                             Iterator<Entry<String, JsonNode>> fields = jsonMessage.fields();
                             while (fields.hasNext()) {
+
                                 Entry<String, JsonNode> field = fields.next();
                                 String fieldName = field.getKey();
                                 List<String> values = new ArrayList<>();
@@ -110,7 +114,7 @@ public class GitLabApiException extends Exception {
                                 }
 
                                 if (values.size() > 0) {
-                                    buf.append((buf.length() > 0 ? ", " : Normal.EMPTY)).append(fieldName);
+                                    buf.append((buf.length() > 0 ? ", " : "")).append(fieldName);
                                 }
                             }
 
@@ -119,13 +123,14 @@ public class GitLabApiException extends Exception {
                             }
 
                         } else if (jsonMessage.isArray()) {
+
                             List<String> values = new ArrayList<>();
                             for (JsonNode value : jsonMessage) {
                                 values.add(value.asText());
                             }
 
                             if (values.size() > 0) {
-                                this.message = String.join(Symbol.LF, values);
+                                this.message = String.join("\n", values);
                             }
 
                         } else if (jsonMessage.isTextual()) {
@@ -135,12 +140,14 @@ public class GitLabApiException extends Exception {
                         }
 
                     } else {
+
                         JsonNode jsonError = json.get("error");
-                        if (null != jsonError) {
+                        if (jsonError != null) {
                             this.message = jsonError.asText();
                         }
                     }
                 }
+
             } catch (Exception ignore) {
             }
         }
@@ -163,7 +170,7 @@ public class GitLabApiException extends Exception {
      */
     @Override
     public final String getMessage() {
-        return null != message ? message : getReason();
+        return (message != null ? message : getReason());
     }
 
     /**
@@ -173,7 +180,7 @@ public class GitLabApiException extends Exception {
      * @return the HTTP status reason message
      */
     public final String getReason() {
-        return null != statusInfo ? statusInfo.getReasonPhrase() : null;
+        return (statusInfo != null ? statusInfo.getReasonPhrase() : null);
     }
 
     /**
@@ -183,7 +190,7 @@ public class GitLabApiException extends Exception {
      * @return the HTTP status code, returns 0 if the causing error was not an HTTP related exception
      */
     public final int getHttpStatus() {
-        return httpStatus;
+        return (httpStatus);
     }
 
     /**
@@ -194,7 +201,7 @@ public class GitLabApiException extends Exception {
      * otherwise returns false
      */
     public boolean hasValidationErrors() {
-        return null != validationErrors;
+        return (validationErrors != null);
     }
 
     /**
@@ -205,7 +212,7 @@ public class GitLabApiException extends Exception {
      * was caused by validation errors on the GitLab server, otherwise returns null
      */
     public Map<String, List<String>> getValidationErrors() {
-        return validationErrors;
+        return (validationErrors);
     }
 
     @Override
@@ -240,21 +247,21 @@ public class GitLabApiException extends Exception {
         }
 
         if (message == null) {
-            if (null != other.message)
+            if (other.message != null)
                 return false;
         } else if (!message.equals(other.message)) {
             return false;
         }
 
         if (statusInfo == null) {
-            if (null != other.statusInfo)
+            if (other.statusInfo != null)
                 return false;
         } else if (!statusInfo.equals(other.statusInfo)) {
             return false;
         }
 
         if (validationErrors == null) {
-            if (null != other.validationErrors)
+            if (other.validationErrors != null)
                 return false;
         } else if (!validationErrors.equals(other.validationErrors)) {
             return false;
@@ -262,5 +269,4 @@ public class GitLabApiException extends Exception {
 
         return true;
     }
-
 }

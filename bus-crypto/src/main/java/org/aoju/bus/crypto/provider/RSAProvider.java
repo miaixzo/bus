@@ -28,7 +28,6 @@ package org.aoju.bus.crypto.provider;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.asymmetric.KeyType;
 import org.aoju.bus.crypto.asymmetric.RSA;
@@ -55,7 +54,7 @@ public class RSAProvider implements Provider {
             throw new InstrumentException("key is null!");
         }
         String[] array = StringKit.split(key, Symbol.COMMA);
-        RSA rsa = Builder.rsa(array[0], array[1]);
+        RSA rsa = new RSA(array[0], array[1]);
         return rsa.encrypt(content, KeyType.valueOf(array[2]));
     }
 
@@ -73,7 +72,7 @@ public class RSAProvider implements Provider {
         }
         String[] array = StringKit.split(key, Symbol.COMMA);
 
-        RSA rsa = Builder.rsa(array[0], array[1]);
+        RSA rsa = new RSA(array[0], array[1]);
         return rsa.decrypt(content, KeyType.valueOf(array[2]));
     }
 

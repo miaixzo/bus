@@ -29,17 +29,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import org.aoju.bus.gitlab.GitLabApiException;
-import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Kimi Liu
- * @version 6.2.8
- * @since JDK 1.8+
- */
 public class ApplicationSettings {
 
     private Integer id;
@@ -103,7 +98,7 @@ public class ApplicationSettings {
     public Object addSetting(String setting, Object value) throws GitLabApiException {
 
         Setting appSetting = Setting.forValue(setting);
-        if (null != appSetting) {
+        if (appSetting != null) {
             return (addSetting(appSetting, value));
         }
 

@@ -43,7 +43,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public class DES extends Symmetric {
+public class DES extends Crypto {
 
     private static final long serialVersionUID = 1L;
 
@@ -137,7 +137,7 @@ public class DES extends Symmetric {
      * @param key     密钥，长度：8的倍数
      */
     public DES(String mode, String padding, byte[] key) {
-        this(mode, padding, Builder.generateKey(Algorithm.DES, key), null);
+        this(mode, padding, Builder.generateKey(Algorithm.DES.getValue(), key), null);
     }
 
     /**
@@ -149,7 +149,7 @@ public class DES extends Symmetric {
      * @param iv      加盐
      */
     public DES(String mode, String padding, byte[] key, byte[] iv) {
-        this(mode, padding, Builder.generateKey(Algorithm.DES, key), null == iv ? null : new IvParameterSpec(iv));
+        this(mode, padding, Builder.generateKey(Algorithm.DES.getValue(), key), null == iv ? null : new IvParameterSpec(iv));
     }
 
     /**

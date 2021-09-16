@@ -79,9 +79,9 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      */
     protected boolean isUseVariable;
     /**
-     * 设定文件的URL
+     * 设定文件的资源
      */
-    protected URL settingUrl;
+    protected Resource resource;
 
     private Readers readers;
     private WatchMonitor watchMonitor;
@@ -169,10 +169,8 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return 成功初始化与否
      */
     public boolean init(Resource resource, java.nio.charset.Charset charset, boolean isUseVariable) {
-        if (null == resource) {
-            throw new NullPointerException("Null setting url define!");
-        }
-        this.settingUrl = resource.getUrl();
+        Assert.notNull(resource, "Setting resource must be not null!");
+        this.resource = resource;
         this.charset = charset;
         this.isUseVariable = isUseVariable;
 
@@ -188,7 +186,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
         if (null == this.readers) {
             readers = new Readers(this.groupMap, this.charset, this.isUseVariable);
         }
-        return readers.load(new UriResource(this.settingUrl));
+        return readers.load(this.resource);
     }
 
     /**
@@ -208,12 +206,12 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      */
     public void autoLoad(boolean autoReload, Consumer<Boolean> callback) {
         if (autoReload) {
-            Assert.notNull(this.settingUrl, "Setting URL is null !");
+            Assert.notNull(this.resource, "Setting resource must be not null !");
             if (null != this.watchMonitor) {
                 // 先关闭之前的监听
                 this.watchMonitor.close();
             }
-            this.watchMonitor = WatchKit.createModify(this.settingUrl, new SimpleWatcher() {
+            this.watchMonitor = WatchKit.createModify(this.resource.getUrl(), new SimpleWatcher() {
                 @Override
                 public void onModify(WatchEvent<?> event, Path currentPath) {
                     boolean success = load();
@@ -224,7 +222,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
                 }
             });
             this.watchMonitor.start();
-            Logger.debug("Auto load for [{}] listenning...", this.settingUrl);
+            Logger.debug("Auto load for [{}] listenning...", this.resource.getUrl());
         } else {
             IoKit.close(this.watchMonitor);
             this.watchMonitor = null;
@@ -237,14 +235,15 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return 获得设定文件的路径
      */
     public URL getSettingUrl() {
-        return this.settingUrl;
+        return (null == this.resource) ? null : this.resource.getUrl();
     }
 
     /**
      * @return 获得设定文件的路径
      */
     public String getSettingPath() {
-        return (null == this.settingUrl) ? null : this.settingUrl.getPath();
+        final URL settingUrl = getSettingUrl();
+        return (null == settingUrl) ? null : settingUrl.getPath();
     }
 
     /**
@@ -346,8 +345,9 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * 持久化不会保留之前的分组，注意如果配置文件在jar内部或者在exe中，此方法会报错。
      */
     public void store() {
-        Assert.notNull(this.settingUrl, "Setting path must be not null !");
-        store(FileKit.file(this.settingUrl));
+        final URL resourceUrl = getSettingUrl();
+        Assert.notNull(resourceUrl, "Setting path must be not null !");
+        store(FileKit.file(resourceUrl));
     }
 
     /**
@@ -668,7 +668,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
         result = prime * result + ((null == charset) ? 0 : charset.hashCode());
         result = prime * result + groupMap.hashCode();
         result = prime * result + (isUseVariable ? 1231 : 1237);
-        result = prime * result + ((null == settingUrl) ? 0 : settingUrl.hashCode());
+        result = prime * result + ((this.resource == null) ? 0 : this.resource.hashCode());
         return result;
     }
 
@@ -697,10 +697,10 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
         if (isUseVariable != other.isUseVariable) {
             return false;
         }
-        if (null == settingUrl) {
-            return null == other.settingUrl;
+        if (this.resource == null) {
+            return other.resource == null;
         } else {
-            return settingUrl.equals(other.settingUrl);
+            return resource.equals(other.resource);
         }
     }
 
