@@ -45,7 +45,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/pdf
      * </ul>
      */
-    public static final DocumentFormat PDF = getInstance().getFormatByExtension("pdf");
+    public static final DocumentFormat PDF = getInstance().getFormatBySuffix("pdf");
 
     /**
      * Macromedia Flash.
@@ -55,7 +55,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/x-shockwave-flash
      * </ul>
      */
-    public static final DocumentFormat SWF = getInstance().getFormatByExtension("swf");
+    public static final DocumentFormat SWF = getInstance().getFormatBySuffix("swf");
 
     /**
      * HTML.
@@ -65,7 +65,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: text/html
      * </ul>
      */
-    public static final DocumentFormat HTML = getInstance().getFormatByExtension("html");
+    public static final DocumentFormat HTML = getInstance().getFormatBySuffix("html");
 
     /**
      * XHTML.
@@ -75,7 +75,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/xhtml+xml
      * </ul>
      */
-    public static final DocumentFormat XHTML = getInstance().getFormatByExtension("xhtml");
+    public static final DocumentFormat XHTML = getInstance().getFormatBySuffix("xhtml");
 
     /**
      * OpenDocument Text.
@@ -85,7 +85,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.text
      * </ul>
      */
-    public static final DocumentFormat ODT = getInstance().getFormatByExtension("odt");
+    public static final DocumentFormat ODT = getInstance().getFormatBySuffix("odt");
 
     /**
      * OpenDocument Text Template.
@@ -95,7 +95,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.text-template
      * </ul>
      */
-    public static final DocumentFormat OTT = getInstance().getFormatByExtension("ott");
+    public static final DocumentFormat OTT = getInstance().getFormatBySuffix("ott");
 
     /**
      * OpenDocument Text Flat XML.
@@ -105,7 +105,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.text-flat-xml
      * </ul>
      */
-    public static final DocumentFormat FODT = getInstance().getFormatByExtension("fodt");
+    public static final DocumentFormat FODT = getInstance().getFormatBySuffix("fodt");
 
     /**
      * OpenOffice.org 1.0 Text Document.
@@ -115,7 +115,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.sun.xml.writer
      * </ul>
      */
-    public static final DocumentFormat SXW = getInstance().getFormatByExtension("sxw");
+    public static final DocumentFormat SXW = getInstance().getFormatBySuffix("sxw");
 
     /**
      * Microsoft Word 97-2003.
@@ -125,7 +125,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/msword
      * </ul>
      */
-    public static final DocumentFormat DOC = getInstance().getFormatByExtension("doc");
+    public static final DocumentFormat DOC = getInstance().getFormatBySuffix("doc");
 
     /**
      * Microsoft Word 2007-2013 XML.
@@ -135,7 +135,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
      * </ul>
      */
-    public static final DocumentFormat DOCX = getInstance().getFormatByExtension("docx");
+    public static final DocumentFormat DOCX = getInstance().getFormatBySuffix("docx");
 
     /**
      * Rich Text Format.
@@ -145,7 +145,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: text/rtf"
      * </ul>
      */
-    public static final DocumentFormat RTF = getInstance().getFormatByExtension("rtf");
+    public static final DocumentFormat RTF = getInstance().getFormatBySuffix("rtf");
 
     /**
      * WordPerfect.
@@ -155,7 +155,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/wordperfect
      * </ul>
      */
-    public static final DocumentFormat WPD = getInstance().getFormatByExtension("wpd");
+    public static final DocumentFormat WPD = getInstance().getFormatBySuffix("wpd");
 
     /**
      * Plain Text.
@@ -165,7 +165,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: text/plain
      * </ul>
      */
-    public static final DocumentFormat TXT = getInstance().getFormatByExtension("txt");
+    public static final DocumentFormat TXT = getInstance().getFormatBySuffix("txt");
 
     /**
      * OpenDocument Spreadsheet.
@@ -175,7 +175,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.spreadsheet
      * </ul>
      */
-    public static final DocumentFormat ODS = getInstance().getFormatByExtension("ods");
+    public static final DocumentFormat ODS = getInstance().getFormatBySuffix("ods");
 
     /**
      * OpenDocument Spreadsheet Template.
@@ -185,7 +185,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.spreadsheet-template
      * </ul>
      */
-    public static final DocumentFormat OTS = getInstance().getFormatByExtension("ots");
+    public static final DocumentFormat OTS = getInstance().getFormatBySuffix("ots");
 
     /**
      * OpenDocument Spreadsheet Flat XML.
@@ -195,7 +195,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.spreadsheet-flat-xml
      * </ul>
      */
-    public static final DocumentFormat FODS = getInstance().getFormatByExtension("fods");
+    public static final DocumentFormat FODS = getInstance().getFormatBySuffix("fods");
 
     /**
      * OpenOffice.org 1.0 Spreadsheet.
@@ -205,7 +205,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.sun.xml.calc
      * </ul>
      */
-    public static final DocumentFormat SXC = getInstance().getFormatByExtension("sxc");
+    public static final DocumentFormat SXC = getInstance().getFormatBySuffix("sxc");
 
     /**
      * Microsoft Excel 97-2003.
@@ -215,7 +215,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.ms-excel
      * </ul>
      */
-    public static final DocumentFormat XLS = getInstance().getFormatByExtension("xls");
+    public static final DocumentFormat XLS = getInstance().getFormatBySuffix("xls");
 
     /**
      * Microsoft Excel 2007-2013 XML.
@@ -225,7 +225,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
      * </ul>
      */
-    public static final DocumentFormat XLSX = getInstance().getFormatByExtension("xlsx");
+    public static final DocumentFormat XLSX = getInstance().getFormatBySuffix("xlsx");
 
     /**
      * Comma Separated Values.
@@ -235,7 +235,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: text/csv
      * </ul>
      */
-    public static final DocumentFormat CSV = getInstance().getFormatByExtension("csv");
+    public static final DocumentFormat CSV = getInstance().getFormatBySuffix("csv");
 
     /**
      * Tab Separated Values.
@@ -245,7 +245,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: text/tab-separated-values
      * </ul>
      */
-    public static final DocumentFormat TSV = getInstance().getFormatByExtension("tsv");
+    public static final DocumentFormat TSV = getInstance().getFormatBySuffix("tsv");
 
     /**
      * OpenDocument Presentation.
@@ -255,7 +255,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.presentation
      * </ul>
      */
-    public static final DocumentFormat ODP = getInstance().getFormatByExtension("odp");
+    public static final DocumentFormat ODP = getInstance().getFormatBySuffix("odp");
 
     /**
      * OpenDocument Presentation Template.
@@ -265,7 +265,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.presentation-template
      * </ul>
      */
-    public static final DocumentFormat OTP = getInstance().getFormatByExtension("otp");
+    public static final DocumentFormat OTP = getInstance().getFormatBySuffix("otp");
 
     /**
      * OpenDocument Presentation Flat XML.
@@ -275,7 +275,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.presentation-flat-xml
      * </ul>
      */
-    public static final DocumentFormat FODP = getInstance().getFormatByExtension("fodp");
+    public static final DocumentFormat FODP = getInstance().getFormatBySuffix("fodp");
 
     /**
      * OpenOffice.org 1.0 Presentation.
@@ -285,7 +285,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.sun.xml.impress
      * </ul>
      */
-    public static final DocumentFormat SXI = getInstance().getFormatByExtension("sxi");
+    public static final DocumentFormat SXI = getInstance().getFormatBySuffix("sxi");
 
     /**
      * Microsoft PowerPoint 97-2003.
@@ -295,7 +295,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.ms-powerpoint
      * </ul>
      */
-    public static final DocumentFormat PPT = getInstance().getFormatByExtension("ppt");
+    public static final DocumentFormat PPT = getInstance().getFormatBySuffix("ppt");
 
     /**
      * Microsoft PowerPoint 2007-2013 XML.
@@ -305,7 +305,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.openxmlformats-officedocument.presentationml.presentation
      * </ul>
      */
-    public static final DocumentFormat PPTX = getInstance().getFormatByExtension("pptx");
+    public static final DocumentFormat PPTX = getInstance().getFormatBySuffix("pptx");
 
     /**
      * OpenDocument Drawing.
@@ -315,7 +315,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.graphics
      * </ul>
      */
-    public static final DocumentFormat ODG = getInstance().getFormatByExtension("odg");
+    public static final DocumentFormat ODG = getInstance().getFormatBySuffix("odg");
 
     /**
      * OpenDocument Drawing Template.
@@ -325,7 +325,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.graphics
      * </ul>
      */
-    public static final DocumentFormat OTG = getInstance().getFormatByExtension("otg");
+    public static final DocumentFormat OTG = getInstance().getFormatBySuffix("otg");
 
     /**
      * OpenDocument Drawing Flat XML.
@@ -335,7 +335,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd.oasis.opendocument.graphics-flat-xml
      * </ul>
      */
-    public static final DocumentFormat FODG = getInstance().getFormatByExtension("fodg");
+    public static final DocumentFormat FODG = getInstance().getFormatBySuffix("fodg");
 
     /**
      * Scalable Vector Graphics.
@@ -345,7 +345,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: image/svg+xml
      * </ul>
      */
-    public static final DocumentFormat SVG = getInstance().getFormatByExtension("svg");
+    public static final DocumentFormat SVG = getInstance().getFormatBySuffix("svg");
 
     /**
      * Visio format.
@@ -355,7 +355,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/x-visio
      * </ul>
      */
-    public static final DocumentFormat VSD = getInstance().getFormatByExtension("vsd");
+    public static final DocumentFormat VSD = getInstance().getFormatBySuffix("vsd");
 
     /**
      * New Visio format.
@@ -365,7 +365,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: application/vnd-ms-visio.drawing
      * </ul>
      */
-    public static final DocumentFormat VSDX = getInstance().getFormatByExtension("vsdx");
+    public static final DocumentFormat VSDX = getInstance().getFormatBySuffix("vsdx");
 
     /**
      * Portable Network Graphics.
@@ -375,7 +375,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: image/png
      * </ul>
      */
-    public static final DocumentFormat PNG = getInstance().getFormatByExtension("png");
+    public static final DocumentFormat PNG = getInstance().getFormatBySuffix("png");
 
     /**
      * Joint Photographic Experts Group.
@@ -385,7 +385,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: image/jpg
      * </ul>
      */
-    public static final DocumentFormat JPEG = getInstance().getFormatByExtension("jpg");
+    public static final DocumentFormat JPEG = getInstance().getFormatBySuffix("jpg");
 
     /**
      * Tagged Image File Format.
@@ -395,7 +395,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: image/tif
      * </ul>
      */
-    public static final DocumentFormat TIFF = getInstance().getFormatByExtension("tif");
+    public static final DocumentFormat TIFF = getInstance().getFormatBySuffix("tif");
 
     /**
      * Graphic Interchange Format.
@@ -405,7 +405,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: image/gif
      * </ul>
      */
-    public static final DocumentFormat GIF = getInstance().getFormatByExtension("gif");
+    public static final DocumentFormat GIF = getInstance().getFormatBySuffix("gif");
 
     /**
      * Windows Bitmap.
@@ -415,7 +415,7 @@ public final class DefaultFormatRegistry {
      *   <li>Media Type: image/bmp
      * </ul>
      */
-    public static final DocumentFormat BMP = getInstance().getFormatByExtension("bmp");
+    public static final DocumentFormat BMP = getInstance().getFormatBySuffix("bmp");
 
     /**
      * 获取类的默认实例.
@@ -432,8 +432,8 @@ public final class DefaultFormatRegistry {
      * @param extension 将返回其文档格式的扩展名.
      * @return 如果指定的扩展不存在文档格式，则使用找到的文档格式，或者使用{@code null}.
      */
-    public static DocumentFormat getFormatByExtension(final String extension) {
-        return getInstance().getFormatByExtension(extension);
+    public static DocumentFormat getFormatBySuffix(final String extension) {
+        return getInstance().getFormatBySuffix(extension);
     }
 
     /**

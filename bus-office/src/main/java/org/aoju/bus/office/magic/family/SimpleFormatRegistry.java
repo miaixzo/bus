@@ -57,8 +57,8 @@ public class SimpleFormatRegistry implements FormatRegistry {
     }
 
     @Override
-    public DocumentFormat getFormatByExtension(final String extension) {
-        return null == extension ? null : fmtsByExtension.get(StringKit.lowerCase(extension));
+    public DocumentFormat getFormatBySuffix(final String suffix) {
+        return null == suffix ? null : fmtsByExtension.get(StringKit.lowerCase(suffix));
     }
 
     @Override
