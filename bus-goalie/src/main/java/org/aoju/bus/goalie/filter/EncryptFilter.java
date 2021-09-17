@@ -29,6 +29,9 @@ import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.crypto.Padding;
+import org.aoju.bus.crypto.symmetric.AES;
 import org.aoju.bus.crypto.symmetric.Crypto;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Config;
@@ -70,7 +73,7 @@ public class EncryptFilter implements WebFilter {
     @PostConstruct
     public void init() {
         if (Algorithm.AES.getValue().equals(encrypt.getType())) {
-            // crypto = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
+            crypto = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
         }
     }
 
