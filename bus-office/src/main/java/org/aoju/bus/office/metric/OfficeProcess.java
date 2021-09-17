@@ -259,7 +259,7 @@ public class OfficeProcess {
         final String execPath = executable.getAbsolutePath();
         final String prefix = descriptor.useLongOptionNameGnuStyle() ? Symbol.MINUS + Symbol.MINUS : Symbol.MINUS;
         command.add(execPath);
-        command.add(prefix + "accept=" + acceptString);
+        command.add(prefix + "accept=\"" + acceptString + "\"");
         command.add(prefix + "headless");
         command.add(prefix + "invisible");
         command.add(prefix + "nocrashreport");

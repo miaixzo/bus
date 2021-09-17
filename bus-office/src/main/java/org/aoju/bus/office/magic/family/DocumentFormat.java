@@ -77,7 +77,7 @@ public class DocumentFormat {
         this.mimeType = mimeType;
         this.inputFamily = inputFamily;
         this.loadProperties = Optional.ofNullable(loadProperties)
-                .map(HashMap<String, Object>::new)
+                .map(HashMap::new)
                 .map(mapCopy -> unmodifiable ? Collections.unmodifiableMap(mapCopy) : mapCopy)
                 .orElse(null);
         this.storeProperties = Optional.ofNullable(storeProperties)

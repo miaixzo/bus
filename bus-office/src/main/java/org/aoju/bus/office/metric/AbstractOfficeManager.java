@@ -67,7 +67,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
      */
     protected static File makeTempDir(final File workingDir) {
         final File tempDir = new File(workingDir, "converter_" + ObjectID.id());
-        tempDir.mkdir();
+        tempDir.mkdirs();
         if (!tempDir.isDirectory()) {
             throw new IllegalStateException(String.format("Cannot create temp directory: %s", tempDir));
         }
