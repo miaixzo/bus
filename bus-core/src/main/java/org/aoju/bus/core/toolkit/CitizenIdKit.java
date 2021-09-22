@@ -308,6 +308,7 @@ public class CitizenIdKit {
         } else if (idcard.matches("^[157][0-9]{6}\\(?[0-9A-Z]\\)?$")) {
             info[0] = "澳门";
             info[1] = "N";
+            info[2] = "true";
         } else if (idcard.matches("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$")) {
             info[0] = "香港";
             info[1] = "N";

@@ -47,9 +47,9 @@ import java.util.Set;
 public class WrapperProperties {
 
     private int order;
-    private String name = "hi-wrapper";
+    private String name = "extend-wrapper";
     /**
-     * 指示已启用注册.
+     * 指示已启用注册
      */
     private Boolean enabled = true;
     private Map<String, String> initParameters = new LinkedHashMap<>();

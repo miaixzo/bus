@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
+import org.apache.poi.common.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -756,6 +757,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             } else {
                 rowMap = (Map) rowBean;
             }
+        } else if (rowBean instanceof Hyperlink) {
+            // Hyperlink当成一个值
+            return writeRow(CollKit.newArrayList(rowBean), isWriteKeyAsHead);
         } else if (BeanKit.isBean(rowBean.getClass())) {
             if (MapKit.isEmpty(this.headerAlias)) {
                 rowMap = BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false);

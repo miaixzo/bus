@@ -54,7 +54,7 @@ import java.util.Map;
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class DecryptFilter implements WebFilter {
 
-    private final Config.Decrypt decrypt;
+    private Config.Decrypt decrypt;
     private Crypto crypto;
 
     public DecryptFilter(Config.Decrypt decrypt) {
@@ -74,7 +74,6 @@ public class DecryptFilter implements WebFilter {
         if (decrypt.isEnabled() && Context.get(exchange).isNeedDecrypt()) {
             doDecrypt(Context.get(exchange).getRequestMap());
         }
-
         return chain.filter(builder.build());
     }
 

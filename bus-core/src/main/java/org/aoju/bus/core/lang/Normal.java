@@ -50,6 +50,26 @@ public class Normal {
     public static final String NULL = "null";
 
     /**
+     * 真/是
+     */
+    public static final String TRUE = "true";
+    
+    /**
+     * 假/否
+     */
+    public static final String FALSE = "false";
+
+    /**
+     * 启用
+     */
+    public static final String ENABLED = "enabled";
+
+    /**
+     * 禁用
+     */
+    public static final String DISABLED = "disabled";
+
+    /**
      * is
      */
     public static final String IS = "is";

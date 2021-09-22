@@ -62,8 +62,7 @@ import java.nio.charset.StandardCharsets;
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class EncryptFilter implements WebFilter {
 
-    Config.Encrypt encrypt;
-
+    private Config.Encrypt encrypt;
     private Crypto crypto;
 
     public EncryptFilter(Config.Encrypt encrypt) {
@@ -79,7 +78,6 @@ public class EncryptFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
         if (encrypt.isEnabled()
                 && (Context.Format.xml.equals(Context.get(exchange).getFormat())
                 || Context.Format.json.equals(Context.get(exchange).getFormat()))) {
@@ -98,7 +96,6 @@ public class EncryptFilter implements WebFilter {
             if (Algorithm.AES.getValue().equals(encrypt.getType())) {
                 message.setData(crypto.encryptBase64(JsonKit.toJsonString(message.getData()), Charset.UTF_8));
             }
-
         }
     }
 

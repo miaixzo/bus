@@ -190,6 +190,11 @@ public class CellKit {
             if ((value instanceof Double || value instanceof Float || value instanceof BigDecimal) && null != styleSet && null != styleSet.getCellStyleForNumber()) {
                 cell.setCellStyle(styleSet.getCellStyleForNumber());
             }
+        } else if (value instanceof Hyperlink) {
+            // 自定义超链接样式
+            if (null != styleSet && null != styleSet.getCellStyleForHyperlink()) {
+                cell.setCellStyle(styleSet.getCellStyleForHyperlink());
+            }
         }
 
         setCellValue(cell, value);

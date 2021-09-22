@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.Serializable;
@@ -59,6 +60,10 @@ public class StyleSet implements Serializable {
      * 默认日期样式
      */
     protected CellStyle cellStyleForDate;
+    /**
+     * 默认链接样式
+     */
+    protected CellStyle cellStyleForHyperlink;
 
     /**
      * 构造
@@ -70,51 +75,69 @@ public class StyleSet implements Serializable {
         this.headCellStyle = StyleKit.createHeadCellStyle(workbook);
         this.cellStyle = StyleKit.createDefaultCellStyle(workbook);
 
+        // 默认数字格式
+        cellStyleForNumber = StyleKit.cloneCellStyle(workbook, this.cellStyle);
+        // 2表示：0.00
+        cellStyleForNumber.setDataFormat((short) 2);
+
         // 默认日期格式
         this.cellStyleForDate = StyleKit.cloneCellStyle(workbook, this.cellStyle);
         // 22表示：m/d/yy h:mm
         this.cellStyleForDate.setDataFormat((short) 22);
 
-        // 默认数字格式
-        cellStyleForNumber = StyleKit.cloneCellStyle(workbook, this.cellStyle);
-        // 2表示：0.00
-        cellStyleForNumber.setDataFormat((short) 2);
+
+        // 默认链接样式
+        this.cellStyleForHyperlink = StyleKit.cloneCellStyle(workbook, this.cellStyle);
+        final Font font = this.workbook.createFont();
+        font.setUnderline((byte) 1);
+        font.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
+        this.cellStyleForHyperlink.setFont(font);
     }
 
     /**
-     * 获取头部样式,获取后可以定义整体头部样式
+     * 获取头部样式，获取后可以定义整体头部样式
      *
      * @return 头部样式
      */
     public CellStyle getHeadCellStyle() {
-        return headCellStyle;
+        return this.headCellStyle;
     }
 
     /**
-     * 获取常规单元格样式,获取后可以定义整体头部样式
+     * 获取常规单元格样式，获取后可以定义整体头部样式
      *
      * @return 常规单元格样式
      */
     public CellStyle getCellStyle() {
-        return cellStyle;
+        return this.cellStyle;
     }
 
     /**
-     * 获取数字(带小数点)单元格样式,获取后可以定义整体头部样式
+     * 获取数字（带小数点）单元格样式，获取后可以定义整体数字样式
      *
-     * @return 数字(带小数点)单元格样式
+     * @return 数字（带小数点）单元格样式
      */
     public CellStyle getCellStyleForNumber() {
-        return cellStyleForNumber;
+        return this.cellStyleForNumber;
     }
 
     /**
-     * 获取日期单元格样式,获取后可以定义整体头部样式
+     * 获取日期单元格样式，获取后可以定义整体日期样式
      *
      * @return 日期单元格样式
      */
     public CellStyle getCellStyleForDate() {
-        return cellStyleForDate;
+        return this.cellStyleForDate;
+    }
+
+    /**
+     * 获取链接单元格样式，获取后可以定义整体链接样式
+     *
+     * @return 链接单元格样式
+     * @since 5.7.13
+     */
+    public CellStyle getCellStyleForHyperlink() {
+        return this.cellStyleForHyperlink;
     }
 
     /**
@@ -129,6 +152,7 @@ public class StyleSet implements Serializable {
         StyleKit.setBorder(this.cellStyle, borderSize, colorIndex);
         StyleKit.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
         StyleKit.setBorder(this.cellStyleForDate, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyleForHyperlink, borderSize, colorIndex);
         return this;
     }
 
@@ -144,6 +168,7 @@ public class StyleSet implements Serializable {
         StyleKit.setAlign(this.cellStyle, halign, valign);
         StyleKit.setAlign(this.cellStyleForNumber, halign, valign);
         StyleKit.setAlign(this.cellStyleForDate, halign, valign);
+        StyleKit.setAlign(this.cellStyleForHyperlink, halign, valign);
         return this;
     }
 
@@ -161,6 +186,7 @@ public class StyleSet implements Serializable {
         StyleKit.setColor(this.cellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         StyleKit.setColor(this.cellStyleForNumber, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         StyleKit.setColor(this.cellStyleForDate, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyleForHyperlink, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         return this;
     }
 
@@ -168,8 +194,8 @@ public class StyleSet implements Serializable {
      * 设置全局字体
      *
      * @param color      字体颜色
-     * @param fontSize   字体大小,-1表示默认大小
-     * @param fontName   字体名,null表示默认字体
+     * @param fontSize   字体大小，-1表示默认大小
+     * @param fontName   字体名，null表示默认字体
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
@@ -181,7 +207,7 @@ public class StyleSet implements Serializable {
     /**
      * 设置全局字体
      *
-     * @param font       字体,可以通过{@link StyleKit#createFont(Workbook, short, short, String)}创建
+     * @param font       字体，可以通过{@link StyleKit#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
@@ -192,6 +218,7 @@ public class StyleSet implements Serializable {
         this.cellStyle.setFont(font);
         this.cellStyleForNumber.setFont(font);
         this.cellStyleForDate.setFont(font);
+        this.cellStyleForHyperlink.setFont(font);
         return this;
     }
 
@@ -204,6 +231,7 @@ public class StyleSet implements Serializable {
         this.cellStyle.setWrapText(true);
         this.cellStyleForNumber.setWrapText(true);
         this.cellStyleForDate.setWrapText(true);
+        this.cellStyleForHyperlink.setWrapText(true);
         return this;
     }
 
