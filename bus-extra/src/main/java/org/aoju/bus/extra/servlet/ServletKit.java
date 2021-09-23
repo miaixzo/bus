@@ -28,10 +28,7 @@ package org.aoju.bus.extra.servlet;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.collection.ArrayIterator;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.toolkit.*;
@@ -324,9 +321,8 @@ public class ServletKit {
      * @return 客户浏览器是否为IE
      */
     public static boolean isIE(HttpServletRequest request) {
-        String userAgent = getHeader(request, "User-Agent");
+        String userAgent = getHeader(request, Header.USER_AGENT);
         if (StringKit.isNotBlank(userAgent)) {
-            //noinspection ConstantConditions
             userAgent = userAgent.toUpperCase();
             return userAgent.contains("MSIE") || userAgent.contains("TRIDENT");
         }

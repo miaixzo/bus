@@ -61,7 +61,7 @@ public class AlipayProvider extends AbstractProvider {
     public AlipayProvider(Context context) {
         super(context, Registry.ALIPAY);
         this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(), "json", Charset.DEFAULT_UTF_8, context
-                .getPublicKey(), "RSA2");
+                .getPublicKey(), Algorithm.RSA2.getValue());
     }
 
     public AlipayProvider(Context context, ExtendCache extendCache) {

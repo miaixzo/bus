@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -89,7 +90,7 @@ public class WeiboProvider extends AbstractProvider {
     @Override
     public Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "OAuth2 " + String.format("uid=%s&access_token=%s",
+        header.put(Header.AUTHORIZATION, "OAuth2 " + String.format("uid=%s&access_token=%s",
                 accToken.getUid(), accToken.getAccessToken()));
         header.put("API-RemoteIP", getLocalIp());
 

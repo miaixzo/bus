@@ -163,7 +163,7 @@ public final class MultipartBody extends RequestBody {
 
             MediaType contentType = body.contentType();
             if (null != contentType) {
-                sink.writeUtf8("Content-Type: ")
+                sink.writeUtf8(Header.CONTENT_TYPE + ": ")
                         .writeUtf8(contentType.toString())
                         .write(CRLF);
             }

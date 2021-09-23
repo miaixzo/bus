@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -75,7 +76,7 @@ public class GoogleProvider extends AbstractProvider {
     @Override
     public Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Bearer " + accToken.getAccessToken());
+        header.put(Header.AUTHORIZATION, "Bearer " + accToken.getAccessToken());
 
         String response = Httpx.post(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(response);

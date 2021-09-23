@@ -86,26 +86,6 @@ public class Httpz {
             this.httpd = httpd;
         }
 
-        public GetBuilder get() {
-            return new GetBuilder(httpd);
-        }
-
-        public PostBuilder post() {
-            return new PostBuilder(httpd);
-        }
-
-        public PutBuilder put() {
-            return new PutBuilder(httpd);
-        }
-
-        public Httpd getHttpd() {
-            return httpd;
-        }
-
-        public void setHttpd(Httpd httpd) {
-            this.httpd = httpd;
-        }
-
         /**
          * 取消所有请求
          */
@@ -139,7 +119,8 @@ public class Httpz {
         /**
          * 取消请求
          *
-         * @param tag 标签
+         * @param httpd 发送HTTP请求
+         * @param tag   标签
          */
         public static void cancel(final Httpd httpd, final Object tag) {
             if (httpd != null && tag != null) {
@@ -154,6 +135,26 @@ public class Httpz {
                     }
                 }
             }
+        }
+
+        public GetBuilder get() {
+            return new GetBuilder(httpd);
+        }
+
+        public PostBuilder post() {
+            return new PostBuilder(httpd);
+        }
+
+        public PutBuilder put() {
+            return new PutBuilder(httpd);
+        }
+
+        public Httpd getHttpd() {
+            return httpd;
+        }
+
+        public void setHttpd(Httpd httpd) {
+            this.httpd = httpd;
         }
 
     }

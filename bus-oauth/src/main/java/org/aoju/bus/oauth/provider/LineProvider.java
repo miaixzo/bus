@@ -2,6 +2,8 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Httpx;
@@ -56,8 +58,8 @@ public class LineProvider extends AbstractProvider {
     @Override
     protected Property getUserInfo(AccToken authToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
-        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+        header.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Header.AUTHORIZATION, "Bearer ".concat(authToken.getAccessToken()));
         JSONObject object = JSONObject.parseObject(Httpx.post(source.revoke(), null, header));
 
         return Property.builder()

@@ -41,7 +41,7 @@ import java.util.*;
  * @version 6.2.8
  * @since JDK 1.8+
  */
-public final class Headers {
+public class Headers {
 
     private final String[] namesAndValues;
 

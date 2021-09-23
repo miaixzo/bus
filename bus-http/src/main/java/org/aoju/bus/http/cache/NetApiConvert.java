@@ -179,8 +179,8 @@ public final class NetApiConvert {
         for (String fieldName : varyFields) {
             List<String> fieldValues = requestProperties.get(fieldName);
             if (null == fieldValues) {
-                if (fieldName.equals("Accept-Encoding")) {
-                    result.add("Accept-Encoding", "gzip");
+                if (fieldName.equals(Header.ACCEPT_ENCODING)) {
+                    result.add(Header.ACCEPT_ENCODING, "gzip");
                 }
             } else {
                 for (String fieldValue : fieldValues) {

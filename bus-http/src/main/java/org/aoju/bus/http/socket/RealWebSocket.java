@@ -252,19 +252,19 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                     + response.code() + Symbol.SPACE + response.message() + Symbol.SINGLE_QUOTE);
         }
 
-        String headerConnection = response.header("Connection");
-        if (!"Upgrade".equalsIgnoreCase(headerConnection)) {
+        String headerConnection = response.header(Header.CONNECTION);
+        if (!Header.UPGRADE.equalsIgnoreCase(headerConnection)) {
             throw new ProtocolException("Expected 'Connection' header value 'Upgrade' but was '"
                     + headerConnection + Symbol.SINGLE_QUOTE);
         }
 
-        String headerUpgrade = response.header("Upgrade");
+        String headerUpgrade = response.header(Header.UPGRADE);
         if (!"websocket".equalsIgnoreCase(headerUpgrade)) {
             throw new ProtocolException(
                     "Expected 'Upgrade' header value 'websocket' but was '" + headerUpgrade + Symbol.SINGLE_QUOTE);
         }
 
-        String headerAccept = response.header("Sec-WebSocket-Accept");
+        String headerAccept = response.header(Header.SEC_WEBSOCKET_ACCEPT);
         String acceptExpected = ByteString.encodeUtf8(key + WebSocketProtocol.ACCEPT_MAGIC)
                 .sha1().base64();
         if (!acceptExpected.equals(headerAccept)) {

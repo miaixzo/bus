@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.lang.Header;
+
 import javax.net.ssl.*;
 import java.net.URL;
 import java.security.SecureRandom;
@@ -70,7 +72,7 @@ public class CertKit {
             URL url = new URL(httpsUrl);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+            conn.setRequestProperty(Header.CONTENT_TYPE, "application/json;charset=utf-8");
             conn.setConnectTimeout(3000);
             conn.setReadTimeout(5000);
             conn.connect();

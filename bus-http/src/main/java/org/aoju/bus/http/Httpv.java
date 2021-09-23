@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -439,7 +440,7 @@ public class Httpv {
                 Request request = chain.request();
                 Response response = chain.proceed(request);
                 ResponseBody body = response.body();
-                String type = response.header("Content-Type");
+                String type = response.header(Header.CONTENT_TYPE);
                 if (null == body || null != type && (type.contains("octet-stream")
                         || type.contains("image") || type.contains("video")
                         || type.contains("archive") || type.contains("word")

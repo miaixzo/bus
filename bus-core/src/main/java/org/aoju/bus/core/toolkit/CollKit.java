@@ -3448,6 +3448,7 @@ public class CollKit {
      * 将指定元素交换到指定索引位置,其他元素的索引值不变
      * 交换会修改原List
      *
+     * @param <T>         处理参数类型
      * @param list        列表
      * @param element     需交换元素
      * @param targetIndex 目标索引
@@ -3463,6 +3464,7 @@ public class CollKit {
      * 将指定元素交换到指定元素位置,其他元素的索引值不变
      * 交换会修改原List
      *
+     * @param <T>           处理参数类型
      * @param list          列表
      * @param element       需交换元素
      * @param targetElement 目标元素

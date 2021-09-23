@@ -27,10 +27,7 @@ package org.aoju.bus.http.bodys;
 
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Process;
@@ -298,7 +295,7 @@ public class ResultBody extends AbstractBody implements Body {
         if (response.code() != HttpURLConnection.HTTP_PARTIAL) {
             return rangeStart;
         }
-        String range = response.header("Content-Range");
+        String range = response.header(Header.CONTENT_RANGE);
         if (null != range && range.startsWith("bytes")) {
             int index = range.indexOf(Symbol.C_MINUS);
             if (index > 5) {

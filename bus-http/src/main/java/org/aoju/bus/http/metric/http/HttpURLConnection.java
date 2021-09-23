@@ -27,6 +27,8 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.Version;
 import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.http.*;
@@ -385,17 +387,17 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
             }
         }
 
-        if (null == requestHeaders.get("User-Agent")) {
-            requestHeaders.add("User-Agent", defaultUserAgent());
+        if (null == requestHeaders.get(Header.USER_AGENT)) {
+            requestHeaders.add(Header.USER_AGENT, defaultUserAgent());
         }
 
         OutputStreamBody requestBody = null;
         if (HttpMethod.permitsRequestBody(method)) {
             // 如果还没有内容类型，则为请求主体添加内容类型
-            String contentType = requestHeaders.get("Content-Type");
+            String contentType = requestHeaders.get(Header.CONTENT_TYPE);
             if (null == contentType) {
-                contentType = "application/x-www-form-urlencoded";
-                requestHeaders.add("Content-Type", contentType);
+                contentType = MediaType.APPLICATION_FORM_URLENCODED;
+                requestHeaders.add(Header.CONTENT_TYPE, contentType);
             }
 
             boolean stream = fixedContentLength != -1L || chunkLength > 0;

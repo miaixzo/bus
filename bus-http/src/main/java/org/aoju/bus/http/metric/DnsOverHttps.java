@@ -27,6 +27,7 @@ package org.aoju.bus.http.metric;
 
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -418,7 +419,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     private Request buildRequest(String hostname, int type) {
-        Request.Builder requestBuilder = new Request.Builder().header("Accept", DNS_MESSAGE.toString());
+        Request.Builder requestBuilder = new Request.Builder().header(Header.ACCEPT, DNS_MESSAGE.toString());
 
         ByteString query = encodeQuery(hostname, type);
 

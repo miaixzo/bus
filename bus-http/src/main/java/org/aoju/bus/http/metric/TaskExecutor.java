@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Results;
 import org.aoju.bus.http.Results.State;
@@ -146,13 +148,29 @@ public final class TaskExecutor {
             }
         }
         if (null == callable) {
-            return new Data<>(null, "application/x-www-form-urlencoded");
+            return new Data<>(null, toMediaType(type));
         }
         if (null != cause) {
             throw new InstrumentException("Conversion failed", cause);
         }
 
         throw new InstrumentException("No match[" + type + "]Type converter！");
+    }
+
+    private String toMediaType(String type) {
+        if (type != null) {
+            String lower = type.toLowerCase();
+            if (lower.contains(Builder.JSON)) {
+                return MediaType.APPLICATION_JSON;
+            }
+            if (lower.contains(Builder.XML)) {
+                return MediaType.APPLICATION_XML;
+            }
+            if (lower.contains(Builder.PROTOBUF)) {
+                return MediaType.APPLICATION_PROTOBUF;
+            }
+        }
+        return MediaType.APPLICATION_FORM_URLENCODED;
     }
 
     private void initRootCause(Throwable throwable, Throwable cause) {

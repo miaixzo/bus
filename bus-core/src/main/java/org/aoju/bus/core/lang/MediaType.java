@@ -71,6 +71,12 @@ public class MediaType {
     public static final MediaType APPLICATION_XML_TYPE = new MediaType("application", "xml");
 
     /**
+     * "application/x-protobuf"
+     */
+    public static final String APPLICATION_PROTOBUF = "application/x-protobuf";
+    public static final MediaType APPLICATION_PROTOBUF_TYPE = new MediaType("application", "x-protobuf");
+
+    /**
      * "application/atom+xml"
      */
     public static final String APPLICATION_ATOM_XML = "application/atom+xml";

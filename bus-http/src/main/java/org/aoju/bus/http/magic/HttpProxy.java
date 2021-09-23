@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.magic;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.http.secure.Authenticator;
 import org.aoju.bus.http.secure.Credentials;
 
@@ -72,8 +73,8 @@ public class HttpProxy {
         return (route, response) -> {
             String credential = Credentials.basic(user, password);
             return response.request().newBuilder().
-                    header("Proxy-Authorization", credential).
-                    header("Proxy-Connection", "Keep-Alive").build();
+                    header(Header.PROXY_AUTHORIZATION, credential).
+                    header(Header.PROXY_CONNECTION, Header.KEEP_ALIVE).build();
         };
     }
 

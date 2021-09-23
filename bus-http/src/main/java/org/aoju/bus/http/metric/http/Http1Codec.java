@@ -114,7 +114,7 @@ public final class Http1Codec implements HttpCodec {
     @Override
     public ResponseBody openResponseBody(Response response) {
         streamAllocation.eventListener.responseBodyStart(streamAllocation.call);
-        String contentType = response.header("Content-Type");
+        String contentType = response.header(Header.CONTENT_TYPE);
 
         if (!HttpHeaders.hasBody(response)) {
             Source source = newFixedLengthSource(0);

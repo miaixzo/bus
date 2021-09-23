@@ -28,6 +28,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -78,7 +79,7 @@ public class GithubProvider extends AbstractProvider {
     @Override
     public Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "token " + accToken.getAccessToken());
+        header.put(Header.AUTHORIZATION, "token " + accToken.getAccessToken());
 
         JSONObject object = JSONObject.parseObject(Httpx.get(Builder.fromUrl(source.userInfo()).build(), null, header));
 

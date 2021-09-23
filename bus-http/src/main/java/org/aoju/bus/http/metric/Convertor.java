@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Wapper;
 
@@ -121,7 +122,7 @@ public interface Convertor {
 
         @Override
         public String mediaType() {
-            return "application/x-www-form-urlencoded";
+            return MediaType.APPLICATION_FORM_URLENCODED;
         }
 
         @Override

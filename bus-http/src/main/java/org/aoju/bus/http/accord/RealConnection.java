@@ -423,7 +423,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                         throw new IOException("Failed to authenticate with proxy");
                     }
 
-                    if ("close".equalsIgnoreCase(response.header("Connection"))) {
+                    if ("close".equalsIgnoreCase(response.header(Header.CONNECTION))) {
                         return tunnelRequest;
                     }
                     break;

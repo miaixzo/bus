@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.secure;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
 import org.aoju.bus.http.Route;
@@ -73,7 +74,7 @@ public final class NetAuthenticator implements Authenticator {
                 String credential = Credentials.basic(
                         auth.getUserName(), new String(auth.getPassword()), challenge.charset());
                 return request.newBuilder()
-                        .header(proxyAuthorization ? "Proxy-Authorization" : "Authorization", credential)
+                        .header(proxyAuthorization ? Header.PROXY_AUTHENTICATE : Header.AUTHORIZATION, credential)
                         .build();
             }
         }

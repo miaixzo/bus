@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -184,10 +185,10 @@ public class AbstractStowrs implements AutoCloseable {
             httpPost.setRequestMethod("POST");
             httpPost.setConnectTimeout(10000);
             httpPost.setReadTimeout(60000);
-            httpPost.setRequestProperty("Content-Type",
+            httpPost.setRequestProperty(Header.CONTENT_TYPE,
                     MediaType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
-            httpPost.setRequestProperty("User-Agent", null == agentName ? "STOWRS" : agentName);
-            httpPost.setRequestProperty("Accept",
+            httpPost.setRequestProperty(Header.USER_AGENT, null == agentName ? "STOWRS" : agentName);
+            httpPost.setRequestProperty(Header.ACCEPT,
                     contentType == MediaType.APPLICATION_DICOM_JSON ? MediaType.APPLICATION_DICOM_JSON : MediaType.APPLICATION_DICOM_XML);
 
             if (null != headers && !headers.isEmpty()) {
@@ -220,7 +221,7 @@ public class AbstractStowrs implements AutoCloseable {
         out.write(MultipartParser.Separator.BOUNDARY.getType());
         out.writeBytes(MULTIPART_BOUNDARY);
         out.write(MultipartParser.Separator.FIELD.getType());
-        out.writeBytes("Content-Type: ");
+        out.writeBytes(Header.CONTENT_TYPE + ": ");
         out.writeBytes(contentType);
         out.write(MultipartParser.Separator.HEADER.getType());
     }

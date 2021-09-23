@@ -3,6 +3,8 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -32,7 +34,7 @@ public class SlackProvider extends AbstractProvider {
     @Override
     protected AccToken getAccessToken(Callback callback) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
+        header.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         JSONObject accessTokenObject = JSONObject.parseObject(Httpx.post(accessTokenUrl(callback.getCode()), null, header));
         this.checkResponse(accessTokenObject);
@@ -47,8 +49,8 @@ public class SlackProvider extends AbstractProvider {
     @Override
     protected Property getUserInfo(AccToken authToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
-        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+        header.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Header.AUTHORIZATION, "Bearer ".concat(authToken.getAccessToken()));
 
         JSONObject object = JSONObject.parseObject(Httpx.post(userInfoUrl(authToken), null, header));
         this.checkResponse(object);
@@ -70,8 +72,8 @@ public class SlackProvider extends AbstractProvider {
     @Override
     public Message revoke(AccToken authToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/x-www-form-urlencoded");
-        header.put("Authorization", "Bearer ".concat(authToken.getAccessToken()));
+        header.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+        header.put(Header.AUTHORIZATION, "Bearer ".concat(authToken.getAccessToken()));
 
         JSONObject object = JSONObject.parseObject(Httpx.post(source.revoke(), null, header));
         this.checkResponse(object);

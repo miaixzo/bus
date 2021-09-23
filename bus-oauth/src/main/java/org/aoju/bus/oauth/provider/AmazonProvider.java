@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.RandomKit;
@@ -147,8 +149,8 @@ public class AmazonProvider extends AbstractProvider {
         this.checkToken(accessToken);
 
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "api.amazon.com");
-        header.put("Authorization", "bearer " + accessToken);
+        header.put(Header.HOST, "api.amazon.com");
+        header.put(Header.AUTHORIZATION, "bearer " + accessToken);
 
         String userInfo = Httpx.get(this.source.userInfo(), new HashMap<>(0), header);
         JSONObject jsonObject = JSONObject.parseObject(userInfo);
@@ -187,8 +189,8 @@ public class AmazonProvider extends AbstractProvider {
 
     private AccToken getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "api.amazon.com");
-        header.put("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+        header.put(Header.HOST, "api.amazon.com");
+        header.put(Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
 
         String response = Httpx.post(url, param, header);
         JSONObject jsonObject = JSONObject.parseObject(response);

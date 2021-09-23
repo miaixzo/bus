@@ -30,10 +30,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.key.ObjectID;
-import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -44,6 +41,7 @@ import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 
+import java.lang.System;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
@@ -232,15 +230,15 @@ public class ElemeProvider extends AbstractProvider {
     }
 
     private void setHeader(Map<String, String> header) {
-        setHeader(header, "application/x-www-form-urlencoded;charset=UTF-8", getRequestId());
-        header.put("Authorization", this.getBasic(context.getAppKey(), context.getAppSecret()));
+        setHeader(header, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8", getRequestId());
+        header.put(Header.AUTHORIZATION, this.getBasic(context.getAppKey(), context.getAppSecret()));
     }
 
     private void setHeader(Map<String, String> header, String contentType, String requestId) {
-        header.put("Accept", "text/xml,text/javascript,text/html");
-        header.put("Content-Type", contentType);
-        header.put("Accept-Encoding", "gzip");
-        header.put("User-Agent", "eleme-openapi-java-sdk");
+        header.put(Header.ACCEPT, "text/xml,text/javascript,text/html");
+        header.put(Header.CONTENT_TYPE, contentType);
+        header.put(Header.ACCEPT_ENCODING, "gzip");
+        header.put(Header.USER_AGENT, "eleme-openapi-java-sdk");
         header.put("x-eleme-requestid", requestId);
     }
 
