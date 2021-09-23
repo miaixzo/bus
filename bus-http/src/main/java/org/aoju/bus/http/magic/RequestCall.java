@@ -83,7 +83,7 @@ public class RequestCall {
 
     private void execute(final RequestCall requestCall, AbsCallback absCallback) {
         final AbsCallback finalAbsCallback = absCallback;
-        final int id = requestCall.getHttpRequest().getId();
+        final String id = requestCall.getHttpRequest().getId();
         requestCall.getNewCall().enqueue(new org.aoju.bus.http.Callback() {
             @Override
             public void onFailure(NewCall newCall, final IOException e) {

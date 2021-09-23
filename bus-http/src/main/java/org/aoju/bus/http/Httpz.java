@@ -106,6 +106,56 @@ public class Httpz {
             this.httpd = httpd;
         }
 
+        /**
+         * 取消所有请求
+         */
+        public static void cancelAll() {
+            cancelAll(client.getHttpd());
+        }
+
+        /**
+         * @param httpd 发送HTTP请求
+         */
+        public static void cancelAll(final Httpd httpd) {
+            if (httpd != null) {
+                for (NewCall call : httpd.dispatcher().queuedCalls()) {
+                    call.cancel();
+                }
+                for (NewCall call : httpd.dispatcher().runningCalls()) {
+                    call.cancel();
+                }
+            }
+        }
+
+        /**
+         * 取消请求
+         *
+         * @param tag 标签
+         */
+        public static void cancel(final Object tag) {
+            cancel(client.getHttpd(), tag);
+        }
+
+        /**
+         * 取消请求
+         *
+         * @param tag 标签
+         */
+        public static void cancel(final Httpd httpd, final Object tag) {
+            if (httpd != null && tag != null) {
+                for (NewCall call : httpd.dispatcher().queuedCalls()) {
+                    if (tag.equals(call.request().tag())) {
+                        call.cancel();
+                    }
+                }
+                for (NewCall call : httpd.dispatcher().runningCalls()) {
+                    if (tag.equals(call.request().tag())) {
+                        call.cancel();
+                    }
+                }
+            }
+        }
+
     }
 
 }

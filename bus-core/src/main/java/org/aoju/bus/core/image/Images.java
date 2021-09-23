@@ -902,9 +902,12 @@ public class Images implements Serializable {
      */
     public InputStream getInputStream() throws Exception {
         if (null != this.srcImage) {
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ImageIO.write(this.srcImage, fileType, os);
-            return new ByteArrayInputStream(os.toByteArray());
+            try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+                ImageIO.write(srcImage, fileType, os);
+                return new ByteArrayInputStream(os.toByteArray());
+            } catch (Exception e) {
+                throw new Exception("执行图片合成失败，无法输出文件流");
+            }
         } else {
             throw new Exception("尚未执行图片合成，无法输出文件流");
         }
