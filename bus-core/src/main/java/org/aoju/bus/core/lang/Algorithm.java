@@ -142,7 +142,14 @@ public enum Algorithm {
      * 3DES算法，默认实现为：DESede/CBC/PKCS5Padding
      */
     DESede("DESede"),
+    /**
+     * 分组加密算法
+     * RC2加密算法的执行速度是DES算法的两倍
+     */
     RC2("RC2"),
+    /**
+     * 流加密算法，密钥长度可变
+     */
     RC4("RC4"),
 
     PBEWithMD5AndDES("PBEWithMD5AndDES"),
@@ -151,9 +158,22 @@ public enum Algorithm {
 
     /******************************* 国密算法 *******************************/
 
+    /**
+     * 对称算法
+     */
     SM1("SM1"),
+    /**
+     * 公钥密码算法
+     */
     SM2("SM2"),
+    /**
+     * 主要用于数字签名及验证、消息认证码生成及验证、随机数生成等
+     * 其安全性及效率与SHA-256相当
+     */
     SM3("SM3"),
+    /**
+     * 迭代分组密码算法
+     */
     SM4("SM4");
 
     private final String value;

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -633,7 +634,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (null == bodyParams) {
             return new FormBody.Builder(charset).build();
         }
-        if (Builder.FORM.equalsIgnoreCase(bodyType)) {
+        if (Http.FORM.equalsIgnoreCase(bodyType)) {
             FormBody.Builder builder = new FormBody.Builder(charset);
             for (String name : bodyParams.keySet()) {
                 String value = bodyParams.get(name);

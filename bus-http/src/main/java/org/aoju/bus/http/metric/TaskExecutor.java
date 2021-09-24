@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Results;
 import org.aoju.bus.http.Results.State;
@@ -160,13 +160,13 @@ public final class TaskExecutor {
     private String toMediaType(String type) {
         if (type != null) {
             String lower = type.toLowerCase();
-            if (lower.contains(Builder.JSON)) {
+            if (lower.contains(Http.JSON)) {
                 return MediaType.APPLICATION_JSON;
             }
-            if (lower.contains(Builder.XML)) {
+            if (lower.contains(Http.XML)) {
                 return MediaType.APPLICATION_XML;
             }
-            if (lower.contains(Builder.PROTOBUF)) {
+            if (lower.contains(Http.PROTOBUF)) {
                 return MediaType.APPLICATION_PROTOBUF;
             }
         }

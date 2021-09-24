@@ -395,7 +395,7 @@ public class Httpv {
 
         private Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
 
-        private String bodyType = org.aoju.bus.http.Builder.FORM;
+        private String bodyType = Http.FORM;
 
         public Builder() {
             mediaTypes = new HashMap<>();

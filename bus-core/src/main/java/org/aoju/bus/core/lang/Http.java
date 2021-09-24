@@ -409,6 +409,22 @@ public class Http {
      * Window size in bytes.
      */
     public static final int INITIAL_WINDOW_SIZE = 7;
+    /**
+     * The form data
+     */
+    public static final String FORM = "form";
+    /**
+     * The json data
+     */
+    public static final String JSON = "json";
+    /**
+     * The xml data
+     */
+    public static final String XML = "xml";
+    /**
+     * The protobuf data
+     */
+    public static final String PROTOBUF = "protobuf";
 
     /**
      * 是否为http协议
