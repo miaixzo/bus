@@ -33,6 +33,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import javax.validation.Validator;
+
 /**
  * 国际化配置
  *
@@ -45,20 +47,24 @@ public class I18nConfiguration {
 
     @Autowired
     I18nProperties properties;
-    /**
-     * 验证 Bean
-     */
-    public LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
 
-    /**
-     * 注入 Validator 验证 Bean
-     */
-    @Bean
-    public void setValidator() {
+    private ResourceBundleMessageSource getMessageSource() {
         ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
         bundleMessageSource.setDefaultEncoding(StringKit.toString(this.properties.getDefaultEncoding(), Charset.DEFAULT_UTF_8));
         bundleMessageSource.setBasenames(this.properties.getBaseNames());
-        validator.setValidationMessageSource(bundleMessageSource);
+        return bundleMessageSource;
+    }
+
+    /**
+     * 注入 Validator 验证 Bean
+     *
+     * @return 校验信息
+     */
+    @Bean
+    public Validator getValidator() {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(getMessageSource());
+        return validator;
     }
 
 }
