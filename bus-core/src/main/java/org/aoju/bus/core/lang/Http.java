@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * HTTP 相关常量
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class Http {
@@ -409,6 +409,22 @@ public class Http {
      * Window size in bytes.
      */
     public static final int INITIAL_WINDOW_SIZE = 7;
+    /**
+     * The form data
+     */
+    public static final String FORM = "form";
+    /**
+     * The json data
+     */
+    public static final String JSON = "json";
+    /**
+     * The xml data
+     */
+    public static final String XML = "xml";
+    /**
+     * The protobuf data
+     */
+    public static final String PROTOBUF = "protobuf";
 
     /**
      * 是否为http协议

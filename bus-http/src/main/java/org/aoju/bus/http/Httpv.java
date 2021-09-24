@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -47,7 +48,7 @@ import java.util.concurrent.Executor;
  * Httpv 客户端接口
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class Httpv {
@@ -394,7 +395,7 @@ public class Httpv {
 
         private Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
 
-        private String bodyType = org.aoju.bus.http.Builder.FORM;
+        private String bodyType = Http.FORM;
 
         public Builder() {
             mediaTypes = new HashMap<>();
@@ -439,7 +440,7 @@ public class Httpv {
                 Request request = chain.request();
                 Response response = chain.proceed(request);
                 ResponseBody body = response.body();
-                String type = response.header("Content-Type");
+                String type = response.header(Header.CONTENT_TYPE);
                 if (null == body || null != type && (type.contains("octet-stream")
                         || type.contains("image") || type.contains("video")
                         || type.contains("archive") || type.contains("word")

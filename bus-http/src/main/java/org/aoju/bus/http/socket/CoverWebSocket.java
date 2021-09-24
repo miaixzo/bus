@@ -1,8 +1,12 @@
 package org.aoju.bus.http.socket;
 
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.http.*;
+import org.aoju.bus.http.Httpv;
+import org.aoju.bus.http.Request;
+import org.aoju.bus.http.Response;
+import org.aoju.bus.http.Results;
 import org.aoju.bus.http.bodys.AbstractBody;
 import org.aoju.bus.http.magic.RealResult;
 import org.aoju.bus.http.metric.Cancelable;
@@ -54,7 +58,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     public void msgType(String type) {
-        if (null == type || type.equalsIgnoreCase(Builder.FORM)) {
+        if (null == type || type.equalsIgnoreCase(Http.FORM)) {
             throw new IllegalArgumentException("msgType 不可为空 或 form");
         }
         this.msgType = type;
@@ -278,7 +282,7 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.2.8
+     * @version 6.2.9
      * @since JDK 1.8+
      */
     public static class Client extends CoverHttp<Client> {
@@ -331,7 +335,7 @@ public class CoverWebSocket implements Cancelable {
          */
         public CoverWebSocket listen() {
             String bodyType = getBodyType();
-            String msgType = Builder.FORM.equalsIgnoreCase(bodyType) ? Builder.JSON : bodyType;
+            String msgType = Http.FORM.equalsIgnoreCase(bodyType) ? Http.JSON : bodyType;
             CoverWebSocket socket = new CoverWebSocket(httpv.executor(), msgType);
             registeTagTask(socket);
             httpv.preprocess(this, () -> {
@@ -428,7 +432,7 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.2.8
+     * @version 6.2.9
      * @since JDK 1.8+
      */
     public static class Message extends AbstractBody {

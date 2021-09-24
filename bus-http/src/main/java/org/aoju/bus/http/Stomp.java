@@ -35,7 +35,7 @@ import java.util.*;
  * Websockt 的 Stomp 客户端
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class Stomp {
@@ -350,7 +350,6 @@ public class Stomp {
         public static final String VERSION = "accept-version";
         public static final String HEART_BEAT = "heart-beat";
         public static final String DESTINATION = "destination";
-        public static final String CONTENT_TYPE = "content-type";
         public static final String MESSAGE_ID = "message-id";
         public static final String ID = "id";
         public static final String SUBSCRIPTION = "subscription";

@@ -52,7 +52,7 @@ import java.util.*;
  * 该类设计为一个独立的工具类,依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class SqlServerParser {
@@ -330,8 +330,8 @@ public class SqlServerParser {
             processPlainSelect((PlainSelect) selectBody, level + 1);
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSelectBody()) {
-                processSelectBody(withItem.getSelectBody(), level + 1);
+            if (null != withItem.getSubSelect().getSelectBody()) {
+                processSelectBody(withItem.getSubSelect().getSelectBody(), level + 1);
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;

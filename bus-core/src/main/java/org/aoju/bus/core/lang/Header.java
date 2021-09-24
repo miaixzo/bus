@@ -29,11 +29,111 @@ package org.aoju.bus.core.lang;
  * Header 常量
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class Header {
 
+    /**
+     * The header Host
+     */
+    public static final String HOST = "Host";
+    /**
+     * The header Server
+     */
+    public static final String SERVER = "Server";
+    /**
+     * The header Age
+     */
+    public static final String AGE = "Age";
+    /**
+     * The header Allow
+     */
+    public static final String ALLOW = "Allow";
+    /**
+     * The header Expires
+     */
+    public static final String EXPIRES = "Expires";
+    /**
+     * The header Cookie
+     */
+    public static final String COOKIE = "Cookie";
+    /**
+     * The header Set-Cookie
+     */
+    public static final String SET_COOKIE = "Set-Cookie";
+    /**
+     * The header Encoding
+     */
+    public static final String ENCODING = "Encoding";
+    /**
+     * The header Upgrade
+     */
+    public static final String UPGRADE = "Upgrade";
+    /**
+     * The header Trailers
+     */
+    public static final String TRAILERS = "Trailers";
+    /**
+     * The header Location
+     */
+    public static final String LOCATION = "Location";
+    /**
+     * The header Connection
+     */
+    public static final String CONNECTION = "Connection";
+    /**
+     * The header Date
+     */
+    public static final String DATE = "Date";
+    /**
+     * The header Etag
+     */
+    public static final String ETAG = "Etag";
+    /**
+     * The header Expect
+     */
+    public static final String EXPECT = "Expect";
+    /**
+     * The header From
+     */
+    public static final String FROM = "From";
+    /**
+     * The header Link
+     */
+    public static final String LINK = "Link";
+    /**
+     * The header Vary
+     */
+    public static final String VARY = "Vary";
+    /**
+     * The header Via
+     */
+    public static final String VIA = "Via";
+    /**
+     * The header Range
+     */
+    public static final String RANGE = "Range";
+    /**
+     * The header Referer
+     */
+    public static final String REFERER = "Referer";
+    /**
+     * The header Refresh
+     */
+    public static final String REFRESH = "Refresh";
+    /**
+     * The header te
+     */
+    public static final String TE = "te";
+    /**
+     * The header If-Match
+     */
+    public static final String IF_MATCH = "If-Match";
+    /**
+     * The header If-Range
+     */
+    public static final String IF_RANGE = "If-Range";
     /**
      * The header Accept
      */
@@ -54,30 +154,6 @@ public class Header {
      * The header Accept-Ranges
      */
     public static final String ACCEPT_RANGES = "Accept-Ranges";
-    /**
-     * The header Age
-     */
-    public static final String AGE = "Age";
-    /**
-     * The header Allow
-     */
-    public static final String ALLOW = "Allow";
-    /**
-     * The header Expires
-     */
-    public static final String EXPIRES = "Expires";
-    /**
-     * The header Cookie
-     */
-    public static final String COOKIE = "Cookie";
-    /**
-     * The header Cache-Control
-     */
-    public static final String CACHE_CONTROL = "Cache-Control";
-    /**
-     * The header Connection
-     */
-    public static final String CONNECTION = "Connection";
     /**
      * The header Content-Encoding
      */
@@ -111,21 +187,37 @@ public class Header {
      */
     public static final String CONTENT_DISPOSITION = "Content-Disposition";
     /**
-     * The header User-Agent
-     */
-    public static final String USER_AGENT = "User-Agent";
-    /**
      * The header Transfer-Encoding
      */
     public static final String TRANSFER_ENCODING = "Transfer-Encoding";
     /**
-     * The header Host
+     * The header Cache-Control
      */
-    public static final String HOST = "Host";
+    public static final String CACHE_CONTROL = "Cache-Control";
+    /**
+     * The header User-Agent
+     */
+    public static final String USER_AGENT = "User-Agent";
+    /**
+     * The header Retry-After
+     */
+    public static final String RETRY_AFTER = "Retry-After";
+    /**
+     * The header Max-Forwards
+     */
+    public static final String MAX_FORWARDS = "Max-Forwards";
     /**
      * The header Keep-Alive
      */
     public static final String KEEP_ALIVE = "Keep-Alive";
+    /**
+     * The header Authorization
+     */
+    public static final String AUTHORIZATION = "Authorization";
+    /**
+     * The header Proxy-Authorization
+     */
+    public static final String PROXY_AUTHORIZATION = "Proxy-Authorization";
     /**
      * The header Proxy-Connection
      */
@@ -143,17 +235,13 @@ public class Header {
      */
     public static final String HTTPD_PREEMPTIVE = "Httpd-Preemptive";
     /**
-     * The header te
+     * The header Last-Modified
      */
-    public static final String TE = "te";
+    public static final String LAST_MODIFIED = "Last-Modified";
     /**
-     * The header Encoding
+     * The header If-Unmodified-Since
      */
-    public static final String ENCODING = "Encoding";
-    /**
-     * The header Upgrade
-     */
-    public static final String UPGRADE = "Upgrade";
+    public static final String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
     /**
      * The header If-Modified-Since
      */
@@ -167,8 +255,20 @@ public class Header {
      */
     public static final String SEC_WEBSOCKET_KEY = "Sec-WebSocket-Key";
     /**
+     * The header Sec-WebSocket-Accept
+     */
+    public static final String SEC_WEBSOCKET_ACCEPT = "Sec-WebSocket-Accept";
+    /**
      * The header Sec-WebSocket-Version
      */
     public static final String SEC_WEBSOCKET_VERSION = "Sec-WebSocket-Version";
+    /**
+     * The header Sec-WebSocket-Version
+     */
+    public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+    /**
+     * The header Sec-WebSocket-Version
+     */
+    public static final String STRICT_TRANSPORT_SECURITY = "Strict-Transport-Security";
 
 }

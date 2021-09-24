@@ -44,12 +44,12 @@ import java.util.Map;
  * HTTP请求处理
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class HttpRequest {
 
-    protected int id;
+    protected String id;
     protected String url;
     protected Map<String, String> params;
     protected Map<String, String> encodedParams;
@@ -64,7 +64,7 @@ public abstract class HttpRequest {
                           List<PostRequest.FileInfo> fileInfos,
                           String body,
                           MultipartBody multipartBody,
-                          int id) {
+                          String id) {
         this(url, tag, params, null, headers, fileInfos, body, multipartBody, id);
     }
 
@@ -74,7 +74,7 @@ public abstract class HttpRequest {
                           List<PostRequest.FileInfo> fileInfos,
                           String body,
                           MultipartBody multipartBody,
-                          int id) {
+                          String id) {
         this.url = url;
         this.params = params;
         this.encodedParams = encodedParams;
@@ -144,7 +144,7 @@ public abstract class HttpRequest {
         builder.headers(headerBuilder.build());
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

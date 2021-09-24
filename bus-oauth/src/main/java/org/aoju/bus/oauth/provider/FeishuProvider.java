@@ -28,6 +28,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -48,7 +49,7 @@ import java.util.Map;
  * 飞书登录
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class FeishuProvider extends AbstractProvider {
@@ -74,8 +75,8 @@ public class FeishuProvider extends AbstractProvider {
     @Override
     protected Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
-        header.put("Authorization", "Bearer " + accToken.getAccessToken());
+        header.put(Header.CONTENT_TYPE, "application/json");
+        header.put(Header.AUTHORIZATION, "Bearer " + accToken.getAccessToken());
 
         String response = Httpx.post(source.userInfo(), null, header);
 
@@ -135,7 +136,7 @@ public class FeishuProvider extends AbstractProvider {
         params.put("app_secret", context.getAppSecret());
 
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
+        header.put(Header.CONTENT_TYPE, "application/json");
 
         String response = Httpx.post(url, params, header);
         JSONObject jsonObject = JSON.parseObject(response);
@@ -148,7 +149,7 @@ public class FeishuProvider extends AbstractProvider {
 
     private AccToken getToken(JSONObject params, String url) {
         Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json");
+        header.put(Header.CONTENT_TYPE, "application/json");
 
         String response = Httpx.post(url, params, header);
 

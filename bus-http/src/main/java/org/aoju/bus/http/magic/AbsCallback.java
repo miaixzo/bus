@@ -31,13 +31,27 @@ import org.aoju.bus.http.NewCall;
  * 回调处理
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class AbsCallback {
 
-    public abstract void onFailure(NewCall newCall, Exception e, int id);
+    /**
+     * 失败回调信息
+     *
+     * @param newCall   回调信息
+     * @param exception 异常
+     * @param id        当前请求标识
+     */
+    public abstract void onFailure(NewCall newCall, Exception exception, String id);
 
-    public abstract void onResponse(NewCall newCall, HttpResponse httpResponse, int id);
+    /**
+     * 响应回调信息
+     *
+     * @param newCall  回调信息
+     * @param response 响应信息
+     * @param id       当前请求标识
+     */
+    public abstract void onResponse(NewCall newCall, HttpResponse response, String id);
 
 }

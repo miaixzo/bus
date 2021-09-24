@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>6.2.8</version>
+    <version>6.2.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.5.3</spring.boot.version>
+        <spring.boot.version>2.5.5</spring.boot.version>
         <lombok.version>1.18.20</lombok.version>
         <aspectj.version>1.9.6</aspectj.version>
         <persistence.version>2.2</persistence.version>
@@ -51,9 +51,9 @@
         <mybatis.version>3.5.7</mybatis.version>
         <mybatis.spring.version>2.0.6</mybatis.spring.version>
         <validation.version>2.0.1.Final</validation.version>
-        <jsqlparser.version>4.0</jsqlparser.version>
-        <mysql.version>8.0.25</mysql.version>
-        <druid.version>1.2.6</druid.version>
+        <jsqlparser.version>4.2</jsqlparser.version>
+        <mysql.version>8.0.26</mysql.version>
+        <druid.version>1.2.7</druid.version>
         <dubbo.version>3.0.1</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
     </properties>
@@ -204,15 +204,15 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>${jsqlparser.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${validation.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>${jsqlparser.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

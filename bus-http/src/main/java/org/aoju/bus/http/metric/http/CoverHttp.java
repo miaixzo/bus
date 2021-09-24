@@ -25,9 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.http.Process;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.Results.State;
@@ -51,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
@@ -631,7 +634,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (null == bodyParams) {
             return new FormBody.Builder(charset).build();
         }
-        if (Builder.FORM.equalsIgnoreCase(bodyType)) {
+        if (Http.FORM.equalsIgnoreCase(bodyType)) {
             FormBody.Builder builder = new FormBody.Builder(charset);
             for (String name : bodyParams.keySet()) {
                 String value = bodyParams.get(name);
@@ -700,21 +703,21 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     protected void assertNotConflict(boolean bodyCantUsed) {
         if (bodyCantUsed) {
-            if (null != requestBody) {
+            if (ObjectKit.isNotEmpty(requestBody)) {
                 throw new InstrumentException("GET | HEAD request The setBodyPara method cannot be called!");
             }
-            if (null != bodyParams) {
+            if (MapKit.isNotEmpty(bodyParams)) {
                 throw new InstrumentException("GET | HEAD request The addBodyPara method cannot be called!");
             }
-            if (null != files) {
+            if (MapKit.isNotEmpty(files)) {
                 throw new InstrumentException("GET | HEAD request The addFilePara method cannot be called!");
             }
         }
-        if (null != requestBody) {
-            if (null != bodyParams) {
+        if (ObjectKit.isNotEmpty(requestBody)) {
+            if (MapKit.isNotEmpty(bodyParams)) {
                 throw new InstrumentException("The methods addBodyPara and setBodyPara cannot be called at the same time!");
             }
-            if (null != files) {
+            if (MapKit.isNotEmpty(files)) {
                 throw new InstrumentException("The methods addFilePara and setBodyPara cannot be called at the same time!");
             }
         }

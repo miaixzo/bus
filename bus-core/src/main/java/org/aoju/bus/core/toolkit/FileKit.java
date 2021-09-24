@@ -55,7 +55,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -3266,7 +3266,7 @@ public class FileKit {
     }
 
     /**
-     * 将流的内容写入文件
+     * 将路径对应文件写入流中，此方法不会关闭输出流
      *
      * @param in           输入流
      * @param fullFilePath 文件绝对路径
@@ -3278,7 +3278,7 @@ public class FileKit {
     }
 
     /**
-     * 将文件写入流中
+     * 将文件写入流中，此方法不会关闭输出流
      *
      * @param file 文件
      * @param out  流

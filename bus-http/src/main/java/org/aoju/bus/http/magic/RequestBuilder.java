@@ -35,7 +35,7 @@ import java.util.Map;
  * 请求参数构造器
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 
@@ -47,7 +47,7 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
     protected Map<String, String> headers;
     protected Map<String, String> params;
     protected Map<String, String> encodedParams;
-    protected int id;
+    protected String id;
 
     public RequestBuilder(Httpd httpd) {
         this.httpd = httpd;
@@ -56,7 +56,7 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
         encodedParams = new LinkedHashMap<>();
     }
 
-    public T id(int id) {
+    public T id(String id) {
         this.id = id;
         return (T) this;
     }

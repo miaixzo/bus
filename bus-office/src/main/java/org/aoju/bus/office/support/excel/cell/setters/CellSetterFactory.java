@@ -26,6 +26,7 @@
 package org.aoju.bus.office.support.excel.cell.setters;
 
 import org.aoju.bus.office.support.excel.cell.CellSetter;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.RichTextString;
 
 import java.time.temporal.TemporalAccessor;
@@ -36,7 +37,7 @@ import java.util.Date;
  * {@link CellSetter} 简单静态工厂类，用于根据值类型创建对应的{@link CellSetter}
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class CellSetterFactory {
@@ -64,6 +65,8 @@ public class CellSetterFactory {
             return new RichTextCellSetter((RichTextString) value);
         } else if (value instanceof Number) {
             return new NumberCellSetter((Number) value);
+        } else if (value instanceof Hyperlink) {
+            return new HyperlinkCellSetter((Hyperlink) value);
         } else {
             return new CharSequenceCellSetter(value.toString());
         }

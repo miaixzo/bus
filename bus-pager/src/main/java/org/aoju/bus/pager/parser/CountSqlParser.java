@@ -41,7 +41,7 @@ import java.util.*;
  * sql解析类,提供更智能的count查询sql
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class CountSqlParser {
@@ -308,8 +308,8 @@ public class CountSqlParser {
             processPlainSelect((PlainSelect) selectBody);
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSelectBody()) {
-                processSelectBody(withItem.getSelectBody());
+            if (null != withItem.getSubSelect().getSelectBody()) {
+                processSelectBody(withItem.getSubSelect().getSelectBody());
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;
@@ -355,7 +355,7 @@ public class CountSqlParser {
     public void processWithItemsList(List<WithItem> withItemsList) {
         if (null != withItemsList && withItemsList.size() > 0) {
             for (WithItem item : withItemsList) {
-                processSelectBody(item.getSelectBody());
+                processSelectBody(item.getSubSelect().getSelectBody());
             }
         }
     }

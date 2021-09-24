@@ -38,7 +38,7 @@ import java.sql.SQLException;
  * 数据库查询工厂
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Data
@@ -54,6 +54,7 @@ public class DatabaseQueryFactory implements Serializable {
      * 禁止通过new方式实例化对象
      */
     private DatabaseQueryFactory() {
+
     }
 
     /**
@@ -72,14 +73,14 @@ public class DatabaseQueryFactory implements Serializable {
      */
     public DatabaseQuery newInstance() {
         try {
-            //获取数据库URL 用于判断数据库类型
+            // 获取数据库URL 用于判断数据库类型
             String url = this.getDataSource().getConnection().getMetaData().getURL();
-            //获取实现类
+            // 获取实现类
             Class<? extends DatabaseQuery> query = DatabaseType.getDbType(url).getImplClass();
-            //获取有参构造
+            // 获取有参构造
             Constructor<? extends DatabaseQuery> constructor = query
                     .getConstructor(DataSource.class);
-            //实例化
+            // 实例化
             return constructor.newInstance(dataSource);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
                 | InvocationTargetException | SQLException e) {

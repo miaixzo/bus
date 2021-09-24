@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * AbstractBuilder
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class AbstractProcess implements Process {
@@ -65,7 +65,8 @@ public abstract class AbstractProcess implements Process {
      */
     volatile Map<String, List<PrimaryKey>> primaryKeysCaching = new ConcurrentHashMap<>();
 
-    private AbstractProcess() {
+    protected AbstractProcess() {
+
     }
 
     /**
@@ -73,7 +74,7 @@ public abstract class AbstractProcess implements Process {
      *
      * @param config {@link Config}
      */
-    AbstractProcess(Config config) {
+    protected AbstractProcess(Config config) {
         Assert.notNull(config, "Configuration can not be empty!");
         this.config = config;
     }
@@ -214,16 +215,16 @@ public abstract class AbstractProcess implements Process {
                 columns.forEach(BeanKit::trimAllFields);
             });
         }
-        //if file type is markdown
+        // if file type is markdown
         if (config.getEngineConfig().getFileType().equals(EngineFileType.MD)) {
             //escape xml
             BeanKit.replaceStrFields(dataModel);
-            //columns
+            // columns
             tables.forEach(i -> {
                 //table escape xml
                 BeanKit.replaceStrFields(i);
                 List<ColumnSchema> columns = i.getColumns();
-                //columns escape xml
+                // columns escape xml
                 columns.forEach(BeanKit::replaceStrFields);
             });
         }

@@ -29,7 +29,7 @@ package org.aoju.bus.office.process;
  * 用于FreeBSD的{@link ProcessManager}实现
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class FreeBSDProcessManager extends UnixProcessManager {
@@ -45,11 +45,7 @@ public class FreeBSDProcessManager extends UnixProcessManager {
 
     @Override
     protected String[] getRunningProcessesCommand(final String process) {
-        return new String[]{
-                "/bin/sh",
-                "-c",
-                "/bin/ps -e -o pid,args | /usr/bin/grep " + process + " | /usr/bin/grep -v grep"
-        };
+        return new String[]{"/bin/ps", "-e", "-o", "pid,args"};
     }
 
     private static class DefaultHolder {

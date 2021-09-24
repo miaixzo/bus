@@ -28,6 +28,7 @@ package org.aoju.bus.office.support.excel;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
+import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -40,7 +41,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -333,6 +334,32 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
             this.sheet.setDefaultColumnStyle(x, columnStyle);
         }
         return columnStyle;
+    }
+
+    /**
+     * 创建 {@link Hyperlink}，默认内容（标签为链接地址本身）
+     *
+     * @param type    链接类型
+     * @param address 链接地址
+     * @return 链接
+     */
+    public Hyperlink createHyperlink(HyperlinkType type, String address) {
+        return createHyperlink(type, address, address);
+    }
+
+    /**
+     * 创建 {@link Hyperlink}，默认内容
+     *
+     * @param type    链接类型
+     * @param address 链接地址
+     * @param label   标签，即单元格中显示的内容
+     * @return 链接
+     */
+    public Hyperlink createHyperlink(HyperlinkType type, String address, String label) {
+        final Hyperlink hyperlink = this.workbook.getCreationHelper().createHyperlink(type);
+        hyperlink.setAddress(address);
+        hyperlink.setLabel(label);
+        return hyperlink;
     }
 
     /**

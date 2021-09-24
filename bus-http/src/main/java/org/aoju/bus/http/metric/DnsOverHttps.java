@@ -27,6 +27,7 @@ package org.aoju.bus.http.metric;
 
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -50,7 +51,7 @@ import java.util.concurrent.CountDownLatch;
  * DNS over HTTPS实施
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class DnsOverHttps implements DnsX {
@@ -418,7 +419,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     private Request buildRequest(String hostname, int type) {
-        Request.Builder requestBuilder = new Request.Builder().header("Accept", DNS_MESSAGE.toString());
+        Request.Builder requestBuilder = new Request.Builder().header(Header.ACCEPT, DNS_MESSAGE.toString());
 
         ByteString query = encodeQuery(hostname, type);
 

@@ -37,7 +37,7 @@ import java.util.List;
  * 处理 Order by
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class OrderByParser {
@@ -81,8 +81,8 @@ public class OrderByParser {
             return orderByElements;
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSelectBody()) {
-                return extraOrderBy(withItem.getSelectBody());
+            if (null != withItem.getSubSelect().getSelectBody()) {
+                return extraOrderBy(withItem.getSubSelect().getSelectBody());
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;

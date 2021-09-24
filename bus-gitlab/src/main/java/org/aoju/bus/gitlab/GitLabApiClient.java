@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.support.JacksonJson;
 import org.aoju.bus.gitlab.support.MaskingLoggingFilter;
@@ -62,7 +63,7 @@ public class GitLabApiClient implements AutoCloseable {
 
     protected static final String PRIVATE_TOKEN_HEADER = "PRIVATE-TOKEN";
     protected static final String SUDO_HEADER = "Sudo";
-    protected static final String AUTHORIZATION_HEADER = "Authorization";
+    protected static final String AUTHORIZATION_HEADER = Header.AUTHORIZATION;
     protected static final String X_GITLAB_TOKEN_HEADER = "X-Gitlab-Token";
 
     private ClientConfig clientConfig;

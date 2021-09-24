@@ -25,20 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.socket.channel;
 
-import org.aoju.bus.socket.WorkerRegister;
-
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AsynchronousChannelProvider;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGroup {
@@ -75,11 +73,16 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
     /**
      * 服务端accept线程池
      */
-    private ExecutorService acceptExecutorService;
+    private final ExecutorService acceptExecutorService;
     /**
      * accept工作组
      */
-    private Worker[] acceptWorkers = null;
+    private final Worker[] acceptWorkers;
+    private Worker futureWorker;
+    /**
+     * 同步IO线程池
+     */
+    private ExecutorService futureExecutorService;
     /**
      * group运行状态
      */
@@ -99,7 +102,10 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         this.readExecutorService = readExecutorService;
         this.readWorkers = new Worker[threadNum];
         for (int i = 0; i < threadNum; i++) {
-            readWorkers[i] = new Worker(Selector.open(), SelectionKey.OP_READ);
+            readWorkers[i] = new Worker(selectionKey -> {
+                AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
+                asynchronousSocketChannel.doRead(true);
+            });
             this.readExecutorService.execute(readWorkers[i]);
         }
 
@@ -108,27 +114,67 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         final int acceptThreadNum = 1;
         writeExecutorService = getThreadPoolExecutor("bus-socket:write-", writeThreadNum);
         this.writeWorkers = new Worker[writeThreadNum];
-        int validSelectionKey = SelectionKey.OP_WRITE | SelectionKey.OP_CONNECT;
-        // accept 复用 write线程组
-        if (acceptThreadNum <= 0) {
-            validSelectionKey |= SelectionKey.OP_ACCEPT;
-            acceptWorkers = writeWorkers;
-        }
+
         for (int i = 0; i < writeThreadNum; i++) {
-            writeWorkers[i] = new Worker(Selector.open(), validSelectionKey);
+            writeWorkers[i] = new Worker(selectionKey -> {
+                AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
+                if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) > 0) {
+                    asynchronousSocketChannel.doWrite();
+                } else {
+                    System.out.println("ignore write");
+                }
+            });
             writeExecutorService.execute(writeWorkers[i]);
         }
 
-        if (acceptThreadNum > 0) {
-            acceptExecutorService = getThreadPoolExecutor("bus-socket:accept-", acceptThreadNum);
-            acceptWorkers = new Worker[acceptThreadNum];
-            for (int i = 0; i < acceptThreadNum; i++) {
-                acceptWorkers[i] = new Worker(Selector.open(), SelectionKey.OP_ACCEPT);
-                acceptExecutorService.execute(acceptWorkers[i]);
-            }
+        // init threadPool for accept
+        acceptExecutorService = getThreadPoolExecutor("bus-socket:connect-", acceptThreadNum);
+        acceptWorkers = new Worker[acceptThreadNum];
+        for (int i = 0; i < acceptThreadNum; i++) {
+            acceptWorkers[i] = new Worker(selectionKey -> {
+                if (selectionKey.isAcceptable()) {
+                    AsynchronousServerSocketChannel serverSocketChannel = (AsynchronousServerSocketChannel) selectionKey.attachment();
+                    serverSocketChannel.doAccept();
+                } else if (selectionKey.isConnectable()) {
+                    AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
+                    asynchronousSocketChannel.doConnect();
+                }
+            });
+            acceptExecutorService.execute(acceptWorkers[i]);
         }
 
         scheduledExecutor = new ScheduledThreadPoolExecutor(1, r -> new Thread(r, "bus-socket:scheduled"));
+    }
+
+    /**
+     * 同步IO注册异步线程，防止主IO线程阻塞
+     *
+     * @param register 注册对象
+     * @param opType   类型
+     * @throws IOException 异常
+     */
+    public synchronized void registerFuture(Consumer<Selector> register, int opType) throws IOException {
+        if (futureWorker == null) {
+            futureExecutorService = getThreadPoolExecutor("bus-socket:future-", 1);
+            futureWorker = new Worker(selectionKey -> {
+                AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
+                switch (opType) {
+                    case SelectionKey.OP_READ:
+                        removeOps(selectionKey, SelectionKey.OP_READ);
+                        asynchronousSocketChannel.doRead(true);
+                        break;
+                    case SelectionKey.OP_WRITE:
+                        removeOps(selectionKey, SelectionKey.OP_WRITE);
+                        asynchronousSocketChannel.doWrite();
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("unSupport opType: " + opType);
+                }
+
+            });
+            futureExecutorService.execute(futureWorker);
+        }
+        futureWorker.addRegister(register);
     }
 
     private ThreadPoolExecutor getThreadPoolExecutor(final String prefix, int threadNum) {
@@ -156,34 +202,23 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
     }
 
     public Worker getReadWorker() {
-        return readWorkers[index(readWorkers.length, readIndex)];
+        return readWorkers[(readIndex.getAndIncrement() & Integer.MAX_VALUE) % readWorkers.length];
     }
 
     public Worker getWriteWorker() {
-        return writeWorkers[index(writeWorkers.length, writeIndex)];
+        return writeWorkers[(writeIndex.getAndIncrement() & Integer.MAX_VALUE) % writeWorkers.length];
     }
 
     public Worker getAcceptWorker() {
-        return acceptWorkers[index(acceptWorkers.length, writeIndex)];
+        return acceptWorkers[(writeIndex.getAndIncrement() & Integer.MAX_VALUE) % acceptWorkers.length];
+    }
+
+    public Worker getConnectWorker() {
+        return acceptWorkers[(writeIndex.getAndIncrement() & Integer.MAX_VALUE) % acceptWorkers.length];
     }
 
     public ScheduledThreadPoolExecutor getScheduledExecutor() {
         return scheduledExecutor;
-    }
-
-    /**
-     * 获取分配Worker的索引下标
-     *
-     * @param arrayLength 数组对象长度
-     * @param index       索引游标
-     * @return 分配到的下标
-     */
-    private int index(int arrayLength, AtomicInteger index) {
-        int i = index.getAndIncrement() % arrayLength;
-        if (i < 0) {
-            i = -i;
-        }
-        return i;
     }
 
     @Override
@@ -201,8 +236,11 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         running = false;
         readExecutorService.shutdown();
         writeExecutorService.shutdown();
-        if (null != acceptExecutorService) {
+        if (acceptExecutorService != null) {
             acceptExecutorService.shutdown();
+        }
+        if (futureExecutorService != null) {
+            futureExecutorService.shutdown();
         }
         scheduledExecutor.shutdown();
     }
@@ -212,8 +250,11 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         running = false;
         readExecutorService.shutdownNow();
         writeExecutorService.shutdownNow();
-        if (null != acceptExecutorService) {
+        if (acceptExecutorService != null) {
             acceptExecutorService.shutdownNow();
+        }
+        if (futureExecutorService != null) {
+            futureExecutorService.shutdownNow();
         }
         scheduledExecutor.shutdownNow();
     }
@@ -227,9 +268,6 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         if ((selectionKey.interestOps() & opt) != 0) {
             return;
         }
-        if (worker.selector != selectionKey.selector()) {
-            throw new RuntimeException();
-        }
         selectionKey.interestOps(selectionKey.interestOps() | opt);
         // Worker线程无需wakeup
         if (worker.getWorkerThread() != Thread.currentThread()) {
@@ -239,79 +277,68 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
 
     class Worker implements Runnable {
         /**
-         * 当前Worker关注的有效事件
-         */
-        private final int validSelectionKey;
-        /**
          * 当前Worker绑定的Selector
          */
         private final Selector selector;
         /**
          * 待注册的事件
          */
-        private final ConcurrentLinkedQueue<WorkerRegister> registers = new ConcurrentLinkedQueue<>();
+        private final ConcurrentLinkedQueue<Consumer<Selector>> registers = new ConcurrentLinkedQueue<>();
+        private final Consumer<SelectionKey> consumer;
         int invoker = 0;
+        int modCount;
         private Thread workerThread;
 
-        Worker(Selector selector, int validSelectionKey) {
-            this.selector = selector;
-            this.validSelectionKey = validSelectionKey;
+        Worker(Consumer<SelectionKey> consumer) throws IOException {
+            this.selector = Selector.open();
+            this.consumer = consumer;
         }
 
         /**
          * 注册事件
          */
-        void addRegister(WorkerRegister register) {
+        final void addRegister(Consumer<Selector> register) {
             registers.offer(register);
+            modCount++;
             selector.wakeup();
         }
 
-        public Thread getWorkerThread() {
+        public final Thread getWorkerThread() {
             return workerThread;
         }
 
         @Override
-        public void run() {
+        public final void run() {
             workerThread = Thread.currentThread();
             // 优先获取SelectionKey,若无关注事件触发则阻塞在selector.select(),减少select被调用次数
             Set<SelectionKey> keySet = selector.selectedKeys();
             try {
+                int v = 0;
                 while (running) {
-                    WorkerRegister register;
-                    while (null != (register = registers.poll())) {
-                        register.callback(selector);
+                    Consumer<Selector> register;
+                    if (v != modCount) {
+                        v = modCount;
+                        while ((register = registers.poll()) != null) {
+                            register.accept(selector);
+                        }
                     }
-                    if (keySet.isEmpty() && selector.select() == 0) {
-                        continue;
-                    }
-                    Iterator<SelectionKey> keyIterator = keySet.iterator();
+
+                    selector.select();
                     // 执行本次已触发待处理的事件
-                    while (keyIterator.hasNext()) {
-                        SelectionKey key = keyIterator.next();
-                        keyIterator.remove();
+                    for (SelectionKey key : keySet) {
                         invoker = 0;
-                        if (!key.isValid()) {
-                            continue;
-                        }
-                        if ((validSelectionKey & SelectionKey.OP_ACCEPT) > 0 && key.isAcceptable()) {
-                            AsynchronousServerSocketChannel serverSocketChannel = (AsynchronousServerSocketChannel) key.attachment();
-                            serverSocketChannel.doAccept();
-                            continue;
-                        }
-                        AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) key.attachment();
-                        // 读取客户端数据
-                        if ((validSelectionKey & SelectionKey.OP_WRITE) > 0 && key.isWritable()) {// 输出数据至客户端
-                            removeOps(key, SelectionKey.OP_WRITE);
-                            asynchronousSocketChannel.doWrite();
-                        } else if ((validSelectionKey & SelectionKey.OP_READ) > 0 && key.isReadable()) {
-                            asynchronousSocketChannel.doRead();
-                        } else if ((validSelectionKey & SelectionKey.OP_CONNECT) > 0 && key.isConnectable()) {
-                            asynchronousSocketChannel.doConnect();
-                        }
+                        consumer.accept(key);
                     }
+                    keySet.clear();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    selector.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

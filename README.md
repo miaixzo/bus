@@ -6,7 +6,7 @@
 </p>
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v6.2.8-blue.svg?label=Maven%20Central" />
+		<img src="https://img.shields.io/badge/maven--central-v6.2.9-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -15,7 +15,7 @@
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg">
 	</a>
 	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-2.5.3-brightgreen.svg">
+		<img src="https://img.shields.io/badge/Spring Boot-2.5.5-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-8.0-blue.svg">
@@ -56,7 +56,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java8�
 |[ √ ]|bus-all|包含微服务所需的完整模块以及通用组件| 
 |[ √ ]|bus-base|基础功能及base相关功能,实体类(Entity),服务(Service),接口(Controller)|
 |[ √ ]|bus-bom|包含所有组建信息,当然可以通过配置按需加载等|
-|[ × ]|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
+|[ √ ]|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
 |[ √ ]|bus-core|核心功能及工具类,包括常量、线程、类加载器、反射、集合、日期等常用工具|
 |[ √ ]|bus-cron|定时器及定时任务等功能|
 |[ √ ]|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
@@ -97,7 +97,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java8�
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.2.8</version>
+    <version>6.2.9</version>
 </dependency>
 ```
 

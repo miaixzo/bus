@@ -42,7 +42,7 @@ import java.util.Arrays;
  * 默认的{@link OfficeManager}实现，它使用一个office进程池来执行转换任务.
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class LocalOfficePoolManager extends AbstractOfficePoolManager {

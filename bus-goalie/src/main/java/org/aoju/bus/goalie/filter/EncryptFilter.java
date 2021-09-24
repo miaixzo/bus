@@ -29,6 +29,9 @@ import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.crypto.Padding;
+import org.aoju.bus.crypto.symmetric.AES;
 import org.aoju.bus.crypto.symmetric.Crypto;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Config;
@@ -53,14 +56,13 @@ import java.nio.charset.StandardCharsets;
  * 数据加密
  *
  * @author Justubborn
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class EncryptFilter implements WebFilter {
 
-    Config.Encrypt encrypt;
-
+    private Config.Encrypt encrypt;
     private Crypto crypto;
 
     public EncryptFilter(Config.Encrypt encrypt) {
@@ -70,13 +72,12 @@ public class EncryptFilter implements WebFilter {
     @PostConstruct
     public void init() {
         if (Algorithm.AES.getValue().equals(encrypt.getType())) {
-            // crypto = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
+            crypto = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
         }
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
         if (encrypt.isEnabled()
                 && (Context.Format.xml.equals(Context.get(exchange).getFormat())
                 || Context.Format.json.equals(Context.get(exchange).getFormat()))) {
@@ -95,7 +96,6 @@ public class EncryptFilter implements WebFilter {
             if (Algorithm.AES.getValue().equals(encrypt.getType())) {
                 message.setData(crypto.encryptBase64(JsonKit.toJsonString(message.getData()), Charset.UTF_8));
             }
-
         }
     }
 

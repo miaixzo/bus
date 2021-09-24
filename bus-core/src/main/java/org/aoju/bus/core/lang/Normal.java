@@ -34,7 +34,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class Normal {
@@ -48,6 +48,26 @@ public class Normal {
      * 字符串:null
      */
     public static final String NULL = "null";
+
+    /**
+     * 真/是
+     */
+    public static final String TRUE = "true";
+    
+    /**
+     * 假/否
+     */
+    public static final String FALSE = "false";
+
+    /**
+     * 启用
+     */
+    public static final String ENABLED = "enabled";
+
+    /**
+     * 禁用
+     */
+    public static final String DISABLED = "disabled";
 
     /**
      * is

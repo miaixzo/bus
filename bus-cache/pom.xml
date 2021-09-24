@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>6.2.8</version>
+    <version>6.2.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.5.3</spring.boot.version>
+        <spring.boot.version>2.5.5</spring.boot.version>
         <lombok.version>1.18.20</lombok.version>
         <guice.version>5.0.1</guice.version>
         <jedis.version>3.6.1</jedis.version>
@@ -52,8 +52,8 @@
         <guava.version>30.1.1-jre</guava.version>
         <yaml.version>1.28</yaml.version>
         <hession.version>4.0.65</hession.version>
-        <druid.version>1.2.6</druid.version>
-        <mysql.version>8.0.25</mysql.version>
+        <druid.version>1.2.7</druid.version>
+        <mysql.version>8.0.26</mysql.version>
     </properties>
 
     <dependencies>

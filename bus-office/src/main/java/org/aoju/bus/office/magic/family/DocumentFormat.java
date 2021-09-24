@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 包含处理特定文档格式所需的信息
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class DocumentFormat {
@@ -77,7 +77,7 @@ public class DocumentFormat {
         this.mimeType = mimeType;
         this.inputFamily = inputFamily;
         this.loadProperties = Optional.ofNullable(loadProperties)
-                .map(HashMap<String, Object>::new)
+                .map(HashMap::new)
                 .map(mapCopy -> unmodifiable ? Collections.unmodifiableMap(mapCopy) : mapCopy)
                 .orElse(null);
         this.storeProperties = Optional.ofNullable(storeProperties)

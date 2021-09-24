@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * HTTP 媒体类型
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Data
@@ -69,6 +69,12 @@ public class MediaType {
      */
     public static final String APPLICATION_XML = "application/xml";
     public static final MediaType APPLICATION_XML_TYPE = new MediaType("application", "xml");
+
+    /**
+     * "application/x-protobuf"
+     */
+    public static final String APPLICATION_PROTOBUF = "application/x-protobuf";
+    public static final MediaType APPLICATION_PROTOBUF_TYPE = new MediaType("application", "x-protobuf");
 
     /**
      * "application/atom+xml"

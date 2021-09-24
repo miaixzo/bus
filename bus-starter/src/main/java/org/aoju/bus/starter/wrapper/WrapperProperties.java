@@ -39,7 +39,7 @@ import java.util.Set;
  * 配置信息
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Data
@@ -47,9 +47,9 @@ import java.util.Set;
 public class WrapperProperties {
 
     private int order;
-    private String name = "hi-wrapper";
+    private String name = "extend-wrapper";
     /**
-     * 指示已启用注册.
+     * 指示已启用注册
      */
     private Boolean enabled = true;
     private Map<String, String> initParameters = new LinkedHashMap<>();

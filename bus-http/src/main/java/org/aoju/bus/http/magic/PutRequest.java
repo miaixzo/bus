@@ -42,7 +42,7 @@ import java.util.Map;
  * PUT请求处理
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class PutRequest extends HttpRequest {
@@ -53,7 +53,8 @@ public class PutRequest extends HttpRequest {
                       Map<String, String> headers,
                       List<PostRequest.FileInfo> fileInfos,
                       String body,
-                      MultipartBody multipartBody, int id) {
+                      MultipartBody multipartBody,
+                      String id) {
         super(url, tag, params, headers, fileInfos, body, multipartBody, id);
     }
 

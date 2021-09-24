@@ -50,7 +50,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class Crypto extends AbstractCrypto<Crypto> {

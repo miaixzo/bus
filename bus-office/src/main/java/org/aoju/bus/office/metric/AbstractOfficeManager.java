@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 所有{@link OfficeManager}的基类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficeManager implements OfficeManager, TemporaryFileMaker {
@@ -67,7 +67,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
      */
     protected static File makeTempDir(final File workingDir) {
         final File tempDir = new File(workingDir, "converter_" + ObjectID.id());
-        tempDir.mkdir();
+        tempDir.mkdirs();
         if (!tempDir.isDirectory()) {
             throw new IllegalStateException(String.format("Cannot create temp directory: %s", tempDir));
         }

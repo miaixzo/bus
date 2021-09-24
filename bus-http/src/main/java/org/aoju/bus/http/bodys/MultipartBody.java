@@ -43,7 +43,7 @@ import java.util.UUID;
  * 用于复合对象
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class MultipartBody extends RequestBody {
@@ -163,7 +163,7 @@ public final class MultipartBody extends RequestBody {
 
             MediaType contentType = body.contentType();
             if (null != contentType) {
-                sink.writeUtf8("Content-Type: ")
+                sink.writeUtf8(Header.CONTENT_TYPE + ": ")
                         .writeUtf8(contentType.toString())
                         .write(CRLF);
             }

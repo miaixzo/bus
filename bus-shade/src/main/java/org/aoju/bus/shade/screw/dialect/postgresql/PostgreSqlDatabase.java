@@ -32,7 +32,7 @@ import org.aoju.bus.shade.screw.metadata.Database;
  * 数据库信息
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Data

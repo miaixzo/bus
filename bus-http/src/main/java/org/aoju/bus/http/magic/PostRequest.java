@@ -45,19 +45,19 @@ import java.util.Map;
  * POST请求处理
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class PostRequest extends HttpRequest {
 
     public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
-                       List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody, int id) {
+                       List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody, String id) {
         super(url, tag, params, headers, fileInfos, postBody, multipartBody, id);
     }
 
     public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> encodeParams,
                        Map<String, String> headers, List<FileInfo> fileInfos, String postBody, MultipartBody multipartBody,
-                       int id) {
+                       String id) {
         super(url, tag, params, encodeParams, headers, fileInfos, postBody, multipartBody, id);
     }
 

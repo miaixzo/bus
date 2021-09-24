@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
@@ -45,7 +46,7 @@ import java.util.Map;
  * Teambition授权登录
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class TeambitionProvider extends AbstractProvider {
@@ -84,7 +85,7 @@ public class TeambitionProvider extends AbstractProvider {
     @Override
     public Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "OAuth2 " + accToken.getAccessToken());
+        header.put(Header.AUTHORIZATION, "OAuth2 " + accToken.getAccessToken());
 
         String response = Httpx.post(source.userInfo(), null, header);
         JSONObject object = JSONObject.parseObject(response);

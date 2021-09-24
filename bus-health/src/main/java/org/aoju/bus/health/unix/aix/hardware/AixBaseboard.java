@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * Baseboard data obtained by lscfg
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Immutable

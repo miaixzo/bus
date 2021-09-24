@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -48,7 +49,7 @@ import java.util.Map;
  * 领英登录
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class LinkedinProvider extends AbstractProvider {
@@ -71,9 +72,9 @@ public class LinkedinProvider extends AbstractProvider {
         String accessToken = accToken.getAccessToken();
 
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "api.linkedin.com");
-        header.put("Connection", "Keep-Alive");
-        header.put("Authorization", "Bearer " + accessToken);
+        header.put(Header.HOST, "api.linkedin.com");
+        header.put(Header.CONNECTION, "Keep-Alive");
+        header.put(Header.AUTHORIZATION, "Bearer " + accessToken);
 
         String response = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(response);
@@ -187,9 +188,9 @@ public class LinkedinProvider extends AbstractProvider {
      */
     private String getUserEmail(String accessToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "api.linkedin.com");
-        header.put("Connection", "Keep-Alive");
-        header.put("Authorization", "Bearer " + accessToken);
+        header.put(Header.HOST, "api.linkedin.com");
+        header.put(Header.CONNECTION, "Keep-Alive");
+        header.put(Header.AUTHORIZATION, "Bearer " + accessToken);
 
         String url = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
         String response = Httpx.get(url, null, header);
@@ -228,7 +229,7 @@ public class LinkedinProvider extends AbstractProvider {
      */
     private AccToken getToken(String accessTokenUrl) {
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "www.linkedin.com");
+        header.put(Header.HOST, "www.linkedin.com");
 
         String response = Httpx.get(accessTokenUrl, null, header);
         JSONObject object = JSONObject.parseObject(response);

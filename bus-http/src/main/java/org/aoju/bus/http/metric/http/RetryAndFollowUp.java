@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.exception.RelevantException;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -55,7 +56,7 @@ import java.security.cert.CertificateException;
  * 如果调用被取消，它可能会抛出{@link IOException}
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class RetryAndFollowUp implements Interceptor {
@@ -288,7 +289,7 @@ public final class RetryAndFollowUp implements Interceptor {
             case Http.HTTP_SEE_OTHER:
                 if (!client.followRedirects()) return null;
 
-                String location = userResponse.header("Location");
+                String location = userResponse.header(Header.LOCATION);
                 if (null == location) return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
@@ -309,12 +310,12 @@ public final class RetryAndFollowUp implements Interceptor {
                     if (!maintainBody) {
                         requestBuilder.removeHeader("Transfer-Encoding");
                         requestBuilder.removeHeader("Content-Length");
-                        requestBuilder.removeHeader("Content-Type");
+                        requestBuilder.removeHeader(Header.CONTENT_TYPE);
                     }
                 }
 
                 if (!sameConnection(userResponse, url)) {
-                    requestBuilder.removeHeader("Authorization");
+                    requestBuilder.removeHeader(Header.AUTHORIZATION);
                 }
 
                 return requestBuilder.url(url).build();

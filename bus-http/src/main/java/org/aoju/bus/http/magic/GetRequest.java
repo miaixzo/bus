@@ -34,19 +34,19 @@ import java.util.Map;
  * GET请求处理
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class GetRequest extends HttpRequest {
 
     public GetRequest(String url, Object tag, Map<String, String> params,
-                      Map<String, String> headers, int id) {
+                      Map<String, String> headers, String id) {
         super(url, tag, params, headers, null, null, null, id);
     }
 
     public GetRequest(String url, Object tag, Map<String, String> params,
                       Map<String, String> encodedParams,
-                      Map<String, String> headers, int id) {
+                      Map<String, String> headers, String id) {
         super(url, tag, params, encodedParams, headers, null, null, null, id);
     }
 

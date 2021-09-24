@@ -35,7 +35,7 @@ import java.util.function.Function;
  *
  * @param <T> 被比较的对象
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class FuncCompare<T> extends NullCompare<T> {

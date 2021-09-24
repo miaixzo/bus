@@ -897,22 +897,21 @@ HttpCall call=http.async("/upload")
 ```java
     private static class LocalCookieJar implements CookieJar {
 
-    List<Cookie> cookies;
-
-    @Override
-    public List<Cookie> loadForRequest(UnoUrl arg0) {
-        if (null != cookies) {
-            return cookies;
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public void saveFromResponse(UnoUrl arg0, List<Cookie> cookies) {
-        this.cookies = cookies;
-    }
-
-}
+       List<Cookie> cookies;
+   
+       @Override
+       public List<Cookie> loadForRequest(UnoUrl arg0) {
+           if (null != cookies) {
+               return cookies;
+           }
+           return new ArrayList<>();
+       }
+   
+       @Override
+       public void saveFromResponse(UnoUrl arg0, List<Cookie> cookies) {
+           this.cookies = cookies;
+       }
+   }
 
 
     LocalCookieJar cookie = new LocalCookieJar();
@@ -928,7 +927,6 @@ HttpCall call=http.async("/upload")
             .build()
             .execute();
             System.out.println(cookie.cookies);
-
 ```
 
 11.设置Content-Type为application/json
@@ -941,7 +939,6 @@ HttpCall call=http.async("/upload")
         url(url).
         build().
         execute();
-
 ```
 
 12.取消请求
@@ -953,4 +950,16 @@ HttpCall call=http.async("/upload")
     HttpResponse delegate = call.execute();
     call.cancel();
     System.out.println(delegate.string());
+```
+
+13.取消所有请求
+
+```java
+    Httpz.cancelAll();
+```
+
+14.按照TAG取消请求
+
+```java
+    Httpz.cancel(tag);
 ```

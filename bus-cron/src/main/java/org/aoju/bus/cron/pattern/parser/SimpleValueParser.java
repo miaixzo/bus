@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 简易值转换器 将给定String值转为int
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class SimpleValueParser implements ValueParser {

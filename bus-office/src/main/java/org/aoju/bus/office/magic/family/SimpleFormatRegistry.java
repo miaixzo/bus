@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * SimpleDocumentFormatRegistry包含office支持的文档格式集合.
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class SimpleFormatRegistry implements FormatRegistry {
@@ -57,8 +57,8 @@ public class SimpleFormatRegistry implements FormatRegistry {
     }
 
     @Override
-    public DocumentFormat getFormatByExtension(final String extension) {
-        return null == extension ? null : fmtsByExtension.get(StringKit.lowerCase(extension));
+    public DocumentFormat getFormatBySuffix(final String suffix) {
+        return null == suffix ? null : fmtsByExtension.get(StringKit.lowerCase(suffix));
     }
 
     @Override

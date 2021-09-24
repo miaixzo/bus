@@ -48,13 +48,13 @@ import java.util.Map;
  * 数据解密
  *
  * @author Justubborn
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class DecryptFilter implements WebFilter {
 
-    private final Config.Decrypt decrypt;
+    private Config.Decrypt decrypt;
     private Crypto crypto;
 
     public DecryptFilter(Config.Decrypt decrypt) {
@@ -74,7 +74,6 @@ public class DecryptFilter implements WebFilter {
         if (decrypt.isEnabled() && Context.get(exchange).isNeedDecrypt()) {
             doDecrypt(Context.get(exchange).getRequestMap());
         }
-
         return chain.filter(builder.build());
     }
 

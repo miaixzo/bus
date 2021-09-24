@@ -23,53 +23,36 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.i18n;
+package org.aoju.bus.office.support.excel.cell.setters;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Component;
+import org.aoju.bus.office.support.excel.cell.CellSetter;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Hyperlink;
 
 /**
- * 获取本地 i18n 资源
- * key = value
+ * {@link Hyperlink} 值单元格设置器
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
-@Component
-public class LocaleMessage {
+public class HyperlinkCellSetter implements CellSetter {
 
-    private final MessageSource messageSource;
-
-    @Autowired
-    public LocaleMessage(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
-
-    public String getMessage(String code) {
-        return getMessage(code, null);
-    }
+    private final Hyperlink value;
 
     /**
-     * @param code ：对应messages配置的key.
-     * @param args : 数组参数.
-     * @return 返回获取到的结果
+     * 构造
+     *
+     * @param value 值
      */
-    public String getMessage(String code, Object[] args) {
-        return getMessage(code, args, null);
+    HyperlinkCellSetter(Hyperlink value) {
+        this.value = value;
     }
 
-    /**
-     * @param code           ：对应messages配置的key.
-     * @param args           : 数组参数.
-     * @param defaultMessage : 没有设置key的时候的默认值.
-     * @return 返回获取到的结果
-     */
-    public String getMessage(String code, Object[] args, String defaultMessage) {
-        //这里使用比较方便的方法,不依赖request.
-        return messageSource.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
+    @Override
+    public void setValue(Cell cell) {
+        cell.setHyperlink(this.value);
+        cell.setCellValue(this.value.getLabel());
     }
 
 }

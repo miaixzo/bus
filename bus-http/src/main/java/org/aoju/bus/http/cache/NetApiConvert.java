@@ -65,7 +65,7 @@ import java.util.Set;
  * 在Java和Httpd表示之间进行转换的方法
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class NetApiConvert {
@@ -179,8 +179,8 @@ public final class NetApiConvert {
         for (String fieldName : varyFields) {
             List<String> fieldValues = requestProperties.get(fieldName);
             if (null == fieldValues) {
-                if (fieldName.equals("Accept-Encoding")) {
-                    result.add("Accept-Encoding", "gzip");
+                if (fieldName.equals(Header.ACCEPT_ENCODING)) {
+                    result.add(Header.ACCEPT_ENCODING, "gzip");
                 }
             } else {
                 for (String fieldValue : fieldValues) {

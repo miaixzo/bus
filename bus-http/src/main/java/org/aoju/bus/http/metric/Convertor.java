@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Wapper;
 
@@ -37,7 +38,7 @@ import java.util.List;
  * 消息转换器接口
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public interface Convertor {
@@ -121,7 +122,7 @@ public interface Convertor {
 
         @Override
         public String mediaType() {
-            return "application/x-www-form-urlencoded";
+            return MediaType.APPLICATION_FORM_URLENCODED;
         }
 
         @Override

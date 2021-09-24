@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * 服务来自缓存的请求并将响应写入缓存。
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class CacheInterceptor implements Interceptor {
@@ -103,14 +103,14 @@ public final class CacheInterceptor implements Interceptor {
      * @return the true/false
      */
     static boolean isEndToEnd(String fieldName) {
-        return !"Connection".equalsIgnoreCase(fieldName)
-                && !"Keep-Alive".equalsIgnoreCase(fieldName)
-                && !"Proxy-Authenticate".equalsIgnoreCase(fieldName)
-                && !"Proxy-Authorization".equalsIgnoreCase(fieldName)
-                && !"TE".equalsIgnoreCase(fieldName)
-                && !"Trailers".equalsIgnoreCase(fieldName)
-                && !"Transfer-Encoding".equalsIgnoreCase(fieldName)
-                && !"Upgrade".equalsIgnoreCase(fieldName);
+        return !Header.CONNECTION.equalsIgnoreCase(fieldName)
+                && !Header.KEEP_ALIVE.equalsIgnoreCase(fieldName)
+                && !Header.PROXY_AUTHENTICATE.equalsIgnoreCase(fieldName)
+                && !Header.PROXY_AUTHORIZATION.equalsIgnoreCase(fieldName)
+                && !Header.TE.equalsIgnoreCase(fieldName)
+                && !Header.TRAILERS.equalsIgnoreCase(fieldName)
+                && !Header.TRANSFER_ENCODING.equalsIgnoreCase(fieldName)
+                && !Header.UPGRADE.equalsIgnoreCase(fieldName);
     }
 
     /**

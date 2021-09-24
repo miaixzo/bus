@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * 并可以跳过读取和关闭该源
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class Http1Codec implements HttpCodec {
@@ -114,7 +114,7 @@ public final class Http1Codec implements HttpCodec {
     @Override
     public ResponseBody openResponseBody(Response response) {
         streamAllocation.eventListener.responseBodyStart(streamAllocation.call);
-        String contentType = response.header("Content-Type");
+        String contentType = response.header(Header.CONTENT_TYPE);
 
         if (!HttpHeaders.hasBody(response)) {
             Source source = newFixedLengthSource(0);

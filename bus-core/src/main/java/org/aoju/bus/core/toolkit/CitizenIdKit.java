@@ -37,7 +37,7 @@ import java.util.Objects;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -308,6 +308,7 @@ public class CitizenIdKit {
         } else if (idcard.matches("^[157][0-9]{6}\\(?[0-9A-Z]\\)?$")) {
             info[0] = "澳门";
             info[1] = "N";
+            info[2] = "true";
         } else if (idcard.matches("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$")) {
             info[0] = "香港";
             info[1] = "N";

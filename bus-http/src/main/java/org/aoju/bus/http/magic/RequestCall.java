@@ -35,7 +35,7 @@ import java.io.IOException;
  * 请求调用者
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class RequestCall {
@@ -83,7 +83,7 @@ public class RequestCall {
 
     private void execute(final RequestCall requestCall, AbsCallback absCallback) {
         final AbsCallback finalAbsCallback = absCallback;
-        final int id = requestCall.getHttpRequest().getId();
+        final String id = requestCall.getHttpRequest().getId();
         requestCall.getNewCall().enqueue(new org.aoju.bus.http.Callback() {
             @Override
             public void onFailure(NewCall newCall, final IOException e) {

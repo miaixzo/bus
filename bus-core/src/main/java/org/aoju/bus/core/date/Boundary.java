@@ -35,7 +35,7 @@ import java.util.Date;
  * 日期范围
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class Boundary extends Range<DateTime> {

@@ -26,6 +26,7 @@
 package org.aoju.bus.http.magic;
 
 import org.aoju.bus.http.NewCall;
+import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
 
@@ -33,22 +34,31 @@ import java.io.IOException;
  * 回调处理
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class StringCallback extends AbsCallback {
 
     @Override
-    public void onResponse(NewCall newCall, HttpResponse response, int id) {
+    public void onResponse(NewCall call, HttpResponse response, String id) {
         try {
-            onSuccess(newCall, response.body().string(), id);
+            onSuccess(call, response.body().string(), id);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.error(e.getMessage(), e);
         }
     }
 
-    public void onSuccess(NewCall newCall, String response, int id) {
-
+    @Override
+    public void onFailure(NewCall call, Exception e, String id) {
+        Logger.error("onFailure id:{}", id);
+        Logger.error(e.getMessage(), e);
     }
+
+    /**
+     * @param call     回调
+     * @param response 响应信息
+     * @param id       当前请求标识
+     */
+    public abstract void onSuccess(NewCall call, String response, String id);
 
 }

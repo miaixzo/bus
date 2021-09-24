@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class WriteBuffer extends OutputStream {
@@ -51,7 +51,7 @@ public final class WriteBuffer extends OutputStream {
     private final ReentrantLock readLock = new ReentrantLock();
     private final ReentrantLock writeLock = new ReentrantLock();
     /**
-     * Condition for waiting puts
+     * 等待置位条件
      */
     private final Condition notFull = readLock.newCondition();
 
@@ -60,7 +60,7 @@ public final class WriteBuffer extends OutputStream {
      */
     private final PageBuffer pageBuffer;
     /**
-     * 缓冲区数据刷新Function
+     * 缓冲区数据刷新
      */
     private final Consumer<WriteBuffer> consumer;
     /**
@@ -91,6 +91,10 @@ public final class WriteBuffer extends OutputStream {
      * 辅助8字节以内输出的缓存组数
      */
     private byte[] cacheByte;
+    /**
+     * 当前持有write锁的线程
+     */
+    private volatile Thread writeLockThread;
 
     public WriteBuffer(PageBuffer pageBuffer, Consumer<WriteBuffer> consumer, int chunkSize, int capacity) {
         this.pageBuffer = pageBuffer;
@@ -128,7 +132,7 @@ public final class WriteBuffer extends OutputStream {
      * @see #write(int)
      */
     public void writeByte(byte b) {
-        writeLock.lock();
+        boolean suc = writeLock();
         try {
             if (writeInBuf == null) {
                 writeInBuf = pageBuffer.allocate(chunkSize);
@@ -136,41 +140,9 @@ public final class WriteBuffer extends OutputStream {
             writeInBuf.buffer().put(b);
             flushWriteBuffer(false);
         } finally {
-            writeLock.unlock();
-        }
-    }
-
-    private void flushWriteBuffer(boolean forceFlush) {
-        if (!forceFlush && writeInBuf.buffer().hasRemaining()) {
-            return;
-        }
-        consumer.accept(this);
-        if (writeInBuf == null || writeInBuf.buffer().position() == 0) {
-            return;
-        }
-        writeInBuf.buffer().flip();
-        VirtualBuffer virtualBuffer = writeInBuf;
-        writeInBuf = null;
-        readLock.lock();
-        try {
-            while (count == items.length) {
-                notFull.await();
-                // 防止因close诱发内存泄露
-                if (closed) {
-                    virtualBuffer.clean();
-                    return;
-                }
+            if (suc) {
+                writeUnLock();
             }
-
-            items[putIndex] = virtualBuffer;
-            if (++putIndex == items.length) {
-                putIndex = 0;
-            }
-            count++;
-        } catch (InterruptedException e1) {
-            throw new RuntimeException(e1);
-        } finally {
-            readLock.unlock();
         }
     }
 
@@ -211,7 +183,7 @@ public final class WriteBuffer extends OutputStream {
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        writeLock.lock();
+        boolean suc = writeLock();
         try {
             while (len > 0) {
                 if (writeInBuf == null) {
@@ -230,17 +202,18 @@ public final class WriteBuffer extends OutputStream {
                 flushWriteBuffer(false);
             }
         } finally {
-            writeLock.unlock();
+            if (suc) {
+                writeUnLock();
+            }
         }
     }
-
 
     public void write(ByteBuffer buffer) {
         write(VirtualBuffer.wrap(buffer));
     }
 
     public void write(VirtualBuffer virtualBuffer) {
-        writeLock.lock();
+        boolean suc = writeLock();
         try {
             if (writeInBuf != null && !virtualBuffer.buffer().isDirect() && writeInBuf.buffer().remaining() > virtualBuffer.buffer().remaining()) {
                 writeInBuf.buffer().put(virtualBuffer.buffer());
@@ -254,16 +227,9 @@ public final class WriteBuffer extends OutputStream {
             }
             flushWriteBuffer(false);
         } finally {
-            writeLock.unlock();
-        }
-    }
-
-    /**
-     * 初始化8字节的缓存数值
-     */
-    private void initCacheBytes() {
-        if (cacheByte == null) {
-            cacheByte = new byte[8];
+            if (suc) {
+                writeUnLock();
+            }
         }
     }
 
@@ -310,14 +276,16 @@ public final class WriteBuffer extends OutputStream {
         flush();
         closed = true;
         if (writeInBuf != null) {
-            writeLock.lock();
+            boolean suc = writeLock();
             try {
                 if (writeInBuf != null) {
                     writeInBuf.clean();
                     writeInBuf = null;
                 }
             } finally {
-                writeLock.unlock();
+                if (suc) {
+                    writeUnLock();
+                }
             }
         }
         VirtualBuffer byteBuf;
@@ -325,7 +293,6 @@ public final class WriteBuffer extends OutputStream {
             byteBuf.clean();
         }
     }
-
 
     /**
      * 是否存在待输出的数据
@@ -338,7 +305,7 @@ public final class WriteBuffer extends OutputStream {
 
     public void reuse(VirtualBuffer buffer) {
         boolean clean = true;
-        if (writeInBuf == null && writeLock.tryLock()) {
+        if (writeInBuf == null && (writeLockThread == Thread.currentThread() || writeLock.tryLock())) {
             try {
                 if (writeInBuf == null) {
                     writeInBuf = buffer;
@@ -346,7 +313,9 @@ public final class WriteBuffer extends OutputStream {
                     clean = false;
                 }
             } finally {
-                writeLock.unlock();
+                if (writeLockThread != Thread.currentThread()) {
+                    writeLock.unlock();
+                }
             }
         }
 
@@ -389,7 +358,7 @@ public final class WriteBuffer extends OutputStream {
         if (count > 0) {
             return pollQueue();
         }
-        if (writeInBuf == null || !writeLock.tryLock()) {
+        if (writeInBuf == null || !(writeLockThread == Thread.currentThread() || writeLock.tryLock())) {
             return null;
         }
         try {
@@ -405,8 +374,76 @@ public final class WriteBuffer extends OutputStream {
                 return null;
             }
         } finally {
-            writeLock.unlock();
+            if (writeLockThread != Thread.currentThread()) {
+                writeLock.unlock();
+            }
         }
+    }
+
+    private void flushWriteBuffer(boolean forceFlush) {
+        if (!forceFlush && writeInBuf.buffer().hasRemaining()) {
+            return;
+        }
+        consumer.accept(this);
+        if (writeInBuf == null || writeInBuf.buffer().position() == 0) {
+            return;
+        }
+        writeInBuf.buffer().flip();
+        VirtualBuffer virtualBuffer = writeInBuf;
+        writeInBuf = null;
+        readLock.lock();
+        try {
+            while (count == items.length) {
+                notFull.await();
+                // 防止因close诱发内存泄露
+                if (closed) {
+                    virtualBuffer.clean();
+                    return;
+                }
+            }
+
+            items[putIndex] = virtualBuffer;
+            if (++putIndex == items.length) {
+                putIndex = 0;
+            }
+            count++;
+        } catch (InterruptedException e1) {
+            throw new RuntimeException(e1);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    /**
+     * 初始化8字节的缓存数值
+     */
+    private void initCacheBytes() {
+        if (cacheByte == null) {
+            cacheByte = new byte[8];
+        }
+    }
+
+    /**
+     * 当前持有write锁的线程
+     *
+     * @return 是否持有锁
+     */
+    private boolean writeLock() {
+        if (writeLockThread != Thread.currentThread()) {
+            writeLock.lock();
+            writeLockThread = Thread.currentThread();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 当前持有write锁的线程
+     */
+    private void writeUnLock() {
+        writeLockThread = null;
+        writeLock.unlock();
     }
 
 }

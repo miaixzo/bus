@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
  * 实用方法工具
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class Builder {
@@ -126,10 +126,6 @@ public abstract class Builder {
     public static final String UNKNOWN = "UNKNOWN";
     public static final String ERROR = "ERROR";
 
-    public static final String FORM = "form";
-    public static final String JSON = "json";
-    public static final String XML = "xml";
-    public static final String PROTOBUF = "protobuf";
     public static Builder instance;
 
     static {
@@ -176,10 +172,6 @@ public abstract class Builder {
 
     public static String format(Date value) {
         return STANDARD_DATE_FORMAT.get().format(value);
-    }
-
-    public static void initializeInstanceForTests() {
-        new Httpd();
     }
 
     public static void addSuppressedIfPossible(Throwable e, Throwable suppressed) {

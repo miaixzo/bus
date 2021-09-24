@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -63,7 +64,7 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class SoapX {
@@ -699,7 +700,7 @@ public class SoapX {
      */
     public HttpResponse transpond() {
         try {
-            this.headers("Content-Type", getContentType());
+            this.headers(Header.CONTENT_TYPE, getContentType());
             return Httpz.post()
                     .url(this.url)
                     .headers(this.headers)

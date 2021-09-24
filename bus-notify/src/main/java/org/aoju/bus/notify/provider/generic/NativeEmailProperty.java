@@ -38,7 +38,7 @@ import java.io.File;
  * 电子邮件消息
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Getter

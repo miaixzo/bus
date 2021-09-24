@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {
@@ -100,6 +100,20 @@ public final class DiskLruCache implements Closeable, Flushable {
      * 如果快照的序列号不等于其条目的序列号，则该快照将失效
      */
     private long nextSequenceNumber = 0;
+
+    DiskLruCache(FileSystem fileSystem, File directory, int appVersion, int valueCount, long maxSize,
+                 Executor executor) {
+        this.fileSystem = fileSystem;
+        this.directory = directory;
+        this.appVersion = appVersion;
+        this.journalFile = new File(directory, JOURNAL_FILE);
+        this.journalFileTmp = new File(directory, JOURNAL_FILE_TEMP);
+        this.journalFileBackup = new File(directory, JOURNAL_FILE_BACKUP);
+        this.valueCount = valueCount;
+        this.maxSize = maxSize;
+        this.executor = executor;
+    }
+
     private final Runnable cleanupRunnable = new Runnable() {
         public void run() {
             synchronized (DiskLruCache.this) {
@@ -125,18 +139,6 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
     };
-    DiskLruCache(FileSystem fileSystem, File directory, int appVersion, int valueCount, long maxSize,
-                 Executor executor) {
-        this.fileSystem = fileSystem;
-        this.directory = directory;
-        this.appVersion = appVersion;
-        this.journalFile = new File(directory, JOURNAL_FILE);
-        this.journalFileTmp = new File(directory, JOURNAL_FILE_TEMP);
-        this.journalFileBackup = new File(directory, JOURNAL_FILE_BACKUP);
-        this.valueCount = valueCount;
-        this.maxSize = maxSize;
-        this.executor = executor;
-    }
 
     /**
      * 创建一个驻留在{@code directory}中的缓存。此缓存在第一次访问时惰性初始化，如果它不存在，将创建它.

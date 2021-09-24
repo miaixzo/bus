@@ -62,7 +62,7 @@ import java.util.concurrent.TimeUnit;
  * 连接提供
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {
@@ -423,7 +423,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                         throw new IOException("Failed to authenticate with proxy");
                     }
 
-                    if ("close".equalsIgnoreCase(response.header("Connection"))) {
+                    if ("close".equalsIgnoreCase(response.header(Header.CONNECTION))) {
                         return tunnelRequest;
                     }
                     break;

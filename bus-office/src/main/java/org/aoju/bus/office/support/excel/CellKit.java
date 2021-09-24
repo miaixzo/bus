@@ -50,7 +50,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -189,6 +189,11 @@ public class CellKit {
             // 数字单独定义格式
             if ((value instanceof Double || value instanceof Float || value instanceof BigDecimal) && null != styleSet && null != styleSet.getCellStyleForNumber()) {
                 cell.setCellStyle(styleSet.getCellStyleForNumber());
+            }
+        } else if (value instanceof Hyperlink) {
+            // 自定义超链接样式
+            if (null != styleSet && null != styleSet.getCellStyleForHyperlink()) {
+                cell.setCellStyle(styleSet.getCellStyleForHyperlink());
             }
         }
 

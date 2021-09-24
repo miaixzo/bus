@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.BulkData;
@@ -40,7 +41,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile {
@@ -113,10 +114,10 @@ public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile
             out.writeBytes(MULTIPART_BOUNDARY);
             byte[] fsep = MultipartParser.Separator.FIELD.getType();
             out.write(fsep);
-            out.writeBytes("Content-Type: ");
+            out.writeBytes(Header.CONTENT_TYPE + ": ");
             out.writeBytes(mdiaType);
             out.write(fsep);
-            out.writeBytes("Content-Location: ");
+            out.writeBytes(Header.CONTENT_LOCATION + ": ");
             out.writeBytes(getContentLocation(metadata));
             out.write(MultipartParser.Separator.HEADER.getType());
 

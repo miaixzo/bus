@@ -44,7 +44,7 @@ import java.io.InputStream;
  * 所有文档转换器实现的基类.
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {
@@ -71,7 +71,7 @@ public abstract class AbstractProvider implements Provider {
     public OptionalSource convert(final File source) {
         final SourceFromFileProvider specs = new SourceFromFileProvider(source);
         final DocumentFormat format =
-                formatRegistry.getFormatByExtension(FileKit.getSuffix(source.getName()));
+                formatRegistry.getFormatBySuffix(FileKit.getSuffix(source.getName()));
         if (null != format) {
             specs.setDocumentFormat(format);
         }

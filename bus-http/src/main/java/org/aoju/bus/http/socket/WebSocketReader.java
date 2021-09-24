@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * 这个类不是线程安全的
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 final class WebSocketReader {

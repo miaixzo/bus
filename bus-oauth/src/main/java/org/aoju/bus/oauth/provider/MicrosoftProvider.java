@@ -28,6 +28,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -49,7 +50,7 @@ import java.util.Map;
  * 微软登录
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class MicrosoftProvider extends AbstractProvider {
@@ -75,7 +76,7 @@ public class MicrosoftProvider extends AbstractProvider {
      */
     private AccToken getToken(String accessTokenUrl) {
         Map<String, String> header = new HashMap<>();
-        header.put("Host", "https://login.microsoftonline.com");
+        header.put(Header.HOST, "https://login.microsoftonline.com");
 
         Map<String, Object> paramMap = new HashMap<>();
         UriKit.decodeVal(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
@@ -112,7 +113,7 @@ public class MicrosoftProvider extends AbstractProvider {
         String jwt = tokenType + Symbol.SPACE + token;
 
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", jwt);
+        header.put(Header.AUTHORIZATION, jwt);
 
         String response = Httpx.get(userInfoUrl(accToken), null, header);
 
