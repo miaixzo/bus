@@ -32,7 +32,7 @@ import java.util.List;
  * CSV数据,包括头部信息和行数据
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class CsvData {

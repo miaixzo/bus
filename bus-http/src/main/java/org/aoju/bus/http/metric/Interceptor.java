@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * 通常，拦截器在请求或响应上添加、删除或转换标头
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public interface Interceptor {

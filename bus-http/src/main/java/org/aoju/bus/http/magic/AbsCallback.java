@@ -31,7 +31,7 @@ import org.aoju.bus.http.NewCall;
  * 回调处理
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class AbsCallback {

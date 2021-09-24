@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * Memory obtained by /proc/meminfo and /proc/vmstat
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @ThreadSafe

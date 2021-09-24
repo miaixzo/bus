@@ -54,7 +54,7 @@ import org.aoju.bus.core.toolkit.ClassKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class MultilineToStringStyle extends RecursiveToStringStyle {

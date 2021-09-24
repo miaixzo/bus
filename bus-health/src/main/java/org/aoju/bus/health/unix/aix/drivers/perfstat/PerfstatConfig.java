@@ -32,7 +32,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * Utility to query partition config
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @ThreadSafe

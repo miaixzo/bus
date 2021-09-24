@@ -33,7 +33,7 @@ import org.apache.poi.ss.usermodel.RichTextString;
  * {@link RichTextString} 值单元格设置器
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class RichTextCellSetter implements CellSetter {

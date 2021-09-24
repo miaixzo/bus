@@ -56,7 +56,7 @@ import java.util.*;
  * 缓存HTTP和HTTPS对文件系统的响应，以便可以重用它们，从而节省时间和带宽.
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public final class Cache implements Closeable, Flushable {

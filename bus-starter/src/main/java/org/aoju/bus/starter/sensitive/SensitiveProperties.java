@@ -33,7 +33,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 /**
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Data

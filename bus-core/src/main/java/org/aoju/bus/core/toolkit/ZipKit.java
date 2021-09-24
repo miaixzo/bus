@@ -48,7 +48,7 @@ import java.util.zip.ZipOutputStream;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class ZipKit {

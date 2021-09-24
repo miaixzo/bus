@@ -32,7 +32,7 @@ import java.util.TimeZone;
  * 日期基本信息获取接口
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public interface DateMotd {

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>6.2.8</version>
+    <version>6.2.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.5.3</spring.boot.version>
+        <spring.boot.version>2.5.5</spring.boot.version>
         <compress.version>1.21</compress.version>
         <freemarker.version>2.3.30</freemarker.version>
         <lombok.version>1.18.20</lombok.version>

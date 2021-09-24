@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 心跳插件
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class HeartPlugin<T> extends AbstractPlugin<T> {

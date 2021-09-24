@@ -38,7 +38,7 @@ import java.util.List;
  * 消息转换器接口
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public interface Convertor {

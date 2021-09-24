@@ -35,8 +35,9 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
 /**
  * BouncyCastle的HMAC算法实现引擎，使用{@link Mac} 实现摘要
  * 当引入BouncyCastle库时自动使用其作为Provider
+ *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class BCHMacEngine implements MacEngine {

@@ -41,7 +41,7 @@ import java.nio.channels.WritableByteChannel;
  * {@link ReadableByteChannel} 向 {@link WritableByteChannel} 拷贝
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteChannel> {

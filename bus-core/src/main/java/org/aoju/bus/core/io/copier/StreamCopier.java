@@ -38,7 +38,7 @@ import java.io.OutputStream;
  * {@link InputStream} 向 {@link OutputStream} 拷贝
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class StreamCopier extends IoCopier<InputStream, OutputStream> {

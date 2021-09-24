@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * 存储服务-京东云
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class JdYunOssProvider extends AbstractProvider {

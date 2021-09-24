@@ -39,7 +39,7 @@ import java.lang.annotation.*;
  * ResponseBodyAdvice 脱敏加密
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 @Documented

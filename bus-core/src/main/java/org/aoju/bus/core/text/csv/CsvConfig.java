@@ -35,7 +35,7 @@ import java.util.Map;
  * CSV基础配置项
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public class CsvConfig<T extends CsvConfig<?>> implements Serializable {

@@ -31,7 +31,7 @@ import java.io.Serializable;
  * 密钥
  *
  * @author Kimi Liu
- * @version 6.2.8
+ * @version 6.2.9
  * @since JDK 1.8+
  */
 public abstract class SecureKey implements Key, Serializable {
