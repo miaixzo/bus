@@ -39,12 +39,12 @@ import org.springframework.stereotype.Component;
  * @since JDK 1.8+
  */
 @Component
-public class LocaleMessage {
+public class I18nMessage {
 
     private final MessageSource messageSource;
 
     @Autowired
-    public LocaleMessage(MessageSource messageSource) {
+    public I18nMessage(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 

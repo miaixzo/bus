@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.annotation;
 
 import org.aoju.bus.starter.i18n.I18nConfiguration;
-import org.aoju.bus.starter.i18n.LocaleMessage;
+import org.aoju.bus.starter.i18n.I18nMessage;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -42,7 +42,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import({I18nConfiguration.class, LocaleMessage.class})
+@Import({I18nConfiguration.class, I18nMessage.class})
 public @interface EnableI18n {
 
 }
