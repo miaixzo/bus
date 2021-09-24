@@ -149,8 +149,9 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
     /**
      * 同步IO注册异步线程，防止主IO线程阻塞
      *
-     * @param register
-     * @throws IOException
+     * @param register 注册对象
+     * @param opType   类型
+     * @throws IOException 异常
      */
     public synchronized void registerFuture(Consumer<Selector> register, int opType) throws IOException {
         if (futureWorker == null) {

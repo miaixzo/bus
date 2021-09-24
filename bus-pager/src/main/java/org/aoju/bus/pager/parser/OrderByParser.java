@@ -81,8 +81,8 @@ public class OrderByParser {
             return orderByElements;
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSelectBody()) {
-                return extraOrderBy(withItem.getSelectBody());
+            if (null != withItem.getSubSelect().getSelectBody()) {
+                return extraOrderBy(withItem.getSubSelect().getSelectBody());
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;

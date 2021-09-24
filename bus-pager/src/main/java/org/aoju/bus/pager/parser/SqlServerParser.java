@@ -330,8 +330,8 @@ public class SqlServerParser {
             processPlainSelect((PlainSelect) selectBody, level + 1);
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSelectBody()) {
-                processSelectBody(withItem.getSelectBody(), level + 1);
+            if (null != withItem.getSubSelect().getSelectBody()) {
+                processSelectBody(withItem.getSubSelect().getSelectBody(), level + 1);
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;
