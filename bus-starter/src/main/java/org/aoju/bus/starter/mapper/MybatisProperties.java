@@ -72,9 +72,5 @@ public class MybatisProperties {
      * 支持通过 Mapper 接口参数来传递分页参数
      */
     private String supportMethodsArguments;
-    /**
-     * 记录时间,即created,modified
-     */
-    private boolean recordTime;
 
 }
