@@ -36,6 +36,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ResolvableType;
@@ -53,13 +54,19 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 @Component
-public class SpringBuilder {
+public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * "@PostConstruct"注解标记的类中，由于ApplicationContext还未加载，导致空指针
      * 因此实现BeanFactoryPostProcessor注入ConfigurableApplicationContext实现bean的操作
      */
     private static ConfigurableApplicationContext context;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        System.setProperty("user.timezone", "Asia/Shanghai");
+        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
+    }
 
     public static ConfigurableApplicationContext getContext() {
         return SpringBuilder.context;
