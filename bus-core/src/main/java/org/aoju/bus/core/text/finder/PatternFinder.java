@@ -23,49 +23,66 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.collection;
+package org.aoju.bus.core.text.finder;
 
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * {@link Enumeration}对象转{@link Iterator}对象
+ * 正则查找器
  *
- * @param <E> 元素类型
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class EnumerationIter<E> implements Iterator<E>, Iterable<E> {
+public class PatternFinder extends TextFinder {
 
-    private final Enumeration<E> e;
+    private static final long serialVersionUID = 1L;
+
+    private final Pattern pattern;
+    private Matcher matcher;
 
     /**
      * 构造
      *
-     * @param enumeration {@link Enumeration}对象
+     * @param regex           被查找的正则表达式
+     * @param caseInsensitive 是否忽略大小写
      */
-    public EnumerationIter(Enumeration<E> enumeration) {
-        this.e = enumeration;
+    public PatternFinder(String regex, boolean caseInsensitive) {
+        this(Pattern.compile(regex, caseInsensitive ? Pattern.CASE_INSENSITIVE : 0));
+    }
+
+    /**
+     * 构造
+     *
+     * @param pattern 被查找的正则{@link Pattern}
+     */
+    public PatternFinder(Pattern pattern) {
+        this.pattern = pattern;
     }
 
     @Override
-    public boolean hasNext() {
-        return e.hasMoreElements();
+    public TextFinder setText(CharSequence text) {
+        this.matcher = pattern.matcher(text);
+        return super.setText(text);
     }
 
     @Override
-    public E next() {
-        return e.nextElement();
+    public int start(int from) {
+        if (matcher.find(from)) {
+            return matcher.start();
+        }
+        return -1;
     }
 
     @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
+    public int end(int start) {
+        return matcher.end();
     }
 
     @Override
-    public Iterator<E> iterator() {
+    public PatternFinder reset() {
+        this.matcher.reset();
         return this;
     }
 

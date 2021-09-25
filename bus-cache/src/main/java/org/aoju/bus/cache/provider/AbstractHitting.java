@@ -28,8 +28,8 @@ package org.aoju.bus.cache.provider;
 import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.setting.Builder;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.annotation.PreDestroy;
 import java.io.InputStream;
@@ -70,7 +70,7 @@ public abstract class AbstractHitting implements Hitting {
 
     protected AbstractHitting(Map<String, Object> context) {
         InputStream resource = this.getClass().getClassLoader().getResourceAsStream(Normal.META_DATA_INF + "/caches/bus-cache.yaml");
-        this.sqls = new Yaml().loadAs(resource, Properties.class);
+        this.sqls = Builder.load(resource, Properties.class);
 
         this.jdbcOperations = jdbcOperationsSupplier(context).get();
         executor.submit(() -> {

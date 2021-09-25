@@ -25,13 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.collection.LineIter;
+import org.aoju.bus.core.collection.LineIterator;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.io.copier.ChannelCopier;
 import org.aoju.bus.core.io.copier.ReaderWriterCopier;
 import org.aoju.bus.core.io.copier.StreamCopier;
 import org.aoju.bus.core.io.streams.BOMInputStream;
+import org.aoju.bus.core.io.streams.BOMReader;
 import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.io.streams.NullOutputStream;
 import org.aoju.bus.core.lang.Assert;
@@ -375,6 +376,16 @@ public class IoKit {
      */
     public static BufferedReader getReader(BOMInputStream in) {
         return getReader(in, in.getCharset());
+    }
+
+    /**
+     * 从{@link InputStream}中获取{@link BOMReader}
+     *
+     * @param in {@link InputStream}
+     * @return {@link BOMReader}
+     */
+    public static BOMReader getReader(InputStream in) {
+        return new BOMReader(in);
     }
 
     /**
@@ -829,7 +840,7 @@ public class IoKit {
         Assert.notNull(reader);
         Assert.notNull(lineHandler);
 
-        for (String line : new LineIter(reader)) {
+        for (String line : new LineIterator(reader)) {
             lineHandler.handle(line);
         }
     }

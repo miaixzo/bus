@@ -45,7 +45,7 @@ public class DateConverter extends AbstractConverter<Date> {
 
     private final Class<? extends Date> targetType;
     /**
-     * 日期格式化
+     * 日期格式
      */
     private String format;
 
@@ -102,11 +102,11 @@ public class DateConverter extends AbstractConverter<Date> {
         } else {
             // 统一按照字符串处理
             final String valueStr = convertString(value);
-            final java.util.Date date = StringKit.isBlank(this.format)
+            final DateTime dateTime = StringKit.isBlank(this.format)
                     ? DateKit.parse(valueStr) //
                     : DateKit.parse(valueStr, this.format);
-            if (null != date) {
-                return wrap(date);
+            if (null != dateTime) {
+                return wrap(dateTime);
             }
         }
         throw new InstrumentException("Can not convert {}:[{}] to {}", value.getClass().getName(), value, this.targetType.getName());
@@ -120,25 +120,25 @@ public class DateConverter extends AbstractConverter<Date> {
     /**
      * java.util.Date转为子类型
      *
-     * @param date Date
+     * @param dateTime 时间
      * @return 目标类型对象
      */
-    private java.util.Date wrap(java.util.Date date) {
+    private java.util.Date wrap(DateTime dateTime) {
         // 返回指定类型
         if (java.util.Date.class == targetType) {
-            return date;
+            return dateTime;
         }
         if (DateTime.class == targetType) {
-            return DateKit.date(date);
+            return DateKit.date(dateTime);
         }
         if (java.sql.Date.class == targetType) {
-            return new java.sql.Date(date.getTime());
+            return dateTime.toSqlDate();
         }
         if (java.sql.Time.class == targetType) {
-            return new java.sql.Time(date.getTime());
+            return new java.sql.Time(dateTime.getTime());
         }
         if (java.sql.Timestamp.class == targetType) {
-            return new java.sql.Timestamp(date.getTime());
+            return dateTime.toTimestamp();
         }
 
         throw new UnsupportedOperationException(StringKit.format("Unsupported target Date type: {}", this.targetType.getName()));

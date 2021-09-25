@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.collection.EnumerationIter;
+import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
@@ -3829,14 +3829,14 @@ public class FileKit {
      * @param resource 资源路径
      * @return 资源列表
      */
-    public static EnumerationIter<URL> getResourceIter(String resource) {
+    public static EnumerationIterator<URL> getResourceIter(String resource) {
         final Enumeration<URL> resources;
         try {
             resources = ClassKit.getClassLoader().getResources(resource);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        return new EnumerationIter<>(resources);
+        return new EnumerationIterator<>(resources);
     }
 
     /**

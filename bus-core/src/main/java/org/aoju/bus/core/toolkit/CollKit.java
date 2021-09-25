@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.ArrayIterator;
-import org.aoju.bus.core.collection.EnumerationIter;
+import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.collection.IteratorEnumeration;
 import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.compare.PropertyCompare;
@@ -2186,7 +2186,7 @@ public class CollKit {
         } else if (value instanceof Iterable) {
             iter = ((Iterable) value).iterator();
         } else if (value instanceof Enumeration) {
-            iter = new EnumerationIter<>((Enumeration) value);
+            iter = new EnumerationIterator<>((Enumeration) value);
         } else if (ArrayKit.isArray(value)) {
             iter = new ArrayIterator<>(value);
         } else if (value instanceof CharSequence) {

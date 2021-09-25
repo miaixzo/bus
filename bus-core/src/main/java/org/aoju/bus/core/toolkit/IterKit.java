@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.collection.CopiedIter;
-import org.aoju.bus.core.collection.EnumerationIter;
+import org.aoju.bus.core.collection.CopiedIterator;
+import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Func;
@@ -622,7 +622,7 @@ public class IterKit {
      * @return {@link Iterator}
      */
     public static <E> Iterator<E> asIterator(Enumeration<E> e) {
-        return new EnumerationIter<>(e);
+        return new EnumerationIterator<>(e);
     }
 
     /**
@@ -733,7 +733,7 @@ public class IterKit {
      * @return 元素类型, 当列表为空或元素全部为null时, 返回null
      */
     public static Class<?> getElementType(Iterator<?> iterator) {
-        final Iterator<?> iter2 = new CopiedIter<>(iterator);
+        final Iterator<?> iter2 = new CopiedIterator<>(iterator);
         if (iter2.hasNext()) {
             final Object t = iter2.next();
             if (null != t) {

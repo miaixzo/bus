@@ -44,7 +44,7 @@ import java.util.List;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class CopiedIter<E> implements Iterator<E>, Iterable<E>, Serializable {
+public class CopiedIterator<E> implements IterableIterator<E>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,13 +55,13 @@ public class CopiedIter<E> implements Iterator<E>, Iterable<E>, Serializable {
      *
      * @param iterator 被复制的Iterator
      */
-    public CopiedIter(Iterator<E> iterator) {
+    public CopiedIterator(Iterator<E> iterator) {
         final List<E> eleList = CollKit.newArrayList(iterator);
         this.listIterator = eleList.iterator();
     }
 
-    public static <V> CopiedIter<V> copyOf(Iterator<V> iterator) {
-        return new CopiedIter<>(iterator);
+    public static <V> CopiedIterator<V> copyOf(Iterator<V> iterator) {
+        return new CopiedIterator<>(iterator);
     }
 
     @Override

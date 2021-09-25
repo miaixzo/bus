@@ -31,6 +31,8 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.Builders;
 import org.aoju.bus.core.text.Naming;
 import org.aoju.bus.core.text.Similarity;
+import org.aoju.bus.core.text.SplitIterator;
+import org.aoju.bus.core.text.finder.*;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -39,6 +41,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Locale;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -2167,22 +2170,12 @@ public class StringKit {
      * @return 截取后的字符串数组
      */
     public static String[] splitByLength(String text, int len) {
-        int partCount = text.length() / len;
-        int lastPartCount = text.length() % len;
-        int fixPart = 0;
-        if (lastPartCount != 0) {
-            fixPart = 1;
-        }
-
-        final String[] strs = new String[partCount + fixPart];
-        for (int i = 0; i < partCount + fixPart; i++) {
-            if (i == partCount + fixPart - 1 && lastPartCount != 0) {
-                strs[i] = text.substring(i * len, i * len + lastPartCount);
-            } else {
-                strs[i] = text.substring(i * len, i * len + len);
-            }
-        }
-        return strs;
+        SplitIterator splitIter = new SplitIterator(text,
+                new LengthFinder(len),
+                Integer.MAX_VALUE,
+                false
+        );
+        return splitIter.toArray(false);
     }
 
     /**
@@ -2262,33 +2255,16 @@ public class StringKit {
      * 使用空白符切分字符串
      * 切分后的字符串两边不包含空白符,空串或空白符串并不做为元素之一
      *
-     * @param str   被切分的字符串
+     * @param text  被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
      */
-    public static List<String> split(String str, int limit) {
-        if (isEmpty(str)) {
+    public static List<String> split(String text, int limit) {
+        if (isEmpty(text)) {
             return new ArrayList<>(0);
         }
-        if (limit == 1) {
-            return CollKit.addAll(new ArrayList<>(1), str, true, true);
-        }
-
-        final List<String> list = new ArrayList<>();
-        int len = str.length();
-        int start = 0;//切分后每个部分的起始
-        for (int i = 0; i < len; i++) {
-            if (CharKit.isBlankChar(str.charAt(i))) {
-                CollKit.addAll(list, str.substring(start, i), true, true);
-                start = i + 1;//i+1同时将start与i保持一致
-
-                //检查是否超出范围(最大允许limit-1个,剩下一个留给末尾字符串)
-                if (limit > 0 && list.size() > limit - 2) {
-                    break;
-                }
-            }
-        }
-        return CollKit.addAll(list, str.substring(start, len), true, true);//收尾
+        final SplitIterator splitIter = new SplitIterator(text, new MatcherFinder(CharKit::isBlankChar), limit, true);
+        return splitIter.toList(false);
     }
 
     /**
@@ -2362,6 +2338,19 @@ public class StringKit {
         return split(str, separator, limit, isTrim, ignoreEmpty, false);
     }
 
+    /**
+     * 切分字符串，大小写敏感
+     *
+     * @param str         被切分的字符串
+     * @param separator   分隔符字符
+     * @param limit       限制分片数，-1不限制
+     * @param ignoreEmpty 是否忽略空串
+     * @param mapping     切分后的字符串元素的转换方法
+     * @return 切分后的集合，元素类型是经过 mapping 转换后的
+     */
+    public static <R> List<R> split(CharSequence str, char separator, int limit, boolean ignoreEmpty, Function<String, R> mapping) {
+        return split(str, separator, limit, ignoreEmpty, false, mapping);
+    }
 
     /**
      * 切分字符串,不忽略大小写
@@ -2398,81 +2387,46 @@ public class StringKit {
     /**
      * 通过正则切分字符串
      *
-     * @param str         字符串
+     * @param text        字符串
      * @param separator   分隔符正则{@link Pattern}
      * @param limit       限制分片数
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(String str, Pattern separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        if (isEmpty(str)) {
+    public static List<String> split(String text, Pattern separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+        if (isEmpty(text)) {
             return new ArrayList<>(0);
         }
-        if (limit == 1) {
-            return CollKit.addAll(new ArrayList<>(1), str, isTrim, ignoreEmpty);
-        }
+        final SplitIterator splitIter = new SplitIterator(text, new PatternFinder(separator), limit, ignoreEmpty);
+        return splitIter.toList(isTrim);
+    }
 
-        if (null == separator) {//分隔符为空时按照空白符切分
-            return split(str, limit);
-        }
-
-        final Matcher matcher = separator.matcher(str);
-        final List<String> list = new ArrayList<>();
-        int len = str.length();
-        int start = 0;
-        while (matcher.find()) {
-            CollKit.addAll(list, str.substring(start, matcher.start()), isTrim, ignoreEmpty);
-            start = matcher.end();
-
-            if (limit > 0 && list.size() > limit - 2) {
-                break;
-            }
-        }
-        return CollKit.addAll(list, str.substring(start, len), isTrim, ignoreEmpty);
+    public static List<String> split(CharSequence text, char separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
+        return split(text, separator, limit, ignoreEmpty, ignoreCase, trimFunc(isTrim));
     }
 
     /**
      * 切分字符串
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
-     * @param limit       限制分片数,-1不限制
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
+     * @param limit       限制分片数，-1不限制
      * @param ignoreEmpty 是否忽略空串
      * @param ignoreCase  是否忽略大小写
-     * @return 切分后的集合
+     * @param mapping     切分后的字符串元素的转换方法
+     * @return 切分后的集合，元素类型是经过 mapping 转换后的
      */
-    public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty,
-                                     boolean ignoreCase) {
-        if (StringKit.isEmpty(str)) {
-            return new ArrayList<>(0);
-        }
-        if (limit == 1) {
-            return CollKit.addAll(new ArrayList<>(1), str, isTrim, ignoreEmpty);
-        }
-
-        final List<String> list = new ArrayList<>(limit > 0 ? limit : 16);
-        int len = str.length();
-        int start = 0;//切分后每个部分的起始
-        for (int i = 0; i < len; i++) {
-            if (MathKit.equals(separator, str.charAt(i), ignoreCase)) {
-                CollKit.addAll(list, str.substring(start, i), isTrim, ignoreEmpty);
-                start = i + 1;//i+1同时将start与i保持一致
-
-                //检查是否超出范围(最大允许limit-1个，剩下一个留给末尾字符串)
-                if (limit > 0 && list.size() > limit - 2) {
-                    break;
-                }
-            }
-        }
-        return CollKit.addAll(list, str.substring(start, len), isTrim, ignoreEmpty);//收尾
+    public static <R> List<R> split(CharSequence text, char separator, int limit, boolean ignoreEmpty,
+                                    boolean ignoreCase, Function<String, R> mapping) {
+        final SplitIterator splitIter = new SplitIterator(text, new CharFinder(separator, ignoreCase), limit, ignoreEmpty);
+        return splitIter.toList(mapping);
     }
 
     /**
      * 切分字符串
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符串
      * @param limit       限制分片数
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
@@ -2480,41 +2434,10 @@ public class StringKit {
      * @param ignoreCase  是否忽略大小写
      * @return 切分后的集合
      */
-    public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty,
+    public static List<String> split(String text, String separator, int limit, boolean isTrim, boolean ignoreEmpty,
                                      boolean ignoreCase) {
-        if (isEmpty(str)) {
-            return new ArrayList<>(0);
-        }
-        if (limit == 1) {
-            return CollKit.addAll(new ArrayList<>(1), str, isTrim, ignoreEmpty);
-        }
-
-        if (isEmpty(separator)) {//分隔符为空时按照空白符切分
-            return split(str, limit);
-        } else if (separator.length() == 1) {//分隔符只有一个字符长度时按照单分隔符切分
-            return split(str, separator.charAt(0), limit, isTrim, ignoreEmpty, ignoreCase);
-        }
-
-        final List<String> list = new ArrayList<>();
-        int len = str.length();
-        int separatorLen = separator.length();
-        int start = 0;
-        int i = 0;
-        while (i < len) {
-            i = indexOf(str, separator, start, ignoreCase);
-            if (i > -1) {
-                CollKit.addAll(list, str.substring(start, i), isTrim, ignoreEmpty);
-                start = i + separatorLen;
-
-                //检查是否超出范围(最大允许limit-1个,剩下一个留给末尾字符串)
-                if (limit > 0 && list.size() > limit - 2) {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        return CollKit.addAll(list, str.substring(start, len), isTrim, ignoreEmpty);
+        final SplitIterator splitIter = new SplitIterator(text, new StringFinder(separator, ignoreCase), limit, ignoreEmpty);
+        return splitIter.toList(isTrim);
     }
 
     /**
@@ -6369,6 +6292,16 @@ public class StringKit {
             sb.append((start <= i && i < end) ? character : str.charAt(i));
         }
         return sb;
+    }
+
+    /**
+     * Trim函数
+     *
+     * @param isTrim 是否trim
+     * @return {@link Function}
+     */
+    private static Function<String, String> trimFunc(boolean isTrim) {
+        return (str) -> isTrim ? trim(str) : str;
     }
 
 }

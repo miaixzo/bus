@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.beans.PathExpression;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.BasicType;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -306,6 +307,58 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      */
     public Number getNumber(String attr) {
         return get(attr, null);
+    }
+
+    /**
+     * 通过表达式获取JSON中嵌套的对象
+     * <ol>
+     * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
+     * <li>[]表达式，可以获取集合等对象中对应index的值</li>
+     * </ol>
+     * <p>
+     * 表达式栗子：
+     *
+     * <pre>
+     * persion
+     * persion.name
+     * persons[3]
+     * person.friends[5].name
+     * </pre>
+     *
+     * @param expression 表达式
+     * @return 对象
+     * @see PathExpression#get(Object)
+     */
+    public <T> T getByPath(String expression) {
+        return (T) PathExpression.create(expression).get(this);
+    }
+
+    /**
+     * 通过表达式获取JSON中嵌套的对象
+     * <ol>
+     * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
+     * <li>[]表达式，可以获取集合等对象中对应index的值</li>
+     * </ol>
+     * <p>
+     * 表达式栗子：
+     *
+     * <pre>
+     * persion
+     * persion.name
+     * persons[3]
+     * person.friends[5].name
+     * </pre>
+     * <p>
+     * 获取表达式对应值后转换为对应类型的值
+     *
+     * @param <T>        返回值类型
+     * @param expression 表达式
+     * @param resultType 返回值类型
+     * @return 对象
+     * @see PathExpression#get(Object)
+     */
+    public <T> T getByPath(String expression, Class<T> resultType) {
+        return Convert.convert(resultType, getByPath(expression));
     }
 
     /**

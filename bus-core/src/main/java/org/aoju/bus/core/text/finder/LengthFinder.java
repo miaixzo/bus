@@ -1,0 +1,67 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ *                                                                               *
+ ********************************************************************************/
+package org.aoju.bus.core.text.finder;
+
+import org.aoju.bus.core.lang.Assert;
+
+/**
+ * 长度查找器
+ *
+ * @author Kimi Liu
+ * @version 6.2.9
+ * @since JDK 1.8+
+ */
+public class LengthFinder extends TextFinder {
+
+    private static final long serialVersionUID = 1L;
+
+    private final int length;
+
+    /**
+     * 构造
+     *
+     * @param length 长度
+     */
+    public LengthFinder(int length) {
+        this.length = length;
+    }
+
+    @Override
+    public int start(int from) {
+        Assert.notNull(this.text, "Text to find must be not null!");
+        final int result = from + length;
+        if (result < text.length()) {
+            return result;
+        }
+        return -1;
+    }
+
+    @Override
+    public int end(int start) {
+        return start;
+    }
+
+}
