@@ -2170,11 +2170,7 @@ public class StringKit {
      * @return 截取后的字符串数组
      */
     public static String[] splitByLength(String text, int len) {
-        SplitIterator splitIter = new SplitIterator(text,
-                new LengthFinder(len),
-                Integer.MAX_VALUE,
-                false
-        );
+        SplitIterator splitIter = new SplitIterator(text, new LengthFinder(len), -1, false);
         return splitIter.toArray(false);
     }
 
