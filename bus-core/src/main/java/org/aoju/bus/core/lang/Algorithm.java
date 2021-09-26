@@ -116,15 +116,15 @@ public enum Algorithm {
 
     /***************************** 摘要-HMAC算法 *****************************/
 
-    HmacMD5("HmacMD5"),
-    HmacSHA1("HmacSHA1"),
-    HmacSHA256("HmacSHA256"),
-    HmacSHA384("HmacSHA384"),
-    HmacSHA512("HmacSHA512"),
+    HMACMD5("HmacMD5"),
+    HMACSHA1("HmacSHA1"),
+    HMACSHA256("HmacSHA256"),
+    HMACSHA384("HmacSHA384"),
+    HMACSHA512("HmacSHA512"),
     /**
      * HmacSM3算法实现，需要BouncyCastle库支持
      */
-    HmacSM3("HmacSM3"),
+    HMACSM3("HmacSM3"),
 
     /***************************** 对称-算法类型 *****************************/
 
@@ -133,7 +133,7 @@ public enum Algorithm {
      */
     AES("AES"),
     ARCFOUR("ARCFOUR"),
-    Blowfish("Blowfish"),
+    BLOWFISH("Blowfish"),
     /**
      * 默认的DES加密方式：DES/ECB/PKCS5Padding
      */
@@ -141,7 +141,7 @@ public enum Algorithm {
     /**
      * 3DES算法，默认实现为：DESede/CBC/PKCS5Padding
      */
-    DESede("DESede"),
+    DESEDE("DESede"),
     /**
      * 分组加密算法
      * RC2加密算法的执行速度是DES算法的两倍
@@ -152,9 +152,9 @@ public enum Algorithm {
      */
     RC4("RC4"),
 
-    PBEWithMD5AndDES("PBEWithMD5AndDES"),
-    PBEWithSHA1AndDESede("PBEWithSHA1AndDESede"),
-    PBEWithSHA1AndRC2_40("PBEWithSHA1AndRC2_40"),
+    PBEWITHMD5ANDDES("PBEWithMD5AndDES"),
+    PBEWITHSHA1ANDDESEDE("PBEWithSHA1AndDESede"),
+    PBEWITHSHA1ANDRC2_40("PBEWithSHA1AndRC2_40"),
 
     /******************************* 国密算法 *******************************/
 

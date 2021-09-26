@@ -615,7 +615,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacMd5(byte[] key) {
-        return new HMac(Algorithm.HmacMD5, key);
+        return new HMac(Algorithm.HMACMD5, key);
     }
 
     /**
@@ -627,7 +627,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacMd5() {
-        return new HMac(Algorithm.HmacMD5);
+        return new HMac(Algorithm.HMACMD5);
     }
 
     /**
@@ -653,7 +653,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha1(byte[] key) {
-        return new HMac(Algorithm.HmacSHA1, key);
+        return new HMac(Algorithm.HMACSHA1, key);
     }
 
     /**
@@ -665,7 +665,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha1() {
-        return new HMac(Algorithm.HmacSHA1);
+        return new HMac(Algorithm.HMACSHA1);
     }
 
     /**
@@ -691,7 +691,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha256(byte[] key) {
-        return new HMac(Algorithm.HmacSHA256, key);
+        return new HMac(Algorithm.HMACSHA256, key);
     }
 
     /**
@@ -703,7 +703,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha256() {
-        return new HMac(Algorithm.HmacSHA256);
+        return new HMac(Algorithm.HMACSHA256);
     }
 
     /**
@@ -1925,7 +1925,7 @@ public class Builder {
         } else {
             KeySpec keySpec;
             try {
-                if (algorithm.startsWith(Algorithm.DESede.getValue())) {
+                if (algorithm.startsWith(Algorithm.DESEDE.getValue())) {
                     // DESede兼容
                     keySpec = new DESedeKeySpec(key);
                 } else {

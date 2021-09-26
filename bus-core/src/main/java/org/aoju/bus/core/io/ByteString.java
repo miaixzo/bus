@@ -216,15 +216,15 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public ByteString hmacSha1(ByteString key) {
-        return hmac(Algorithm.HmacSHA1.getValue(), key);
+        return hmac(Algorithm.HMACSHA1.getValue(), key);
     }
 
     public ByteString hmacSha256(ByteString key) {
-        return hmac(Algorithm.HmacSHA256.getValue(), key);
+        return hmac(Algorithm.HMACSHA256.getValue(), key);
     }
 
     public ByteString hmacSha512(ByteString key) {
-        return hmac(Algorithm.HmacSHA512.getValue(), key);
+        return hmac(Algorithm.HMACSHA512.getValue(), key);
     }
 
     private ByteString hmac(String algorithm, ByteString key) {

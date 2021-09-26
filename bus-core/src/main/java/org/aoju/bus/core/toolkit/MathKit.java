@@ -2931,7 +2931,7 @@ public class MathKit {
      * @param m 选择的个数
      * @return 排列数
      */
-    public static long arrangementCount(int n, int m) {
+    public static long arrangeCount(int n, int m) {
         return Arrange.count(n, m);
     }
 
@@ -2941,7 +2941,7 @@ public class MathKit {
      * @param n 总数
      * @return 排列数
      */
-    public static long arrangementCount(int n) {
+    public static long arrangeCount(int n) {
         return Arrange.count(n);
     }
 
@@ -2952,7 +2952,7 @@ public class MathKit {
      * @param m     选择个数
      * @return 所有排列列表
      */
-    public static List<String[]> arrangementSelect(String[] datas, int m) {
+    public static List<String[]> arrangeSelect(String[] datas, int m) {
         return new Arrange(datas).select(m);
     }
 
@@ -2962,7 +2962,7 @@ public class MathKit {
      * @param datas 待选列表
      * @return 所有排列列表
      */
-    public static List<String[]> arrangementSelect(String[] datas) {
+    public static List<String[]> arrangeSelect(String[] datas) {
         return new Arrange(datas).select();
     }
 
@@ -2973,7 +2973,7 @@ public class MathKit {
      * @param m 选择的个数
      * @return 组合数
      */
-    public static long combinationCount(int n, int m) {
+    public static long combineCount(int n, int m) {
         return Combine.count(n, m);
     }
 
@@ -2984,7 +2984,7 @@ public class MathKit {
      * @param m     选择个数
      * @return 所有组合列表
      */
-    public static List<String[]> combinationSelect(String[] datas, int m) {
+    public static List<String[]> combineSelect(String[] datas, int m) {
         return new Combine(datas).select(m);
     }
 
