@@ -138,7 +138,6 @@ public abstract class EventChanges {
         this.totalTimeSpent = totalTimeSpent;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> ChangeContainer<T> get(String property) {
 
         if (otherProperties.containsKey(property)) {
