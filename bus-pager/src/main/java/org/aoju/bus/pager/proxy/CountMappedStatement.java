@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.plugin;
+package org.aoju.bus.pager.proxy;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -58,7 +58,7 @@ public class CountMappedStatement {
         builder.fetchSize(ms.getFetchSize());
         builder.statementType(ms.getStatementType());
         builder.keyGenerator(ms.getKeyGenerator());
-        if (null != ms.getKeyProperties() && ms.getKeyProperties().length != 0) {
+        if (ms.getKeyProperties() != null && ms.getKeyProperties().length != 0) {
             StringBuilder keyProperties = new StringBuilder();
             for (String keyProperty : ms.getKeyProperties()) {
                 keyProperties.append(keyProperty).append(Symbol.COMMA);

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,10 +23,12 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.plugin;
+package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.pager.Dialect;
 import org.aoju.bus.pager.PageException;
-import org.aoju.bus.pager.dialect.Dialect;
+import org.aoju.bus.pager.plugin.BoundSqlInterceptor;
+import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -49,14 +51,21 @@ import java.util.Map;
  */
 public abstract class CountExecutor {
 
-    private static final Field ADDITIONAL_PARAMETERS_FIELD;
+    private static Field additionalParametersField;
+    private static Field providerMethodArgumentNamesField;
 
     static {
         try {
-            ADDITIONAL_PARAMETERS_FIELD = BoundSql.class.getDeclaredField("additionalParameters");
-            ADDITIONAL_PARAMETERS_FIELD.setAccessible(true);
+            additionalParametersField = BoundSql.class.getDeclaredField("additionalParameters");
+            additionalParametersField.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throw new PageException("获取 BoundSql 属性 additionalParameters 失败: " + e, e);
+        }
+        try {
+            // 兼容低版本
+            providerMethodArgumentNamesField = ProviderSqlSource.class.getDeclaredField("providerMethodArgumentNames");
+            providerMethodArgumentNamesField.setAccessible(true);
+        } catch (NoSuchFieldException ignore) {
         }
     }
 
@@ -68,14 +77,28 @@ public abstract class CountExecutor {
      */
     public static Map<String, Object> getAdditionalParameter(BoundSql boundSql) {
         try {
-            return (Map<String, Object>) ADDITIONAL_PARAMETERS_FIELD.get(boundSql);
+            return (Map<String, Object>) additionalParametersField.get(boundSql);
         } catch (IllegalAccessException e) {
             throw new PageException("获取 BoundSql 属性值 additionalParameters 失败: " + e, e);
         }
     }
 
     /**
-     * 尝试获取已经存在的在 MS,提供对手写count和page的支持
+     * 获取 ProviderSqlSource 属性值 providerMethodArgumentNames
+     *
+     * @param providerSqlSource 服务提供者
+     * @return the array
+     */
+    public static String[] getProviderMethodArgumentNames(ProviderSqlSource providerSqlSource) {
+        try {
+            return providerMethodArgumentNamesField != null ? (String[]) providerMethodArgumentNamesField.get(providerSqlSource) : null;
+        } catch (IllegalAccessException e) {
+            throw new PageException("获取 ProviderSqlSource 属性值 providerMethodArgumentNames: " + e, e);
+        }
+    }
+
+    /**
+     * 尝试获取已经存在的在 MS，提供对手写count和page的支持
      *
      * @param configuration 配置
      * @param msId          标识
@@ -92,7 +115,7 @@ public abstract class CountExecutor {
     }
 
     /**
-     * 执行手动设置的 count 查询,该查询支持的参数必须和被分页的方法相同
+     * 执行手动设置的 count 查询，该查询支持的参数必须和被分页的方法相同
      *
      * @param executor      执行者
      * @param countMs       MappedStatement
@@ -108,7 +131,8 @@ public abstract class CountExecutor {
         CacheKey countKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, boundSql);
         BoundSql countBoundSql = countMs.getBoundSql(parameter);
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
-        if (null == countResultList || ((List) countResultList).isEmpty()) {
+        // 某些数据（如 TDEngine）查询 count 无结果时返回 null
+        if (countResultList == null || ((List) countResultList).isEmpty()) {
             return 0L;
         }
         return ((Number) ((List) countResultList).get(0)).longValue();
@@ -137,12 +161,17 @@ public abstract class CountExecutor {
         String countSql = dialect.getCountSql(countMs, boundSql, parameter, rowBounds, countKey);
         // countKey.update(countSql);
         BoundSql countBoundSql = new BoundSql(countMs.getConfiguration(), countSql, boundSql.getParameterMappings(), parameter);
-        // 当使用动态 SQL 时,可能会产生临时的参数,这些参数需要手动设置到新的 BoundSql 中
+        // 当使用动态 SQL 时，可能会产生临时的参数，这些参数需要手动设置到新的 BoundSql 中
         for (String key : additionalParameters.keySet()) {
             countBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
         }
+        // 对 boundSql 的拦截处理
+        if (dialect instanceof BoundSqlInterceptor.Chain) {
+            countBoundSql = ((BoundSqlInterceptor.Chain) dialect).doBoundSql(BoundSqlInterceptor.Type.COUNT_SQL, countBoundSql, countKey);
+        }
         // 执行 count 查询
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
+        // 某些数据（如 TDEngine）查询 count 无结果时返回 null
         if (countResultList == null || ((List) countResultList).isEmpty()) {
             return 0L;
         }
@@ -182,10 +211,14 @@ public abstract class CountExecutor {
             for (String key : additionalParameters.keySet()) {
                 pageBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
             }
+            // 对 boundSql 的拦截处理
+            if (dialect instanceof BoundSqlInterceptor.Chain) {
+                pageBoundSql = ((BoundSqlInterceptor.Chain) dialect).doBoundSql(BoundSqlInterceptor.Type.PAGE_SQL, pageBoundSql, pageKey);
+            }
             // 执行分页查询
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, pageKey, pageBoundSql);
         } else {
-            // 不执行分页的情况下,也不执行内存分页
+            // 不执行分页的情况下，也不执行内存分页
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, boundSql);
         }
     }

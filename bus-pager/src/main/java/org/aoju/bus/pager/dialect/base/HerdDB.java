@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,43 +23,58 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.dialect.base;
 
 import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractDialect;
+import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.reflection.MetaObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
- * 数据库方言 db2
+ * 数据库方言 herddb
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class Db2 extends AbstractDialect {
+public class HerdDB extends AbstractPaging {
 
     @Override
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
-        paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());
-        // 处理pageKey
-        pageKey.update(page.getStartRow() + 1);
-        pageKey.update(page.getEndRow());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
+        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
+        pageKey.update(page.getStartRow());
+        pageKey.update(page.getPageSize());
+        if (boundSql.getParameterMappings() != null) {
+            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
+            if (page.getStartRow() == 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
+            } else {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, long.class).build());
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
+            }
+            MetaObject metaObject = org.aoju.bus.mapper.reflect.MetaObject.forObject(boundSql);
+            metaObject.setValue("parameterMappings", newParameterMappings);
+        }
         return paramMap;
     }
 
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 140);
-        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
         sqlBuilder.append(sql);
-        sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ? AND ?");
+        if (page.getStartRow() == 0) {
+            sqlBuilder.append("\n LIMIT ? ");
+        } else {
+            sqlBuilder.append("\n LIMIT ?, ? ");
+        }
         return sqlBuilder.toString();
     }
 

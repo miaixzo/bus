@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.pager.cache;
 
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.PageException;
-import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.lang.reflect.Constructor;
 import java.util.Properties;
@@ -51,7 +51,7 @@ public abstract class CacheFactory {
      * @return the object
      */
     public static <K, V> Cache<K, V> createCache(String sqlCacheClass, String prefix, Properties properties) {
-        if (PageFromObject.isEmpty(sqlCacheClass)) {
+        if (StringKit.isEmpty(sqlCacheClass)) {
             try {
                 Class.forName("com.google.common.cache.Cache");
                 return new GuavaCache<>(properties, prefix);

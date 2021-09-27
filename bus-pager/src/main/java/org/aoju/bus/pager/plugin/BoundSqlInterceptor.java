@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,46 +23,54 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.plugin;
 
-import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractDialect;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-
-import java.util.Map;
 
 /**
- * 数据库方言 oracle
+ * BoundSql 处理器
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class Oracle extends AbstractDialect {
+public interface BoundSqlInterceptor {
 
-    @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
-        // 处理pageKey
-        pageKey.update(page.getEndRow());
-        pageKey.update(page.getStartRow());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
-        return paramMap;
+    /**
+     * boundsql 处理
+     *
+     * @param type     类型
+     * @param boundSql 当前类型的 boundSql
+     * @param cacheKey 缓存 key
+     * @param chain    处理器链，通过 chain.doBoundSql 方法继续执行后续方法，也可以直接返回 boundSql 终止后续方法的执行
+     * @return 允许修改 boundSql 并返回修改后的
+     */
+    BoundSql boundSql(Type type, BoundSql boundSql, CacheKey cacheKey, Chain chain);
+
+    enum Type {
+        /**
+         * 原始SQL，分页插件执行前，先执行这个类型
+         */
+        ORIGINAL,
+        /**
+         * count SQL，第二个执行这里
+         */
+        COUNT_SQL,
+        /**
+         * 分页 SQL，最后执行这里
+         */
+        PAGE_SQL
     }
 
-    @Override
-    public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM ( ");
-        sqlBuilder.append(" SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM ( ");
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" ) TMP_PAGE)");
-        sqlBuilder.append(" WHERE ROW_ID <= ? AND ROW_ID > ?");
-        return sqlBuilder.toString();
+    /**
+     * 处理器链，可以控制是否继续执行
+     */
+    interface Chain {
+
+        Chain DO_NOTHING = (type, boundSql, cacheKey) -> boundSql;
+
+        BoundSql doBoundSql(Type type, BoundSql boundSql, CacheKey cacheKey);
     }
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,53 +23,43 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.reflect;
+package org.aoju.bus.pager.dialect.base;
 
-import org.aoju.bus.pager.PageException;
+import org.aoju.bus.pager.Page;
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
 
-import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
- * 反射工具
+ * 数据库方言 sqlserver2012
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class MetaObject {
+public class SqlServer2012 extends SqlServer {
 
-    public static Method method;
-
-    static {
-        try {
-            // 高版本中的 MetaObject.forObject 有 4 个参数,低版本是 1 个
-            // 先判断当前使用的是否为高版本
-            Class.forName("org.apache.ibatis.reflection.ReflectorFactory");
-            // 下面这个 MetaObjectWithCache 带反射的缓存信息
-            Class<?> metaClass = Class.forName("org.aoju.bus.pager.reflect.MetaObjectWithCache");
-            method = metaClass.getDeclaredMethod("forObject", Object.class);
-        } catch (Throwable e1) {
-            try {
-                Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.SystemMetaObject");
-                method = metaClass.getDeclaredMethod("forObject", Object.class);
-            } catch (Exception e2) {
-                try {
-                    Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.MetaObject");
-                    method = metaClass.getDeclaredMethod("forObject", Object.class);
-                } catch (Exception e3) {
-                    throw new PageException(e3);
-                }
-            }
-        }
-
+    @Override
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
+        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
+        // 处理pageKey
+        pageKey.update(page.getStartRow());
+        pageKey.update(page.getPageSize());
+        // 处理参数配置
+        handleParameter(boundSql, ms, long.class, int.class);
+        return paramMap;
     }
 
-    public static org.apache.ibatis.reflection.MetaObject forObject(Object object) {
-        try {
-            return (org.apache.ibatis.reflection.MetaObject) method.invoke(null, object);
-        } catch (Exception e) {
-            throw new PageException(e);
-        }
+    @Override
+    public String getPageSql(String sql, Page page, CacheKey pageKey) {
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 64);
+        sqlBuilder.append(sql);
+        sqlBuilder.append("\n OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ");
+        pageKey.update(page.getPageSize());
+        return sqlBuilder.toString();
     }
 
 }

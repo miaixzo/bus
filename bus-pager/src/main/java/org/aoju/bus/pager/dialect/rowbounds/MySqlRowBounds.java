@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -44,10 +44,10 @@ public class MySqlRowBounds extends AbstractRowBounds {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
         sqlBuilder.append(sql);
         if (rowBounds.getOffset() == 0) {
-            sqlBuilder.append(" LIMIT ");
+            sqlBuilder.append("\n LIMIT ");
             sqlBuilder.append(rowBounds.getLimit());
         } else {
-            sqlBuilder.append(" LIMIT ");
+            sqlBuilder.append("\n LIMIT ");
             sqlBuilder.append(rowBounds.getOffset());
             sqlBuilder.append(Symbol.COMMA);
             sqlBuilder.append(rowBounds.getLimit());

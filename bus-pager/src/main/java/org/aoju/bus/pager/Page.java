@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -24,6 +24,8 @@
  *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.pager;
+
+import org.aoju.bus.pager.plugin.BoundSqlInterceptor;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -51,11 +53,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 起始行
      */
-    private int startRow;
+    private long startRow;
     /**
      * 末行
      */
-    private int endRow;
+    private long endRow;
     /**
      * 总数
      */
@@ -73,7 +75,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     private Boolean reasonable;
     /**
-     * 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
+     * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
      */
     private Boolean pageSizeZero;
     /**
@@ -88,6 +90,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * 只增加排序
      */
     private boolean orderByOnly;
+    /**
+     * sql拦截处理
+     */
+    private BoundSqlInterceptor boundSqlInterceptor;
+    private transient BoundSqlInterceptor.Chain chain;
 
     public Page() {
         super();
@@ -114,6 +121,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         setReasonable(reasonable);
     }
 
+    /**
+     * @param rowBounds 分页对象
+     * @param count     总数
+     */
     public Page(int[] rowBounds, boolean count) {
         super(0);
         if (rowBounds[0] == 0 && rowBounds[1] == Integer.MAX_VALUE) {
@@ -142,11 +153,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return this;
     }
 
-    public int getEndRow() {
+    public long getEndRow() {
         return endRow;
     }
 
-    public Page<E> setEndRow(int endRow) {
+    public Page<E> setEndRow(long endRow) {
         this.endRow = endRow;
         return this;
     }
@@ -156,8 +167,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setPageNo(int pageNo) {
-        // 分页合理化,针对不合理的页码自动处理
-        this.pageNo = ((null != reasonable && reasonable) && pageNo <= 0) ? 1 : pageNo;
+        // 分页合理化，针对不合理的页码自动处理
+        this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
 
@@ -170,11 +181,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return this;
     }
 
-    public int getStartRow() {
+    public long getStartRow() {
         return startRow;
     }
 
-    public Page<E> setStartRow(int startRow) {
+    public Page<E> setStartRow(long startRow) {
         this.startRow = startRow;
         return this;
     }
@@ -194,8 +205,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         } else {
             pages = 0;
         }
-        // 分页合理化,针对不合理的页码自动处理
-        if ((null != reasonable && reasonable) && pageNo > pages) {
+        // 分页合理化，针对不合理的页码自动处理
+        if ((reasonable != null && reasonable) && pageNo > pages) {
             if (pages != 0) {
                 pageNo = pages;
             }
@@ -208,11 +219,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setReasonable(Boolean reasonable) {
-        if (null == reasonable) {
+        if (reasonable == null) {
             return this;
         }
         this.reasonable = reasonable;
-        // 分页合理化,针对不合理的页码自动处理
+        // 分页合理化，针对不合理的页码自动处理
         if (this.reasonable && this.pageNo <= 0) {
             this.pageNo = 1;
             calculateStartAndEndRow();
@@ -225,7 +236,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setPageSizeZero(Boolean pageSizeZero) {
-        if (null != pageSizeZero) {
+        if (this.pageSizeZero == null && pageSizeZero != null) {
             this.pageSizeZero = pageSizeZero;
         }
         return this;
@@ -272,8 +283,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @return 结果
      */
     public Page<E> pageNo(int pageNo) {
-        // 分页合理化,针对不合理的页码自动处理
-        this.pageNo = ((null != reasonable && reasonable) && pageNo <= 0) ? 1 : pageNo;
+        // 分页合理化，针对不合理的页码自动处理
+        this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
 
@@ -312,13 +323,24 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
+     * 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
      *
      * @param pageSizeZero 分页大小
      * @return 结果
      */
     public Page<E> pageSizeZero(Boolean pageSizeZero) {
         setPageSizeZero(pageSizeZero);
+        return this;
+    }
+
+    /**
+     * 设置 BoundSql 拦截器
+     *
+     * @param boundSqlInterceptor 分页拦截器
+     * @return 结果
+     */
+    public Page<E> boundSqlInterceptor(BoundSqlInterceptor boundSqlInterceptor) {
+        setBoundSqlInterceptor(boundSqlInterceptor);
         return this;
     }
 
@@ -333,12 +355,52 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return this;
     }
 
-    public Paginating<E> toPages() {
+    public Paginating<E> toPageInfo() {
         return new Paginating<>(this);
+    }
+
+    /**
+     * 数据对象转换
+     *
+     * @param function 函数
+     * @param <T>      泛型对象
+     * @return 分页属性
+     */
+    public <T> Paginating<T> toPageInfo(Function<E, T> function) {
+        List<T> list = new ArrayList<>(this.size());
+        for (E e : this) {
+            list.add(function.apply(e));
+        }
+        Paginating<T> paginating = new Paginating<>(list);
+        paginating.setTotal(this.getTotal());
+        paginating.setPageNo(this.getPageNo());
+        paginating.setPageSize(this.getPageSize());
+        paginating.setPages(this.getPages());
+        paginating.setStartRow(this.getStartRow());
+        paginating.setEndRow(this.getEndRow());
+        paginating.calcByNavigatePages(Paginating.DEFAULT_NAVIGATE_PAGES);
+        return paginating;
     }
 
     public Serialize<E> toPageSerializable() {
         return new Serialize<>(this);
+    }
+
+    /**
+     * 数据对象转换
+     *
+     * @param function 函数
+     * @param <T>      泛型对象
+     * @return 分页属性
+     */
+    public <T> Serialize<T> toPageSerializable(Function<E, T> function) {
+        List<T> list = new ArrayList<>(this.size());
+        for (E e : this) {
+            list.add(function.apply(e));
+        }
+        Serialize<T> serialize = new Serialize<>(list);
+        serialize.setTotal(this.getTotal());
+        return serialize;
     }
 
     public <E> Page<E> doSelectPage(Querying select) {
@@ -346,9 +408,9 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return (Page<E>) this;
     }
 
-    public <E> Paginating<E> doSelectPages(Querying select) {
+    public <E> Paginating<E> doSelectPageInfo(Querying select) {
         select.doSelect();
-        return (Paginating<E>) this.toPages();
+        return (Paginating<E>) this.toPageInfo();
     }
 
     public <E> Serialize<E> doSelectPageSerializable(Querying select) {
@@ -371,9 +433,55 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         this.countColumn = countColumn;
     }
 
+    public BoundSqlInterceptor getBoundSqlInterceptor() {
+        return boundSqlInterceptor;
+    }
+
+    public void setBoundSqlInterceptor(BoundSqlInterceptor boundSqlInterceptor) {
+        this.boundSqlInterceptor = boundSqlInterceptor;
+    }
+
+    BoundSqlInterceptor.Chain getChain() {
+        return chain;
+    }
+
+    void setChain(BoundSqlInterceptor.Chain chain) {
+        this.chain = chain;
+    }
+
+    @Override
+    public String toString() {
+        return "Page{" +
+                "count=" + count +
+                ", pageNo=" + pageNo +
+                ", pageSize=" + pageSize +
+                ", startRow=" + startRow +
+                ", endRow=" + endRow +
+                ", total=" + total +
+                ", pages=" + pages +
+                ", reasonable=" + reasonable +
+                ", pageSizeZero=" + pageSizeZero +
+                '}' + super.toString();
+    }
+
     @Override
     public void close() {
         PageContext.clearPage();
+    }
+
+    /**
+     * 兼容低版本 Java 7
+     */
+    public interface Function<E, T> {
+
+        /**
+         * 将此函数应用于给定的参数
+         *
+         * @param t 函数参数
+         * @return 函数结构
+         */
+        T apply(E t);
+
     }
 
 }

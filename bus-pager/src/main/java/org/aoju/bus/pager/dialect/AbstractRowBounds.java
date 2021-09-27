@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,7 +40,7 @@ import java.util.Properties;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public abstract class AbstractRowBounds extends AbstractPaging {
+public abstract class AbstractRowBounds extends AbstractDialect {
 
     @Override
     public boolean skip(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
@@ -51,14 +51,14 @@ public abstract class AbstractRowBounds extends AbstractPaging {
     public boolean beforeCount(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         if (rowBounds instanceof RowBounds) {
             RowBounds pageRowBounds = (RowBounds) rowBounds;
-            return null == pageRowBounds.getCount() || pageRowBounds.getCount();
+            return pageRowBounds.getCount() == null || pageRowBounds.getCount();
         }
         return false;
     }
 
     @Override
     public boolean afterCount(long count, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
-        // 由于 beforeCount 校验,这里一定是 PageRowBounds
+        // 由于 beforeCount 校验，这里一定是 PageRowBounds
         ((RowBounds) rowBounds).setTotal(count);
         return count > 0;
     }

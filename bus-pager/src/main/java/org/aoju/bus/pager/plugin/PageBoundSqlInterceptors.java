@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,43 +23,44 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.plugin;
 
-import org.aoju.bus.pager.Page;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
+import org.aoju.bus.core.toolkit.StringKit;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
- * 数据库方言 sqlserver2012
- *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class SqlServer2012 extends SqlServer {
+public class PageBoundSqlInterceptors {
 
-    @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
-        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
-        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
-        // 处理pageKey
-        pageKey.update(page.getStartRow());
-        pageKey.update(page.getPageSize());
-        // 处理参数配置
-        handleParameter(boundSql, ms);
-        return paramMap;
+    private BoundSqlInterceptor.Chain chain;
+
+    public void setProperties(Properties properties) {
+        // 初始化 boundSqlInterceptorChain
+        String boundSqlInterceptorStr = properties.getProperty("boundSqlInterceptors");
+        if (StringKit.isNotEmpty(boundSqlInterceptorStr)) {
+            String[] boundSqlInterceptors = boundSqlInterceptorStr.split("[;|,]");
+            List<BoundSqlInterceptor> list = new ArrayList<>();
+            for (int i = 0; i < boundSqlInterceptors.length; i++) {
+                try {
+                    list.add((BoundSqlInterceptor) Class.forName(boundSqlInterceptors[i]).newInstance());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (list.size() > 0) {
+                chain = new BoundSqlInterceptorChain(null, list);
+            }
+        }
     }
 
-    @Override
-    public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 64);
-        sqlBuilder.append(sql);
-        sqlBuilder.append(" OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ");
-        pageKey.update(page.getPageSize());
-        return sqlBuilder.toString();
+    public BoundSqlInterceptor.Chain getChain() {
+        return chain;
     }
 
 }

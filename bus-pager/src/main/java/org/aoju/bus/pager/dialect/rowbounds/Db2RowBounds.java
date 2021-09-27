@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,10 +31,6 @@ import org.apache.ibatis.session.RowBounds;
 
 /**
  * db2 基于 RowBounds 的分页
- *
- * @author Kimi Liu
- * @version 6.2.9
- * @since JDK 1.8+
  */
 public class Db2RowBounds extends AbstractRowBounds {
 
@@ -43,9 +39,9 @@ public class Db2RowBounds extends AbstractRowBounds {
         int startRow = rowBounds.getOffset() + 1;
         int endRow = rowBounds.getOffset() + rowBounds.getLimit();
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 120);
-        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS ROW_ID FROM ( ");
+        sqlBuilder.append("SELECT * FROM (SELECT TMP_PAGE.*,ROWNUMBER() OVER() AS PAGEHELPER_ROW_ID FROM ( \n");
         sqlBuilder.append(sql);
-        sqlBuilder.append(" ) AS TMP_PAGE) TMP_PAGE WHERE ROW_ID BETWEEN ");
+        sqlBuilder.append("\n ) AS TMP_PAGE) TMP_PAGE WHERE PAGEHELPER_ROW_ID BETWEEN ");
         sqlBuilder.append(startRow);
         sqlBuilder.append(" AND ");
         sqlBuilder.append(endRow);

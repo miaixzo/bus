@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,19 +23,18 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.dialect.base;
 
-import org.aoju.bus.mapper.criteria.Assert;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.cache.Cache;
 import org.aoju.bus.pager.cache.CacheFactory;
-import org.aoju.bus.pager.dialect.AbstractDialect;
+import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.aoju.bus.pager.dialect.ReplaceSql;
 import org.aoju.bus.pager.dialect.replace.RegexWithNolock;
 import org.aoju.bus.pager.dialect.replace.SimpleWithNolock;
 import org.aoju.bus.pager.parser.OrderByParser;
 import org.aoju.bus.pager.parser.SqlServerParser;
-import org.aoju.bus.pager.plugin.PageFromObject;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -51,7 +50,8 @@ import java.util.Properties;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class SqlServer extends AbstractDialect {
+public class SqlServer extends AbstractPaging {
+
     protected SqlServerParser pageSql = new SqlServerParser();
     protected Cache<String, String> CACHE_COUNTSQL;
     protected Cache<String, String> CACHE_PAGESQL;
@@ -61,7 +61,7 @@ public class SqlServer extends AbstractDialect {
     public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
         String sql = boundSql.getSql();
         String cacheSql = CACHE_COUNTSQL.get(sql);
-        if (null != cacheSql) {
+        if (cacheSql != null) {
             return cacheSql;
         } else {
             cacheSql = sql;
@@ -78,35 +78,13 @@ public class SqlServer extends AbstractDialect {
         return paramMap;
     }
 
-    /**
-     * 分页查询,pageHelper转换SQL时报错with(nolock)不识别的问题,
-     * 重写父类AbstractHelperDialect.getPageSql转换出错的方法
-     * 1. this.replaceSql.replace(sql);先转换成假的表名
-     * 2. 然后进行SQL转换
-     * 3. this.replaceSql.restore(sql);最后再恢复成真的with(nolock)
-     */
-    @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey) {
-        String sql = boundSql.getSql();
-        Page page = this.getLocalPage();
-        String orderBy = page.getOrderBy();
-        if (Assert.isNotEmpty(orderBy)) {
-            pageKey.update(orderBy);
-            sql = this.replaceSql.replace(sql);
-            sql = OrderByParser.converToOrderBySql(sql, orderBy);
-            sql = this.replaceSql.restore(sql);
-        }
-
-        return page.isOrderByOnly() ? sql : this.getPageSql(sql, page, pageKey);
-    }
-
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         // 处理pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
         String cacheSql = CACHE_PAGESQL.get(sql);
-        if (null == cacheSql) {
+        if (cacheSql == null) {
             cacheSql = sql;
             cacheSql = replaceSql.replace(cacheSql);
             cacheSql = pageSql.convertToPageSql(cacheSql, null, null);
@@ -119,28 +97,43 @@ public class SqlServer extends AbstractDialect {
     }
 
     @Override
+    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey) {
+        String sql = boundSql.getSql();
+        Page page = this.getLocalPage();
+        String orderBy = page.getOrderBy();
+        if (StringKit.isNotEmpty(orderBy)) {
+            pageKey.update(orderBy);
+            sql = this.replaceSql.replace(sql);
+            sql = OrderByParser.converToOrderBySql(sql, orderBy);
+            sql = this.replaceSql.restore(sql);
+        }
+
+        return page.isOrderByOnly() ? sql : this.getPageSql(sql, page, pageKey);
+    }
+
+    @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
         String replaceSql = properties.getProperty("replaceSql");
-        if (PageFromObject.isEmpty(replaceSql) || "simple".equalsIgnoreCase(replaceSql)) {
-            this.replaceSql = new SimpleWithNolock();
-        } else if ("regex".equalsIgnoreCase(replaceSql)) {
+        if (StringKit.isEmpty(replaceSql) || "regex".equalsIgnoreCase(replaceSql)) {
             this.replaceSql = new RegexWithNolock();
+        } else if ("simple".equalsIgnoreCase(replaceSql)) {
+            this.replaceSql = new SimpleWithNolock();
         } else {
             try {
                 this.replaceSql = (ReplaceSql) Class.forName(replaceSql).newInstance();
             } catch (Exception e) {
-                throw new RuntimeException("replaceSql 参数配置的值不符合要求,可选值为 simple 和 regex,或者是实现了 "
+                throw new RuntimeException("replaceSql 参数配置的值不符合要求，可选值为 simple 和 regex，或者是实现了 "
                         + ReplaceSql.class.getCanonicalName() + " 接口的全限定类名", e);
             }
         }
         String sqlCacheClass = properties.getProperty("sqlCacheClass");
-        if (PageFromObject.isNotEmpty(sqlCacheClass) && !sqlCacheClass.equalsIgnoreCase("false")) {
+        if (StringKit.isNotEmpty(sqlCacheClass) && !sqlCacheClass.equalsIgnoreCase("false")) {
             CACHE_COUNTSQL = CacheFactory.createCache(sqlCacheClass, "count", properties);
-            CACHE_PAGESQL = CacheFactory.createCache(sqlCacheClass, "proxy", properties);
+            CACHE_PAGESQL = CacheFactory.createCache(sqlCacheClass, "page", properties);
         } else {
             CACHE_COUNTSQL = CacheFactory.createCache(null, "count", properties);
-            CACHE_PAGESQL = CacheFactory.createCache(null, "proxy", properties);
+            CACHE_PAGESQL = CacheFactory.createCache(null, "page", properties);
         }
     }
 

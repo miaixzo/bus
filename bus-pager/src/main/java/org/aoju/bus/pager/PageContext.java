@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,11 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
-import org.aoju.bus.pager.dialect.AbstractDialect;
-import org.aoju.bus.pager.dialect.Dialect;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.aoju.bus.pager.parser.CountSqlParser;
-import org.aoju.bus.pager.plugin.CountMappedStatement;
-import org.aoju.bus.pager.plugin.PageFromObject;
+import org.aoju.bus.pager.plugin.BoundSqlInterceptor;
+import org.aoju.bus.pager.plugin.BoundSqlInterceptorChain;
+import org.aoju.bus.pager.plugin.PageBoundSqlInterceptors;
+import org.aoju.bus.pager.proxy.CountMappedStatement;
 import org.aoju.bus.pager.proxy.PageAutoDialect;
 import org.aoju.bus.pager.proxy.PageMethod;
 import org.aoju.bus.pager.proxy.PageParams;
@@ -38,6 +40,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -48,22 +51,23 @@ import java.util.Properties;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class PageContext extends PageMethod implements Dialect {
+public class PageContext extends PageMethod implements Dialect, BoundSqlInterceptor.Chain {
 
     private PageParams pageParams;
     private PageAutoDialect autoDialect;
+    private PageBoundSqlInterceptors pageBoundSqlInterceptors;
 
     @Override
     public boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
         if (ms.getId().endsWith(CountMappedStatement.COUNT)) {
-            throw new RuntimeException("Multiple paging plug-ins found, please check the system configuration!");
+            throw new RuntimeException("在系统中发现了多个分页插件，请检查系统配置!");
         }
         Page page = pageParams.getPage(parameterObject, rowBounds);
-        if (null == page) {
+        if (page == null) {
             return true;
         } else {
             // 设置默认的 count 列
-            if (PageFromObject.isEmpty(page.getCountColumn())) {
+            if (StringKit.isEmpty(page.getCountColumn())) {
                 page.setCountColumn(pageParams.getCountColumn());
             }
             autoDialect.initDelegateDialect(ms);
@@ -107,9 +111,9 @@ public class PageContext extends PageMethod implements Dialect {
 
     @Override
     public Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds) {
-        // 这个方法即使不分页也会被执行,所以要判断 null
-        AbstractDialect delegate = autoDialect.getDelegate();
-        if (null != delegate) {
+        // 这个方法即使不分页也会被执行，所以要判断 null
+        AbstractPaging delegate = autoDialect.getDelegate();
+        if (delegate != null) {
             return delegate.afterPage(pageList, parameterObject, rowBounds);
         }
         return pageList;
@@ -117,9 +121,9 @@ public class PageContext extends PageMethod implements Dialect {
 
     @Override
     public void afterAll() {
-        // 这个方法即使不分页也会被执行,所以要判断 null
-        AbstractDialect delegate = autoDialect.getDelegate();
-        if (null != delegate) {
+        // 这个方法即使不分页也会被执行，所以要判断 null
+        AbstractPaging delegate = autoDialect.getDelegate();
+        if (delegate != null) {
             delegate.afterAll();
             autoDialect.clearDelegate();
         }
@@ -127,13 +131,37 @@ public class PageContext extends PageMethod implements Dialect {
     }
 
     @Override
+    public BoundSql doBoundSql(BoundSqlInterceptor.Type type, BoundSql boundSql, CacheKey cacheKey) {
+        Page<Object> localPage = getLocalPage();
+        BoundSqlInterceptor.Chain chain = localPage != null ? localPage.getChain() : null;
+        if (chain == null) {
+            BoundSqlInterceptor boundSqlInterceptor = localPage != null ? localPage.getBoundSqlInterceptor() : null;
+            BoundSqlInterceptor.Chain defaultChain = pageBoundSqlInterceptors != null ? pageBoundSqlInterceptors.getChain() : null;
+            if (boundSqlInterceptor != null) {
+                chain = new BoundSqlInterceptorChain(defaultChain, Arrays.asList(boundSqlInterceptor));
+            } else if (defaultChain != null) {
+                chain = defaultChain;
+            }
+            if (chain == null) {
+                chain = DO_NOTHING;
+            }
+            if (localPage != null) {
+                localPage.setChain(chain);
+            }
+        }
+        return chain.doBoundSql(type, boundSql, cacheKey);
+    }
+
+    @Override
     public void setProperties(Properties properties) {
         setStaticProperties(properties);
         pageParams = new PageParams();
         autoDialect = new PageAutoDialect();
+        pageBoundSqlInterceptors = new PageBoundSqlInterceptors();
         pageParams.setProperties(properties);
         autoDialect.setProperties(properties);
-        // 20180902新增 aggregateFunctions, 允许手动添加聚合函数(影响行数)
+        pageBoundSqlInterceptors.setProperties(properties);
+        // 20180902新增 aggregateFunctions, 允许手动添加聚合函数（影响行数）
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
     }
 

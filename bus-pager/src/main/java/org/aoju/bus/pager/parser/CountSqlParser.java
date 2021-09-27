@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,7 +33,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.pager.plugin.PageFromObject;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.*;
 
@@ -148,7 +148,7 @@ public class CountSqlParser {
      * @param functions 函数
      */
     public static void addAggregateFunctions(String functions) {
-        if (PageFromObject.isNotEmpty(functions)) {
+        if (StringKit.isNotEmpty(functions)) {
             String[] funs = functions.split(Symbol.COMMA);
             for (int i = 0; i < funs.length; i++) {
                 AGGREGATE_FUNCTIONS.add(funs[i].toUpperCase());
@@ -223,9 +223,9 @@ public class CountSqlParser {
         StringBuilder stringBuilder = new StringBuilder(sql.length() + 40);
         stringBuilder.append("select count(");
         stringBuilder.append(name);
-        stringBuilder.append(") from (");
+        stringBuilder.append(") from ( \n");
         stringBuilder.append(sql);
-        stringBuilder.append(") tmp_count");
+        stringBuilder.append("\n ) tmp_count");
         return stringBuilder.toString();
     }
 
@@ -280,7 +280,9 @@ public class CountSqlParser {
                     String name = ((Function) expression).getName();
                     if (null != name) {
                         String NAME = name.toUpperCase();
-                        if (falseFunctions.contains(NAME)) {
+                        if (skipFunctions.contains(NAME)) {
+                            //go on
+                        } else if (falseFunctions.contains(NAME)) {
                             return false;
                         } else {
                             for (String aggregateFunction : AGGREGATE_FUNCTIONS) {
@@ -383,11 +385,13 @@ public class CountSqlParser {
             if (null != subSelect.getSelectBody()) {
                 processSelectBody(subSelect.getSelectBody());
             }
+        } else if (fromItem instanceof ValuesList) {
+
         } else if (fromItem instanceof LateralSubSelect) {
             LateralSubSelect lateralSubSelect = (LateralSubSelect) fromItem;
-            if (null != lateralSubSelect.getSubSelect()) {
+            if (lateralSubSelect.getSubSelect() != null) {
                 SubSelect subSelect = lateralSubSelect.getSubSelect();
-                if (null != subSelect.getSelectBody()) {
+                if (subSelect.getSelectBody() != null) {
                     processSelectBody(subSelect.getSelectBody());
                 }
             }

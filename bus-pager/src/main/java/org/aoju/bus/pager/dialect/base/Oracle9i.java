@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,10 +23,10 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.dialect.general;
+package org.aoju.bus.pager.dialect.base;
 
 import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractDialect;
+import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -34,13 +34,13 @@ import org.apache.ibatis.mapping.MappedStatement;
 import java.util.Map;
 
 /**
- * 数据库方言 oracle 9i
+ * 数据库方言 oracle9i
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class Oracle9i extends AbstractDialect {
+public class Oracle9i extends AbstractPaging {
 
     @Override
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
@@ -50,7 +50,7 @@ public class Oracle9i extends AbstractDialect {
         pageKey.update(page.getEndRow());
         pageKey.update(page.getStartRow());
         // 处理参数配置
-        handleParameter(boundSql, ms);
+        handleParameter(boundSql, ms, long.class, long.class);
         return paramMap;
     }
 

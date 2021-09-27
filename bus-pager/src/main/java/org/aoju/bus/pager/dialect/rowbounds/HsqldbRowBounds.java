@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -43,12 +43,12 @@ public class HsqldbRowBounds extends AbstractRowBounds {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);
         sqlBuilder.append(sql);
         if (rowBounds.getLimit() > 0) {
-            sqlBuilder.append(" LIMIT ");
+            sqlBuilder.append("\n LIMIT ");
             sqlBuilder.append(rowBounds.getLimit());
             pageKey.update(rowBounds.getLimit());
         }
         if (rowBounds.getOffset() > 0) {
-            sqlBuilder.append(" OFFSET ");
+            sqlBuilder.append("\n OFFSET ");
             sqlBuilder.append(rowBounds.getOffset());
             pageKey.update(rowBounds.getOffset());
         }

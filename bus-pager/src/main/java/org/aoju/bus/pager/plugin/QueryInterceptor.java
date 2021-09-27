@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,8 +33,6 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
-import java.util.Properties;
-
 /**
  * QueryInterceptor 规范
  *
@@ -60,7 +58,7 @@ public class QueryInterceptor implements Interceptor {
         Executor executor = (Executor) invocation.getTarget();
         CacheKey cacheKey;
         BoundSql boundSql;
-        // 由于逻辑关系,只会进入一次
+        // 由于逻辑关系，只会进入一次
         if (args.length == 4) {
             // 4 个参数时
             boundSql = ms.getBoundSql(parameter);
@@ -70,17 +68,14 @@ public class QueryInterceptor implements Interceptor {
             cacheKey = (CacheKey) args[4];
             boundSql = (BoundSql) args[5];
         }
-        // 注：下面的方法可以根据自己的逻辑调用多次,在分页插件中,count 和 proxy 各调用了一次
+
+        // 注：下面的方法可以根据自己的逻辑调用多次，在分页插件中，count 和 page 各调用了一次
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
 
     @Override
     public Object plugin(Object target) {
         return Plugin.wrap(target, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
     }
 
 }
