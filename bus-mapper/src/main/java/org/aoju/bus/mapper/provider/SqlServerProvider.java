@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,13 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.provider;
 
+import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
-import org.aoju.bus.mapper.builder.SqlSourceBuilder;
+import org.aoju.bus.mapper.builder.SqlBuilder;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
- * SqlServerProvider实现类,特殊方法实现类
+ * SqlServerProvider实现类，特殊方法实现类
  *
  * @author Kimi Liu
  * @version 6.2.9
@@ -53,9 +54,13 @@ public class SqlServerProvider extends MapperTemplate {
         final Class<?> entityClass = getEntityClass(ms);
         //开始拼sql
         StringBuilder sql = new StringBuilder();
-        sql.append(SqlSourceBuilder.insertIntoTable(entityClass, tableName(entityClass)))
-                .append(SqlSourceBuilder.insertColumns(entityClass, true, false, false))
-                .append(SqlSourceBuilder.insertValuesColumns(entityClass, true, false, false));
+        sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass)));
+        sql.append(SqlBuilder.insertColumns(entityClass, true, false, false));
+        sql.append(SqlBuilder.insertValuesColumns(entityClass, true, false, false));
+
+        // 反射把MappedStatement中的设置主键名
+        EntityBuilder.setKeyProperties(EntityBuilder.getPKColumns(entityClass), ms);
+
         return sql.toString();
     }
 
@@ -68,9 +73,13 @@ public class SqlServerProvider extends MapperTemplate {
     public String insertSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        sql.append(SqlSourceBuilder.insertIntoTable(entityClass, tableName(entityClass)))
-                .append(SqlSourceBuilder.insertColumns(entityClass, true, true, isNotEmpty()))
-                .append(SqlSourceBuilder.insertValuesColumns(entityClass, true, true, isNotEmpty()));
+        sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass)));
+        sql.append(SqlBuilder.insertColumns(entityClass, true, true, isNotEmpty()));
+        sql.append(SqlBuilder.insertValuesColumns(entityClass, true, true, isNotEmpty()));
+
+        // 反射把MappedStatement中的设置主键名
+        EntityBuilder.setKeyProperties(EntityBuilder.getPKColumns(entityClass), ms);
+
         return sql.toString();
     }
 

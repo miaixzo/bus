@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 public class FreeBsdOSProcess extends AbstractOSProcess {
 
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
-            .map(String::toLowerCase).collect(Collectors.joining(","));
+            .map(String::toLowerCase).collect(Collectors.joining(Symbol.COMMA));
     private static final int ARGMAX = BsdSysctlKit.sysctl("kern.argmax", 0);
     private Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
 

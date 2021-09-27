@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.openbsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
 import org.aoju.bus.health.builtin.hardware.SoundCard;
@@ -93,7 +94,7 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
                 // Codec is on the next line
                 int idx = line.indexOf("codec");
                 if (idx >= 0) {
-                    idx = line.indexOf(':');
+                    idx = line.indexOf(Symbol.C_COLON);
                     codecMap.put(key, line.substring(idx + 1).trim());
                 }
                 // clear key so we don't keep looking

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,9 +27,11 @@ package org.aoju.bus.mapper.criteria;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,11 +57,10 @@ public class SimpleType {
             "java.time.Month",
             "java.time.YearMonth"
     };
-
     private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>();
 
     /**
-     * 特别注意：由于基本类型有默认值,因此在实体类中不建议使用基本类型作为数据库字段类型
+     * 特别注意：由于基本类型有默认值，因此在实体类中不建议使用基本类型作为数据库字段类型
      */
     static {
         SIMPLE_TYPE_SET.add(byte[].class);
@@ -73,6 +74,7 @@ public class SimpleType {
         SIMPLE_TYPE_SET.add(Double.class);
         SIMPLE_TYPE_SET.add(Boolean.class);
         SIMPLE_TYPE_SET.add(Date.class);
+        SIMPLE_TYPE_SET.add(Timestamp.class);
         SIMPLE_TYPE_SET.add(Class.class);
         SIMPLE_TYPE_SET.add(BigInteger.class);
         SIMPLE_TYPE_SET.add(BigDecimal.class);
@@ -85,19 +87,33 @@ public class SimpleType {
     /**
      * 注册新的类型
      *
-     * @param clazz 对象
+     * @param clazz 对象Class
      */
     public static void registerSimpleType(Class<?> clazz) {
         SIMPLE_TYPE_SET.add(clazz);
     }
 
     /**
+     * 注册 8 种基本类型
+     */
+    public static void registerPrimitiveTypes() {
+        registerSimpleType(boolean.class);
+        registerSimpleType(byte.class);
+        registerSimpleType(short.class);
+        registerSimpleType(int.class);
+        registerSimpleType(long.class);
+        registerSimpleType(char.class);
+        registerSimpleType(float.class);
+        registerSimpleType(double.class);
+    }
+
+    /**
      * 注册新的类型
      *
-     * @param classes 对象
+     * @param classes 注册类型
      */
     public static void registerSimpleType(String classes) {
-        if (Assert.isNotEmpty(classes)) {
+        if (StringKit.isNotEmpty(classes)) {
             String[] cls = classes.split(Symbol.COMMA);
             for (String c : cls) {
                 try {
@@ -110,9 +126,9 @@ public class SimpleType {
     }
 
     /**
-     * 注册新的类型,不存在时不抛出异常
+     * 注册新的类型，不存在时不抛出异常
      *
-     * @param clazz 对象
+     * @param clazz 注册类型
      */
     private static void registerSimpleTypeSilence(String clazz) {
         try {
@@ -123,10 +139,10 @@ public class SimpleType {
     }
 
     /**
-     * Tells us if the class passed in is a known common type
+     * 传入的类是否是已知的公共类型
      *
-     * @param clazz The class to check
-     * @return True if the class is known
+     * @param clazz 要检查的类
+     * @return the boolean
      */
     public static boolean isSimpleType(Class<?> clazz) {
         return SIMPLE_TYPE_SET.contains(clazz);

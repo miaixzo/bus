@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,10 +33,28 @@ package org.aoju.bus.mapper.criteria;
  * @since JDK 1.8+
  */
 public enum Style {
-    normal,                     //原值
-    camelhump,                  //驼峰转下划线
-    uppercase,                  //转换为大写
-    lowercase,                  //转换为小写
-    camelhumpAndUppercase,      //驼峰转下划线大写形式
-    camelhumpAndLowercase,      //驼峰转下划线小写形式
+    /**
+     * 原值
+     */
+    normal,
+    /**
+     * 驼峰转下划线
+     */
+    camelhump,
+    /**
+     * 转换为大写
+     */
+    uppercase,
+    /**
+     * 转换为小写
+     */
+    lowercase,
+    /**
+     * 驼峰转下划线大写形式
+     */
+    camelhumpAndUppercase,
+    /**
+     * 驼峰转下划线小写形式
+     */
+    camelhumpAndLowercase
 }

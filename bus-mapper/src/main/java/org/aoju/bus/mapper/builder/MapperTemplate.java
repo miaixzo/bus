@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,17 +25,16 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.mapper.criteria.Assert;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.mapper.entity.Config;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.aoju.bus.mapper.entity.EntityTable;
-import org.aoju.bus.mapper.reflection.Reflector;
+import org.aoju.bus.mapper.reflect.MetaObject;
+import org.aoju.bus.mapper.reflect.Reflector;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlSource;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.scripting.xmltags.DynamicSqlSource;
 import org.apache.ibatis.scripting.xmltags.SqlNode;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
@@ -52,7 +51,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 通用Mapper模板类,扩展通用Mapper时需要继承该类
+ * 通用Mapper模板类，扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
  * @version 6.2.9
@@ -74,8 +73,8 @@ public abstract class MapperTemplate {
     /**
      * 该方法仅仅用来初始化ProviderSqlSource
      *
-     * @param record 对象
-     * @return string
+     * @param record 记录值
+     * @return the string
      */
     public String dynamicSQL(Object record) {
         return "dynamicSQL";
@@ -84,7 +83,7 @@ public abstract class MapperTemplate {
     /**
      * 添加映射方法
      *
-     * @param methodName 方法名称
+     * @param methodName 方法名
      * @param method     方法
      */
     public void addMethodMap(String methodName, Method method) {
@@ -92,41 +91,41 @@ public abstract class MapperTemplate {
     }
 
     /**
-     * 获取Identity值的表达式
+     * 获取IDENTITY值的表达式
      *
-     * @param column 列信息
+     * @param column 列
      * @return the string
      */
     public String getIDENTITY(EntityColumn column) {
-        return MessageFormat.format(mapperBuilder.getConfig().getIdentity(), column.getSequenceName(), column.getColumn(), column.getProperty(), column.getTable().getName());
+        return MessageFormat.format(mapperBuilder.getConfig().getIDENTITY(), column.getColumn(), column.getProperty(), column.getTable().getName());
     }
 
     /**
      * 是否支持该通用方法
      *
-     * @param msId 方法ID
+     * @param msId 方法
      * @return the boolean
      */
     public boolean supportMethod(String msId) {
         Class<?> mapperClass = Reflector.getMapperClass(msId);
-        if (null != mapperClass && this.mapperClass.isAssignableFrom(mapperClass)) {
+        if (mapperClass != null && this.mapperClass.isAssignableFrom(mapperClass)) {
             String methodName = Reflector.getMethodName(msId);
-            return null != methodMap.get(methodName);
+            return methodMap.get(methodName) != null;
         }
         return false;
     }
 
     /**
-     * 设置返回值类型 - 为了让typeHandler在select时有效,改为设置resultMap
+     * 设置返回值类型 - 为了让typeHandler在select时有效，改为设置resultMap
      *
      * @param ms          MappedStatement
-     * @param entityClass 对象
+     * @param entityClass 实体Class对象
      */
     protected void setResultType(MappedStatement ms, Class<?> entityClass) {
         EntityTable entityTable = EntityBuilder.getEntityTable(entityClass);
         List<ResultMap> resultMaps = new ArrayList<>();
         resultMaps.add(entityTable.getResultMap(ms.getConfiguration()));
-        MetaObject metaObject = SystemMetaObject.forObject(ms);
+        org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(ms);
         metaObject.setValue("resultMaps", Collections.unmodifiableList(resultMaps));
     }
 
@@ -134,10 +133,10 @@ public abstract class MapperTemplate {
      * 重新设置SqlSource
      *
      * @param ms        MappedStatement
-     * @param sqlSource SqlSource
+     * @param sqlSource sql
      */
     protected void setSqlSource(MappedStatement ms, SqlSource sqlSource) {
-        MetaObject msObject = SystemMetaObject.forObject(ms);
+        org.apache.ibatis.reflection.MetaObject msObject = MetaObject.forObject(ms);
         msObject.setValue("sqlSource", sqlSource);
     }
 
@@ -145,8 +144,8 @@ public abstract class MapperTemplate {
      * 通过xmlSql创建sqlSource
      *
      * @param ms     MappedStatement
-     * @param xmlSql String
-     * @return SqlSource
+     * @param xmlSql XM信息
+     * @return the object
      */
     public SqlSource createSqlSource(MappedStatement ms, String xmlSql) {
         return languageDriver.createSqlSource(ms.getConfiguration(), "<script>\n\t" + xmlSql + "</script>", null);
@@ -170,7 +169,7 @@ public abstract class MapperTemplate {
                     ParameterizedType t = (ParameterizedType) type;
                     if (t.getRawType() == this.mapperClass || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
                         Class<?> returnType = (Class<?>) t.getActualTypeArguments()[0];
-                        //获取该类型后,第一次对该类型进行初始化
+                        //获取该类型后，第一次对该类型进行初始化
                         EntityBuilder.initEntityNameMap(returnType, mapperBuilder.getConfig());
                         entityClassMap.put(msId, returnType);
                         return returnType;
@@ -182,52 +181,42 @@ public abstract class MapperTemplate {
     }
 
     /**
-     * 获取序列下个值的表达式
-     *
-     * @param column 列
-     * @return the string
-     */
-    protected String getSeqNextVal(EntityColumn column) {
-        return MessageFormat.format(mapperBuilder.getConfig().getSeqFormat(), column.getSequenceName(), column.getColumn(), column.getProperty(), column.getTable().getName());
-    }
-
-    /**
      * 获取实体类的表名
      *
-     * @param entityClass 对象
+     * @param entityClass 实体Class对象
      * @return the string
      */
     protected String tableName(Class<?> entityClass) {
         EntityTable entityTable = EntityBuilder.getEntityTable(entityClass);
         String prefix = entityTable.getPrefix();
-        if (Assert.isEmpty(prefix)) {
+        if (StringKit.isEmpty(prefix)) {
             //使用全局配置
             prefix = mapperBuilder.getConfig().getPrefix();
         }
-        if (Assert.isNotEmpty(prefix)) {
-            return prefix + Symbol.DOT + entityTable.getName();
+        if (StringKit.isNotEmpty(prefix)) {
+            return prefix + "." + entityTable.getName();
         }
         return entityTable.getName();
     }
 
-    public String getIdentity() {
-        return mapperBuilder.getConfig().getIdentity();
+    public Config getConfig() {
+        return mapperBuilder.getConfig();
     }
 
-    public String getUUID() {
-        return mapperBuilder.getConfig().getUUID();
+    public String getIDENTITY() {
+        return getConfig().getIDENTITY();
     }
 
     public boolean isBEFORE() {
-        return mapperBuilder.getConfig().isBEFORE();
+        return getConfig().isBEFORE();
     }
 
-    public boolean isCheckEntityClass() {
-        return mapperBuilder.getConfig().isCheckEntityClass();
+    public boolean isCheckConditionEntityClass() {
+        return getConfig().isCheckConditionEntityClass();
     }
 
     public boolean isNotEmpty() {
-        return mapperBuilder.getConfig().isNotEmpty();
+        return getConfig().isNotEmpty();
     }
 
     /**
@@ -241,21 +230,21 @@ public abstract class MapperTemplate {
         }
         Method method = methodMap.get(Reflector.getMethodName(ms));
         try {
-            //第一种,直接操作ms,不需要返回值
+            // 第一种，直接操作ms，不需要返回值
             if (method.getReturnType() == Void.TYPE) {
                 method.invoke(this, ms);
             }
-            //第二种,返回SqlNode
+            // 第二种，返回SqlNode
             else if (SqlNode.class.isAssignableFrom(method.getReturnType())) {
                 SqlNode sqlNode = (SqlNode) method.invoke(this, ms);
                 DynamicSqlSource dynamicSqlSource = new DynamicSqlSource(ms.getConfiguration(), sqlNode);
                 setSqlSource(ms, dynamicSqlSource);
             }
-            //第三种,返回xml形式的sql字符串
+            // 第三种，返回xml形式的sql字符串
             else if (String.class.equals(method.getReturnType())) {
                 String xmlSql = (String) method.invoke(this, ms);
                 SqlSource sqlSource = createSqlSource(ms, xmlSql);
-                //替换原有的SqlSource
+                // 替换原有的SqlSource
                 setSqlSource(ms, sqlSource);
             } else {
                 throw new InstrumentException("自定义Mapper方法返回类型错误,可选的返回类型为void,SqlNode,String三种!");
@@ -263,7 +252,7 @@ public abstract class MapperTemplate {
         } catch (IllegalAccessException e) {
             throw new InstrumentException(e);
         } catch (InvocationTargetException e) {
-            throw new InstrumentException(null != e.getTargetException() ? e.getTargetException() : e);
+            throw new InstrumentException(e.getTargetException() != null ? e.getTargetException() : e);
         }
     }
 

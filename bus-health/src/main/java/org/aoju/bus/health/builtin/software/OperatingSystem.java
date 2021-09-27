@@ -28,6 +28,7 @@ package org.aoju.bus.health.builtin.software;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -407,7 +408,7 @@ public interface OperatingSystem {
 
             StringBuilder sb = new StringBuilder(null != getVersion() ? getVersion() : Normal.UNKNOWN);
             if (!StringKit.isBlank(getCodeName())) {
-                sb.append(" (").append(getCodeName()).append(')');
+                sb.append(" (").append(getCodeName()).append(Symbol.C_PARENTHESE_RIGHT);
             }
             if (!StringKit.isBlank(getBuildNumber())) {
                 sb.append(" build ").append(getBuildNumber());

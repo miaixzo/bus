@@ -781,12 +781,12 @@ public class Solar {
                 for (String f : getFestivals()) {
                     s.append(" (");
                     s.append(f);
-                    s.append(")");
+                    s.append(Symbol.PARENTHESE_RIGHT);
                 }
                 for (String f : getOtherFestivals()) {
                     s.append(" (");
                     s.append(f);
-                    s.append(")");
+                    s.append(Symbol.PARENTHESE_RIGHT);
                 }
                 s.append(Symbol.SPACE);
                 s.append(getZodiac());

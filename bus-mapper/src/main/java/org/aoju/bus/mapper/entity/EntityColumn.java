@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,9 @@
 package org.aoju.bus.mapper.entity;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.mapper.criteria.Assert;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.mapper.criteria.Order;
+import org.aoju.bus.mapper.genid.GenId;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
@@ -45,19 +47,26 @@ public class EntityColumn {
     private Class<?> javaType;
     private JdbcType jdbcType;
     private Class<? extends TypeHandler<?>> typeHandler;
-    private String sequenceName;
     private boolean id = false;
-    private boolean uuid = false;
     private boolean identity = false;
+    private Class<? extends GenId> genIdClass;
+    //字段是否为 blob
+    private boolean blob;
     private String generator;
     //排序
     private String orderBy;
+    private int orderPriority;
     //可插入
     private boolean insertable = true;
     //可更新
     private boolean updatable = true;
+    private Order order = Order.DEFAULT;
+    //是否设置 javaType
+    private boolean useJavaType;
     /**
      * 对应的字段信息
+     *
+     * @since 3.5.0
      */
     private EntityField entityField;
 
@@ -71,8 +80,8 @@ public class EntityColumn {
     /**
      * 返回格式如:colum = #{age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
      *
-     * @param entityName 名称
-     * @return string
+     * @param entityName 实体映射名
+     * @return the string
      */
     public String getColumnEqualsHolder(String entityName) {
         return this.column + " = " + getColumnHolder(entityName);
@@ -81,8 +90,8 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
      *
-     * @param entityName 名称
-     * @return string
+     * @param entityName 实体映射名
+     * @return the string
      */
     public String getColumnHolder(String entityName) {
         return getColumnHolder(entityName, null);
@@ -91,7 +100,7 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age+suffix,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
      *
-     * @param entityName 名称
+     * @param entityName 实体映射名
      * @param suffix     后缀
      * @return the string
      */
@@ -102,7 +111,7 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age+suffix,jdbcType=NUMERIC,typeHandler=MyTypeHandler},
      *
-     * @param entityName 名称
+     * @param entityName 实体映射名
      * @param suffix     后缀
      * @return the string
      */
@@ -113,33 +122,38 @@ public class EntityColumn {
     /**
      * 返回格式如:#{entityName.age+suffix,jdbcType=NUMERIC,typeHandler=MyTypeHandler}+separator
      *
-     * @param entityName 名称
+     * @param entityName 实体映射名
      * @param suffix     后缀
      * @param separator  分隔符
      * @return the string
      */
     public String getColumnHolder(String entityName, String suffix, String separator) {
         StringBuffer sb = new StringBuffer("#{");
-        if (Assert.isNotEmpty(entityName)) {
+        if (StringKit.isNotEmpty(entityName)) {
             sb.append(entityName);
-            sb.append(Symbol.DOT);
+            sb.append(".");
         }
         sb.append(this.property);
-        if (Assert.isNotEmpty(suffix)) {
+        if (StringKit.isNotEmpty(suffix)) {
             sb.append(suffix);
         }
-        if (null != this.jdbcType) {
-            sb.append(",jdbcType=");
+        // 如果 null 被当作值来传递，对于所有可能为空的列，JDBC Type 是需要的
+        if (this.jdbcType != null) {
+            sb.append(", jdbcType=");
             sb.append(this.jdbcType.toString());
-        } else if (null != this.typeHandler) {
-            sb.append(",typeHandler=");
+        }
+        // 为了以后定制类型处理方式，你也可以指定一个特殊的类型处理器类，例如枚举
+        if (this.typeHandler != null) {
+            sb.append(", typeHandler=");
             sb.append(this.typeHandler.getCanonicalName());
-        } else if (!this.javaType.isArray()) {//当类型为数组时,不设置javaType#103
-            sb.append(",javaType=");
+        }
+        // useJavaType 默认 false,没有 javaType 限制时，对 ByPrimaryKey 方法的参数校验就放宽了，会自动转型
+        if (useJavaType && !this.javaType.isArray()) {
+            sb.append(", javaType=");
             sb.append(javaType.getCanonicalName());
         }
-        sb.append(Symbol.BRACE_RIGHT);
-        if (Assert.isNotEmpty(separator)) {
+        sb.append("}");
+        if (StringKit.isNotEmpty(separator)) {
             sb.append(separator);
         }
         return sb.toString();
@@ -148,39 +162,35 @@ public class EntityColumn {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         EntityColumn that = (EntityColumn) o;
 
         if (id != that.id) return false;
-        if (uuid != that.uuid) return false;
         if (identity != that.identity) return false;
-        if (null != table ? !table.equals(that.table) : null != that.table) return false;
-        if (null != property ? !property.equals(that.property) : null != that.property) return false;
-        if (null != column ? !column.equals(that.column) : null != that.column) return false;
-        if (null != javaType ? !javaType.equals(that.javaType) : null != that.javaType) return false;
+        if (table != null ? !table.equals(that.table) : that.table != null) return false;
+        if (property != null ? !property.equals(that.property) : that.property != null) return false;
+        if (column != null ? !column.equals(that.column) : that.column != null) return false;
+        if (javaType != null ? !javaType.equals(that.javaType) : that.javaType != null) return false;
         if (jdbcType != that.jdbcType) return false;
-        if (null != typeHandler ? !typeHandler.equals(that.typeHandler) : null != that.typeHandler) return false;
-        if (null != sequenceName ? !sequenceName.equals(that.sequenceName) : null != that.sequenceName) return false;
-        if (null != generator ? !generator.equals(that.generator) : null != that.generator) return false;
-        return !(null != orderBy ? !orderBy.equals(that.orderBy) : null != that.orderBy);
+        if (typeHandler != null ? !typeHandler.equals(that.typeHandler) : that.typeHandler != null) return false;
+        if (generator != null ? !generator.equals(that.generator) : that.generator != null) return false;
+        return !(orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = null != table ? table.hashCode() : 0;
-        result = 31 * result + (null != property ? property.hashCode() : 0);
-        result = 31 * result + (null != column ? column.hashCode() : 0);
-        result = 31 * result + (null != javaType ? javaType.hashCode() : 0);
-        result = 31 * result + (null != jdbcType ? jdbcType.hashCode() : 0);
-        result = 31 * result + (null != typeHandler ? typeHandler.hashCode() : 0);
-        result = 31 * result + (null != sequenceName ? sequenceName.hashCode() : 0);
+        int result = table != null ? table.hashCode() : 0;
+        result = 31 * result + (property != null ? property.hashCode() : 0);
+        result = 31 * result + (column != null ? column.hashCode() : 0);
+        result = 31 * result + (javaType != null ? javaType.hashCode() : 0);
+        result = 31 * result + (jdbcType != null ? jdbcType.hashCode() : 0);
+        result = 31 * result + (typeHandler != null ? typeHandler.hashCode() : 0);
         result = 31 * result + (id ? 1 : 0);
-        result = 31 * result + (uuid ? 1 : 0);
         result = 31 * result + (identity ? 1 : 0);
-        result = 31 * result + (null != generator ? generator.hashCode() : 0);
-        result = 31 * result + (null != orderBy ? orderBy.hashCode() : 0);
+        result = 31 * result + (generator != null ? generator.hashCode() : 0);
+        result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
         return result;
     }
 
@@ -192,10 +202,20 @@ public class EntityColumn {
         this.column = column;
     }
 
+    /**
+     * 返回格式如:colum = #{age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
+     *
+     * @return the string
+     */
     public String getColumnEqualsHolder() {
         return getColumnEqualsHolder(null);
     }
 
+    /**
+     * 返回格式如:#{age,jdbcType=NUMERIC,typeHandler=MyTypeHandler}
+     *
+     * @return the string
+     */
     public String getColumnHolder() {
         return getColumnHolder(null);
     }
@@ -248,14 +268,6 @@ public class EntityColumn {
         this.property = property;
     }
 
-    public String getSequenceName() {
-        return sequenceName;
-    }
-
-    public void setSequenceName(String sequenceName) {
-        this.sequenceName = sequenceName;
-    }
-
     public EntityTable getTable() {
         return table;
     }
@@ -288,6 +300,14 @@ public class EntityColumn {
         this.identity = identity;
     }
 
+    public Class<? extends GenId> getGenIdClass() {
+        return genIdClass;
+    }
+
+    public void setGenIdClass(Class<? extends GenId> genIdClass) {
+        this.genIdClass = genIdClass;
+    }
+
     public boolean isInsertable() {
         return insertable;
     }
@@ -304,11 +324,56 @@ public class EntityColumn {
         this.updatable = updatable;
     }
 
-    public boolean isUuid() {
-        return uuid;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setUuid(boolean uuid) {
-        this.uuid = uuid;
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public boolean isBlob() {
+        return blob;
+    }
+
+    public void setBlob(boolean blob) {
+        this.blob = blob;
+    }
+
+    public boolean isUseJavaType() {
+        return useJavaType;
+    }
+
+    public void setUseJavaType(boolean useJavaType) {
+        this.useJavaType = useJavaType;
+    }
+
+    public int getOrderPriority() {
+        return orderPriority;
+    }
+
+    public void setOrderPriority(int orderPriority) {
+        this.orderPriority = orderPriority;
+    }
+
+    @Override
+    public String toString() {
+        return "EntityColumn{" +
+                "table=" + table.getName() +
+                ", property='" + property + '\'' +
+                ", column='" + column + '\'' +
+                ", javaType=" + javaType +
+                ", jdbcType=" + jdbcType +
+                ", typeHandler=" + typeHandler +
+                ", id=" + id +
+                ", identity=" + identity +
+                ", blob=" + blob +
+                ", generator='" + generator + '\'' +
+                ", orderBy='" + orderBy + '\'' +
+                ", orderPriority='" + orderPriority + '\'' +
+                ", insertable=" + insertable +
+                ", updatable=" + updatable +
+                ", order=" + order +
+                '}';
     }
 }

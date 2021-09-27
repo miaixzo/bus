@@ -33,6 +33,7 @@ import com.sun.jna.platform.mac.SystemB.HostCpuLoadInfo;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
@@ -125,7 +126,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected ProcessorIdentifier queryProcessorId() {
-        String cpuName = SysctlKit.sysctl("machdep.cpu.brand_string", "");
+        String cpuName = SysctlKit.sysctl("machdep.cpu.brand_string", Normal.EMPTY);
         String cpuVendor;
         String cpuStepping;
         String cpuModel;
@@ -155,13 +156,13 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             processorID = String.format("%08x%08x", type, family);
         } else {
             // Processing an Intel chip
-            cpuVendor = SysctlKit.sysctl("machdep.cpu.vendor", "");
+            cpuVendor = SysctlKit.sysctl("machdep.cpu.vendor", Normal.EMPTY);
             int i = SysctlKit.sysctl("machdep.cpu.stepping", -1);
-            cpuStepping = i < 0 ? "" : Integer.toString(i);
+            cpuStepping = i < 0 ? Normal.EMPTY : Integer.toString(i);
             i = SysctlKit.sysctl("machdep.cpu.model", -1);
-            cpuModel = i < 0 ? "" : Integer.toString(i);
+            cpuModel = i < 0 ? Normal.EMPTY : Integer.toString(i);
             i = SysctlKit.sysctl("machdep.cpu.family", -1);
-            cpuFamily = i < 0 ? "" : Integer.toString(i);
+            cpuFamily = i < 0 ? Normal.EMPTY : Integer.toString(i);
             long processorIdBits = 0L;
             processorIdBits |= SysctlKit.sysctl("machdep.cpu.signature", 0);
             processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;

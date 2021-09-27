@@ -109,17 +109,17 @@ public class Job implements Runnable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(target.getClass().getName()).append("#")
-                .append(method.getName()).append("|").append(type);
+        StringBuilder sb = new StringBuilder(target.getClass().getName()).append(Symbol.SHAPE)
+                .append(method.getName()).append(Symbol.OR).append(type);
         if (type == TYPE.CRON) {
-            sb.append("|").append(cron);
+            sb.append(Symbol.OR).append(cron);
         } else if (type == TYPE.ON_APPLICATION_START) {
-            sb.append("|").append(async);
+            sb.append(Symbol.C_OR).append(async);
         } else {
             if (type == TYPE.FIXED_DELAY) {
-                sb.append("|").append(fixedDelay);
+                sb.append(Symbol.OR).append(fixedDelay);
             } else if (type == TYPE.FIXED_RATE) {
-                sb.append("|").append(fixedRate);
+                sb.append(Symbol.OR).append(fixedRate);
             }
             sb.append(Symbol.C_COMMA).append(initialDelay);
         }

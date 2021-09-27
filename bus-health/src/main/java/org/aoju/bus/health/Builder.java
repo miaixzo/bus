@@ -421,7 +421,7 @@ public final class Builder {
      * otherwise the map may contain only a single element for {@code pid}
      */
     public static Map<Integer, String> getCwdMap(int pid) {
-        List<String> lsof = Executor.runNative("lsof -F n -d cwd" + (pid < 0 ? "" : " -p " + pid));
+        List<String> lsof = Executor.runNative("lsof -F n -d cwd" + (pid < 0 ? Normal.EMPTY : " -p " + pid));
         Map<Integer, String> cwdMap = new HashMap<>();
         Integer key = -1;
         for (String line : lsof) {
@@ -1573,7 +1573,7 @@ public final class Builder {
             String vendorId = "0x" + m.group(1).toLowerCase();
             String productId = "0x" + m.group(2).toLowerCase();
             String serial = m.group(4);
-            return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? "" : serial);
+            return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? Normal.EMPTY : serial);
         }
         return null;
     }
@@ -1735,7 +1735,7 @@ public final class Builder {
         if (utAddrV6[1] == 0 && utAddrV6[2] == 0 && utAddrV6[3] == 0) {
             // Special case for all 0's
             if (utAddrV6[0] == 0) {
-                return "::";
+                return Symbol.COLON + Symbol.COLON;
             }
             // Parse using InetAddress
             byte[] ipv4 = ByteBuffer.allocate(4).putInt(utAddrV6[0]).array();
@@ -1922,7 +1922,7 @@ public final class Builder {
     public static List<PathMatcher> parseFileSystemConfig(String config) {
         FileSystem fs = FileSystems.getDefault();
         List<PathMatcher> patterns = new ArrayList<>();
-        for (String item : config.split(",")) {
+        for (String item : config.split(Symbol.COMMA)) {
             if (item.length() > 0) {
                 // Using glob: prefix as the defult unless user has specified glob or regex. See
                 // https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-

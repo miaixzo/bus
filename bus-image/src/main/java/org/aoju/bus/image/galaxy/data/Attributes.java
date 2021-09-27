@@ -3282,7 +3282,7 @@ public class Attributes implements Serializable {
     private int creatorIndexOf(String privateCreator, int groupNumber) {
         if ((groupNumber & 1) == 0)
             throw new IllegalArgumentException(
-                    "(" + Tag.shortToHexString(groupNumber) + ",xxxx) is not a private Group");
+                    Symbol.PARENTHESE_LEFT + Tag.shortToHexString(groupNumber) + ",xxxx) is not a private Group");
 
         int group = groupNumber << 16;
         int creatorTag = group | 0x10;

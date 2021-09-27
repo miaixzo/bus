@@ -1651,7 +1651,7 @@ public class UriKit {
         if (StringKit.isEmpty(fragment)) {
             this.fragment = null;
         }
-        this.fragment = StringKit.removePrefix(fragment, "#");
+        this.fragment = StringKit.removePrefix(fragment, Symbol.SHAPE);
         return this;
     }
 

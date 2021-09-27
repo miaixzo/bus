@@ -97,7 +97,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 for (byte b : hwmac) {
                     octets.add(String.format("%02x", b));
                 }
-                this.mac = String.join(":", octets);
+                this.mac = String.join(Symbol.COLON, octets);
             } else {
                 this.mac = Normal.UNKNOWN;
             }
@@ -110,8 +110,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress address = interfaceAddress.getAddress();
                 if (address.getHostAddress().length() > 0) {
-                    if (address.getHostAddress().contains(":")) {
-                        ipv6list.add(address.getHostAddress().split("%")[0]);
+                    if (address.getHostAddress().contains(Symbol.COLON)) {
+                        ipv6list.add(address.getHostAddress().split(Symbol.PERCENT)[0]);
                         prefixLengthList.add(interfaceAddress.getNetworkPrefixLength());
                     } else {
                         ipv4list.add(address.getHostAddress());

@@ -142,7 +142,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
         List<IPConnection> conns = new ArrayList<>();
         for (String s : FileKit.readLines(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
-            if (s.indexOf(':') >= 0) {
+            if (s.indexOf(Symbol.C_COLON) >= 0) {
                 String[] split = RegEx.SPACES.split(s.trim());
                 if (split.length > 9) {
                     Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
@@ -159,7 +159,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     private static Pair<byte[], Integer> parseIpAddr(String s) {
-        int colon = s.indexOf(':');
+        int colon = s.indexOf(Symbol.C_COLON);
         if (colon > 0 && colon < s.length()) {
             byte[] first = Builder.hexStringToByteArray(s.substring(0, colon));
             // Bytes are in __be32 endianness. we must invert each set of 4 bytes
@@ -178,7 +178,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     private static Pair<Integer, Integer> parseHexColonHex(String s) {
-        int colon = s.indexOf(':');
+        int colon = s.indexOf(Symbol.C_COLON);
         if (colon > 0 && colon < s.length()) {
             int first = Builder.hexStringToInt(s.substring(0, colon), 0);
             int second = Builder.hexStringToInt(s.substring(colon + 1), 0);

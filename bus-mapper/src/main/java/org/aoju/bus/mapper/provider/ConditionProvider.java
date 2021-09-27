@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,18 +27,19 @@ package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
-import org.aoju.bus.mapper.builder.SqlSourceBuilder;
+import org.aoju.bus.mapper.builder.SqlBuilder;
+import org.aoju.bus.mapper.reflect.MetaObject;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
 
 /**
- * ConditionProvider实现类,基础方法实现类
+ * ConditionProvider实现类，基础方法实现类
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
 public class ConditionProvider extends MapperTemplate {
-
 
     public ConditionProvider(Class<?> mapperClass, MapperBuilder mapperBuilder) {
         super(mapperClass, mapperBuilder);
@@ -51,7 +52,16 @@ public class ConditionProvider extends MapperTemplate {
      * @return the string
      */
     public String selectCountByCondition(MappedStatement ms) {
-        return selectCountByWhere(ms);
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder("SELECT ");
+        if (isCheckConditionEntityClass()) {
+            sql.append(SqlBuilder.conditionCheck(entityClass));
+        }
+        sql.append(SqlBuilder.conditionCountColumn(entityClass));
+        sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
+        sql.append(SqlBuilder.conditionWhereClause());
+        sql.append(SqlBuilder.conditionForUpdate());
+        return sql.toString();
     }
 
     /**
@@ -61,9 +71,27 @@ public class ConditionProvider extends MapperTemplate {
      * @return the string
      */
     public String deleteByCondition(MappedStatement ms) {
-        return deleteByWhere(ms);
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        if (isCheckConditionEntityClass()) {
+            sql.append(SqlBuilder.conditionCheck(entityClass));
+        }
+        // 如果设置了安全删除，就不允许执行不带查询条件的 delete 方法
+        if (getConfig().isSafeDelete()) {
+            sql.append(SqlBuilder.conditionHasAtLeastOneCriteriaCheck("_parameter"));
+        }
+        if (SqlBuilder.hasLogicDeleteColumn(entityClass)) {
+            sql.append(SqlBuilder.updateTable(entityClass, tableName(entityClass)));
+            sql.append("<set>");
+            sql.append(SqlBuilder.logicDeleteColumnEqualsValue(entityClass, true));
+            sql.append("</set>");
+            MetaObject.forObject(ms).setValue("sqlCommandType", SqlCommandType.UPDATE);
+        } else {
+            sql.append(SqlBuilder.deleteFromTable(entityClass, tableName(entityClass)));
+        }
+        sql.append(SqlBuilder.conditionWhereClause());
+        return sql.toString();
     }
-
 
     /**
      * 根据Condition查询
@@ -72,7 +100,21 @@ public class ConditionProvider extends MapperTemplate {
      * @return the string
      */
     public String selectByCondition(MappedStatement ms) {
-        return selectByWhere(ms);
+        Class<?> entityClass = getEntityClass(ms);
+        // 将返回值修改为实体类型
+        setResultType(ms, entityClass);
+        StringBuilder sql = new StringBuilder("SELECT ");
+        if (isCheckConditionEntityClass()) {
+            sql.append(SqlBuilder.conditionCheck(entityClass));
+        }
+        sql.append("<if test=\"distinct\">distinct</if>");
+        // 支持查询指定列
+        sql.append(SqlBuilder.conditionSelectColumns(entityClass));
+        sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
+        sql.append(SqlBuilder.conditionWhereClause());
+        sql.append(SqlBuilder.conditionOrderBy(entityClass));
+        sql.append(SqlBuilder.conditionForUpdate());
+        return sql.toString();
     }
 
     /**
@@ -82,7 +124,7 @@ public class ConditionProvider extends MapperTemplate {
      * @return the string
      */
     public String selectByConditionAndRowBounds(MappedStatement ms) {
-        return selectByWhere(ms);
+        return selectByCondition(ms);
     }
 
     /**
@@ -92,7 +134,19 @@ public class ConditionProvider extends MapperTemplate {
      * @return the string
      */
     public String updateByConditionSelective(MappedStatement ms) {
-        return updateByWhereSelective(ms);
+        Class<?> entityClass = getEntityClass(ms);
+        StringBuilder sql = new StringBuilder();
+        if (isCheckConditionEntityClass()) {
+            sql.append(SqlBuilder.conditionCheck(entityClass));
+        }
+        // 安全更新，Condition 必须包含条件
+        if (getConfig().isSafeUpdate()) {
+            sql.append(SqlBuilder.conditionHasAtLeastOneCriteriaCheck("condition"));
+        }
+        sql.append(SqlBuilder.updateTable(entityClass, tableName(entityClass), "condition"));
+        sql.append(SqlBuilder.updateSetColumnsIgnoreVersion(entityClass, "record", true, isNotEmpty()));
+        sql.append(SqlBuilder.updateByConditionWhereClause());
+        return sql.toString();
     }
 
     /**
@@ -102,114 +156,18 @@ public class ConditionProvider extends MapperTemplate {
      * @return the string
      */
     public String updateByCondition(MappedStatement ms) {
-        return updateByWhere(ms);
-    }
-
-
-    /**
-     * 根据Condition查询总数
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String selectCountByWhere(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        if (isCheckEntityClass()) {
-            sql.append(SqlSourceBuilder.check(entityClass));
+        if (isCheckConditionEntityClass()) {
+            sql.append(SqlBuilder.conditionCheck(entityClass));
         }
-        sql.append(SqlSourceBuilder.selectCount(entityClass))
-                .append(SqlSourceBuilder.fromTable(entityClass, tableName(entityClass)))
-                .append(SqlSourceBuilder.whereClause())
-                .append(SqlSourceBuilder.forUpdate());
-        return sql.toString();
-    }
-
-    /**
-     * 根据Condition删除
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String deleteByWhere(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        if (isCheckEntityClass()) {
-            sql.append(SqlSourceBuilder.check(entityClass));
+        // 安全更新，Condition 必须包含条件
+        if (getConfig().isSafeUpdate()) {
+            sql.append(SqlBuilder.conditionHasAtLeastOneCriteriaCheck("condition"));
         }
-        sql.append(SqlSourceBuilder.deleteFromTable(entityClass, tableName(entityClass)))
-                .append(SqlSourceBuilder.whereClause());
-        return sql.toString();
-    }
-
-
-    /**
-     * 根据Condition查询
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String selectByWhere(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        //将返回值修改为实体类型
-        setResultType(ms, entityClass);
-        StringBuilder sql = new StringBuilder("SELECT ");
-        if (isCheckEntityClass()) {
-            sql.append(SqlSourceBuilder.check(entityClass));
-        }
-        sql.append("<if test=\"distinct\">distinct</if>")
-                //支持查询指定列
-                .append(SqlSourceBuilder.selectColumns(entityClass))
-                .append(SqlSourceBuilder.fromTable(entityClass, tableName(entityClass)))
-                .append(SqlSourceBuilder.whereClause())
-                .append(SqlSourceBuilder.orderBy(entityClass))
-                .append(SqlSourceBuilder.forUpdate());
-        return sql.toString();
-    }
-
-    /**
-     * 根据Condition查询
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String selectByWhereAndRowBounds(MappedStatement ms) {
-        return selectByWhere(ms);
-    }
-
-    /**
-     * 根据Condition更新非null字段
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String updateByWhereSelective(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        if (isCheckEntityClass()) {
-            sql.append(SqlSourceBuilder.check(entityClass));
-        }
-        sql.append(SqlSourceBuilder.updateTable(entityClass, tableName(entityClass), "condition"))
-                .append(SqlSourceBuilder.updateSetColumns(entityClass, "record", true, isNotEmpty()))
-                .append(SqlSourceBuilder.updateByWhereClause());
-        return sql.toString();
-    }
-
-    /**
-     * 根据Condition更新
-     *
-     * @param ms MappedStatement
-     * @return the string
-     */
-    public String updateByWhere(MappedStatement ms) {
-        Class<?> entityClass = getEntityClass(ms);
-        StringBuilder sql = new StringBuilder();
-        if (isCheckEntityClass()) {
-            sql.append(SqlSourceBuilder.check(entityClass));
-        }
-        sql.append(SqlSourceBuilder.updateTable(entityClass, tableName(entityClass), "condition"))
-                .append(SqlSourceBuilder.updateSetColumns(entityClass, "record", false, false))
-                .append(SqlSourceBuilder.updateByWhereClause());
+        sql.append(SqlBuilder.updateTable(entityClass, tableName(entityClass), "condition"));
+        sql.append(SqlBuilder.updateSetColumnsIgnoreVersion(entityClass, "record", false, false));
+        sql.append(SqlBuilder.updateByConditionWhereClause());
         return sql.toString();
     }
 
@@ -219,8 +177,8 @@ public class ConditionProvider extends MapperTemplate {
      * @param ms MappedStatement
      * @return the string
      */
-    public String selectOneByWhere(MappedStatement ms) {
-        return selectByWhere(ms);
+    public String selectOneByCondition(MappedStatement ms) {
+        return selectByCondition(ms);
     }
 
 }

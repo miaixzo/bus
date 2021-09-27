@@ -160,7 +160,8 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
     /**
      * 获取切分后的对象列表
      *
-     * @param <T> 元素类型
+     * @param <T>     元素类型
+     * @param mapping 函数
      * @return 切分后的列表
      */
     public <T> List<T> toList(Function<String, T> mapping) {

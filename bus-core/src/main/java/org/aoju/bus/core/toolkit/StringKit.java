@@ -2337,6 +2337,7 @@ public class StringKit {
     /**
      * 切分字符串，大小写敏感
      *
+     * @param <R>         泛型对象
      * @param str         被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数，-1不限制
@@ -2405,6 +2406,7 @@ public class StringKit {
     /**
      * 切分字符串
      *
+     * @param <R>         泛型对象
      * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数，-1不限制

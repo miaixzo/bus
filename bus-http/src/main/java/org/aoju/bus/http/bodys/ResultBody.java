@@ -319,14 +319,14 @@ public class ResultBody extends AbstractBody implements Body {
     private String indexFileName(String fileName, int index) {
         int i = fileName.lastIndexOf(Symbol.C_DOT);
         if (i < 0) {
-            return fileName + "(" + index + ")";
+            return fileName + Symbol.PARENTHESE_LEFT + index + ")";
         }
         String ext = fileName.substring(i);
         if (i > 0) {
             String name = fileName.substring(0, i);
-            return name + "(" + index + ")" + ext;
+            return name + Symbol.PARENTHESE_LEFT + index + ")" + ext;
         }
-        return "(" + index + ")" + ext;
+        return Symbol.PARENTHESE_LEFT + index + ")" + ext;
     }
 
     private String resolveFileName() {
