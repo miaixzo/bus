@@ -44,5 +44,4 @@ public class GoalieProperties {
     private final Config server = new Config();
     private boolean condition;
 
-
 }

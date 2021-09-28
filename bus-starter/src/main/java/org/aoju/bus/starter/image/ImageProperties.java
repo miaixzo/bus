@@ -52,17 +52,14 @@ public class ImageProperties {
      * 服务名称
      */
     String aeTitle;
-
     /**
      * 原始文件保存路径
      */
     String dcmPath;
-
     /**
      * 转换后图片保存路径
      */
     String imgPath;
-
     /**
      * 是否启用opencv
      */

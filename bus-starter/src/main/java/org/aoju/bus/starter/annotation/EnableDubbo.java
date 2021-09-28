@@ -56,7 +56,7 @@ public @interface EnableDubbo {
      * @see DubboComponentScan#basePackages()
      */
     @AliasFor(annotation = DubboComponentScan.class, attribute = "basePackages")
-    String[] basePackage() default {};
+    String[] basePackages() default {};
 
     /**
      * packages to scan for annotated @Service classes.
@@ -66,7 +66,7 @@ public @interface EnableDubbo {
      * @see DubboComponentScan#basePackageClasses
      */
     @AliasFor(annotation = DubboComponentScan.class, attribute = "basePackageClasses")
-    Class<?>[] basePackageClass() default {};
+    Class<?>[] basePackageClasses() default {};
 
     /**
      * binding to multiple Spring Beans.

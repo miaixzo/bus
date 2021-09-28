@@ -64,7 +64,6 @@ public class MybatisPluginBuilder {
                 p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
                 p.setProperty("reasonable", mybatisProperties.getReasonable());
                 p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
-                p.setProperty("returnPage", mybatisProperties.getReturnPage());
                 p.setProperty("params", mybatisProperties.getParams());
 
                 PageSqlHandler pageSqlHandler = new PageSqlHandler();

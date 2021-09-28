@@ -49,7 +49,6 @@ public class CorsProperties {
      * 允许的域名
      */
     private String[] allowedOrigins = new String[]{Symbol.STAR};
-
     /**
      * 允许的请求头
      */
@@ -58,7 +57,6 @@ public class CorsProperties {
      * 允许的方法
      */
     private String[] allowedMethods = new String[]{"GET", "DELETE", "POST", "PUT", "OPTIONS"};
-
     /**
      * 响应头信息公开
      */
