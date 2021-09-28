@@ -27,14 +27,12 @@ package org.aoju.bus.starter.mapper;
 
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.mapper.plugins.ExplainSqlHandler;
-import org.aoju.bus.mapper.plugins.NatureSqlHandler;
-import org.aoju.bus.mapper.plugins.SensitiveResultSetHandler;
-import org.aoju.bus.mapper.plugins.SensitiveStatementHandler;
 import org.aoju.bus.pager.plugins.PageSqlHandler;
 import org.aoju.bus.starter.BusXExtend;
 import org.aoju.bus.starter.PlaceBinder;
 import org.aoju.bus.starter.sensitive.SensitiveProperties;
+import org.aoju.bus.starter.sensitive.SensitiveResultSetHandler;
+import org.aoju.bus.starter.sensitive.SensitiveStatementHandler;
 import org.apache.ibatis.plugin.Interceptor;
 import org.springframework.core.env.Environment;
 

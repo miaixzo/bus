@@ -73,7 +73,7 @@ public class XmlyProvider extends AbstractProvider {
     public static String sign(Map<String, String> params, String clientSecret) {
         TreeMap<String, Object> map = new TreeMap<>(params);
         String baseStr = Base64.encode(Builder.parseMapToString(map, false));
-        byte[] sign = sign(clientSecret.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HmacSHA1.getValue());
+        byte[] sign = sign(clientSecret.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
         MessageDigest md5;
         StringBuilder builder = null;
         try {

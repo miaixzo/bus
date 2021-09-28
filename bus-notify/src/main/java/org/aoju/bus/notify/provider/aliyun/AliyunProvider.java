@@ -119,8 +119,8 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
      */
     protected String sign(String stringToSign) {
         try {
-            Mac mac = Mac.getInstance(Algorithm.HmacSHA1.getValue());
-            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HmacSHA1.getValue()));
+            Mac mac = Mac.getInstance(Algorithm.HMACSHA1.getValue());
+            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue()));
             byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {

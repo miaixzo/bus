@@ -27,6 +27,9 @@ package org.aoju.bus.starter.annotation;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.starter.druid.DruidConfiguration;
+import org.aoju.bus.starter.mapper.MapperConfiguration;
+import org.aoju.bus.starter.mapper.MapperFactoryBean;
+import org.aoju.bus.starter.mapper.MapperScannerRegistrar;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.Import;
 
@@ -47,8 +50,7 @@ import java.lang.annotation.*;
 public @interface EnableMapper {
 
     /**
-     * Alias for the {@link #basePackages()} attribute. Allows for more concise
-     * annotation declarations.
+     * {@link #basePackages()} 属性的别名，与basePackages有相同效果
      *
      * @return the array
      */
@@ -62,65 +64,56 @@ public @interface EnableMapper {
     String[] basePackages() default {};
 
     /**
-     * Type-safe alternative to {@link #basePackages()} for specifying the packages
-     * to scan for annotated components. The package of each class specified will be scanned.
-     * Consider creating a special no-op marker class or interface in each package
-     * that serves no purpose other than being referenced by this attribute.
+     * 类型安全的替代{@link #basePackages()} 用于指定要扫描的包以查找带注释的组件,每个指定类的包将被扫描
+     * 考虑在每个包中创建一个特殊的无操作标记类或接口，它除了被该属性引用之外没有其他用途。
      *
      * @return the class
      */
     Class<?>[] basePackageClasses() default {};
 
     /**
-     * The {@link BeanNameGenerator} class to be used for naming detected components
-     * within the Spring container.
+     * 用于命名Spring容器中检测到的组件的{@link BeanNameGenerator}类
+     *
+     * @return the class
      */
     Class<? extends BeanNameGenerator> nameGenerator() default BeanNameGenerator.class;
 
     /**
-     * This property specifies the annotation that the scanner will search for.
-     * <p>
-     * The scanner will register all interfaces in the base package that also have
-     * the specified annotation.
-     * <p>
-     * Note this can be combined with markerInterface.
+     * 此属性指定扫描器将搜索的注释
+     * 扫描器将在基本包中注册所有同样具有指定注释的接口
+     * 注意，这可以与markerInterface结合使用
      *
      * @return the class
      */
     Class<? extends Annotation> annotationClass() default Annotation.class;
 
     /**
-     * This property specifies the parent that the scanner will search for.
-     * <p>
-     * The scanner will register all interfaces in the base package that also have
-     * the specified interface class as a parent.
-     * <p>
-     * Note this can be combined with annotationClass.
+     * 此属性指定扫描程序将搜索的父程序
+     * 扫描器将注册基包中所有同样具有指定接口类作为父类的接口
+     * 注意，这可以与annotationClass结合使用
      *
      * @return the class
      */
     Class<?> markerInterface() default Class.class;
 
     /**
-     * Specifies which {@code SqlSessionTemplate} to use in the case that there is
-     * more than one in the spring context. Usually this is only needed when you
-     * have more than one datasource.
+     * 指定在spring上下文中有多个SqlSessionTemplate时使用哪个{@code SqlSessionTemplate}
+     * 通常只有当您有多个数据源时才需要这样做
      *
      * @return the string
      */
     String sqlSessionTemplateRef() default Normal.EMPTY;
 
     /**
-     * Specifies which {@code SqlSessionFactory} to use in the case that there is
-     * more than one in the spring context. Usually this is only needed when you
-     * have more than one datasource.
+     * 指定在spring上下文中有多个SqlSessionFactory时使用哪个{@code SqlSessionFactory}
+     * 通常只有当您有多个数据源时才需要这样做
      *
      * @return the string
      */
     String sqlSessionFactoryRef() default Normal.EMPTY;
 
     /**
-     * Specifies a custom MapperFactoryBean to return a mybatis proxy as spring bean.
+     * 指定一个自定义的MapperFactoryBean来返回一个mybatis代理作为spring bean
      *
      * @return the class
      */

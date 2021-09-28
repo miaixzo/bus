@@ -106,7 +106,7 @@ public final class KstatKit {
             case LibKstat.KSTAT_DATA_UINT64:
                 return Formats.toUnsignedString(data.value.ui64);
             case LibKstat.KSTAT_DATA_STRING:
-                return data.value.text.addr.getString(0);
+                return data.value.str.addr.getString(0);
             default:
                 Logger.error("Unimplemented kstat data type {}", data.data_type);
                 return Normal.EMPTY;
