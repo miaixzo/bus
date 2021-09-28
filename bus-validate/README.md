@@ -152,7 +152,7 @@ public @interface Blank {
 
 ```java
         @Valid //标记注解，启用验证器AOP拦截
-public append(@Blank String str){
+public append(@Blank String text){
         ...
         }
 ```

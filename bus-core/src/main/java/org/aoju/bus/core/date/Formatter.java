@@ -603,40 +603,40 @@ public class Formatter {
      * 通过给定的日期格式解析日期时间字符串
      * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
-     * @param str           日期时间字符串，非空
+     * @param text          日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的 {@link Calendar}
      */
-    public static Calendar parse(String str, String... parsePatterns) {
-        return parseByPatterns(str, null, parsePatterns);
+    public static Calendar parse(String text, String... parsePatterns) {
+        return parseByPatterns(text, null, parsePatterns);
     }
 
     /**
      * 通过给定的日期格式解析日期时间字符串
      * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
-     * @param str           日期时间字符串，非空
+     * @param text          日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的 {@link Calendar}
      */
-    public static Calendar parse(String str, Locale locale, String... parsePatterns) {
-        return parseByPatterns(str, locale, true, parsePatterns);
+    public static Calendar parse(String text, Locale locale, String... parsePatterns) {
+        return parseByPatterns(text, locale, true, parsePatterns);
     }
 
     /**
      * 通过给定的日期格式解析日期时间字符串
      * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
-     * @param str           日期时间字符串，非空
+     * @param text          日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param lenient       日期时间解析是否使用严格模式
      * @param parsePatterns 需要尝试的日期时间格式数组，非空
      * @return 解析后的 {@link Calendar}
      * @see java.util.Calendar#isLenient()
      */
-    public static Calendar parse(String str, Locale locale, boolean lenient, String... parsePatterns) {
-        if (null == str || null == parsePatterns) {
+    public static Calendar parse(String text, Locale locale, boolean lenient, String... parsePatterns) {
+        if (null == text || null == parsePatterns) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
 
@@ -650,7 +650,7 @@ public class Formatter {
             final FastDateParser fdp = new FastDateParser(parsePattern, tz, lcl);
             calendar.clear();
             try {
-                if (fdp.parse(str, pos, calendar) && pos.getIndex() == str.length()) {
+                if (fdp.parse(text, pos, calendar) && pos.getIndex() == text.length()) {
                     return calendar;
                 }
             } catch (final IllegalArgumentException ignore) {
@@ -658,7 +658,7 @@ public class Formatter {
             }
             pos.setIndex(0);
         }
-        throw new InstrumentException("Unable to parse the date: {}", str);
+        throw new InstrumentException("Unable to parse the date: {}", text);
     }
 
     /**
@@ -818,40 +818,40 @@ public class Formatter {
      * 通过给定的日期格式解析日期时间字符串
      * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
-     * @param str           日期时间字符串，非空
+     * @param text          日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的 {@link Calendar}
      */
-    public static Calendar parseByPatterns(String str, String... parsePatterns) {
-        return parseByPatterns(str, null, parsePatterns);
+    public static Calendar parseByPatterns(String text, String... parsePatterns) {
+        return parseByPatterns(text, null, parsePatterns);
     }
 
     /**
      * 通过给定的日期格式解析日期时间字符串
      * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
-     * @param str           日期时间字符串，非空
+     * @param text          日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
      * @return 解析后的 {@link Calendar}
      */
-    public static Calendar parseByPatterns(String str, Locale locale, String... parsePatterns) {
-        return parseByPatterns(str, locale, true, parsePatterns);
+    public static Calendar parseByPatterns(String text, Locale locale, String... parsePatterns) {
+        return parseByPatterns(text, locale, true, parsePatterns);
     }
 
     /**
      * 通过给定的日期格式解析日期时间字符串
      * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
-     * @param str           日期时间字符串，非空
+     * @param text          日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param lenient       日期时间解析是否使用严格模式
      * @param parsePatterns 需要尝试的日期时间格式数组，非空
      * @return 解析后的 {@link Calendar}
      * @see java.util.Calendar#isLenient()
      */
-    public static Calendar parseByPatterns(String str, Locale locale, boolean lenient, String... parsePatterns) {
-        if (null == str || null == parsePatterns) {
+    public static Calendar parseByPatterns(String text, Locale locale, boolean lenient, String... parsePatterns) {
+        if (null == text || null == parsePatterns) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
 
@@ -865,7 +865,7 @@ public class Formatter {
             final FastDateParser fdp = new FastDateParser(parsePattern, tz, lcl);
             calendar.clear();
             try {
-                if (fdp.parse(str, pos, calendar) && pos.getIndex() == str.length()) {
+                if (fdp.parse(text, pos, calendar) && pos.getIndex() == text.length()) {
                     return calendar;
                 }
             } catch (final IllegalArgumentException ignore) {
@@ -873,7 +873,7 @@ public class Formatter {
             }
             pos.setIndex(0);
         }
-        throw new InstrumentException("Unable to parse the date: {}", str);
+        throw new InstrumentException("Unable to parse the date: {}", text);
     }
 
     /**

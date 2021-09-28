@@ -97,10 +97,10 @@ public class Pinyin4JProvider extends AbstractPinyinProvider {
     }
 
     @Override
-    public String getPinyin(String str, String separator) {
+    public String getPinyin(String text, String separator) {
         final Builders result = StringKit.builders();
         boolean isFirst = true;
-        final int strLen = str.length();
+        final int strLen = text.length();
         try {
             for (int i = 0; i < strLen; i++) {
                 if (isFirst) {
@@ -108,9 +108,9 @@ public class Pinyin4JProvider extends AbstractPinyinProvider {
                 } else {
                     result.append(separator);
                 }
-                final String[] pinyinStringArray = PinyinHelper.toHanyuPinyinStringArray(str.charAt(i), format);
+                final String[] pinyinStringArray = PinyinHelper.toHanyuPinyinStringArray(text.charAt(i), format);
                 if (ArrayKit.isEmpty(pinyinStringArray)) {
-                    result.append(str.charAt(i));
+                    result.append(text.charAt(i));
                 } else {
                     result.append(pinyinStringArray[0]);
                 }

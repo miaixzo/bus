@@ -23,25 +23,15 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.mapper.common;
-
-import org.aoju.bus.mapper.annotation.RegisterMapper;
+package org.aoju.bus.mapper;
 
 /**
- * 通用Mapper接口
+ * 标记接口,继承该接口的接口,在MapperScannerConfigurer#setMarkerInterface时,会自动注册到通用Mapper
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-@RegisterMapper
-public interface Mapper<T> extends
-        BasicMapper<T>,
-        ConditionMapper<T>,
-        IdsMapper<T>,
-        MySqlMapper<T>,
-        RowBoundsMapper<T>,
-        SqlServerMapper<T>,
-        Marker {
+public interface Marker {
 
 }

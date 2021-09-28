@@ -1238,29 +1238,29 @@ public class ImageKit {
     /**
      * 根据文字创建PNG图片
      *
-     * @param str             文字
+     * @param text            文字
      * @param font            字体{@link Font}
      * @param backgroundColor 背景颜色，默认透明
      * @param fontColor       字体颜色，默认黑色
      * @param out             图片输出地
      */
-    public static void createImage(String str, Font font, Color backgroundColor, Color fontColor, ImageOutputStream out) {
-        writePng(createImage(str, font, backgroundColor, fontColor, BufferedImage.TYPE_INT_ARGB), out);
+    public static void createImage(String text, Font font, Color backgroundColor, Color fontColor, ImageOutputStream out) {
+        writePng(createImage(text, font, backgroundColor, fontColor, BufferedImage.TYPE_INT_ARGB), out);
     }
 
     /**
      * 根据文字创建图片
      *
-     * @param str             文字
+     * @param text            文字
      * @param font            字体{@link Font}
      * @param backgroundColor 背景颜色，默认透明
      * @param fontColor       字体颜色，默认黑色
      * @param imageType       图片类型，见：{@link BufferedImage}
      * @return 图片
      */
-    public static BufferedImage createImage(String str, Font font, Color backgroundColor, Color fontColor, int imageType) {
+    public static BufferedImage createImage(String text, Font font, Color backgroundColor, Color fontColor, int imageType) {
         // 获取font的样式应用在str上的整个矩形
-        final Rectangle2D r = getRectangle(str, font);
+        final Rectangle2D r = getRectangle(text, font);
         // 获取单个字符的高度
         int unitHeight = (int) Math.floor(r.getHeight());
         // 获取整个str用了font样式的宽度这里用四舍五入后+1保证宽度绝对能容纳这个字符串作为图片的宽度
@@ -1278,7 +1278,7 @@ public class ImageKit {
         }
         g.setColor(ObjectKit.defaultIfNull(fontColor, Color.BLACK));
         g.setFont(font);// 设置画笔字体
-        g.drawString(str, 0, font.getSize());// 画出字符串
+        g.drawString(text, 0, font.getSize());// 画出字符串
         g.dispose();
 
         return image;
@@ -1287,12 +1287,12 @@ public class ImageKit {
     /**
      * 获取font的样式应用在str上的整个矩形
      *
-     * @param str  字符串，必须非空
+     * @param text 字符串，必须非空
      * @param font 字体，必须非空
      * @return {@link Rectangle2D}
      */
-    public static Rectangle2D getRectangle(String str, Font font) {
-        return font.getStringBounds(str,
+    public static Rectangle2D getRectangle(String text, Font font) {
+        return font.getStringBounds(text,
                 new FontRenderContext(AffineTransform.getScaleInstance(1, 1),
                         false,
                         false));

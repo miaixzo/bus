@@ -968,13 +968,13 @@ public final class Builder {
     /**
      * Convert a string to an integer representation.
      *
-     * @param str  A human readable ASCII string
+     * @param text A human readable ASCII string
      * @param size Number of characters to convert to the long. May not exceed 8.
      * @return An integer representing the string where each character is treated as
      * a byte
      */
-    public static long strToLong(String str, int size) {
-        return byteArrayToLong(str.getBytes(Charset.US_ASCII), size);
+    public static long strToLong(String text, int size) {
+        return byteArrayToLong(text.getBytes(Charset.US_ASCII), size);
     }
 
     /**
@@ -1642,13 +1642,13 @@ public final class Builder {
      * list of just the integers. For example, 0 1 4-7 parses to a list containing
      * 0, 1, 4, 5, 6, and 7.
      *
-     * @param str A string containing space-delimited integers or ranges of integers
-     *            with a hyphen
+     * @param text A string containing space-delimited integers or ranges of integers
+     *             with a hyphen
      * @return A list of integers representing the provided range(s).
      */
-    public static List<Integer> parseHyphenatedIntList(String str) {
+    public static List<Integer> parseHyphenatedIntList(String text) {
         List<Integer> result = new ArrayList<>();
-        for (String s : RegEx.SPACES.split(str)) {
+        for (String s : RegEx.SPACES.split(text)) {
             if (s.contains(Symbol.MINUS)) {
                 int first = getFirstIntValue(s);
                 int last = getNthIntValue(s, 2);

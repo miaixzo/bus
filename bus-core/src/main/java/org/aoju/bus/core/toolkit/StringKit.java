@@ -61,48 +61,48 @@ public class StringKit {
     /**
      * 字符串去空格
      *
-     * @param str 原始字符串
+     * @param text 原始字符串
      * @return 返回字符串
      */
-    public static String trim(CharSequence str) {
-        return (null == str) ? null : trim(str, 0);
+    public static String trim(CharSequence text) {
+        return (null == text) ? null : trim(text, 0);
     }
 
     /**
      * 除去字符串头尾部的空白符,如果字符串是null,依然返回null
      *
-     * @param str  要处理的字符串
+     * @param text 要处理的字符串
      * @param mode -1去除开始位置,0全部去除, 1去除结束位置
      * @return 除去指定字符后的的字符串, 如果原字串为null, 则返回null
      */
-    public static String trim(CharSequence str, int mode) {
-        if (null == str) {
+    public static String trim(CharSequence text, int mode) {
+        if (null == text) {
             return null;
         }
 
-        int length = str.length();
+        int length = text.length();
         int start = 0;
         int end = length;
 
         // 扫描字符串头部
         if (mode <= 0) {
-            while ((start < end) && (CharKit.isBlankChar(str.charAt(start)))) {
+            while ((start < end) && (CharKit.isBlankChar(text.charAt(start)))) {
                 start++;
             }
         }
 
         // 扫描字符串尾部
         if (mode >= 0) {
-            while ((start < end) && (CharKit.isBlankChar(str.charAt(end - 1)))) {
+            while ((start < end) && (CharKit.isBlankChar(text.charAt(end - 1)))) {
                 end--;
             }
         }
 
         if ((start > 0) || (end < length)) {
-            return str.toString().substring(start, end);
+            return text.toString().substring(start, end);
         }
 
-        return str.toString();
+        return text.toString();
     }
 
     /**
@@ -126,33 +126,33 @@ public class StringKit {
     /**
      * 按照断言，除去字符串头尾部的断言为真的字符，如果字符串是{@code null}，依然返回{@code null}。
      *
-     * @param str       要处理的字符串
+     * @param text      要处理的字符串
      * @param mode      {@code -1}表示trimStart，{@code 0}表示trim全部， {@code 1}表示trimEnd
      * @param predicate 断言是否过掉字符，返回{@code true}表述过滤掉，{@code false}表示不过滤
      * @return 除去指定字符后的的字符串，如果原字串为{@code null}，则返回{@code null}
      */
-    public static String trim(CharSequence str, int mode, Predicate<Character> predicate) {
+    public static String trim(CharSequence text, int mode, Predicate<Character> predicate) {
         String result;
-        if (str == null) {
+        if (text == null) {
             result = null;
         } else {
-            int length = str.length();
+            int length = text.length();
             int start = 0;
             int end = length;// 扫描字符串头部
             if (mode <= 0) {
-                while ((start < end) && (predicate.test(str.charAt(start)))) {
+                while ((start < end) && (predicate.test(text.charAt(start)))) {
                     start++;
                 }
             }// 扫描字符串尾部
             if (mode >= 0) {
-                while ((start < end) && (predicate.test(str.charAt(end - 1)))) {
+                while ((start < end) && (predicate.test(text.charAt(end - 1)))) {
                     end--;
                 }
             }
             if ((start > 0) || (end < length)) {
-                result = str.toString().substring(start, end);
+                result = text.toString().substring(start, end);
             } else {
-                result = str.toString();
+                result = text.toString();
             }
         }
         return result;
@@ -169,11 +169,11 @@ public class StringKit {
      * StringKit.trimToEmpty("    abc    ") = "abc"
      * </pre>
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 去除两边空白符后的字符串, 如果为空返回null
      */
-    public static String trimToNull(CharSequence str) {
-        final String trimStr = trim(str);
+    public static String trimToNull(CharSequence text) {
+        final String trimStr = trim(text);
         return Normal.EMPTY.equals(trimStr) ? null : trimStr;
     }
 
@@ -189,11 +189,11 @@ public class StringKit {
      * StringKit.trimToEmpty("    abc    ") = "abc"
      * </pre>
      *
-     * @param str 要被裁剪的字符串可能是空的
+     * @param text 要被裁剪的字符串可能是空的
      * @return 如果{@code null}输入，则为空字符串
      */
-    public static String trimToEmpty(final String str) {
-        return null == str ? Normal.EMPTY : str.trim();
+    public static String trimToEmpty(final String text) {
+        return null == text ? Normal.EMPTY : text.trim();
     }
 
     /**
@@ -222,19 +222,19 @@ public class StringKit {
      * 2、为不可见字符(如空格)
      * 3、""
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 是否为空
      */
-    public static boolean isBlank(CharSequence str) {
+    public static boolean isBlank(CharSequence text) {
         int length;
 
-        if ((null == str) || ((length = str.length()) == 0)) {
+        if ((null == text) || ((length = text.length()) == 0)) {
             return true;
         }
 
         for (int i = 0; i < length; i++) {
             // 只要有一个非空字符即为非空字符串
-            if (false == CharKit.isBlankChar(str.charAt(i))) {
+            if (false == CharKit.isBlankChar(text.charAt(i))) {
                 return false;
             }
         }
@@ -267,11 +267,11 @@ public class StringKit {
      * 2、不为不可见字符(如空格)
      * 3、不为""
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 是否为非空
      */
-    public static boolean isNotBlank(CharSequence str) {
-        return false == isBlank(str);
+    public static boolean isNotBlank(CharSequence text) {
+        return false == isBlank(text);
     }
 
     /**
@@ -288,16 +288,16 @@ public class StringKit {
     /**
      * 是否包含空字符串
      *
-     * @param strs 字符串列表
+     * @param texts 字符串列表
      * @return 是否包含空字符串
      */
-    public static boolean hasBlank(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean hasBlank(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isBlank(str)) {
+        for (CharSequence text : texts) {
+            if (isBlank(text)) {
                 return true;
             }
         }
@@ -320,26 +320,26 @@ public class StringKit {
      * StringKit.isNoneBlank("foo", "bar")     = true
      * </pre>
      *
-     * @param strs 要检查的字符串可以为null或空
+     * @param texts 要检查的字符串可以为null或空
      * @return 所有字符序列都不为空或null或仅为空格
      */
-    public static boolean isNoneBlank(final CharSequence... strs) {
-        return !isAnyBlank(strs);
+    public static boolean isNoneBlank(final CharSequence... texts) {
+        return !isAnyBlank(texts);
     }
 
     /**
      * 给定所有字符串是否为空白
      *
-     * @param strs 字符串
+     * @param texts 字符串
      * @return 所有字符串是否为空白
      */
-    public static boolean isAllBlank(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean isAllBlank(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isNotBlank(str)) {
+        for (CharSequence text : texts) {
+            if (isNotBlank(text)) {
                 return false;
             }
         }
@@ -363,15 +363,15 @@ public class StringKit {
      * StringKit.isAnyBlank("foo", "bar")     = false
      * </pre>
      *
-     * @param strs 要检查的字符序列可以为空或空
+     * @param texts 要检查的字符序列可以为空或空
      * @return 如果任何一个字符序列是空的，或者是空的，或者只有空白
      */
-    public static boolean isAnyBlank(final CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean isAnyBlank(final CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return false;
         }
-        for (final CharSequence str : strs) {
-            if (isBlank(str)) {
+        for (final CharSequence text : texts) {
+            if (isBlank(text)) {
                 return true;
             }
         }
@@ -383,26 +383,26 @@ public class StringKit {
      * 1、为null
      * 2、为""
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 是否为空 true/false
      */
-    public static boolean isEmpty(CharSequence str) {
-        return null == str || str.length() == 0;
+    public static boolean isEmpty(CharSequence text) {
+        return null == text || text.length() == 0;
     }
 
     /**
      * 是否全部为空字符串
      *
-     * @param strs 字符串列表
+     * @param texts 字符串列表
      * @return 是否全部为空字符串
      */
-    public static boolean isAllEmpty(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean isAllEmpty(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isNotEmpty(str)) {
+        for (CharSequence text : texts) {
+            if (isNotEmpty(text)) {
                 return false;
             }
         }
@@ -413,26 +413,26 @@ public class StringKit {
      * 是否存都不为{@code null}或空对象
      * 通过{@link StringKit#hasEmpty(CharSequence...)} 判断元素
      *
-     * @param strs 被检查的对象,一个或者多个
+     * @param texts 被检查的对象,一个或者多个
      * @return 是否都不为空
      */
-    public static boolean isAllNotEmpty(CharSequence... strs) {
-        return false == hasEmpty(strs);
+    public static boolean isAllNotEmpty(CharSequence... texts) {
+        return false == hasEmpty(texts);
     }
 
     /**
      * 是否包含空字符串
      *
-     * @param strs 字符串列表
+     * @param texts 字符串列表
      * @return 是否包含空字符串
      */
-    public static boolean hasEmpty(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean hasEmpty(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isEmpty(str)) {
+        for (CharSequence text : texts) {
+            if (isEmpty(text)) {
                 return true;
             }
         }
@@ -444,22 +444,22 @@ public class StringKit {
      * 1、不为null
      * 2、不为""
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 是否为非空 true/false
      */
-    public static boolean isNotEmpty(CharSequence str) {
-        return false == isEmpty(str);
+    public static boolean isNotEmpty(CharSequence text) {
+        return false == isEmpty(text);
     }
 
     /**
      * 当给定字符串为null时，转换为Empty
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 原字符串或者空串
      * @see #nullToEmpty(CharSequence)
      */
-    public static String emptyIfNull(CharSequence str) {
-        return nullToEmpty(str);
+    public static String emptyIfNull(CharSequence text) {
+        return nullToEmpty(text);
     }
 
     /**
@@ -482,11 +482,11 @@ public class StringKit {
     /**
      * 当给定字符串为null时，转换为Empty
      *
-     * @param str 被转换的字符串
+     * @param text 被转换的字符串
      * @return 转换后的字符串
      */
-    public static String nullToEmpty(CharSequence str) {
-        return nullToDefault(str, Normal.EMPTY);
+    public static String nullToEmpty(CharSequence text) {
+        return nullToDefault(text, Normal.EMPTY);
     }
 
     /**
@@ -499,12 +499,12 @@ public class StringKit {
      * nullToDefault(&quot;bat&quot;, &quot;default&quot;) = &quot;bat&quot;
      * </pre>
      *
-     * @param str        要转换的字符串
+     * @param text       要转换的字符串
      * @param defaultStr 默认字符串
      * @return 字符串本身或指定的默认字符串
      */
-    public static String nullToDefault(CharSequence str, String defaultStr) {
-        return null == str ? defaultStr : str.toString();
+    public static String nullToDefault(CharSequence text, String defaultStr) {
+        return null == text ? defaultStr : text.toString();
     }
 
     /**
@@ -517,12 +517,12 @@ public class StringKit {
      * emptyToDefault(&quot;bat&quot;, &quot;default&quot;) = &quot;bat&quot;
      * </pre>
      *
-     * @param str        要转换的字符串
+     * @param text       要转换的字符串
      * @param defaultStr 默认字符串
      * @return 字符串本身或指定的默认字符串
      */
-    public static String emptyToDefault(CharSequence str, String defaultStr) {
-        return isEmpty(str) ? defaultStr : str.toString();
+    public static String emptyToDefault(CharSequence text, String defaultStr) {
+        return isEmpty(text) ? defaultStr : text.toString();
     }
 
     /**
@@ -535,71 +535,71 @@ public class StringKit {
      * emptyToDefault(&quot;bat&quot;, &quot;default&quot;) = &quot;bat&quot;
      * </pre>
      *
-     * @param str        要转换的字符串
+     * @param text       要转换的字符串
      * @param defaultStr 默认字符串
      * @return 字符串本身或指定的默认字符串
      */
-    public static String blankToDefault(CharSequence str, String defaultStr) {
-        return isBlank(str) ? defaultStr : str.toString();
+    public static String blankToDefault(CharSequence text, String defaultStr) {
+        return isBlank(text) ? defaultStr : text.toString();
     }
 
     /**
      * 当给定字符串为空字符串时，转换为<code>null</code>
      *
-     * @param str 被转换的字符串
+     * @param text 被转换的字符串
      * @return 转换后的字符串
      */
-    public static String emptyToNull(CharSequence str) {
-        return isEmpty(str) ? null : str.toString();
+    public static String emptyToNull(CharSequence text) {
+        return isEmpty(text) ? null : text.toString();
     }
 
     /**
      * 检查字符串是否为null、“null”、“undefined”
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否为null、“null”、“undefined”
      */
-    public static boolean isNullOrUndefined(CharSequence str) {
-        if (null == str) {
+    public static boolean isNullOrUndefined(CharSequence text) {
+        if (null == text) {
             return true;
         }
-        return isNullOrUndefinedStr(str);
+        return isNullOrUndefinedStr(text);
     }
 
     /**
      * 检查字符串是否为null、“”、“null”、“undefined”
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否为null、“”、“null”、“undefined”
      */
-    public static boolean isEmptyOrUndefined(CharSequence str) {
-        if (isEmpty(str)) {
+    public static boolean isEmptyOrUndefined(CharSequence text) {
+        if (isEmpty(text)) {
             return true;
         }
-        return isNullOrUndefinedStr(str);
+        return isNullOrUndefinedStr(text);
     }
 
     /**
      * 检查字符串是否为null、空白串、“null”、“undefined”
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否为null、空白串、“null”、“undefined”
      */
-    public static boolean isBlankOrUndefined(CharSequence str) {
-        if (isBlank(str)) {
+    public static boolean isBlankOrUndefined(CharSequence text) {
+        if (isBlank(text)) {
             return true;
         }
-        return isNullOrUndefinedStr(str);
+        return isNullOrUndefinedStr(text);
     }
 
     /**
      * 是否为“null”、“undefined”，不做空指针检查
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否为“null”、“undefined”
      */
-    private static boolean isNullOrUndefinedStr(CharSequence str) {
-        String strString = str.toString().trim();
+    private static boolean isNullOrUndefinedStr(CharSequence text) {
+        String strString = text.toString().trim();
         return Normal.NULL.equals(strString) || Normal.UNDEFINED.equals(strString);
     }
 
@@ -683,13 +683,13 @@ public class StringKit {
      * StringKit.toString("bat", "NULL") = "bat"
      * </pre>
      *
-     * @param str        要检查的字符串可能为空
+     * @param text       要检查的字符串可能为空
      * @param defaultStr 如果输入是{@code null}，返回的默认字符串可能是null
      * @return 传入的字符串，如果是{@code null}，则为默认值
      * @see String#valueOf(Object)
      */
-    public static String toString(final String str, final String defaultStr) {
-        return null == str ? defaultStr : str;
+    public static String toString(final String text, final String defaultStr) {
+        return null == text ? defaultStr : text;
     }
 
     /**
@@ -886,16 +886,16 @@ public class StringKit {
      * 更具体地说，如果{@code String}不是{@code null}，
      * 那么这个方法返回{@code true}，它的长度大于0，并且至少包含一个非空白字符
      *
-     * @param str 要检查的{@code String}(可能是{@code null})
+     * @param text 要检查的{@code String}(可能是{@code null})
      * @return 如果{@code String}不是{@code null}，那么它的长度大于0，并且不包含空格
      */
-    public static boolean hasText(String str) {
-        if (null == str || str.isEmpty()) {
+    public static boolean hasText(String text) {
+        if (null == text || text.isEmpty()) {
             return false;
         }
-        int strLen = str.length();
+        int strLen = text.length();
         for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(str.charAt(i))) {
+            if (!Character.isWhitespace(text.charAt(i))) {
                 return true;
             }
         }
@@ -905,26 +905,26 @@ public class StringKit {
     /**
      * 检查给定的{@code String}既不是{@code null}也不是长度为0.
      *
-     * @param str 要检查的{@code String}(可能是{@code null})
+     * @param text 要检查的{@code String}(可能是{@code null})
      * @return 如果{@code String}不是{@code null}，并且有长度，则为{@code true}
      * @see #hasText(String)
      */
-    public static boolean hasLength(String str) {
-        return (null != str && !str.isEmpty());
+    public static boolean hasLength(String text) {
+        return (null != text && !text.isEmpty());
     }
 
     /**
      * 将base64字符串处理成String字节
      *
-     * @param str base64的字符串
+     * @param text base64的字符串
      * @return 原字节数据
      */
-    public static byte[] base64ToByte(String str) {
+    public static byte[] base64ToByte(String text) {
         try {
-            if (null == str) {
+            if (null == text) {
                 return null;
             }
-            return Base64.getDecoder().decode(str);
+            return Base64.getDecoder().decode(text);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -934,15 +934,15 @@ public class StringKit {
      * 将base64字符串处理成String
      * (用默认的String编码集)
      *
-     * @param str base64的字符串
+     * @param text base64的字符串
      * @return 可显示的字符串
      */
-    public static String base64ToString(String str) {
+    public static String base64ToString(String text) {
         try {
-            if (null == str) {
+            if (null == text) {
                 return null;
             }
-            return new String(base64ToByte(str), Charset.UTF_8);
+            return new String(base64ToByte(text), Charset.UTF_8);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -952,16 +952,16 @@ public class StringKit {
      * 将base64字符串处理成String
      * (用默认的String编码集)
      *
-     * @param str     base64的字符串
+     * @param text    base64的字符串
      * @param charset 编码格式(UTF-8/GBK)
      * @return 可显示的字符串
      */
-    public static String base64ToString(String str, String charset) {
+    public static String base64ToString(String text, String charset) {
         try {
-            if (null == str) {
+            if (null == text) {
                 return null;
             }
-            return new String(base64ToByte(str), charset);
+            return new String(base64ToByte(text), charset);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -1054,20 +1054,20 @@ public class StringKit {
     /**
      * 字符串编码为Unicode形式
      *
-     * @param str         被编码的字符串
+     * @param text        被编码的字符串
      * @param isSkipAscii 是否跳过ASCII字符(只跳过可见字符)
      * @return Unicode字符串
      */
-    public static String toUnicode(String str, boolean isSkipAscii) {
-        if (StringKit.isEmpty(str)) {
-            return str;
+    public static String toUnicode(String text, boolean isSkipAscii) {
+        if (StringKit.isEmpty(text)) {
+            return text;
         }
 
-        final int len = str.length();
-        final TextKit unicode = TextKit.create(str.length() * 6);
+        final int len = text.length();
+        final TextKit unicode = TextKit.create(text.length() * 6);
         char c;
         for (int i = 0; i < len; i++) {
-            c = str.charAt(i);
+            c = text.charAt(i);
             if (isSkipAscii && CharKit.isAsciiPrintable(c)) {
                 unicode.append(c);
             } else {
@@ -1251,12 +1251,12 @@ public class StringKit {
      * 给定字符串是否与提供的中任一字符串相同，相同则返回{@code true}，没有相同的返回{@code false}
      * 如果参与比对的字符串列表为空，返回{@code false}
      *
-     * @param str1 给定需要检查的字符串
-     * @param strs 需要参与比对的字符串列表
+     * @param str1  给定需要检查的字符串
+     * @param texts 需要参与比对的字符串列表
      * @return 是否相同
      */
-    public static boolean equalsAny(CharSequence str1, CharSequence... strs) {
-        return equalsAny(str1, false, strs);
+    public static boolean equalsAny(CharSequence str1, CharSequence... texts) {
+        return equalsAny(str1, false, texts);
     }
 
     /**
@@ -1265,16 +1265,16 @@ public class StringKit {
      *
      * @param str1       给定需要检查的字符串
      * @param ignoreCase 是否忽略大小写
-     * @param strs       需要参与比对的字符串列表
+     * @param texts      需要参与比对的字符串列表
      * @return 是否相同
      */
-    public static boolean equalsAny(CharSequence str1, boolean ignoreCase, CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean equalsAny(CharSequence str1, boolean ignoreCase, CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return false;
         }
 
-        for (CharSequence str : strs) {
-            if (equals(str1, str, ignoreCase)) {
+        for (CharSequence text : texts) {
+            if (equals(str1, text, ignoreCase)) {
                 return true;
             }
         }
@@ -1412,16 +1412,16 @@ public class StringKit {
      * abcdefgh 2 3 =  c
      * abcdefgh 2 -3 =  cde
      *
-     * @param str       String
+     * @param text      String
      * @param fromIndex 开始的index(包括)
      * @param toIndex   结束的index(不包括)
      * @return 字串
      */
-    public static String sub(CharSequence str, int fromIndex, int toIndex) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String sub(CharSequence text, int fromIndex, int toIndex) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
-        int len = str.length();
+        int len = text.length();
 
         if (fromIndex < 0) {
             fromIndex = len + fromIndex;
@@ -1451,7 +1451,7 @@ public class StringKit {
             return Normal.EMPTY;
         }
 
-        return str.toString().substring(fromIndex, toIndex);
+        return text.toString().substring(fromIndex, toIndex);
     }
 
     /**
@@ -1482,53 +1482,53 @@ public class StringKit {
     /**
      * 获取分隔符最后一次出现之前的子字符串
      *
-     * @param str       要从中获取子字符串的字符串可以为空
+     * @param text      要从中获取子字符串的字符串可以为空
      * @param separator 要搜索的字符串可能为空
      * @return 分隔符最后一次出现之前的子字符串
      */
-    public static String subBeforeLast(final String str, final String separator) {
-        if (isEmpty(str) || isEmpty(separator)) {
-            return str;
+    public static String subBeforeLast(final String text, final String separator) {
+        if (isEmpty(text) || isEmpty(separator)) {
+            return text;
         }
-        final int pos = str.lastIndexOf(separator);
+        final int pos = text.lastIndexOf(separator);
         if (pos == INDEX_NOT_FOUND) {
-            return str;
+            return text;
         }
-        return str.substring(0, pos);
+        return text.substring(0, pos);
     }
 
     /**
      * 获取分隔符最后一次出现后的子字符串
      *
-     * @param str       要从中获取子字符串的字符串可以为空
+     * @param text      要从中获取子字符串的字符串可以为空
      * @param separator 要搜索的字符串可能为空
      * @return 分隔符最后一次出现后的子字符串
      */
-    public static String subAfterLast(final String str, final String separator) {
-        if (isEmpty(str)) {
-            return str;
+    public static String subAfterLast(final String text, final String separator) {
+        if (isEmpty(text)) {
+            return text;
         }
         if (isEmpty(separator)) {
             return Normal.EMPTY;
         }
-        final int pos = str.lastIndexOf(separator);
-        if (pos == INDEX_NOT_FOUND || pos == str.length() - separator.length()) {
+        final int pos = text.lastIndexOf(separator);
+        if (pos == INDEX_NOT_FOUND || pos == text.length() - separator.length()) {
             return Normal.EMPTY;
         }
-        return str.substring(pos + separator.length());
+        return text.substring(pos + separator.length());
     }
 
     /**
      * 通过CodePoint截取字符串，可以截断Emoji
      *
-     * @param str       string
+     * @param text      string
      * @param fromIndex 开始的index(包括)
      * @param toIndex   结束的index(不包括)
      * @return 字串
      */
-    public static String subCodePoint(CharSequence str, int fromIndex, int toIndex) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String subCodePoint(CharSequence text, int fromIndex, int toIndex) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
 
         if (fromIndex < 0 || fromIndex > toIndex) {
@@ -1541,7 +1541,7 @@ public class StringKit {
 
         final StringBuilder sb = new StringBuilder();
         final int subLen = toIndex - fromIndex;
-        str.toString().codePoints().skip(fromIndex).limit(subLen).forEach(v -> sb.append(Character.toChars(v)));
+        text.toString().codePoints().skip(fromIndex).limit(subLen).forEach(v -> sb.append(Character.toChars(v)));
         return sb.toString();
     }
 
@@ -1572,19 +1572,19 @@ public class StringKit {
             return null == string ? null : Normal.EMPTY;
         }
 
-        final String str = string.toString();
+        final String text = string.toString();
         final String sep = separator.toString();
         if (sep.isEmpty()) {
             return Normal.EMPTY;
         }
-        final int pos = isLastSeparator ? str.lastIndexOf(sep) : str.indexOf(sep);
+        final int pos = isLastSeparator ? text.lastIndexOf(sep) : text.indexOf(sep);
         if (INDEX_NOT_FOUND == pos) {
-            return str;
+            return text;
         }
         if (0 == pos) {
             return Normal.EMPTY;
         }
-        return str.substring(0, pos);
+        return text.substring(0, pos);
     }
 
     /**
@@ -1611,15 +1611,15 @@ public class StringKit {
             return null == string ? null : Normal.EMPTY;
         }
 
-        final String str = string.toString();
-        final int pos = isLastSeparator ? str.lastIndexOf(separator) : str.indexOf(separator);
+        final String text = string.toString();
+        final int pos = isLastSeparator ? text.lastIndexOf(separator) : text.indexOf(separator);
         if (INDEX_NOT_FOUND == pos) {
-            return str;
+            return text;
         }
         if (0 == pos) {
             return Normal.EMPTY;
         }
-        return str.substring(0, pos);
+        return text.substring(0, pos);
     }
 
     /**
@@ -1650,13 +1650,13 @@ public class StringKit {
         if (null == separator) {
             return Normal.EMPTY;
         }
-        final String str = string.toString();
+        final String text = string.toString();
         final String sep = separator.toString();
-        final int pos = isLastSeparator ? str.lastIndexOf(sep) : str.indexOf(sep);
+        final int pos = isLastSeparator ? text.lastIndexOf(sep) : text.indexOf(sep);
         if (INDEX_NOT_FOUND == pos || (string.length() - 1) == pos) {
             return Normal.EMPTY;
         }
-        return str.substring(pos + separator.length());
+        return text.substring(pos + separator.length());
     }
 
     /**
@@ -1682,24 +1682,24 @@ public class StringKit {
         if (isEmpty(string)) {
             return null == string ? null : Normal.EMPTY;
         }
-        final String str = string.toString();
-        final int pos = isLastSeparator ? str.lastIndexOf(separator) : str.indexOf(separator);
+        final String text = string.toString();
+        final int pos = isLastSeparator ? text.lastIndexOf(separator) : text.indexOf(separator);
         if (INDEX_NOT_FOUND == pos) {
             return Normal.EMPTY;
         }
-        return str.substring(pos + 1);
+        return text.substring(pos + 1);
     }
 
     /**
      * 截取指定字符串中间部分,不包括标识字符串
      *
-     * @param str    被切割的字符串
+     * @param text   被切割的字符串
      * @param before 截取开始的字符串标识
      * @param after  截取到的字符串标识
      * @return 截取后的字符串
      */
-    public static String subBetween(CharSequence str, CharSequence before, CharSequence after) {
-        return subBetween(str.toString(), before.toString(), after.toString());
+    public static String subBetween(CharSequence text, CharSequence before, CharSequence after) {
+        return subBetween(text.toString(), before.toString(), after.toString());
     }
 
     /**
@@ -1718,20 +1718,20 @@ public class StringKit {
      * StringKit.subBetween("yabczyabcz", "y", "z")  = "abc"
      * </pre>
      *
-     * @param str    被切割的字符串
+     * @param text   被切割的字符串
      * @param before 截取开始的字符串标识
      * @param after  截取到的字符串标识
      * @return 截取后的字符串
      */
-    public static String subBetween(String str, String before, String after) {
-        if (null == str || null == before || null == after) {
+    public static String subBetween(String text, String before, String after) {
+        if (null == text || null == before || null == after) {
             return null;
         }
-        int start = str.indexOf(before);
+        int start = text.indexOf(before);
         if (start != INDEX_NOT_FOUND) {
-            int end = str.indexOf(after, start + before.length());
+            int end = text.indexOf(after, start + before.length());
             if (end != INDEX_NOT_FOUND) {
-                return str.substring(start + before.length(), end);
+                return text.substring(start + before.length(), end);
             }
         }
         return null;
@@ -1749,12 +1749,12 @@ public class StringKit {
      * StringKit.subBetween("tagabctag", "tag") = "abc"
      * </pre>
      *
-     * @param str            被切割的字符串
+     * @param text           被切割的字符串
      * @param beforeAndAfter 截取开始和结束的字符串标识
      * @return 截取后的字符串
      */
-    public static String subBetween(CharSequence str, CharSequence beforeAndAfter) {
-        return subBetween(str, beforeAndAfter, beforeAndAfter);
+    public static String subBetween(CharSequence text, CharSequence beforeAndAfter) {
+        return subBetween(text, beforeAndAfter, beforeAndAfter);
     }
 
     /**
@@ -1773,20 +1773,20 @@ public class StringKit {
      * StringKit.subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           重叠时只截取内部，
      * </pre>
      *
-     * @param str    被切割的字符串
+     * @param text   被切割的字符串
      * @param prefix 截取开始的字符串标识
      * @param suffix 截取到的字符串标识
      * @return 截取后的字符串
      */
-    public static String[] subBetweenAll(CharSequence str, CharSequence prefix, CharSequence suffix) {
-        if (hasEmpty(str, prefix, suffix) ||
+    public static String[] subBetweenAll(CharSequence text, CharSequence prefix, CharSequence suffix) {
+        if (hasEmpty(text, prefix, suffix) ||
                 // 不包含起始字符串，则肯定没有子串
-                false == contains(str, prefix)) {
+                false == contains(text, prefix)) {
             return new String[0];
         }
 
         final List<String> result = new LinkedList<>();
-        final String[] split = split(str, prefix);
+        final String[] split = split(text, prefix);
         if (prefix.equals(suffix)) {
             // 前后缀字符相同，单独处理
             for (int i = 1, length = split.length - 1; i < length; i += 2) {
@@ -1819,12 +1819,12 @@ public class StringKit {
      * StringKit.subBetweenAll("#hello# world#!", "#");   = ["hello"]
      * </pre>
      *
-     * @param str             被切割的字符串
+     * @param text            被切割的字符串
      * @param prefixAndSuffix 截取开始和结束的字符串标识
      * @return 截取后的字符串
      */
-    public static String[] subBetweenAll(CharSequence str, CharSequence prefixAndSuffix) {
-        return subBetweenAll(str, prefixAndSuffix, prefixAndSuffix);
+    public static String[] subBetweenAll(CharSequence text, CharSequence prefixAndSuffix) {
+        return subBetweenAll(text, prefixAndSuffix, prefixAndSuffix);
     }
 
     /**
@@ -1869,299 +1869,344 @@ public class StringKit {
     /**
      * 切分字符串路径,仅支持Unix分界符：/
      *
-     * @param str 被切分的字符串
+     * @param text 被切分的字符串
      * @return 切分后的集合
      */
-    public static List<String> splitPath(String str) {
-        return splitPath(str, 0);
+    public static List<String> splitPath(String text) {
+        return splitPath(text, 0);
     }
 
     /**
      * 切分字符串路径,仅支持Unix分界符：/
      *
-     * @param str   被切分的字符串
+     * @param text  被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
      */
-    public static List<String> splitPath(String str, int limit) {
-        return split(str, Symbol.C_SLASH, limit, true, true);
+    public static List<String> splitPath(String text, int limit) {
+        return split(text, Symbol.C_SLASH, limit, true, true);
     }
 
     /**
      * 切分字符串路径,仅支持Unix分界符：/
      *
-     * @param str 被切分的字符串
+     * @param text 被切分的字符串
      * @return 切分后的集合
      */
-    public static String[] splitPathToArray(String str) {
-        return ArrayKit.toArray(splitPath(str));
+    public static String[] splitPathToArray(String text) {
+        return ArrayKit.toArray(splitPath(text));
     }
 
     /**
      * 切分字符串路径,仅支持Unix分界符：/
      *
-     * @param str   被切分的字符串
+     * @param text  被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
      */
-    public static String[] splitPathToArray(String str, int limit) {
-        return ArrayKit.toArray(splitPath(str, limit));
+    public static String[] splitPathToArray(String text, int limit) {
+        return ArrayKit.toArray(splitPath(text, limit));
     }
 
     /**
      * 切分字符串,去除切分后每个元素两边的空白符,去除空白项
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @return 切分后的集合
      */
-    public static List<String> splitTrim(CharSequence str, char separator) {
-        return splitTrim(str.toString(), separator, true);
+    public static List<String> splitTrim(CharSequence text, char separator) {
+        return splitTrim(text.toString(), separator, true);
     }
 
     /**
      * 切分字符串，去除切分后每个元素两边的空白符，去除空白项
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @return 切分后的集合
      */
-    public static List<String> splitTrim(CharSequence str, CharSequence separator) {
-        return splitTrim(str, separator, -1);
+    public static List<String> splitTrim(CharSequence text, CharSequence separator) {
+        return splitTrim(text, separator, -1);
     }
 
     /**
      * 切分字符串，去除切分后每个元素两边的空白符，去除空白项
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @param limit     限制分片数，-1不限制
      * @return 切分后的集合
      */
-    public static List<String> splitTrim(CharSequence str, CharSequence separator, int limit) {
-        return split(str, separator, limit, true, true);
+    public static List<String> splitTrim(CharSequence text, CharSequence separator, int limit) {
+        return split(text, separator, limit, true, true);
     }
 
     /**
      * 切分字符串
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitTrim(String str, char separator, boolean ignoreEmpty) {
-        return split(str, separator, 0, true, ignoreEmpty);
+    public static List<String> splitTrim(String text, char separator, boolean ignoreEmpty) {
+        return split(text, separator, 0, true, ignoreEmpty);
     }
 
     /**
      * 切分字符串,去除每个元素两边空格,忽略大小写
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符串
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitTrim(String str, String separator, boolean ignoreEmpty) {
-        return split(str, separator, true, ignoreEmpty);
+    public static List<String> splitTrim(String text, String separator, boolean ignoreEmpty) {
+        return split(text, separator, true, ignoreEmpty);
     }
 
     /**
      * 切分字符串,大小写敏感,去除每个元素两边空白符
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数,-1不限制
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitTrim(String str, char separator, int limit, boolean ignoreEmpty) {
-        return split(str, separator, limit, true, ignoreEmpty, false);
+    public static List<String> splitTrim(String text, char separator, int limit, boolean ignoreEmpty) {
+        return split(text, separator, limit, true, ignoreEmpty, false);
     }
 
     /**
      * 切分字符串,去除每个元素两边空格,忽略大小写
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符串
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitTrim(String str, String separator, int limit, boolean ignoreEmpty) {
-        return split(str, separator, limit, true, ignoreEmpty);
+    public static List<String> splitTrim(String text, String separator, int limit, boolean ignoreEmpty) {
+        return split(text, separator, limit, true, ignoreEmpty);
     }
 
     /**
      * 切分字符串,忽略大小写
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数,-1不限制
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitIgnoreCase(String str, char separator, int limit, boolean isTrim,
+    public static List<String> splitIgnoreCase(String text, char separator, int limit, boolean isTrim,
                                                boolean ignoreEmpty) {
-        return split(str, separator, limit, isTrim, ignoreEmpty, true);
+        return split(text, separator, limit, isTrim, ignoreEmpty, true);
     }
 
     /**
      * 切分字符串,忽略大小写
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符串
      * @param limit       限制分片数
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitIgnoreCase(String str, String separator, int limit, boolean isTrim,
+    public static List<String> splitIgnoreCase(String text, String separator, int limit, boolean isTrim,
                                                boolean ignoreEmpty) {
-        return split(str, separator, limit, isTrim, ignoreEmpty, true);
+        return split(text, separator, limit, isTrim, ignoreEmpty, true);
     }
 
     /**
      * 切分字符串,去除每个元素两边空格,忽略大小写
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符串
      * @param limit       限制分片数
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitTrimIgnoreCase(String str, String separator, int limit, boolean ignoreEmpty) {
-        return split(str, separator, limit, true, ignoreEmpty, true);
+    public static List<String> splitTrimIgnoreCase(String text, String separator, int limit, boolean ignoreEmpty) {
+        return split(text, separator, limit, true, ignoreEmpty, true);
     }
 
     /**
      * 切分字符串为long数组
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符
      * @return 切分后long数组
      */
-    public static long[] splitToLong(CharSequence str, char separator) {
-        return Convert.convert(long[].class, splitTrim(str, separator));
+    public static long[] splitToLong(CharSequence text, char separator) {
+        return Convert.convert(long[].class, splitTrim(text, separator));
     }
 
     /**
      * 切分字符串为long数组
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符串
      * @return 切分后long数组
      */
-    public static long[] splitToLong(CharSequence str, CharSequence separator) {
-        return Convert.convert(long[].class, splitTrim(str, separator));
+    public static long[] splitToLong(CharSequence text, CharSequence separator) {
+        return Convert.convert(long[].class, splitTrim(text, separator));
     }
 
     /**
      * 切分字符串为int数组
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符
      * @return 切分后long数组
      */
-    public static int[] splitToInt(CharSequence str, char separator) {
-        return Convert.convert(int[].class, splitTrim(str, separator));
+    public static int[] splitToInt(CharSequence text, char separator) {
+        return Convert.convert(int[].class, splitTrim(text, separator));
     }
 
     /**
      * 切分字符串为int数组
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符串
      * @return 切分后long数组
      */
-    public static int[] splitToInt(CharSequence str, CharSequence separator) {
-        return Convert.convert(int[].class, splitTrim(str, separator));
+    public static int[] splitToInt(CharSequence text, CharSequence separator) {
+        return Convert.convert(int[].class, splitTrim(text, separator));
     }
 
     /**
      * 切分字符串
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @param limit     限制分片数
      * @return 切分后的集合
      */
-    public static String[] splitToArray(CharSequence str, char separator, int limit) {
-        if (null == str) {
+    public static String[] splitToArray(CharSequence text, char separator, int limit) {
+        if (null == text) {
             return new String[]{};
         }
-        return splitToArray(str.toString(), separator, limit, false, false);
+        return splitToArray(text.toString(), separator, limit, false, false);
     }
 
     /**
      * 切分字符串为字符串数组
      *
-     * @param str   被切分的字符串
+     * @param text  被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
      */
-    public static String[] splitToArray(String str, int limit) {
-        return ArrayKit.toArray(split(str, limit));
+    public static String[] splitToArray(String text, int limit) {
+        return ArrayKit.toArray(split(text, limit));
     }
 
     /**
      * 切分字符串为字符串数组
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static String[] splitToArray(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return ArrayKit.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+    public static String[] splitToArray(String text, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+        return ArrayKit.toArray(split(text, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
      * 切分字符串为字符串数组
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static String[] splitToArray(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return ArrayKit.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+    public static String[] splitToArray(String text, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+        return ArrayKit.toArray(split(text, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
      * 通过正则切分字符串为字符串数组
      *
-     * @param str              被切分的字符串
-     * @param separatorPattern 分隔符正则{@link Pattern}
-     * @param limit            限制分片数
-     * @param isTrim           是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty      是否忽略空串
+     * @param text        被切分的字符串
+     * @param separator   分隔符正则{@link Pattern}
+     * @param limit       限制分片数
+     * @param isTrim      是否去除切分字符串后每个元素两边的空格
+     * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim,
+    public static String[] splitToArray(String text, Pattern separator, int limit, boolean isTrim,
                                         boolean ignoreEmpty) {
-        return ArrayKit.toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
+        return ArrayKit.toArray(split(text, separator, limit, isTrim, ignoreEmpty));
+    }
+
+    /**
+     * 切分字符串为字符串数组
+     *
+     * @param text      被切分的字符串
+     * @param separator 分隔符字符
+     * @return 切分后的集合
+     */
+    public static String[] splitToArray(String text, String separator) {
+        return splitToArray(text, separator, true, true);
+    }
+
+    /**
+     * 切分字符串为字符串数组
+     *
+     * @param text        被切分的字符串
+     * @param separator   分隔符字符， 每个字符都被单独视为分隔符
+     * @param isTrim      是否去除切分字符串后每个元素两边的空格
+     * @param ignoreEmpty 是否忽略空串
+     * @return 切分后的集合
+     */
+    public static String[] splitToArray(String text, String separator, boolean isTrim, boolean ignoreEmpty) {
+        if (text == null) {
+            return Normal.EMPTY_STRING_ARRAY;
+        } else {
+            StringTokenizer st = new StringTokenizer(text, separator);
+            ArrayList tokens = new ArrayList();
+
+            while (true) {
+                String token;
+                do {
+                    if (!st.hasMoreTokens()) {
+                        return toStringArray(tokens);
+                    }
+
+                    token = st.nextToken();
+                    if (isTrim) {
+                        token = token.trim();
+                    }
+                } while (ignoreEmpty && token.length() <= 0);
+
+                tokens.add(token);
+            }
+        }
     }
 
     /**
      * 通过正则切分字符串
      *
-     * @param str            字符串
-     * @param separatorRegex 分隔符正则
-     * @param limit          限制分片数
-     * @param isTrim         是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty    是否忽略空串
+     * @param text        字符串
+     * @param separator   分隔符正则
+     * @param limit       限制分片数
+     * @param isTrim      是否去除切分字符串后每个元素两边的空格
+     * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> splitByRegex(String str, String separatorRegex, int limit, boolean isTrim,
+    public static List<String> splitByRegex(String text, String separator, int limit, boolean isTrim,
                                             boolean ignoreEmpty) {
-        final Pattern pattern = PatternKit.get(separatorRegex);
-        return split(str, pattern, limit, isTrim, ignoreEmpty);
+        final Pattern pattern = PatternKit.get(separator);
+        return split(text, pattern, limit, isTrim, ignoreEmpty);
     }
 
     /**
@@ -2177,41 +2222,41 @@ public class StringKit {
     /**
      * 切分字符串
      *
-     * @param str 被切分的字符串
+     * @param text 被切分的字符串
      * @return 字符串
      */
-    public static String split(String str) {
-        return split(str, Symbol.COMMA, Symbol.COMMA);
+    public static String split(String text) {
+        return split(text, Symbol.COMMA, Symbol.COMMA);
     }
 
     /**
      * 切分字符串
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符
      * @return 字符串
      */
-    public static String[] split(CharSequence str, CharSequence separator) {
-        if (null == str) {
+    public static String[] split(CharSequence text, CharSequence separator) {
+        if (null == text) {
             return new String[]{};
         }
 
         final String separatorStr = (null == separator) ? null : separator.toString();
-        return splitToArray(str.toString(), separatorStr, 0, false, false);
+        return splitToArray(text.toString(), separatorStr, 0, false, false);
     }
 
     /**
      * 切分字符串
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符
      * @param reserve   替换后的分隔符
      * @return 字符串
      */
-    public static String split(String str, CharSequence separator, CharSequence reserve) {
+    public static String split(String text, CharSequence separator, CharSequence reserve) {
         StringBuffer sb = new StringBuffer();
-        if (StringKit.isNotEmpty(str)) {
-            String[] arr = split(str, separator);
+        if (StringKit.isNotEmpty(text)) {
+            String[] arr = split(text, separator);
             for (int i = 0; i < arr.length; i++) {
                 if (i == 0) {
                     sb.append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
@@ -2226,12 +2271,12 @@ public class StringKit {
     /**
      * 切分字符串,去除切分后每个元素两边的空白符,去除空白项
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @return 切分后的集合
      */
-    public static List<String> split(String str, char separator) {
-        return split(str, separator, -1);
+    public static List<String> split(String text, char separator) {
+        return split(text, separator, -1);
     }
 
     /**
@@ -2239,12 +2284,12 @@ public class StringKit {
      * a#b#c =  [a,b,c]
      * a##b#c =  [a,"",b,c]
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @return 切分后的集合
      */
-    public static List<String> split(CharSequence str, char separator) {
-        return split(str, separator, 0);
+    public static List<String> split(CharSequence text, char separator) {
+        return split(text, separator, 0);
     }
 
     /**
@@ -2266,119 +2311,119 @@ public class StringKit {
     /**
      * 切分字符串,不去除切分后每个元素两边的空白符,不去除空白项
      *
-     * @param str       被切分的字符串
+     * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @param limit     限制分片数,-1不限制
      * @return 切分后的集合
      */
-    public static List<String> split(CharSequence str, char separator, int limit) {
-        return split(str.toString(), separator, limit, false, false);
+    public static List<String> split(CharSequence text, char separator, int limit) {
+        return split(text.toString(), separator, limit, false, false);
     }
 
     /**
      * 切分字符串
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(String str, char separator, boolean isTrim, boolean ignoreEmpty) {
-        return split(str, separator, 0, isTrim, ignoreEmpty);
+    public static List<String> split(String text, char separator, boolean isTrim, boolean ignoreEmpty) {
+        return split(text, separator, 0, isTrim, ignoreEmpty);
     }
 
     /**
      * 切分字符串,不忽略大小写
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符串
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(String str, String separator, boolean isTrim, boolean ignoreEmpty) {
-        return split(str, separator, -1, isTrim, ignoreEmpty, false);
+    public static List<String> split(String text, String separator, boolean isTrim, boolean ignoreEmpty) {
+        return split(text, separator, -1, isTrim, ignoreEmpty, false);
     }
 
     /**
      * 切分字符串
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数，-1不限制
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(CharSequence str, CharSequence separator, int limit, boolean isTrim,
+    public static List<String> split(CharSequence text, CharSequence separator, int limit, boolean isTrim,
                                      boolean ignoreEmpty) {
-        if (null == str) {
+        if (null == text) {
             return new ArrayList<>(0);
         }
         final String separatorStr = (null == separator) ? null : separator.toString();
-        return split(str.toString(), separatorStr, limit, isTrim, ignoreEmpty);
+        return split(text.toString(), separatorStr, limit, isTrim, ignoreEmpty);
     }
 
     /**
      * 切分字符串,大小写敏感
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数,-1不限制
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return split(str, separator, limit, isTrim, ignoreEmpty, false);
+    public static List<String> split(String text, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+        return split(text, separator, limit, isTrim, ignoreEmpty, false);
     }
 
     /**
      * 切分字符串，大小写敏感
      *
      * @param <R>         泛型对象
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数，-1不限制
      * @param ignoreEmpty 是否忽略空串
      * @param mapping     切分后的字符串元素的转换方法
      * @return 切分后的集合，元素类型是经过 mapping 转换后的
      */
-    public static <R> List<R> split(CharSequence str, char separator, int limit, boolean ignoreEmpty, Function<String, R> mapping) {
-        return split(str, separator, limit, ignoreEmpty, false, mapping);
+    public static <R> List<R> split(CharSequence text, char separator, int limit, boolean ignoreEmpty, Function<String, R> mapping) {
+        return split(text, separator, limit, ignoreEmpty, false, mapping);
     }
 
     /**
      * 切分字符串,不忽略大小写
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符串
      * @param limit       限制分片数
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return split(str, separator, limit, isTrim, ignoreEmpty, false);
+    public static List<String> split(String text, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+        return split(text, separator, limit, isTrim, ignoreEmpty, false);
     }
 
     /**
      * 切分字符串
      *
-     * @param str         被切分的字符串
+     * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数，-1不限制
      * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(CharSequence str, char separator, int limit, boolean isTrim,
+    public static List<String> split(CharSequence text, char separator, int limit, boolean isTrim,
                                      boolean ignoreEmpty) {
-        if (null == str) {
+        if (null == text) {
             return new ArrayList<>(0);
         }
-        return split(str.toString(), separator, limit, isTrim, ignoreEmpty);
+        return split(text.toString(), separator, limit, isTrim, ignoreEmpty);
     }
 
     /**
@@ -2441,44 +2486,44 @@ public class StringKit {
     /**
      * 指定范围内查找指定字符
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param searchChar 被查找的字符
      * @return 位置
      */
-    public static int indexOf(final CharSequence str, char searchChar) {
-        return indexOf(str, searchChar, 0);
+    public static int indexOf(final CharSequence text, char searchChar) {
+        return indexOf(text, searchChar, 0);
     }
 
     /**
      * 指定范围内查找指定字符
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param searchChar 被查找的字符
      * @param start      起始位置,如果小于0,从0开始查找
      * @return 位置
      */
-    public static int indexOf(final CharSequence str, char searchChar, int start) {
-        if (str instanceof String) {
-            return ((String) str).indexOf(searchChar, start);
+    public static int indexOf(final CharSequence text, char searchChar, int start) {
+        if (text instanceof String) {
+            return ((String) text).indexOf(searchChar, start);
         } else {
-            return indexOf(str, searchChar, start, -1);
+            return indexOf(text, searchChar, start, -1);
         }
     }
 
     /**
      * 指定范围内查找指定字符
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param searchChar 被查找的字符
      * @param start      起始位置,如果小于0,从0开始查找
      * @param end        终止位置,如果超过str.length()则默认查找到字符串末尾
      * @return 位置
      */
-    public static int indexOf(final CharSequence str, char searchChar, int start, int end) {
-        if (isEmpty(str)) {
+    public static int indexOf(final CharSequence text, char searchChar, int start, int end) {
+        if (isEmpty(text)) {
             return Symbol.C_MINUS + Symbol.C_ONE;
         }
-        final int len = str.length();
+        final int len = text.length();
         if (start < 0 || start > len) {
             start = 0;
         }
@@ -2486,7 +2531,7 @@ public class StringKit {
             end = len;
         }
         for (int i = start; i < end; i++) {
-            if (str.charAt(i) == searchChar) {
+            if (text.charAt(i) == searchChar) {
                 return i;
             }
         }
@@ -2510,12 +2555,12 @@ public class StringKit {
      * StringKit.indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
      */
-    public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
-        return indexOfIgnoreCase(str, searchStr, 0);
+    public static int indexOfIgnoreCase(final CharSequence text, final CharSequence searchStr) {
+        return indexOfIgnoreCase(text, searchStr, 0);
     }
 
     /**
@@ -2535,33 +2580,33 @@ public class StringKit {
      * StringKit.indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置
      * @return 位置
      */
-    public static int indexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
-        return indexOf(str, searchStr, fromIndex, true);
+    public static int indexOfIgnoreCase(final CharSequence text, final CharSequence searchStr, int fromIndex) {
+        return indexOf(text, searchStr, fromIndex, true);
     }
 
     /**
      * 指定范围内反向查找字符串
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param searchStr  需要查找位置的字符串
      * @param fromIndex  起始位置
      * @param ignoreCase 是否忽略大小写
      * @return 位置
      */
-    public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
-        if (null == str || null == searchStr) {
+    public static int indexOf(final CharSequence text, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
+        if (null == text || null == searchStr) {
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
             fromIndex = 0;
         }
 
-        final int endLimit = str.length() - searchStr.length() + 1;
+        final int endLimit = text.length() - searchStr.length() + 1;
         if (fromIndex > endLimit) {
             return INDEX_NOT_FOUND;
         }
@@ -2571,11 +2616,11 @@ public class StringKit {
 
         if (false == ignoreCase) {
             // 不忽略大小写调用JDK方法
-            return str.toString().indexOf(searchStr.toString(), fromIndex);
+            return text.toString().indexOf(searchStr.toString(), fromIndex);
         }
 
         for (int i = fromIndex; i < endLimit; i++) {
-            if (isSubEquals(str, i, searchStr, 0, searchStr.length(), true)) {
+            if (isSubEquals(text, i, searchStr, 0, searchStr.length(), true)) {
                 return i;
             }
         }
@@ -2585,44 +2630,44 @@ public class StringKit {
     /**
      * 指定范围内查找字符串,忽略大小写
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param searchStr 需要查找位置的字符串
      * @return 位置
      */
-    public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr) {
-        return lastIndexOfIgnoreCase(str, searchStr, str.length());
+    public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence searchStr) {
+        return lastIndexOfIgnoreCase(text, searchStr, text.length());
     }
 
     /**
      * 指定范围内查找字符串,忽略大小写
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param searchStr 需要查找位置的字符串
      * @param fromIndex 起始位置,从后往前计数
      * @return 位置
      */
-    public static int lastIndexOfIgnoreCase(final CharSequence str, final CharSequence searchStr, int fromIndex) {
-        return lastIndexOf(str, searchStr, fromIndex, true);
+    public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence searchStr, int fromIndex) {
+        return lastIndexOf(text, searchStr, fromIndex, true);
     }
 
     /**
      * 指定范围内查找字符串
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param searchStr  需要查找位置的字符串
      * @param fromIndex  起始位置,从后往前计数
      * @param ignoreCase 是否忽略大小写
      * @return 位置
      */
-    public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex,
+    public static int lastIndexOf(final CharSequence text, final CharSequence searchStr, int fromIndex,
                                   boolean ignoreCase) {
-        if (null == str || null == searchStr) {
+        if (null == text || null == searchStr) {
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
             fromIndex = 0;
         }
-        fromIndex = Math.min(fromIndex, str.length());
+        fromIndex = Math.min(fromIndex, text.length());
 
         if (searchStr.length() == 0) {
             return fromIndex;
@@ -2630,11 +2675,11 @@ public class StringKit {
 
         if (false == ignoreCase) {
             // 不忽略大小写调用JDK方法
-            return str.toString().lastIndexOf(searchStr.toString(), fromIndex);
+            return text.toString().lastIndexOf(searchStr.toString(), fromIndex);
         }
 
         for (int i = fromIndex; i >= 0; i--) {
-            if (isSubEquals(str, i, searchStr, 0, searchStr.length(), true)) {
+            if (isSubEquals(text, i, searchStr, 0, searchStr.length(), true)) {
                 return i;
             }
         }
@@ -2642,8 +2687,8 @@ public class StringKit {
     }
 
     /**
-     * 返回字符串 searchStr 在字符串 str 中第 ordinal 次出现的位置
-     * 如果 str=null 或 searchStr=null 或 ordinal小于等于0 则返回-1
+     * 返回字符串 searchStr 在字符串 text 中第 ordinal 次出现的位置
+     * 如果 text=null 或 searchStr=null 或 ordinal小于等于0 则返回-1
      *
      * <pre>
      * StringKit.ordinalIndexOf(null, *, *)          = -1
@@ -2659,13 +2704,13 @@ public class StringKit {
      * StringKit.ordinalIndexOf("aabaabaa", "", 2)   = 0
      * </pre>
      *
-     * @param str       被检查的字符串,可以为null
+     * @param text      被检查的字符串,可以为null
      * @param searchStr 被查找的字符串,可以为null
      * @param ordinal   第几次出现的位置
      * @return 查找到的位置
      */
-    public static int ordinalIndexOf(String str, String searchStr, int ordinal) {
-        if (null == str || null == searchStr || ordinal <= 0) {
+    public static int ordinalIndexOf(String text, String searchStr, int ordinal) {
+        if (null == text || null == searchStr || ordinal <= 0) {
             return INDEX_NOT_FOUND;
         }
         if (searchStr.length() == 0) {
@@ -2674,7 +2719,7 @@ public class StringKit {
         int found = 0;
         int index = INDEX_NOT_FOUND;
         do {
-            index = str.indexOf(searchStr, index + 1);
+            index = text.indexOf(searchStr, index + 1);
             if (index < 0) {
                 return index;
             }
@@ -2705,23 +2750,23 @@ public class StringKit {
     /**
      * 重复某个字符串
      *
-     * @param str   被重复的字符
+     * @param text  被重复的字符
      * @param count 重复的数目
      * @return 重复字符字符串
      */
-    public static String repeat(CharSequence str, int count) {
-        if (null == str) {
+    public static String repeat(CharSequence text, int count) {
+        if (null == text) {
             return null;
         }
-        if (count <= 0 || str.length() == 0) {
+        if (count <= 0 || text.length() == 0) {
             return Normal.EMPTY;
         }
         if (count == 1) {
-            return str.toString();
+            return text.toString();
         }
 
         // 检查
-        final int len = str.length();
+        final int len = text.length();
         final long longSize = (long) len * (long) count;
         final int size = (int) longSize;
         if (size != longSize) {
@@ -2729,7 +2774,7 @@ public class StringKit {
         }
 
         final char[] array = new char[size];
-        str.toString().getChars(0, len, array, 0);
+        text.toString().getChars(0, len, array, 0);
         int n;
         for (n = len; n < size - n; n <<= 1) {// n <<= 1相当于n *2
             System.arraycopy(array, 0, array, n, n);
@@ -2742,28 +2787,28 @@ public class StringKit {
     /**
      * 重复某个字符串到指定长度
      *
-     * @param str    被重复的字符
+     * @param text   被重复的字符
      * @param padLen 指定长度
      * @return 重复字符字符串
      */
-    public static String repeatByLength(CharSequence str, int padLen) {
-        if (null == str) {
+    public static String repeatByLength(CharSequence text, int padLen) {
+        if (null == text) {
             return null;
         }
         if (padLen <= 0) {
             return Normal.EMPTY;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen == padLen) {
-            return str.toString();
+            return text.toString();
         } else if (strLen > padLen) {
-            return subPre(str, padLen);
+            return subPre(text, padLen);
         }
 
         // 重复，直到达到指定长度
         final char[] padding = new char[padLen];
         for (int i = 0; i < padLen; i++) {
-            padding[i] = str.charAt(i % strLen);
+            padding[i] = text.charAt(i % strLen);
         }
         return new String(padding);
     }
@@ -2777,12 +2822,12 @@ public class StringKit {
      * StringKit.repeatAndJoin("?", 5, null) = "?????"
      * </pre>
      *
-     * @param str         被重复的字符串
+     * @param text        被重复的字符串
      * @param count       数量
      * @param conjunction 分界符
      * @return 连接后的字符串
      */
-    public static String repeatAndJoin(CharSequence str, int count, CharSequence conjunction) {
+    public static String repeatAndJoin(CharSequence text, int count, CharSequence conjunction) {
         if (count <= 0) {
             return Normal.EMPTY;
         }
@@ -2794,7 +2839,7 @@ public class StringKit {
             } else if (isNotEmpty(conjunction.toString())) {
                 builder.append(conjunction);
             }
-            builder.append(str);
+            builder.append(text);
         }
         return builder.toString();
     }
@@ -2803,11 +2848,11 @@ public class StringKit {
      * 反转字符串
      * 例如：abcd = dcba
      *
-     * @param str 被反转的字符串
+     * @param text 被反转的字符串
      * @return 反转后的字符串
      */
-    public static String reverse(String str) {
-        char[] chars = str.toCharArray();
+    public static String reverse(String text) {
+        char[] chars = text.toCharArray();
         ArrayKit.reverse(chars);
         return new String(chars);
     }
@@ -2816,40 +2861,40 @@ public class StringKit {
      * 编码字符串
      * 使用系统默认编码
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 编码后的字节码
      */
-    public static byte[] bytes(CharSequence str) {
-        return bytes(str, java.nio.charset.Charset.defaultCharset());
+    public static byte[] bytes(CharSequence text) {
+        return bytes(text, java.nio.charset.Charset.defaultCharset());
     }
 
     /**
      * 编码字符串
      *
-     * @param str     字符串
+     * @param text    字符串
      * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
      * @return 编码后的字节码
      */
-    public static byte[] bytes(CharSequence str, String charset) {
-        return bytes(str, isBlank(charset) ? java.nio.charset.Charset.defaultCharset() : java.nio.charset.Charset.forName(charset));
+    public static byte[] bytes(CharSequence text, String charset) {
+        return bytes(text, isBlank(charset) ? java.nio.charset.Charset.defaultCharset() : java.nio.charset.Charset.forName(charset));
     }
 
     /**
      * 编码字符串
      *
-     * @param str     字符串
+     * @param text    字符串
      * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
      * @return 编码后的字节码
      */
-    public static byte[] bytes(CharSequence str, java.nio.charset.Charset charset) {
-        if (null == str) {
+    public static byte[] bytes(CharSequence text, java.nio.charset.Charset charset) {
+        if (null == text) {
             return null;
         }
 
         if (null == charset) {
-            return str.toString().getBytes();
+            return text.toString().getBytes();
         }
-        return str.toString().getBytes(charset);
+        return text.toString().getBytes(charset);
     }
 
     /**
@@ -2869,69 +2914,69 @@ public class StringKit {
      * StringKit.removeStart("abc", "")    = "abc"
      * </pre>
      *
-     * @param str    要搜索的源字符串可能为空
+     * @param text   要搜索的源字符串可能为空
      * @param remove 要搜索和删除的字符串可能为空
      * @return 如果找到，则删除字符串，如果输入为空字符串，则{@code null}
      */
-    public static String removeStart(final String str, final String remove) {
-        if (isEmpty(str) || isEmpty(remove)) {
-            return str;
+    public static String removeStart(final String text, final String remove) {
+        if (isEmpty(text) || isEmpty(remove)) {
+            return text;
         }
-        if (str.startsWith(remove)) {
-            return str.substring(remove.length());
+        if (text.startsWith(remove)) {
+            return text.substring(remove.length());
         }
-        return str;
+        return text;
     }
 
     /**
      * 去掉首部指定长度的字符串并将剩余字符串首字母小写
-     * 例如：str=setName, preLength=3 =  return name
+     * 例如：text=setName, preLength=3 =  return name
      *
-     * @param str       被处理的字符串
+     * @param text      被处理的字符串
      * @param preLength 去掉的长度
      * @return 处理后的字符串, 不符合规范返回null
      */
-    public static String removePreAndLowerFirst(CharSequence str, int preLength) {
-        if (null == str) {
+    public static String removePreAndLowerFirst(CharSequence text, int preLength) {
+        if (null == text) {
             return null;
         }
-        if (str.length() > preLength) {
-            char first = Character.toLowerCase(str.charAt(preLength));
-            if (str.length() > preLength + 1) {
-                return first + str.toString().substring(preLength + 1);
+        if (text.length() > preLength) {
+            char first = Character.toLowerCase(text.charAt(preLength));
+            if (text.length() > preLength + 1) {
+                return first + text.toString().substring(preLength + 1);
             }
             return String.valueOf(first);
         } else {
-            return str.toString();
+            return text.toString();
         }
     }
 
     /**
      * 去掉首部指定长度的字符串并将剩余字符串首字母小写
-     * 例如：str=setName, prefix=set =  return name
+     * 例如：text=setName, prefix=set =  return name
      *
-     * @param str    被处理的字符串
+     * @param text   被处理的字符串
      * @param prefix 前缀
      * @return 处理后的字符串, 不符合规范返回null
      */
-    public static String removePreAndLowerFirst(CharSequence str, CharSequence prefix) {
-        return lowerFirst(removePrefix(str, prefix));
+    public static String removePreAndLowerFirst(CharSequence text, CharSequence prefix) {
+        return lowerFirst(removePrefix(text, prefix));
     }
 
 
     /**
      * 去掉指定前缀
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前缀
      * @return 切掉后的字符串, 若前缀不是 preffix, 返回原字符串
      */
-    public static String removePrefix(CharSequence str, CharSequence prefix) {
-        if (isEmpty(str) || isEmpty(prefix)) {
-            return toString(str);
+    public static String removePrefix(CharSequence text, CharSequence prefix) {
+        if (isEmpty(text) || isEmpty(prefix)) {
+            return toString(text);
         }
 
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         if (str2.startsWith(prefix.toString())) {
             return subSuf(str2, prefix.length());// 截取后半段
         }
@@ -2941,16 +2986,16 @@ public class StringKit {
     /**
      * 忽略大小写去掉指定前缀
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前缀
      * @return 切掉后的字符串, 若前缀不是 prefix, 返回原字符串
      */
-    public static String removePrefixIgnoreCase(CharSequence str, CharSequence prefix) {
-        if (isEmpty(str) || isEmpty(prefix)) {
-            return toString(str);
+    public static String removePrefixIgnoreCase(CharSequence text, CharSequence prefix) {
+        if (isEmpty(text) || isEmpty(prefix)) {
+            return toString(text);
         }
 
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         if (str2.toLowerCase().startsWith(prefix.toString().toLowerCase())) {
             return subSuf(str2, prefix.length());// 截取后半段
         }
@@ -2960,16 +3005,16 @@ public class StringKit {
     /**
      * 去掉指定后缀
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param suffix 后缀
      * @return 切掉后的字符串, 若后缀不是 suffix, 返回原字符串
      */
-    public static String removeSuffix(CharSequence str, CharSequence suffix) {
-        if (isEmpty(str) || isEmpty(suffix)) {
-            return toString(str);
+    public static String removeSuffix(CharSequence text, CharSequence suffix) {
+        if (isEmpty(text) || isEmpty(suffix)) {
+            return toString(text);
         }
 
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         if (str2.endsWith(suffix.toString())) {
             return subPre(str2, str2.length() - suffix.length());// 截取前半段
         }
@@ -2978,57 +3023,57 @@ public class StringKit {
 
     /**
      * 原字符串首字母大写并在其首部添加指定字符串
-     * 例如：str=name, preString=get = return getName
+     * 例如：text=name, preString=get = return getName
      *
-     * @param str       被处理的字符串
+     * @param text      被处理的字符串
      * @param preString 添加的首部
      * @return 处理后的字符串
      */
-    public static String upperFirstAndAddPre(CharSequence str, String preString) {
-        if (null == str || null == preString) {
+    public static String upperFirstAndAddPre(CharSequence text, String preString) {
+        if (null == text || null == preString) {
             return null;
         }
-        return preString + upperFirst(str);
+        return preString + upperFirst(text);
     }
 
     /**
      * 大写首字母
-     * 例如：str = name, return Name
+     * 例如：text = name, return Name
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 字符串
      */
-    public static String upperFirst(CharSequence str) {
-        if (null == str) {
+    public static String upperFirst(CharSequence text) {
+        if (null == text) {
             return null;
         }
-        if (str.length() > 0) {
-            char firstChar = str.charAt(0);
+        if (text.length() > 0) {
+            char firstChar = text.charAt(0);
             if (Character.isLowerCase(firstChar)) {
-                return Character.toUpperCase(firstChar) + subSuf(str, 1);
+                return Character.toUpperCase(firstChar) + subSuf(text, 1);
             }
         }
-        return str.toString();
+        return text.toString();
     }
 
     /**
      * 小写首字母
-     * 例如：str = Name, return name
+     * 例如：text = Name, return name
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 字符串
      */
-    public static String lowerFirst(CharSequence str) {
-        if (null == str) {
+    public static String lowerFirst(CharSequence text) {
+        if (null == text) {
             return null;
         }
-        if (str.length() > 0) {
-            char firstChar = str.charAt(0);
+        if (text.length() > 0) {
+            char firstChar = text.charAt(0);
             if (Character.isUpperCase(firstChar)) {
-                return Character.toLowerCase(firstChar) + subSuf(str, 1);
+                return Character.toLowerCase(firstChar) + subSuf(text, 1);
             }
         }
-        return str.toString();
+        return text.toString();
     }
 
 
@@ -3048,12 +3093,12 @@ public class StringKit {
      * 将驼峰式命名的字符串转换为使用符号连接方式
      * 如果转换前的驼峰式命名的字符串为空，则返回空字符串
      *
-     * @param str    转换前的驼峰式命名的字符串，也可以为符号连接形式
+     * @param text   转换前的驼峰式命名的字符串，也可以为符号连接形式
      * @param symbol 连接符
      * @return 转换后符号连接方式命名的字符串
      */
-    public static String toSymbolCase(CharSequence str, char symbol) {
-        return Naming.toSymbolCase(str, symbol);
+    public static String toSymbolCase(CharSequence text, char symbol) {
+        return Naming.toSymbolCase(text, symbol);
     }
 
     /**
@@ -3061,11 +3106,11 @@ public class StringKit {
      * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串
      * 例如：hello_world= helloWorld
      *
-     * @param str 转换前的下划线大写方式命名的字符串
+     * @param text 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串
      */
-    public static String toCamelCase(CharSequence str) {
-        return Naming.toCamelCase(str);
+    public static String toCamelCase(CharSequence text) {
+        return Naming.toCamelCase(text);
     }
 
     /**
@@ -3080,15 +3125,15 @@ public class StringKit {
      * StringKit.remove("queued", "zz") = "queued"
      * </pre>
      *
-     * @param str    要搜索的源字符串可能为空
+     * @param text   要搜索的源字符串可能为空
      * @param remove 要搜索和删除的字符串可能为空
      * @return 如果找到，则删除字符串，如果输入为空字符串，则{@code null}
      */
-    public static String remove(final String str, final String remove) {
-        if (isEmpty(str) || isEmpty(remove)) {
-            return str;
+    public static String remove(final String text, final String remove) {
+        if (isEmpty(text) || isEmpty(remove)) {
+            return text;
         }
-        return replace(str, remove, Normal.EMPTY, -1);
+        return replace(text, remove, Normal.EMPTY, -1);
     }
 
     /**
@@ -3105,15 +3150,15 @@ public class StringKit {
      * StringKit.removeIgnoreCase("queued", "zZ") = "queued"
      * </pre>
      *
-     * @param str    要搜索的源字符串可能为空
+     * @param text   要搜索的源字符串可能为空
      * @param remove 要搜索和删除的字符串(不区分大小写)可能为空
      * @return 如果找到，则删除字符串，如果输入为空字符串，则{@code null}
      */
-    public static String removeIgnoreCase(final String str, final String remove) {
-        if (isEmpty(str) || isEmpty(remove)) {
-            return str;
+    public static String removeIgnoreCase(final String text, final String remove) {
+        if (isEmpty(text) || isEmpty(remove)) {
+            return text;
         }
-        return replaceIgnoreCase(str, remove, Normal.EMPTY, -1);
+        return replaceIgnoreCase(text, remove, Normal.EMPTY, -1);
     }
 
     /**
@@ -3126,15 +3171,15 @@ public class StringKit {
      * StringKit.remove("queued", 'z') = "queued"
      * </pre>
      *
-     * @param str    要搜索的源字符串可能为空
+     * @param text   要搜索的源字符串可能为空
      * @param remove 要搜索和删除的字符串(不区分大小写)可能为空
      * @return 如果找到，则删除字符的子字符串，如果输入为空字符串，则{@code null}
      */
-    public static String remove(final String str, final char remove) {
-        if (isEmpty(str) || str.indexOf(remove) == INDEX_NOT_FOUND) {
-            return str;
+    public static String remove(final String text, final char remove) {
+        if (isEmpty(text) || text.indexOf(remove) == INDEX_NOT_FOUND) {
+            return text;
         }
-        final char[] chars = str.toCharArray();
+        final char[] chars = text.toCharArray();
         int pos = 0;
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] != remove) {
@@ -3175,22 +3220,22 @@ public class StringKit {
     /**
      * 去除字符串中指定的多个字符，如有多个则全部去除
      *
-     * @param str   字符串
+     * @param text  字符串
      * @param chars 字符列表
      * @return 去除后的字符
      */
-    public static String removeAll(CharSequence str, char... chars) {
-        if (null == str || ArrayKit.isEmpty(chars)) {
-            return toString(str);
+    public static String removeAll(CharSequence text, char... chars) {
+        if (null == text || ArrayKit.isEmpty(chars)) {
+            return toString(text);
         }
-        final int len = str.length();
+        final int len = text.length();
         if (0 == len) {
-            return toString(str);
+            return toString(text);
         }
         final StringBuilder builder = builder(len);
         char c;
         for (int i = 0; i < len; i++) {
-            c = str.charAt(i);
+            c = text.charAt(i);
             if (false == ArrayKit.contains(chars, c)) {
                 builder.append(c);
             }
@@ -3202,28 +3247,28 @@ public class StringKit {
      * 移除字符串中所有给定字符串
      * 例：removeAll("aa-bb-cc-dd", "-") - aabbccdd
      *
-     * @param str         字符串
+     * @param text        字符串
      * @param strToRemove 被移除的字符串
      * @return 移除后的字符串
      */
-    public static String removeAll(CharSequence str, CharSequence strToRemove) {
-        if (isEmpty(str) || isEmpty(strToRemove)) {
-            return toString(str);
+    public static String removeAll(CharSequence text, CharSequence strToRemove) {
+        if (isEmpty(text) || isEmpty(strToRemove)) {
+            return toString(text);
         }
-        return str.toString().replace(strToRemove, Normal.EMPTY);
+        return text.toString().replace(strToRemove, Normal.EMPTY);
     }
 
     /**
      * 移除字符串中所有给定字符串，当某个字符串出现多次，则全部移除
      * 例：removeAny("aa-bb-cc-dd", "a", "b") - --cc-dd
      *
-     * @param str          字符串
+     * @param text         字符串
      * @param strsToRemove 被移除的字符串
      * @return 移除后的字符串
      */
-    public static String removeAny(CharSequence str, CharSequence... strsToRemove) {
-        String result = toString(str);
-        if (isNotEmpty(str)) {
+    public static String removeAny(CharSequence text, CharSequence... strsToRemove) {
+        String result = toString(text);
+        if (isNotEmpty(text)) {
             for (CharSequence strToRemove : strsToRemove) {
                 result = removeAll(result, strToRemove);
             }
@@ -3453,14 +3498,14 @@ public class StringKit {
     /**
      * 替换字符串中的空格、回车、换行符、制表符
      *
-     * @param str 字符串信息
+     * @param text 字符串信息
      * @return 替换后的字符串
      */
-    public static String replaceBlank(String str) {
+    public static String replaceBlank(String text) {
         String val = Normal.EMPTY;
-        if (null != str) {
+        if (null != text) {
             Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-            Matcher m = p.matcher(str);
+            Matcher m = p.matcher(text);
             val = m.replaceAll(Normal.EMPTY);
         }
         return val;
@@ -3692,16 +3737,16 @@ public class StringKit {
      * StringKit.replaceChars("abcba", 'b', 'y') = "aycya"
      * StringKit.replaceChars("abcba", 'z', 'y') = "abcba"
      *
-     * @param str         要替换字符的字符串，可以为空
+     * @param text        要替换字符的字符串，可以为空
      * @param searchChar  要搜索的字符可能为空
      * @param replaceChar 要替换的字符可以为空
      * @return 修改的字符串，{@code null}如果输入的字符串为空
      */
-    public static String replaceChars(final String str, final char searchChar, final char replaceChar) {
-        if (null == str) {
+    public static String replaceChars(final String text, final char searchChar, final char replaceChar) {
+        if (null == text) {
             return null;
         }
-        return str.replace(searchChar, replaceChar);
+        return text.replace(searchChar, replaceChar);
     }
 
     /**
@@ -3717,24 +3762,24 @@ public class StringKit {
      * StringKit.replaceChars("abcba", "bc", "y")   = "ayya"
      * StringKit.replaceChars("abcba", "bc", "yzx") = "ayzya"
      *
-     * @param str          要替换字符的字符串，可以为空
+     * @param text         要替换字符的字符串，可以为空
      * @param searchChars  要搜索的一组字符可能为空
      * @param replaceChars 要替换的一组字符可能为空
      * @return 修改的字符串，{@code null}如果输入的字符串为空
      */
-    public static String replaceChars(final String str, final String searchChars, String replaceChars) {
-        if (isEmpty(str) || isEmpty(searchChars)) {
-            return str;
+    public static String replaceChars(final String text, final String searchChars, String replaceChars) {
+        if (isEmpty(text) || isEmpty(searchChars)) {
+            return text;
         }
         if (null == replaceChars) {
             replaceChars = Normal.EMPTY;
         }
         boolean modified = false;
         final int replaceCharsLength = replaceChars.length();
-        final int strLength = str.length();
+        final int strLength = text.length();
         final StringBuilder buf = new StringBuilder(strLength);
         for (int i = 0; i < strLength; i++) {
-            final char ch = str.charAt(i);
+            final char ch = text.charAt(i);
             final int index = searchChars.indexOf(ch);
             if (index >= 0) {
                 modified = true;
@@ -3748,90 +3793,90 @@ public class StringKit {
         if (modified) {
             return buf.toString();
         }
-        return str;
+        return text;
     }
 
     /**
      * 替换字符串中的指定字符串,忽略大小写
      *
-     * @param str         字符串
+     * @param text        字符串
      * @param searchStr   被查找的字符串
      * @param replacement 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replaceIgnoreCase(CharSequence str, CharSequence searchStr, CharSequence replacement) {
-        return replace(str, 0, searchStr, replacement, true);
+    public static String replaceIgnoreCase(CharSequence text, CharSequence searchStr, CharSequence replacement) {
+        return replace(text, 0, searchStr, replacement, true);
     }
 
     /**
      * 替换字符串中的指定字符串
      *
-     * @param str         字符串
+     * @param text        字符串
      * @param searchStr   被查找的字符串
      * @param replacement 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, CharSequence searchStr, CharSequence replacement) {
-        return replace(str, 0, searchStr, replacement, false);
+    public static String replace(CharSequence text, CharSequence searchStr, CharSequence replacement) {
+        return replace(text, 0, searchStr, replacement, false);
     }
 
     /**
      * 替换字符串中的指定字符串
      *
-     * @param str         字符串
+     * @param text        字符串
      * @param searchStr   被查找的字符串
      * @param replacement 被替换的字符串
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, CharSequence searchStr, CharSequence replacement,
+    public static String replace(CharSequence text, CharSequence searchStr, CharSequence replacement,
                                  boolean ignoreCase) {
-        return replace(str, 0, searchStr, replacement, ignoreCase);
+        return replace(text, 0, searchStr, replacement, ignoreCase);
     }
 
     /**
      * 替换字符串中的指定字符串
      *
-     * @param str         字符串
+     * @param text        字符串
      * @param fromIndex   开始位置(包括)
      * @param searchStr   被查找的字符串
      * @param replacement 被替换的字符串
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, int fromIndex, CharSequence searchStr, CharSequence replacement,
+    public static String replace(CharSequence text, int fromIndex, CharSequence searchStr, CharSequence replacement,
                                  boolean ignoreCase) {
-        if (isEmpty(str) || isEmpty(searchStr)) {
-            return toString(str);
+        if (isEmpty(text) || isEmpty(searchStr)) {
+            return toString(text);
         }
         if (null == replacement) {
             replacement = Normal.EMPTY;
         }
 
-        final int strLength = str.length();
+        final int strLength = text.length();
         final int searchStrLength = searchStr.length();
         if (fromIndex > strLength) {
-            return toString(str);
+            return toString(text);
         } else if (fromIndex < 0) {
             fromIndex = 0;
         }
 
         final TextKit result = TextKit.create(strLength + 16);
         if (0 != fromIndex) {
-            result.append(str.subSequence(0, fromIndex));
+            result.append(text.subSequence(0, fromIndex));
         }
 
         int preIndex = fromIndex;
         int index = fromIndex;
-        while ((index = indexOf(str, searchStr, preIndex, ignoreCase)) > -1) {
-            result.append(str.subSequence(preIndex, index));
+        while ((index = indexOf(text, searchStr, preIndex, ignoreCase)) > -1) {
+            result.append(text.subSequence(preIndex, index));
             result.append(replacement);
             preIndex = index + searchStrLength;
         }
 
         if (preIndex < strLength) {
             // 结尾部分
-            result.append(str.subSequence(preIndex, strLength));
+            result.append(text.subSequence(preIndex, strLength));
         }
         return result.toString();
     }
@@ -3845,50 +3890,50 @@ public class StringKit {
      *     // 结果为："ZZZaaabbbccc中文-1234-"
      * </pre>
      *
-     * @param str        要替换的字符串
+     * @param text       要替换的字符串
      * @param pattern    用于匹配的正则式
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, java.util.regex.Pattern pattern, Func.Func1<Matcher, String> replaceFun) {
-        return PatternKit.replaceAll(str, pattern, replaceFun);
+    public static String replace(CharSequence text, java.util.regex.Pattern pattern, Func.Func1<Matcher, String> replaceFun) {
+        return PatternKit.replaceAll(text, pattern, replaceFun);
     }
 
     /**
      * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
      *
-     * @param str        要替换的字符串
+     * @param text       要替换的字符串
      * @param regex      用于匹配的正则式
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, String regex, Func.Func1<Matcher, String> replaceFun) {
-        return PatternKit.replaceAll(str, regex, replaceFun);
+    public static String replace(CharSequence text, String regex, Func.Func1<Matcher, String> replaceFun) {
+        return PatternKit.replaceAll(text, regex, replaceFun);
     }
 
     /**
      * 替换指定字符串的指定区间内字符为固定字符
      *
-     * @param str          字符串
+     * @param text         字符串
      * @param startInclude 开始位置(包含)
      * @param endExclude   结束位置(不包含)
      * @param replacedChar 被替换的字符
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence str, int startInclude, int endExclude, char replacedChar) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String replace(CharSequence text, int startInclude, int endExclude, char replacedChar) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
-        final int strLength = str.length();
+        final int strLength = text.length();
         if (startInclude > strLength) {
-            return toString(str);
+            return toString(text);
         }
         if (endExclude > strLength) {
             endExclude = strLength;
         }
         if (startInclude > endExclude) {
             // 如果起始位置大于结束位置,不替换
-            return toString(str);
+            return toString(text);
         }
 
         final char[] chars = new char[strLength];
@@ -3896,7 +3941,7 @@ public class StringKit {
             if (i >= startInclude && i < endExclude) {
                 chars[i] = replacedChar;
             } else {
-                chars[i] = str.charAt(i);
+                chars[i] = text.charAt(i);
             }
         }
         return new String(chars);
@@ -3905,53 +3950,53 @@ public class StringKit {
     /**
      * 替换指定字符串的指定区间内字符为"*"
      *
-     * @param str          字符串
+     * @param text         字符串
      * @param startInclude 开始位置(包含)
      * @param endExclude   结束位置(不包含)
      * @return 替换后的字符串
      */
-    public static String hide(CharSequence str, int startInclude, int endExclude) {
-        return replace(str, startInclude, endExclude, Symbol.C_STAR);
+    public static String hide(CharSequence text, int startInclude, int endExclude) {
+        return replace(text, startInclude, endExclude, Symbol.C_STAR);
     }
 
     /**
      * 替换字符字符数组中所有的字符为replacedStr
      * 提供的chars为所有需要被替换的字符,例如："\r\n",则"\r"和"\n"都会被替换,哪怕他们单独存在
      *
-     * @param str         被检查的字符串
+     * @param text        被检查的字符串
      * @param chars       需要替换的字符列表,用一个字符串表示这个字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
      */
-    public static String replaceChars(CharSequence str, String chars, CharSequence replacedStr) {
-        if (isEmpty(str) || isEmpty(chars)) {
-            return toString(str);
+    public static String replaceChars(CharSequence text, String chars, CharSequence replacedStr) {
+        if (isEmpty(text) || isEmpty(chars)) {
+            return toString(text);
         }
-        return replaceChars(str, chars.toCharArray(), replacedStr);
+        return replaceChars(text, chars.toCharArray(), replacedStr);
     }
 
     /**
      * 替换字符字符数组中所有的字符为replacedStr
      *
-     * @param str         被检查的字符串
+     * @param text        被检查的字符串
      * @param chars       需要替换的字符列表
      * @param replacedStr 替换成的字符串
      * @return 新字符串
      */
-    public static String replaceChars(CharSequence str, char[] chars, CharSequence replacedStr) {
-        if (isEmpty(str) || ArrayKit.isEmpty(chars)) {
-            return toString(str);
+    public static String replaceChars(CharSequence text, char[] chars, CharSequence replacedStr) {
+        if (isEmpty(text) || ArrayKit.isEmpty(chars)) {
+            return toString(text);
         }
 
         final Set<Character> set = new HashSet<>(chars.length);
         for (char c : chars) {
             set.add(c);
         }
-        int strLen = str.length();
+        int strLen = text.length();
         final StringBuilder builder = new StringBuilder();
         char c;
         for (int i = 0; i < strLen; i++) {
-            c = str.charAt(i);
+            c = text.charAt(i);
             builder.append(set.contains(c) ? replacedStr : c);
         }
         return builder.toString();
@@ -3960,46 +4005,46 @@ public class StringKit {
     /**
      * 清理空白字符
      *
-     * @param str 被清理的字符串
+     * @param text 被清理的字符串
      * @return 清理后的字符串
      */
-    public static String cleanBlank(CharSequence str) {
-        return filter(str, c -> !CharKit.isBlankChar(c));
+    public static String cleanBlank(CharSequence text) {
+        return filter(text, c -> !CharKit.isBlankChar(c));
     }
 
     /**
      * 包装指定字符串
      * 当前缀和后缀一致时使用此方法
      *
-     * @param str             被包装的字符串
+     * @param text            被包装的字符串
      * @param prefixAndSuffix 前缀和后缀
      * @return 包装后的字符串
      */
-    public static String wrap(CharSequence str, CharSequence prefixAndSuffix) {
-        return wrap(str, prefixAndSuffix, prefixAndSuffix);
+    public static String wrap(CharSequence text, CharSequence prefixAndSuffix) {
+        return wrap(text, prefixAndSuffix, prefixAndSuffix);
     }
 
     /**
      * 包装指定字符串
      *
-     * @param str    被包装的字符串
+     * @param text   被包装的字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 包装后的字符串
      */
-    public static String wrap(CharSequence str, CharSequence prefix, CharSequence suffix) {
-        return nullToEmpty(prefix).concat(nullToEmpty(str)).concat(nullToEmpty(suffix));
+    public static String wrap(CharSequence text, CharSequence prefix, CharSequence suffix) {
+        return nullToEmpty(prefix).concat(nullToEmpty(text)).concat(nullToEmpty(suffix));
     }
 
     /**
      * 包装多个字符串
      *
      * @param prefixAndSuffix 前缀和后缀
-     * @param strs            多个字符串
+     * @param texts           多个字符串
      * @return 包装的字符串数组
      */
-    public static String[] wrapAll(CharSequence prefixAndSuffix, CharSequence... strs) {
-        return wrapAll(prefixAndSuffix, prefixAndSuffix, strs);
+    public static String[] wrapAll(CharSequence prefixAndSuffix, CharSequence... texts) {
+        return wrapAll(prefixAndSuffix, prefixAndSuffix, texts);
     }
 
     /**
@@ -4007,13 +4052,13 @@ public class StringKit {
      *
      * @param prefix 前缀
      * @param suffix 后缀
-     * @param strs   多个字符串
+     * @param texts  多个字符串
      * @return 包装的字符串数组
      */
-    public static String[] wrapAll(CharSequence prefix, CharSequence suffix, CharSequence... strs) {
-        final String[] results = new String[strs.length];
-        for (int i = 0; i < strs.length; i++) {
-            results[i] = wrap(strs[i], prefix, suffix);
+    public static String[] wrapAll(CharSequence prefix, CharSequence suffix, CharSequence... texts) {
+        final String[] results = new String[texts.length];
+        for (int i = 0; i < texts.length; i++) {
+            results[i] = wrap(texts[i], prefix, suffix);
         }
         return results;
     }
@@ -4021,128 +4066,128 @@ public class StringKit {
     /**
      * 去掉字符包装,如果未被包装则返回原字符串
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前置字符串
      * @param suffix 后置字符串
      * @return 去掉包装字符的字符串
      */
-    public static String unWrap(CharSequence str, String prefix, String suffix) {
-        if (isWrap(str, prefix, suffix)) {
-            return sub(str, prefix.length(), str.length() - suffix.length());
+    public static String unWrap(CharSequence text, String prefix, String suffix) {
+        if (isWrap(text, prefix, suffix)) {
+            return sub(text, prefix.length(), text.length() - suffix.length());
         }
-        return str.toString();
+        return text.toString();
     }
 
     /**
      * 去掉字符包装,如果未被包装则返回原字符串
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前置字符
      * @param suffix 后置字符
      * @return 去掉包装字符的字符串
      */
-    public static String unWrap(CharSequence str, char prefix, char suffix) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String unWrap(CharSequence text, char prefix, char suffix) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
-        if (str.charAt(0) == prefix && str.charAt(str.length() - 1) == suffix) {
-            return sub(str, 1, str.length() - 1);
+        if (text.charAt(0) == prefix && text.charAt(text.length() - 1) == suffix) {
+            return sub(text, 1, text.length() - 1);
         }
-        return str.toString();
+        return text.toString();
     }
 
     /**
      * 去掉字符包装,如果未被包装则返回原字符串
      *
-     * @param str             字符串
+     * @param text            字符串
      * @param prefixAndSuffix 前置和后置字符
      * @return 去掉包装字符的字符串
      */
-    public static String unWrap(CharSequence str, char prefixAndSuffix) {
-        return unWrap(str, prefixAndSuffix, prefixAndSuffix);
+    public static String unWrap(CharSequence text, char prefixAndSuffix) {
+        return unWrap(text, prefixAndSuffix, prefixAndSuffix);
     }
 
     /**
      * 指定字符串是否被包装
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 是否被包装
      */
-    public static boolean isWrap(CharSequence str, String prefix, String suffix) {
-        if (ArrayKit.hasNull(str, prefix, suffix)) {
+    public static boolean isWrap(CharSequence text, String prefix, String suffix) {
+        if (ArrayKit.hasNull(text, prefix, suffix)) {
             return false;
         }
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         return str2.startsWith(prefix) && str2.endsWith(suffix);
     }
 
     /**
      * 指定字符串是否被同一字符包装(前后都有这些字符串)
      *
-     * @param str     字符串
+     * @param text    字符串
      * @param wrapper 包装字符串
      * @return 是否被包装
      */
-    public static boolean isWrap(CharSequence str, String wrapper) {
-        return isWrap(str, wrapper, wrapper);
+    public static boolean isWrap(CharSequence text, String wrapper) {
+        return isWrap(text, wrapper, wrapper);
     }
 
     /**
      * 指定字符串是否被同一字符包装(前后都有这些字符串)
      *
-     * @param str     字符串
+     * @param text    字符串
      * @param wrapper 包装字符
      * @return 是否被包装
      */
-    public static boolean isWrap(CharSequence str, char wrapper) {
-        return isWrap(str, wrapper, wrapper);
+    public static boolean isWrap(CharSequence text, char wrapper) {
+        return isWrap(text, wrapper, wrapper);
     }
 
     /**
      * 指定字符串是否被包装
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param prefixChar 前缀
      * @param suffixChar 后缀
      * @return 是否被包装
      */
-    public static boolean isWrap(CharSequence str, char prefixChar, char suffixChar) {
-        if (null == str) {
+    public static boolean isWrap(CharSequence text, char prefixChar, char suffixChar) {
+        if (null == text) {
             return false;
         }
 
-        return str.charAt(0) == prefixChar && str.charAt(str.length() - 1) == suffixChar;
+        return text.charAt(0) == prefixChar && text.charAt(text.length() - 1) == suffixChar;
     }
 
     /**
      * 包装指定字符串，如果前缀或后缀已经包含对应的字符串，则不再包装
      *
-     * @param str    被包装的字符串
+     * @param text   被包装的字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 包装后的字符串
      */
-    public static String wrapIfMissing(CharSequence str, CharSequence prefix, CharSequence suffix) {
+    public static String wrapIfMissing(CharSequence text, CharSequence prefix, CharSequence suffix) {
         int len = 0;
-        if (isNotEmpty(str)) {
-            len += str.length();
+        if (isNotEmpty(text)) {
+            len += text.length();
         }
         if (isNotEmpty(prefix)) {
-            len += str.length();
+            len += text.length();
         }
         if (isNotEmpty(suffix)) {
-            len += str.length();
+            len += text.length();
         }
         StringBuilder sb = new StringBuilder(len);
-        if (isNotEmpty(prefix) && false == startWith(str, prefix)) {
+        if (isNotEmpty(prefix) && false == startWith(text, prefix)) {
             sb.append(prefix);
         }
-        if (isNotEmpty(str)) {
-            sb.append(str);
+        if (isNotEmpty(text)) {
+            sb.append(text);
         }
-        if (isNotEmpty(suffix) && false == endWith(str, suffix)) {
+        if (isNotEmpty(suffix) && false == endWith(text, suffix)) {
             sb.append(suffix);
         }
         return sb.toString();
@@ -4152,11 +4197,11 @@ public class StringKit {
      * 包装多个字符串，如果已经包装，则不再包装
      *
      * @param prefixAndSuffix 前缀和后缀
-     * @param strs            多个字符串
+     * @param texts           多个字符串
      * @return 包装的字符串数组
      */
-    public static String[] wrapAllIfMissing(CharSequence prefixAndSuffix, CharSequence... strs) {
-        return wrapAllIfMissing(prefixAndSuffix, prefixAndSuffix, strs);
+    public static String[] wrapAllIfMissing(CharSequence prefixAndSuffix, CharSequence... texts) {
+        return wrapAllIfMissing(prefixAndSuffix, prefixAndSuffix, texts);
     }
 
     /**
@@ -4164,13 +4209,13 @@ public class StringKit {
      *
      * @param prefix 前缀
      * @param suffix 后缀
-     * @param strs   多个字符串
+     * @param texts  多个字符串
      * @return 包装的字符串数组
      */
-    public static String[] wrapAllIfMissing(CharSequence prefix, CharSequence suffix, CharSequence... strs) {
-        final String[] results = new String[strs.length];
-        for (int i = 0; i < strs.length; i++) {
-            results[i] = wrapIfMissing(strs[i], prefix, suffix);
+    public static String[] wrapAllIfMissing(CharSequence prefix, CharSequence suffix, CharSequence... texts) {
+        final String[] results = new String[texts.length];
+        for (int i = 0; i < texts.length; i++) {
+            results[i] = wrapIfMissing(texts[i], prefix, suffix);
         }
         return results;
     }
@@ -4178,57 +4223,57 @@ public class StringKit {
     /**
      * 字符串是否以给定字符开始
      *
-     * @param str 字符串
-     * @param c   字符
+     * @param text 字符串
+     * @param c    字符
      * @return 是否开始
      */
-    public static boolean startWith(CharSequence str, char c) {
-        if (true == isEmpty(str)) {
+    public static boolean startWith(CharSequence text, char c) {
+        if (true == isEmpty(text)) {
             return false;
         }
-        return c == str.charAt(0);
+        return c == text.charAt(0);
     }
 
     /**
      * 是否以指定字符串开头
      * 如果给定的字符串和开头字符串都为null则返回true,否则任意一个值为null返回false
      *
-     * @param str        被监测字符串
+     * @param text       被监测字符串
      * @param prefix     开头字符串
      * @param ignoreCase 是否忽略大小写
      * @return 是否以指定字符串开头
      */
-    public static boolean startWith(CharSequence str, CharSequence prefix, boolean ignoreCase) {
-        return startWith(str, prefix, ignoreCase, false);
+    public static boolean startWith(CharSequence text, CharSequence prefix, boolean ignoreCase) {
+        return startWith(text, prefix, ignoreCase, false);
     }
 
     /**
      * 是否以指定字符串开头
      * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
      *
-     * @param str          被监测字符串
+     * @param text         被监测字符串
      * @param prefix       开头字符串
      * @param ignoreCase   是否忽略大小写
      * @param ignoreEquals 是否忽略字符串相等的情况
      * @return 是否以指定字符串开头
      */
-    public static boolean startWith(CharSequence str, CharSequence prefix, boolean ignoreCase, boolean ignoreEquals) {
-        if (null == str || null == prefix) {
+    public static boolean startWith(CharSequence text, CharSequence prefix, boolean ignoreCase, boolean ignoreEquals) {
+        if (null == text || null == prefix) {
             if (false == ignoreEquals) {
                 return false;
             }
-            return null == str && null == prefix;
+            return null == text && null == prefix;
         }
 
         boolean isStartWith;
         if (ignoreCase) {
-            isStartWith = str.toString().toLowerCase().startsWith(prefix.toString().toLowerCase());
+            isStartWith = text.toString().toLowerCase().startsWith(prefix.toString().toLowerCase());
         } else {
-            isStartWith = str.toString().startsWith(prefix.toString());
+            isStartWith = text.toString().startsWith(prefix.toString());
         }
 
         if (isStartWith) {
-            return (false == ignoreEquals) || (false == equals(str, prefix, ignoreCase));
+            return (false == ignoreEquals) || (false == equals(text, prefix, ignoreCase));
         }
         return false;
     }
@@ -4236,40 +4281,40 @@ public class StringKit {
     /**
      * 是否以指定字符串开头
      *
-     * @param str    被监测字符串
+     * @param text   被监测字符串
      * @param prefix 开头字符串
      * @return 是否以指定字符串开头
      */
-    public static boolean startWith(CharSequence str, CharSequence prefix) {
-        return startWith(str, prefix, false);
+    public static boolean startWith(CharSequence text, CharSequence prefix) {
+        return startWith(text, prefix, false);
     }
 
     /**
      * 是否以指定字符串开头，忽略相等字符串的情况
      *
-     * @param str    被监测字符串
+     * @param text   被监测字符串
      * @param prefix 开头字符串
      * @return 是否以指定字符串开头并且两个字符串不相等
      */
-    public static boolean startWithIgnoreEquals(CharSequence str, CharSequence prefix) {
-        return startWith(str, prefix, false, true);
+    public static boolean startWithIgnoreEquals(CharSequence text, CharSequence prefix) {
+        return startWith(text, prefix, false, true);
     }
 
     /**
      * 给定字符串是否以任何一个字符串开始
      * 给定字符串和数组为空都返回false
      *
-     * @param str      给定字符串
+     * @param text     给定字符串
      * @param prefixes 需要检测的开始字符串
      * @return 给定字符串是否以任何一个字符串开始
      */
-    public static boolean startWithAny(CharSequence str, CharSequence... prefixes) {
-        if (isEmpty(str) || ArrayKit.isEmpty(prefixes)) {
+    public static boolean startWithAny(CharSequence text, CharSequence... prefixes) {
+        if (isEmpty(text) || ArrayKit.isEmpty(prefixes)) {
             return false;
         }
 
         for (CharSequence suffix : prefixes) {
-            if (startWith(str, suffix, false)) {
+            if (startWith(text, suffix, false)) {
                 return true;
             }
         }
@@ -4279,75 +4324,75 @@ public class StringKit {
     /**
      * 是否以指定字符串开头,忽略大小写
      *
-     * @param str    被监测字符串
+     * @param text   被监测字符串
      * @param prefix 开头字符串
      * @return 是否以指定字符串开头
      */
-    public static boolean startWithIgnoreCase(CharSequence str, CharSequence prefix) {
-        return startWith(str, prefix, true);
+    public static boolean startWithIgnoreCase(CharSequence text, CharSequence prefix) {
+        return startWith(text, prefix, true);
     }
 
     /**
      * 字符串是否以给定字符结尾
      *
-     * @param str 字符串
-     * @param c   字符
+     * @param text 字符串
+     * @param c    字符
      * @return 是否结尾
      */
-    public static boolean endWith(CharSequence str, char c) {
-        if (isEmpty(str)) {
+    public static boolean endWith(CharSequence text, char c) {
+        if (isEmpty(text)) {
             return false;
         }
-        return c == str.charAt(str.length() - 1);
+        return c == text.charAt(text.length() - 1);
     }
 
     /**
      * 是否以指定字符串结尾
      * 如果给定的字符串和开头字符串都为null则返回true,否则任意一个值为null返回false
      *
-     * @param str          被监测字符串
+     * @param text         被监测字符串
      * @param suffix       结尾字符串
      * @param isIgnoreCase 是否忽略大小写
      * @return 是否以指定字符串结尾
      */
-    public static boolean endWith(CharSequence str, CharSequence suffix, boolean isIgnoreCase) {
-        if (null == str || null == suffix) {
-            return null == str && null == suffix;
+    public static boolean endWith(CharSequence text, CharSequence suffix, boolean isIgnoreCase) {
+        if (null == text || null == suffix) {
+            return null == text && null == suffix;
         }
 
         if (isIgnoreCase) {
-            return str.toString().toLowerCase().endsWith(suffix.toString().toLowerCase());
+            return text.toString().toLowerCase().endsWith(suffix.toString().toLowerCase());
         } else {
-            return str.toString().endsWith(suffix.toString());
+            return text.toString().endsWith(suffix.toString());
         }
     }
 
     /**
      * 是否以指定字符串结尾
      *
-     * @param str    被监测字符串
+     * @param text   被监测字符串
      * @param suffix 结尾字符串
      * @return 是否以指定字符串结尾
      */
-    public static boolean endWith(CharSequence str, CharSequence suffix) {
-        return endWith(str, suffix, false);
+    public static boolean endWith(CharSequence text, CharSequence suffix) {
+        return endWith(text, suffix, false);
     }
 
     /**
      * 给定字符串是否以任何一个字符串结尾
      * 给定字符串和数组为空都返回false
      *
-     * @param str      给定字符串
+     * @param text     给定字符串
      * @param suffixes 需要检测的结尾字符串
      * @return 给定字符串是否以任何一个字符串结尾
      */
-    public static boolean endWithAny(CharSequence str, CharSequence... suffixes) {
-        if (isEmpty(str) || ArrayKit.isEmpty(suffixes)) {
+    public static boolean endWithAny(CharSequence text, CharSequence... suffixes) {
+        if (isEmpty(text) || ArrayKit.isEmpty(suffixes)) {
             return false;
         }
 
         for (CharSequence suffix : suffixes) {
-            if (endWith(str, suffix, false)) {
+            if (endWith(text, suffix, false)) {
                 return true;
             }
         }
@@ -4358,17 +4403,17 @@ public class StringKit {
      * 给定字符串是否以任何一个字符串结尾（忽略大小写）
      * 给定字符串和数组为空都返回false
      *
-     * @param str      给定字符串
+     * @param text     给定字符串
      * @param suffixes 需要检测的结尾字符串
      * @return 给定字符串是否以任何一个字符串结尾
      */
-    public static boolean endWithAnyIgnoreCase(CharSequence str, CharSequence... suffixes) {
-        if (isEmpty(str) || ArrayKit.isEmpty(suffixes)) {
+    public static boolean endWithAnyIgnoreCase(CharSequence text, CharSequence... suffixes) {
+        if (isEmpty(text) || ArrayKit.isEmpty(suffixes)) {
             return false;
         }
 
         for (CharSequence suffix : suffixes) {
-            if (endWith(str, suffix, true)) {
+            if (endWith(text, suffix, true)) {
                 return true;
             }
         }
@@ -4378,41 +4423,41 @@ public class StringKit {
     /**
      * 是否以指定字符串结尾,忽略大小写
      *
-     * @param str    被监测字符串
+     * @param text   被监测字符串
      * @param suffix 结尾字符串
      * @return 是否以指定字符串结尾
      */
-    public static boolean endWithIgnoreCase(CharSequence str, CharSequence suffix) {
-        return endWith(str, suffix, true);
+    public static boolean endWithIgnoreCase(CharSequence text, CharSequence suffix) {
+        return endWith(text, suffix, true);
     }
 
     /**
      * 去除两边的指定字符串
      *
-     * @param str            被处理的字符串
+     * @param text           被处理的字符串
      * @param prefixOrSuffix 前缀或后缀
      * @return 处理后的字符串
      */
-    public static String strip(CharSequence str, CharSequence prefixOrSuffix) {
-        return strip(str, prefixOrSuffix, prefixOrSuffix);
+    public static String strip(CharSequence text, CharSequence prefixOrSuffix) {
+        return strip(text, prefixOrSuffix, prefixOrSuffix);
     }
 
     /**
      * 去除两边的指定字符串
      *
-     * @param str    被处理的字符串
+     * @param text   被处理的字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 处理后的字符串
      */
-    public static String strip(CharSequence str, CharSequence prefix, CharSequence suffix) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String strip(CharSequence text, CharSequence prefix, CharSequence suffix) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
         int from = 0;
-        int to = str.length();
+        int to = text.length();
 
-        String str2 = str.toString();
+        String str2 = text.toString();
         if (startWith(str2, prefix)) {
             from = prefix.length();
         }
@@ -4425,30 +4470,30 @@ public class StringKit {
     /**
      * 去除两边的指定字符串,忽略大小写
      *
-     * @param str            被处理的字符串
+     * @param text           被处理的字符串
      * @param prefixOrSuffix 前缀或后缀
      * @return 处理后的字符串
      */
-    public static String stripIgnoreCase(CharSequence str, CharSequence prefixOrSuffix) {
-        return stripIgnoreCase(str, prefixOrSuffix, prefixOrSuffix);
+    public static String stripIgnoreCase(CharSequence text, CharSequence prefixOrSuffix) {
+        return stripIgnoreCase(text, prefixOrSuffix, prefixOrSuffix);
     }
 
     /**
      * 去除两边的指定字符串,忽略大小写
      *
-     * @param str    被处理的字符串
+     * @param text   被处理的字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 处理后的字符串
      */
-    public static String stripIgnoreCase(CharSequence str, CharSequence prefix, CharSequence suffix) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String stripIgnoreCase(CharSequence text, CharSequence prefix, CharSequence suffix) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
         int from = 0;
-        int to = str.length();
+        int to = text.length();
 
-        String str2 = str.toString();
+        String str2 = text.toString();
         if (startWithIgnoreCase(str2, prefix)) {
             from = prefix.length();
         }
@@ -4461,16 +4506,16 @@ public class StringKit {
     /**
      * 如果给定字符串不是以prefix开头的,在开头补充 prefix
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前缀
      * @return 补充后的字符串
      */
-    public static String addPrefixIfNot(CharSequence str, CharSequence prefix) {
-        if (isEmpty(str) || isEmpty(prefix)) {
-            return toString(str);
+    public static String addPrefixIfNot(CharSequence text, CharSequence prefix) {
+        if (isEmpty(text) || isEmpty(prefix)) {
+            return toString(text);
         }
 
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         final String prefix2 = prefix.toString();
         if (false == str2.startsWith(prefix2)) {
             return prefix2.concat(str2);
@@ -4481,16 +4526,16 @@ public class StringKit {
     /**
      * 如果给定字符串不是以suffix结尾的,在尾部补充 suffix
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param suffix 后缀
      * @return 补充后的字符串
      */
-    public static String addSuffixIfNot(CharSequence str, CharSequence suffix) {
-        if (isEmpty(str) || isEmpty(suffix)) {
-            return toString(str);
+    public static String addSuffixIfNot(CharSequence text, CharSequence suffix) {
+        if (isEmpty(text) || isEmpty(suffix)) {
+            return toString(text);
         }
 
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         final String suffix2 = suffix.toString();
         if (false == str2.endsWith(suffix2)) {
             return str2.concat(suffix2);
@@ -4501,51 +4546,51 @@ public class StringKit {
     /**
      * 指定字符是否在字符串中出现过
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param searchChar 被查找的字符
      * @return 是否包含
      */
-    public static boolean contains(CharSequence str, char searchChar) {
-        return indexOf(str, searchChar) > -1;
+    public static boolean contains(CharSequence text, char searchChar) {
+        return indexOf(text, searchChar) > -1;
     }
 
     /**
      * 指定字符串是否在字符串中出现过
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param searchStr 被查找的字符串
      * @return 是否包含
      */
-    public static boolean contains(CharSequence str, CharSequence searchStr) {
-        if (null == str || null == searchStr) {
+    public static boolean contains(CharSequence text, CharSequence searchStr) {
+        if (null == text || null == searchStr) {
             return false;
         }
-        return str.toString().contains(searchStr);
+        return text.toString().contains(searchStr);
     }
 
     /**
      * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
      *
-     * @param str      指定字符串
+     * @param text     指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
      */
-    public static boolean containsAny(CharSequence str, CharSequence... testStrs) {
-        return null != getContainsAny(str, testStrs);
+    public static boolean containsAny(CharSequence text, CharSequence... testStrs) {
+        return null != getContainsAny(text, testStrs);
     }
 
     /**
      * 查找指定字符串是否包含指定字符列表中的任意一个字符
      *
-     * @param str       指定字符串
+     * @param text      指定字符串
      * @param testChars 需要检查的字符数组
      * @return 是否包含任意一个字符
      */
-    public static boolean containsAny(CharSequence str, char... testChars) {
-        if (false == isEmpty(str)) {
-            int len = str.length();
+    public static boolean containsAny(CharSequence text, char... testChars) {
+        if (false == isEmpty(text)) {
+            int len = text.length();
             for (int i = 0; i < len; i++) {
-                if (ArrayKit.contains(testChars, str.charAt(i))) {
+                if (ArrayKit.contains(testChars, text.charAt(i))) {
                     return true;
                 }
             }
@@ -4556,15 +4601,15 @@ public class StringKit {
     /**
      * 检查指定字符串中是否只包含给定的字符
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param testChars 检查的字符
      * @return 字符串含有非检查的字符, 返回false
      */
-    public static boolean containsOnly(CharSequence str, char... testChars) {
-        if (false == isEmpty(str)) {
-            int len = str.length();
+    public static boolean containsOnly(CharSequence text, char... testChars) {
+        if (false == isEmpty(text)) {
+            int len = text.length();
             for (int i = 0; i < len; i++) {
-                if (false == ArrayKit.contains(testChars, str.charAt(i))) {
+                if (false == ArrayKit.contains(testChars, text.charAt(i))) {
                     return false;
                 }
             }
@@ -4576,20 +4621,20 @@ public class StringKit {
      * 给定字符串是否包含空白符(空白符包括空格、制表符、全角空格和不间断空格)
      * 如果给定字符串为null或者"",则返回false
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否包含空白符
      */
-    public static boolean containsBlank(CharSequence str) {
-        if (null == str) {
+    public static boolean containsBlank(CharSequence text) {
+        if (null == text) {
             return false;
         }
-        final int length = str.length();
+        final int length = text.length();
         if (0 == length) {
             return false;
         }
 
         for (int i = 0; i < length; i += 1) {
-            if (CharKit.isBlankChar(str.charAt(i))) {
+            if (CharKit.isBlankChar(text.charAt(i))) {
                 return true;
             }
         }
@@ -4599,16 +4644,16 @@ public class StringKit {
     /**
      * 查找指定字符串是否包含指定字符串列表中的任意一个字符串,如果包含返回找到的第一个字符串
      *
-     * @param str      指定字符串
+     * @param text     指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
      */
-    public static String getContainsAny(CharSequence str, CharSequence... testStrs) {
-        if (isEmpty(str) || ArrayKit.isEmpty(testStrs)) {
+    public static String getContainsAny(CharSequence text, CharSequence... testStrs) {
+        if (isEmpty(text) || ArrayKit.isEmpty(testStrs)) {
             return null;
         }
         for (CharSequence val : testStrs) {
-            if (val.toString().contains(str)) {
+            if (val.toString().contains(text)) {
                 return val.toString();
             }
         }
@@ -4618,44 +4663,44 @@ public class StringKit {
     /**
      * 是否包含特定字符,忽略大小写,如果给定两个参数都为<code>null</code>,返回true
      *
-     * @param str     被检测字符串
+     * @param text    被检测字符串
      * @param testStr 被测试是否包含的字符串
      * @return 是否包含
      */
-    public static boolean containsIgnoreCase(CharSequence str, CharSequence testStr) {
-        if (null == str) {
+    public static boolean containsIgnoreCase(CharSequence text, CharSequence testStr) {
+        if (null == text) {
             // 如果被监测字符串和
             return null == testStr;
         }
-        return str.toString().toLowerCase().contains(testStr.toString().toLowerCase());
+        return text.toString().toLowerCase().contains(testStr.toString().toLowerCase());
     }
 
     /**
      * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
      * 忽略大小写
      *
-     * @param str      指定字符串
+     * @param text     指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 是否包含任意一个字符串
      */
-    public static boolean containsAnyIgnoreCase(CharSequence str, CharSequence... testStrs) {
-        return null != getContainsStrIgnoreCase(str, testStrs);
+    public static boolean containsAnyIgnoreCase(CharSequence text, CharSequence... testStrs) {
+        return null != getContainsStrIgnoreCase(text, testStrs);
     }
 
     /**
      * 查找指定字符串是否包含指定字符串列表中的任意一个字符串,如果包含返回找到的第一个字符串
      * 忽略大小写
      *
-     * @param str      指定字符串
+     * @param text     指定字符串
      * @param testStrs 需要检查的字符串数组
      * @return 被包含的第一个字符串
      */
-    public static String getContainsStrIgnoreCase(CharSequence str, CharSequence... testStrs) {
-        if (isEmpty(str) || ArrayKit.isEmpty(testStrs)) {
+    public static String getContainsStrIgnoreCase(CharSequence text, CharSequence... testStrs) {
+        if (isEmpty(text) || ArrayKit.isEmpty(testStrs)) {
             return null;
         }
         for (CharSequence testStr : testStrs) {
-            if (containsIgnoreCase(str, testStr)) {
+            if (containsIgnoreCase(text, testStr)) {
                 return testStr.toString();
             }
         }
@@ -4665,40 +4710,40 @@ public class StringKit {
     /**
      * 给定字符串是否被字符包围
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 是否包围, 空串不包围
      */
-    public static boolean isSurround(CharSequence str, CharSequence prefix, CharSequence suffix) {
-        if (isBlank(str)) {
+    public static boolean isSurround(CharSequence text, CharSequence prefix, CharSequence suffix) {
+        if (isBlank(text)) {
             return false;
         }
-        if (str.length() < (prefix.length() + suffix.length())) {
+        if (text.length() < (prefix.length() + suffix.length())) {
             return false;
         }
 
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         return str2.startsWith(prefix.toString()) && str2.endsWith(suffix.toString());
     }
 
     /**
      * 给定字符串是否被字符包围
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param prefix 前缀
      * @param suffix 后缀
      * @return 是否包围, 空串不包围
      */
-    public static boolean isSurround(CharSequence str, char prefix, char suffix) {
-        if (isBlank(str)) {
+    public static boolean isSurround(CharSequence text, char prefix, char suffix) {
+        if (isBlank(text)) {
             return false;
         }
-        if (str.length() < 2) {
+        if (text.length() < 2) {
             return false;
         }
 
-        return str.charAt(0) == prefix && str.charAt(str.length() - 1) == suffix;
+        return text.charAt(0) == prefix && text.charAt(text.length() - 1) == suffix;
     }
 
     /**
@@ -4716,39 +4761,39 @@ public class StringKit {
      * StringKit.rightPad("bat", 5, "")    = "bat  "
      * </pre>
      *
-     * @param str    要填充的字符串可能为空
+     * @param text   要填充的字符串可能为空
      * @param size   字符大小
      * @param padStr 要填充的字符
      * @return 右填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
-    public static String rightPad(final String str, final int size, String padStr) {
-        if (null == str) {
+    public static String rightPad(final String text, final int size, String padStr) {
+        if (null == text) {
             return null;
         }
         if (isEmpty(padStr)) {
             padStr = Symbol.SPACE;
         }
         final int padLen = padStr.length();
-        final int strLen = str.length();
+        final int strLen = text.length();
         final int pads = size - strLen;
         if (pads <= 0) {
-            return str;
+            return text;
         }
         if (padLen == 1 && pads <= PAD_LIMIT) {
-            return rightPad(str, size, padStr.charAt(0));
+            return rightPad(text, size, padStr.charAt(0));
         }
 
         if (pads == padLen) {
-            return str.concat(padStr);
+            return text.concat(padStr);
         } else if (pads < padLen) {
-            return str.concat(padStr.substring(0, pads));
+            return text.concat(padStr.substring(0, pads));
         } else {
             final char[] padding = new char[pads];
             final char[] padChars = padStr.toCharArray();
             for (int i = 0; i < pads; i++) {
                 padding[i] = padChars[i % padLen];
             }
-            return str.concat(new String(padding));
+            return text.concat(new String(padding));
         }
     }
 
@@ -4764,23 +4809,23 @@ public class StringKit {
      * StringKit.rightPad("bat", -1, 'z') = "bat"
      * </pre>
      *
-     * @param str     要填充的字符串可能为空
+     * @param text    要填充的字符串可能为空
      * @param size    字符大小
      * @param padChar 要填充的字符
      * @return 右填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
-    public static String rightPad(final String str, final int size, final char padChar) {
-        if (null == str) {
+    public static String rightPad(final String text, final int size, final char padChar) {
+        if (null == text) {
             return null;
         }
-        final int pads = size - str.length();
+        final int pads = size - text.length();
         if (pads <= 0) {
-            return str;
+            return text;
         }
         if (pads > PAD_LIMIT) {
-            return rightPad(str, size, String.valueOf(padChar));
+            return rightPad(text, size, String.valueOf(padChar));
         }
-        return str.concat(repeat(padChar, pads));
+        return text.concat(repeat(padChar, pads));
     }
 
     /**
@@ -4795,21 +4840,21 @@ public class StringKit {
      * StringKit.left("abc", 4)   = "abc"
      * </pre>
      *
-     * @param str 要从中获取字符的字符串可能为空
-     * @param len 所需字符串的长度
+     * @param text 要从中获取字符的字符串可能为空
+     * @param len  所需字符串的长度
      * @return 最左边的字符，{@code null}如果输入为空字符串
      */
-    public static String left(final String str, final int len) {
-        if (null == str) {
+    public static String left(final String text, final int len) {
+        if (null == text) {
             return null;
         }
         if (len < 0) {
             return Normal.EMPTY;
         }
-        if (str.length() <= len) {
-            return str;
+        if (text.length() <= len) {
+            return text;
         }
-        return str.substring(0, len);
+        return text.substring(0, len);
     }
 
     /**
@@ -4824,21 +4869,21 @@ public class StringKit {
      * StringKit.right("abc", 4)   = "abc"
      * </pre>
      *
-     * @param str 要从中获取字符的字符串可能为空
-     * @param len 所需字符串的长度
+     * @param text 要从中获取字符的字符串可能为空
+     * @param len  所需字符串的长度
      * @return 最右边的字符，{@code null}如果输入为空字符串
      */
-    public static String right(final String str, final int len) {
-        if (null == str) {
+    public static String right(final String text, final int len) {
+        if (null == text) {
             return null;
         }
         if (len < 0) {
             return Normal.EMPTY;
         }
-        if (str.length() <= len) {
-            return str;
+        if (text.length() <= len) {
+            return text;
         }
-        return str.substring(str.length() - len);
+        return text.substring(text.length() - len);
     }
 
     /**
@@ -4855,25 +4900,25 @@ public class StringKit {
      * StringKit.mid("abc", -2, 2)  = "ab"
      * </pre>
      *
-     * @param str 要从中获取字符的字符串可能为空
-     * @param pos 开始时的位置，负为零
-     * @param len 所需字符串的长度
+     * @param text 要从中获取字符的字符串可能为空
+     * @param pos  开始时的位置，负为零
+     * @param len  所需字符串的长度
      * @return 中间的字符，{@code null}如果输入为空字符串
      */
-    public static String mid(final String str, int pos, final int len) {
-        if (null == str) {
+    public static String mid(final String text, int pos, final int len) {
+        if (null == text) {
             return null;
         }
-        if (len < 0 || pos > str.length()) {
+        if (len < 0 || pos > text.length()) {
             return Normal.EMPTY;
         }
         if (pos < 0) {
             pos = 0;
         }
-        if (str.length() <= pos + len) {
-            return str.substring(pos);
+        if (text.length() <= pos + len) {
+            return text.substring(pos);
         }
-        return str.substring(pos, pos + len);
+        return text.substring(pos, pos + len);
     }
 
     /**
@@ -4888,12 +4933,12 @@ public class StringKit {
      * StringKit.leftPad("bat", -1) = "bat"
      * </pre>
      *
-     * @param str  要填充的字符串可能为空
+     * @param text 要填充的字符串可能为空
      * @param size 字符大小
      * @return 左填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
-    public static String leftPad(final String str, final int size) {
-        return leftPad(str, size, Symbol.C_SPACE);
+    public static String leftPad(final String text, final int size) {
+        return leftPad(text, size, Symbol.C_SPACE);
     }
 
     /**
@@ -4908,23 +4953,23 @@ public class StringKit {
      * StringKit.leftPad("bat", -1, 'z') = "bat"
      * </pre>
      *
-     * @param str     要填充的字符串可能为空
+     * @param text    要填充的字符串可能为空
      * @param size    字符大小
      * @param padChar 要填充的字符
      * @return 左填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
-    public static String leftPad(final String str, final int size, final char padChar) {
-        if (null == str) {
+    public static String leftPad(final String text, final int size, final char padChar) {
+        if (null == text) {
             return null;
         }
-        final int pads = size - str.length();
+        final int pads = size - text.length();
         if (pads <= 0) {
-            return str;
+            return text;
         }
         if (pads > PAD_LIMIT) {
-            return leftPad(str, size, String.valueOf(padChar));
+            return leftPad(text, size, String.valueOf(padChar));
         }
-        return repeat(padChar, pads).concat(str);
+        return repeat(padChar, pads).concat(text);
     }
 
     /**
@@ -4942,39 +4987,39 @@ public class StringKit {
      * StringKit.leftPad("bat", 5, "")    = "  bat"
      * </pre>
      *
-     * @param str    要填充的字符串可能为空
+     * @param text   要填充的字符串可能为空
      * @param size   大小
      * @param padStr 要填充的字符串，null或empty被视为单个空格
      * @return 左填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
-    public static String leftPad(final String str, final int size, String padStr) {
-        if (null == str) {
+    public static String leftPad(final String text, final int size, String padStr) {
+        if (null == text) {
             return null;
         }
         if (isEmpty(padStr)) {
             padStr = Symbol.SPACE;
         }
         final int padLen = padStr.length();
-        final int strLen = str.length();
+        final int strLen = text.length();
         final int pads = size - strLen;
         if (pads <= 0) {
-            return str;
+            return text;
         }
         if (padLen == 1 && pads <= PAD_LIMIT) {
-            return leftPad(str, size, padStr.charAt(0));
+            return leftPad(text, size, padStr.charAt(0));
         }
 
         if (pads == padLen) {
-            return padStr.concat(str);
+            return padStr.concat(text);
         } else if (pads < padLen) {
-            return padStr.substring(0, pads).concat(str);
+            return padStr.substring(0, pads).concat(text);
         } else {
             final char[] padding = new char[pads];
             final char[] padChars = padStr.toCharArray();
             for (int i = 0; i < pads; i++) {
                 padding[i] = padChars[i % padLen];
             }
-            return new String(padding).concat(str);
+            return new String(padding).concat(text);
         }
     }
 
@@ -5027,13 +5072,13 @@ public class StringKit {
      * 连接多个字符串为一个
      *
      * @param isNullToEmpty 是否null转为""
-     * @param strs          字符串数组
+     * @param texts         字符串数组
      * @return 连接后的字符串
      */
-    public static String concat(boolean isNullToEmpty, CharSequence... strs) {
+    public static String concat(boolean isNullToEmpty, CharSequence... texts) {
         final Builders sb = new Builders();
-        for (CharSequence str : strs) {
-            sb.append(isNullToEmpty ? nullToEmpty(str) : str);
+        for (CharSequence text : texts) {
+            sb.append(isNullToEmpty ? nullToEmpty(text) : text);
         }
         return sb.toString();
     }
@@ -5046,16 +5091,16 @@ public class StringKit {
      * 2. 其它非字母的Unicode符都算作大写
      * </pre>
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否全部为大写
      */
-    public static boolean isUpperCase(CharSequence str) {
-        if (null == str) {
+    public static boolean isUpperCase(CharSequence text) {
+        if (null == text) {
             return false;
         }
-        final int len = str.length();
+        final int len = text.length();
         for (int i = 0; i < len; i++) {
-            if (Character.isLowerCase(str.charAt(i))) {
+            if (Character.isLowerCase(text.charAt(i))) {
                 return false;
             }
         }
@@ -5070,16 +5115,16 @@ public class StringKit {
      * 2. 其它非字母的Unicode符都算作小写
      * </pre>
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否全部为小写
      */
-    public static boolean isLowerCase(CharSequence str) {
-        if (null == str) {
+    public static boolean isLowerCase(CharSequence text) {
+        if (null == text) {
             return false;
         }
-        final int len = str.length();
+        final int len = text.length();
         for (int i = 0; i < len; i++) {
-            if (Character.isUpperCase(str.charAt(i))) {
+            if (Character.isUpperCase(text.charAt(i))) {
                 return false;
             }
         }
@@ -5106,15 +5151,15 @@ public class StringKit {
      * StringKit.swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
      * </pre>
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 交换后的字符串
      */
-    public static String swapCase(final String str) {
-        if (isEmpty(str)) {
-            return str;
+    public static String swapCase(final String text) {
+        if (isEmpty(text)) {
+            return text;
         }
 
-        final char[] buffer = str.toCharArray();
+        final char[] buffer = text.toCharArray();
 
         for (int i = 0; i < buffer.length; i++) {
             final char ch = buffer[i];
@@ -5133,13 +5178,13 @@ public class StringKit {
      * 将已有字符串填充为规定长度,如果已有字符串超过这个长度则返回这个字符串
      * 字符填充于字符串前
      *
-     * @param str        被填充的字符串
+     * @param text       被填充的字符串
      * @param filledChar 填充的字符
      * @param len        填充长度
      * @return 填充后的字符串
      */
-    public static String fillBefore(String str, char filledChar, int len) {
-        return fill(str, filledChar, len, true);
+    public static String fillBefore(String text, char filledChar, int len) {
+        return fill(text, filledChar, len, true);
     }
 
     /**
@@ -5251,13 +5296,13 @@ public class StringKit {
     /**
      * 创建StringBuilder对象
      *
-     * @param strs 初始字符串列表
+     * @param texts 初始字符串列表
      * @return StringBuilder对象
      */
-    public static StringBuilder builder(CharSequence... strs) {
+    public static StringBuilder builder(CharSequence... texts) {
         final StringBuilder sb = new StringBuilder();
-        for (CharSequence str : strs) {
-            sb.append(str);
+        for (CharSequence text : texts) {
+            sb.append(text);
         }
         return sb;
     }
@@ -5265,24 +5310,24 @@ public class StringKit {
     /**
      * 创建Builders对象
      *
-     * @param strs 初始字符串列表
+     * @param texts 初始字符串列表
      * @return Builders对象
      */
-    public static Builders builders(CharSequence... strs) {
-        return new Builders(strs);
+    public static Builders builders(CharSequence... texts) {
+        return new Builders(texts);
     }
 
     /**
      * 获得StringReader
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return StringReader
      */
-    public static StringReader getReader(CharSequence str) {
-        if (null == str) {
+    public static StringReader getReader(CharSequence text) {
+        if (null == text) {
             return null;
         }
-        return new StringReader(str.toString());
+        return new StringReader(text.toString());
     }
 
     /**
@@ -5352,24 +5397,24 @@ public class StringKit {
     /**
      * 统计 字符串 中单词出现次数(不排序)
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param separator 分隔符
      * @return 统计次数 如: {"hello":10}
      */
-    public static Map<String, Long> count(String str, String separator) {
-        return count(Collections.singletonList(str), separator);
+    public static Map<String, Long> count(String text, String separator) {
+        return count(Collections.singletonList(text), separator);
     }
 
     /**
      * 统计 字符串 中单词出现次数(根据value排序)
      *
-     * @param str         字符串
+     * @param text        字符串
      * @param separator   分隔符
      * @param isValueDesc 是否倒叙排列
      * @return 统计次数 如: {"hello":10}
      */
-    public static Map<String, Long> count(String str, String separator, boolean isValueDesc) {
-        return count(Collections.singletonList(str), separator, isValueDesc);
+    public static Map<String, Long> count(String text, String separator, boolean isValueDesc) {
+        return count(Collections.singletonList(text), separator, isValueDesc);
     }
 
     /**
@@ -5381,8 +5426,8 @@ public class StringKit {
      */
     public static Map<String, Long> count(List<String> list, String separator) {
         Map<String, Long> countMap = MapKit.newHashMap();
-        for (String str : list) {
-            String[] words = str.split(separator);
+        for (String text : list) {
+            String[] words = text.split(separator);
             for (String word : words) {
                 countMap.put(word, countMap.getOrDefault(word, 0L) + 1);
             }
@@ -5405,22 +5450,22 @@ public class StringKit {
     /**
      * 将字符串切分为N等份
      *
-     * @param str        字符串
+     * @param text       字符串
      * @param partLength 每等份的长度
      * @return 切分后的数组
      */
-    public static String[] cut(CharSequence str, int partLength) {
-        if (null == str) {
+    public static String[] cut(CharSequence text, int partLength) {
+        if (null == text) {
             return null;
         }
-        int len = str.length();
+        int len = text.length();
         if (len < partLength) {
-            return new String[]{str.toString()};
+            return new String[]{text.toString()};
         }
         int part = MathKit.count(len, partLength);
         final String[] array = new String[part];
 
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         for (int i = 0; i < part; i++) {
             array[i] = str2.substring(i * partLength, (i == part - 1) ? len : (partLength + i * partLength));
         }
@@ -5438,30 +5483,30 @@ public class StringKit {
      *     <li>abcdef 1 -》 a</li>
      * </ul>
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param maxLength 最大长度
      * @return 截取后的字符串
      */
-    public static String brief(CharSequence str, int maxLength) {
-        if (null == str) {
+    public static String brief(CharSequence text, int maxLength) {
+        if (null == text) {
             return null;
         }
-        final int strLength = str.length();
+        final int strLength = text.length();
         if (maxLength <= 0 || strLength <= maxLength) {
-            return str.toString();
+            return text.toString();
         }
 
         switch (maxLength) {
             case 1:
-                return String.valueOf(str.charAt(0));
+                return String.valueOf(text.charAt(0));
             case 2:
-                return str.charAt(0) + Symbol.DOT;
+                return text.charAt(0) + Symbol.DOT;
             case 3:
-                return str.charAt(0) + Symbol.DOT + str.charAt(str.length() - 1);
+                return text.charAt(0) + Symbol.DOT + text.charAt(text.length() - 1);
         }
 
         final int w = maxLength / 2;
-        final String str2 = str.toString();
+        final String str2 = text.toString();
         return format("{}...{}",
                 str2.substring(0, maxLength - w),
                 str2.substring(strLength - w + 3));
@@ -5470,33 +5515,33 @@ public class StringKit {
     /**
      * 首字母变小写
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return {String}
      */
-    public static String firstCharToLower(String str) {
-        char firstChar = str.charAt(0);
+    public static String firstCharToLower(String text) {
+        char firstChar = text.charAt(0);
         if (firstChar >= 'A' && firstChar <= 'Z') {
-            char[] arr = str.toCharArray();
+            char[] arr = text.toCharArray();
             arr[0] += ('a' - 'A');
             return new String(arr);
         }
-        return str;
+        return text;
     }
 
     /**
      * 首字母变大写
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return {String}
      */
-    public static String firstCharToUpper(String str) {
-        char firstChar = str.charAt(0);
+    public static String firstCharToUpper(String text) {
+        char firstChar = text.charAt(0);
         if (firstChar >= 'a' && firstChar <= 'z') {
-            char[] arr = str.toCharArray();
+            char[] arr = text.toCharArray();
             arr[0] -= ('a' - 'A');
             return new String(arr);
         }
-        return str;
+        return text;
     }
 
     /**
@@ -5541,14 +5586,14 @@ public class StringKit {
      * StringKit.upperCase("aBc") = "ABC"
      * </pre>
      *
-     * @param str 字符串可以为空
+     * @param text 字符串可以为空
      * @return 大写字符串{@code null}如果输入为空字符串
      */
-    public static String upperCase(final String str) {
-        if (null == str) {
+    public static String upperCase(final String text) {
+        if (null == text) {
             return null;
         }
-        return str.toUpperCase();
+        return text.toUpperCase();
     }
 
     /**
@@ -5560,15 +5605,15 @@ public class StringKit {
      * StringKit.upperCase("aBc", Locale.ENGLISH) = "ABC"
      * </pre>
      *
-     * @param str    字符串可以为空
+     * @param text   字符串可以为空
      * @param locale 定义案例转换规则的区域设置不能为空
      * @return 大写字符串{@code null}如果输入为空字符串
      */
-    public static String upperCase(final String str, final Locale locale) {
-        if (null == str) {
+    public static String upperCase(final String text, final Locale locale) {
+        if (null == text) {
             return null;
         }
-        return str.toUpperCase(locale);
+        return text.toUpperCase(locale);
     }
 
     /**
@@ -5580,14 +5625,14 @@ public class StringKit {
      * StringKit.lowerCase("aBc") = "abc"
      * </pre>
      *
-     * @param str 字符串可以为空
+     * @param text 字符串可以为空
      * @return 小写字符串{@code null}如果输入为空字符串
      */
-    public static String lowerCase(final String str) {
-        if (null == str) {
+    public static String lowerCase(final String text) {
+        if (null == text) {
             return null;
         }
-        return str.toLowerCase();
+        return text.toLowerCase();
     }
 
     /**
@@ -5599,15 +5644,15 @@ public class StringKit {
      * StringKit.lowerCase("aBc", Locale.ENGLISH) = "abc"
      * </pre>
      *
-     * @param str    字符串可以为空
+     * @param text   字符串可以为空
      * @param locale t定义案例转换规则的区域设置不能为空
      * @return 小写字符串{@code null}如果输入为空字符串
      */
-    public static String lowerCase(final String str, final Locale locale) {
-        if (null == str) {
+    public static String lowerCase(final String text, final Locale locale) {
+        if (null == text) {
             return null;
         }
-        return str.toLowerCase(locale);
+        return text.toLowerCase(locale);
     }
 
     /**
@@ -5622,26 +5667,26 @@ public class StringKit {
      * StringKit.capitalize("'cat'") = "'cat'"
      * </pre>
      *
-     * @param str 要大写的字符串可以为空
+     * @param text 要大写的字符串可以为空
      * @return 大写字符串，{@code null}如果输入为空字符串
      */
-    public static String capitalize(final String str) {
+    public static String capitalize(final String text) {
         int strLen;
-        if (null == str || (strLen = str.length()) == 0) {
-            return str;
+        if (null == text || (strLen = text.length()) == 0) {
+            return text;
         }
 
-        final int firstCodepoint = str.codePointAt(0);
+        final int firstCodepoint = text.codePointAt(0);
         final int newCodePoint = Character.toTitleCase(firstCodepoint);
         if (firstCodepoint == newCodePoint) {
-            return str;
+            return text;
         }
 
         final int[] newCodePoints = new int[strLen];
         int outOffset = 0;
         newCodePoints[outOffset++] = newCodePoint;
         for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
-            final int codepoint = str.codePointAt(inOffset);
+            final int codepoint = text.codePointAt(inOffset);
             newCodePoints[outOffset++] = codepoint;
             inOffset += Character.charCount(codepoint);
         }
@@ -5659,26 +5704,26 @@ public class StringKit {
      * StringKit.uncapitalize("CAT") = "cAT"
      * </pre>
      *
-     * @param str 要取消大写的字符串可以为空
+     * @param text 要取消大写的字符串可以为空
      * @return 未大写的字符串，{@code null}如果输入为空字符串
      */
-    public static String uncapitalize(final String str) {
+    public static String uncapitalize(final String text) {
         int strLen;
-        if (null == str || (strLen = str.length()) == 0) {
-            return str;
+        if (null == text || (strLen = text.length()) == 0) {
+            return text;
         }
 
-        final int firstCodepoint = str.codePointAt(0);
+        final int firstCodepoint = text.codePointAt(0);
         final int newCodePoint = Character.toLowerCase(firstCodepoint);
         if (firstCodepoint == newCodePoint) {
-            return str;
+            return text;
         }
 
         final int[] newCodePoints = new int[strLen];
         int outOffset = 0;
         newCodePoints[outOffset++] = newCodePoint;
         for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
-            final int codepoint = str.codePointAt(inOffset);
+            final int codepoint = text.codePointAt(inOffset);
             newCodePoints[outOffset++] = codepoint;
             inOffset += Character.charCount(codepoint);
         }
@@ -5719,25 +5764,25 @@ public class StringKit {
     /**
      * 如果字符串还没有以后缀结尾，则将后缀追加到字符串的末尾.
      *
-     * @param str        字符串.
+     * @param text       字符串.
      * @param suffix     附加到字符串末尾的后缀.
      * @param ignoreCase 指示比较是否应忽略大小写.
      * @param suffixes   有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
-    private static String appendIfMissing(final String str, final CharSequence suffix, final boolean ignoreCase,
+    private static String appendIfMissing(final String text, final CharSequence suffix, final boolean ignoreCase,
                                           final CharSequence... suffixes) {
-        if (null == str || isEmpty(suffix) || endWith(str, suffix, ignoreCase)) {
-            return toString(str);
+        if (null == text || isEmpty(suffix) || endWith(text, suffix, ignoreCase)) {
+            return toString(text);
         }
         if (null != suffixes && suffixes.length > 0) {
             for (final CharSequence s : suffixes) {
-                if (endWith(str, s, ignoreCase)) {
-                    return str;
+                if (endWith(text, s, ignoreCase)) {
+                    return text;
                 }
             }
         }
-        return str.concat(suffix.toString());
+        return text.concat(suffix.toString());
     }
 
     /**
@@ -5765,14 +5810,14 @@ public class StringKit {
      * StringKit.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
      * </pre>
      *
-     * @param str      字符串.
+     * @param text     字符串.
      * @param suffix   附加到字符串末尾的后缀.
      * @param suffixes 有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
-    public static String appendIfMissing(final String str, final CharSequence suffix, final CharSequence...
+    public static String appendIfMissing(final String text, final CharSequence suffix, final CharSequence...
             suffixes) {
-        return appendIfMissing(str, suffix, false, suffixes);
+        return appendIfMissing(text, suffix, false, suffixes);
     }
 
     /**
@@ -5800,38 +5845,38 @@ public class StringKit {
      * StringKit.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
      * </pre>
      *
-     * @param str      字符串.
+     * @param text     字符串.
      * @param suffix   附加到字符串末尾的后缀.
      * @param suffixes 有效终止符的附加后缀(可选).
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串.
      */
-    public static String appendIfMissingIgnoreCase(final String str, final CharSequence suffix, final CharSequence...
+    public static String appendIfMissingIgnoreCase(final String text, final CharSequence suffix, final CharSequence...
             suffixes) {
-        return appendIfMissing(str, suffix, true, suffixes);
+        return appendIfMissing(text, suffix, true, suffixes);
     }
 
     /**
      * 如果字符串还没有以任何前缀开始，则将前缀添加到字符串的开头.
      *
-     * @param str        字符串.
+     * @param text       字符串.
      * @param prefix     在字符串开始前的前缀.
      * @param ignoreCase 指示比较是否应忽略大小写.
      * @param prefixes   有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
-    private static String prependIfMissing(final String str, final CharSequence prefix, final boolean ignoreCase,
+    private static String prependIfMissing(final String text, final CharSequence prefix, final boolean ignoreCase,
                                            final CharSequence... prefixes) {
-        if (null == str || isEmpty(prefix) || startWith(str, prefix, ignoreCase)) {
-            return toString(str);
+        if (null == text || isEmpty(prefix) || startWith(text, prefix, ignoreCase)) {
+            return toString(text);
         }
         if (null != prefixes && prefixes.length > 0) {
             for (final CharSequence s : prefixes) {
-                if (startWith(str, s, ignoreCase)) {
-                    return str;
+                if (startWith(text, s, ignoreCase)) {
+                    return text;
                 }
             }
         }
-        return prefix.toString().concat(str);
+        return prefix.toString().concat(text);
     }
 
     /**
@@ -5859,14 +5904,14 @@ public class StringKit {
      * StringKit.prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
      * </pre>
      *
-     * @param str      T字符串.
+     * @param text     T字符串.
      * @param prefix   在字符串开始前的前缀.
      * @param prefixes 有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
-    public static String prependIfMissing(final String str, final CharSequence prefix, final CharSequence...
+    public static String prependIfMissing(final String text, final CharSequence prefix, final CharSequence...
             prefixes) {
-        return prependIfMissing(str, prefix, false, prefixes);
+        return prependIfMissing(text, prefix, false, prefixes);
     }
 
     /**
@@ -5894,14 +5939,14 @@ public class StringKit {
      * StringKit.prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
      * </pre>
      *
-     * @param str      T字符串.
+     * @param text     T字符串.
      * @param prefix   在字符串开始前的前缀.
      * @param prefixes 有效的附加前缀(可选).
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串.
      */
-    public static String prependIfMissingIgnoreCase(final String str, final CharSequence prefix,
+    public static String prependIfMissingIgnoreCase(final String text, final CharSequence prefix,
                                                     final CharSequence... prefixes) {
-        return prependIfMissing(str, prefix, true, prefixes);
+        return prependIfMissing(text, prefix, true, prefixes);
     }
 
     /**
@@ -5934,12 +5979,12 @@ public class StringKit {
      * StringKit.center("a", 4)    = " a  "
      * </pre>
      *
-     * @param str  字符串
+     * @param text 字符串
      * @param size 指定长度
      * @return 补充后的字符串
      */
-    public static String center(CharSequence str, final int size) {
-        return center(str, size, Symbol.C_SPACE);
+    public static String center(CharSequence text, final int size) {
+        return center(text, size, Symbol.C_SPACE);
     }
 
     /**
@@ -5956,23 +6001,23 @@ public class StringKit {
      * StringKit.center("abc", 7, ' ')   = "  abc  "
      * </pre>
      *
-     * @param str     字符串
+     * @param text    字符串
      * @param size    指定长度
      * @param padChar 两边补充的字符
      * @return 补充后的字符串
      */
-    public static String center(CharSequence str, final int size, char padChar) {
-        if (null == str || size <= 0) {
-            return toString(str);
+    public static String center(CharSequence text, final int size, char padChar) {
+        if (null == text || size <= 0) {
+            return toString(text);
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         final int pads = size - strLen;
         if (pads <= 0) {
-            return str.toString();
+            return text.toString();
         }
-        str = padPre(str, strLen + pads / 2, padChar);
-        str = padAfter(str, size, padChar);
-        return str.toString();
+        text = padPre(text, strLen + pads / 2, padChar);
+        text = padAfter(text, size, padChar);
+        return text.toString();
     }
 
     /**
@@ -5990,26 +6035,26 @@ public class StringKit {
      * StringKit.center("abc", 7, "")   = "  abc  "
      * </pre>
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param size   指定长度
      * @param padStr 两边补充的字符串
      * @return 补充后的字符串
      */
-    public static String center(CharSequence str, final int size, CharSequence padStr) {
-        if (null == str || size <= 0) {
-            return toString(str);
+    public static String center(CharSequence text, final int size, CharSequence padStr) {
+        if (null == text || size <= 0) {
+            return toString(text);
         }
         if (isEmpty(padStr)) {
             padStr = Symbol.SPACE;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         final int pads = size - strLen;
         if (pads <= 0) {
-            return str.toString();
+            return text.toString();
         }
-        str = padPre(str, strLen + pads / 2, padStr);
-        str = padAfter(str, size, padStr);
-        return str.toString();
+        text = padPre(text, strLen + pads / 2, padStr);
+        text = padAfter(text, size, padStr);
+        return text.toString();
     }
 
     /**
@@ -6021,23 +6066,23 @@ public class StringKit {
      * StringKit.padPre("123", 2, "ABC");//"12"
      * </pre>
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param minLength 最小长度
      * @param padStr    补充的字符
      * @return 补充后的字符串
      */
-    public static String padPre(CharSequence str, int minLength, CharSequence padStr) {
-        if (null == str) {
+    public static String padPre(CharSequence text, int minLength, CharSequence padStr) {
+        if (null == text) {
             return null;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen == minLength) {
-            return str.toString();
+            return text.toString();
         } else if (strLen > minLength) {
-            return subPre(str, minLength);
+            return subPre(text, minLength);
         }
 
-        return repeatByLength(padStr, minLength - strLen).concat(str.toString());
+        return repeatByLength(padStr, minLength - strLen).concat(text.toString());
     }
 
     /**
@@ -6049,23 +6094,23 @@ public class StringKit {
      * StringKit.padPre("123", 2, '0');//"12"
      * </pre>
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param minLength 最小长度
      * @param padChar   补充的字符
      * @return 补充后的字符串
      */
-    public static String padPre(CharSequence str, int minLength, char padChar) {
-        if (null == str) {
+    public static String padPre(CharSequence text, int minLength, char padChar) {
+        if (null == text) {
             return null;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen == minLength) {
-            return str.toString();
+            return text.toString();
         } else if (strLen > minLength) {
-            return subPre(str, minLength);
+            return subPre(text, minLength);
         }
 
-        return repeat(padChar, minLength - strLen).concat(str.toString());
+        return repeat(padChar, minLength - strLen).concat(text.toString());
     }
 
     /**
@@ -6077,23 +6122,23 @@ public class StringKit {
      * StringKit.padAfter("123", 2, '0');//"23"
      * </pre>
      *
-     * @param str       字符串，如果为<code>null</code>，直接返回null
+     * @param text      字符串，如果为<code>null</code>，直接返回null
      * @param minLength 最小长度
      * @param padChar   补充的字符
      * @return 补充后的字符串
      */
-    public static String padAfter(CharSequence str, int minLength, char padChar) {
-        if (null == str) {
+    public static String padAfter(CharSequence text, int minLength, char padChar) {
+        if (null == text) {
             return null;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen == minLength) {
-            return str.toString();
+            return text.toString();
         } else if (strLen > minLength) {
-            return sub(str, strLen - minLength, strLen);
+            return sub(text, strLen - minLength, strLen);
         }
 
-        return str.toString().concat(repeat(padChar, minLength - strLen));
+        return text.toString().concat(repeat(padChar, minLength - strLen));
     }
 
     /**
@@ -6105,23 +6150,23 @@ public class StringKit {
      * StringKit.padAfter("123", 2, "ABC");//"23"
      * </pre>
      *
-     * @param str       字符串，如果为<code>null</code>，直接返回null
+     * @param text      字符串，如果为<code>null</code>，直接返回null
      * @param minLength 最小长度
      * @param padStr    补充的字符
      * @return 补充后的字符串
      */
-    public static String padAfter(CharSequence str, int minLength, CharSequence padStr) {
-        if (null == str) {
+    public static String padAfter(CharSequence text, int minLength, CharSequence padStr) {
+        if (null == text) {
             return null;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen == minLength) {
-            return str.toString();
+            return text.toString();
         } else if (strLen > minLength) {
-            return subByLength(str, minLength);
+            return subByLength(text, minLength);
         }
 
-        return str.toString().concat(repeatByLength(padStr, minLength - strLen));
+        return text.toString().concat(repeatByLength(padStr, minLength - strLen));
     }
 
     /**
@@ -6130,30 +6175,30 @@ public class StringKit {
      * 如果给定的位置大于字符串长度，返回false
      * 如果给定的位置小于0，返回false
      *
-     * @param str      字符串
+     * @param text     字符串
      * @param position 位置
      * @param c        需要对比的字符
      * @return 字符串指定位置的字符是否与给定字符相同
      */
-    public static boolean equalsCharAt(CharSequence str, int position, char c) {
-        if (null == str || position < 0) {
+    public static boolean equalsCharAt(CharSequence text, int position, char c) {
+        if (null == text || position < 0) {
             return false;
         }
-        return str.length() > position && c == str.charAt(position);
+        return text.length() > position && c == text.charAt(position);
     }
 
     /**
      * 字符串按照字符排序方法
      *
-     * @param str 排序字段
+     * @param text 排序字段
      * @return {@link String}
      * @author sixawn.zheng
      */
-    public static String sort(String str) {
-        if (isEmpty(str) || Normal.EMPTY.equalsIgnoreCase(str)) {
+    public static String sort(String text) {
+        if (isEmpty(text) || Normal.EMPTY.equalsIgnoreCase(text)) {
             return null;
         }
-        char[] strArray = str.toCharArray();
+        char[] strArray = text.toCharArray();
 
         Arrays.sort(strArray);
 
@@ -6163,20 +6208,20 @@ public class StringKit {
     /**
      * 过滤字符串
      *
-     * @param str    字符串
+     * @param text   字符串
      * @param filter 过滤器
      * @return 过滤后的字符串
      */
-    public static String filter(CharSequence str, Filter<Character> filter) {
-        if (null == str || null == filter) {
-            return toString(str);
+    public static String filter(CharSequence text, Filter<Character> filter) {
+        if (null == text || null == filter) {
+            return toString(text);
         }
 
-        int len = str.length();
+        int len = text.length();
         final StringBuilder sb = new StringBuilder(len);
         char c;
         for (int i = 0; i < len; i++) {
-            c = str.charAt(i);
+            c = text.charAt(i);
             if (filter.accept(c)) {
                 sb.append(c);
             }
@@ -6234,38 +6279,48 @@ public class StringKit {
     }
 
     /**
+     * Trim函数
+     *
+     * @param isTrim 是否trim
+     * @return {@link Function}
+     */
+    private static Function<String, String> trimFunc(boolean isTrim) {
+        return (text) -> isTrim ? trim(text) : text;
+    }
+
+    /**
      * 返回第一个非{@code null}元素
      *
-     * @param strs 多个元素
-     * @param <T>  元素类型
+     * @param texts 多个元素
+     * @param <T>   元素类型
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      */
-    public <T extends CharSequence> T firstNonNull(T... strs) {
-        return ArrayKit.firstNonNull(strs);
+    public <T extends CharSequence> T firstNonNull(T... texts) {
+        return ArrayKit.firstNonNull(texts);
     }
 
     /**
      * 返回第一个非empty元素
      *
-     * @param strs 多个元素
-     * @param <T>  元素类型
+     * @param texts 多个元素
+     * @param <T>   元素类型
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      * @see #isNotEmpty(CharSequence)
      */
-    public <T extends CharSequence> T firstNonEmpty(T... strs) {
-        return ArrayKit.firstNonNull(StringKit::isNotEmpty, strs);
+    public <T extends CharSequence> T firstNonEmpty(T... texts) {
+        return ArrayKit.firstNonNull(StringKit::isNotEmpty, texts);
     }
 
     /**
      * 返回第一个非blank 元素
      *
-     * @param strs 多个元素
-     * @param <T>  元素类型
+     * @param texts 多个元素
+     * @param <T>   元素类型
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      * @see #isNotBlank(CharSequence)
      */
-    public <T extends CharSequence> T firstNonBlank(T... strs) {
-        return ArrayKit.firstNonNull(StringKit::isNotBlank, strs);
+    public <T extends CharSequence> T firstNonBlank(T... texts) {
+        return ArrayKit.firstNonNull(StringKit::isNotBlank, texts);
     }
 
     /**
@@ -6274,32 +6329,22 @@ public class StringKit {
      * StringKit.hide()是  开始位置,到结束位置
      * StringKit.cover()是 开始位置,指定长度
      *
-     * @param str       原字符串
+     * @param text      原字符串
      * @param start     开始位置
      * @param len       覆盖的长度
      * @param character 覆盖的符号
      * @return 返回值类型        符号覆盖字符后的字符串
      */
-    public CharSequence cover(String str, int start, int len, Character character) {
-        if (start < 0 || len > str.length()) {
+    public CharSequence cover(String text, int start, int len, Character character) {
+        if (start < 0 || len > text.length()) {
             throw new IndexOutOfBoundsException();
         }
         int end = start + len;
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            sb.append((start <= i && i < end) ? character : str.charAt(i));
+        for (int i = 0; i < text.length(); i++) {
+            sb.append((start <= i && i < end) ? character : text.charAt(i));
         }
         return sb;
-    }
-
-    /**
-     * Trim函数
-     *
-     * @param isTrim 是否trim
-     * @return {@link Function}
-     */
-    private static Function<String, String> trimFunc(boolean isTrim) {
-        return (str) -> isTrim ? trim(str) : str;
     }
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
-import org.aoju.bus.pager.plugin.BoundSqlInterceptor;
+import org.aoju.bus.pager.plugins.BoundSqlHandler;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -93,8 +93,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * sql拦截处理
      */
-    private BoundSqlInterceptor boundSqlInterceptor;
-    private transient BoundSqlInterceptor.Chain chain;
+    private BoundSqlHandler boundSqlHandler;
+    private transient BoundSqlHandler.Chain chain;
 
     public Page() {
         super();
@@ -336,11 +336,11 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     /**
      * 设置 BoundSql 拦截器
      *
-     * @param boundSqlInterceptor 分页拦截器
+     * @param boundSqlHandler 分页拦截器
      * @return 结果
      */
-    public Page<E> boundSqlInterceptor(BoundSqlInterceptor boundSqlInterceptor) {
-        setBoundSqlInterceptor(boundSqlInterceptor);
+    public Page<E> boundSqlInterceptor(BoundSqlHandler boundSqlHandler) {
+        setBoundSqlInterceptor(boundSqlHandler);
         return this;
     }
 
@@ -433,19 +433,19 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         this.countColumn = countColumn;
     }
 
-    public BoundSqlInterceptor getBoundSqlInterceptor() {
-        return boundSqlInterceptor;
+    public BoundSqlHandler getBoundSqlInterceptor() {
+        return boundSqlHandler;
     }
 
-    public void setBoundSqlInterceptor(BoundSqlInterceptor boundSqlInterceptor) {
-        this.boundSqlInterceptor = boundSqlInterceptor;
+    public void setBoundSqlInterceptor(BoundSqlHandler boundSqlHandler) {
+        this.boundSqlHandler = boundSqlHandler;
     }
 
-    BoundSqlInterceptor.Chain getChain() {
+    BoundSqlHandler.Chain getChain() {
         return chain;
     }
 
-    void setChain(BoundSqlInterceptor.Chain chain) {
+    void setChain(BoundSqlHandler.Chain chain) {
         this.chain = chain;
     }
 

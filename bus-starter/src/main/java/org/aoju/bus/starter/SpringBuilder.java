@@ -62,12 +62,6 @@ public class SpringBuilder implements ApplicationContextAware {
      */
     private static ConfigurableApplicationContext context;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
-    }
-
     public static ConfigurableApplicationContext getContext() {
         return SpringBuilder.context;
     }
@@ -301,6 +295,12 @@ public class SpringBuilder implements ApplicationContextAware {
      */
     public static boolean isTestMode() {
         return "test".equalsIgnoreCase(getActiveProfile());
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        System.setProperty("user.timezone", "Asia/Shanghai");
+        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
     }
 
 }

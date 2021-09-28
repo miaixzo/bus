@@ -73,12 +73,12 @@ public class TextKit implements CharSequence, Appendable, Serializable {
     /**
      * 构造
      *
-     * @param strs 初始字符串
+     * @param texts 初始字符串
      */
-    public TextKit(CharSequence... strs) {
-        this(ArrayKit.isEmpty(strs) ? DEFAULT_CAPACITY : (totalLength(strs) + DEFAULT_CAPACITY));
-        for (int i = 0; i < strs.length; i++) {
-            append(strs[i]);
+    public TextKit(CharSequence... texts) {
+        this(ArrayKit.isEmpty(texts) ? DEFAULT_CAPACITY : (totalLength(texts) + DEFAULT_CAPACITY));
+        for (int i = 0; i < texts.length; i++) {
+            append(texts[i]);
         }
     }
 
@@ -104,24 +104,24 @@ public class TextKit implements CharSequence, Appendable, Serializable {
     /**
      * 创建字符串构建器
      *
-     * @param strs 初始字符串
+     * @param texts 初始字符串
      * @return {@link TextKit}
      */
-    public static TextKit create(CharSequence... strs) {
-        return new TextKit(strs);
+    public static TextKit create(CharSequence... texts) {
+        return new TextKit(texts);
     }
 
     /**
      * 给定字符串数组的总长度
      * null字符长度定义为0
      *
-     * @param strs 字符串数组
+     * @param texts 字符串数组
      * @return 总长度
      */
-    private static int totalLength(CharSequence... strs) {
+    private static int totalLength(CharSequence... texts) {
         int totalLength = 0;
-        for (int i = 0; i < strs.length; i++) {
-            totalLength += (null == strs[i] ? 4 : strs[i].length());
+        for (int i = 0; i < texts.length; i++) {
+            totalLength += (null == texts[i] ? 4 : texts[i].length());
         }
         return totalLength;
     }
@@ -163,15 +163,15 @@ public class TextKit implements CharSequence, Appendable, Serializable {
     /**
      * 将字符串的所有数据依次写成一行,去除无意义字符串
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 处理后的字符串
      */
-    private static String removeSign(String str) {
-        StringBuilder sb = new StringBuilder(str.length());
+    private static String removeSign(String text) {
+        StringBuilder sb = new StringBuilder(text.length());
         // 遍历字符串str,如果是汉字数字或字母,则追加到ab上面
-        int length = str.length();
+        int length = text.length();
         for (int i = 0; i < length; i++) {
-            sb.append(charReg(str.charAt(i)));
+            sb.append(charReg(text.charAt(i)));
         }
         return sb.toString();
     }

@@ -28,11 +28,11 @@ public class Naming {
      * HelloWorld_test=》hello_world_test
      * </pre>
      *
-     * @param str 转换前的驼峰式命名的字符串，也可以为下划线形式
+     * @param text 转换前的驼峰式命名的字符串，也可以为下划线形式
      * @return 转换后下划线方式命名的字符串
      */
-    public static String toUnderlineCase(CharSequence str) {
-        return toSymbolCase(str, Symbol.C_UNDERLINE);
+    public static String toUnderlineCase(CharSequence text) {
+        return toSymbolCase(text, Symbol.C_UNDERLINE);
     }
 
     /**
@@ -51,33 +51,33 @@ public class Naming {
      * HelloWorld_test=》hello-world-test
      * </pre>
      *
-     * @param str 转换前的驼峰式命名的字符串，也可以为下划线形式
+     * @param text 转换前的驼峰式命名的字符串，也可以为下划线形式
      * @return 转换后下划线方式命名的字符串
      */
-    public static String toKebabCase(CharSequence str) {
-        return toSymbolCase(str, Symbol.C_MINUS);
+    public static String toKebabCase(CharSequence text) {
+        return toSymbolCase(text, Symbol.C_MINUS);
     }
 
     /**
      * 将驼峰式命名的字符串转换为使用符号连接方式如果转换前的驼峰式命名的字符串为空，则返回空字符串
      *
-     * @param str    转换前的驼峰式命名的字符串，也可以为符号连接形式
+     * @param text   转换前的驼峰式命名的字符串，也可以为符号连接形式
      * @param symbol 连接符
      * @return 转换后符号连接方式命名的字符串
      */
-    public static String toSymbolCase(CharSequence str, char symbol) {
-        if (str == null) {
+    public static String toSymbolCase(CharSequence text, char symbol) {
+        if (text == null) {
             return null;
         }
 
-        final int length = str.length();
+        final int length = text.length();
         final Builders sb = new Builders();
         char c;
         for (int i = 0; i < length; i++) {
-            c = str.charAt(i);
+            c = text.charAt(i);
             if (Character.isUpperCase(c)) {
-                final Character preChar = (i > 0) ? str.charAt(i - 1) : null;
-                final Character nextChar = (i < str.length() - 1) ? str.charAt(i + 1) : null;
+                final Character preChar = (i > 0) ? text.charAt(i - 1) : null;
+                final Character nextChar = (i < text.length() - 1) ? text.charAt(i + 1) : null;
 
                 if (null != preChar) {
                     if (symbol == preChar) {

@@ -92,11 +92,11 @@ public class Fonts {
      * 获得字体对应字符串的长宽信息
      *
      * @param metrics {@link FontMetrics}
-     * @param str     字符串
+     * @param text    字符串
      * @return 长宽信息
      */
-    public static Dimension getDimension(FontMetrics metrics, String str) {
-        final int width = metrics.stringWidth(str);
+    public static Dimension getDimension(FontMetrics metrics, String text) {
+        final int width = metrics.stringWidth(text);
         final int height = metrics.getAscent() - metrics.getLeading() - metrics.getDescent();
 
         return new Dimension(width, height);

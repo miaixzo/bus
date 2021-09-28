@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager.plugin;
+package org.aoju.bus.pager.plugins;
 
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.Dialect;
@@ -58,7 +58,7 @@ import java.util.Properties;
                 @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         }
 )
-public class PageInterceptor implements Interceptor {
+public class PageSqlHandler implements Interceptor {
 
     protected Cache<String, MappedStatement> msCountMap = null;
     private volatile Dialect dialect;
@@ -88,8 +88,8 @@ public class PageInterceptor implements Interceptor {
             }
             checkDialectExists();
             // 对 boundSql 的拦截处理
-            if (dialect instanceof BoundSqlInterceptor.Chain) {
-                boundSql = ((BoundSqlInterceptor.Chain) dialect).doBoundSql(BoundSqlInterceptor.Type.ORIGINAL, boundSql, cacheKey);
+            if (dialect instanceof BoundSqlHandler.Chain) {
+                boundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.ORIGINAL, boundSql, cacheKey);
             }
             List resultList;
             // 调用方法判断是否需要进行分页，如果不需要，直接返回结果

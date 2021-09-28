@@ -47,7 +47,7 @@ public enum CellDataType {
     /**
      * 计算结果类型
      */
-    FORMULA("str"),
+    FORMULA("text"),
     /**
      * 富文本类型
      */

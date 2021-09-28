@@ -27,11 +27,16 @@ package org.aoju.bus.starter.mapper;
 
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.pager.plugin.PageInterceptor;
+import org.aoju.bus.mapper.plugins.ExplainSqlHandler;
+import org.aoju.bus.mapper.plugins.NatureSqlHandler;
+import org.aoju.bus.mapper.plugins.SensitiveResultSetHandler;
+import org.aoju.bus.mapper.plugins.SensitiveStatementHandler;
+import org.aoju.bus.pager.plugins.PageSqlHandler;
+import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.starter.PlaceBinder;
 import org.aoju.bus.starter.sensitive.SensitiveProperties;
-import org.aoju.bus.starter.sensitive.SensitiveResultSetHandler;
-import org.aoju.bus.starter.sensitive.SensitiveStatementHandler;
 import org.apache.ibatis.plugin.Interceptor;
+import org.springframework.core.env.Environment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,31 +53,46 @@ public class MybatisPluginBuilder {
 
     public static List<Interceptor> plugins = new ArrayList<>();
 
-    public static Interceptor[] build(MybatisProperties mybatisProperties,
-                                      SensitiveProperties sensitiveProperties) {
-        if (ObjectKit.isNotEmpty(mybatisProperties)) {
-            Properties p = new Properties();
-            p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
-            p.setProperty("reasonable", mybatisProperties.getReasonable());
-            p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
-            p.setProperty("returnPage", mybatisProperties.getReturnPage());
-            p.setProperty("params", mybatisProperties.getParams());
+    public static Interceptor[] build(Environment environment) {
+        List<Interceptor> list = CollKit.newArrayList(
+                new NatureSqlHandler(),
+                new ExplainSqlHandler()
+        );
 
-            PageInterceptor interceptor = new PageInterceptor();
-            interceptor.setProperties(p);
+        if (ObjectKit.isNotEmpty(environment)) {
+            MybatisProperties mybatisProperties = PlaceBinder.bind(environment, MybatisProperties.class, BusXExtend.MYBATIS);
+            if (ObjectKit.isNotEmpty(mybatisProperties)) {
+                Properties p = new Properties();
+                p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
+                p.setProperty("reasonable", mybatisProperties.getReasonable());
+                p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
+                p.setProperty("returnPage", mybatisProperties.getReturnPage());
+                p.setProperty("params", mybatisProperties.getParams());
 
-            List<Interceptor> list = CollKit.newArrayList(
-                    interceptor,
-                    new NatureSQLHandler(),
-                    new ExplainSQLHandler()
-            );
-
-            if (ObjectKit.isNotEmpty(sensitiveProperties)) {
-                list.add(new SensitiveResultSetHandler(sensitiveProperties));
-                list.add(new SensitiveStatementHandler(sensitiveProperties));
+                PageSqlHandler pageSqlHandler = new PageSqlHandler();
+                pageSqlHandler.setProperties(p);
+                list.add(pageSqlHandler);
             }
-            plugins.addAll(list);
+
+            SensitiveProperties sensitiveProperties = PlaceBinder.bind(environment, SensitiveProperties.class, BusXExtend.MYBATIS);
+            if (ObjectKit.isNotEmpty(sensitiveProperties)) {
+                Properties p = new Properties();
+                p.setProperty("debug", String.valueOf(sensitiveProperties.isDebug()));
+                p.setProperty("key", sensitiveProperties.getDecrypt().getKey());
+                p.setProperty("type", sensitiveProperties.getDecrypt().getType());
+                // 数据解密脱敏
+                SensitiveResultSetHandler sensitiveResultSetHandler = new SensitiveResultSetHandler();
+                sensitiveResultSetHandler.setProperties(p);
+                list.add(sensitiveResultSetHandler);
+                p.setProperty("key", sensitiveProperties.getEncrypt().getKey());
+                p.setProperty("type", sensitiveProperties.getEncrypt().getType());
+                // 数据脱敏加密
+                SensitiveStatementHandler sensitiveStatementHandler = new SensitiveStatementHandler();
+                sensitiveStatementHandler.setProperties(p);
+                list.add(sensitiveStatementHandler);
+            }
         }
+        plugins.addAll(list);
         return plugins.stream().toArray(Interceptor[]::new);
     }
 

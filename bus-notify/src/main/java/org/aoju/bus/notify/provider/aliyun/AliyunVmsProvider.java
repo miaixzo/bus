@@ -79,8 +79,8 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunVmsProperty, Context
         params.put("Signature", getSign(params));
 
         Map<String, Object> map = new HashMap<>();
-        for (String str : params.keySet()) {
-            map.put(specialUrlEncode(str), specialUrlEncode(params.get(str)));
+        for (String text : params.keySet()) {
+            map.put(specialUrlEncode(text), specialUrlEncode(params.get(text)));
         }
         return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_VMS_API, map));
     }

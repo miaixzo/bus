@@ -43,12 +43,12 @@ public class LocaleConverter extends AbstractConverter<Locale> {
     @Override
     protected Locale convertInternal(Object value) {
         try {
-            String str = convertString(value);
-            if (StringKit.isEmpty(str)) {
+            String text = convertString(value);
+            if (StringKit.isEmpty(text)) {
                 return null;
             }
 
-            final String[] items = str.split(Symbol.UNDERLINE);
+            final String[] items = text.split(Symbol.UNDERLINE);
             if (items.length == 1) {
                 return new Locale(items[0]);
             }

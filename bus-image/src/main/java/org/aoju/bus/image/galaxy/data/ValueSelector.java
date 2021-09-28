@@ -37,7 +37,7 @@ public class ValueSelector implements Serializable {
 
     private final AttributesSelector attributesSelector;
     private final int valueIndex;
-    private String str;
+    private String text;
 
     public ValueSelector(int tag, String privateCreator, int index, ItemPointer... itemPointers) {
         this(new AttributesSelector(tag, privateCreator, itemPointers), index);
@@ -84,13 +84,13 @@ public class ValueSelector implements Serializable {
 
     @Override
     public String toString() {
-        if (null == str)
-            str = attributesSelector.toStringBuilder()
+        if (null == text)
+            text = attributesSelector.toStringBuilder()
                     .append("/Value[@number=\"")
                     .append(valueIndex + 1)
                     .append("\"]")
                     .toString();
-        return str;
+        return text;
     }
 
     @Override

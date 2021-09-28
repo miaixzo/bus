@@ -154,7 +154,7 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
      * @return 切分后的列表
      */
     public List<String> toList(boolean trim) {
-        return toList((str) -> trim ? StringKit.trim(str) : str);
+        return toList((text) -> trim ? StringKit.trim(text) : text);
     }
 
     /**

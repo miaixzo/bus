@@ -60,25 +60,25 @@ public class DefaultEntityResolve implements EntityResolve {
     /**
      * 根据指定的样式进行转换
      *
-     * @param str   字符串
+     * @param text  字符串
      * @param style 样式
      * @return the string
      */
-    public static String convertByStyle(String str, Style style) {
+    public static String convertByStyle(String text, Style style) {
         switch (style) {
             case camelhump:
-                return Naming.toUnderlineCase(str);
+                return Naming.toUnderlineCase(text);
             case uppercase:
-                return str.toUpperCase();
+                return text.toUpperCase();
             case lowercase:
-                return str.toLowerCase();
+                return text.toLowerCase();
             case camelhumpAndLowercase:
-                return Naming.toUnderlineCase(str).toLowerCase();
+                return Naming.toUnderlineCase(text).toLowerCase();
             case camelhumpAndUppercase:
-                return Naming.toUnderlineCase(str).toUpperCase();
+                return Naming.toUnderlineCase(text).toUpperCase();
             case normal:
             default:
-                return str;
+                return text;
         }
     }
 

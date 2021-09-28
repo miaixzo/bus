@@ -114,6 +114,31 @@ public final class DiskLruCache implements Closeable, Flushable {
         this.executor = executor;
     }
 
+    /**
+     * 创建一个驻留在{@code directory}中的缓存。此缓存在第一次访问时惰性初始化，如果它不存在，将创建它.
+     *
+     * @param fileSystem 读写文件
+     * @param directory  一个可写目录
+     * @param appVersion 版本信息
+     * @param valueCount 每个缓存条目的值数目.
+     * @param maxSize    此缓存应用于存储的最大字节数
+     * @return the disk cache
+     */
+    public static DiskLruCache create(FileSystem fileSystem, File directory, int appVersion,
+                                      int valueCount, long maxSize) {
+        if (maxSize <= 0) {
+            throw new IllegalArgumentException("maxSize <= 0");
+        }
+        if (valueCount <= 0) {
+            throw new IllegalArgumentException("valueCount <= 0");
+        }
+
+        Executor executor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(), Builder.threadFactory("Httpd DiskLruCache", true));
+
+        return new DiskLruCache(fileSystem, directory, appVersion, valueCount, maxSize, executor);
+    }
+
     private final Runnable cleanupRunnable = new Runnable() {
         public void run() {
             synchronized (DiskLruCache.this) {
@@ -139,31 +164,6 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
     };
-
-    /**
-     * 创建一个驻留在{@code directory}中的缓存。此缓存在第一次访问时惰性初始化，如果它不存在，将创建它.
-     *
-     * @param fileSystem 读写文件
-     * @param directory  一个可写目录
-     * @param appVersion 版本信息
-     * @param valueCount 每个缓存条目的值数目.
-     * @param maxSize    此缓存应用于存储的最大字节数
-     * @return the disk cache
-     */
-    public static DiskLruCache create(FileSystem fileSystem, File directory, int appVersion,
-                                      int valueCount, long maxSize) {
-        if (maxSize <= 0) {
-            throw new IllegalArgumentException("maxSize <= 0");
-        }
-        if (valueCount <= 0) {
-            throw new IllegalArgumentException("valueCount <= 0");
-        }
-
-        Executor executor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(), Builder.threadFactory("Httpd DiskLruCache", true));
-
-        return new DiskLruCache(fileSystem, directory, appVersion, valueCount, maxSize, executor);
-    }
 
     public synchronized void initialize() throws IOException {
         assert Thread.holdsLock(this);

@@ -48,8 +48,8 @@ public class Bopomofo4jProvider extends AbstractPinyinProvider {
     }
 
     @Override
-    public String getPinyin(String str, String separator) {
-        return Bopomofo4j.pinyin(str, ToneType.WITHOUT_TONE, false, false, separator);
+    public String getPinyin(String text, String separator) {
+        return Bopomofo4j.pinyin(text, ToneType.WITHOUT_TONE, false, false, separator);
     }
 
 }

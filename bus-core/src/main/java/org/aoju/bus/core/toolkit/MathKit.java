@@ -1045,14 +1045,14 @@ public class MathKit {
     /**
      * 是否为数字
      *
-     * @param str 字符串值
+     * @param text 字符串值
      * @return 是否为数字
      */
-    public static boolean isNumber(String str) {
-        if (StringKit.isBlank(str)) {
+    public static boolean isNumber(String text) {
+        if (StringKit.isBlank(text)) {
             return false;
         }
-        char[] chars = str.toCharArray();
+        char[] chars = text.toCharArray();
         int sz = chars.length;
         boolean hasExp = false;
         boolean hasDecPoint = false;
@@ -1064,7 +1064,7 @@ public class MathKit {
             if (chars[start] == Symbol.C_ZERO && chars[start + 1] == 'x') {
                 int i = start + 2;
                 if (i == sz) {
-                    return false; // str == "0x"
+                    return false; // text == "0x"
                 }
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
@@ -2079,40 +2079,40 @@ public class MathKit {
      * 创建{@link BigInteger},支持16进制、10进制和8进制,如果传入空白串返回null
      * from Apache Common Lang
      *
-     * @param str 数字字符串
+     * @param text 数字字符串
      * @return {@link BigInteger}
      */
-    public static BigInteger newBigInteger(String str) {
-        str = StringKit.trimToNull(str);
-        if (null == str) {
+    public static BigInteger newBigInteger(String text) {
+        text = StringKit.trimToNull(text);
+        if (null == text) {
             return null;
         }
 
         int pos = 0; // 数字字符串位置
         int radix = 10;
         boolean negate = false; // 负数与否
-        if (str.startsWith(Symbol.MINUS)) {
+        if (text.startsWith(Symbol.MINUS)) {
             negate = true;
             pos = 1;
         }
-        if (str.startsWith("0x", pos) || str.startsWith("0X", pos)) {
+        if (text.startsWith("0x", pos) || text.startsWith("0X", pos)) {
             // hex
             radix = 16;
             pos += 2;
-        } else if (str.startsWith(Symbol.SHAPE, pos)) {
+        } else if (text.startsWith(Symbol.SHAPE, pos)) {
             // alternative hex (allowed by Long/Integer)
             radix = 16;
             pos++;
-        } else if (str.startsWith(Symbol.ZERO, pos) && str.length() > pos + 1) {
+        } else if (text.startsWith(Symbol.ZERO, pos) && text.length() > pos + 1) {
             // octal; so long as there are additional digits
             radix = 8;
             pos++;
         } // default is to treat as decimal
 
         if (pos > 0) {
-            str = str.substring(pos);
+            text = text.substring(pos);
         }
-        final BigInteger value = new BigInteger(str, radix);
+        final BigInteger value = new BigInteger(text, radix);
         return negate ? value.negate() : value;
     }
 
@@ -2504,11 +2504,11 @@ public class MathKit {
      *   MathKit.toInt("1")  = 1
      * </pre>
      *
-     * @param str 要转换的字符串可以为空
+     * @param text 要转换的字符串可以为空
      * @return 字符串表示的整型数，如果转换失败则默认值
      */
-    public static int toInt(final String str) {
-        return toInt(str, 0);
+    public static int toInt(final String text) {
+        return toInt(text, 0);
     }
 
     /**
@@ -2520,16 +2520,16 @@ public class MathKit {
      *   MathKit.toInt("1", 0)  = 1
      * </pre>
      *
-     * @param str          要转换的字符串可以为空
+     * @param text         要转换的字符串可以为空
      * @param defaultValue 默认值
      * @return 字符串表示的int，如果转换失败则默认值
      */
-    public static int toInt(final String str, final int defaultValue) {
-        if (null == str) {
+    public static int toInt(final String text, final int defaultValue) {
+        if (null == text) {
             return defaultValue;
         }
         try {
-            return Integer.parseInt(str);
+            return Integer.parseInt(text);
         } catch (final NumberFormatException nfe) {
             return defaultValue;
         }
@@ -2544,11 +2544,11 @@ public class MathKit {
      *   MathKit.toLong("1")  = 1L
      * </pre>
      *
-     * @param str 要转换的字符串可以为空
+     * @param text 要转换的字符串可以为空
      * @return 字符串表示的long，如果转换失败则默认值
      */
-    public static long toLong(final String str) {
-        return toLong(str, 0L);
+    public static long toLong(final String text) {
+        return toLong(text, 0L);
     }
 
     /**
@@ -2560,16 +2560,16 @@ public class MathKit {
      *   MathKit.toInt("1", 0)  = 1
      * </pre>
      *
-     * @param str          要转换的字符串可以为空
+     * @param text         要转换的字符串可以为空
      * @param defaultValue 默认值
      * @return 字符串表示的long，如果转换失败则默认值
      */
-    public static long toLong(final String str, final long defaultValue) {
-        if (null == str) {
+    public static long toLong(final String text, final long defaultValue) {
+        if (null == text) {
             return defaultValue;
         }
         try {
-            return Long.parseLong(str);
+            return Long.parseLong(text);
         } catch (final NumberFormatException nfe) {
             return defaultValue;
         }
@@ -2584,11 +2584,11 @@ public class MathKit {
      *   MathKit.toFloat("1.5")  = 1.5f
      * </pre>
      *
-     * @param str 要转换的字符串可以为空
+     * @param text 要转换的字符串可以为空
      * @return 字符串表示的float，如果转换失败则默认值
      */
-    public static float toFloat(final String str) {
-        return toFloat(str, 0.0f);
+    public static float toFloat(final String text) {
+        return toFloat(text, 0.0f);
     }
 
     /**
@@ -2600,16 +2600,16 @@ public class MathKit {
      *   MathKit.toFloat("1.5", 0.0f)  = 1.5f
      * </pre>
      *
-     * @param str          要转换的字符串可以为空
+     * @param text         要转换的字符串可以为空
      * @param defaultValue 默认值
      * @return 字符串表示的float，如果转换失败则默认值
      */
-    public static float toFloat(final String str, final float defaultValue) {
-        if (null == str) {
+    public static float toFloat(final String text, final float defaultValue) {
+        if (null == text) {
             return defaultValue;
         }
         try {
-            return Float.parseFloat(str);
+            return Float.parseFloat(text);
         } catch (final NumberFormatException nfe) {
             return defaultValue;
         }
@@ -2624,11 +2624,11 @@ public class MathKit {
      *   MathKit.toDouble("1.5")  = 1.5d
      * </pre>
      *
-     * @param str 要转换的字符串可以为空
+     * @param text 要转换的字符串可以为空
      * @return 字符串表示的double，如果转换失败则默认值
      */
-    public static double toDouble(final String str) {
-        return toDouble(str, 0.0d);
+    public static double toDouble(final String text) {
+        return toDouble(text, 0.0d);
     }
 
     /**
@@ -2640,16 +2640,16 @@ public class MathKit {
      *   MathKit.toDouble("1.5", 0.0d)  = 1.5d
      * </pre>
      *
-     * @param str          要转换的字符串可以为空
+     * @param text         要转换的字符串可以为空
      * @param defaultValue 默认值
      * @return 字符串表示的double，如果转换失败则默认值
      */
-    public static double toDouble(final String str, final double defaultValue) {
-        if (null == str) {
+    public static double toDouble(final String text, final double defaultValue) {
+        if (null == text) {
             return defaultValue;
         }
         try {
-            return Double.parseDouble(str);
+            return Double.parseDouble(text);
         } catch (final NumberFormatException nfe) {
             return defaultValue;
         }
@@ -2710,11 +2710,11 @@ public class MathKit {
      *   MathKit.toByte("1")  = 1
      * </pre>
      *
-     * @param str 要转换的字符可以为空
+     * @param text 要转换的字符可以为空
      * @return 字符串表示的byte，如果转换失败则默认值
      */
-    public static byte toByte(final String str) {
-        return toByte(str, (byte) 0);
+    public static byte toByte(final String text) {
+        return toByte(text, (byte) 0);
     }
 
     /**
@@ -2726,16 +2726,16 @@ public class MathKit {
      *   MathKit.toByte("1", 0)  = 1
      * </pre>
      *
-     * @param str          要转换的字符可以为空
+     * @param text         要转换的字符可以为空
      * @param defaultValue 默认值
      * @return 字符串表示的byte，如果转换失败则默认值
      */
-    public static byte toByte(final String str, final byte defaultValue) {
-        if (null == str) {
+    public static byte toByte(final String text, final byte defaultValue) {
+        if (null == text) {
             return defaultValue;
         }
         try {
-            return Byte.parseByte(str);
+            return Byte.parseByte(text);
         } catch (final NumberFormatException nfe) {
             return defaultValue;
         }
@@ -2750,11 +2750,11 @@ public class MathKit {
      *   MathKit.toShort("1")  = 1
      * </pre>
      *
-     * @param str 要转换的字符可以为空
+     * @param text 要转换的字符可以为空
      * @return 字符串表示的short，如果转换失败则默认值
      */
-    public static short toShort(final String str) {
-        return toShort(str, (short) 0);
+    public static short toShort(final String text) {
+        return toShort(text, (short) 0);
     }
 
     /**
@@ -2766,16 +2766,16 @@ public class MathKit {
      *   MathKit.toShort("1", 0)  = 1
      * </pre>
      *
-     * @param str          要转换的字符可以为空
+     * @param text         要转换的字符可以为空
      * @param defaultValue 默认值
      * @return 字符串表示的short，如果转换失败则默认值
      */
-    public static short toShort(final String str, final short defaultValue) {
-        if (null == str) {
+    public static short toShort(final String text, final short defaultValue) {
+        if (null == text) {
             return defaultValue;
         }
         try {
-            return Short.parseShort(str);
+            return Short.parseShort(text);
         } catch (final NumberFormatException nfe) {
             return defaultValue;
         }
@@ -2907,21 +2907,21 @@ public class MathKit {
     /**
      * 将一个String转换为一个BigDecimal
      *
-     * @param str a <code>String</code> to convert, may be null
+     * @param text a <code>String</code> to convert, may be null
      * @return 转换后的BigDecimal(如果输入为null ， 则为null)
      * @throws NumberFormatException 如果值不能被转换
      */
-    public static BigDecimal createBigDecimal(final String str) {
-        if (null == str) {
+    public static BigDecimal createBigDecimal(final String text) {
+        if (null == text) {
             return null;
         }
-        if (StringKit.isBlank(str)) {
+        if (StringKit.isBlank(text)) {
             throw new NumberFormatException("A blank string is not a valid number");
         }
-        if (str.trim().startsWith(Symbol.MINUS + Symbol.MINUS)) {
-            throw new NumberFormatException(str + " is not a valid number.");
+        if (text.trim().startsWith(Symbol.MINUS + Symbol.MINUS)) {
+            throw new NumberFormatException(text + " is not a valid number.");
         }
-        return new BigDecimal(str);
+        return new BigDecimal(text);
     }
 
     /**

@@ -47,7 +47,7 @@ public class Configuration extends org.apache.ibatis.session.Configuration {
      *
      * @param mapperBuilder 逻辑处理类
      */
-    public void setMapperHelper(MapperBuilder mapperBuilder) {
+    public void setMapperBuilder(MapperBuilder mapperBuilder) {
         this.mapperBuilder = mapperBuilder;
     }
 

@@ -421,36 +421,36 @@ public abstract class AbstractProvider implements Provider {
     /**
      * 字符串转map，字符串格式为 {@code xxx=xxx&xxx=xxx}
      *
-     * @param str    待转换的字符串
+     * @param text   待转换的字符串
      * @param decode 是否解码
      * @return map
      */
-    public Map<String, String> parseStringToMap(String str, boolean decode) {
-        if (StringKit.isNotEmpty(str)) {
+    public Map<String, String> parseStringToMap(String text, boolean decode) {
+        if (StringKit.isNotEmpty(text)) {
             // 去除 URL 路径信息
-            int beginPos = str.indexOf(Symbol.QUESTION_MARK);
+            int beginPos = text.indexOf(Symbol.QUESTION_MARK);
             if (beginPos > -1) {
-                str = str.substring(beginPos + 1);
+                text = text.substring(beginPos + 1);
             }
 
             // 去除 # 后面的内容
-            int endPos = str.indexOf(Symbol.SHAPE);
+            int endPos = text.indexOf(Symbol.SHAPE);
             if (endPos > -1) {
-                str = str.substring(0, endPos);
+                text = text.substring(0, endPos);
             }
         }
 
         Map<String, String> params = new HashMap<>(16);
-        if (StringKit.isEmpty(str)) {
+        if (StringKit.isEmpty(text)) {
             return params;
         }
 
-        if (!str.contains(Symbol.AND)) {
-            params.put(decode ? UriKit.decode(str) : str, Normal.EMPTY);
+        if (!text.contains(Symbol.AND)) {
+            params.put(decode ? UriKit.decode(text) : text, Normal.EMPTY);
             return params;
         }
 
-        final int len = str.length();
+        final int len = text.length();
         String name = null;
         // 未处理字符开始位置
         int pos = 0;
@@ -459,12 +459,12 @@ public abstract class AbstractProvider implements Provider {
         // 当前字符
         char c;
         for (i = 0; i < len; i++) {
-            c = str.charAt(i);
+            c = text.charAt(i);
             // 键值对的分界点
             if (c == Symbol.C_EQUAL) {
                 if (null == name) {
                     // name可以是""
-                    name = str.substring(pos, i);
+                    name = text.substring(pos, i);
                 }
                 pos = i + 1;
             }
@@ -472,9 +472,9 @@ public abstract class AbstractProvider implements Provider {
             else if (c == Symbol.C_AND) {
                 if (null == name && pos != i) {
                     // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
-                    addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
+                    addParam(params, text.substring(pos, i), Normal.EMPTY, decode);
                 } else if (null != name) {
-                    addParam(params, name, str.substring(pos, i), decode);
+                    addParam(params, name, text.substring(pos, i), decode);
                     name = null;
                 }
                 pos = i + 1;
@@ -484,9 +484,9 @@ public abstract class AbstractProvider implements Provider {
         // 处理结尾
         if (pos != i) {
             if (null == name) {
-                addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
+                addParam(params, text.substring(pos, i), Normal.EMPTY, decode);
             } else {
-                addParam(params, name, str.substring(pos, i), decode);
+                addParam(params, name, text.substring(pos, i), decode);
             }
         } else if (null != name) {
             addParam(params, name, Normal.EMPTY, decode);

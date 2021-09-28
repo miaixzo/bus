@@ -45,8 +45,6 @@ import java.util.Properties;
  */
 public class Config {
 
-    public static final String PREFIX = "mapper";
-
     private List<Class> mappers = new ArrayList<>();
     private String IDENTITY;
     private boolean BEFORE;

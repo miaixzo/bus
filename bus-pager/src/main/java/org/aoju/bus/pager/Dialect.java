@@ -58,7 +58,7 @@ public interface Dialect {
      * @param ms              MappedStatement
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
-     * @return
+     * @return the object
      */
     boolean beforeCount(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
@@ -70,7 +70,7 @@ public interface Dialect {
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
      * @param countKey        count 缓存 key
-     * @return
+     * @return the object
      */
     String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey);
 
@@ -88,10 +88,10 @@ public interface Dialect {
      * 处理查询参数对象
      *
      * @param ms              MappedStatement
-     * @param parameterObject
-     * @param boundSql
-     * @param pageKey
-     * @return
+     * @param parameterObject 方法参数
+     * @param boundSql        绑定 SQL 对象
+     * @param pageKey         分页缓存 key
+     * @return the object
      */
     Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey);
 
@@ -101,7 +101,7 @@ public interface Dialect {
      * @param ms              MappedStatement
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
-     * @return
+     * @return the object
      */
     boolean beforePage(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
@@ -113,7 +113,7 @@ public interface Dialect {
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
      * @param pageKey         分页缓存 key
-     * @return
+     * @return the object
      */
     String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey);
 
@@ -123,7 +123,7 @@ public interface Dialect {
      * @param pageList        分页查询结果
      * @param parameterObject 方法参数
      * @param rowBounds       分页参数
-     * @return
+     * @return the object
      */
     Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds);
 

@@ -208,14 +208,14 @@ public abstract class Matchers {
     /**
      * 构造函数
      *
-     * @param str 匹配的字符串为null或空,不匹配任何内容
+     * @param text 匹配的字符串为null或空,不匹配任何内容
      * @return 给定字符串返回一个新的匹配器
      */
-    public static Matchers stringMatcher(final String str) {
-        if (StringKit.isEmpty(str)) {
+    public static Matchers stringMatcher(final String text) {
+        if (StringKit.isEmpty(text)) {
             return NONE_MATCHER;
         }
-        return new StringMatcher(str);
+        return new StringMatcher(text);
     }
 
     /**
@@ -311,9 +311,9 @@ public abstract class Matchers {
          */
         private final char[] chars;
 
-        StringMatcher(final String str) {
+        StringMatcher(final String text) {
             super();
-            chars = str.toCharArray();
+            chars = text.toCharArray();
         }
 
         /**

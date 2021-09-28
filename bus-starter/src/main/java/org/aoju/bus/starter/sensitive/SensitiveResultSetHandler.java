@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
+import org.aoju.bus.mapper.handler.AbstractSqlHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;

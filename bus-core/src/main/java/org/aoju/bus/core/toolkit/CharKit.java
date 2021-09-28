@@ -294,20 +294,20 @@ public class CharKit {
      *     <li>需要同时校验多个字符串时，建议采用 {@link #hasBlank(CharSequence...)} 或 {@link #isAllBlank(CharSequence...)}</li>
      * </ul>
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 若为空白，则返回 true
      * @see #isEmpty(CharSequence)
      */
-    public static boolean isBlank(CharSequence str) {
+    public static boolean isBlank(CharSequence text) {
         int length;
 
-        if ((str == null) || ((length = str.length()) == 0)) {
+        if ((text == null) || ((length = text.length()) == 0)) {
             return true;
         }
 
         for (int i = 0; i < length; i++) {
             // 只要有一个非空字符即为非空字符串
-            if (false == isBlankChar(str.charAt(i))) {
+            if (false == isBlankChar(text.charAt(i))) {
                 return false;
             }
         }
@@ -333,12 +333,12 @@ public class CharKit {
      * 该方法会校验空白字符，且性能相对于 {@link #isNotEmpty(CharSequence)} 略慢
      * 建议：仅对于客户端（或第三方接口）传入的参数使用该方法
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 是否为非空
      * @see #isBlank(CharSequence)
      */
-    public static boolean isNotBlank(CharSequence str) {
-        return false == isBlank(str);
+    public static boolean isNotBlank(CharSequence text) {
+        return false == isBlank(text);
     }
 
     /**
@@ -357,16 +357,16 @@ public class CharKit {
      *     <li>isAllBlank(CharSequence...)          等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
-     * @param strs 字符串列表
+     * @param texts 字符串列表
      * @return 所有字符串是否为空白
      */
-    public static boolean isAllBlank(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean isAllBlank(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isNotBlank(str)) {
+        for (CharSequence text : texts) {
+            if (isNotBlank(text)) {
                 return false;
             }
         }
@@ -393,12 +393,12 @@ public class CharKit {
      *     <li>需要同时校验多个字符串时，建议采用 {@link #hasEmpty(CharSequence...)} 或 {@link #isAllEmpty(CharSequence...)}</li>
      * </ul>
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 是否为空
      * @see #isBlank(CharSequence)
      */
-    public static boolean isEmpty(CharSequence str) {
-        return str == null || str.length() == 0;
+    public static boolean isEmpty(CharSequence text) {
+        return text == null || text.length() == 0;
     }
 
     /**
@@ -417,12 +417,12 @@ public class CharKit {
      * 注意：该方法与 {@link #isNotBlank(CharSequence)} 的区别是：该方法不校验空白字符
      * 建议：该方法建议用于工具类或任何可以预期的方法参数的校验中
      *
-     * @param str 被检测的字符串
+     * @param text 被检测的字符串
      * @return 是否为非空
      * @see #isEmpty(CharSequence)
      */
-    public static boolean isNotEmpty(CharSequence str) {
-        return false == isEmpty(str);
+    public static boolean isNotEmpty(CharSequence text) {
+        return false == isEmpty(text);
     }
 
     /**
@@ -442,16 +442,16 @@ public class CharKit {
      *     <li>isAllEmpty(CharSequence...)          等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
      * </ul>
      *
-     * @param strs 字符串列表
+     * @param texts 字符串列表
      * @return 所有字符串是否为空白
      */
-    public static boolean isAllEmpty(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean isAllEmpty(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isNotEmpty(str)) {
+        for (CharSequence text : texts) {
+            if (isNotEmpty(text)) {
                 return false;
             }
         }
@@ -495,50 +495,50 @@ public class CharKit {
     /**
      * 检查字符串是否为null、“null”、“undefined”
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否为null、“null”、“undefined”
      */
-    public static boolean isNullOrUndefined(CharSequence str) {
-        if (null == str) {
+    public static boolean isNullOrUndefined(CharSequence text) {
+        if (null == text) {
             return true;
         }
-        return isNullOrUndefinedStr(str);
+        return isNullOrUndefinedStr(text);
     }
 
     /**
      * 检查字符串是否为null、“”、“null”、“undefined”
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否为null、“”、“null”、“undefined”
      */
-    public static boolean isEmptyOrUndefined(CharSequence str) {
-        if (isEmpty(str)) {
+    public static boolean isEmptyOrUndefined(CharSequence text) {
+        if (isEmpty(text)) {
             return true;
         }
-        return isNullOrUndefinedStr(str);
+        return isNullOrUndefinedStr(text);
     }
 
     /**
      * 检查字符串是否为null、空白串、“null”、“undefined”
      *
-     * @param str 被检查的字符串
+     * @param text 被检查的字符串
      * @return 是否为null、空白串、“null”、“undefined”
      */
-    public static boolean isBlankOrUndefined(CharSequence str) {
-        if (isBlank(str)) {
+    public static boolean isBlankOrUndefined(CharSequence text) {
+        if (isBlank(text)) {
             return true;
         }
-        return isNullOrUndefinedStr(str);
+        return isNullOrUndefinedStr(text);
     }
 
     /**
      * 是否为“null”、“undefined”，不做空指针检查
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否为“null”、“undefined”
      */
-    private static boolean isNullOrUndefinedStr(CharSequence str) {
-        String strString = str.toString().trim();
+    private static boolean isNullOrUndefinedStr(CharSequence text) {
+        String strString = text.toString().trim();
         return Normal.NULL.equals(strString) || "undefined".equals(strString);
     }
 
@@ -558,16 +558,16 @@ public class CharKit {
      *     <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
-     * @param strs 字符串列表
+     * @param texts 字符串列表
      * @return 是否包含空字符串
      */
-    public static boolean hasBlank(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean hasBlank(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isBlank(str)) {
+        for (CharSequence text : texts) {
+            if (isBlank(text)) {
                 return true;
             }
         }
@@ -591,16 +591,16 @@ public class CharKit {
      *     <li>{@link #isAllEmpty(CharSequence...)} 等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
      * </ul>
      *
-     * @param strs 字符串列表
+     * @param texts 字符串列表
      * @return 是否包含空字符串
      */
-    public static boolean hasEmpty(CharSequence... strs) {
-        if (ArrayKit.isEmpty(strs)) {
+    public static boolean hasEmpty(CharSequence... texts) {
+        if (ArrayKit.isEmpty(texts)) {
             return true;
         }
 
-        for (CharSequence str : strs) {
-            if (isEmpty(str)) {
+        for (CharSequence text : texts) {
+            if (isEmpty(text)) {
                 return true;
             }
         }
@@ -809,41 +809,41 @@ public class CharKit {
     /**
      * 字符串是否以(数字)开始
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否数字开始
      */
-    public static boolean startWithNumber(CharSequence str) {
-        return isNotBlank(str) && RegEx.NUMBERS.matcher(str.subSequence(0, 1)).find();
+    public static boolean startWithNumber(CharSequence text) {
+        return isNotBlank(text) && RegEx.NUMBERS.matcher(text.subSequence(0, 1)).find();
     }
 
     /**
      * 字符串是否以(英文字母 、数字和下划线)开始
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否英文字母 、数字和下划线开始
      */
-    public static boolean startWithGeneral(CharSequence str) {
-        return isNotBlank(str) && RegEx.GENERAL.matcher(str.subSequence(0, 1)).find();
+    public static boolean startWithGeneral(CharSequence text) {
+        return isNotBlank(text) && RegEx.GENERAL.matcher(text.subSequence(0, 1)).find();
     }
 
     /**
      * 字符串是否以(字母)开始
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否字母开始
      */
-    public static boolean startWithWord(CharSequence str) {
-        return isNotBlank(str) && RegEx.WORD.matcher(str.subSequence(0, 1)).find();
+    public static boolean startWithWord(CharSequence text) {
+        return isNotBlank(text) && RegEx.WORD.matcher(text.subSequence(0, 1)).find();
     }
 
     /**
      * 字符串是否以(中文汉字)开始
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否中文汉字开始
      */
-    public static boolean startWithChinese(CharSequence str) {
-        return isNotBlank(str) && RegEx.CHINESES.matcher(str.subSequence(0, 1)).find();
+    public static boolean startWithChinese(CharSequence text) {
+        return isNotBlank(text) && RegEx.CHINESES.matcher(text.subSequence(0, 1)).find();
     }
 
 }

@@ -795,12 +795,12 @@ public class Convert {
     /**
      * 字符串转换成十六进制字符串,结果为小写
      *
-     * @param str     待转换的ASCII字符串
+     * @param text    待转换的ASCII字符串
      * @param charset 编码
      * @return 16进制字符串
      */
-    public static String toHex(String str, java.nio.charset.Charset charset) {
-        return HexKit.encodeHexStr(str, charset);
+    public static String toHex(String text, java.nio.charset.Charset charset) {
+        return HexKit.encodeHexStr(text, charset);
     }
 
     /**
@@ -860,18 +860,18 @@ public class Convert {
      * 给定字符串转换字符编码
      * 如果参数为空,则返回原字符串,不报错
      *
-     * @param str           被转码的字符串
+     * @param text          被转码的字符串
      * @param sourceCharset 原字符集
      * @param destCharset   目标字符集
      * @return 转换后的字符串
      * @see Charset#convert(String, String, String)
      */
-    public static String convertCharset(String str, String sourceCharset, String destCharset) {
-        if (StringKit.hasBlank(str, sourceCharset, destCharset)) {
-            return str;
+    public static String convertCharset(String text, String sourceCharset, String destCharset) {
+        if (StringKit.hasBlank(text, sourceCharset, destCharset)) {
+            return text;
         }
 
-        return Charset.convert(str, sourceCharset, destCharset);
+        return Charset.convert(text, sourceCharset, destCharset);
     }
 
     /**

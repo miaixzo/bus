@@ -65,22 +65,22 @@ public class PinyinKit {
     /**
      * 将输入字符串转为拼音，每个字之间的拼音使用空格分隔
      *
-     * @param str 任意字符，汉字返回拼音，非汉字原样返回
+     * @param text 任意字符，汉字返回拼音，非汉字原样返回
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static String getPinyin(String str) {
-        return getPinyin(str, Symbol.SPACE);
+    public static String getPinyin(String text) {
+        return getPinyin(text, Symbol.SPACE);
     }
 
     /**
      * 将输入字符串转为拼音，以字符为单位插入分隔符
      *
-     * @param str       任意字符，汉字返回拼音，非汉字原样返回
+     * @param text      任意字符，汉字返回拼音，非汉字原样返回
      * @param separator 每个字拼音之间的分隔符
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static String getPinyin(String str, String separator) {
-        return getProvider().getPinyin(str, separator);
+    public static String getPinyin(String text, String separator) {
+        return getProvider().getPinyin(text, separator);
     }
 
     /**
@@ -96,12 +96,12 @@ public class PinyinKit {
     /**
      * 将输入字符串转为拼音首字母，其它字符原样返回
      *
-     * @param str       任意字符，汉字返回拼音，非汉字原样返回
+     * @param text      任意字符，汉字返回拼音，非汉字原样返回
      * @param separator 分隔符
      * @return 汉字返回拼音，非汉字原样返回
      */
-    public static String getFirstLetter(String str, String separator) {
-        return getProvider().getFirstLetter(str, separator);
+    public static String getFirstLetter(String text, String separator) {
+        return getProvider().getFirstLetter(text, separator);
     }
 
     /**

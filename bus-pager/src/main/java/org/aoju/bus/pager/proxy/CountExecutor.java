@@ -27,7 +27,7 @@ package org.aoju.bus.pager.proxy;
 
 import org.aoju.bus.pager.Dialect;
 import org.aoju.bus.pager.PageException;
-import org.aoju.bus.pager.plugin.BoundSqlInterceptor;
+import org.aoju.bus.pager.plugins.BoundSqlHandler;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -166,8 +166,8 @@ public abstract class CountExecutor {
             countBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
         }
         // 对 boundSql 的拦截处理
-        if (dialect instanceof BoundSqlInterceptor.Chain) {
-            countBoundSql = ((BoundSqlInterceptor.Chain) dialect).doBoundSql(BoundSqlInterceptor.Type.COUNT_SQL, countBoundSql, countKey);
+        if (dialect instanceof BoundSqlHandler.Chain) {
+            countBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.COUNT_SQL, countBoundSql, countKey);
         }
         // 执行 count 查询
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
@@ -212,8 +212,8 @@ public abstract class CountExecutor {
                 pageBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
             }
             // 对 boundSql 的拦截处理
-            if (dialect instanceof BoundSqlInterceptor.Chain) {
-                pageBoundSql = ((BoundSqlInterceptor.Chain) dialect).doBoundSql(BoundSqlInterceptor.Type.PAGE_SQL, pageBoundSql, pageKey);
+            if (dialect instanceof BoundSqlHandler.Chain) {
+                pageBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.PAGE_SQL, pageBoundSql, pageKey);
             }
             // 执行分页查询
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, pageKey, pageBoundSql);

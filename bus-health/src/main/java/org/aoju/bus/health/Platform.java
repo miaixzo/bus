@@ -61,9 +61,9 @@ import java.util.function.Supplier;
 public class Platform {
 
     private static final OS OS_CURRENT_PLATFORM = OS.getValue(getOSType());
+    private static final String NOT_SUPPORTED = "Operating system not supported: ";
     private final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
     private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
-    private static final String NOT_SUPPORTED = "Operating system not supported: ";
 
     /**
      * Getter for the field <code>currentPlatformEnum</code>.

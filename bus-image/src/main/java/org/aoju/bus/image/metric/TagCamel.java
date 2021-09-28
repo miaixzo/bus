@@ -236,37 +236,37 @@ public class TagCamel implements Serializable {
             return Normal.EMPTY;
         }
 
-        String str;
+        String text;
 
         if (value instanceof String) {
-            str = (String) value;
+            text = (String) value;
         } else if (value instanceof String[]) {
-            str = Arrays.asList((String[]) value).stream().collect(Collectors.joining(Symbol.BACKSLASH));
+            text = Arrays.asList((String[]) value).stream().collect(Collectors.joining(Symbol.BACKSLASH));
         } else if (value instanceof TemporalAccessor) {
-            str = TagValue.formatDateTime((TemporalAccessor) value);
+            text = TagValue.formatDateTime((TemporalAccessor) value);
         } else if (value instanceof TemporalAccessor[]) {
-            str = Stream.of((TemporalAccessor[]) value).map(TagValue::formatDateTime).collect(Collectors.joining(", "));
+            text = Stream.of((TemporalAccessor[]) value).map(TagValue::formatDateTime).collect(Collectors.joining(", "));
         } else if (value instanceof float[]) {
             float[] array = (float[]) value;
-            str = IntStream.range(0, array.length).mapToObj(i -> String.valueOf(array[i]))
+            text = IntStream.range(0, array.length).mapToObj(i -> String.valueOf(array[i]))
                     .collect(Collectors.joining(", "));
         } else if (value instanceof double[]) {
-            str = DoubleStream.of((double[]) value).mapToObj(String::valueOf).collect(Collectors.joining(", "));
+            text = DoubleStream.of((double[]) value).mapToObj(String::valueOf).collect(Collectors.joining(", "));
         } else if (value instanceof int[]) {
-            str = IntStream.of((int[]) value).mapToObj(String::valueOf).collect(Collectors.joining(", "));
+            text = IntStream.of((int[]) value).mapToObj(String::valueOf).collect(Collectors.joining(", "));
         } else {
-            str = value.toString();
+            text = value.toString();
         }
 
         if (StringKit.hasText(format) && !"$V".equals(format.trim())) {
-            return formatValue(str, value instanceof Float || value instanceof Double, format);
+            return formatValue(text, value instanceof Float || value instanceof Double, format);
         }
 
-        return null == str ? Normal.EMPTY : str;
+        return null == text ? Normal.EMPTY : text;
     }
 
     protected static String formatValue(String value, boolean decimal, String format) {
-        String str = value;
+        String text = value;
         int index = format.indexOf("$V");
         int fmLength = 2;
         if (index != -1) {
@@ -280,7 +280,7 @@ public class TagCamel implements Serializable {
                     if (null != pattern) {
                         fmLength += pattern.length() + 2;
                         try {
-                            str = new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.getDefault())).format(Double.parseDouble(str));
+                            text = new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(Locale.getDefault())).format(Double.parseDouble(text));
                         } catch (NumberFormatException e) {
                             Logger.warn("Cannot apply pattern to decimal value", e);
                         }
@@ -292,9 +292,9 @@ public class TagCamel implements Serializable {
                         fmLength += pattern.length() + 2;
                         try {
                             int limit = Integer.parseInt(pattern);
-                            int size = str.length();
+                            int size = text.length();
                             if (size > limit) {
-                                str = str.substring(0, limit) + "...";
+                                text = text.substring(0, limit) + "...";
                             }
                         } catch (NumberFormatException e) {
                             Logger.warn("Cannot apply pattern to decimal value", e);
@@ -302,12 +302,12 @@ public class TagCamel implements Serializable {
                     }
                 }
             }
-            str = format.substring(0, index) + str;
+            text = format.substring(0, index) + text;
             if (format.length() > index + fmLength) {
-                str += format.substring(index + fmLength);
+                text += format.substring(index + fmLength);
             }
         }
-        return str;
+        return text;
     }
 
     private static String getPattern(int startIndex, String format) {

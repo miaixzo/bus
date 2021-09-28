@@ -92,27 +92,27 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 构造
      *
-     * @param str 初始字符串
+     * @param text 初始字符串
      */
-    public Builders(final String str) {
+    public Builders(final String text) {
         super();
-        if (null == str) {
+        if (null == text) {
             this.buffer = new char[CAPACITY];
         } else {
-            this.buffer = new char[str.length() + CAPACITY];
-            append(str);
+            this.buffer = new char[text.length() + CAPACITY];
+            append(text);
         }
     }
 
     /**
      * 创建字符串构建器
      *
-     * @param strs 初始字符串
+     * @param texts 初始字符串
      */
-    public Builders(CharSequence... strs) {
-        this(ArrayKit.isEmpty(strs) ? CAPACITY : (totalLength(strs) + CAPACITY));
-        for (int i = 0; i < strs.length; i++) {
-            append(strs[i]);
+    public Builders(CharSequence... texts) {
+        this(ArrayKit.isEmpty(texts) ? CAPACITY : (totalLength(texts) + CAPACITY));
+        for (int i = 0; i < texts.length; i++) {
+            append(texts[i]);
         }
     }
 
@@ -138,24 +138,24 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 创建字符串构建器
      *
-     * @param strs 初始字符串
+     * @param texts 初始字符串
      * @return {@link Builders}
      */
-    public static Builders create(CharSequence... strs) {
-        return new Builders(strs);
+    public static Builders create(CharSequence... texts) {
+        return new Builders(texts);
     }
 
     /**
      * 给定字符串数组的总长度
      * null字符长度定义为0
      *
-     * @param strs 字符串数组
+     * @param texts 字符串数组
      * @return 总长度
      */
-    private static int totalLength(CharSequence... strs) {
+    private static int totalLength(CharSequence... texts) {
         int totalLength = 0;
-        for (CharSequence str : strs) {
-            totalLength += (null == str ? 4 : str.length());
+        for (CharSequence text : texts) {
+            totalLength += (null == text ? 4 : text.length());
         }
         return totalLength;
     }
@@ -463,18 +463,18 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将对象附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}.
      *
-     * @param str 要追加的字符串
+     * @param text 要追加的字符串
      * @return this
      */
-    public Builders append(final String str) {
-        if (null == str) {
+    public Builders append(final String text) {
+        if (null == text) {
             return appendNull();
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen > 0) {
             final int len = length();
             ensureCapacity(len + strLen);
-            str.getChars(0, strLen, buffer, len);
+            text.getChars(0, strLen, buffer, len);
             size += strLen;
         }
         return this;
@@ -484,25 +484,25 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将对象附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}.
      *
-     * @param str        要追加的字符串
+     * @param text       要追加的字符串
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders append(final String str, final int startIndex, final int length) {
-        if (null == str) {
+    public Builders append(final String text, final int startIndex, final int length) {
+        if (null == text) {
             return appendNull();
         }
-        if (startIndex < 0 || startIndex > str.length()) {
+        if (startIndex < 0 || startIndex > text.length()) {
             throw new StringIndexOutOfBoundsException("startIndex must be valid");
         }
-        if (length < 0 || (startIndex + length) > str.length()) {
+        if (length < 0 || (startIndex + length) > text.length()) {
             throw new StringIndexOutOfBoundsException("length must be valid");
         }
         if (length > 0) {
             final int len = length();
             ensureCapacity(len + length);
-            str.getChars(startIndex, startIndex + length, buffer, len);
+            text.getChars(startIndex, startIndex + length, buffer, len);
             size += length;
         }
         return this;
@@ -578,18 +578,18 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将对象附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}.
      *
-     * @param str 要追加的字符串
+     * @param text 要追加的字符串
      * @return this
      */
-    public Builders append(final StringBuffer str) {
-        if (null == str) {
+    public Builders append(final StringBuffer text) {
+        if (null == text) {
             return appendNull();
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen > 0) {
             final int len = length();
             ensureCapacity(len + strLen);
-            str.getChars(0, strLen, buffer, len);
+            text.getChars(0, strLen, buffer, len);
             size += strLen;
         }
         return this;
@@ -599,25 +599,25 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将对象附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}.
      *
-     * @param str        要追加的字符串
+     * @param text       要追加的字符串
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders append(final StringBuffer str, final int startIndex, final int length) {
-        if (null == str) {
+    public Builders append(final StringBuffer text, final int startIndex, final int length) {
+        if (null == text) {
             return appendNull();
         }
-        if (startIndex < 0 || startIndex > str.length()) {
+        if (startIndex < 0 || startIndex > text.length()) {
             throw new StringIndexOutOfBoundsException("startIndex must be valid");
         }
-        if (length < 0 || (startIndex + length) > str.length()) {
+        if (length < 0 || (startIndex + length) > text.length()) {
             throw new StringIndexOutOfBoundsException("length must be valid");
         }
         if (length > 0) {
             final int len = length();
             ensureCapacity(len + length);
-            str.getChars(startIndex, startIndex + length, buffer, len);
+            text.getChars(startIndex, startIndex + length, buffer, len);
             size += length;
         }
         return this;
@@ -627,18 +627,18 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将对象附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}.
      *
-     * @param str 要追加的字符串
+     * @param text 要追加的字符串
      * @return this
      */
-    public Builders append(final StringBuilder str) {
-        if (null == str) {
+    public Builders append(final StringBuilder text) {
+        if (null == text) {
             return appendNull();
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen > 0) {
             final int len = length();
             ensureCapacity(len + strLen);
-            str.getChars(0, strLen, buffer, len);
+            text.getChars(0, strLen, buffer, len);
             size += strLen;
         }
         return this;
@@ -648,25 +648,25 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将StringBuilder的一部分附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str        要追加的字符串
+     * @param text       要追加的字符串
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders append(final StringBuilder str, final int startIndex, final int length) {
-        if (null == str) {
+    public Builders append(final StringBuilder text, final int startIndex, final int length) {
+        if (null == text) {
             return appendNull();
         }
-        if (startIndex < 0 || startIndex > str.length()) {
+        if (startIndex < 0 || startIndex > text.length()) {
             throw new StringIndexOutOfBoundsException("startIndex must be valid");
         }
-        if (length < 0 || (startIndex + length) > str.length()) {
+        if (length < 0 || (startIndex + length) > text.length()) {
             throw new StringIndexOutOfBoundsException("length must be valid");
         }
         if (length > 0) {
             final int len = length();
             ensureCapacity(len + length);
-            str.getChars(startIndex, startIndex + length, buffer, len);
+            text.getChars(startIndex, startIndex + length, buffer, len);
             size += length;
         }
         return this;
@@ -676,18 +676,18 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将String的一部分附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str 要追加的字符串
+     * @param text 要追加的字符串
      * @return this
      */
-    public Builders append(final Builders str) {
-        if (null == str) {
+    public Builders append(final Builders text) {
+        if (null == text) {
             return appendNull();
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen > 0) {
             final int len = length();
             ensureCapacity(len + strLen);
-            System.arraycopy(str.buffer, 0, buffer, len, strLen);
+            System.arraycopy(text.buffer, 0, buffer, len, strLen);
             size += strLen;
         }
         return this;
@@ -697,25 +697,25 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将字符串生成器的一部分附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}.
      *
-     * @param str        要追加的字符串
+     * @param text       要追加的字符串
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders append(final Builders str, final int startIndex, final int length) {
-        if (null == str) {
+    public Builders append(final Builders text, final int startIndex, final int length) {
+        if (null == text) {
             return appendNull();
         }
-        if (startIndex < 0 || startIndex > str.length()) {
+        if (startIndex < 0 || startIndex > text.length()) {
             throw new StringIndexOutOfBoundsException("startIndex must be valid");
         }
-        if (length < 0 || (startIndex + length) > str.length()) {
+        if (length < 0 || (startIndex + length) > text.length()) {
             throw new StringIndexOutOfBoundsException("length must be valid");
         }
         if (length > 0) {
             final int len = length();
             ensureCapacity(len + length);
-            str.getChars(startIndex, startIndex + length, buffer, len);
+            text.getChars(startIndex, startIndex + length, buffer, len);
             size += length;
         }
         return this;
@@ -863,24 +863,24 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 将对象后接新行追加到此字符串生成器
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str 要附加的值
+     * @param text 要附加的值
      * @return this
      */
-    public Builders appendln(final String str) {
-        return append(str).appendNewLine();
+    public Builders appendln(final String text) {
+        return append(text).appendNewLine();
     }
 
     /**
      * 将对象后接新行追加到此字符串生成器
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str        要附加的值
+     * @param text       要附加的值
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders appendln(final String str, final int startIndex, final int length) {
-        return append(str, startIndex, length).appendNewLine();
+    public Builders appendln(final String text, final int startIndex, final int length) {
+        return append(text, startIndex, length).appendNewLine();
     }
 
     /**
@@ -899,72 +899,72 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 向此字符串生成器追加一个字符串缓冲区，后跟新行
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str 要追加的字符串缓冲区
+     * @param text 要追加的字符串缓冲区
      * @return this
      */
-    public Builders appendln(final StringBuffer str) {
-        return append(str).appendNewLine();
+    public Builders appendln(final StringBuffer text) {
+        return append(text).appendNewLine();
     }
 
     /**
      * 向此字符串生成器追加一个字符串缓冲区，后跟新行
      * * 附加null将调用{@link #appendNull()}
      *
-     * @param str t他附加字符串生成器
+     * @param text t他附加字符串生成器
      * @return this
      */
-    public Builders appendln(final StringBuilder str) {
-        return append(str).appendNewLine();
+    public Builders appendln(final StringBuilder text) {
+        return append(text).appendNewLine();
     }
 
     /**
      * 向此字符串生成器追加一个字符串缓冲区，后跟新行
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str        要追加的字符串缓冲区
+     * @param text       要追加的字符串缓冲区
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders appendln(final StringBuilder str, final int startIndex, final int length) {
-        return append(str, startIndex, length).appendNewLine();
+    public Builders appendln(final StringBuilder text, final int startIndex, final int length) {
+        return append(text, startIndex, length).appendNewLine();
     }
 
     /**
      * 向此字符串生成器追加一个字符串缓冲区，后跟新行
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str        要追加的字符串缓冲区
+     * @param text       要追加的字符串缓冲区
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders appendln(final StringBuffer str, final int startIndex, final int length) {
-        return append(str, startIndex, length).appendNewLine();
+    public Builders appendln(final StringBuffer text, final int startIndex, final int length) {
+        return append(text, startIndex, length).appendNewLine();
     }
 
     /**
      * 向此字符串生成器追加一个字符串缓冲区，后跟新行
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str 要追加的字符串缓冲区
+     * @param text 要追加的字符串缓冲区
      * @return this
      */
-    public Builders appendln(final Builders str) {
-        return append(str).appendNewLine();
+    public Builders appendln(final Builders text) {
+        return append(text).appendNewLine();
     }
 
     /**
      * 向此字符串生成器追加一个字符串缓冲区，后跟新行
      * 附加null将调用{@link #appendNull()}
      *
-     * @param str        要追加的字符串缓冲区
+     * @param text       要追加的字符串缓冲区
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public Builders appendln(final Builders str, final int startIndex, final int length) {
-        return append(str, startIndex, length).appendNewLine();
+    public Builders appendln(final Builders text, final int startIndex, final int length) {
+        return append(text, startIndex, length).appendNewLine();
     }
 
     /**
@@ -1183,19 +1183,19 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     public Builders appendFixedWidthPadLeft(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
-            String str = null == obj ? getNullText() : obj.toString();
-            if (null == str) {
-                str = Normal.EMPTY;
+            String text = null == obj ? getNullText() : obj.toString();
+            if (null == text) {
+                text = Normal.EMPTY;
             }
-            final int strLen = str.length();
+            final int strLen = text.length();
             if (strLen >= width) {
-                str.getChars(strLen - width, strLen, buffer, size);
+                text.getChars(strLen - width, strLen, buffer, size);
             } else {
                 final int padLen = width - strLen;
                 for (int i = 0; i < padLen; i++) {
                     buffer[size + i] = padChar;
                 }
-                str.getChars(0, strLen, buffer, size + padLen);
+                text.getChars(0, strLen, buffer, size + padLen);
             }
             size += width;
         }
@@ -1230,16 +1230,16 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     public Builders appendFixedWidthPadRight(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
-            String str = null == obj ? getNullText() : obj.toString();
-            if (null == str) {
-                str = Normal.EMPTY;
+            String text = null == obj ? getNullText() : obj.toString();
+            if (null == text) {
+                text = Normal.EMPTY;
             }
-            final int strLen = str.length();
+            final int strLen = text.length();
             if (strLen >= width) {
-                str.getChars(0, width, buffer, size);
+                text.getChars(0, width, buffer, size);
             } else {
                 final int padLen = width - strLen;
-                str.getChars(0, strLen, buffer, size);
+                text.getChars(0, strLen, buffer, size);
                 for (int i = 0; i < padLen; i++) {
                     buffer[size + strLen + i] = padChar;
                 }
@@ -1284,23 +1284,23 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * 插入null将使用存储的空文本值.
      *
      * @param index 要添加的索引必须有效
-     * @param str   要插入的字符串
+     * @param text  要插入的字符串
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public Builders insert(final int index, String str) {
+    public Builders insert(final int index, String text) {
         validateIndex(index);
-        if (null == str) {
-            str = nullText;
+        if (null == text) {
+            text = nullText;
         }
-        if (null != str) {
-            final int strLen = str.length();
+        if (null != text) {
+            final int strLen = text.length();
             if (strLen > 0) {
                 final int newSize = size + strLen;
                 ensureCapacity(newSize);
                 System.arraycopy(buffer, index, buffer, index + strLen, size - index);
                 size = newSize;
-                str.getChars(0, strLen, buffer, index);
+                text.getChars(0, strLen, buffer, index);
             }
         }
         return this;
@@ -1529,16 +1529,16 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 删除生成器中出现的字符串
      *
-     * @param str 若要删除的字符串为空，则不执行任何操作
+     * @param text 若要删除的字符串为空，则不执行任何操作
      * @return this
      */
-    public Builders deleteAll(final String str) {
-        final int len = null == str ? 0 : str.length();
+    public Builders deleteAll(final String text) {
+        final int len = null == text ? 0 : text.length();
         if (len > 0) {
-            int index = indexOf(str, 0);
+            int index = indexOf(text, 0);
             while (index >= 0) {
                 deleteImpl(index, index + len, len);
-                index = indexOf(str, index);
+                index = indexOf(text, index);
             }
         }
         return this;
@@ -1547,13 +1547,13 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 删除生成器中出现的字符串
      *
-     * @param str 若要删除的字符串为空，则不执行任何操作
+     * @param text 若要删除的字符串为空，则不执行任何操作
      * @return this
      */
-    public Builders deleteFirst(final String str) {
-        final int len = null == str ? 0 : str.length();
+    public Builders deleteFirst(final String text) {
+        final int len = null == text ? 0 : text.length();
         if (len > 0) {
-            final int index = indexOf(str, 0);
+            final int index = indexOf(text, 0);
             if (index >= 0) {
                 deleteImpl(index, index + len, len);
             }
@@ -1823,14 +1823,14 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 检查此生成器是否以指定的字符串开始
      *
-     * @param str 要搜索的字符串null返回false
+     * @param text 要搜索的字符串null返回false
      * @return 如果生成器从字符串开始，则为真
      */
-    public boolean startsWith(final String str) {
-        if (null == str) {
+    public boolean startsWith(final String text) {
+        if (null == text) {
             return false;
         }
-        final int len = str.length();
+        final int len = text.length();
         if (len == 0) {
             return true;
         }
@@ -1838,7 +1838,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
             return false;
         }
         for (int i = 0; i < len; i++) {
-            if (buffer[i] != str.charAt(i)) {
+            if (buffer[i] != text.charAt(i)) {
                 return false;
             }
         }
@@ -1848,14 +1848,14 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 检查此生成器是否以指定的字符串结束
      *
-     * @param str 要搜索的字符串null返回false
+     * @param text 要搜索的字符串null返回false
      * @return 如果生成器以字符串结束，则为真
      */
-    public boolean endsWith(final String str) {
-        if (null == str) {
+    public boolean endsWith(final String text) {
+        if (null == text) {
             return false;
         }
-        final int len = str.length();
+        final int len = text.length();
         if (len == 0) {
             return true;
         }
@@ -1864,7 +1864,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         }
         int pos = size - len;
         for (int i = 0; i < len; i++, pos++) {
-            if (buffer[pos] != str.charAt(i)) {
+            if (buffer[pos] != text.charAt(i)) {
                 return false;
             }
         }
@@ -1980,11 +1980,11 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 检查字符串生成器是否包含指定的字符串
      *
-     * @param str 要找的字符
+     * @param text 要找的字符
      * @return 如果生成器包含该字符，则为真
      */
-    public boolean contains(final String str) {
-        return indexOf(str, 0) >= 0;
+    public boolean contains(final String text) {
+        return indexOf(text, 0) >= 0;
     }
 
     /**
@@ -2031,28 +2031,28 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 搜索字符串生成器以查找指定字符串的第一个引用
      *
-     * @param str 要查找的字符串，如果为null返回-1
+     * @param text 要查找的字符串，如果为null返回-1
      * @return 字符的第一个索引，如果没有找到则为-1
      */
-    public int indexOf(final String str) {
-        return indexOf(str, 0);
+    public int indexOf(final String text) {
+        return indexOf(text, 0);
     }
 
     /**
      * 从给定索引开始搜索，搜索字符串生成器以查找指定字符串的第一个引用
      *
-     * @param str        要查找的字符串，如果为null返回-1
+     * @param text       要查找的字符串，如果为null返回-1
      * @param startIndex 从索引开始，无效的索引四舍五入到边缘
      * @return 字符的第一个索引，如果没有找到则为-1
      */
-    public int indexOf(final String str, int startIndex) {
+    public int indexOf(final String text, int startIndex) {
         startIndex = (startIndex < 0 ? 0 : startIndex);
-        if (null == str || startIndex >= size) {
+        if (null == text || startIndex >= size) {
             return -1;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen == 1) {
-            return indexOf(str.charAt(0), startIndex);
+            return indexOf(text.charAt(0), startIndex);
         }
         if (strLen == 0) {
             return startIndex;
@@ -2065,7 +2065,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         outer:
         for (int i = startIndex; i < len; i++) {
             for (int j = 0; j < strLen; j++) {
-                if (str.charAt(j) != thisBuf[i + j]) {
+                if (text.charAt(j) != thisBuf[i + j]) {
                     continue outer;
                 }
             }
@@ -2139,35 +2139,35 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     /**
      * 搜索字符串生成器以查找对指定字符串的最后引用
      *
-     * @param str 要查找的字符串，null返回-1
+     * @param text 要查找的字符串，null返回-1
      * @return 字符串的最后一个索引，如果没有找到，则为-1
      */
-    public int lastIndexOf(final String str) {
-        return lastIndexOf(str, size - 1);
+    public int lastIndexOf(final String text) {
+        return lastIndexOf(text, size - 1);
     }
 
     /**
      * 从给定索引开始搜索，搜索字符串生成器以查找指定字符串的最后一个引用
      *
-     * @param str        要查找的字符串，null返回-1
+     * @param text       要查找的字符串，null返回-1
      * @param startIndex 从索引开始，无效的索引四舍五入到边缘
      * @return 字符串的最后一个索引，如果没有找到，则为-1
      */
-    public int lastIndexOf(final String str, int startIndex) {
+    public int lastIndexOf(final String text, int startIndex) {
         startIndex = (startIndex >= size ? size - 1 : startIndex);
-        if (null == str || startIndex < 0) {
+        if (null == text || startIndex < 0) {
             return -1;
         }
-        final int strLen = str.length();
+        final int strLen = text.length();
         if (strLen > 0 && strLen <= size) {
             if (strLen == 1) {
-                return lastIndexOf(str.charAt(0), startIndex);
+                return lastIndexOf(text.charAt(0), startIndex);
             }
 
             outer:
             for (int i = startIndex - strLen + 1; i >= 0; i--) {
                 for (int j = 0; j < strLen; j++) {
-                    if (str.charAt(j) != buffer[i + j]) {
+                    if (text.charAt(j) != buffer[i + j]) {
                         continue outer;
                     }
                 }

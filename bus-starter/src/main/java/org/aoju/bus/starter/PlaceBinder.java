@@ -25,6 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
+import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.PropertyValues;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertyResolver;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 /**
  * 返回值信息处理.
  *
@@ -33,6 +42,54 @@ package org.aoju.bus.starter;
  * @since JDK 1.8+
  */
 public interface PlaceBinder {
+
+    /**
+     * 全局资源绑定到指定对象即属性
+     *
+     * @param environment 环境配置信息
+     * @param targetClass 目标Class对象
+     * @param prefix      资源前缀
+     * @param <T>         泛型对象
+     * @return the object
+     */
+    static <T> T bind(Environment environment, Class<T> targetClass, String prefix) {
+        // 使用 Spring Boot 2.x 方式绑定
+        try {
+            Class<?> bindClass = Class.forName("org.springframework.boot.context.properties.bind.Binder");
+            Method getMethod = bindClass.getDeclaredMethod("get", Environment.class);
+            Method bindMethod = bindClass.getDeclaredMethod("bind", String.class, Class.class);
+            Object bind = getMethod.invoke(null, environment);
+            Object bindResult = bindMethod.invoke(bind, prefix, targetClass);
+            Method resultGetMethod = bindResult.getClass().getDeclaredMethod("get");
+            Method isBoundMethod = bindResult.getClass().getDeclaredMethod("isBound");
+            if ((Boolean) isBoundMethod.invoke(bindResult)) {
+                return (T) resultGetMethod.invoke(bindResult);
+            }
+            return null;
+        } catch (Exception e) {
+            // 使用 Spring Boot 1.x 方式绑定
+            try {
+                // 反射提取配置信息
+                Class<?> resolverClass = Class.forName("org.springframework.boot.bind.RelaxedPropertyResolver");
+                Constructor<?> resolverConstructor = resolverClass.getDeclaredConstructor(PropertyResolver.class);
+                Method getSubPropertiesMethod = resolverClass.getDeclaredMethod("getSubProperties", String.class);
+                Object resolver = resolverConstructor.newInstance(environment);
+                Map<String, Object> properties = (Map<String, Object>) getSubPropertiesMethod.invoke(resolver, "");
+                // 创建结果类
+                T target = targetClass.newInstance();
+                // 反射使用 org.springframework.boot.bind.RelaxedDataBinder
+                Class<?> binderClass = Class.forName("org.springframework.boot.bind.RelaxedDataBinder");
+                Constructor<?> binderConstructor = binderClass.getDeclaredConstructor(Object.class, String.class);
+                Method bindMethod = binderClass.getMethod("bind", PropertyValues.class);
+                // 创建 binder 并绑定数据
+                Object binder = binderConstructor.newInstance(target, prefix);
+                bindMethod.invoke(binder, new MutablePropertyValues(properties));
+                return target;
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 
     String bind(String string);
 

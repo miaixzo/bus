@@ -74,8 +74,8 @@ public class RedisCache implements CacheX {
     static byte[][] toByteArray(Collection<String> keys) {
         byte[][] array = new byte[keys.size()][];
         int index = 0;
-        for (String str : keys) {
-            array[index++] = str.getBytes();
+        for (String text : keys) {
+            array[index++] = text.getBytes();
         }
         return array;
     }

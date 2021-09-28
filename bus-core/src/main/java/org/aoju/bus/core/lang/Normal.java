@@ -53,7 +53,7 @@ public class Normal {
      * 真/是
      */
     public static final String TRUE = "true";
-    
+
     /**
      * 假/否
      */

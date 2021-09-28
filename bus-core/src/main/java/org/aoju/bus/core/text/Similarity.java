@@ -121,16 +121,16 @@ public class Similarity {
     /**
      * 将字符串的所有数据依次写成一行，去除无意义字符串
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 处理后的字符串
      */
-    private static String removeSign(String str) {
-        int length = str.length();
+    private static String removeSign(String text) {
+        int length = text.length();
         StringBuilder sb = StringKit.builder(length);
         // 遍历字符串str,如果是汉字数字或字母，则追加到ab上面
         char c;
         for (int i = 0; i < length; i++) {
-            c = str.charAt(i);
+            c = text.charAt(i);
             if (isValidChar(c)) {
                 sb.append(c);
             }

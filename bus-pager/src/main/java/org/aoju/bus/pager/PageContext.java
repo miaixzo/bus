@@ -28,9 +28,9 @@ package org.aoju.bus.pager;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.aoju.bus.pager.parser.CountSqlParser;
-import org.aoju.bus.pager.plugin.BoundSqlInterceptor;
-import org.aoju.bus.pager.plugin.BoundSqlInterceptorChain;
-import org.aoju.bus.pager.plugin.PageBoundSqlInterceptors;
+import org.aoju.bus.pager.plugins.BoundSqlChain;
+import org.aoju.bus.pager.plugins.BoundSqlHandler;
+import org.aoju.bus.pager.plugins.PageBoundSqlHandler;
 import org.aoju.bus.pager.proxy.CountMappedStatement;
 import org.aoju.bus.pager.proxy.PageAutoDialect;
 import org.aoju.bus.pager.proxy.PageMethod;
@@ -51,11 +51,11 @@ import java.util.Properties;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class PageContext extends PageMethod implements Dialect, BoundSqlInterceptor.Chain {
+public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.Chain {
 
     private PageParams pageParams;
     private PageAutoDialect autoDialect;
-    private PageBoundSqlInterceptors pageBoundSqlInterceptors;
+    private PageBoundSqlHandler pageBoundSqlHandler;
 
     @Override
     public boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
@@ -131,14 +131,14 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlIntercep
     }
 
     @Override
-    public BoundSql doBoundSql(BoundSqlInterceptor.Type type, BoundSql boundSql, CacheKey cacheKey) {
+    public BoundSql doBoundSql(BoundSqlHandler.Type type, BoundSql boundSql, CacheKey cacheKey) {
         Page<Object> localPage = getLocalPage();
-        BoundSqlInterceptor.Chain chain = localPage != null ? localPage.getChain() : null;
+        BoundSqlHandler.Chain chain = localPage != null ? localPage.getChain() : null;
         if (chain == null) {
-            BoundSqlInterceptor boundSqlInterceptor = localPage != null ? localPage.getBoundSqlInterceptor() : null;
-            BoundSqlInterceptor.Chain defaultChain = pageBoundSqlInterceptors != null ? pageBoundSqlInterceptors.getChain() : null;
-            if (boundSqlInterceptor != null) {
-                chain = new BoundSqlInterceptorChain(defaultChain, Arrays.asList(boundSqlInterceptor));
+            BoundSqlHandler boundSqlHandler = localPage != null ? localPage.getBoundSqlInterceptor() : null;
+            BoundSqlHandler.Chain defaultChain = pageBoundSqlHandler != null ? pageBoundSqlHandler.getChain() : null;
+            if (boundSqlHandler != null) {
+                chain = new BoundSqlChain(defaultChain, Arrays.asList(boundSqlHandler));
             } else if (defaultChain != null) {
                 chain = defaultChain;
             }
@@ -157,10 +157,10 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlIntercep
         setStaticProperties(properties);
         pageParams = new PageParams();
         autoDialect = new PageAutoDialect();
-        pageBoundSqlInterceptors = new PageBoundSqlInterceptors();
+        pageBoundSqlHandler = new PageBoundSqlHandler();
         pageParams.setProperties(properties);
         autoDialect.setProperties(properties);
-        pageBoundSqlInterceptors.setProperties(properties);
+        pageBoundSqlHandler.setProperties(properties);
         // 20180902新增 aggregateFunctions, 允许手动添加聚合函数（影响行数）
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
     }

@@ -213,8 +213,8 @@ public class Charset {
      * @return 被转换编码的文件
      */
     public static File convert(final File file, final java.nio.charset.Charset srcCharset, final java.nio.charset.Charset destCharset) {
-        final String str = FileKit.readString(file, srcCharset);
-        return FileKit.writeString(str, file, destCharset);
+        final String text = FileKit.readString(file, srcCharset);
+        return FileKit.writeString(text, file, destCharset);
     }
 
     /**

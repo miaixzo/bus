@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.starter.druid.DruidConfiguration;
-import org.aoju.bus.starter.mapper.MapperConfiguration;
-import org.aoju.bus.starter.mapper.MybatisConfiguration;
+import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -43,7 +43,101 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(value = {MybatisConfiguration.class, MapperConfiguration.class, DruidConfiguration.class})
+@Import({DruidConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class})
 public @interface EnableMapper {
+
+    /**
+     * Alias for the {@link #basePackages()} attribute. Allows for more concise
+     * annotation declarations.
+     *
+     * @return the array
+     */
+    String[] value() default {};
+
+    /**
+     * 扫描MyBatis接口的基本包
+     *
+     * @return the string
+     */
+    String[] basePackages() default {};
+
+    /**
+     * Type-safe alternative to {@link #basePackages()} for specifying the packages
+     * to scan for annotated components. The package of each class specified will be scanned.
+     * Consider creating a special no-op marker class or interface in each package
+     * that serves no purpose other than being referenced by this attribute.
+     *
+     * @return the class
+     */
+    Class<?>[] basePackageClasses() default {};
+
+    /**
+     * The {@link BeanNameGenerator} class to be used for naming detected components
+     * within the Spring container.
+     */
+    Class<? extends BeanNameGenerator> nameGenerator() default BeanNameGenerator.class;
+
+    /**
+     * This property specifies the annotation that the scanner will search for.
+     * <p>
+     * The scanner will register all interfaces in the base package that also have
+     * the specified annotation.
+     * <p>
+     * Note this can be combined with markerInterface.
+     *
+     * @return the class
+     */
+    Class<? extends Annotation> annotationClass() default Annotation.class;
+
+    /**
+     * This property specifies the parent that the scanner will search for.
+     * <p>
+     * The scanner will register all interfaces in the base package that also have
+     * the specified interface class as a parent.
+     * <p>
+     * Note this can be combined with annotationClass.
+     *
+     * @return the class
+     */
+    Class<?> markerInterface() default Class.class;
+
+    /**
+     * Specifies which {@code SqlSessionTemplate} to use in the case that there is
+     * more than one in the spring context. Usually this is only needed when you
+     * have more than one datasource.
+     *
+     * @return the string
+     */
+    String sqlSessionTemplateRef() default Normal.EMPTY;
+
+    /**
+     * Specifies which {@code SqlSessionFactory} to use in the case that there is
+     * more than one in the spring context. Usually this is only needed when you
+     * have more than one datasource.
+     *
+     * @return the string
+     */
+    String sqlSessionFactoryRef() default Normal.EMPTY;
+
+    /**
+     * Specifies a custom MapperFactoryBean to return a mybatis proxy as spring bean.
+     *
+     * @return the class
+     */
+    Class<? extends MapperFactoryBean> factoryBean() default MapperFactoryBean.class;
+
+    /**
+     * 通用 Mapper 的配置，一行一个配置
+     *
+     * @return the array
+     */
+    String[] properties() default {};
+
+    /**
+     * 还可以直接配置一个 MapperBuilder bean
+     *
+     * @return the string
+     */
+    String mapperBuilderRef() default Normal.EMPTY;
 
 }

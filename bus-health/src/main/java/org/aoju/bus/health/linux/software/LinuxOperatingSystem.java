@@ -609,8 +609,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         boolean systemctlFound = false;
         List<String> systemctl = Executor.runNative("systemctl list-unit-files");
-        for (String str : systemctl) {
-            String[] split = RegEx.SPACES.split(str);
+        for (String text : systemctl) {
+            String[] split = RegEx.SPACES.split(text);
             if (split.length >= 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);

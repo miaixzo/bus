@@ -23,15 +23,54 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.mapper.common;
+package org.aoju.bus.pager.plugins;
+
+import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
 
 /**
- * 标记接口,继承该接口的接口,在MapperScannerConfigurer#setMarkerInterface时,会自动注册到通用Mapper
+ * BoundSql 处理器
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public interface Marker {
+public interface BoundSqlHandler {
+
+    /**
+     * boundsql 处理
+     *
+     * @param type     类型
+     * @param boundSql 当前类型的 boundSql
+     * @param cacheKey 缓存 key
+     * @param chain    处理器链，通过 chain.doBoundSql 方法继续执行后续方法，也可以直接返回 boundSql 终止后续方法的执行
+     * @return 允许修改 boundSql 并返回修改后的
+     */
+    BoundSql boundSql(Type type, BoundSql boundSql, CacheKey cacheKey, Chain chain);
+
+    enum Type {
+        /**
+         * 原始SQL，分页插件执行前，先执行这个类型
+         */
+        ORIGINAL,
+        /**
+         * count SQL，第二个执行这里
+         */
+        COUNT_SQL,
+        /**
+         * 分页 SQL，最后执行这里
+         */
+        PAGE_SQL
+    }
+
+    /**
+     * 处理器链，可以控制是否继续执行
+     */
+    interface Chain {
+
+        Chain DO_NOTHING = (type, boundSql, cacheKey) -> boundSql;
+
+        BoundSql doBoundSql(Type type, BoundSql boundSql, CacheKey cacheKey);
+    }
 
 }
