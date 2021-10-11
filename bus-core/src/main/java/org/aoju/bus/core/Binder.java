@@ -110,12 +110,12 @@ public class Binder {
         this.ignoreUnresolvablePlaceholders = ignoreUnresolvablePlaceholders;
     }
 
-    private static boolean substringMatch(CharSequence str, int index, CharSequence substring) {
-        if (index + substring.length() > str.length()) {
+    private static boolean substringMatch(CharSequence text, int index, CharSequence substring) {
+        if (index + substring.length() > text.length()) {
             return false;
         }
         for (int i = 0; i < substring.length(); i++) {
-            if (str.charAt(index + i) != substring.charAt(i)) {
+            if (text.charAt(index + i) != substring.charAt(i)) {
                 return false;
             }
         }

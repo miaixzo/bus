@@ -155,10 +155,10 @@ public class SwingKit {
     /**
      * 打印输出指定字符串(借助剪贴板)
      *
-     * @param str 字符串
+     * @param text 字符串
      */
-    public static void keyPressString(String str) {
-        setStr(str);
+    public static void keyPressString(String text) {
+        setStr(text);
         keyPressWithCtrl(KeyEvent.VK_V);// 粘贴
         delay();
     }

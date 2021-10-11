@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -42,7 +42,9 @@ public enum Identity {
     HSQLDB("CALL IDENTITY()"),
     SYBASE("SELECT @@IDENTITY"),
     DB2_MF("SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1"),
-    INFORMIX("select dbinfo('sqlca.sqlerrd1') from systables where tabid=1");
+    INFORMIX("select dbinfo('sqlca.sqlerrd1') from systables where tabid=1"),
+    DEFAULT(""),
+    NULL("");
 
     private String identityRetrievalStatement;
 
@@ -70,6 +72,8 @@ public enum Identity {
             returnValue = DB2_MF;
         } else if ("Informix".equalsIgnoreCase(database)) {
             returnValue = INFORMIX;
+        } else if ("".equals(database)) {
+            return DEFAULT;
         }
         return returnValue;
     }
@@ -77,4 +81,5 @@ public enum Identity {
     public String getIdentityRetrievalStatement() {
         return identityRetrievalStatement;
     }
+
 }

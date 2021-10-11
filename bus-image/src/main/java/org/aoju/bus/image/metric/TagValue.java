@@ -107,10 +107,10 @@ public final class TagValue {
         if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
             if (null != val) {
-                String[] strs = val.split(Pattern.quote(separator));
-                int[] vals = new int[strs.length];
-                for (int i = 0; i < strs.length; i++) {
-                    vals[i] = Integer.parseInt(strs[i], 10);
+                String[] texts = val.split(Pattern.quote(separator));
+                int[] vals = new int[texts.length];
+                for (int i = 0; i < texts.length; i++) {
+                    vals[i] = Integer.parseInt(texts[i], 10);
                 }
                 return vals;
             }
@@ -141,10 +141,10 @@ public final class TagValue {
         if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
             if (null != val) {
-                String[] strs = val.split(Pattern.quote(separator));
-                double[] vals = new double[strs.length];
-                for (int i = 0; i < strs.length; i++) {
-                    vals[i] = Double.parseDouble(strs[0]);
+                String[] texts = val.split(Pattern.quote(separator));
+                double[] vals = new double[texts.length];
+                for (int i = 0; i < texts.length; i++) {
+                    vals[i] = Double.parseDouble(texts[0]);
                 }
                 return vals;
             }
@@ -175,10 +175,10 @@ public final class TagValue {
         if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
             if (null != val) {
-                String[] strs = val.split(Pattern.quote(separator));
-                float[] vals = new float[strs.length];
-                for (int i = 0; i < strs.length; i++) {
-                    vals[i] = Float.parseFloat(strs[0]);
+                String[] texts = val.split(Pattern.quote(separator));
+                float[] vals = new float[texts.length];
+                for (int i = 0; i < texts.length; i++) {
+                    vals[i] = Float.parseFloat(texts[0]);
                 }
                 return vals;
             }
@@ -217,16 +217,16 @@ public final class TagValue {
         if (null != attribute) {
             String val = xmler.getAttributeValue(null, attribute);
             if (null != val) {
-                String[] strs = val.split(Pattern.quote(separator));
-                TemporalAccessor[] vals = new TemporalAccessor[strs.length];
-                for (int i = 0; i < strs.length; i++) {
+                String[] texts = val.split(Pattern.quote(separator));
+                TemporalAccessor[] vals = new TemporalAccessor[texts.length];
+                for (int i = 0; i < texts.length; i++) {
                     try {
                         if (TagCamel.TagType.TIME.equals(type)) {
-                            vals[i] = LocalTime.parse(strs[i]);
+                            vals[i] = LocalTime.parse(texts[i]);
                         } else if (TagCamel.TagType.DATETIME.equals(type)) {
-                            vals[i] = LocalDateTime.parse(strs[i]);
+                            vals[i] = LocalDateTime.parse(texts[i]);
                         } else {
-                            vals[i] = LocalDate.parse(strs[i]);
+                            vals[i] = LocalDate.parse(texts[i]);
                         }
                     } catch (Exception e) {
                         Logger.error("Parse date", e);

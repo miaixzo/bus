@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.version;
 
+import org.aoju.bus.core.lang.exception.VersionException;
+
 /**
+ * 版本信息
+ *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
@@ -33,27 +37,11 @@ package org.aoju.bus.mapper.version;
 public interface NextVersion<T> {
 
     /**
-     * 获取下一个版本
-     *
-     * @param nextVersionClass 下个版本对象
-     * @param current          内容
-     * @return 结果对象
-     * @throws VersionException 异常
-     */
-    static Object version(String nextVersionClass, Object current) throws VersionException {
-        try {
-            NextVersion nextVersion = (NextVersion) Class.forName(nextVersionClass).newInstance();
-            return nextVersion.nextVersion(current);
-        } catch (Exception e) {
-            throw new VersionException("获取下一个版本号失败!", e);
-        }
-    }
-
-    /**
      * 返回下一个版本
      *
-     * @param current 对象
-     * @return 结果
+     * @param current 当前版本
+     * @return the object
      */
     T nextVersion(T current) throws VersionException;
+
 }

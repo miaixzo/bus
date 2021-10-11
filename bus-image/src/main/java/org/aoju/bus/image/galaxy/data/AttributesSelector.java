@@ -43,7 +43,7 @@ public class AttributesSelector implements Serializable {
     private final int tag;
     private final String privateCreator;
     private final List<ItemPointer> itemPointers;
-    private String str;
+    private String text;
 
     public AttributesSelector(int tag) {
         this(tag, null, Collections.EMPTY_LIST);
@@ -140,9 +140,9 @@ public class AttributesSelector implements Serializable {
 
     @Override
     public String toString() {
-        if (null == str)
-            str = toStringBuilder().toString();
-        return str;
+        if (null == text)
+            text = toStringBuilder().toString();
+        return text;
     }
 
     @Override

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,40 +25,30 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.common.condition;
 
+import org.aoju.bus.mapper.annotation.RegisterMapper;
 import org.aoju.bus.mapper.provider.ConditionProvider;
-import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 
 /**
  * 通用Mapper接口,Condition查询
  *
+ * @param <T> 不能为空
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
+@RegisterMapper
 public interface UpdateByConditionMapper<T> {
 
     /**
-     * 根据Condition条件更新实体`record`包含的全部属性,null值会被更新
+     * 根据Condition条件更新实体`record`包含的全部属性，null值会被更新
      *
-     * @param record    对象
+     * @param record    记录值
      * @param condition 条件
-     * @return 结果
+     * @return the int
      */
     @UpdateProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    @Options(useCache = false)
     int updateByCondition(@Param("record") T record, @Param("condition") Object condition);
-
-    /**
-     * 根据Condition条件更新实体`record`包含的全部属性,null值会被更新
-     *
-     * @param record    对象
-     * @param condition 条件
-     * @return 结果
-     */
-    @UpdateProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    @Options(useCache = false)
-    int updateByWhere(@Param("record") T record, @Param("condition") Object condition);
 
 }

@@ -30,6 +30,8 @@ import org.aoju.bus.core.lang.Symbol;
 import java.util.Map;
 
 /**
+ * 缓存命中策略
+ *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+

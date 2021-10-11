@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.common.condition;
 
+import org.aoju.bus.mapper.annotation.RegisterMapper;
 import org.aoju.bus.mapper.provider.ConditionProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 
@@ -33,36 +34,21 @@ import java.util.List;
 /**
  * 通用Mapper接口,Condition查询
  *
+ * @param <T> 不能为空
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
+@RegisterMapper
 public interface SelectByConditionMapper<T> {
 
     /**
      * 根据Condition条件进行查询
      *
-     * @param object 对象
-     * @return 结果集
+     * @param condition 条件
+     * @return the list
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    List<T> selectByCondition(Object object);
+    List<T> selectByCondition(Object condition);
 
-    /**
-     * 根据Condition条件进行查询
-     *
-     * @param object 对象
-     * @return 结果集
-     */
-    @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    List<T> selectByWhere(Object object);
-
-    /**
-     * 根据Condition条件进行查询
-     *
-     * @param object 对象
-     * @return 结果集
-     */
-    @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    T selectOneByWhere(Object object);
 }

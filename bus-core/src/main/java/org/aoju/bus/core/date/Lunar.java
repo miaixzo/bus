@@ -3710,7 +3710,7 @@ public class Lunar {
      * @return 日冲描述，如(壬申)猴
      */
     public String getDayChongDesc() {
-        return "(" + getDayChongGan() + getDayChong() + ")" + getDayChongAnimal();
+        return Symbol.PARENTHESE_LEFT + getDayChongGan() + getDayChong() + Symbol.PARENTHESE_RIGHT + getDayChongAnimal();
     }
 
     /**
@@ -3785,7 +3785,7 @@ public class Lunar {
      * @return 时冲描述，如(壬申)猴
      */
     public String getTimeChongDesc() {
-        return "(" + getTimeChongGan() + getTimeChong() + ")" + getTimeChongAnimal();
+        return Symbol.PARENTHESE_LEFT + getTimeChongGan() + getTimeChong() + Symbol.PARENTHESE_RIGHT + getTimeChongAnimal();
     }
 
     /**
@@ -4576,19 +4576,19 @@ public class Lunar {
             s.append(strYmd);
             s.append(Symbol.SPACE);
             s.append(getYearInGanZhi());
-            s.append("(");
+            s.append(Symbol.C_PARENTHESE_LEFT);
             s.append(getYearAnimal());
             s.append(")年 ");
             s.append(getMonthInGanZhi());
-            s.append("(");
+            s.append(Symbol.C_PARENTHESE_LEFT);
             s.append(getMonthAnimal());
             s.append(")月 ");
             s.append(getDayInGanZhi());
-            s.append("(");
+            s.append(Symbol.C_PARENTHESE_LEFT);
             s.append(getDayAnimal());
             s.append(")日 ");
             s.append(getTimeZhi());
-            s.append("(");
+            s.append(Symbol.C_PARENTHESE_LEFT);
             s.append(getTimeAnimal());
             s.append(")时 纳音[");
             s.append(getYearNaYin());
@@ -4603,12 +4603,12 @@ public class Lunar {
             for (String f : getFestivals()) {
                 s.append(" (");
                 s.append(f);
-                s.append(")");
+                s.append(Symbol.PARENTHESE_RIGHT);
             }
             for (String f : getOtherFestivals()) {
                 s.append(" (");
                 s.append(f);
-                s.append(")");
+                s.append(Symbol.PARENTHESE_RIGHT);
             }
             String jq = getSolarTerm(true);
             if (jq.length() > 0) {

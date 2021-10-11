@@ -1029,9 +1029,9 @@ public class XmlKit {
         int lastIdx = 0;
         Matcher matchr = pattern.matcher(xml);
         while (matchr.find()) {
-            String str = matchr.group();
+            String text = matchr.group();
             res.append(xml, lastIdx, matchr.start());
-            res.append(str.toLowerCase());
+            res.append(text.toLowerCase());
             lastIdx = matchr.end();
         }
         res.append(xml.substring(lastIdx));

@@ -296,7 +296,7 @@ public class NineStar {
             s.append(getWuXing());
             s.append(Symbol.SPACE);
             s.append(getPosition());
-            s.append("(");
+            s.append(Symbol.PARENTHESE_LEFT);
             s.append(getPositionDesc());
             s.append(") ");
             s.append(getNameInBeiDou());

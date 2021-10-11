@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.annotation;
 
-import org.aoju.bus.mapper.version.DefaultVersion;
+import org.aoju.bus.mapper.version.DefaultNextVersion;
 import org.aoju.bus.mapper.version.NextVersion;
 
 import java.lang.annotation.ElementType;
@@ -40,15 +40,15 @@ import java.lang.annotation.Target;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Version {
 
     /**
-     * 下一个版本号的算法,默认算法支持 Integer 和 Long,在原基础上 +1
+     * 下一个版本号的算法，默认算法支持 Integer 和 Long，在原基础上 +1
      *
-     * @return 版本信息
+     * @return the class
      */
-    Class<? extends NextVersion> nextVersion() default DefaultVersion.class;
+    Class<? extends NextVersion> nextVersion() default DefaultNextVersion.class;
 
 }

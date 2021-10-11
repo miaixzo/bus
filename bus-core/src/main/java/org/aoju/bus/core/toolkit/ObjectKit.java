@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.Builders;
+import org.aoju.bus.core.text.TextBuilder;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -101,14 +101,14 @@ public class ObjectKit {
     /**
      * 如果给定对象为{@code null}或者""返回默认值, 否则返回自定义handle处理后的返回值
      *
-     * @param str          String 类型
+     * @param text         String 类型
      * @param handle       自定义的处理方法
      * @param defaultValue 默认为空的返回值
      * @param <T>          被检查对象为{@code null}或者 ""返回默认值，否则返回自定义handle处理后的返回值
      * @return 被检查对象为{ null}返回默认值,否则返回原值
      */
-    public static <T> T defaultIfEmpty(final String str, Supplier<? extends T> handle, final T defaultValue) {
-        if (StringKit.isNotEmpty(str)) {
+    public static <T> T defaultIfEmpty(final String text, Supplier<? extends T> handle, final T defaultValue) {
+        if (StringKit.isNotEmpty(text)) {
             return handle.get();
         }
         return defaultValue;
@@ -126,12 +126,12 @@ public class ObjectKit {
      * </pre>
      *
      * @param <T>          对象类型(必须实现CharSequence接口)
-     * @param str          被检查对象，可能为{@code null}
+     * @param text         被检查对象，可能为{@code null}
      * @param defaultValue 被检查对象为{@code null}或者 ""返回的默认值，可以为{@code null}或者 ""
      * @return 被检查对象为{@code null}或者 ""返回默认值，否则返回原值
      */
-    public static <T extends CharSequence> T defaultIfEmpty(final T str, final T defaultValue) {
-        return StringKit.isEmpty(str) ? defaultValue : str;
+    public static <T extends CharSequence> T defaultIfEmpty(final T text, final T defaultValue) {
+        return StringKit.isEmpty(text) ? defaultValue : text;
     }
 
     /**
@@ -146,12 +146,12 @@ public class ObjectKit {
      * </pre>
      *
      * @param <T>          对象类型(必须实现CharSequence接口)
-     * @param str          被检查对象，可能为{@code null}
+     * @param text         被检查对象，可能为{@code null}
      * @param defaultValue 被检查对象为{@code null}或者 ""或者空白符返回的默认值，可以为{@code null}或者 ""或者空白符
      * @return 被检查对象为{@code null}或者 ""或者空白符返回默认值，否则返回原值
      */
-    public static <T extends CharSequence> T defaultIfBlank(final T str, final T defaultValue) {
-        return StringKit.isBlank(str) ? defaultValue : str;
+    public static <T extends CharSequence> T defaultIfBlank(final T text, final T defaultValue) {
+        return StringKit.isBlank(text) ? defaultValue : text;
     }
 
     /**
@@ -219,33 +219,6 @@ public class ObjectKit {
     }
 
     /**
-     * 判断对象是否Empty(null或元素为0)
-     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
-     *
-     * @param object 待检查对象
-     * @return boolean 返回的布尔值
-     */
-    public static final boolean isEmpty(Object... object) {
-        for (Object obj : object) {
-            if (null == obj || Normal.EMPTY.equals(obj)) {
-                return true;
-            }
-            if (obj instanceof CharSequence) {
-                return StringKit.isEmpty((CharSequence) obj);
-            } else if (obj instanceof Map) {
-                return MapKit.isEmpty((Map) obj);
-            } else if (obj instanceof Iterable) {
-                return IterKit.isEmpty((Iterable) obj);
-            } else if (obj instanceof Iterator) {
-                return IterKit.isEmpty((Iterator) obj);
-            } else if (ArrayKit.isArray(obj)) {
-                return ArrayKit.isEmpty(obj);
-            }
-        }
-        return false;
-    }
-
-    /**
      * 判断对象是否为NotEmpty(!null或元素大于0)
      * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
      *
@@ -253,17 +226,6 @@ public class ObjectKit {
      * @return boolean 返回的布尔值
      */
     public static final boolean isNotEmpty(Object object) {
-        return !isEmpty(object);
-    }
-
-    /**
-     * 判断对象是否为NotEmpty(!null或元素大于0)
-     * 实用于对如下对象做判断:String Collection及其子类 Map及其子类
-     *
-     * @param object 待检查对象
-     * @return boolean 返回的布尔值
-     */
-    public static final boolean isNotEmpty(Object... object) {
         return !isEmpty(object);
     }
 
@@ -1349,7 +1311,7 @@ public class ObjectKit {
      * @param builder 要附加到的生成器
      * @param object  要为其创建toString的对象
      */
-    public static void identityToString(final Builders builder, final Object object) {
+    public static void identityToString(final TextBuilder builder, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");
         final String name = object.getClass().getName();
         final String hexString = Integer.toHexString(System.identityHashCode(object));

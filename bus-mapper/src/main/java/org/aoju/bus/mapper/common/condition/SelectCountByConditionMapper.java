@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,33 +25,28 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.common.condition;
 
+import org.aoju.bus.mapper.annotation.RegisterMapper;
 import org.aoju.bus.mapper.provider.ConditionProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 
 /**
  * 通用Mapper接口,Condition查询
  *
+ * @param <T> 不能为空
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
+@RegisterMapper
 public interface SelectCountByConditionMapper<T> {
 
     /**
      * 根据Condition条件进行查询总数
      *
-     * @param object 对象
-     * @return 结果
+     * @param condition 条件
+     * @return the int
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    int selectCountByCondition(Object object);
+    int selectCountByCondition(Object condition);
 
-    /**
-     * 根据Condition条件进行查询总数
-     *
-     * @param object 对象
-     * @return 结果
-     */
-    @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    int selectCountByWhere(Object object);
 }

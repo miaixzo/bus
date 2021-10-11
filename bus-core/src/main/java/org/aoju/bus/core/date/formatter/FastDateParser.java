@@ -247,11 +247,6 @@ public class FastDateParser extends AbstractMotd implements DateParser {
     }
 
     @Override
-    public Object parseObject(final String source) throws ParseException {
-        return parse(source);
-    }
-
-    @Override
     public Date parse(final String source) throws ParseException {
         final ParsePosition pp = new ParsePosition(0);
         final Date date = parse(source, pp);
@@ -262,11 +257,6 @@ public class FastDateParser extends AbstractMotd implements DateParser {
             throw new ParseException("Unparseable date: " + source, pp.getErrorIndex());
         }
         return date;
-    }
-
-    @Override
-    public Object parseObject(final String source, final ParsePosition pos) {
-        return parse(source, pos);
     }
 
     @Override
@@ -284,7 +274,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
         while (lt.hasNext()) {
             final StrategyAndWidth strategyAndWidth = lt.next();
             final int maxWidth = strategyAndWidth.getMaxWidth(lt);
-            if (!strategyAndWidth.strategy.parse(this, calendar, source, pos, maxWidth)) {
+            if (false == strategyAndWidth.strategy.parse(this, calendar, source, pos, maxWidth)) {
                 return false;
             }
         }

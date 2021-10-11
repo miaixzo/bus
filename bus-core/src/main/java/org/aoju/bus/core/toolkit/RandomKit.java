@@ -431,12 +431,12 @@ public class RandomKit {
     /**
      * 获得一个随机的字符串
      *
-     * @param str    随机字符选取的样本
+     * @param text   随机字符选取的样本
      * @param length 字符串的长度
      * @return 随机字符串
      */
-    public static String randomString(String str, int length) {
-        if (StringKit.isEmpty(str)) {
+    public static String randomString(String text, int length) {
+        if (StringKit.isEmpty(text)) {
             return Normal.EMPTY;
         }
         final StringBuilder sb = new StringBuilder(length);
@@ -444,10 +444,10 @@ public class RandomKit {
         if (length < 1) {
             length = 1;
         }
-        int baseLength = str.length();
+        int baseLength = text.length();
         for (int i = 0; i < length; i++) {
             int number = randomInt(baseLength);
-            sb.append(str.charAt(number));
+            sb.append(text.charAt(number));
         }
         return sb.toString();
     }

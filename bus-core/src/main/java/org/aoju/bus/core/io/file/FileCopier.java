@@ -209,7 +209,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
         if (false == src.exists()) {
             throw new InstrumentException("File not exist: " + src);
         }
-        Assert.notNull(dest, "Destination File or directiory is null !");
+        Assert.notNull(dest, "Destination File or directory is null !");
         if (FileKit.equals(src, dest)) {
             throw new InstrumentException("Files '{" + src + "}' and '{" + dest + "}' are equal");
         }

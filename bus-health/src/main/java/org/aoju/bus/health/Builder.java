@@ -421,7 +421,7 @@ public final class Builder {
      * otherwise the map may contain only a single element for {@code pid}
      */
     public static Map<Integer, String> getCwdMap(int pid) {
-        List<String> lsof = Executor.runNative("lsof -F n -d cwd" + (pid < 0 ? "" : " -p " + pid));
+        List<String> lsof = Executor.runNative("lsof -F n -d cwd" + (pid < 0 ? Normal.EMPTY : " -p " + pid));
         Map<Integer, String> cwdMap = new HashMap<>();
         Integer key = -1;
         for (String line : lsof) {
@@ -968,13 +968,13 @@ public final class Builder {
     /**
      * Convert a string to an integer representation.
      *
-     * @param str  A human readable ASCII string
+     * @param text A human readable ASCII string
      * @param size Number of characters to convert to the long. May not exceed 8.
      * @return An integer representing the string where each character is treated as
      * a byte
      */
-    public static long strToLong(String str, int size) {
-        return byteArrayToLong(str.getBytes(Charset.US_ASCII), size);
+    public static long strToLong(String text, int size) {
+        return byteArrayToLong(text.getBytes(Charset.US_ASCII), size);
     }
 
     /**
@@ -1573,7 +1573,7 @@ public final class Builder {
             String vendorId = "0x" + m.group(1).toLowerCase();
             String productId = "0x" + m.group(2).toLowerCase();
             String serial = m.group(4);
-            return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? "" : serial);
+            return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? Normal.EMPTY : serial);
         }
         return null;
     }
@@ -1642,13 +1642,13 @@ public final class Builder {
      * list of just the integers. For example, 0 1 4-7 parses to a list containing
      * 0, 1, 4, 5, 6, and 7.
      *
-     * @param str A string containing space-delimited integers or ranges of integers
-     *            with a hyphen
+     * @param text A string containing space-delimited integers or ranges of integers
+     *             with a hyphen
      * @return A list of integers representing the provided range(s).
      */
-    public static List<Integer> parseHyphenatedIntList(String str) {
+    public static List<Integer> parseHyphenatedIntList(String text) {
         List<Integer> result = new ArrayList<>();
-        for (String s : RegEx.SPACES.split(str)) {
+        for (String s : RegEx.SPACES.split(text)) {
             if (s.contains(Symbol.MINUS)) {
                 int first = getFirstIntValue(s);
                 int last = getNthIntValue(s, 2);
@@ -1735,7 +1735,7 @@ public final class Builder {
         if (utAddrV6[1] == 0 && utAddrV6[2] == 0 && utAddrV6[3] == 0) {
             // Special case for all 0's
             if (utAddrV6[0] == 0) {
-                return "::";
+                return Symbol.COLON + Symbol.COLON;
             }
             // Parse using InetAddress
             byte[] ipv4 = ByteBuffer.allocate(4).putInt(utAddrV6[0]).array();
@@ -1922,7 +1922,7 @@ public final class Builder {
     public static List<PathMatcher> parseFileSystemConfig(String config) {
         FileSystem fs = FileSystems.getDefault();
         List<PathMatcher> patterns = new ArrayList<>();
-        for (String item : config.split(",")) {
+        for (String item : config.split(Symbol.COMMA)) {
             if (item.length() > 0) {
                 // Using glob: prefix as the defult unless user has specified glob or regex. See
                 // https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-

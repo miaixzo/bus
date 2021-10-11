@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.reader;
 
+import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -66,8 +67,9 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
         }
 
         final List<T> beanList = new ArrayList<>(mapList.size());
+        final CopyOptions copyOptions = CopyOptions.create().setIgnoreError(true);
         for (Map<String, Object> map : mapList) {
-            beanList.add(BeanKit.toBeanIgnoreError(map, this.beanClass));
+            beanList.add(BeanKit.toBean(map, this.beanClass, copyOptions));
         }
         return beanList;
     }

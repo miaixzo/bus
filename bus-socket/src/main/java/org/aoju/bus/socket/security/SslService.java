@@ -51,6 +51,12 @@ public class SslService {
     private final boolean isClient;
     private final ClientAuth clientAuth;
     private SSLContext sslContext;
+
+    public SslService(boolean isClient, ClientAuth clientAuth) {
+        this.isClient = isClient;
+        this.clientAuth = clientAuth;
+    }
+
     private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
         @Override
         public void completed(Integer result, HandshakeModel attachment) {
@@ -68,10 +74,6 @@ public class SslService {
             attachment.getHandshakeCallback().callback();
         }
     };
-    public SslService(boolean isClient, ClientAuth clientAuth) {
-        this.isClient = isClient;
-        this.clientAuth = clientAuth;
-    }
 
     public void initKeyStore(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword) {
         try {

@@ -52,8 +52,8 @@ public abstract class BaseDubboFilter implements Filter, Filter.Listener {
         return false;
     }
 
-    String withUnknown(String str) {
-        return StringKit.isBlank(str) ? "unknown" : str;
+    String withUnknown(String text) {
+        return StringKit.isBlank(text) ? "unknown" : text;
     }
 
     String getAsyncIdTrace(String asyncId) {

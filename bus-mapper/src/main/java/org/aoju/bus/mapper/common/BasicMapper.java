@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,22 +25,24 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.common;
 
-import org.aoju.bus.mapper.common.basic.BasicDeleteMapper;
-import org.aoju.bus.mapper.common.basic.BasicInsertMapper;
-import org.aoju.bus.mapper.common.basic.BasicSelectMapper;
-import org.aoju.bus.mapper.common.basic.BasicUpdateMapper;
+import org.aoju.bus.mapper.annotation.RegisterMapper;
+import org.aoju.bus.mapper.common.base.BaseDeleteMapper;
+import org.aoju.bus.mapper.common.base.BaseInsertMapper;
+import org.aoju.bus.mapper.common.base.BaseSelectMapper;
+import org.aoju.bus.mapper.common.base.BaseUpdateMapper;
 
 /**
- * 通用Mapper接口,其他接口继承该接口
+ * 通用Mapper接口,其他接口继承该接口即可
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
+@RegisterMapper
 public interface BasicMapper<T> extends
-        BasicSelectMapper<T>,
-        BasicInsertMapper<T>,
-        BasicUpdateMapper<T>,
-        BasicDeleteMapper<T> {
+        BaseSelectMapper<T>,
+        BaseInsertMapper<T>,
+        BaseUpdateMapper<T>,
+        BaseDeleteMapper<T> {
 
 }

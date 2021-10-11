@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.pager.proxy;
 
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.Querying;
-import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.util.Properties;
 
@@ -44,8 +43,6 @@ public abstract class PageMethod {
     protected static boolean DEFAULT_COUNT = true;
 
     /**
-     * 获取 Page 参数
-     *
      * @param <T> 对象
      * @return 结果
      */
@@ -89,10 +86,10 @@ public abstract class PageMethod {
      * @return 结果
      */
     public static <E> Page<E> startPage(Object params) {
-        Page<E> page = PageFromObject.getPageFromObject(params, true);
-        // 当已经执行过orderBy的时候
+        Page<E> page = PageObject.getPageFromObject(params, true);
+        //当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
-        if (null != oldPage && oldPage.isOrderByOnly()) {
+        if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
         }
         setLocalPage(page);
@@ -147,16 +144,16 @@ public abstract class PageMethod {
      * @param pageSize     每页显示数量
      * @param count        是否进行count查询
      * @param reasonable   分页合理化,null时用默认配置
-     * @param pageSizeZero true且pageSize=0时返回全部结果,false时分页,null时用默认配置
+     * @param pageSizeZero true且pageSize=0时返回全部结果，false时分页,null时用默认配置
      * @return 结果
      */
     public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
         Page<E> page = new Page<>(pageNo, pageSize, count);
         page.setReasonable(reasonable);
         page.setPageSizeZero(pageSizeZero);
-        // 当已经执行过orderBy的时候
+        //当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
-        if (null != oldPage && oldPage.isOrderByOnly()) {
+        if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
         }
         setLocalPage(page);
@@ -167,7 +164,7 @@ public abstract class PageMethod {
      * 开始分页
      *
      * @param <E>    对象
-     * @param offset 起始位置,偏移位置
+     * @param offset 起始位置，偏移位置
      * @param limit  每页显示数量
      * @return 结果
      */
@@ -179,7 +176,7 @@ public abstract class PageMethod {
      * 开始分页
      *
      * @param <E>    对象
-     * @param offset 起始位置,偏移位置
+     * @param offset 起始位置，偏移位置
      * @param limit  每页显示数量
      * @param count  是否进行count查询
      * @return 结果
@@ -188,7 +185,7 @@ public abstract class PageMethod {
         Page<E> page = new Page<>(new int[]{offset, limit}, count);
         // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
-        if (null != oldPage && oldPage.isOrderByOnly()) {
+        if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
         }
         setLocalPage(page);
@@ -202,7 +199,7 @@ public abstract class PageMethod {
      */
     public static void orderBy(String orderBy) {
         Page<?> page = getLocalPage();
-        if (null != page) {
+        if (page != null) {
             page.setOrderBy(orderBy);
         } else {
             page = new Page();
@@ -218,8 +215,8 @@ public abstract class PageMethod {
      * @param properties 插件属性
      */
     protected static void setStaticProperties(Properties properties) {
-        // defaultCount,这是一个全局生效的参数,多数据源时也是统一的行为
-        if (null != properties) {
+        // defaultCount，这是一个全局生效的参数，多数据源时也是统一的行为
+        if (properties != null) {
             DEFAULT_COUNT = Boolean.valueOf(properties.getProperty("defaultCount", "true"));
         }
     }

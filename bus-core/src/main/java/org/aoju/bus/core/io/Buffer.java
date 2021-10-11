@@ -1779,7 +1779,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 160-bit SHA-1 HMAC of this buffer.
      */
     public final ByteString hmacSha1(ByteString key) {
-        return hmac(Algorithm.HmacSHA1.getValue(), key);
+        return hmac(Algorithm.HMACSHA1.getValue(), key);
     }
 
     /**
@@ -1787,7 +1787,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 256-bit SHA-256 HMAC of this buffer.
      */
     public final ByteString hmacSha256(ByteString key) {
-        return hmac(Algorithm.HmacSHA256.getValue(), key);
+        return hmac(Algorithm.HMACSHA256.getValue(), key);
     }
 
     /**
@@ -1795,7 +1795,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return the 512-bit SHA-512 HMAC of this buffer.
      */
     public final ByteString hmacSha512(ByteString key) {
-        return hmac(Algorithm.HmacSHA512.getValue(), key);
+        return hmac(Algorithm.HMACSHA512.getValue(), key);
     }
 
     private ByteString hmac(String algorithm, ByteString key) {

@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 public class SolarisOSProcess extends AbstractOSProcess {
 
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
-            .map(String::toLowerCase).collect(Collectors.joining(","));
+            .map(String::toLowerCase).collect(Collectors.joining(Symbol.COMMA));
     private Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoize.memoize(this::queryCommandlineEnvironment);
 
     private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);

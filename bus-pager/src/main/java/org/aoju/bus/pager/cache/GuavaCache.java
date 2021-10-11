@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,7 @@
 package org.aoju.bus.pager.cache;
 
 import com.google.common.cache.CacheBuilder;
-import org.aoju.bus.pager.plugin.PageFromObject;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -45,21 +45,21 @@ public class GuavaCache<K, V> implements Cache<K, V> {
     public GuavaCache(Properties properties, String prefix) {
         CacheBuilder cacheBuilder = CacheBuilder.newBuilder();
         String maximumSize = properties.getProperty(prefix + ".maximumSize");
-        if (PageFromObject.isNotEmpty(maximumSize)) {
+        if (StringKit.isNotEmpty(maximumSize)) {
             cacheBuilder.maximumSize(Long.parseLong(maximumSize));
         } else {
             cacheBuilder.maximumSize(1000);
         }
         String expireAfterAccess = properties.getProperty(prefix + ".expireAfterAccess");
-        if (PageFromObject.isNotEmpty(expireAfterAccess)) {
+        if (StringKit.isNotEmpty(expireAfterAccess)) {
             cacheBuilder.expireAfterAccess(Long.parseLong(expireAfterAccess), TimeUnit.MILLISECONDS);
         }
         String expireAfterWrite = properties.getProperty(prefix + ".expireAfterWrite");
-        if (PageFromObject.isNotEmpty(expireAfterWrite)) {
+        if (StringKit.isNotEmpty(expireAfterWrite)) {
             cacheBuilder.expireAfterWrite(Long.parseLong(expireAfterWrite), TimeUnit.MILLISECONDS);
         }
         String initialCapacity = properties.getProperty(prefix + ".initialCapacity");
-        if (PageFromObject.isNotEmpty(initialCapacity)) {
+        if (StringKit.isNotEmpty(initialCapacity)) {
             cacheBuilder.initialCapacity(Integer.parseInt(initialCapacity));
         }
         CACHE = cacheBuilder.build();
@@ -74,4 +74,5 @@ public class GuavaCache<K, V> implements Cache<K, V> {
     public void put(K key, V value) {
         CACHE.put(key, value);
     }
+
 }

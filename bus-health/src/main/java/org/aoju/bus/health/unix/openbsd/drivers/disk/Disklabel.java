@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.openbsd.drivers.disk;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.health.Builder;
@@ -117,7 +118,7 @@ public final class Disklabel {
               l:        387166336        112937088  4.2BSD   4096 32768 26062 # /home
              Note size is in sectors
              */
-            if (line.trim().indexOf(':') == 1) {
+            if (line.trim().indexOf(Symbol.C_COLON) == 1) {
                 // partition table values have a single letter followed by a colon
                 String[] split = RegEx.SPACES.split(line.trim(), 9);
                 String name = split[0].substring(0, 1);
@@ -158,7 +159,7 @@ public final class Disklabel {
         int major = 0;
         int minor = 0;
         String majorMinor = Executor.getFirstAnswer("stat -f %Hr,%Lr /dev/" + diskName + name);
-        int comma = majorMinor.indexOf(',');
+        int comma = majorMinor.indexOf(Symbol.C_COMMA);
         if (comma > 0 && comma < majorMinor.length()) {
             major = Builder.parseIntOrDefault(majorMinor.substring(0, comma), 0);
             minor = Builder.parseIntOrDefault(majorMinor.substring(comma + 1), 0);

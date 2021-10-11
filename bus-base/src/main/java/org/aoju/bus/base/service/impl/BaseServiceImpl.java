@@ -106,7 +106,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public int deleteByWhere(Object object) {
-        return mapper.deleteByWhere(object);
+        return mapper.deleteByCondition(object);
     }
 
     @Override
@@ -146,13 +146,13 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     @Override
     public int updateByWhere(T entity, Object object) {
         entity.setUpdatedInfo(entity);
-        return mapper.updateByWhere(entity, object);
+        return mapper.updateByCondition(entity, object);
     }
 
     @Override
     public int updateByWhereSelective(T entity, Object object) {
         entity.setUpdatedInfo(entity);
-        return mapper.updateByWhereSelective(entity, object);
+        return mapper.updateByConditionSelective(entity, object);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public int selectCountByWhere(Object object) {
-        return mapper.selectCountByWhere(object);
+        return mapper.selectCountByCondition(object);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public List<T> selectByWhere(Object where) {
-        return mapper.selectByWhere(where);
+        return mapper.selectByCondition(where);
     }
 
     @Override

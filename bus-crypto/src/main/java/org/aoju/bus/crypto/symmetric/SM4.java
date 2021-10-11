@@ -50,9 +50,8 @@ import javax.crypto.spec.IvParameterSpec;
  */
 public class SM4 extends Crypto {
 
-    private static final long serialVersionUID = 1L;
-
     public static final String ALGORITHM_NAME = Algorithm.SM4.name();
+    private static final long serialVersionUID = 1L;
 
     /**
      * 构造，使用随机密钥

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,16 +36,14 @@ import org.aoju.bus.pager.dialect.ReplaceSql;
  */
 public class SimpleWithNolock implements ReplaceSql {
 
-    protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
-
     @Override
     public String replace(String sql) {
-        return sql.replaceAll("((?i)with\\s*\\(nolock\\))", WITHNOLOCK);
+        return sql.replaceAll("((?i)with\\s*\\(nolock\\))", ", PAGEWITHNOLOCK");
     }
 
     @Override
     public String restore(String sql) {
-        return sql.replaceAll(WITHNOLOCK, " with(nolock)");
+        return sql.replaceAll(", PAGEWITHNOLOCK", " with(nolock)");
     }
 
 }

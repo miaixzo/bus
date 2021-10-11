@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.shade.screw.execute.ProduceExecute;
 
 /**
@@ -39,7 +40,7 @@ public class Builder {
     /**
      * 百分号
      */
-    public static final String PERCENT_SIGN = "%";
+    public static final String PERCENT_SIGN = Symbol.PERCENT;
     /**
      * 暂未支持
      */

@@ -88,28 +88,28 @@ public class Graphics {
      * 绘制字符串，使用随机颜色，默认抗锯齿
      *
      * @param g      {@link java.awt.Graphics}画笔
-     * @param str    字符串
+     * @param text   字符串
      * @param font   字体
      * @param width  字符串总宽度
      * @param height 字符串背景高度
      * @return 画笔对象
      */
-    public static java.awt.Graphics drawStringColourful(java.awt.Graphics g, String str, Font font, int width, int height) {
-        return drawString(g, str, font, null, width, height);
+    public static java.awt.Graphics drawStringColourful(java.awt.Graphics g, String text, Font font, int width, int height) {
+        return drawString(g, text, font, null, width, height);
     }
 
     /**
      * 绘制字符串，默认抗锯齿
      *
      * @param g      {@link java.awt.Graphics}画笔
-     * @param str    字符串
+     * @param text   字符串
      * @param font   字体
      * @param color  字体颜色，{@code null} 表示使用随机颜色（每个字符单独随机）
      * @param width  字符串背景的宽度
      * @param height 字符串背景的高度
      * @return 画笔对象
      */
-    public static java.awt.Graphics drawString(java.awt.Graphics g, String str, Font font, Color color, int width, int height) {
+    public static java.awt.Graphics drawString(java.awt.Graphics g, String text, Font font, Color color, int width, int height) {
         // 抗锯齿
         if (g instanceof Graphics2D) {
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -123,14 +123,14 @@ public class Graphics {
             g.setColor(color);
         }
 
-        final int len = str.length();
+        final int len = text.length();
         int charWidth = width / len;
         for (int i = 0; i < len; i++) {
             if (null == color) {
                 // 产生随机的颜色值，让输出的每个字符的颜色值都将不同。
                 g.setColor(ImageKit.randomColor());
             }
-            g.drawString(String.valueOf(str.charAt(i)), i * charWidth, midY);
+            g.drawString(String.valueOf(text.charAt(i)), i * charWidth, midY);
         }
         return g;
     }
@@ -140,13 +140,13 @@ public class Graphics {
      * 此方法定义一个矩形区域和坐标，文字基于这个区域中间偏移x,y绘制。
      *
      * @param g         {@link java.awt.Graphics}画笔
-     * @param str       字符串
+     * @param text      字符串
      * @param font      字体，字体大小决定了在背景中绘制的大小
      * @param color     字体颜色，{@code null} 表示使用黑色
      * @param rectangle 字符串绘制坐标和大小，此对象定义了绘制字符串的区域大小和偏移位置
      * @return 画笔对象
      */
-    public static java.awt.Graphics drawString(java.awt.Graphics g, String str, Font font, Color color, Rectangle rectangle) {
+    public static java.awt.Graphics drawString(java.awt.Graphics g, String text, Font font, Color color, Rectangle rectangle) {
         // 背景长宽
         final int backgroundWidth = rectangle.width;
         final int backgroundHeight = rectangle.height;
@@ -154,7 +154,7 @@ public class Graphics {
         //获取字符串本身的长宽
         Dimension dimension;
         try {
-            dimension = Fonts.getDimension(g.getFontMetrics(font), str);
+            dimension = Fonts.getDimension(g.getFontMetrics(font), text);
         } catch (Exception e) {
             // 此处报告bug某些情况下会抛出IndexOutOfBoundsException，在此做容错处理
             dimension = new Dimension(backgroundWidth / 3, backgroundHeight / 3);
@@ -163,20 +163,20 @@ public class Graphics {
         rectangle.setSize(dimension.width, dimension.height);
         final Point point = ImageKit.getPointCentre(rectangle, backgroundWidth, backgroundHeight);
 
-        return drawString(g, str, font, color, point);
+        return drawString(g, text, font, color, point);
     }
 
     /**
      * 绘制字符串，默认抗锯齿
      *
      * @param g     {@link java.awt.Graphics}画笔
-     * @param str   字符串
+     * @param text  字符串
      * @param font  字体，字体大小决定了在背景中绘制的大小
      * @param color 字体颜色，{@code null} 表示使用黑色
      * @param point 绘制字符串的位置坐标
      * @return 画笔对象
      */
-    public static java.awt.Graphics drawString(java.awt.Graphics g, String str, Font font, Color color, Point point) {
+    public static java.awt.Graphics drawString(java.awt.Graphics g, String text, Font font, Color color, Point point) {
         // 抗锯齿
         if (g instanceof Graphics2D) {
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -184,7 +184,7 @@ public class Graphics {
 
         g.setFont(font);
         g.setColor(ObjectKit.defaultIfNull(color, Color.BLACK));
-        g.drawString(str, point.x, point.y);
+        g.drawString(text, point.x, point.y);
 
         return g;
     }

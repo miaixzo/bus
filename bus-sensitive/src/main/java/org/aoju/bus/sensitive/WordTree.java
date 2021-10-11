@@ -26,7 +26,7 @@
 package org.aoju.bus.sensitive;
 
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.text.Builders;
+import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -201,7 +201,7 @@ public class WordTree extends HashMap<Character, WordTree> {
         int length = text.length();
         final Filter<Character> charFilter = this.charFilter;
         // 存放查找到的字符缓存。完整出现一个词时加到findedWords中，否则清空
-        final Builders wordBuffer = StringKit.builders();
+        final TextBuilder wordBuffer = StringKit.builders();
         char currentChar;
         for (int i = 0; i < length; i++) {
             wordBuffer.reset();

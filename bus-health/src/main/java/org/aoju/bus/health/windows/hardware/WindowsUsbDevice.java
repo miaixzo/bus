@@ -27,6 +27,7 @@ package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Guid;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
@@ -148,7 +149,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         if (nameMap.containsKey(device)) {
             String name = nameMap.get(device);
             if (name.isEmpty()) {
-                name = vendorId + ":" + productId;
+                name = vendorId + Symbol.COLON + productId;
             }
             String deviceId = deviceIdMap.get(device);
             String mfg = mfgMap.get(device);

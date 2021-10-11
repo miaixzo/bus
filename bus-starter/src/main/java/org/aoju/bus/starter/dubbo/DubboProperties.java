@@ -42,8 +42,8 @@ import org.springframework.context.annotation.Bean;
 @ConfigurationProperties(prefix = BusXExtend.DUBBO)
 public class DubboProperties {
 
-    protected String basePackage;
-    protected String basePackageClass;
+    protected String basePackages;
+    protected String basePackageClasses;
     protected boolean multiple;
 
     @Bean

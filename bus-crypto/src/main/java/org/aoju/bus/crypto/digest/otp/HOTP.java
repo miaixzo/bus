@@ -74,7 +74,7 @@ public class HOTP {
      * @param key            共享密码，RFC 4226要求最少128位
      */
     public HOTP(int passwordLength, byte[] key) {
-        this(passwordLength, Algorithm.HmacSHA1, key);
+        this(passwordLength, Algorithm.HMACSHA1, key);
     }
 
     /**

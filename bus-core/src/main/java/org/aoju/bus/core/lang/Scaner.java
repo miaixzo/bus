@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.collection.EnumerationIter;
+import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
@@ -145,7 +145,7 @@ public class Scaner {
     }
 
     /**
-     * 扫面该包路径下所有class文件
+     * 扫描该包路径下所有class文件
      *
      * @return 类集合
      */
@@ -154,7 +154,7 @@ public class Scaner {
     }
 
     /**
-     * 扫面该包路径下所有class文件
+     * 扫描该包路径下所有class文件
      *
      * @param packageName 包路径 com | com. | com.abs | com.abs.
      * @return 类集合
@@ -310,7 +310,7 @@ public class Scaner {
      */
     private void scanJar(JarFile jar) {
         String name;
-        for (JarEntry entry : new EnumerationIter<>(jar.entries())) {
+        for (JarEntry entry : new EnumerationIterator<>(jar.entries())) {
             name = StringKit.removePrefix(entry.getName(), Symbol.SLASH);
             if (StringKit.isEmpty(packagePath) || name.startsWith(this.packagePath)) {
                 if (name.endsWith(FileType.CLASS) && false == entry.isDirectory()) {

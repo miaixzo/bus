@@ -379,7 +379,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                     }
                                     disk.release();
                                 }
-                                String mountPoint = mountPointMap.getOrDefault(partBsdName, "");
+                                String mountPoint = mountPointMap.getOrDefault(partBsdName, Normal.EMPTY);
                                 Long size = sdService.getLongProperty("Size");
                                 Integer bsdMajor = sdService.getIntegerProperty("BSD Major");
                                 Integer bsdMinor = sdService.getIntegerProperty("BSD Minor");

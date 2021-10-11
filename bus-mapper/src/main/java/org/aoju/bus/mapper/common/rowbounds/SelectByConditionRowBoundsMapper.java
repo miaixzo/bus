@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.common.rowbounds;
 
+import org.aoju.bus.mapper.annotation.RegisterMapper;
 import org.aoju.bus.mapper.provider.ConditionProvider;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
@@ -32,32 +33,24 @@ import org.apache.ibatis.session.RowBounds;
 import java.util.List;
 
 /**
- * 通用Mapper接口,Condition查询
+ * 通用Mapper接口,查询
  *
+ * @param <T> 不能为空
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
+@RegisterMapper
 public interface SelectByConditionRowBoundsMapper<T> {
 
     /**
-     * 根据Condition条件和RowBounds进行分页查询,该方法和selectByWhereAndRowBounds完全一样,只是名字改成了Condition
+     * 根据condition条件和RowBounds进行分页查询
      *
      * @param condition 条件
-     * @param rowBounds RowBounds信息
-     * @return 结果集
+     * @param rowBounds RowBounds
+     * @return the list
      */
     @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
     List<T> selectByConditionAndRowBounds(Object condition, RowBounds rowBounds);
-
-    /**
-     * 根据Condition条件更新实体和RowBounds进行分页查询
-     *
-     * @param object    对象
-     * @param rowBounds RowBounds信息
-     * @return 结果集
-     */
-    @SelectProvider(type = ConditionProvider.class, method = "dynamicSQL")
-    List<T> selectByWhereAndRowBounds(Object object, RowBounds rowBounds);
 
 }

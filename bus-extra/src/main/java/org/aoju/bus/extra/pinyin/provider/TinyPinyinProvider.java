@@ -61,8 +61,8 @@ public class TinyPinyinProvider extends AbstractPinyinProvider {
     }
 
     @Override
-    public String getPinyin(String str, String separator) {
-        return Pinyin.toPinyin(str, separator).toLowerCase();
+    public String getPinyin(String text, String separator) {
+        return Pinyin.toPinyin(text, separator).toLowerCase();
     }
 
 }

@@ -32,6 +32,6 @@ package org.aoju.bus.base.mapper;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public interface Mapper<T> extends org.aoju.bus.mapper.common.Mapper<T> {
+public interface Mapper<T> extends org.aoju.bus.mapper.Mapper<T> {
 
 }

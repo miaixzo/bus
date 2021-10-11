@@ -59,6 +59,28 @@ public abstract class AbstractFtp implements Closeable {
     }
 
     /**
+     * 是否包含指定字符串,忽略大小写
+     *
+     * @param names      文件或目录名列表
+     * @param nameToFind 要查找的文件或目录名
+     * @return 是否包含
+     */
+    private static boolean containsIgnoreCase(List<String> names, String nameToFind) {
+        if (CollKit.isEmpty(names)) {
+            return false;
+        }
+        if (StringKit.isEmpty(nameToFind)) {
+            return false;
+        }
+        for (String name : names) {
+            if (nameToFind.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 如果连接超时的话,重新进行连接
      *
      * @return this
@@ -207,28 +229,6 @@ public abstract class AbstractFtp implements Closeable {
      * @param destPath   本地目录
      */
     public abstract void download(String sourcePath, String destPath);
-
-    /**
-     * 是否包含指定字符串,忽略大小写
-     *
-     * @param names      文件或目录名列表
-     * @param nameToFind 要查找的文件或目录名
-     * @return 是否包含
-     */
-    private static boolean containsIgnoreCase(List<String> names, String nameToFind) {
-        if (CollKit.isEmpty(names)) {
-            return false;
-        }
-        if (StringKit.isEmpty(nameToFind)) {
-            return false;
-        }
-        for (String name : names) {
-            if (nameToFind.equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * 下载文件-避免未完成的文件

@@ -153,14 +153,14 @@ public class IniSetting extends ArrayList<IniElement> {
      * @throws IOException io exception from {@link OutputStream#write(byte[])}
      */
     public void write(OutputStream out, Charset charset, boolean withComment) throws IOException {
-        String str;
+        String text;
         for (IniElement element : this) {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = null == element ? getNewLineSplit() :
-                    withComment ? element.toString() + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
-            out.write(str.getBytes(charset));
+            text = null == element ? getNewLineSplit() :
+                    withComment ? element + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
+            out.write(text.getBytes(charset));
         }
         out.flush();
     }
@@ -187,14 +187,14 @@ public class IniSetting extends ArrayList<IniElement> {
      * @throws IOException io exception from {@link Writer#write(String)}
      */
     public void write(Writer writer, boolean withComment) throws IOException {
-        String str;
+        String text;
         for (IniElement element : this) {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = null == element ? getNewLineSplit() :
-                    withComment ? element.toString() + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
-            writer.write(str);
+            text = null == element ? getNewLineSplit() :
+                    withComment ? element + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
+            writer.write(text);
         }
         writer.flush();
     }
@@ -206,13 +206,13 @@ public class IniSetting extends ArrayList<IniElement> {
      * @param withComment write with comment
      */
     public void write(PrintStream print, boolean withComment) {
-        String str;
+        String text;
         for (IniElement element : this) {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = null == element ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
-            print.println(str);
+            text = null == element ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
+            print.println(text);
         }
         print.flush();
     }

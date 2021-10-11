@@ -67,9 +67,9 @@ public class TagView {
     public String getFormattedText(boolean anonymize, Readable... tagable) {
         for (TagCamel t : this.tag) {
             if (!anonymize || t.getAnonymizationType() != 1) {
-                String str = t.getFormattedTagValue(TagValue.getTagValue(t, tagable), format);
-                if (StringKit.hasText(str)) {
-                    return str;
+                String text = t.getFormattedTagValue(TagValue.getTagValue(t, tagable), format);
+                if (StringKit.hasText(text)) {
+                    return text;
                 }
             }
         }

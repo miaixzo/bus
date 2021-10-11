@@ -29,6 +29,8 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.util.List;
+
 /**
  * 用于识别当前版本号和版权声明!
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
@@ -192,6 +194,13 @@ public class Version {
      */
     private int compare(String version) {
         return ObjectKit.compare(get(), version, complete);
+    }
+
+    public static void main(String[] args) {
+
+        List<String> list = StringKit.split(get(), '.', 0, true, true, String::trim);
+
+        System.out.println(major());
     }
 
 }

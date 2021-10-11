@@ -214,7 +214,18 @@ public class DateTime extends Date {
      * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
      */
     public DateTime(CharSequence dateStr, DateParser dateParser) {
-        this(parse(dateStr, dateParser), dateParser.getTimeZone());
+        this(dateStr, dateParser, true);
+    }
+
+    /**
+     * 构造
+     *
+     * @param dateStr    Date字符串
+     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link Fields}
+     * @param lenient    是否宽容模式
+     */
+    public DateTime(CharSequence dateStr, DateParser dateParser, boolean lenient) {
+        this(parse(dateStr, dateParser, lenient));
     }
 
     /**
@@ -299,14 +310,16 @@ public class DateTime extends Date {
      * @param parser  {@link FormatBuilder}
      * @return {@link Date}
      */
-    private static Date parse(CharSequence dateStr, DateParser parser) {
+    private static Calendar parse(CharSequence dateStr, DateParser parser, boolean lenient) {
         Assert.notNull(parser, "Parser or DateFromat must be not null !");
         Assert.notBlank(dateStr, "Date String must be not blank !");
-        try {
-            return parser.parse(dateStr.toString());
-        } catch (Exception e) {
-            throw new InstrumentException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern(), e);
+
+        final Calendar calendar = Formatter.parse(dateStr, lenient, parser);
+        if (null == calendar) {
+            throw new InstrumentException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern());
         }
+        calendar.setFirstDayOfWeek(Fields.Week.Mon.getKey());
+        return calendar;
     }
 
     /**

@@ -60,11 +60,11 @@ public class AmazonProvider extends AbstractProvider {
         }
     }
 
-    public static byte[] digest(String str) {
+    public static byte[] digest(String text) {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
-            messageDigest.update(str.getBytes(StandardCharsets.UTF_8));
+            messageDigest.update(text.getBytes(StandardCharsets.UTF_8));
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

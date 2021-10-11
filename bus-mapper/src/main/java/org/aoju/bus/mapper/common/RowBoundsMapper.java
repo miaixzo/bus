@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,17 +25,20 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.common;
 
+import org.aoju.bus.mapper.annotation.RegisterMapper;
+import org.aoju.bus.mapper.common.rowbounds.SelectByConditionRowBoundsMapper;
 import org.aoju.bus.mapper.common.rowbounds.SelectRowBoundsMapper;
 
 /**
  * 通用Mapper接口,带RowBounds参数的查询
- * 配合分页插件可以实现物理分页
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
+@RegisterMapper
 public interface RowBoundsMapper<T> extends
+        SelectByConditionRowBoundsMapper<T>,
         SelectRowBoundsMapper<T> {
 
 }

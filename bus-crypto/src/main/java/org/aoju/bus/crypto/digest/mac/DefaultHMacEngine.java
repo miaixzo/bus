@@ -51,7 +51,6 @@ public class DefaultHMacEngine implements MacEngine {
      *
      * @param algorithm 算法
      * @param key       密钥
-
      */
     public DefaultHMacEngine(String algorithm, byte[] key) {
         this(algorithm, (null == key) ? null : new SecretKeySpec(key, algorithm));

@@ -73,10 +73,10 @@ public final class Builder {
         return new String(randomChars);
     }
 
-    public static String createAlphanumericHash(final String str, final int length) {
+    public static String createAlphanumericHash(final String text, final int length) {
         try {
             final MessageDigest md = MessageDigest.getInstance(Algorithm.SHA256.getValue());
-            final byte[] digest = md.digest(str.getBytes(Charset.UTF_8));
+            final byte[] digest = md.digest(text.getBytes(Charset.UTF_8));
             final StringBuilder sb = new StringBuilder();
             for (final byte b : digest) {
                 if (b < 16) sb.append(Symbol.ZERO);

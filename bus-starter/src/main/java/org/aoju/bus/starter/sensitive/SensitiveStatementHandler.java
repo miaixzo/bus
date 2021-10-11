@@ -26,11 +26,11 @@
 package org.aoju.bus.starter.sensitive;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
+import org.aoju.bus.mapper.plugins.AbstractSqlHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.NShield;
@@ -50,6 +50,7 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * 数据脱敏加密
@@ -61,11 +62,18 @@ import java.util.Map;
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
 
-    private final SensitiveProperties properties;
-
-    public SensitiveStatementHandler(SensitiveProperties properties) {
-        this.properties = properties;
-    }
+    /**
+     * 是否DEBUG模式
+     */
+    private boolean debug;
+    /**
+     * 加密类型
+     */
+    private String type;
+    /**
+     * 加密秘钥
+     */
+    private String key;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -80,7 +88,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
             return invocation.proceed();
         }
 
-        if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
+        if (this.debug) {
             Sensitive sensitive = null != params ? params.getClass().getAnnotation(Sensitive.class) : null;
             if (ObjectKit.isNotEmpty(sensitive)) {
                 handleParameters(sensitive, mappedStatement.getConfiguration(), boundSql, params, commandType);
@@ -95,6 +103,13 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
             return Plugin.wrap(object, this);
         }
         return object;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+        this.debug = BooleanKit.toBoolean(properties.getProperty("debug"));
+        this.key = properties.getProperty("key");
+        this.type = properties.getProperty("type");
     }
 
     private void handleParameters(Sensitive sensitive, Configuration configuration, BoundSql boundSql, Object param, SqlCommandType commandType) {
@@ -122,11 +137,8 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
                     Privacy privacy = field.getAnnotation(Privacy.class);
                     if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
                         if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
-                            if (ObjectKit.isEmpty(this.properties)) {
-                                throw new InstrumentException("Please check the request.crypto.encrypt");
-                            }
                             Logger.debug("Write data encryption enabled ...");
-                            value = org.aoju.bus.crypto.Builder.encrypt(this.properties.getEncrypt().getType(), this.properties.getEncrypt().getKey(), value.toString(), Charset.UTF_8);
+                            value = org.aoju.bus.crypto.Builder.encrypt(this.type, this.key, value.toString(), Charset.UTF_8);
                         }
                     }
                 }

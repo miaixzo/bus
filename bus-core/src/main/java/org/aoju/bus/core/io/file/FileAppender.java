@@ -102,8 +102,8 @@ public class FileAppender implements Serializable {
      */
     public FileAppender flush() {
         try (PrintWriter pw = writer.getPrintWriter(true)) {
-            for (String str : list) {
-                pw.print(str);
+            for (String text : list) {
+                pw.print(text);
                 if (isNewLineMode) {
                     pw.println();
                 }

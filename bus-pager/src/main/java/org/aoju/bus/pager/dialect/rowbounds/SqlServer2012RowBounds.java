@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -41,7 +41,7 @@ public class SqlServer2012RowBounds extends SqlServerRowBounds {
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);
         sqlBuilder.append(sql);
-        sqlBuilder.append(" OFFSET ");
+        sqlBuilder.append("\n OFFSET ");
         sqlBuilder.append(rowBounds.getOffset());
         sqlBuilder.append(" ROWS ");
         pageKey.update(rowBounds.getOffset());

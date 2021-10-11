@@ -114,13 +114,13 @@ public class Java implements Serializable {
             return 0f;
         }
 
-        String str = JAVA_VERSION.substring(0, 3);
+        String text = JAVA_VERSION.substring(0, 3);
 
         if (JAVA_VERSION.length() >= 5) {
-            str = str + JAVA_VERSION.substring(4, 5);
+            text = text + JAVA_VERSION.substring(4, 5);
         }
 
-        return Float.parseFloat(str);
+        return Float.parseFloat(text);
     }
 
     /**
@@ -133,17 +133,17 @@ public class Java implements Serializable {
             return 0;
         }
 
-        String str = JAVA_VERSION.substring(0, 1);
+        String text = JAVA_VERSION.substring(0, 1);
 
-        str = str + JAVA_VERSION.substring(2, 3);
+        text = text + JAVA_VERSION.substring(2, 3);
 
         if (JAVA_VERSION.length() >= 5) {
-            str = str + JAVA_VERSION.substring(4, 5);
+            text = text + JAVA_VERSION.substring(4, 5);
         } else {
-            str = str + Symbol.ZERO;
+            text = text + Symbol.ZERO;
         }
 
-        return Integer.parseInt(str);
+        return Integer.parseInt(text);
     }
 
     /**

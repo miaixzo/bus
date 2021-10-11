@@ -27,6 +27,7 @@ package org.aoju.bus.socket;
 
 import org.aoju.bus.core.io.ByteBuffer;
 import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.handler.CompletionReadHandler;
 import org.aoju.bus.socket.handler.CompletionWriteHandler;
 import org.aoju.bus.socket.handler.ConcurrentReadHandler;
@@ -183,8 +184,8 @@ public class AioQuickServer<T> {
             shutdown();
             throw e;
         }
-        System.out.println("bus-socket server started on port " + config.getPort() + ",threadNum:" + config.getThreadNum());
-        System.out.println("bus-socket server config is " + config);
+        Logger.info("bus-socket server started on port " + config.getPort() + ",threadNum:" + config.getThreadNum());
+        Logger.info("bus-socket server config is " + config);
     }
 
     private void startAcceptThread() {

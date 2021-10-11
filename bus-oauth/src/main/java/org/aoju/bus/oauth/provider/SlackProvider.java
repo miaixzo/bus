@@ -93,7 +93,7 @@ public class SlackProvider extends AbstractProvider {
             if (object.containsKey("response_metadata")) {
                 JSONArray array = object.getJSONObject("response_metadata").getJSONArray("messages");
                 if (null != array && array.size() > 0) {
-                    errorMsg += "; " + String.join(",", array.toArray(new String[0]));
+                    errorMsg += "; " + String.join(Symbol.COMMA, array.toArray(new String[0]));
                 }
             }
 

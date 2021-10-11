@@ -69,22 +69,22 @@ public class Builder {
     }
 
     /**
-     * 如果给定字符串{@code str}中不包含{@code appendStr},则在{@code str}后追加{@code appendStr}；
-     * 如果已包含{@code appendStr},则在{@code str}后追加{@code otherwise}
+     * 如果给定字符串{@code text}中不包含{@code appendStr},则在{@code text}后追加{@code appendStr}；
+     * 如果已包含{@code appendStr},则在{@code text}后追加{@code otherwise}
      *
-     * @param str       给定的字符串
+     * @param text      给定的字符串
      * @param appendStr 需要追加的内容
-     * @param otherwise 当{@code appendStr}不满足时追加到{@code str}后的内容
+     * @param otherwise 当{@code appendStr}不满足时追加到{@code text}后的内容
      * @return 追加后的字符串
      */
-    public static String appendIfNotContain(String str, String appendStr, String otherwise) {
-        if (StringKit.isEmpty(str) || StringKit.isEmpty(appendStr)) {
-            return str;
+    public static String appendIfNotContain(String text, String appendStr, String otherwise) {
+        if (StringKit.isEmpty(text) || StringKit.isEmpty(appendStr)) {
+            return text;
         }
-        if (str.contains(appendStr)) {
-            return str.concat(otherwise);
+        if (text.contains(appendStr)) {
+            return text.concat(otherwise);
         }
-        return str.concat(appendStr);
+        return text.concat(appendStr);
     }
 
     /**
@@ -92,7 +92,7 @@ public class Builder {
      *
      * @param params 待转换的map
      * @param encode 是否转码
-     * @return str
+     * @return the string
      */
     public static String parseMapToString(Map<String, Object> params, boolean encode) {
         List<String> paramList = new ArrayList<>();

@@ -49,10 +49,9 @@ public class CacheConfiguration {
 
     @Bean
     public AspectjCacheProxy cacheConfigurer() {
-        String type = StringKit.toString(this.properties.getType());
         try {
-            if (!StringKit.isEmpty(type)) {
-                Object provider = ClassKit.loadClass(type);
+            if (StringKit.isNotEmpty(this.properties.getType())) {
+                Object provider = ClassKit.loadClass(this.properties.getType());
                 Context config = Context.newConfig(this.properties.getMap());
                 if (provider instanceof H2Hitting) {
                     config.setHitting(new H2Hitting(
@@ -80,7 +79,7 @@ public class CacheConfiguration {
                 return new AspectjCacheProxy(config);
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("can not resolve class with type: " + type);
+            throw new IllegalArgumentException("can not resolve class with type: " + this.properties.getType());
         }
         return null;
     }

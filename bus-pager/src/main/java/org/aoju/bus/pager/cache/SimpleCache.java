@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.pager.cache;
 
-import org.aoju.bus.pager.plugin.PageFromObject;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.apache.ibatis.cache.decorators.FifoCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.CacheBuilder;
@@ -46,7 +46,7 @@ public class SimpleCache<K, V> implements Cache<K, V> {
     public SimpleCache(Properties properties, String prefix) {
         CacheBuilder cacheBuilder = new CacheBuilder("SQL_CACHE");
         String typeClass = properties.getProperty(prefix + ".typeClass");
-        if (PageFromObject.isNotEmpty(typeClass)) {
+        if (StringKit.isNotEmpty(typeClass)) {
             try {
                 cacheBuilder.implementation((Class<? extends org.apache.ibatis.cache.Cache>) Class.forName(typeClass));
             } catch (ClassNotFoundException e) {
@@ -56,7 +56,7 @@ public class SimpleCache<K, V> implements Cache<K, V> {
             cacheBuilder.implementation(PerpetualCache.class);
         }
         String evictionClass = properties.getProperty(prefix + ".evictionClass");
-        if (PageFromObject.isNotEmpty(evictionClass)) {
+        if (StringKit.isNotEmpty(evictionClass)) {
             try {
                 cacheBuilder.addDecorator((Class<? extends org.apache.ibatis.cache.Cache>) Class.forName(evictionClass));
             } catch (ClassNotFoundException e) {
@@ -66,11 +66,11 @@ public class SimpleCache<K, V> implements Cache<K, V> {
             cacheBuilder.addDecorator(FifoCache.class);
         }
         String flushInterval = properties.getProperty(prefix + ".flushInterval");
-        if (PageFromObject.isNotEmpty(flushInterval)) {
+        if (StringKit.isNotEmpty(flushInterval)) {
             cacheBuilder.clearInterval(Long.parseLong(flushInterval));
         }
         String size = properties.getProperty(prefix + ".size");
-        if (PageFromObject.isNotEmpty(size)) {
+        if (StringKit.isNotEmpty(size)) {
             cacheBuilder.size(Integer.parseInt(size));
         }
         cacheBuilder.properties(properties);
@@ -90,4 +90,5 @@ public class SimpleCache<K, V> implements Cache<K, V> {
     public void put(K key, V value) {
         CACHE.putObject(key, value);
     }
+
 }

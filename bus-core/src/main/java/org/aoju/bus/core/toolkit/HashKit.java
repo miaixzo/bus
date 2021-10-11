@@ -219,16 +219,16 @@ public class HashKit {
     /**
      * RS算法hash
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int rsHash(String str) {
+    public static int rsHash(String text) {
         int b = 378551;
         int a = 63689;
         int hash = 0;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash = hash * a + str.charAt(i);
+        for (int i = 0; i < text.length(); i++) {
+            hash = hash * a + text.charAt(i);
             a = a * b;
         }
 
@@ -238,14 +238,14 @@ public class HashKit {
     /**
      * JS算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int jsHash(String str) {
+    public static int jsHash(String text) {
         int hash = 1315423911;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash ^= ((hash << 5) + str.charAt(i) + (hash >> 2));
+        for (int i = 0; i < text.length(); i++) {
+            hash ^= ((hash << 5) + text.charAt(i) + (hash >> 2));
         }
 
         return hash & 0x7FFFFFFF;
@@ -254,10 +254,10 @@ public class HashKit {
     /**
      * PJW算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int pjwHash(String str) {
+    public static int pjwHash(String text) {
         int bitsInUnsignedInt = 32;
         int threeQuarters = (bitsInUnsignedInt * 3) / 4;
         int oneEighth = bitsInUnsignedInt / 8;
@@ -265,8 +265,8 @@ public class HashKit {
         int hash = 0;
         int test = 0;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash = (hash << oneEighth) + str.charAt(i);
+        for (int i = 0; i < text.length(); i++) {
+            hash = (hash << oneEighth) + text.charAt(i);
 
             if ((test = hash & highBits) != 0) {
                 hash = ((hash ^ (test >> threeQuarters)) & (~highBits));
@@ -279,15 +279,15 @@ public class HashKit {
     /**
      * ELF算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int elfHash(String str) {
+    public static int elfHash(String text) {
         int hash = 0;
         int x = 0;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash = (hash << 4) + str.charAt(i);
+        for (int i = 0; i < text.length(); i++) {
+            hash = (hash << 4) + text.charAt(i);
             if ((x = (int) (hash & 0xF0000000L)) != 0) {
                 hash ^= (x >> 24);
                 hash &= ~x;
@@ -300,15 +300,15 @@ public class HashKit {
     /**
      * BKDR算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int bkdrHash(String str) {
+    public static int bkdrHash(String text) {
         int seed = 131; // 31 131 1313 13131 131313 etc..
         int hash = 0;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash = (hash * seed) + str.charAt(i);
+        for (int i = 0; i < text.length(); i++) {
+            hash = (hash * seed) + text.charAt(i);
         }
 
         return hash & 0x7FFFFFFF;
@@ -317,14 +317,14 @@ public class HashKit {
     /**
      * SDBM算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int sdbmHash(String str) {
+    public static int sdbmHash(String text) {
         int hash = 0;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash = str.charAt(i) + (hash << 6) + (hash << 16) - hash;
+        for (int i = 0; i < text.length(); i++) {
+            hash = text.charAt(i) + (hash << 6) + (hash << 16) - hash;
         }
 
         return hash & 0x7FFFFFFF;
@@ -333,14 +333,14 @@ public class HashKit {
     /**
      * DJB算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int djbHash(String str) {
+    public static int djbHash(String text) {
         int hash = 5381;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash = ((hash << 5) + hash) + str.charAt(i);
+        for (int i = 0; i < text.length(); i++) {
+            hash = ((hash << 5) + hash) + text.charAt(i);
         }
 
         return hash & 0x7FFFFFFF;
@@ -349,14 +349,14 @@ public class HashKit {
     /**
      * DEK算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int dekHash(String str) {
-        int hash = str.length();
+    public static int dekHash(String text) {
+        int hash = text.length();
 
-        for (int i = 0; i < str.length(); i++) {
-            hash = ((hash << 5) ^ (hash >> 27)) ^ str.charAt(i);
+        for (int i = 0; i < text.length(); i++) {
+            hash = ((hash << 5) ^ (hash >> 27)) ^ text.charAt(i);
         }
 
         return hash & 0x7FFFFFFF;
@@ -365,14 +365,14 @@ public class HashKit {
     /**
      * AP算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int apHash(String str) {
+    public static int apHash(String text) {
         int hash = 0;
 
-        for (int i = 0; i < str.length(); i++) {
-            hash ^= ((i & 1) == 0) ? ((hash << 7) ^ str.charAt(i) ^ (hash >> 3)) : (~((hash << 11) ^ str.charAt(i) ^ (hash >> 5)));
+        for (int i = 0; i < text.length(); i++) {
+            hash ^= ((i & 1) == 0) ? ((hash << 7) ^ text.charAt(i) ^ (hash >> 3)) : (~((hash << 11) ^ text.charAt(i) ^ (hash >> 5)));
         }
 
         // return (hash & 0x7FFFFFFF);
@@ -382,13 +382,13 @@ public class HashKit {
     /**
      * TianL Hash算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return Hash值
      */
-    public static long tianlHash(String str) {
+    public static long tianlHash(String text) {
         long hash = 0;
 
-        int iLength = str.length();
+        int iLength = text.length();
         if (iLength == 0) {
             return 0;
         }
@@ -405,7 +405,7 @@ public class HashKit {
 
         if (iLength <= 96) {
             for (i = 1; i <= iLength; i++) {
-                ucChar = str.charAt(i - 1);
+                ucChar = text.charAt(i - 1);
                 if (ucChar <= 'Z' && ucChar >= 'A') {
                     ucChar = (char) (ucChar + 32);
                 }
@@ -413,7 +413,7 @@ public class HashKit {
             }
         } else {
             for (i = 1; i <= 96; i++) {
-                ucChar = str.charAt(i + iLength - 96 - 1);
+                ucChar = text.charAt(i + iLength - 96 - 1);
                 if (ucChar <= 'Z' && ucChar >= 'A') {
                     ucChar = (char) (ucChar + 32);
                 }
@@ -429,15 +429,15 @@ public class HashKit {
     /**
      * JAVA自己带的算法
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static int javaDefaultHash(String str) {
+    public static int javaDefaultHash(String text) {
         int h = 0;
         int off = 0;
-        int len = str.length();
+        int len = text.length();
         for (int i = 0; i < len; i++) {
-            h = 31 * h + str.charAt(off++);
+            h = 31 * h + text.charAt(off++);
         }
         return h;
     }
@@ -445,13 +445,13 @@ public class HashKit {
     /**
      * 混合hash算法,输出64位的值
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return hash值
      */
-    public static long mixHash(String str) {
-        long hash = str.hashCode();
+    public static long mixHash(String text) {
+        long hash = text.hashCode();
         hash <<= 32;
-        hash |= fnvHash(str);
+        hash |= fnvHash(text);
         return hash;
     }
 

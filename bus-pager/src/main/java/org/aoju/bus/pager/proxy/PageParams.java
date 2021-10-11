@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,11 +26,11 @@
 package org.aoju.bus.pager.proxy;
 
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageContext;
 import org.aoju.bus.pager.Paging;
 import org.aoju.bus.pager.RowBounds;
-import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.util.Properties;
 
@@ -83,16 +83,16 @@ public class PageParams {
                     page = new Page(rowBounds.getOffset(), rowBounds.getLimit(), rowBoundsWithCount);
                 } else {
                     page = new Page(new int[]{rowBounds.getOffset(), rowBounds.getLimit()}, rowBoundsWithCount);
-                    // offsetAsPageNo=false的时候,由于PageNo问题,不能使用reasonable,这里会强制为false
+                    // offsetAsPageNo=false的时候，由于PageNo问题，不能使用reasonable，这里会强制为false
                     page.setReasonable(false);
                 }
                 if (rowBounds instanceof RowBounds) {
                     RowBounds pageRowBounds = (RowBounds) rowBounds;
-                    page.setCount(null == pageRowBounds.getCount() || pageRowBounds.getCount());
+                    page.setCount(pageRowBounds.getCount() == null || pageRowBounds.getCount());
                 }
             } else if (parameterObject instanceof Paging || supportMethodsArguments) {
                 try {
-                    page = PageFromObject.getPageFromObject(parameterObject, false);
+                    page = PageObject.getPageFromObject(parameterObject, false);
                 } catch (Exception e) {
                     return null;
                 }
@@ -103,11 +103,11 @@ public class PageParams {
             PageContext.setLocalPage(page);
         }
         // 分页合理化
-        if (null == page.getReasonable()) {
+        if (page.getReasonable() == null) {
             page.setReasonable(reasonable);
         }
-        // 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
-        if (null == page.getPageSizeZero()) {
+        // 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
+        if (page.getPageSizeZero() == null) {
             page.setPageSizeZero(pageSizeZero);
         }
         return page;
@@ -115,27 +115,26 @@ public class PageParams {
 
     public void setProperties(Properties properties) {
         // offset作为PageNo使用
-        String offsetAsPageNo = properties.getProperty("offsetAsPageNo");
-        this.offsetAsPageNo = Boolean.parseBoolean(offsetAsPageNo);
+        this.offsetAsPageNo = Boolean.parseBoolean(properties.getProperty("offsetAsPageNo"));
         // RowBounds方式是否做count查询
         String rowBoundsWithCount = properties.getProperty("rowBoundsWithCount");
         this.rowBoundsWithCount = Boolean.parseBoolean(rowBoundsWithCount);
-        // 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页
+        // 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页
         String pageSizeZero = properties.getProperty("pageSizeZero");
         this.pageSizeZero = Boolean.parseBoolean(pageSizeZero);
-        // 分页合理化,true开启,如果分页参数不合理会自动修正 默认false不启用
+        // 分页合理化，true开启，如果分页参数不合理会自动修正。默认false不启用
         String reasonable = properties.getProperty("reasonable");
         this.reasonable = Boolean.parseBoolean(reasonable);
-        // 是否支持接口参数来传递分页参数,默认false
+        // 是否支持接口参数来传递分页参数，默认false
         String supportMethodsArguments = properties.getProperty("supportMethodsArguments");
         this.supportMethodsArguments = Boolean.parseBoolean(supportMethodsArguments);
         // 默认count列
         String countColumn = properties.getProperty("countColumn");
-        if (PageFromObject.isNotEmpty(countColumn)) {
+        if (StringKit.isNotEmpty(countColumn)) {
             this.countColumn = countColumn;
         }
-        // 当offsetAsPageNo=false的时候,不能参数映射
-        PageFromObject.setParams(properties.getProperty("params"));
+        // 当offsetAsPageNo=false的时候，不能参数映射
+        PageObject.setParams(properties.getProperty("params"));
     }
 
     public boolean isOffsetAsPageNo() {

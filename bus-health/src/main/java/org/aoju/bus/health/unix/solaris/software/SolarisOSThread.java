@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.solaris.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -118,7 +119,7 @@ public class SolarisOSThread extends AbstractOSThread {
                         psOutput.trim(), Symbol.C_SPACE);
                 if (threadMap.containsKey(SolarisOSProcess.PsThreadColumns.PRI) && lwpStr.equals(threadMap.get(SolarisOSProcess.PsThreadColumns.LWP))) {
                     List<String> prstatList = Executor.runNative("prstat -L -v -p " + pid + " 1 1");
-                    String prstatRow = "";
+                    String prstatRow = Normal.EMPTY;
                     for (String s : prstatList) {
                         String row = s.trim();
                         if (row.endsWith("/" + lwpStr)) {

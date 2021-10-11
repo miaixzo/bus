@@ -61,10 +61,21 @@ public class BOMInputStream extends InputStream {
     String defaultCharset;
     String charset;
 
+    /**
+     * 构造
+     *
+     * @param in 流
+     */
     public BOMInputStream(InputStream in) {
         this(in, Charset.DEFAULT_UTF_8);
     }
 
+    /**
+     * 构造
+     *
+     * @param in             流
+     * @param defaultCharset 默认编码
+     */
     public BOMInputStream(InputStream in, String defaultCharset) {
         this.in = new PushbackInputStream(in, BOM_SIZE);
         this.defaultCharset = defaultCharset;
@@ -85,7 +96,7 @@ public class BOMInputStream extends InputStream {
      * @return 编码
      */
     public String getCharset() {
-        if (!isInited) {
+        if (false == isInited) {
             try {
                 init();
             } catch (IOException ex) {
@@ -108,8 +119,8 @@ public class BOMInputStream extends InputStream {
     }
 
     /**
-     * Read-ahead four bytes and check for BOM marks.
-     * Extra bytes are unread back to the stream, only BOM bytes are skipped.
+     * 预读四个字节并检查BOM标记
+     * 额外的字节未读回流，只有BOM字节被跳过
      *
      * @throws IOException 读取引起的异常
      */

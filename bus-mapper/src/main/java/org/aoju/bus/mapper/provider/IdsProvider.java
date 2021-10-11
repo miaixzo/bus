@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
-import org.aoju.bus.mapper.builder.SqlSourceBuilder;
+import org.aoju.bus.mapper.builder.SqlBuilder;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.apache.ibatis.mapping.MappedStatement;
 
@@ -50,7 +50,7 @@ public class IdsProvider extends MapperTemplate {
     }
 
     /**
-     * 根据主键字符串进行删除,类中只有存在一个带有@Id注解的字段
+     * 根据主键字符串进行删除，类中只有存在一个带有@Id注解的字段
      *
      * @param ms MappedStatement
      * @return the string
@@ -58,13 +58,13 @@ public class IdsProvider extends MapperTemplate {
     public String deleteByIds(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        sql.append(SqlSourceBuilder.deleteFromTable(entityClass, tableName(entityClass)));
+        sql.append(SqlBuilder.deleteFromTable(entityClass, tableName(entityClass)));
         Set<EntityColumn> columnList = EntityBuilder.getPKColumns(entityClass);
         if (columnList.size() == 1) {
             EntityColumn column = columnList.iterator().next();
-            sql.append(" where ")
-                    .append(column.getColumn())
-                    .append(" in (${_parameter})");
+            sql.append(" where ");
+            sql.append(column.getColumn());
+            sql.append(" in (${_parameter})");
         } else {
             throw new InstrumentException("继承 deleteByIds 方法的实体类[" + entityClass.getCanonicalName() + "]中必须只有一个带有 @Id 注解的字段");
         }
@@ -72,24 +72,24 @@ public class IdsProvider extends MapperTemplate {
     }
 
     /**
-     * 根据主键字符串进行查询,类中只有存在一个带有@Id注解的字段
+     * 根据主键字符串进行查询，类中只有存在一个带有@Id注解的字段
      *
      * @param ms MappedStatement
      * @return the string
      */
     public String selectByIds(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
-        //将返回值修改为实体类型
+        // 将返回值修改为实体类型
         setResultType(ms, entityClass);
         StringBuilder sql = new StringBuilder();
-        sql.append(SqlSourceBuilder.selectAllColumns(entityClass))
-                .append(SqlSourceBuilder.fromTable(entityClass, tableName(entityClass)));
+        sql.append(SqlBuilder.selectAllColumns(entityClass));
+        sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
         Set<EntityColumn> columnList = EntityBuilder.getPKColumns(entityClass);
         if (columnList.size() == 1) {
             EntityColumn column = columnList.iterator().next();
-            sql.append(" where ")
-                    .append(column.getColumn())
-                    .append(" in (${_parameter})");
+            sql.append(" where ");
+            sql.append(column.getColumn());
+            sql.append(" in (${_parameter})");
         } else {
             throw new InstrumentException("继承 selectByIds 方法的实体类[" + entityClass.getCanonicalName() + "]中必须只有一个带有 @Id 注解的字段");
         }

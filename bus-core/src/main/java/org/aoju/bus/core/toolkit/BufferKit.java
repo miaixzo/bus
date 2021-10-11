@@ -231,9 +231,9 @@ public class BufferKit {
             decode.onMalformedInput(CodingErrorAction.REPORT);
             decode.onUnmappableCharacter(CodingErrorAction.REPORT);
             buffer.mark();
-            String str = decode.decode(buffer).toString();
+            String text = decode.decode(buffer).toString();
             buffer.reset();
-            return str;
+            return text;
         } catch (CharacterCodingException e) {
             throw new InstrumentException(e);
         }

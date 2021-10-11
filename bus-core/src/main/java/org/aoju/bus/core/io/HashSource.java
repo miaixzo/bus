@@ -84,11 +84,11 @@ public final class HashSource extends DelegateSource {
     }
 
     public static HashSource hmacSha1(Source source, ByteString key) {
-        return new HashSource(source, key, Algorithm.HmacSHA1.getValue());
+        return new HashSource(source, key, Algorithm.HMACSHA1.getValue());
     }
 
     public static HashSource hmacSha256(Source source, ByteString key) {
-        return new HashSource(source, key, Algorithm.HmacSHA256.getValue());
+        return new HashSource(source, key, Algorithm.HMACSHA256.getValue());
     }
 
     @Override

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.socket.channel;
 
+import org.aoju.bus.logger.Logger;
+
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -121,7 +123,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
                 if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) > 0) {
                     asynchronousSocketChannel.doWrite();
                 } else {
-                    System.out.println("ignore write");
+                    Logger.warn("ignore write");
                 }
             });
             writeExecutorService.execute(writeWorkers[i]);

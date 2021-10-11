@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,7 +28,7 @@ package org.aoju.bus.pager.parser;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.pager.PageException;
 
 import java.util.List;
@@ -50,20 +50,22 @@ public class OrderByParser {
      * @return the string
      */
     public static String converToOrderBySql(String sql, String orderBy) {
+        //解析SQL
+        Statement stmt;
         try {
-            Statement stmt = CCJSqlParserUtil.parse(sql);
+            stmt = CCJSqlParserUtil.parse(sql);
             Select select = (Select) stmt;
             SelectBody selectBody = select.getSelectBody();
-            // 处理body-去最外层order by
+            //处理body-去最外层order by
             List<OrderByElement> orderByElements = extraOrderBy(selectBody);
             String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
-            if (defaultOrderBy.indexOf(Symbol.C_QUESTION_MARK) != -1) {
-                throw new PageException("原SQL[" + sql + "]中的order by包含参数,因此不能使用OrderBy插件进行修改!");
+            if (defaultOrderBy.indexOf('?') != -1) {
+                throw new PageException("原SQL[" + sql + "]中的order by包含参数，因此不能使用OrderBy插件进行修改!");
             }
-            // 新的sql
+            //新的sql
             sql = select.toString();
         } catch (Throwable e) {
-            throw new PageException("处理排序失败: " + e, e);
+            Logger.warn("处理排序失败: " + e + "，降级为直接拼接 order by 参数");
         }
         return sql + " order by " + orderBy;
     }

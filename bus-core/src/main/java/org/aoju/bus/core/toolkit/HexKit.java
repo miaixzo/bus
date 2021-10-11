@@ -70,12 +70,12 @@ public class HexKit {
     /**
      * 将字节数组转换为十六进制字符数组
      *
-     * @param str     字符串
+     * @param text    字符串
      * @param charset 编码
      * @return 十六进制char[]
      */
-    public static char[] encodeHex(String str, java.nio.charset.Charset charset) {
-        return encodeHex(StringKit.bytes(str, charset), true);
+    public static char[] encodeHex(String text, java.nio.charset.Charset charset) {
+        return encodeHex(StringKit.bytes(text, charset), true);
     }
 
     /**

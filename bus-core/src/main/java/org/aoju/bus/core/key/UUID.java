@@ -298,12 +298,12 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     /**
      * 将字符串转换为长整型数字
      *
-     * @param str   数字字符串
+     * @param text  数字字符串
      * @param radix 进制数
      */
-    private static long toNumber(String str, int radix) {
-        if (null == str) {
-            throw new NumberFormatException("The str cannot be null");
+    private static long toNumber(String text, int radix) {
+        if (null == text) {
+            throw new NumberFormatException("The text cannot be null");
         }
         if (radix < MIN_RADIX) {
             throw new NumberFormatException("radix " + radix + " less than Numbers.MIN_RADIX");
@@ -313,35 +313,35 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         }
 
         boolean negative = false;
-        Integer digit, i = 0, len = str.length();
+        Integer digit, i = 0, len = text.length();
         long result = 0, limit = -Long.MAX_VALUE, multmin;
         if (len <= 0) {
-            throw forInputString(str);
+            throw forInputString(text);
         }
 
-        char firstChar = str.charAt(0);
+        char firstChar = text.charAt(0);
         if (firstChar < '0') {
             if (firstChar == Symbol.C_MINUS) {
                 negative = true;
                 limit = Long.MIN_VALUE;
             } else if (firstChar != Symbol.C_PLUS) {
-                throw forInputString(str);
+                throw forInputString(text);
             }
             if (len == 1) {
-                throw forInputString(str);
+                throw forInputString(text);
             }
             i++;
         }
 
         multmin = limit / radix;
         while (i < len) {
-            digit = DIGIT_MAP.get(str.charAt(i++));
+            digit = DIGIT_MAP.get(text.charAt(i++));
             if (null == digit || digit < 0 || result < multmin) {
-                throw forInputString(str);
+                throw forInputString(text);
             }
             result *= radix;
             if (result < limit + digit) {
-                throw forInputString(str);
+                throw forInputString(text);
             }
             result -= digit;
         }

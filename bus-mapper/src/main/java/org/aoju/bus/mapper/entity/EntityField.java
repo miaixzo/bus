@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,10 +28,11 @@ package org.aoju.bus.mapper.entity;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * 封装字段和方法,统一调用某些方法
+ * 封装字段和方法，统一调用某些方法
  *
  * @author Kimi Liu
  * @version 6.2.9
@@ -39,8 +40,14 @@ import java.lang.reflect.Method;
  */
 public class EntityField {
 
+    /**
+     * 字段属性名
+     */
     private String name;
     private Field field;
+    /**
+     * 设置javaType
+     */
     private Class<?> javaType;
     private Method setter;
     private Method getter;
@@ -52,12 +59,12 @@ public class EntityField {
      * @param propertyDescriptor 字段name对应的property
      */
     public EntityField(Field field, PropertyDescriptor propertyDescriptor) {
-        if (null != field) {
+        if (field != null) {
             this.field = field;
             this.name = field.getName();
             this.javaType = field.getType();
         }
-        if (null != propertyDescriptor) {
+        if (propertyDescriptor != null) {
             this.name = propertyDescriptor.getName();
             this.setter = propertyDescriptor.getWriteMethod();
             this.getter = propertyDescriptor.getReadMethod();
@@ -66,9 +73,9 @@ public class EntityField {
     }
 
     /**
-     * 先创建field,然后可以通过该方法获取property等属性
+     * 先创建field，然后可以通过该方法获取property等属性
      *
-     * @param other field
+     * @param other 名称信息
      */
     public void copyFromPropertyDescriptor(EntityField other) {
         this.setter = other.setter;
@@ -85,28 +92,56 @@ public class EntityField {
      */
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
         boolean result = false;
-        if (null != field) {
+        if (field != null) {
             result = field.isAnnotationPresent(annotationClass);
         }
-        if (!result && null != setter) {
+        if (!result && setter != null) {
             result = setter.isAnnotationPresent(annotationClass);
         }
-        if (!result && null != getter) {
+        if (!result && getter != null) {
             result = getter.isAnnotationPresent(annotationClass);
         }
         return result;
     }
 
+    /**
+     * 获取指定的注解
+     *
+     * @param annotationClass 注解信息
+     * @param <T>             对象引用
+     * @return the annotation
+     */
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         T result = null;
-        if (null != field) {
+        if (field != null) {
             result = field.getAnnotation(annotationClass);
         }
-        if (null == result && null != setter) {
+        if (result == null && setter != null) {
             result = setter.getAnnotation(annotationClass);
         }
-        if (null == result && null != getter) {
+        if (result == null && getter != null) {
             result = getter.getAnnotation(annotationClass);
+        }
+        return result;
+    }
+
+    /**
+     * 反射获取值
+     *
+     * @param object 对象
+     * @return the object
+     * @throws IllegalAccessException    异常
+     * @throws InvocationTargetException 异常
+     */
+    public Object getValue(Object object) throws IllegalAccessException, InvocationTargetException {
+        Object result = null;
+        if (getter != null) {
+            result = getter.invoke(object);
+        } else if (field != null) {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            result = field.get(object);
         }
         return result;
     }
@@ -114,17 +149,17 @@ public class EntityField {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         EntityField that = (EntityField) o;
 
-        return !(null != name ? !name.equals(that.name) : null != that.name);
+        return !(name != null ? !name.equals(that.name) : that.name != null);
 
     }
 
     @Override
     public int hashCode() {
-        return null != name ? name.hashCode() : 0;
+        return name != null ? name.hashCode() : 0;
     }
 
     public Class<?> getJavaType() {

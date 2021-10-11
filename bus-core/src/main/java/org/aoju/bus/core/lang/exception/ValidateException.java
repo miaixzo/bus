@@ -26,7 +26,7 @@
 package org.aoju.bus.core.lang.exception;
 
 /**
- * 自定义异常: 参数验证失败
+ * 自定义异常: 验证异常
  *
  * @author Kimi Liu
  * @version 6.2.9

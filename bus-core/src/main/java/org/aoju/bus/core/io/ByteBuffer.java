@@ -67,6 +67,7 @@ public class ByteBuffer extends ByteString {
      */
     private PageBuffer[] pageBuffers;
     private boolean enabled = true;
+
     public ByteBuffer(Buffer buffer, int byteCount) {
         super(null);
         IoKit.checkOffsetAndCount(buffer.size, 0, byteCount);
@@ -100,6 +101,21 @@ public class ByteBuffer extends ByteString {
     }
 
     /**
+     * @param pageSize 内存页大小
+     * @param pageNo   内存页个数
+     * @param isDirect 是否使用直接缓冲区
+     */
+    public ByteBuffer(final int pageSize, final int pageNo, final boolean isDirect) {
+        pageBuffers = new PageBuffer[pageNo];
+        for (int i = 0; i < pageNo; i++) {
+            pageBuffers[i] = new PageBuffer(pageBuffers, pageSize, isDirect);
+        }
+        if (pageNo == 0 || pageSize == 0) {
+            future.cancel(false);
+        }
+    }
+
+    /**
      * 内存回收任务
      */
     private final ScheduledFuture<?> future = BUFFER_POOL_CLEAN.scheduleWithFixedDelay(new Runnable() {
@@ -120,21 +136,6 @@ public class ByteBuffer extends ByteString {
             }
         }
     }, 500, 1000, TimeUnit.MILLISECONDS);
-
-    /**
-     * @param pageSize 内存页大小
-     * @param pageNo   内存页个数
-     * @param isDirect 是否使用直接缓冲区
-     */
-    public ByteBuffer(final int pageSize, final int pageNo, final boolean isDirect) {
-        pageBuffers = new PageBuffer[pageNo];
-        for (int i = 0; i < pageNo; i++) {
-            pageBuffers[i] = new PageBuffer(pageBuffers, pageSize, isDirect);
-        }
-        if (pageNo == 0 || pageSize == 0) {
-            future.cancel(false);
-        }
-    }
 
     @Override
     public String utf8() {

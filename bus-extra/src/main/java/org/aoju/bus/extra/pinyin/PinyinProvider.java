@@ -50,11 +50,11 @@ public interface PinyinProvider {
     /**
      * 获取字符串对应的完整拼音，非中文返回原字符
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param separator 拼音之间的分隔符
      * @return 拼音
      */
-    String getPinyin(String str, String separator);
+    String getPinyin(String text, String separator);
 
     /**
      * 将输入字符串转为拼音首字母，其它字符原样返回
@@ -69,13 +69,13 @@ public interface PinyinProvider {
     /**
      * 将输入字符串转为拼音首字母，其它字符原样返回
      *
-     * @param str       任意字符，汉字返回拼音，非汉字原样返回
+     * @param text      任意字符，汉字返回拼音，非汉字原样返回
      * @param separator 分隔符
      * @return 汉字返回拼音，非汉字原样返回
      */
-    default String getFirstLetter(String str, String separator) {
+    default String getFirstLetter(String text, String separator) {
         final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
-        final String[] split = StringKit.split(getPinyin(str, splitSeparator), splitSeparator);
+        final String[] split = StringKit.split(getPinyin(text, splitSeparator), splitSeparator);
         return ArrayKit.join(split, separator, (s) -> String.valueOf(s.length() > 0 ? s.charAt(0) : Normal.EMPTY));
     }
 

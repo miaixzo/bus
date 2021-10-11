@@ -60,7 +60,7 @@ public class MacEngineFactory {
      * @return {@link MacEngine}
      */
     public static MacEngine createEngine(String algorithm, Key key, AlgorithmParameterSpec spec) {
-        if (algorithm.equalsIgnoreCase(Algorithm.HmacSM3.getValue())) {
+        if (algorithm.equalsIgnoreCase(Algorithm.HMACSM3.getValue())) {
             // HmacSM3算法是BC库实现的，忽略加盐
             return Builder.createHmacSm3Engine(key.getEncoded());
         }

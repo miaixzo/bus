@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,9 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -41,6 +38,7 @@ import java.util.List;
  */
 public class Paginating<T> extends Serialize<T> {
 
+    public static final int DEFAULT_NAVIGATE_PAGES = 8;
     /**
      * 当前页
      */
@@ -54,15 +52,15 @@ public class Paginating<T> extends Serialize<T> {
      */
     private int size;
     /**
-     * 由于startRow和endRow不常用,这里说个具体的用法
+     * 由于startRow和endRow不常用，这里说个具体的用法
      * 可以在页面中"显示startRow到endRow 共size条数据"
      * 当前页面第一个元素在数据库中的行号
      */
-    private int startRow;
+    private long startRow;
     /**
      * 当前页面最后一个元素在数据库中的行号
      */
-    private int endRow;
+    private long endRow;
     /**
      * 总页数
      */
@@ -91,6 +89,7 @@ public class Paginating<T> extends Serialize<T> {
      * 是否有下一页
      */
     private boolean hasNextPage = false;
+
     /**
      * 导航页码数
      */
@@ -98,7 +97,7 @@ public class Paginating<T> extends Serialize<T> {
     /**
      * 所有导航页号
      */
-    private int[] navigatePageNo;
+    private int[] navigatepageNo;
     /**
      * 导航条上的第一页
      */
@@ -109,21 +108,22 @@ public class Paginating<T> extends Serialize<T> {
     private int navigateLastPage;
 
     public Paginating() {
+
     }
 
     /**
      * 包装Page对象
      *
-     * @param list 对象
+     * @param list 分页结果
      */
     public Paginating(List<T> list) {
-        this(list, 8);
+        this(list, DEFAULT_NAVIGATE_PAGES);
     }
 
     /**
      * 包装Page对象
      *
-     * @param list          page结果
+     * @param list          分页结果
      * @param navigatePages 页码数量
      */
     public Paginating(List<T> list, int navigatePages) {
@@ -135,13 +135,13 @@ public class Paginating<T> extends Serialize<T> {
 
             this.pages = page.getPages();
             this.size = page.size();
-            // 由于结果是>startRow的,所以实际的需要+1
+            //由于结果是>startRow的，所以实际的需要+1
             if (this.size == 0) {
                 this.startRow = 0;
                 this.endRow = 0;
             } else {
                 this.startRow = page.getStartRow() + 1;
-                // 计算实际的endRow(最后一页的时候特殊)
+                //计算实际的endRow（最后一页的时候特殊）
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {
@@ -154,13 +154,7 @@ public class Paginating<T> extends Serialize<T> {
             this.endRow = list.size() > 0 ? list.size() - 1 : 0;
         }
         if (list instanceof Collection) {
-            this.navigatePages = navigatePages;
-            // 计算导航页
-            calcNavigatePageNo();
-            // 计算前后页,第一页,最后一页
-            calcPage();
-            // 判断页面边界
-            judgePageBoudary();
+            calcByNavigatePages(navigatePages);
         }
     }
 
@@ -169,21 +163,31 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     public static <T> Paginating<T> of(List<T> list, int navigatePages) {
-        return new Paginating<>(list, navigatePages);
+        return new Paginating<T>(list, navigatePages);
+    }
+
+    public void calcByNavigatePages(int navigatePages) {
+        setNavigatePages(navigatePages);
+        // 计算导航页
+        calcnavigatepageNo();
+        // 计算前后页，第一页，最后一页
+        calcPage();
+        // 判断页面边界
+        judgePageBoudary();
     }
 
     /**
      * 计算导航页
      */
-    private void calcNavigatePageNo() {
+    private void calcnavigatepageNo() {
         // 当总页数小于或等于导航页码数时
         if (pages <= navigatePages) {
-            navigatePageNo = new int[pages];
+            navigatepageNo = new int[pages];
             for (int i = 0; i < pages; i++) {
-                navigatePageNo[i] = i + 1;
+                navigatepageNo[i] = i + 1;
             }
         } else { // 当总页数大于导航页码数时
-            navigatePageNo = new int[navigatePages];
+            navigatepageNo = new int[navigatePages];
             int startNum = pageNo - navigatePages / 2;
             int endNum = pageNo + navigatePages / 2;
 
@@ -191,30 +195,30 @@ public class Paginating<T> extends Serialize<T> {
                 startNum = 1;
                 // 最前navigatePages页
                 for (int i = 0; i < navigatePages; i++) {
-                    navigatePageNo[i] = startNum++;
+                    navigatepageNo[i] = startNum++;
                 }
             } else if (endNum > pages) {
                 endNum = pages;
                 // 最后navigatePages页
                 for (int i = navigatePages - 1; i >= 0; i--) {
-                    navigatePageNo[i] = endNum--;
+                    navigatepageNo[i] = endNum--;
                 }
             } else {
                 // 所有中间页
                 for (int i = 0; i < navigatePages; i++) {
-                    navigatePageNo[i] = startNum++;
+                    navigatepageNo[i] = startNum++;
                 }
             }
         }
     }
 
     /**
-     * 计算前后页,第一页,最后一页
+     * 计算前后页，第一页，最后一页
      */
     private void calcPage() {
-        if (null != navigatePageNo && navigatePageNo.length > 0) {
-            navigateFirstPage = navigatePageNo[0];
-            navigateLastPage = navigatePageNo[navigatePageNo.length - 1];
+        if (navigatepageNo != null && navigatepageNo.length > 0) {
+            navigateFirstPage = navigatepageNo[0];
+            navigateLastPage = navigatepageNo[navigatepageNo.length - 1];
             if (pageNo > 1) {
                 prePage = pageNo - 1;
             }
@@ -258,19 +262,19 @@ public class Paginating<T> extends Serialize<T> {
         this.size = size;
     }
 
-    public int getStartRow() {
+    public long getStartRow() {
         return startRow;
     }
 
-    public void setStartRow(int startRow) {
+    public void setStartRow(long startRow) {
         this.startRow = startRow;
     }
 
-    public int getEndRow() {
+    public long getEndRow() {
         return endRow;
     }
 
-    public void setEndRow(int endRow) {
+    public void setEndRow(long endRow) {
         this.endRow = endRow;
     }
 
@@ -338,12 +342,12 @@ public class Paginating<T> extends Serialize<T> {
         this.navigatePages = navigatePages;
     }
 
-    public int[] getNavigatePageNo() {
-        return navigatePageNo;
+    public int[] getnavigatepageNo() {
+        return navigatepageNo;
     }
 
-    public void setNavigatePageNo(int[] navigatePageNo) {
-        this.navigatePageNo = navigatePageNo;
+    public void setnavigatepageNo(int[] navigatepageNo) {
+        this.navigatepageNo = navigatepageNo;
     }
 
     public int getNavigateFirstPage() {
@@ -364,7 +368,7 @@ public class Paginating<T> extends Serialize<T> {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Pages{");
+        final StringBuilder sb = new StringBuilder("PageInfo{");
         sb.append("pageNo=").append(pageNo);
         sb.append(", pageSize=").append(pageSize);
         sb.append(", size=").append(size);
@@ -382,17 +386,17 @@ public class Paginating<T> extends Serialize<T> {
         sb.append(", navigatePages=").append(navigatePages);
         sb.append(", navigateFirstPage=").append(navigateFirstPage);
         sb.append(", navigateLastPage=").append(navigateLastPage);
-        sb.append(", navigatePageNo=");
-        if (null == navigatePageNo) {
-            sb.append(Normal.NULL);
+        sb.append(", navigatepageNo=");
+        if (navigatepageNo == null) {
+            sb.append("null");
         } else {
-            sb.append(Symbol.C_BRACKET_LEFT);
-            for (int i = 0; i < navigatePageNo.length; ++i) {
-                sb.append(i == 0 ? Normal.EMPTY : ", ").append(navigatePageNo[i]);
+            sb.append('[');
+            for (int i = 0; i < navigatepageNo.length; ++i) {
+                sb.append(i == 0 ? "" : ", ").append(navigatepageNo[i]);
             }
-            sb.append(Symbol.C_BRACKET_RIGHT);
+            sb.append(']');
         }
-        sb.append(Symbol.C_BRACE_RIGHT);
+        sb.append('}');
         return sb.toString();
     }
 

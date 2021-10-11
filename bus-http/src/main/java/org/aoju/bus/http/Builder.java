@@ -461,7 +461,7 @@ public abstract class Builder {
         for (int i = pos; i < limit; ) {
             if (b == address.length) return null;
 
-            if (i + 2 <= limit && input.regionMatches(i, "::", 0, 2)) {
+            if (i + 2 <= limit && input.regionMatches(i, Symbol.COLON + Symbol.COLON, 0, 2)) {
                 if (compress != -1) return null;
                 i += 2;
                 b += 2;

@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
-            .collect(Collectors.joining(","));
+            .collect(Collectors.joining(Symbol.COMMA));
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
     Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());

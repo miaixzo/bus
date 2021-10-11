@@ -33,6 +33,7 @@ import com.sun.jna.platform.win32.Wtsapi32.WTS_SESSION_INFO;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.OSSession;
 
@@ -108,7 +109,7 @@ public final class SessionWtsData {
                                 pBuffer = ppBuffer.getValue(); // returns WTS_CLIENT_ADDRESS
                                 WTS_CLIENT_ADDRESS addr = new WTS_CLIENT_ADDRESS(pBuffer);
                                 WTS.WTSFreeMemory(pBuffer);
-                                String host = "::";
+                                String host = Symbol.COLON + Symbol.COLON;
                                 if (addr.AddressFamily == IPHlpAPI.AF_INET) {
                                     try {
                                         host = InetAddress.getByAddress(Arrays.copyOfRange(addr.Address, 2, 6))

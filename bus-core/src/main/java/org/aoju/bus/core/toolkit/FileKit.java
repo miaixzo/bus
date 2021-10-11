@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.collection.EnumerationIter;
+import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
@@ -46,6 +46,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -453,6 +454,29 @@ public class FileKit {
      */
     public static void walkFiles(Path start, FileVisitor<? super Path> visitor) {
         walkFiles(start, -1, visitor);
+    }
+
+    /**
+     * 递归遍历目录并处理目录下的文件，可以处理目录或文件：
+     * <ul>
+     *     <li>非目录则直接调用{@link Consumer}处理</li>
+     *     <li>目录则递归调用此方法处理</li>
+     * </ul>
+     *
+     * @param file     文件或目录，文件直接处理
+     * @param consumer 文件处理器，只会处理文件
+     */
+    public static void walkFiles(File file, Consumer<File> consumer) {
+        if (file.isDirectory()) {
+            final File[] subFiles = file.listFiles();
+            if (ArrayKit.isNotEmpty(subFiles)) {
+                for (File tmp : subFiles) {
+                    walkFiles(tmp, consumer);
+                }
+            }
+        } else {
+            consumer.accept(file);
+        }
     }
 
     /**
@@ -878,7 +902,7 @@ public class FileKit {
         if (false == src.exists()) {
             throw new InstrumentException("File not exist: " + src);
         }
-        Assert.notNull(dest, "Destination File or directiory is null !");
+        Assert.notNull(dest, "Destination File or directory is null !");
         if (equals(src, dest)) {
             throw new InstrumentException("Files '{}' and '{}' are equal", src, dest);
         }
@@ -896,7 +920,7 @@ public class FileKit {
      */
     public static Path copyFile(Path src, Path dest, StandardCopyOption... options) throws InstrumentException {
         Assert.notNull(src, "Source File is null !");
-        Assert.notNull(dest, "Dest File or directiory is null !");
+        Assert.notNull(dest, "Dest File or directory is null !");
 
         Path destPath = isDirectory(dest) ? dest.resolve(src.getFileName()) : dest;
         try {
@@ -3491,7 +3515,9 @@ public class FileKit {
                 parentCanonicalPath = parentFile.getCanonicalPath();
                 canonicalPath = file.getCanonicalPath();
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                // getCanonicalPath有时会抛出奇怪的IO异常，此时忽略异常，使用AbsolutePath判断
+                parentCanonicalPath = parentFile.getAbsolutePath();
+                canonicalPath = file.getAbsolutePath();
             }
             if (false == canonicalPath.startsWith(parentCanonicalPath)) {
                 throw new IllegalArgumentException("New file is outside of the parent dir: " + file.getName());
@@ -3829,14 +3855,14 @@ public class FileKit {
      * @param resource 资源路径
      * @return 资源列表
      */
-    public static EnumerationIter<URL> getResourceIter(String resource) {
+    public static EnumerationIterator<URL> getResourceIter(String resource) {
         final Enumeration<URL> resources;
         try {
             resources = ClassKit.getClassLoader().getResources(resource);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        return new EnumerationIter<>(resources);
+        return new EnumerationIterator<>(resources);
     }
 
     /**

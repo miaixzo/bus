@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,9 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.mapper.criteria.Assert;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -43,31 +42,37 @@ import java.util.regex.Pattern;
 
 /**
  * 数据库表
- *
- * @author Kimi Liu
- * @version 6.2.9
- * @since JDK 1.8+
  */
 public class EntityTable {
 
     public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
     //属性和列对应
-    public Map<String, EntityColumn> propertyMap;
+    protected Map<String, EntityColumn> propertyMap;
     private String name;
     private String catalog;
     private String schema;
     private String orderByClause;
     private String baseSelect;
-    //实体类 => 全部列属性
-    private Set<EntityColumn> entityClassColumns;
-    //实体类 => 主键信息
-    private Set<EntityColumn> entityClassPKColumns;
-    //useGenerator包含多列的时候需要用到
+    /**
+     * 实体类 => 全部列属性
+     */
+    private LinkedHashSet<EntityColumn> entityClassColumns;
+    /**
+     * 实体类 => 主键信息
+     */
+    private LinkedHashSet<EntityColumn> entityClassPKColumns;
+    /**
+     * useGenerator包含多列的时候需要用到
+     */
     private List<String> keyProperties;
     private List<String> keyColumns;
-    //resultMap对象
+    /**
+     * resultMap对象
+     */
     private ResultMap resultMap;
-    //类
+    /**
+     * 类
+     */
     private Class<?> entityClass;
 
     public EntityTable(Class<?> entityClass) {
@@ -77,14 +82,14 @@ public class EntityTable {
     /**
      * 生成当前实体的resultMap对象
      *
-     * @param configuration 配置
-     * @return ResultMap
+     * @param configuration 配置信息
+     * @return the object
      */
     public ResultMap getResultMap(Configuration configuration) {
-        if (null != this.resultMap) {
+        if (this.resultMap != null) {
             return this.resultMap;
         }
-        if (null == entityClassColumns || entityClassColumns.size() == 0) {
+        if (entityClassColumns == null || entityClassColumns.size() == 0) {
             return null;
         }
         List<ResultMapping> resultMappings = new ArrayList<>();
@@ -96,10 +101,10 @@ public class EntityTable {
                 column = matcher.group(1);
             }
             ResultMapping.Builder builder = new ResultMapping.Builder(configuration, entityColumn.getProperty(), column, entityColumn.getJavaType());
-            if (null != entityColumn.getJdbcType()) {
+            if (entityColumn.getJdbcType() != null) {
                 builder.jdbcType(entityColumn.getJdbcType());
             }
-            if (null != entityColumn.getTypeHandler()) {
+            if (entityColumn.getTypeHandler() != null) {
                 try {
                     builder.typeHandler(getInstance(entityColumn.getJavaType(), entityColumn.getTypeHandler()));
                 } catch (Exception e) {
@@ -118,6 +123,9 @@ public class EntityTable {
         return this.resultMap;
     }
 
+    /**
+     * 初始化 - Condition 会使用
+     */
     public void initPropertyMap() {
         propertyMap = new HashMap<>(getEntityClassColumns().size());
         for (EntityColumn column : getEntityClassColumns()) {
@@ -125,8 +133,16 @@ public class EntityTable {
         }
     }
 
+    /**
+     * 实例化TypeHandler
+     *
+     * @param <T>              泛型对象
+     * @param javaTypeClass    Java类型
+     * @param typeHandlerClass 拦截处理对象
+     * @return the object
+     */
     public <T> TypeHandler<T> getInstance(Class<?> javaTypeClass, Class<?> typeHandlerClass) {
-        if (null != javaTypeClass) {
+        if (javaTypeClass != null) {
             try {
                 Constructor<?> c = typeHandlerClass.getConstructor(Class.class);
                 return (TypeHandler<T>) c.newInstance(javaTypeClass);
@@ -164,31 +180,31 @@ public class EntityTable {
         return entityClass;
     }
 
-    public Set<EntityColumn> getEntityClassColumns() {
+    public LinkedHashSet<EntityColumn> getEntityClassColumns() {
         return entityClassColumns;
     }
 
-    public void setEntityClassColumns(Set<EntityColumn> entityClassColumns) {
+    public void setEntityClassColumns(LinkedHashSet<EntityColumn> entityClassColumns) {
         this.entityClassColumns = entityClassColumns;
     }
 
-    public Set<EntityColumn> getEntityClassPKColumns() {
+    public LinkedHashSet<EntityColumn> getEntityClassPKColumns() {
         return entityClassPKColumns;
     }
 
-    public void setEntityClassPKColumns(Set<EntityColumn> entityClassPKColumns) {
+    public void setEntityClassPKColumns(LinkedHashSet<EntityColumn> entityClassPKColumns) {
         this.entityClassPKColumns = entityClassPKColumns;
     }
 
     public String[] getKeyColumns() {
-        if (null != keyColumns && keyColumns.size() > 0) {
+        if (keyColumns != null && keyColumns.size() > 0) {
             return keyColumns.toArray(new String[]{});
         }
         return new String[]{};
     }
 
     public void setKeyColumns(String keyColumn) {
-        if (null == this.keyColumns) {
+        if (this.keyColumns == null) {
             this.keyColumns = new ArrayList<>();
             this.keyColumns.add(keyColumn);
         } else {
@@ -201,14 +217,14 @@ public class EntityTable {
     }
 
     public String[] getKeyProperties() {
-        if (null != keyProperties && keyProperties.size() > 0) {
+        if (keyProperties != null && keyProperties.size() > 0) {
             return keyProperties.toArray(new String[]{});
         }
         return new String[]{};
     }
 
     public void setKeyProperties(String keyProperty) {
-        if (null == this.keyProperties) {
+        if (this.keyProperties == null) {
             this.keyProperties = new ArrayList<>();
             this.keyProperties.add(keyProperty);
         } else {
@@ -237,13 +253,13 @@ public class EntityTable {
     }
 
     public String getPrefix() {
-        if (Assert.isNotEmpty(catalog)) {
+        if (StringKit.isNotEmpty(catalog)) {
             return catalog;
         }
-        if (Assert.isNotEmpty(schema)) {
+        if (StringKit.isNotEmpty(schema)) {
             return schema;
         }
-        return Normal.EMPTY;
+        return "";
     }
 
     public Map<String, EntityColumn> getPropertyMap() {

@@ -45,11 +45,11 @@ public class EmojiKit {
     /**
      * 是否为Emoji表情的Unicode符
      *
-     * @param str 被测试的字符串
+     * @param text 被测试的字符串
      * @return 是否为Emoji表情的Unicode符
      */
-    public static boolean isEmoji(String str) {
-        return EmojiManager.isEmoji(str);
+    public static boolean isEmoji(String text) {
+        return EmojiManager.isEmoji(text);
     }
 
     /**
@@ -83,11 +83,11 @@ public class EmojiKit {
      * <code>:boy|type_6:</code> 替换为 <code>👦🏿</code>
      * </pre>
      *
-     * @param str 包含Emoji别名或者HTML表现形式的字符串
+     * @param text 包含Emoji别名或者HTML表现形式的字符串
      * @return 替换后的字符串
      */
-    public static String toUnicode(String str) {
-        return EmojiParser.parseToUnicode(str);
+    public static String toUnicode(String text) {
+        return EmojiParser.parseToUnicode(text);
     }
 
     /**
@@ -110,11 +110,11 @@ public class EmojiKit {
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy:🏿</code>
      *
-     * @param str 包含Emoji Unicode字符的字符串
+     * @param text 包含Emoji Unicode字符的字符串
      * @return 替换后的字符串
      */
-    public static String toAlias(String str) {
-        return toAlias(str, FitzpatrickAction.PARSE);
+    public static String toAlias(String text) {
+        return toAlias(text, FitzpatrickAction.PARSE);
     }
 
     /**
@@ -122,12 +122,12 @@ public class EmojiKit {
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>:boy|type_6:</code>
      *
-     * @param str               包含Emoji Unicode字符的字符串
+     * @param text              包含Emoji Unicode字符的字符串
      * @param fitzpatrickAction 修饰符
      * @return 替换后的字符串
      */
-    public static String toAlias(String str, FitzpatrickAction fitzpatrickAction) {
-        return EmojiParser.parseToAliases(str, fitzpatrickAction);
+    public static String toAlias(String text, FitzpatrickAction fitzpatrickAction) {
+        return EmojiParser.parseToAliases(text, fitzpatrickAction);
     }
 
     /**
@@ -135,11 +135,11 @@ public class EmojiKit {
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>&amp;#x1f466;</code>
      *
-     * @param str 包含Emoji Unicode字符的字符串
+     * @param text 包含Emoji Unicode字符的字符串
      * @return 替换后的字符串
      */
-    public static String toHtmlHex(String str) {
-        return EmojiParser.parseToHtmlHexadecimal(str);
+    public static String toHtmlHex(String text) {
+        return EmojiParser.parseToHtmlHexadecimal(text);
     }
 
     /**
@@ -147,31 +147,31 @@ public class EmojiKit {
      * <p>
      * 例如：<code>👦🏿</code> 转换为 <code>&amp;#128102;</code>
      *
-     * @param str 包含Emoji Unicode字符的字符串
+     * @param text 包含Emoji Unicode字符的字符串
      * @return 替换后的字符串
      */
-    public static String toHtml(String str) {
-        return EmojiParser.parseToHtmlHexadecimal(str);
+    public static String toHtml(String text) {
+        return EmojiParser.parseToHtmlHexadecimal(text);
     }
 
     /**
      * 去除字符串中所有的Emoji Unicode字符
      *
-     * @param str 包含Emoji字符的字符串
+     * @param text 包含Emoji字符的字符串
      * @return 替换后的字符串
      */
-    public static String removeAllEmojis(String str) {
-        return EmojiParser.removeAllEmojis(str);
+    public static String removeAllEmojis(String text) {
+        return EmojiParser.removeAllEmojis(text);
     }
 
     /**
      * 提取字符串中所有的Emoji Unicode
      *
-     * @param str 包含Emoji字符的字符串
+     * @param text 包含Emoji字符的字符串
      * @return Emoji字符列表
      */
-    public static List<String> extractEmojis(String str) {
-        return EmojiParser.extractEmojis(str);
+    public static List<String> extractEmojis(String text) {
+        return EmojiParser.extractEmojis(text);
     }
 
 }

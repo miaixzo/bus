@@ -254,18 +254,18 @@ public final class Expression implements Serializable, Cloneable {
                 String expr = exprsTok.nextToken().trim();
 
                 // throw an exception if L is used with other days of the month
-                if (exprOn == DAY_OF_MONTH && expr.indexOf('L') != -1 && expr.length() > 1 && expr.contains(",")) {
+                if (exprOn == DAY_OF_MONTH && expr.indexOf('L') != -1 && expr.length() > 1 && expr.contains(Symbol.COMMA)) {
                     throw new ParseException("Support for specifying 'L' and 'LW' with other days of the month is not implemented", -1);
                 }
                 // throw an exception if L is used with other days of the week
-                if (exprOn == DAY_OF_WEEK && expr.indexOf('L') != -1 && expr.length() > 1 && expr.contains(",")) {
+                if (exprOn == DAY_OF_WEEK && expr.indexOf('L') != -1 && expr.length() > 1 && expr.contains(Symbol.COMMA)) {
                     throw new ParseException("Support for specifying 'L' with other days of the week is not implemented", -1);
                 }
                 if (exprOn == DAY_OF_WEEK && expr.indexOf(Symbol.C_SHAPE) != -1 && expr.indexOf(Symbol.C_SHAPE, expr.indexOf(Symbol.C_SHAPE) + 1) != -1) {
                     throw new ParseException("Support for specifying multiple \"nth\" days is not implemented.", -1);
                 }
 
-                StringTokenizer vTok = new StringTokenizer(expr, ",");
+                StringTokenizer vTok = new StringTokenizer(expr, Symbol.COMMA);
                 while (vTok.hasMoreTokens()) {
                     String v = vTok.nextToken();
                     storeExpressionVals(0, v, exprOn);
@@ -694,7 +694,7 @@ public final class Expression implements Serializable, Cloneable {
             Integer iVal = itr.next();
             String val = iVal.toString();
             if (!first) {
-                buf.append(",");
+                buf.append(Symbol.COMMA);
             }
             buf.append(val);
             first = false;
@@ -720,7 +720,7 @@ public final class Expression implements Serializable, Cloneable {
             Integer iVal = itr.next();
             String val = iVal.toString();
             if (!first) {
-                buf.append(",");
+                buf.append(Symbol.COMMA);
             }
             buf.append(val);
             first = false;

@@ -438,8 +438,8 @@ public class Console {
     public static class Table {
 
         private static final char ROW_LINE = Symbol.C_MINUS;
-        private static final char COLUMN_LINE = '|';
-        private static final char CORNER = '+';
+        private static final char COLUMN_LINE = Symbol.C_OR;
+        private static final char CORNER = Symbol.C_PLUS;
         private static final char SPACE = '\u3000';
         private static final char LF = Symbol.C_LF;
 

@@ -33,15 +33,11 @@ import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * CSV文件读取器,参考：FastCSV
@@ -50,9 +46,10 @@ import java.util.Objects;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public final class CsvReader {
+public class CsvReader implements Iterable<CsvRow>, Closeable {
 
-    CsvReadConfig config;
+    private final Reader reader;
+    private final CsvReadConfig config;
 
     /**
      * 构造,使用默认配置项
@@ -67,7 +64,60 @@ public final class CsvReader {
      * @param config 配置项
      */
     public CsvReader(CsvReadConfig config) {
+        this((Reader) null, config);
+    }
+
+    /**
+     * 构造
+     *
+     * @param reader {@link Reader}，null表示不设置默认reader
+     * @param config 配置项，null表示默认配置
+     */
+    public CsvReader(Reader reader, CsvReadConfig config) {
         this.config = ObjectKit.defaultIfNull(config, CsvReadConfig.defaultConfig());
+        this.reader = reader;
+    }
+
+    /**
+     * 构造，默认{@link Charset#UTF_8}编码
+     *
+     * @param file   CSV文件路径，null表示不设置路径
+     * @param config 配置项，null表示默认配置
+     */
+    public CsvReader(File file, CsvReadConfig config) {
+        this(file, Charset.UTF_8, config);
+    }
+
+    /**
+     * 构造，默认{@link Charset#UTF_8}编码
+     *
+     * @param path   CSV文件路径，null表示不设置路径
+     * @param config 配置项，null表示默认配置
+     */
+    public CsvReader(Path path, CsvReadConfig config) {
+        this(path, Charset.UTF_8, config);
+    }
+
+    /**
+     * 构造
+     *
+     * @param file    CSV文件路径，null表示不设置路径
+     * @param charset 编码
+     * @param config  配置项，null表示默认配置
+     */
+    public CsvReader(File file, java.nio.charset.Charset charset, CsvReadConfig config) {
+        this(FileKit.getReader(file, charset), config);
+    }
+
+    /**
+     * 构造
+     *
+     * @param path    CSV文件路径，null表示不设置路径
+     * @param charset 编码
+     * @param config  配置项，null表示默认配置
+     */
+    public CsvReader(Path path, java.nio.charset.Charset charset, CsvReadConfig config) {
+        this(FileKit.getReader(path, charset), config);
     }
 
     /**
@@ -220,9 +270,8 @@ public final class CsvReader {
      */
     private void read(CsvParser csvParser, CsvHandler rowHandler) {
         try {
-            CsvRow csvRow;
-            while (null != (csvRow = csvParser.nextRow())) {
-                rowHandler.handle(csvRow);
+            while (csvParser.hasNext()) {
+                rowHandler.handle(csvParser.next());
             }
         } finally {
             IoKit.close(csvParser);
@@ -317,6 +366,32 @@ public final class CsvReader {
             }
         });
         return result;
+    }
+
+    /**
+     * 根据Reader创建{@link Stream}，以便使用stream方式读取csv行
+     *
+     * @return {@link Stream}
+     */
+    public Stream<CsvRow> stream() {
+        return StreamSupport.stream(spliterator(), false)
+                .onClose(() -> {
+                    try {
+                        close();
+                    } catch (final IOException e) {
+                        throw new InstrumentException(e);
+                    }
+                });
+    }
+
+    @Override
+    public Iterator<CsvRow> iterator() {
+        return parse(this.reader);
+    }
+
+    @Override
+    public void close() throws IOException {
+        IoKit.close(this.reader);
     }
 
 }
