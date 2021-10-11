@@ -26,7 +26,7 @@
 package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.text.Builders;
+import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
@@ -53,11 +53,11 @@ public class SheetSaxHandler extends DefaultHandler {
     /**
      * 上一次的内容
      */
-    private final Builders lastContent = StringKit.builders();
+    private final TextBuilder lastContent = StringKit.builders();
     /**
      * 上一次的内容
      */
-    private final Builders lastFormula = StringKit.builders();
+    private final TextBuilder lastFormula = StringKit.builders();
     /**
      * 单元格的格式表，对应style.xml
      */

@@ -27,7 +27,7 @@ package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.Builders;
+import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -56,7 +56,7 @@ public final class CsvParser implements Closeable {
     /**
      * 当前读取字段
      */
-    private final Builders currentField = new Builders(512);
+    private final TextBuilder currentField = new TextBuilder(512);
     /**
      * 前一个特殊分界字符
      */
@@ -206,7 +206,7 @@ public final class CsvParser implements Closeable {
 
         final List<String> currentFields = new ArrayList<>(maxFieldCount > 0 ? maxFieldCount : DEFAULT_ROW_CAPACITY);
 
-        final Builders currentField = this.currentField;
+        final TextBuilder currentField = this.currentField;
         final Buffer buf = this.buf;
         int preChar = this.preChar;//前一个特殊分界字符
         int copyLen = 0; //拷贝长度
@@ -424,14 +424,14 @@ public final class CsvParser implements Closeable {
         }
 
         /**
-         * 将数据追加到{@link Builders}，追加结束后需手动调用{@link #mark()} 重置读取位置
+         * 将数据追加到{@link TextBuilder}，追加结束后需手动调用{@link #mark()} 重置读取位置
          *
-         * @param builders {@link Builders}
-         * @param length   追加的长度
+         * @param textBuilder {@link TextBuilder}
+         * @param length      追加的长度
          * @see #mark()
          */
-        void appendTo(Builders builders, int length) {
-            builders.append(this.buf, this.mark, length);
+        void appendTo(TextBuilder textBuilder, int length) {
+            textBuilder.append(this.buf, this.mark, length);
         }
     }
 

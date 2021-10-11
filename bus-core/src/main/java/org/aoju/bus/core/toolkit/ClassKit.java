@@ -31,6 +31,7 @@ import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
+import org.aoju.bus.core.compiler.JavaSourceCompiler;
 import org.aoju.bus.core.convert.BasicType;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
@@ -38,6 +39,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 import org.aoju.bus.core.loader.JarLoaders;
 
+import javax.tools.*;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -82,6 +84,10 @@ public class ClassKit {
             Long.TYPE, Float.TYPE, Double.TYPE
     };
     private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
+    /**
+     * java 编译器
+     */
+    public static final JavaCompiler SYSTEM_COMPILER = ToolProvider.getSystemJavaCompiler();
 
     static {
         List<Class<?>> primitiveTypes = new ArrayList<>(32);
@@ -3768,6 +3774,63 @@ public class ClassKit {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 编译指定的源码文件
+     *
+     * @param sourceFiles 源码文件路径
+     * @return 0表示成功，否则其他
+     */
+    public static boolean compile(String... sourceFiles) {
+        return 0 == SYSTEM_COMPILER.run(null, null, null, sourceFiles);
+    }
+
+    /**
+     * 获取{@link StandardJavaFileManager}
+     *
+     * @return {@link StandardJavaFileManager}
+     */
+    public static StandardJavaFileManager getFileManager() {
+        return SYSTEM_COMPILER.getStandardFileManager(null, null, null);
+    }
+
+    /**
+     * 获取{@link StandardJavaFileManager}
+     *
+     * @param diagnosticListener 异常收集器
+     * @return {@link StandardJavaFileManager}
+     */
+    public static StandardJavaFileManager getFileManager(DiagnosticListener<? super JavaFileObject> diagnosticListener) {
+        return SYSTEM_COMPILER.getStandardFileManager(null, null, null);
+    }
+
+    /**
+     * 新建编译任务
+     *
+     * @param fileManager        {@link JavaFileManager}，用于管理已经编译好的文件
+     * @param diagnosticListener 诊断监听
+     * @param options            选项，例如 -cpXXX等
+     * @param compilationUnits   编译单元，即需要编译的对象
+     * @return {@link JavaCompiler.CompilationTask}
+     */
+    public static JavaCompiler.CompilationTask getTask(
+            JavaFileManager fileManager,
+            DiagnosticListener<? super JavaFileObject> diagnosticListener,
+            Iterable<String> options,
+            Iterable<? extends JavaFileObject> compilationUnits) {
+        return SYSTEM_COMPILER.getTask(null, fileManager, diagnosticListener, options, null, compilationUnits);
+    }
+
+    /**
+     * 获取{@link JavaSourceCompiler}
+     *
+     * @param parent 父{@link ClassLoader}
+     * @return {@link JavaSourceCompiler}
+     * @see JavaSourceCompiler#create(ClassLoader)
+     */
+    public static JavaSourceCompiler getCompiler(ClassLoader parent) {
+        return JavaSourceCompiler.create(parent);
     }
 
     public enum Interfaces {

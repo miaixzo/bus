@@ -47,18 +47,18 @@ public class Similarity {
      *     <li>计算出两个字符串最大子串，除以最长的字符串，结果即为相似度</li>
      * </ul>
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
+     * @param texta 字符串1
+     * @param textb 字符串2
      * @return 相似度
      */
-    public static double similar(String strA, String strB) {
+    public static double similar(String texta, String textb) {
         String newStrA, newStrB;
-        if (strA.length() < strB.length()) {
-            newStrA = removeSign(strB);
-            newStrB = removeSign(strA);
+        if (texta.length() < textb.length()) {
+            newStrA = removeSign(textb);
+            newStrB = removeSign(texta);
         } else {
-            newStrA = removeSign(strA);
-            newStrB = removeSign(strB);
+            newStrA = removeSign(texta);
+            newStrB = removeSign(textb);
         }
 
         // 用较大的字符串长度作为分母，相似子串作为分子计算出字串相似度
@@ -75,30 +75,30 @@ public class Similarity {
     /**
      * 计算相似度百分比
      *
-     * @param strA  字符串1
-     * @param strB  字符串2
+     * @param texta 字符串1
+     * @param textb 字符串2
      * @param scale 保留小数
      * @return 百分比
      */
-    public static String similar(String strA, String strB, int scale) {
-        return MathKit.formatPercent(similar(strA, strB), scale);
+    public static String similar(String texta, String textb, int scale) {
+        return MathKit.formatPercent(similar(texta, textb), scale);
     }
 
     /**
      * 最长公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
      * 算法解析见：https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
+     * @param texta 字符串1
+     * @param textb 字符串2
      * @return 最长公共子串
      */
-    public static String longestCommonSubstring(String strA, String strB) {
-        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1，
+    public static String longestCommonSubstring(String texta, String textb) {
+        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_texta和chars_textb的对应位相同，则matrix[i][j]的值为左上角的值加1，
         // 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
-        final int[][] matrix = generateMatrix(strA, strB);
+        final int[][] matrix = generateMatrix(texta, textb);
 
-        int m = strA.length();
-        int n = strB.length();
+        int m = texta.length();
+        int n = textb.length();
         // 矩阵中，如果matrix[m][n]的值不等于matrix[m-1][n]的值也不等于matrix[m][n-1]的值，
         // 则matrix[m][n]对应的字符为相似字符元，并将其存入result数组中。
         char[] result = new char[matrix[m][n]];
@@ -109,7 +109,7 @@ public class Similarity {
             } else if (matrix[m][n] == matrix[m - 1][n]) {
                 m--;
             } else {
-                result[currentIndex] = strA.charAt(m - 1);
+                result[currentIndex] = texta.charAt(m - 1);
                 currentIndex--;
                 n--;
                 m--;
@@ -155,33 +155,33 @@ public class Similarity {
     /**
      * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
+     * @param texta 字符串1
+     * @param textb 字符串2
      * @return 公共子串
      */
-    private static int longestCommonSubstringLength(String strA, String strB) {
-        final int m = strA.length();
-        final int n = strB.length();
-        return generateMatrix(strA, strB)[m][n];
+    private static int longestCommonSubstringLength(String texta, String textb) {
+        final int m = texta.length();
+        final int n = textb.length();
+        return generateMatrix(texta, textb)[m][n];
     }
 
     /**
      * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
      *
-     * @param strA 字符串1
-     * @param strB 字符串2
+     * @param texta 字符串1
+     * @param textb 字符串2
      * @return 公共串矩阵
      */
-    private static int[][] generateMatrix(String strA, String strB) {
-        int m = strA.length();
-        int n = strB.length();
+    private static int[][] generateMatrix(String texta, String textb) {
+        int m = texta.length();
+        int n = textb.length();
 
-        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_strA和chars_strB的对应位相同，则matrix[i][j]的值为左上角的值加1，
+        // 初始化矩阵数据,matrix[0][0]的值为0， 如果字符数组chars_texta和chars_textb的对应位相同，则matrix[i][j]的值为左上角的值加1，
         // 否则，matrix[i][j]的值等于左上方最近两个位置的较大值， 矩阵中其余各点的值为0.
         final int[][] matrix = new int[m + 1][n + 1];
         for (int i = 1; i <= m; i++) {
             for (int j = 1; j <= n; j++) {
-                if (strA.charAt(i - 1) == strB.charAt(j - 1)) {
+                if (texta.charAt(i - 1) == textb.charAt(j - 1)) {
                     matrix[i][j] = matrix[i - 1][j - 1] + 1;
                 } else {
                     matrix[i][j] = Math.max(matrix[i][j - 1], matrix[i - 1][j]);

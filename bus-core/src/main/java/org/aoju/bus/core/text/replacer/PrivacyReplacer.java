@@ -23,45 +23,50 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.text;
+package org.aoju.bus.core.text.replacer;
 
+import org.aoju.bus.core.lang.Replacer;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.text.Lookups;
+import org.aoju.bus.core.text.Matchers;
+import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
- * 按值替换字符串中的变量.
+ * 按值替换字符串中的变量
  *
  * @author Kimi Liu
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class Replacers {
+public class PrivacyReplacer implements Replacer<Object>, Serializable {
 
     /**
-     * 默认变量前缀.
+     * 默认变量前缀
      */
     public static final Matchers DEFAULT_PREFIX = Matchers.stringMatcher(Symbol.DOLLAR + Symbol.BRACE_LEFT);
     /**
-     * 默认变量后缀.
+     * 默认变量后缀
      */
     public static final Matchers DEFAULT_SUFFIX = Matchers.stringMatcher(Symbol.BRACE_RIGHT);
     /**
-     * 默认值分隔符.
+     * 默认值分隔符
      */
     public static final Matchers DEFAULT_VALUE_DELIMITER = Matchers.stringMatcher(Symbol.COLON + Symbol.MINUS);
-
+    private static final long serialVersionUID = 1L;
     /**
-     * 存储转义字符.
+     * 存储转义字符
      */
     private char escapeChar;
     /**
-     * 存储变量前缀.
+     * 存储变量前缀
      */
     private Matchers prefixMatcher;
     /**
-     * 存储变量后缀.
+     * 存储变量后缀
      */
     private Matchers suffixMatcher;
     /**
@@ -69,7 +74,7 @@ public class Replacers {
      */
     private Matchers valueDelimiterMatcher;
     /**
-     * 变量解析被委托给VariableResolver的实现程序.
+     * 变量解析被委托给VariableResolver的实现程序
      */
     private Lookups<?> variableResolver;
     /**
@@ -84,7 +89,7 @@ public class Replacers {
     /**
      * 默认值为变量前缀和后缀以及转义字符.
      */
-    public Replacers() {
+    public PrivacyReplacer() {
         this(null, DEFAULT_PREFIX, DEFAULT_SUFFIX, Symbol.C_DOLLAR);
     }
 
@@ -95,7 +100,7 @@ public class Replacers {
      * @param <V>      映射中值的类型
      * @param valueMap 带有变量值的映射可能为null
      */
-    public <V> Replacers(final Map<String, V> valueMap) {
+    public <V> PrivacyReplacer(final Map<String, V> valueMap) {
         this(Lookups.mapLookup(valueMap), DEFAULT_PREFIX, DEFAULT_SUFFIX, Symbol.C_DOLLAR);
     }
 
@@ -107,7 +112,7 @@ public class Replacers {
      * @param prefix   变量的前缀,而不是null
      * @param suffix   变量的后缀,而不是null
      */
-    public <V> Replacers(final Map<String, V> valueMap, final String prefix, final String suffix) {
+    public <V> PrivacyReplacer(final Map<String, V> valueMap, final String prefix, final String suffix) {
         this(Lookups.mapLookup(valueMap), prefix, suffix, Symbol.C_DOLLAR);
     }
 
@@ -120,8 +125,8 @@ public class Replacers {
      * @param suffix   变量的后缀,而不是null
      * @param escape   转义字符
      */
-    public <V> Replacers(final Map<String, V> valueMap, final String prefix, final String suffix,
-                         final char escape) {
+    public <V> PrivacyReplacer(final Map<String, V> valueMap, final String prefix, final String suffix,
+                               final char escape) {
         this(Lookups.mapLookup(valueMap), prefix, suffix, escape);
     }
 
@@ -135,8 +140,8 @@ public class Replacers {
      * @param escape    转义字符
      * @param delimiter 变量默认值分隔符可以为空
      */
-    public <V> Replacers(final Map<String, V> valueMap, final String prefix, final String suffix,
-                         final char escape, final String delimiter) {
+    public <V> PrivacyReplacer(final Map<String, V> valueMap, final String prefix, final String suffix,
+                               final char escape, final String delimiter) {
         this(Lookups.mapLookup(valueMap), prefix, suffix, escape, delimiter);
     }
 
@@ -145,7 +150,7 @@ public class Replacers {
      *
      * @param resolver 变量解析器可以为空
      */
-    public Replacers(final Lookups<?> resolver) {
+    public PrivacyReplacer(final Lookups<?> resolver) {
         this(resolver, DEFAULT_PREFIX, DEFAULT_SUFFIX, Symbol.C_DOLLAR);
     }
 
@@ -157,8 +162,8 @@ public class Replacers {
      * @param suffix   变量的后缀,而不是null
      * @param escape   转义字符
      */
-    public Replacers(final Lookups<?> resolver, final String prefix, final String suffix,
-                     final char escape) {
+    public PrivacyReplacer(final Lookups<?> resolver, final String prefix, final String suffix,
+                           final char escape) {
         this.setVariableResolver(resolver);
         this.setVariablePrefix(prefix);
         this.setVariableSuffix(suffix);
@@ -175,8 +180,8 @@ public class Replacers {
      * @param escape    转义字符
      * @param delimiter 变量默认值分隔符可以为空
      */
-    public Replacers(final Lookups<?> resolver, final String prefix, final String suffix,
-                     final char escape, final String delimiter) {
+    public PrivacyReplacer(final Lookups<?> resolver, final String prefix, final String suffix,
+                           final char escape, final String delimiter) {
         this.setVariableResolver(resolver);
         this.setVariablePrefix(prefix);
         this.setVariableSuffix(suffix);
@@ -192,7 +197,7 @@ public class Replacers {
      * @param suffixMatcher 后缀解析器,而不是null
      * @param escape        转义转义字符
      */
-    public Replacers(
+    public PrivacyReplacer(
             final Lookups<?> resolver, final Matchers prefixMatcher, final Matchers suffixMatcher,
             final char escape) {
         this(resolver, prefixMatcher, suffixMatcher, escape, DEFAULT_VALUE_DELIMITER);
@@ -207,7 +212,7 @@ public class Replacers {
      * @param escape        转义转义字符
      * @param delimiter     变量默认值分隔符可以为空
      */
-    public Replacers(
+    public PrivacyReplacer(
             final Lookups<?> resolver, final Matchers prefixMatcher, final Matchers suffixMatcher,
             final char escape, final Matchers delimiter) {
         this.setVariableResolver(resolver);
@@ -227,7 +232,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public static <V> String replace(final Object source, final Map<String, V> valueMap) {
-        return new Replacers(valueMap).replace(source);
+        return new PrivacyReplacer(valueMap).replace(source);
     }
 
     /**
@@ -242,7 +247,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public static <V> String replace(final Object source, final Map<String, V> valueMap, final String prefix, final String suffix) {
-        return new Replacers(valueMap, prefix, suffix).replace(source);
+        return new PrivacyReplacer(valueMap, prefix, suffix).replace(source);
     }
 
     /**
@@ -263,7 +268,7 @@ public class Replacers {
             final String propValue = value.getProperty(propName);
             valueMap.put(propName, propValue);
         }
-        return Replacers.replace(source, valueMap);
+        return PrivacyReplacer.replace(source, valueMap);
     }
 
     /**
@@ -274,7 +279,38 @@ public class Replacers {
      * @return 返回替换操作的结果
      */
     public static String replaceSystemProperties(final Object source) {
-        return new Replacers(Lookups.systemPropertiesLookup()).replace(source);
+        return new PrivacyReplacer(Lookups.systemPropertiesLookup()).replace(source);
+    }
+
+    /**
+     * 用匹配的值替换所有出现的变量
+     *
+     * @param source 获取要替换的字符数组的源代码
+     * @return 替换操作的结果
+     */
+    @Override
+    public String replace(final Object source) {
+        if (null == source) {
+            return null;
+        }
+        final TextBuilder buf = new TextBuilder().append(source);
+        substitute(buf, 0, buf.length());
+        return buf.toString();
+    }
+
+    /**
+     * 用匹配的值替换所有出现的变量
+     *
+     * @param source 获取要替换的字符数组的源代码
+     * @return 替换操作的结果
+     */
+    public String replace(final TextBuilder source) {
+        if (null == source) {
+            return null;
+        }
+        final TextBuilder buf = new TextBuilder(source.length()).append(source);
+        substitute(buf, 0, buf.length());
+        return buf.toString();
     }
 
     /**
@@ -288,28 +324,9 @@ public class Replacers {
         if (null == source) {
             return null;
         }
-        final Builders buf = new Builders(source);
+        final TextBuilder buf = new TextBuilder(source);
         if (substitute(buf, 0, source.length()) == false) {
             return source;
-        }
-        return buf.toString();
-    }
-
-    /**
-     * 用匹配的值替换所有出现的变量
-     *
-     * @param source 获取要替换的字符串
-     * @param offset 偏移数组中的起始偏移必须有效
-     * @param length 偏移数组中的起始偏移必须有效
-     * @return 替换操作的结果
-     */
-    public String replace(final String source, final int offset, final int length) {
-        if (null == source) {
-            return null;
-        }
-        final Builders buf = new Builders(length).append(source, offset, length);
-        if (substitute(buf, 0, length) == false) {
-            return source.substring(offset, offset + length);
         }
         return buf.toString();
     }
@@ -326,8 +343,27 @@ public class Replacers {
         if (null == source) {
             return null;
         }
-        final Builders buf = new Builders(source.length).append(source);
+        final TextBuilder buf = new TextBuilder(source.length).append(source);
         substitute(buf, 0, source.length);
+        return buf.toString();
+    }
+
+    /**
+     * 用匹配的值替换所有出现的变量
+     *
+     * @param source 获取要替换的字符串
+     * @param offset 偏移数组中的起始偏移必须有效
+     * @param length 偏移数组中的起始偏移必须有效
+     * @return 替换操作的结果
+     */
+    public String replace(final String source, final int offset, final int length) {
+        if (null == source) {
+            return null;
+        }
+        final TextBuilder buf = new TextBuilder(length).append(source, offset, length);
+        if (substitute(buf, 0, length) == false) {
+            return source.substring(offset, offset + length);
+        }
         return buf.toString();
     }
 
@@ -343,7 +379,7 @@ public class Replacers {
         if (null == source) {
             return null;
         }
-        final Builders buf = new Builders(length).append(source, offset, length);
+        final TextBuilder buf = new TextBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -359,7 +395,7 @@ public class Replacers {
         if (null == source) {
             return null;
         }
-        final Builders buf = new Builders(source.length()).append(source);
+        final TextBuilder buf = new TextBuilder(source.length()).append(source);
         substitute(buf, 0, buf.length());
         return buf.toString();
     }
@@ -376,7 +412,7 @@ public class Replacers {
         if (null == source) {
             return null;
         }
-        final Builders buf = new Builders(length).append(source, offset, length);
+        final TextBuilder buf = new TextBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -406,24 +442,8 @@ public class Replacers {
         if (null == source) {
             return null;
         }
-        final Builders buf = new Builders(length).append(source, offset, length);
+        final TextBuilder buf = new TextBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
-        return buf.toString();
-    }
-
-
-    /**
-     * 用匹配的值替换所有出现的变量
-     *
-     * @param source 获取要替换的字符数组的源代码
-     * @return 替换操作的结果
-     */
-    public String replace(final Builders source) {
-        if (null == source) {
-            return null;
-        }
-        final Builders buf = new Builders(source.length()).append(source);
-        substitute(buf, 0, buf.length());
         return buf.toString();
     }
 
@@ -435,30 +455,14 @@ public class Replacers {
      * @param length 要处理的数组中的长度必须是有效的
      * @return 替换操作的结果
      */
-    public String replace(final Builders source, final int offset, final int length) {
+    public String replace(final TextBuilder source, final int offset, final int length) {
         if (null == source) {
             return null;
         }
-        final Builders buf = new Builders(length).append(source, offset, length);
+        final TextBuilder buf = new TextBuilder(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
-
-    /**
-     * 用匹配的值替换所有出现的变量
-     *
-     * @param source 获取要替换的字符数组的源代码
-     * @return 替换操作的结果
-     */
-    public String replace(final Object source) {
-        if (null == source) {
-            return null;
-        }
-        final Builders buf = new Builders().append(source);
-        substitute(buf, 0, buf.length());
-        return buf.toString();
-    }
-
 
     /**
      * 用匹配的值替换所有出现的变量
@@ -485,7 +489,7 @@ public class Replacers {
         if (null == source) {
             return false;
         }
-        final Builders buf = new Builders(length).append(source, offset, length);
+        final TextBuilder buf = new TextBuilder(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return false;
         }
@@ -518,7 +522,7 @@ public class Replacers {
         if (null == source) {
             return false;
         }
-        final Builders buf = new Builders(length).append(source, offset, length);
+        final TextBuilder buf = new TextBuilder(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return false;
         }
@@ -532,7 +536,7 @@ public class Replacers {
      * @param source 获取要替换的字符数组的源代码
      * @return 替换操作的结果
      */
-    public boolean replaceIn(final Builders source) {
+    public boolean replaceIn(final TextBuilder source) {
         if (null == source) {
             return false;
         }
@@ -547,7 +551,7 @@ public class Replacers {
      * @param length 要处理的数组中的长度必须是有效的
      * @return 替换操作的结果
      */
-    public boolean replaceIn(final Builders source, final int offset, final int length) {
+    public boolean replaceIn(final TextBuilder source, final int offset, final int length) {
         if (null == source) {
             return false;
         }
@@ -562,7 +566,7 @@ public class Replacers {
      * @param length 要处理的构建器中的长度必须是有效的
      * @return true/false
      */
-    protected boolean substitute(final Builders buffer, final int offset, final int length) {
+    protected boolean substitute(final TextBuilder buffer, final int offset, final int length) {
         return substitute(buffer, offset, length, null) > 0;
     }
 
@@ -575,7 +579,7 @@ public class Replacers {
      * @param priorVariables 保存被替换变量的堆栈可以为空
      * @return 发生的长度更改, 除非priorVariables在int时为null 表示布尔标志,表示是否发生了更改
      */
-    private int substitute(final Builders buffer, final int offset, final int length, List<String> priorVariables) {
+    private int substitute(final TextBuilder buffer, final int offset, final int length, List<String> priorVariables) {
         final Matchers pfxMatcher = getVariablePrefixMatcher();
         final Matchers suffMatcher = getVariableSuffixMatcher();
         final char escape = getEscapeChar();
@@ -628,7 +632,7 @@ public class Replacers {
                                         + startMatchLen, pos - startPos
                                         - startMatchLen);
                                 if (substitutionInVariablesEnabled) {
-                                    final Builders bufName = new Builders(varNameExpr);
+                                    final TextBuilder bufName = new TextBuilder(varNameExpr);
                                     substitute(bufName, 0, bufName.length());
                                     varNameExpr = bufName.toString();
                                 }
@@ -709,7 +713,7 @@ public class Replacers {
         if (priorVariables.contains(varName) == false) {
             return;
         }
-        final Builders buf = new Builders(256);
+        final TextBuilder buf = new TextBuilder(256);
         buf.append("Infinite loop in property interpolation of ");
         buf.append(priorVariables.remove(0));
         buf.append(": ");
@@ -727,7 +731,7 @@ public class Replacers {
      * @param endPos       变量的结束位置,包括后缀,有效
      * @return 返回变量的值, 如果变量未知, 则null
      */
-    protected String resolveVariable(final String variableName, final Builders buf, final int startPos, final int endPos) {
+    protected String resolveVariable(final String variableName, final TextBuilder buf, final int startPos, final int endPos) {
         final Lookups<?> resolver = getVariableResolver();
         if (null == resolver) {
             return null;
@@ -769,7 +773,7 @@ public class Replacers {
      * @param prefixMatcher 前缀匹配器,null被忽略
      * @return this, 以启用链接
      */
-    public Replacers setVariablePrefixMatcher(final Matchers prefixMatcher) {
+    public PrivacyReplacer setVariablePrefixMatcher(final Matchers prefixMatcher) {
         if (null == prefixMatcher) {
             throw new IllegalArgumentException("Variable prefix matcher must not be null!");
         }
@@ -783,7 +787,7 @@ public class Replacers {
      * @param prefix 要使用的前缀字符
      * @return this, 以启用链接
      */
-    public Replacers setVariablePrefix(final char prefix) {
+    public PrivacyReplacer setVariablePrefix(final char prefix) {
         return setVariablePrefixMatcher(Matchers.charMatcher(prefix));
     }
 
@@ -793,7 +797,7 @@ public class Replacers {
      * @param prefix 变量的前缀,而不是null
      * @return this, 以启用链接
      */
-    public Replacers setVariablePrefix(final String prefix) {
+    public PrivacyReplacer setVariablePrefix(final String prefix) {
         if (null == prefix) {
             throw new IllegalArgumentException("Variable prefix must not be null!");
         }
@@ -816,7 +820,7 @@ public class Replacers {
      * @param suffixMatcher 后缀匹配器,null被忽略
      * @return this, 以启用链接
      */
-    public Replacers setVariableSuffixMatcher(final Matchers suffixMatcher) {
+    public PrivacyReplacer setVariableSuffixMatcher(final Matchers suffixMatcher) {
         if (null == suffixMatcher) {
             throw new IllegalArgumentException("Variable suffix matcher must not be null!");
         }
@@ -830,7 +834,7 @@ public class Replacers {
      * @param suffix 要使用的后缀字符
      * @return this, 以启用链接
      */
-    public Replacers setVariableSuffix(final char suffix) {
+    public PrivacyReplacer setVariableSuffix(final char suffix) {
         return setVariableSuffixMatcher(Matchers.charMatcher(suffix));
     }
 
@@ -840,7 +844,7 @@ public class Replacers {
      * @param suffix 变量的后缀,而不是null
      * @return this, 以启用链接
      */
-    public Replacers setVariableSuffix(final String suffix) {
+    public PrivacyReplacer setVariableSuffix(final String suffix) {
         if (null == suffix) {
             throw new IllegalArgumentException("Variable suffix must not be null!");
         }
@@ -851,12 +855,12 @@ public class Replacers {
         return valueDelimiterMatcher;
     }
 
-    public Replacers setValueDelimiterMatcher(final Matchers valueDelimiterMatcher) {
+    public PrivacyReplacer setValueDelimiterMatcher(final Matchers valueDelimiterMatcher) {
         this.valueDelimiterMatcher = valueDelimiterMatcher;
         return this;
     }
 
-    public Replacers setValueDelimiter(final char valueDelimiter) {
+    public PrivacyReplacer setValueDelimiter(final char valueDelimiter) {
         return setValueDelimiterMatcher(Matchers.charMatcher(valueDelimiter));
     }
 
@@ -866,7 +870,7 @@ public class Replacers {
      * @param valueDelimiter 要使用的变量默认值分隔符字符串可以为null或空
      * @return this, 以启用链接
      */
-    public Replacers setValueDelimiter(final String valueDelimiter) {
+    public PrivacyReplacer setValueDelimiter(final String valueDelimiter) {
         if (StringKit.isEmpty(valueDelimiter)) {
             setValueDelimiterMatcher(null);
             return this;

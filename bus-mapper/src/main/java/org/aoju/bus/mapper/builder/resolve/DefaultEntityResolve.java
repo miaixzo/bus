@@ -26,7 +26,7 @@
 package org.aoju.bus.mapper.builder.resolve;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.Naming;
+import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.annotation.ColumnType;
 import org.aoju.bus.mapper.annotation.KeySql;
@@ -67,15 +67,15 @@ public class DefaultEntityResolve implements EntityResolve {
     public static String convertByStyle(String text, Style style) {
         switch (style) {
             case camelhump:
-                return Naming.toUnderlineCase(text);
+                return NamingCase.toUnderlineCase(text);
             case uppercase:
                 return text.toUpperCase();
             case lowercase:
                 return text.toLowerCase();
             case camelhumpAndLowercase:
-                return Naming.toUnderlineCase(text).toLowerCase();
+                return NamingCase.toUnderlineCase(text).toLowerCase();
             case camelhumpAndUppercase:
-                return Naming.toUnderlineCase(text).toUpperCase();
+                return NamingCase.toUnderlineCase(text).toUpperCase();
             case normal:
             default:
                 return text;

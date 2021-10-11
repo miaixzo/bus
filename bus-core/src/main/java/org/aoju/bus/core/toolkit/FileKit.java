@@ -46,6 +46,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -453,6 +454,29 @@ public class FileKit {
      */
     public static void walkFiles(Path start, FileVisitor<? super Path> visitor) {
         walkFiles(start, -1, visitor);
+    }
+
+    /**
+     * 递归遍历目录并处理目录下的文件，可以处理目录或文件：
+     * <ul>
+     *     <li>非目录则直接调用{@link Consumer}处理</li>
+     *     <li>目录则递归调用此方法处理</li>
+     * </ul>
+     *
+     * @param file     文件或目录，文件直接处理
+     * @param consumer 文件处理器，只会处理文件
+     */
+    public static void walkFiles(File file, Consumer<File> consumer) {
+        if (file.isDirectory()) {
+            final File[] subFiles = file.listFiles();
+            if (ArrayKit.isNotEmpty(subFiles)) {
+                for (File tmp : subFiles) {
+                    walkFiles(tmp, consumer);
+                }
+            }
+        } else {
+            consumer.accept(file);
+        }
     }
 
     /**

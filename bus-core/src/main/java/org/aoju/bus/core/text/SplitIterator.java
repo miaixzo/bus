@@ -48,11 +48,22 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 文本内容
+     */
     private final String text;
+    /**
+     * 文本查找抽象类
+     */
     private final TextFinder finder;
+    /**
+     * 限制数量
+     */
     private final int limit;
+    /**
+     * 是否忽略""
+     */
     private final boolean ignoreEmpty;
-
     /**
      * 上一次的结束位置
      */
@@ -168,7 +179,7 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
         final List<T> result = new ArrayList<>();
         while (this.hasNext()) {
             final T apply = mapping.apply(this.next());
-            if (ignoreEmpty && StringKit.isBlank(apply)) {
+            if (ignoreEmpty && StringKit.emptyIfString(apply)) {
                 // 对于mapping之后依旧是String的情况，ignoreEmpty依旧有效
                 continue;
             }

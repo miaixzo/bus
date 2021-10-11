@@ -39,7 +39,6 @@ import java.util.Map;
 
 /**
  * HTML/XML/JSON等
- * <p>
  * ESCAPE信息
  *
  * @author Kimi Liu

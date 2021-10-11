@@ -28,10 +28,10 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.Builders;
-import org.aoju.bus.core.text.Naming;
+import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.text.Similarity;
 import org.aoju.bus.core.text.SplitIterator;
+import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.text.finder.*;
 
 import java.io.StringReader;
@@ -470,7 +470,7 @@ public class StringKit {
      * @param obj 对象
      * @return 如果为字符串是否为空串
      */
-    public static boolean emptyIfStr(Object obj) {
+    public static boolean emptyIfString(Object obj) {
         if (null == obj) {
             return true;
         } else if (obj instanceof CharSequence) {
@@ -2831,7 +2831,7 @@ public class StringKit {
         if (count <= 0) {
             return Normal.EMPTY;
         }
-        final Builders builder = Builders.create();
+        final TextBuilder builder = TextBuilder.create();
         boolean isFirst = true;
         while (count-- > 0) {
             if (isFirst) {
@@ -3086,7 +3086,7 @@ public class StringKit {
      * @return 转换后下划线大写方式命名的字符串
      */
     public static String toUnderlineCase(CharSequence camelCaseStr) {
-        return Naming.toUnderlineCase(camelCaseStr);
+        return NamingCase.toUnderlineCase(camelCaseStr);
     }
 
     /**
@@ -3098,7 +3098,7 @@ public class StringKit {
      * @return 转换后符号连接方式命名的字符串
      */
     public static String toSymbolCase(CharSequence text, char symbol) {
-        return Naming.toSymbolCase(text, symbol);
+        return NamingCase.toSymbolCase(text, symbol);
     }
 
     /**
@@ -3110,7 +3110,7 @@ public class StringKit {
      * @return 转换后的驼峰式命名的字符串
      */
     public static String toCamelCase(CharSequence text) {
-        return Naming.toCamelCase(text);
+        return NamingCase.toCamelCase(text);
     }
 
     /**
@@ -5076,7 +5076,7 @@ public class StringKit {
      * @return 连接后的字符串
      */
     public static String concat(boolean isNullToEmpty, CharSequence... texts) {
-        final Builders sb = new Builders();
+        final TextBuilder sb = new TextBuilder();
         for (CharSequence text : texts) {
             sb.append(isNullToEmpty ? nullToEmpty(text) : text);
         }
@@ -5265,12 +5265,12 @@ public class StringKit {
     }
 
     /**
-     * 创建Builders对象
+     * 创建TextBuilder对象
      *
-     * @return Builders对象
+     * @return TextBuilder对象
      */
-    public static Builders builders() {
-        return new Builders();
+    public static TextBuilder builders() {
+        return new TextBuilder();
     }
 
     /**
@@ -5284,13 +5284,13 @@ public class StringKit {
     }
 
     /**
-     * 创建Builders对象
+     * 创建TextBuilder对象
      *
      * @param capacity 初始大小
-     * @return Builders对象
+     * @return TextBuilder对象
      */
-    public static Builders builders(int capacity) {
-        return new Builders(capacity);
+    public static TextBuilder builders(int capacity) {
+        return new TextBuilder(capacity);
     }
 
     /**
@@ -5308,13 +5308,13 @@ public class StringKit {
     }
 
     /**
-     * 创建Builders对象
+     * 创建TextBuilder对象
      *
      * @param texts 初始字符串列表
-     * @return Builders对象
+     * @return TextBuilder对象
      */
-    public static Builders builders(CharSequence... texts) {
-        return new Builders(texts);
+    public static TextBuilder builders(CharSequence... texts) {
+        return new TextBuilder(texts);
     }
 
     /**

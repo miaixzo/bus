@@ -27,7 +27,7 @@ package org.aoju.bus.validate.validators;
 
 import lombok.Data;
 import org.aoju.bus.core.lang.exception.ValidateException;
-import org.aoju.bus.core.text.Replacers;
+import org.aoju.bus.core.text.replacer.PrivacyReplacer;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.MapKit;
 
@@ -126,7 +126,7 @@ public class Property {
      * @return the string
      */
     public String getFormatted() {
-        return new Replacers(this.param).replace(this.errmsg);
+        return new PrivacyReplacer(this.param).replace(this.errmsg);
     }
 
 }
