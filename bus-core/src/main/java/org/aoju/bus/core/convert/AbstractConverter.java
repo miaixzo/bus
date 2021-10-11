@@ -26,7 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.CharKit;
+import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -125,9 +125,9 @@ public abstract class AbstractConverter<T> implements Converter<T> {
             return value.toString();
         } else if (ArrayKit.isArray(value)) {
             return ArrayKit.toString(value);
-        } else if (CharKit.isChar(value)) {
+        } else if (CharsKit.isChar(value)) {
             //对于ASCII字符使用缓存加速转换，减少空间创建
-            return CharKit.toString((char) value);
+            return CharsKit.toString((char) value);
         }
         return value.toString();
     }

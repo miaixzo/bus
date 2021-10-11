@@ -85,7 +85,7 @@ public class ReflectKit {
      */
     public static void invokeSetter(Object obj, String name, Object value) {
         Object object = obj;
-        String[] names = StringKit.split(name, Symbol.DOT);
+        String[] names = StringKit.splitToArray(name, Symbol.DOT);
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 String getterMethodName = Normal.GET + StringKit.capitalize(names[i]);

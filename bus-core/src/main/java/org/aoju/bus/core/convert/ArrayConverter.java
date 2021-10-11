@@ -116,7 +116,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
             }
 
             // 单纯字符串情况下按照逗号分隔后劈开
-            final String[] strings = StringKit.split(value.toString(), Symbol.COMMA);
+            final String[] strings = StringKit.splitToArray(value.toString(), Symbol.COMMA);
             return convertArrayToArray(strings);
         }
 

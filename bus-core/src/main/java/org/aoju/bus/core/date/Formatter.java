@@ -520,7 +520,7 @@ public class Formatter {
         // 含有单个位数数字的日期时间格式
         dateStr = normalize(dateStr);
         if (PatternKit.isMatch(Fields.REGEX_NORM, dateStr)) {
-            final int colonCount = CharKit.count(dateStr, Symbol.COLON);
+            final int colonCount = CharsKit.count(dateStr, Symbol.COLON);
             switch (colonCount) {
                 case 0:
                     // yyyy-MM-dd

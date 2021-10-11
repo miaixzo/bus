@@ -41,7 +41,7 @@ import java.nio.CharBuffer;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public class CharKit {
+public class CharsKit {
 
     /**
      * 是否为ASCII字符,ASCII字符位于0~127之间

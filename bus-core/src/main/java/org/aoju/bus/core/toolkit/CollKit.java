@@ -1921,7 +1921,7 @@ public class CollKit {
      * @return Map
      */
     public static Map<String, String> zip(String keys, String values, String delimiter, boolean isOrder) {
-        return ArrayKit.zip(StringKit.split(keys, delimiter), StringKit.split(values, delimiter), isOrder);
+        return ArrayKit.zip(StringKit.splitToArray(keys, delimiter), StringKit.splitToArray(values, delimiter), isOrder);
     }
 
     /**

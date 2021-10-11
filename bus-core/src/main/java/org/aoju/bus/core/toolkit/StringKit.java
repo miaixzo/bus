@@ -30,9 +30,8 @@ import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.text.Similarity;
-import org.aoju.bus.core.text.SplitIterator;
 import org.aoju.bus.core.text.TextBuilder;
-import org.aoju.bus.core.text.finder.*;
+import org.aoju.bus.core.text.TextSplitter;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -86,14 +85,14 @@ public class StringKit {
 
         // 扫描字符串头部
         if (mode <= 0) {
-            while ((start < end) && (CharKit.isBlankChar(text.charAt(start)))) {
+            while ((start < end) && (CharsKit.isBlankChar(text.charAt(start)))) {
                 start++;
             }
         }
 
         // 扫描字符串尾部
         if (mode >= 0) {
-            while ((start < end) && (CharKit.isBlankChar(text.charAt(end - 1)))) {
+            while ((start < end) && (CharsKit.isBlankChar(text.charAt(end - 1)))) {
                 end--;
             }
         }
@@ -234,7 +233,7 @@ public class StringKit {
 
         for (int i = 0; i < length; i++) {
             // 只要有一个非空字符即为非空字符串
-            if (false == CharKit.isBlankChar(text.charAt(i))) {
+            if (false == CharsKit.isBlankChar(text.charAt(i))) {
                 return false;
             }
         }
@@ -860,28 +859,6 @@ public class StringKit {
     }
 
     /**
-     * 将给定的{@code Collection}复制到{@code String}数组中
-     * {@code Collection }必须只包含{@code String}元素
-     *
-     * @param collection 要复制的集合 {@code Collection}
-     * @return {@code String} 数组
-     */
-    public static String[] toStringArray(Collection<String> collection) {
-        return collection.toArray(Normal.EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * 将给定的枚举复制到{@code String}数组中
-     * 枚举必须只包含{@code String}元素
-     *
-     * @param enumeration 要复制的枚举 {@code Enumeration}
-     * @return {@code String} 数组
-     */
-    public static String[] toStringArray(Enumeration<String> enumeration) {
-        return toStringArray(Collections.list(enumeration));
-    }
-
-    /**
      * 检查给定的{@code String}是否包含实际的文本。
      * 更具体地说，如果{@code String}不是{@code null}，
      * 那么这个方法返回{@code true}，它的长度大于0，并且至少包含一个非空白字符
@@ -1068,7 +1045,7 @@ public class StringKit {
         char c;
         for (int i = 0; i < len; i++) {
             c = text.charAt(i);
-            if (isSkipAscii && CharKit.isAsciiPrintable(c)) {
+            if (isSkipAscii && CharsKit.isAsciiPrintable(c)) {
                 unicode.append(c);
             } else {
                 unicode.append(HexKit.toUnicodeHex(c));
@@ -1760,7 +1737,6 @@ public class StringKit {
 
     /**
      * 截取指定字符串中间部分,不包括标识字符串
-     *
      * <pre>
      * StringKit.subBetween(null, *)            = null
      * StringKit.subBetween("", "")             = ""
@@ -1781,7 +1757,7 @@ public class StringKit {
     /**
      * 截取指定字符串多段中间部分，不包括标识字符串
      * <pre>
-     * StringKit.subBetweenAll("wx[b]y[z]", "[", "]") 		= ["b","z"]
+     * StringKit.subBetweenAll("wx[b]y[z]", "[", "]") 		    = ["b","z"]
      * StringKit.subBetweenAll(null, *, *)          			= []
      * StringKit.subBetweenAll(*, null, *)          			= []
      * StringKit.subBetweenAll(*, *, null)          			= []
@@ -1791,7 +1767,7 @@ public class StringKit {
      * StringKit.subBetweenAll("yabcz", "", "")     			= []
      * StringKit.subBetweenAll("yabcz", "y", "z")   			= ["abc"]
      * StringKit.subBetweenAll("yabczyabcz", "y", "z")   		= ["abc","abc"]
-     * StringKit.subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           重叠时只截取内部，
+     * StringKit.subBetweenAll("[yabc[zy]abcz]", "[", "]");     = ["zy"]
      * </pre>
      *
      * @param text   被切割的字符串
@@ -1807,7 +1783,7 @@ public class StringKit {
         }
 
         final List<String> result = new LinkedList<>();
-        final String[] split = split(text, prefix);
+        final String[] split = splitToArray(text, prefix);
         if (prefix.equals(suffix)) {
             // 前后缀字符相同，单独处理
             for (int i = 1, length = split.length - 1; i < length; i += 2) {
@@ -1828,16 +1804,19 @@ public class StringKit {
 
     /**
      * 截取指定字符串多段中间部分，不包括标识字符串
+     * <p>
+     * 栗子：
+     *
      * <pre>
      * StringKit.subBetweenAll(null, *)          			= []
      * StringKit.subBetweenAll(*, null)          			= []
-     * StringKit.subBetweenAll(*, *)          			= []
+     * StringKit.subBetweenAll(*, *)          			    = []
      * StringKit.subBetweenAll("", "")          			= []
      * StringKit.subBetweenAll("", "#")         			= []
-     * StringKit.subBetweenAll("abcd", "")     		    = []
-     * StringKit.subBetweenAll("#abcd#", "#")   		    = ["abcd"]
-     * StringKit.subBetweenAll("#hello# #world#!", "#")   = ["hello", "world"]
-     * StringKit.subBetweenAll("#hello# world#!", "#");   = ["hello"]
+     * StringKit.subBetweenAll("hello", "")     		    = []
+     * StringKit.subBetweenAll("#hello#", "#")   		    = ["hello"]
+     * StringKit.subBetweenAll("#hello# #world#!", "#")     = ["hello", "world"]
+     * StringKit.subBetweenAll("#hello# world#!", "#");     = ["hello"]
      * </pre>
      *
      * @param text            被切割的字符串
@@ -1861,18 +1840,18 @@ public class StringKit {
      * StringKit.subSufByLength(null, 3)         =     null
      * </pre>
      *
-     * @param string 字符串
+     * @param text   字符串
      * @param length 切割长度
      * @return 切割后后剩余的后半部分字符串
      */
-    public static String subByLength(CharSequence string, int length) {
-        if (isEmpty(string)) {
+    public static String subByLength(CharSequence text, int length) {
+        if (isEmpty(text)) {
             return null;
         }
         if (length <= 0) {
             return Normal.EMPTY;
         }
-        return sub(string, -length, string.length());
+        return sub(text, -length, text.length());
     }
 
     /**
@@ -1959,6 +1938,18 @@ public class StringKit {
      * @param limit     限制分片数，-1不限制
      * @return 切分后的集合
      */
+    public static List<String> splitTrim(CharSequence text, char separator, int limit) {
+        return split(text, separator, limit, true, true);
+    }
+
+    /**
+     * 切分字符串，去除切分后每个元素两边的空白符，去除空白项
+     *
+     * @param text      被切分的字符串
+     * @param separator 分隔符字符
+     * @param limit     限制分片数，-1不限制
+     * @return 切分后的集合
+     */
     public static List<String> splitTrim(CharSequence text, CharSequence separator, int limit) {
         return split(text, separator, limit, true, true);
     }
@@ -1988,19 +1979,6 @@ public class StringKit {
     }
 
     /**
-     * 切分字符串,大小写敏感,去除每个元素两边空白符
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符
-     * @param limit       限制分片数,-1不限制
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> splitTrim(String text, char separator, int limit, boolean ignoreEmpty) {
-        return split(text, separator, limit, true, ignoreEmpty, false);
-    }
-
-    /**
      * 切分字符串,去除每个元素两边空格,忽略大小写
      *
      * @param text        被切分的字符串
@@ -2011,49 +1989,6 @@ public class StringKit {
      */
     public static List<String> splitTrim(String text, String separator, int limit, boolean ignoreEmpty) {
         return split(text, separator, limit, true, ignoreEmpty);
-    }
-
-    /**
-     * 切分字符串,忽略大小写
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符
-     * @param limit       限制分片数,-1不限制
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> splitIgnoreCase(String text, char separator, int limit, boolean isTrim,
-                                               boolean ignoreEmpty) {
-        return split(text, separator, limit, isTrim, ignoreEmpty, true);
-    }
-
-    /**
-     * 切分字符串,忽略大小写
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> splitIgnoreCase(String text, String separator, int limit, boolean isTrim,
-                                               boolean ignoreEmpty) {
-        return split(text, separator, limit, isTrim, ignoreEmpty, true);
-    }
-
-    /**
-     * 切分字符串,去除每个元素两边空格,忽略大小写
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param limit       限制分片数
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> splitTrimIgnoreCase(String text, String separator, int limit, boolean ignoreEmpty) {
-        return split(text, separator, limit, true, ignoreEmpty, true);
     }
 
     /**
@@ -2101,72 +2036,44 @@ public class StringKit {
     }
 
     /**
+     * 切分字符串，如果分隔符不存在则返回原字符串
+     *
+     * @param text      被切分的字符串
+     * @param separator 分隔符
+     * @return 字符串
+     */
+    public static String[] splitToArray(CharSequence text, CharSequence separator) {
+        if (text == null) {
+            return new String[]{};
+        }
+
+        return TextSplitter.splitToArray(text.toString(), toString(separator), 0, false, false);
+    }
+
+    /**
+     * 切分字符串
+     *
+     * @param text      被切分的字符串
+     * @param separator 分隔符字符
+     * @return 切分后的数组
+     */
+    public static String[] splitToArray(CharSequence text, char separator) {
+        return splitToArray(text, separator, 0);
+    }
+
+    /**
      * 切分字符串
      *
      * @param text      被切分的字符串
      * @param separator 分隔符字符
      * @param limit     限制分片数
-     * @return 切分后的集合
+     * @return 切分后的数组
      */
     public static String[] splitToArray(CharSequence text, char separator, int limit) {
         if (null == text) {
             return new String[]{};
         }
-        return splitToArray(text.toString(), separator, limit, false, false);
-    }
-
-    /**
-     * 切分字符串为字符串数组
-     *
-     * @param text  被切分的字符串
-     * @param limit 限制分片数
-     * @return 切分后的集合
-     */
-    public static String[] splitToArray(String text, int limit) {
-        return ArrayKit.toArray(split(text, limit));
-    }
-
-    /**
-     * 切分字符串为字符串数组
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static String[] splitToArray(String text, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return ArrayKit.toArray(split(text, separator, limit, isTrim, ignoreEmpty));
-    }
-
-    /**
-     * 切分字符串为字符串数组
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static String[] splitToArray(String text, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return ArrayKit.toArray(split(text, separator, limit, isTrim, ignoreEmpty));
-    }
-
-    /**
-     * 通过正则切分字符串为字符串数组
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符正则{@link Pattern}
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static String[] splitToArray(String text, Pattern separator, int limit, boolean isTrim,
-                                        boolean ignoreEmpty) {
-        return ArrayKit.toArray(split(text, separator, limit, isTrim, ignoreEmpty));
+        return TextSplitter.splitToArray(text.toString(), separator, limit, false, false);
     }
 
     /**
@@ -2177,7 +2084,7 @@ public class StringKit {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String text, String separator) {
-        return splitToArray(text, separator, true, true);
+        return TextSplitter.splitToArray(text, separator);
     }
 
     /**
@@ -2190,120 +2097,13 @@ public class StringKit {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String text, String separator, boolean isTrim, boolean ignoreEmpty) {
-        if (text == null) {
-            return Normal.EMPTY_STRING_ARRAY;
-        } else {
-            StringTokenizer st = new StringTokenizer(text, separator);
-            ArrayList tokens = new ArrayList();
-
-            while (true) {
-                String token;
-                do {
-                    if (!st.hasMoreTokens()) {
-                        return toStringArray(tokens);
-                    }
-
-                    token = st.nextToken();
-                    if (isTrim) {
-                        token = token.trim();
-                    }
-                } while (ignoreEmpty && token.length() <= 0);
-
-                tokens.add(token);
-            }
-        }
-    }
-
-    /**
-     * 通过正则切分字符串
-     *
-     * @param text        字符串
-     * @param separator   分隔符正则
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> splitByRegex(String text, String separator, int limit, boolean isTrim,
-                                            boolean ignoreEmpty) {
-        final Pattern pattern = PatternKit.get(separator);
-        return split(text, pattern, limit, isTrim, ignoreEmpty);
-    }
-
-    /**
-     * @param text 每字符串
-     * @param len  每一个小节的长度
-     * @return 截取后的字符串数组
-     */
-    public static String[] splitByLength(String text, int len) {
-        SplitIterator splitIter = new SplitIterator(text, new LengthFinder(len), -1, false);
-        return splitIter.toArray(false);
+        return TextSplitter.splitToArray(text, separator, isTrim, ignoreEmpty);
     }
 
     /**
      * 切分字符串
-     *
-     * @param text 被切分的字符串
-     * @return 字符串
-     */
-    public static String split(String text) {
-        return split(text, Symbol.COMMA, Symbol.COMMA);
-    }
-
-    /**
-     * 切分字符串
-     *
-     * @param text      被切分的字符串
-     * @param separator 分隔符
-     * @return 字符串
-     */
-    public static String[] split(CharSequence text, CharSequence separator) {
-        if (null == text) {
-            return new String[]{};
-        }
-
-        final String separatorStr = (null == separator) ? null : separator.toString();
-        return splitToArray(text.toString(), separatorStr, 0, false, false);
-    }
-
-    /**
-     * 切分字符串
-     *
-     * @param text      被切分的字符串
-     * @param separator 分隔符
-     * @param reserve   替换后的分隔符
-     * @return 字符串
-     */
-    public static String split(String text, CharSequence separator, CharSequence reserve) {
-        StringBuffer sb = new StringBuffer();
-        if (StringKit.isNotEmpty(text)) {
-            String[] arr = split(text, separator);
-            for (int i = 0; i < arr.length; i++) {
-                if (i == 0) {
-                    sb.append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
-                } else {
-                    sb.append(reserve).append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
-                }
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 切分字符串,去除切分后每个元素两边的空白符,去除空白项
-     *
-     * @param text      被切分的字符串
-     * @param separator 分隔符字符
-     * @return 切分后的集合
-     */
-    public static List<String> split(String text, char separator) {
-        return split(text, separator, -1);
-    }
-
-    /**
-     * 切分字符串
-     * a#b#c =  [a,b,c]
-     * a##b#c =  [a,"",b,c]
+     * a#b#c =》 [a,b,c]
+     * a##b#c =》 [a,"",b,c]
      *
      * @param text      被切分的字符串
      * @param separator 分隔符字符
@@ -2314,35 +2114,19 @@ public class StringKit {
     }
 
     /**
-     * 使用空白符切分字符串
-     * 切分后的字符串两边不包含空白符,空串或空白符串并不做为元素之一
-     *
-     * @param text  被切分的字符串
-     * @param limit 限制分片数
-     * @return 切分后的集合
-     */
-    public static List<String> split(String text, int limit) {
-        if (isEmpty(text)) {
-            return new ArrayList<>(0);
-        }
-        final SplitIterator splitIter = new SplitIterator(text, new MatcherFinder(CharKit::isBlankChar), limit, true);
-        return splitIter.toList(false);
-    }
-
-    /**
-     * 切分字符串,不去除切分后每个元素两边的空白符,不去除空白项
+     * 切分字符串，不去除切分后每个元素两边的空白符，不去除空白项
      *
      * @param text      被切分的字符串
      * @param separator 分隔符字符
-     * @param limit     限制分片数,-1不限制
+     * @param limit     限制分片数，-1不限制
      * @return 切分后的集合
      */
     public static List<String> split(CharSequence text, char separator, int limit) {
-        return split(text.toString(), separator, limit, false, false);
+        return split(text, separator, limit, false, false);
     }
 
     /**
-     * 切分字符串
+     * 切分字符串，不限制分片数量
      *
      * @param text        被切分的字符串
      * @param separator   分隔符字符
@@ -2350,21 +2134,8 @@ public class StringKit {
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(String text, char separator, boolean isTrim, boolean ignoreEmpty) {
+    public static List<String> split(CharSequence text, char separator, boolean isTrim, boolean ignoreEmpty) {
         return split(text, separator, 0, isTrim, ignoreEmpty);
-    }
-
-    /**
-     * 切分字符串,不忽略大小写
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> split(String text, String separator, boolean isTrim, boolean ignoreEmpty) {
-        return split(text, separator, -1, isTrim, ignoreEmpty, false);
     }
 
     /**
@@ -2377,33 +2148,14 @@ public class StringKit {
      * @param ignoreEmpty 是否忽略空串
      * @return 切分后的集合
      */
-    public static List<String> split(CharSequence text, CharSequence separator, int limit, boolean isTrim,
-                                     boolean ignoreEmpty) {
-        if (null == text) {
-            return new ArrayList<>(0);
-        }
-        final String separatorStr = (null == separator) ? null : separator.toString();
-        return split(text.toString(), separatorStr, limit, isTrim, ignoreEmpty);
+    public static List<String> split(CharSequence text, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+        return TextSplitter.split(text, separator, limit, isTrim, ignoreEmpty);
     }
 
     /**
-     * 切分字符串,大小写敏感
+     * 切分字符串
      *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符
-     * @param limit       限制分片数,-1不限制
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> split(String text, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return split(text, separator, limit, isTrim, ignoreEmpty, false);
-    }
-
-    /**
-     * 切分字符串，大小写敏感
-     *
-     * @param <R>         泛型对象
+     * @param <R>         切分后元素类型
      * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数，-1不限制
@@ -2412,96 +2164,67 @@ public class StringKit {
      * @return 切分后的集合，元素类型是经过 mapping 转换后的
      */
     public static <R> List<R> split(CharSequence text, char separator, int limit, boolean ignoreEmpty, Function<String, R> mapping) {
-        return split(text, separator, limit, ignoreEmpty, false, mapping);
-    }
-
-    /**
-     * 切分字符串,不忽略大小写
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> split(String text, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return split(text, separator, limit, isTrim, ignoreEmpty, false);
-    }
-
-    /**
-     * 切分字符串
-     *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符
-     * @param limit       限制分片数，-1不限制
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
-     */
-    public static List<String> split(CharSequence text, char separator, int limit, boolean isTrim,
-                                     boolean ignoreEmpty) {
         if (null == text) {
             return new ArrayList<>(0);
         }
-        return split(text.toString(), separator, limit, isTrim, ignoreEmpty);
+        return TextSplitter.split(text.toString(), separator, limit, ignoreEmpty, mapping);
     }
 
     /**
-     * 通过正则切分字符串
+     * 切分字符串，如果分隔符不存在则返回原字符串
      *
-     * @param text        字符串
-     * @param separator   分隔符正则{@link Pattern}
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
+     * @param text      被切分的字符串
+     * @param separator 分隔符
+     * @return 字符串
      */
-    public static List<String> split(String text, Pattern separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        if (isEmpty(text)) {
-            return new ArrayList<>(0);
-        }
-        final SplitIterator splitIter = new SplitIterator(text, new PatternFinder(separator), limit, ignoreEmpty);
-        return splitIter.toList(isTrim);
-    }
-
-    public static List<String> split(CharSequence text, char separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
-        return split(text, separator, limit, ignoreEmpty, ignoreCase, trimFunc(isTrim));
+    public static List<String> split(CharSequence text, CharSequence separator) {
+        return split(text, separator, false, false);
     }
 
     /**
      * 切分字符串
      *
-     * @param <R>         泛型对象
+     * @param text        被切分的字符串
+     * @param separator   分隔符字符
+     * @param isTrim      是否去除切分字符串后每个元素两边的空格
+     * @param ignoreEmpty 是否忽略空串
+     * @return 切分后的集合
+     */
+    public static List<String> split(CharSequence text, CharSequence separator, boolean isTrim, boolean ignoreEmpty) {
+        return split(text, separator, 0, isTrim, ignoreEmpty);
+    }
+
+    /**
+     * 切分字符串
+     *
      * @param text        被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数，-1不限制
+     * @param isTrim      是否去除切分字符串后每个元素两边的空格
      * @param ignoreEmpty 是否忽略空串
-     * @param ignoreCase  是否忽略大小写
-     * @param mapping     切分后的字符串元素的转换方法
-     * @return 切分后的集合，元素类型是经过 mapping 转换后的
+     * @return 切分后的集合
      */
-    public static <R> List<R> split(CharSequence text, char separator, int limit, boolean ignoreEmpty,
-                                    boolean ignoreCase, Function<String, R> mapping) {
-        final SplitIterator splitIter = new SplitIterator(text, new CharFinder(separator, ignoreCase), limit, ignoreEmpty);
-        return splitIter.toList(mapping);
+    public static List<String> split(CharSequence text, CharSequence separator, int limit, boolean isTrim, boolean ignoreEmpty) {
+        if (null == text) {
+            return new ArrayList<>(0);
+        }
+        final String separatorStr = (null == separator) ? null : separator.toString();
+        return TextSplitter.split(text.toString(), separatorStr, limit, isTrim, ignoreEmpty);
     }
 
     /**
-     * 切分字符串
+     * 根据给定长度，将给定字符串截取为多个部分
      *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param limit       限制分片数
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @param ignoreCase  是否忽略大小写
-     * @return 切分后的集合
+     * @param text 字符串
+     * @param len  每一个小节的长度
+     * @return 截取后的字符串数组
+     * @see TextSplitter#splitByLength(String, int)
      */
-    public static List<String> split(String text, String separator, int limit, boolean isTrim, boolean ignoreEmpty,
-                                     boolean ignoreCase) {
-        final SplitIterator splitIter = new SplitIterator(text, new StringFinder(separator, ignoreCase), limit, ignoreEmpty);
-        return splitIter.toList(isTrim);
+    public static String[] split(CharSequence text, int len) {
+        if (null == text) {
+            return new String[]{};
+        }
+        return TextSplitter.splitByLength(text.toString(), len);
     }
 
     /**
@@ -2537,7 +2260,7 @@ public class StringKit {
      * @param text       字符串
      * @param searchChar 被查找的字符
      * @param start      起始位置,如果小于0,从0开始查找
-     * @param end        终止位置,如果超过str.length()则默认查找到字符串末尾
+     * @param end        终止位置,如果超过text.length()则默认查找到字符串末尾
      * @return 位置
      */
     public static int indexOf(final CharSequence text, char searchChar, int start, int end) {
@@ -2840,7 +2563,7 @@ public class StringKit {
      * <pre>
      * StringKit.repeatAndJoin("?", 5, ",")   = "?,?,?,?,?"
      * StringKit.repeatAndJoin("?", 0, ",")   = ""
-     * StringKit.repeatAndJoin("?", 5, null) = "?????"
+     * StringKit.repeatAndJoin("?", 5, null)  = "?????"
      * </pre>
      *
      * @param text        被重复的字符串
@@ -2921,18 +2644,14 @@ public class StringKit {
     /**
      * 删除指定字符串
      * 是否在开始位置,否则返回源字符串
-     * A {@code null} source string will return {@code null}.
-     * An empty ("") source string will return the empty string.
-     * A {@code null} search string will return the source string.
-     *
      * <pre>
-     * StringKit.removeStart(null, *)      = null
-     * StringKit.removeStart("", *)        = ""
-     * StringKit.removeStart(*, null)      = *
+     * StringKit.removeStart(null, *)                    = null
+     * StringKit.removeStart("", *)                      = ""
+     * StringKit.removeStart(*, null)                    = *
      * StringKit.removeStart("www.domain.com", "www.")   = "domain.com"
      * StringKit.removeStart("domain.com", "www.")       = "domain.com"
      * StringKit.removeStart("www.domain.com", "domain") = "www.domain.com"
-     * StringKit.removeStart("abc", "")    = "abc"
+     * StringKit.removeStart("abc", "")                  = "abc"
      * </pre>
      *
      * @param text   要搜索的源字符串可能为空
@@ -4030,7 +3749,7 @@ public class StringKit {
      * @return 清理后的字符串
      */
     public static String cleanBlank(CharSequence text) {
-        return filter(text, c -> !CharKit.isBlankChar(c));
+        return filter(text, c -> !CharsKit.isBlankChar(c));
     }
 
     /**
@@ -4655,7 +4374,7 @@ public class StringKit {
         }
 
         for (int i = 0; i < length; i += 1) {
-            if (CharKit.isBlankChar(text.charAt(i))) {
+            if (CharsKit.isBlankChar(text.charAt(i))) {
                 return true;
             }
         }

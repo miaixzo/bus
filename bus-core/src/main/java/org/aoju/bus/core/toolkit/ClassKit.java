@@ -70,6 +70,10 @@ import java.util.jar.Manifest;
 public class ClassKit {
 
     /**
+     * java 编译器
+     */
+    public static final JavaCompiler SYSTEM_COMPILER = ToolProvider.getSystemJavaCompiler();
+    /**
      * 原始类型名和其class对应表,例如：int = int.class
      */
     private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
@@ -84,10 +88,6 @@ public class ClassKit {
             Long.TYPE, Float.TYPE, Double.TYPE
     };
     private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
-    /**
-     * java 编译器
-     */
-    public static final JavaCompiler SYSTEM_COMPILER = ToolProvider.getSystemJavaCompiler();
 
     static {
         List<Class<?>> primitiveTypes = new ArrayList<>(32);

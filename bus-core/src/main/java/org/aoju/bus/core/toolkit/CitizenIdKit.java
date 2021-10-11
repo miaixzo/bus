@@ -244,7 +244,7 @@ public class CitizenIdKit {
             // 获取校验位
             char val = getCheckCode18(code17);
             // 第18位
-            return CharKit.equals(val, idcard.charAt(17), ignoreCase);
+            return CharsKit.equals(val, idcard.charAt(17), ignoreCase);
         }
         return false;
     }

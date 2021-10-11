@@ -28,6 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.builder.HashCodeBuilder;
 import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
+import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
@@ -6040,7 +6041,7 @@ public class ArrayKit {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final char current = array[i];
-            if (CharKit.compare(previous, current) > 0) {
+            if (CharsKit.compare(previous, current) > 0) {
                 return false;
             }
 

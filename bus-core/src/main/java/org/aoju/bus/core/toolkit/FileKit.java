@@ -1600,7 +1600,7 @@ public class FileKit {
             char c;
             while (i-- >= 0) {
                 c = filePath.charAt(i);
-                if (CharKit.isFileSeparator(c)) {
+                if (CharsKit.isFileSeparator(c)) {
                     return i;
                 }
             }
@@ -1869,7 +1869,7 @@ public class FileKit {
         if (0 == len) {
             return filePath;
         }
-        if (CharKit.isFileSeparator(filePath.charAt(len - 1))) {
+        if (CharsKit.isFileSeparator(filePath.charAt(len - 1))) {
             //以分隔符结尾的去掉结尾分隔符
             len--;
         }
@@ -1878,7 +1878,7 @@ public class FileKit {
         char c;
         for (int i = len - 1; i > -1; i--) {
             c = filePath.charAt(i);
-            if (CharKit.isFileSeparator(c)) {
+            if (CharsKit.isFileSeparator(c)) {
                 //查找最后一个路径分隔符(/或者\)
                 begin = i + 1;
                 break;
@@ -1951,7 +1951,7 @@ public class FileKit {
         if (0 == len) {
             return fileName;
         }
-        if (CharKit.isFileSeparator(fileName.charAt(len - 1))) {
+        if (CharsKit.isFileSeparator(fileName.charAt(len - 1))) {
             len--;
         }
 
@@ -1965,7 +1965,7 @@ public class FileKit {
                 end = i;
             }
             if (0 == begin || begin > end) {
-                if (CharKit.isFileSeparator(c)) {
+                if (CharsKit.isFileSeparator(c)) {
                     //查找最后一个路径分隔符(/或者\),如果这个分隔符在.之后,则继续查找,否则结束
                     begin = i + 1;
                     break;

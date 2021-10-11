@@ -28,7 +28,7 @@ package org.aoju.bus.core.codec;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.CharKit;
+import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
@@ -210,24 +210,24 @@ public class Base64Encoder {
         int n = srcLen / 3;
         int r = srcLen - 3 * n;
         while (n-- > 0) {
-            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
                     | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
-            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b2 & 0x0F) << 2)
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b2 & 0x0F) << 2)
                     | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
-            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[b3 & 0x3F];
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[b3 & 0x3F];
         }
         if (r > 0)
             if (r == 1) {
-                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
-                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)];
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)];
                 dest[destPos++] = Symbol.C_EQUAL;
                 dest[destPos++] = Symbol.C_EQUAL;
             } else {
-                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
                         | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
-                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[(b2 & 0x0F) << 2];
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[(b2 & 0x0F) << 2];
                 dest[destPos++] = Symbol.C_EQUAL;
             }
     }

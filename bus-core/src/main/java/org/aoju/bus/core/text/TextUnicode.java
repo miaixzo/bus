@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
-import org.aoju.bus.core.toolkit.CharKit;
+import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -87,7 +87,7 @@ public class TextUnicode {
         char c;
         for (int i = 0; i < len; i++) {
             c = str.charAt(i);
-            if (isSkipAscii && CharKit.isAsciiPrintable(c)) {
+            if (isSkipAscii && CharsKit.isAsciiPrintable(c)) {
                 unicode.append(c);
             } else {
                 unicode.append(HexKit.toUnicodeHex(c));

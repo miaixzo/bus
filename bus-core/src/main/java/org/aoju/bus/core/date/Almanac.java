@@ -1349,7 +1349,7 @@ public class Almanac extends Converter {
         if (null == dateToCompare || dateToCompare.trim().length() == 0) {
             dateToCompare = Fields.NORM_DATE_FORMAT.format(new Date());
         }
-        String[] data = StringKit.split(birthDay, Symbol.MINUS);
+        String[] data = StringKit.splitToArray(birthDay, Symbol.MINUS);
         if (data.length < 3) {
             throw new IllegalArgumentException("Please confirm the date format !");
         }
