@@ -31,7 +31,9 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.WmiQueryHandler;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Utility to query WMI class {@code Win32_Process}
@@ -57,21 +59,13 @@ public final class Win32Process {
      * start the provided processes.
      */
     public static WmiResult<CommandLineProperty> queryCommandLines(Set<Integer> pidsToQuery) {
-        StringBuilder sb = new StringBuilder(WIN32_PROCESS);
-        if (null != pidsToQuery) {
-            boolean first = true;
-            for (Integer pid : pidsToQuery) {
-                if (first) {
-                    sb.append(" WHERE ProcessID=");
-                    first = false;
-                } else {
-                    sb.append(" OR ProcessID=");
-                }
-                sb.append(pid);
-            }
+        String sb = WIN32_PROCESS;
+        if (pidsToQuery != null) {
+            sb += " WHERE ProcessID="
+                    + pidsToQuery.stream().map(String::valueOf).collect(Collectors.joining(" OR PROCESSID="));
         }
-        WmiQuery<CommandLineProperty> commandLineQuery = new WmiQuery<>(sb.toString(), CommandLineProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(commandLineQuery);
+        WmiQuery<CommandLineProperty> commandLineQuery = new WmiQuery<>(sb, CommandLineProperty.class);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(commandLineQuery);
     }
 
     /**
@@ -81,21 +75,13 @@ public final class Win32Process {
      * @return Information on the provided processes.
      */
     public static WmiResult<ProcessXPProperty> queryProcesses(Collection<Integer> pids) {
-        StringBuilder sb = new StringBuilder(WIN32_PROCESS);
-        if (null != pids) {
-            boolean first = true;
-            for (Integer pid : pids) {
-                if (first) {
-                    sb.append(" WHERE ProcessID=");
-                    first = false;
-                } else {
-                    sb.append(" OR ProcessID=");
-                }
-                sb.append(pid);
-            }
+        String sb = WIN32_PROCESS;
+        if (pids != null) {
+            sb += " WHERE ProcessID="
+                    + pids.stream().map(String::valueOf).collect(Collectors.joining(" OR PROCESSID="));
         }
-        WmiQuery<ProcessXPProperty> processQueryXP = new WmiQuery<>(sb.toString(), ProcessXPProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(processQueryXP);
+        WmiQuery<ProcessXPProperty> processQueryXP = new WmiQuery<>(sb, ProcessXPProperty.class);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(processQueryXP);
     }
 
     /**

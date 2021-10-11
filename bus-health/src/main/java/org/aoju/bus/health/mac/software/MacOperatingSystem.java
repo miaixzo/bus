@@ -230,7 +230,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSService[] getServices() {
+    public List<OSService> getServices() {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
@@ -263,7 +263,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
                 services.add(s);
             }
         }
-        return services.toArray(new OSService[0]);
+        return services;
     }
 
     @Override

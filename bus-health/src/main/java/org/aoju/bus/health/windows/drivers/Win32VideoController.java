@@ -30,6 +30,8 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.WmiQueryHandler;
 
+import java.util.Objects;
+
 /**
  * Utility to query WMI class {@code Win32_VideoController}
  *
@@ -53,7 +55,7 @@ public final class Win32VideoController {
     public static WmiResult<VideoControllerProperty> queryVideoController() {
         WmiQuery<VideoControllerProperty> videoControllerQuery = new WmiQuery<>(WIN32_VIDEO_CONTROLLER,
                 VideoControllerProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(videoControllerQuery);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(videoControllerQuery);
     }
 
     /**

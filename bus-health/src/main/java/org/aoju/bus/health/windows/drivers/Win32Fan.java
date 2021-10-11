@@ -30,6 +30,8 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.WmiQueryHandler;
 
+import java.util.Objects;
+
 /**
  * Utility to query WMI class {@code Win32_Fan}
  *
@@ -53,7 +55,7 @@ public final class Win32Fan {
      */
     public static WmiResult<SpeedProperty> querySpeed() {
         WmiQuery<SpeedProperty> fanQuery = new WmiQuery<>(WIN32_FAN, SpeedProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(fanQuery);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(fanQuery);
     }
 
     /**

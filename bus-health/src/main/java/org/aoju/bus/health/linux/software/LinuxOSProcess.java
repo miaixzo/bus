@@ -50,6 +50,7 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -151,7 +152,9 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        return Builder.getStringFromFile(String.format(ProcPath.PID_CMDLINE, getProcessID()));
+        return Arrays
+                .stream(Builder.getStringFromFile(String.format(ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
+                .collect(Collectors.joining(Symbol.SPACE));
     }
 
     @Override

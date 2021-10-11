@@ -30,6 +30,8 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.WmiQueryHandler;
 
+import java.util.Objects;
+
 /**
  * Utility to query WMI class {@code Win32_OperatingSystem}
  *
@@ -52,7 +54,7 @@ public final class Win32OperatingSystem {
      */
     public static WmiResult<OSVersionProperty> queryOsVersion() {
         WmiQuery<OSVersionProperty> osVersionQuery = new WmiQuery<>(WIN32_OPERATING_SYSTEM, OSVersionProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(osVersionQuery);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(osVersionQuery);
     }
 
     /**

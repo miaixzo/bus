@@ -189,14 +189,11 @@ public class MacFileSystem extends AbstractFileSystem {
                         description = "Network Drive";
                     }
 
-                    String name = Normal.EMPTY;
                     File file = new File(path);
+                    String name = file.getName();
+                    // getName() for / is still blank, so:
                     if (name.isEmpty()) {
-                        name = file.getName();
-                        // getName() for / is still blank, so:
-                        if (name.isEmpty()) {
-                            name = file.getPath();
-                        }
+                        name = file.getPath();
                     }
                     if (null != nameToMatch && !nameToMatch.equals(name)) {
                         continue;

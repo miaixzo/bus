@@ -85,12 +85,11 @@ public abstract class AbstractNetworkParams implements NetworkParams {
     public String getHostName() {
         try {
             String hn = InetAddress.getLocalHost().getHostName();
-            int dot = hn.indexOf(Symbol.C_DOT);
+            int dot = hn.indexOf('.');
             if (dot == -1) {
                 return hn;
-            } else {
-                return hn.substring(0, dot);
             }
+            return hn.substring(0, dot);
         } catch (UnknownHostException e) {
             Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
             return Normal.EMPTY;

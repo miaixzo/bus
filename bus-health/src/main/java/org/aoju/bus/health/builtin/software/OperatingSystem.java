@@ -35,10 +35,7 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.unix.Who;
 import org.aoju.bus.health.unix.Xwininfo;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -304,8 +301,8 @@ public interface OperatingSystem {
      *
      * @return An array of {@link OSService} objects
      */
-    default OSService[] getServices() {
-        return new OSService[0];
+    default List<OSService> getServices() {
+        return new ArrayList<>();
     }
 
     /**

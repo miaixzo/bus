@@ -498,7 +498,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
+        if (jvmBitness < 64 && !Executor.getFirstAnswer("uname -m").contains("64")) {
             return jvmBitness;
         }
         return 64;
@@ -598,7 +598,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSService[] getServices() {
+    public List<OSService> getServices() {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
@@ -641,7 +641,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 Logger.error("Directory: /etc/init does not exist");
             }
         }
-        return services.toArray(new OSService[0]);
+        return services;
     }
 
 
