@@ -331,7 +331,18 @@ public class Base64 {
      * @return 是否为Base64
      */
     public static boolean isBase64(CharSequence base64) {
-        return isBase64(StringKit.bytes(base64));
+        if (base64 == null || base64.length() < 2) {
+            return false;
+        }
+
+        byte[] bytes = StringKit.bytes(base64, Charset.UTF_8);
+
+        if (bytes.length != base64.length()) {
+            // 如果长度不相等，说明存在双字节字符，肯定不是Base64，直接返回false
+            return false;
+        }
+
+        return isBase64(bytes);
     }
 
     /**
@@ -341,8 +352,17 @@ public class Base64 {
      * @return 是否为Base64
      */
     public static boolean isBase64(byte[] base64Bytes) {
+        boolean hasPadding = false;
         for (byte base64Byte : base64Bytes) {
-            if (false == (Base64Decoder.isBase64Code(base64Byte) || isWhiteSpace(base64Byte))) {
+            if (hasPadding) {
+                if (Symbol.C_EQUAL != base64Byte) {
+                    // 前一个字符是'='，则后边的字符都必须是'='，即'='只能都位于结尾
+                    return false;
+                }
+            } else if (Symbol.C_EQUAL == base64Byte) {
+                // 发现'=' 标记之
+                hasPadding = true;
+            } else if (false == (Base64Decoder.isBase64Code(base64Byte) || isWhiteSpace(base64Byte))) {
                 return false;
             }
         }

@@ -731,6 +731,21 @@ public class Formatter {
         return Integer.parseInt(format(date, Fields.PURE_DATE_MINUTE_PATTERN));
     }
 
+    /**
+     * 使用指定{@link DateParser}解析字符串为{@link Calendar}
+     *
+     * @param str     日期字符串
+     * @param lenient 是否宽容模式
+     * @param parser  {@link DateParser}
+     * @return 解析后的 {@link Calendar}，解析失败返回{@code null}
+     */
+    public static Calendar parse(CharSequence str, boolean lenient, DateParser parser) {
+        final Calendar calendar = Calendar.getInstance(parser.getTimeZone(), parser.getLocale());
+        calendar.clear();
+        calendar.setLenient(lenient);
+
+        return parser.parse(StringKit.toString(str), new ParsePosition(0), calendar) ? calendar : null;
+    }
 
     /**
      * 解析CST时间，格式：

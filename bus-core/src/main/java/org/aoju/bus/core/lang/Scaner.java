@@ -145,7 +145,7 @@ public class Scaner {
     }
 
     /**
-     * 扫面该包路径下所有class文件
+     * 扫描该包路径下所有class文件
      *
      * @return 类集合
      */
@@ -154,7 +154,7 @@ public class Scaner {
     }
 
     /**
-     * 扫面该包路径下所有class文件
+     * 扫描该包路径下所有class文件
      *
      * @param packageName 包路径 com | com. | com.abs | com.abs.
      * @return 类集合

@@ -1291,49 +1291,49 @@ public class StringKit {
      * 转义\： format("this is \\\\{} for {}", "a", "b") =  this is \a for b
      *
      * @param template 文本模板，被替换的部分用 {} 表示，如果模板为null，返回"null"
-     * @param params   参数值
+     * @param args     参数值
      * @return 格式化后的文本，如果模板为null，返回"null"
      */
-    public static String format(CharSequence template, Object... params) {
+    public static String format(CharSequence template, Object... args) {
         if (null == template) {
             return Normal.NULL;
         }
-        if (ArrayKit.isEmpty(params) || isBlank(template)) {
+        if (ArrayKit.isEmpty(args) || isBlank(template)) {
             return template.toString();
         }
-        return format(template.toString(), params);
+        return format(template.toString(), args);
     }
 
     /**
      * 格式化文本
      *
      * @param template 文本模板，被替换的部分用 {key} 表示
-     * @param map      参数值对
+     * @param args     参数值对
      * @return 格式化后的文本
      */
-    public static String format(CharSequence template, Map<?, ?> map) {
-        return format(template, map, true);
+    public static String format(CharSequence template, Map<?, ?> args) {
+        return format(template, args, true);
     }
 
     /**
      * 格式化文本
      *
      * @param template   文本模板，被替换的部分用 {key} 表示
-     * @param map        参数值对
+     * @param args       参数值对
      * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
      * @return 格式化后的文本
      */
-    public static String format(CharSequence template, Map<?, ?> map, boolean ignoreNull) {
+    public static String format(CharSequence template, Map<?, ?> args, boolean ignoreNull) {
         if (null == template) {
             return null;
         }
-        if (null == map || map.isEmpty()) {
+        if (null == args || args.isEmpty()) {
             return template.toString();
         }
 
         String template2 = template.toString();
         String value;
-        for (Map.Entry<?, ?> entry : map.entrySet()) {
+        for (Map.Entry<?, ?> entry : args.entrySet()) {
             value = toString(entry.getValue());
             if (null == value && ignoreNull) {
                 continue;
@@ -1346,59 +1346,80 @@ public class StringKit {
     /**
      * 格式化字符串
      * 此方法只是简单将占位符 {} 按照顺序替换为参数
-     * 如果想输出 {} 使用 \\转义 { 即可,如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
+     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
      * 例：
-     * 通常使用：format("this is {} for {}", "a", "b") =  this is a for b
-     * 转义{}： format("this is \\{} for {}", "a", "b") =  this is \{} for a
-     * 转义\：format("this is \\\\{} for {}", "a", "b") =  this is \a for b
+     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
+     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a
+     * 转义\： format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
      *
-     * @param val      字符串模板
-     * @param argArray 参数列表
+     * @param template 字符串模板
+     * @param args     参数列表
      * @return 结果
      */
-    public static String format(final String val, final Object... argArray) {
-        if (isBlank(val) || ArrayKit.isEmpty(argArray)) {
-            return val;
+    public static String format(String template, Object... args) {
+        return format(template, "{}", args);
+    }
+
+    /**
+     * 格式化字符串
+     * 此方法只是简单将指定占位符 按照顺序替换为参数
+     * 如果想输出占位符使用 \\转义即可，如果想输出占位符之前的 \ 使用双转义符 \\\\ 即可
+     * 例：
+     * 通常使用：format("this is {} for {}", "{}", "a", "b") =》 this is a for b
+     * 转义{}： format("this is \\{} for {}", "{}", "a", "b") =》 this is \{} for a
+     * 转义\： format("this is \\\\{} for {}", "{}", "a", "b") =》 this is \a for b
+     *
+     * @param template    字符串模板
+     * @param placeHolder 占位符，例如{}
+     * @param args        参数列表
+     * @return 结果
+     */
+    public static String format(String template, String placeHolder, Object... args) {
+        if (isBlank(template) || isBlank(placeHolder) || ArrayKit.isEmpty(args)) {
+            return template;
         }
-        final int strPatternLength = val.length();
+        final int templateLength = template.length();
+        final int placeHolderLength = placeHolder.length();
 
-        //初始化定义好的长度以获得更好的性能
-        StringBuilder sbuf = new StringBuilder(strPatternLength + 50);
+        // 初始化定义好的长度以获得更好的性能
+        final StringBuilder sbuf = new StringBuilder(templateLength + 50);
 
-        int handledPosition = 0;//记录已经处理到的位置
-        int delimIndex;//占位符所在位置
-        for (int argIndex = 0; argIndex < argArray.length; argIndex++) {
-            delimIndex = val.indexOf(Symbol.DELIM, handledPosition);
-            if (delimIndex == -1) {//剩余部分无占位符
-                if (handledPosition == 0) { //不带占位符的模板直接返回
-                    return val;
-                } else { //字符串模板剩余部分不再包含占位符,加入剩余部分后返回结果
-                    sbuf.append(val, handledPosition, strPatternLength);
-                    return sbuf.toString();
+        int handledPosition = 0;// 记录已经处理到的位置
+        int delimIndex;// 占位符所在位置
+        for (int argIndex = 0; argIndex < args.length; argIndex++) {
+            delimIndex = template.indexOf(placeHolder, handledPosition);
+            if (delimIndex == -1) {// 剩余部分无占位符
+                if (handledPosition == 0) { // 不带占位符的模板直接返回
+                    return template;
                 }
-            } else {
-                if (delimIndex > 0 && val.charAt(delimIndex - 1) == Symbol.C_BACKSLASH) {//转义符
-                    if (delimIndex > 1 && val.charAt(delimIndex - 2) == Symbol.C_BACKSLASH) {//双转义符
-                        //转义符之前还有一个转义符,占位符依旧有效
-                        sbuf.append(val, handledPosition, delimIndex - 1);
-                        sbuf.append(toString(argArray[argIndex]));
-                        handledPosition = delimIndex + 2;
-                    } else {
-                        //占位符被转义
-                        argIndex--;
-                        sbuf.append(val, handledPosition, delimIndex - 1);
-                        sbuf.append(Symbol.C_BRACE_LEFT);
-                        handledPosition = delimIndex + 1;
-                    }
-                } else {//正常占位符
-                    sbuf.append(val, handledPosition, delimIndex);
-                    sbuf.append(toString(argArray[argIndex]));
-                    handledPosition = delimIndex + 2;
+                // 字符串模板剩余部分不再包含占位符，加入剩余部分后返回结果
+                sbuf.append(template, handledPosition, templateLength);
+                return sbuf.toString();
+            }
+
+            // 转义符
+            if (delimIndex > 0 && template.charAt(delimIndex - 1) == Symbol.C_BACKSLASH) {// 转义符
+                if (delimIndex > 1 && template.charAt(delimIndex - 2) == Symbol.C_BACKSLASH) {// 双转义符
+                    // 转义符之前还有一个转义符，占位符依旧有效
+                    sbuf.append(template, handledPosition, delimIndex - 1);
+                    sbuf.append(toString(args[argIndex]));
+                    handledPosition = delimIndex + placeHolderLength;
+                } else {
+                    // 占位符被转义
+                    argIndex--;
+                    sbuf.append(template, handledPosition, delimIndex - 1);
+                    sbuf.append(placeHolder.charAt(0));
+                    handledPosition = delimIndex + 1;
                 }
+            } else {// 正常占位符
+                sbuf.append(template, handledPosition, delimIndex);
+                sbuf.append(toString(args[argIndex]));
+                handledPosition = delimIndex + placeHolderLength;
             }
         }
-        //加入最后一个占位符后所有的字符
-        sbuf.append(val, handledPosition, val.length());
+
+        // 加入最后一个占位符后所有的字符
+        sbuf.append(template, handledPosition, templateLength);
 
         return sbuf.toString();
     }

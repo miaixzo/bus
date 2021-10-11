@@ -3284,7 +3284,7 @@ public class CollKit {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return collection.stream().collect(Collectors.toMap(key, Function.identity()));
+        return collection.stream().collect(Collectors.toMap(key, Function.identity(), (l, r) -> l));
     }
 
     /**

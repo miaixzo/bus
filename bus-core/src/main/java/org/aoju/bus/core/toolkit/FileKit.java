@@ -902,7 +902,7 @@ public class FileKit {
         if (false == src.exists()) {
             throw new InstrumentException("File not exist: " + src);
         }
-        Assert.notNull(dest, "Destination File or directiory is null !");
+        Assert.notNull(dest, "Destination File or directory is null !");
         if (equals(src, dest)) {
             throw new InstrumentException("Files '{}' and '{}' are equal", src, dest);
         }
@@ -920,7 +920,7 @@ public class FileKit {
      */
     public static Path copyFile(Path src, Path dest, StandardCopyOption... options) throws InstrumentException {
         Assert.notNull(src, "Source File is null !");
-        Assert.notNull(dest, "Dest File or directiory is null !");
+        Assert.notNull(dest, "Dest File or directory is null !");
 
         Path destPath = isDirectory(dest) ? dest.resolve(src.getFileName()) : dest;
         try {
@@ -3515,7 +3515,9 @@ public class FileKit {
                 parentCanonicalPath = parentFile.getCanonicalPath();
                 canonicalPath = file.getCanonicalPath();
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                // getCanonicalPath有时会抛出奇怪的IO异常，此时忽略异常，使用AbsolutePath判断
+                parentCanonicalPath = parentFile.getAbsolutePath();
+                canonicalPath = file.getAbsolutePath();
             }
             if (false == canonicalPath.startsWith(parentCanonicalPath)) {
                 throw new IllegalArgumentException("New file is outside of the parent dir: " + file.getName());

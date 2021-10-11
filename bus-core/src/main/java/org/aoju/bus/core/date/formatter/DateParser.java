@@ -80,7 +80,9 @@ public interface DateParser extends DateMotd {
      * @throws ParseException 如果无法解析指定字符串的开头
      * @see java.text.DateFormat#parseObject(String)
      */
-    Object parseObject(String source) throws ParseException;
+    default Object parseObject(String source) throws ParseException {
+        return parse(source);
+    }
 
     /**
      * 根据 {@link ParsePosition} 给定将日期字符串解析并转换为  {@link Date} 对象
@@ -90,6 +92,8 @@ public interface DateParser extends DateMotd {
      * @return 日期对象
      * @see java.text.DateFormat#parseObject(String, ParsePosition)
      */
-    Object parseObject(String source, ParsePosition pos);
+    default Object parseObject(String source, ParsePosition pos) {
+        return parse(source, pos);
+    }
 
 }

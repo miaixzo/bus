@@ -335,8 +335,7 @@ public class RuntimeKit {
 
     /**
      * 使用运行时异常包装编译异常
-     * <p>
-     * 如果
+     * 如果传入参数已经是运行时异常，则直接返回，不再额外包装
      *
      * @param throwable 异常
      * @return 运行时异常
@@ -361,7 +360,7 @@ public class RuntimeKit {
     /**
      * 包装一个异常
      *
-     * @param <T>           对象
+     * @param <T>           被包装的异常类型
      * @param throwable     异常
      * @param wrapThrowable 包装后的异常类
      * @return 包装后的异常
@@ -515,24 +514,25 @@ public class RuntimeKit {
      * 堆栈转为完整字符串
      *
      * @param throwable           异常对象
-     * @param limit               限制最大长度
+     * @param limit               限制最大长度，&gt;0表示不限制长度
      * @param replaceCharToStrMap 替换字符为指定字符串
      * @return 堆栈转为的字符串
      */
     public static String getStackTrace(Throwable throwable, int limit, Map<Character, String> replaceCharToStrMap) {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         throwable.printStackTrace(new PrintStream(baos));
-        String exceptionStr = baos.toString();
-        int length = exceptionStr.length();
-        if (limit > 0 && limit < length) {
-            length = limit;
+
+        final String exceptionStr = baos.toString();
+        final int length = exceptionStr.length();
+        if (limit < 0 || limit > length) {
+            limit = length;
         }
 
-        if (CollKit.isNotEmpty(replaceCharToStrMap)) {
+        if (MapKit.isNotEmpty(replaceCharToStrMap)) {
             final StringBuilder sb = StringKit.builder();
             char c;
             String value;
-            for (int i = 0; i < length; i++) {
+            for (int i = 0; i < limit; i++) {
                 c = exceptionStr.charAt(i);
                 value = replaceCharToStrMap.get(c);
                 if (null != value) {
@@ -543,6 +543,9 @@ public class RuntimeKit {
             }
             return sb.toString();
         } else {
+            if (limit == length) {
+                return exceptionStr;
+            }
             return StringKit.subPre(exceptionStr, limit);
         }
     }

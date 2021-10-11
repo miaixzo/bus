@@ -26,6 +26,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -289,11 +290,13 @@ public final class CsvWriter implements Closeable, Flushable {
 
     /**
      * 写出一行注释，注释符号可自定义
+     * 如果注释符不存在，则抛出异常
      *
      * @param comment 注释内容
      * @return this
      */
     public CsvWriter writeComment(String comment) {
+        Assert.notNull(this.config.commentCharacter, "Comment is disable!");
         try {
             writer.write(this.config.commentCharacter);
             writer.write(comment);

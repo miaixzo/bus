@@ -27,7 +27,6 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.map.TableMap;
 
@@ -180,26 +179,6 @@ public class TypeKit {
      */
     public static boolean isJdk(Class<?> clazz) {
         return null != clazz && null == clazz.getClassLoader();
-    }
-
-    /**
-     * 判断是否为Bean对象
-     * 判定方法是是否存在只有一个参数的setXXX方法
-     *
-     * @param clazz 待测试类
-     * @return 是否为Bean对象
-     */
-    public static boolean isBean(Class<?> clazz) {
-        if (isJavaBean(clazz)) {
-            final Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                if (method.getParameterTypes().length == 1 && method.getName().startsWith(Normal.SET)) {
-                    // 检测包含标准的setXXX方法即视为标准的JavaBean
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**

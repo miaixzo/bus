@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
+import org.aoju.bus.core.collection.ComputeIterator;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.TextBuilder;
@@ -36,6 +37,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -45,7 +47,7 @@ import java.util.*;
  * @version 6.2.9
  * @since JDK 1.8+
  */
-public final class CsvParser implements Closeable {
+public final class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
 
     private static final int DEFAULT_ROW_CAPACITY = 10;
 
@@ -99,6 +101,11 @@ public final class CsvParser implements Closeable {
     public CsvParser(final Reader reader, CsvReadConfig config) {
         this.reader = Objects.requireNonNull(reader, "reader must not be null");
         this.config = ObjectKit.defaultIfNull(config, CsvReadConfig.defaultConfig());
+    }
+
+    @Override
+    protected CsvRow computeNext() {
+        return nextRow();
     }
 
     /**
@@ -240,7 +247,7 @@ public final class CsvParser implements Closeable {
             if (preChar < 0 || preChar == Symbol.C_CR || preChar == Symbol.C_LF) {
                 // 判断行首字符为指定注释字符的注释开始，直到遇到换行符
                 // 行首分两种，1是preChar < 0表示文本开始，2是换行符后紧跟就是下一行的开始
-                if (c == this.config.commentCharacter) {
+                if (null != this.config.commentCharacter && c == this.config.commentCharacter) {
                     inComment = true;
                 }
             }

@@ -934,25 +934,6 @@ public class ClassKit {
     }
 
     /**
-     * 判断是否为Bean对象
-     * 判定方法是是否存在只有一个参数的setXXX方法
-     *
-     * @param clazz 待测试类
-     * @return 是否为Bean对象
-     */
-    public static boolean isBean(Class<?> clazz) {
-        if (isNormalClass(clazz)) {
-            final Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                if (method.getParameterTypes().length == 1 && method.getName().startsWith(Normal.SET)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * 对象转Map,不进行驼峰转下划线,不忽略值为空的字段
      *
      * @param bean bean对象

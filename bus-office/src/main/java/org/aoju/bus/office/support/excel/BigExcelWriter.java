@@ -49,7 +49,7 @@ public class BigExcelWriter extends ExcelWriter {
     private boolean isFlushed;
 
     /**
-     * 构造,默认生成xls格式的Excel文件
+     * 构造,默认生成xlsx格式的Excel文件
      * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(java.io.OutputStream)}方法写出到流
      * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
      */

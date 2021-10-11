@@ -57,7 +57,7 @@ public class BeanKit {
 
     /**
      * 判断是否为Bean对象
-     * 判定方法是是否存在只有一个参数的setXXX方法
+     * 判定方法是否存在只有一个参数的setXXX方法
      *
      * @param clazz 待测试类
      * @return 是否为Bean对象
@@ -151,7 +151,7 @@ public class BeanKit {
 
     /**
      * 判断是否有Setter方法
-     * 判定方法是是否存在只有一个参数的setXXX方法
+     * 判定方法是否存在只有一个参数的setXXX方法
      *
      * @param clazz 待测试类
      * @return 是否为Bean对象
@@ -171,7 +171,7 @@ public class BeanKit {
 
     /**
      * 判断是否为Bean对象
-     * 判定方法是是否存在只有一个参数的setXXX方法
+     * 判定方法是否存在只有一个参数的getXXX方法
      *
      * @param clazz 待测试类
      * @return 是否为Bean对象

@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.22</lombok.version>
         <aliyun.oss.version>3.4.2</aliyun.oss.version>
         <baidu.bos.version>0.10.48</baidu.bos.version>
         <huawei.oss.version>3.0.2</huawei.oss.version>
