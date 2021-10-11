@@ -90,28 +90,10 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
         return Pair.of(serialNumber, uuid);
     }
 
-    private static String querySystemSerialNumber() {
-        String result;
-        if ((null != (result = querySerialFromBios()) || null != (result = querySerialFromCsProduct()))
-                && !StringKit.isBlank(result)) {
-            return result;
-        }
-        return Normal.UNKNOWN;
-    }
-
     private static String querySerialFromBios() {
         WmiResult<Win32Bios.BiosSerialProperty> serialNum = Win32Bios.querySerialNumber();
         if (serialNum.getResultCount() > 0) {
             return WmiKit.getString(serialNum, Win32Bios.BiosSerialProperty.SERIALNUMBER, 0);
-        }
-        return null;
-    }
-
-    private static String querySerialFromCsProduct() {
-        WmiResult<Win32ComputerSystemProduct.ComputerSystemProductProperty> identifyingNumber = Win32ComputerSystemProduct
-                .queryIdentifyingNumber();
-        if (identifyingNumber.getResultCount() > 0) {
-            return WmiKit.getString(identifyingNumber, Win32ComputerSystemProduct.ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
         }
         return null;
     }

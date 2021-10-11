@@ -75,7 +75,7 @@ public interface PinyinProvider {
      */
     default String getFirstLetter(String text, String separator) {
         final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
-        final String[] split = StringKit.split(getPinyin(text, splitSeparator), splitSeparator);
+        final String[] split = StringKit.splitToArray(getPinyin(text, splitSeparator), splitSeparator);
         return ArrayKit.join(split, separator, (s) -> String.valueOf(s.length() > 0 ? s.charAt(0) : Normal.EMPTY));
     }
 

@@ -158,10 +158,9 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.1
      */
     public final String[] getClassPathArray() {
-        return StringKit.split(getClassPath(), Platform.get("path.separator", false));
+        return StringKit.splitToArray(getClassPath(), Platform.get("path.separator", false));
     }
 
     /**
@@ -201,7 +200,7 @@ public class JavaRuntime implements Serializable {
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String[] getLibraryPathArray() {
-        return StringKit.split(getLibraryPath(), Platform.get("path.separator", false));
+        return StringKit.splitToArray(getLibraryPath(), Platform.get("path.separator", false));
     }
 
     /**

@@ -74,7 +74,6 @@ public final class Sysfs {
                 return productName + " (version: " + productVersion + ")";
             }
             return productName;
-            s
         }
         return null;
     }
