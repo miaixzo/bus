@@ -2323,7 +2323,7 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
     }
 
     /**
-     * 验证定义生成器范围的参数.
+     * 验证定义生成器范围的参数
      *
      * @param startIndex 起始索引(包括起始索引)必须有效
      * @param endIndex   唯一的结束索引必须有效，除非太大，否则将被视为字符串的结束

@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 树节点 每个属性都可以在{@link  NodeConfig}中被重命名
+ * 树节点 每个属性都可以在{@link NodeConfig}中被重命名
  * 在你的项目里它可以是部门实体、地区实体等任意类树节点实体
  * 类树节点实体: 包含key，父Key.不限于这些属性的可以构造成一颗树的实体对象
  *
@@ -46,18 +46,22 @@ public class TreeNode<T> implements Node<T> {
      * ID
      */
     private T id;
+
     /**
      * 父节点ID
      */
     private T parentId;
+
     /**
      * 名称
      */
     private CharSequence name;
+
     /**
      * 顺序 越小优先级越高 默认0
      */
     private Comparable<?> weight = 0;
+
     /**
      * 扩展字段
      */

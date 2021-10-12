@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.Normal;
 import java.lang.annotation.*;
 
 /**
- * annotation for cron handler
+ * cron处理程序的注解
  *
  * @author Kimi Liu
  * @version 6.2.9

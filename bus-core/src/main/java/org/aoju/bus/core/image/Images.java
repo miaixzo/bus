@@ -124,6 +124,32 @@ public class Images implements Serializable {
     }
 
     /**
+     * @param canvasWidth  画布宽
+     * @param canvasHeight 画布高
+     * @param fileType     输出图片格式
+     */
+    public Images(int canvasWidth, int canvasHeight, String fileType) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.fileType = fileType;
+    }
+
+    /**
+     * @param canvasWidth  画布宽
+     * @param canvasHeight 画布高
+     * @param bgColor      背景颜色
+     * @param fileType     输出图片格式
+     */
+    public Images(int canvasWidth, int canvasHeight, Color bgColor, String fileType) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.fileType = fileType;
+        RectangleElement bgElement = new RectangleElement(0, 0, canvasWidth, canvasHeight);
+        bgElement.setColor(bgColor);
+        this.list.add(bgElement);
+    }
+
+    /**
      * 构造
      *
      * @param srcImage 来源图片

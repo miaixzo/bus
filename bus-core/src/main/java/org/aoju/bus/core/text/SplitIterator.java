@@ -79,7 +79,7 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
      * @param text            文本
      * @param separatorFinder 分隔符匹配器
      * @param limit           限制数量
-     * @param ignoreEmpty     是否忽略""
+     * @param ignoreEmpty     是否忽略
      */
     public SplitIterator(CharSequence text, TextFinder separatorFinder, int limit, boolean ignoreEmpty) {
         Assert.notNull(text, "Text must be not null!");

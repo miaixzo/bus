@@ -4,7 +4,7 @@ import org.aoju.bus.core.lang.tree.NodeConfig;
 import org.aoju.bus.core.lang.tree.Tree;
 import org.aoju.bus.core.lang.tree.TreeBuilder;
 import org.aoju.bus.core.lang.tree.TreeNode;
-import org.aoju.bus.core.lang.tree.parser.DefaultParser;
+import org.aoju.bus.core.lang.tree.parser.DefaultNodeParser;
 import org.aoju.bus.core.lang.tree.parser.NodeParser;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class TreeKit {
      * 构建单root节点树
      *
      * @param list 源数据集合
-     * @return List
+     * @return {@link Tree}
      */
     public static Tree<Integer> buildSingle(List<TreeNode<Integer>> list) {
         return buildSingle(list, 0);
@@ -53,10 +53,10 @@ public class TreeKit {
      * @param <E>      ID类型
      * @param list     源数据集合
      * @param parentId 最顶层父id值 一般为 0 之类
-     * @return List
+     * @return {@link Tree}
      */
     public static <E> Tree<E> buildSingle(List<TreeNode<E>> list, E parentId) {
-        return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultParser<>());
+        return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultNodeParser<>());
     }
 
     /**
@@ -68,7 +68,7 @@ public class TreeKit {
      * @return List
      */
     public static <E> List<Tree<E>> build(List<TreeNode<E>> list, E parentId) {
-        return build(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultParser<>());
+        return build(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultNodeParser<>());
     }
 
     /**
@@ -79,7 +79,7 @@ public class TreeKit {
      * @param list       源数据集合
      * @param parentId   最顶层父id值 一般为 0 之类
      * @param nodeParser 转换器
-     * @return List
+     * @return {@link Tree}
      */
     public static <T, E> Tree<E> buildSingle(List<T> list, E parentId, NodeParser<T, E> nodeParser) {
         return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
@@ -93,7 +93,7 @@ public class TreeKit {
      * @param list       源数据集合
      * @param parentId   最顶层父id值 一般为 0 之类
      * @param nodeParser 转换器
-     * @return List
+     * @return the list
      */
     public static <T, E> List<Tree<E>> build(List<T> list, E parentId, NodeParser<T, E> nodeParser) {
         return build(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
@@ -108,7 +108,7 @@ public class TreeKit {
      * @param rootId     最顶层父id值 一般为 0 之类
      * @param nodeConfig 配置
      * @param nodeParser 转换器
-     * @return List
+     * @return the list
      */
     public static <T, E> List<Tree<E>> build(List<T> list, E rootId, NodeConfig nodeConfig, NodeParser<T, E> nodeParser) {
         return buildSingle(list, rootId, nodeConfig, nodeParser).getChildren();
@@ -117,16 +117,17 @@ public class TreeKit {
     /**
      * 构建单root节点树
      *
-     * @param <T>        转换的实体 为数据源里的对象类型
-     * @param <E>        ID类型
-     * @param list       源数据集合
-     * @param rootId     最顶层父id值 一般为 0 之类
+     * @param <T>            转换的实体 为数据源里的对象类型
+     * @param <E>            ID类型
+     * @param list           源数据集合
+     * @param rootId         最顶层父id值 一般为 0 之类
      * @param nodeConfig 配置
-     * @param nodeParser 转换器
-     * @return List
+     * @param nodeParser     转换器
+     * @return {@link Tree}
      */
     public static <T, E> Tree<E> buildSingle(List<T> list, E rootId, NodeConfig nodeConfig, NodeParser<T, E> nodeParser) {
-        return TreeBuilder.of(rootId, nodeConfig).append(list, nodeParser).build();
+        return TreeBuilder.of(rootId, nodeConfig)
+                .append(list, nodeParser).build();
     }
 
     /**
@@ -135,7 +136,7 @@ public class TreeKit {
      * @param <E>    ID类型
      * @param map    源数据Map
      * @param rootId 最顶层父id值 一般为 0 之类
-     * @return List
+     * @return the list
      */
     public static <E> List<Tree<E>> build(Map<E, Tree<E>> map, E rootId) {
         return buildSingle(map, rootId).getChildren();
@@ -162,8 +163,8 @@ public class TreeKit {
     }
 
     /**
-     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个
-     * 此方法只查找此节点及子节点，采用递归深度优先遍历
+     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。
+     * 此方法只查找此节点及子节点，采用递归深度优先遍历。
      *
      * @param <T>  ID类型
      * @param node 节点
@@ -195,6 +196,8 @@ public class TreeKit {
 
     /**
      * 获取所有父节点名称列表
+     *
+     * <p>
      * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心
      * 返回结果就是：[研发一部, 研发中心, 技术中心]
      *

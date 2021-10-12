@@ -785,6 +785,17 @@ public class ArrayKit {
     }
 
     /**
+     * 将给定的枚举复制到{@code String}数组中
+     * 枚举必须只包含{@code String}元素
+     *
+     * @param enumeration 要复制的枚举 {@code Enumeration}
+     * @return {@code String} 数组
+     */
+    public static String[] toArray(Enumeration<String> enumeration) {
+        return toArray(Collections.list(enumeration));
+    }
+
+    /**
      * {@link ByteBuffer} 转byte数组
      *
      * @param bytebuffer {@link ByteBuffer}

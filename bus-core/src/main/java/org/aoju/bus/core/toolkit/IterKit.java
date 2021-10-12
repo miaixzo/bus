@@ -29,9 +29,9 @@ import org.aoju.bus.core.collection.CopiedIterator;
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.Func;
 import org.aoju.bus.core.lang.Matcher;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.function.Func1;
 
 import java.util.*;
 import java.util.function.Function;
@@ -806,7 +806,7 @@ public class IterKit {
      * @param keyFunc  生成key的函数
      * @return 生成的map
      */
-    public static <K, V> Map<K, V> toMap(Iterator<V> iterator, Map<K, V> map, Func.Func1<V, K> keyFunc) {
+    public static <K, V> Map<K, V> toMap(Iterator<V> iterator, Map<K, V> map, Func1<V, K> keyFunc) {
         return toMap(iterator, map, keyFunc, (value) -> value);
     }
 
@@ -823,7 +823,7 @@ public class IterKit {
      * @param valueFunc 生成值的策略函数
      * @return 生成的map
      */
-    public static <K, V, E> Map<K, V> toMap(Iterator<E> iterator, Map<K, V> map, Func.Func1<E, K> keyFunc, Func.Func1<E, V> valueFunc) {
+    public static <K, V, E> Map<K, V> toMap(Iterator<E> iterator, Map<K, V> map, Func1<E, K> keyFunc, Func1<E, V> valueFunc) {
         if (null == iterator) {
             return map;
         }

@@ -1,6 +1,5 @@
 package org.aopalliance.intercept;
 
-
 import org.aopalliance.aop.Advice;
 
 /**

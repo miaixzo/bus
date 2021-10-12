@@ -28,10 +28,8 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.NamingCase;
-import org.aoju.bus.core.text.Similarity;
-import org.aoju.bus.core.text.TextBuilder;
-import org.aoju.bus.core.text.TextSplitter;
+import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.text.*;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -1271,14 +1269,14 @@ public class StringKit {
      * @param args     参数值
      * @return 格式化后的文本，如果模板为null，返回"null"
      */
-    public static String format(CharSequence template, Object... args) {
+    public static String format(String template, Object... args) {
         if (null == template) {
             return Normal.NULL;
         }
         if (ArrayKit.isEmpty(args) || isBlank(template)) {
-            return template.toString();
+            return template;
         }
-        return format(template.toString(), args);
+        return TextFormatter.format(template, args);
     }
 
     /**
@@ -1293,112 +1291,16 @@ public class StringKit {
     }
 
     /**
-     * 格式化文本
+     * 格式化文本，使用 {varName} 占位
+     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) - aValue and bValue
      *
      * @param template   文本模板，被替换的部分用 {key} 表示
-     * @param args       参数值对
+     * @param map        参数值对
      * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
      * @return 格式化后的文本
      */
-    public static String format(CharSequence template, Map<?, ?> args, boolean ignoreNull) {
-        if (null == template) {
-            return null;
-        }
-        if (null == args || args.isEmpty()) {
-            return template.toString();
-        }
-
-        String template2 = template.toString();
-        String value;
-        for (Map.Entry<?, ?> entry : args.entrySet()) {
-            value = toString(entry.getValue());
-            if (null == value && ignoreNull) {
-                continue;
-            }
-            template2 = replace(template2, "{" + entry.getKey() + "}", value);
-        }
-        return template2;
-    }
-
-    /**
-     * 格式化字符串
-     * 此方法只是简单将占位符 {} 按照顺序替换为参数
-     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
-     * 例：
-     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
-     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a
-     * 转义\： format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
-     *
-     * @param template 字符串模板
-     * @param args     参数列表
-     * @return 结果
-     */
-    public static String format(String template, Object... args) {
-        return format(template, "{}", args);
-    }
-
-    /**
-     * 格式化字符串
-     * 此方法只是简单将指定占位符 按照顺序替换为参数
-     * 如果想输出占位符使用 \\转义即可，如果想输出占位符之前的 \ 使用双转义符 \\\\ 即可
-     * 例：
-     * 通常使用：format("this is {} for {}", "{}", "a", "b") =》 this is a for b
-     * 转义{}： format("this is \\{} for {}", "{}", "a", "b") =》 this is \{} for a
-     * 转义\： format("this is \\\\{} for {}", "{}", "a", "b") =》 this is \a for b
-     *
-     * @param template    字符串模板
-     * @param placeHolder 占位符，例如{}
-     * @param args        参数列表
-     * @return 结果
-     */
-    public static String format(String template, String placeHolder, Object... args) {
-        if (isBlank(template) || isBlank(placeHolder) || ArrayKit.isEmpty(args)) {
-            return template;
-        }
-        final int templateLength = template.length();
-        final int placeHolderLength = placeHolder.length();
-
-        // 初始化定义好的长度以获得更好的性能
-        final StringBuilder sbuf = new StringBuilder(templateLength + 50);
-
-        int handledPosition = 0;// 记录已经处理到的位置
-        int delimIndex;// 占位符所在位置
-        for (int argIndex = 0; argIndex < args.length; argIndex++) {
-            delimIndex = template.indexOf(placeHolder, handledPosition);
-            if (delimIndex == -1) {// 剩余部分无占位符
-                if (handledPosition == 0) { // 不带占位符的模板直接返回
-                    return template;
-                }
-                // 字符串模板剩余部分不再包含占位符，加入剩余部分后返回结果
-                sbuf.append(template, handledPosition, templateLength);
-                return sbuf.toString();
-            }
-
-            // 转义符
-            if (delimIndex > 0 && template.charAt(delimIndex - 1) == Symbol.C_BACKSLASH) {// 转义符
-                if (delimIndex > 1 && template.charAt(delimIndex - 2) == Symbol.C_BACKSLASH) {// 双转义符
-                    // 转义符之前还有一个转义符，占位符依旧有效
-                    sbuf.append(template, handledPosition, delimIndex - 1);
-                    sbuf.append(toString(args[argIndex]));
-                    handledPosition = delimIndex + placeHolderLength;
-                } else {
-                    // 占位符被转义
-                    argIndex--;
-                    sbuf.append(template, handledPosition, delimIndex - 1);
-                    sbuf.append(placeHolder.charAt(0));
-                    handledPosition = delimIndex + 1;
-                }
-            } else {// 正常占位符
-                sbuf.append(template, handledPosition, delimIndex);
-                sbuf.append(toString(args[argIndex]));
-                handledPosition = delimIndex + placeHolderLength;
-            }
-        }
-
-        // 加入最后一个占位符后所有的字符
-        sbuf.append(template, handledPosition, templateLength);
-
-        return sbuf.toString();
+    public static String format(CharSequence template, Map<?, ?> map, boolean ignoreNull) {
+        return TextFormatter.format(template, map, ignoreNull);
     }
 
     /**
@@ -2210,6 +2112,39 @@ public class StringKit {
         }
         final String separatorStr = (null == separator) ? null : separator.toString();
         return TextSplitter.split(text.toString(), separatorStr, limit, isTrim, ignoreEmpty);
+    }
+
+    /**
+     * 切分字符串
+     *
+     * @param text      被切分的字符串
+     * @param separator 分隔符
+     * @param reserve   替换后的分隔符
+     * @return 字符串
+     */
+    public static String split(String text, CharSequence separator, CharSequence reserve) {
+        StringBuffer sb = new StringBuffer();
+        if (StringKit.isNotEmpty(text)) {
+            String[] arr = splitToArray(text, separator);
+            for (int i = 0; i < arr.length; i++) {
+                if (i == 0) {
+                    sb.append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
+                } else {
+                    sb.append(reserve).append(Symbol.SINGLE_QUOTE).append(arr[i]).append(Symbol.SINGLE_QUOTE);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 切分字符串
+     *
+     * @param text 被切分的字符串
+     * @return 字符串
+     */
+    public static String split(String text) {
+        return split(text, Symbol.COMMA, Symbol.COMMA);
     }
 
     /**
@@ -3635,7 +3570,7 @@ public class StringKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, java.util.regex.Pattern pattern, Func.Func1<Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, java.util.regex.Pattern pattern, Func1<Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, pattern, replaceFun);
     }
 
@@ -3647,7 +3582,7 @@ public class StringKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, String regex, Func.Func1<Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, String regex, Func1<Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, regex, replaceFun);
     }
 
@@ -6016,16 +5951,6 @@ public class StringKit {
             }
         }
         return stVal;
-    }
-
-    /**
-     * Trim函数
-     *
-     * @param isTrim 是否trim
-     * @return {@link Function}
-     */
-    private static Function<String, String> trimFunc(boolean isTrim) {
-        return (text) -> isTrim ? trim(text) : text;
     }
 
     /**

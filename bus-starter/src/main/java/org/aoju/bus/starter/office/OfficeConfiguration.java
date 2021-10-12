@@ -74,7 +74,7 @@ public class OfficeConfiguration {
         if (!StringKit.isBlank(this.properties.getPortNumbers())) {
             builder.portNumbers(
                     ArrayKit.toPrimitive(
-                            Stream.of(StringKit.split(this.properties.getPortNumbers(), Symbol.COMMA))
+                            Stream.of(StringKit.splitToArray(this.properties.getPortNumbers(), Symbol.COMMA))
                                     .map(text -> MathKit.toInt(text, Builder.DEFAULT_PORT_NUMBER))
                                     .toArray(Integer[]::new)));
         }

@@ -139,32 +139,6 @@ public final class DiskLruCache implements Closeable, Flushable {
         return new DiskLruCache(fileSystem, directory, appVersion, valueCount, maxSize, executor);
     }
 
-    private final Runnable cleanupRunnable = new Runnable() {
-        public void run() {
-            synchronized (DiskLruCache.this) {
-                if (!initialized | closed) {
-                    return;
-                }
-
-                try {
-                    trimToSize();
-                } catch (IOException ignored) {
-                    mostRecentTrimFailed = true;
-                }
-
-                try {
-                    if (journalRebuildRequired()) {
-                        rebuildJournal();
-                        redundantOpCount = 0;
-                    }
-                } catch (IOException e) {
-                    mostRecentRebuildFailed = true;
-                    journalWriter = IoKit.buffer(IoKit.blackhole());
-                }
-            }
-        }
-    };
-
     public synchronized void initialize() throws IOException {
         assert Thread.holdsLock(this);
 
@@ -205,6 +179,32 @@ public final class DiskLruCache implements Closeable, Flushable {
 
         initialized = true;
     }
+
+    private final Runnable cleanupRunnable = new Runnable() {
+        public void run() {
+            synchronized (DiskLruCache.this) {
+                if (!initialized | closed) {
+                    return;
+                }
+
+                try {
+                    trimToSize();
+                } catch (IOException ignored) {
+                    mostRecentTrimFailed = true;
+                }
+
+                try {
+                    if (journalRebuildRequired()) {
+                        rebuildJournal();
+                        redundantOpCount = 0;
+                    }
+                } catch (IOException e) {
+                    mostRecentRebuildFailed = true;
+                    journalWriter = IoKit.buffer(IoKit.blackhole());
+                }
+            }
+        }
+    };
 
     private void readJournal() throws IOException {
         BufferSource source = IoKit.buffer(fileSystem.source(journalFile));
@@ -966,6 +966,5 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
     }
-
 
 }

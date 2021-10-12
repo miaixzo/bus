@@ -156,7 +156,7 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
         if (StringKit.isBlank(value)) {
             return null;
         }
-        return StringKit.split(value, delimiter);
+        return StringKit.splitToArray(value, delimiter);
     }
 
     /**

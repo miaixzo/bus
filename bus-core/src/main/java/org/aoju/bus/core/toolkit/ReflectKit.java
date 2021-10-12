@@ -68,7 +68,7 @@ public class ReflectKit {
      */
     public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
-        for (String method : StringKit.split(name, Symbol.DOT)) {
+        for (String method : StringKit.splitToArray(name, Symbol.DOT)) {
             String getterMethodName = Normal.GET + StringKit.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
@@ -229,7 +229,7 @@ public class ReflectKit {
                 return method;
             } catch (NoSuchMethodException e) {
                 // Method不在当前类定义,继续向上转型
-                continue;// new add
+                continue;
             }
         }
         return null;

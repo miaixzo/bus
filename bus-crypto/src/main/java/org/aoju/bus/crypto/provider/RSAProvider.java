@@ -53,7 +53,7 @@ public class RSAProvider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        String[] array = StringKit.split(key, Symbol.COMMA);
+        String[] array = StringKit.splitToArray(key, Symbol.COMMA);
         RSA rsa = new RSA(array[0], array[1]);
         return rsa.encrypt(content, KeyType.valueOf(array[2]));
     }
@@ -70,7 +70,7 @@ public class RSAProvider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        String[] array = StringKit.split(key, Symbol.COMMA);
+        String[] array = StringKit.splitToArray(key, Symbol.COMMA);
 
         RSA rsa = new RSA(array[0], array[1]);
         return rsa.decrypt(content, KeyType.valueOf(array[2]));

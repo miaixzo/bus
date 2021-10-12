@@ -28,11 +28,14 @@ package org.aoju.bus.core.text;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.finder.*;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -272,13 +275,13 @@ public class TextSplitter {
             return Normal.EMPTY_STRING_ARRAY;
         } else {
             StringTokenizer st = new StringTokenizer(text, separator);
-            ArrayList tokens = new ArrayList();
+            List tokens = new ArrayList();
 
             while (true) {
                 String token;
                 do {
                     if (!st.hasMoreTokens()) {
-                        return toStringArray(tokens);
+                        return ArrayKit.toArray(tokens);
                     }
 
                     token = st.nextToken();
@@ -303,7 +306,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+        return ArrayKit.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -317,7 +320,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+        return ArrayKit.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -328,7 +331,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, int limit) {
-        return toArray(split(str, limit));
+        return ArrayKit.toArray(split(str, limit));
     }
 
     /**
@@ -342,7 +345,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
+        return ArrayKit.toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -414,7 +417,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitPathToArray(CharSequence str) {
-        return toArray(splitPath(str));
+        return ArrayKit.toArray(splitPath(str));
     }
 
     /**
@@ -425,7 +428,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitPathToArray(CharSequence str, int limit) {
-        return toArray(splitPath(str, limit));
+        return ArrayKit.toArray(splitPath(str, limit));
     }
 
     /**
@@ -453,38 +456,6 @@ public class TextSplitter {
     public static List<String> splitByRegex(String str, String separatorRegex, int limit, boolean isTrim, boolean ignoreEmpty) {
         final Pattern pattern = PatternKit.get(separatorRegex);
         return split(str, pattern, limit, isTrim, ignoreEmpty);
-    }
-
-    /**
-     * List转Array
-     *
-     * @param list List
-     * @return Array
-     */
-    public static String[] toArray(List<String> list) {
-        return list.toArray(new String[0]);
-    }
-
-    /**
-     * 将给定的{@code Collection}复制到{@code String}数组中
-     * {@code Collection }必须只包含{@code String}元素
-     *
-     * @param collection 要复制的集合 {@code Collection}
-     * @return {@code String} 数组
-     */
-    public static String[] toStringArray(Collection<String> collection) {
-        return collection.toArray(Normal.EMPTY_STRING_ARRAY);
-    }
-
-    /**
-     * 将给定的枚举复制到{@code String}数组中
-     * 枚举必须只包含{@code String}元素
-     *
-     * @param enumeration 要复制的枚举 {@code Enumeration}
-     * @return {@code String} 数组
-     */
-    public static String[] toStringArray(Enumeration<String> enumeration) {
-        return toStringArray(Collections.list(enumeration));
     }
 
     /**

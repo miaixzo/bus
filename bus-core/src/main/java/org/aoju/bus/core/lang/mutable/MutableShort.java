@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.mutable;
 
-
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**

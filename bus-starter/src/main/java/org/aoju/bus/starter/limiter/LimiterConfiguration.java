@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.limiter;
 
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.starter.annotation.EnableLimiter;
 import org.springframework.context.annotation.AdviceMode;
@@ -53,7 +53,7 @@ public class LimiterConfiguration extends AdviceModeImportSelector<EnableLimiter
                 List<String> list = new ArrayList<>();
                 list.add(AutoProxyRegistrar.class.getName());
                 list.add(LimiterAwareHandler.class.getName());
-                return StringKit.toStringArray(list);
+                return ArrayKit.toArray(list);
             case ASPECTJ:
                 throw new RuntimeException("NotImplemented");
             default:

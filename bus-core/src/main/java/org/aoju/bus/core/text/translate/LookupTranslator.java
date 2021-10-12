@@ -34,7 +34,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 /**
- * 使用查找表转换值.
+ * 使用查找表转换值
  *
  * @author Kimi Liu
  * @version 6.2.9

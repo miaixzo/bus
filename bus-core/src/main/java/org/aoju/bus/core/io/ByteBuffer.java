@@ -115,6 +115,16 @@ public class ByteBuffer extends ByteString {
         }
     }
 
+    @Override
+    public String utf8() {
+        return toByteString().utf8();
+    }
+
+    @Override
+    public String string(Charset charset) {
+        return toByteString().string(charset);
+    }
+
     /**
      * 内存回收任务
      */
@@ -136,16 +146,6 @@ public class ByteBuffer extends ByteString {
             }
         }
     }, 500, 1000, TimeUnit.MILLISECONDS);
-
-    @Override
-    public String utf8() {
-        return toByteString().utf8();
-    }
-
-    @Override
-    public String string(Charset charset) {
-        return toByteString().string(charset);
-    }
 
     @Override
     public String base64() {

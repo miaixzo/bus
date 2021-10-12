@@ -60,20 +60,25 @@ public class TextPainter implements Painter {
             textLineElements = this.getBreakLineElements(textElement);
         }
 
-        for (TextElement textLineElement : textLineElements) {
+        for (int i = 0; i < textLineElements.size(); i++) {
+            TextElement textLineElement = textLineElements.get(i);
             int textWidth = 0;
-            //设置字体、颜色
+            // 设置字体、颜色
             g.setFont(textLineElement.getFont());
             g.setColor(textLineElement.getColor());
 
-            //设置居中
+            // 设置居中（多行的时候，第一行居中，后续行以第一行的x坐标为准）
             if (textLineElement.isCenter()) {
-                textWidth = this.getFrontWidth(textLineElement.getText(), textLineElement.getFont());
-                int centerX = (canvasWidth - textWidth) / 2;
-                textLineElement.setX(centerX);
+                if (i == 0) {
+                    textWidth = this.getFrontWidth(textLineElement.getText(), textLineElement.getFont());
+                    int centerX = (canvasWidth - textWidth) / 2;
+                    textLineElement.setX(centerX);
+                } else {
+                    textLineElement.setX(textLineElements.get(0).getX());
+                }
             }
 
-            //旋转
+            // 旋转
             if (null != textLineElement.getRotate()) {
                 if (textWidth == 0) {
                     textWidth = this.getFrontWidth(textLineElement.getText(), textLineElement.getFont());
@@ -81,7 +86,7 @@ public class TextPainter implements Painter {
                 g.rotate(Math.toRadians(textLineElement.getRotate()), textLineElement.getX() + textWidth / 2, textLineElement.getY());
             }
 
-            //设置透明度
+            // 设置透明度
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, textLineElement.getAlpha()));
 
             // 带删除线样式的文字要特殊处理
@@ -94,7 +99,7 @@ public class TextPainter implements Painter {
                 g.drawString(textLineElement.getText(), textLineElement.getX(), textLineElement.getY());
             }
 
-            //绘制完后反向旋转，以免影响后续元素
+            // 绘制完后反向旋转，以免影响后续元素
             if (null != textLineElement.getRotate()) {
                 g.rotate(-Math.toRadians(textLineElement.getRotate()), textLineElement.getX() + textWidth / 2, textLineElement.getY());
             }

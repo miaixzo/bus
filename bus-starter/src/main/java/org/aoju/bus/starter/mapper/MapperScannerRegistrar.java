@@ -1,5 +1,6 @@
 package org.aoju.bus.starter.mapper;
 
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -101,7 +102,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
             scanner.setMapperProperties(environment);
         }
         scanner.registerFilters();
-        scanner.doScan(StringKit.toStringArray(basePackages));
+        scanner.doScan(ArrayKit.toArray(basePackages));
     }
 
     @Override

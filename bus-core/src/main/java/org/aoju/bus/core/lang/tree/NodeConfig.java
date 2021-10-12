@@ -42,18 +42,19 @@ public class NodeConfig implements Serializable {
      * 默认属性配置对象
      */
     public static NodeConfig DEFAULT_CONFIG = new NodeConfig();
+
     /**
-     * 属性名配置字段
+     * 可以配置递归深度 从0开始计算 默认此配置为空,即不限制
      */
+    private Integer deep;
+
+    // 属性名配置字段
     private String idKey = "id";
     private String parentIdKey = "parentId";
     private String weightKey = "weight";
     private String nameKey = "name";
     private String childrenKey = "children";
-    /**
-     * 可以配置递归深度 从0开始计算 默认此配置为空,即不限制
-     */
-    private Integer deep;
+
 
     /**
      * 获取ID对应的名称
@@ -143,6 +144,7 @@ public class NodeConfig implements Serializable {
     public String getParentIdKey() {
         return this.parentIdKey;
     }
+
 
     /**
      * 设置父点对应的名称

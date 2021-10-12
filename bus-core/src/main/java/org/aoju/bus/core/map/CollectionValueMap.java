@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.lang.Func;
+import org.aoju.bus.core.lang.function.Func0;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public class CollectionValueMap<K, V> extends AbsCollValueMap<K, V, Collection<V>> {
 
-    private final Func.Func0<Collection<V>> collectionCreateFunc;
+    private final Func0<Collection<V>> collectionCreateFunc;
 
     /**
      * 构造
@@ -97,7 +97,7 @@ public class CollectionValueMap<K, V> extends AbsCollValueMap<K, V, Collection<V
      * @param m                    Map
      * @param collectionCreateFunc Map中值的集合创建函数
      */
-    public CollectionValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m, Func.Func0<Collection<V>> collectionCreateFunc) {
+    public CollectionValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m, Func0<Collection<V>> collectionCreateFunc) {
         this(m.size(), loadFactor, collectionCreateFunc);
         this.putAll(m);
     }
@@ -109,7 +109,7 @@ public class CollectionValueMap<K, V> extends AbsCollValueMap<K, V, Collection<V
      * @param loadFactor           加载因子
      * @param collectionCreateFunc Map中值的集合创建函数
      */
-    public CollectionValueMap(int initialCapacity, float loadFactor, Func.Func0<Collection<V>> collectionCreateFunc) {
+    public CollectionValueMap(int initialCapacity, float loadFactor, Func0<Collection<V>> collectionCreateFunc) {
         super(new HashMap<>(initialCapacity, loadFactor));
         this.collectionCreateFunc = collectionCreateFunc;
     }

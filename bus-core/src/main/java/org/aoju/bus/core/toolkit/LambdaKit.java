@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.lang.Func;
 import org.aoju.bus.core.lang.SimpleCache;
+import org.aoju.bus.core.lang.function.Func1;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
@@ -50,7 +50,7 @@ public class LambdaKit {
      * @param func 需要解析的 lambda 对象（无参方法）
      * @return 返回解析后的结果
      */
-    public static <T> SerializedLambda resolve(Func.Func1<T, ?> func) {
+    public static <T> SerializedLambda resolve(Func1<T, ?> func) {
         return _resolve(func);
     }
 
@@ -61,7 +61,7 @@ public class LambdaKit {
      * @param func 函数（无参方法）
      * @return 函数名称
      */
-    public static <T> String getMethodName(Func.Func1<T, ?> func) {
+    public static <T> String getMethodName(Func1<T, ?> func) {
         return resolve(func).getImplMethodName();
     }
 

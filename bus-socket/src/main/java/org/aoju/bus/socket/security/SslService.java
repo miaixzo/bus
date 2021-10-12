@@ -57,6 +57,23 @@ public class SslService {
         this.clientAuth = clientAuth;
     }
 
+    public void initKeyStore(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword) {
+        try {
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            KeyStore ks = KeyStore.getInstance("JKS");
+            ks.load(keyStoreInputStream, keyStorePassword.toCharArray());
+            kmf.init(ks, keyPassword.toCharArray());
+            KeyManager[] keyManagers = kmf.getKeyManagers();
+
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagers, null, new SecureRandom());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
         @Override
         public void completed(Integer result, HandshakeModel attachment) {
@@ -74,23 +91,6 @@ public class SslService {
             attachment.getHandshakeCallback().callback();
         }
     };
-
-    public void initKeyStore(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword) {
-        try {
-
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            KeyStore ks = KeyStore.getInstance("JKS");
-            ks.load(keyStoreInputStream, keyStorePassword.toCharArray());
-            kmf.init(ks, keyPassword.toCharArray());
-            KeyManager[] keyManagers = kmf.getKeyManagers();
-
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagers, null, new SecureRandom());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void initTrust(InputStream trustInputStream, String trustPassword) {
         try {

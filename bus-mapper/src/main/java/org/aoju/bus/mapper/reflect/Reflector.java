@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.reflect;
 
-import org.aoju.bus.core.lang.Func;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.function.Fn;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.SoftCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
@@ -55,7 +55,7 @@ public class Reflector {
 
     }
 
-    public static String fnToFieldName(Func.Fn fn) {
+    public static String fnToFieldName(Fn fn) {
         try {
             Method method = fn.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(Boolean.TRUE);

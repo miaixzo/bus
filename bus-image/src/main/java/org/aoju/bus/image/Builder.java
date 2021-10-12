@@ -128,7 +128,7 @@ public class Builder {
             return new String[]{Symbol.STAR};
         }
 
-        String[] uids = StringKit.split(s, Symbol.COMMA);
+        String[] uids = StringKit.splitToArray(s, Symbol.COMMA);
         for (int i = 0; i < uids.length; i++) {
             uids[i] = toUID(uids[i]);
         }

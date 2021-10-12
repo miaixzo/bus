@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.additional.delete;
 
-import org.aoju.bus.core.lang.Func;
+import org.aoju.bus.core.lang.function.Fn;
 import org.aoju.bus.mapper.annotation.RegisterMapper;
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Param;
@@ -48,7 +48,7 @@ public interface DeleteByPropertyMapper<T> {
      * @return the int
      */
     @DeleteProvider(type = DeletePropertyProvider.class, method = "dynamicSQL")
-    int deleteByProperty(@Param("fn") Func.Fn<T, ?> fn, @Param("value") Object value);
+    int deleteByProperty(@Param("fn") Fn<T, ?> fn, @Param("value") Object value);
 
     /**
      * 根据实体中的属性删除，条件使用 in
@@ -58,7 +58,7 @@ public interface DeleteByPropertyMapper<T> {
      * @return the int
      */
     @DeleteProvider(type = DeletePropertyProvider.class, method = "dynamicSQL")
-    int deleteInByProperty(@Param("fn") Func.Fn<T, ?> fn, @Param("values") Object value);
+    int deleteInByProperty(@Param("fn") Fn<T, ?> fn, @Param("values") Object value);
 
     /**
      * 根据属性及对应值进行删除，删除条件使用 between
@@ -69,6 +69,6 @@ public interface DeleteByPropertyMapper<T> {
      * @return the int
      */
     @SelectProvider(type = DeletePropertyProvider.class, method = "dynamicSQL")
-    int deleteBetweenByProperty(@Param("fn") Func.Fn<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
+    int deleteBetweenByProperty(@Param("fn") Fn<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
 
 }

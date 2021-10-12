@@ -37,7 +37,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 对象的全局唯一标识符<p>
+ * 对象的全局唯一标识符
  * 由12个字节组成,分割如下:
  *
  * @author Kimi Liu
