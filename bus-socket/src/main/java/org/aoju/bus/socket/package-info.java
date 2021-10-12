@@ -3,7 +3,7 @@
  *
  * <p>
  * 用户进行通信开发时需要实现该package中的接口，通常情况下仅需实现{@link org.aoju.bus.socket.Protocol}、{@link  org.aoju.bus.socket.process.MessageProcessor}即可
- * 如需仅需通讯层面的监控，smart-socket提供了接口{@linkNetMonitor}以供使用
+ * 如需仅需通讯层面的监控，提供了接口{@link org.aoju.bus.socket.NetMonitor}以供使用
  * </p>
  *
  * <p>
