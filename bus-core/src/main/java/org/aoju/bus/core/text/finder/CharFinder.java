@@ -39,35 +39,35 @@ public class CharFinder extends TextFinder {
 
     private static final long serialVersionUID = 1L;
 
-    private final char c;
+    private final char word;
     private final boolean caseInsensitive;
 
     /**
      * 构造，不忽略字符大小写
      *
-     * @param c 被查找的字符
+     * @param word 被查找的字符
      */
-    public CharFinder(char c) {
-        this(c, false);
+    public CharFinder(char word) {
+        this(word, false);
     }
 
     /**
      * 构造
      *
-     * @param c               被查找的字符
+     * @param word            被查找的字符
      * @param caseInsensitive 是否忽略大小写
      */
-    public CharFinder(char c, boolean caseInsensitive) {
-        this.c = c;
+    public CharFinder(char word, boolean caseInsensitive) {
+        this.word = word;
         this.caseInsensitive = caseInsensitive;
     }
 
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
-        final int length = text.length();
+        final int length = this.text.length();
         for (int i = from; i < length; i++) {
-            if (MathKit.equals(c, text.charAt(i), caseInsensitive)) {
+            if (MathKit.equals(word, this.text.charAt(i), caseInsensitive)) {
                 return i;
             }
         }

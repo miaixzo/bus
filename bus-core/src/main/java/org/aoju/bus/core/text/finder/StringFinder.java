@@ -39,25 +39,25 @@ public class StringFinder extends TextFinder {
 
     private static final long serialVersionUID = 1L;
 
-    private final CharSequence text;
+    private final CharSequence word;
     private final boolean caseInsensitive;
 
     /**
      * 构造
      *
-     * @param text            被查找的字符串
+     * @param word            被查找的字符
      * @param caseInsensitive 是否忽略大小写
      */
-    public StringFinder(CharSequence text, boolean caseInsensitive) {
-        Assert.notEmpty(text);
-        this.text = text;
+    public StringFinder(CharSequence word, boolean caseInsensitive) {
+        Assert.notEmpty(word);
+        this.word = word;
         this.caseInsensitive = caseInsensitive;
     }
 
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
-        return StringKit.indexOf(this.text, this.text, from, caseInsensitive);
+        return StringKit.indexOf(this.text, this.word, from, caseInsensitive);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class StringFinder extends TextFinder {
         if (start < 0) {
             return -1;
         }
-        return start + this.text.length();
+        return start + word.length();
     }
 
 }

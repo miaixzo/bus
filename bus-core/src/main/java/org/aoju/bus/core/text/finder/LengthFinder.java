@@ -28,7 +28,7 @@ package org.aoju.bus.core.text.finder;
 import org.aoju.bus.core.lang.Assert;
 
 /**
- * 长度查找器
+ * 固定长度查找器
  *
  * @author Kimi Liu
  * @version 6.2.9

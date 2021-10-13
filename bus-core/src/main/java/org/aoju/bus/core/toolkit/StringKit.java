@@ -2234,12 +2234,12 @@ public class StringKit {
      * StringKit.indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
-     * @param text      字符串
-     * @param searchStr 需要查找位置的字符串
+     * @param text 字符串
+     * @param word 需要查找位置的字符串
      * @return 位置
      */
-    public static int indexOfIgnoreCase(final CharSequence text, final CharSequence searchStr) {
-        return indexOfIgnoreCase(text, searchStr, 0);
+    public static int indexOfIgnoreCase(final CharSequence text, final CharSequence word) {
+        return indexOfIgnoreCase(text, word, 0);
     }
 
     /**
@@ -2260,46 +2260,46 @@ public class StringKit {
      * </pre>
      *
      * @param text      字符串
-     * @param searchStr 需要查找位置的字符串
+     * @param word      需要查找位置的字符串
      * @param fromIndex 起始位置
      * @return 位置
      */
-    public static int indexOfIgnoreCase(final CharSequence text, final CharSequence searchStr, int fromIndex) {
-        return indexOf(text, searchStr, fromIndex, true);
+    public static int indexOfIgnoreCase(final CharSequence text, final CharSequence word, int fromIndex) {
+        return indexOf(text, word, fromIndex, true);
     }
 
     /**
      * 指定范围内反向查找字符串
      *
      * @param text       字符串
-     * @param searchStr  需要查找位置的字符串
+     * @param word       需要查找位置的字符串
      * @param fromIndex  起始位置
      * @param ignoreCase 是否忽略大小写
      * @return 位置
      */
-    public static int indexOf(final CharSequence text, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
-        if (null == text || null == searchStr) {
+    public static int indexOf(final CharSequence text, CharSequence word, int fromIndex, boolean ignoreCase) {
+        if (null == text || null == word) {
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
             fromIndex = 0;
         }
 
-        final int endLimit = text.length() - searchStr.length() + 1;
+        final int endLimit = text.length() - word.length() + 1;
         if (fromIndex > endLimit) {
             return INDEX_NOT_FOUND;
         }
-        if (searchStr.length() == 0) {
+        if (word.length() == 0) {
             return fromIndex;
         }
 
         if (false == ignoreCase) {
             // 不忽略大小写调用JDK方法
-            return text.toString().indexOf(searchStr.toString(), fromIndex);
+            return text.toString().indexOf(word.toString(), fromIndex);
         }
 
         for (int i = fromIndex; i < endLimit; i++) {
-            if (isSubEquals(text, i, searchStr, 0, searchStr.length(), true)) {
+            if (isSubEquals(text, i, word, 0, word.length(), true)) {
                 return i;
             }
         }
@@ -2309,38 +2309,38 @@ public class StringKit {
     /**
      * 指定范围内查找字符串,忽略大小写
      *
-     * @param text      字符串
-     * @param searchStr 需要查找位置的字符串
+     * @param text 字符串
+     * @param word 需要查找位置的字符串
      * @return 位置
      */
-    public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence searchStr) {
-        return lastIndexOfIgnoreCase(text, searchStr, text.length());
+    public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence word) {
+        return lastIndexOfIgnoreCase(text, word, text.length());
     }
 
     /**
      * 指定范围内查找字符串,忽略大小写
      *
      * @param text      字符串
-     * @param searchStr 需要查找位置的字符串
+     * @param word      需要查找位置的字符串
      * @param fromIndex 起始位置,从后往前计数
      * @return 位置
      */
-    public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence searchStr, int fromIndex) {
-        return lastIndexOf(text, searchStr, fromIndex, true);
+    public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence word, int fromIndex) {
+        return lastIndexOf(text, word, fromIndex, true);
     }
 
     /**
      * 指定范围内查找字符串
      *
      * @param text       字符串
-     * @param searchStr  需要查找位置的字符串
+     * @param word       需要查找位置的字符串
      * @param fromIndex  起始位置,从后往前计数
      * @param ignoreCase 是否忽略大小写
      * @return 位置
      */
-    public static int lastIndexOf(final CharSequence text, final CharSequence searchStr, int fromIndex,
+    public static int lastIndexOf(final CharSequence text, final CharSequence word, int fromIndex,
                                   boolean ignoreCase) {
-        if (null == text || null == searchStr) {
+        if (null == text || null == word) {
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
@@ -2348,17 +2348,17 @@ public class StringKit {
         }
         fromIndex = Math.min(fromIndex, text.length());
 
-        if (searchStr.length() == 0) {
+        if (word.length() == 0) {
             return fromIndex;
         }
 
         if (false == ignoreCase) {
             // 不忽略大小写调用JDK方法
-            return text.toString().lastIndexOf(searchStr.toString(), fromIndex);
+            return text.toString().lastIndexOf(word.toString(), fromIndex);
         }
 
         for (int i = fromIndex; i >= 0; i--) {
-            if (isSubEquals(text, i, searchStr, 0, searchStr.length(), true)) {
+            if (isSubEquals(text, i, word, 0, word.length(), true)) {
                 return i;
             }
         }
@@ -2366,8 +2366,8 @@ public class StringKit {
     }
 
     /**
-     * 返回字符串 searchStr 在字符串 text 中第 ordinal 次出现的位置
-     * 如果 text=null 或 searchStr=null 或 ordinal小于等于0 则返回-1
+     * 返回字符串 word 在字符串 text 中第 ordinal 次出现的位置
+     * 如果 text=null 或 word=null 或 ordinal小于等于0 则返回-1
      *
      * <pre>
      * StringKit.ordinalIndexOf(null, *, *)          = -1
@@ -2383,22 +2383,22 @@ public class StringKit {
      * StringKit.ordinalIndexOf("aabaabaa", "", 2)   = 0
      * </pre>
      *
-     * @param text      被检查的字符串,可以为null
-     * @param searchStr 被查找的字符串,可以为null
-     * @param ordinal   第几次出现的位置
+     * @param text    被检查的字符串,可以为null
+     * @param word    被查找的字符串,可以为null
+     * @param ordinal 第几次出现的位置
      * @return 查找到的位置
      */
-    public static int ordinalIndexOf(String text, String searchStr, int ordinal) {
-        if (null == text || null == searchStr || ordinal <= 0) {
+    public static int ordinalIndexOf(String text, String word, int ordinal) {
+        if (null == text || null == word || ordinal <= 0) {
             return INDEX_NOT_FOUND;
         }
-        if (searchStr.length() == 0) {
+        if (word.length() == 0) {
             return 0;
         }
         int found = 0;
         int index = INDEX_NOT_FOUND;
         do {
-            index = text.indexOf(searchStr, index + 1);
+            index = text.indexOf(word, index + 1);
             if (index < 0) {
                 return index;
             }
@@ -3056,14 +3056,14 @@ public class StringKit {
      * StringKit.replace("aba", "a", "")    = "b"
      * StringKit.replace("aba", "a", "z")   = "zbz"
      *
-     * @param text         要搜索和替换的文本可能为空
-     * @param searchString 要搜索的字符串可能为空
-     * @param replacement  要替换它的字符串可能是null
+     * @param text        要搜索和替换的文本可能为空
+     * @param word        要搜索的字符串可能为空
+     * @param replacement 要替换它的字符串可能是null
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
-     * @see #replace(String text, String searchString, String replacement, int max)
+     * @see #replace(String text, String word, String replacement, int max)
      */
-    public static String replace(final String text, final String searchString, final String replacement) {
-        return replace(text, searchString, replacement, -1);
+    public static String replace(final String text, final String word, final String replacement) {
+        return replace(text, word, replacement, -1);
     }
 
     /**
@@ -3077,14 +3077,14 @@ public class StringKit {
      * StringKit.replaceIgnoreCase("abA", "A", "")    = "b"
      * StringKit.replaceIgnoreCase("aba", "A", "z")   = "zbz"
      *
-     * @param text         要搜索和替换的文本可能为空
-     * @param searchString 要搜索的字符串(大小写不敏感)可以为空
-     * @param replacement  要替换它的字符串可能是null
+     * @param text        要搜索和替换的文本可能为空
+     * @param word        要搜索的字符串(大小写不敏感)可以为空
+     * @param replacement 要替换它的字符串可能是null
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
-     * @see #replaceIgnoreCase(String text, String searchString, String replacement, int max)
+     * @see #replaceIgnoreCase(String text, String word, String replacement, int max)
      */
-    public static String replaceIgnoreCase(final String text, final String searchString, final String replacement) {
-        return replaceIgnoreCase(text, searchString, replacement, -1);
+    public static String replaceIgnoreCase(final String text, final String word, final String replacement) {
+        return replaceIgnoreCase(text, word, replacement, -1);
     }
 
     /**
@@ -3103,15 +3103,15 @@ public class StringKit {
      * StringKit.replace("abaa", "a", "z", 2)   = "zbza"
      * StringKit.replace("abaa", "a", "z", -1)  = "zbzz"
      *
-     * @param text         要搜索和替换的文本可能为空
-     * @param searchString 要搜索的字符串可能为空
-     * @param replacement  要替换它的字符串可能是null
-     * @param max          要替换的值的最大数目，如果没有最大值，则为{@code -1}
+     * @param text        要搜索和替换的文本可能为空
+     * @param word        要搜索的字符串可能为空
+     * @param replacement 要替换它的字符串可能是null
+     * @param max         要替换的值的最大数目，如果没有最大值，则为{@code -1}
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
      */
-    public static String replace(final String text, final String searchString, final String replacement,
+    public static String replace(final String text, final String word, final String replacement,
                                  final int max) {
-        return replace(text, searchString, replacement, max, false);
+        return replace(text, word, replacement, max, false);
     }
 
     /**
@@ -3131,29 +3131,29 @@ public class StringKit {
      * StringKit.replace("abAa", "a", "z", 2, true)   = "zbza"
      * StringKit.replace("abAa", "a", "z", -1, true)  = "zbzz"
      *
-     * @param text         要搜索和替换的文本可能为空
-     * @param searchString 要搜索的字符串(大小写不敏感)可以为空
-     * @param replacement  要替换它的字符串可能是null
-     * @param max          要替换的值的最大数目，如果没有最大值，则为{@code -1}
-     * @param ignoreCase   如果真替换不区分大小写，则为区分大小写
+     * @param text        要搜索和替换的文本可能为空
+     * @param word        要搜索的字符串(大小写不敏感)可以为空
+     * @param replacement 要替换它的字符串可能是null
+     * @param max         要替换的值的最大数目，如果没有最大值，则为{@code -1}
+     * @param ignoreCase  如果真替换不区分大小写，则为区分大小写
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
      */
-    private static String replace(final String text, String searchString, final String replacement, int max,
+    private static String replace(final String text, String word, final String replacement, int max,
                                   final boolean ignoreCase) {
-        if (isEmpty(text) || isEmpty(searchString) || null == replacement || max == 0) {
+        if (isEmpty(text) || isEmpty(word) || null == replacement || max == 0) {
             return text;
         }
         String searchText = text;
         if (ignoreCase) {
             searchText = text.toLowerCase();
-            searchString = searchString.toLowerCase();
+            word = word.toLowerCase();
         }
         int start = 0;
-        int end = searchText.indexOf(searchString, start);
+        int end = searchText.indexOf(word, start);
         if (end == INDEX_NOT_FOUND) {
             return text;
         }
-        final int replLength = searchString.length();
+        final int replLength = word.length();
         int increase = replacement.length() - replLength;
         increase = increase < 0 ? 0 : increase;
         increase *= max < 0 ? 16 : max > 64 ? 64 : max;
@@ -3164,7 +3164,7 @@ public class StringKit {
             if (--max == 0) {
                 break;
             }
-            end = searchText.indexOf(searchString, start);
+            end = searchText.indexOf(word, start);
         }
         buf.append(text, start, text.length());
         return buf.toString();
@@ -3203,15 +3203,15 @@ public class StringKit {
      * StringKit.replaceIgnoreCase("abAa", "a", "z", 2)   = "zbza"
      * StringKit.replaceIgnoreCase("abAa", "a", "z", -1)  = "zbzz"
      *
-     * @param text         要搜索和替换的文本可能为空
-     * @param searchString 要搜索的字符串(大小写不敏感)可以为空
-     * @param replacement  要替换它的字符串可能是null
-     * @param max          要替换的值的最大数目，如果没有最大值，则为{@code -1}
+     * @param text        要搜索和替换的文本可能为空
+     * @param word        要搜索的字符串(大小写不敏感)可以为空
+     * @param replacement 要替换它的字符串可能是null
+     * @param max         要替换的值的最大数目，如果没有最大值，则为{@code -1}
      * @return 处理了任何替换的文本，{@code null}如果输入为空字符串
      */
-    public static String replaceIgnoreCase(final String text, final String searchString, final String replacement,
+    public static String replaceIgnoreCase(final String text, final String word, final String replacement,
                                            final int max) {
-        return replace(text, searchString, replacement, max, true);
+        return replace(text, word, replacement, max, true);
     }
 
     /**
@@ -3475,38 +3475,38 @@ public class StringKit {
      * 替换字符串中的指定字符串,忽略大小写
      *
      * @param text        字符串
-     * @param searchStr   被查找的字符串
+     * @param word        被查找的字符串
      * @param replacement 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replaceIgnoreCase(CharSequence text, CharSequence searchStr, CharSequence replacement) {
-        return replace(text, 0, searchStr, replacement, true);
+    public static String replaceIgnoreCase(CharSequence text, CharSequence word, CharSequence replacement) {
+        return replace(text, 0, word, replacement, true);
     }
 
     /**
      * 替换字符串中的指定字符串
      *
      * @param text        字符串
-     * @param searchStr   被查找的字符串
+     * @param word        被查找的字符串
      * @param replacement 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, CharSequence searchStr, CharSequence replacement) {
-        return replace(text, 0, searchStr, replacement, false);
+    public static String replace(CharSequence text, CharSequence word, CharSequence replacement) {
+        return replace(text, 0, word, replacement, false);
     }
 
     /**
      * 替换字符串中的指定字符串
      *
      * @param text        字符串
-     * @param searchStr   被查找的字符串
+     * @param word        被查找的字符串
      * @param replacement 被替换的字符串
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, CharSequence searchStr, CharSequence replacement,
+    public static String replace(CharSequence text, CharSequence word, CharSequence replacement,
                                  boolean ignoreCase) {
-        return replace(text, 0, searchStr, replacement, ignoreCase);
+        return replace(text, 0, word, replacement, ignoreCase);
     }
 
     /**
@@ -3514,14 +3514,14 @@ public class StringKit {
      *
      * @param text        字符串
      * @param fromIndex   开始位置(包括)
-     * @param searchStr   被查找的字符串
+     * @param word        被查找的字符串
      * @param replacement 被替换的字符串
      * @param ignoreCase  是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, int fromIndex, CharSequence searchStr, CharSequence replacement,
+    public static String replace(CharSequence text, int fromIndex, CharSequence word, CharSequence replacement,
                                  boolean ignoreCase) {
-        if (isEmpty(text) || isEmpty(searchStr)) {
+        if (isEmpty(text) || isEmpty(word)) {
             return toString(text);
         }
         if (null == replacement) {
@@ -3529,7 +3529,7 @@ public class StringKit {
         }
 
         final int strLength = text.length();
-        final int searchStrLength = searchStr.length();
+        final int wordLength = word.length();
         if (fromIndex > strLength) {
             return toString(text);
         } else if (fromIndex < 0) {
@@ -3543,10 +3543,10 @@ public class StringKit {
 
         int preIndex = fromIndex;
         int index = fromIndex;
-        while ((index = indexOf(text, searchStr, preIndex, ignoreCase)) > -1) {
+        while ((index = indexOf(text, word, preIndex, ignoreCase)) > -1) {
             result.append(text.subSequence(preIndex, index));
             result.append(replacement);
-            preIndex = index + searchStrLength;
+            preIndex = index + wordLength;
         }
 
         if (preIndex < strLength) {
@@ -4232,15 +4232,15 @@ public class StringKit {
     /**
      * 指定字符串是否在字符串中出现过
      *
-     * @param text      字符串
-     * @param searchStr 被查找的字符串
+     * @param text 字符串
+     * @param word 被查找的字符串
      * @return 是否包含
      */
-    public static boolean contains(CharSequence text, CharSequence searchStr) {
-        if (null == text || null == searchStr) {
+    public static boolean contains(CharSequence text, CharSequence word) {
+        if (null == text || null == word) {
             return false;
         }
-        return text.toString().contains(searchStr);
+        return text.toString().contains(word);
     }
 
     /**
@@ -5419,17 +5419,17 @@ public class StringKit {
      * StringKit.endsWithAny("abcXYZ", "def", "xyz") = false
      * </pre>
      *
-     * @param sequence      要检查的CharSequence可能为空
-     * @param searchStrings 要查找的区分大小写的字符序列可以是空的，也可以包含{@code null}
+     * @param text 要检查的CharSequence可能为空
+     * @param word 要查找的区分大小写的字符序列可以是空的，也可以包含{@code null}
      * @return {如果输入{@code sequence}是{@code null}， 并且没有提供{@code searchstring}，
      * 或者输入{@code sequence}以提供的区分大小写的{@code searchstring}结尾.
      */
-    public static boolean endsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
-        if (isEmpty(sequence) || ArrayKit.isEmpty(searchStrings)) {
+    public static boolean endsWithAny(final CharSequence text, final CharSequence... word) {
+        if (isEmpty(text) || ArrayKit.isEmpty(word)) {
             return false;
         }
-        for (final CharSequence searchString : searchStrings) {
-            if (endWith(sequence, searchString)) {
+        for (final CharSequence val : word) {
+            if (endWith(text, val)) {
                 return true;
             }
         }
