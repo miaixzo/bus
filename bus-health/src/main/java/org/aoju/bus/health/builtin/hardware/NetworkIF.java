@@ -40,7 +40,7 @@ import java.util.Arrays;
  * usage to ensure consistent calculations.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -113,7 +113,7 @@ public interface NetworkIF {
      * This value is set when the {@link NetworkIF} is
      * instantiated and may not be up to date.
      */
-    int getMTU();
+    long getMTU();
 
     /**
      * The Media Access Control (MAC) address.

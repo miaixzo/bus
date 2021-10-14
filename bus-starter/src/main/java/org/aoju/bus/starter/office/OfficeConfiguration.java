@@ -47,7 +47,7 @@ import java.util.stream.Stream;
  * 文档在线预览配置
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
@@ -74,7 +74,7 @@ public class OfficeConfiguration {
         if (!StringKit.isBlank(this.properties.getPortNumbers())) {
             builder.portNumbers(
                     ArrayKit.toPrimitive(
-                            Stream.of(StringKit.split(this.properties.getPortNumbers(), Symbol.COMMA))
+                            Stream.of(StringKit.splitToArray(this.properties.getPortNumbers(), Symbol.COMMA))
                                     .map(text -> MathKit.toInt(text, Builder.DEFAULT_PORT_NUMBER))
                                     .toArray(Integer[]::new)));
         }

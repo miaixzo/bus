@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 样式集合,此样式集合汇集了整个工作簿的样式,用于减少样式的创建和冗余
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class StyleSet implements Serializable {
@@ -134,7 +134,6 @@ public class StyleSet implements Serializable {
      * 获取链接单元格样式，获取后可以定义整体链接样式
      *
      * @return 链接单元格样式
-     * @since 5.7.13
      */
     public CellStyle getCellStyleForHyperlink() {
         return this.cellStyleForHyperlink;

@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 两个半部分,描述段如何组成这个字节字符串
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class ByteBuffer extends ByteString {
@@ -115,6 +115,21 @@ public class ByteBuffer extends ByteString {
         }
     }
 
+    @Override
+    public String utf8() {
+        return toByteString().utf8();
+    }
+
+    @Override
+    public String string(Charset charset) {
+        return toByteString().string(charset);
+    }
+
+    @Override
+    public String base64() {
+        return toByteString().base64();
+    }
+
     /**
      * 内存回收任务
      */
@@ -136,21 +151,6 @@ public class ByteBuffer extends ByteString {
             }
         }
     }, 500, 1000, TimeUnit.MILLISECONDS);
-
-    @Override
-    public String utf8() {
-        return toByteString().utf8();
-    }
-
-    @Override
-    public String string(Charset charset) {
-        return toByteString().string(charset);
-    }
-
-    @Override
-    public String base64() {
-        return toByteString().base64();
-    }
 
     @Override
     public String hex() {

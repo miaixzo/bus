@@ -43,7 +43,7 @@ import java.util.Set;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe

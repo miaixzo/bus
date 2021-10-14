@@ -25,7 +25,7 @@ import java.util.Map;
  * 根据一定规则算出图片背景色的RGB值，进行替换
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  **/
 public class Removal {

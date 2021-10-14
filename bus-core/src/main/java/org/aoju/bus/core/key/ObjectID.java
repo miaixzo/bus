@@ -37,11 +37,11 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 对象的全局唯一标识符<p>
+ * 对象的全局唯一标识符
  * 由12个字节组成,分割如下:
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class ObjectID implements Comparable<ObjectID>, Serializable {

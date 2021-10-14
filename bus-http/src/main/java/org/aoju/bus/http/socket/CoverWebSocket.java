@@ -282,7 +282,7 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.2.9
+     * @version 6.3.0
      * @since JDK 1.8+
      */
     public static class Client extends CoverHttp<Client> {
@@ -432,7 +432,7 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.2.9
+     * @version 6.3.0
      * @since JDK 1.8+
      */
     public static class Message extends AbstractBody {

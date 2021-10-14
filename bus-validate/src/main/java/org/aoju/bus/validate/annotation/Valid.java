@@ -31,7 +31,7 @@ import java.lang.annotation.*;
  * 标记注解,标明要被拦截的类或方法或者参数
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @Documented

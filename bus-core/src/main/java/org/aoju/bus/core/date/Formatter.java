@@ -59,7 +59,7 @@ import java.util.*;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class Formatter {
@@ -520,7 +520,7 @@ public class Formatter {
         // 含有单个位数数字的日期时间格式
         dateStr = normalize(dateStr);
         if (PatternKit.isMatch(Fields.REGEX_NORM, dateStr)) {
-            final int colonCount = CharKit.count(dateStr, Symbol.COLON);
+            final int colonCount = CharsKit.count(dateStr, Symbol.COLON);
             switch (colonCount) {
                 case 0:
                     // yyyy-MM-dd

@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 签名异常
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class SignatureException extends UncheckedException {

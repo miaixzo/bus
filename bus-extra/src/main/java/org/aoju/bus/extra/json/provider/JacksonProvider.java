@@ -42,7 +42,7 @@ import java.util.Map;
  * Jackson 解析器
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class JacksonProvider extends AbstractJsonProvider {

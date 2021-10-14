@@ -56,7 +56,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class StoreSCU implements AutoCloseable {
@@ -277,7 +277,7 @@ public class StoreSCU implements AutoCloseable {
                         break;
                     }
                 }
-                String[] ss = (String[]) StringKit.split(line, Symbol.C_HT).toArray();
+                String[] ss = StringKit.splitToArray(line, Symbol.C_HT);
                 try {
                     send(new File(ss[4]), Long.parseLong(ss[3]), ss[1], ss[0], ss[2]);
                 } catch (Exception e) {
@@ -458,7 +458,7 @@ public class StoreSCU implements AutoCloseable {
         public void init(Properties props) {
             for (String cuid : props.stringPropertyNames()) {
                 commonExtNegs.put(cuid, new CommonExtended(cuid, UID.StorageServiceClass,
-                        (String[]) StringKit.split(props.getProperty(cuid), Symbol.C_COMMA).toArray()));
+                        StringKit.splitToArray(props.getProperty(cuid), Symbol.C_COMMA)));
             }
         }
 

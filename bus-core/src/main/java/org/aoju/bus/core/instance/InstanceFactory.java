@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.instance;
 
-
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
@@ -39,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实例化工厂类
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public final class InstanceFactory implements Instance {

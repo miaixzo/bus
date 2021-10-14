@@ -33,7 +33,7 @@ import java.util.Comparator;
  *
  * @param <E> 被比较对象类型
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class ReverseCompare<E> implements Comparator<E>, Serializable {
@@ -46,7 +46,7 @@ public class ReverseCompare<E> implements Comparator<E>, Serializable {
     private final Comparator<? super E> comparator;
 
     public ReverseCompare(Comparator<? super E> comparator) {
-        this.comparator = (null == comparator) ? Comparables.INSTANCE : comparator;
+        this.comparator = (null == comparator) ? NormalCompare.INSTANCE : comparator;
     }
 
     @Override

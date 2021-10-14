@@ -53,7 +53,7 @@ import java.util.concurrent.ExecutorService;
  * 方法参数等构建器
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class Builder {
@@ -128,7 +128,7 @@ public class Builder {
             return new String[]{Symbol.STAR};
         }
 
-        String[] uids = StringKit.split(s, Symbol.COMMA);
+        String[] uids = StringKit.splitToArray(s, Symbol.COMMA);
         for (int i = 0; i < uids.length; i++) {
             uids[i] = toUID(uids[i]);
         }

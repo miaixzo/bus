@@ -25,14 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.mutable;
 
-
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**
  * 可变 <code>int</code> 类型
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @see Integer
  * @since JDK 1.8+
  */

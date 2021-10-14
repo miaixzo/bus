@@ -40,7 +40,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class CGet {
@@ -169,7 +169,7 @@ public class CGet {
     }
 
     private static void configureStorageSOPClass(GetSCU getSCU, String cuid, String tsuids) {
-        String[] ts = (String[]) StringKit.split(tsuids, Symbol.C_SEMICOLON).toArray();
+        String[] ts = StringKit.splitToArray(tsuids, Symbol.C_SEMICOLON);
         for (int i = 0; i < ts.length; i++) {
             ts[i] = Builder.toUID(ts[i]);
         }

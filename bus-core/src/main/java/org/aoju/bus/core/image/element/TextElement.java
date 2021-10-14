@@ -33,7 +33,7 @@ import java.awt.*;
  * 文本元素
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @Data

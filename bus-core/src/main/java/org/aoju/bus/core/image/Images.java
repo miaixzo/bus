@@ -61,7 +61,7 @@ import java.util.List;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class Images implements Serializable {
@@ -121,6 +121,32 @@ public class Images implements Serializable {
         this.canvasWidth = bgImageElement.getImage().getWidth();
         this.canvasHeight = bgImageElement.getImage().getHeight();
         this.fileType = fileType;
+    }
+
+    /**
+     * @param canvasWidth  画布宽
+     * @param canvasHeight 画布高
+     * @param fileType     输出图片格式
+     */
+    public Images(int canvasWidth, int canvasHeight, String fileType) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.fileType = fileType;
+    }
+
+    /**
+     * @param canvasWidth  画布宽
+     * @param canvasHeight 画布高
+     * @param bgColor      背景颜色
+     * @param fileType     输出图片格式
+     */
+    public Images(int canvasWidth, int canvasHeight, Color bgColor, String fileType) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        this.fileType = fileType;
+        RectangleElement bgElement = new RectangleElement(0, 0, canvasWidth, canvasHeight);
+        bgElement.setColor(bgColor);
+        this.list.add(bgElement);
     }
 
     /**

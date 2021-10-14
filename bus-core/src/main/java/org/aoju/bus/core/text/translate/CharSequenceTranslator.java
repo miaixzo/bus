@@ -31,11 +31,11 @@ import java.io.Writer;
 import java.util.Locale;
 
 /**
- * 用于翻译文本的API
+ * 用于转换文本的API
  * 其核心用途是转义和反转义文本
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public abstract class CharSequenceTranslator {

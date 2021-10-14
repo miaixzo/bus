@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -222,7 +222,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSService[] getServices() {
+    public List<OSService> getServices() {
         List<OSService> services = new ArrayList<>();
         // Get legacy RC service name possibilities
         List<String> legacySvcs = new ArrayList<>();
@@ -270,7 +270,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         }
-        return services.toArray(new OSService[0]);
+        return services;
     }
 
     @Override

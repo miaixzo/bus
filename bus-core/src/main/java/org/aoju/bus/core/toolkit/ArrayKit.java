@@ -28,6 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.builder.HashCodeBuilder;
 import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
+import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class ArrayKit {
@@ -781,6 +782,17 @@ public class ArrayKit {
      */
     public static String[] toArray(List<String> list) {
         return list.toArray(new String[list.size()]);
+    }
+
+    /**
+     * 将给定的枚举复制到{@code String}数组中
+     * 枚举必须只包含{@code String}元素
+     *
+     * @param enumeration 要复制的枚举 {@code Enumeration}
+     * @return {@code String} 数组
+     */
+    public static String[] toArray(Enumeration<String> enumeration) {
+        return toArray(Collections.list(enumeration));
     }
 
     /**
@@ -6040,7 +6052,7 @@ public class ArrayKit {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final char current = array[i];
-            if (CharKit.compare(previous, current) > 0) {
+            if (CharsKit.compare(previous, current) > 0) {
                 return false;
             }
 

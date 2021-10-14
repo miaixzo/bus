@@ -30,7 +30,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
     }
 
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
-        WmiQueryHandler h = WmiQueryHandler.createInstance();
+        WmiQueryHandler h = Objects.requireNonNull(WmiQueryHandler.createInstance());
         boolean comInit = false;
         try {
             comInit = h.initCOM();

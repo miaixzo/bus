@@ -43,7 +43,7 @@ import java.security.cert.X509Certificate;
  * keytool -genkey -validity 36000 -alias www.aoju.org -keyalg RSA -keystore server.keystore
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class SslService {
@@ -55,6 +55,23 @@ public class SslService {
     public SslService(boolean isClient, ClientAuth clientAuth) {
         this.isClient = isClient;
         this.clientAuth = clientAuth;
+    }
+
+    public void initKeyStore(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword) {
+        try {
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            KeyStore ks = KeyStore.getInstance("JKS");
+            ks.load(keyStoreInputStream, keyStorePassword.toCharArray());
+            kmf.init(ks, keyPassword.toCharArray());
+            KeyManager[] keyManagers = kmf.getKeyManagers();
+
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagers, null, new SecureRandom());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
@@ -74,23 +91,6 @@ public class SslService {
             attachment.getHandshakeCallback().callback();
         }
     };
-
-    public void initKeyStore(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword) {
-        try {
-
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            KeyStore ks = KeyStore.getInstance("JKS");
-            ks.load(keyStoreInputStream, keyStorePassword.toCharArray());
-            kmf.init(ks, keyPassword.toCharArray());
-            KeyManager[] keyManagers = kmf.getKeyManagers();
-
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagers, null, new SecureRandom());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void initTrust(InputStream trustInputStream, String trustPassword) {
         try {

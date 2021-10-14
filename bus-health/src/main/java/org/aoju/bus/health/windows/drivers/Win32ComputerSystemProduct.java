@@ -30,11 +30,13 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.WmiQueryHandler;
 
+import java.util.Objects;
+
 /**
  * Utility to query WMI class {@code Win32_ComputerSystemProduct}
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -50,21 +52,10 @@ public final class Win32ComputerSystemProduct {
      *
      * @return Assigned serial number and UUID.
      */
-    public static WmiResult<ComputerSystemProductProperty> queryIdentifyingNumber() {
-        WmiQuery<ComputerSystemProductProperty> identifyingNumberQuery = new WmiQuery<>(WIN32_COMPUTER_SYSTEM_PRODUCT,
-                ComputerSystemProductProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(identifyingNumberQuery);
-    }
-
-    /**
-     * Queries the Computer System Product.
-     *
-     * @return Assigned serial number and UUID.
-     */
     public static WmiResult<ComputerSystemProductProperty> queryIdentifyingNumberUUID() {
         WmiQuery<ComputerSystemProductProperty> identifyingNumberQuery = new WmiQuery<>(WIN32_COMPUTER_SYSTEM_PRODUCT,
                 ComputerSystemProductProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(identifyingNumberQuery);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(identifyingNumberQuery);
     }
 
     /**

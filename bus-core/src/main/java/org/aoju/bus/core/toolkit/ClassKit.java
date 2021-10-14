@@ -64,11 +64,15 @@ import java.util.jar.Manifest;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class ClassKit {
 
+    /**
+     * java 编译器
+     */
+    public static final JavaCompiler SYSTEM_COMPILER = ToolProvider.getSystemJavaCompiler();
     /**
      * 原始类型名和其class对应表,例如：int = int.class
      */
@@ -84,10 +88,6 @@ public class ClassKit {
             Long.TYPE, Float.TYPE, Double.TYPE
     };
     private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
-    /**
-     * java 编译器
-     */
-    public static final JavaCompiler SYSTEM_COMPILER = ToolProvider.getSystemJavaCompiler();
 
     static {
         List<Class<?>> primitiveTypes = new ArrayList<>(32);

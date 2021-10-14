@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -178,7 +178,7 @@ public final class PerfCounterWildcardQuery {
         List<String> instances = new ArrayList<>();
         EnumMap<T, List<Long>> valuesMap = new EnumMap<>(propertyEnum);
         WmiQuery<T> query = new WmiQuery<>(wmiClass, propertyEnum);
-        WmiResult<T> result = WmiQueryHandler.createInstance().queryWMI(query);
+        WmiResult<T> result = Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(query);
         if (result.getResultCount() > 0) {
             for (T prop : propertyEnum.getEnumConstants()) {
                 // First element is instance name
@@ -191,7 +191,7 @@ public final class PerfCounterWildcardQuery {
                     for (int i = 0; i < result.getResultCount(); i++) {
                         switch (result.getCIMType(prop)) {
                             case Wbemcli.CIM_UINT16:
-                                values.add(Long.valueOf(WmiKit.getUint16(result, prop, i)));
+                                values.add((long) WmiKit.getUint16(result, prop, i));
                                 break;
                             case Wbemcli.CIM_UINT32:
                                 values.add(WmiKit.getUint32asLong(result, prop, i));

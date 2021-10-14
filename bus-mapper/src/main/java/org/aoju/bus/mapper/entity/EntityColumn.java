@@ -36,7 +36,7 @@ import org.apache.ibatis.type.TypeHandler;
  * 数据库表对应的列
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class EntityColumn {
@@ -50,23 +50,34 @@ public class EntityColumn {
     private boolean id = false;
     private boolean identity = false;
     private Class<? extends GenId> genIdClass;
-    //字段是否为 blob
+    /**
+     * 字段是否为 blob
+     */
     private boolean blob;
     private String generator;
-    //排序
+    /**
+     * 排序
+     */
     private String orderBy;
     private int orderPriority;
-    //可插入
+    /**
+     * 可插入
+     */
     private boolean insertable = true;
-    //可更新
+    /**
+     * 可更新
+     */
     private boolean updatable = true;
+    /**
+     * 排序
+     */
     private Order order = Order.DEFAULT;
-    //是否设置 javaType
+    /**
+     * 是否设置 javaType
+     */
     private boolean useJavaType;
     /**
      * 对应的字段信息
-     *
-     * @since 3.5.0
      */
     private EntityField entityField;
 

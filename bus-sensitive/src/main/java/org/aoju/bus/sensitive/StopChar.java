@@ -33,7 +33,7 @@ import java.util.Set;
  * 过滤词及一些简单处理
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class StopChar {
@@ -60,7 +60,7 @@ public class StopChar {
             ':', '.', '!', ';', ']', '|', '%');
 
     /**
-     * 判断指定的词是否是不处理的词。 如果参数为空，则返回true，因为空也属于不处理的字符。
+     * 判断指定的词是否是不处理的词。 如果参数为空，则返回true，因为空也属于不处理的字符
      *
      * @param ch 指定的词
      * @return 是否是不处理的词

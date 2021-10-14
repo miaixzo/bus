@@ -37,7 +37,7 @@ import java.util.List;
  * 抽象类
  *
  * @author Justubborn
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK1.8+
  */
 @AllArgsConstructor

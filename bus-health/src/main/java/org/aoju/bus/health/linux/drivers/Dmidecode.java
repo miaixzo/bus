@@ -35,7 +35,7 @@ import org.aoju.bus.health.Executor;
  * Utility to read info from {@code dmidecode}
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -120,7 +120,6 @@ public final class Dmidecode {
      * in the pair otherwise
      */
     public static Pair<String, String> queryBiosNameRev() {
-
         String biosName = null;
         String revision = null;
 

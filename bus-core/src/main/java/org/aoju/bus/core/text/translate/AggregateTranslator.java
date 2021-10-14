@@ -31,11 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 执行一个接一个的翻译程序序列 执行结束时
- * 第一个转换器使用输入中的代码点.
+ * 执行一个接一个的转换程序序列 执行结束时
+ * 第一个转换器使用输入中的代码点
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class AggregateTranslator extends CharSequenceTranslator {

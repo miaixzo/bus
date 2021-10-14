@@ -42,7 +42,7 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public abstract class AbstractSetting implements OptNullString<String>, Serializable {
@@ -156,7 +156,7 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
         if (StringKit.isBlank(value)) {
             return null;
         }
-        return StringKit.split(value, delimiter);
+        return StringKit.splitToArray(value, delimiter);
     }
 
     /**

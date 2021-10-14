@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.wrapper;
 
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +36,7 @@ import java.io.PrintWriter;
 
 /**
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class CacheResponseWrapper extends HttpServletResponseWrapper {

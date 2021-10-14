@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -200,7 +200,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSService[] getServices() {
+    public List<OSService> getServices() {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
@@ -223,7 +223,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         } else {
             Logger.error("Directory: /etc/init does not exist");
         }
-        return services.toArray(new OSService[0]);
+        return services;
     }
 
     @Override

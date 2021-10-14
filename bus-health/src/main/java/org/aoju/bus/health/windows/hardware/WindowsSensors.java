@@ -34,12 +34,14 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.logger.Logger;
 
+import java.util.Objects;
+
 
 /**
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -48,7 +50,7 @@ final class WindowsSensors extends AbstractSensors {
     private static final String COM_EXCEPTION_MSG = "COM exception: {}";
 
     private static double getTempFromOHM() {
-        WmiQueryHandler h = WmiQueryHandler.createInstance();
+        WmiQueryHandler h = Objects.requireNonNull(WmiQueryHandler.createInstance());
         boolean comInit = false;
         try {
             comInit = h.initCOM();
@@ -94,7 +96,7 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     private static int[] getFansFromOHM() {
-        WmiQueryHandler h = WmiQueryHandler.createInstance();
+        WmiQueryHandler h = Objects.requireNonNull(WmiQueryHandler.createInstance());
         boolean comInit = false;
         try {
             comInit = h.initCOM();
@@ -137,7 +139,7 @@ final class WindowsSensors extends AbstractSensors {
     }
 
     private static double getVoltsFromOHM() {
-        WmiQueryHandler h = WmiQueryHandler.createInstance();
+        WmiQueryHandler h = Objects.requireNonNull(WmiQueryHandler.createInstance());
         boolean comInit = false;
         try {
             comInit = h.initCOM();

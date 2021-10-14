@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans;
 
-import org.aoju.bus.core.lang.Func;
 import org.aoju.bus.core.lang.SimpleCache;
+import org.aoju.bus.core.lang.function.Func0;
 
 import java.beans.PropertyDescriptor;
 import java.util.Map;
@@ -36,7 +36,7 @@ import java.util.Map;
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public enum PropertyCache {
@@ -68,7 +68,7 @@ public enum PropertyCache {
     public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
             Class<?> beanClass,
             boolean ignoreCase,
-            Func.Func0<Map<String, PropertyDescriptor>> supplier) {
+            Func0<Map<String, PropertyDescriptor>> supplier) {
         return getCache(ignoreCase).get(beanClass, supplier);
     }
 

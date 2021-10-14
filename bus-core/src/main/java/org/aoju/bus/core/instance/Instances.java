@@ -25,12 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.instance;
 
-
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Func;
 import org.aoju.bus.core.lang.SimpleCache;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.function.Func0;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
@@ -43,7 +42,7 @@ import java.util.HashMap;
  * 对于 {@link InstanceFactory} 的便于使用
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -140,7 +139,7 @@ public final class Instances {
      * @param supplier 单例对象的创建函数
      * @return 单例对象
      */
-    public static <T> T singletion(String key, Func.Func0<T> supplier) {
+    public static <T> T singletion(String key, Func0<T> supplier) {
         return (T) POOL.get(key, supplier::call);
     }
 

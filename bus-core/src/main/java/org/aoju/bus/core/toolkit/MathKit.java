@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -1742,10 +1742,10 @@ public class MathKit {
      * @param c2         字符2
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
-     * @see CharKit#equals(char, char, boolean)
+     * @see CharsKit#equals(char, char, boolean)
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
-        return CharKit.equals(c1, c2, ignoreCase);
+        return CharsKit.equals(c1, c2, ignoreCase);
     }
 
     /**

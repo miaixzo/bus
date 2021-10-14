@@ -31,10 +31,10 @@ import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.magic.Property;
 
 /**
- * 七牛云短信
+ * 京东云短信
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK1.8+
  */
 @Getter

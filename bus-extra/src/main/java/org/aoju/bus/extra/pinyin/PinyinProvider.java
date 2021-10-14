@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 拼音服务提供者
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public interface PinyinProvider {
@@ -75,7 +75,7 @@ public interface PinyinProvider {
      */
     default String getFirstLetter(String text, String separator) {
         final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
-        final String[] split = StringKit.split(getPinyin(text, splitSeparator), splitSeparator);
+        final String[] split = StringKit.splitToArray(getPinyin(text, splitSeparator), splitSeparator);
         return ArrayKit.join(split, separator, (s) -> String.valueOf(s.length() > 0 ? s.charAt(0) : Normal.EMPTY));
     }
 

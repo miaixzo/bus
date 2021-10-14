@@ -34,7 +34,7 @@ import org.aoju.bus.health.Builder;
  * Utility to read info from {@code sysfs}
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -72,9 +72,8 @@ public final class Sysfs {
         } else {
             if (!productVersion.isEmpty() && !"None".equals(productVersion)) {
                 return productName + " (version: " + productVersion + ")";
-            } else {
-                return productName;
             }
+            return productName;
         }
         return null;
     }

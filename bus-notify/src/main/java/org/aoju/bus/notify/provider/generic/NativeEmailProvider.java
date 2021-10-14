@@ -52,7 +52,7 @@ import java.util.List;
  * 电子邮件消息
  *
  * @author Justubborn
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK1.8+
  */
 public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, Context> {
@@ -200,14 +200,14 @@ public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, C
         msg.setContent(mainPart);
 
         // 收件人
-        msg.setRecipients(MimeMessage.RecipientType.TO, getAddress(StringKit.split(entity.getReceive(), Symbol.COMMA), charset));
+        msg.setRecipients(MimeMessage.RecipientType.TO, getAddress(StringKit.splitToArray(entity.getReceive(), Symbol.COMMA), charset));
         // 抄送人
         if (StringKit.isNotEmpty(entity.getCcs())) {
-            msg.setRecipients(MimeMessage.RecipientType.CC, getAddress(StringKit.split(entity.getCcs(), Symbol.COMMA), charset));
+            msg.setRecipients(MimeMessage.RecipientType.CC, getAddress(StringKit.splitToArray(entity.getCcs(), Symbol.COMMA), charset));
         }
         // 密送人
         if (StringKit.isNotEmpty(entity.getBccs())) {
-            msg.setRecipients(MimeMessage.RecipientType.BCC, getAddress(StringKit.split(entity.getBccs(), Symbol.COMMA), charset));
+            msg.setRecipients(MimeMessage.RecipientType.BCC, getAddress(StringKit.splitToArray(entity.getBccs(), Symbol.COMMA), charset));
         }
         return msg;
     }

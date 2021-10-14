@@ -26,8 +26,12 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.*;
+import org.aoju.bus.core.lang.Holder;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.function.Func1;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -39,7 +43,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class PatternKit {
@@ -677,7 +681,7 @@ public class PatternKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的文本
      */
-    public static String replaceAll(CharSequence text, String regex, Func.Func1<Matcher, String> replaceFun) {
+    public static String replaceAll(CharSequence text, String regex, Func1<Matcher, String> replaceFun) {
         return replaceAll(text, Pattern.compile(regex), replaceFun);
     }
 
@@ -695,7 +699,7 @@ public class PatternKit {
      * @param replaceFun 决定如何替换的函数,可能被多次调用（当有多个匹配时）
      * @return 替换后的字符串
      */
-    public static String replaceAll(CharSequence text, Pattern pattern, Func.Func1<Matcher, String> replaceFun) {
+    public static String replaceAll(CharSequence text, Pattern pattern, Func1<Matcher, String> replaceFun) {
         if (StringKit.isEmpty(text)) {
             return StringKit.toString(text);
         }

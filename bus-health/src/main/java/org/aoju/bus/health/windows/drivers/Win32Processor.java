@@ -30,11 +30,13 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.WmiQueryHandler;
 
+import java.util.Objects;
+
 /**
  * Utility to query WMI class {@code Win32_Processor}
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -54,7 +56,7 @@ public final class Win32Processor {
      */
     public static WmiResult<VoltProperty> queryVoltage() {
         WmiQuery<VoltProperty> voltQuery = new WmiQuery<>(WIN32_PROCESSOR, VoltProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(voltQuery);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(voltQuery);
     }
 
     /**
@@ -73,7 +75,7 @@ public final class Win32Processor {
      */
     public static WmiResult<ProcessorIdProperty> queryProcessorId() {
         WmiQuery<ProcessorIdProperty> idQuery = new WmiQuery<>(WIN32_PROCESSOR, ProcessorIdProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(idQuery);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(idQuery);
     }
 
     /**
@@ -84,7 +86,7 @@ public final class Win32Processor {
      */
     public static WmiResult<BitnessProperty> queryBitness() {
         WmiQuery<BitnessProperty> bitnessQuery = new WmiQuery<>(WIN32_PROCESSOR, BitnessProperty.class);
-        return WmiQueryHandler.createInstance().queryWMI(bitnessQuery);
+        return Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(bitnessQuery);
     }
 
     /**

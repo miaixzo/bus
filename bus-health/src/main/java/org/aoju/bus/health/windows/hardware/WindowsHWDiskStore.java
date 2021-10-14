@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * Windows hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -81,7 +81,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * @return a list of {@link HWDiskStore} objects representing the disks
      */
     public static List<HWDiskStore> getDisks() {
-        WmiQueryHandler h = WmiQueryHandler.createInstance();
+        WmiQueryHandler h = Objects.requireNonNull(WmiQueryHandler.createInstance());
         boolean comInit = false;
         try {
             comInit = h.initCOM();

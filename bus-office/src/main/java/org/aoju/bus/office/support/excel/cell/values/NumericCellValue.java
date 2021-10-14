@@ -38,7 +38,7 @@ import org.apache.poi.ss.util.NumberToTextConverter;
  * 单元格值可能为Long、Double、Date
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class NumericCellValue implements CellValue<Object> {

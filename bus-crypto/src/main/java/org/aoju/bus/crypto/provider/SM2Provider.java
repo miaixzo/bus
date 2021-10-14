@@ -37,7 +37,7 @@ import org.bouncycastle.crypto.engines.SM2Engine;
  * RSA 加密解密算法
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class SM2Provider implements Provider {
@@ -54,7 +54,7 @@ public class SM2Provider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        String[] array = StringKit.split(key, Symbol.COMMA);
+        String[] array = StringKit.splitToArray(key, Symbol.COMMA);
         SM2 sm2 = new SM2(array[0], array[1]);
         sm2.setMode(SM2Engine.Mode.C1C3C2);
         return sm2.encrypt(content, KeyType.valueOf(array[2]));
@@ -72,7 +72,7 @@ public class SM2Provider implements Provider {
         if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        String[] array = StringKit.split(key, Symbol.COMMA);
+        String[] array = StringKit.splitToArray(key, Symbol.COMMA);
         SM2 sm2 = new SM2(array[0], array[1]);
         sm2.setMode(SM2Engine.Mode.C1C3C2);
         return sm2.decrypt(content, KeyType.valueOf(array[2]));

@@ -29,11 +29,11 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * 帮助器子类到CharSequenceTranslator,
- * 以支持翻译一次最多替换一个字符.
+ * 帮助器子类到CharSequenceTranslator
+ * 以支持转换一次最多替换一个字符
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public abstract class CodePointTranslator extends CharSequenceTranslator {

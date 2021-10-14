@@ -38,7 +38,7 @@ import java.util.*;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class ReflectKit {
@@ -68,7 +68,7 @@ public class ReflectKit {
      */
     public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
-        for (String method : StringKit.split(name, Symbol.DOT)) {
+        for (String method : StringKit.splitToArray(name, Symbol.DOT)) {
             String getterMethodName = Normal.GET + StringKit.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
@@ -85,7 +85,7 @@ public class ReflectKit {
      */
     public static void invokeSetter(Object obj, String name, Object value) {
         Object object = obj;
-        String[] names = StringKit.split(name, Symbol.DOT);
+        String[] names = StringKit.splitToArray(name, Symbol.DOT);
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 String getterMethodName = Normal.GET + StringKit.capitalize(names[i]);
@@ -229,7 +229,7 @@ public class ReflectKit {
                 return method;
             } catch (NoSuchMethodException e) {
                 // Method不在当前类定义,继续向上转型
-                continue;// new add
+                continue;
             }
         }
         return null;

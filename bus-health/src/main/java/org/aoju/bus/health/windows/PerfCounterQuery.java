@@ -38,6 +38,7 @@ import org.aoju.bus.logger.Logger;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -46,7 +47,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -172,13 +173,13 @@ public final class PerfCounterQuery {
      */
     public static <T extends Enum<T>> Map<T, Long> queryValuesFromWMI(Class<T> propertyEnum, String wmiClass) {
         WmiQuery<T> query = new WmiQuery<>(wmiClass, propertyEnum);
-        WmiResult<T> result = WmiQueryHandler.createInstance().queryWMI(query);
+        WmiResult<T> result = Objects.requireNonNull(WmiQueryHandler.createInstance()).queryWMI(query);
         EnumMap<T, Long> valueMap = new EnumMap<>(propertyEnum);
         if (result.getResultCount() > 0) {
             for (T prop : propertyEnum.getEnumConstants()) {
                 switch (result.getCIMType(prop)) {
                     case Wbemcli.CIM_UINT16:
-                        valueMap.put(prop, Long.valueOf(WmiKit.getUint16(result, prop, 0)));
+                        valueMap.put(prop, (long) WmiKit.getUint16(result, prop, 0));
                         break;
                     case Wbemcli.CIM_UINT32:
                         valueMap.put(prop, WmiKit.getUint32asLong(result, prop, 0));

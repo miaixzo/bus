@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.lang.function.Func0;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,7 +43,7 @@ import java.util.function.Predicate;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {
@@ -101,7 +103,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * @param supplier 如果不存在回调方法，用于生产值对象
      * @return 值对象
      */
-    public V get(K key, Func.Func0<V> supplier) {
+    public V get(K key, Func0<V> supplier) {
         return get(key, null, supplier);
     }
 
@@ -113,7 +115,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * @param supplier       如果不存在回调方法或结果不可用，用于生产值对象
      * @return 值对象
      */
-    public V get(K key, Predicate<V> validPredicate, Func.Func0<V> supplier) {
+    public V get(K key, Predicate<V> validPredicate, Func0<V> supplier) {
         V v = get(key);
         if (null == v && null != supplier) {
             // 每个key单独获取一把锁，降低锁的粒度提高并发能力，see pr#1385@Github

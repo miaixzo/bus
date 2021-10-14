@@ -29,11 +29,11 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * 用于单次处理全部输入的翻译程序
+ * 用于单次处理全部输入的转换程序
  * 处理初始索引检查和返回代码点的计数.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 abstract class SinglePassTranslator extends CharSequenceTranslator {

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
-import org.aoju.bus.core.toolkit.CharKit;
+import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 提供Unicode字符串和普通字符串之间的转换
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class TextUnicode {
@@ -87,7 +87,7 @@ public class TextUnicode {
         char c;
         for (int i = 0; i < len; i++) {
             c = str.charAt(i);
-            if (isSkipAscii && CharKit.isAsciiPrintable(c)) {
+            if (isSkipAscii && CharsKit.isAsciiPrintable(c)) {
                 unicode.append(c);
             } else {
                 unicode.append(HexKit.toUnicodeHex(c));

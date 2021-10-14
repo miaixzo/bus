@@ -25,14 +25,17 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.finder.*;
-import org.aoju.bus.core.toolkit.CharKit;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -40,7 +43,7 @@ import java.util.regex.Pattern;
  * 字符串切分器，封装统一的字符串分割静态方法
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class TextSplitter {
@@ -57,7 +60,7 @@ public class TextSplitter {
         if (StringKit.isEmpty(text)) {
             return new ArrayList<>(0);
         }
-        final SplitIterator SplitIterator = new SplitIterator(text, new MatcherFinder(CharKit::isBlankChar), limit, true);
+        final SplitIterator SplitIterator = new SplitIterator(text, new MatcherFinder(CharsKit::isBlankChar), limit, true);
         return SplitIterator.toList(false);
     }
 
@@ -250,6 +253,51 @@ public class TextSplitter {
     /**
      * 切分字符串为字符串数组
      *
+     * @param text      被切分的字符串
+     * @param separator 分隔符字符
+     * @return 切分后的集合
+     */
+    public static String[] splitToArray(String text, String separator) {
+        return splitToArray(text, separator, true, true);
+    }
+
+    /**
+     * 切分字符串为字符串数组
+     *
+     * @param text        被切分的字符串
+     * @param separator   分隔符字符， 每个字符都被单独视为分隔符
+     * @param isTrim      是否去除切分字符串后每个元素两边的空格
+     * @param ignoreEmpty 是否忽略空串
+     * @return 切分后的集合
+     */
+    public static String[] splitToArray(String text, String separator, boolean isTrim, boolean ignoreEmpty) {
+        if (text == null) {
+            return Normal.EMPTY_STRING_ARRAY;
+        } else {
+            StringTokenizer st = new StringTokenizer(text, separator);
+            List tokens = new ArrayList();
+
+            while (true) {
+                String token;
+                do {
+                    if (!st.hasMoreTokens()) {
+                        return ArrayKit.toArray(tokens);
+                    }
+
+                    token = st.nextToken();
+                    if (isTrim) {
+                        token = token.trim();
+                    }
+                } while (ignoreEmpty && token.length() <= 0);
+
+                tokens.add(token);
+            }
+        }
+    }
+
+    /**
+     * 切分字符串为字符串数组
+     *
      * @param str         被切分的字符串
      * @param separator   分隔符字符
      * @param limit       限制分片数
@@ -258,7 +306,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, String separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+        return ArrayKit.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -272,7 +320,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, char separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
+        return ArrayKit.toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -283,7 +331,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, int limit) {
-        return toArray(split(str, limit));
+        return ArrayKit.toArray(split(str, limit));
     }
 
     /**
@@ -297,7 +345,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim, boolean ignoreEmpty) {
-        return toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
+        return ArrayKit.toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
     }
 
     /**
@@ -369,7 +417,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitPathToArray(CharSequence str) {
-        return toArray(splitPath(str));
+        return ArrayKit.toArray(splitPath(str));
     }
 
     /**
@@ -380,7 +428,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static String[] splitPathToArray(CharSequence str, int limit) {
-        return toArray(splitPath(str, limit));
+        return ArrayKit.toArray(splitPath(str, limit));
     }
 
     /**
@@ -408,16 +456,6 @@ public class TextSplitter {
     public static List<String> splitByRegex(String str, String separatorRegex, int limit, boolean isTrim, boolean ignoreEmpty) {
         final Pattern pattern = PatternKit.get(separatorRegex);
         return split(str, pattern, limit, isTrim, ignoreEmpty);
-    }
-
-    /**
-     * List转Array
-     *
-     * @param list List
-     * @return Array
-     */
-    public static String[] toArray(List<String> list) {
-        return list.toArray(new String[0]);
     }
 
     /**

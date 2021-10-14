@@ -42,7 +42,7 @@ import java.util.List;
  * Common NetworkParams implementation.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -85,12 +85,11 @@ public abstract class AbstractNetworkParams implements NetworkParams {
     public String getHostName() {
         try {
             String hn = InetAddress.getLocalHost().getHostName();
-            int dot = hn.indexOf(Symbol.C_DOT);
+            int dot = hn.indexOf('.');
             if (dot == -1) {
                 return hn;
-            } else {
-                return hn.substring(0, dot);
             }
+            return hn.substring(0, dot);
         } catch (UnknownHostException e) {
             Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
             return Normal.EMPTY;

@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class Almanac extends Converter {
@@ -1349,7 +1349,7 @@ public class Almanac extends Converter {
         if (null == dateToCompare || dateToCompare.trim().length() == 0) {
             dateToCompare = Fields.NORM_DATE_FORMAT.format(new Date());
         }
-        String[] data = StringKit.split(birthDay, Symbol.MINUS);
+        String[] data = StringKit.splitToArray(birthDay, Symbol.MINUS);
         if (data.length < 3) {
             throw new IllegalArgumentException("Please confirm the date format !");
         }

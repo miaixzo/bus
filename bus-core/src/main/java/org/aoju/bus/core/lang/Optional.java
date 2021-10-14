@@ -1,5 +1,6 @@
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.lang.function.VoidFunc0;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.NoSuchElementException;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
  *
  * @param <T> 包裹里元素的类型
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @see java.util.Optional
  * @since JDK 1.8+
  */
@@ -112,7 +113,7 @@ public class Optional<T> {
      * 判断包裹里元素的值是否不存在，不存在为 {@code true}，否则为{@code false}
      *
      * @return 包裹里元素的值不存在 则为 {@code true}，否则为{@code false}
-     * @since 11 这是jdk11{@link java.util.Optional}中的新函数
+     * 这是jdk11{@link java.util.Optional}中的新函数
      */
     public boolean isEmpty() {
         return value == null;
@@ -137,7 +138,7 @@ public class Optional<T> {
 
     /**
      * 如果包裹里的值存在，就执行传入的值存在时的操作({@link Consumer#accept})
-     * 否则执行传入的值不存在时的操作({@link VoidFunc.VoidFunc0}中的{@link VoidFunc.VoidFunc0#call()})
+     * 否则执行传入的值不存在时的操作({@link VoidFunc0}中的{@link VoidFunc0#call()})
      *
      * <p>
      * 例如值存在就打印对应的值，不存在则用{@code Console.error}打印另一句字符串
@@ -149,7 +150,7 @@ public class Optional<T> {
      * @param emptyAction 包裹里的值不存在时的操作
      * @throws NullPointerException 如果包裹里的值存在时，执行的操作为 {@code null}, 或者包裹里的值不存在时的操作为 {@code null}，则抛出{@code NPE}
      */
-    public void ifPresentOrElse(Consumer<? super T> action, VoidFunc.VoidFunc0 emptyAction) {
+    public void ifPresentOrElse(Consumer<? super T> action, VoidFunc0 emptyAction) {
         if (value != null) {
             action.accept(value);
         } else {

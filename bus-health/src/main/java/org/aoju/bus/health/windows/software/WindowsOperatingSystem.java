@@ -58,7 +58,7 @@ import java.util.function.Supplier;
  * and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -446,22 +446,16 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return new WindowsNetworkParams();
     }
 
-
-    /*
-     * Package-private methods for use by WindowsOSProcess to limit process memory
-     * queries to processes with same bitness as the current one
-     */
-
     @Override
-    public OSService[] getServices() {
+    public List<OSService> getServices() {
         try (W32ServiceManager sm = new W32ServiceManager()) {
             sm.open(Winsvc.SC_MANAGER_ENUMERATE_SERVICE);
-            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm.enumServicesStatusExProcess(WinNT.SERVICE_WIN32,
+            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm.enumServicesStatusExProcess(com.sun.jna.platform.win32.WinNT.SERVICE_WIN32,
                     Winsvc.SERVICE_STATE_ALL, null);
-            OSService[] svcArray = new OSService[services.length];
-            for (int i = 0; i < services.length; i++) {
+            List<OSService> svcArray = new ArrayList<>();
+            for (Winsvc.ENUM_SERVICE_STATUS_PROCESS service : services) {
                 State state;
-                switch (services[i].ServiceStatusProcess.dwCurrentState) {
+                switch (service.ServiceStatusProcess.dwCurrentState) {
                     case 1:
                         state = OSService.State.STOPPED;
                         break;
@@ -472,13 +466,13 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                         state = OSService.State.OTHER;
                         break;
                 }
-                svcArray[i] = new OSService(services[i].lpDisplayName, services[i].ServiceStatusProcess.dwProcessId,
-                        state);
+                svcArray.add(new OSService(service.lpDisplayName, service.ServiceStatusProcess.dwProcessId,
+                        state));
             }
             return svcArray;
         } catch (com.sun.jna.platform.win32.Win32Exception ex) {
             Logger.error("Win32Exception: {}", ex.getMessage());
-            return new OSService[0];
+            return Collections.emptyList();
         }
     }
 

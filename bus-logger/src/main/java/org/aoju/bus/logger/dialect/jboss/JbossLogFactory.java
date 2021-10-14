@@ -32,7 +32,7 @@ import org.aoju.bus.logger.LogFactory;
  * Jboss-Logging
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class JbossLogFactory extends LogFactory {

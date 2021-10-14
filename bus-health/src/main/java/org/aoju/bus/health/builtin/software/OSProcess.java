@@ -38,7 +38,7 @@ import java.util.Map;
  * threads.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -68,11 +68,6 @@ public interface OSProcess {
      * require the end user to parse the result. Users should generally prefer
      * {@link #getArguments()} which already parses the results, and use this method
      * as a backup.
-     * <p>
-     * On Linux and macOS systems, the string is null-character-delimited, to permit
-     * the end user to parse the executable and arguments if desired. This
-     * null-delimited behavior may change in future versions and should not be
-     * relied upon; use {@link #getArguments()} instead.
      * <p>
      * On AIX and Solaris, the string may be truncated to 80 characters if there was
      * insufficient permission to read the process memory.

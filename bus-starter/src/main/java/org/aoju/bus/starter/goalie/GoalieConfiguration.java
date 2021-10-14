@@ -62,7 +62,7 @@ import java.util.List;
  * 路由自动配置
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8++
  */
 @ConditionalOnWebApplication

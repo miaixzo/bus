@@ -28,10 +28,10 @@ package org.aoju.bus.core.text.finder;
 import org.aoju.bus.core.lang.Assert;
 
 /**
- * 长度查找器
+ * 固定长度查找器
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class LengthFinder extends TextFinder {

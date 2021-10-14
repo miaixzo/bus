@@ -35,7 +35,7 @@ import java.io.IOException;
  * 可能已经用替代协议进行了多次尝试，但没有一次成功
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public final class RouteException extends HttpUncheckException {

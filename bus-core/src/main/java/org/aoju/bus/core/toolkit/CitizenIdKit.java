@@ -37,7 +37,7 @@ import java.util.Objects;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -244,7 +244,7 @@ public class CitizenIdKit {
             // 获取校验位
             char val = getCheckCode18(code17);
             // 第18位
-            return CharKit.equals(val, idcard.charAt(17), ignoreCase);
+            return CharsKit.equals(val, idcard.charAt(17), ignoreCase);
         }
         return false;
     }

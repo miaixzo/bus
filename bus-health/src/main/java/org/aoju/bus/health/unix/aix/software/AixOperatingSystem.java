@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * platforms.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -204,7 +204,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSService[] getServices() {
+    public List<OSService> getServices() {
         List<OSService> services = new ArrayList<>();
         // Get system services from lssrc command
         /*-
@@ -252,7 +252,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         }
-        return services.toArray(new OSService[0]);
+        return services;
     }
 
     @Override

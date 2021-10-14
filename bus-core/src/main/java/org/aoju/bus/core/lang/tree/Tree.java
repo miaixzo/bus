@@ -40,7 +40,7 @@ import java.util.List;
  *
  * @param <T> ID类型
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
@@ -117,7 +117,7 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 
     /**
      * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个
-     * 此方法只查找此节点及子节点，采用广度优先遍历。
+     * 此方法只查找此节点及子节点，采用广度优先遍历
      *
      * @param id ID
      * @return 节点
@@ -128,6 +128,8 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 
     /**
      * 获取所有父节点名称列表
+     *
+     * <p>
      * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心
      * 返回结果就是：[研发一部, 研发中心, 技术中心]
      *
@@ -141,6 +143,8 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 
     /**
      * 获取所有父节点名称列表
+     *
+     * <p>
      * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心
      * 返回结果就是：[研发一部, 研发中心, 技术中心]
      *
