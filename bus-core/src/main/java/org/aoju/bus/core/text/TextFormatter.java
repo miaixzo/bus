@@ -54,7 +54,7 @@ public class TextFormatter {
      * @return 结果
      */
     public static String format(String template, Object... args) {
-        return formatWith(template, "{}", args);
+        return format(template, "{}", args);
     }
 
     /**
@@ -71,7 +71,7 @@ public class TextFormatter {
      * @param args        参数列表
      * @return 结果
      */
-    public static String formatWith(String template, String placeHolder, Object... args) {
+    public static String format(String template, String placeHolder, Object... args) {
         if (StringKit.isBlank(template) || StringKit.isBlank(placeHolder) || ArrayKit.isEmpty(args)) {
             return template;
         }
