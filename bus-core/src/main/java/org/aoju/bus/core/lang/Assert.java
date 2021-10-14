@@ -898,6 +898,7 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
+     * @param <X>           泛型对象
      * @param value         值
      * @param min           最小值（包含）
      * @param max           最大值（包含）
@@ -916,13 +917,15 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
-     * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param value    值
+     * @param min      最小值（包含）
+     * @param max      最大值（包含）
+     * @param template 模板信息
+     * @param params   参数
      * @return 经过检查后的值
      */
-    public static int checkBetween(int value, int min, int max, String errorMsgTemplate, Object... params) {
-        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static int checkBetween(int value, int min, int max, String template, Object... params) {
+        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(template, params)));
     }
 
     /**
@@ -940,6 +943,7 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
+     * @param <X>           泛型对象
      * @param value         值
      * @param min           最小值（包含）
      * @param max           最大值（包含）
@@ -982,6 +986,7 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
+     * @param <X>           泛型对象
      * @param value         值
      * @param min           最小值（包含）
      * @param max           最大值（包含）
@@ -1000,13 +1005,15 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
-     * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param value    值
+     * @param min      最小值（包含）
+     * @param max      最大值（包含）
+     * @param template 模板信息
+     * @param params   参数
      * @return 经过检查后的值
      */
-    public static double checkBetween(double value, double min, double max, String errorMsgTemplate, Object... params) {
-        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static double checkBetween(double value, double min, double max, String template, Object... params) {
+        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(template, params)));
     }
 
     /**
