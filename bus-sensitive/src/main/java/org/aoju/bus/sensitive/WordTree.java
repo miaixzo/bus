@@ -59,6 +59,7 @@ public class WordTree extends HashMap<Character, WordTree> {
      * 默认构造
      */
     public WordTree() {
+
     }
 
     /**
@@ -77,34 +78,39 @@ public class WordTree extends HashMap<Character, WordTree> {
      * 增加一组单词
      *
      * @param words 单词集合
+     * @return this
      */
-    public void addWords(Collection<String> words) {
+    public WordTree addWords(Collection<String> words) {
         if (false == (words instanceof Set)) {
             words = new HashSet<>(words);
         }
         for (String word : words) {
             addWord(word);
         }
+        return this;
     }
 
     /**
      * 增加一组单词
      *
      * @param words 单词数组
+     * @return this
      */
-    public void addWords(String... words) {
+    public WordTree addWords(String... words) {
         HashSet<String> wordsSet = CollKit.newHashSet(words);
         for (String word : wordsSet) {
             addWord(word);
         }
+        return this;
     }
 
     /**
      * 添加单词，使用默认类型
      *
      * @param word 单词
+     * @return this
      */
-    public void addWord(String word) {
+    public WordTree addWord(String word) {
         final Filter<Character> charFilter = this.charFilter;
         WordTree parent = null;
         WordTree current = this;
@@ -113,9 +119,10 @@ public class WordTree extends HashMap<Character, WordTree> {
         int length = word.length();
         for (int i = 0; i < length; i++) {
             currentChar = word.charAt(i);
-            if (charFilter.accept(currentChar)) {//只处理合法字符
+            // 只处理合法字符
+            if (charFilter.accept(currentChar)) {
                 child = current.get(currentChar);
-                if (null == child) {
+                if (child == null) {
                     // 无子类，新建一个子节点后存放下一个字符
                     child = new WordTree();
                     current.put(currentChar, child);
@@ -127,6 +134,7 @@ public class WordTree extends HashMap<Character, WordTree> {
         if (null != parent) {
             parent.setEnd(currentChar);
         }
+        return this;
     }
 
     /**
@@ -266,6 +274,17 @@ public class WordTree extends HashMap<Character, WordTree> {
         if (null != c) {
             this.endCharacterSet.add(c);
         }
+    }
+
+    /**
+     * 清除所有的词,
+     * 此方法调用后, wordTree 将被清空
+     * endCharacterSet 也将清空
+     */
+    @Override
+    public void clear() {
+        super.clear();
+        this.endCharacterSet.clear();
     }
 
 }

@@ -32,21 +32,22 @@ import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.convert.ConverterRegistry;
-import org.aoju.bus.core.lang.Editor;
-import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.Matcher;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
+import java.lang.System;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -3477,10 +3478,73 @@ public class CollKit {
     }
 
     /**
+     * 通过cas操作 实现对指定值内的回环累加
+     *
+     * @param object        集合
+     *                      <ul>
+     *                        <li>Collection - 集合的大小
+     *                        <li>Map - Map的大小
+     *                        <li>Array - 数组大小
+     *                        <li>Iterator - 迭代器中剩余的元素数
+     *                        <li>Enumeration - 枚举中剩余的元素数
+     *                      </ul>
+     * @param atomicInteger 原子操作类
+     * @return 索引位置
+     */
+    public static int ringNextIntByObj(Object object, AtomicInteger atomicInteger) {
+        Assert.notNull(object);
+        int modulo = size(object);
+        return ringNextInt(modulo, atomicInteger);
+    }
+
+    /**
+     * 通过cas操作 实现对指定值内的回环累加
+     *
+     * @param modulo        回环周期值
+     * @param atomicInteger 原子操作类
+     * @return 索引位置
+     */
+    public static int ringNextInt(int modulo, AtomicInteger atomicInteger) {
+        Assert.notNull(atomicInteger);
+        Assert.isTrue(modulo > 0);
+        if (modulo <= 1) {
+            return 0;
+        }
+        for (; ; ) {
+            int current = atomicInteger.get();
+            int next = (current + 1) % modulo;
+            if (atomicInteger.compareAndSet(current, next)) {
+                return next;
+            }
+        }
+    }
+
+    /**
+     * 通过cas操作 实现对指定值内的回环累加
+     *
+     * @param modulo     回环周期值
+     * @param atomicLong 原子操作类
+     * @return 索引位置
+     */
+    public static long ringNextLong(long modulo, AtomicLong atomicLong) {
+        Assert.notNull(atomicLong);
+        Assert.isTrue(modulo > 0);
+        if (modulo <= 1) {
+            return 0;
+        }
+        for (; ; ) {
+            long current = atomicLong.get();
+            long next = (current + 1) % modulo;
+            if (atomicLong.compareAndSet(current, next)) {
+                return next;
+            }
+        }
+    }
+
+    /**
      * 针对一个参数做相应的操作
      *
      * @param <T> 处理参数类型
-     * @author Kimi Liu
      */
     public interface Consumer<T> {
         /**
@@ -3497,7 +3561,6 @@ public class CollKit {
      *
      * @param <K> KEY类型
      * @param <V> VALUE类型
-     * @author Kimi Liu
      */
     public interface KVConsumer<K, V> {
         /**

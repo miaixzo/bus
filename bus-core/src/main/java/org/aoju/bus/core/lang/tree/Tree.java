@@ -106,7 +106,6 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
      *
      * @param parent 父节点
      * @return this
-     * @since 5.2.4
      */
     public Tree<T> setParent(Tree<T> parent) {
         this.parent = parent;

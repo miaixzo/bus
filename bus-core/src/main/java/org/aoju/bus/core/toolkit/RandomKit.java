@@ -526,4 +526,13 @@ public class RandomKit {
         return 0 == randomInt(2);
     }
 
+    /**
+     * 随机汉字（'\u4E00'-'\u9FFF'）
+     *
+     * @return 随机的汉字字符
+     */
+    public static char randomChinese() {
+        return (char) randomInt('\u4E00', '\u9FFF');
+    }
+
 }

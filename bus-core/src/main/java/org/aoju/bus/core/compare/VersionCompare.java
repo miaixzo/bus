@@ -54,6 +54,7 @@ public class VersionCompare implements Comparator<String>, Serializable {
      * 默认构造
      */
     public VersionCompare() {
+
     }
 
     /**

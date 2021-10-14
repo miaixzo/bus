@@ -113,7 +113,7 @@ public class Optional<T> {
      * 判断包裹里元素的值是否不存在，不存在为 {@code true}，否则为{@code false}
      *
      * @return 包裹里元素的值不存在 则为 {@code true}，否则为{@code false}
-     * @since 11 这是jdk11{@link java.util.Optional}中的新函数
+     * 这是jdk11{@link java.util.Optional}中的新函数
      */
     public boolean isEmpty() {
         return value == null;

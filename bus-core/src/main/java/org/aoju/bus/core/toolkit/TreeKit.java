@@ -117,12 +117,12 @@ public class TreeKit {
     /**
      * 构建单root节点树
      *
-     * @param <T>            转换的实体 为数据源里的对象类型
-     * @param <E>            ID类型
-     * @param list           源数据集合
-     * @param rootId         最顶层父id值 一般为 0 之类
+     * @param <T>        转换的实体 为数据源里的对象类型
+     * @param <E>        ID类型
+     * @param list       源数据集合
+     * @param rootId     最顶层父id值 一般为 0 之类
      * @param nodeConfig 配置
-     * @param nodeParser     转换器
+     * @param nodeParser 转换器
      * @return {@link Tree}
      */
     public static <T, E> Tree<E> buildSingle(List<T> list, E rootId, NodeConfig nodeConfig, NodeParser<T, E> nodeParser) {

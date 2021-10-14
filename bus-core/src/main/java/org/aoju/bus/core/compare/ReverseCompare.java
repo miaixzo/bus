@@ -46,7 +46,7 @@ public class ReverseCompare<E> implements Comparator<E>, Serializable {
     private final Comparator<? super E> comparator;
 
     public ReverseCompare(Comparator<? super E> comparator) {
-        this.comparator = (null == comparator) ? Comparables.INSTANCE : comparator;
+        this.comparator = (null == comparator) ? NormalCompare.INSTANCE : comparator;
     }
 
     @Override
