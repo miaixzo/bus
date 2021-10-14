@@ -9,7 +9,7 @@ import java.io.Serializable;
  * 此接口用于将一个函数包装成为一个对象，从而传递对象
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @FunctionalInterface

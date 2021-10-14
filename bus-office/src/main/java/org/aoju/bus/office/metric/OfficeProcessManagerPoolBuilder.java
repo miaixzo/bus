@@ -34,7 +34,7 @@ import java.io.File;
  * 当需要某个office实例执行转换时，该类提供{@link AbstractOfficePoolManager}的配置
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class OfficeProcessManagerPoolBuilder extends OfficeProcessManagerEntryBuilder

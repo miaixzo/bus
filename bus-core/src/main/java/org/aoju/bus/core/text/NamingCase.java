@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 命名规则封装，主要是针对驼峰风格命名、连接符命名等的封装
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class NamingCase {

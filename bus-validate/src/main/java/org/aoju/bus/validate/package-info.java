@@ -3,7 +3,7 @@
  * 开发时，参考了Hibernate-Validator 5.x，但是没有做到兼容，因为JSR-303提供的注解的方法太少，不方便拓展，所以写了这个框架。
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 package org.aoju.bus.validate;

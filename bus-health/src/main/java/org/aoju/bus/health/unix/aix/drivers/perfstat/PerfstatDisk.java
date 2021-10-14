@@ -33,7 +33,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * Utility to query performance stats for disk_stats
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe

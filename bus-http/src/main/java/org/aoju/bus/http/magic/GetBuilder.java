@@ -34,7 +34,7 @@ import java.util.Map;
  * GET参数构造器
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class GetBuilder extends RequestBuilder<GetBuilder> {

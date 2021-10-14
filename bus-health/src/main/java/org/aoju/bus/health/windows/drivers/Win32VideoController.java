@@ -36,7 +36,7 @@ import java.util.Objects;
  * Utility to query WMI class {@code Win32_VideoController}
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -38,7 +38,7 @@ import java.util.List;
  * 将一行数据转换为Map，key为指定行，value为当前行对应位置的值
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public abstract class BeanRowHandler<T> extends AbstractRowHandler<T> {

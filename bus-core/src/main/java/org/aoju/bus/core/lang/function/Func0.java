@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @param <R> 返回值类型
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @FunctionalInterface

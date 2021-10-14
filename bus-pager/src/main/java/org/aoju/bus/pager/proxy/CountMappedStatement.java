@@ -37,7 +37,7 @@ import java.util.List;
  * 创建新的MappedStatement,主要是Count返回值int
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class CountMappedStatement {

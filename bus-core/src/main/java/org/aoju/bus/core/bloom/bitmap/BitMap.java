@@ -29,7 +29,7 @@ package org.aoju.bus.core.bloom.bitmap;
  * BitMap接口，用于将某个int或long值映射到一个数组中，从而判定某个值是否存在
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public interface BitMap {

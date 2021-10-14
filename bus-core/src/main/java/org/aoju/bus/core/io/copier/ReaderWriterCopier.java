@@ -36,7 +36,7 @@ import java.io.*;
  * {@link Reader} 向 {@link Writer} 拷贝
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class ReaderWriterCopier extends IoCopier<Reader, Writer> {

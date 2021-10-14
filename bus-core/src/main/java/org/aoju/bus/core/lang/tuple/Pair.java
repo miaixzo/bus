@@ -43,10 +43,10 @@ import java.util.Objects;
  * 但是,对可能存储的存储对象的类型没有限制
  * 如果可变对象存储在对中,那么对本身就会有效地变成可变的
  *
- * @param <L> the left element type
- * @param <R> the right element type
+ * @param <L> 左元素类型
+ * @param <R> 右元素类型
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe

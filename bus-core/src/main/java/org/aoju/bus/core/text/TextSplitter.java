@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * 字符串切分器，封装统一的字符串分割静态方法
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class TextSplitter {

@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
  * 所以，只能够通过自定义SQL来了
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class OracleDataBaseQuery extends AbstractDatabaseQuery {

@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.Normal;
  * 封装了Bopomofo4j的引擎
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class Bopomofo4jProvider extends AbstractPinyinProvider {

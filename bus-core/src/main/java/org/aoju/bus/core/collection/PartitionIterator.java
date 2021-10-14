@@ -39,6 +39,9 @@ import java.util.List;
  * </ol>
  *
  * @param <T> 字段类型
+ * @author Kimi Liu
+ * @version 6.3.0
+ * @since JDK 1.8+
  */
 public class PartitionIterator<T> implements IterableIterator<List<T>>, Serializable {
 

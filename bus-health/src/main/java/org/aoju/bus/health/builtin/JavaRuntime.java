@@ -35,7 +35,7 @@ import java.io.Serializable;
  * 代表当前运行的JRE的信息
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class JavaRuntime implements Serializable {

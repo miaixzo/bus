@@ -47,7 +47,7 @@ import java.net.URL;
  * 它将向LibreOffice在线服务器发送转换请求，并等待任务完成或达到配置的任务执行超时.
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {

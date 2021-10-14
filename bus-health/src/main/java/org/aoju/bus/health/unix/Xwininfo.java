@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * Utility to query X11 windows
  *
  * @author Kimi Liu
- * @version 6.2.9
+ * @version 6.3.0
  * @since JDK 1.8+
  */
 @ThreadSafe
