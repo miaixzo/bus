@@ -962,13 +962,15 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
-     * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param value    值
+     * @param min      最小值（包含）
+     * @param max      最大值（包含）
+     * @param template 模板信息
+     * @param params   参数
      * @return 经过检查后的值
      */
-    public static long checkBetween(long value, long min, long max, String errorMsgTemplate, Object... params) {
-        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static long checkBetween(long value, long min, long max, String template, Object... params) {
+        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(template, params)));
     }
 
     /**
