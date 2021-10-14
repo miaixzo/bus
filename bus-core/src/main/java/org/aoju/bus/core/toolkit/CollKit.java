@@ -3559,8 +3559,8 @@ public class CollKit {
     /**
      * 针对两个参数做相应的操作,例如Map中的KEY和VALUE
      *
-     * @param <K> KEY类型
-     * @param <V> VALUE类型
+     * @param <K> key类型
+     * @param <V> valueE类型
      */
     public interface KVConsumer<K, V> {
         /**
