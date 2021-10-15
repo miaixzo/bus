@@ -40,22 +40,15 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class CopyVisitor extends SimpleFileVisitor<Path> {
 
-    /**
-     * 源Path，或基准路径，用于计算被拷贝文件的相对路径
-     */
     private final Path source;
     private final Path target;
     private final CopyOption[] copyOptions;
-
-    /**
-     * 标记目标目录是否创建，省略每次判断目标是否存在
-     */
     private boolean isTargetCreated;
 
     /**
      * 构造
      *
-     * @param source      源Path，或基准路径，用于计算被拷贝文件的相对路径
+     * @param source      源Path
      * @param target      目标Path
      * @param copyOptions 拷贝选项，如跳过已存在等
      */
@@ -69,19 +62,16 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-        initTargetDir();
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+            throws IOException {
+        initTarget();
         // 将当前目录相对于源路径转换为相对于目标路径
-        final Path targetDir = resolveTarget(dir);
-
-        // 在目录不存在的情况下，copy方法会创建新目录
+        final Path targetDir = target.resolve(source.relativize(dir));
         try {
             Files.copy(dir, targetDir, copyOptions);
         } catch (FileAlreadyExistsException e) {
-            if (false == Files.isDirectory(targetDir)) {
-                // 目标文件存在抛出异常，目录忽略
+            if (false == Files.isDirectory(targetDir))
                 throw e;
-            }
         }
         return FileVisitResult.CONTINUE;
     }
@@ -89,32 +79,15 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
             throws IOException {
-        initTargetDir();
-        // 如果目标存在，无论目录还是文件都抛出FileAlreadyExistsException异常，此处不做特别处理
-        Files.copy(file, resolveTarget(file), copyOptions);
+        initTarget();
+        Files.copy(file, target.resolve(source.relativize(file)), copyOptions);
         return FileVisitResult.CONTINUE;
-    }
-
-    /**
-     * 根据源文件或目录路径，拼接生成目标的文件或目录路径<br>
-     * 原理是首先截取源路径，得到相对路径，再和目标路径拼接
-     *
-     * <p>
-     * 如：源路径是 /opt/test/，需要拷贝的文件是 /opt/test/a/a.txt，得到相对路径 a/a.txt
-     * 目标路径是/home/，则得到最终目标路径是 /home/a/a.txt
-     * </p>
-     *
-     * @param file 需要拷贝的文件或目录Path
-     * @return 目标Path
-     */
-    private Path resolveTarget(Path file) {
-        return target.resolve(source.relativize(file));
     }
 
     /**
      * 初始化目标文件或目录
      */
-    private void initTargetDir() {
+    private void initTarget() {
         if (false == this.isTargetCreated) {
             FileKit.mkdir(this.target);
             this.isTargetCreated = true;

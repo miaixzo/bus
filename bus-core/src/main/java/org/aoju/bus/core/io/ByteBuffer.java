@@ -130,11 +130,6 @@ public class ByteBuffer extends ByteString {
         return toByteString().base64();
     }
 
-    @Override
-    public String hex() {
-        return toByteString().hex();
-    }
-
     /**
      * 内存回收任务
      */
@@ -156,6 +151,11 @@ public class ByteBuffer extends ByteString {
             }
         }
     }, 500, 1000, TimeUnit.MILLISECONDS);
+
+    @Override
+    public String hex() {
+        return toByteString().hex();
+    }
 
     @Override
     public ByteString toAsciiLowercase() {

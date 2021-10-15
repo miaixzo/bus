@@ -347,10 +347,9 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             throw new CryptoException(e);
         } finally {
             lock.unlock();
-            // CipherOutputStream必须关闭，才能完全写出
-            IoKit.close(cipherOutputStream);
             if (isClose) {
                 IoKit.close(data);
+                IoKit.close(cipherOutputStream);
             }
         }
     }
@@ -397,10 +396,9 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             throw new CryptoException(e);
         } finally {
             lock.unlock();
-            // CipherOutputStream必须关闭，才能完全写出
-            IoKit.close(cipherInputStream);
             if (isClose) {
                 IoKit.close(data);
+                IoKit.close(cipherInputStream);
             }
         }
     }

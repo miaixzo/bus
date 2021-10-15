@@ -313,17 +313,12 @@ public class BeanKit {
      * @return {@link BeanDesc}
      */
     public static BeanDesc getBeanDesc(Class<?> clazz) {
-        return BeanCache.INSTANCE.getBeanDesc(clazz, () -> new BeanDesc(clazz));
-    }
-
-    /**
-     * 遍历Bean的属性
-     *
-     * @param clazz  Bean类
-     * @param action 每个元素的处理类
-     */
-    public static void descForEach(Class<?> clazz, Consumer<? super PropertyDesc> action) {
-        getBeanDesc(clazz).getProps().forEach(action);
+        BeanDesc beanDesc = BeanCache.INSTANCE.getBeanDesc(clazz);
+        if (null == beanDesc) {
+            beanDesc = new BeanDesc(clazz);
+            BeanCache.INSTANCE.putBeanDesc(clazz, beanDesc);
+        }
+        return beanDesc;
     }
 
     /**
@@ -778,31 +773,6 @@ public class BeanKit {
     }
 
     /**
-     * 对象转Map<br>
-     * 通过自定义{@link CopyOptions} 完成抓换选项，以便实现：
-     *
-     * <pre>
-     * 1. 字段筛选，可以去除不需要的字段
-     * 2. 字段变换，例如实现驼峰转下划线
-     * 3. 自定义字段前缀或后缀等等
-     * 4. 字段值处理
-     * ...
-     * </pre>
-     *
-     * @param bean        bean对象
-     * @param targetMap   目标的Map
-     * @param copyOptions 拷贝选项
-     * @return the Map
-     */
-    public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, CopyOptions copyOptions) {
-        if (null == bean) {
-            return null;
-        }
-
-        return BeanCopier.create(bean, targetMap, copyOptions).copy();
-    }
-
-    /**
      * 按照Bean对象属性创建对应的Class对象，并忽略某些属性
      *
      * @param <T>              对象类型
@@ -995,7 +965,7 @@ public class BeanKit {
      * @param modifierTypes 修饰符枚举
      * @return 是否有指定修饰符, 如果有返回true, 否则false, 如果提供参数为null返回false
      */
-    public static boolean hasModifier(Class<?> clazz, ModifierType... modifierTypes) {
+    public static boolean hasModifier(Class<?> clazz, BeanKit.ModifierType... modifierTypes) {
         if (null == clazz || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
@@ -1009,7 +979,7 @@ public class BeanKit {
      * @param modifierTypes 修饰符枚举
      * @return 是否有指定修饰符, 如果有返回true, 否则false, 如果提供参数为null返回false
      */
-    public static boolean hasModifier(Constructor<?> constructor, ModifierType... modifierTypes) {
+    public static boolean hasModifier(Constructor<?> constructor, BeanKit.ModifierType... modifierTypes) {
         if (null == constructor || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
@@ -1023,7 +993,7 @@ public class BeanKit {
      * @param modifierTypes 修饰符枚举
      * @return 是否有指定修饰符, 如果有返回true, 否则false, 如果提供参数为null返回false
      */
-    public static boolean hasModifier(Method method, ModifierType... modifierTypes) {
+    public static boolean hasModifier(Method method, BeanKit.ModifierType... modifierTypes) {
         if (null == method || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
@@ -1037,7 +1007,7 @@ public class BeanKit {
      * @param modifierTypes 修饰符枚举
      * @return 是否有指定修饰符, 如果有返回true, 否则false, 如果提供参数为null返回false
      */
-    public static boolean hasModifier(Field field, ModifierType... modifierTypes) {
+    public static boolean hasModifier(Field field, BeanKit.ModifierType... modifierTypes) {
         if (null == field || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
@@ -1051,7 +1021,7 @@ public class BeanKit {
      * @return 是否是Public
      */
     public static boolean isPublic(Field field) {
-        return hasModifier(field, ModifierType.PUBLIC);
+        return hasModifier(field, BeanKit.ModifierType.PUBLIC);
     }
 
     /**
@@ -1061,7 +1031,7 @@ public class BeanKit {
      * @return 是否是Public
      */
     public static boolean isPublic(Method method) {
-        return hasModifier(method, ModifierType.PUBLIC);
+        return hasModifier(method, BeanKit.ModifierType.PUBLIC);
     }
 
     /**
@@ -1071,7 +1041,7 @@ public class BeanKit {
      * @return 是否是Public
      */
     public static boolean isPublic(Class<?> clazz) {
-        return hasModifier(clazz, ModifierType.PUBLIC);
+        return hasModifier(clazz, BeanKit.ModifierType.PUBLIC);
     }
 
     /**
@@ -1081,7 +1051,7 @@ public class BeanKit {
      * @return 是否是Public
      */
     public static boolean isPublic(Constructor<?> constructor) {
-        return hasModifier(constructor, ModifierType.PUBLIC);
+        return hasModifier(constructor, BeanKit.ModifierType.PUBLIC);
     }
 
     /**
@@ -1091,7 +1061,7 @@ public class BeanKit {
      * @return 是否是static
      */
     public static boolean isStatic(Field field) {
-        return hasModifier(field, ModifierType.STATIC);
+        return hasModifier(field, BeanKit.ModifierType.STATIC);
     }
 
     /**
@@ -1101,7 +1071,7 @@ public class BeanKit {
      * @return 是否是static
      */
     public static boolean isStatic(Method method) {
-        return hasModifier(method, ModifierType.STATIC);
+        return hasModifier(method, BeanKit.ModifierType.STATIC);
     }
 
     /**
@@ -1111,7 +1081,7 @@ public class BeanKit {
      * @return 是否是static
      */
     public static boolean isStatic(Class<?> clazz) {
-        return hasModifier(clazz, ModifierType.STATIC);
+        return hasModifier(clazz, BeanKit.ModifierType.STATIC);
     }
 
     /**
@@ -1120,7 +1090,7 @@ public class BeanKit {
      * @param modifierTypes 修饰符列表,元素不能为空
      * @return “与”之后的修饰符
      */
-    private static int modifiersToInt(ModifierType... modifierTypes) {
+    private static int modifiersToInt(BeanKit.ModifierType... modifierTypes) {
         int modifier = modifierTypes[0].getValue();
         for (int i = 1; i < modifierTypes.length; i++) {
             modifier |= modifierTypes[i].getValue();
