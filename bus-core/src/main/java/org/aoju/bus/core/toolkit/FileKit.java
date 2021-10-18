@@ -410,6 +410,18 @@ public class FileKit {
 
     /**
      * 递归遍历目录以及子目录中的所有文件
+     * 如果提供path为文件，直接返回过滤结果
+     *
+     * @param path       当前遍历文件或目录
+     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
+     * @return 文件列表
+     */
+    public static List<File> loopFiles(Path path, FileFilter fileFilter) {
+        return loopFiles(path, -1, fileFilter);
+    }
+
+    /**
+     * 递归遍历目录以及子目录中的所有文件
      * 如果提供file为文件，直接返回过滤结果
      *
      * @param path       当前遍历文件或目录

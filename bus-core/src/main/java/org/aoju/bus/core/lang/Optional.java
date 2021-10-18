@@ -211,7 +211,6 @@ public class Optional<T> {
         if (isEmpty()) {
             return empty();
         } else {
-            @SuppressWarnings("unchecked")
             Optional<U> r = (Optional<U>) mapper.apply(value);
             return Objects.requireNonNull(r);
         }
@@ -248,7 +247,6 @@ public class Optional<T> {
         if (isPresent()) {
             return this;
         } else {
-            @SuppressWarnings("unchecked")
             Optional<T> r = (Optional<T>) supplier.get();
             return Objects.requireNonNull(r);
         }
