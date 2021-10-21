@@ -119,7 +119,7 @@ public class UriKit {
      * @return this
      */
     public static UriKit of(String url) {
-        return of(url, org.aoju.bus.core.lang.Charset.UTF_8);
+        return of(url, Charset.UTF_8);
     }
 
     /**
@@ -379,7 +379,7 @@ public class UriKit {
             if (null == charset || StringKit.isEmpty(url)) {
                 return url;
             }
-            return java.net.URLEncoder.encode(url, charset.toString());
+            return URLEncoder.encode(url, charset.toString());
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException(e);
         }

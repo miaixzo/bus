@@ -32,6 +32,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 /**
@@ -85,6 +86,10 @@ public class CopyOptions implements Serializable {
     /**
      * 反向映射表，自动生成用于反向查找
      */
+    protected BiFunction<String, Object, Object> fieldValueEditor;
+    /**
+     * 反向映射表，自动生成用于反向查找
+     */
     private Map<String, String> reversedFieldMapping;
     /**
      * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
@@ -95,18 +100,18 @@ public class CopyOptions implements Serializable {
      * 构造拷贝选项
      */
     public CopyOptions() {
-        this.propertiesFilter = (f, v) -> true;
+
     }
 
     /**
      * 构造拷贝选项
      *
-     * @param editable         限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性
-     * @param ignoreNullValue  是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
-     * @param ignoreProperties 忽略的目标对象中属性列表,设置一个属性列表,不拷贝这些属性值
+     * @param editable         限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
+     * @param ignoreNullValue  是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
+     * @param ignoreProperties 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
      */
     public CopyOptions(Class<?> editable, boolean ignoreNullValue, String... ignoreProperties) {
-        this();
+        this.propertiesFilter = (f, v) -> true;
         this.editable = editable;
         this.ignoreNullValue = ignoreNullValue;
         this.ignoreProperties = ignoreProperties;
@@ -251,6 +256,29 @@ public class CopyOptions implements Serializable {
     }
 
     /**
+     * 设置字段属性值编辑器，用于自定义属性值转换规则，例如null转""等
+     *
+     * @param fieldValueEditor 字段属性值编辑器，用于自定义属性值转换规则，例如null转""等
+     * @return this
+     */
+    public CopyOptions setFieldValueEditor(BiFunction<String, Object, Object> fieldValueEditor) {
+        this.fieldValueEditor = fieldValueEditor;
+        return this;
+    }
+
+    /**
+     * 转换字段名为编辑后的字段名
+     *
+     * @param fieldName  字段名
+     * @param fieldValue 字段值
+     * @return 编辑后的字段名
+     */
+    protected Object editFieldValue(String fieldName, Object fieldValue) {
+        return (null != this.fieldValueEditor) ?
+                this.fieldValueEditor.apply(fieldName, fieldValue) : fieldValue;
+    }
+
+    /**
      * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
      *
      * @return 是否支持
@@ -301,7 +329,7 @@ public class CopyOptions implements Serializable {
      *
      * @return 反转映射
      */
-    protected Map<String, String> getReversedMapping() {
+    private Map<String, String> getReversedMapping() {
         if (null == this.fieldMapping) {
             return null;
         }

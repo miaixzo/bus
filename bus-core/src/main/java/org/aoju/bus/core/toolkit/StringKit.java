@@ -1972,11 +1972,10 @@ public class StringKit {
      * @return 切分后的数组
      */
     public static String[] splitToArray(CharSequence text, char separator, int limit) {
-        if (null == text) {
-            return new String[]{};
-        }
+        Assert.notNull(text, "Text must be not null!");
         return TextSplitter.splitToArray(text.toString(), separator, limit, false, false);
     }
+
 
     /**
      * 切分字符串为字符串数组
@@ -3570,7 +3569,7 @@ public class StringKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, java.util.regex.Pattern pattern, Func1<Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, Pattern pattern, Func1<Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, pattern, replaceFun);
     }
 

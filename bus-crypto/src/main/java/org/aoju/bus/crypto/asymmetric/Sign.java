@@ -51,15 +51,16 @@ import java.util.Set;
  * @since JDK 1.8+
  */
 public class Sign extends Asymmetric<Sign> {
+
     private static final long serialVersionUID = 1L;
 
     /**
-     * 签名，用于签名和验证
+     * 签名 用于签名和验证
      */
     protected Signature signature;
 
     /**
-     * 构造，创建新的私钥公钥对
+     * 构造 创建新的私钥公钥对
      *
      * @param algorithm {@link Algorithm}
      */
@@ -68,7 +69,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造，创建新的私钥公钥对
+     * 构造 创建新的私钥公钥对
      *
      * @param algorithm 算法
      */
@@ -136,9 +137,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
@@ -164,9 +163,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法

@@ -1801,7 +1801,7 @@ public class Builder {
         }
 
         PrivateKey privateKey;
-        //尝试PKCS#8
+        // 尝试PKCS#8
         try {
             privateKey = generatePrivateKey("sm2", privateKeyBytes);
         } catch (Exception ignore) {
@@ -1833,7 +1833,7 @@ public class Builder {
         }
 
         PublicKey publicKey;
-        //尝试X.509
+        // 尝试X.509
         try {
             publicKey = generatePublicKey(Algorithm.SM2.getValue(), publicKeyBytes);
         } catch (Exception ignore) {
@@ -1916,7 +1916,7 @@ public class Builder {
      */
     public static SecretKey generateDESKey(String algorithm, byte[] key) {
         if (StringKit.isBlank(algorithm) || false == algorithm.startsWith("DES")) {
-            throw new CryptoException("Algorithm [{}] is not a DES algorithm!");
+            throw new CryptoException("Algorithm [{}] is not a DES algorithm!", algorithm);
         }
 
         SecretKey secretKey;
@@ -1948,7 +1948,7 @@ public class Builder {
      */
     public static SecretKey generatePBEKey(String algorithm, char[] key) {
         if (StringKit.isBlank(algorithm) || false == algorithm.startsWith("PBE")) {
-            throw new CryptoException("Algorithm [{}] is not a PBE algorithm!");
+            throw new CryptoException("Algorithm [{}] is not a PBE algorithm!", algorithm);
         }
 
         if (null == key) {
@@ -2723,7 +2723,7 @@ public class Builder {
             }
         }
 
-        //表示无法识别的密钥类型
+        // 表示无法识别的密钥类型
         return null;
     }
 
@@ -3047,6 +3047,5 @@ public class Builder {
             throw new CryptoException("Error rs: {}", Hex.toHexString(rs));
         }
     }
-
 
 }

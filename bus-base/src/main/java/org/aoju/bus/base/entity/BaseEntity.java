@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Entity 基本信息.
+ * Entity 基本信息
  *
  * @author Kimi Liu
  * @version 6.3.0

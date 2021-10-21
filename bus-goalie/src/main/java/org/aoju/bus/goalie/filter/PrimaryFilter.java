@@ -26,6 +26,7 @@
 package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.extra.json.JsonKit;
@@ -117,6 +118,14 @@ public class PrimaryFilter implements WebFilter {
     private void doParams(ServerWebExchange exchange) {
         Context context = Context.get(exchange);
         Map<String, String> params = context.getRequestMap();
+
+        // 过滤无效参数及值- undefined
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (Normal.UNDEFINED.equals(StringKit.lowerCase(entry.getKey()))
+                    || Normal.UNDEFINED.equals(StringKit.lowerCase(entry.getValue()))) {
+                throw new BusinessException(ErrorCode.EM_100101);
+            }
+        }
 
         if (StringKit.isBlank(params.get(Config.METHOD))) {
             throw new BusinessException(ErrorCode.EM_100108);

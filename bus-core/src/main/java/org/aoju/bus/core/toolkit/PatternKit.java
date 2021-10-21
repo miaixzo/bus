@@ -318,7 +318,7 @@ public class PatternKit {
             return null;
         }
 
-        //提取模板中的编号
+        // 提取模板中的编号
         final TreeSet<Integer> varNums = new TreeSet<>((o1, o2) -> ObjectKit.compare(o2, o1));
         final Matcher matcherForTemplate = RegEx.GROUP_VAR.matcher(template);
         while (matcherForTemplate.find()) {
@@ -339,7 +339,7 @@ public class PatternKit {
      * 从content中匹配出多个值并根据template生成新的字符串
      * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * content 2019年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2019-5
      *
      * @param regex    匹配正则字符串
      * @param content  被匹配的内容
@@ -359,7 +359,7 @@ public class PatternKit {
      * 从content中匹配出多个值并根据template生成新的字符串
      * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * content 2019年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2019-5
      *
      * @param pattern       匹配正则
      * @param contentHolder 被匹配的内容的Holder，value为内容正文，经过这个方法的原文将被去掉匹配之前的内容
@@ -389,7 +389,7 @@ public class PatternKit {
     /**
      * 从content中匹配出多个值并根据template生成新的字符串
      * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * content 2019年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2019-5
      *
      * @param regex         匹配正则字符串
      * @param contentHolder 被匹配的内容的Holder，value为内容正文，经过这个方法的原文将被去掉匹配之前的内容
