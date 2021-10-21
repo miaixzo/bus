@@ -41,10 +41,10 @@ public class AtomicReferenceConverter extends AbstractConverter<AtomicReference>
 
     @Override
     protected AtomicReference<?> convertInternal(Object value) {
-        //尝试将值转换为Reference泛型的类型
+        // 尝试将值转换为Reference泛型的类型
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(AtomicReference.class);
-        if (false == TypeKit.isUnknow(paramType)) {
+        if (false == TypeKit.isUnknown(paramType)) {
             targetValue = ConverterRegistry.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {

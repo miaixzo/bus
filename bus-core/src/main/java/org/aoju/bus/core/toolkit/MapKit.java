@@ -29,12 +29,12 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Types;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.map.*;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Map相关工具类
@@ -90,12 +90,12 @@ public class MapKit {
      *
      * @param <K>     Key类型
      * @param <V>     Value类型
-     * @param size    初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
+     * @param size    初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75 + 1
      * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap(int size, boolean isOrder) {
-        int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR);
+        int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR) + 1;
         return isOrder ? new LinkedHashMap<>(initialCapacity) : new HashMap<>(initialCapacity);
     }
 
@@ -153,6 +153,57 @@ public class MapKit {
     }
 
     /**
+     * 创建键不重复Map
+     *
+     * @param <K>  key的类型
+     * @param <V>  value的类型
+     * @param size 初始容量
+     * @return {@link IdentityHashMap}
+     */
+    public static <K, V> Map<K, V> newIdentityMap(int size) {
+        return new IdentityHashMap<>(size);
+    }
+
+    /**
+     * 新建一个初始容量为{@link MapKit#DEFAULT_INITIAL_CAPACITY} 的ConcurrentHashMap
+     *
+     * @param <K> key的类型
+     * @param <V> value的类型
+     * @return ConcurrentHashMap
+     */
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap() {
+        return new ConcurrentHashMap<>(DEFAULT_INITIAL_CAPACITY);
+    }
+
+    /**
+     * 新建一个ConcurrentHashMap
+     *
+     * @param size 初始容量，当传入的容量小于等于0时，容量为{@link MapKit#DEFAULT_INITIAL_CAPACITY}
+     * @param <K>  key的类型
+     * @param <V>  value的类型
+     * @return ConcurrentHashMap
+     */
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(int size) {
+        final int initCapacity = size <= 0 ? DEFAULT_INITIAL_CAPACITY : size;
+        return new ConcurrentHashMap<>(initCapacity);
+    }
+
+    /**
+     * 传入一个Map将其转化为ConcurrentHashMap类型
+     *
+     * @param map map
+     * @param <K> key的类型
+     * @param <V> value的类型
+     * @return ConcurrentHashMap
+     */
+    public static <K, V> ConcurrentHashMap<K, V> newConcurrentHashMap(Map<K, V> map) {
+        if (isEmpty(map)) {
+            return new ConcurrentHashMap<>(DEFAULT_INITIAL_CAPACITY);
+        }
+        return new ConcurrentHashMap<>(map);
+    }
+
+    /**
      * 创建Map
      * 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
      *
@@ -165,11 +216,7 @@ public class MapKit {
         if (mapType.isAssignableFrom(AbstractMap.class)) {
             return new HashMap<>();
         } else {
-            try {
-                return (Map<K, V>) ReflectKit.newInstance(mapType);
-            } catch (Exception e) {
-                throw new InstrumentException(e);
-            }
+            return (Map<K, V>) ReflectKit.newInstance(mapType);
         }
     }
 
@@ -203,6 +250,22 @@ public class MapKit {
     }
 
     /**
+     * 根据给定的Pair数组创建Map对象
+     *
+     * @param <K>   键类型
+     * @param <V>   值类型
+     * @param pairs 键值对
+     * @return Map
+     */
+    public static <K, V> Map<K, V> of(Pair<K, V>... pairs) {
+        final Map<K, V> map = new HashMap<>();
+        for (Pair<K, V> pair : pairs) {
+            map.put(pair.getKey(), pair.getValue());
+        }
+        return map;
+    }
+
+    /**
      * 将数组转换为Map(HashMap),支持数组元素类型为：
      *
      * <pre>
@@ -232,7 +295,7 @@ public class MapKit {
         for (int i = 0; i < array.length; i++) {
             final Object object = array[i];
             if (object instanceof Map.Entry) {
-                Entry entry = (Entry) object;
+                Map.Entry entry = (Map.Entry) object;
                 map.put(entry.getKey(), entry.getValue());
             } else if (object instanceof Object[]) {
                 final Object[] entry = (Object[]) object;
@@ -260,22 +323,6 @@ public class MapKit {
             } else {
                 throw new IllegalArgumentException(StringKit.format("Array element {}, '{}', is not type of Map.Entry or Array or Iterable or Iterator", i, object));
             }
-        }
-        return map;
-    }
-
-    /**
-     * 根据给定的Pair数组创建Map对象
-     *
-     * @param pairs 键值对
-     * @param <K>   键类型
-     * @param <V>   值类型
-     * @return Map对象
-     */
-    public static <K, V> Map<K, V> of(Pair<K, V>... pairs) {
-        final Map<K, V> map = new HashMap<>();
-        for (Pair<K, V> pair : pairs) {
-            map.put(pair.getKey(), pair.getValue());
         }
         return map;
     }
@@ -371,7 +418,7 @@ public class MapKit {
             return resultList;
         }
 
-        boolean isEnd = true;// 是否结束 标准是元素列表已耗尽
+        boolean isEnd;// 是否结束。标准是元素列表已耗尽
         int index = 0;// 值索引
         Map<K, V> map;
         do {
@@ -385,7 +432,7 @@ public class MapKit {
                 if (index < vListSize) {
                     map.put(entry.getKey(), vList.get(index));
                     if (index != vListSize - 1) {
-                        // 当值列表中还有更多值(非最后一个),继续循环
+                        // 当值列表中还有更多值（非最后一个），继续循环
                         isEnd = false;
                     }
                 }

@@ -62,7 +62,6 @@ public class NumericCellValue implements CellValue<Object> {
         if (null != style) {
             // 判断是否为日期
             if (Builder.isDateFormat(cell)) {
-                // 使用Hutool的DateTime包装
                 return DateKit.date(cell.getDateCellValue());
             }
 

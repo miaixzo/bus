@@ -124,7 +124,7 @@ public class Optional<T> {
      *
      * <p> 例如如果值存在就打印结果
      * <pre>{@code
-     * Optional.ofNullable("Hello Hutool!").ifPresent(Console::log);
+     * Optional.ofNullable("Hello!").ifPresent(Console::log);
      * }</pre>
      *
      * @param action 你想要执行的操作
@@ -143,7 +143,7 @@ public class Optional<T> {
      * <p>
      * 例如值存在就打印对应的值，不存在则用{@code Console.error}打印另一句字符串
      * <pre>{@code
-     * Optional.ofNullable("Hello Hutool!").ifPresentOrElse(Console::log, () -> Console.error("Ops!Something is wrong!"));
+     * Optional.ofNullable("Hello!").ifPresentOrElse(Console::log, () -> Console.error("Ops!Something is wrong!"));
      * }</pre>
      *
      * @param action      包裹里的值存在时的操作

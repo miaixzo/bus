@@ -2495,51 +2495,6 @@ public class ClassKit {
     }
 
     /**
-     * 将被覆盖方法的层次结构向下获取到{@code result}，其中包含泛型.
-     *
-     * @param method             方法信息
-     * @param interfacesBehavior 接口，{@code null}
-     * @return 按从子类到超类的升序设置方法
-     */
-    public static Set<Method> getOverrideHierarchy(final Method method,
-                                                   final Interfaces interfacesBehavior) {
-        Assert.notNull(method);
-        final Set<Method> result = new LinkedHashSet<>();
-        result.add(method);
-
-        final Class<?>[] parameterTypes = method.getParameterTypes();
-
-        final Class<?> declaringClass = method.getDeclaringClass();
-
-        final Iterator<Class<?>> hierarchy = hierarchy(declaringClass, interfacesBehavior).iterator();
-
-        hierarchy.next();
-        hierarchyTraversal:
-        while (hierarchy.hasNext()) {
-            final Class<?> c = hierarchy.next();
-            final Method m = getMatchingAccessibleMethod(c, method.getName(), parameterTypes);
-            if (null == m) {
-                continue;
-            }
-            if (Arrays.equals(m.getParameterTypes(), parameterTypes)) {
-                result.add(m);
-                continue;
-            }
-            // 在包含接口的情况下，每次都需要获取参数
-            final Map<TypeVariable<?>, Type> typeArguments = TypeKit.getTypeArguments(declaringClass, m.getDeclaringClass());
-            for (int i = 0; i < parameterTypes.length; i++) {
-                final Type childType = TypeKit.unrollVariables(typeArguments, method.getGenericParameterTypes()[i]);
-                final Type parentType = TypeKit.unrollVariables(typeArguments, m.getGenericParameterTypes()[i]);
-                if (!TypeKit.equals(childType, parentType)) {
-                    continue hierarchyTraversal;
-                }
-            }
-            result.add(m);
-        }
-        return result;
-    }
-
-    /**
      * 获取使用给定注释进行注释的给定类的所有类级公共方法.
      *
      * @param cls           要查询的 {@link Class}
@@ -2707,7 +2662,7 @@ public class ClassKit {
      *
      * @param cls         要反映的{@link Class}不能是{@code null}
      * @param fieldName   要获取的字段名
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)} 方法打破范围限制.
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)} 方法打破范围限制.
      *                    {@code false}将只匹配{@code public}字段
      * @return 字段对象
      */
@@ -2772,7 +2727,7 @@ public class ClassKit {
      *
      * @param clazz       被查找字段的类
      * @param fieldName   字段名
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}方法打破范围限制.{@code false}将只匹配{@code public}字段
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}方法打破范围限制.{@code false}将只匹配{@code public}字段
      * @return 属性对象
      */
     public static Field getDeclaredField(final Class<?> clazz,
@@ -2872,7 +2827,7 @@ public class ClassKit {
      * 读取一个静态 {@link Field}.
      *
      * @param field       字段信息
-     * @param forceAccess 是否使用 {@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用 {@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制
      * @return 字段值
      * @throws IllegalAccessException 如果字段不可访问
@@ -2900,7 +2855,7 @@ public class ClassKit {
      *
      * @param cls         要反映的{@link Class}不能是{@code null}
      * @param fieldName   要获取的字段名
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
      * @return 字段对象
      * @throws IllegalAccessException 如果字段不可访问
@@ -2928,7 +2883,7 @@ public class ClassKit {
      *
      * @param cls         要反映的{@link Class}不能是{@code null}
      * @param fieldName   要获取的字段名
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
      * @return 字段对象
      * @throws IllegalAccessException 如果字段不可访问
@@ -2956,7 +2911,7 @@ public class ClassKit {
      *
      * @param field       要使用的字段
      * @param target      要调用的对象可以是{@code null}，用于{@code static}字段
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制.
      * @return 字段值
      * @throws IllegalAccessException 如果字段不可访问
@@ -2988,7 +2943,7 @@ public class ClassKit {
      *
      * @param target      target      要调用的对象可以是{@code null}，用于{@code static}字段
      * @param fieldName   要获取的字段名
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
      * @return 字段值
      * @throws IllegalAccessException 如果字段不可访问
@@ -3020,7 +2975,7 @@ public class ClassKit {
      *
      * @param target      target      要调用的对象可以是{@code null}，用于{@code static}字段
      * @param fieldName   要获取的字段名
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制.{@code false}将只匹配{@code public}字段
      * @return 字段值
      * @throws IllegalAccessException 如果字段不可访问
@@ -3051,7 +3006,7 @@ public class ClassKit {
      *
      * @param field       字段
      * @param value       值
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制 {@code false}将只匹配{@code public}字段
      * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
      */
@@ -3084,7 +3039,7 @@ public class ClassKit {
      * @param cls         查找的类{@link Class}
      * @param fieldName   字段名
      * @param value       值
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制 {@code false}将只匹配{@code public}字段
      * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
      */
@@ -3118,7 +3073,7 @@ public class ClassKit {
      * @param cls         查找的类{@link Class}
      * @param fieldName   字段名
      * @param value       值
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
      * @throws IllegalAccessException 如果字段不是{@code public}或{@code final}
      */
@@ -3153,7 +3108,7 @@ public class ClassKit {
      * @param field       字段
      * @param target      要调用的对象可以是{@code null}，用于{@code static}字段
      * @param value       值
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制 {@code false}将只匹配{@code public}字段
      * @throws IllegalAccessException 如果字段不可访问或{@code final}
      */
@@ -3185,7 +3140,7 @@ public class ClassKit {
      * 移除修饰符 {@link Field}.
      *
      * @param field       字段属性
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
      * @throws IllegalArgumentException 如果字段是{@code null}
      */
@@ -3231,7 +3186,7 @@ public class ClassKit {
      * @param target      目标对象不能是{@code null}
      * @param fieldName   要获取的字段名
      * @param value       值信息
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
      * @throws IllegalAccessException 如果字段不可访问
      */
@@ -3267,7 +3222,7 @@ public class ClassKit {
      * @param target      目标对象不能是{@code null}
      * @param fieldName   要获取的字段名
      * @param value       值信息
-     * @param forceAccess 是否使用{@link java.lang.reflect.AccessibleObject#setAccessible(boolean)}
+     * @param forceAccess 是否使用{@link AccessibleObject#setAccessible(boolean)}
      *                    方法打破范围限制 {@code false}将只匹配{@code public}字段.
      * @throws IllegalAccessException 如果字段不可访问
      */

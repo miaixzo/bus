@@ -88,7 +88,7 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
                     && 2 == typeArguments.length
                     && Objects.equals(this.keyType, typeArguments[0])
                     && Objects.equals(this.valueType, typeArguments[1])) {
-                //对于键值对类型一致的Map对象，不再做转换，直接返回原对象
+                // 对于键值对类型一致的Map对象，不再做转换，直接返回原对象
                 return (Map) value;
             }
             map = MapKit.createMap(TypeKit.getClass(this.mapType));
@@ -114,8 +114,8 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
         Object key;
         Object value;
         for (Entry<?, ?> entry : srcMap.entrySet()) {
-            key = TypeKit.isUnknow(this.keyType) ? entry.getKey() : convert.convert(this.keyType, entry.getKey());
-            value = TypeKit.isUnknow(this.valueType) ? entry.getValue() : convert.convert(this.valueType, entry.getValue());
+            key = TypeKit.isUnknown(this.keyType) ? entry.getKey() : convert.convert(this.keyType, entry.getKey());
+            value = TypeKit.isUnknown(this.valueType) ? entry.getValue() : convert.convert(this.valueType, entry.getValue());
             targetMap.put(key, value);
         }
     }

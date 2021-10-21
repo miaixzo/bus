@@ -169,14 +169,14 @@ public class ConverterRegistry {
      * @throws ConvertException 转换器不存在
      */
     public <T> T convert(Type type, Object value, T defaultValue, boolean isCustomFirst) throws ConvertException {
-        if (TypeKit.isUnknow(type) && null == defaultValue) {
+        if (TypeKit.isUnknown(type) && null == defaultValue) {
             // 对于用户不指定目标类型的情况，返回原值
             return (T) value;
         }
         if (ObjectKit.isNull(value)) {
             return defaultValue;
         }
-        if (TypeKit.isUnknow(type)) {
+        if (TypeKit.isUnknown(type)) {
             type = defaultValue.getClass();
         }
 

@@ -26,15 +26,16 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.Holder;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.mutable.MutableObject;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -129,11 +130,46 @@ public class PatternKit {
             return null;
         }
 
-        final Matcher matcher = pattern.matcher(content);
-        if (matcher.find()) {
-            return matcher.group(groupIndex);
+        final MutableObject<String> result = new MutableObject<>();
+        get(pattern, content, matcher -> result.set(matcher.group(groupIndex)));
+        return result.get();
+    }
+
+    /**
+     * 获得匹配的字符串
+     *
+     * @param pattern   匹配的正则
+     * @param content   被匹配的内容
+     * @param groupName 匹配正则的分组名称
+     * @return 匹配后得到的字符串，未匹配返回null
+     */
+    public static String get(Pattern pattern, CharSequence content, String groupName) {
+        if (null == content || null == pattern || null == groupName) {
+            return null;
+        }
+        final Matcher m = pattern.matcher(content);
+        if (m.find()) {
+            return m.group(groupName);
         }
         return null;
+    }
+
+    /**
+     * 在给定字符串中查找给定规则的字符，如果找到则使用{@link Consumer}处理之
+     * 如果内容中有多个匹配项，则只处理找到的第一个结果。
+     *
+     * @param pattern  匹配的正则
+     * @param content  被匹配的内容
+     * @param consumer 匹配到的内容处理器
+     */
+    public static void get(Pattern pattern, CharSequence content, Consumer<Matcher> consumer) {
+        if (null == content || null == pattern || null == consumer) {
+            return;
+        }
+        final Matcher m = pattern.matcher(content);
+        if (m.find()) {
+            consumer.accept(m);
+        }
     }
 
     /**
@@ -217,6 +253,57 @@ public class PatternKit {
     }
 
     /**
+     * 获得匹配的字符串
+     *
+     * @param regex     匹配的正则
+     * @param content   被匹配的内容
+     * @param groupName 匹配正则的分组名称
+     * @return 匹配后得到的字符串，未匹配返回null
+     */
+    public static String getByGroupName(String regex, CharSequence content, String groupName) {
+        if (null == content || null == regex || null == groupName) {
+            return null;
+        }
+        final Pattern pattern = PatternKit.get(regex, Pattern.DOTALL);
+        Matcher m = pattern.matcher(content);
+        if (m.find()) {
+            return m.group(groupName);
+        }
+        return null;
+    }
+
+    /**
+     * 获得匹配的字符串
+     *
+     * @param regex   匹配的正则
+     * @param content 被匹配的内容
+     * @return 命名捕获组
+     */
+    public static Map<String, String> getAllGroupNames(String regex, CharSequence content) {
+        if (null == content || null == regex) {
+            return null;
+        }
+        Map<String, String> result = new HashMap<>();
+        try {
+            final Pattern pattern = PatternKit.get(regex, Pattern.DOTALL);
+            Matcher m = pattern.matcher(content);
+            // 通过反射获取 namedGroups 方法
+            Method method = ReflectKit.getMethod(Pattern.class, "namedGroups");
+            ReflectKit.setAccessible(method);
+            Map<String, Integer> map = (Map<String, Integer>) method.invoke(pattern);
+            // 组合返回值
+            if (m.matches()) {
+                for (Map.Entry<String, Integer> e : map.entrySet()) {
+                    result.put(e.getKey(), m.group(e.getValue()));
+                }
+            }
+            return result;
+        } catch (InvocationTargetException | IllegalAccessException ex) {
+            throw new InstrumentException("call getAllGroupNames(...) method error: " + ex.getMessage());
+        }
+    }
+
+    /**
      * 从content中匹配出多个值并根据template生成新的字符串
      * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
@@ -231,7 +318,7 @@ public class PatternKit {
             return null;
         }
 
-        //提取模板中的编号
+        // 提取模板中的编号
         final TreeSet<Integer> varNums = new TreeSet<>((o1, o2) -> ObjectKit.compare(o2, o1));
         final Matcher matcherForTemplate = RegEx.GROUP_VAR.matcher(template);
         while (matcherForTemplate.find()) {
@@ -252,7 +339,7 @@ public class PatternKit {
      * 从content中匹配出多个值并根据template生成新的字符串
      * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * content 2019年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2019-5
      *
      * @param regex    匹配正则字符串
      * @param content  被匹配的内容
@@ -272,7 +359,7 @@ public class PatternKit {
      * 从content中匹配出多个值并根据template生成新的字符串
      * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * content 2019年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2019-5
      *
      * @param pattern       匹配正则
      * @param contentHolder 被匹配的内容的Holder，value为内容正文，经过这个方法的原文将被去掉匹配之前的内容
@@ -302,7 +389,7 @@ public class PatternKit {
     /**
      * 从content中匹配出多个值并根据template生成新的字符串
      * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * content 2019年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2019-5
      *
      * @param regex         匹配正则字符串
      * @param contentHolder 被匹配的内容的Holder，value为内容正文，经过这个方法的原文将被去掉匹配之前的内容
@@ -402,22 +489,38 @@ public class PatternKit {
     }
 
     /**
-     * 删除正则匹配到的内容之前的字符 如果没有找到,则返回原文
+     * 删除正则匹配到的内容之前的字符 如果没有找到，则返回原文
      *
      * @param regex   定位正则
      * @param content 被查找的内容
      * @return 删除前缀后的新内容
      */
-    public static String delPre(String regex, String content) {
+    public static String delPre(String regex, CharSequence content) {
         if (null == content || null == regex) {
-            return content;
+            return StringKit.toString(content);
         }
-        final Pattern pattern = get(regex, Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(content);
+
+        final Pattern pattern = PatternKit.get(regex, Pattern.DOTALL);
+        return delPre(pattern, content);
+    }
+
+    /**
+     * 删除正则匹配到的内容之前的字符 如果没有找到，则返回原文
+     *
+     * @param pattern 定位正则模式
+     * @param content 被查找的内容
+     * @return 删除前缀后的新内容
+     */
+    public static String delPre(Pattern pattern, CharSequence content) {
+        if (null == content || null == pattern) {
+            return StringKit.toString(content);
+        }
+
+        final Matcher matcher = pattern.matcher(content);
         if (matcher.find()) {
             return StringKit.sub(content, matcher.end(), content.length());
         }
-        return content;
+        return StringKit.toString(content);
     }
 
     /**
@@ -468,9 +571,7 @@ public class PatternKit {
         if (null == regex) {
             return null;
         }
-
-        Pattern pattern = get(regex, Pattern.DOTALL);
-        return findAll(pattern, content, group, collection);
+        return findAll(PatternKit.get(regex, Pattern.DOTALL), content, group, collection);
     }
 
     /**
@@ -495,20 +596,32 @@ public class PatternKit {
      * @param collection 返回的集合类型
      * @return 结果集
      */
-    public static <T extends Collection<String>> T findAll(Pattern pattern, String content, int group, T collection) {
+    public static <T extends Collection<String>> T findAll(Pattern pattern, CharSequence content, int group, T collection) {
         if (null == pattern || null == content) {
             return null;
         }
+        Assert.notNull(collection, "Collection must be not null !");
 
-        if (null == collection) {
-            throw new NullPointerException("Null collection param provided!");
-        }
-
-        Matcher matcher = pattern.matcher(content);
-        while (matcher.find()) {
-            collection.add(matcher.group(group));
-        }
+        findAll(pattern, content, (matcher) -> collection.add(matcher.group(group)));
         return collection;
+    }
+
+    /**
+     * 取得内容中匹配的所有结果，使用{@link Consumer}完成匹配结果处理
+     *
+     * @param pattern  编译后的正则模式
+     * @param content  被查找的内容
+     * @param consumer 匹配结果处理函数
+     */
+    public static void findAll(Pattern pattern, CharSequence content, Consumer<Matcher> consumer) {
+        if (null == pattern || null == content) {
+            return;
+        }
+
+        final Matcher matcher = pattern.matcher(content);
+        while (matcher.find()) {
+            consumer.accept(matcher);
+        }
     }
 
     /**

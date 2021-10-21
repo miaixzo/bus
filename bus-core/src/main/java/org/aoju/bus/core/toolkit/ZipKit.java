@@ -25,18 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.compress.Deflate;
-import org.aoju.bus.core.compress.Gzip;
-import org.aoju.bus.core.compress.ZipReader;
-import org.aoju.bus.core.compress.ZipWriter;
+import org.aoju.bus.core.compress.*;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
@@ -918,6 +919,82 @@ public class ZipKit {
             }
         }
         return fileNames;
+    }
+
+    /**
+     * 在zip文件中添加新文件或目录
+     * 新文件添加在zip根目录，文件夹包括其本身和内容
+     * 如果待添加文件夹是系统根路径（如/或c:/），则只复制文件夹下的内容
+     *
+     * @param zipPath        zip文件的Path
+     * @param appendFilePath 待添加文件Path(可以是文件夹)
+     * @param options        拷贝选项，可选是否覆盖等
+     * @throws IOException 异常信息
+     */
+    public static void append(Path zipPath, Path appendFilePath, CopyOption... options) throws IOException {
+        try (FileSystem zipFileSystem = createZip(zipPath.toString())) {
+            if (Files.isDirectory(appendFilePath)) {
+                Path source = appendFilePath.getParent();
+                if (null == source) {
+                    // 如果用户提供的是根路径，则不复制目录，直接复制目录下的内容
+                    source = appendFilePath;
+                }
+                Files.walkFileTree(appendFilePath, new ZipCopyVisitor(source, zipFileSystem, options));
+            } else {
+                Files.copy(appendFilePath, zipFileSystem.getPath(FileKit.getName(appendFilePath)), options);
+            }
+        } catch (FileAlreadyExistsException ignored) {
+            // 不覆盖情况下，文件已存在, 跳过
+        }
+    }
+
+    /**
+     * 创建 {@link FileSystem}
+     *
+     * @param path 文件路径，可以是目录或Zip文件等
+     * @return {@link FileSystem}
+     */
+    public static FileSystem create(String path) {
+        try {
+            return FileSystems.newFileSystem(
+                    Paths.get(path).toUri(),
+                    MapKit.of("create", "true"));
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 创建 Zip的{@link FileSystem}，默认UTF-8编码
+     *
+     * @param path 文件路径，可以是目录或Zip文件等
+     * @return {@link FileSystem}
+     */
+    public static FileSystem createZip(String path) {
+        return createZip(path, null);
+    }
+
+    /**
+     * 创建 Zip的{@link FileSystem}
+     *
+     * @param path    文件路径，可以是目录或Zip文件等
+     * @param charset 编码
+     * @return {@link FileSystem}
+     */
+    public static FileSystem createZip(String path, Charset charset) {
+        if (null == charset) {
+            charset = org.aoju.bus.core.lang.Charset.UTF_8;
+        }
+        final HashMap<String, String> env = new HashMap<>();
+        env.put("create", "true");
+        env.put("encoding", charset.name());
+
+        try {
+            return FileSystems.newFileSystem(
+                    URI.create("jar:" + Paths.get(path).toUri()), env);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     /**

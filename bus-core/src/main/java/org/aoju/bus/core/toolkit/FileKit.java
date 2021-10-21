@@ -1889,6 +1889,19 @@ public class FileKit {
     }
 
     /**
+     * 获取{@link Path}文件名
+     *
+     * @param path {@link Path}
+     * @return 文件名
+     */
+    public static String getName(Path path) {
+        if (null == path) {
+            return null;
+        }
+        return path.getFileName().toString();
+    }
+
+    /**
      * 获取文件后缀名，扩展名不带“.”
      *
      * @param file 文件
@@ -1961,12 +1974,12 @@ public class FileKit {
         for (int i = len - 1; i > -1; i--) {
             c = fileName.charAt(i);
             if (len == end && Symbol.C_DOT == c) {
-                //查找最后一个文件名和扩展名的分隔符：.
+                // 查找最后一个文件名和扩展名的分隔符：.
                 end = i;
             }
             if (0 == begin || begin > end) {
                 if (CharsKit.isFileSeparator(c)) {
-                    //查找最后一个路径分隔符(/或者\),如果这个分隔符在.之后,则继续查找,否则结束
+                    // 查找最后一个路径分隔符(/或者\),如果这个分隔符在.之后,则继续查找,否则结束
                     begin = i + 1;
                     break;
                 }
