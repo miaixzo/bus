@@ -75,16 +75,16 @@ public class BaseEntity extends Tracer {
     protected String modified;
 
     /**
-     * 当前页码
+     * 分页页码
      */
     @Transient
-    protected transient int pageNo;
+    protected transient Integer pageNo;
 
     /**
      * 分页大小
      */
     @Transient
-    protected transient int pageSize;
+    protected transient Integer pageSize;
 
     /**
      * 排序方式,asc desc
