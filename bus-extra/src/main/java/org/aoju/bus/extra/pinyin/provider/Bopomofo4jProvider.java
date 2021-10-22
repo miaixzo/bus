@@ -30,7 +30,7 @@ import com.rnkrsoft.bopomofo4j.ToneType;
 import org.aoju.bus.core.lang.Normal;
 
 /**
- * 封装了Bopomofo4j的引擎
+ * Bopomofo4j 引擎
  *
  * @author Kimi Liu
  * @version 6.3.0

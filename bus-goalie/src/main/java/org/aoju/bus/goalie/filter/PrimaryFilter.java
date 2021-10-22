@@ -76,7 +76,7 @@ public class PrimaryFilter implements WebFilter {
             return chain.filter(mutate)
                     .then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
         } else {
-            //文件
+            // 文件上传处理
             if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mutate.getRequest().getHeaders().getContentType())) {
                 return mutate.getMultipartData().flatMap(params -> {
                     Map<String, String> formMap = new LinkedHashMap<>();
@@ -156,7 +156,7 @@ public class PrimaryFilter implements WebFilter {
             HttpHeaders headers = new HttpHeaders();
             headers.putAll(exchange.getRequest().getHeaders());
             headers.setContentType(mediaType);
-            //变异
+            // 变异
             ServerHttpRequest requestDecorator = new ServerHttpRequestDecorator(request) {
                 @Override
                 public HttpHeaders getHeaders() {

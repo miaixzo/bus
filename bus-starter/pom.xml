@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.5.5</spring.boot.version>
+        <spring.boot.version>2.5.6</spring.boot.version>
         <lombok.version>1.18.22</lombok.version>
         <aspectj.version>1.9.6</aspectj.version>
         <persistence.version>2.2</persistence.version>
@@ -52,7 +52,7 @@
         <mybatis.spring.version>2.0.6</mybatis.spring.version>
         <validation.version>2.0.1.Final</validation.version>
         <jsqlparser.version>4.2</jsqlparser.version>
-        <mysql.version>8.0.26</mysql.version>
+        <mysql.version>8.0.27</mysql.version>
         <druid.version>1.2.8</druid.version>
         <dubbo.version>3.0.1</dubbo.version>
         <servlet.version>4.0.1</servlet.version>

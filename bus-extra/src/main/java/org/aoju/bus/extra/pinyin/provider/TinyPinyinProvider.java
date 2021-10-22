@@ -28,7 +28,7 @@ package org.aoju.bus.extra.pinyin.provider;
 import com.github.promeg.pinyinhelper.Pinyin;
 
 /**
- * TinyPinyin引擎
+ * TinyPinyin 引擎
  *
  * @author Kimi Liu
  * @version 6.3.0
