@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.core.lang.exception.PageException;
 import org.aoju.bus.pager.Dialect;
-import org.aoju.bus.pager.PageException;
 import org.aoju.bus.pager.plugins.BoundSqlHandler;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.cache.CacheKey;

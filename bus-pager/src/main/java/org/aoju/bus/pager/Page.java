@@ -26,6 +26,7 @@
 package org.aoju.bus.pager;
 
 import org.aoju.bus.pager.plugins.BoundSqlHandler;
+import org.aoju.bus.pager.proxy.PageAutoDialect;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -95,6 +96,10 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     private BoundSqlHandler boundSqlHandler;
     private transient BoundSqlHandler.Chain chain;
+    /**
+     * 分页实现类，可以使用 {@link PageAutoDialect} 类中注册的别名，例如 "mysql", "oracle"
+     */
+    private String dialectClass;
 
     public Page() {
         super();
@@ -447,6 +452,25 @@ public class Page<E> extends ArrayList<E> implements Closeable {
 
     void setChain(BoundSqlHandler.Chain chain) {
         this.chain = chain;
+    }
+
+    public String getDialectClass() {
+        return dialectClass;
+    }
+
+    public void setDialectClass(String dialectClass) {
+        this.dialectClass = dialectClass;
+    }
+
+    /**
+     * 指定使用的分页实现，如果自己使用的很频繁，建议自己增加一层封装再使用
+     *
+     * @param dialect 分页实现类，可以使用 {@link PageAutoDialect} 类中注册的别名，例如 "mysql", "oracle"
+     * @return
+     */
+    public Page<E> using(String dialect) {
+        this.dialectClass = dialect;
+        return this;
     }
 
     @Override

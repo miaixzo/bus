@@ -70,7 +70,7 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
             if (StringKit.isEmpty(page.getCountColumn())) {
                 page.setCountColumn(pageParams.getCountColumn());
             }
-            autoDialect.initDelegateDialect(ms);
+            autoDialect.initDialectAlias(ms, page.getDialectClass());
             return false;
         }
     }

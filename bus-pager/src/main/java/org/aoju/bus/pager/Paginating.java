@@ -26,6 +26,7 @@
 package org.aoju.bus.pager;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -177,6 +178,15 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
+     * 返回一个空的 Pageinfo 对象
+     *
+     * @return
+     */
+    public static <T> Paginating<T> emptyPageInfo() {
+        return new Paginating(Collections.emptyList(), 0);
+    }
+
+    /**
      * 计算导航页
      */
     private void calcnavigatepageNo() {
@@ -236,6 +246,13 @@ public class Paginating<T> extends Serialize<T> {
         isLastPage = pageNo == pages || pages == 0;
         hasPreviousPage = pageNo > 1;
         hasNextPage = pageNo < pages;
+    }
+
+    /**
+     * 是否包含内容
+     */
+    public boolean hasContent() {
+        return this.size > 0;
     }
 
     public int getPageNo() {

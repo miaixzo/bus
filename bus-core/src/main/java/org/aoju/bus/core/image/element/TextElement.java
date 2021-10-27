@@ -119,8 +119,8 @@ public class TextElement extends AbstractElement<TextElement> {
     /**
      * 设置自动换行
      *
-     * @param maxLineWidth 最大行宽
-     * @param maxLineCount 最大行数
+     * @param maxLineWidth 最大宽度（超出则换行）
+     * @param maxLineCount 最大行数（超出则丢弃）
      * @param lineHeight   行高
      * @return 当前对象
      */
@@ -157,6 +157,10 @@ public class TextElement extends AbstractElement<TextElement> {
     public TextElement setColor(Color color) {
         this.color = color;
         return this;
+    }
+
+    public TextElement setColor(int r, int g, int b) {
+        return setColor(new Color(r, g, b));
     }
 
     public boolean isStrikeThrough() {

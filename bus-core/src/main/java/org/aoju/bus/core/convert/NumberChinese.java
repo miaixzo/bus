@@ -48,7 +48,7 @@ public class NumberChinese {
     /**
      * 中文形式，奇数位置是简体，偶数位置是记账繁体，0共用
      * 使用混合数组提高效率和数组复用
-     **/
+     */
     private static final char[] CHINESE_DIGITS_VALUE = {
             Symbol.C_UL_ZERO, Symbol.C_L_ONE, Symbol.C_U_ONE, Symbol.C_L_TWO, Symbol.C_U_TWO, Symbol.C_L_THREE, Symbol.C_U_THREE,
             Symbol.C_L_FOUR, Symbol.C_U_FOUR, Symbol.C_L_FIVE, Symbol.C_U_FIVE, Symbol.C_L_SIX, Symbol.C_U_SIX, Symbol.C_L_SEVEN,

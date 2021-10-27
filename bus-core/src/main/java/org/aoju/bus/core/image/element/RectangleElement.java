@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.image.element;
 
+import org.aoju.bus.core.lang.Scale;
+
 import java.awt.*;
 
 /**
@@ -52,6 +54,27 @@ public class RectangleElement extends AbstractElement<RectangleElement> {
      * 颜色，默认白色
      */
     private Color color = new Color(255, 255, 255);
+
+    /**
+     * 渐变-开始颜色
+     */
+    private Color fromColor;
+    /**
+     * 渐变-结束颜色
+     */
+    private Color toColor;
+    /**
+     * 开始位置延长（反向，影响渐变效果）
+     */
+    private Integer fromExtend = 0;
+    /**
+     * 结束位置延长（正向，影响渐变效果）
+     */
+    private Integer toExtend = 0;
+    /**
+     * 渐变方向
+     */
+    private Scale.Gradient gradient;
 
     /**
      * @param x      x坐标
@@ -100,6 +123,64 @@ public class RectangleElement extends AbstractElement<RectangleElement> {
     public RectangleElement setColor(Color color) {
         this.color = color;
         return this;
+    }
+
+    public RectangleElement setColor(int r, int g, int b) {
+        return setColor(new Color(r, g, b));
+    }
+
+    /**
+     * 设置渐变
+     *
+     * @param fromColor 开始颜色
+     * @param toColor   结束颜色
+     * @param gradient  渐变方向
+     * @return this
+     */
+    public RectangleElement setGradient(Color fromColor, Color toColor, Scale.Gradient gradient) {
+        this.fromColor = fromColor;
+        this.toColor = toColor;
+        this.gradient = gradient;
+        return this;
+    }
+
+    /**
+     * 设置渐变
+     *
+     * @param fromColor  开始颜色
+     * @param toColor    结束颜色
+     * @param fromExtend 开始位置延长（影响渐变效果）
+     * @param toExtend   结束位置延长（影响渐变效果）
+     * @param gradient   渐变方向
+     * @return this
+     */
+    public RectangleElement setGradient(Color fromColor, Color toColor, int fromExtend, int toExtend, Scale.Gradient gradient) {
+        this.fromColor = fromColor;
+        this.toColor = toColor;
+        this.fromExtend = fromExtend;
+        this.toExtend = toExtend;
+        this.gradient = gradient;
+        return this;
+    }
+
+    public Color getFromColor() {
+        return fromColor;
+    }
+
+    public Color getToColor() {
+        return toColor;
+    }
+
+    public Integer getFromExtend() {
+        return fromExtend;
+    }
+
+    public Integer getToExtend() {
+        return toExtend;
+    }
+
+    public Scale.Gradient getGradient() {
+        return gradient;
     }
 
 }

@@ -38,7 +38,7 @@ public class Scale {
 
     /**
      * 图片缩略模式
-     **/
+     */
     public enum Mode {
         /**
          * 原始比例，不缩放
@@ -107,6 +107,28 @@ public class Scale {
             return this.value;
         }
 
+    }
+
+    /**
+     * 渐变方向
+     */
+    public enum Gradient {
+        /**
+         * 上到下
+         */
+        TOP_BOTTOM,
+        /**
+         * 左到右
+         */
+        LEFT_RIGHT,
+        /**
+         * 左上到右下
+         */
+        LEFT_TOP_TO_RIGHT_BOTTOM,
+        /**
+         * 右上到左下
+         */
+        RIGHT_TOP_TO_LEFT_BOTTOM
     }
 
 }

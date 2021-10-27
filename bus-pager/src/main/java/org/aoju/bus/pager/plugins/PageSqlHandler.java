@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.pager.plugins;
 
+import org.aoju.bus.core.lang.exception.PageException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.Dialect;
-import org.aoju.bus.pager.PageException;
 import org.aoju.bus.pager.cache.Cache;
 import org.aoju.bus.pager.cache.CacheFactory;
 import org.aoju.bus.pager.proxy.CountExecutor;

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.core.lang.exception.PageException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.PageException;
 import org.aoju.bus.pager.Paging;
 import org.apache.ibatis.reflection.MetaObject;
 
