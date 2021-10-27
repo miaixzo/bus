@@ -466,7 +466,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * 指定使用的分页实现，如果自己使用的很频繁，建议自己增加一层封装再使用
      *
      * @param dialect 分页实现类，可以使用 {@link PageAutoDialect} 类中注册的别名，例如 "mysql", "oracle"
-     * @return
+     * @return this
      */
     public Page<E> using(String dialect) {
         this.dialectClass = dialect;

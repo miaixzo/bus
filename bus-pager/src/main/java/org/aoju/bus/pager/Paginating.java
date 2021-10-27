@@ -180,7 +180,8 @@ public class Paginating<T> extends Serialize<T> {
     /**
      * 返回一个空的 Pageinfo 对象
      *
-     * @return
+     * @param <T> 分页对象
+     * @return this
      */
     public static <T> Paginating<T> emptyPageInfo() {
         return new Paginating(Collections.emptyList(), 0);
@@ -250,6 +251,8 @@ public class Paginating<T> extends Serialize<T> {
 
     /**
      * 是否包含内容
+     *
+     * @return the boolean
      */
     public boolean hasContent() {
         return this.size > 0;

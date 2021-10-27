@@ -180,6 +180,7 @@ public class PageAutoDialect {
      *
      * @param dialectClass 方言
      * @param properties   属性
+     * @return the object
      */
     public static AbstractPaging instanceDialect(String dialectClass, Properties properties) {
         AbstractPaging dialect;
@@ -281,7 +282,7 @@ public class PageAutoDialect {
     /**
      * 多数据动态获取时，每次需要初始化，还可以运行时指定具体的实现
      *
-     * @param ms
+     * @param ms           MappedStatement
      * @param dialectClass 分页实现，必须是 {@link AbstractPaging} 实现类，可以使用当前类中注册的别名，例如 "mysql", "oracle"
      */
     public void initDelegateDialect(MappedStatement ms, String dialectClass) {
