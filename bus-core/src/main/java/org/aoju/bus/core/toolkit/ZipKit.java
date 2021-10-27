@@ -929,7 +929,7 @@ public class ZipKit {
      * @param zipPath        zip文件的Path
      * @param appendFilePath 待添加文件Path(可以是文件夹)
      * @param options        拷贝选项，可选是否覆盖等
-     * @throws IOException 异常信息
+     * @throws IOException IO异常
      */
     public static void append(Path zipPath, Path appendFilePath, CopyOption... options) throws IOException {
         try (FileSystem zipFileSystem = createZip(zipPath.toString())) {

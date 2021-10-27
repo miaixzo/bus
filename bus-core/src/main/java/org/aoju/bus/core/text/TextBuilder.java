@@ -50,7 +50,7 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
     /**
      * 默认容量
      */
-    private static final int CAPACITY = 16;
+    public static final int CAPACITY = 16;
     /**
      * 存放的字符数组
      */
@@ -151,10 +151,10 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      * @param texts 字符串数组
      * @return 总长度
      */
-    private static int totalLength(CharSequence... texts) {
+    public static int totalLength(CharSequence... texts) {
         int totalLength = 0;
         for (CharSequence text : texts) {
-            totalLength += (null == text ? 4 : text.length());
+            totalLength += (null == text ? 0 : text.length());
         }
         return totalLength;
     }

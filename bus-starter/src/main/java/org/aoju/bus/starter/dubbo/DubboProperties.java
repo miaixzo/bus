@@ -42,8 +42,17 @@ import org.springframework.context.annotation.Bean;
 @ConfigurationProperties(prefix = BusXExtend.DUBBO)
 public class DubboProperties {
 
+    /**
+     * 扫描dubbo接口的基本包
+     */
     protected String basePackages;
+    /**
+     * 扫描的包以查找带注解@DubboService的类
+     */
     protected String basePackageClasses;
+    /**
+     * 是否绑定到多个Spring bean
+     */
     protected boolean multiple;
 
     @Bean

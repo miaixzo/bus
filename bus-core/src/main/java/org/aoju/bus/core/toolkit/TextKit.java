@@ -28,6 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.text.TextBuilder;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -42,10 +43,6 @@ import java.util.Arrays;
 public class TextKit implements CharSequence, Appendable, Serializable {
 
     /**
-     * 默认容量
-     */
-    public static final int DEFAULT_CAPACITY = 16;
-    /**
      * 存放的字符数组
      */
     private char[] value;
@@ -58,7 +55,7 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      * 构造
      */
     public TextKit() {
-        this(DEFAULT_CAPACITY);
+        this(TextBuilder.CAPACITY);
     }
 
     /**
@@ -76,7 +73,7 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      * @param texts 初始字符串
      */
     public TextKit(CharSequence... texts) {
-        this(ArrayKit.isEmpty(texts) ? DEFAULT_CAPACITY : (totalLength(texts) + DEFAULT_CAPACITY));
+        this(ArrayKit.isEmpty(texts) ? TextBuilder.CAPACITY : (TextBuilder.totalLength(texts) + TextBuilder.CAPACITY));
         for (int i = 0; i < texts.length; i++) {
             append(texts[i]);
         }
@@ -109,21 +106,6 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      */
     public static TextKit create(CharSequence... texts) {
         return new TextKit(texts);
-    }
-
-    /**
-     * 给定字符串数组的总长度
-     * null字符长度定义为0
-     *
-     * @param texts 字符串数组
-     * @return 总长度
-     */
-    private static int totalLength(CharSequence... texts) {
-        int totalLength = 0;
-        for (int i = 0; i < texts.length; i++) {
-            totalLength += (null == texts[i] ? 4 : texts[i].length());
-        }
-        return totalLength;
     }
 
     /**

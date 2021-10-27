@@ -3849,10 +3849,10 @@ public class StringKit {
             len += text.length();
         }
         if (isNotEmpty(prefix)) {
-            len += text.length();
+            len += prefix.length();
         }
         if (isNotEmpty(suffix)) {
-            len += text.length();
+            len += suffix.length();
         }
         StringBuilder sb = new StringBuilder(len);
         if (isNotEmpty(prefix) && false == startWith(text, prefix)) {

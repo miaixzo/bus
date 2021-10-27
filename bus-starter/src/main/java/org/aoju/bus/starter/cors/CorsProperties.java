@@ -26,6 +26,7 @@
 package org.aoju.bus.starter.cors;
 
 import lombok.Data;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -56,7 +57,7 @@ public class CorsProperties {
     /**
      * 允许的方法
      */
-    private String[] allowedMethods = new String[]{"GET", "DELETE", "POST", "PUT", "OPTIONS"};
+    private String[] allowedMethods = new String[]{Http.GET, Http.POST, Http.PUT, Http.OPTIONS, Http.DELETE};
     /**
      * 响应头信息公开
      */

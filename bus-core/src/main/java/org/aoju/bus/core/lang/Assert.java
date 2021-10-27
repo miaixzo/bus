@@ -898,7 +898,7 @@ public class Assert {
     /**
      * 检查值是否在指定范围内
      *
-     * @param <X>           泛型对象
+     * @param <X>           异常类型
      * @param value         值
      * @param min           最小值（包含）
      * @param max           最大值（包含）

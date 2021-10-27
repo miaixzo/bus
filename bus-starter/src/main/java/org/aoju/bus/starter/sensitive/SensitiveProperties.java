@@ -46,8 +46,14 @@ public class SensitiveProperties {
     @Autowired
     private Decrypt decrypt;
 
+    /**
+     * 是否调试模式
+     */
     private boolean debug;
 
+    /**
+     * 加密信息
+     */
     @Data
     @ConfigurationProperties(prefix = BusXExtend.SENSITIVE + ".encrypt")
     public class Encrypt {
@@ -55,6 +61,9 @@ public class SensitiveProperties {
         private String type;
     }
 
+    /**
+     * 解密信息
+     */
     @Data
     @ConfigurationProperties(prefix = BusXExtend.SENSITIVE + ".decrypt")
     public class Decrypt {

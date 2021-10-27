@@ -381,4 +381,21 @@ public class HexKit {
         return builder.toString();
     }
 
+    /**
+     * 将byte值转为16进制并添加到{@link StringBuilder}中
+     *
+     * @param builder     {@link StringBuilder}
+     * @param b           byte
+     * @param toLowerCase 是否使用小写
+     */
+    public static void appendHex(StringBuilder builder, byte b, boolean toLowerCase) {
+        final char[] toDigits = toLowerCase ? Normal.DIGITS_16_LOWER : Normal.DIGITS_16_UPPER;
+        // 高位
+        int high = (b & 0xf0) >>> 4;
+        // 低位
+        int low = b & 0x0f;
+        builder.append(toDigits[high]);
+        builder.append(toDigits[low]);
+    }
+
 }

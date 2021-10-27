@@ -1550,7 +1550,7 @@ public class MathKit {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
      * @see Character#compare(char, char)
      */
     public static int compare(char x, char y) {
@@ -1562,7 +1562,7 @@ public class MathKit {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
      * @see Double#compare(double, double)
      */
     public static int compare(double x, double y) {
@@ -1574,7 +1574,7 @@ public class MathKit {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
      * @see Integer#compare(int, int)
      */
     public static int compare(int x, int y) {
@@ -1593,7 +1593,7 @@ public class MathKit {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
      * @see Long#compare(long, long)
      */
     public static int compare(long x, long y) {
@@ -1612,7 +1612,7 @@ public class MathKit {
      *
      * @param x 第一个值
      * @param y 第二个值
-     * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
+     * @return x==y返回0，x&lt;y返回小于0的数，x&gt;y返回大于0的数
      * @see Short#compare(short, short)
      */
     public static int compare(short x, short y) {

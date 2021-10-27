@@ -42,30 +42,98 @@ import java.util.List;
 @ConfigurationProperties(prefix = BusXExtend.DATASOURCE)
 public class DruidProperties {
 
-    private String key;
+    /**
+     * 数据源名称
+     */
     private String name;
+    /**
+     * 数据源连接url
+     */
     private String url;
+    /**
+     * 数据库账号
+     */
     private String username;
+    /**
+     * 数据库密码
+     */
     private String password;
+    /**
+     * 连接池类型
+     */
     private String type;
+    /**
+     * 数据库连接池驱动
+     */
     private String driverClassName;
+    /**
+     * 配置监控统计拦截的
+     */
     private String filters;
+    /**
+     * 连接池中的最小空闲连接数
+     */
     private String minIdle;
-    private String timeBetweenEvictionRunsMillis;
+    /**
+     * 最小空闲时间，默认30分钟
+     */
     private String minEvictableIdleTimeMillis;
+    /**
+     * 最大空闲时间，默认7小时
+     */
+    private String maxEvictableIdleTimeMillis;
+    /**
+     * 测试连接是否可用的SQL语句
+     */
     private String validationQuery;
-    private String poolPreparedStatements;
+    /**
+     * 是否缓存preparedStatement
+     */
+    private boolean poolPreparedStatements;
+    /**
+     * 要启用PSCache
+     */
     private String maxOpenPreparedStatements;
-    private String privateKey;
-
+    /**
+     * 检测需要关闭的空闲连接周期
+     */
+    private String timeBetweenEvictionRunsMillis;
+    /**
+     * 最大连接池数量
+     */
     private int maxActive;
+    /**
+     * 初始化时建立连接的个数
+     */
     private int initialSize;
+    /**
+     * 获取连接等待超时的时间
+     */
     private int maxWait;
-
+    /**
+     * 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测
+     * 如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效
+     */
     private boolean testWhileIdle;
+    /**
+     * 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+     */
     private boolean testOnBorrow;
+    /**
+     * 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+     */
     private boolean testOnReturn;
-
+    /**
+     * 数据源加解密信息
+     */
+    private String privateKey;
+    /**
+     * 多数据源唯一标识
+     */
+    private String key;
+    /**
+     * 多数据源支持
+     */
     private List<DruidProperties> multi;
 
 }
