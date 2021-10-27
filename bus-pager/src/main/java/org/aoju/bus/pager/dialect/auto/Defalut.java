@@ -53,22 +53,22 @@ public class Defalut implements AutoDialect<String> {
         try {
             AUTO_DIALECTS.add(new Hikari());
         } catch (Exception ignore) {
+            // ignore
         }
         try {
             AUTO_DIALECTS.add(new Druid());
         } catch (Exception ignore) {
-        }
-        try {
-            AUTO_DIALECTS.add(new Tomcat());
-        } catch (Exception ignore) {
+            // ignore
         }
         try {
             AUTO_DIALECTS.add(new C3P0());
         } catch (Exception ignore) {
+            // ignore
         }
         try {
             AUTO_DIALECTS.add(new Dbcp());
         } catch (Exception ignore) {
+            // ignore
         }
     }
 
