@@ -338,7 +338,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @param name  参数名
      * @param value 参数值
      * @return this 实例
-     **/
+     */
     public C addPathPara(String name, Object value) {
         if (null != name && null != value) {
             if (null == pathParams) {
@@ -354,7 +354,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      *
      * @param params 参数集合
      * @return this 实例
-     **/
+     */
     public C addPathPara(Map<String, ?> params) {
         if (null == pathParams) {
             pathParams = new HashMap<>();
@@ -369,7 +369,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @param name  参数名
      * @param value 参数值
      * @return this 实例
-     **/
+     */
     public C addUrlPara(String name, Object value) {
         if (null != name && null != value) {
             if (null == urlParams) {
@@ -385,7 +385,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      *
      * @param params 参数集合
      * @return this 实例
-     **/
+     */
     public C addUrlPara(Map<String, ?> params) {
         if (null == urlParams) {
             urlParams = new HashMap<>();
@@ -400,7 +400,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @param name  参数名
      * @param value 参数值
      * @return this 实例
-     **/
+     */
     public C addBodyPara(String name, Object value) {
         if (null != name && null != value) {
             if (null == bodyParams) {
@@ -416,7 +416,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      *
      * @param params 参数集合
      * @return this 实例
-     **/
+     */
     public C addBodyPara(Map<String, ?> params) {
         if (null == bodyParams) {
             bodyParams = new HashMap<>();
@@ -441,7 +441,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      *
      * @param body 请求体，字节数组、字符串 或 Java对象（由 MsgConvertor 来序列化）
      * @return this 实例
-     **/
+     */
     public C setBodyPara(Object body) {
         this.requestBody = body;
         return (C) this;

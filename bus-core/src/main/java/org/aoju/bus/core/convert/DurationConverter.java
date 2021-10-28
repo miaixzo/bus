@@ -37,6 +37,8 @@ import java.time.temporal.TemporalAmount;
  */
 public class DurationConverter extends AbstractConverter<Duration> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected Duration convertInternal(Object value) {
         if (value instanceof TemporalAmount) {

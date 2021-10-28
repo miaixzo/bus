@@ -29,6 +29,10 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 样式集合,此样式集合汇集了整个工作簿的样式,用于减少样式的创建和冗余
@@ -40,6 +44,7 @@ import java.io.Serializable;
 public class StyleSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     /**
      * 工作簿引用
      */
@@ -232,6 +237,45 @@ public class StyleSet implements Serializable {
         this.cellStyleForDate.setWrapText(true);
         this.cellStyleForHyperlink.setWrapText(true);
         return this;
+    }
+
+    /**
+     * 获取值对应的公共单元格样式
+     *
+     * @param value    值
+     * @param isHeader 是否为标题单元格
+     * @return 值对应单元格样式
+     */
+    public CellStyle getStyleByValueType(Object value, boolean isHeader) {
+        CellStyle style = null;
+
+        if (isHeader && null != this.headCellStyle) {
+            style = headCellStyle;
+        } else if (null != cellStyle) {
+            style = cellStyle;
+        }
+
+        if (value instanceof Date
+                || value instanceof TemporalAccessor
+                || value instanceof Calendar) {
+            // 日期单独定义格式
+            if (null != this.cellStyleForDate) {
+                style = this.cellStyleForDate;
+            }
+        } else if (value instanceof Number) {
+            // 数字单独定义格式
+            if ((value instanceof Double || value instanceof Float || value instanceof BigDecimal) &&
+                    null != this.cellStyleForNumber) {
+                style = this.cellStyleForNumber;
+            }
+        } else if (value instanceof Hyperlink) {
+            // 自定义超链接样式
+            if (null != this.cellStyleForHyperlink) {
+                style = this.cellStyleForHyperlink;
+            }
+        }
+
+        return style;
     }
 
 }

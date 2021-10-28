@@ -31,18 +31,18 @@ import org.aoju.bus.core.date.formatter.FormatBuilder;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ZoneKit;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -136,7 +136,7 @@ public class DateTime extends Date {
      * @param zoneId  时区ID
      */
     public DateTime(Instant instant, ZoneId zoneId) {
-        this(instant.toEpochMilli(), TimeZone.getTimeZone(ObjectKit.defaultIfNull(zoneId, ZoneId.systemDefault())));
+        this(instant.toEpochMilli(), ZoneKit.toTimeZone(zoneId));
     }
 
     /**
@@ -145,7 +145,7 @@ public class DateTime extends Date {
      * @param temporalAccessor {@link TemporalAccessor} 对象
      */
     public DateTime(TemporalAccessor temporalAccessor) {
-        this(DateKit.toInstant(temporalAccessor));
+        this(Converter.toInstant(temporalAccessor));
     }
 
     /**
@@ -184,7 +184,7 @@ public class DateTime extends Date {
      * @param format  格式
      */
     public DateTime(CharSequence dateStr, String format) {
-        this(dateStr, DateKit.newSimpleFormat(format));
+        this(dateStr, Formatter.newSimpleFormat(format));
     }
 
     /**
@@ -204,7 +204,7 @@ public class DateTime extends Date {
      * @param formatter 格式化器,{@link DateTimeFormatter}
      */
     public DateTime(CharSequence dateStr, DateTimeFormatter formatter) {
-        this(Instant.from(formatter.parse(dateStr)), formatter.getZone());
+        this(Converter.toInstant(formatter.parse(dateStr)), formatter.getZone());
     }
 
     /**
@@ -320,6 +320,47 @@ public class DateTime extends Date {
         }
         calendar.setFirstDayOfWeek(Fields.Week.Mon.getKey());
         return calendar;
+    }
+
+    /**
+     * {@link TemporalAccessor}转{@link LocalDateTime}，使用默认时区
+     *
+     * @param temporalAccessor {@link TemporalAccessor}
+     * @return {@link LocalDateTime}
+     */
+    public static LocalDateTime of(TemporalAccessor temporalAccessor) {
+        if (null == temporalAccessor) {
+            return null;
+        }
+
+        if (temporalAccessor instanceof LocalDate) {
+            return ((LocalDate) temporalAccessor).atStartOfDay();
+        }
+
+        return LocalDateTime.of(
+                get(temporalAccessor, ChronoField.YEAR),
+                get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
+                get(temporalAccessor, ChronoField.DAY_OF_MONTH),
+                get(temporalAccessor, ChronoField.HOUR_OF_DAY),
+                get(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
+                get(temporalAccessor, ChronoField.SECOND_OF_MINUTE),
+                get(temporalAccessor, ChronoField.NANO_OF_SECOND)
+        );
+    }
+
+    /**
+     * 安全获取时间的某个属性，属性不存在返回0
+     *
+     * @param temporalAccessor 需要获取的时间对象
+     * @param field            需要获取的属性
+     * @return 时间的值，如果无法获取则默认为 0
+     */
+    public static int get(TemporalAccessor temporalAccessor, TemporalField field) {
+        if (temporalAccessor.isSupported(field)) {
+            return temporalAccessor.get(field);
+        }
+
+        return (int) field.range().getMinimum();
     }
 
     /**
@@ -866,7 +907,7 @@ public class DateTime extends Date {
      */
     public String toDateString() {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_DATE_PATTERN, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_DATE_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_DATE_FORMAT);
     }
@@ -878,7 +919,7 @@ public class DateTime extends Date {
      */
     public String toTimeString() {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_TIME_PATTERN, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_TIME_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_TIME_FORMAT);
     }
@@ -910,7 +951,7 @@ public class DateTime extends Date {
      */
     public String toString(TimeZone timeZone) {
         if (null != timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_DATETIME_PATTERN, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_DATETIME_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_DATETIME_FORMAT);
     }
@@ -923,7 +964,7 @@ public class DateTime extends Date {
      */
     public String toString(String format) {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(format, null, timeZone));
+            return toString(Formatter.newSimpleFormat(format, null, timeZone));
         }
         return toString(FormatBuilder.getInstance(format));
     }

@@ -919,7 +919,7 @@ public class Convert {
      * @return 英文表达式
      */
     public static String numberToWord(Number number) {
-        return NumberWord.format(number);
+        return NumberFormatter.format(number);
     }
 
     /**
@@ -933,7 +933,7 @@ public class Convert {
      * @return 英文表达式
      */
     public static String numberToSimple(Number number) {
-        return NumberWord.formatSimple(number.longValue());
+        return NumberFormatter.formatSimple(number.longValue());
     }
 
     /**
@@ -944,7 +944,7 @@ public class Convert {
      * @return 中文
      */
     public static String numberToChinese(double number, boolean isUseTraditional) {
-        return NumberChinese.format(number, isUseTraditional);
+        return NumberFormatter.format(number, isUseTraditional);
     }
 
     /**
@@ -958,7 +958,7 @@ public class Convert {
      * @return 数字
      */
     public static int chineseToNumber(String number) {
-        return NumberChinese.chineseToNumber(number);
+        return NumberFormatter.chineseToNumber(number);
     }
 
     /**
@@ -971,7 +971,7 @@ public class Convert {
         if (null == n) {
             return "零";
         }
-        return NumberChinese.format(n.doubleValue(), true, true);
+        return NumberFormatter.format(n.doubleValue(), true, true);
     }
 
     /**

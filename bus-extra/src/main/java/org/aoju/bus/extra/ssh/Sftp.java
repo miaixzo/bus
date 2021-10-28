@@ -37,6 +37,7 @@ import org.aoju.bus.extra.ftp.AbstractFtp;
 import org.aoju.bus.extra.ftp.FtpConfig;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -477,19 +478,27 @@ public class Sftp extends AbstractFtp {
         return this;
     }
 
+    /**
+     * 将本地数据流上传到目标服务器，目标文件名为destPath，目标必须为文件
+     *
+     * @param srcStream 本地的数据流
+     * @param destPath  目标路径，
+     * @param monitor   上传进度监控，通过实现此接口完成进度显示
+     * @param mode      {@link Mode} 模式
+     * @return this
+     */
+    public Sftp put(InputStream srcStream, String destPath, SftpProgressMonitor monitor, Mode mode) {
+        try {
+            channel.put(srcStream, destPath, monitor, mode.ordinal());
+        } catch (SftpException e) {
+            throw new InstrumentException(e);
+        }
+        return this;
+    }
+
     @Override
     public void download(String src, File destFile) {
         get(src, FileKit.getAbsolutePath(destFile));
-    }
-
-    /**
-     * 下载文件到{@link OutputStream}中
-     *
-     * @param src 源文件路径，包括文件名
-     * @param out 目标流
-     */
-    public void download(String src, OutputStream out) {
-        get(src, out);
     }
 
     /**
@@ -520,6 +529,36 @@ public class Sftp extends AbstractFtp {
         } catch (SftpException e) {
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * 下载文件到{@link OutputStream}中
+     *
+     * @param src 源文件路径，包括文件名
+     * @param out 目标流
+     */
+    public void download(String src, OutputStream out) {
+        get(src, out);
+    }
+
+    /**
+     * 上传文件到指定目录，可选：
+     *
+     * <pre>
+     * 1. path为null或""上传到当前路径
+     * 2. path为相对路径则相对于当前路径的子路径
+     * 3. path为绝对路径则上传到此路径
+     * </pre>
+     *
+     * @param destPath   服务端路径，可以为{@code null} 或者相对路径或绝对路径
+     * @param fileName   文件名
+     * @param fileStream 文件流
+     * @return 是否上传成功
+     */
+    public boolean upload(String destPath, String fileName, InputStream fileStream) {
+        destPath = StringKit.addSuffixIfNot(destPath, Symbol.SLASH) + StringKit.removePrefix(fileName, Symbol.SLASH);
+        put(fileStream, destPath, null, Mode.OVERWRITE);
+        return true;
     }
 
     /**

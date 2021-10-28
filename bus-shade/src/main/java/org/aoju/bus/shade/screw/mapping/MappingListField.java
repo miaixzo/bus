@@ -47,7 +47,7 @@ public @interface MappingListField {
      * JSON列表属性映射名称
      *
      * @return {@link String}
-     **/
+     */
     String value() default Normal.EMPTY;
 
 }

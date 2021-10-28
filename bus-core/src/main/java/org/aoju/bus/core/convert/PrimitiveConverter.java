@@ -51,6 +51,11 @@ import java.util.function.Function;
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 目标类型
+     */
     private final Class<?> targetType;
 
     /**

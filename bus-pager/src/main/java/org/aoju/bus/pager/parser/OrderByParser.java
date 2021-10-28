@@ -28,8 +28,8 @@ package org.aoju.bus.pager.parser;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.aoju.bus.core.lang.exception.PageException;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.pager.PageException;
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class OrderByParser {
             return orderByElements;
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSubSelect().getSelectBody()) {
+            if (null != withItem.getSubSelect()) {
                 return extraOrderBy(withItem.getSubSelect().getSelectBody());
             }
         } else {

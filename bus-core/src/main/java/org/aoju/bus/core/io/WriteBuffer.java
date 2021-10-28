@@ -185,21 +185,24 @@ public final class WriteBuffer extends OutputStream {
     public void write(byte[] b, int off, int len) throws IOException {
         boolean suc = writeLock();
         try {
-            while (len > 0) {
-                if (writeInBuf == null) {
-                    writeInBuf = pageBuffer.allocate(Math.max(chunkSize, len));
+            if (writeInBuf == null) {
+                writeInBuf = pageBuffer.allocate(Math.max(chunkSize, len));
+            }
+            ByteBuffer writeBuffer = writeInBuf.buffer();
+            if (closed) {
+                writeInBuf.clean();
+                writeInBuf = null;
+                throw new IOException("writeBuffer has closed");
+            }
+            int remaining = writeBuffer.remaining();
+            if (remaining > len) {
+                writeBuffer.put(b, off, len);
+            } else {
+                writeBuffer.put(b, off, remaining);
+                flushWriteBuffer(true);
+                if (len > remaining) {
+                    write(b, off + remaining, len - remaining);
                 }
-                ByteBuffer writeBuffer = writeInBuf.buffer();
-                if (closed) {
-                    writeInBuf.clean();
-                    writeInBuf = null;
-                    throw new IOException("writeBuffer has closed");
-                }
-                int writeSize = Math.min(writeBuffer.remaining(), len);
-                writeBuffer.put(b, off, writeSize);
-                off += writeSize;
-                len -= writeSize;
-                flushWriteBuffer(false);
             }
         } finally {
             if (suc) {

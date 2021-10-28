@@ -43,6 +43,8 @@ import java.util.Date;
  */
 public class DateConverter extends AbstractConverter<Date> {
 
+    private static final long serialVersionUID = 1L;
+
     private final Class<? extends Date> targetType;
     /**
      * 日期格式

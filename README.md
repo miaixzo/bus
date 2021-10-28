@@ -15,7 +15,7 @@
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg">
 	</a>
 	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-2.5.5-brightgreen.svg">
+		<img src="https://img.shields.io/badge/Spring Boot-2.5.6-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-8.0-blue.svg">
@@ -174,7 +174,7 @@ Open sourced under the MIT license.
 
 Thanks JetBrains for the OpenSource license.
 
-感谢JetBrains提供IDEA免费license
+感谢JetBrains提供IDEA开源license
 
 ##
 

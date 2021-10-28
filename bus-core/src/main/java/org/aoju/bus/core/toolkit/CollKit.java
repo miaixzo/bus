@@ -51,6 +51,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -220,6 +221,32 @@ public class CollKit {
      */
     public static <T> List<T> emptyIfNull(List<T> list) {
         return (null == list) ? Collections.emptyList() : list;
+    }
+
+    /**
+     * 如果给定集合为空，返回默认集合
+     *
+     * @param <T>               集合类型
+     * @param <E>               集合元素类型
+     * @param collection        集合
+     * @param defaultCollection 默认数组
+     * @return 非空（empty）的原集合或默认集合
+     */
+    public static <T extends Collection<E>, E> T defaultIfEmpty(T collection, T defaultCollection) {
+        return isEmpty(collection) ? defaultCollection : collection;
+    }
+
+    /**
+     * 如果给定集合为空，返回默认集合
+     *
+     * @param <T>        集合类型
+     * @param <E>        集合元素类型
+     * @param collection 集合
+     * @param supplier   默认值懒加载函数
+     * @return 非空（empty）的原集合或默认集合
+     */
+    public static <T extends Collection<E>, E> T defaultIfEmpty(T collection, Supplier<? extends T> supplier) {
+        return isEmpty(collection) ? supplier.get() : collection;
     }
 
     /**
@@ -2176,7 +2203,7 @@ public class CollKit {
         if (null == collection || null == value) {
             return collection;
         }
-        if (TypeKit.isUnknow(elementType)) {
+        if (TypeKit.isUnknown(elementType)) {
             // 元素类型为空时，使用Object类型来接纳所有类型
             elementType = Object.class;
         }

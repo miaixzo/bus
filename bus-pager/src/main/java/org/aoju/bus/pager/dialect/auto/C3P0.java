@@ -23,31 +23,23 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager;
+package org.aoju.bus.pager.dialect.auto;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.aoju.bus.pager.dialect.AbstractAutoDialect;
 
 /**
- * 分页插件异常
+ * c3p0
  *
  * @author Kimi Liu
  * @version 6.3.0
  * @since JDK 1.8+
  */
-public class PageException extends RuntimeException {
+public class C3P0 extends AbstractAutoDialect<ComboPooledDataSource> {
 
-    public PageException() {
-        super();
-    }
-
-    public PageException(String message) {
-        super(message);
-    }
-
-    public PageException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PageException(Throwable cause) {
-        super(cause);
+    @Override
+    public String getJdbcUrl(ComboPooledDataSource comboPooledDataSource) {
+        return comboPooledDataSource.getJdbcUrl();
     }
 
 }

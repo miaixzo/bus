@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.qrcode;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.aoju.bus.core.lang.Charset;
@@ -348,13 +349,31 @@ public class QrConfig {
      * @return 配置
      */
     public Map<EncodeHintType, Object> toHints() {
+        return toHints(BarcodeFormat.QR_CODE);
+    }
+
+    /**
+     * 转换为Zxing的二维码配置
+     *
+     * @param format 格式，根据格式不同，{@link #errorCorrection}的值类型有所不同
+     * @return 配置
+     */
+    public HashMap<EncodeHintType, Object> toHints(BarcodeFormat format) {
         // 配置
-        final Map<EncodeHintType, Object> hints = new HashMap<>();
+        final HashMap<EncodeHintType, Object> hints = new HashMap<>();
         if (null != this.charset) {
-            hints.put(EncodeHintType.CHARACTER_SET, charset.toString());
+            hints.put(EncodeHintType.CHARACTER_SET, charset.toString().toLowerCase());
         }
         if (null != this.errorCorrection) {
-            hints.put(EncodeHintType.ERROR_CORRECTION, this.errorCorrection);
+            Object value;
+            if (BarcodeFormat.AZTEC == format || BarcodeFormat.PDF_417 == format) {
+                // issue#I4FE3U@Gitee
+                value = this.errorCorrection.getBits();
+            } else {
+                value = this.errorCorrection;
+            }
+
+            hints.put(EncodeHintType.ERROR_CORRECTION, value);
         }
         if (null != this.margin) {
             hints.put(EncodeHintType.MARGIN, this.margin);

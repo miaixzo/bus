@@ -34,7 +34,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.aoju.bus.pager.PageException;
+import org.aoju.bus.core.lang.exception.PageException;
 
 import java.util.*;
 
@@ -330,7 +330,7 @@ public class SqlServerParser {
             processPlainSelect((PlainSelect) selectBody, level + 1);
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (null != withItem.getSubSelect().getSelectBody()) {
+            if (null != withItem.getSubSelect()) {
                 processSelectBody(withItem.getSubSelect().getSelectBody(), level + 1);
             }
         } else {

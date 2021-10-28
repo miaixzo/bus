@@ -12,7 +12,6 @@ import org.aoju.bus.goalie.metric.Limiter;
  */
 public class DefaultLimiterRegistry extends AbstractRegistry<Limiter> implements LimiterRegistry {
 
-
     @Override
     public void addLimiter(Limiter limiter) {
         String nameVersion = limiter.getMethod() + limiter.getVersion();

@@ -27,6 +27,7 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -124,16 +125,16 @@ public class StopWatch {
      * 创建计时任务（秒表）
      *
      * @param id 用于标识秒表的唯一ID
-     * @return StopWatch
+     * @return this
      */
     public static StopWatch create(String id) {
         return new StopWatch(id);
     }
 
     /**
-     * 获取{@link StopWatch} 的ID,用于多个秒表对象的区分
+     * 获取StopWatch 的ID，用于多个秒表对象的区分
      *
-     * @return the ID 空字符串为
+     * @return 默认为空字符串
      * @see #StopWatch(String)
      */
     public String getId() {
@@ -205,7 +206,7 @@ public class StopWatch {
      * @see #currentTaskName()
      */
     public boolean isRunning() {
-        return null != this.currentTaskName;
+        return (this.currentTaskName != null);
     }
 
     /**
@@ -271,9 +272,19 @@ public class StopWatch {
     }
 
     /**
-     * 获取所有任务的总花费时间(纳秒)
+     * 获取所有任务的总花费时间
      *
-     * @return 所有任务的总花费时间(纳秒)
+     * @param unit 时间单位，{@code null}表示默认{@link TimeUnit#NANOSECONDS}
+     * @return 花费时间
+     */
+    public long getTotal(TimeUnit unit) {
+        return unit.convert(this.totalTimeNanos, TimeUnit.NANOSECONDS);
+    }
+
+    /**
+     * 获取所有任务的总花费时间（纳秒）
+     *
+     * @return 所有任务的总花费时间（纳秒）
      * @see #getTotalTimeMillis()
      * @see #getTotalTimeSeconds()
      */
@@ -289,7 +300,7 @@ public class StopWatch {
      * @see #getTotalTimeSeconds()
      */
     public long getTotalTimeMillis() {
-        return TimeUnit.NANOSECONDS.toMillis(this.totalTimeNanos);
+        return getTotal(TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -325,27 +336,61 @@ public class StopWatch {
     }
 
     /**
-     * 获取任务信息
+     * 获取任务信息，类似于：
+     * <pre>
+     *     StopWatch '[id]': running time = [total] ns
+     * </pre>
      *
      * @return 任务信息
      */
     public String shortSummary() {
-        return StringKit.format("StopWatch '{}': running time = {} ns", this.id, this.totalTimeNanos);
+        return shortSummary(null);
+    }
+
+    /**
+     * 获取任务信息，类似于：
+     * <pre>
+     *     StopWatch '[id]': running time = [total] [unit]
+     * </pre>
+     *
+     * @param unit 时间单位，{@code null}则默认为{@link TimeUnit#NANOSECONDS}
+     * @return 任务信息
+     */
+    public String shortSummary(TimeUnit unit) {
+        if (null == unit) {
+            unit = TimeUnit.NANOSECONDS;
+        }
+        return StringKit.format("StopWatch '{}': running time = {} {}",
+                this.id, getTotal(unit), DateKit.getShotName(unit));
+    }
+
+    /**
+     * 生成所有任务的一个任务花费时间表，单位纳秒
+     *
+     * @return 任务时间表
+     */
+    public String prettyPrint() {
+        return prettyPrint(null);
     }
 
     /**
      * 生成所有任务的一个任务花费时间表
      *
+     * @param unit 时间单位，{@code null}则默认{@link TimeUnit#NANOSECONDS} 纳秒
      * @return 任务时间表
      */
-    public String prettyPrint() {
-        StringBuilder sb = new StringBuilder(shortSummary());
+    public String prettyPrint(TimeUnit unit) {
+        if (null == unit) {
+            unit = TimeUnit.NANOSECONDS;
+        }
+
+        final StringBuilder sb = new StringBuilder(shortSummary(unit));
         sb.append(FileKit.getLineSeparator());
         if (null == this.taskList) {
             sb.append("No task info kept");
         } else {
             sb.append("---------------------------------------------").append(FileKit.getLineSeparator());
-            sb.append("ns         %     Task name").append(FileKit.getLineSeparator());
+            sb.append(DateKit.getShotName(unit)).append("         %     Task name").append(FileKit.getLineSeparator());
             sb.append("---------------------------------------------").append(FileKit.getLineSeparator());
 
             final NumberFormat nf = NumberFormat.getNumberInstance();
@@ -353,11 +398,12 @@ public class StopWatch {
             nf.setGroupingUsed(false);
 
             final NumberFormat pf = NumberFormat.getPercentInstance();
-            pf.setMinimumIntegerDigits(3);
+            pf.setMinimumIntegerDigits(2);
             pf.setGroupingUsed(false);
+
             for (TaskInfo task : getTaskInfo()) {
-                sb.append(nf.format(task.getTimeNanos())).append(Symbol.SPACE);
-                sb.append(pf.format((double) task.getTimeNanos() / getTotalTimeNanos())).append(Symbol.SPACE);
+                sb.append(nf.format(task.getTime(unit))).append("  ");
+                sb.append(pf.format((double) task.getTimeNanos() / getTotalTimeNanos())).append("   ");
                 sb.append(task.getTaskName()).append(FileKit.getLineSeparator());
             }
         }
@@ -367,7 +413,7 @@ public class StopWatch {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(shortSummary());
-        if (null == this.taskList) {
+        if (null != this.taskList) {
             for (TaskInfo task : this.taskList) {
                 sb.append("; [").append(task.getTaskName()).append("] took ").append(task.getTimeNanos()).append(" ns");
                 long percent = Math.round(100.0 * task.getTimeNanos() / getTotalTimeNanos());
@@ -387,24 +433,40 @@ public class StopWatch {
         private final String taskName;
         private final long timeNanos;
 
+        /**
+         * 构造
+         *
+         * @param taskName  任务名称
+         * @param timeNanos 花费时间（纳秒）
+         */
         TaskInfo(String taskName, long timeNanos) {
             this.taskName = taskName;
             this.timeNanos = timeNanos;
         }
 
         /**
-         * 获取任务名Get the name of this task.
+         * 获取任务名
          *
-         * @return the string
+         * @return 任务名
          */
         public String getTaskName() {
             return this.taskName;
         }
 
         /**
-         * 获取任务花费时间(单位：纳秒)
+         * 获取指定单位的任务花费时间
          *
-         * @return the long
+         * @param unit 单位
+         * @return 任务花费时间
+         */
+        public long getTime(TimeUnit unit) {
+            return unit.convert(this.timeNanos, TimeUnit.NANOSECONDS);
+        }
+
+        /**
+         * 获取任务花费时间（单位：纳秒）
+         *
+         * @return 任务花费时间（单位：纳秒）
          * @see #getTimeMillis()
          * @see #getTimeSeconds()
          */
@@ -413,20 +475,20 @@ public class StopWatch {
         }
 
         /**
-         * 获取任务花费时间(单位：毫秒)
+         * 获取任务花费时间（单位：毫秒）
          *
-         * @return the long
+         * @return 任务花费时间（单位：毫秒）
          * @see #getTimeNanos()
          * @see #getTimeSeconds()
          */
         public long getTimeMillis() {
-            return TimeUnit.NANOSECONDS.toMillis(this.timeNanos);
+            return getTime(TimeUnit.MILLISECONDS);
         }
 
         /**
-         * 获取任务花费时间(单位：秒)
+         * 获取任务花费时间（单位：秒）
          *
-         * @return the double
+         * @return 任务花费时间（单位：秒）
          * @see #getTimeMillis()
          * @see #getTimeNanos()
          */

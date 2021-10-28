@@ -38,6 +38,8 @@ import java.net.URL;
  */
 public class URLConverter extends AbstractConverter<URL> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected URL convertInternal(Object value) {
         try {

@@ -36,6 +36,8 @@ import org.aoju.bus.core.lang.Charset;
  */
 public class CharsetConverter extends AbstractConverter<java.nio.charset.Charset> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected java.nio.charset.Charset convertInternal(Object value) {
         return Charset.charset(convertString(value));

@@ -319,7 +319,7 @@ public class QrCodeKit {
         }
         BitMatrix bitMatrix;
         try {
-            bitMatrix = multiFormatWriter.encode(content, format, config.width, config.height, config.toHints());
+            bitMatrix = multiFormatWriter.encode(content, format, config.width, config.height, config.toHints(format));
         } catch (WriterException e) {
             throw new InstrumentException(e);
         }

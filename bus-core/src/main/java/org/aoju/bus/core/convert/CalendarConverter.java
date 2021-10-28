@@ -40,6 +40,8 @@ import java.util.Date;
  */
 public class CalendarConverter extends AbstractConverter<Calendar> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 日期格式化
      */

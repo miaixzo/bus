@@ -50,7 +50,7 @@ import java.lang.annotation.*;
 public @interface EnableDubbo {
 
     /**
-     * Base packages to scan for annotated @Service classes.
+     * Base packages to scan for annotated @DubboService classes.
      *
      * @return the base packages to scan
      * @see DubboComponentScan#basePackages()
@@ -59,7 +59,7 @@ public @interface EnableDubbo {
     String[] basePackages() default {};
 
     /**
-     * packages to scan for annotated @Service classes.
+     * packages to scan for annotated @DubboService classes.
      * The package of each class specified will be scanned.
      *
      * @return classes from the base packages to scan

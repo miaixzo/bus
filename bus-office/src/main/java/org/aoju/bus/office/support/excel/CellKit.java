@@ -169,32 +169,7 @@ public class CellKit {
         }
 
         if (null != styleSet) {
-            final CellStyle headCellStyle = styleSet.getHeadCellStyle();
-            final CellStyle cellStyle = styleSet.getCellStyle();
-            if (isHeader && null != headCellStyle) {
-                cell.setCellStyle(headCellStyle);
-            } else if (null != cellStyle) {
-                cell.setCellStyle(cellStyle);
-            }
-        }
-
-        if (value instanceof Date
-                || value instanceof TemporalAccessor
-                || value instanceof Calendar) {
-            // 日期单独定义格式
-            if (null != styleSet && null != styleSet.getCellStyleForDate()) {
-                cell.setCellStyle(styleSet.getCellStyleForDate());
-            }
-        } else if (value instanceof Number) {
-            // 数字单独定义格式
-            if ((value instanceof Double || value instanceof Float || value instanceof BigDecimal) && null != styleSet && null != styleSet.getCellStyleForNumber()) {
-                cell.setCellStyle(styleSet.getCellStyleForNumber());
-            }
-        } else if (value instanceof Hyperlink) {
-            // 自定义超链接样式
-            if (null != styleSet && null != styleSet.getCellStyleForHyperlink()) {
-                cell.setCellStyle(styleSet.getCellStyleForHyperlink());
-            }
+            cell.setCellStyle(styleSet.getStyleByValueType(value, isHeader));
         }
 
         setCellValue(cell, value);

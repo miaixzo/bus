@@ -58,6 +58,8 @@ import java.util.function.Function;
  */
 public class NumberConverter extends AbstractConverter<Number> {
 
+    private static final long serialVersionUID = 1L;
+
     private final Class<? extends Number> targetType;
 
     public NumberConverter() {

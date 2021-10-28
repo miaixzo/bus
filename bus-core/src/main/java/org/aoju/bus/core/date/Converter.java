@@ -478,7 +478,7 @@ public class Converter extends Formatter {
             // 指定本地时间转换 为Instant，取当天日期
             result = ((OffsetTime) temporalAccessor).atDate(LocalDate.now()).toInstant();
         } else {
-            result = Instant.from(temporalAccessor);
+            result = toInstant(DateTime.of(temporalAccessor));
         }
 
         return result;

@@ -42,6 +42,11 @@ import java.lang.reflect.Type;
  */
 public class ReferenceConverter extends AbstractConverter<Reference> {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 目标类型
+     */
     private final Class<? extends Reference> targetType;
 
     /**
@@ -55,10 +60,10 @@ public class ReferenceConverter extends AbstractConverter<Reference> {
 
     @Override
     protected Reference<?> convertInternal(Object value) {
-        //尝试将值转换为Reference泛型的类型
+        // 尝试将值转换为Reference泛型的类型
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(targetType);
-        if (false == TypeKit.isUnknow(paramType)) {
+        if (false == TypeKit.isUnknown(paramType)) {
             targetValue = ConverterRegistry.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {

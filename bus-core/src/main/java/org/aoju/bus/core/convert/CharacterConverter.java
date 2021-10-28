@@ -37,6 +37,8 @@ import org.aoju.bus.core.toolkit.StringKit;
  */
 public class CharacterConverter extends AbstractConverter<Character> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected Character convertInternal(Object value) {
         if (value instanceof Boolean) {

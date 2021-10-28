@@ -46,6 +46,8 @@ import java.util.TimeZone;
  */
 public class StringConverter extends AbstractConverter<String> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Clob字段值转字符串
      *

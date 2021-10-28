@@ -114,7 +114,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         // init threadPool for write and connect
         final int writeThreadNum = 1;
         final int acceptThreadNum = 1;
-        writeExecutorService = getThreadPoolExecutor("bus-socket:write-", writeThreadNum);
+        writeExecutorService = getSingleThreadExecutor("bus-socket:write");
         this.writeWorkers = new Worker[writeThreadNum];
 
         for (int i = 0; i < writeThreadNum; i++) {
@@ -130,7 +130,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         }
 
         // init threadPool for accept
-        acceptExecutorService = getThreadPoolExecutor("bus-socket:connect-", acceptThreadNum);
+        acceptExecutorService = getSingleThreadExecutor("bus-socket:connect");
         acceptWorkers = new Worker[acceptThreadNum];
         for (int i = 0; i < acceptThreadNum; i++) {
             acceptWorkers[i] = new Worker(selectionKey -> {
@@ -157,7 +157,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
      */
     public synchronized void registerFuture(Consumer<Selector> register, int opType) throws IOException {
         if (futureWorker == null) {
-            futureExecutorService = getThreadPoolExecutor("bus-socket:future-", 1);
+            futureExecutorService = getSingleThreadExecutor("bus-socket:future");
             futureWorker = new Worker(selectionKey -> {
                 AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
                 switch (opType) {
@@ -179,16 +179,9 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         futureWorker.addRegister(register);
     }
 
-    private ThreadPoolExecutor getThreadPoolExecutor(final String prefix, int threadNum) {
-        return new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(), new ThreadFactory() {
-            private final AtomicInteger atomicInteger = new AtomicInteger(0);
-
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, prefix + atomicInteger.getAndIncrement());
-            }
-        });
+    private ThreadPoolExecutor getSingleThreadExecutor(final String prefix) {
+        return new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(), r -> new Thread(r, prefix));
     }
 
     /**
@@ -288,7 +281,6 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         private final ConcurrentLinkedQueue<Consumer<Selector>> registers = new ConcurrentLinkedQueue<>();
         private final Consumer<SelectionKey> consumer;
         int invoker = 0;
-        int modCount;
         private Thread workerThread;
 
         Worker(Consumer<SelectionKey> consumer) throws IOException {
@@ -301,7 +293,6 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
          */
         final void addRegister(Consumer<Selector> register) {
             registers.offer(register);
-            modCount++;
             selector.wakeup();
         }
 
@@ -314,15 +305,11 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
             workerThread = Thread.currentThread();
             // 优先获取SelectionKey,若无关注事件触发则阻塞在selector.select(),减少select被调用次数
             Set<SelectionKey> keySet = selector.selectedKeys();
+            Consumer<Selector> register;
             try {
-                int v = 0;
                 while (running) {
-                    Consumer<Selector> register;
-                    if (v != modCount) {
-                        v = modCount;
-                        while ((register = registers.poll()) != null) {
-                            register.accept(selector);
-                        }
+                    while ((register = registers.poll()) != null) {
+                        register.accept(selector);
                     }
 
                     selector.select();

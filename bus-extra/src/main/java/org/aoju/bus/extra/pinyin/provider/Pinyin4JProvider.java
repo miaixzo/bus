@@ -37,7 +37,7 @@ import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
- * Pinyin4j引擎
+ * Pinyin4j 引擎
  *
  * @author Kimi Liu
  * @version 6.3.0

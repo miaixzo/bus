@@ -37,6 +37,11 @@ import org.aoju.bus.core.lang.exception.ConvertException;
  */
 public class CastConverter<T> extends AbstractConverter<T> {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 目标类型
+     */
     private Class<T> targetType;
 
     @Override

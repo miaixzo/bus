@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 
 /**
- * Jpinyin引擎
+ * Jpinyin 引擎
  *
  * @author Kimi Liu
  * @version 6.3.0

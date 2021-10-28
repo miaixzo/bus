@@ -328,18 +328,22 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     public void read(int startRowIndex, int endRowIndex, CellHandler cellHandler) {
         checkNotClosed();
 
-        startRowIndex = Math.max(startRowIndex, this.sheet.getFirstRowNum());// 读取起始行（包含）
-        endRowIndex = Math.min(endRowIndex, this.sheet.getLastRowNum());// 读取结束行（包含）
+        // 读取起始行（包含）
+        startRowIndex = Math.max(startRowIndex, this.sheet.getFirstRowNum());
+        // 读取结束行（包含）
+        endRowIndex = Math.min(endRowIndex, this.sheet.getLastRowNum());
 
         Row row;
         short columnSize;
         for (int y = startRowIndex; y <= endRowIndex; y++) {
             row = this.sheet.getRow(y);
-            columnSize = row.getLastCellNum();
-            Cell cell;
-            for (short x = 0; x < columnSize; x++) {
-                cell = row.getCell(x);
-                cellHandler.handle(cell, CellKit.getCellValue(cell));
+            if (null != row) {
+                columnSize = row.getLastCellNum();
+                Cell cell;
+                for (short x = 0; x < columnSize; x++) {
+                    cell = row.getCell(x);
+                    cellHandler.handle(cell, CellKit.getCellValue(cell));
+                }
             }
         }
     }

@@ -25,13 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.text.Normalizer;
 
 /**
  * 字符工具类
@@ -844,6 +842,29 @@ public class CharsKit {
      */
     public static boolean startWithChinese(CharSequence text) {
         return isNotBlank(text) && RegEx.CHINESES.matcher(text.subSequence(0, 1)).find();
+    }
+
+    /**
+     * 检查给定字符串的所有字符是否都一样
+     *
+     * @param str 字符出啊
+     * @return 给定字符串的所有字符是否都一样
+     */
+    public static boolean isCharEquals(CharSequence str) {
+        Assert.notEmpty(str, "Str to check must be not empty!");
+        return count(str, str.charAt(0)) == str.length();
+    }
+
+    /**
+     * 对字符串归一化处理，如 "Á" 可以使用 "u00C1"或 "u0041u0301"表示，实际测试中两个字符串并不equals
+     * 因此使用此方法归一为一种表示形式，默认按照W3C通常建议的，在NFC中交换文本。
+     *
+     * @param str 归一化的字符串
+     * @return 归一化后的字符串
+     * @see Normalizer#normalize(CharSequence, Normalizer.Form)
+     */
+    public static String normalize(CharSequence str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFC);
     }
 
 }
