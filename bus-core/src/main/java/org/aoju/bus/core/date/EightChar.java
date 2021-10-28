@@ -791,7 +791,16 @@ public class EightChar {
          * @return 流年
          */
         public LiuNian[] getLiuNian() {
-            int n = 10;
+            return getLiuNian(10);
+        }
+
+        /**
+         * 获取流年
+         *
+         * @param n 轮数
+         * @return 流年
+         */
+        public LiuNian[] getLiuNian(int n) {
             if (index < 1) {
                 n = endYear - startYear + 1;
             }
@@ -803,12 +812,21 @@ public class EightChar {
         }
 
         /**
-         * 获取小运
+         * 获取10轮小运
          *
          * @return 小运
          */
         public XiaoYun[] getXiaoYun() {
-            int n = 10;
+            return getXiaoYun(10);
+        }
+
+        /**
+         * 获取小运
+         *
+         * @param n 轮数
+         * @return 小运
+         */
+        public XiaoYun[] getXiaoYun(int n) {
             if (index < 1) {
                 n = endYear - startYear + 1;
             }
@@ -1220,12 +1238,21 @@ public class EightChar {
         }
 
         /**
-         * 获取大运
+         * 获取10轮大运
          *
          * @return 大运
          */
         public DaYun[] getDaYun() {
-            int n = 10;
+            return getDaYun(10);
+        }
+
+        /**
+         * 获取大运
+         *
+         * @param n 轮数
+         * @return 大运
+         */
+        public DaYun[] getDaYun(int n) {
             DaYun[] l = new DaYun[n];
             for (int i = 0; i < n; i++) {
                 l[i] = new DaYun(this, i);

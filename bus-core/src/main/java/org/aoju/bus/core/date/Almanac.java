@@ -52,21 +52,6 @@ import java.util.stream.Collectors;
 public class Almanac extends Converter {
 
     /**
-     * 获取农历年份
-     *
-     * @param year 　农历年数值表示
-     * @return 农历年传统字符表示
-     */
-    public static String getYear(int year) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Fields.CN_YEAR[year / 1000]);
-        sb.append(Fields.CN_YEAR[year % 1000 / 100]);
-        sb.append(Fields.CN_YEAR[year % 100 / 10]);
-        sb.append(Fields.CN_YEAR[year % 10]);
-        return sb.toString();
-    }
-
-    /**
      * 获取年，比如2020
      *
      * @param date Date
