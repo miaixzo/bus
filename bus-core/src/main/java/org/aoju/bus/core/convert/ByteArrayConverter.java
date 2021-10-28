@@ -36,6 +36,8 @@ import org.aoju.bus.core.toolkit.ArrayKit;
  */
 public class ByteArrayConverter extends AbstractConverter<byte[]> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected byte[] convertInternal(Object value) {
         final Byte[] result = ConverterRegistry.getInstance().convert(Byte[].class, value);

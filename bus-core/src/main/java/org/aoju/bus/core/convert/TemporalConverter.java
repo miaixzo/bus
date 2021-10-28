@@ -57,6 +57,11 @@ import java.util.Objects;
  */
 public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 目标类型
+     */
     private final Class<?> targetType;
     /**
      * 日期格式化

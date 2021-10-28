@@ -38,6 +38,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AtomicBooleanConverter extends AbstractConverter<AtomicBoolean> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected AtomicBoolean convertInternal(Object value) {
         if (value instanceof Boolean) {

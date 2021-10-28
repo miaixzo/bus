@@ -25,11 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.convert.NumberChinese;
-import org.aoju.bus.core.date.formatter.DateParser;
-import org.aoju.bus.core.date.formatter.DatePrinter;
-import org.aoju.bus.core.date.formatter.FastDateParser;
-import org.aoju.bus.core.date.formatter.FormatBuilder;
+import org.aoju.bus.core.convert.NumberFormatter;
+import org.aoju.bus.core.date.formatter.*;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -47,6 +44,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 日期格式化和解析
@@ -288,6 +286,78 @@ public class Formatter {
     }
 
     /**
+     * 格式化为中文日期格式，如果isUppercase为false
+     * 则返回：2018年10月24日，否则,返回二〇一八年十月二十四日
+     *
+     * @param date        被格式化的日期
+     * @param isUppercase 是否采用大写形式
+     * @param withTime    是否包含时间部分
+     * @return 中文日期字符串
+     */
+    public static String format(Date date, boolean isUppercase, boolean withTime) {
+        if (null == date) {
+            return null;
+        }
+
+        if (false == isUppercase) {
+            return (withTime ? Fields.NORM_CN_DATE_TIME_FORMAT : Fields.NORM_DATE_CN_FORMAT).format(date);
+        }
+
+        return parse(Converter.toCalendar(date), withTime);
+    }
+
+    /**
+     * 将指定Calendar时间格式化为纯中文形式
+     *
+     * <pre>
+     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日（withTime为false）
+     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日一十二时一十三分一十四秒（withTime为true）
+     * </pre>
+     *
+     * @param calendar {@link Calendar}
+     * @param withTime 是否包含时间部分
+     * @return 格式化后的字符串
+     */
+    public static String format(Calendar calendar, boolean withTime) {
+        final StringBuilder result = StringKit.builder();
+
+        // 年
+        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        final int length = year.length();
+        for (int i = 0; i < length; i++) {
+            result.append(NumberFormatter.toChinese(year.charAt(i), false));
+        }
+        result.append('年');
+
+        // 月
+        int month = calendar.get(Calendar.MONTH) + 1;
+        result.append(NumberFormatter.format(month, false));
+        result.append('月');
+
+        // 日
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        result.append(NumberFormatter.format(day, false));
+        result.append('日');
+
+        if (withTime) {
+            // 时
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            result.append(NumberFormatter.format(hour, false));
+            result.append('时');
+            // 分
+            int minute = calendar.get(Calendar.MINUTE);
+            result.append(NumberFormatter.format(minute, false));
+            result.append('分');
+            // 秒
+            int second = calendar.get(Calendar.SECOND);
+            result.append(NumberFormatter.format(second, false));
+            result.append('秒');
+        }
+
+        return result.toString().replace('零', '〇');
+    }
+
+    /**
      * 格式化日期部分(不包括时间)
      * 格式 yyyy-MM-dd
      *
@@ -332,75 +402,47 @@ public class Formatter {
     }
 
     /**
-     * 格式化为中文日期格式，如果isUppercase为false
-     * 则返回：2018年10月24日，否则,返回二〇一八年十月二十四日
+     * 格式化日期间隔输出
      *
-     * @param date        被格式化的日期
-     * @param isUppercase 是否采用大写形式
-     * @param withTime    是否包含时间部分
-     * @return 中文日期字符串
+     * @param beginDate 起始日期
+     * @param endDate   结束日期
+     * @param units     级别,按照天、小时、分、秒、毫秒分为5个等级
+     * @return XX天XX小时XX分XX秒
      */
-    public static String format(Date date, boolean isUppercase, boolean withTime) {
-        if (null == date) {
-            return null;
-        }
-
-        if (false == isUppercase) {
-            return (withTime ? Fields.NORM_CN_DATE_TIME_FORMAT : Fields.NORM_DATE_CN_FORMAT).format(date);
-        }
-
-        return parse(Converter.toCalendar(date), withTime);
+    public static String formatBetween(Date beginDate, Date endDate, Fields.Units units) {
+        return formatBetween(Almanac.between(beginDate, endDate, Fields.Units.MILLISECOND), units);
     }
 
     /**
-     * 将指定Calendar时间格式化为纯中文形式
+     * 格式化日期间隔输出,精确到毫秒
      *
-     * <pre>
-     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日（withTime为false）
-     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日一十二时一十三分一十四秒（withTime为true）
-     * </pre>
-     *
-     * @param calendar {@link Calendar}
-     * @param withTime 是否包含时间部分
-     * @return 格式化后的字符串
+     * @param beginDate 起始日期
+     * @param endDate   结束日期
+     * @return XX天XX小时XX分XX秒
      */
-    public static String format(Calendar calendar, boolean withTime) {
-        final StringBuilder result = StringKit.builder();
+    public static String formatBetween(Date beginDate, Date endDate) {
+        return formatBetween(Almanac.between(beginDate, endDate, Fields.Units.MILLISECOND));
+    }
 
-        // 年
-        String year = String.valueOf(calendar.get(Calendar.YEAR));
-        final int length = year.length();
-        for (int i = 0; i < length; i++) {
-            result.append(NumberChinese.toChinese(year.charAt(i), false));
-        }
-        result.append('年');
+    /**
+     * 格式化日期间隔输出
+     *
+     * @param betweenMs 日期间隔
+     * @param units     级别,按照天、小时、分、秒、毫秒分为5个等级
+     * @return XX天XX小时XX分XX秒XX毫秒
+     */
+    public static String formatBetween(long betweenMs, Fields.Units units) {
+        return new DatePeriod(betweenMs, units).format();
+    }
 
-        // 月
-        int month = calendar.get(Calendar.MONTH) + 1;
-        result.append(NumberChinese.format(month, false));
-        result.append('月');
-
-        // 日
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        result.append(NumberChinese.format(day, false));
-        result.append('日');
-
-        if (withTime) {
-            // 时
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            result.append(NumberChinese.format(hour, false));
-            result.append('时');
-            // 分
-            int minute = calendar.get(Calendar.MINUTE);
-            result.append(NumberChinese.format(minute, false));
-            result.append('分');
-            // 秒
-            int second = calendar.get(Calendar.SECOND);
-            result.append(NumberChinese.format(second, false));
-            result.append('秒');
-        }
-
-        return result.toString().replace('零', '〇');
+    /**
+     * 格式化日期间隔输出,精确到毫秒
+     *
+     * @param betweenMs 日期间隔
+     * @return XX天XX小时XX分XX秒XX毫秒
+     */
+    public static String formatBetween(long betweenMs) {
+        return new DatePeriod(betweenMs, Fields.Units.MILLISECOND).format();
     }
 
     /**
@@ -422,32 +464,32 @@ public class Formatter {
         String year = String.valueOf(calendar.get(Calendar.YEAR));
         final int length = year.length();
         for (int i = 0; i < length; i++) {
-            result.append(NumberChinese.toChinese(year.charAt(i), false));
+            result.append(NumberFormatter.toChinese(year.charAt(i), false));
         }
         result.append('年');
 
         // 月
         int month = calendar.get(Calendar.MONTH) + 1;
-        result.append(NumberChinese.format(month, false));
+        result.append(NumberFormatter.format(month, false));
         result.append('月');
 
         // 日
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        result.append(NumberChinese.format(day, false));
+        result.append(NumberFormatter.format(day, false));
         result.append('日');
 
         if (withTime) {
             // 时
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            result.append(NumberChinese.format(hour, false));
+            result.append(NumberFormatter.format(hour, false));
             result.append('时');
             // 分
             int minute = calendar.get(Calendar.MINUTE);
-            result.append(NumberChinese.format(minute, false));
+            result.append(NumberFormatter.format(minute, false));
             result.append('分');
             // 秒
             int second = calendar.get(Calendar.SECOND);
-            result.append(NumberChinese.format(second, false));
+            result.append(NumberFormatter.format(second, false));
             result.append('秒');
         }
 
@@ -921,6 +963,31 @@ public class Formatter {
         }
         format.setLenient(false);
         return format;
+    }
+
+    /**
+     * 获取时长单位简写
+     *
+     * @param unit 单位
+     * @return 单位简写名称
+     */
+    public static String getShotName(TimeUnit unit) {
+        switch (unit) {
+            case NANOSECONDS:
+                return "ns";
+            case MICROSECONDS:
+                return "μs";
+            case MILLISECONDS:
+                return "ms";
+            case SECONDS:
+                return "s";
+            case MINUTES:
+                return "min";
+            case HOURS:
+                return "h";
+            default:
+                return unit.name().toLowerCase();
+        }
     }
 
     /**

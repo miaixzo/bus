@@ -27,7 +27,6 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.toolkit.DateKit;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -108,7 +107,6 @@ public class Between {
         return new Between(begin, end, isAbs);
     }
 
-
     /**
      * 判断两个日期相差的时长
      * 返回 给定单位的时长差
@@ -129,8 +127,8 @@ public class Between {
      * @return 相差月数
      */
     public long betweenMonth(boolean isReset) {
-        final Calendar beginCal = DateKit.toCalendar(begin);
-        final Calendar endCal = DateKit.toCalendar(end);
+        final Calendar beginCal = Converter.toCalendar(begin);
+        final Calendar endCal = Converter.toCalendar(end);
 
         final int betweenYear = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
         final int betweenMonthOfYear = endCal.get(Calendar.MONTH) - beginCal.get(Calendar.MONTH);
@@ -155,8 +153,8 @@ public class Between {
      * @return 相差年数
      */
     public long betweenYear(boolean isReset) {
-        final Calendar beginCal = DateKit.toCalendar(begin);
-        final Calendar endCal = DateKit.toCalendar(end);
+        final Calendar beginCal = Converter.toCalendar(begin);
+        final Calendar endCal = Converter.toCalendar(end);
 
         int result = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
         if (false == isReset) {
@@ -186,7 +184,7 @@ public class Between {
      * @return 字符串
      */
     public String toString(Fields.Units unit) {
-        return DateKit.formatBetween(between(Fields.Units.MILLISECOND), unit);
+        return Formatter.formatBetween(between(Fields.Units.MILLISECOND), unit);
     }
 
     @Override

@@ -42,6 +42,11 @@ import java.lang.reflect.Type;
  */
 public class ReferenceConverter extends AbstractConverter<Reference> {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 目标类型
+     */
     private final Class<? extends Reference> targetType;
 
     /**

@@ -44,6 +44,8 @@ import java.util.Objects;
  */
 public class MapConverter extends AbstractConverter<Map<?, ?>> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Map类型
      */

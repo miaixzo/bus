@@ -31,7 +31,6 @@ import org.aoju.bus.core.date.formatter.FormatBuilder;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.ZoneKit;
@@ -146,7 +145,7 @@ public class DateTime extends Date {
      * @param temporalAccessor {@link TemporalAccessor} 对象
      */
     public DateTime(TemporalAccessor temporalAccessor) {
-        this(DateKit.toInstant(temporalAccessor));
+        this(Converter.toInstant(temporalAccessor));
     }
 
     /**
@@ -185,7 +184,7 @@ public class DateTime extends Date {
      * @param format  格式
      */
     public DateTime(CharSequence dateStr, String format) {
-        this(dateStr, DateKit.newSimpleFormat(format));
+        this(dateStr, Formatter.newSimpleFormat(format));
     }
 
     /**
@@ -908,7 +907,7 @@ public class DateTime extends Date {
      */
     public String toDateString() {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_DATE_PATTERN, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_DATE_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_DATE_FORMAT);
     }
@@ -920,7 +919,7 @@ public class DateTime extends Date {
      */
     public String toTimeString() {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_TIME_PATTERN, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_TIME_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_TIME_FORMAT);
     }
@@ -952,7 +951,7 @@ public class DateTime extends Date {
      */
     public String toString(TimeZone timeZone) {
         if (null != timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_DATETIME_PATTERN, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_DATETIME_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_DATETIME_FORMAT);
     }
@@ -965,7 +964,7 @@ public class DateTime extends Date {
      */
     public String toString(String format) {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(format, null, timeZone));
+            return toString(Formatter.newSimpleFormat(format, null, timeZone));
         }
         return toString(FormatBuilder.getInstance(format));
     }

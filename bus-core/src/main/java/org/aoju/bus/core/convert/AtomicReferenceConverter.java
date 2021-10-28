@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class AtomicReferenceConverter extends AbstractConverter<AtomicReference> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected AtomicReference<?> convertInternal(Object value) {
         // 尝试将值转换为Reference泛型的类型

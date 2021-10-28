@@ -36,6 +36,8 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  */
 public class AtomicIntegerArrayConverter extends AbstractConverter<AtomicIntegerArray> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected AtomicIntegerArray convertInternal(Object value) {
         return new AtomicIntegerArray(Convert.convert(int[].class, value));

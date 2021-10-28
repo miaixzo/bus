@@ -40,6 +40,8 @@ import java.nio.file.Paths;
  */
 public class PathConverter extends AbstractConverter<Path> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected Path convertInternal(Object value) {
         try {

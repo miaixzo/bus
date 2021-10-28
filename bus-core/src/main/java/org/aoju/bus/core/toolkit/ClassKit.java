@@ -3728,7 +3728,7 @@ public class ClassKit {
      * @return {@link StandardJavaFileManager}
      */
     public static StandardJavaFileManager getFileManager() {
-        return SYSTEM_COMPILER.getStandardFileManager(null, null, null);
+        return getFileManager(null);
     }
 
     /**
@@ -3738,7 +3738,7 @@ public class ClassKit {
      * @return {@link StandardJavaFileManager}
      */
     public static StandardJavaFileManager getFileManager(DiagnosticListener<? super JavaFileObject> diagnosticListener) {
-        return SYSTEM_COMPILER.getStandardFileManager(null, null, null);
+        return SYSTEM_COMPILER.getStandardFileManager(diagnosticListener, null, null);
     }
 
     /**

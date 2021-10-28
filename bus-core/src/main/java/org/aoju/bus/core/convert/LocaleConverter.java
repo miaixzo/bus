@@ -40,6 +40,8 @@ import java.util.Locale;
  */
 public class LocaleConverter extends AbstractConverter<Locale> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected Locale convertInternal(Object value) {
         try {

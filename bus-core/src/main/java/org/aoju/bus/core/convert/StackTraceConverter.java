@@ -40,6 +40,8 @@ import java.util.Map;
  */
 public class StackTraceConverter extends AbstractConverter<StackTraceElement> {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     protected StackTraceElement convertInternal(Object value) {
         if (value instanceof Map) {

@@ -43,6 +43,8 @@ import java.util.stream.Collectors;
  */
 public class EnumConverter extends AbstractConverter<Object> {
 
+    private static final long serialVersionUID = 1L;
+
     private static final Map<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new ConcurrentHashMap<>();
 
     private final Class enumClass;

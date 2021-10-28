@@ -37,6 +37,8 @@ import org.aoju.bus.core.toolkit.ClassKit;
  */
 public class ClassConverter extends AbstractConverter<Class<?>> {
 
+    private static final long serialVersionUID = 1L;
+
     private final boolean isInitialized;
 
     /**

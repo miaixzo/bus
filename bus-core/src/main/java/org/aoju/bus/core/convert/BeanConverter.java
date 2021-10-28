@@ -52,6 +52,8 @@ import java.util.Map;
  */
 public class BeanConverter<T> extends AbstractConverter<T> {
 
+    private static final long serialVersionUID = 1L;
+
     private final Type beanType;
     private final Class<T> beanClass;
     private final CopyOptions copyOptions;
