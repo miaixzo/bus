@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
@@ -50,10 +51,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     int SOCKINFO_IN = 1;
     int SOCKINFO_TCP = 2;
 
-    int UTX_USERSIZE = 256;
-    int UTX_LINESIZE = 32;
+    int UTX_USERSIZE =  Normal._256;
+    int UTX_LINESIZE = Normal._32;
     int UTX_IDSIZE = 4;
-    int UTX_HOSTSIZE = 256;
+    int UTX_HOSTSIZE =  Normal._256;
 
     int AF_INET = 2; // The Internet Protocol version 4 (IPv4) address family.
     int AF_INET6 = 30; // The Internet Protocol version 6 (IPv6) address family.
@@ -83,7 +84,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public short ut_type; // type of this entry
         public Timeval ut_tv; // time entry was created
         public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
-        public byte[] ut_pad = new byte[16]; // reserved for future use
+        public byte[] ut_pad = new byte[Normal._16]; // reserved for future use
     }
 
     /**

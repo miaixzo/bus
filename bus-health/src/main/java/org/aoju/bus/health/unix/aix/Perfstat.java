@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.aix;
 
 import com.sun.jna.*;
 import com.sun.jna.Structure.FieldOrder;
+import org.aoju.bus.core.lang.Normal;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ import java.util.Map;
 public interface Perfstat extends Library {
 
     Perfstat INSTANCE = getInstance();
-    int IDENTIFIER_LENGTH = 64;
+    int IDENTIFIER_LENGTH = Normal._64;
 
     static Perfstat getInstance() {
         int RTLD_MEMBER = 0x40000; // allows "lib.a(obj.o)" syntax
@@ -452,7 +453,7 @@ public interface Perfstat extends Library {
     class perfstat_process_t extends Structure {
         public long version; // version number (1, 2, etc.,)
         public long pid; // Process ID
-        public byte[] proc_name = new byte[64]; // Name of The Process
+        public byte[] proc_name = new byte[Normal._64]; // Name of The Process
         public int proc_priority; // Process Priority
         public long num_threads; // Thread Count
         public long proc_uid; // Owner Info
@@ -549,23 +550,23 @@ public interface Perfstat extends Library {
             "targetmemexpsize"})
     class perfstat_partition_config_t extends Structure {
         public long version; // Version number
-        public byte[] partitionname = new byte[64]; // Partition Name
-        public byte[] nodename = new byte[64]; // Node Name
+        public byte[] partitionname = new byte[Normal._64]; // Partition Name
+        public byte[] nodename = new byte[Normal._64]; // Node Name
         public int conf; // Partition Properties (perfstat_partition_type_t 32-bit union)
         public int partitionnum; // Partition Number
         public int groupid; // Group ID
 
         /* Hardware Configuration */
-        public byte[] processorFamily = new byte[64]; // Processor Type
-        public byte[] processorModel = new byte[64]; // Processor Model
-        public byte[] machineID = new byte[64]; // Machine ID
+        public byte[] processorFamily = new byte[Normal._64]; // Processor Type
+        public byte[] processorModel = new byte[Normal._64]; // Processor Model
+        public byte[] machineID = new byte[Normal._64]; // Machine ID
         public double processorMHz; // Processor Clock Speed in MHz
         public perfstat_value_t numProcessors; // Number of Configured Physical Processors in frame
 
         /* Software Configuration */
-        public byte[] OSName = new byte[64]; // Name of Operating System
-        public byte[] OSVersion = new byte[64]; // Version of operating System
-        public byte[] OSBuild = new byte[64]; // Build of Operating System
+        public byte[] OSName = new byte[Normal._64]; // Name of Operating System
+        public byte[] OSVersion = new byte[Normal._64]; // Version of operating System
+        public byte[] OSBuild = new byte[Normal._64]; // Build of Operating System
 
         /* Lpar Configuration */
         public int lcpus; // Number of Logical CPUs

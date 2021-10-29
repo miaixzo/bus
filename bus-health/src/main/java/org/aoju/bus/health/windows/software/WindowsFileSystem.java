@@ -159,7 +159,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
         }
         try {
             do {
-                fstype = new char[16];
+                fstype = new char[Normal._16];
                 name = new char[BUFSIZE];
                 mount = new char[BUFSIZE];
                 pFlags = new IntByReference();
@@ -169,7 +169,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 systemFreeBytes = new WinNT.LARGE_INTEGER(0L);
 
                 volume = Native.toString(aVolume);
-                Kernel32.INSTANCE.GetVolumeInformation(volume, name, BUFSIZE, null, null, pFlags, fstype, 16);
+                Kernel32.INSTANCE.GetVolumeInformation(volume, name, BUFSIZE, null, null, pFlags, fstype, Normal._16);
                 final int flags = pFlags.getValue();
                 Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(volume, mount, BUFSIZE, null);
 

@@ -110,7 +110,7 @@ public class ElemeProvider extends AbstractProvider {
             byte[] byteData = md.digest();
             StringBuilder buffer = new StringBuilder();
             for (byte byteDatum : byteData) {
-                buffer.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+                buffer.append(Integer.toString((byteDatum & 0xff) + 0x100, Normal._16).substring(1));
             }
             return null == buffer ? Normal.EMPTY : buffer.toString();
         } catch (Exception ignored) {

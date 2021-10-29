@@ -56,7 +56,7 @@ public class HashID {
     private static final Pattern PATTERN = Pattern.compile("[\\w\\W]{1,12}");
 
     private static final int DEFAULT_MIN_HASH_LENGTH = 0;
-    private static final int MIN_ALPHABET_LENGTH = 16;
+    private static final int MIN_ALPHABET_LENGTH = Normal._16;
     private static final double SEP_DIV = 3.5;
     private static final int GUARD_DIV = 12;
 
@@ -305,7 +305,7 @@ public class HashID {
         final Matcher matcher = PATTERN.matcher(hexa);
 
         while (matcher.find()) {
-            matched.add(Long.parseLong(Symbol.ONE + matcher.group(), 16));
+            matched.add(Long.parseLong(Symbol.ONE + matcher.group(), Normal._16));
         }
 
         // conversion

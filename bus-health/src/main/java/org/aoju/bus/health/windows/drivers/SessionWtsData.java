@@ -33,6 +33,7 @@ import com.sun.jna.platform.win32.Wtsapi32.WTS_SESSION_INFO;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.OSSession;
@@ -60,7 +61,7 @@ public final class SessionWtsData {
     private static final int WTS_ACTIVE = 0;
     private static final int WTS_CLIENTADDRESS = 14;
     private static final int WTS_SESSIONINFO = 24;
-    private static final int WTS_CLIENTPROTOCOLTYPE = 16;
+    private static final int WTS_CLIENTPROTOCOLTYPE = Normal._16;
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 

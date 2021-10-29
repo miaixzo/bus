@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 
@@ -41,7 +42,7 @@ public class Tag {
     public static final int CommandLengthToEnd = 1;
     public static final int AffectedSOPClassUID = 2;
     public static final int RequestedSOPClassUID = 3;
-    public static final int CommandRecognitionCode = 16;
+    public static final int CommandRecognitionCode = Normal._16;
     public static final int CommandField = 256;
     public static final int MessageID = 272;
     public static final int MessageIDBeingRespondedTo = 288;

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.serialize;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 
@@ -87,7 +88,7 @@ public class JdkSerializer extends AbstractSerializer {
 
     @Override
     protected byte[] doSerialize(Object obj) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(Normal._512);
         serialize((Serializable) obj, baos);
         return baos.toByteArray();
     }

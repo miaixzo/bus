@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
@@ -137,7 +139,7 @@ public class BufferedImages {
             short[] pixels = (short[]) data;
             pix = pm.getRGB(pixels[0]);
         }
-        b[0] = (byte) ((pix >> 16) & 0xff);
+        b[0] = (byte) ((pix >> Normal._16) & 0xff);
         b[1] = (byte) ((pix >> 8) & 0xff);
         b[2] = (byte) (pix & 0xff);
         return b;

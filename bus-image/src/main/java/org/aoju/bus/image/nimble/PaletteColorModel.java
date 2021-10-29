@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 
@@ -114,7 +115,7 @@ public class PaletteColorModel extends ColorModel {
             throw new IllegalArgumentException(
                     "Illegal LUT Descriptor: len=" + desc[0]);
         int bits = desc[2];
-        if (bits != 8 && bits != 16)
+        if (bits != 8 && bits != Normal._16)
             throw new IllegalArgumentException(
                     "Illegal LUT Descriptor: bits=" + bits);
         return desc;
@@ -135,7 +136,7 @@ public class PaletteColorModel extends ColorModel {
             }
             data = new byte[len];
             inflateSegmentedLut(segm, data);
-        } else if (bits == 16 || data.length != len) {
+        } else if (bits == Normal._16 || data.length != len) {
             if (data.length != len << 1)
                 lutLengthMismatch(data.length, len);
             int hilo = ds.bigEndian() ? 0 : 1;
@@ -161,7 +162,7 @@ public class PaletteColorModel extends ColorModel {
                         x = linearSegment(in[i++], out, x, n);
                         break;
                     case 2: {
-                        int i2 = (in[i++] & 0xffff) | (in[i++] << 16);
+                        int i2 = (in[i++] & 0xffff) | (in[i++] << Normal._16);
                         while (n-- > 0) {
                             int op2 = in[i2++];
                             int n2 = in[i2++] & 0xffff;
@@ -305,7 +306,7 @@ public class PaletteColorModel extends ColorModel {
                 rgb = new int[length];
                 for (int i = 0; i < r.length; i++)
                     rgb[i] = 0xff000000
-                            | ((r[i] & 0xff) << 16)
+                            | ((r[i] & 0xff) << Normal._16)
                             | ((g[i] & 0xff) << 8)
                             | (b[i] & 0xff);
             }
@@ -317,7 +318,7 @@ public class PaletteColorModel extends ColorModel {
 
             @Override
             public int getRed(int pixel) {
-                return (rgb[index(pixel, offset, rgb.length)] >> 16) & 0xff;
+                return (rgb[index(pixel, offset, rgb.length)] >> Normal._16) & 0xff;
             }
 
             @Override
@@ -379,7 +380,7 @@ public class PaletteColorModel extends ColorModel {
             @Override
             public int getRGB(int pixel) {
                 return 0xff000000
-                        | (value(pixel, rOffset, r) << 16)
+                        | (value(pixel, rOffset, r) << Normal._16)
                         | (value(pixel, gOffset, g) << 8)
                         | (value(pixel, bOffset, b));
             }

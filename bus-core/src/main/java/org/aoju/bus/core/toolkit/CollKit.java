@@ -850,7 +850,7 @@ public class CollKit {
         if (null == ts) {
             return isSorted ? new LinkedHashSet<>() : new HashSet<>();
         }
-        int initialCapacity = Math.max((int) (ts.length / .75f) + 1, 16);
+        int initialCapacity = Math.max((int) (ts.length / .75f) + 1, Normal._16);
         final HashSet<T> set = isSorted ? new LinkedHashSet<>(initialCapacity) : new HashSet<>(initialCapacity);
         Collections.addAll(set, ts);
         return set;
@@ -3145,7 +3145,7 @@ public class CollKit {
         if (isEmpty(mapCollection)) {
             return new HashSet<>();
         }
-        final HashSet<K> set = new HashSet<>(mapCollection.size() * 16);
+        final HashSet<K> set = new HashSet<>(mapCollection.size() * Normal._16);
         for (Map<K, ?> map : mapCollection) {
             set.addAll(map.keySet());
         }

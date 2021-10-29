@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * 缓冲区的一段
  * 缓冲区中的每个段都是一个循环链表节点,它引用以下内容和
@@ -50,7 +52,7 @@ public final class Segment {
     /**
      * 这样做避免了这么多字节的{@code arraycopy()}时，将被共享
      */
-    public static final int SHARE_MINIMUM = 1024;
+    public static final int SHARE_MINIMUM = Normal._1024;
 
     public final byte[] data;
 

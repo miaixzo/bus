@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.key;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
@@ -64,10 +65,10 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
                         NetworkInterface ni = e.nextElement();
                         sb.append(ni.toString());
                     }
-                    machinePiece = sb.toString().hashCode() << 16;
+                    machinePiece = sb.toString().hashCode() << Normal._16;
                 } catch (Exception e) {
                     // exception sometimes happens with IBM JVM, use random
-                    machinePiece = (new Random().nextInt()) << 16;
+                    machinePiece = (new Random().nextInt()) << Normal._16;
                 }
             }
             // add a 2 byte process piece. It must represent not only the JVM
@@ -137,7 +138,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
 
         byte[] b = new byte[12];
         for (int i = 0; i < b.length; i++) {
-            b[i] = (byte) Integer.parseInt(s.substring(i * 2, i * 2 + 2), 16);
+            b[i] = (byte) Integer.parseInt(s.substring(i * 2, i * 2 + 2), Normal._16);
         }
         ByteBuffer bb = ByteBuffer.wrap(b);
         _time = bb.getInt();

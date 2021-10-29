@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -3064,7 +3065,7 @@ public class UID {
     }
 
     public static boolean isValid(String uid) {
-        return uid.length() <= 64 && PATTERN.matcher(uid).matches();
+        return uid.length() <= Normal._64 && PATTERN.matcher(uid).matches();
     }
 
     public static String createUID() {

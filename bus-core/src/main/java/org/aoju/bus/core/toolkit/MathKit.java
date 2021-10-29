@@ -2097,11 +2097,11 @@ public class MathKit {
         }
         if (text.startsWith("0x", pos) || text.startsWith("0X", pos)) {
             // hex
-            radix = 16;
+            radix = Normal._16;
             pos += 2;
         } else if (text.startsWith(Symbol.SHAPE, pos)) {
             // alternative hex (allowed by Long/Integer)
-            radix = 16;
+            radix = Normal._16;
             pos++;
         } else if (text.startsWith(Symbol.ZERO, pos) && text.length() > pos + 1) {
             // octal; so long as there are additional digits
@@ -2214,7 +2214,7 @@ public class MathKit {
 
         if (StringKit.startWithIgnoreCase(number, "0x")) {
             // 0x04表示16进制数
-            return Integer.parseInt(number.substring(2), 16);
+            return Integer.parseInt(number.substring(2), Normal._16);
         }
 
         try {
@@ -2244,7 +2244,7 @@ public class MathKit {
 
         if (number.startsWith("0x")) {
             // 0x04表示16进制数
-            return Long.parseLong(number.substring(2), 16);
+            return Long.parseLong(number.substring(2), Normal._16);
         }
 
         try {
@@ -2332,7 +2332,7 @@ public class MathKit {
         final byte[] result = new byte[4];
 
         result[0] = (byte) (value >> 24);
-        result[1] = (byte) (value >> 16);
+        result[1] = (byte) (value >> Normal._16);
         result[2] = (byte) (value >> 8);
         result[3] = (byte) (value /* >> 0 */);
 
@@ -2346,9 +2346,9 @@ public class MathKit {
      * @return int
      */
     public static int toInt(byte[] bytes) {
-        return (bytes[0] & 0xff) << 24//
-                | (bytes[1] & 0xff) << 16//
-                | (bytes[2] & 0xff) << 8//
+        return (bytes[0] & 0xff) << 24
+                | (bytes[1] & 0xff) << Normal._16
+                | (bytes[2] & 0xff) << 8
                 | (bytes[3] & 0xff);
     }
 
@@ -3049,9 +3049,9 @@ public class MathKit {
         if (size <= 0) {
             return Symbol.ZERO;
         }
-        int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
+        int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(Normal._1024)));
         return new DecimalFormat("#,##0.##")
-                .format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE + Normal.CAPACITY_NAMES[digitGroups];
+                .format(size / Math.pow(Normal._1024, digitGroups)) + Symbol.SPACE + Normal.CAPACITY_NAMES[digitGroups];
     }
 
     /**

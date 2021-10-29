@@ -134,7 +134,7 @@ public class ComplexKit {
 
         if (len > 12) {
             level++;
-            if (len >= 16) {
+            if (len >= Normal._16) {
                 level++;
             }
         }

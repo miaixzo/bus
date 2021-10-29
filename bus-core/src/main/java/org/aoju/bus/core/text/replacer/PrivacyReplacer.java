@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.replacer;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Replacer;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.Lookups;
@@ -713,7 +714,7 @@ public class PrivacyReplacer implements Replacer<Object>, Serializable {
         if (priorVariables.contains(varName) == false) {
             return;
         }
-        final TextBuilder buf = new TextBuilder(256);
+        final TextBuilder buf = new TextBuilder( Normal._256);
         buf.append("Infinite loop in property interpolation of ");
         buf.append(priorVariables.remove(0));
         buf.append(": ");

@@ -30,6 +30,7 @@ import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
@@ -62,7 +63,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
      * 要加入队列的最大字节数。而不是排队超过这个限制，我们拆掉web套接字!有可能我们写得比别人读得快
      * 16 MiB
      */
-    private static final long MAX_QUEUE_SIZE = 16 * 1024 * 1024;
+    private static final long MAX_QUEUE_SIZE = Normal._16 * Normal._1024 * Normal._1024;
 
     /**
      * 客户端调用{@link #close}以等待适当关闭的最大时间量。如果服务器没有响应，websocket将被取消
@@ -169,7 +170,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         this.random = random;
         this.pingIntervalMillis = pingIntervalMillis;
 
-        byte[] nonce = new byte[16];
+        byte[] nonce = new byte[Normal._16];
         random.nextBytes(nonce);
         this.key = ByteString.of(nonce).base64();
 

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -155,7 +157,7 @@ public final class WriteBuffer extends OutputStream {
     public void writeInt(int v) throws IOException {
         initCacheBytes();
         cacheByte[0] = (byte) ((v >>> 24) & 0xFF);
-        cacheByte[1] = (byte) ((v >>> 16) & 0xFF);
+        cacheByte[1] = (byte) ((v >>> Normal._16) & 0xFF);
         cacheByte[2] = (byte) ((v >>> 8) & 0xFF);
         cacheByte[3] = (byte) (v & 0xFF);
         write(cacheByte, 0, 4);
@@ -173,9 +175,9 @@ public final class WriteBuffer extends OutputStream {
         cacheByte[0] = (byte) ((v >>> 56) & 0xFF);
         cacheByte[1] = (byte) ((v >>> 48) & 0xFF);
         cacheByte[2] = (byte) ((v >>> 40) & 0xFF);
-        cacheByte[3] = (byte) ((v >>> 32) & 0xFF);
+        cacheByte[3] = (byte) ((v >>> Normal._32) & 0xFF);
         cacheByte[4] = (byte) ((v >>> 24) & 0xFF);
-        cacheByte[5] = (byte) ((v >>> 16) & 0xFF);
+        cacheByte[5] = (byte) ((v >>> Normal._16) & 0xFF);
         cacheByte[6] = (byte) ((v >>> 8) & 0xFF);
         cacheByte[7] = (byte) (v & 0xFF);
         write(cacheByte, 0, 8);

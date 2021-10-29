@@ -978,7 +978,7 @@ public class StringKit {
         byte[] bytes = new byte[hex.length() / 2];
         for (int i = 0; i < hex.length() / 2; i++) {
             String subStr = hex.substring(i * 2, i * 2 + 2);
-            bytes[i] = (byte) Integer.parseInt(subStr, 16);
+            bytes[i] = (byte) Integer.parseInt(subStr, Normal._16);
         }
         return bytes;
     }
@@ -1063,7 +1063,7 @@ public class StringKit {
         String[] hex = input.split("\\\\u");
         for (int i = 1; i < hex.length; i++) {
             // 转换出每一个代码点
-            int data = Integer.parseInt(hex[i], 16);
+            int data = Integer.parseInt(hex[i], Normal._16);
             // 追加成string
             string.append((char) data);
         }
@@ -1095,7 +1095,7 @@ public class StringKit {
                 if (i + 5 < len) {
                     char c = 0;
                     try {
-                        c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), 16);
+                        c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), Normal._16);
                         sb.append(c);
                         pos = i + 6;//跳过整个Unicode符
                     } catch (NumberFormatException e) {
@@ -1141,7 +1141,7 @@ public class StringKit {
         String start = "Ⓐ";
         String hexStr = toUnicode(start).substring(Symbol.UNICODE_START_CHAR.length());
         int difference = letter >= 'a' && letter <= 'z' ? (letter - (int) 'a') : (letter - (int) 'A');
-        String hex = new BigInteger(hexStr, 16).add(new BigInteger(String.valueOf(difference), 10)).toString(16);
+        String hex = new BigInteger(hexStr, Normal._16).add(new BigInteger(String.valueOf(difference), 10)).toString(Normal._16);
 
         String unicodeStr = Symbol.UNICODE_START_CHAR + hex;
         return toString(unicodeStr);
@@ -3155,7 +3155,7 @@ public class StringKit {
         final int replLength = word.length();
         int increase = replacement.length() - replLength;
         increase = increase < 0 ? 0 : increase;
-        increase *= max < 0 ? 16 : max > 64 ? 64 : max;
+        increase *= max < 0 ? Normal._16 : max > Normal._64 ? Normal._64 : max;
         final StringBuilder buf = new StringBuilder(text.length() + increase);
         while (end != INDEX_NOT_FOUND) {
             buf.append(text, start, end).append(replacement);
@@ -3535,7 +3535,7 @@ public class StringKit {
             fromIndex = 0;
         }
 
-        final TextKit result = TextKit.create(strLength + 16);
+        final TextKit result = TextKit.create(strLength + Normal._16);
         if (0 != fromIndex) {
             result.append(text.subSequence(0, fromIndex));
         }

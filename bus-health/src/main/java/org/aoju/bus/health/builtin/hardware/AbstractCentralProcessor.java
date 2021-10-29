@@ -26,6 +26,7 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
@@ -99,7 +100,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         processorIdBytes |= steppingL & 0xf;
         // 19:16,7:4 – Model
         processorIdBytes |= (modelL & 0x0f) << 4;
-        processorIdBytes |= (modelL & 0xf0) << 16;
+        processorIdBytes |= (modelL & 0xf0) << Normal._16;
         // 27:20,11:8 – Family
         processorIdBytes |= (familyL & 0x0f) << 8;
         processorIdBytes |= (familyL & 0xf0) << 20;
@@ -107,7 +108,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         for (String flag : flags) {
             switch (flag) { // NOSONAR squid:S1479
                 case "fpu":
-                    processorIdBytes |= 1L << 32;
+                    processorIdBytes |= 1L << Normal._32;
                     break;
                 case "vme":
                     processorIdBytes |= 1L << 33;

@@ -113,7 +113,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             return 64;
         }
         // 9th bit of conf is 64-bit kernel
-        return (config.get().conf & 0x0080_0000) > 0 ? 64 : 32;
+        return (config.get().conf & 0x0080_0000) > 0 ? Normal._64 : Normal._32;
     }
 
     @Override

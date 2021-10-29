@@ -26,6 +26,7 @@
 package org.aoju.bus.core.bloom;
 
 import org.aoju.bus.core.bloom.filter.*;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**
@@ -52,7 +53,7 @@ public class BitMapBloomFilter implements BloomFilter {
      */
     public BitMapBloomFilter(int m) {
         long mNum = MathKit.div(String.valueOf(m), String.valueOf(5)).longValue();
-        long size = mNum * 1024 * 1024 * 8;
+        long size = mNum * Normal._1024 * Normal._1024 * 8;
 
         filters = new BloomFilter[]{
                 new DefaultFilter(size),

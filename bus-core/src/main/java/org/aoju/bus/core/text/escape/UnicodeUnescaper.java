@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.escape;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 
@@ -60,7 +61,7 @@ public class UnicodeUnescaper extends CharSequenceTranslator {
                 final CharSequence unicode = input.subSequence(index + i, index + i + 4);
 
                 try {
-                    final int value = Integer.parseInt(unicode.toString(), 16);
+                    final int value = Integer.parseInt(unicode.toString(), Normal._16);
                     out.write((char) value);
                 } catch (final NumberFormatException nfe) {
                     throw new IllegalArgumentException("Unable to parse unicode value: " + unicode, nfe);

@@ -28,6 +28,7 @@ package org.aoju.bus.health.windows.drivers;
 import com.sun.jna.platform.win32.WinBase;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Config;
@@ -88,7 +89,7 @@ public final class ProcessPerformanceData {
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
                 if (ctime > now) {
-                    ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
+                    ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> Normal._32), (int) (ctime & 0xffffffffL)).getTime();
                 }
                 long upTime = now - ctime;
                 if (upTime < 1L) {
@@ -139,7 +140,7 @@ public final class ProcessPerformanceData {
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
                 if (ctime > now) {
-                    ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
+                    ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> Normal._32), (int) (ctime & 0xffffffffL)).getTime();
                 }
                 long upTime = now - ctime;
                 if (upTime < 1L) {

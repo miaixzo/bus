@@ -1,5 +1,6 @@
 package org.aoju.bus.pager.dialect.base;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.cache.CacheKey;
@@ -27,7 +28,7 @@ public class Firebird extends AbstractPaging {
 
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        StringBuilder sqlBuilder = new StringBuilder(sql.length() + 64);
+        StringBuilder sqlBuilder = new StringBuilder(sql.length() + Normal._64);
         sqlBuilder.append(sql);
         sqlBuilder.append("\n OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ");
         pageKey.update(page.getPageSize());

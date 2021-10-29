@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.reader;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.galaxy.data.Implementation;
 import org.aoju.bus.image.nimble.DicomMetaData;
 
@@ -77,7 +78,7 @@ public class NativeDCMImageReaderSpi extends ImageReaderSpi {
         try {
             int tag = iis.read()
                     | (iis.read() << 8)
-                    | (iis.read() << 16)
+                    | (iis.read() << Normal._16)
                     | (iis.read() << 24);
             return ((tag >= 0x00080000 && tag <= 0x00080016)
                     || (iis.skipBytes(124) == 124

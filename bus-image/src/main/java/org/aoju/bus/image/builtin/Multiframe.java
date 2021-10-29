@@ -225,7 +225,7 @@ public class Multiframe {
 
     private String createInstanceNumber(String mfinstno, int frame) {
         String s = String.format(instanceNumberFormat, mfinstno, frame + 1);
-        return s.length() > 16 ? s.substring(s.length() - 16) : s;
+        return s.length() > Normal._16 ? s.substring(s.length() - Normal._16) : s;
     }
 
     private enum Impl {

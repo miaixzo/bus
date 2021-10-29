@@ -26,6 +26,7 @@
 package org.aoju.bus.cron.pattern.matcher;
 
 import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.Normal;
 
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
      */
     public boolean match(int value, int month, boolean isLeapYear) {
         return (super.match(value)
-                || (value > 27 && match(32) && isLastDayOfMonth(value, month, isLeapYear)));
+                || (value > 27 && match(Normal._32) && isLastDayOfMonth(value, month, isLeapYear)));
     }
 
 }

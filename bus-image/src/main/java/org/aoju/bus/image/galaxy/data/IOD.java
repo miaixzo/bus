@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.image.Tag;
@@ -655,7 +656,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         private int tagOf(String s) throws SAXException {
             try {
-                return (int) Long.parseLong(s, 16);
+                return (int) Long.parseLong(s, Normal._16);
             } catch (NullPointerException e) {
                 throw new SAXException("missing tag attribute");
             } catch (IllegalArgumentException e) {
@@ -673,7 +674,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                 for (int i = 0; i < tagPath.length; i++)
                     tagPath[i] = ss[i].equals(Symbol.DOUBLE_DOT)
                             ? -1
-                            : (int) Long.parseLong(s, 16);
+                            : (int) Long.parseLong(s, Normal._16);
                 return tagPath;
             } catch (IllegalArgumentException e) {
                 throw new SAXException("invalid tag=\"" + s + Symbol.C_DOUBLE_QUOTES);

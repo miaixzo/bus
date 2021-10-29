@@ -1057,7 +1057,7 @@ public class Connection implements Serializable {
 
     private void doProxyHandshake(Socket s, String hostname, int port,
                                   String userauth, int connectTimeout) throws IOException {
-        StringBuilder request = new StringBuilder(128);
+        StringBuilder request = new StringBuilder( Normal._128);
         request.append("CONNECT ")
                 .append(hostname).append(Symbol.C_COLON).append(port)
                 .append(" HTTP/1.1\r\nHost: ")
@@ -1181,7 +1181,7 @@ public class Connection implements Serializable {
         private final String rsp;
 
         public HTTPResponse(Socket s) throws IOException {
-            super(64);
+            super(Normal._64);
             InputStream in = s.getInputStream();
             boolean eol = false;
             int b;

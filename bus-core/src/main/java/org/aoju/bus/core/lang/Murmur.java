@@ -96,9 +96,9 @@ public class Murmur implements Serializable {
         // body
         for (int i = 0; i < nblocks; i++) {
             int i_4 = i << 2;
-            int k = (data[i_4] & 0xff) //
-                    | ((data[i_4 + 1] & 0xff) << 8) //
-                    | ((data[i_4 + 2] & 0xff) << 16) //
+            int k = (data[i_4] & 0xff)
+                    | ((data[i_4 + 1] & 0xff) << 8)
+                    | ((data[i_4 + 2] & 0xff) << Normal._16)
                     | ((data[i_4 + 3] & 0xff) << 24);
 
             // mix functions
@@ -114,7 +114,7 @@ public class Murmur implements Serializable {
         int k1 = 0;
         switch (length - idx) {
             case 3:
-                k1 ^= data[idx + 2] << 16;
+                k1 ^= data[idx + 2] << Normal._16;
             case 2:
                 k1 ^= data[idx + 1] << 8;
             case 1:
@@ -129,11 +129,11 @@ public class Murmur implements Serializable {
 
         // finalization
         hash ^= length;
-        hash ^= (hash >>> 16);
+        hash ^= (hash >>> Normal._16);
         hash *= 0x85ebca6b;
         hash ^= (hash >>> 13);
         hash *= 0xc2b2ae35;
-        hash ^= (hash >>> 16);
+        hash ^= (hash >>> Normal._16);
 
         return hash;
     }
@@ -175,13 +175,13 @@ public class Murmur implements Serializable {
         // body
         for (int i = 0; i < nblocks; i++) {
             final int i8 = i << 3;
-            long k = ((long) data[i8] & 0xff) //
-                    | (((long) data[i8 + 1] & 0xff) << 8) //
-                    | (((long) data[i8 + 2] & 0xff) << 16) //
-                    | (((long) data[i8 + 3] & 0xff) << 24) //
-                    | (((long) data[i8 + 4] & 0xff) << 32)//
-                    | (((long) data[i8 + 5] & 0xff) << 40) //
-                    | (((long) data[i8 + 6] & 0xff) << 48) //
+            long k = ((long) data[i8] & 0xff)
+                    | (((long) data[i8 + 1] & 0xff) << 8)
+                    | (((long) data[i8 + 2] & 0xff) << Normal._16)
+                    | (((long) data[i8 + 3] & 0xff) << 24)
+                    | (((long) data[i8 + 4] & 0xff) << 32)
+                    | (((long) data[i8 + 5] & 0xff) << 40)
+                    | (((long) data[i8 + 6] & 0xff) << 48)
                     | (((long) data[i8 + 7] & 0xff) << 56);
 
             // mix functions
@@ -205,7 +205,7 @@ public class Murmur implements Serializable {
             case 4:
                 k1 ^= ((long) data[tailStart + 3] & 0xff) << 24;
             case 3:
-                k1 ^= ((long) data[tailStart + 2] & 0xff) << 16;
+                k1 ^= ((long) data[tailStart + 2] & 0xff) << Normal._16;
             case 2:
                 k1 ^= ((long) data[tailStart + 1] & 0xff) << 8;
             case 1:
@@ -261,7 +261,7 @@ public class Murmur implements Serializable {
             final int i16 = i << 4;
             long k1 = ((long) data[i16] & 0xff)
                     | (((long) data[i16 + 1] & 0xff) << 8)
-                    | (((long) data[i16 + 2] & 0xff) << 16)
+                    | (((long) data[i16 + 2] & 0xff) << Normal._16)
                     | (((long) data[i16 + 3] & 0xff) << 24)
                     | (((long) data[i16 + 4] & 0xff) << 32)
                     | (((long) data[i16 + 5] & 0xff) << 40)
@@ -270,7 +270,7 @@ public class Murmur implements Serializable {
 
             long k2 = ((long) data[i16 + 8] & 0xff)
                     | (((long) data[i16 + 9] & 0xff) << 8)
-                    | (((long) data[i16 + 10] & 0xff) << 16)
+                    | (((long) data[i16 + 10] & 0xff) << Normal._16)
                     | (((long) data[i16 + 11] & 0xff) << 24)
                     | (((long) data[i16 + 12] & 0xff) << 32)
                     | (((long) data[i16 + 13] & 0xff) << 40)
@@ -306,11 +306,11 @@ public class Murmur implements Serializable {
             case 14:
                 k2 ^= (long) (data[tailStart + 13] & 0xff) << 40;
             case 13:
-                k2 ^= (long) (data[tailStart + 12] & 0xff) << 32;
+                k2 ^= (long) (data[tailStart + 12] & 0xff) << Normal._32;
             case 12:
                 k2 ^= (long) (data[tailStart + 11] & 0xff) << 24;
             case 11:
-                k2 ^= (long) (data[tailStart + 10] & 0xff) << 16;
+                k2 ^= (long) (data[tailStart + 10] & 0xff) << Normal._16;
             case 10:
                 k2 ^= (long) (data[tailStart + 9] & 0xff) << 8;
             case 9:
@@ -327,11 +327,11 @@ public class Murmur implements Serializable {
             case 6:
                 k1 ^= (long) (data[tailStart + 5] & 0xff) << 40;
             case 5:
-                k1 ^= (long) (data[tailStart + 4] & 0xff) << 32;
+                k1 ^= (long) (data[tailStart + 4] & 0xff) << Normal._32;
             case 4:
                 k1 ^= (long) (data[tailStart + 3] & 0xff) << 24;
             case 3:
-                k1 ^= (long) (data[tailStart + 2] & 0xff) << 16;
+                k1 ^= (long) (data[tailStart + 2] & 0xff) << Normal._16;
             case 2:
                 k1 ^= (long) (data[tailStart + 1] & 0xff) << 8;
             case 1:

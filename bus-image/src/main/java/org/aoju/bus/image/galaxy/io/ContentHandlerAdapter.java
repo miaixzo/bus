@@ -26,6 +26,7 @@
 package org.aoju.bus.image.galaxy.io;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.*;
 import org.xml.sax.helpers.DefaultHandler;
@@ -45,9 +46,9 @@ public class ContentHandlerAdapter extends DefaultHandler {
     private final boolean bigEndian;
     private final LinkedList<Attributes> items = new LinkedList<>();
     private final LinkedList<Sequence> seqs = new LinkedList<>();
-    private final ByteArrayOutputStream bout = new ByteArrayOutputStream(64);
+    private final ByteArrayOutputStream bout = new ByteArrayOutputStream(Normal._64);
     private final char[] carry = new char[4];
-    private final StringBuilder sb = new StringBuilder(64);
+    private final StringBuilder sb = new StringBuilder(Normal._64);
     private final List<String> values = new ArrayList<>();
     private Attributes fmi;
     private int carryLen;
@@ -87,7 +88,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
             case 'D':
                 if (qName.equals("DicomAttribute"))
                     startDicomAttribute(
-                            (int) Long.parseLong(atts.getValue("tag"), 16),
+                            (int) Long.parseLong(atts.getValue("tag"), Normal._16),
                             atts.getValue("privateCreator"),
                             atts.getValue("vr"));
                 else if (qName.equals("DataFragment"))

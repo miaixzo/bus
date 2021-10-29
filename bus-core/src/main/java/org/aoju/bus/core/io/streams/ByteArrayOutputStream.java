@@ -27,6 +27,7 @@ package org.aoju.bus.core.io.streams;
 
 import org.aoju.bus.core.io.FastByteBuffer;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
@@ -47,7 +48,7 @@ public class ByteArrayOutputStream extends OutputStream {
     private final FastByteBuffer buffer;
 
     public ByteArrayOutputStream() {
-        this(1024);
+        this(Normal._1024);
     }
 
     /**

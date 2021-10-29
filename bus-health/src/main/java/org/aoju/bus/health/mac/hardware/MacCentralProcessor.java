@@ -165,7 +165,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             cpuFamily = i < 0 ? Normal.EMPTY : Integer.toString(i);
             long processorIdBits = 0L;
             processorIdBits |= SysctlKit.sysctl("machdep.cpu.signature", 0);
-            processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
+            processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << Normal._32;
             processorID = String.format("%016x", processorIdBits);
         }
         if (cpuFreq == 0) {

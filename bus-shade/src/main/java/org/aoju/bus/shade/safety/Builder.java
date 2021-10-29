@@ -79,8 +79,8 @@ public abstract class Builder {
     public static String BOOT_INF_CLASSES = "BOOT-INF/classes/";
     public static String BOOT_INF_LIB = "BOOT-INF/lib/";
     public static String CRLF = System.getProperty("line.separator");
-    public static int DEFAULT_KEYSIZE = 128;
-    public static int DEFAULT_IVSIZE = 128;
+    public static int DEFAULT_KEYSIZE =  Normal._128;
+    public static int DEFAULT_IVSIZE =  Normal._128;
 
     // 保留密钥在 META-INF/MANIFEST.MF 中,启动时无需输入密钥
     public static int FLAG_DANGER = 1;

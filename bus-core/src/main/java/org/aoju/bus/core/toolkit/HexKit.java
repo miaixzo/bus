@@ -342,7 +342,7 @@ public class HexKit {
      * @throws RuntimeException 当ch不是一个合法的十六进制字符时,抛出运行时异常
      */
     private static int toDigit(char ch, int index) {
-        int digit = Character.digit(ch, 16);
+        int digit = Character.digit(ch, Normal._16);
         if (digit == -1) {
             throw new RuntimeException("Illegal hexadecimal character " + ch + " at index " + index);
         }
@@ -359,7 +359,7 @@ public class HexKit {
         if (null == hexStr) {
             return null;
         }
-        return new BigInteger(hexStr, 16);
+        return new BigInteger(hexStr, Normal._16);
     }
 
     /**

@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.solaris.software;
 
 import com.sun.jna.platform.unix.solaris.LibKstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -165,10 +166,10 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     protected int queryBitness(int jvmBitness) {
-        if (jvmBitness == 64) {
-            return 64;
+        if (jvmBitness == Normal._64) {
+            return Normal._64;
         }
-        return Builder.parseIntOrDefault(Executor.getFirstAnswer("isainfo -b"), 32);
+        return Builder.parseIntOrDefault(Executor.getFirstAnswer("isainfo -b"), Normal._32);
     }
 
     @Override

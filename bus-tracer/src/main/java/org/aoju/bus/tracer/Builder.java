@@ -79,11 +79,11 @@ public final class Builder {
             final byte[] digest = md.digest(text.getBytes(Charset.UTF_8));
             final StringBuilder sb = new StringBuilder();
             for (final byte b : digest) {
-                if (b < 16) sb.append(Symbol.ZERO);
+                if (b < Normal._16) sb.append(Symbol.ZERO);
                 sb.append(Integer.toHexString(b & 0xff));
             }
             while (sb.length() < length) {
-                sb.append(sb.toString());
+                sb.append(sb);
             }
             return sb.delete(length, sb.length()).toString();
         } catch (NoSuchAlgorithmException | UnsupportedCharsetException e) {

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * Hash算法大全
  * 推荐使用FNV1算法
@@ -212,7 +214,7 @@ public class HashKit {
         key += (key << 3);
         key ^= (key >>> 6);
         key += ~(key << 11);
-        key ^= (key >>> 16);
+        key ^= (key >>> Normal._16);
         return key;
     }
 
@@ -258,7 +260,7 @@ public class HashKit {
      * @return hash值
      */
     public static int pjwHash(String text) {
-        int bitsInUnsignedInt = 32;
+        int bitsInUnsignedInt = Normal._32;
         int threeQuarters = (bitsInUnsignedInt * 3) / 4;
         int oneEighth = bitsInUnsignedInt / 8;
         int highBits = 0xFFFFFFFF << (bitsInUnsignedInt - oneEighth);
@@ -324,7 +326,7 @@ public class HashKit {
         int hash = 0;
 
         for (int i = 0; i < text.length(); i++) {
-            hash = text.charAt(i) + (hash << 6) + (hash << 16) - hash;
+            hash = text.charAt(i) + (hash << 6) + (hash << Normal._16) - hash;
         }
 
         return hash & 0x7FFFFFFF;
@@ -393,7 +395,7 @@ public class HashKit {
             return 0;
         }
 
-        if (iLength <= 256) {
+        if (iLength <=  Normal._256) {
             hash = 16777216L * (iLength - 1);
         } else {
             hash = 4278190080L;
@@ -407,7 +409,7 @@ public class HashKit {
             for (i = 1; i <= iLength; i++) {
                 ucChar = text.charAt(i - 1);
                 if (ucChar <= 'Z' && ucChar >= 'A') {
-                    ucChar = (char) (ucChar + 32);
+                    ucChar = (char) (ucChar + Normal._32);
                 }
                 hash += (3 * i * ucChar * ucChar + 5 * i * ucChar + 7 * i + 11 * ucChar) % 16777216;
             }
@@ -415,7 +417,7 @@ public class HashKit {
             for (i = 1; i <= 96; i++) {
                 ucChar = text.charAt(i + iLength - 96 - 1);
                 if (ucChar <= 'Z' && ucChar >= 'A') {
-                    ucChar = (char) (ucChar + 32);
+                    ucChar = (char) (ucChar + Normal._32);
                 }
                 hash += (3 * i * ucChar * ucChar + 5 * i * ucChar + 7 * i + 11 * ucChar) % 16777216;
             }
@@ -450,7 +452,7 @@ public class HashKit {
      */
     public static long mixHash(String text) {
         long hash = text.hashCode();
-        hash <<= 32;
+        hash <<= Normal._32;
         hash |= fnvHash(text);
         return hash;
     }

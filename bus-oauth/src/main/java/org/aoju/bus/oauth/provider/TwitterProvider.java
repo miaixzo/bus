@@ -197,7 +197,7 @@ public class TwitterProvider extends AbstractProvider {
     private Map<String, String> buildOauthParams() {
         Map<String, String> params = new HashMap<>(5);
         params.put("oauth_consumer_key", context.getAppKey());
-        params.put("oauth_nonce", generateNonce(32));
+        params.put("oauth_nonce", generateNonce(Normal._32));
         params.put("oauth_signature_method", "HMAC-SHA1");
         params.put("oauth_timestamp", Normal.EMPTY + DateKit.timestamp());
         params.put("oauth_version", "1.0");

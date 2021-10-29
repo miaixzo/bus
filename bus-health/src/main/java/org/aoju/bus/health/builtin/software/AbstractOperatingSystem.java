@@ -26,6 +26,7 @@
 package org.aoju.bus.health.builtin.software;
 
 import com.sun.jna.Platform;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
@@ -133,11 +134,11 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     private int queryPlatformBitness() {
         if (Platform.is64Bit()) {
-            return 64;
+            return Normal._64;
         }
         // Initialize based on JVM Bitness. Individual OS implementations will test
         // if 32-bit JVM running on 64-bit OS
-        int jvmBitness = System.getProperty("os.arch").contains("64") ? 64 : 32;
+        int jvmBitness = System.getProperty("os.arch").contains("64") ? Normal._64 : Normal._32;
         return queryBitness(jvmBitness);
     }
 

@@ -82,7 +82,7 @@ public class XmlyProvider extends AbstractProvider {
             md5.update(sign);
             byte[] byteData = md5.digest();
             for (byte byteDatum : byteData) {
-                builder.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+                builder.append(Integer.toString((byteDatum & 0xff) + 0x100, Normal._16).substring(1));
             }
         } catch (Exception ignored) {
         }

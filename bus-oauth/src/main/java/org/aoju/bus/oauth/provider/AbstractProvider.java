@@ -440,7 +440,7 @@ public abstract class AbstractProvider implements Provider {
             }
         }
 
-        Map<String, String> params = new HashMap<>(16);
+        Map<String, String> params = new HashMap<>(Normal._16);
         if (StringKit.isEmpty(text)) {
             return params;
         }

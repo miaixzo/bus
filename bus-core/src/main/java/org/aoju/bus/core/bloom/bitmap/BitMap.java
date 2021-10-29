@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.bloom.bitmap;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * BitMap接口，用于将某个int或long值映射到一个数组中，从而判定某个值是否存在
  *
@@ -34,8 +36,8 @@ package org.aoju.bus.core.bloom.bitmap;
  */
 public interface BitMap {
 
-    int MACHINE32 = 32;
-    int MACHINE64 = 64;
+    int MACHINE32 = Normal._32;
+    int MACHINE64 =  Normal._64;
 
     /**
      * 加入值

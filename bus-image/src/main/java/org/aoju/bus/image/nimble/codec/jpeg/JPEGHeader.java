@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec.jpeg;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -139,7 +140,7 @@ public class JPEGHeader {
         }
         attrs.setInt(Tag.Rows, VR.US, y);
         attrs.setInt(Tag.Columns, VR.US, x);
-        attrs.setInt(Tag.BitsAllocated, VR.US, p > 8 ? 16 : 8);
+        attrs.setInt(Tag.BitsAllocated, VR.US, p > 8 ? Normal._16 : 8);
         attrs.setInt(Tag.BitsStored, VR.US, p);
         attrs.setInt(Tag.HighBit, VR.US, p - 1);
         attrs.setInt(Tag.PixelRepresentation, VR.US, 0);

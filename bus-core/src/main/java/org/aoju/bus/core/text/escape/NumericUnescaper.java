@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.escape;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.translate.CharSequenceTranslator;
 
@@ -126,7 +127,7 @@ public class NumericUnescaper extends CharSequenceTranslator {
             int entityValue;
             try {
                 if (isHex) {
-                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 16);
+                    entityValue = Integer.parseInt(input.subSequence(start, end).toString(), Normal._16);
                 } else {
                     entityValue = Integer.parseInt(input.subSequence(start, end).toString(), 10);
                 }

@@ -32,6 +32,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * C动态库，包含所有基于*nix的操作系统的公共代码。这个类应该被认为是非api的，
@@ -45,9 +46,9 @@ public interface CLibrary extends LibCAPI, Library {
 
     int AI_CANONNAME = 2;
 
-    int UT_LINESIZE = 32;
-    int UT_NAMESIZE = 32;
-    int UT_HOSTSIZE = 256;
+    int UT_LINESIZE = Normal._32;
+    int UT_NAMESIZE = Normal._32;
+    int UT_HOSTSIZE =  Normal._256;
     int LOGIN_PROCESS = 6; // Session leader of a logged in user.
     int USER_PROCESS = 7; // Normal process.
 

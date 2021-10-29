@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -71,7 +72,7 @@ public class Dcm2Jpg {
 
     private static int parseHex(String s) throws InstrumentException {
         try {
-            return Integer.parseInt(s, 16);
+            return Integer.parseInt(s, Normal._16);
         } catch (NumberFormatException e) {
             throw new InstrumentException(e.getMessage());
         }

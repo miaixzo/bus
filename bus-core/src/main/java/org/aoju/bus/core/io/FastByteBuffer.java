@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * 代码移植自<a href="https://github.com/biezhi/blade">blade</a>
  * 快速缓冲,将数据存放在缓冲集中,取代以往的单一数组
@@ -42,7 +44,7 @@ public class FastByteBuffer {
     /**
      * 缓冲集
      */
-    private byte[][] buffers = new byte[16][];
+    private byte[][] buffers = new byte[Normal._16][];
     /**
      * 缓冲数
      */
@@ -65,12 +67,12 @@ public class FastByteBuffer {
     private int size;
 
     public FastByteBuffer() {
-        this(1024);
+        this(Normal._1024);
     }
 
     public FastByteBuffer(int size) {
         if (size <= 0) {
-            size = 1024;
+            size = Normal._1024;
         }
         this.minChunkLen = Math.abs(size);
     }

@@ -27,6 +27,7 @@ package org.aoju.bus.image;
 
 import lombok.Data;
 import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.logger.Logger;
@@ -66,7 +67,7 @@ public class Node {
         if (!StringKit.hasText(aet)) {
             throw new IllegalArgumentException("Missing AETitle");
         }
-        if (aet.length() > 16) {
+        if (aet.length() > Normal._16) {
             throw new IllegalArgumentException("AETitle has more than 16 characters");
         }
         if (null != port && (port < 1 || port > 65535)) {

@@ -40,6 +40,76 @@ import java.util.Arrays;
 public class Normal {
 
     /**
+     * The number 1024
+     * 1.二进制计数的基本计量单位
+     * 2.广大程序员的共同节日
+     */
+    public static final int _1024 = 1024;
+    /**
+     * The number 512
+     */
+    public static final int _512 = 512;
+    /**
+     * The number 256
+     */
+    public static final int _256 = 256;
+    /**
+     * The number 128
+     */
+    public static final int _128 = 128;
+    /**
+     * The number 64
+     */
+    public static final int _64 = 64;
+    /**
+     * The number 32
+     */
+    public static final int _32 = 32;
+    /**
+     * The number 16
+     */
+    public static final int _16 = 16;
+    /**
+     * The number 9
+     */
+    public static final int _9 = 9;
+    /**
+     * The number 8
+     */
+    public static final int _8 = 9;
+    /**
+     * The number 7
+     */
+    public static final int _7 = 7;
+    /**
+     * The number 6
+     */
+    public static final int _6 = 6;
+    /**
+     * The number 5
+     */
+    public static final int _5 = 5;
+    /**
+     * The number 4
+     */
+    public static final int _4 = 4;
+    /**
+     * The number 3
+     */
+    public static final int _3 = 3;
+    /**
+     * The number 2
+     */
+    public static final int _2 = 2;
+    /**
+     * The number 1
+     */
+    public static final int _1 = 1;
+    /**
+     * The number 0
+     */
+    public static final int _0 = 0;
+    /**
      * 字符串:空
      */
     public static final String EMPTY = "";
@@ -1111,22 +1181,22 @@ public class Normal {
     /**
      * Bytes per Kilobyte(KB).
      */
-    public static final long BYTES_PER_KB = 1024;
+    public static final long BYTES_PER_KB = _1024;
 
     /**
      * Bytes per Megabyte(MB).
      */
-    public static final long BYTES_PER_MB = BYTES_PER_KB * 1024;
+    public static final long BYTES_PER_MB = BYTES_PER_KB * _1024;
 
     /**
      * Bytes per Gigabyte(GB).
      */
-    public static final long BYTES_PER_GB = BYTES_PER_MB * 1024;
+    public static final long BYTES_PER_GB = BYTES_PER_MB * _1024;
 
     /**
      * Bytes per Terabyte(TB).
      */
-    public static final long BYTES_PER_TB = BYTES_PER_GB * 1024;
+    public static final long BYTES_PER_TB = BYTES_PER_GB * _1024;
 
     /**
      * <pre>

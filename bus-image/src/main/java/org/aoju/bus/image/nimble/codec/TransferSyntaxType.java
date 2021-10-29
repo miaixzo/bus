@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -37,19 +38,19 @@ import org.aoju.bus.image.galaxy.data.VR;
  */
 public enum TransferSyntaxType {
 
-    NATIVE(false, false, true, 16, 0),
+    NATIVE(false, false, true, Normal._16, 0),
     JPEG_BASELINE(true, true, false, 8, 0),
     JPEG_EXTENDED(true, true, false, 12, 0),
     JPEG_SPECTRAL(true, true, false, 12, 0),
     JPEG_PROGRESSIVE(true, true, false, 12, 0),
-    JPEG_LOSSLESS(true, true, true, 16, 0),
-    JPEG_LS(true, true, true, 16, 0),
-    JPEG_2000(true, true, true, 16, 0),
-    RLE(true, false, true, 16, 1),
-    JPIP(false, false, true, 16, 0),
+    JPEG_LOSSLESS(true, true, true, Normal._16, 0),
+    JPEG_LS(true, true, true, Normal._16, 0),
+    JPEG_2000(true, true, true, Normal._16, 0),
+    RLE(true, false, true, Normal._16, 1),
+    JPIP(false, false, true, Normal._16, 0),
     MPEG(true, false, false, 8, 0),
-    DEFLATED(false, false, true, 16, 0),
-    UNKNOWN(false, false, true, 16, 0);
+    DEFLATED(false, false, true, Normal._16, 0),
+    UNKNOWN(false, false, true, Normal._16, 0);
 
     private final boolean pixeldataEncapsulated;
     private final boolean frameSpanMultipleFragments;

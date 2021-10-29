@@ -97,7 +97,7 @@ public class Httpx {
     public Httpx(int connTimeout,
                  int readTimeout,
                  int writeTimeout) {
-        this(null, null, connTimeout, readTimeout, writeTimeout, 64, 5, 5, 5);
+        this(null, null, connTimeout, readTimeout, writeTimeout, Normal._64, 5, 5, 5);
     }
 
     /**

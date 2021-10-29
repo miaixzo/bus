@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class AsyncTimeout extends Timeout {
     /**
      * 一次不要写超过64 KiB的数据，否则，慢速连接可能会遭受超时
      */
-    private static final int TIMEOUT_WRITE_SIZE = 64 * 1024;
+    private static final int TIMEOUT_WRITE_SIZE = Normal._64 * Normal._1024;
     /**
      * 任务线程在关闭之前的空闲时间
      */

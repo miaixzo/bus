@@ -578,7 +578,7 @@ public final class Builder {
         Logger.debug("Manufacurer ID: {}", temp);
         return String.format("%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace(Symbol.AT, Normal.EMPTY);
+                (char) (64 + Integer.parseInt(temp.substring(12, Normal._16), 2))).replace(Symbol.AT, Normal.EMPTY);
     }
 
     /**
@@ -603,7 +603,7 @@ public final class Builder {
     public static String getSerialNo(byte[] edid) {
         // Bytes 12-15 are Serial number (last 4 characters)
         if (Logger.get().isDebug()) {
-            Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
+            Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, Normal._16)));
         }
         return String.format("%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
                 getAlphaNumericOrHex(edid[13]), getAlphaNumericOrHex(edid[12]));
@@ -621,7 +621,7 @@ public final class Builder {
      */
     public static byte getWeek(byte[] edid) {
         // Byte 16 is manufacture week
-        return edid[16];
+        return edid[Normal._16];
     }
 
     /**
@@ -922,8 +922,8 @@ public final class Builder {
         }
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) (Character.digit(digits.charAt(i), 16) << 4
-                    | Character.digit(digits.charAt(i + 1), 16));
+            data[i / 2] = (byte) (Character.digit(digits.charAt(i), Normal._16) << 4
+                    | Character.digit(digits.charAt(i + 1), Normal._16));
         }
         return data;
     }
@@ -1068,8 +1068,8 @@ public final class Builder {
         StringBuilder sb = new StringBuilder();
         try {
             for (int pos = 0; pos < hexString.length(); pos += 2) {
-                charAsInt = Integer.parseInt(hexString.substring(pos, pos + 2), 16);
-                if (charAsInt < 32 || charAsInt > 127) {
+                charAsInt = Integer.parseInt(hexString.substring(pos, pos + 2), Normal._16);
+                if (charAsInt < Normal._32 || charAsInt > 127) {
                     return hexString;
                 }
                 sb.append((char) charAsInt);
@@ -1598,7 +1598,7 @@ public final class Builder {
                 if (mem.length == 2) {
                     try {
                         // Parse the hex strings
-                        bytes += Long.parseLong(mem[1], 16) - Long.parseLong(mem[0], 16) + 1;
+                        bytes += Long.parseLong(mem[1], Normal._16) - Long.parseLong(mem[0], Normal._16) + 1;
                     } catch (NumberFormatException e) {
                         Logger.trace(MESSAGE, r, e);
                     }
@@ -1684,7 +1684,7 @@ public final class Builder {
      * @return The address as an array of sizteen bytes
      */
     public static byte[] parseIntArrayToIP(int[] ip6) {
-        ByteBuffer bb = ByteBuffer.allocate(16).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bb = ByteBuffer.allocate(Normal._16).order(ByteOrder.LITTLE_ENDIAN);
         for (int i : ip6) {
             bb.putInt(i);
         }
@@ -1747,7 +1747,7 @@ public final class Builder {
             }
         }
         // Parse all 16 bytes
-        byte[] ipv6 = ByteBuffer.allocate(16).putInt(utAddrV6[0]).putInt(utAddrV6[1]).putInt(utAddrV6[2])
+        byte[] ipv6 = ByteBuffer.allocate(Normal._16).putInt(utAddrV6[0]).putInt(utAddrV6[1]).putInt(utAddrV6[2])
                 .putInt(utAddrV6[3]).array();
         try {
             return InetAddress.getByAddress(ipv6).getHostAddress()
@@ -1799,9 +1799,9 @@ public final class Builder {
         if (null != hexString) {
             try {
                 if (hexString.startsWith("0x")) {
-                    return new BigInteger(hexString.substring(2), 16).intValue();
+                    return new BigInteger(hexString.substring(2), Normal._16).intValue();
                 } else {
-                    return new BigInteger(hexString, 16).intValue();
+                    return new BigInteger(hexString, Normal._16).intValue();
                 }
             } catch (NumberFormatException e) {
                 Logger.trace(MESSAGE, hexString, e);
@@ -1822,9 +1822,9 @@ public final class Builder {
         if (null != hexString) {
             try {
                 if (hexString.startsWith("0x")) {
-                    return new BigInteger(hexString.substring(2), 16).longValue();
+                    return new BigInteger(hexString.substring(2), Normal._16).longValue();
                 } else {
-                    return new BigInteger(hexString, 16).longValue();
+                    return new BigInteger(hexString, Normal._16).longValue();
                 }
             } catch (NumberFormatException e) {
                 Logger.trace(MESSAGE, hexString, e);

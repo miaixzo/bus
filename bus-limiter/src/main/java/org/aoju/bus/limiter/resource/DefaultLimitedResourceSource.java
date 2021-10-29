@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.resource;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Parser;
@@ -48,7 +49,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
 
     private static final Collection<LimitedResource> NULL_CACHING_ATTRIBUTE = Collections.emptyList();
 
-    private final Map<Object, Collection<LimitedResource>> cache = new ConcurrentHashMap(1024);
+    private final Map<Object, Collection<LimitedResource>> cache = new ConcurrentHashMap(Normal._1024);
 
     private final Set<Parser> annotationParsers;
 

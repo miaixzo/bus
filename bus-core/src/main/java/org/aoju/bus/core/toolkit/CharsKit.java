@@ -76,7 +76,7 @@ public class CharsKit {
      * @return true表示为ASCII可见字符, 可见字符位于32~126之间
      */
     public static boolean isAsciiPrintable(char ch) {
-        return ch >= 32 && ch < 127;
+        return ch >= Normal._32 && ch < 127;
     }
 
     /**
@@ -95,7 +95,7 @@ public class CharsKit {
      * @return true表示为控制符, 控制符位于0~31和127
      */
     public static boolean isAsciiControl(final char ch) {
-        return ch < 32 || ch == 127;
+        return ch < Normal._32 || ch == 127;
     }
 
     /**
@@ -699,11 +699,11 @@ public class CharsKit {
      * @return 字符串
      */
     public static String toString(char c) {
-        String[] CACHE = new String[128];
-        for (char i = 0; i < 128; i++) {
+        String[] CACHE = new String[ Normal._128];
+        for (char i = 0; i <  Normal._128; i++) {
             CACHE[i] = String.valueOf(i);
         }
-        return c < 128 ? CACHE[c] : String.valueOf(c);
+        return c <  Normal._128 ? CACHE[c] : String.valueOf(c);
     }
 
     /**

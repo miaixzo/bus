@@ -119,7 +119,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(64), Normal.EMPTY).toString();
+        return promptTo(new StringBuilder(Normal._64), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

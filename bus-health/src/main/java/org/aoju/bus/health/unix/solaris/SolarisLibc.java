@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
@@ -43,8 +44,8 @@ public interface SolarisLibc extends CLibrary {
 
     SolarisLibc INSTANCE = Native.load("c", SolarisLibc.class);
 
-    int UTX_USERSIZE = 32;
-    int UTX_LINESIZE = 32;
+    int UTX_USERSIZE = Normal._32;
+    int UTX_LINESIZE = Normal._32;
     int UTX_IDSIZE = 4;
     int UTX_HOSTSIZE = 257;
 

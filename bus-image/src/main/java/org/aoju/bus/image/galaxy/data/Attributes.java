@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  */
 public class Attributes implements Serializable {
 
-    private static final int INIT_CAPACITY = 16;
+    private static final int INIT_CAPACITY = Normal._16;
     private static final int TO_STRING_LIMIT = 50;
     private static final int TO_STRING_WIDTH = 78;
     private final boolean bigEndian;
@@ -1295,7 +1295,7 @@ public class Attributes implements Serializable {
 
     public Date getDate(String privateCreator, long tag, Date defVal,
                         DatePrecision precision) {
-        int daTag = (int) (tag >>> 32);
+        int daTag = (int) (tag >>> Normal._32);
         int tmTag = (int) tag;
 
         String tm = getString(privateCreator, tmTag, VR.TM, null);
@@ -1384,7 +1384,7 @@ public class Attributes implements Serializable {
     public Date[] getDates(String privateCreator,
                            long tag,
                            DatePrecision precisions) {
-        int daTag = (int) (tag >>> 32);
+        int daTag = (int) (tag >>> Normal._32);
         int tmTag = (int) tag;
 
         String[] tm = getStrings(privateCreator, tmTag);
@@ -1489,7 +1489,7 @@ public class Attributes implements Serializable {
     }
 
     public DateRange getDateRange(String privateCreator, long tag, DateRange defVal) {
-        int daTag = (int) (tag >>> 32);
+        int daTag = (int) (tag >>> Normal._32);
         int tmTag = (int) tag;
 
         String tm = getString(privateCreator, tmTag, VR.TM, null);
@@ -1900,7 +1900,7 @@ public class Attributes implements Serializable {
 
     public void setDate(String privateCreator, long tag,
                         DatePrecision precision, Date dt) {
-        int daTag = (int) (tag >>> 32);
+        int daTag = (int) (tag >>> Normal._32);
         int tmTag = (int) tag;
         setDate(privateCreator, daTag, VR.DA, precision, dt);
         setDate(privateCreator, tmTag, VR.TM, precision, dt);
@@ -1927,7 +1927,7 @@ public class Attributes implements Serializable {
     }
 
     public void setDateRange(String privateCreator, long tag, DateRange range) {
-        int daTag = (int) (tag >>> 32);
+        int daTag = (int) (tag >>> Normal._32);
         int tmTag = (int) tag;
         setDateRange(privateCreator, daTag, VR.DA, range);
         setDateRange(privateCreator, tmTag, VR.TM, range);
@@ -2480,7 +2480,7 @@ public class Attributes implements Serializable {
     }
 
     public String toString(int limit, int maxWidth) {
-        return toStringBuilder(limit, maxWidth, new StringBuilder(1024))
+        return toStringBuilder(limit, maxWidth, new StringBuilder(Normal._1024))
                 .toString();
     }
 
@@ -3284,7 +3284,7 @@ public class Attributes implements Serializable {
             throw new IllegalArgumentException(
                     Symbol.PARENTHESE_LEFT + Tag.shortToHexString(groupNumber) + ",xxxx) is not a private Group");
 
-        int group = groupNumber << 16;
+        int group = groupNumber << Normal._16;
         int creatorTag = group | 0x10;
         int index = indexOf(creatorTag);
         if (index < 0)

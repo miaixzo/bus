@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.*;
 import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
@@ -216,7 +217,7 @@ public class Decompressor {
         for (int y = 0; y < h; ++y) {
             for (int i = 0, j = y * stride; i < b.length; ) {
                 int s = data[j++];
-                b[i++] = (byte) (s >> 16);
+                b[i++] = (byte) (s >> Normal._16);
                 b[i++] = (byte) (s >> 8);
                 b[i++] = (byte) s;
             }

@@ -328,11 +328,11 @@ public interface OperatingSystem {
         /**
          * Only incude 64-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
+        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == Normal._64;
         /**
          * Only include 32-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == Normal._32;
     }
 
     /**

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.tracer;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.tracer.config.TraceFilterConfig;
 
 import java.util.HashMap;
@@ -38,9 +39,9 @@ import java.util.regex.Pattern;
  */
 public class TracerProperties {
 
-    private int sessionIdLength = 32;
+    private int sessionIdLength = Normal._32;
 
-    private int invocationIdLength = 32;
+    private int invocationIdLength = Normal._32;
 
     private Map<TraceFilterConfig.Channel, Pattern> filter = new HashMap<>();
 

@@ -613,7 +613,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             String[] split = RegEx.SPACES.split(text);
             if (split.length >= 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
                 // remove .service extension
-                String name = split[0].substring(0, split[0].length() - 8);
+                String name = split[0].substring(0, split[0].length() - Normal._8);
                 int index = name.lastIndexOf(Symbol.C_DOT);
                 String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
                 if (!running.contains(name) && !running.contains(shortName)) {

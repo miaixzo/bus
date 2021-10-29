@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.reader;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.logger.Logger;
 
@@ -55,7 +56,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
     private static final String MISMATCH_NUM_RLE_SEGMENTS =
             "Number of RLE Segments does not match image type: ";
 
-    private final int[] header = new int[16];
+    private final int[] header = new int[Normal._16];
 
     private final byte[] buf = new byte[8192];
 
@@ -242,11 +243,11 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
 
     private void readRLEHeader(int numSegments) throws IOException {
         fillBuffer();
-        if (bufLen < 64)
+        if (bufLen < Normal._64)
             throw new EOFException();
         for (int i = 0, off = 0; i < header.length; i++, off += 4)
             header[i] = ByteKit.bytesToIntLE(buf, off);
-        bufPos = 64;
+        bufPos = Normal._64;
         if (header[0] != numSegments)
             throw new IOException(MISMATCH_NUM_RLE_SEGMENTS + header[0]);
     }
@@ -263,7 +264,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
                 if (n >= 0) {
                     read(data, pos, ++n);
                     pos += n;
-                } else if (n != -128) {
+                } else if (n != - Normal._128) {
                     end = pos + 1 - n;
                     val = nextByte();
                     while (pos < end)
@@ -308,7 +309,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
                 if (n >= 0) {
                     read(data, pos, ++n, shift);
                     pos += n;
-                } else if (n != -128) {
+                } else if (n != - Normal._128) {
                     end = pos + 1 - n;
                     val = (nextByte() & 0xff) << shift;
                     while (pos < end)

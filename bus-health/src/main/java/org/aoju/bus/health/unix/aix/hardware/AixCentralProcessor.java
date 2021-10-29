@@ -69,10 +69,10 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         // read from /usr/include/sys/proc.h
         for (String s : FileKit.readLines("/usr/include/sys/proc.h")) {
             if (s.contains("SBITS") && s.contains("#define")) {
-                return Builder.parseLastInt(s, 16);
+                return Builder.parseLastInt(s, Normal._16);
             }
         }
-        return 16;
+        return Normal._16;
     }
 
     @Override

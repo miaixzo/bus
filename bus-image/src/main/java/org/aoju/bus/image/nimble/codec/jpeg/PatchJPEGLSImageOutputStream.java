@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec.jpeg;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
 import javax.imageio.stream.ImageOutputStream;
@@ -51,7 +52,7 @@ public class PatchJPEGLSImageOutputStream extends ImageOutputStreamImpl {
         super.flushedPos = ios.getFlushedPosition();
         this.ios = ios;
         this.patchJpegLS = patchJpegLS;
-        this.jpegheader = null != patchJpegLS ? new byte[256] : null;
+        this.jpegheader = null != patchJpegLS ? new byte[ Normal._256] : null;
     }
 
     public void write(byte[] b, int off, int len) throws IOException {

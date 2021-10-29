@@ -33,6 +33,7 @@ import com.sun.jna.platform.win32.BaseTSD.ULONG_PTR;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
@@ -105,7 +106,7 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public UNICODE_STRING DesktopInfo;
         public UNICODE_STRING ShellInfo;
         public UNICODE_STRING RuntimeData;
-        public RTL_DRIVE_LETTER_CURDIR[] CurrentDirectories = new RTL_DRIVE_LETTER_CURDIR[32];
+        public RTL_DRIVE_LETTER_CURDIR[] CurrentDirectories = new RTL_DRIVE_LETTER_CURDIR[Normal._32];
         public ULONG_PTR EnvironmentSize;
         public ULONG_PTR EnvironmentVersion;
         public Pointer PackageDependencyData;

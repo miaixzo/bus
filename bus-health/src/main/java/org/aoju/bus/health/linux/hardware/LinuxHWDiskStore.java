@@ -76,7 +76,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     private static final String DEV_LOCATION = "/dev/";
     private static final String DEV_MAPPER = DEV_LOCATION + "mapper/";
 
-    private static final int SECTORSIZE = 512;
+    private static final int SECTORSIZE = Normal._512;
 
     // Get a list of orders to pass to Builder
     private static final int[] UDEV_STAT_ORDERS = new int[UdevStat.values().length];

@@ -32,6 +32,7 @@ import org.aoju.bus.core.image.Removal;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -1429,7 +1430,7 @@ public class ImageKit {
                 imgWriteParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
                 imgWriteParams.setCompressionQuality(quality);
                 final ColorModel colorModel = renderedImage.getColorModel();// ColorModel.getRGBdefault();
-                imgWriteParams.setDestinationType(new ImageTypeSpecifier(colorModel, colorModel.createCompatibleSampleModel(16, 16)));
+                imgWriteParams.setDestinationType(new ImageTypeSpecifier(colorModel, colorModel.createCompatibleSampleModel(16, Normal._16)));
             }
         }
 
@@ -1812,7 +1813,7 @@ public class ImageKit {
         if (null == random) {
             random = RandomKit.getRandom();
         }
-        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        return new Color(random.nextInt( Normal._256), random.nextInt( Normal._256), random.nextInt( Normal._256));
     }
 
     /**

@@ -30,6 +30,7 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.WinPerf.*;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.windows.PerfCounterWildcardQuery.PdhCounterWildcardProperty;
@@ -107,7 +108,7 @@ public final class HkeyPerformance {
         // Store timestamp
         PERF_DATA_BLOCK perfData = new PERF_DATA_BLOCK(pPerfData.share(0));
         long perfTime100nSec = perfData.PerfTime100nSec.getValue(); // 1601
-        long now = WinBase.FILETIME.filetimeToDate((int) (perfTime100nSec >> 32), (int) (perfTime100nSec & 0xffffffffL))
+        long now = WinBase.FILETIME.filetimeToDate((int) (perfTime100nSec >> Normal._32), (int) (perfTime100nSec & 0xffffffffL))
                 .getTime(); // 1970
 
         // Iterate object types.
@@ -163,7 +164,7 @@ public final class HkeyPerformance {
                         if (size == 4) {
                             counterMap.put(key,
                                     pPerfData.getInt(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
-                        } else if (size == 8) {
+                        } else if (size == Normal._8) {
                             counterMap.put(key,
                                     pPerfData.getLong(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
                         } else {

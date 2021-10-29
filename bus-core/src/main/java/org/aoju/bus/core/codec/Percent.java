@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -91,7 +92,7 @@ public class Percent implements Serializable {
      * [a-zA-Z0-9]默认不被编码
      */
     public Percent() {
-        this(new BitSet(256));
+        this(new BitSet( Normal._256));
     }
 
     /**

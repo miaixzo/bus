@@ -633,7 +633,7 @@ public class SpecificCharacterSet {
                 return;
 
             bb.put((byte) 0x1b);
-            int b1 = seq >> 16;
+            int b1 = seq >> Normal._16;
             if (b1 != 0)
                 bb.put((byte) b1);
             bb.put((byte) (seq >> 8));

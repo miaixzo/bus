@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 
@@ -294,7 +295,7 @@ public final class RealSource implements BufferSource {
             return buffer.readUtf8Line(scanLength); // The line was 'limit' UTF-8 bytes followed by \r\n.
         }
         Buffer data = new Buffer();
-        buffer.copyTo(data, 0, Math.min(32, buffer.size()));
+        buffer.copyTo(data, 0, Math.min(Normal._32, buffer.size()));
         throw new EOFException("\\n not found: limit=" + Math.min(buffer.size(), limit)
                 + " content=" + data.readByteString().hex() + '…');
     }

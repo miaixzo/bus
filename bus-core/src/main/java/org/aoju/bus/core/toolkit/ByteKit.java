@@ -26,6 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -98,7 +99,7 @@ public class ByteKit {
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
             return new byte[]{
                     (byte) ((data >> 24) & 0xFF),
-                    (byte) ((data >> 16) & 0xFF),
+                    (byte) ((data >> Normal._16) & 0xFF),
                     (byte) ((data >> 8) & 0xFF),
                     (byte) (data & 0xFF) //
             };
@@ -106,7 +107,7 @@ public class ByteKit {
             return new byte[]{
                     (byte) (data & 0xFF),
                     (byte) ((data >> 8) & 0xFF),
-                    (byte) ((data >> 16) & 0xFF),
+                    (byte) ((data >> Normal._16) & 0xFF),
                     (byte) ((data >> 24) & 0xFF)
             };
         }
@@ -302,12 +303,12 @@ public class ByteKit {
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
             return data[3] & 0xFF |
                     (data[2] & 0xFF) << 8 |
-                    (data[1] & 0xFF) << 16 |
+                    (data[1] & 0xFF) << Normal._16 |
                     (data[0] & 0xFF) << 24;
         } else {
             return data[0] & 0xFF | //
                     (data[1] & 0xFF) << 8 |
-                    (data[2] & 0xFF) << 16 |
+                    (data[2] & 0xFF) << Normal._16 |
                     (data[3] & 0xFF) << 24;
         }
     }
@@ -737,7 +738,7 @@ public class ByteKit {
      * @return the int
      */
     public static int bytesToIntBE(byte[] data, int off) {
-        return (data[off] << 24) + ((data[off + 1] & 255) << 16)
+        return (data[off] << 24) + ((data[off + 1] & 255) << Normal._16)
                 + ((data[off + 2] & 255) << 8) + (data[off + 3] & 255);
     }
 
@@ -750,7 +751,7 @@ public class ByteKit {
      * @return the int
      */
     public static int bytesToIntLE(byte[] data, int off) {
-        return (data[off + 3] << 24) + ((data[off + 2] & 255) << 16)
+        return (data[off + 3] << 24) + ((data[off + 2] & 255) << Normal._16)
                 + ((data[off + 1] & 255) << 8) + (data[off] & 255);
     }
 
@@ -788,7 +789,7 @@ public class ByteKit {
      * @return the int
      */
     public static int bytesToTagLE(byte[] data, int off) {
-        return (data[off + 1] << 24) + ((data[off] & 255) << 16)
+        return (data[off + 1] << 24) + ((data[off] & 255) << Normal._16)
                 + ((data[off + 3] & 255) << 8) + (data[off + 2] & 255);
     }
 
@@ -854,9 +855,9 @@ public class ByteKit {
         return ((long) data[off] << 56)
                 + ((long) (data[off + 1] & 255) << 48)
                 + ((long) (data[off + 2] & 255) << 40)
-                + ((long) (data[off + 3] & 255) << 32)
+                + ((long) (data[off + 3] & 255) << Normal._32)
                 + ((long) (data[off + 4] & 255) << 24)
-                + ((data[off + 5] & 255) << 16)
+                + ((data[off + 5] & 255) << Normal._16)
                 + ((data[off + 6] & 255) << 8)
                 + (data[off + 7] & 255);
     }
@@ -873,9 +874,9 @@ public class ByteKit {
         return ((long) data[off + 7] << 56)
                 + ((long) (data[off + 6] & 255) << 48)
                 + ((long) (data[off + 5] & 255) << 40)
-                + ((long) (data[off + 4] & 255) << 32)
+                + ((long) (data[off + 4] & 255) << Normal._32)
                 + ((long) (data[off + 3] & 255) << 24)
-                + ((data[off + 2] & 255) << 16)
+                + ((data[off + 2] & 255) << Normal._16)
                 + ((data[off + 1] & 255) << 8)
                 + (data[off] & 255);
     }
@@ -986,7 +987,7 @@ public class ByteKit {
      */
     public static byte[] intToBytesBE(int data, byte[] bytes, int off) {
         bytes[off] = (byte) (data >> 24);
-        bytes[off + 1] = (byte) (data >> 16);
+        bytes[off + 1] = (byte) (data >> Normal._16);
         bytes[off + 2] = (byte) (data >> 8);
         bytes[off + 3] = (byte) data;
         return bytes;
@@ -1003,7 +1004,7 @@ public class ByteKit {
      */
     public static byte[] intToBytesLE(int data, byte[] bytes, int off) {
         bytes[off + 3] = (byte) (data >> 24);
-        bytes[off + 2] = (byte) (data >> 16);
+        bytes[off + 2] = (byte) (data >> Normal._16);
         bytes[off + 1] = (byte) (data >> 8);
         bytes[off] = (byte) data;
         return bytes;
@@ -1047,7 +1048,7 @@ public class ByteKit {
      */
     public static byte[] tagToBytesLE(int data, byte[] bytes, int off) {
         bytes[off + 1] = (byte) (data >> 24);
-        bytes[off] = (byte) (data >> 16);
+        bytes[off] = (byte) (data >> Normal._16);
         bytes[off + 3] = (byte) (data >> 8);
         bytes[off + 2] = (byte) data;
         return bytes;
@@ -1160,7 +1161,7 @@ public class ByteKit {
         bytes[off] = (byte) (data >> 56);
         bytes[off + 1] = (byte) (data >> 48);
         bytes[off + 2] = (byte) (data >> 40);
-        bytes[off + 3] = (byte) (data >> 32);
+        bytes[off + 3] = (byte) (data >> Normal._32);
         bytes[off + 4] = (byte) (data >> 24);
         bytes[off + 5] = (byte) (data >> 16);
         bytes[off + 6] = (byte) (data >> 8);
@@ -1181,7 +1182,7 @@ public class ByteKit {
         bytes[off + 7] = (byte) (data >> 56);
         bytes[off + 6] = (byte) (data >> 48);
         bytes[off + 5] = (byte) (data >> 40);
-        bytes[off + 4] = (byte) (data >> 32);
+        bytes[off + 4] = (byte) (data >> Normal._32);
         bytes[off + 3] = (byte) (data >> 24);
         bytes[off + 2] = (byte) (data >> 16);
         bytes[off + 1] = (byte) (data >> 8);
@@ -1348,7 +1349,7 @@ public class ByteKit {
         if (data >= 0) {
             return data;
         }
-        return 256 + data;
+        return  Normal._256 + data;
     }
 
     /**

@@ -389,9 +389,9 @@ public class SolarisOSProcess extends AbstractOSProcess {
         for (String line : pflags) {
             if (line.contains("data model")) {
                 if (line.contains("LP32")) {
-                    return 32;
+                    return Normal._32;
                 } else if (line.contains("LP64")) {
-                    return 64;
+                    return Normal._64;
                 }
             }
         }
@@ -474,8 +474,8 @@ public class SolarisOSProcess extends AbstractOSProcess {
         this.threadCount = Builder.parseIntOrDefault(psMap.get(SolarisOperatingSystem.PsKeywords.NLWP), 0);
         this.priority = Builder.parseIntOrDefault(psMap.get(SolarisOperatingSystem.PsKeywords.PRI), 0);
         // These are in KB, multiply
-        this.virtualSize = Builder.parseLongOrDefault(psMap.get(SolarisOperatingSystem.PsKeywords.VSZ), 0) * 1024;
-        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(SolarisOperatingSystem.PsKeywords.RSS), 0) * 1024;
+        this.virtualSize = Builder.parseLongOrDefault(psMap.get(SolarisOperatingSystem.PsKeywords.VSZ), 0) * Normal._1024;
+        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(SolarisOperatingSystem.PsKeywords.RSS), 0) * Normal._1024;
         // Avoid divide by zero for processes up less than a second
         long elapsedTime = Builder.parseDHMSOrDefault(psMap.get(SolarisOperatingSystem.PsKeywords.ETIME), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;

@@ -30,6 +30,7 @@ import org.aoju.bus.core.date.formatter.DatePrinter;
 import org.aoju.bus.core.date.formatter.FormatBuilder;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.System;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -85,7 +86,7 @@ public class DateTime extends Date {
      * @param timeZone 时区
      */
     public DateTime(TimeZone timeZone) {
-        this(System.currentTimeMillis(), timeZone);
+        this(java.lang.System.currentTimeMillis(), timeZone);
     }
 
     /**
@@ -214,7 +215,7 @@ public class DateTime extends Date {
      * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
      */
     public DateTime(CharSequence dateStr, DateParser dateParser) {
-        this(dateStr, dateParser, true);
+        this(dateStr, dateParser, System.getBoolean(System.BUS_DATE_LENIENT, true));
     }
 
     /**

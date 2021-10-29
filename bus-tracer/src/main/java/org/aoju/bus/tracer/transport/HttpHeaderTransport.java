@@ -26,6 +26,7 @@
 package org.aoju.bus.tracer.transport;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
@@ -72,7 +73,7 @@ public class HttpHeaderTransport {
     }
 
     public String render(Map<String, String> context) {
-        final StringBuilder sb = new StringBuilder(128);
+        final StringBuilder sb = new StringBuilder( Normal._128);
         for (Iterator<Map.Entry<String, String>> iterator = context.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> entry = iterator.next();
             try {

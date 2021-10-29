@@ -284,7 +284,7 @@ public class BufferKit {
         }
         int state = 0;
         for (int i = off; i < len; ++i) {
-            state = Normal.DECODE_64_TABLE[256 + (state << 4) + Normal.DECODE_64_TABLE[(0xff & data.get(i))]];
+            state = Normal.DECODE_64_TABLE[ Normal._256 + (state << 4) + Normal.DECODE_64_TABLE[(0xff & data.get(i))]];
             if (state == 1) {
                 return false;
             }

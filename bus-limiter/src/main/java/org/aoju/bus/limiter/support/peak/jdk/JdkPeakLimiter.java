@@ -28,6 +28,7 @@ package org.aoju.bus.limiter.support.peak.jdk;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.limiter.support.peak.PeakLimiter;
 
 import java.util.Objects;
@@ -47,7 +48,7 @@ public class JdkPeakLimiter extends PeakLimiter {
     public JdkPeakLimiter(String limiterName) {
         this.limiterName = limiterName;
         this.cache = CacheBuilder.newBuilder()
-                .concurrencyLevel(16)
+                .concurrencyLevel(Normal._16)
                 .initialCapacity(2048)
                 .build(new CacheLoader<CacheKey, Semaphore>() {
                     @Override

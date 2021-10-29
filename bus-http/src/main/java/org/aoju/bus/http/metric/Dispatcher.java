@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.RealCall;
@@ -59,7 +60,7 @@ public final class Dispatcher {
      * 运行同步调用。包括尚未结束的已取消调用
      */
     private final Deque<RealCall> runningSyncCalls = new ArrayDeque<>();
-    private int maxRequests = 64;
+    private int maxRequests = Normal._64;
     private int maxRequestsPerHost = 5;
     private Runnable idleCallback;
     /**

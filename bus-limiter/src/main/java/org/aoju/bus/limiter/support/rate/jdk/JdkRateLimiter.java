@@ -28,6 +28,7 @@ package org.aoju.bus.limiter.support.rate.jdk;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.limiter.support.rate.RateLimiter;
 
 import java.util.Objects;
@@ -56,7 +57,7 @@ public class JdkRateLimiter extends RateLimiter {
         this.rateLimiterName = rateLimiterName;
         this.cache = CacheBuilder.newBuilder()
                 .expireAfterAccess(expireAfterAccess, expireAfterAccessUnit)
-                .concurrencyLevel(16)
+                .concurrencyLevel(Normal._16)
                 .build(new CacheLoader<CacheKey, RateLimiterObject>() {
                     @Override
                     public RateLimiterObject load(CacheKey key) {

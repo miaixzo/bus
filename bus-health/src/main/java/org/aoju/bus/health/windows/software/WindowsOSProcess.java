@@ -350,10 +350,10 @@ public class WindowsOSProcess extends AbstractOSProcess {
         if (null != pHandle) {
             try {
                 // Test for 32-bit process on 64-bit windows
-                if (IS_VISTA_OR_GREATER && this.bitness == 64) {
+                if (IS_VISTA_OR_GREATER && this.bitness == Normal._64) {
                     IntByReference wow64 = new IntByReference(0);
                     if (Kernel32.INSTANCE.IsWow64Process(pHandle, wow64) && wow64.getValue() > 0) {
-                        this.bitness = 32;
+                        this.bitness = Normal._32;
                     }
                 }
                 // Full path

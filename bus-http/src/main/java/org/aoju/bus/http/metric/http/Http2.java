@@ -69,7 +69,7 @@ public final class Http2 {
      * 查找表的有效标志的数据，报头，延续。无效的组合用二进制表示.
      */
     static final String[] FLAGS = new String[0x40];
-    static final String[] BINARY = new String[256];
+    static final String[] BINARY = new String[ Normal._256];
     /**
      * 查找有效框架类型的表
      */

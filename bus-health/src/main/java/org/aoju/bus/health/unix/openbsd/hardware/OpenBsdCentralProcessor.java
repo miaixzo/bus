@@ -57,7 +57,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
 
     private static Triple<Integer, Integer, Integer> cpuidToFamilyModelStepping(int cpuid) {
         // family is bits 27:20 | 11:8
-        int family = cpuid >> 16 & 0xff0 | cpuid >> 8 & 0xf;
+        int family = cpuid >> Normal._16 & 0xff0 | cpuid >> 8 & 0xf;
         // model is bits 19:16 | 7:4
         int model = cpuid >> 12 & 0xf0 | cpuid >> 4 & 0xf;
         // stepping is bits 3:0

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Capacity;
@@ -46,7 +47,7 @@ public abstract class AAssociateRQAC {
     protected final LinkedHashMap<String, RoleSelection> roleSelMap = new LinkedHashMap<>();
     protected final LinkedHashMap<String, ExtendedNegotiate> extNegMap = new LinkedHashMap<>();
     protected final LinkedHashMap<String, CommonExtended> commonExtNegMap = new LinkedHashMap<>();
-    protected byte[] reservedBytes = new byte[32];
+    protected byte[] reservedBytes = new byte[Normal._32];
     protected int protocolVersion = 1;
     protected int maxPDULength = Connection.DEF_MAX_PDU_LENGTH;
     protected int maxOpsInvoked = Connection.SYNCHRONOUS_MODE;
@@ -82,10 +83,10 @@ public abstract class AAssociateRQAC {
     }
 
     public final void setReservedBytes(byte[] reservedBytes) {
-        if (reservedBytes.length != 32)
+        if (reservedBytes.length != Normal._32)
             throw new IllegalArgumentException("reservedBytes.length: "
                     + reservedBytes.length);
-        System.arraycopy(reservedBytes, 0, this.reservedBytes, 0, 32);
+        System.arraycopy(reservedBytes, 0, this.reservedBytes, 0, Normal._32);
     }
 
     public final String getCalledAET() {
@@ -93,7 +94,7 @@ public abstract class AAssociateRQAC {
     }
 
     public final void setCalledAET(String calledAET) {
-        if (calledAET.length() > 16)
+        if (calledAET.length() > Normal._16)
             throw new IllegalArgumentException("calledAET: " + calledAET);
         this.calledAET = calledAET;
     }
@@ -103,7 +104,7 @@ public abstract class AAssociateRQAC {
     }
 
     public final void setCallingAET(String callingAET) {
-        if (callingAET.length() > 16)
+        if (callingAET.length() > Normal._16)
             throw new IllegalArgumentException("callingAET: " + callingAET);
         this.callingAET = callingAET;
     }

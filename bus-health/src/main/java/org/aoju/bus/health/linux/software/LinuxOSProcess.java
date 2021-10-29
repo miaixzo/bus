@@ -304,7 +304,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         if (!path.isEmpty()) {
             try (InputStream is = new FileInputStream(path)) {
                 if (is.read(buffer) == buffer.length) {
-                    return buffer[4] == 1 ? 32 : 64;
+                    return buffer[4] == 1 ? Normal._32 : Normal._64;
                 }
             } catch (IOException e) {
                 Logger.warn("Failed to read process file: {}", path);
@@ -323,7 +323,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // pid 9726's current affinity mask: f
         String[] split = RegEx.SPACES.split(mask);
         try {
-            return new BigInteger(split[split.length - 1], 16).longValue();
+            return new BigInteger(split[split.length - 1], Normal._16).longValue();
         } catch (NumberFormatException e) {
             return 0;
         }

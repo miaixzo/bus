@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.compress.*;
 import org.aoju.bus.core.io.resource.Resource;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -54,7 +55,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipKit {
 
-    private static final int DEFAULT_BYTE_ARRAY_LENGTH = 32;
+    private static final int DEFAULT_BYTE_ARRAY_LENGTH = Normal._32;
 
     /**
      * 默认编码,使用平台相关编码

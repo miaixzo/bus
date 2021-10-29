@@ -57,7 +57,7 @@ public final class Base32 {
         StringBuilder base32 = new StringBuilder((bytes.length + 7) * 8 / 5);
 
         while (i < bytes.length) {
-            currByte = (bytes[i] >= 0) ? bytes[i] : (bytes[i] + 256);
+            currByte = (bytes[i] >= 0) ? bytes[i] : (bytes[i] + Normal._256);
 
             if (index > 3) {
                 if ((i + 1) < bytes.length) {

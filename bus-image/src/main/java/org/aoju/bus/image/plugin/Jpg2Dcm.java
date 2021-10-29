@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.Tag;
@@ -101,7 +102,7 @@ public class Jpg2Dcm {
     private static void supplementMissingDateTime(Attributes metadata) {
         Date now = new Date();
         for (long tag : DA_TM_TAGS)
-            if (!metadata.containsValue((int) (tag >>> 32)))
+            if (!metadata.containsValue((int) (tag >>> Normal._32)))
                 metadata.setDate(tag, now);
     }
 

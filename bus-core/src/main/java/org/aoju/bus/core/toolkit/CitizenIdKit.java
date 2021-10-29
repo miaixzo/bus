@@ -488,7 +488,7 @@ public class CitizenIdKit {
         if (len == CHINA_ID_MIN_LENGTH) {
             idcard = getIdCardTo18(idcard);
         }
-        char sCardChar = Objects.requireNonNull(idcard).charAt(16);
+        char sCardChar = Objects.requireNonNull(idcard).charAt(Normal._16);
         return (sCardChar % 2 != 0) ? 1 : 0;
     }
 

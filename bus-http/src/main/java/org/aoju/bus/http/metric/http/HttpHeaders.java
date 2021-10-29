@@ -28,6 +28,7 @@ package org.aoju.bus.http.metric.http;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -79,7 +80,7 @@ public final class HttpHeaders {
     public HttpHeaders(ByteString name, ByteString value) {
         this.name = name;
         this.value = value;
-        this.hpackSize = 32 + name.size() + value.size();
+        this.hpackSize = Normal._32 + name.size() + value.size();
     }
 
     public static long contentLength(Response response) {

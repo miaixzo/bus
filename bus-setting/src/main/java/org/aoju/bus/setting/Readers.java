@@ -28,6 +28,7 @@ package org.aoju.bus.setting;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -360,7 +361,7 @@ public class Readers {
      * @see #defaultFormat(java.io.Reader, int)
      */
     protected IniSetting defaultFormat(java.io.Reader reader) throws IOException {
-        return defaultFormat(reader, 16);
+        return defaultFormat(reader, Normal._16);
     }
 
     /**

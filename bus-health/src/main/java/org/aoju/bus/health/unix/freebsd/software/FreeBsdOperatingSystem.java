@@ -128,7 +128,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
             return jvmBitness;
         }
-        return 64;
+        return Normal._64;
     }
 
     @Override

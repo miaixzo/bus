@@ -480,10 +480,10 @@ public class EscapeCodeValues {
         ESCAPE_JAVA = new AggregateTranslator(
                 new LookupTranslator(Collections.unmodifiableMap(ESCAPE_JAVA_MAP)),
                 new LookupTranslator(JAVA_CTRL_CHARS_ESCAPE),
-                JavaUnicodeEscaper.outsideOf(32, 0x7f)
+                JavaUnicodeEscaper.outsideOf(Normal._32, 0x7f)
         );
         UNESCAPE_JAVA = new AggregateTranslator(
-                new OctalUnescaper(),     // .between('\1', '\377'),
+                new OctalUnescaper(),
                 new UnicodeUnescaper(),
                 new LookupTranslator(JAVA_CTRL_CHARS_UNESCAPE),
                 new LookupTranslator(Collections.unmodifiableMap(UNESCAPE_JAVA_MAP))
@@ -491,13 +491,13 @@ public class EscapeCodeValues {
         ESCAPE_ECMASCRIPT = new AggregateTranslator(
                 new LookupTranslator(Collections.unmodifiableMap(ESCAPE_ECMASCRIPT_MAP)),
                 new LookupTranslator(JAVA_CTRL_CHARS_ESCAPE),
-                JavaUnicodeEscaper.outsideOf(32, 0x7f)
+                JavaUnicodeEscaper.outsideOf(Normal._32, 0x7f)
         );
 
         ESCAPE_JSON = new AggregateTranslator(
                 new LookupTranslator(Collections.unmodifiableMap(escapeJsonMap)),
                 new LookupTranslator(JAVA_CTRL_CHARS_ESCAPE),
-                JavaUnicodeEscaper.outsideOf(32, 0x7e)
+                JavaUnicodeEscaper.outsideOf(Normal._32, 0x7e)
         );
 
         ESCAPE_XML10 = new AggregateTranslator(

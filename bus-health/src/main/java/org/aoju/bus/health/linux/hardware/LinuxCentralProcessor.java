@@ -147,7 +147,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // 15:4 - PartNum = model
         midrBytes |= Builder.parseLastInt(model, 0) << 4;
         // 19:16 - Architecture = family
-        midrBytes |= Builder.parseLastInt(family, 0) << 16;
+        midrBytes |= Builder.parseLastInt(family, 0) << Normal._16;
         // 31:24 - Implementer = vendor
         midrBytes |= Builder.parseLastInt(vendor, 0) << 24;
 

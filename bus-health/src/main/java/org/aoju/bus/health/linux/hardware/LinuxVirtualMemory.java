@@ -26,6 +26,7 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
@@ -127,7 +128,7 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
         }
         long memory = Builder.parseLongOrDefault(memorySplit[1], 0L);
         if (memorySplit.length > 2 && "kB".equals(memorySplit[2])) {
-            memory *= 1024;
+            memory *= Normal._1024;
         }
         return memory;
     }

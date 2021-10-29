@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * @author Kimi Liu
  * @version 6.3.0
@@ -39,7 +41,7 @@ public class AAssociateAC extends AAssociateRQAC {
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(512)).toString();
+        return promptTo(new StringBuilder(Normal._512)).toString();
     }
 
     StringBuilder promptTo(StringBuilder sb) {

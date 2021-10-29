@@ -113,8 +113,8 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
                         vendorId = "0x" + line.substring(idx + 11, idx + 15);
                     }
                     idx = line.indexOf("Product ID: ");
-                    if (idx >= 0 && line.length() >= idx + 16) {
-                        productId = "0x" + line.substring(idx + 12, idx + 16);
+                    if (idx >= 0 && line.length() >= idx + Normal._16) {
+                        productId = "0x" + line.substring(idx + 12, idx + Normal._16);
                     }
                     if (line.contains(PCI_CLASS_DISPLAY)) {
                         classCodeFound = true;

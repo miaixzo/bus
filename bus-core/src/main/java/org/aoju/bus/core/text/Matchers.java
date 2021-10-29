@@ -26,6 +26,7 @@
 package org.aoju.bus.core.text;
 
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -390,7 +391,7 @@ public abstract class Matchers {
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
-            return buffer[pos] <= 32 ? 1 : 0;
+            return buffer[pos] <= Normal._32 ? 1 : 0;
         }
     }
 

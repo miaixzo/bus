@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.mutable;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**
@@ -201,7 +202,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     @Override
     public int hashCode() {
         final long bits = Double.doubleToLongBits(value);
-        return (int) (bits ^ bits >>> 32);
+        return (int) (bits ^ bits >>> Normal._32);
     }
 
     /**

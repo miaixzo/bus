@@ -26,6 +26,7 @@
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 /**
@@ -99,7 +100,7 @@ public class ToStringBuilder implements Builder<String> {
             style = getDefaultStyle();
         }
         if (null == buffer) {
-            buffer = new StringBuffer(512);
+            buffer = new StringBuffer(Normal._512);
         }
         this.buffer = buffer;
         this.style = style;

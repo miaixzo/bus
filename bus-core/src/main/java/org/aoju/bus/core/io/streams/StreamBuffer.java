@@ -26,6 +26,7 @@
 package org.aoju.bus.core.io.streams;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 
@@ -106,7 +107,7 @@ public class StreamBuffer extends InputStream {
     private static class OutputStreamBuffer extends OutputStream {
 
         private final List<byte[]> bytes = new ArrayList<>();
-        private final int width = 1024;
+        private final int width = Normal._1024;
         private int index = 0;
         private int cursor = 0;
 

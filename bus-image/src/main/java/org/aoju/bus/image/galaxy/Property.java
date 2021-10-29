@@ -256,9 +256,9 @@ public class Property implements Serializable {
         int l = s.length();
         if (s.startsWith(".0", l - 2))
             return s.substring(0, l - 2);
-        int skip = l - 16;
+        int skip = l - Normal._16;
         int e = s.indexOf('E', l - 5);
-        return e < 0 ? (skip > 0 ? s.substring(0, 16) : s)
+        return e < 0 ? (skip > 0 ? s.substring(0, Normal._16) : s)
                 : s.startsWith(".0", e - 2) ? cut(s, e - 2, e)
                 : skip > 0 ? cut(s, e - skip, e) : s;
     }

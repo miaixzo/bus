@@ -535,7 +535,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < 64 && null != System.getenv("ProgramFiles(x86)") && IS_VISTA_OR_GREATER) {
+        if (jvmBitness < Normal._64 && null != System.getenv("ProgramFiles(x86)") && IS_VISTA_OR_GREATER) {
             WbemcliUtil.WmiResult<BitnessProperty> bitnessMap = Win32Processor.queryBitness();
             if (bitnessMap.getResultCount() > 0) {
                 return WmiKit.getUint16(bitnessMap, BitnessProperty.ADDRESSWIDTH, 0);

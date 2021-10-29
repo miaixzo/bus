@@ -50,7 +50,7 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
     /**
      * 默认容量
      */
-    public static final int CAPACITY = 16;
+    public static final int CAPACITY = Normal._16;
     /**
      * 存放的字符数组
      */

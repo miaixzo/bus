@@ -26,6 +26,7 @@
 package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -51,7 +52,7 @@ public class RC4 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int SBOX_LENGTH = 256;
+    private static final int SBOX_LENGTH =  Normal._256;
     /**
      * 密钥最小长度
      */

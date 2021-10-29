@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
@@ -46,7 +47,7 @@ public class DayOfMonthValueParser extends SimpleValueParser {
     public int parse(String value) throws InstrumentException {
         //每月最后一天
         if ("L".equalsIgnoreCase(value) || ObjectKit.equal(value, "32")) {
-            return 32;
+            return Normal._32;
         } else {
             return super.parse(value);
         }

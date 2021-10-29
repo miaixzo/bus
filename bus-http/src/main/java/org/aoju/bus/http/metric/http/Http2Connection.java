@@ -58,7 +58,7 @@ import java.util.concurrent.*;
  */
 public final class Http2Connection implements Closeable {
 
-    static final int CLIENT_WINDOW_SIZE = 16 * 1024 * 1024;
+    static final int CLIENT_WINDOW_SIZE = Normal._16 * Normal._1024 * Normal._1024;
 
     /**
      * 共享执行程序来发送传入流的通知。这个执行器需要多个线程，因为侦听器不需要立即返回.

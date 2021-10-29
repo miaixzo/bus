@@ -963,14 +963,14 @@ public class UriKit {
         boolean changed = false;
         for (byte b : bytes) {
             if (b < 0) {
-                b += 256;
+                b +=  Normal._256;
             }
             if (type.isAllowed(b)) {
                 bos.write(b);
             } else {
                 bos.write(Symbol.C_PERCENT);
-                char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, 16));
-                char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, 16));
+                char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, Normal._16));
+                char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, Normal._16));
                 bos.write(hex1);
                 bos.write(hex2);
                 changed = true;
@@ -1000,8 +1000,8 @@ public class UriKit {
                 if (i + 2 < length) {
                     char hex1 = source.charAt(i + 1);
                     char hex2 = source.charAt(i + 2);
-                    int u = Character.digit(hex1, 16);
-                    int l = Character.digit(hex2, 16);
+                    int u = Character.digit(hex1, Normal._16);
+                    int l = Character.digit(hex2, Normal._16);
                     if (u == -1 || l == -1) {
                         throw new IllegalArgumentException("Invalid encoded sequence " + source.substring(i));
                     }
@@ -1129,7 +1129,7 @@ public class UriKit {
      * @return 标准化的参数字符串
      */
     public static String normalize(String paramPart, java.nio.charset.Charset charset) {
-        final TextKit builder = TextKit.create(paramPart.length() + 16);
+        final TextKit builder = TextKit.create(paramPart.length() + Normal._16);
         final int len = paramPart.length();
         String name = null;
         int pos = 0; // 未处理字符开始位置
@@ -1338,7 +1338,7 @@ public class UriKit {
             return url;
         }
 
-        final TextKit textKit = TextKit.create(url.length() + queryString.length() + 16);
+        final TextKit textKit = TextKit.create(url.length() + queryString.length() + Normal._16);
         int qmIndex = url.indexOf(Symbol.C_QUESTION_MARK);
         if (qmIndex > 0) {
             textKit.append(isEncode ? encodeVal(url, charset) : url);

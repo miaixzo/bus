@@ -416,8 +416,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         this.groupID = psMap.get(OpenBsdOperatingSystem.PsKeywords.GID);
         this.priority = Builder.parseIntOrDefault(psMap.get(OpenBsdOperatingSystem.PsKeywords.PRI), 0);
         // These are in KB, multiply
-        this.virtualSize = Builder.parseLongOrDefault(psMap.get(OpenBsdOperatingSystem.PsKeywords.VSZ), 0) * 1024;
-        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(OpenBsdOperatingSystem.PsKeywords.RSS), 0) * 1024;
+        this.virtualSize = Builder.parseLongOrDefault(psMap.get(OpenBsdOperatingSystem.PsKeywords.VSZ), 0) * Normal._1024;
+        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(OpenBsdOperatingSystem.PsKeywords.RSS), 0) * Normal._1024;
         // Avoid divide by zero for processes up less than a second
         long elapsedTime = Builder.parseDHMSOrDefault(psMap.get(OpenBsdOperatingSystem.PsKeywords.ETIME), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;

@@ -210,7 +210,7 @@ public class TransferCapability implements Serializable {
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(512), Normal.EMPTY).toString();
+        return promptTo(new StringBuilder(Normal._512), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

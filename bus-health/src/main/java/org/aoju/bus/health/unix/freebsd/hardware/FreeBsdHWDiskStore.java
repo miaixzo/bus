@@ -95,8 +95,8 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
                 store.reads = (long) Builder.parseDoubleOrDefault(split[1], 0d);
                 store.writes = (long) Builder.parseDoubleOrDefault(split[2], 0d);
                 // In KB
-                store.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * 1024);
-                store.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * 1024);
+                store.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * Normal._1024);
+                store.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * Normal._1024);
                 // # transactions
                 store.currentQueueLength = Builder.parseLongOrDefault(split[5], 0L);
                 // In seconds, multiply for ms
@@ -165,8 +165,8 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
             this.reads = (long) Builder.parseDoubleOrDefault(split[1], 0d);
             this.writes = (long) Builder.parseDoubleOrDefault(split[2], 0d);
             // In KB
-            this.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * 1024);
-            this.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * 1024);
+            this.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * Normal._1024);
+            this.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * Normal._1024);
             // # transactions
             this.currentQueueLength = Builder.parseLongOrDefault(split[5], 0L);
             // In seconds, multiply for ms

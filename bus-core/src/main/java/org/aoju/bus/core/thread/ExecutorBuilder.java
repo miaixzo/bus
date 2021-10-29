@@ -26,6 +26,7 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.builder.Builder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.concurrent.*;
@@ -49,7 +50,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     /**
      * 默认的等待队列容量
      */
-    public static final int DEFAULT_QUEUE_CAPACITY = 1024;
+    public static final int DEFAULT_QUEUE_CAPACITY = Normal._1024;
     /**
      * 初始池大小
      */

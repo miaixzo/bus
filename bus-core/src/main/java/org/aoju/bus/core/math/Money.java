@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.math;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
@@ -355,7 +356,7 @@ public class Money implements Serializable, Comparable<Money> {
      */
     @Override
     public int hashCode() {
-        return (int) (cent ^ (cent >>> 32));
+        return (int) (cent ^ (cent >>> Normal._32));
     }
 
     /**

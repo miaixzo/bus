@@ -153,7 +153,7 @@ public final class DistinguishedNameParser {
                 }
                 break;
             } else if (chars[pos] >= 'A' && chars[pos] <= 'F') {
-                chars[pos] += 32;
+                chars[pos] += Normal._32;
             }
 
             pos++;
@@ -240,7 +240,7 @@ public final class DistinguishedNameParser {
         int res = getByte(pos);
         pos++; //FIXME tmp
 
-        if (res < 128) {
+        if (res <  Normal._128) {
             return (char) res;
         } else if (res >= 192 && res <= 247) {
 

@@ -289,9 +289,9 @@ public class AixOSProcess extends AbstractOSProcess {
         for (String line : pflags) {
             if (line.contains("data model")) {
                 if (line.contains("LP32")) {
-                    return 32;
+                    return Normal._32;
                 } else if (line.contains("LP64")) {
-                    return 64;
+                    return Normal._64;
                 }
             }
         }

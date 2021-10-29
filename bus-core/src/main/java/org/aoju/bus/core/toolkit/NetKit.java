@@ -41,6 +41,7 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * 网络相关工具
@@ -54,7 +55,7 @@ public class NetKit {
     /**
      * 默认最小端口,1024
      */
-    public static final int PORT_RANGE_MIN = 1024;
+    public static final int PORT_RANGE_MIN = Normal._1024;
     /**
      * 默认最大端口,65535
      */
@@ -72,7 +73,7 @@ public class NetKit {
         sb.append((longIP >>> 24));
         sb.append(Symbol.DOT);
         // 将高8位置0,然后右移16位
-        sb.append(longIP >> 16 & 0xFF);
+        sb.append(longIP >> Normal._16 & 0xFF);
         sb.append(Symbol.DOT);
         sb.append(longIP >> 8 & 0xFF);
         sb.append(Symbol.DOT);
@@ -87,20 +88,29 @@ public class NetKit {
      * @return long值
      */
     public static long ipv4ToLong(String strIP) {
-        if (Validator.isIpv4(strIP)) {
-            long[] ip = new long[4];
-            // 先找到IP地址字符串中.的位置
-            int position1 = strIP.indexOf(Symbol.DOT);
-            int position2 = strIP.indexOf(Symbol.DOT, position1 + 1);
-            int position3 = strIP.indexOf(Symbol.DOT, position2 + 1);
-            // 将每个.之间的字符串转换成整型
-            ip[0] = Long.parseLong(strIP.substring(0, position1));
-            ip[1] = Long.parseLong(strIP.substring(position1 + 1, position2));
-            ip[2] = Long.parseLong(strIP.substring(position2 + 1, position3));
-            ip[3] = Long.parseLong(strIP.substring(position3 + 1));
-            return (ip[0] << 24) + (ip[1] << 16) + (ip[2] << 8) + ip[3];
+        final Matcher matcher = RegEx.IPV4.matcher(strIP);
+        if (matcher.matches()) {
+            long addr = 0;
+            for (int i = 1; i <= 4; ++i) {
+                addr |= Long.parseLong(matcher.group(i)) << 8 * (4 - i);
+            }
+            return addr;
         }
-        return 0;
+        throw new IllegalArgumentException("Invalid IPv4 address!");
+    }
+
+    /**
+     * 将匹配到的Ipv4地址的4个分组分别处理
+     *
+     * @param matcher 匹配到的Ipv4正则
+     * @return ipv4对应long
+     */
+    private static long matchAddress(Matcher matcher) {
+        long addr = 0;
+        for (int i = 1; i <= 4; ++i) {
+            addr |= Long.parseLong(matcher.group(i)) << 8 * (4 - i);
+        }
+        return addr;
     }
 
     /**
@@ -235,7 +245,6 @@ public class NetKit {
         if (availablePorts.size() != numRequested) {
             throw new InstrumentException("Could not find {} available  ports in the range [{}, {}]", numRequested, minPort, maxPort);
         }
-
         return availablePorts;
     }
 
@@ -324,7 +333,6 @@ public class NetKit {
             destHost = host;
             port = defaultPort;
         }
-
         return new InetSocketAddress(destHost, port);
     }
 
@@ -363,7 +371,6 @@ public class NetKit {
                 return netInterface;
             }
         }
-
         return null;
     }
 
@@ -390,9 +397,7 @@ public class NetKit {
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIpv4s() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(t -> t instanceof Inet4Address);
-
-        return toIpList(localAddressList);
+        return toIpList(localAddressList(t -> t instanceof Inet4Address));
     }
 
     /**
@@ -402,9 +407,7 @@ public class NetKit {
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIpv6s() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(t -> t instanceof Inet6Address);
-
-        return toIpList(localAddressList);
+        return toIpList(localAddressList(t -> t instanceof Inet6Address));
     }
 
     /**
@@ -418,7 +421,6 @@ public class NetKit {
         for (InetAddress address : addressList) {
             ipSet.add(address.getHostAddress());
         }
-
         return ipSet;
     }
 
@@ -429,8 +431,7 @@ public class NetKit {
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIps() {
-        final LinkedHashSet<InetAddress> localAddressList = localAddressList(null);
-        return toIpList(localAddressList);
+        return toIpList(localAddressList(null));
     }
 
     /**
@@ -525,7 +526,6 @@ public class NetKit {
         } catch (UnknownHostException e) {
             // ignore
         }
-
         return null;
     }
 
@@ -664,14 +664,15 @@ public class NetKit {
      * @return 是否在范围内
      */
     public static boolean isInRange(String ip, String cidr) {
-        String[] ips = StringKit.splitToArray(ip, Symbol.C_DOT);
-        int ipAddr = (Integer.parseInt(ips[0]) << 24) | (Integer.parseInt(ips[1]) << 16) | (Integer.parseInt(ips[2]) << 8) | Integer.parseInt(ips[3]);
-        int type = Integer.parseInt(cidr.replaceAll(".*/", Normal.EMPTY));
-        int mask = 0xFFFFFFFF << (32 - type);
-        String cidrIp = cidr.replaceAll("/.*", Normal.EMPTY);
-        String[] cidrIps = cidrIp.split("\\.");
-        int cidrIpAddr = (Integer.parseInt(cidrIps[0]) << 24) | (Integer.parseInt(cidrIps[1]) << 16) | (Integer.parseInt(cidrIps[2]) << 8) | Integer.parseInt(cidrIps[3]);
-        return (ipAddr & mask) == (cidrIpAddr & mask);
+        final int maskSplitMarkIndex = cidr.lastIndexOf(Symbol.SLASH);
+        if (maskSplitMarkIndex < 0) {
+            throw new IllegalArgumentException("Invalid cidr: " + cidr);
+        }
+
+        final long mask = (-1L << Normal._32 - Integer.parseInt(cidr.substring(maskSplitMarkIndex + 1)));
+        long cidrIpAddr = ipv4ToLong(cidr.substring(0, maskSplitMarkIndex));
+
+        return (ipv4ToLong(ip) & mask) == (cidrIpAddr & mask);
     }
 
     /**

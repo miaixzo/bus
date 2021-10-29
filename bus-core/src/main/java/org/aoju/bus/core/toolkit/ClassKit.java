@@ -90,7 +90,7 @@ public class ClassKit {
     private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
 
     static {
-        List<Class<?>> primitiveTypes = new ArrayList<>(32);
+        List<Class<?>> primitiveTypes = new ArrayList<>(Normal._32);
         // 加入原始类型
         primitiveTypes.addAll(BasicType.PRIMITIVE_WRAPPER_MAP.keySet());
         // 加入原始类型数组类型

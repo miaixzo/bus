@@ -221,7 +221,7 @@ public class Weighing<T> implements Serializable {
             result = prime * result + ((null == obj) ? 0 : obj.hashCode());
             long temp;
             temp = Double.doubleToLongBits(weight);
-            result = prime * result + (int) (temp ^ (temp >>> 32));
+            result = prime * result + (int) (temp ^ (temp >>> Normal._32));
             return result;
         }
 

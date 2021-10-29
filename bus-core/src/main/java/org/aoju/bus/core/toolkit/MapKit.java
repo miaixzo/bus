@@ -28,6 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.map.*;
@@ -48,7 +49,7 @@ public class MapKit {
     /**
      * 默认初始大小
      */
-    public static final int DEFAULT_INITIAL_CAPACITY = 16;
+    public static final int DEFAULT_INITIAL_CAPACITY = Normal._16;
     /**
      * 默认增长因子,当Map的size达到 容量*增长因子时,开始扩充Map
      */

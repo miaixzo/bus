@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
@@ -164,7 +165,7 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected byte[] toBytes(String s, byte[] b, int off, boolean bigEndian) {
-            return toBytes(Integer.parseInt(s, 16), b, off, bigEndian);
+            return toBytes(Integer.parseInt(s, Normal._16), b, off, bigEndian);
         }
 
         @Override

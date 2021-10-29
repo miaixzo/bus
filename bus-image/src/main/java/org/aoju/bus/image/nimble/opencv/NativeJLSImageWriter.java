@@ -93,7 +93,7 @@ public class NativeJLSImageWriter extends ImageWriter {
                 if (signed) {
                     Logger.warn("Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
                     jpeglsNLE = 0;
-                    bitCompressed = 16; // 扩展到分配的位以避免异常，因为将负值视为大正值
+                    bitCompressed = Normal._16; // 扩展到分配的位以避免异常，因为将负值视为大正值
                 }
 
                 int[] params = new int[15];

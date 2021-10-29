@@ -26,6 +26,7 @@
 package org.aoju.bus.image.nimble.opencv;
 
 import lombok.Data;
+import org.aoju.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
@@ -34,7 +35,8 @@ import lombok.Data;
  */
 @Data
 public class ImageParameters {
-    public static final int DEFAULT_TILE_SIZE = 512;
+
+    public static final int DEFAULT_TILE_SIZE = Normal._512;
 
     // List of supported color model format
     public static final int CM_S_RGB = 1;

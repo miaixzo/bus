@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.stream;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.BulkData;
@@ -73,7 +74,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
     }
 
     public SegmentedImageStream(ImageInputStream iis, long streamPosition, int length, boolean singleFrame) throws IOException {
-        fragments = new Fragments(VR.OB, false, 16);
+        fragments = new Fragments(VR.OB, false, Normal._16);
         if (!singleFrame) {
             lastSegment = 2;
         }

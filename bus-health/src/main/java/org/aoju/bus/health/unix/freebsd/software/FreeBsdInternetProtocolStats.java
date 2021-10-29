@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.freebsd.software;
 
 import com.sun.jna.Memory;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
@@ -54,12 +55,12 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();
         Memory m = BsdSysctlKit.sysctl("net.inet.tcp.stats");
-        if (null != m && m.size() >= 128) {
+        if (null != m && m.size() >=  Normal._128) {
             ft.tcps_connattempt = m.getInt(0);
             ft.tcps_accepts = m.getInt(4);
             ft.tcps_drops = m.getInt(12);
-            ft.tcps_conndrops = m.getInt(16);
-            ft.tcps_sndpack = m.getInt(64);
+            ft.tcps_conndrops = m.getInt(Normal._16);
+            ft.tcps_sndpack = m.getInt(Normal._64);
             ft.tcps_sndrexmitpack = m.getInt(72);
             ft.tcps_rcvpack = m.getInt(104);
             ft.tcps_rcvbadsum = m.getInt(112);
@@ -80,7 +81,7 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
             ut.udps_badlen = m.getInt(12);
             ut.udps_opackets = m.getInt(36);
             ut.udps_noportmcast = m.getInt(48);
-            ut.udps_rcv6_swcsum = m.getInt(64);
+            ut.udps_rcv6_swcsum = m.getInt(Normal._64);
             ut.udps_snd6_swcsum = m.getInt(80);
         }
         return ut;

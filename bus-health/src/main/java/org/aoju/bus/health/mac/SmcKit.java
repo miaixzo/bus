@@ -34,6 +34,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.logger.Logger;
 
@@ -269,7 +270,7 @@ public final class SmcKit {
         public byte status;
         public byte data8;
         public int data32;
-        public byte[] bytes = new byte[32];
+        public byte[] bytes = new byte[Normal._32];
     }
 
     /**
@@ -280,7 +281,7 @@ public final class SmcKit {
         public byte[] key = new byte[5];
         public int dataSize;
         public byte[] dataType = new byte[5];
-        public byte[] bytes = new byte[32];
+        public byte[] bytes = new byte[Normal._32];
     }
 
 }

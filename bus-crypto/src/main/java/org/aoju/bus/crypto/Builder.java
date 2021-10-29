@@ -123,7 +123,7 @@ public class Builder {
      * Keysize must be a multiple of 64, ranging from 512 to 1024 (inclusive).
      * </pre>
      */
-    public static final int DEFAULT_KEY_SIZE = 1024;
+    public static final int DEFAULT_KEY_SIZE = Normal._1024;
     /**
      * SM2默认曲线
      *
@@ -1871,7 +1871,7 @@ public class Builder {
         final KeyGenerator keyGenerator = getKeyGenerator(algorithm);
         if (keySize <= 0 && Algorithm.AES.getValue().equals(algorithm)) {
             // 对于AES的密钥，除非指定，否则强制使用128位
-            keySize = 128;
+            keySize =  Normal._128;
         }
 
         if (keySize > 0) {
@@ -1952,7 +1952,7 @@ public class Builder {
         }
 
         if (null == key) {
-            key = RandomKit.randomString(32).toCharArray();
+            key = RandomKit.randomString(Normal._32).toCharArray();
         }
         PBEKeySpec keySpec = new PBEKeySpec(key);
         return generateKey(algorithm, keySpec);
@@ -2122,7 +2122,7 @@ public class Builder {
         int keySize = DEFAULT_KEY_SIZE;
         if ("ECIES".equalsIgnoreCase(algorithm)) {
             // ECIES算法对KEY的长度有要求，此处默认256
-            keySize = 256;
+            keySize =  Normal._256;
         }
 
         return generateKeyPair(algorithm, keySize);
@@ -2230,7 +2230,7 @@ public class Builder {
             // key长度适配修正
             if ("EC".equalsIgnoreCase(algorithm) && keySize > 256) {
                 // 对于EC（EllipticCurve）算法，密钥长度有限制，在此使用默认256
-                keySize = 256;
+                keySize =  Normal._256;
             }
             if (null != random) {
                 keyPairGen.initialize(keySize, random);
@@ -2641,7 +2641,7 @@ public class Builder {
      */
     public static PublicKey getRSAPublicKey(String modulus, String publicExponent) {
         return getRSAPublicKey(
-                new BigInteger(modulus, 16), new BigInteger(publicExponent, 16));
+                new BigInteger(modulus, Normal._16), new BigInteger(publicExponent, Normal._16));
     }
 
     /**
@@ -2862,7 +2862,7 @@ public class Builder {
     public static byte[] changeC1C2C3ToC1C3C2(byte[] c1c2c3, ECDomainParameters ecDomainParameters) {
         // sm2p256v1的这个固定65 可看GMNamedCurves、ECCurve代码
         final int c1Len = (ecDomainParameters.getCurve().getFieldSize() + 7) / 8 * 2 + 1;
-        final int c3Len = 32; // new SM3Digest().getDigestSize();
+        final int c3Len = Normal._32;
         byte[] result = new byte[c1c2c3.length];
         System.arraycopy(c1c2c3, 0, result, 0, c1Len); // c1
         System.arraycopy(c1c2c3, c1c2c3.length - c3Len, result, c1Len, c3Len); // c3
@@ -2880,7 +2880,7 @@ public class Builder {
     public static byte[] changeC1C3C2ToC1C2C3(byte[] c1c3c2, ECDomainParameters ecDomainParameters) {
         // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码
         final int c1Len = (ecDomainParameters.getCurve().getFieldSize() + 7) / 8 * 2 + 1;
-        final int c3Len = 32; // new SM3Digest().getDigestSize();
+        final int c3Len = Normal._32;
         byte[] result = new byte[c1c3c2.length];
         System.arraycopy(c1c3c2, 0, result, 0, c1Len); // c1: 0->65
         System.arraycopy(c1c3c2, c1Len + c3Len, result, c1Len, c1c3c2.length - c1Len - c3Len); // c2
@@ -2915,11 +2915,11 @@ public class Builder {
      * @return Rs结果为asn1格式
      */
     public static byte[] rsPlainToAsn1(byte[] sign) {
-        if (sign.length != 32 * 2) {
+        if (sign.length != Normal._32 * 2) {
             throw new CryptoException("err rs. ");
         }
-        BigInteger r = new BigInteger(1, Arrays.copyOfRange(sign, 0, 32));
-        BigInteger s = new BigInteger(1, Arrays.copyOfRange(sign, 32, 32 * 2));
+        BigInteger r = new BigInteger(1, Arrays.copyOfRange(sign, 0, Normal._32));
+        BigInteger s = new BigInteger(1, Arrays.copyOfRange(sign, Normal._32, Normal._32 * 2));
         try {
             return StandardDSAEncoding.INSTANCE.encode(SM2_DOMAIN_PARAMS.getN(), r, s);
         } catch (IOException e) {
@@ -3034,14 +3034,14 @@ public class Builder {
      */
     private static byte[] bigIntToFixedLengthBytes(BigInteger rOrS) {
         byte[] rs = rOrS.toByteArray();
-        if (rs.length == 32) {
+        if (rs.length == Normal._32) {
             return rs;
-        } else if (rs.length == 32 + 1 && rs[0] == 0) {
-            return Arrays.copyOfRange(rs, 1, 32 + 1);
-        } else if (rs.length < 32) {
-            byte[] result = new byte[32];
+        } else if (rs.length == Normal._32 + 1 && rs[0] == 0) {
+            return Arrays.copyOfRange(rs, 1, Normal._32 + 1);
+        } else if (rs.length < Normal._32) {
+            byte[] result = new byte[Normal._32];
             Arrays.fill(result, (byte) 0);
-            System.arraycopy(rs, 0, result, 32 - rs.length, rs.length);
+            System.arraycopy(rs, 0, result, Normal._32 - rs.length, rs.length);
             return result;
         } else {
             throw new CryptoException("Error rs: {}", Hex.toHexString(rs));

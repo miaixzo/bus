@@ -28,6 +28,7 @@ package org.aoju.bus.http.metric.http;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
@@ -60,7 +61,7 @@ public final class Http1Codec implements HttpCodec {
     private static final int STATE_OPEN_RESPONSE_BODY = 4;
     private static final int STATE_READING_RESPONSE_BODY = 5;
     private static final int STATE_CLOSED = 6;
-    private static final int HEADER_LIMIT = 256 * 1024;
+    private static final int HEADER_LIMIT = Normal._256 * Normal._1024;
 
     /**
      * 配置此流的客户端。可能是空的HTTPS代理隧道.

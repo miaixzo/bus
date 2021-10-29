@@ -326,7 +326,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         Memory nameBuf;
         do {
             // First increment is probably enough
-            bufSize += 256;
+            bufSize +=  Normal._256;
             nameBuf = new Memory(bufSize);
             ret = Kernel32.INSTANCE.DeviceIoControl(hBattery, IOCTL_BATTERY_QUERY_INFORMATION, bqi.getPointer(),
                     bqi.size(), nameBuf, (int) nameBuf.size(), dwOut, null);

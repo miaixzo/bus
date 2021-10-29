@@ -116,7 +116,7 @@ public final class ProcessWtsData {
                     WmiKit.getString(processWmiResult, Win32Process.ProcessXPProperty.EXECUTABLEPATH, i),
                     WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.THREADCOUNT, i),
                     // WMI Pagefile usage is in KB
-                    1024 * (WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.PAGEFILEUSAGE, i) & 0xffff_ffffL),
+                    Normal._1024 * (WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.PAGEFILEUSAGE, i) & 0xffff_ffffL),
                     WmiKit.getUint64(processWmiResult, Win32Process.ProcessXPProperty.KERNELMODETIME, i) / 10_000L,
                     WmiKit.getUint64(processWmiResult, Win32Process.ProcessXPProperty.USERMODETIME, i) / 10_000L,
                     WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.HANDLECOUNT, i)));

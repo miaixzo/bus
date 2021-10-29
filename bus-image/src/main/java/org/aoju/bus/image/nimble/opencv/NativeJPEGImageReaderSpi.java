@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
+
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
@@ -112,7 +114,7 @@ public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
                 if ((byte2 >= 0xCD) && (byte2 <= 0xCF)) {
                     return true;
                 }
-                int length = iis.read() << 8;
+                int length = iis.read() << Normal._8;
                 length += iis.read();
                 length -= 2;
                 while (length > 0) {

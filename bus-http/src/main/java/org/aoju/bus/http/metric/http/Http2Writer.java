@@ -27,6 +27,7 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
@@ -64,7 +65,7 @@ final class Http2Writer implements Closeable {
     }
 
     private static void writeMedium(BufferSink sink, int i) throws IOException {
-        sink.writeByte((i >>> 16) & 0xff);
+        sink.writeByte((i >>> Normal._16) & 0xff);
         sink.writeByte((i >>> 8) & 0xff);
         sink.writeByte(i & 0xff);
     }

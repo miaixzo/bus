@@ -53,7 +53,7 @@
         <houbb.version>0.2.2</houbb.version>
         <jsch.version>0.1.54</jsch.version>
         <zxing.version>3.4.1</zxing.version>
-        <net.version>3.7</net.version>
+        <net.version>3.8.0</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
         <compress.vetsion>1.21</compress.vetsion>
         <lzo.version>1.0.6</lzo.version>

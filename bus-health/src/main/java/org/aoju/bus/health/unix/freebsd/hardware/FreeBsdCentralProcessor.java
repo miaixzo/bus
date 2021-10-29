@@ -101,13 +101,13 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                     // NumberFormatException
                     switch (groupLevel) {
                         case 1:
-                            group1 = Long.parseLong(m.group(1), 16);
+                            group1 = Long.parseLong(m.group(1), Normal._16);
                             break;
                         case 2:
-                            group2.add(Long.parseLong(m.group(1), 16));
+                            group2.add(Long.parseLong(m.group(1), Normal._16));
                             break;
                         case 3:
-                            group3.add(Long.parseLong(m.group(1), 16));
+                            group3.add(Long.parseLong(m.group(1), Normal._16));
                             break;
                         default:
                             break;
@@ -203,7 +203,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             } else if (line.startsWith("Features=")) {
                 Matcher m = featuresPattern.matcher(line);
                 if (m.matches()) {
-                    processorIdBits |= Long.decode(m.group(1)) << 32;
+                    processorIdBits |= Long.decode(m.group(1)) << Normal._32;
                 }
                 // No further interest in this file
                 break;

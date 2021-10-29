@@ -33,10 +33,8 @@ import org.aoju.bus.core.image.painter.Painter;
 import org.aoju.bus.core.image.painter.PainterFactory;
 import org.aoju.bus.core.image.painter.TextPainter;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.Graphics;
-import org.aoju.bus.core.lang.Scale;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
@@ -424,8 +422,8 @@ public class Images implements Serializable {
 
         int divsum = (div + 1) >> 1;
         divsum *= divsum;
-        int dv[] = new int[256 * divsum];
-        for (i = 0; i < 256 * divsum; i++) {
+        int dv[] = new int[ Normal._256 * divsum];
+        for (i = 0; i <  Normal._256 * divsum; i++) {
             dv[i] = (i / divsum);
         }
 
@@ -445,7 +443,7 @@ public class Images implements Serializable {
             for (i = -radius; i <= radius; i++) {
                 p = pix[yi + Math.min(wm, Math.max(i, 0))];
                 sir = stack[i + radius];
-                sir[0] = (p & 0xff0000) >> 16;
+                sir[0] = (p & 0xff0000) >> Normal._16;
                 sir[1] = (p & 0x00ff00) >> 8;
                 sir[2] = (p & 0x0000ff);
                 rbs = r1 - Math.abs(i);
@@ -486,7 +484,7 @@ public class Images implements Serializable {
                 }
                 p = pix[yw + vmin[x]];
 
-                sir[0] = (p & 0xff0000) >> 16;
+                sir[0] = (p & 0xff0000) >> Normal._16;
                 sir[1] = (p & 0x00ff00) >> 8;
                 sir[2] = (p & 0x0000ff);
 
@@ -548,7 +546,7 @@ public class Images implements Serializable {
             yi = x;
             stackpointer = radius;
             for (y = 0; y < h; y++) {
-                pix[yi] = (0xff000000 & pix[yi]) | (dv[rsum] << 16) | (dv[gsum] << 8) | dv[bsum];
+                pix[yi] = (0xff000000 & pix[yi]) | (dv[rsum] << Normal._16) | (dv[gsum] << 8) | dv[bsum];
 
                 rsum -= routsum;
                 gsum -= goutsum;

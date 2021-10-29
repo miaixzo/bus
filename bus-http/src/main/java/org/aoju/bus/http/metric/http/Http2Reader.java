@@ -26,6 +26,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
@@ -59,7 +60,7 @@ public final class Http2Reader implements Closeable {
     }
 
     private static int readMedium(BufferSource source) throws IOException {
-        return (source.readByte() & 0xff) << 16
+        return (source.readByte() & 0xff) << Normal._16
                 | (source.readByte() & 0xff) << 8
                 | (source.readByte() & 0xff);
     }

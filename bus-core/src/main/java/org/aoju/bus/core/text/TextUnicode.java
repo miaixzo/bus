@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -118,7 +119,7 @@ public class TextUnicode {
             if (i + 5 < len) {
                 char c;
                 try {
-                    c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), 16);
+                    c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), Normal._16);
                     sb.append(c);
                     pos = i + 6;//跳过整个Unicode符
                 } catch (NumberFormatException e) {

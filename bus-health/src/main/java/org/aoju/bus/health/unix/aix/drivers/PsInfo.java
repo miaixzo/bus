@@ -31,6 +31,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.unix.aix.AixLibc;
@@ -284,16 +285,16 @@ public final class PsInfo {
         PR_ADDR(8), // internal address of proc struct
         PR_SIZE(8), // process image size in kb (1024) units
         PR_RSSIZE(8), // resident set size in kb (1024) units
-        PR_START(16), // process start time, time since epoch
-        PR_TIME(16), // usr+sys cpu time for this process
+        PR_START(Normal._16), // process start time, time since epoch
+        PR_TIME(Normal._16), // usr+sys cpu time for this process
         PR_CID(2), // corral id
         PR_PAD2(2), // reserved for future use
         PR_ARGC(4), // initial argument count
         PR_ARGV(8), // address of initial argument vector in user process
         PR_ENVP(8), // address of initial environment vector in user process
-        PR_FNAME(16), // last component of exec()ed pathname
+        PR_FNAME(Normal._16), // last component of exec()ed pathname
         PR_PSARGS(80), // initial characters of arg list
-        PR_PAD(64), // reserved for future use
+        PR_PAD(Normal._64), // reserved for future use
         PR_LWP(lwpsInfoOffsets.get(LwpsInfoT.SIZE)), // "representative" thread info
         SIZE(0);
 

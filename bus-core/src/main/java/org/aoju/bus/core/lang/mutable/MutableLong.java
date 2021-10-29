@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.mutable;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**
@@ -202,7 +203,7 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
 
     @Override
     public int hashCode() {
-        return (int) (value ^ (value >>> 32));
+        return (int) (value ^ (value >>> Normal._32));
     }
 
     /**

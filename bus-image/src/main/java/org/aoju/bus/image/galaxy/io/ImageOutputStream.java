@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.io;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Tag;
@@ -44,7 +45,7 @@ public class ImageOutputStream extends FilterOutputStream {
 
     private static final byte[] DICM = {'D', 'I', 'C', 'M'};
     private final byte[] buf = new byte[12];
-    private byte[] preamble = new byte[128];
+    private byte[] preamble = new byte[ Normal._128];
     private boolean explicitVR;
     private boolean bigEndian;
     private boolean deflated;
@@ -61,7 +62,7 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public final void setPreamble(byte[] preamble) {
-        if (preamble.length != 128)
+        if (preamble.length !=  Normal._128)
             throw new IllegalArgumentException(
                     "preamble.length=" + preamble.length);
         this.preamble = preamble.clone();

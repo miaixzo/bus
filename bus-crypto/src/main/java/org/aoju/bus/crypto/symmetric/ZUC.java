@@ -1,5 +1,6 @@
 package org.aoju.bus.crypto.symmetric;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.RandomKit;
 import org.aoju.bus.crypto.Builder;
 
@@ -51,7 +52,7 @@ public class ZUC extends Crypto {
         if (null == iv) {
             switch (algorithm) {
                 case ZUC_128:
-                    iv = RandomKit.randomBytes(16);
+                    iv = RandomKit.randomBytes(Normal._16);
                     break;
                 case ZUC_256:
                     iv = RandomKit.randomBytes(25);

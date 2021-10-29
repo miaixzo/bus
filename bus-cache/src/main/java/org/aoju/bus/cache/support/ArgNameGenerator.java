@@ -60,7 +60,7 @@ public class ArgNameGenerator {
             X_ARGS_PREFIX + 13,
             X_ARGS_PREFIX + 14,
             X_ARGS_PREFIX + 15,
-            X_ARGS_PREFIX + 16,
+            X_ARGS_PREFIX + Normal._16,
             X_ARGS_PREFIX + 17,
             X_ARGS_PREFIX + 18,
             X_ARGS_PREFIX + 19
