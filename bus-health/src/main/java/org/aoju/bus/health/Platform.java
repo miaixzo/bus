@@ -185,7 +185,7 @@ public class Platform {
         } else if ("i386".equals(arch)) {
             arch = "x86";
         } else if ("x86_64".equals(arch) || "amd64".equals(arch)) {
-            arch = "x86-64";
+            arch = "x86_64";
         }
         switch (osType) {
             case com.sun.jna.Platform.ANDROID:
