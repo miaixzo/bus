@@ -94,7 +94,7 @@ public class CopyOptions implements Serializable {
     /**
      * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
      */
-    private boolean transientSupport = true;
+    private boolean transientSupport = false;
 
     /**
      * 构造拷贝选项
