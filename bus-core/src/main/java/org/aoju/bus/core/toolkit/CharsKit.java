@@ -537,7 +537,18 @@ public class CharsKit {
      */
     private static boolean isNullOrUndefinedStr(CharSequence text) {
         String strString = text.toString().trim();
-        return Normal.NULL.equals(strString) || "undefined".equals(strString);
+        return Normal.NULL.equals(strString) || Normal.UNDEFINED.equals(strString);
+    }
+
+    /**
+     * 是否不为“null”、“undefined”，不做空指针检查
+     *
+     * @param str 字符串
+     * @return 是否不为“null”、“undefined”，不为“null”、“undefined”返回true，否则false
+     */
+    private static boolean isNotNullAndNotUndefinedStr(CharSequence str) {
+        String strString = str.toString().trim();
+        return !Normal.NULL.equals(strString) && !Normal.UNDEFINED.equals(strString);
     }
 
     /**
