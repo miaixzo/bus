@@ -61,7 +61,6 @@ public class MetaObject {
                 }
             }
         }
-
     }
 
     public static org.apache.ibatis.reflection.MetaObject forObject(Object object) {

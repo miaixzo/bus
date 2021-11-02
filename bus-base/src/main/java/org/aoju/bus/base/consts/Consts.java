@@ -55,6 +55,7 @@ public class Consts extends Normal {
     /**
      * 全局类型
      */
+    public static final String TYPE_MINUS_ONE = "-1";
     public static final String TYPE_ZERO = Symbol.ZERO;
     public static final String TYPE_ONE = Symbol.ONE;
     public static final String TYPE_TWO = Symbol.TWO;

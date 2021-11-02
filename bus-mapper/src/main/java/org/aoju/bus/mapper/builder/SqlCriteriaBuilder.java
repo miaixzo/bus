@@ -49,7 +49,7 @@ public class SqlCriteriaBuilder<T> implements SqlsCriteria {
     }
 
     public static <T> SqlCriteriaBuilder<T> custom(Class<T> clazz) {
-        return new SqlCriteriaBuilder<T>();
+        return new SqlCriteriaBuilder<>();
     }
 
     /**

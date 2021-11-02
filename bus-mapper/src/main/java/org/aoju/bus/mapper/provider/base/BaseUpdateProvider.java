@@ -72,4 +72,5 @@ public class BaseUpdateProvider extends MapperTemplate {
         sql.append(SqlBuilder.wherePKColumns(entityClass, true));
         return sql.toString();
     }
+
 }

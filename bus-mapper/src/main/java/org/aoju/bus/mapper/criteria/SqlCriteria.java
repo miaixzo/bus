@@ -197,7 +197,7 @@ public class SqlCriteria {
         private List<Criterion> criterions;
 
         public Criteria() {
-            this.criterions = new ArrayList<Criterion>(2);
+            this.criterions = new ArrayList<>(2);
         }
 
         public List<Criterion> getCriterions() {

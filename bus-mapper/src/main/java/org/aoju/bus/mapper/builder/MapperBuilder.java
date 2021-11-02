@@ -96,7 +96,7 @@ public class MapperBuilder {
         Method[] methods = mapperClass.getDeclaredMethods();
         Class<?> templateClass = null;
         Class<?> tempClass = null;
-        Set<String> methodSet = new HashSet<String>();
+        Set<String> methodSet = new HashSet<>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(SelectProvider.class)) {
                 SelectProvider provider = method.getAnnotation(SelectProvider.class);

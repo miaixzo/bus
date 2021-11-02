@@ -82,6 +82,7 @@ public class EntityColumn {
     private EntityField entityField;
 
     public EntityColumn() {
+
     }
 
     public EntityColumn(EntityTable table) {
@@ -387,4 +388,5 @@ public class EntityColumn {
                 ", order=" + order +
                 '}';
     }
+
 }

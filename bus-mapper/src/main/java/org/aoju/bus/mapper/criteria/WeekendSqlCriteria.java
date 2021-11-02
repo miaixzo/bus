@@ -45,7 +45,7 @@ public class WeekendSqlCriteria<T> implements SqlsCriteria {
     }
 
     public static <T> WeekendSqlCriteria<T> custom() {
-        return new WeekendSqlCriteria<T>();
+        return new WeekendSqlCriteria<>();
     }
 
     public WeekendSqlCriteria<T> andIsNull(String property) {

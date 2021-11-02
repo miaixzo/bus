@@ -161,7 +161,7 @@ public class FieldBuilder {
             for (EntityField field : fields) {
                 for (EntityField property : properties) {
                     if (!usedSet.contains(property) && field.getName().equals(property.getName())) {
-                        //泛型的情况下通过属性可以得到实际的类型
+                        // 泛型的情况下通过属性可以得到实际的类型
                         field.setJavaType(property.getJavaType());
                         break;
                     }
@@ -226,7 +226,7 @@ public class FieldBuilder {
          */
         @Override
         public List<EntityField> getProperties(Class<?> entityClass) {
-            List<EntityField> entityFields = new ArrayList<EntityField>();
+            List<EntityField> entityFields = new ArrayList<>();
             BeanInfo beanInfo;
             try {
                 beanInfo = Introspector.getBeanInfo(entityClass);
@@ -250,7 +250,7 @@ public class FieldBuilder {
 
         @Override
         public List<EntityField> getFields(Class<?> entityClass) {
-            List<EntityField> fieldList = new ArrayList<EntityField>();
+            List<EntityField> fieldList = new ArrayList<>();
             _getFields(entityClass, fieldList, _getGenericTypeMap(entityClass), null);
             return fieldList;
         }
@@ -264,7 +264,7 @@ public class FieldBuilder {
         @Override
         public List<EntityField> getProperties(Class<?> entityClass) {
             Map<String, Class<?>> genericMap = _getGenericTypeMap(entityClass);
-            List<EntityField> entityFields = new ArrayList<EntityField>();
+            List<EntityField> entityFields = new ArrayList<>();
             BeanInfo beanInfo;
             try {
                 beanInfo = Introspector.getBeanInfo(entityClass);
@@ -354,7 +354,7 @@ public class FieldBuilder {
          * @param entityClass 实体Class对象
          */
         private Map<String, Class<?>> _getGenericTypeMap(Class<?> entityClass) {
-            Map<String, Class<?>> genericMap = new HashMap<String, Class<?>>();
+            Map<String, Class<?>> genericMap = new HashMap<>();
             if (entityClass == Object.class) {
                 return genericMap;
             }

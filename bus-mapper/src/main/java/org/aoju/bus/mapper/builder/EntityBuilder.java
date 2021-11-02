@@ -85,7 +85,7 @@ public class EntityBuilder {
             return table.getOrderByClause();
         }
 
-        List<EntityColumn> orderEntityColumns = new ArrayList<EntityColumn>();
+        List<EntityColumn> orderEntityColumns = new ArrayList<>();
         for (EntityColumn column : table.getEntityClassColumns()) {
             if (column.getOrderBy() != null) {
                 orderEntityColumns.add(column);

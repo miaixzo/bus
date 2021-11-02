@@ -59,7 +59,7 @@ public class Weekend<T> extends Condition {
     }
 
     public static <A> Weekend<A> of(Class<A> clazz) {
-        return new Weekend<A>(clazz, Boolean.TRUE);
+        return new Weekend<>(clazz, Boolean.TRUE);
     }
 
     public WeekendCriteria<T, Object> createCriteriaAddOn() {
