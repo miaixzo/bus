@@ -602,15 +602,15 @@ public class FileKit {
      * 创建文件及其父目录,如果这个文件存在,直接返回这个文件
      * 此方法不对File对象类型做判断,如果File不存在,无法判断其类型
      *
-     * @param fullFilePath 文件的全路径,使用POSIX风格
+     * @param path 文件的全路径,使用POSIX风格
      * @return 文件, 若路径为null, 返回null
      * @throws InstrumentException 异常
      */
-    public static File touch(String fullFilePath) throws InstrumentException {
-        if (null == fullFilePath) {
+    public static File touch(String path) throws InstrumentException {
+        if (null == path) {
             return null;
         }
-        return touch(file(fullFilePath));
+        return touch(file(path));
     }
 
     /**
@@ -3317,13 +3317,13 @@ public class FileKit {
     /**
      * 将路径对应文件写入流中，此方法不会关闭输出流
      *
-     * @param in           输入流
-     * @param fullFilePath 文件绝对路径
+     * @param in   输入流
+     * @param path 文件绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
      */
-    public static File writeFromStream(InputStream in, String fullFilePath) throws InstrumentException {
-        return writeFromStream(in, touch(fullFilePath));
+    public static File writeFromStream(InputStream in, String path) throws InstrumentException {
+        return writeFromStream(in, touch(path));
     }
 
     /**
@@ -3341,13 +3341,13 @@ public class FileKit {
     /**
      * 将流的内容写入文件
      *
-     * @param fullFilePath 文件绝对路径
-     * @param out          输出流
+     * @param path 文件绝对路径
+     * @param out  输出流
      * @return 写出的流byte数
      * @throws InstrumentException 异常
      */
-    public static long writeToStream(String fullFilePath, OutputStream out) throws InstrumentException {
-        return writeToStream(touch(fullFilePath), out);
+    public static long writeToStream(String path, OutputStream out) throws InstrumentException {
+        return writeToStream(touch(path), out);
     }
 
     /**
