@@ -26,6 +26,7 @@
 package org.aoju.bus.core.text;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -113,18 +114,19 @@ public class TextUnicode {
         TextBuilder sb = TextBuilder.create(len);
         int i;
         int pos = 0;
-        while ((i = StringKit.indexOfIgnoreCase(unicode, "\\u", pos)) != -1) {
-            sb.append(unicode, pos, i);// 写入Unicode符之前的部分
+        while ((i = StringKit.indexOfIgnoreCase(unicode, Symbol.UNICODE_START_CHAR, pos)) != -1) {
+            // 写入Unicode符之前的部分
+            sb.append(unicode, pos, i);
             pos = i;
             if (i + 5 < len) {
                 char c;
                 try {
                     c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), Normal._16);
                     sb.append(c);
-                    pos = i + 6;//跳过整个Unicode符
+                    pos = i + 6;// 跳过整个Unicode符
                 } catch (NumberFormatException e) {
-                    // 非法Unicode符，跳过
-                    sb.append(unicode, pos, i + 2);//写入"\\u"
+                    // 非法Unicode符，跳过,  写入"\\u"
+                    sb.append(unicode, pos, i + 2);
                     pos = i + 2;
                 }
             } else {

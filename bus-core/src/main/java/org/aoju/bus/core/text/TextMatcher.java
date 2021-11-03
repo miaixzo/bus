@@ -1,5 +1,6 @@
 package org.aoju.bus.core.text;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -58,7 +59,7 @@ public class TextMatcher {
                     patterns.add(part.toString());
                     part.clear();
                 }
-            } else if ('{' == c && '$' == pre) {
+            } else if (Symbol.C_BRACE_LEFT == c && Symbol.C_DOLLAR == pre) {
                 // 变量开始
                 inVar = true;
                 final String preText = part.subString(0, part.length() - 1);
@@ -90,7 +91,7 @@ public class TextMatcher {
         String key = null;
         int to;
         for (String part : patterns) {
-            if (StringKit.isWrap(part, "${", "}")) {
+            if (StringKit.isWrap(part, Symbol.DOLLAR + Symbol.BRACE_LEFT, Symbol.BRACE_RIGHT)) {
                 // 变量
                 key = StringKit.sub(part, 2, part.length() - 1);
             } else {

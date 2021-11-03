@@ -81,12 +81,16 @@ public class TextFormatter {
         // 初始化定义好的长度以获得更好的性能
         final StringBuilder text = new StringBuilder(templateLength + 50);
 
-        int handledPosition = 0;// 记录已经处理到的位置
-        int delimIndex;// 占位符所在位置
+        // 记录已经处理到的位置
+        int handledPosition = 0;
+        // 占位符所在位置
+        int delimIndex;
         for (int argIndex = 0; argIndex < args.length; argIndex++) {
             delimIndex = template.indexOf(placeHolder, handledPosition);
-            if (delimIndex == -1) {// 剩余部分无占位符
-                if (handledPosition == 0) { // 不带占位符的模板直接返回
+            // 剩余部分无占位符
+            if (delimIndex == -1) {
+                if (handledPosition == 0) {
+                    // 不带占位符的模板直接返回
                     return template;
                 }
                 // 字符串模板剩余部分不再包含占位符，加入剩余部分后返回结果
@@ -95,8 +99,9 @@ public class TextFormatter {
             }
 
             // 转义符
-            if (delimIndex > 0 && template.charAt(delimIndex - 1) == Symbol.C_BACKSLASH) {// 转义符
-                if (delimIndex > 1 && template.charAt(delimIndex - 2) == Symbol.C_BACKSLASH) {// 双转义符
+            if (delimIndex > 0 && template.charAt(delimIndex - 1) == Symbol.C_BACKSLASH) {
+                // 双转义符
+                if (delimIndex > 1 && template.charAt(delimIndex - 2) == Symbol.C_BACKSLASH) {
                     // 转义符之前还有一个转义符，占位符依旧有效
                     text.append(template, handledPosition, delimIndex - 1);
                     text.append(StringKit.toString(args[argIndex]));

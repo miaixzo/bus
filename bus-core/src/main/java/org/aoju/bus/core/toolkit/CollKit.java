@@ -568,6 +568,21 @@ public class CollKit {
     }
 
     /**
+     * 判断指定集合是否包含指定值，如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     *
+     * @param collection 集合
+     * @param value      需要查找的值
+     * @return 果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     */
+    public static boolean safeContains(Collection<?> collection, Object value) {
+        try {
+            return contains(collection, value);
+        } catch (ClassCastException | NullPointerException e) {
+            return false;
+        }
+    }
+
+    /**
      * 检查给定的迭代器是否包含给定的元素.
      *
      * @param iterator 要检查的迭代器

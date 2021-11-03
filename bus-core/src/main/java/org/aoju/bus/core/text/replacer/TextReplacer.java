@@ -56,8 +56,10 @@ public abstract class TextReplacer implements Replacer<CharSequence>, Serializab
     public CharSequence replace(CharSequence text) {
         final int len = text.length();
         final TextBuilder builder = TextBuilder.create(len);
-        int pos = 0;//当前位置
-        int consumed;//处理过的字符数
+        // 当前位置
+        int pos = 0;
+        // 处理过的字符数
+        int consumed;
         while (pos < len) {
             consumed = replace(text, pos, builder);
             if (0 == consumed) {

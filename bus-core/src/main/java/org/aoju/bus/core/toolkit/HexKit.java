@@ -272,7 +272,7 @@ public class HexKit {
     public static String toUnicodeHex(int value) {
         final StringBuilder builder = new StringBuilder(6);
 
-        builder.append("\\u");
+        builder.append(Symbol.UNICODE_START_CHAR);
         String hex = Integer.toHexString(value);
         int len = hex.length();
         if (len < 4) {
@@ -296,7 +296,7 @@ public class HexKit {
      */
     public static String toUnicodeHex(char ch) {
         StringBuilder sb = new StringBuilder(6);
-        sb.append("\\u");
+        sb.append(Symbol.UNICODE_START_CHAR);
         sb.append(Normal.DIGITS_16_LOWER[(ch >> 12) & 15]);
         sb.append(Normal.DIGITS_16_LOWER[(ch >> 8) & 15]);
         sb.append(Normal.DIGITS_16_LOWER[(ch >> 4) & 15]);

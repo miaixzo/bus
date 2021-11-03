@@ -137,6 +137,19 @@ public class DateKit extends Almanac {
     }
 
     /**
+     * 创建日期范围生成器
+     *
+     * @param start 起始日期时间
+     * @param end   结束日期时间
+     * @param type  步进单位
+     * @param step  步进数
+     * @return {@link Boundary}
+     */
+    public static List<DateTime> rangeToList(Date start, Date end, final Fields.Type type, int step) {
+        return CollKit.newArrayList((Iterable<DateTime>) new Boundary(start, end, type, step));
+    }
+
+    /**
      * 通过公历构造
      *
      * @return {@link Lunar}
