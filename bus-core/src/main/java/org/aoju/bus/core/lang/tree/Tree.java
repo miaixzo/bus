@@ -34,6 +34,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 通过转换器将你的实体转化为TreeNodeMap节点实体 属性都存在此处,属性有序，可支持排序
@@ -250,6 +251,19 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
     public void putExtra(String key, Object value) {
         Assert.notEmpty(key, "Key must be not empty !");
         this.put(key, value);
+    }
+
+    /**
+     * 递归树并处理子树下的节点：
+     *
+     * @param consumer 节点处理器
+     */
+    public void walk(Consumer<Tree<T>> consumer) {
+        consumer.accept(this);
+        final List<Tree<T>> children = getChildren();
+        if (CollKit.isNotEmpty(children)) {
+            children.forEach((tree) -> tree.walk(consumer));
+        }
     }
 
     @Override

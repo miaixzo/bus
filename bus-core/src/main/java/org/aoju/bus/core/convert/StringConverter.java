@@ -32,6 +32,7 @@ import org.aoju.bus.core.toolkit.XmlKit;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Type;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -94,6 +95,8 @@ public class StringConverter extends AbstractConverter<String> {
             return clobToString((Clob) value);
         } else if (value instanceof Blob) {
             return blobToString((Blob) value);
+        } else if (value instanceof Type) {
+            return ((Type) value).getTypeName();
         }
 
         return convertString(value);

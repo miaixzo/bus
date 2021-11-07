@@ -207,14 +207,15 @@ public class RegEx {
 
     /**
      * URL
+     * 定义见：https://www.ietf.org/rfc/rfc3986.html#appendix-B
      */
-    public static final String URL_PATTERN = "[a-zA-z]+://[^\\s]*";
+    public static final String URL_PATTERN = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
     public static final Pattern URL = Pattern.compile(URL_PATTERN);
 
     /**
      * Http URL
      */
-    public static final String URL_HTTP_PATTERN = "(https://|http://)?([\\w-]+\\.)+[\\w-]+(:\\d+)*(/[\\w- ./?%&=]*)?";
+    public static final String URL_HTTP_PATTERN = "(https?|ftp|file)://[\\w-+&@#/%?=~_|!:,.;]*[\\w-+&@#/%=~_|]";
     public static final Pattern URL_HTTP = Pattern.compile(URL_HTTP_PATTERN);
 
     /**

@@ -84,6 +84,8 @@ public class Percent implements Serializable {
     private final BitSet safeCharacters;
     /**
      * 是否编码空格为+
+     * 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
+     * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
      */
     private boolean encodeSpaceAsPlus = false;
 

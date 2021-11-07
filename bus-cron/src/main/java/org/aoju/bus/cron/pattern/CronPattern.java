@@ -59,8 +59,7 @@ import java.util.*;
  * 注意：
  *
  * <pre>
- * 当isMatchSecond为<code>true</code>时才会匹配秒部分
- * 当isMatchYear为<code>true</code>时才会匹配年部分
+ * 当isMatchSecond为{@code true}时才会匹配秒部分
  * 默认都是关闭的
  * </pre>
  * <p>
@@ -184,7 +183,7 @@ public class CronPattern {
      *
      * @param millis        时间毫秒数
      * @param isMatchSecond 是否匹配秒
-     * @return 如果匹配返回 <code>true</code>, 否则返回 <code>false</code>
+     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
     public boolean match(long millis, boolean isMatchSecond) {
         return match(TimeZone.getDefault(), millis, isMatchSecond);
@@ -196,7 +195,7 @@ public class CronPattern {
      * @param timezone      时区 {@link TimeZone}
      * @param millis        时间毫秒数
      * @param isMatchSecond 是否匹配秒
-     * @return 如果匹配返回 <code>true</code>, 否则返回 <code>false</code>
+     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
     public boolean match(TimeZone timezone, long millis, boolean isMatchSecond) {
         final GregorianCalendar calendar = new GregorianCalendar(timezone);
@@ -209,7 +208,7 @@ public class CronPattern {
      *
      * @param calendar      时间
      * @param isMatchSecond 是否匹配秒
-     * @return 如果匹配返回 <code>true</code>, 否则返回 <code>false</code>
+     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
     public boolean match(GregorianCalendar calendar, boolean isMatchSecond) {
         final int second = calendar.get(Calendar.SECOND);
