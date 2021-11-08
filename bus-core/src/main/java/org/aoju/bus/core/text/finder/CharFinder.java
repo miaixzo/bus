@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 字符查找器
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CharFinder extends TextFinder {

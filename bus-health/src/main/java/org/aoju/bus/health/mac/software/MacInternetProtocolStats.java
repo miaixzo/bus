@@ -27,6 +27,7 @@ package org.aoju.bus.health.mac.software;
 
 import com.sun.jna.Memory;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
@@ -45,7 +46,7 @@ import java.util.function.Supplier;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -68,12 +69,12 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat mt = new CLibrary.BsdTcpstat();
         Memory m = SysctlKit.sysctl("net.inet.tcp.stats");
-        if (null != m && m.size() >= 128) {
+        if (null != m && m.size() >= Normal._128) {
             mt.tcps_connattempt = m.getInt(0);
             mt.tcps_accepts = m.getInt(4);
             mt.tcps_drops = m.getInt(12);
-            mt.tcps_conndrops = m.getInt(16);
-            mt.tcps_sndpack = m.getInt(64);
+            mt.tcps_conndrops = m.getInt(Normal._16);
+            mt.tcps_sndpack = m.getInt(Normal._64);
             mt.tcps_sndrexmitpack = m.getInt(72);
             mt.tcps_rcvpack = m.getInt(104);
             mt.tcps_rcvbadsum = m.getInt(112);
@@ -92,7 +93,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
             mi.ips_badsum = m.getInt(4);
             mi.ips_tooshort = m.getInt(8);
             mi.ips_toosmall = m.getInt(12);
-            mi.ips_badhlen = m.getInt(16);
+            mi.ips_badhlen = m.getInt(Normal._16);
             mi.ips_badlen = m.getInt(20);
             mi.ips_delivered = m.getInt(56);
         }
@@ -119,7 +120,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
             ut.udps_badlen = m.getInt(12);
             ut.udps_opackets = m.getInt(36);
             ut.udps_noportmcast = m.getInt(48);
-            ut.udps_rcv6_swcsum = m.getInt(64);
+            ut.udps_rcv6_swcsum = m.getInt(Normal._64);
             ut.udps_snd6_swcsum = m.getInt(80);
         }
         return ut;
@@ -274,7 +275,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     @Override
     public List<IPConnection> getConnections() {
         List<IPConnection> conns = new ArrayList<>();
-        int[] pids = new int[1024];
+        int[] pids = new int[Normal._1024];
         int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE)
                 / SystemB.INT_SIZE;
         for (int i = 0; i < numberOfProcesses; i++) {

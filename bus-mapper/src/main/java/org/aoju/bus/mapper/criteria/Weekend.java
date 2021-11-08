@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Weekend<T> extends Condition {
@@ -59,7 +59,7 @@ public class Weekend<T> extends Condition {
     }
 
     public static <A> Weekend<A> of(Class<A> clazz) {
-        return new Weekend<A>(clazz, Boolean.TRUE);
+        return new Weekend<>(clazz, Boolean.TRUE);
     }
 
     public WeekendCriteria<T, Object> createCriteriaAddOn() {

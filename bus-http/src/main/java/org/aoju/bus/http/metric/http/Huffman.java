@@ -42,6 +42,7 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Normal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,7 +57,7 @@ import java.io.IOException;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Huffman {
@@ -237,7 +238,7 @@ public class Huffman {
         final int terminalBits;
 
         Node() {
-            this.children = new Node[256];
+            this.children = new Node[Normal._256];
             this.symbol = 0;
             this.terminalBits = 0;
         }

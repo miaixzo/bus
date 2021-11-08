@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -40,7 +41,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ImageConversion {
@@ -312,7 +313,7 @@ public class ImageConversion {
                         short datum = data[i++];
                         binaryDataArray[b++] = (byte) ((datum >>> 8) & 0xFF);
                         binaryDataArray[b++] = (byte) (datum & 0xFF);
-                        xRemaining -= 16;
+                        xRemaining -= Normal._16;
                     }
                     if (xRemaining > 0) {
                         binaryDataArray[b++] = (byte) ((data[i] >>> 8) & 0XFF);
@@ -328,10 +329,10 @@ public class ImageConversion {
                     while (xRemaining > 24) {
                         int datum = data[i++];
                         binaryDataArray[b++] = (byte) ((datum >>> 24) & 0xFF);
-                        binaryDataArray[b++] = (byte) ((datum >>> 16) & 0xFF);
+                        binaryDataArray[b++] = (byte) ((datum >>> Normal._16) & 0xFF);
                         binaryDataArray[b++] = (byte) ((datum >>> 8) & 0xFF);
                         binaryDataArray[b++] = (byte) (datum & 0xFF);
-                        xRemaining -= 32;
+                        xRemaining -= Normal._32;
                     }
                     int shift = 24;
                     while (xRemaining > 0) {
@@ -379,15 +380,15 @@ public class ImageConversion {
                 for (int y = 0; y < rectHeight; y++) {
                     int bOffset = bitOffset;
                     for (int x = 0; x < rectWidth; x += 8, bOffset += 8) {
-                        int i = eltOffset + bOffset / 16;
-                        int mod = bOffset % 16;
+                        int i = eltOffset + bOffset / Normal._16;
+                        int mod = bOffset % Normal._16;
                         int left = data[i] & 0xFFFF;
                         if (mod <= 8) {
                             binaryDataArray[b++] = (byte) (left >>> (8 - mod));
                         } else {
                             int delta = mod - 8;
                             int right = data[i + 1] & 0xFFFF;
-                            binaryDataArray[b++] = (byte) ((left << delta) | (right >>> (16 - delta)));
+                            binaryDataArray[b++] = (byte) ((left << delta) | (right >>> (Normal._16 - delta)));
                         }
                     }
                     eltOffset += lineStride;
@@ -398,15 +399,15 @@ public class ImageConversion {
                 for (int y = 0; y < rectHeight; y++) {
                     int bOffset = bitOffset;
                     for (int x = 0; x < rectWidth; x += 8, bOffset += 8) {
-                        int i = eltOffset + bOffset / 32;
-                        int mod = bOffset % 32;
+                        int i = eltOffset + bOffset / Normal._32;
+                        int mod = bOffset % Normal._32;
                         int left = data[i];
                         if (mod <= 24) {
                             binaryDataArray[b++] = (byte) (left >>> (24 - mod));
                         } else {
                             int delta = mod - 24;
                             int right = data[i + 1];
-                            binaryDataArray[b++] = (byte) ((left << delta) | (right >>> (32 - delta)));
+                            binaryDataArray[b++] = (byte) ((left << delta) | (right >>> (Normal._32 - delta)));
                         }
                     }
                     eltOffset += lineStride;
@@ -469,10 +470,10 @@ public class ImageConversion {
             short[] data = dataBuffer instanceof DataBufferShort ? ((DataBufferShort) dataBuffer).getData()
                     : ((DataBufferUShort) dataBuffer).getData();
             for (int y = rectY; y < maxY; y++) {
-                int bOffset = eltOffset * 16 + bitOffset;
+                int bOffset = eltOffset * Normal._16 + bitOffset;
                 for (int x = rectX; x < maxX; x++) {
-                    short s = data[bOffset / 16];
-                    bdata[k++] = (byte) ((s >>> (15 - bOffset % 16)) & 0x0000001);
+                    short s = data[bOffset / Normal._16];
+                    bdata[k++] = (byte) ((s >>> (15 - bOffset % Normal._16)) & 0x0000001);
                     bOffset++;
                 }
                 eltOffset += lineStride;
@@ -480,10 +481,10 @@ public class ImageConversion {
         } else if (dataBuffer instanceof DataBufferInt) {
             int[] data = ((DataBufferInt) dataBuffer).getData();
             for (int y = rectY; y < maxY; y++) {
-                int bOffset = eltOffset * 32 + bitOffset;
+                int bOffset = eltOffset * Normal._32 + bitOffset;
                 for (int x = rectX; x < maxX; x++) {
-                    int i = data[bOffset / 32];
-                    bdata[k++] = (byte) ((i >>> (31 - bOffset % 32)) & 0x0000001);
+                    int i = data[bOffset / Normal._32];
+                    bdata[k++] = (byte) ((i >>> (31 - bOffset % Normal._32)) & 0x0000001);
                     bOffset++;
                 }
                 eltOffset += lineStride;
@@ -549,7 +550,7 @@ public class ImageConversion {
                     int i = eltOffset;
                     while (xRemaining > 8) {
                         data[i++] = (short) (((binaryDataArray[b++] & 0xFF) << 8) | (binaryDataArray[b++] & 0xFF));
-                        xRemaining -= 16;
+                        xRemaining -= Normal._16;
                     }
                     if (xRemaining > 0) {
                         data[i++] = (short) ((binaryDataArray[b++] & 0xFF) << 8);
@@ -563,9 +564,9 @@ public class ImageConversion {
                     int xRemaining = rectWidth;
                     int i = eltOffset;
                     while (xRemaining > 24) {
-                        data[i++] = ((binaryDataArray[b++] & 0xFF) << 24) | ((binaryDataArray[b++] & 0xFF) << 16)
+                        data[i++] = ((binaryDataArray[b++] & 0xFF) << 24) | ((binaryDataArray[b++] & 0xFF) << Normal._16)
                                 | ((binaryDataArray[b++] & 0xFF) << 8) | (binaryDataArray[b++] & 0xFF);
-                        xRemaining -= 32;
+                        xRemaining -= Normal._32;
                     }
                     int shift = 24;
                     while (xRemaining > 0) {
@@ -630,7 +631,7 @@ public class ImageConversion {
 
                 int rightShift = bitOffset & 7;
                 int leftShift = 8 - rightShift;
-                int leftShift16 = 16 + leftShift;
+                int leftShift16 = Normal._16 + leftShift;
                 int mask = (short) (~(255 << leftShift));
                 int mask1 = (short) (65535 << leftShift);
                 int mask2 = (short) ~mask1;
@@ -673,7 +674,7 @@ public class ImageConversion {
                 int[] data = ((DataBufferInt) dataBuffer).getData();
                 int rightShift = bitOffset & 7;
                 int leftShift = 8 - rightShift;
-                int leftShift32 = 32 + leftShift;
+                int leftShift32 = Normal._32 + leftShift;
                 int mask = 0xFFFFFFFF << leftShift;
                 int mask1 = ~mask;
 
@@ -766,10 +767,10 @@ public class ImageConversion {
             short[] data = dataBuffer instanceof DataBufferShort ? ((DataBufferShort) dataBuffer).getData()
                     : ((DataBufferUShort) dataBuffer).getData();
             for (int y = 0; y < rectHeight; y++) {
-                int bOffset = eltOffset * 16 + bitOffset;
+                int bOffset = eltOffset * Normal._16 + bitOffset;
                 for (int x = 0; x < rectWidth; x++) {
                     if (bdata[k++] != (byte) 0) {
-                        data[bOffset / 16] |= (short) (0x00000001 << (15 - bOffset % 16));
+                        data[bOffset / Normal._16] |= (short) (0x00000001 << (15 - bOffset % Normal._16));
                     }
                     bOffset++;
                 }
@@ -778,10 +779,10 @@ public class ImageConversion {
         } else if (dataBuffer instanceof DataBufferInt) {
             int[] data = ((DataBufferInt) dataBuffer).getData();
             for (int y = 0; y < rectHeight; y++) {
-                int bOffset = eltOffset * 32 + bitOffset;
+                int bOffset = eltOffset * Normal._32 + bitOffset;
                 for (int x = 0; x < rectWidth; x++) {
                     if (bdata[k++] != (byte) 0) {
-                        data[bOffset / 32] |= 0x00000001 << (31 - bOffset % 32);
+                        data[bOffset / Normal._32] |= 0x00000001 << (31 - bOffset % 32);
                     }
                     bOffset++;
                 }

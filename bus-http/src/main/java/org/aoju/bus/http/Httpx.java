@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Httpx {
@@ -97,7 +97,7 @@ public class Httpx {
     public Httpx(int connTimeout,
                  int readTimeout,
                  int writeTimeout) {
-        this(null, null, connTimeout, readTimeout, writeTimeout, 64, 5, 5, 5);
+        this(null, null, connTimeout, readTimeout, writeTimeout, Normal._64, 5, 5, 5);
     }
 
     /**

@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -40,7 +41,7 @@ import java.util.stream.StreamSupport;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class StreamKit {
@@ -127,7 +128,7 @@ public class StreamKit {
         try {
             StringBuilder sb = new StringBuilder();
 
-            char[] data = new char[64];
+            char[] data = new char[Normal._64];
             int len;
             while (true) {
                 if ((len = reader.read(data)) == -1)

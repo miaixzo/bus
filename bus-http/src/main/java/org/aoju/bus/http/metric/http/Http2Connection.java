@@ -53,12 +53,12 @@ import java.util.concurrent.*;
  * 到远程对等点的套接字连接。连接主机可以发送和接收数据流.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public final class Http2Connection implements Closeable {
 
-    static final int CLIENT_WINDOW_SIZE = 16 * 1024 * 1024;
+    static final int CLIENT_WINDOW_SIZE = Normal._16 * Normal._1024 * Normal._1024;
 
     /**
      * 共享执行程序来发送传入流的通知。这个执行器需要多个线程，因为侦听器不需要立即返回.

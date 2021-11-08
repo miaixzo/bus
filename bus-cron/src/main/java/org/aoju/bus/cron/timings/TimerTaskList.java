@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  * 任务队列，任务双向链表
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class TimerTaskList implements Delayed {

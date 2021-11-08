@@ -42,7 +42,7 @@ import java.nio.charset.CodingErrorAction;
  * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class BufferKit {
@@ -284,7 +284,7 @@ public class BufferKit {
         }
         int state = 0;
         for (int i = off; i < len; ++i) {
-            state = Normal.DECODE_64_TABLE[256 + (state << 4) + Normal.DECODE_64_TABLE[(0xff & data.get(i))]];
+            state = Normal.DECODE_64_TABLE[Normal._256 + (state << 4) + Normal.DECODE_64_TABLE[(0xff & data.get(i))]];
             if (state == 1) {
                 return false;
             }

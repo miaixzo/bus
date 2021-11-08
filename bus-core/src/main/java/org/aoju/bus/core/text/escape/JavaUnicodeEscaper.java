@@ -25,11 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.escape;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * Translates codepoints to their Unicode escaped value suitable for Java source.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class JavaUnicodeEscaper extends UnicodeEscaper {
@@ -108,7 +110,7 @@ public class JavaUnicodeEscaper extends UnicodeEscaper {
     @Override
     protected String toUtf16Escape(final int codepoint) {
         final char[] surrogatePair = Character.toChars(codepoint);
-        return "\\u" + hex(surrogatePair[0]) + "\\u" + hex(surrogatePair[1]);
+        return Symbol.UNICODE_START_CHAR + hex(surrogatePair[0]) + Symbol.UNICODE_START_CHAR + hex(surrogatePair[1]);
     }
 
 }

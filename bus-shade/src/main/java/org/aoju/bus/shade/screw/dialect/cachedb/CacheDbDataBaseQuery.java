@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * CacheDB 数据库查询
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {

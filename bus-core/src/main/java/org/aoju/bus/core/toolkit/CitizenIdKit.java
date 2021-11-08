@@ -37,7 +37,7 @@ import java.util.Objects;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -488,7 +488,7 @@ public class CitizenIdKit {
         if (len == CHINA_ID_MIN_LENGTH) {
             idcard = getIdCardTo18(idcard);
         }
-        char sCardChar = Objects.requireNonNull(idcard).charAt(16);
+        char sCardChar = Objects.requireNonNull(idcard).charAt(Normal._16);
         return (sCardChar % 2 != 0) ? 1 : 0;
     }
 

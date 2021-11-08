@@ -47,7 +47,7 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
@@ -457,7 +457,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         int limit = segment.limit;
 
         if (limit - pos < 8) {
-            return (readInt() & 0xffffffffL) << 32
+            return (readInt() & 0xffffffffL) << Normal._32
                     | (readInt() & 0xffffffffL);
         }
 
@@ -465,7 +465,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         long v = (data[pos++] & 0xffL) << 56
                 | (data[pos++] & 0xffL) << 48
                 | (data[pos++] & 0xffL) << 40
-                | (data[pos++] & 0xffL) << 32
+                | (data[pos++] & 0xffL) << Normal._32
                 | (data[pos++] & 0xffL) << 24
                 | (data[pos++] & 0xffL) << 16
                 | (data[pos++] & 0xffL) << 8
@@ -827,7 +827,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             return readUtf8Line(scanLength);
         }
         Buffer data = new Buffer();
-        copyTo(data, 0, Math.min(32, size()));
+        copyTo(data, 0, Math.min(Normal._32, size()));
         throw new EOFException("\\n not found: limit=" + Math.min(size(), limit)
                 + " content=" + data.readByteString().hex() + '…');
     }

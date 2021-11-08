@@ -38,7 +38,7 @@ import java.util.*;
  * 通用的Condition查询对象
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Condition implements DynamicTableName {
@@ -368,13 +368,21 @@ public class Condition implements DynamicTableName {
 
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
-        // 字段是否必须存在
+        /**
+         * 字段是否必须存在
+         */
         protected boolean exists;
-        // 值是否不能为空
+        /**
+         * 值是否不能为空
+         */
         protected boolean notNull;
-        // 连接条件
+        /**
+         * 连接条件
+         */
         protected String andOr;
-        // 属性和列对应
+        /**
+         * 属性和列对应
+         */
         protected Map<String, EntityColumn> propertyMap;
 
         protected GeneratedCriteria(Map<String, EntityColumn> propertyMap, boolean exists, boolean notNull) {
@@ -912,22 +920,32 @@ public class Condition implements DynamicTableName {
     public static class Builder {
         private final Class<?> entityClass;
         protected EntityTable table;
-        //属性和列对应
+        /**
+         * 属性和列对应
+         */
         protected Map<String, EntityColumn> propertyMap;
         private StringBuilder orderByClause;
         private boolean distinct;
         private boolean exists;
         private boolean notNull;
         private boolean forUpdate;
-        //查询字段
+        /**
+         * 查询字段
+         */
         private Set<String> selectColumns;
-        //排除的查询字段
+        /**
+         * 排除的查询字段
+         */
         private Set<String> excludeColumns;
         private String countColumn;
         private List<SqlCriteria.Criteria> sqlsCriteria;
-        //动态表名
+        /**
+         * 动态表名
+         */
         private List<Condition.Criteria> conditionCriterias;
-        //动态表名
+        /**
+         * 动态表名
+         */
         private String tableName;
 
         public Builder(Class<?> entityClass) {

@@ -25,19 +25,21 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Implementation {
 
     private static String versionName() {
-        StringBuilder sb = new StringBuilder(16);
+        StringBuilder sb = new StringBuilder(Normal._16);
         sb.append("aoju-");
         sb.append(Implementation.class.getPackage()
                 .getImplementationVersion());
-        return sb.substring(0, Math.min(16, sb.length()));
+        return sb.substring(0, Math.min(Normal._16, sb.length()));
     }
 
     public static String getClassUID() {

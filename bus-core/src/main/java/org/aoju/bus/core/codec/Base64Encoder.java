@@ -35,7 +35,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * Base64编码
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Base64Encoder {
@@ -151,7 +151,7 @@ public class Base64Encoder {
         byte[] encodeTable = isUrlSafe ? Normal.ENCODE_URL_TABLE : Normal.ENCODE_64_TABLE;
 
         for (int s = 0, d = 0, cc = 0; s < evenlen; ) {
-            int i = (arr[s++] & 0xff) << 16 | (arr[s++] & 0xff) << 8 | (arr[s++] & 0xff);
+            int i = (arr[s++] & 0xff) << Normal._16 | (arr[s++] & 0xff) << 8 | (arr[s++] & 0xff);
 
             dest[d++] = encodeTable[(i >>> 18) & 0x3f];
             dest[d++] = encodeTable[(i >>> 12) & 0x3f];

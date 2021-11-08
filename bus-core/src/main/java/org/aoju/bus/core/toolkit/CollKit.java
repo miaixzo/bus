@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -568,6 +568,21 @@ public class CollKit {
     }
 
     /**
+     * 判断指定集合是否包含指定值，如果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     *
+     * @param collection 集合
+     * @param value      需要查找的值
+     * @return 果集合为空（null或者空），返回{@code false}，否则找到元素返回{@code true}
+     */
+    public static boolean safeContains(Collection<?> collection, Object value) {
+        try {
+            return contains(collection, value);
+        } catch (ClassCastException | NullPointerException e) {
+            return false;
+        }
+    }
+
+    /**
      * 检查给定的迭代器是否包含给定的元素.
      *
      * @param iterator 要检查的迭代器
@@ -850,7 +865,7 @@ public class CollKit {
         if (null == ts) {
             return isSorted ? new LinkedHashSet<>() : new HashSet<>();
         }
-        int initialCapacity = Math.max((int) (ts.length / .75f) + 1, 16);
+        int initialCapacity = Math.max((int) (ts.length / .75f) + 1, Normal._16);
         final HashSet<T> set = isSorted ? new LinkedHashSet<>(initialCapacity) : new HashSet<>(initialCapacity);
         Collections.addAll(set, ts);
         return set;
@@ -3145,7 +3160,7 @@ public class CollKit {
         if (isEmpty(mapCollection)) {
             return new HashSet<>();
         }
-        final HashSet<K> set = new HashSet<>(mapCollection.size() * 16);
+        final HashSet<K> set = new HashSet<>(mapCollection.size() * Normal._16);
         for (Map<K, ?> map : mapCollection) {
             set.addAll(map.keySet());
         }

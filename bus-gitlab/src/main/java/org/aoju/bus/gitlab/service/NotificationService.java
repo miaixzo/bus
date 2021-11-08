@@ -26,6 +26,7 @@
 package org.aoju.bus.gitlab.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.gitlab.GitLabApiForm;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
@@ -306,7 +307,7 @@ public abstract class NotificationService {
 
     protected void setProperty(String prop, Object value) {
         if (properties == null) {
-            properties = new HashMap<>(16);
+            properties = new HashMap<>(Normal._16);
         }
 
         properties.put(prop, value);

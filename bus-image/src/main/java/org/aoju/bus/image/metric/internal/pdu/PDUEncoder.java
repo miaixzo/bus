@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
@@ -38,7 +39,7 @@ import java.io.OutputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PDUEncoder extends PDVOutputStream {
@@ -129,7 +130,7 @@ public class PDUEncoder extends PDVOutputStream {
         put(0);
         encodeAET(rqac.getCalledAET());
         encodeAET(rqac.getCallingAET());
-        put(rqac.getReservedBytes(), 0, 32);
+        put(rqac.getReservedBytes(), 0, Normal._32);
         encodeStringItem(Builder.APP_CONTEXT, rqac.getApplicationContext());
         for (Presentation pc : rqac.getPresentationContexts())
             encode(pc, pcBuilder);
@@ -156,7 +157,7 @@ public class PDUEncoder extends PDVOutputStream {
 
     private void putInt(int v) {
         buf[pos++] = (byte) (v >> 24);
-        buf[pos++] = (byte) (v >> 16);
+        buf[pos++] = (byte) (v >> Normal._16);
         buf[pos++] = (byte) (v >> 8);
         buf[pos++] = (byte) v;
     }
@@ -178,7 +179,7 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     private void encodeAET(String aet) {
-        int endpos = pos + 16;
+        int endpos = pos + Normal._16;
         putString(aet);
         while (pos < endpos)
             put(0x20);

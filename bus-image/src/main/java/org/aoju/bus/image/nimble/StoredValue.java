@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public abstract class StoredValue {
@@ -81,7 +82,7 @@ public abstract class StoredValue {
 
         public Signed(int bitsStored) {
             this.bitsStored = bitsStored;
-            this.shift = 32 - bitsStored;
+            this.shift = Normal._32 - bitsStored;
         }
 
         @Override

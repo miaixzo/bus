@@ -62,7 +62,7 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -104,11 +104,11 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     private UUID(byte[] data) {
         long msb = 0;
         long lsb = 0;
-        assert data.length == 16 : "data must be 16 bytes in length";
+        assert data.length == Normal._16 : "data must be 16 bytes in length";
         for (int i = 0; i < 8; i++) {
             msb = (msb << 8) | (data[i] & 0xff);
         }
-        for (int i = 8; i < 16; i++) {
+        for (int i = 8; i < Normal._16; i++) {
             lsb = (lsb << 8) | (data[i] & 0xff);
         }
         this.mostSigBits = msb;
@@ -173,8 +173,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         // 产生UUID
         java.util.UUID uuid = java.util.UUID.randomUUID();
         // 分区转换
-        return digits(uuid.getMostSignificantBits() >> 32, 8) +
-                digits(uuid.getMostSignificantBits() >> 16, 4) +
+        return digits(uuid.getMostSignificantBits() >> Normal._32, 8) +
+                digits(uuid.getMostSignificantBits() >> Normal._16, 4) +
                 digits(uuid.getMostSignificantBits(), 4) +
                 digits(uuid.getLeastSignificantBits() >> 48, 4) +
                 digits(uuid.getLeastSignificantBits(), 12);
@@ -200,7 +200,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     public static String randomUUIDBase64() {
         java.util.UUID uuid = java.util.UUID.randomUUID();
-        byte[] byUuid = new byte[16];
+        byte[] byUuid = new byte[Normal._16];
         long least = uuid.getLeastSignificantBits();
         long most = uuid.getMostSignificantBits();
         long2bytes(most, byUuid, 0);
@@ -218,7 +218,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     public static UUID randomUUID(boolean isSecure) {
         final Random ng = isSecure ? numberGenerator : RandomKit.getRandom();
 
-        byte[] randomBytes = new byte[16];
+        byte[] randomBytes = new byte[Normal._16];
         ng.nextBytes(randomBytes);
         randomBytes[6] &= 0x0f; /* clear version */
         randomBytes[6] |= 0x40; /* set to version 4 */
@@ -265,9 +265,9 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         }
 
         long mostSigBits = Long.decode(components[0]).longValue();
-        mostSigBits <<= 16;
+        mostSigBits <<= Normal._16;
         mostSigBits |= Long.decode(components[1]).longValue();
-        mostSigBits <<= 16;
+        mostSigBits <<= Normal._16;
         mostSigBits |= Long.decode(components[2]).longValue();
 
         long leastSigBits = Long.decode(components[3]).longValue();
@@ -421,9 +421,9 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     public long timestamp() throws UnsupportedOperationException {
         checkTimeBase();
-        return (mostSigBits & 0x0FFFL) << 48//
-                | ((mostSigBits >> 16) & 0x0FFFFL) << 32//
-                | mostSigBits >>> 32;
+        return (mostSigBits & 0x0FFFL) << 48
+                | ((mostSigBits >> Normal._16) & 0x0FFFFL) << Normal._32
+                | mostSigBits >>> Normal._32;
     }
 
     /**
@@ -509,14 +509,14 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 此{@code UUID} 的字符串表现形式
      */
     public String toString(boolean isSimple) {
-        final StringBuilder builder = new StringBuilder(isSimple ? 32 : 36);
+        final StringBuilder builder = new StringBuilder(isSimple ? Normal._32 : 36);
         // time_low
-        builder.append(digits(mostSigBits >> 32, 8));
+        builder.append(digits(mostSigBits >> Normal._32, 8));
         if (false == isSimple) {
             builder.append(Symbol.C_MINUS);
         }
         // time_mid
-        builder.append(digits(mostSigBits >> 16, 4));
+        builder.append(digits(mostSigBits >> Normal._16, 4));
         if (false == isSimple) {
             builder.append(Symbol.C_MINUS);
         }
@@ -543,7 +543,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     public int hashCode() {
         long hilo = mostSigBits ^ leastSigBits;
-        return ((int) (hilo >> 32)) ^ (int) hilo;
+        return ((int) (hilo >> Normal._32)) ^ (int) hilo;
     }
 
     /**

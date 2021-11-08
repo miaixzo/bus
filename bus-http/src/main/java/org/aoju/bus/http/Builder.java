@@ -30,6 +30,7 @@ import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -59,7 +60,7 @@ import java.util.regex.Pattern;
  * 实用方法工具
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public abstract class Builder {
@@ -358,7 +359,7 @@ public abstract class Builder {
                     : decodeIpv6(host, 0, host.length());
             if (null == inetAddress) return null;
             byte[] address = inetAddress.getAddress();
-            if (address.length == 16) return inet6AddressToAscii(address);
+            if (address.length == Normal._16) return inet6AddressToAscii(address);
             throw new AssertionError("Invalid IPv6 address: '" + host + Symbol.SINGLE_QUOTE);
         }
 
@@ -453,7 +454,7 @@ public abstract class Builder {
     }
 
     private static InetAddress decodeIpv6(String input, int pos, int limit) {
-        byte[] address = new byte[16];
+        byte[] address = new byte[Normal._16];
         int b = 0;
         int compress = -1;
         int groupOffset = -1;
@@ -549,7 +550,7 @@ public abstract class Builder {
         int longestRunLength = 0;
         for (int i = 0; i < address.length; i += 2) {
             int currentRunOffset = i;
-            while (i < 16 && address[i] == 0 && address[i + 1] == 0) {
+            while (i < Normal._16 && address[i] == 0 && address[i + 1] == 0) {
                 i += 2;
             }
             int currentRunLength = i - currentRunOffset;
@@ -564,7 +565,7 @@ public abstract class Builder {
             if (i == longestRunOffset) {
                 result.writeByte(Symbol.C_COLON);
                 i += longestRunLength;
-                if (i == 16) result.writeByte(Symbol.C_COLON);
+                if (i == Normal._16) result.writeByte(Symbol.C_COLON);
             } else {
                 if (i > 0) result.writeByte(Symbol.C_COLON);
                 int group = (address[i] & 0xff) << 8 | address[i + 1] & 0xff;

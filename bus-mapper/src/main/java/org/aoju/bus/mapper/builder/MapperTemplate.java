@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.entity.Config;
@@ -54,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通用Mapper模板类，扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public abstract class MapperTemplate {
@@ -169,7 +170,7 @@ public abstract class MapperTemplate {
                     ParameterizedType t = (ParameterizedType) type;
                     if (t.getRawType() == this.mapperClass || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
                         Class<?> returnType = (Class<?>) t.getActualTypeArguments()[0];
-                        //获取该类型后，第一次对该类型进行初始化
+                        // 获取该类型后，第一次对该类型进行初始化
                         EntityBuilder.initEntityNameMap(returnType, mapperBuilder.getConfig());
                         entityClassMap.put(msId, returnType);
                         return returnType;
@@ -190,11 +191,11 @@ public abstract class MapperTemplate {
         EntityTable entityTable = EntityBuilder.getEntityTable(entityClass);
         String prefix = entityTable.getPrefix();
         if (StringKit.isEmpty(prefix)) {
-            //使用全局配置
+            // 使用全局配置
             prefix = mapperBuilder.getConfig().getPrefix();
         }
         if (StringKit.isNotEmpty(prefix)) {
-            return prefix + "." + entityTable.getName();
+            return prefix + Symbol.DOT + entityTable.getName();
         }
         return entityTable.getName();
     }

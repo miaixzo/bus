@@ -34,7 +34,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * BaseUpdateProvider实现类，基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class BaseUpdateProvider extends MapperTemplate {
@@ -72,4 +72,5 @@ public class BaseUpdateProvider extends MapperTemplate {
         sql.append(SqlBuilder.wherePKColumns(entityClass, true));
         return sql.toString();
     }
+
 }

@@ -36,7 +36,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
@@ -119,7 +119,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(64), Normal.EMPTY).toString();
+        return promptTo(new StringBuilder(Normal._64), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.shade.safety.algorithm;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -32,7 +34,7 @@ import java.io.IOException;
  * 安全随机数
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class SecureRandom extends java.security.SecureRandom {
@@ -89,7 +91,7 @@ public class SecureRandom extends java.security.SecureRandom {
         int val = 0;
 
         val |= nextValue() << 24;
-        val |= nextValue() << 16;
+        val |= nextValue() << Normal._16;
 
         if (_intPad == 2) {
             _intPad--;
@@ -113,9 +115,9 @@ public class SecureRandom extends java.security.SecureRandom {
         val |= (long) nextValue() << 56;
         val |= (long) nextValue() << 48;
         val |= (long) nextValue() << 40;
-        val |= (long) nextValue() << 32;
+        val |= (long) nextValue() << Normal._32;
         val |= (long) nextValue() << 24;
-        val |= (long) nextValue() << 16;
+        val |= (long) nextValue() << Normal._16;
         val |= (long) nextValue() << 8;
         val |= nextValue();
 

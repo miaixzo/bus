@@ -39,7 +39,7 @@ import java.util.TreeMap;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class MultipartInputStream extends FilterInputStream {
@@ -208,7 +208,7 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     private static final class Field {
-        byte[] buffer = new byte[256];
+        byte[] buffer = new byte[Normal._256];
         int length;
 
         void reset() {

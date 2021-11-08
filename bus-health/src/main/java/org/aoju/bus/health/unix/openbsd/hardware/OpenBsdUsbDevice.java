@@ -38,7 +38,7 @@ import java.util.*;
  * OpenBsd Usb Device
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @Immutable
@@ -105,7 +105,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                 // addr 01: 8086:0000 Intel, EHCI root hub
                 if (line.indexOf(Symbol.C_COLON) == 7 && line.indexOf(Symbol.C_COMMA) >= 18) {
                     key = parent + line.substring(0, 7);
-                    String[] split = line.substring(8).trim().split(Symbol.COMMA);
+                    String[] split = line.substring(Normal._8).trim().split(Symbol.COMMA);
                     if (split.length > 1) {
                         // 0 = vid:pid vendor
                         String vendorStr = split[0].trim();
@@ -133,7 +133,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                 // Since all we need is the serial...
                 int idx = line.indexOf("iSerial ");
                 if (idx >= 0) {
-                    serialMap.put(key, line.substring(idx + 8).trim());
+                    serialMap.put(key, line.substring(idx + Normal._8).trim());
                 }
                 key = Normal.EMPTY;
             }

@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
@@ -36,7 +37,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public interface OpenBsdLibc extends CLibrary {
@@ -55,7 +56,7 @@ public interface OpenBsdLibc extends CLibrary {
     int KERN_VERSION = 4; // string: compile time info
     int KERN_MAXVNODES = 5; // int: max vnodes
     int KERN_MAXPROC = 6; // int: max processes
-    int KERN_ARGMAX = 8; // int: max arguments to exec
+    int KERN_ARGMAX = Normal._8; // int: max arguments to exec
     int KERN_CPTIME = 40; // array: cp_time
     int KERN_CPTIME2 = 71; // array: cp_time2
 

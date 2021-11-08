@@ -28,6 +28,7 @@ package org.aoju.bus.health.windows.drivers;
 import com.sun.jna.platform.win32.WinBase;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.windows.ThreadInformation;
@@ -43,7 +44,7 @@ import java.util.Map;
  * backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -142,7 +143,7 @@ public final class ThreadPerformanceData {
                 int tid = tidList.get(inst).intValue();
                 String name = Integer.toString(nameIndex++);
                 long startTime = startTimeList.get(inst);
-                startTime = WinBase.FILETIME.filetimeToDate((int) (startTime >> 32), (int) (startTime & 0xffffffffL)).getTime();
+                startTime = WinBase.FILETIME.filetimeToDate((int) (startTime >> Normal._32), (int) (startTime & 0xffffffffL)).getTime();
                 if (startTime > now) {
                     startTime = now - 1;
                 }

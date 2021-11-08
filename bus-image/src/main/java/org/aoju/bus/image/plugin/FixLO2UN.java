@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class FixLO2UN extends SimpleFileVisitor<Path> {
@@ -93,7 +94,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
 
     private int correctLength(MappedByteBuffer mbb) {
         int length;
-        while (mbb.remaining() > 8) {
+        while (mbb.remaining() > Normal._8) {
             if (mbb.getShort() == 0x4f4c
                     && mbb.get(mbb.position() - 3) == 0
                     && mbb.get(mbb.position() - 6) % 2 != 0

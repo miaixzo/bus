@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ArgNameGenerator {
@@ -60,7 +60,7 @@ public class ArgNameGenerator {
             X_ARGS_PREFIX + 13,
             X_ARGS_PREFIX + 14,
             X_ARGS_PREFIX + 15,
-            X_ARGS_PREFIX + 16,
+            X_ARGS_PREFIX + Normal._16,
             X_ARGS_PREFIX + 17,
             X_ARGS_PREFIX + 18,
             X_ARGS_PREFIX + 19

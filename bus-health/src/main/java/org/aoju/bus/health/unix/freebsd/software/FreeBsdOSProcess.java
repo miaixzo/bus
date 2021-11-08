@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -320,15 +320,15 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         mib[2] = 9; // KERN_PROC_SV_NAME
         mib[3] = getProcessID();
         // Allocate memory for arguments
-        Pointer abi = new Memory(32);
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(32));
+        Pointer abi = new Memory(Normal._32);
+        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(Normal._32));
         // Fetch abi vector
         if (0 == FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, abi, size, null, LibCAPI.size_t.ZERO)) {
             String elf = abi.getString(0);
             if (elf.contains("ELF32")) {
-                return 32;
+                return Normal._32;
             } else if (elf.contains("ELF64")) {
-                return 64;
+                return Normal._64;
             }
         }
         return 0;
@@ -398,8 +398,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.threadCount = Builder.parseIntOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NLWP), 0);
         this.priority = Builder.parseIntOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.PRI), 0);
         // These are in KB, multiply
-        this.virtualSize = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.VSZ), 0) * 1024;
-        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.RSS), 0) * 1024;
+        this.virtualSize = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.VSZ), 0) * Normal._1024;
+        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.RSS), 0) * Normal._1024;
         // Avoid divide by zero for processes up less than a second
         long elapsedTime = Builder.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.ETIMES), 0L);
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;

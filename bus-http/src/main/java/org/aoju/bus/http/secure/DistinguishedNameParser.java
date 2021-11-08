@@ -35,7 +35,7 @@ import javax.security.auth.x500.X500Principal;
  * 它不支持十六进制字符串样式的值.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public final class DistinguishedNameParser {
@@ -153,7 +153,7 @@ public final class DistinguishedNameParser {
                 }
                 break;
             } else if (chars[pos] >= 'A' && chars[pos] <= 'F') {
-                chars[pos] += 32;
+                chars[pos] += Normal._32;
             }
 
             pos++;
@@ -240,7 +240,7 @@ public final class DistinguishedNameParser {
         int res = getByte(pos);
         pos++; //FIXME tmp
 
-        if (res < 128) {
+        if (res < Normal._128) {
             return (char) res;
         } else if (res >= 192 && res <= 247) {
 

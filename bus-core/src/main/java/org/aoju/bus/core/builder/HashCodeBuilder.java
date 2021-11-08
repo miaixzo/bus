@@ -27,6 +27,7 @@ package org.aoju.bus.core.builder;
 
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
 
@@ -64,7 +65,7 @@ import java.util.Set;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class HashCodeBuilder implements Builder<Integer> {
@@ -330,7 +331,7 @@ public class HashCodeBuilder implements Builder<Integer> {
     }
 
     public HashCodeBuilder append(final long value) {
-        iTotal = iTotal * iConstant + ((int) (value ^ (value >> 32)));
+        iTotal = iTotal * iConstant + ((int) (value ^ (value >> Normal._32)));
         return this;
     }
 

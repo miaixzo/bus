@@ -38,7 +38,7 @@ import java.util.List;
  * 注意，这并不保证将来的帧不会到达流ID
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public interface PushObserver {

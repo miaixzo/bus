@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -51,7 +52,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Transcoder implements Closeable {
@@ -176,7 +177,7 @@ public class Transcoder implements Closeable {
         this.dis = dis;
         dis.readFileMetaInformation();
         dis.setImageInputHandler(imageInputHandler);
-        dataset = new Attributes(dis.bigEndian(), 64);
+        dataset = new Attributes(dis.bigEndian(), Normal._64);
         srcTransferSyntax = dis.getTransferSyntax();
         srcTransferSyntaxType = TransferSyntaxType.forUID(srcTransferSyntax);
         destTransferSyntax = srcTransferSyntax;
@@ -736,7 +737,7 @@ public class Transcoder implements Closeable {
     }
 
     private void extendSignUnusedBits(short[] data) {
-        int unused = 32 - imageDescriptor.getBitsStored();
+        int unused = Normal._32 - imageDescriptor.getBitsStored();
         for (int i = 0; i < data.length; i++)
             data[i] = (short) ((data[i] << unused) >> unused);
     }
@@ -749,7 +750,7 @@ public class Transcoder implements Closeable {
         int stride = csm.getScanlineStride();
         if (csm.getBandOffsets()[0] != 0)
             bgr2rgb(bankData[0]);
-        if (imageDescriptor.getBitsAllocated() == 16) {
+        if (imageDescriptor.getBitsAllocated() == Normal._16) {
             byte[] buf = new byte[len << 1];
             int j0 = dos.isBigEndian() ? 1 : 0;
             for (byte[] b : bankData)
@@ -786,7 +787,7 @@ public class Transcoder implements Closeable {
         for (int y = 0; y < h; ++y) {
             for (int i = 0, j = y * stride; i < b.length; ) {
                 int s = data[j++];
-                b[i++] = (byte) (s >> 16);
+                b[i++] = (byte) (s >> Normal._16);
                 b[i++] = (byte) (s >> 8);
                 b[i++] = (byte) s;
             }

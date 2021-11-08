@@ -46,7 +46,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 基础方言信息
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PageAutoDialect {
@@ -130,26 +130,6 @@ public class PageAutoDialect {
         autoDialectMap.put(alias, autoDialectClass);
     }
 
-
-    /**
-     * 获取当前的代理对象
-     *
-     * @return object
-     */
-    public AbstractPaging getDelegate() {
-        if (delegate != null) {
-            return delegate;
-        }
-        return dialectThreadLocal.get();
-    }
-
-    /**
-     * 移除代理对象
-     */
-    public void clearDelegate() {
-        dialectThreadLocal.remove();
-    }
-
     public static String fromJdbcUrl(String jdbcUrl) {
         final String url = jdbcUrl.toLowerCase();
         for (String dialect : dialectAliasMap.keySet()) {
@@ -199,6 +179,25 @@ public class PageAutoDialect {
         }
         dialect.setProperties(properties);
         return dialect;
+    }
+
+    /**
+     * 获取当前的代理对象
+     *
+     * @return object
+     */
+    public AbstractPaging getDelegate() {
+        if (delegate != null) {
+            return delegate;
+        }
+        return dialectThreadLocal.get();
+    }
+
+    /**
+     * 移除代理对象
+     */
+    public void clearDelegate() {
+        dialectThreadLocal.remove();
     }
 
     /**

@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * controls the computer.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -328,11 +328,11 @@ public interface OperatingSystem {
         /**
          * Only incude 64-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
+        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == Normal._64;
         /**
          * Only include 32-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == Normal._32;
     }
 
     /**

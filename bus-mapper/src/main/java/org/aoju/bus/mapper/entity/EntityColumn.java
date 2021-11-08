@@ -36,7 +36,7 @@ import org.apache.ibatis.type.TypeHandler;
  * 数据库表对应的列
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class EntityColumn {
@@ -82,6 +82,7 @@ public class EntityColumn {
     private EntityField entityField;
 
     public EntityColumn() {
+
     }
 
     public EntityColumn(EntityTable table) {
@@ -387,4 +388,5 @@ public class EntityColumn {
                 ", order=" + order +
                 '}';
     }
+
 }

@@ -33,7 +33,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Druid 监控配置项
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @Data
@@ -75,5 +75,5 @@ public class DruidMonitorProperties {
      * 添加不需要忽略的格式信息
      */
     private String exclusions;
-    
+
 }

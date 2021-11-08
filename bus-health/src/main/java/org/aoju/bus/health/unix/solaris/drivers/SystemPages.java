@@ -35,7 +35,7 @@ import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
  * Utility to query geom part list
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe

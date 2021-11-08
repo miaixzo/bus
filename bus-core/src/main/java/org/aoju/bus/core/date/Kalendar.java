@@ -29,6 +29,7 @@ import org.aoju.bus.core.date.calendar.DayWrapper;
 import org.aoju.bus.core.date.calendar.MonthWrapper;
 import org.aoju.bus.core.date.calendar.NonWrapper;
 import org.aoju.bus.core.date.calendar.YearWrapper;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.CollKit;
 
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日历类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Kalendar {
@@ -81,7 +82,7 @@ public class Kalendar {
     private static NonWrapper calendar(int year, int month, boolean includeLunarDate, boolean includeHoliday, Map<String, Integer> dateTypeMap) {
         YearMonth yearMonth = YearMonth.of(year, month);
         NonWrapper nonWrapper = new NonWrapper();
-        Map<String, DayWrapper> dayMap = new ConcurrentHashMap<>(64);
+        Map<String, DayWrapper> dayMap = new ConcurrentHashMap<>(Normal._64);
         List<DayWrapper> dayList = new ArrayList<>();
 
         List<LocalDateTime> localDateTimeList = Almanac.getLocalDateTimeList(YearMonth.of(year, month));
@@ -144,7 +145,7 @@ public class Kalendar {
      * @return {@link NonWrapper}
      */
     private static NonWrapper calendar(int year, boolean includeLunar, boolean includeHoliday, Map<String, Integer> dateTypeMap) {
-        Map<String, DayWrapper> dayMap = new ConcurrentHashMap<>(512);
+        Map<String, DayWrapper> dayMap = new ConcurrentHashMap<>(Normal._512);
         List<DayWrapper> dayList = new ArrayList<>();
         List<MonthWrapper> monthWrapperList = new ArrayList<>();
 

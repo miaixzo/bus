@@ -37,7 +37,7 @@ import java.util.Set;
  * BaseInsertProvider实现类，基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class BaseInsertProvider extends MapperTemplate {
@@ -49,7 +49,7 @@ public class BaseInsertProvider extends MapperTemplate {
     public String insert(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        //获取全部列
+        // 获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlBuilder.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
@@ -64,19 +64,19 @@ public class BaseInsertProvider extends MapperTemplate {
                 sql.append(SqlBuilder.getLogicDeletedValue(column, false)).append(Symbol.COMMA);
                 continue;
             }
-            //优先使用传入的属性值,当原属性property!=null时，用原属性
-            //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
+            // 优先使用传入的属性值,当原属性property!=null时，用原属性
+            // 自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
                 sql.append(SqlBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", Symbol.COMMA)));
             } else {
-                //其他情况值仍然存在原property中
+                // 其他情况值仍然存在原property中
                 sql.append(SqlBuilder.getIfNotNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
-            //当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
+            // 当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
             if (column.isIdentity()) {
                 sql.append(SqlBuilder.getIfCacheIsNull(column, column.getColumnHolder() + Symbol.COMMA));
             } else {
-                //当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
+                // 当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
                 sql.append(SqlBuilder.getIfIsNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
         }
@@ -87,7 +87,7 @@ public class BaseInsertProvider extends MapperTemplate {
     public String insertSelective(MappedStatement ms) {
         Class<?> entityClass = getEntityClass(ms);
         StringBuilder sql = new StringBuilder();
-        //获取全部列
+        // 获取全部列
         Set<EntityColumn> columnList = EntityBuilder.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlBuilder.getLogicDeleteColumn(entityClass);
         processKey(sql, entityClass, ms, columnList);
@@ -118,16 +118,16 @@ public class BaseInsertProvider extends MapperTemplate {
                 sql.append(SqlBuilder.getLogicDeletedValue(column, false)).append(Symbol.COMMA);
                 continue;
             }
-            //优先使用传入的属性值,当原属性property!=null时，用原属性
-            //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
+            // 优先使用传入的属性值,当原属性property!=null时，用原属性
+            // 自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
                 sql.append(SqlBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", Symbol.COMMA)));
             } else {
-                //其他情况值仍然存在原property中
+                // 其他情况值仍然存在原property中
                 sql.append(SqlBuilder.getIfNotNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
-            //当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
-            //序列的情况
+            // 当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
+            // 序列的情况
             if (column.isIdentity()) {
                 sql.append(SqlBuilder.getIfCacheIsNull(column, column.getColumnHolder() + Symbol.COMMA));
             }
@@ -148,7 +148,7 @@ public class BaseInsertProvider extends MapperTemplate {
                 // 如果是Identity列，就需要插入selectKey
                 // 如果已经存在Identity列，抛出异常
                 if (hasIdentityKey) {
-                    //jdbc类型只需要添加一次
+                    // jdbc类型只需要添加一次
                     if (column.getGenerator() != null && "JDBC".equals(column.getGenerator())) {
                         continue;
                     }

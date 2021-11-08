@@ -32,7 +32,7 @@ import org.aoju.bus.shade.screw.execute.ProduceExecute;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Builder {

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.metric.internal.hl7.HL7Charset;
 import org.aoju.bus.image.metric.internal.hl7.HL7Parser;
@@ -44,7 +45,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class HL72Xml {
@@ -86,7 +87,7 @@ public class HL72Xml {
 
     public void parse(InputStream is) throws IOException,
             TransformerConfigurationException, SAXException {
-        byte[] buf = new byte[256];
+        byte[] buf = new byte[Normal._256];
         int len = is.read(buf);
         HL7Segment msh = HL7Segment.parseMSH(buf, buf.length);
         String charsetName = HL7Charset.toCharsetName(msh.getField(17, charset));

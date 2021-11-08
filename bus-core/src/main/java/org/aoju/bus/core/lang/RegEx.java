@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class RegEx {
@@ -120,7 +120,7 @@ public class RegEx {
     /**
      * IP v4
      */
-    public static final String IPV4_PATTERN = "\\b((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\.((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\.((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\.((?!\\d\\d\\d)\\d+|1\\d\\d|2[0-4]\\d|25[0-5])\\b";
+    public static final String IPV4_PATTERN = "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)$";
     public static final Pattern IPV4 = Pattern.compile(IPV4_PATTERN);
 
     /**
@@ -207,14 +207,15 @@ public class RegEx {
 
     /**
      * URL
+     * 定义见：https://www.ietf.org/rfc/rfc3986.html#appendix-B
      */
-    public static final String URL_PATTERN = "[a-zA-z]+://[^\\s]*";
+    public static final String URL_PATTERN = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
     public static final Pattern URL = Pattern.compile(URL_PATTERN);
 
     /**
      * Http URL
      */
-    public static final String URL_HTTP_PATTERN = "(https://|http://)?([\\w-]+\\.)+[\\w-]+(:\\d+)*(/[\\w- ./?%&=]*)?";
+    public static final String URL_HTTP_PATTERN = "(https?|ftp|file)://[\\w-+&@#/%?=~_|!:,.;]*[\\w-+&@#/%=~_|]";
     public static final Pattern URL_HTTP = Pattern.compile(URL_HTTP_PATTERN);
 
     /**

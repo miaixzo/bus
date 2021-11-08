@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class SpecificCharacterSet {
@@ -633,7 +633,7 @@ public class SpecificCharacterSet {
                 return;
 
             bb.put((byte) 0x1b);
-            int b1 = seq >> 16;
+            int b1 = seq >> Normal._16;
             if (b1 != 0)
                 bb.put((byte) b1);
             bb.put((byte) (seq >> 8));

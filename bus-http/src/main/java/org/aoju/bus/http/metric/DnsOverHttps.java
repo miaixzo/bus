@@ -51,7 +51,7 @@ import java.util.concurrent.CountDownLatch;
  * DNS over HTTPS实施
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class DnsOverHttps implements DnsX {
@@ -59,7 +59,7 @@ public class DnsOverHttps implements DnsX {
     public static final int TYPE_A = 0x0001;
     public static final int TYPE_AAAA = 0x001c;
     public static final MediaType DNS_MESSAGE = MediaType.valueOf("application/dns-message");
-    public static final int MAX_RESPONSE_SIZE = 64 * 1024;
+    public static final int MAX_RESPONSE_SIZE = Normal._64 * Normal._1024;
     private static final byte SERVFAIL = 2;
     private static final byte NXDOMAIN = 3;
     private final Httpd client;
@@ -99,7 +99,7 @@ public class DnsOverHttps implements DnsX {
         Buffer buf = new Buffer();
 
         buf.writeShort(0);
-        buf.writeShort(256);
+        buf.writeShort(Normal._256);
         buf.writeShort(1);
         buf.writeShort(0);
         buf.writeShort(0);

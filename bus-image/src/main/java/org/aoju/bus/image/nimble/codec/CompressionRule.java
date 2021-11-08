@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.nimble.Photometric;
 
@@ -33,7 +34,7 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CompressionRule implements Comparable<CompressionRule>, Serializable {
@@ -150,12 +151,12 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
 
         int[] getBitsStored() {
             int n = 0;
-            for (int i = 8; i <= 16; i++)
+            for (int i = 8; i <= Normal._16; i++)
                 if (matchBitStored(i))
                     n++;
 
             int[] bitsStored = new int[n];
-            for (int i = 8, j = 0; i <= 16; i++)
+            for (int i = 8, j = 0; i <= Normal._16; i++)
                 if (matchBitStored(i))
                     bitsStored[j++] = i;
 

@@ -47,7 +47,7 @@ import java.util.TreeMap;
  *
  * @param <T> 权重随机获取的对象类型
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Weighing<T> implements Serializable {
@@ -221,7 +221,7 @@ public class Weighing<T> implements Serializable {
             result = prime * result + ((null == obj) ? 0 : obj.hashCode());
             long temp;
             temp = Double.doubleToLongBits(weight);
-            result = prime * result + (int) (temp ^ (temp >>> 32));
+            result = prime * result + (int) (temp ^ (temp >>> Normal._32));
             return result;
         }
 

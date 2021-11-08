@@ -27,6 +27,7 @@ package org.aoju.bus.crypto.digest.otp;
 
 import org.aoju.bus.core.codec.Base32;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.RandomKit;
 import org.aoju.bus.crypto.digest.HMac;
 
@@ -39,7 +40,7 @@ import org.aoju.bus.crypto.digest.HMac;
  * <p>参考：https://github.com/jchambers/java-otp</p>
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class HOTP {
@@ -101,7 +102,7 @@ public class HOTP {
      * @return 共享密钥
      */
     public static String generateSecretKey(int numBytes) {
-        return Base32.encode(RandomKit.getSecureRandom(RandomKit.randomBytes(256)).generateSeed(numBytes));
+        return Base32.encode(RandomKit.getSecureRandom(RandomKit.randomBytes(Normal._256)).generateSeed(numBytes));
     }
 
     /**
@@ -119,7 +120,7 @@ public class HOTP {
         this.buffer[2] = (byte) ((counter & 0x0000ff0000000000L) >>> 40);
         this.buffer[3] = (byte) ((counter & 0x000000ff00000000L) >>> 32);
         this.buffer[4] = (byte) ((counter & 0x00000000ff000000L) >>> 24);
-        this.buffer[5] = (byte) ((counter & 0x0000000000ff0000L) >>> 16);
+        this.buffer[5] = (byte) ((counter & 0x0000000000ff0000L) >>> Normal._16);
         this.buffer[6] = (byte) ((counter & 0x000000000000ff00L) >>> 8);
         this.buffer[7] = (byte) (counter & 0x00000000000000ffL);
 
@@ -155,7 +156,7 @@ public class HOTP {
     private int truncate(byte[] digest) {
         final int offset = digest[digest.length - 1] & 0x0f;
         return ((digest[offset] & 0x7f) << 24 |
-                (digest[offset + 1] & 0xff) << 16 |
+                (digest[offset + 1] & 0xff) << Normal._16 |
                 (digest[offset + 2] & 0xff) << 8 |
                 (digest[offset + 3] & 0xff)) %
                 this.modDivisor;

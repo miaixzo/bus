@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 处理主要逻辑，最关键的一个类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class MapperBuilder {
@@ -96,7 +96,7 @@ public class MapperBuilder {
         Method[] methods = mapperClass.getDeclaredMethods();
         Class<?> templateClass = null;
         Class<?> tempClass = null;
-        Set<String> methodSet = new HashSet<String>();
+        Set<String> methodSet = new HashSet<>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(SelectProvider.class)) {
                 SelectProvider provider = method.getAnnotation(SelectProvider.class);

@@ -26,6 +26,7 @@
 package org.aoju.bus.starter.sensitive;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -139,13 +140,13 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
 
     private Map<String, Privacy> getSensitiveByResultMap(ResultMap resultMap) {
         if (null == resultMap) {
-            return new HashMap<>(16);
+            return new HashMap<>(Normal._16);
         }
         return getSensitiveByType(resultMap.getType());
     }
 
     private Map<String, Privacy> getSensitiveByType(Class<?> clazz) {
-        Map<String, Privacy> sensitiveFieldMap = new HashMap<>(16);
+        Map<String, Privacy> sensitiveFieldMap = new HashMap<>(Normal._16);
         for (Field field : clazz.getDeclaredFields()) {
             Privacy sensitiveField = field.getAnnotation(Privacy.class);
             if (null != sensitiveField) {

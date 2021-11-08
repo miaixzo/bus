@@ -26,6 +26,7 @@
 package org.aoju.bus.image.nimble.codec.jpeg;
 
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.aoju.bus.image.nimble.stream.ImagePixelInputStream;
@@ -40,7 +41,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
@@ -79,7 +80,7 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
     }
 
     private byte[] firstBytesOf(ImageInputStream iis) throws IOException {
-        byte[] b = new byte[256];
+        byte[] b = new byte[Normal._256];
         int n, off = 0, len = b.length;
         iis.mark();
         while (len > 0 && (n = iis.read(b, off, len)) > 0) {

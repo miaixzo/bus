@@ -25,17 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * 这是避免GC搅动和零填充所必需的
  * 这个池是一个线程安全的静态单例
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public final class LifeCycle {
 
-    static final long MAX_SIZE = 64 * 1024;
+    static final long MAX_SIZE = Normal._64 * Normal._1024;
 
     static Segment next;
 

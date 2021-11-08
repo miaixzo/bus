@@ -26,6 +26,7 @@
 package org.aoju.bus.validate;
 
 import lombok.Data;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.validate.validators.Property;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import java.util.List;
  * 校验结果收集器
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @Data
@@ -88,7 +89,7 @@ public class Collector {
      * @return 基础校验结果集合
      */
     public List<Collector> getResult() {
-        List<Collector> list = new ArrayList<>(16);
+        List<Collector> list = new ArrayList<>(Normal._16);
         for (Collector collector : this.result) {
             if (collector instanceof Collector) {
                 list.addAll(collector.getResult());

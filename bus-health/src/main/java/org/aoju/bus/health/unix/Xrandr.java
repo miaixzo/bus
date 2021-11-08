@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 
@@ -37,7 +38,7 @@ import java.util.List;
  * Utility to query xrandr
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -63,12 +64,12 @@ public final class Xrandr {
                 sb = new StringBuilder();
             } else if (null != sb) {
                 sb.append(s.trim());
-                if (sb.length() < 256) {
+                if (sb.length() < Normal._256) {
                     continue;
                 }
                 String edidStr = sb.toString();
                 byte[] edid = Builder.hexStringToByteArray(edidStr);
-                if (edid.length >= 128) {
+                if (edid.length >= Normal._128) {
                     displays.add(edid);
                 }
                 sb = null;

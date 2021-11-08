@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.reader;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -61,7 +62,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class NativeDCMImageReader extends ImageReader implements Closeable {
@@ -542,7 +543,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                 grayscaleValue = dParam.getOverlayGrayscaleValue();
         }
         Overlays.applyOverlay(null != ovlyData ? 0 : frameIndex, raster,
-                ovlyAttrs, gg0000, grayscaleValue >>> (16 - outBits), ovlyData);
+                ovlyAttrs, gg0000, grayscaleValue >>> (Normal._16 - outBits), ovlyData);
     }
 
     private int[] getActiveOverlayGroupOffsets(ImageReadParam param) {
@@ -861,7 +862,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
 
     /**
      * @author Kimi Liu
-     * @version 6.3.0
+     * @version 6.3.1
      * @since JDK 1.8+
      */
     public static class NativeDCMImageReadParam extends ImageReadParam {

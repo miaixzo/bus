@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.reflect;
 
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.SimpleCache;
 import org.aoju.bus.core.toolkit.TypeKit;
 
@@ -38,7 +39,7 @@ import java.util.Map;
  * 泛型变量和泛型实际类型映射关系缓存
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ActualTypeMapper {
@@ -53,6 +54,16 @@ public class ActualTypeMapper {
      */
     public static Map<Type, Type> get(Type type) {
         return CACHE.get(type, () -> createTypeMap(type));
+    }
+
+    /**
+     * 获取泛型变量名（字符串）和泛型实际类型的对应关系Map
+     *
+     * @param type 被解析的包含泛型参数的类
+     * @return 泛型对应关系Map
+     */
+    public static Map<String, Type> getStringKeyMap(Type type) {
+        return Convert.toMap(String.class, Type.class, get(type));
     }
 
     /**
@@ -98,7 +109,6 @@ public class ActualTypeMapper {
      */
     private static Map<Type, Type> createTypeMap(Type type) {
         final Map<Type, Type> typeMap = new HashMap<>();
-
         // 按继承层级寻找泛型变量和实际类型的对应关系
         // 在类中，对应关系分为两类：
         // 1. 父类定义变量，子类标注实际类型
@@ -115,8 +125,13 @@ public class ActualTypeMapper {
             final Class<?> rawType = (Class<?>) parameterizedType.getRawType();
             final Type[] typeParameters = rawType.getTypeParameters();
 
+            Type value;
             for (int i = 0; i < typeParameters.length; i++) {
-                typeMap.put(typeParameters[i], typeArguments[i]);
+                value = typeArguments[i];
+                // 跳过泛型变量对应泛型变量的情况
+                if (false == value instanceof TypeVariable) {
+                    typeMap.put(typeParameters[i], value);
+                }
             }
 
             type = rawType;

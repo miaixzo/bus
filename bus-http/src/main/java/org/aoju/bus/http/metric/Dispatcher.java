@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.RealCall;
@@ -42,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * 如果您提供自己的执行程序，它应该能够并发地运行{@linkplain #getMaxRequests 配置的最大调用数}
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public final class Dispatcher {
@@ -59,7 +60,7 @@ public final class Dispatcher {
      * 运行同步调用。包括尚未结束的已取消调用
      */
     private final Deque<RealCall> runningSyncCalls = new ArrayDeque<>();
-    private int maxRequests = 64;
+    private int maxRequests = Normal._64;
     private int maxRequestsPerHost = 5;
     private Runnable idleCallback;
     /**

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.mapping;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.beans.BeanInfo;
@@ -42,7 +43,7 @@ import java.util.*;
  * 映射器
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Mapping {
@@ -60,25 +61,25 @@ public class Mapping {
      * @throws InstrumentException 异常
      */
     public static <T> T convert(ResultSet resultSet, Class<T> clazz) throws InstrumentException {
-        //存放列名和结果
-        Map<String, Object> values = new HashMap<>(16);
+        // 存放列名和结果
+        Map<String, Object> values = new HashMap<>(Normal._16);
         try {
-            //处理 ResultSet
+            // 处理 ResultSet
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            //迭代
+            // 迭代
             while (resultSet.next()) {
-                //放入内存
+                // 放入内存
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnName(i);
                     values.put(columnName, resultSet.getString(columnName));
                 }
             }
-            //有结果
+            // 有结果
             if (values.size() != 0) {
-                //获取类数据
+                // 获取类数据
                 List<FieldMethod> fieldMethods = getFieldMethods(clazz);
-                //设置属性值
+                // 设置属性值
                 return getObject(clazz, fieldMethods, values);
             }
             return clazz.newInstance();
@@ -96,29 +97,28 @@ public class Mapping {
      */
     public static <T> List<T> convertList(ResultSet resultSet,
                                           Class<T> clazz) throws InstrumentException {
-        //存放列名和结果
-        List<Map<String, Object>> values = new ArrayList<>(16);
-        //结果集合
+        // 存放列名和结果
+        List<Map<String, Object>> values = new ArrayList<>(Normal._16);
+        // 结果集合
         List<T> list = new ArrayList<>();
         try {
-            //处理 ResultSet
+            // 处理 ResultSet
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            //迭代
+            // 迭代
             while (resultSet.next()) {
                 //map object
-                HashMap<String, Object> value = new HashMap<>(16);
-                //循环所有的列，获取列名，根据列名获取值
+                HashMap<String, Object> value = new HashMap<>(Normal._16);
+                // 循环所有的列，获取列名，根据列名获取值
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnName(i);
                     value.put(columnName, resultSet.getString(i));
                 }
-                //add object
                 values.add(value);
             }
-            //获取类数据
+            // 获取类数据
             List<FieldMethod> fieldMethods = getFieldMethods(clazz);
-            //循环集合，根据类型反射构建对象
+            // 循环集合，根据类型反射构建对象
             for (Map<String, Object> map : values) {
                 T rsp = getObject(clazz, fieldMethods, map);
                 list.add(rsp);
@@ -146,7 +146,7 @@ public class Mapping {
             IllegalAccessException,
             InvocationTargetException {
         T rsp = clazz.newInstance();
-        //设置属性值
+        // 设置属性值
         for (FieldMethod filed : fieldMethods) {
             Field field = filed.getField();
             Method method = filed.getMethod();
@@ -169,24 +169,24 @@ public class Mapping {
      */
     private static <T> List<FieldMethod> getFieldMethods(Class<T> clazz) throws IntrospectionException,
             NoSuchFieldException {
-        //结果集合
+        // 结果集合
         List<FieldMethod> fieldMethods = new ArrayList<>();
         //BeanInfo
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
-        //循环处理值
+        // 循环处理值
         for (PropertyDescriptor pd : pds) {
             Method writeMethod = pd.getWriteMethod();
             if (null == writeMethod) {
                 continue;
             }
-            //获取字段
+            // 获取字段
             Field field = clazz.getDeclaredField(pd.getName());
-            //获取只写方法
+            // 获取只写方法
             FieldMethod fieldMethod = new FieldMethod();
             fieldMethod.setField(field);
             fieldMethod.setMethod(writeMethod);
-            //放入集合
+            // 放入集合
             fieldMethods.add(fieldMethod);
         }
         return fieldMethods;

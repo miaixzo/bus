@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -34,7 +35,7 @@ import java.awt.image.*;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class LookupTableFactory {
@@ -142,7 +143,7 @@ public class LookupTableFactory {
     private void adjustVOILUTDescriptor(Attributes vLUT) {
         int[] desc = vLUT.getInts(Tag.LUTDescriptor);
         byte[] data;
-        if (null != desc && desc.length == 3 && desc[2] == 16
+        if (null != desc && desc.length == 3 && desc[2] == Normal._16
                 && null != (data = vLUT.getSafeBytes(Tag.LUTData))) {
             int hiByte = 0;
             for (int i = vLUT.bigEndian() ? 0 : 1; i < data.length; i++, i++)
@@ -179,7 +180,7 @@ public class LookupTableFactory {
 
         if (data.length == len << 1) {
             if (outBits > 8) {
-                if (outBits > 16)
+                if (outBits > Normal._16)
                     return null;
 
                 short[] ss = new short[len];

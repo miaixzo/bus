@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StreamKit;
@@ -50,7 +51,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PDUDecoder extends PDVInputStream {
@@ -246,9 +247,9 @@ public class PDUDecoder extends PDVInputStream {
             rqac.setProtocolVersion(getUnsignedShort());
             get();
             get();
-            rqac.setCalledAET(getString(16).trim());
-            rqac.setCallingAET(getString(16).trim());
-            rqac.setReservedBytes(getBytes(32));
+            rqac.setCalledAET(getString(Normal._16).trim());
+            rqac.setCallingAET(getString(Normal._16).trim());
+            rqac.setReservedBytes(getBytes(Normal._32));
             while (pos < pdulen)
                 decodeItem(rqac);
             checkPDULength(pos - 6);

@@ -33,7 +33,7 @@ import org.aoju.bus.setting.magic.IniPropertyImpl;
  * 将字符串值格式设置为{@link IniProperty}
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PropertyFormatter extends AbstractFormatter<IniProperty> {

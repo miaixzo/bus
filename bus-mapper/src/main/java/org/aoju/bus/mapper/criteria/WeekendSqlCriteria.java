@@ -33,7 +33,7 @@ import org.aoju.bus.mapper.reflect.Reflector;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class WeekendSqlCriteria<T> implements SqlsCriteria {
@@ -45,7 +45,7 @@ public class WeekendSqlCriteria<T> implements SqlsCriteria {
     }
 
     public static <T> WeekendSqlCriteria<T> custom() {
-        return new WeekendSqlCriteria<T>();
+        return new WeekendSqlCriteria<>();
     }
 
     public WeekendSqlCriteria<T> andIsNull(String property) {

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 
@@ -33,7 +34,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class AttributesSelector implements Serializable {
@@ -77,7 +78,7 @@ public class AttributesSelector implements Serializable {
 
     static int selectTag(String s, int fromIndex) {
         String tagStr = select("@tag=", s, fromIndex);
-        return Integer.parseInt(tagStr, 16);
+        return Integer.parseInt(tagStr, Normal._16);
     }
 
     static String selectPrivateCreator(String s, int fromIndex) {
@@ -161,7 +162,7 @@ public class AttributesSelector implements Serializable {
     }
 
     StringBuilder toStringBuilder() {
-        StringBuilder sb = new StringBuilder(32);
+        StringBuilder sb = new StringBuilder(Normal._32);
         for (ItemPointer ip : itemPointers) {
             appendTo(ip.sequenceTag, ip.privateCreator, "\"]/Item", sb);
             if (ip.itemIndex >= 0)

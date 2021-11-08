@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 
@@ -35,7 +36,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class MultipartReader {
@@ -176,7 +177,7 @@ public class MultipartReader {
 
     protected void discardDataBeforeDelimiter() throws IOException {
         try (InputStream in = newPartInputStream()) {
-            byte[] pBuffer = new byte[1024];
+            byte[] pBuffer = new byte[Normal._1024];
             while (true) {
                 if (in.read(pBuffer) == -1) {
                     break;

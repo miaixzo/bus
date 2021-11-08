@@ -35,7 +35,7 @@ import java.util.*;
  * 八字
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class EightChar {
@@ -791,7 +791,16 @@ public class EightChar {
          * @return 流年
          */
         public LiuNian[] getLiuNian() {
-            int n = 10;
+            return getLiuNian(10);
+        }
+
+        /**
+         * 获取流年
+         *
+         * @param n 轮数
+         * @return 流年
+         */
+        public LiuNian[] getLiuNian(int n) {
             if (index < 1) {
                 n = endYear - startYear + 1;
             }
@@ -803,12 +812,21 @@ public class EightChar {
         }
 
         /**
-         * 获取小运
+         * 获取10轮小运
          *
          * @return 小运
          */
         public XiaoYun[] getXiaoYun() {
-            int n = 10;
+            return getXiaoYun(10);
+        }
+
+        /**
+         * 获取小运
+         *
+         * @param n 轮数
+         * @return 小运
+         */
+        public XiaoYun[] getXiaoYun(int n) {
             if (index < 1) {
                 n = endYear - startYear + 1;
             }
@@ -1134,8 +1152,8 @@ public class EightChar {
             // 阳男阴女顺推，阴男阳女逆推
             Solar start = forward ? current : prev.getSolar();
             Solar end = forward ? next.getSolar() : current;
-            int endTimeZhiIndex = (end.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(end.build(false).substring(11, 16));
-            int startTimeZhiIndex = (start.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(start.build(false).substring(11, 16));
+            int endTimeZhiIndex = (end.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(end.build(false).substring(11, Normal._16));
+            int startTimeZhiIndex = (start.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(start.build(false).substring(11, Normal._16));
             // 时辰差
             int hourDiff = endTimeZhiIndex - startTimeZhiIndex;
             Calendar endCalendar = Kalendar.calendar(end.getYear(), end.getMonth(), end.getDay());
@@ -1220,12 +1238,21 @@ public class EightChar {
         }
 
         /**
-         * 获取大运
+         * 获取10轮大运
          *
          * @return 大运
          */
         public DaYun[] getDaYun() {
-            int n = 10;
+            return getDaYun(10);
+        }
+
+        /**
+         * 获取大运
+         *
+         * @param n 轮数
+         * @return 大运
+         */
+        public DaYun[] getDaYun(int n) {
             DaYun[] l = new DaYun[n];
             for (int i = 0; i < n; i++) {
                 l[i] = new DaYun(this, i);

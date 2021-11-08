@@ -50,7 +50,7 @@ import java.util.TreeMap;
  * 喜马拉雅登录
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class XmlyProvider extends AbstractProvider {
@@ -82,7 +82,7 @@ public class XmlyProvider extends AbstractProvider {
             md5.update(sign);
             byte[] byteData = md5.digest();
             for (byte byteDatum : byteData) {
-                builder.append(Integer.toString((byteDatum & 0xff) + 0x100, 16).substring(1));
+                builder.append(Integer.toString((byteDatum & 0xff) + 0x100, Normal._16).substring(1));
             }
         } catch (Exception ignored) {
         }

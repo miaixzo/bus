@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.socket.process.MessageProcessor;
 
 import java.net.SocketOption;
@@ -35,7 +36,7 @@ import java.util.Map;
  * Quickly服务端/客户端配置信息 T:解码后生成的对象类型
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ServerConfig<T> {
@@ -43,15 +44,15 @@ public class ServerConfig<T> {
     /**
      * 消息体缓存大小,字节
      */
-    private int readBufferSize = 512;
+    private int readBufferSize = Normal._512;
     /**
      * 内存块大小限制
      */
-    private int writeBufferSize = 128;
+    private int writeBufferSize = Normal._128;
     /**
      * Write缓存区容量
      */
-    private int writeBufferCapacity = 16;
+    private int writeBufferCapacity = Normal._16;
     /**
      * 远程服务器IP
      */

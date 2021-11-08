@@ -49,7 +49,7 @@ import java.util.TreeMap;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class TwitterProvider extends AbstractProvider {
@@ -197,7 +197,7 @@ public class TwitterProvider extends AbstractProvider {
     private Map<String, String> buildOauthParams() {
         Map<String, String> params = new HashMap<>(5);
         params.put("oauth_consumer_key", context.getAppKey());
-        params.put("oauth_nonce", generateNonce(32));
+        params.put("oauth_nonce", generateNonce(Normal._32));
         params.put("oauth_signature_method", "HMAC-SHA1");
         params.put("oauth_timestamp", Normal.EMPTY + DateKit.timestamp());
         params.put("oauth_version", "1.0");

@@ -34,7 +34,7 @@ import org.apache.ibatis.session.RowBounds;
  * HerdDB 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class HerdDBRowBounds extends AbstractRowBounds {

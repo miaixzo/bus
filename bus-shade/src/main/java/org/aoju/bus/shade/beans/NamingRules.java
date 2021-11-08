@@ -25,13 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.shade.beans;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 /**
  * 获奖java中需要的驼峰命名
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class NamingRules {
@@ -46,7 +47,7 @@ public class NamingRules {
         table = changeToJavaFiled(table, true);
         StringBuilder sbuilder = new StringBuilder();
         char[] cs = table.toCharArray();
-        cs[0] -= 32;
+        cs[0] -= Normal._32;
         sbuilder.append(String.valueOf(cs));
         return sbuilder.toString();
     }
@@ -66,7 +67,7 @@ public class NamingRules {
         StringBuilder sbuilder = new StringBuilder(fields[0]);
         for (int i = 1; i < fields.length; i++) {
             char[] cs = fields[i].toCharArray();
-            cs[0] -= 32;
+            cs[0] -= Normal._32;
             sbuilder.append(String.valueOf(cs));
         }
         return sbuilder.toString();

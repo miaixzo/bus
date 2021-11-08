@@ -47,7 +47,7 @@ import java.util.List;
  * WindowsNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -79,7 +79,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getDomainName() {
-        char[] buffer = new char[256];
+        char[] buffer = new char[Normal._256];
         IntByReference bufferSize = new IntByReference(buffer.length);
         if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
             Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());

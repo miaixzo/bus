@@ -45,7 +45,7 @@ import java.util.Map;
  * 构造URL
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @Setter
@@ -275,19 +275,19 @@ public class Builder {
             }
             // 32位随机字符串
             if (TOKEN_STYLE_RANDOM_32.equals(style)) {
-                return RandomKit.randomString(32);
+                return RandomKit.randomString(Normal._32);
             }
             // 64位随机字符串
             if (TOKEN_STYLE_RANDOM_64.equals(style)) {
-                return RandomKit.randomString(64);
+                return RandomKit.randomString(Normal._64);
             }
             // 128位随机字符串
             if (TOKEN_STYLE_RANDOM_128.equals(style)) {
-                return RandomKit.randomString(128);
+                return RandomKit.randomString(Normal._128);
             }
             // tik风格 (2_14_16)
             if (TOKEN_STYLE_RANDOM_TIK.equals(style)) {
-                return RandomKit.randomString(2) + "_" + RandomKit.randomString(14) + "_" + RandomKit.randomString(16) + "__";
+                return RandomKit.randomString(2) + "_" + RandomKit.randomString(14) + "_" + RandomKit.randomString(Normal._16) + "__";
             }
             // 默认，还是ObjectID
             return ObjectID.id();

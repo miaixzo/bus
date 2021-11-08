@@ -25,13 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.mutable;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**
  * 可变 <code>double</code> 类型
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @see Double
  * @since JDK 1.8+
  */
@@ -201,7 +202,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
     @Override
     public int hashCode() {
         final long bits = Double.doubleToLongBits(value);
-        return (int) (bits ^ bits >>> 32);
+        return (int) (bits ^ bits >>> Normal._32);
     }
 
     /**

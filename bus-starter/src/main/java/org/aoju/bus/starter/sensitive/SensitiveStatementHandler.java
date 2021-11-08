@@ -26,6 +26,7 @@
 package org.aoju.bus.starter.sensitive;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -113,7 +114,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
     }
 
     private void handleParameters(Sensitive sensitive, Configuration configuration, BoundSql boundSql, Object param, SqlCommandType commandType) {
-        Map<String, Object> newValues = new HashMap<>(16);
+        Map<String, Object> newValues = new HashMap<>(Normal._16);
         MetaObject metaObject = configuration.newMetaObject(param);
 
         for (Field field : param.getClass().getDeclaredFields()) {

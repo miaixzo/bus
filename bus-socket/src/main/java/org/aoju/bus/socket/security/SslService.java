@@ -43,7 +43,7 @@ import java.security.cert.X509Certificate;
  * keytool -genkey -validity 36000 -alias www.aoju.org -keyalg RSA -keystore server.keystore
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class SslService {
@@ -73,24 +73,6 @@ public class SslService {
             e.printStackTrace();
         }
     }
-
-    private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
-        @Override
-        public void completed(Integer result, HandshakeModel attachment) {
-            if (result == -1) {
-                attachment.setEof(true);
-            }
-            synchronized (attachment) {
-                doHandshake(attachment);
-            }
-        }
-
-        @Override
-        public void failed(Throwable exc, HandshakeModel attachment) {
-            attachment.setEof(true);
-            attachment.getHandshakeCallback().callback();
-        }
-    };
 
     public void initTrust(InputStream trustInputStream, String trustPassword) {
         try {
@@ -124,6 +106,24 @@ public class SslService {
             throw new RuntimeException(e);
         }
     }
+
+    private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
+        @Override
+        public void completed(Integer result, HandshakeModel attachment) {
+            if (result == -1) {
+                attachment.setEof(true);
+            }
+            synchronized (attachment) {
+                doHandshake(attachment);
+            }
+        }
+
+        @Override
+        public void failed(Throwable exc, HandshakeModel attachment) {
+            attachment.setEof(true);
+            attachment.getHandshakeCallback().callback();
+        }
+    };
 
     HandshakeModel createSSLEngine(AsynchronousSocketChannel socketChannel, PageBuffer pageBuffer) {
         try {

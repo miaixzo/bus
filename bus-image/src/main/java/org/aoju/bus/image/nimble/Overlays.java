@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
@@ -35,7 +36,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Overlays {
@@ -52,7 +53,7 @@ public class Overlays {
     public static int[] getOverlayGroupOffsets(Attributes attrs, int tag,
                                                int activationMask) {
         int len = 0;
-        int[] result = new int[16];
+        int[] result = new int[Normal._16];
         for (int i = 0; i < result.length; i++) {
             int gg0000 = i << 17;
             if ((activationMask & (1 << i)) != 0
@@ -64,7 +65,7 @@ public class Overlays {
 
     public static int[] getEmbeddedOverlayGroupOffsets(Attributes attrs) {
         int len = 0;
-        int[] result = new int[16];
+        int[] result = new int[Normal._16];
         int bitsAllocated = attrs.getInt(Tag.BitsAllocated, 8);
         int bitsStored = attrs.getInt(Tag.BitsStored, bitsAllocated);
         for (int i = 0; i < result.length; i++) {

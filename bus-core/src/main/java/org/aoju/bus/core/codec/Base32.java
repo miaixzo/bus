@@ -37,7 +37,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * see http://blog.csdn.net/earbao/article/details/44453937
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public final class Base32 {
@@ -57,7 +57,7 @@ public final class Base32 {
         StringBuilder base32 = new StringBuilder((bytes.length + 7) * 8 / 5);
 
         while (i < bytes.length) {
-            currByte = (bytes[i] >= 0) ? bytes[i] : (bytes[i] + 256);
+            currByte = (bytes[i] >= 0) ? bytes[i] : (bytes[i] + Normal._256);
 
             if (index > 3) {
                 if ((i + 1) < bytes.length) {

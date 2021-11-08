@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -36,14 +37,14 @@ import java.util.concurrent.TimeUnit;
  * 在本地不支持超时的地方实现超时,例如对阻塞的套接字操作.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class AsyncTimeout extends Timeout {
     /**
      * 一次不要写超过64 KiB的数据，否则，慢速连接可能会遭受超时
      */
-    private static final int TIMEOUT_WRITE_SIZE = 64 * 1024;
+    private static final int TIMEOUT_WRITE_SIZE = Normal._64 * Normal._1024;
     /**
      * 任务线程在关闭之前的空闲时间
      */

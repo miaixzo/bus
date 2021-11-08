@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * platforms.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -113,7 +113,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             return 64;
         }
         // 9th bit of conf is 64-bit kernel
-        return (config.get().conf & 0x0080_0000) > 0 ? 64 : 32;
+        return (config.get().conf & 0x0080_0000) > 0 ? Normal._64 : Normal._32;
     }
 
     @Override

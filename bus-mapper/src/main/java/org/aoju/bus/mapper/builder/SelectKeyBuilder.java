@@ -45,7 +45,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class SelectKeyBuilder implements KeyGenerator {
@@ -73,7 +73,6 @@ public class SelectKeyBuilder implements KeyGenerator {
         if (ms.getConfiguration().hasKeyGenerator(keyId)) {
             return;
         }
-        //defaults
         Configuration configuration = ms.getConfiguration();
         KeyGenerator keyGenerator;
         String IDENTITY = (column.getGenerator() == null || "".equals(column.getGenerator())) ? identity : column.getGenerator();
@@ -92,7 +91,7 @@ public class SelectKeyBuilder implements KeyGenerator {
             statementBuilder.databaseId(null);
             statementBuilder.lang(configuration.getDefaultScriptingLanguageInstance());
             statementBuilder.resultOrdered(false);
-            statementBuilder.resulSets(null);
+            statementBuilder.resultSets(null);
             statementBuilder.timeout(configuration.getDefaultStatementTimeout());
 
             List<ParameterMapping> parameterMappings = new ArrayList<>();

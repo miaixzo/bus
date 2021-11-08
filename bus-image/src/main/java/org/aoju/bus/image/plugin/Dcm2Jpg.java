@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -48,7 +49,7 @@ import java.util.Iterator;
  * DCM-JPG转换
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Dcm2Jpg {
@@ -71,7 +72,7 @@ public class Dcm2Jpg {
 
     private static int parseHex(String s) throws InstrumentException {
         try {
-            return Integer.parseInt(s, 16);
+            return Integer.parseInt(s, Normal._16);
         } catch (NumberFormatException e) {
             throw new InstrumentException(e.getMessage());
         }

@@ -25,9 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec.jpeg;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class JPEGLSCodingParam {
@@ -50,7 +52,7 @@ public class JPEGLSCodingParam {
 
     private static JPEGLSCodingParam getDefaultJPEGLSEncodingParam(
             int maxVal, int clampedMaxVal, int near) {
-        int factor = (clampedMaxVal + 128) >> 8;
+        int factor = (clampedMaxVal + Normal._128) >> 8;
         int t1 = factor + 2 + 3 * near;
         if (t1 > maxVal || t1 < near + 1)
             t1 = near + 1;
@@ -60,7 +62,7 @@ public class JPEGLSCodingParam {
         int t3 = factor * 17 + 4 + 7 * near;
         if (t3 > maxVal || t3 < t2)
             t3 = t2;
-        return new JPEGLSCodingParam(maxVal, t1, t2, t3, 64);
+        return new JPEGLSCodingParam(maxVal, t1, t2, t3, Normal._64);
     }
 
     public static JPEGLSCodingParam getDefaultJPEGLSCodingParam(int p, int near) {

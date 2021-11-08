@@ -44,7 +44,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class RandomKit {
@@ -487,7 +487,7 @@ public class RandomKit {
      */
     public static Color randomColor() {
         final Random random = getRandom();
-        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        return new Color(random.nextInt(Normal._256), random.nextInt(Normal._256), random.nextInt(Normal._256));
     }
 
     /**

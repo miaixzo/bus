@@ -45,7 +45,7 @@ import java.util.Random;
  *
  * @author David Klebanoff
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class NanoId {
@@ -99,7 +99,7 @@ public class NanoId {
             alphabet = DEFAULT_ALPHABET;
         }
 
-        if (alphabet.length == 0 || alphabet.length >= 256) {
+        if (alphabet.length == 0 || alphabet.length >= Normal._256) {
             throw new IllegalArgumentException("Alphabet must contain between 1 and 255 symbols.");
         }
 

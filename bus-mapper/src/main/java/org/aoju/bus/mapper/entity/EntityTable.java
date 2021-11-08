@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.apache.ibatis.mapping.ResultFlag;
@@ -46,7 +47,9 @@ import java.util.regex.Pattern;
 public class EntityTable {
 
     public static final Pattern DELIMITER = Pattern.compile("^[`\\[\"]?(.*?)[`\\]\"]?$");
-    //属性和列对应
+    /**
+     * 属性和列对应
+     */
     protected Map<String, EntityColumn> propertyMap;
     private String name;
     private String catalog;
@@ -95,7 +98,7 @@ public class EntityTable {
         List<ResultMapping> resultMappings = new ArrayList<>();
         for (EntityColumn entityColumn : entityClassColumns) {
             String column = entityColumn.getColumn();
-            //去掉可能存在的分隔符
+            // 去掉可能存在的分隔符
             Matcher matcher = DELIMITER.matcher(column);
             if (matcher.find()) {
                 column = matcher.group(1);
@@ -259,7 +262,7 @@ public class EntityTable {
         if (StringKit.isNotEmpty(schema)) {
             return schema;
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     public Map<String, EntityColumn> getPropertyMap() {

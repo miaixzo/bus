@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ConfigurationChange {
@@ -95,7 +96,7 @@ public class ConfigurationChange {
     public String toString() {
         if (isEmpty()) return "[]";
 
-        StringBuilder sb = new StringBuilder(objects.size() * 64);
+        StringBuilder sb = new StringBuilder(objects.size() * Normal._64);
         for (ModifiedObject obj : objects) {
             sb.append(obj.changeType).append(Symbol.C_SPACE).append(obj.dn).append(Symbol.C_LF);
             if (null != obj.attributes) {

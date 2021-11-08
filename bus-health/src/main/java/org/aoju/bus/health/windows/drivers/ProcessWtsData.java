@@ -48,7 +48,7 @@ import java.util.Map;
  * backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -116,7 +116,7 @@ public final class ProcessWtsData {
                     WmiKit.getString(processWmiResult, Win32Process.ProcessXPProperty.EXECUTABLEPATH, i),
                     WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.THREADCOUNT, i),
                     // WMI Pagefile usage is in KB
-                    1024 * (WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.PAGEFILEUSAGE, i) & 0xffff_ffffL),
+                    Normal._1024 * (WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.PAGEFILEUSAGE, i) & 0xffff_ffffL),
                     WmiKit.getUint64(processWmiResult, Win32Process.ProcessXPProperty.KERNELMODETIME, i) / 10_000L,
                     WmiKit.getUint64(processWmiResult, Win32Process.ProcessXPProperty.USERMODETIME, i) / 10_000L,
                     WmiKit.getUint32(processWmiResult, Win32Process.ProcessXPProperty.HANDLECOUNT, i)));

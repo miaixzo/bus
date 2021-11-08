@@ -37,7 +37,7 @@ import java.util.Date;
  * {@link CellSetter} 简单静态工厂类，用于根据值类型创建对应的{@link CellSetter}
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CellSetterFactory {

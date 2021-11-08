@@ -31,7 +31,7 @@ import java.io.Serializable;
  * 过滤器BitMap在64位机器上.这个类能发生更好的效果.一般机器不建议使用
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class LongMap implements BitMap, Serializable {

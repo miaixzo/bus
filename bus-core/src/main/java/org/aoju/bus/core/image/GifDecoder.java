@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.awt.*;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class GifDecoder {
@@ -95,7 +96,7 @@ public class GifDecoder {
     protected Rectangle lastRect; // last image rect
     protected BufferedImage image; // current frame
     protected BufferedImage lastImage; // previous frame
-    protected byte[] block = new byte[256]; // current data block
+    protected byte[] block = new byte[Normal._256]; // current data block
     protected int blockSize = 0; // block size
     // last graphic control extension info
     protected int dispose = 0;
@@ -563,14 +564,14 @@ public class GifDecoder {
         if (n < nbytes) {
             status = STATUS_FORMAT_ERROR;
         } else {
-            tab = new int[256]; // max size to avoid bounds checks
+            tab = new int[Normal._256]; // max size to avoid bounds checks
             int i = 0;
             int j = 0;
             while (i < ncolors) {
                 int r = ((int) c[j++]) & 0xff;
                 int g = ((int) c[j++]) & 0xff;
                 int b = ((int) c[j++]) & 0xff;
-                tab[i++] = 0xff000000 | (r << 16) | (g << 8) | b;
+                tab[i++] = 0xff000000 | (r << Normal._16) | (g << 8) | b;
             }
         }
         return tab;

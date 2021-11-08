@@ -37,7 +37,7 @@ import java.util.Properties;
  * 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public abstract class AbstractRowBounds extends AbstractDialect {

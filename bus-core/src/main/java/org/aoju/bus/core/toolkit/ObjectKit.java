@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ObjectKit {
@@ -79,20 +79,20 @@ public class ObjectKit {
      * @return 被检查对象为{ null}返回默认值,否则返回原值
      */
     public static <T> T defaultIfNull(final T object, final T defaultValue) {
-        return (null != object) ? object : defaultValue;
+        return isNull(object) ? defaultValue : object;
     }
 
     /**
      * 如果给定对象为{@code null} 返回默认值, 如果不为null 返回自定义handle处理后的返回值
      *
      * @param source       Object 类型对象
-     * @param handle       自定义的处理方法
+     * @param handle       非空时自定义的处理方法
      * @param defaultValue 默认为空的返回值
      * @param <T>          被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
      * @return 被检查对象为{ null}返回默认值,否则返回原值
      */
     public static <T> T defaultIfNull(final Object source, Supplier<? extends T> handle, final T defaultValue) {
-        if (Objects.nonNull(source)) {
+        if (isNotNull(source)) {
             return handle.get();
         }
         return defaultValue;

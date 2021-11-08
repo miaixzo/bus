@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -158,7 +158,7 @@ public class MacOSProcess extends AbstractOSProcess {
             // null-terminated envs in similar format
             int nargs = procargs.getInt(0);
             // Sanity check
-            if (nargs > 0 && nargs <= 1024) {
+            if (nargs > 0 && nargs <= Normal._1024) {
                 // Skip first int (containing value of nargs)
                 long offset = com.sun.jna.platform.mac.SystemB.INT_SIZE;
                 // Skip exec_command, as
@@ -396,7 +396,7 @@ public class MacOSProcess extends AbstractOSProcess {
         this.startTime = taskAllInfo.pbsd.pbi_start_tvsec * 1000L + taskAllInfo.pbsd.pbi_start_tvusec / 1000L;
         this.upTime = now - this.startTime;
         this.openFiles = taskAllInfo.pbsd.pbi_nfiles;
-        this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? 32 : 64;
+        this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? Normal._32 : Normal._64;
         this.majorFaults = taskAllInfo.ptinfo.pti_pageins;
         // testing using getrusage confirms pti_faults includes both major and minor
         this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins;

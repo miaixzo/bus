@@ -35,7 +35,7 @@ import java.nio.file.Path;
  * 文件存储提供者
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public interface Provider {

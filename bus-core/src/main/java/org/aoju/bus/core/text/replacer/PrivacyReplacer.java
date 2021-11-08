@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.replacer;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Replacer;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.Lookups;
@@ -39,7 +40,7 @@ import java.util.*;
  * 按值替换字符串中的变量
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PrivacyReplacer implements Replacer<Object>, Serializable {
@@ -713,7 +714,7 @@ public class PrivacyReplacer implements Replacer<Object>, Serializable {
         if (priorVariables.contains(varName) == false) {
             return;
         }
-        final TextBuilder buf = new TextBuilder(256);
+        final TextBuilder buf = new TextBuilder(Normal._256);
         buf.append("Infinite loop in property interpolation of ");
         buf.append(priorVariables.remove(0));
         buf.append(": ");

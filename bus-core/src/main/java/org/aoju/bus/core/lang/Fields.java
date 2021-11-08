@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Fields {
@@ -432,10 +432,10 @@ public class Fields {
     };
 
     /**
-     * 农历年份名
+     * 中文数字
      */
-    public static final String[] CN_YEAR = {
-            "〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"
+    public static final String[] CN_NUMBER = {
+            "〇", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"
     };
 
     /**

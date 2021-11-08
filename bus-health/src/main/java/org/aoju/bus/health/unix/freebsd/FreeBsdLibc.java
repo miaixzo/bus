@@ -28,6 +28,7 @@ package org.aoju.bus.health.unix.freebsd;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
@@ -35,17 +36,17 @@ import org.aoju.bus.health.unix.CLibrary;
  * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public interface FreeBsdLibc extends CLibrary {
 
     FreeBsdLibc INSTANCE = Native.load("libc", FreeBsdLibc.class);
 
-    int UTX_USERSIZE = 32;
-    int UTX_LINESIZE = 16;
+    int UTX_USERSIZE = Normal._32;
+    int UTX_LINESIZE = Normal._16;
     int UTX_IDSIZE = 8;
-    int UTX_HOSTSIZE = 128;
+    int UTX_HOSTSIZE = Normal._128;
     /**
      * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
      */

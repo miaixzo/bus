@@ -25,13 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.mutable;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**
  * 可变 <code>long</code> 类型
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @see Long
  * @since JDK 1.8+
  */
@@ -202,7 +203,7 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
 
     @Override
     public int hashCode() {
-        return (int) (value ^ (value >>> 32));
+        return (int) (value ^ (value >>> Normal._32));
     }
 
     /**

@@ -31,7 +31,7 @@ import org.opencv.imgproc.Imgproc;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class TiledProcessor {
@@ -42,7 +42,7 @@ public class TiledProcessor {
         for (int i = 0; i < numberOfTimes; i++) {
             sourceImage = destImage.clone();
             // Imgproc.blur(sourceImage, destImage, new Size(3.0, 3.0));
-            process(sourceImage, destImage, 256);
+            process(sourceImage, destImage, Normal._256);
         }
         return destImage;
     }

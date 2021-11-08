@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -45,7 +46,7 @@ import java.util.regex.Pattern;
  * UID信息
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class UID {
@@ -3064,7 +3065,7 @@ public class UID {
     }
 
     public static boolean isValid(String uid) {
-        return uid.length() <= 64 && PATTERN.matcher(uid).matches();
+        return uid.length() <= Normal._64 && PATTERN.matcher(uid).matches();
     }
 
     public static String createUID() {

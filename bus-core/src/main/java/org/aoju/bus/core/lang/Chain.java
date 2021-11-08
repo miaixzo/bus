@@ -31,7 +31,7 @@ package org.aoju.bus.core.lang;
  * @param <E> 元素类型
  * @param <T> 目标类类型,用于返回this对象
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public interface Chain<E, T> extends Iterable<E> {

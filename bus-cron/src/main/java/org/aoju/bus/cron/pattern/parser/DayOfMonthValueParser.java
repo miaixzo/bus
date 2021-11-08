@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
@@ -33,7 +34,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
  * 每月最多31天,32和“L”都表示最后一天
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class DayOfMonthValueParser extends SimpleValueParser {
@@ -46,7 +47,7 @@ public class DayOfMonthValueParser extends SimpleValueParser {
     public int parse(String value) throws InstrumentException {
         //每月最后一天
         if ("L".equalsIgnoreCase(value) || ObjectKit.equal(value, "32")) {
-            return 32;
+            return Normal._32;
         } else {
             return super.parse(value);
         }

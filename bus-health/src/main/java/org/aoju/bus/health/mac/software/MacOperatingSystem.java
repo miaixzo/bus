@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -80,7 +80,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     private final String osXVersion;
     private final int major;
     private final int minor;
-    private int maxProc = 1024;
+    private int maxProc = Normal._1024;
 
     public MacOperatingSystem() {
         String version = System.getProperty("os.version");
@@ -126,10 +126,10 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     protected int queryBitness(int jvmBitness) {
-        if (jvmBitness == 64 || (this.major == 10 && this.minor > 6)) {
-            return 64;
+        if (jvmBitness == Normal._64 || (this.major == 10 && this.minor > 6)) {
+            return Normal._64;
         }
-        return Builder.parseIntOrDefault(Executor.getFirstAnswer("getconf LONG_BIT"), 32);
+        return Builder.parseIntOrDefault(Executor.getFirstAnswer("getconf LONG_BIT"), Normal._32);
     }
 
     @Override

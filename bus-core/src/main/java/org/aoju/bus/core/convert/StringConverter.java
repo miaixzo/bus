@@ -32,6 +32,7 @@ import org.aoju.bus.core.toolkit.XmlKit;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Type;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -41,7 +42,7 @@ import java.util.TimeZone;
  * 字符串转换器
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class StringConverter extends AbstractConverter<String> {
@@ -94,6 +95,8 @@ public class StringConverter extends AbstractConverter<String> {
             return clobToString((Clob) value);
         } else if (value instanceof Blob) {
             return blobToString((Blob) value);
+        } else if (value instanceof Type) {
+            return ((Type) value).getTypeName();
         }
 
         return convertString(value);

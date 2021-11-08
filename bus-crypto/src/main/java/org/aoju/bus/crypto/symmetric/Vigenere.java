@@ -25,13 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.symmetric;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * 维吉尼亚密码实现
  * 人们在恺撒移位密码的基础上扩展出多表密码，称为维吉尼亚密码
  * 算法实现来自：https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Vigenere {
@@ -53,7 +55,7 @@ public class Vigenere {
                 if (t + i * cipherKeyLen < dataLen) {
                     final char dataChar = data.charAt(t + i * cipherKeyLen);
                     final char cipherKeyChar = cipherKey.charAt(t);
-                    cipherArray[t + i * cipherKeyLen] = (char) ((dataChar + cipherKeyChar - 64) % 95 + 32);
+                    cipherArray[t + i * cipherKeyLen] = (char) ((dataChar + cipherKeyChar - 64) % 95 + Normal._32);
                 }
             }
         }
@@ -79,9 +81,9 @@ public class Vigenere {
                     final char dataChar = data.charAt(t + i * cipherKeyLen);
                     final char cipherKeyChar = cipherKey.charAt(t);
                     if (dataChar - cipherKeyChar >= 0) {
-                        clearArray[t + i * cipherKeyLen] = (char) ((dataChar - cipherKeyChar) % 95 + 32);
+                        clearArray[t + i * cipherKeyLen] = (char) ((dataChar - cipherKeyChar) % 95 + Normal._32);
                     } else {
-                        clearArray[t + i * cipherKeyLen] = (char) ((dataChar - cipherKeyChar + 95) % 95 + 32);
+                        clearArray[t + i * cipherKeyLen] = (char) ((dataChar - cipherKeyChar + 95) % 95 + Normal._32);
                     }
                 }
             }

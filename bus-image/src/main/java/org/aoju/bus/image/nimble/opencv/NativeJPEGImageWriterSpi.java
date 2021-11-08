@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
+
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
@@ -36,7 +38,7 @@ import java.util.Locale;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
@@ -83,7 +85,7 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
         }
 
         // Ensure bitDepth is no more than 16
-        if (bitDepth > 16) {
+        if (bitDepth > Normal._16) {
             return false;
         }
 

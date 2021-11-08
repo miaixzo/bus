@@ -31,6 +31,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.health.Builder;
@@ -51,7 +52,7 @@ import java.util.*;
  * Utility to query /proc/psinfo
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -276,7 +277,7 @@ public final class PsInfo {
         PR_START(2 * NativeLong.SIZE), // lwp start time, from the epoch
         PR_TIME(2 * NativeLong.SIZE), // cpu time for this lwp
         PR_CLNAME(8), // scheduling class name
-        PR_NAME(16), // name of system lwp
+        PR_NAME(Normal._16), // name of system lwp
         PR_ONPRO(4), // processor which last ran this lwp
         PR_BINDPRO(4), // processor to which lwp is bound
         PR_BINDPSET(4), // processor set to which lwp is bound
@@ -318,7 +319,7 @@ public final class PsInfo {
         PR_START(2 * NativeLong.SIZE), // process start time, from the epoch
         PR_TIME(2 * NativeLong.SIZE), // cpu time for this process
         PR_CTIME(2 * NativeLong.SIZE), // cpu time for reaped children
-        PR_FNAME(16), // name of exec'ed file
+        PR_FNAME(Normal._16), // name of exec'ed file
         PR_PSARGS(80), // initial characters of arg list
         PR_WSTAT(4), // if zombie, the wait() status
         PR_ARGC(4), // initial argument count

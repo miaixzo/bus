@@ -41,7 +41,7 @@ import java.util.Map;
  * 数据库方言 informix
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Informix extends AbstractPaging {

@@ -55,7 +55,7 @@ import java.util.function.Supplier;
  * 操作系统信息支持
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Platform {
@@ -185,7 +185,7 @@ public class Platform {
         } else if ("i386".equals(arch)) {
             arch = "x86";
         } else if ("x86_64".equals(arch) || "amd64".equals(arch)) {
-            arch = "x86-64";
+            arch = "x86_64";
         }
         switch (osType) {
             case com.sun.jna.Platform.ANDROID:

@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe

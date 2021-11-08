@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段关键的一个类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class EntityBuilder {
@@ -85,7 +85,7 @@ public class EntityBuilder {
             return table.getOrderByClause();
         }
 
-        List<EntityColumn> orderEntityColumns = new ArrayList<EntityColumn>();
+        List<EntityColumn> orderEntityColumns = new ArrayList<>();
         for (EntityColumn column : table.getEntityClassColumns()) {
             if (column.getOrderBy() != null) {
                 orderEntityColumns.add(column);

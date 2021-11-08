@@ -37,7 +37,7 @@ import java.util.*;
  * 阳历日期
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Solar {
@@ -260,6 +260,14 @@ public class Solar {
         f -= minute;
         f *= 60;
         int second = (int) Math.round(f);
+        if (second > 59) {
+            second -= 60;
+            minute++;
+        }
+        if (minute > 59) {
+            minute -= 60;
+            hour++;
+        }
 
         this.calendar = Kalendar.calendar(year, month, day, hour, minute, second);
 

@@ -43,7 +43,7 @@ import java.util.List;
  * Graphics Card info obtained from pciconf
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @Immutable

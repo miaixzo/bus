@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  * 设备信息
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Device implements Serializable {
@@ -1256,7 +1256,7 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(512), Normal.EMPTY).toString();
+        return promptTo(new StringBuilder(Normal._512), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

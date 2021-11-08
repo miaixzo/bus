@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.symmetric;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.crypto.Builder;
 
@@ -36,14 +37,14 @@ import javax.crypto.spec.PBEKeySpec;
  * 参考：https://blog.csdn.net/huoji555/article/details/83659687
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PBKDF2 {
 
     private String algorithm = "PBKDF2WithHmacSHA1";
     //生成密文的长度
-    private int keyLength = 512;
+    private int keyLength = Normal._512;
 
     //迭代次数
     private int iterationCount = 1000;

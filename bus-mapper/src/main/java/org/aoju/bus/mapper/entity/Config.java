@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.builder.resolve.EntityResolve;
@@ -40,7 +41,7 @@ import java.util.Properties;
  * 通用Mapper属性配置
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Config {
@@ -146,7 +147,7 @@ public class Config {
         if (StringKit.isNotEmpty(this.schema)) {
             return this.schema;
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     public String getSchema() {
@@ -326,7 +327,7 @@ public class Config {
      */
     public void setProperties(Properties properties) {
         if (properties == null) {
-            //默认驼峰
+            // 默认驼峰
             this.style = Style.camelhump;
             return;
         }
@@ -347,7 +348,7 @@ public class Config {
             setSchema(schema);
         }
 
-        //ORDER 有三个属性名可以进行配置
+        // ORDER 有三个属性名可以进行配置
         String ORDER = properties.getProperty("ORDER");
         if (StringKit.isNotEmpty(ORDER)) {
             setOrder(ORDER);
@@ -365,18 +366,18 @@ public class Config {
         this.notEmpty = Boolean.valueOf(properties.getProperty("notEmpty"));
         this.enableMethodAnnotation = Boolean.valueOf(properties.getProperty("enableMethodAnnotation"));
         this.checkConditionEntityClass = Boolean.valueOf(properties.getProperty("checkConditionEntityClass"));
-        //默认值 true，所以要特殊判断
+        // 默认值 true，所以要特殊判断
         String useSimpleTypeStr = properties.getProperty("useSimpleType");
         if (StringKit.isNotEmpty(useSimpleTypeStr)) {
             this.useSimpleType = Boolean.valueOf(useSimpleTypeStr);
         }
         this.enumAsSimpleType = Boolean.valueOf(properties.getProperty("enumAsSimpleType"));
-        //注册新的基本类型，以逗号隔开，使用全限定类名
+        // 注册新的基本类型，以逗号隔开，使用全限定类名
         String simpleTypes = properties.getProperty("simpleTypes");
         if (StringKit.isNotEmpty(simpleTypes)) {
             SimpleType.registerSimpleType(simpleTypes);
         }
-        //使用 8 种基本类型
+        // 使用 8 种基本类型
         if (Boolean.valueOf(properties.getProperty("usePrimitiveType"))) {
             SimpleType.registerPrimitiveTypes();
         }
@@ -388,19 +389,19 @@ public class Config {
                 throw new InstrumentException(styleStr + "不是合法的Style值!");
             }
         } else {
-            //默认驼峰
+            // 默认驼峰
             this.style = Style.camelhump;
         }
-        //处理关键字
+        // 处理关键字
         String wrapKeyword = properties.getProperty("wrapKeyword");
         if (StringKit.isNotEmpty(wrapKeyword)) {
             this.wrapKeyword = wrapKeyword;
         }
-        //安全删除
+        // 安全删除
         this.safeDelete = Boolean.valueOf(properties.getProperty("safeDelete"));
-        //安全更新
+        // 安全更新
         this.safeUpdate = Boolean.valueOf(properties.getProperty("safeUpdate"));
-        //是否设置 javaType，true 时如 {id, javaType=java.lang.Long}
+        // 是否设置 javaType，true 时如 {id, javaType=java.lang.Long}
         this.useJavaType = Boolean.valueOf(properties.getProperty("useJavaType"));
     }
 

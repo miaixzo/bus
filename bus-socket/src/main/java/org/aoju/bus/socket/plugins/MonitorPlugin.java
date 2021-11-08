@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.plugins;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.AioSession;
 import org.aoju.bus.socket.QuickTimer;
@@ -37,7 +38,7 @@ import java.util.concurrent.atomic.LongAdder;
  * 服务器运行状态监控插件
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
@@ -138,8 +139,8 @@ public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
         onlineCount += connectCount - disConnectCount;
         totalProcessMsgNum += curProcessMsgNum;
         totalConnect += connectCount;
-        Logger.info("\r\n-----" + seconds + "seconds ----\r\ninflow:\t\t" + curInFlow * 1.0 / (1024 * 1024) + "(MB)"
-                + "\r\noutflow:\t" + curOutFlow * 1.0 / (1024 * 1024) + "(MB)"
+        Logger.info("\r\n-----" + seconds + "seconds ----\r\ninflow:\t\t" + curInFlow * 1.0 / (Normal._1024 * Normal._1024) + "(MB)"
+                + "\r\noutflow:\t" + curOutFlow * 1.0 / (Normal._1024 * Normal._1024) + "(MB)"
                 + "\r\nprocess fail:\t" + curDiscardNum
                 + "\r\nprocess count:\t" + curProcessMsgNum
                 + "\r\nprocess total:\t" + totalProcessMsgNum
@@ -149,7 +150,7 @@ public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
                 + "\r\nonline count:\t" + onlineCount
                 + "\r\nconnected total:\t" + totalConnect
                 + "\r\nRequests/sec:\t" + curProcessMsgNum * 1.0 / seconds
-                + "\r\nTransfer/sec:\t" + (curInFlow * 1.0 / (1024 * 1024) / seconds) + "(MB)");
+                + "\r\nTransfer/sec:\t" + (curInFlow * 1.0 / (Normal._1024 * Normal._1024) / seconds) + "(MB)");
     }
 
     private long getAndReset(LongAdder longAdder) {

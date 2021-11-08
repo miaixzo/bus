@@ -28,6 +28,7 @@ package org.aoju.bus.setting;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -49,7 +50,7 @@ import java.util.function.Supplier;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Readers {
@@ -360,7 +361,7 @@ public class Readers {
      * @see #defaultFormat(java.io.Reader, int)
      */
     protected IniSetting defaultFormat(java.io.Reader reader) throws IOException {
-        return defaultFormat(reader, 16);
+        return defaultFormat(reader, Normal._16);
     }
 
     /**

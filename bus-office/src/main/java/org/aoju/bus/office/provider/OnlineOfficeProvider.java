@@ -38,7 +38,7 @@ import org.aoju.bus.office.metric.OfficeManager;
  * 按预期工作,它必须与在线office管理器一起使用.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class OnlineOfficeProvider extends AbstractProvider {

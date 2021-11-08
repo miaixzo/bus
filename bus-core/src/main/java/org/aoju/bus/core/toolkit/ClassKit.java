@@ -64,7 +64,7 @@ import java.util.jar.Manifest;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ClassKit {
@@ -90,7 +90,7 @@ public class ClassKit {
     private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
 
     static {
-        List<Class<?>> primitiveTypes = new ArrayList<>(32);
+        List<Class<?>> primitiveTypes = new ArrayList<>(Normal._32);
         // 加入原始类型
         primitiveTypes.addAll(BasicType.PRIMITIVE_WRAPPER_MAP.keySet());
         // 加入原始类型数组类型

@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
  * 封装字段和方法，统一调用某些方法
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class EntityField {
@@ -173,4 +173,5 @@ public class EntityField {
     public String getName() {
         return name;
     }
+
 }

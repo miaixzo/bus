@@ -40,14 +40,14 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class SAXWriter implements ImageInputHandler {
 
     private static final String NAMESPACE = "http://dicom.nema.org/PS3.19/models/NativeDICOM";
-    private static final int BASE64_CHUNK_LENGTH = 256 * 3;
-    private static final int BUFFER_LENGTH = 256 * 4;
+    private static final int BASE64_CHUNK_LENGTH = Normal._256 * 3;
+    private static final int BUFFER_LENGTH = Normal._256 * 4;
     private final ContentHandler ch;
     private final AttributesImpl atts = new AttributesImpl();
     private final char[] buffer = new char[BUFFER_LENGTH];

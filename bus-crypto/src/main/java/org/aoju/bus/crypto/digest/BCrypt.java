@@ -37,7 +37,7 @@ import java.security.SecureRandom;
  * 它的口令必须是8至56个字符,并将在内部被转化为448位的密钥
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class BCrypt {
@@ -318,8 +318,8 @@ public class BCrypt {
     };
 
     private static final int GENSALT_DEFAULT_LOG2_ROUNDS = 10;
-    private static final int BCRYPT_SALT_LEN = 16;
-    private static final int BLOWFISH_NUM_ROUNDS = 16;
+    private static final int BCRYPT_SALT_LEN = Normal._16;
+    private static final int BLOWFISH_NUM_ROUNDS = Normal._16;
 
     private int P[];
     private int S[];
@@ -620,7 +620,7 @@ public class BCrypt {
         ret = new byte[clen * 4];
         for (i = 0, j = 0; i < clen; i++) {
             ret[j++] = (byte) ((cdata[i] >> 24) & 0xff);
-            ret[j++] = (byte) ((cdata[i] >> 16) & 0xff);
+            ret[j++] = (byte) ((cdata[i] >> Normal._16) & 0xff);
             ret[j++] = (byte) ((cdata[i] >> 8) & 0xff);
             ret[j++] = (byte) (cdata[i] & 0xff);
         }
@@ -698,13 +698,13 @@ public class BCrypt {
         l ^= P[0];
         for (i = 0; i <= BLOWFISH_NUM_ROUNDS - 2; ) {
             n = S[(l >> 24) & 0xff];
-            n += S[0x100 | ((l >> 16) & 0xff)];
+            n += S[0x100 | ((l >> Normal._16) & 0xff)];
             n ^= S[0x200 | ((l >> 8) & 0xff)];
             n += S[0x300 | (l & 0xff)];
             r ^= n ^ P[++i];
 
             n = S[(r >> 24) & 0xff];
-            n += S[0x100 | ((r >> 16) & 0xff)];
+            n += S[0x100 | ((r >> Normal._16) & 0xff)];
             n ^= S[0x200 | ((r >> 8) & 0xff)];
             n += S[0x300 | (r & 0xff)];
             l ^= n ^ P[++i];

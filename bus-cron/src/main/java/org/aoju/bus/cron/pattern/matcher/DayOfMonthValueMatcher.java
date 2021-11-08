@@ -26,6 +26,7 @@
 package org.aoju.bus.cron.pattern.matcher;
 
 import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.Normal;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ import java.util.List;
  * 考虑每月的天数不同,切存在闰年情况,日匹配单独使用
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
@@ -74,7 +75,7 @@ public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
      */
     public boolean match(int value, int month, boolean isLeapYear) {
         return (super.match(value)
-                || (value > 27 && match(32) && isLastDayOfMonth(value, month, isLeapYear)));
+                || (value > 27 && match(Normal._32) && isLastDayOfMonth(value, month, isLeapYear)));
     }
 
 }

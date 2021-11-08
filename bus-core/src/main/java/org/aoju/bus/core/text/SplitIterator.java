@@ -41,7 +41,7 @@ import java.util.function.Function;
  * 此迭代器非线程安全
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class SplitIterator extends ComputeIterator<String> implements Serializable {
@@ -78,7 +78,7 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
      *
      * @param text            文本
      * @param separatorFinder 分隔符匹配器
-     * @param limit           限制数量
+     * @param limit           限制数量，小于等于0表示无限制
      * @param ignoreEmpty     是否忽略
      */
     public SplitIterator(CharSequence text, TextFinder separatorFinder, int limit, boolean ignoreEmpty) {

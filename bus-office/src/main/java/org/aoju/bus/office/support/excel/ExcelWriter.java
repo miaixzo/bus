@@ -28,6 +28,7 @@ package org.aoju.bus.office.support.excel;
 import org.aoju.bus.core.lang.Align;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
@@ -57,7 +58,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -473,7 +474,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         if (columnIndex < 0) {
             this.sheet.setDefaultColumnWidth(width);
         } else {
-            this.sheet.setColumnWidth(columnIndex, width * 256);
+            this.sheet.setColumnWidth(columnIndex, width * Normal._256);
         }
         return this;
     }

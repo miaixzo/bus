@@ -38,7 +38,7 @@ import java.util.Map;
  * Utility to query Process Information performance counter
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -50,7 +50,7 @@ public final class ProcessInformation {
             + " WHERE NOT Name LIKE \"%_Total\"";
 
     private ProcessInformation() {
-        
+
     }
 
     /**

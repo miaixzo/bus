@@ -26,6 +26,7 @@
 package org.aoju.bus.core.text;
 
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -36,7 +37,7 @@ import java.util.Arrays;
  * 如果这些还不够,您可以子类化并实现自己的匹配器
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public abstract class Matchers {
@@ -390,7 +391,7 @@ public abstract class Matchers {
          */
         @Override
         public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
-            return buffer[pos] <= 32 ? 1 : 0;
+            return buffer[pos] <= Normal._32 ? 1 : 0;
         }
     }
 

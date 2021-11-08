@@ -26,6 +26,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.collection.ComputeIterator;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.TextBuilder;
@@ -44,7 +45,7 @@ import java.util.*;
  * CSV行解析器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public final class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
@@ -58,7 +59,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     /**
      * 当前读取字段
      */
-    private final TextBuilder currentField = new TextBuilder(512);
+    private final TextBuilder currentField = new TextBuilder(Normal._512);
     /**
      * 前一个特殊分界字符
      */
