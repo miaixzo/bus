@@ -42,7 +42,7 @@ public class TiledProcessor {
         for (int i = 0; i < numberOfTimes; i++) {
             sourceImage = destImage.clone();
             // Imgproc.blur(sourceImage, destImage, new Size(3.0, 3.0));
-            process(sourceImage, destImage,  Normal._256);
+            process(sourceImage, destImage, Normal._256);
         }
         return destImage;
     }

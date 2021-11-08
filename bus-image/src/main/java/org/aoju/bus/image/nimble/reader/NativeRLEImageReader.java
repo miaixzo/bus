@@ -264,7 +264,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
                 if (n >= 0) {
                     read(data, pos, ++n);
                     pos += n;
-                } else if (n != - Normal._128) {
+                } else if (n != -Normal._128) {
                     end = pos + 1 - n;
                     val = nextByte();
                     while (pos < end)
@@ -309,7 +309,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
                 if (n >= 0) {
                     read(data, pos, ++n, shift);
                     pos += n;
-                } else if (n != - Normal._128) {
+                } else if (n != -Normal._128) {
                     end = pos + 1 - n;
                     val = (nextByte() & 0xff) << shift;
                     while (pos < end)

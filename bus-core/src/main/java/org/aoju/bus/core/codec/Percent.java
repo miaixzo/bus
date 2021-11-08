@@ -52,6 +52,33 @@ import java.util.BitSet;
 public class Percent implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * 存放安全编码
+     */
+    private final BitSet safeCharacters;
+    /**
+     * 是否编码空格为+
+     * 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
+     * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
+     */
+    private boolean encodeSpaceAsPlus = false;
+
+    /**
+     * 构造
+     * [a-zA-Z0-9]默认不被编码
+     */
+    public Percent() {
+        this(new BitSet(Normal._256));
+    }
+
+    /**
+     * 构造
+     *
+     * @param safeCharacters 安全字符，安全字符不被编码
+     */
+    public Percent(BitSet safeCharacters) {
+        this.safeCharacters = safeCharacters;
+    }
 
     /**
      * 从已知Percent创建Percent，会复制给定Percent的安全字符
@@ -76,34 +103,6 @@ public class Percent implements Serializable {
             codec.addSafe(chars.charAt(i));
         }
         return codec;
-    }
-
-    /**
-     * 存放安全编码
-     */
-    private final BitSet safeCharacters;
-    /**
-     * 是否编码空格为+
-     * 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
-     * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
-     */
-    private boolean encodeSpaceAsPlus = false;
-
-    /**
-     * 构造
-     * [a-zA-Z0-9]默认不被编码
-     */
-    public Percent() {
-        this(new BitSet( Normal._256));
-    }
-
-    /**
-     * 构造
-     *
-     * @param safeCharacters 安全字符，安全字符不被编码
-     */
-    public Percent(BitSet safeCharacters) {
-        this.safeCharacters = safeCharacters;
     }
 
     /**

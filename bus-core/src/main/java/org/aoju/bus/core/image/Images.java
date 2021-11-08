@@ -33,8 +33,8 @@ import org.aoju.bus.core.image.painter.Painter;
 import org.aoju.bus.core.image.painter.PainterFactory;
 import org.aoju.bus.core.image.painter.TextPainter;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.Graphics;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
@@ -422,8 +422,8 @@ public class Images implements Serializable {
 
         int divsum = (div + 1) >> 1;
         divsum *= divsum;
-        int dv[] = new int[ Normal._256 * divsum];
-        for (i = 0; i <  Normal._256 * divsum; i++) {
+        int dv[] = new int[Normal._256 * divsum];
+        for (i = 0; i < Normal._256 * divsum; i++) {
             dv[i] = (i / divsum);
         }
 

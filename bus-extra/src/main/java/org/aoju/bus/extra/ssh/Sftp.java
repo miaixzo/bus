@@ -530,7 +530,7 @@ public class Sftp extends AbstractFtp {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * 下载文件到{@link OutputStream}中
      *

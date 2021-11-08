@@ -395,7 +395,7 @@ public class HashKit {
             return 0;
         }
 
-        if (iLength <=  Normal._256) {
+        if (iLength <= Normal._256) {
             hash = 16777216L * (iLength - 1);
         } else {
             hash = 4278190080L;

@@ -51,10 +51,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     int SOCKINFO_IN = 1;
     int SOCKINFO_TCP = 2;
 
-    int UTX_USERSIZE =  Normal._256;
+    int UTX_USERSIZE = Normal._256;
     int UTX_LINESIZE = Normal._32;
     int UTX_IDSIZE = 4;
-    int UTX_HOSTSIZE =  Normal._256;
+    int UTX_HOSTSIZE = Normal._256;
 
     int AF_INET = 2; // The Internet Protocol version 4 (IPv4) address family.
     int AF_INET6 = 30; // The Internet Protocol version 6 (IPv6) address family.

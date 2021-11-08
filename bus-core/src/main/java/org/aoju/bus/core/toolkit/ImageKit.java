@@ -1813,7 +1813,7 @@ public class ImageKit {
         if (null == random) {
             random = RandomKit.getRandom();
         }
-        return new Color(random.nextInt( Normal._256), random.nextInt( Normal._256), random.nextInt( Normal._256));
+        return new Color(random.nextInt(Normal._256), random.nextInt(Normal._256), random.nextInt(Normal._256));
     }
 
     /**

@@ -240,7 +240,7 @@ public final class DistinguishedNameParser {
         int res = getByte(pos);
         pos++; //FIXME tmp
 
-        if (res <  Normal._128) {
+        if (res < Normal._128) {
             return (char) res;
         } else if (res >= 192 && res <= 247) {
 

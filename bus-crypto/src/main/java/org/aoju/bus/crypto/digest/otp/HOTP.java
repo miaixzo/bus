@@ -102,7 +102,7 @@ public class HOTP {
      * @return 共享密钥
      */
     public static String generateSecretKey(int numBytes) {
-        return Base32.encode(RandomKit.getSecureRandom(RandomKit.randomBytes( Normal._256)).generateSeed(numBytes));
+        return Base32.encode(RandomKit.getSecureRandom(RandomKit.randomBytes(Normal._256)).generateSeed(numBytes));
     }
 
     /**

@@ -167,16 +167,6 @@ public class Paginating<T> extends Serialize<T> {
         return new Paginating<T>(list, navigatePages);
     }
 
-    public void calcByNavigatePages(int navigatePages) {
-        setNavigatePages(navigatePages);
-        // 计算导航页
-        calcnavigatepageNo();
-        // 计算前后页，第一页，最后一页
-        calcPage();
-        // 判断页面边界
-        judgePageBoudary();
-    }
-
     /**
      * 返回一个空的 Pageinfo 对象
      *
@@ -185,6 +175,16 @@ public class Paginating<T> extends Serialize<T> {
      */
     public static <T> Paginating<T> emptyPageInfo() {
         return new Paginating(Collections.emptyList(), 0);
+    }
+
+    public void calcByNavigatePages(int navigatePages) {
+        setNavigatePages(navigatePages);
+        // 计算导航页
+        calcnavigatepageNo();
+        // 计算前后页，第一页，最后一页
+        calcPage();
+        // 判断页面边界
+        judgePageBoudary();
     }
 
     /**

@@ -1349,7 +1349,7 @@ public class ByteKit {
         if (data >= 0) {
             return data;
         }
-        return  Normal._256 + data;
+        return Normal._256 + data;
     }
 
     /**

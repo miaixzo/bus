@@ -71,7 +71,7 @@ public class GifEncoder {
     protected byte[] indexedPixels; // converted frame indexed to palette
     protected int colorDepth; // number of bit planes
     protected byte[] colorTab; // RGB palette
-    protected boolean[] usedEntry = new boolean[ Normal._256]; // active palette entries
+    protected boolean[] usedEntry = new boolean[Normal._256]; // active palette entries
     protected int palSize = 7; // color table size (bits-1)
     protected int dispose = -1; // disposal code (-1 = use default)
     protected boolean closeStream = false; // close stream when finished
@@ -386,7 +386,7 @@ public class GifEncoder {
         int g = c.getGreen();
         int b = c.getBlue();
         int minpos = 0;
-        int dmin =  Normal._256 *  Normal._256 *  Normal._256;
+        int dmin = Normal._256 * Normal._256 * Normal._256;
         int len = colorTab.length;
         for (int i = 0; i < len; ) {
             int dr = r - (colorTab[i++] & 0xff);
@@ -566,7 +566,7 @@ public class GifEncoder {
      */
     protected void writePalette() throws IOException {
         out.write(colorTab, 0, colorTab.length);
-        int n = (3 *  Normal._256) - colorTab.length;
+        int n = (3 * Normal._256) - colorTab.length;
         for (int i = 0; i < n; i++) {
             out.write(0);
         }
@@ -697,7 +697,7 @@ public class GifEncoder {
         // Number of characters so far in this 'packet'
         int a_count;
         // Define the storage for the packet accumulator
-        byte[] accum = new byte[ Normal._256];
+        byte[] accum = new byte[Normal._256];
         private int remaining;
         private int curPixel;
 

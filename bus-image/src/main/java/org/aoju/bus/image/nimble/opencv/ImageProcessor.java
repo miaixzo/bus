@@ -59,7 +59,7 @@ public class ImageProcessor {
             lutMat = new Mat();
             List<Mat> luts = new ArrayList<>(lutCh);
             for (int i = 0; i < lutCh; i++) {
-                Mat l = new Mat(1,  Normal._256, CvType.CV_8U);
+                Mat l = new Mat(1, Normal._256, CvType.CV_8U);
                 l.put(0, 0, lut[i]);
                 luts.add(l);
             }
@@ -68,7 +68,7 @@ public class ImageProcessor {
                 Imgproc.cvtColor(srcImg.clone(), srcImg, Imgproc.COLOR_GRAY2BGR);
             }
         } else {
-            lutMat = new Mat(1,  Normal._256, CvType.CV_8UC1);
+            lutMat = new Mat(1, Normal._256, CvType.CV_8UC1);
             lutMat.put(0, 0, lut[0]);
         }
 
@@ -677,7 +677,7 @@ public class ImageProcessor {
         for (int i = 0; i < numberOfTimes; i++) {
             sourceImage = destImage.clone();
             // Imgproc.blur(sourceImage, destImage, new Size(3.0, 3.0));
-            process(sourceImage, destImage,  Normal._256);
+            process(sourceImage, destImage, Normal._256);
         }
         return destImage;
     }

@@ -50,7 +50,7 @@ public final class ProcessInformation {
             + " WHERE NOT Name LIKE \"%_Total\"";
 
     private ProcessInformation() {
-        
+
     }
 
     /**

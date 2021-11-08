@@ -802,9 +802,9 @@ public class ImageInputStream extends FilterInputStream
         mark(132);
         int rlen = StreamKit.readAvailable(this, b132, 0, 132);
         if (rlen == 132) {
-            if (b132[ Normal._128] == 'D' && b132[129] == 'I' && b132[130] == 'C' && b132[131] == 'M') {
-                preamble = new byte[ Normal._128];
-                System.arraycopy(b132, 0, preamble, 0,  Normal._128);
+            if (b132[Normal._128] == 'D' && b132[129] == 'I' && b132[130] == 'C' && b132[131] == 'M') {
+                preamble = new byte[Normal._128];
+                System.arraycopy(b132, 0, preamble, 0, Normal._128);
                 if (!markSupported()) {
                     hasfmi = true;
                     tsuid = UID.ExplicitVRLittleEndian;

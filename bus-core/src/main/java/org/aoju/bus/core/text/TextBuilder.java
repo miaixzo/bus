@@ -45,12 +45,11 @@ import java.util.Objects;
  */
 public class TextBuilder implements CharSequence, Appendable, Builder<String> {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 默认容量
      */
     public static final int CAPACITY = Normal._16;
+    private static final long serialVersionUID = 1L;
     /**
      * 存放的字符数组
      */

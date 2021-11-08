@@ -87,7 +87,7 @@ public class HL72Xml {
 
     public void parse(InputStream is) throws IOException,
             TransformerConfigurationException, SAXException {
-        byte[] buf = new byte[ Normal._256];
+        byte[] buf = new byte[Normal._256];
         int len = is.read(buf);
         HL7Segment msh = HL7Segment.parseMSH(buf, buf.length);
         String charsetName = HL7Charset.toCharsetName(msh.getField(17, charset));

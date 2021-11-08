@@ -55,7 +55,7 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();
         Memory m = BsdSysctlKit.sysctl("net.inet.tcp.stats");
-        if (null != m && m.size() >=  Normal._128) {
+        if (null != m && m.size() >= Normal._128) {
             ft.tcps_connattempt = m.getInt(0);
             ft.tcps_accepts = m.getInt(4);
             ft.tcps_drops = m.getInt(12);

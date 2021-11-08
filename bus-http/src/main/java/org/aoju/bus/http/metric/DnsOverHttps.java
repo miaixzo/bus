@@ -99,7 +99,7 @@ public class DnsOverHttps implements DnsX {
         Buffer buf = new Buffer();
 
         buf.writeShort(0);
-        buf.writeShort( Normal._256);
+        buf.writeShort(Normal._256);
         buf.writeShort(1);
         buf.writeShort(0);
         buf.writeShort(0);

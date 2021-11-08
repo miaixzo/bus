@@ -714,7 +714,7 @@ public class PrivacyReplacer implements Replacer<Object>, Serializable {
         if (priorVariables.contains(varName) == false) {
             return;
         }
-        final TextBuilder buf = new TextBuilder( Normal._256);
+        final TextBuilder buf = new TextBuilder(Normal._256);
         buf.append("Infinite loop in property interpolation of ");
         buf.append(priorVariables.remove(0));
         buf.append(": ");

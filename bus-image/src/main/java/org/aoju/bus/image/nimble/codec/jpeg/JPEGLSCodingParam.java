@@ -52,7 +52,7 @@ public class JPEGLSCodingParam {
 
     private static JPEGLSCodingParam getDefaultJPEGLSEncodingParam(
             int maxVal, int clampedMaxVal, int near) {
-        int factor = (clampedMaxVal +  Normal._128) >> 8;
+        int factor = (clampedMaxVal + Normal._128) >> 8;
         int t1 = factor + 2 + 3 * near;
         if (t1 > maxVal || t1 < near + 1)
             t1 = near + 1;

@@ -474,7 +474,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         if (columnIndex < 0) {
             this.sheet.setDefaultColumnWidth(width);
         } else {
-            this.sheet.setColumnWidth(columnIndex, width *  Normal._256);
+            this.sheet.setColumnWidth(columnIndex, width * Normal._256);
         }
         return this;
     }

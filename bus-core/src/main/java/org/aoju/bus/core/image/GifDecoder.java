@@ -96,7 +96,7 @@ public class GifDecoder {
     protected Rectangle lastRect; // last image rect
     protected BufferedImage image; // current frame
     protected BufferedImage lastImage; // previous frame
-    protected byte[] block = new byte[ Normal._256]; // current data block
+    protected byte[] block = new byte[Normal._256]; // current data block
     protected int blockSize = 0; // block size
     // last graphic control extension info
     protected int dispose = 0;
@@ -564,7 +564,7 @@ public class GifDecoder {
         if (n < nbytes) {
             status = STATUS_FORMAT_ERROR;
         } else {
-            tab = new int[ Normal._256]; // max size to avoid bounds checks
+            tab = new int[Normal._256]; // max size to avoid bounds checks
             int i = 0;
             int j = 0;
             while (i < ncolors) {

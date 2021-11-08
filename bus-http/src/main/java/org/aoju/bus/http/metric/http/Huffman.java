@@ -238,7 +238,7 @@ public class Huffman {
         final int terminalBits;
 
         Node() {
-            this.children = new Node[ Normal._256];
+            this.children = new Node[Normal._256];
             this.symbol = 0;
             this.terminalBits = 0;
         }

@@ -45,7 +45,7 @@ public class ImageOutputStream extends FilterOutputStream {
 
     private static final byte[] DICM = {'D', 'I', 'C', 'M'};
     private final byte[] buf = new byte[12];
-    private byte[] preamble = new byte[ Normal._128];
+    private byte[] preamble = new byte[Normal._128];
     private boolean explicitVR;
     private boolean bigEndian;
     private boolean deflated;
@@ -62,7 +62,7 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public final void setPreamble(byte[] preamble) {
-        if (preamble.length !=  Normal._128)
+        if (preamble.length != Normal._128)
             throw new IllegalArgumentException(
                     "preamble.length=" + preamble.length);
         this.preamble = preamble.clone();

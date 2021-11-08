@@ -64,12 +64,12 @@ public final class Xrandr {
                 sb = new StringBuilder();
             } else if (null != sb) {
                 sb.append(s.trim());
-                if (sb.length() <  Normal._256) {
+                if (sb.length() < Normal._256) {
                     continue;
                 }
                 String edidStr = sb.toString();
                 byte[] edid = Builder.hexStringToByteArray(edidStr);
-                if (edid.length >=  Normal._128) {
+                if (edid.length >= Normal._128) {
                     displays.add(edid);
                 }
                 sb = null;

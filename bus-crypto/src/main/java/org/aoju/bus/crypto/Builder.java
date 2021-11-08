@@ -1881,7 +1881,7 @@ public class Builder {
         final KeyGenerator keyGenerator = getKeyGenerator(algorithm);
         if (keySize <= 0 && Algorithm.AES.getValue().equals(algorithm)) {
             // 对于AES的密钥，除非指定，否则强制使用128位
-            keySize =  Normal._128;
+            keySize = Normal._128;
         }
 
         if (keySize > 0) {
@@ -2132,7 +2132,7 @@ public class Builder {
         int keySize = DEFAULT_KEY_SIZE;
         if ("ECIES".equalsIgnoreCase(algorithm)) {
             // ECIES算法对KEY的长度有要求，此处默认256
-            keySize =  Normal._256;
+            keySize = Normal._256;
         }
 
         return generateKeyPair(algorithm, keySize);
@@ -2240,7 +2240,7 @@ public class Builder {
             // key长度适配修正
             if ("EC".equalsIgnoreCase(algorithm) && keySize > 256) {
                 // 对于EC（EllipticCurve）算法，密钥长度有限制，在此使用默认256
-                keySize =  Normal._256;
+                keySize = Normal._256;
             }
             if (null != random) {
                 keyPairGen.initialize(keySize, random);

@@ -79,7 +79,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getDomainName() {
-        char[] buffer = new char[ Normal._256];
+        char[] buffer = new char[Normal._256];
         IntByReference bufferSize = new IntByReference(buffer.length);
         if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
             Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());

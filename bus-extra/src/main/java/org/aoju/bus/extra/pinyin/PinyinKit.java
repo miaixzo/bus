@@ -121,9 +121,9 @@ public class PinyinKit {
                 break;
             case 2:
                 // 中文字符
-                int hightByte =  Normal._256 + bytes[0];
-                int lowByte =  Normal._256 + bytes[1];
-                asc = ( Normal._256 * hightByte + lowByte) -  Normal._256 *  Normal._256;
+                int hightByte = Normal._256 + bytes[0];
+                int lowByte = Normal._256 + bytes[1];
+                asc = (Normal._256 * hightByte + lowByte) - Normal._256 * Normal._256;
                 break;
             default:
                 throw new InstrumentException("Illegal resource string");

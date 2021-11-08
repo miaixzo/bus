@@ -40,6 +40,13 @@ import java.util.*;
 public class Buddhist {
 
     public static final int DEAD_YEAR = -543;
+    /**
+     * 观音斋日期
+     */
+    public static final String[] DAY_ZHAI_GUAN_YIN = {
+            "1-8", "2-7", "2-9", "2-19", "3-3", "3-6", "3-13", "4-22", "5-3", "5-17",
+            "6-16", "6-18", "6-19", "6-23", "7-13", "8-16", "9-19", "9-23", "10-2", "11-19", "11-24", "12-25"
+    };
     private static final String DJ = "犯者夺纪";
     private static final String JS = "犯者减寿";
     private static final String SS = "犯者损寿";
@@ -56,13 +63,6 @@ public class Buddhist {
     private static final Festival R = new Festival("人神在阴", "犯者得病", true, "宜先一日即戒");
     private static final Festival M = new Festival("司命奏事", JS, true, "如月小，即戒廿九");
     private static final Festival HH = new Festival("月晦", JS, true, "如月小，即戒廿九");
-    /**
-     * 观音斋日期
-     */
-    public static final String[] DAY_ZHAI_GUAN_YIN = {
-            "1-8", "2-7", "2-9", "2-19", "3-3", "3-6", "3-13", "4-22", "5-3", "5-17",
-            "6-16", "6-18", "6-19", "6-23", "7-13", "8-16", "9-19", "9-23", "10-2", "11-19", "11-24", "12-25"
-    };
     /**
      * 因果犯忌
      */

@@ -963,7 +963,7 @@ public class UriKit {
         boolean changed = false;
         for (byte b : bytes) {
             if (b < 0) {
-                b +=  Normal._256;
+                b += Normal._256;
             }
             if (type.isAllowed(b)) {
                 bos.write(b);

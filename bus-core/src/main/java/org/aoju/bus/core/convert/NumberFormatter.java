@@ -93,7 +93,7 @@ public class NumberFormatter {
      * @return 中文
      */
     public static String format(double amount, boolean isUseTraditional, boolean isMoneyMode) {
-        if(0 == amount){
+        if (0 == amount) {
             return "零";
         }
         Assert.checkBetween(amount, -99_9999_9999_9999.99, 99_9999_9999_9999.99,
@@ -114,44 +114,44 @@ public class NumberFormatter {
         yuan = yuan / 10;
 
         // 元
-        if(false == isMoneyMode || 0 != yuan){
+        if (false == isMoneyMode || 0 != yuan) {
             // 金额模式下，无需“零元”
             chineseStr.append(toChinese(yuan, isUseTraditional));
-            if(isMoneyMode){
+            if (isMoneyMode) {
                 chineseStr.append("元");
             }
         }
 
-        if(0 == jiao && 0 == fen){
+        if (0 == jiao && 0 == fen) {
             // 无小数部分的金额结尾
-            if(isMoneyMode){
+            if (isMoneyMode) {
                 chineseStr.append("整");
             }
             return chineseStr.toString();
         }
 
         // 小数部分
-        if(false == isMoneyMode){
+        if (false == isMoneyMode) {
             chineseStr.append("点");
         }
 
         // 角
-        if(0 == yuan && 0 == jiao){
+        if (0 == yuan && 0 == jiao) {
             // 元和角都为0时，只有非金额模式下补“零”
-            if(false == isMoneyMode){
+            if (false == isMoneyMode) {
                 chineseStr.append("零");
             }
-        }else{
+        } else {
             chineseStr.append(numberToChinese(jiao, isUseTraditional));
-            if(isMoneyMode && 0 != jiao){
+            if (isMoneyMode && 0 != jiao) {
                 chineseStr.append("角");
             }
         }
 
         // 分
-        if(0 != fen){
+        if (0 != fen) {
             chineseStr.append(numberToChinese(fen, isUseTraditional));
-            if(isMoneyMode){
+            if (isMoneyMode) {
                 chineseStr.append("分");
             }
         }

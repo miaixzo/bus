@@ -46,7 +46,7 @@ public interface FreeBsdLibc extends CLibrary {
     int UTX_USERSIZE = Normal._32;
     int UTX_LINESIZE = Normal._16;
     int UTX_IDSIZE = 8;
-    int UTX_HOSTSIZE =  Normal._128;
+    int UTX_HOSTSIZE = Normal._128;
     /**
      * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
      */

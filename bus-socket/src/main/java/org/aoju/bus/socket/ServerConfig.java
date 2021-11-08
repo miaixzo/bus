@@ -48,7 +48,7 @@ public class ServerConfig<T> {
     /**
      * 内存块大小限制
      */
-    private int writeBufferSize =  Normal._128;
+    private int writeBufferSize = Normal._128;
     /**
      * Write缓存区容量
      */

@@ -99,7 +99,7 @@ public class NanoId {
             alphabet = DEFAULT_ALPHABET;
         }
 
-        if (alphabet.length == 0 || alphabet.length >=  Normal._256) {
+        if (alphabet.length == 0 || alphabet.length >= Normal._256) {
             throw new IllegalArgumentException("Alphabet must contain between 1 and 255 symbols.");
         }
 

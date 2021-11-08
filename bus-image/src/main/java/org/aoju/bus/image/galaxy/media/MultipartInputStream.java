@@ -208,7 +208,7 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     private static final class Field {
-        byte[] buffer = new byte[ Normal._256];
+        byte[] buffer = new byte[Normal._256];
         int length;
 
         void reset() {

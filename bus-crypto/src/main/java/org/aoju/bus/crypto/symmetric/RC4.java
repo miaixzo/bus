@@ -52,7 +52,7 @@ public class RC4 implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int SBOX_LENGTH =  Normal._256;
+    private static final int SBOX_LENGTH = Normal._256;
     /**
      * 密钥最小长度
      */

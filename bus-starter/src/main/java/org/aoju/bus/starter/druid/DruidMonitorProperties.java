@@ -75,5 +75,5 @@ public class DruidMonitorProperties {
      * 添加不需要忽略的格式信息
      */
     private String exclusions;
-    
+
 }

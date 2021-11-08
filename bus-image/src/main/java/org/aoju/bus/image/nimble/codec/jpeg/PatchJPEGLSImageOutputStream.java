@@ -52,7 +52,7 @@ public class PatchJPEGLSImageOutputStream extends ImageOutputStreamImpl {
         super.flushedPos = ios.getFlushedPosition();
         this.ios = ios;
         this.patchJpegLS = patchJpegLS;
-        this.jpegheader = null != patchJpegLS ? new byte[ Normal._256] : null;
+        this.jpegheader = null != patchJpegLS ? new byte[Normal._256] : null;
     }
 
     public void write(byte[] b, int off, int len) throws IOException {

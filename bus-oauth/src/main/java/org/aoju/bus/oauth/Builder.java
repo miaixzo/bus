@@ -283,7 +283,7 @@ public class Builder {
             }
             // 128位随机字符串
             if (TOKEN_STYLE_RANDOM_128.equals(style)) {
-                return RandomKit.randomString( Normal._128);
+                return RandomKit.randomString(Normal._128);
             }
             // tik风格 (2_14_16)
             if (TOKEN_STYLE_RANDOM_TIK.equals(style)) {

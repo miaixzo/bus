@@ -69,7 +69,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat mt = new CLibrary.BsdTcpstat();
         Memory m = SysctlKit.sysctl("net.inet.tcp.stats");
-        if (null != m && m.size() >=  Normal._128) {
+        if (null != m && m.size() >= Normal._128) {
             mt.tcps_connattempt = m.getInt(0);
             mt.tcps_accepts = m.getInt(4);
             mt.tcps_drops = m.getInt(12);

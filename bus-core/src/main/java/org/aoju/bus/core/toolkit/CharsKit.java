@@ -710,11 +710,11 @@ public class CharsKit {
      * @return 字符串
      */
     public static String toString(char c) {
-        String[] CACHE = new String[ Normal._128];
-        for (char i = 0; i <  Normal._128; i++) {
+        String[] CACHE = new String[Normal._128];
+        for (char i = 0; i < Normal._128; i++) {
             CACHE[i] = String.valueOf(i);
         }
-        return c <  Normal._128 ? CACHE[c] : String.valueOf(c);
+        return c < Normal._128 ? CACHE[c] : String.valueOf(c);
     }
 
     /**
