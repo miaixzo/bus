@@ -33,7 +33,7 @@ import java.util.*;
  * 按照给定的排序规则淘汰末尾元素
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PriorityQueue<E> extends java.util.PriorityQueue<E> {

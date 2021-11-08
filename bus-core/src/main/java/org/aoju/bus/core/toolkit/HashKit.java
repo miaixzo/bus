@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Normal;
  * 推荐使用FNV1算法
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class HashKit {

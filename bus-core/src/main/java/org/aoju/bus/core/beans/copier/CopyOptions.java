@@ -44,7 +44,7 @@ import java.util.function.BiPredicate;
  * 3、忽略的属性列表,设置一个属性列表,不拷贝这些属性值
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CopyOptions implements Serializable {

@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  *
  * @param <T> 包裹里元素的类型
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @see java.util.Optional
  * @since JDK 1.8+
  */
@@ -97,6 +97,16 @@ public class Optional<T> {
      */
     public T get() {
         return value;
+    }
+
+    /**
+     * 以非静态方式获取一个新的 {@code Opt}
+     *
+     * @param value 值
+     * @return 新的 {@code Opt}
+     */
+    public Optional<T> set(T value) {
+        return ofNullable(value);
     }
 
     /**
@@ -199,8 +209,8 @@ public class Optional<T> {
      * 如果不存在，返回一个空的{@code Optional}
      * 和 {@link Optional#map}的区别为 传入的操作返回值必须为 Optional
      *
-     * @param mapper 值存在时执行的操作
      * @param <U>    操作返回值的类型
+     * @param mapper 值存在时执行的操作
      * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
      * 如果不存在，返回一个空的{@code Optional}
      * @throws NullPointerException 如果给定的操作为 {@code null}或者给定的操作执行结果为 {@code null}，抛出 {@code NPE}
@@ -210,8 +220,28 @@ public class Optional<T> {
         if (isEmpty()) {
             return empty();
         } else {
-            Optional<U> r = (Optional<U>) mapper.apply(value);
-            return Objects.requireNonNull(r);
+            return ofNullable(mapper.apply(value).orElse(null));
+        }
+    }
+
+    /**
+     * 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
+     * 如果不存在，返回一个空的{@code Opt}
+     * 和 {@link Optional#map}的区别为 传入的操作返回值必须为 {@link java.util.Optional}
+     *
+     * @param mapper 值存在时执行的操作
+     * @param <U>    操作返回值的类型
+     * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
+     * 如果不存在，返回一个空的{@code Opt}
+     * @throws NullPointerException 如果给定的操作为 {@code null}或者给定的操作执行结果为 {@code null}，抛出 {@code NPE}
+     */
+    public <U> Optional<U> flattedMap(Function<? super T, ? extends java.util.Optional<? extends U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (isEmpty()) {
+            return empty();
+        } else {
+            java.util.Optional<U> r = (java.util.Optional<U>) mapper.apply(value);
+            return Objects.requireNonNull(ofNullable(r.orElse(null)));
         }
     }
 
@@ -358,6 +388,15 @@ public class Optional<T> {
         } else {
             throw exceptionFunction.apply(message);
         }
+    }
+
+    /**
+     * 转换为 {@link java.util.Optional}对象
+     *
+     * @return {@link java.util.Optional}对象
+     */
+    public java.util.Optional<T> toOptional() {
+        return java.util.Optional.ofNullable(this.value);
     }
 
     /**

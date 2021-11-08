@@ -37,7 +37,7 @@ import org.apache.ibatis.mapping.SqlCommandType;
  * BaseDeleteMapper实现类，基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class BaseDeleteProvider extends MapperTemplate {

@@ -35,7 +35,7 @@ import java.lang.annotation.*;
  * 判断是否为日期
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @Documented

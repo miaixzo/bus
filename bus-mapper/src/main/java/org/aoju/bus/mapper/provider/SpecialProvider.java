@@ -39,7 +39,7 @@ import java.util.Set;
  * SpecialProvider实现类，特殊方法实现类
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class SpecialProvider extends MapperTemplate {

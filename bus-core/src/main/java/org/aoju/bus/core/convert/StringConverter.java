@@ -42,7 +42,7 @@ import java.util.TimeZone;
  * 字符串转换器
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class StringConverter extends AbstractConverter<String> {

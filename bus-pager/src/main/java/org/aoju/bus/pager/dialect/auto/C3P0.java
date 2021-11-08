@@ -32,7 +32,7 @@ import org.aoju.bus.pager.dialect.AbstractAutoDialect;
  * c3p0
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class C3P0 extends AbstractAutoDialect<ComboPooledDataSource> {

@@ -41,7 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 当调用{@link #execute(MadeInOffice)}函数时，池将使用第一个{@link OfficeProcessEntryManager}来执行给定的任务
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {

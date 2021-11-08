@@ -29,7 +29,7 @@ package org.aoju.bus.shade.beans;
  * 数据库时间类型 到 实体类时间类型 对应策略
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public enum DateType {

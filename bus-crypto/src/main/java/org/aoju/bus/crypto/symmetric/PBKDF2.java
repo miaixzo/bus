@@ -37,7 +37,7 @@ import javax.crypto.spec.PBEKeySpec;
  * 参考：https://blog.csdn.net/huoji555/article/details/83659687
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class PBKDF2 {

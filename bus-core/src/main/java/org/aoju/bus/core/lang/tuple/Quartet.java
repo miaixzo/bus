@@ -35,7 +35,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * @param <C> 第三个元素的类型
  * @param <D> 第四个元素的类型
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe

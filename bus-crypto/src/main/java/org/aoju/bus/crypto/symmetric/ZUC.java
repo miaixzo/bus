@@ -10,7 +10,7 @@ import javax.crypto.spec.IvParameterSpec;
  * 祖冲之算法集（ZUC算法）实现，基于BouncyCastle实现。
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class ZUC extends Crypto {

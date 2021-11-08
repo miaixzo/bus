@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe

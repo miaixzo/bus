@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
  * Represents a Thread/Task on the operating system.
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public interface OSThread {

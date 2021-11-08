@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Normal;
  * 快速缓冲,将数据存放在缓冲集中,取代以往的单一数组
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class FastByteBuffer {

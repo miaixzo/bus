@@ -12,7 +12,7 @@ import java.util.zip.ZipFile;
  * {@link javax.tools.JavaFileObject} 相关工具类封装
  *
  * @author Kimi Liu
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class JavaFileObject {

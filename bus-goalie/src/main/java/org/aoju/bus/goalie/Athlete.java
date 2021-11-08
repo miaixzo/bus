@@ -33,7 +33,7 @@ import reactor.netty.http.server.HttpServer;
  * 服务端
  *
  * @author Justubborn
- * @version 6.3.0
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class Athlete {
