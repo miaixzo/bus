@@ -23,36 +23,24 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.text;
+package org.aoju.bus.starter.annotation;
 
-import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.starter.elastic.ElasticConfiguration;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
- * ASCII字符对应的字符串缓存
+ * <p>@description 启用 ElasticSearch </p>
  *
- * @author Kimi Liu
+ * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @version 6.3.1
- * @since JDK 1.8+
+ * @since JDK1.8+
  */
-public class ASCIICache {
-
-    private static final String[] CACHE = new String[Normal._128];
-
-    static {
-        for (char c = 0; c < Normal._128; c++) {
-            CACHE[c] = String.valueOf(c);
-        }
-    }
-
-    /**
-     * 字符转为字符串
-     * 如果为ASCII字符，使用缓存
-     *
-     * @param c 字符
-     * @return 字符串
-     */
-    public static String toString(char c) {
-        return c < Normal._128 ? CACHE[c] : String.valueOf(c);
-    }
-
+@Inherited
+@Documented
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Import({ElasticConfiguration.class})
+public @interface EnableElastic {
 }

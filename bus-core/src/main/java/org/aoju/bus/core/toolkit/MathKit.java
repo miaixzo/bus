@@ -40,10 +40,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1273,12 +1270,13 @@ public class MathKit {
             throw new InstrumentException("Size is larger than range between begin and end!");
         }
 
-        Set<Integer> set = new HashSet<>(size, 1);
+        Random ran = new Random();
+        Set<Integer> set = new HashSet<>();
         while (set.size() < size) {
-            set.add(begin + RandomKit.randomInt(end - begin));
+            set.add(begin + ran.nextInt(end - begin));
         }
 
-        return set.toArray(new Integer[0]);
+        return set.toArray(new Integer[size]);
     }
 
     /**

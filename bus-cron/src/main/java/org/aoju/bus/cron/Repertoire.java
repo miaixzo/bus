@@ -26,7 +26,6 @@
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.cron.factory.CronTask;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
@@ -152,24 +151,21 @@ public class Repertoire {
      * 移除Task
      *
      * @param id Task的ID
-     * @return 是否成功移除，{@code false}表示未找到对应ID的任务
      */
-    public boolean remove(String id) {
+    public void remove(String id) {
         final Lock writeLock = lock.writeLock();
         writeLock.lock();
         try {
             final int index = ids.indexOf(id);
-            if (index < 0) {
-                return false;
+            if (index > -1) {
+                tasks.remove(index);
+                patterns.remove(index);
+                ids.remove(index);
+                size--;
             }
-            tasks.remove(index);
-            patterns.remove(index);
-            ids.remove(index);
-            size--;
         } finally {
             writeLock.unlock();
         }
-        return true;
     }
 
     /**
@@ -300,16 +296,6 @@ public class Repertoire {
                 scheduler.manager.spawnExecutor(new CronTask(ids.get(i), patterns.get(i), tasks.get(i)));
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder builder = StringKit.builder();
-        for (int i = 0; i < size; i++) {
-            builder.append(StringKit.format("[{}] [{}] [{}]\n",
-                    ids.get(i), patterns.get(i), tasks.get(i)));
-        }
-        return builder.toString();
     }
 
 }

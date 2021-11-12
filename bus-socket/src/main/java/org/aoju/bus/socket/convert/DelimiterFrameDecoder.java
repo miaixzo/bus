@@ -56,25 +56,11 @@ public class DelimiterFrameDecoder implements SocketDecoder {
      * 是否解析完成
      */
     private boolean finishRead;
-    /**
-     * 位置信息
-     */
-    private final int reposition;
-    /**
-     * 位置信息
-     */
+
     private int position;
 
     public DelimiterFrameDecoder(byte[] endFLag, int unitBufferSize) {
         this.endFLag = endFLag;
-        int p = 0;
-        for (int i = 1; i < endFLag.length; i++) {
-            if (endFLag[i] != endFLag[0]) {
-                p = i - 1;
-                break;
-            }
-        }
-        reposition = p;
         bufferList = new ArrayList<>();
         bufferList.add(ByteBuffer.allocate(unitBufferSize));
     }
@@ -100,9 +86,7 @@ public class DelimiterFrameDecoder implements SocketDecoder {
             byte data = byteBuffer.get();
             preBuffer.put(data);
             if (data != endFLag[exceptIndex]) {
-                if (exceptIndex != reposition + 1 || data != endFLag[reposition]) {
-                    exceptIndex = endFLag[0] == data ? 1 : 0;
-                }
+                exceptIndex = 0;
             } else if (++exceptIndex == endFLag.length) {
                 preBuffer.flip();
                 finishRead = true;

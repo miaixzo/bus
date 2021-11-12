@@ -50,6 +50,12 @@ import java.util.stream.Collectors;
 public class ArrayKit {
 
     /**
+     * 列表或数组中没有找到元素时的索引值 : {@code -1}.
+     * 此值由该类中的方法返回,也可用于与所返回的值进行比较{@link java.util.List}.
+     */
+    private static final int INDEX_NOT_FOUND = -1;
+
+    /**
      * 对象是否为数组对象
      *
      * @param obj 对象
@@ -675,7 +681,7 @@ public class ArrayKit {
             }
         }
 
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -2565,27 +2571,27 @@ public class ArrayKit {
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final Object[] array, final Object value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final Object[] array, final Object value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -2603,34 +2609,34 @@ public class ArrayKit {
                 }
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final Object[] array, final Object value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final Object[] array, final Object value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -2647,7 +2653,7 @@ public class ArrayKit {
                 }
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -2658,32 +2664,32 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final Object[] array, final Object value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final long[] array, final long value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final long[] array, final long value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -2693,34 +2699,34 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final long[] array, final long value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final long[] array, final long value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -2729,7 +2735,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -2740,31 +2746,31 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final long[] array, final long value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final int[] array, final int value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final int[] array, final int value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -2774,34 +2780,34 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final int[] array, final int value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final int[] array, final int value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -2810,7 +2816,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -2821,32 +2827,32 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final int[] array, final int value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final short[] array, final short value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final short[] array, final short value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -2856,34 +2862,34 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final short[] array, final short value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final short[] array, final short value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -2892,7 +2898,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -2903,32 +2909,32 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final short[] array, final short value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final char[] array, final char value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final char[] array, final char value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -2938,34 +2944,34 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final char[] array, final char value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final char[] array, final char value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -2974,7 +2980,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -2985,31 +2991,31 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final char[] array, final char value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final byte[] array, final byte value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final byte[] array, final byte value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -3019,34 +3025,34 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final byte[] array, final byte value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final byte[] array, final byte value, int index) {
         if (null == array) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -3055,7 +3061,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -3066,43 +3072,43 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final byte[] array, final byte value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final double[] array, final double value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array     数组
      * @param value     被检查的元素
      * @param tolerance 容差
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final double[] array, final double value, final double tolerance) {
         return indexOf(array, value, 0, tolerance);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final double[] array, final double value, int index) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -3112,21 +3118,21 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array     数组
      * @param value     被检查的元素
      * @param index     索引
      * @param tolerance 容差
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final double[] array, final double value, int index, final double tolerance) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -3138,46 +3144,46 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final double[] array, final double value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array     数组
      * @param value     被检查的元素
      * @param tolerance 容差
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final double[] array, final double value, final double tolerance) {
         return lastIndexOf(array, value, Integer.MAX_VALUE, tolerance);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final double[] array, final double value, int index) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -3186,24 +3192,24 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array     数组
      * @param value     被检查的元素
      * @param index     索引
      * @param tolerance 容差
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final double[] array, final double value, int index, final double tolerance) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -3214,7 +3220,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -3225,43 +3231,43 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final double[] array, final double value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array     数组
      * @param value     被检查的元素
      * @param tolerance 容差
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static boolean contains(final double[] array, final double value, final double tolerance) {
-        return indexOf(array, value, 0, tolerance) != Normal.__1;
+        return indexOf(array, value, 0, tolerance) != INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final float[] array, final float value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final float[] array, final float value, int index) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -3271,34 +3277,34 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final float[] array, final float value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final float[] array, final float value, int index) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -3307,7 +3313,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -3318,31 +3324,31 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final float[] array, final float value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final boolean[] array, final boolean value) {
         return indexOf(array, value, 0);
     }
 
     /**
-     * 返回数组中指定元素所在位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOf(final boolean[] array, final boolean value, int index) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
             index = 0;
@@ -3352,34 +3358,34 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final boolean[] array, final boolean value) {
         return lastIndexOf(array, value, Integer.MAX_VALUE);
     }
 
     /**
-     * 返回数组中指定元素所在最后的位置,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在最后的位置,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
      * @param index 索引
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int lastIndexOf(final boolean[] array, final boolean value, int index) {
         if (isEmpty(array)) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         if (index < 0) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         } else if (index >= array.length) {
             index = array.length - 1;
         }
@@ -3388,7 +3394,7 @@ public class ArrayKit {
                 return i;
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -3399,7 +3405,7 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean contains(final boolean[] array, final boolean value) {
-        return indexOf(array, value) != Normal.__1;
+        return indexOf(array, value) != INDEX_NOT_FOUND;
     }
 
     /**
@@ -4758,7 +4764,7 @@ public class ArrayKit {
      */
     public static <T> T[] removeElement(final T[] array, final Object element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -4803,7 +4809,7 @@ public class ArrayKit {
      */
     public static boolean[] removeElement(final boolean[] array, final boolean element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -4848,7 +4854,7 @@ public class ArrayKit {
      */
     public static byte[] removeElement(final byte[] array, final byte element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -4893,7 +4899,7 @@ public class ArrayKit {
      */
     public static char[] removeElement(final char[] array, final char element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -4938,7 +4944,7 @@ public class ArrayKit {
      */
     public static double[] removeElement(final double[] array, final double element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -4983,7 +4989,7 @@ public class ArrayKit {
      */
     public static float[] removeElement(final float[] array, final float element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -5028,7 +5034,7 @@ public class ArrayKit {
      */
     public static int[] removeElement(final int[] array, final int element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -5073,7 +5079,7 @@ public class ArrayKit {
      */
     public static long[] removeElement(final long[] array, final long element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -5118,7 +5124,7 @@ public class ArrayKit {
      */
     public static short[] removeElement(final short[] array, final short element) {
         final int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
         return remove(array, index);
@@ -6091,7 +6097,7 @@ public class ArrayKit {
      */
     public static boolean[] removeAllOccurences(final boolean[] array, final boolean element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6099,7 +6105,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6118,7 +6124,7 @@ public class ArrayKit {
      */
     public static char[] removeAllOccurences(final char[] array, final char element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6126,7 +6132,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6145,7 +6151,7 @@ public class ArrayKit {
      */
     public static byte[] removeAllOccurences(final byte[] array, final byte element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6153,7 +6159,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6172,7 +6178,7 @@ public class ArrayKit {
      */
     public static short[] removeAllOccurences(final short[] array, final short element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6180,7 +6186,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6199,7 +6205,7 @@ public class ArrayKit {
      */
     public static int[] removeAllOccurences(final int[] array, final int element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6207,7 +6213,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6226,7 +6232,7 @@ public class ArrayKit {
      */
     public static long[] removeAllOccurences(final long[] array, final long element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6234,7 +6240,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6253,7 +6259,7 @@ public class ArrayKit {
      */
     public static float[] removeAllOccurences(final float[] array, final float element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6261,7 +6267,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6280,7 +6286,7 @@ public class ArrayKit {
      */
     public static double[] removeAllOccurences(final double[] array, final double element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6288,7 +6294,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -6308,7 +6314,7 @@ public class ArrayKit {
      */
     public static <T> T[] removeAllOccurences(final T[] array, final T element) {
         int index = indexOf(array, element);
-        if (index == Normal.__1) {
+        if (index == INDEX_NOT_FOUND) {
             return clone(array);
         }
 
@@ -6316,7 +6322,7 @@ public class ArrayKit {
         indices[0] = index;
         int count = 1;
 
-        while ((index = indexOf(array, element, indices[count - 1] + 1)) != Normal.__1) {
+        while ((index = indexOf(array, element, indices[count - 1] + 1)) != INDEX_NOT_FOUND) {
             indices[count++] = index;
         }
 
@@ -8778,11 +8784,11 @@ public class ArrayKit {
     }
 
     /**
-     * 返回数组中指定元素所在位置,忽略大小写,未找到返回{@link Normal#__1}
+     * 返回数组中指定元素所在位置,忽略大小写,未找到返回{@link #INDEX_NOT_FOUND}
      *
      * @param array 数组
      * @param value 被检查的元素
-     * @return 数组中指定元素所在位置, 未找到返回{@link Normal#__1}
+     * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
      */
     public static int indexOfIgnoreCase(CharSequence[] array, CharSequence value) {
         if (null != array) {
@@ -8792,7 +8798,7 @@ public class ArrayKit {
                 }
             }
         }
-        return Normal.__1;
+        return INDEX_NOT_FOUND;
     }
 
     /**
@@ -8819,7 +8825,7 @@ public class ArrayKit {
      * @return 是否包含
      */
     public static boolean containsIgnoreCase(CharSequence[] array, CharSequence value) {
-        return indexOfIgnoreCase(array, value) > Normal.__1;
+        return indexOfIgnoreCase(array, value) > INDEX_NOT_FOUND;
     }
 
     /**
@@ -9017,7 +9023,7 @@ public class ArrayKit {
      * @return 子数组的开始位置，即子数字第一个元素在数组中的位置
      */
     public static <T> boolean isSub(T[] array, T[] subArray) {
-        return indexOfSub(array, subArray) > Normal.__1;
+        return indexOfSub(array, subArray) > INDEX_NOT_FOUND;
     }
 
     /**
@@ -9030,16 +9036,16 @@ public class ArrayKit {
      */
     public static <T> int indexOfSub(T[] array, T[] subArray) {
         if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
         int firstIndex = indexOf(array, subArray[0]);
         if (firstIndex < 0 || firstIndex + subArray.length > array.length) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
 
         for (int i = 0; i < subArray.length; i++) {
             if (false == ObjectKit.equal(array[i + firstIndex], subArray[i])) {
-                return Normal.__1;
+                return INDEX_NOT_FOUND;
             }
         }
 
@@ -9056,17 +9062,17 @@ public class ArrayKit {
      */
     public static <T> int lastIndexOfSub(T[] array, T[] subArray) {
         if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
 
         int firstIndex = lastIndexOf(array, subArray[0]);
         if (firstIndex < 0 || firstIndex + subArray.length > array.length) {
-            return Normal.__1;
+            return INDEX_NOT_FOUND;
         }
 
         for (int i = 0; i < subArray.length; i++) {
             if (false == ObjectKit.equal(array[i + firstIndex], subArray[i])) {
-                return Normal.__1;
+                return INDEX_NOT_FOUND;
             }
         }
 

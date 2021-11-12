@@ -30,7 +30,7 @@ import org.aoju.bus.gitlab.support.JacksonJson;
 public class ArtifactsFile {
 
     private String filename;
-    private Long size;
+    private Integer size;
 
     public String getFilename() {
         return filename;
@@ -40,11 +40,11 @@ public class ArtifactsFile {
         this.filename = filename;
     }
 
-    public Long getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 

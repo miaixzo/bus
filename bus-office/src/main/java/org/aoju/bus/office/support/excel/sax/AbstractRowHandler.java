@@ -66,12 +66,12 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
     }
 
     @Override
-    public void handle(int sheetIndex, long rowIndex, List<Object> rowCells) {
+    public void handle(int sheetIndex, long rowIndex, List<Object> rowList) {
         Assert.notNull(convertFunc);
         if (rowIndex < this.startRowIndex || rowIndex > this.endRowIndex) {
             return;
         }
-        handleData(sheetIndex, rowIndex, convertFunc.callWithRuntimeException(rowCells));
+        handleData(sheetIndex, rowIndex, convertFunc.callWithRuntimeException(rowList));
     }
 
     /**

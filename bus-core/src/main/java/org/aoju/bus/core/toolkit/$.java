@@ -118,6 +118,26 @@ public class $ {
     }
 
     /**
+     * 首字母变小写
+     *
+     * @param text 字符串
+     * @return {String}
+     */
+    public static String firstCharToLower(String text) {
+        return StringKit.firstCharToLower(text);
+    }
+
+    /**
+     * 首字母变大写
+     *
+     * @param text 字符串
+     * @return {String}
+     */
+    public static String firstCharToUpper(String text) {
+        return StringKit.firstCharToUpper(text);
+    }
+
+    /**
      * 判断是否为空字符串
      * <pre class="code">
      * $.isBlank(null)		   = true
@@ -247,6 +267,16 @@ public class $ {
      */
     public static String cleanText(String txt) {
         return StringKit.cleanText(txt);
+    }
+
+    /**
+     * 获取标识符,用于参数清理
+     *
+     * @param param 参数
+     * @return 清理后的标识符
+     */
+    public static String cleanIdentifier(String param) {
+        return StringKit.cleanIdentifier(param);
     }
 
     /**

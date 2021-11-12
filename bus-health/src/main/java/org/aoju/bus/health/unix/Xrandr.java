@@ -27,7 +27,7 @@ package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public final class Xrandr {
                     continue;
                 }
                 String edidStr = sb.toString();
-                byte[] edid = StringKit.hexStringToByte(edidStr);
+                byte[] edid = Builder.hexStringToByteArray(edidStr);
                 if (edid.length >= Normal._128) {
                     displays.add(edid);
                 }

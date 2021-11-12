@@ -44,9 +44,9 @@ public interface RowHandler {
      *
      * @param sheetIndex 当前Sheet序号
      * @param rowIndex   当前行号，从0开始计数
-     * @param rowCells   行数据，每个Object表示一个单元格的值
+     * @param rowList    行数据列表
      */
-    void handle(int sheetIndex, long rowIndex, List<Object> rowCells);
+    void handle(int sheetIndex, long rowIndex, List<Object> rowList);
 
     /**
      * 处理一个单元格的数据

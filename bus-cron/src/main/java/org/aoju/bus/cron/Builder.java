@@ -140,14 +140,13 @@ public final class Builder {
      * 移除任务
      *
      * @param schedulerId 任务ID
-     * @return 是否移除成功，{@code false}表示未找到对应ID的任务
      */
-    public static boolean remove(String schedulerId) {
-        return scheduler.descheduleWithStatus(schedulerId);
+    public static void remove(String schedulerId) {
+        scheduler.deschedule(schedulerId);
     }
 
     /**
-     * 更新Task的执行时间规则
+     * 移除Task
      *
      * @param id      Task的ID
      * @param pattern {@link CronPattern}

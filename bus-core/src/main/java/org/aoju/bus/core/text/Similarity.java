@@ -26,6 +26,7 @@
 package org.aoju.bus.core.text;
 
 import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 文本相似度计算,局部敏感hash,用于海量文本去重
@@ -125,7 +126,7 @@ public class Similarity {
      */
     private static String removeSign(String text) {
         int length = text.length();
-        StringBuilder sb = new StringBuilder(length);
+        StringBuilder sb = StringKit.builder(length);
         // 遍历字符串str,如果是汉字数字或字母，则追加到ab上面
         char c;
         for (int i = 0; i < length; i++) {

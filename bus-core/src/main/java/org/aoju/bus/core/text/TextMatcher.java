@@ -47,7 +47,7 @@ public class TextMatcher {
         char c = 0;
         char pre;
         boolean inVar = false;
-        TextBuilder part = new TextBuilder();
+        TextBuilder part = StringKit.builders();
         for (int i = 0; i < length; i++) {
             pre = c;
             c = pattern.charAt(i);

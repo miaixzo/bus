@@ -26,8 +26,7 @@
 package org.aoju.bus.core.text.finder;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.toolkit.CharsKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 字符查找器
@@ -58,28 +57,7 @@ public class StringFinder extends TextFinder {
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
-        final int subLen = this.word.length();
-
-        if (from < 0) {
-            from = 0;
-        }
-        int endLimit = getValidEndIndex();
-        if (negative) {
-            for (int i = from; i > endLimit; i--) {
-                if (CharsKit.isSubEquals(text, i, this.word, 0, subLen, caseInsensitive)) {
-                    return i;
-                }
-            }
-        } else {
-            endLimit = endLimit - subLen + 1;
-            for (int i = from; i < endLimit; i++) {
-                if (CharsKit.isSubEquals(text, i, this.word, 0, subLen, caseInsensitive)) {
-                    return i;
-                }
-            }
-        }
-
-        return Normal.__1;
+        return StringKit.indexOf(this.text, this.word, from, caseInsensitive);
     }
 
     @Override

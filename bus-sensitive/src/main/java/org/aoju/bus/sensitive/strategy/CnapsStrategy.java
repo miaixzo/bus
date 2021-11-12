@@ -48,7 +48,7 @@ public class CnapsStrategy extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String snapCard = object.toString();
-        return StringKit.padPre(
+        return StringKit.rightPad(
                 StringKit.left(snapCard, 4),
                 StringKit.length(snapCard),
                 StringKit.fill(10, shield.shadow()

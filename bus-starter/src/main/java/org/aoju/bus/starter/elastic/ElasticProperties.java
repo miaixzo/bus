@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,61 +23,68 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.web;
+package org.aoju.bus.starter.elastic;
 
-import org.aoju.bus.gitlab.support.JacksonJson;
+import lombok.Data;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.starter.BusXExtend;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-public class EventReleaseLink {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-    private Integer id;
-    private Boolean external;
-    private String linkType;
-    private String name;
-    private String url;
+/**
+ * <p>@description ElasticSearch 配置属性类 </p>
+ *
+ * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
+ * @version 6.3.1
+ * @since JDK1.8+
+ */
+@Data
+@ConfigurationProperties(prefix = BusXExtend.ELASTIC)
+public class ElasticProperties {
+    /**
+     * 集群主机地址, 多个用英文逗号,隔开
+     * 格式: ip1:port,ip2:port
+     */
+    private String hosts;
+    /**
+     * 通讯协议
+     */
+    private String schema = "http";
 
-    public Integer getId() {
-        return id;
+    /**
+     * 建立连接超时时间: 毫秒, 默认 6000， 0 - 无限制，-1 - OS 适配
+     */
+    private int connectTimeout = 6000;
+    /**
+     * 读超时: 毫秒，默认 60000， 0 - 无限制，-1 - OS 适配
+     */
+    private int socketTimeout = 60000;
+    /**
+     * 连接请求超时: 毫秒，默认 6000， 0 - 无限制，-1 - OS 适配
+     */
+    private int connectionRequestTimeout = 6000;
+
+    /**
+     * 最大连接数: 默认 2000， 0 - 无限制，-1 - OS 适配
+     */
+    private int maxConnectTotal = 2000;
+    /**
+     * 最大每批连接数: 默认 200， 0 - 无限制，-1 - OS 适配
+     */
+    private int maxConnectPerRoute = 500;
+
+    /**
+     * 集群主机地址列表
+     */
+    private List<String> hostList;
+
+    public List<String> getHostList() {
+        if (null == this.hosts || "".equalsIgnoreCase(this.hosts.trim())) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(this.hosts.split(Symbol.COMMA));
     }
-
-    public void setId(final Integer id) {
-        this.id = id;
-    }
-
-    public Boolean getExternal() {
-        return external;
-    }
-
-    public void setExternal(final Boolean external) {
-        this.external = external;
-    }
-
-    public String getLinkType() {
-        return linkType;
-    }
-
-    public void setLinkType(final String linkType) {
-        this.linkType = linkType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(final String url) {
-        this.url = url;
-    }
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
-
 }

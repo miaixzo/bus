@@ -25,9 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.File;
@@ -45,10 +43,9 @@ import java.nio.file.Path;
 public class FileResource implements Resource {
 
     private final File file;
-    private final String name;
 
     /**
-     * 构造，文件名使用文件本身的名字，带扩展名
+     * 构造
      *
      * @param path 文件
      */
@@ -57,7 +54,7 @@ public class FileResource implements Resource {
     }
 
     /**
-     * 构造，文件名使用文件本身的名字，带扩展名
+     * 构造
      *
      * @param file 文件
      */
@@ -72,9 +69,7 @@ public class FileResource implements Resource {
      * @param fileName 文件名，如果为null获取文件本身的文件名
      */
     public FileResource(File file, String fileName) {
-        Assert.notNull(file, "File must be not null !");
         this.file = file;
-        this.name = ObjectKit.defaultIfNull(fileName, file.getName());
     }
 
     /**
@@ -88,7 +83,7 @@ public class FileResource implements Resource {
 
     @Override
     public String getName() {
-        return this.name;
+        return this.file.getName();
     }
 
     @Override
@@ -117,7 +112,7 @@ public class FileResource implements Resource {
      */
     @Override
     public String toString() {
-        return this.file.toString();
+        return (null == this.file) ? "null" : this.file.toString();
     }
 
 }

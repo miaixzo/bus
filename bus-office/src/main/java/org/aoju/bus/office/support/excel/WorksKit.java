@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -52,7 +53,7 @@ public class WorksKit {
     /**
      * 创建或加载工作簿
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
      * @return {@link Workbook}
      */
     public static Workbook createBook(String excelFilePath) {
@@ -87,17 +88,17 @@ public class WorksKit {
         }
 
         if (excelFile.exists()) {
-            return createBook(FileKit.getInputStream(excelFile));
+            return createBook(FileKit.getInputStream(excelFile), true);
         }
 
         return createBook(StringKit.endWithIgnoreCase(excelFile.getName(), ".xlsx"));
     }
 
     /**
-     * 创建或加载工作簿，只读模式
+     * 创建或加载工作簿,只读模式
      *
      * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param password  Excel工作簿密码,如果无密码传{@code null}
      * @return {@link Workbook}
      */
     public static Workbook createBook(File excelFile, String password) {
@@ -111,32 +112,36 @@ public class WorksKit {
     /**
      * 创建或加载工作簿
      *
-     * @param in Excel输入流
+     * @param in             Excel输入流
+     * @param closeAfterRead 读取结束是否关闭流
      * @return {@link Workbook}
      */
-    public static Workbook createBook(InputStream in) {
-        return createBook(in, null);
+    public static Workbook createBook(InputStream in, boolean closeAfterRead) {
+        return createBook(in, null, closeAfterRead);
     }
 
     /**
      * 创建或加载工作簿
      *
-     * @param in       Excel输入流，使用完毕自动关闭流
-     * @param password 密码
+     * @param in             Excel输入流
+     * @param password       密码
+     * @param closeAfterRead 读取结束是否关闭流
      * @return {@link Workbook}
      */
-    public static Workbook createBook(InputStream in, String password) {
+    public static Workbook createBook(InputStream in, String password, boolean closeAfterRead) {
         try {
             return WorkbookFactory.create(IoKit.toMarkSupportStream(in), password);
         } catch (Exception e) {
             throw new InstrumentException(e);
         } finally {
-            IoKit.close(in);
+            if (closeAfterRead) {
+                IoKit.close(in);
+            }
         }
     }
 
     /**
-     * 根据文件类型创建新的工作簿，文件路径
+     * 根据文件类型创建新的工作簿,文件路径
      *
      * @param isXlsx 是否为xlsx格式的Excel
      * @return {@link Workbook}
@@ -146,7 +151,7 @@ public class WorksKit {
         if (isXlsx) {
             workbook = new XSSFWorkbook();
         } else {
-            workbook = new org.apache.poi.hssf.usermodel.HSSFWorkbook();
+            workbook = new HSSFWorkbook();
         }
         return workbook;
     }
@@ -154,7 +159,7 @@ public class WorksKit {
     /**
      * 创建或加载SXSSFWorkbook工作簿
      *
-     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(String excelFilePath) {
@@ -172,10 +177,10 @@ public class WorksKit {
     }
 
     /**
-     * 创建或加载SXSSFWorkbook工作簿，只读模式
+     * 创建或加载SXSSFWorkbook工作簿,只读模式
      *
      * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param password  Excel工作簿密码,如果无密码传{@code null}
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(File excelFile, String password) {
@@ -185,26 +190,28 @@ public class WorksKit {
     /**
      * 创建或加载SXSSFWorkbook工作簿
      *
-     * @param in Excel输入流
+     * @param in             Excel输入流
+     * @param closeAfterRead 读取结束是否关闭流
      * @return {@link SXSSFWorkbook}
      */
-    public static SXSSFWorkbook createSXSSFBook(InputStream in) {
-        return createSXSSFBook(in, null);
+    public static SXSSFWorkbook createSXSSFBook(InputStream in, boolean closeAfterRead) {
+        return createSXSSFBook(in, null, closeAfterRead);
     }
 
     /**
      * 创建或加载SXSSFWorkbook工作簿
      *
-     * @param in       Excel输入流
-     * @param password 密码
+     * @param in             Excel输入流
+     * @param password       密码
+     * @param closeAfterRead 读取结束是否关闭流
      * @return {@link SXSSFWorkbook}
      */
-    public static SXSSFWorkbook createSXSSFBook(InputStream in, String password) {
-        return toSXSSFBook(createBook(in, password));
+    public static SXSSFWorkbook createSXSSFBook(InputStream in, String password, boolean closeAfterRead) {
+        return toSXSSFBook(createBook(in, password, closeAfterRead));
     }
 
     /**
-     * 创建SXSSFWorkbook，用于大批量数据写出
+     * 创建SXSSFWorkbook,用于大批量数据写出
      *
      * @return {@link SXSSFWorkbook}
      */
@@ -213,7 +220,7 @@ public class WorksKit {
     }
 
     /**
-     * 创建SXSSFWorkbook，用于大批量数据写出
+     * 创建SXSSFWorkbook,用于大批量数据写出
      *
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link Workbook}
@@ -223,7 +230,7 @@ public class WorksKit {
     }
 
     /**
-     * 将Excel Workbook刷出到输出流，不关闭流
+     * 将Excel Workbook刷出到输出流,不关闭流
      *
      * @param book {@link Workbook}
      * @param out  输出流
@@ -259,7 +266,7 @@ public class WorksKit {
 
     /**
      * 获取或者创建sheet表
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之(命名为默认)
      * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
      *
      * @param book       工作簿{@link Workbook}
@@ -271,7 +278,7 @@ public class WorksKit {
         try {
             sheet = book.getSheetAt(sheetIndex);
         } catch (IllegalArgumentException ignore) {
-            // ignore
+            //ignore
         }
         if (null == sheet) {
             sheet = book.createSheet();
@@ -280,7 +287,6 @@ public class WorksKit {
     }
 
     /**
-     *
      * sheet是否为空
      *
      * @param sheet {@link Sheet}
@@ -295,7 +301,6 @@ public class WorksKit {
      *
      * @param book 工作簿
      * @return SXSSFWorkbook
-
      */
     private static SXSSFWorkbook toSXSSFBook(Workbook book) {
         if (book instanceof SXSSFWorkbook) {

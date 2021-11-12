@@ -26,7 +26,7 @@
 package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.CharsKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -833,11 +833,11 @@ public class Converter extends Formatter {
      * @return 时分秒转换后的秒数
      */
     public static int toSecond(String time) {
-        if (CharsKit.isEmpty(time)) {
+        if (StringKit.isEmpty(time)) {
             return 0;
         }
 
-        final List<String> hms = CharsKit.splitTrim(time, Symbol.C_COLON, 3);
+        final List<String> hms = StringKit.splitTrim(time, Symbol.COLON, 3, true);
         int lastIndex = hms.size() - 1;
 
         int result = 0;

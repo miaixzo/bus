@@ -50,7 +50,7 @@ public class MobileStrategy extends AbstractProvider {
         String value = object.toString();
         return StringKit.left(value, 3).concat(
                 StringKit.removeStart(
-                        StringKit.padPre(StringKit.right(value, 4),
+                        StringKit.leftPad(StringKit.right(value, 4),
                                 StringKit.length(value),
                                 shield.shadow()),
                         StringKit.fill(3, shield.shadow())));

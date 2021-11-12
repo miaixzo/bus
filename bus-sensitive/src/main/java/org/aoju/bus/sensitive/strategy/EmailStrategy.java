@@ -64,7 +64,7 @@ public class EmailStrategy extends AbstractProvider {
             int middleLength = atIndex - prefixLength;
             middle = StringKit.repeat(shadow, middleLength);
         }
-        return StringKit.build(email, middle, prefixLength);
+        return StringKit.buildString(email, middle, prefixLength);
     }
 
     @Override
