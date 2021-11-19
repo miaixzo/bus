@@ -26,10 +26,12 @@
 package org.aoju.bus.core.text.finder;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.MathKit;
 
 /**
  * 字符查找器
+ * 查找指定字符在字符串中的位置信息
  *
  * @author Kimi Liu
  * @version 6.3.1
@@ -65,13 +67,21 @@ public class CharFinder extends TextFinder {
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
-        final int length = this.text.length();
-        for (int i = from; i < length; i++) {
-            if (MathKit.equals(word, this.text.charAt(i), caseInsensitive)) {
-                return i;
+        final int limit = getValidEndIndex();
+        if (negative) {
+            for (int i = from; i > limit; i--) {
+                if (MathKit.equals(this.word, text.charAt(i), caseInsensitive)) {
+                    return i;
+                }
+            }
+        } else {
+            for (int i = from; i < limit; i++) {
+                if (MathKit.equals(this.word, text.charAt(i), caseInsensitive)) {
+                    return i;
+                }
             }
         }
-        return -1;
+        return Normal.__1;
     }
 
     @Override

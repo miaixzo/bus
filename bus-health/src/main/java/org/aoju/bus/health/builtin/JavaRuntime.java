@@ -74,7 +74,6 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.3
      */
     public final String getName() {
         return JAVA_RUNTIME_NAME;
@@ -88,7 +87,6 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.3
      */
     public final String getVersion() {
         return JAVA_RUNTIME_VERSION;
@@ -102,7 +100,6 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.1
      */
     public final String getHomeDir() {
         return JAVA_HOME;
@@ -116,7 +113,6 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.3
      */
     public final String getExtDirs() {
         return JAVA_EXT_DIRS;
@@ -130,7 +126,6 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.4
      */
     public final String getEndorsedDirs() {
         return JAVA_ENDORSED_DIRS;
@@ -144,7 +139,6 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.1
      */
     public final String getClassPath() {
         return JAVA_CLASS_PATH;
@@ -171,7 +165,6 @@ public class JavaRuntime implements Serializable {
      * </p>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.1
      */
     public final String getClassVersion() {
         return JAVA_CLASS_VERSION;

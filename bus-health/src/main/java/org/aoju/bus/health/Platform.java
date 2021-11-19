@@ -26,6 +26,7 @@
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -227,7 +228,7 @@ public class Platform {
             default:
                 osPrefix = name.toLowerCase();
                 int space = osPrefix.indexOf(Symbol.SPACE);
-                if (space != -1) {
+                if (space != Normal.__1) {
                     osPrefix = osPrefix.substring(0, space);
                 }
                 osPrefix += Symbol.MINUS + arch;
@@ -553,7 +554,7 @@ public class Platform {
          */
         UNKNOWN("Unknown");
 
-        private String name;
+        private final String name;
 
         OS(String name) {
             this.name = name;

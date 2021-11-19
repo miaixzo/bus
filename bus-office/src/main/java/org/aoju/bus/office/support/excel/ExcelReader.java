@@ -73,6 +73,15 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 构造
      *
+     * @param sheet Excel中的sheet
+     */
+    public ExcelReader(Sheet sheet) {
+        super(sheet);
+    }
+
+    /**
+     * 构造
+     *
      * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
      * @param sheetIndex    sheet序号,0表示第一个sheet
      */
@@ -103,23 +112,21 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 构造
      *
-     * @param bookStream     Excel文件的流
-     * @param sheetIndex     sheet序号,0表示第一个sheet
-     * @param closeAfterRead 读取结束是否关闭流
+     * @param bookStream Excel文件的流
+     * @param sheetIndex sheet序号，0表示第一个sheet
      */
-    public ExcelReader(InputStream bookStream, int sheetIndex, boolean closeAfterRead) {
-        this(WorksKit.createBook(bookStream, closeAfterRead), sheetIndex);
+    public ExcelReader(InputStream bookStream, int sheetIndex) {
+        this(WorksKit.createBook(bookStream), sheetIndex);
     }
 
     /**
      * 构造
      *
-     * @param bookStream     Excel文件的流
-     * @param sheetName      sheet名,第一个默认是sheet1
-     * @param closeAfterRead 读取结束是否关闭流
+     * @param bookStream Excel文件的流
+     * @param sheetName  sheet名，第一个默认是sheet1
      */
-    public ExcelReader(InputStream bookStream, String sheetName, boolean closeAfterRead) {
-        this(WorksKit.createBook(bookStream, closeAfterRead), sheetName);
+    public ExcelReader(InputStream bookStream, String sheetName) {
+        this(WorksKit.createBook(bookStream), sheetName);
     }
 
     /**
@@ -142,14 +149,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
         this(book.getSheet(sheetName));
     }
 
-    /**
-     * 构造
-     *
-     * @param sheet Excel中的sheet
-     */
-    public ExcelReader(Sheet sheet) {
-        super(sheet);
-    }
 
     /**
      * 是否忽略空行

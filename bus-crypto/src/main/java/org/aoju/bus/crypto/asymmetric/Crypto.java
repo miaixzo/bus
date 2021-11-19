@@ -30,6 +30,7 @@ import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.crypto.Builder;
+import org.aoju.bus.crypto.Ciphers;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -60,7 +61,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
     /**
      * Cipher负责完成加密或解密工作
      */
-    protected Cipher cipher;
+    protected Ciphers ciphers;
 
     /**
      * 加密的块大小
@@ -70,12 +71,6 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * 解密的块大小
      */
     protected int decryptBlockSize = -1;
-
-    /**
-     * 算法参数
-     */
-    private AlgorithmParameterSpec algorithmParameterSpec;
-
 
     /**
      * 构造，创建新的私钥公钥对
@@ -217,7 +212,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @return {@link AlgorithmParameterSpec}
      */
     public AlgorithmParameterSpec getAlgorithmParameterSpec() {
-        return algorithmParameterSpec;
+        return this.ciphers.getParams();
     }
 
     /**
@@ -227,7 +222,18 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @param algorithmParameterSpec {@link AlgorithmParameterSpec}
      */
     public void setAlgorithmParameterSpec(AlgorithmParameterSpec algorithmParameterSpec) {
-        this.algorithmParameterSpec = algorithmParameterSpec;
+        this.ciphers.setParams(algorithmParameterSpec);
+    }
+
+    /**
+     * 设置随机数生成器，可自定义随机数种子
+     *
+     * @param random 随机数生成器，可自定义随机数种子
+     * @return this
+     */
+    public Crypto setRandom(SecureRandom random) {
+        this.ciphers.setRandom(random);
+        return this;
     }
 
     @Override
@@ -242,11 +248,11 @@ public class Crypto extends AbstractCrypto<Crypto> {
         final Key key = getKeyByType(keyType);
         lock.lock();
         try {
-            initMode(Cipher.ENCRYPT_MODE, key);
+            final Cipher cipher = initMode(Cipher.ENCRYPT_MODE, key);
 
             if (this.encryptBlockSize < 0) {
                 // 在引入BC库情况下，自动获取块大小
-                final int blockSize = this.cipher.getBlockSize();
+                final int blockSize = cipher.getBlockSize();
                 if (blockSize > 0) {
                     this.encryptBlockSize = blockSize;
                 }
@@ -265,11 +271,11 @@ public class Crypto extends AbstractCrypto<Crypto> {
         final Key key = getKeyByType(keyType);
         lock.lock();
         try {
-            initMode(Cipher.DECRYPT_MODE, key);
+            final Cipher cipher = initMode(Cipher.DECRYPT_MODE, key);
 
             if (this.decryptBlockSize < 0) {
                 // 在引入BC库情况下，自动获取块大小
-                final int blockSize = this.cipher.getBlockSize();
+                final int blockSize = cipher.getBlockSize();
                 if (blockSize > 0) {
                     this.decryptBlockSize = blockSize;
                 }
@@ -289,14 +295,14 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @return 加密或解密
      */
     public Cipher getCipher() {
-        return cipher;
+        return this.ciphers.getCipher();
     }
 
     /**
      * 初始化{@link Cipher}，默认尝试加载BC库
      */
     protected void initCipher() {
-        this.cipher = Builder.createCipher(algorithm);
+        this.ciphers = new Ciphers(this.algorithm);
     }
 
     /**
@@ -315,7 +321,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
 
         // 不足分段
         if (dataLength <= maxBlockSize) {
-            return this.cipher.doFinal(data, 0, dataLength);
+            return getCipher().doFinal(data, 0, dataLength);
         }
 
         // 分段解密
@@ -343,7 +349,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
         // 对数据分段处理
         while (remainLength > 0) {
             blockSize = Math.min(remainLength, maxBlockSize);
-            out.write(cipher.doFinal(data, offSet, blockSize));
+            out.write(getCipher().doFinal(data, offSet, blockSize));
 
             offSet += blockSize;
             remainLength = dataLength - offSet;
@@ -360,12 +366,8 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @throws InvalidAlgorithmParameterException 异常算法错误
      * @throws InvalidKeyException                异常KEY错误
      */
-    private void initMode(int mode, Key key) throws InvalidAlgorithmParameterException, InvalidKeyException {
-        if (null != this.algorithmParameterSpec) {
-            cipher.init(mode, key, this.algorithmParameterSpec);
-        } else {
-            cipher.init(mode, key);
-        }
+    private Cipher initMode(int mode, Key key) throws InvalidAlgorithmParameterException, InvalidKeyException {
+        return this.ciphers.initMode(mode, key).getCipher();
     }
 
 }

@@ -373,7 +373,7 @@ public class HexKit {
      */
     public static String format(String hexStr) {
         final int length = hexStr.length();
-        final StringBuilder builder = StringKit.builder(length + length / 2);
+        final StringBuilder builder = new StringBuilder(length + length / 2);
         builder.append(hexStr.charAt(0)).append(hexStr.charAt(1));
         for (int i = 2; i < length - 1; i += 2) {
             builder.append(Symbol.C_SPACE).append(hexStr.charAt(i)).append(hexStr.charAt(i + 1));

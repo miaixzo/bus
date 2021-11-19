@@ -84,7 +84,7 @@ public class NamingCase {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为使用符号连接方式如果转换前的驼峰式命名的字符串为空，则返回空字符串
+     * 将驼峰式命名的字符串转换为使用符号连接方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串
      *
      * @param text   转换前的驼峰式命名的字符串，也可以为符号连接形式
      * @param symbol 连接符
@@ -162,32 +162,43 @@ public class NamingCase {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式如果转换前的下划线大写方式命名的字符串为空，则返回空字符串
+     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。<br>
      * 规则为：
      * <ul>
      *     <li>单字之间不以空格或任何连接符断开</li>
      *     <li>第一个单字首字母采用小写字母</li>
      *     <li>后续单字的首字母亦用大写字母</li>
      * </ul>
-     * 例如：hello_world - helloWorld
+     * 例如：hello_world=》helloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串
      */
     public static String toCamelCase(CharSequence name) {
+        return toCamelCase(name, Symbol.C_UNDERLINE);
+    }
+
+    /**
+     * 将连接符方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。<br>
+     *
+     * @param name   转换前的自定义方式命名的字符串
+     * @param symbol 连接符
+     * @return 转换后的驼峰式命名的字符串
+     */
+    public static String toCamelCase(CharSequence name, char symbol) {
         if (null == name) {
             return null;
         }
 
-        final String name2 = name.toString();
-        if (StringKit.contains(name2, Symbol.C_UNDERLINE)) {
-            final int length = name2.length();
+        final String value = name.toString();
+        if (StringKit.contains(value, symbol)) {
+            final int length = value.length();
             final StringBuilder sb = new StringBuilder(length);
             boolean upperCase = false;
             for (int i = 0; i < length; i++) {
-                char c = name2.charAt(i);
+                char c = value.charAt(i);
 
-                if (c == Symbol.C_UNDERLINE) {
+                if (c == symbol) {
                     upperCase = true;
                 } else if (upperCase) {
                     sb.append(Character.toUpperCase(c));
@@ -198,7 +209,7 @@ public class NamingCase {
             }
             return sb.toString();
         } else {
-            return name2;
+            return value;
         }
     }
 

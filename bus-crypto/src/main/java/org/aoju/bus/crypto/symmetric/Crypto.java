@@ -27,12 +27,15 @@ package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.Builder;
+import org.aoju.bus.crypto.Ciphers;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
 
+import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.SecretKey;
@@ -44,6 +47,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -70,11 +74,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     /**
      * Cipher负责完成加密或解密工作
      */
-    private javax.crypto.Cipher cipher;
-    /**
-     * 加密解密参数
-     */
-    private AlgorithmParameterSpec params;
+    private Ciphers ciphers;
     /**
      * 是否0填充
      */
@@ -206,7 +206,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
             this.isZeroPadding = true;
         }
 
-        this.cipher = Builder.createCipher(algorithm);
+        this.ciphers = new Ciphers(algorithm);
         return this;
     }
 
@@ -225,7 +225,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @return 加密或解密
      */
     public javax.crypto.Cipher getCipher() {
-        return cipher;
+        return this.ciphers.getCipher();
     }
 
     /**
@@ -235,7 +235,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @return 自身
      */
     public Crypto setParams(AlgorithmParameterSpec params) {
-        this.params = params;
+        this.ciphers.setParams(params);
         return this;
     }
 
@@ -246,8 +246,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @return 自身
      */
     public Crypto setIv(IvParameterSpec iv) {
-        setParams(iv);
-        return this;
+        return setParams(iv);
     }
 
     /**
@@ -258,6 +257,17 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      */
     public Crypto setIv(byte[] iv) {
         setIv(new IvParameterSpec(iv));
+        return this;
+    }
+
+    /**
+     * 设置随机数生成器，可自定义随机数种子
+     *
+     * @param random 随机数生成器，可自定义随机数种子
+     * @return this
+     */
+    public Crypto setRandom(SecureRandom random) {
+        this.ciphers.setRandom(random);
         return this;
     }
 
@@ -287,6 +297,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @return update之后的bytes
      */
     public byte[] update(byte[] data) {
+        final Cipher cipher = this.ciphers.getCipher();
         lock.lock();
         try {
             return cipher.update(paddingDataWithZero(data, cipher.getBlockSize()));
@@ -414,11 +425,8 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      */
     private Crypto initParams(String algorithm, AlgorithmParameterSpec paramsSpec) {
         if (null == paramsSpec) {
-            byte[] iv = null;
-            final javax.crypto.Cipher cipher = this.cipher;
-            if (null != cipher) {
-                iv = cipher.getIV();
-            }
+            byte[] iv = Optional.ofNullable(ciphers)
+                    .map(Ciphers::getCipher).map(Cipher::getIV).get();
 
             // 随机IV
             if (StringKit.startWithIgnoreCase(algorithm, "PBE")) {
@@ -447,13 +455,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @throws InvalidAlgorithmParameterException 无效算法
      */
     private javax.crypto.Cipher initMode(int mode) throws InvalidKeyException, InvalidAlgorithmParameterException {
-        final javax.crypto.Cipher cipher = this.cipher;
-        if (null == this.params) {
-            cipher.init(mode, secretKey);
-        } else {
-            cipher.init(mode, secretKey, params);
-        }
-        return cipher;
+        return this.ciphers.initMode(mode, this.secretKey).getCipher();
     }
 
     /**

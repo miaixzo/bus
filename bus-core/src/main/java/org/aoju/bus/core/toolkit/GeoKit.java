@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.builder.EqualsBuilder;
 import org.aoju.bus.core.builder.HashCodeBuilder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.awt.geom.Point2D;
@@ -590,7 +591,7 @@ public class GeoKit {
             double value = Math.hypot((point.longitude - center.longitude), (point.latitude - center.latitude));
             if (value > r) {
                 // 点在圆外
-                return -1;
+                return Normal.__1;
             } else if (value < r) {
                 // 点在圆内
                 return 1;

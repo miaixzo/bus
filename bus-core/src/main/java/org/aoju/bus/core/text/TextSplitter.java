@@ -165,7 +165,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static List<String> split(CharSequence text, char separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
-        return split(text, separator, limit, ignoreEmpty, trimFunc(isTrim));
+        return split(text, separator, limit, ignoreEmpty, ignoreCase, trimFunc(isTrim));
     }
 
     /**

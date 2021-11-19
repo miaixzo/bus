@@ -1678,14 +1678,14 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 修改月
+     * 原有时间基础上,加上/减去(负数)N年
      *
-     * @param date     Date
-     * @param newValue 新值
-     * @return Date
+     * @param date     日期
+     * @param newValue 年份
+     * @return 操作后的时间
      */
-    public static Date withMonth(Date date, long newValue) {
-        return with(date, ChronoField.MONTH_OF_YEAR, newValue);
+    public static Date withYear(Date date, int newValue) {
+        return with(date, Calendar.YEAR, newValue);
     }
 
     /**
@@ -1708,6 +1708,216 @@ public class Almanac extends Converter {
      */
     public static LocalDate withMonth(LocalDate localDate, long newValue) {
         return localDate.withMonth((int) newValue);
+    }
+
+    /**
+     * 原有时间基础上,加上/减去(负数)N月
+     *
+     * @param date     日期
+     * @param newValue 月份
+     * @return 操作后的时间
+     */
+    public static Date withMonth(Date date, int newValue) {
+        return with(date, Calendar.MONTH, newValue);
+    }
+
+    /**
+     * 原有时间基础上,加上/减去(负数)N周
+     *
+     * @param date     日期
+     * @param newValue 周
+     * @return 操作后的时间
+     */
+    public static Date withWeek(Date date, int newValue) {
+        return with(date, Calendar.WEEK_OF_YEAR, newValue);
+    }
+
+    /**
+     * 原有时间基础上,加上/减去(负数)N天
+     *
+     * @param date     日期
+     * @param newValue 天
+     * @return 操作后的时间
+     */
+    public static Date withDay(Date date, int newValue) {
+        return with(date, Calendar.DAY_OF_MONTH, newValue);
+    }
+
+    /**
+     * 修改小时
+     *
+     * @param date     Date
+     * @param newValue 新值
+     * @return Date
+     */
+    public static Date withHour(Date date, long newValue) {
+        return with(date, ChronoField.HOUR_OF_DAY, newValue);
+    }
+
+    /**
+     * 修改小时
+     *
+     * @param localDateTime LocalDateTime
+     * @param newValue      新值
+     * @return LocalDateTime
+     */
+    public static LocalDateTime withHour(LocalDateTime localDateTime, long newValue) {
+        return localDateTime.withHour((int) newValue);
+    }
+
+    /**
+     * 修改小时
+     *
+     * @param localTime LocalTime
+     * @param newValue  新值
+     * @return LocalTime
+     */
+    public static LocalTime withHour(LocalTime localTime, long newValue) {
+        return localTime.withHour((int) newValue);
+    }
+
+    /**
+     * 原有时间基础上,加上/减去(负数)N小时
+     *
+     * @param date     日期
+     * @param newValue 小时
+     * @return 操作后的时间
+     */
+    public static Date withHour(Date date, int newValue) {
+        return with(date, Calendar.HOUR_OF_DAY, newValue);
+    }
+
+    /**
+     * 修改分钟
+     *
+     * @param date     Date
+     * @param newValue 新值
+     * @return Date
+     */
+    public static Date withMinute(Date date, long newValue) {
+        return with(date, ChronoField.MINUTE_OF_HOUR, newValue);
+    }
+
+    /**
+     * 修改分钟
+     *
+     * @param localDateTime LocalDateTime
+     * @param newValue      新值
+     * @return LocalDateTime
+     */
+    public static LocalDateTime withMinute(LocalDateTime localDateTime, long newValue) {
+        return localDateTime.withMinute((int) newValue);
+    }
+
+    /**
+     * 修改分钟
+     *
+     * @param localTime LocalTime
+     * @param newValue  新值
+     * @return LocalTime
+     */
+    public static LocalTime withMinute(LocalTime localTime, long newValue) {
+        return localTime.withMinute((int) newValue);
+    }
+
+
+    /**
+     * 原有时间基础上,加上/减去(负数)N分钟
+     *
+     * @param date     日期
+     * @param newValue 分钟
+     * @return 操作后的时间
+     */
+    public static Date withMinute(Date date, int newValue) {
+        return with(date, Calendar.MINUTE, newValue);
+    }
+
+    /**
+     * 修改秒
+     *
+     * @param date     Date
+     * @param newValue 新值
+     * @return Date
+     */
+    public static Date withSecond(Date date, long newValue) {
+        return with(date, ChronoField.SECOND_OF_MINUTE, newValue);
+    }
+
+    /**
+     * 修改秒
+     *
+     * @param localDateTime LocalDateTime
+     * @param newValue      新值
+     * @return LocalDateTime
+     */
+    public static LocalDateTime withSecond(LocalDateTime localDateTime, long newValue) {
+        return localDateTime.withSecond((int) newValue);
+    }
+
+    /**
+     * 修改秒
+     *
+     * @param localTime LocalTime
+     * @param newValue  新值
+     * @return LocalTime
+     */
+    public static LocalTime withSecond(LocalTime localTime, long newValue) {
+        return localTime.withSecond((int) newValue);
+    }
+
+    /**
+     * 原有时间基础上,加上/减去(负数)N秒
+     *
+     * @param date     日期
+     * @param newValue 秒
+     * @return 操作后的时间
+     */
+    public static Date withSecond(Date date, int newValue) {
+        return with(date, Calendar.SECOND, newValue);
+    }
+
+    /**
+     * 修改毫秒
+     *
+     * @param date     Date
+     * @param newValue 新值
+     * @return Date
+     */
+    public static Date withMilli(Date date, long newValue) {
+        return with(date, ChronoField.MILLI_OF_SECOND, newValue);
+    }
+
+    /**
+     * 修改毫秒
+     *
+     * @param localDateTime LocalDateTime
+     * @param newValue      新值
+     * @return LocalDateTime
+     */
+    public static LocalDateTime withMilli(LocalDateTime localDateTime, long newValue) {
+        return (LocalDateTime) with(localDateTime, ChronoField.MILLI_OF_SECOND, newValue);
+    }
+
+    /**
+     * 修改毫秒
+     *
+     * @param localTime LocalTime
+     * @param newValue  新值
+     * @return LocalTime
+     */
+    public static LocalTime withMilli(LocalTime localTime, long newValue) {
+        return (LocalTime) with(localTime, ChronoField.MILLI_OF_SECOND, newValue);
+    }
+
+    /**
+     * 原有时间基础上,加上/减去(负数)N毫秒
+     *
+     * @param date     日期
+     * @param newValue 毫秒
+     * @return 操作后的时间
+     */
+    public static Date withMilli(Date date, int newValue) {
+        return with(date, Calendar.MILLISECOND, newValue);
     }
 
     /**
@@ -1774,138 +1984,6 @@ public class Almanac extends Converter {
      */
     public static LocalDate withDayOfYear(LocalDate localDate, long newValue) {
         return localDate.withDayOfYear((int) newValue);
-    }
-
-    /**
-     * 修改小时
-     *
-     * @param date     Date
-     * @param newValue 新值
-     * @return Date
-     */
-    public static Date withHour(Date date, long newValue) {
-        return with(date, ChronoField.HOUR_OF_DAY, newValue);
-    }
-
-    /**
-     * 修改小时
-     *
-     * @param localDateTime LocalDateTime
-     * @param newValue      新值
-     * @return LocalDateTime
-     */
-    public static LocalDateTime withHour(LocalDateTime localDateTime, long newValue) {
-        return localDateTime.withHour((int) newValue);
-    }
-
-    /**
-     * 修改小时
-     *
-     * @param localTime LocalTime
-     * @param newValue  新值
-     * @return LocalTime
-     */
-    public static LocalTime withHour(LocalTime localTime, long newValue) {
-        return localTime.withHour((int) newValue);
-    }
-
-    /**
-     * 修改分钟
-     *
-     * @param date     Date
-     * @param newValue 新值
-     * @return Date
-     */
-    public static Date withMinute(Date date, long newValue) {
-        return with(date, ChronoField.MINUTE_OF_HOUR, newValue);
-    }
-
-    /**
-     * 修改分钟
-     *
-     * @param localDateTime LocalDateTime
-     * @param newValue      新值
-     * @return LocalDateTime
-     */
-    public static LocalDateTime withMinute(LocalDateTime localDateTime, long newValue) {
-        return localDateTime.withMinute((int) newValue);
-    }
-
-    /**
-     * 修改分钟
-     *
-     * @param localTime LocalTime
-     * @param newValue  新值
-     * @return LocalTime
-     */
-    public static LocalTime withMinute(LocalTime localTime, long newValue) {
-        return localTime.withMinute((int) newValue);
-    }
-
-    /**
-     * 修改秒
-     *
-     * @param date     Date
-     * @param newValue 新值
-     * @return Date
-     */
-    public static Date withSecond(Date date, long newValue) {
-        return with(date, ChronoField.SECOND_OF_MINUTE, newValue);
-    }
-
-    /**
-     * 修改秒
-     *
-     * @param localDateTime LocalDateTime
-     * @param newValue      新值
-     * @return LocalDateTime
-     */
-    public static LocalDateTime withSecond(LocalDateTime localDateTime, long newValue) {
-        return localDateTime.withSecond((int) newValue);
-    }
-
-    /**
-     * 修改秒
-     *
-     * @param localTime LocalTime
-     * @param newValue  新值
-     * @return LocalTime
-     */
-    public static LocalTime withSecond(LocalTime localTime, long newValue) {
-        return localTime.withSecond((int) newValue);
-    }
-
-    /**
-     * 修改毫秒
-     *
-     * @param date     Date
-     * @param newValue 新值
-     * @return Date
-     */
-    public static Date withMilli(Date date, long newValue) {
-        return with(date, ChronoField.MILLI_OF_SECOND, newValue);
-    }
-
-    /**
-     * 修改毫秒
-     *
-     * @param localDateTime LocalDateTime
-     * @param newValue      新值
-     * @return LocalDateTime
-     */
-    public static LocalDateTime withMilli(LocalDateTime localDateTime, long newValue) {
-        return (LocalDateTime) with(localDateTime, ChronoField.MILLI_OF_SECOND, newValue);
-    }
-
-    /**
-     * 修改毫秒
-     *
-     * @param localTime LocalTime
-     * @param newValue  新值
-     * @return LocalTime
-     */
-    public static LocalTime withMilli(LocalTime localTime, long newValue) {
-        return (LocalTime) with(localTime, ChronoField.MILLI_OF_SECOND, newValue);
     }
 
     /**
@@ -3284,6 +3362,21 @@ public class Almanac extends Converter {
      */
     public static Date with(Date date, TemporalField field, long newValue) {
         return Converter.toDate(Converter.toLocalDateTime(date).with(field, newValue));
+    }
+
+    /**
+     * 返回添加指定规则后的日期
+     *
+     * @param date   日期
+     * @param field  规则
+     * @param amount 数量
+     * @return 操作后的日期 {@code Date}
+     */
+    private static Date with(final Date date, final int field, final int amount) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(field, amount);
+        return calendar.getTime();
     }
 
     /**

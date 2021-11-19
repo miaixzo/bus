@@ -979,7 +979,7 @@ public class BeanKit {
                         if (null == value) {
                             continue;
                         }
-                        setFieldValue(bean, key, StringKit.replaceBlank(value.toString()));
+                        setFieldValue(bean, key, StringKit.replace(value.toString()));
                     }
                 }
             }

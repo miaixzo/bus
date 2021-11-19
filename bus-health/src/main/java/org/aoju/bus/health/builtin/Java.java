@@ -165,7 +165,6 @@ public class Java implements Serializable {
      * 例如Sun JDK 1.4.2：<code>"http://java.sun.com/"</code>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     * @since Java 1.1
      */
     public final String getVendorURL() {
         return JAVA_VENDOR_URL;

@@ -61,16 +61,16 @@ public abstract class MapRowHandler extends AbstractRowHandler<Map<String, Objec
     public MapRowHandler(int headerRowIndex, int startRowIndex, int endRowIndex) {
         super(startRowIndex, endRowIndex);
         this.headerRowIndex = headerRowIndex;
-        this.convertFunc = (rowList) -> IterKit.toMap(headerList, rowList);
+        this.convertFunc = (rowCells) -> IterKit.toMap(headerList, rowCells);
     }
 
     @Override
-    public void handle(int sheetIndex, long rowIndex, List<Object> rowList) {
+    public void handle(int sheetIndex, long rowIndex, List<Object> rowCells) {
         if (rowIndex == this.headerRowIndex) {
-            this.headerList = CollKit.unmodifiable(Convert.toList(String.class, rowList));
+            this.headerList = CollKit.unmodifiable(Convert.toList(String.class, rowCells));
             return;
         }
-        super.handle(sheetIndex, rowIndex, rowList);
+        super.handle(sheetIndex, rowIndex, rowCells);
     }
 
 }

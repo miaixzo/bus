@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Assert;
 
 /**
  * 固定长度查找器
+ * 给定一个长度，查找的位置为from + length，一般用于分段截取
  *
  * @author Kimi Liu
  * @version 6.3.1
@@ -52,9 +53,18 @@ public class LengthFinder extends TextFinder {
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
-        final int result = from + length;
-        if (result < text.length()) {
-            return result;
+        final int limit = getValidEndIndex();
+        int result;
+        if (negative) {
+            result = from - length;
+            if (result > limit) {
+                return result;
+            }
+        } else {
+            result = from + length;
+            if (result < limit) {
+                return result;
+            }
         }
         return -1;
     }

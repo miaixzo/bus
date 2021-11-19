@@ -1755,7 +1755,7 @@ public class CollKit {
      * @return 处理后的集合
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
-        return filter(collection, StringKit::isNotEmpty);
+        return filter(collection, CharsKit::isNotEmpty);
     }
 
     /**
@@ -1766,7 +1766,7 @@ public class CollKit {
      * @return 处理后的集合
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
-        return filter(collection, StringKit::isNotBlank);
+        return filter(collection, CharsKit::isNotBlank);
     }
 
     /**
@@ -2234,8 +2234,8 @@ public class CollKit {
             iter = new ArrayIterator<>(value);
         } else if (value instanceof CharSequence) {
             // String按照逗号分隔的列表对待
-            final String ArrayStr = StringKit.unWrap((CharSequence) value, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT);
-            iter = StringKit.splitTrim(ArrayStr, Symbol.C_COMMA).iterator();
+            final String ArrayStr = CharsKit.unWrap((CharSequence) value, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT);
+            iter = CharsKit.splitTrim(ArrayStr, Symbol.C_COMMA).iterator();
         } else {
             // 其它类型按照单一元素处理
             iter = CollKit.newArrayList(value).iterator();
@@ -3315,43 +3315,75 @@ public class CollKit {
 
     /**
      * 将collection转化为类型不变的map
-     * <B>{@code Collection<E>  ---->  Map<T,E>}</B>
+     * <B>{@code Collection<V>  ---->  Map<K,V>}</B>
      *
      * @param collection 需要转化的集合
-     * @param key        E类型转化为T类型的lambda方法
+     * @param key        V类型转化为K类型的lambda方法
      * @param <V>        collection中的泛型
      * @param <K>        map中的key类型
      * @return 转化后的map
      */
     public static <V, K> Map<K, V> toIdentityMap(Collection<V> collection, Function<V, K> key) {
+        return toIdentityMap(collection, key, false);
+    }
+
+
+    /**
+     * 将collection转化为类型不变的map
+     * <B>{@code Collection<V>  ---->  Map<K,V>}</B>
+     *
+     * @param collection 需要转化的集合
+     * @param key        V类型转化为K类型的lambda方法
+     * @param isParallel 是否并行流
+     * @param <V>        collection中的泛型
+     * @param <K>        map中的key类型
+     * @return 转化后的map
+     */
+    public static <V, K> Map<K, V> toIdentityMap(Collection<V> collection, Function<V, K> key, boolean isParallel) {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return collection.stream().collect(Collectors.toMap(key, Function.identity(), (l, r) -> l));
+        return StreamKit.of(collection, isParallel)
+                .collect(Collectors.toMap(key, Function.identity(), (l, r) -> l));
     }
 
     /**
      * 将Collection转化为map(value类型与collection的泛型不同)
-     * <B>{@code Collection<E> -----> Map<T,U>  }</B>
+     * <B>{@code Collection<E> -----> Map<K,V>  }</B>
      *
      * @param collection 需要转化的集合
-     * @param key        E类型转化为T类型的lambda方法
-     * @param value      E类型转化为U类型的lambda方法
+     * @param key        E类型转化为K类型的lambda方法
+     * @param value      E类型转化为V类型的lambda方法
      * @param <E>        collection中的泛型
      * @param <K>        map中的key类型
      * @param <V>        map中的value类型
      * @return 转化后的map
      */
     public static <E, K, V> Map<K, V> toMap(Collection<E> collection, Function<E, K> key, Function<E, V> value) {
-        if (isEmpty(collection)) {
-            return Collections.emptyMap();
-        }
-        return collection.stream().collect(Collectors.toMap(key, value));
+        return toMap(collection, key, value, false);
     }
 
     /**
+     * @param collection 需要转化的集合
+     * @param key        E类型转化为K类型的lambda方法
+     * @param value      E类型转化为V类型的lambda方法
+     * @param isParallel 是否并行流
+     * @param <E>        collection中的泛型
+     * @param <K>        map中的key类型
+     * @param <V>        map中的value类型
+     * @return 转化后的map
+     */
+    public static <E, K, V> Map<K, V> toMap(Collection<E> collection, Function<E, K> key, Function<E, V> value, boolean isParallel) {
+        if (isEmpty(collection)) {
+            return Collections.emptyMap();
+        }
+        return StreamKit.of(collection, isParallel).collect(Collectors.toMap(key, value, (l, r) -> l));
+    }
+
+
+    /**
      * 将collection按照规则(比如有相同的班级id)分类成map
-     * <B>{@code Collection<E> -------> Map<T,List<E>> } </B>
+     * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
      *
      * @param collection 需要分类的集合
      * @param key        分类的规则
@@ -3360,12 +3392,25 @@ public class CollKit {
      * @return 分类后的map
      */
     public static <E, K> Map<K, List<E>> groupByKey(Collection<E> collection, Function<E, K> key) {
+        return groupByKey(collection, key, false);
+    }
+
+    /**
+     * 将collection按照规则(比如有相同的班级id)分类成map
+     * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
+     *
+     * @param collection 需要分类的集合
+     * @param key        分类的规则
+     * @param isParallel 是否并行流
+     * @param <E>        collection中的泛型
+     * @param <K>        map中的key类型
+     * @return 分类后的map
+     */
+    public static <E, K> Map<K, List<E>> groupByKey(Collection<E> collection, Function<E, K> key, boolean isParallel) {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return collection
-                .stream()
-                .collect(Collectors.groupingBy(key, Collectors.toList()));
+        return StreamKit.of(collection, isParallel).collect(Collectors.groupingBy(key, Collectors.toList()));
     }
 
     /**
@@ -3381,11 +3426,29 @@ public class CollKit {
      * @return 分类后的map
      */
     public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(Collection<E> collection, Function<E, K> key1, Function<E, U> key2) {
+        return groupBy2Key(collection, key1, key2, false);
+    }
+
+
+    /**
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分类成双层map
+     * <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
+     *
+     * @param collection 需要分类的集合
+     * @param key1       第一个分类的规则
+     * @param key2       第二个分类的规则
+     * @param isParallel 是否并行流
+     * @param <E>        集合元素类型
+     * @param <K>        第一个map中的key类型
+     * @param <U>        第二个map中的key类型
+     * @return 分类后的map
+     */
+    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(Collection<E> collection, Function<E, K> key1,
+                                                                Function<E, U> key2, boolean isParallel) {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return collection
-                .stream()
+        return StreamKit.of(collection, isParallel)
                 .collect(Collectors.groupingBy(key1, Collectors.groupingBy(key2, Collectors.toList())));
     }
 
@@ -3402,12 +3465,29 @@ public class CollKit {
      * @return 分类后的map
      */
     public static <E, T, U> Map<T, Map<U, E>> group2Map(Collection<E> collection, Function<E, T> key1, Function<E, U> key2) {
-        if (isEmpty(collection) || null == key1 || null == key2) {
+        return group2Map(collection, key1, key2, false);
+    }
+
+    /**
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分类成双层map
+     * <B>{@code Collection<E>  --->  Map<T,Map<U,E>> } </B>
+     *
+     * @param collection 需要分类的集合
+     * @param key1       第一个分类的规则
+     * @param key2       第二个分类的规则
+     * @param isParallel 是否并行流
+     * @param <T>        第一个map中的key类型
+     * @param <U>        第二个map中的key类型
+     * @param <E>        collection中的泛型
+     * @return 分类后的map
+     */
+    public static <E, T, U> Map<T, Map<U, E>> group2Map(Collection<E> collection,
+                                                        Function<E, T> key1, Function<E, U> key2, boolean isParallel) {
+        if (isEmpty(collection) || key1 == null || key2 == null) {
             return Collections.emptyMap();
         }
-        return collection
-                .stream()
-                .collect(Collectors.groupingBy(key1, Collectors.toMap(key2, Function.identity())));
+        return StreamKit.of(collection, isParallel)
+                .collect(Collectors.groupingBy(key1, Collectors.toMap(key2, Function.identity(), (l, r) -> l)));
     }
 
     /**
@@ -3421,11 +3501,25 @@ public class CollKit {
      * @return 转化后的list
      */
     public static <E, T> List<T> toList(Collection<E> collection, Function<E, T> function) {
+        return toList(collection, function, false);
+    }
+
+    /**
+     * 将collection转化为List集合，但是两者的泛型不同
+     * <B>{@code Collection<E>  ------>  List<T> } </B>
+     *
+     * @param collection 需要转化的集合
+     * @param function   collection中的泛型转化为list泛型的lambda表达式
+     * @param isParallel 是否并行流
+     * @param <E>        collection中的泛型
+     * @param <T>        List中的泛型
+     * @return 转化后的list
+     */
+    public static <E, T> List<T> toList(Collection<E> collection, Function<E, T> function, boolean isParallel) {
         if (isEmpty(collection)) {
             return Collections.emptyList();
         }
-        return collection
-                .stream()
+        return StreamKit.of(collection, isParallel)
                 .map(function)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -3442,11 +3536,25 @@ public class CollKit {
      * @return 转化后的Set
      */
     public static <E, T> Set<T> toSet(Collection<E> collection, Function<E, T> function) {
-        if (isEmpty(collection) || null == function) {
+        return toSet(collection, function, false);
+    }
+
+    /**
+     * 将collection转化为Set集合，但是两者的泛型不同
+     * <B>{@code Collection<E>  ------>  Set<T> } </B>
+     *
+     * @param collection 需要转化的集合
+     * @param function   collection中的泛型转化为set泛型的lambda表达式
+     * @param isParallel 是否并行流
+     * @param <E>        collection中的泛型
+     * @param <T>        Set中的泛型
+     * @return 转化后的Set
+     */
+    public static <E, T> Set<T> toSet(Collection<E> collection, Function<E, T> function, boolean isParallel) {
+        if (isEmpty(collection)) {
             return Collections.emptySet();
         }
-        return collection
-                .stream()
+        return StreamKit.of(collection, isParallel)
                 .map(function)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
@@ -3475,12 +3583,12 @@ public class CollKit {
         Set<K> key = new HashSet<>();
         key.addAll(map1.keySet());
         key.addAll(map2.keySet());
-        Map<K, V> map = new HashMap<>();
+        Map<K, V> map = MapKit.newHashMap(key.size());
         for (K t : key) {
             X x = map1.get(t);
             Y y = map2.get(t);
             V z = merge.apply(x, y);
-            if (null != z) {
+            if (z != null) {
                 map.put(t, z);
             }
         }

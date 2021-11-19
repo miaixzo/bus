@@ -99,23 +99,22 @@ public class Lunar {
             "艮", "坎", "乾", "兑", "坤", "坤", "艮", "离", "巽", "震"
     };
     /**
-     * 福神方位 ：甲乙东南是福神，丙丁正东是堪宜，戊北己南庚辛坤，壬在乾方癸在西。
+     * 流派1《福神方位歌》：甲乙东南是福神，丙丁正东是堪宜，戊北己南庚辛坤，壬在乾方癸在西。
      */
     public static final String[] POSITION_FU = {
-            "巽", "巽", "震", "震", "坎", "离", "坤", "坤", "乾", "兑"
+            "", "巽", "巽", "震", "震", "坎", "离", "坤", "坤", "乾", "兑"
+    };
+    /**
+     * 流派2《福神方位歌》：甲己正北是福神，丙辛西北乾宫存，乙庚坤位戊癸艮，丁壬巽上好追寻。
+     */
+    public static final String[] POSITION_FU_2 = {
+            "", "坎", "坤", "乾", "巽", "艮", "坎", "坤", "乾", "巽", "艮"
     };
     /**
      * 财神方位 ：甲乙东北是财神，丙丁向在西南寻，戊己正北坐方位，庚辛正东去安身，壬癸原来正南坐，便是财神方位真
      */
     public static final String[] POSITION_CAI = {
             "艮", "艮", "坤", "坤", "坎", "坎", "震", "震", "离", "离"
-    };
-    /**
-     * 逐月胎神方位
-     */
-    public static final String[] POSITION_TAI_MONTH = {
-            "占房床", "占户窗", "占门堂", "占厨灶", "占身床", "占床仓", "占碓磨", "占厕户", "占门房",
-            "占房床", "占炉灶", "占房床"
     };
     /**
      * 地支相冲(子午相冲，丑未相冲，寅申相冲，辰戌相冲，卯酉相冲，巳亥相冲)
@@ -170,20 +169,24 @@ public class Lunar {
             "渐盈凸", "小望", "望", "既望", "立待", "居待", "寝待", "更待", "渐亏凸", "下弦", "下弦",
             "有明", "有明", "蛾眉残", "蛾眉残", "残", "晓", "晦"
     };
-    /**
-     * 逐日胎神方位
-     */
     public static final String[] POSITION_TAI_DAY = {
-            "占门碓外东南", "碓磨厕外东南", "厨灶炉外正南", "仓库门外正南", "房床厕外正南", "占门床外正南",
-            "占碓磨外正南", "厨灶厕外西南", "仓库炉外西南", "房床门外西南", "门鸡栖外西南", "碓磨床外西南",
-            "厨灶碓外西南", "仓库厕外西南", "房床厕外正南", "房床炉外正西", "碓磨栖外正西", "厨灶床外正西",
-            "仓库碓外西北", "房床厕外西北", "占门炉外西北", "碓磨门外西北", "厨灶栖外西北", "仓库床外西北",
-            "房床碓外正北", "占门厕外正北", "碓磨炉外正北", "厨灶门外正北", "仓库栖外正北", "占房床房内北",
-            "占门碓房内北", "碓磨厕房内北", "厨灶炉房内北", "仓库门房内北", "门鸡栖外西南", "占门床房内南",
-            "占碓磨房内南", "厨灶厕房内南", "仓库炉房内南", "房床门房内南", "门鸡栖房内东", "碓磨床房内东",
-            "厨灶碓房内东", "仓库厕房内东", "房床炉房内东", "占大门外东北", "碓磨栖外东北", "厨灶床外东北",
-            "仓库碓外东北", "房床厕外东北", "占门炉外东北", "碓磨门外正东", "厨灶栖外正东", "仓库床外正东",
-            "房床碓外正东", "占门厕外正东", "碓磨炉外东南", "仓库栖外东南", "占房床外东南", "占门碓外东南"
+            "占门碓 外东南", "碓磨厕 外东南", "厨灶炉 外正南", "仓库门 外正南", "房床栖 外正南", "占门床 外正南",
+            "占碓磨 外正南", "厕灶厨 外西南", "仓库炉 外西南", "房床门 外西南", "门碓栖 外西南", "碓磨床 外西南",
+            "厨灶碓 外西南", "仓库厕 外正西", "房床炉 外正西", "占大门 外正西", "碓磨栖 外正西", "厨房床 外正西",
+            "仓库碓 外西北", "房床厕 外西北", "占门炉 外西北", "门碓磨 外西北", "厨灶栖 外西北", "仓库床 外西北",
+            "房床碓 外正北", "占门厕 外正北", "碓磨炉 外正北", "厨灶门 外正北", "仓库栖 外正北", "占房床 房内北",
+            "占门碓 房内北", "碓磨厕 房内北", "厨灶炉 房内北", "门仓库 房内北", "床房栖 房内中", "占门床 房内中",
+            "占碓磨 房内南", "厨磨厕 房内南", "仓库炉 房内南", "房床门 房内西", "门碓栖 房内东", "碓磨床 房内东",
+            "厨灶碓 房内东", "仓库厕 房内东", "房床炉 房内中", "占大门 外东北", "碓磨栖 外东北", "厨灶床 外东北",
+            "仓库碓 外东北", "房床厕 外东北", "占门炉 外东北", "门碓磨 外正东", "厨灶栖 外正东", "仓库床 外正东",
+            "房床碓 外正东", "占门厕 外正东", "碓磨炉 外东南", "厨灶门 外东南", "仓库栖 外东南", "占房床 外东南"
+    };
+    /**
+     * 逐月胎神方位
+     */
+    public static final String[] POSITION_TAI_MONTH = {
+            "占房床", "占户窗", "占门堂", "占厨灶", "占房床", "占床仓", "占碓磨", "占厕户", "占门房", "占房床",
+            "占灶炉", "占房床"
     };
     /**
      * 地支对应天神偏移下标
@@ -3356,21 +3359,41 @@ public class Lunar {
     }
 
     /**
-     * 获取日福神方位
+     * 获取日福神方位（默认流派：2）
      *
      * @return 福神方位，如艮
      */
     public String getDayPositionFu() {
-        return POSITION_FU[dayGanIndex];
+        return getDayPositionFu(2);
+    }
+
+    /**
+     * 获取日福神方位
+     *
+     * @param sect 流派，1或2
+     * @return 福神方位，如艮
+     */
+    public String getDayPositionFu(int sect) {
+        return (1 == sect ? POSITION_FU : POSITION_FU_2)[dayGanIndex + 1];
+    }
+
+    /**
+     * 获取日福神方位描述（默认流派：2）
+     *
+     * @return 福神方位描述，如东北
+     */
+    public String getDayPositionFuDesc() {
+        return getDayPositionFuDesc(2);
     }
 
     /**
      * 获取日福神方位描述
      *
+     * @param sect 流派，1或2
      * @return 福神方位描述，如东北
      */
-    public String getDayPositionFuDesc() {
-        return POSITION_DESC.get(getDayPositionFu());
+    public String getDayPositionFuDesc(int sect) {
+        return POSITION_DESC.get(getDayPositionFu(sect));
     }
 
     /**
@@ -3446,21 +3469,41 @@ public class Lunar {
     }
 
     /**
-     * 获取时辰福神方位
+     * 获取时辰福神方位，默认流派2
      *
      * @return 福神方位，如艮
      */
     public String getTimePositionFu() {
-        return POSITION_FU[timeGanIndex];
+        return getTimePositionFu(2);
+    }
+
+    /**
+     * 获取时辰福神方位
+     *
+     * @param sect 流派，1或2
+     * @return 福神方位，如艮
+     */
+    public String getTimePositionFu(int sect) {
+        return (1 == sect ? POSITION_FU : POSITION_FU_2)[timeGanIndex + 1];
+    }
+
+    /**
+     * 获取时辰福神方位描述，默认流派2
+     *
+     * @return 福神方位描述，如东北
+     */
+    public String getTimePositionFuDesc() {
+        return getTimePositionFuDesc(2);
     }
 
     /**
      * 获取时辰福神方位描述
      *
+     * @param sect 流派，1或2
      * @return 福神方位描述，如东北
      */
-    public String getTimePositionFuDesc() {
-        return POSITION_DESC.get(getTimePositionFu());
+    public String getTimePositionFuDesc(int sect) {
+        return POSITION_DESC.get(getTimePositionFu(sect));
     }
 
     /**
@@ -3594,11 +3637,7 @@ public class Lunar {
      * @return 逐日胎神方位
      */
     public String getDayPositionTai() {
-        int offset = dayGanIndex - dayZhiIndex;
-        if (offset < 0) {
-            offset += 12;
-        }
-        return POSITION_TAI_DAY[offset * 5 + dayGanIndex];
+        return POSITION_TAI_DAY[getJiaZiIndex(getDayInGanZhi())];
     }
 
     /**
@@ -5555,16 +5594,36 @@ public class Lunar {
          * @return 福神方位，如艮
          */
         public String getPositionFu() {
-            return POSITION_FU[ganIndex + 1];
+            return getPositionFu(2);
+        }
+
+        /**
+         * 获取福神方位
+         *
+         * @param sect 流派，1或2
+         * @return 福神方位，如艮
+         */
+        public String getPositionFu(int sect) {
+            return (1 == sect ? POSITION_FU : POSITION_FU_2)[ganIndex + 1];
+        }
+
+        /**
+         * 获取福神方位描述（默认流派：2）
+         *
+         * @return 福神方位描述，如东北
+         */
+        public String getPositionFuDesc() {
+            return getPositionFuDesc(2);
         }
 
         /**
          * 获取福神方位描述
          *
+         * @param sect 流派，1或2
          * @return 福神方位描述，如东北
          */
-        public String getPositionFuDesc() {
-            return POSITION_DESC.get(getPositionFu());
+        public String getPositionFuDesc(int sect) {
+            return POSITION_DESC.get(getPositionFu(sect));
         }
 
         /**
