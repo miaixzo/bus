@@ -159,7 +159,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param sheetName sheet名,做为第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(File destFile, String sheetName) {
-        this(destFile.exists() ? WorksKit.createBook(FileKit.getInputStream(destFile), true) : WorksKit.createBook(StringKit.endWithIgnoreCase(destFile.getName(), ".xlsx")), sheetName);
+        this(WorksKit.createBookForWriter(destFile), sheetName);
         this.destFile = destFile;
     }
 

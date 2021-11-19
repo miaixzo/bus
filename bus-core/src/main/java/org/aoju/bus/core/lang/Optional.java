@@ -1,8 +1,10 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.lang.function.VoidFunc0;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -87,6 +89,17 @@ public class Optional<T> {
     }
 
     /**
+     * 返回一个包裹里{@code List}集合可能为空的{@code Opt}，额外判断了集合内元素为空的情况
+     *
+     * @param value 传入需要包裹的元素
+     * @param <T>   包裹里元素的类型
+     * @return 一个包裹里元素可能为空的 {@code Opt}
+     */
+    public static <T> Optional<List<T>> ofEmptyAble(List<T> value) {
+        return CollKit.isEmpty(value) ? empty() : new Optional<>(value);
+    }
+
+    /**
      * 返回包裹里的元素，取不到则为{@code null}，注意！！！此处和{@link java.util.Optional#get()}不同的一点是本方法并不会抛出{@code NoSuchElementException}
      * 如果元素为空，则返回{@code null}，如果需要一个绝对不能为{@code null}的值，则使用{@link #orElseThrow()}
      * 如果需要一个绝对不能为 {@code null}的值，则使用{@link #orElseThrow()}
@@ -129,6 +142,21 @@ public class Optional<T> {
     }
 
     /**
+     * 执行一系列操作，如果途中发生 {@code NPE} 和 {@code IndexOutOfBoundsException}，返回一个空的{@code Opt}
+     *
+     * @param supplier 操作
+     * @param <T>      类型
+     * @return 操作执行后的值
+     */
+    public static <T> Optional<T> exec(Supplier<T> supplier) {
+        try {
+            return Optional.ofNullable(supplier.get());
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            return empty();
+        }
+    }
+
+    /**
      * 如果包裹里的值存在，就执行传入的操作({@link Consumer#accept})
      *
      * <p> 例如如果值存在就打印结果
@@ -137,12 +165,14 @@ public class Optional<T> {
      * }</pre>
      *
      * @param action 你想要执行的操作
+     * @return this
      * @throws NullPointerException 如果包裹里的值存在，但你传入的操作为{@code null}时抛出
      */
-    public void ifPresent(Consumer<? super T> action) {
-        if (value != null) {
+    public Optional<T> ifPresent(Consumer<? super T> action) {
+        if (isPresent()) {
             action.accept(value);
         }
+        return this;
     }
 
     /**
@@ -157,14 +187,16 @@ public class Optional<T> {
      *
      * @param action      包裹里的值存在时的操作
      * @param emptyAction 包裹里的值不存在时的操作
+     * @return this
      * @throws NullPointerException 如果包裹里的值存在时，执行的操作为 {@code null}, 或者包裹里的值不存在时的操作为 {@code null}，则抛出{@code NPE}
      */
-    public void ifPresentOrElse(Consumer<? super T> action, VoidFunc0 emptyAction) {
-        if (value != null) {
+    public Optional<T> ifPresentOrElse(Consumer<? super T> action, VoidFunc0 emptyAction) {
+        if (isPresent()) {
             action.accept(value);
         } else {
             emptyAction.callWithRuntimeException();
         }
+        return this;
     }
 
     /**
@@ -397,6 +429,31 @@ public class Optional<T> {
      */
     public java.util.Optional<T> toOptional() {
         return java.util.Optional.ofNullable(this.value);
+    }
+
+    /**
+     * 如果包裹里的值存在，就执行传入的值存在时的操作({@link Function#apply(Object)})支持链式调用、转换为其他类型
+     * 否则执行传入的值不存在时的操作({@link VoidFunc0}中的{@link VoidFunc0#call()})
+     *
+     * <p>
+     * 如果值存在就转换为大写，否则用{@code Console.error}打印另一句字符串
+     * <pre>{@code
+     * String text = Optional.ofBlankAble("bus").mapOrElse(String::toUpperCase, () -> Console.log("yes")).mapOrElse(String::intern, () -> Console.log("Value is not present~")).get();
+     * }</pre>
+     *
+     * @param <U>         操作返回值的类型
+     * @param mapper      包裹里的值存在时的操作
+     * @param emptyAction 包裹里的值不存在时的操作
+     * @return this
+     * @throws NullPointerException 如果包裹里的值存在时，执行的操作为 {@code null}, 或者包裹里的值不存在时的操作为 {@code null}，则抛出{@code NPE}
+     */
+    public <U> Optional<U> mapOrElse(Function<? super T, ? extends U> mapper, VoidFunc0 emptyAction) {
+        if (isPresent()) {
+            return ofNullable(mapper.apply(value));
+        } else {
+            emptyAction.callWithRuntimeException();
+            return empty();
+        }
     }
 
     /**

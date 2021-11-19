@@ -19,6 +19,10 @@ import java.util.Map;
 public class ClazzLoader<T extends Resource> extends SecureClassLoader {
 
     private final Map<String, T> resourceMap;
+    /**
+     * 缓存已经加载的类
+     */
+    private final Map<String, Class<?>> cacheClassMap;
 
     /**
      * 构造
@@ -29,6 +33,7 @@ public class ClazzLoader<T extends Resource> extends SecureClassLoader {
     public ClazzLoader(ClassLoader parentClassLoader, Map<String, T> resourceMap) {
         super(ObjectKit.defaultIfNull(parentClassLoader, ClassKit.getClassLoader()));
         this.resourceMap = ObjectKit.defaultIfNull(resourceMap, new HashMap<>());
+        this.cacheClassMap = new HashMap<>();
     }
 
     /**
@@ -44,12 +49,27 @@ public class ClazzLoader<T extends Resource> extends SecureClassLoader {
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
+        final Class<?> clazz = cacheClassMap.computeIfAbsent(name, this::defineByName);
+        if (clazz == null) {
+            return super.findClass(name);
+        }
+        return clazz;
+    }
+
+    /**
+     * 从给定资源中读取class的二进制流，然后生成类
+     * 如果这个类资源不存在，返回{@code null}
+     *
+     * @param name 类名
+     * @return 定义的类
+     */
+    private Class<?> defineByName(String name) {
         final Resource resource = resourceMap.get(name);
         if (null != resource) {
             final byte[] bytes = resource.readBytes();
             return defineClass(name, bytes, 0, bytes.length);
         }
-        return super.findClass(name);
+        return null;
     }
 
 }

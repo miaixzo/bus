@@ -64,16 +64,16 @@ public abstract class BeanRowHandler<T> extends AbstractRowHandler<T> {
         super(startRowIndex, endRowIndex);
         Assert.isTrue(headerRowIndex <= startRowIndex, "Header row must before the start row!");
         this.headerRowIndex = headerRowIndex;
-        this.convertFunc = (rowList) -> BeanKit.toBean(IterKit.toMap(headerList, rowList), clazz);
+        this.convertFunc = (rowCells) -> BeanKit.toBean(IterKit.toMap(headerList, rowCells), clazz);
     }
 
     @Override
-    public void handle(int sheetIndex, long rowIndex, List<Object> rowList) {
+    public void handle(int sheetIndex, long rowIndex, List<Object> rowCells) {
         if (rowIndex == this.headerRowIndex) {
-            this.headerList = CollKit.unmodifiable(Convert.toList(String.class, rowList));
+            this.headerList = CollKit.unmodifiable(Convert.toList(String.class, rowCells));
             return;
         }
-        super.handle(sheetIndex, rowIndex, rowList);
+        super.handle(sheetIndex, rowIndex, rowCells);
     }
 
 }

@@ -1384,7 +1384,7 @@ public class FileKit {
      */
     public static int indexOfSuffix(String filename) {
         if (null == filename) {
-            return -1;
+            return Normal.__1;
         }
         int extensionPos = filename.lastIndexOf(Symbol.DOT);
         int lastSeparator = indexOfLastSeparator(filename);
@@ -1403,7 +1403,7 @@ public class FileKit {
      */
     public static int indexOfLastSeparator(String filename) {
         if (null == filename) {
-            return -1;
+            return Normal.__1;
         }
         int lastUnixPos = filename.lastIndexOf(Symbol.SLASH);
         int lastWindowsPos = filename.lastIndexOf(Symbol.BACKSLASH);
@@ -1617,7 +1617,7 @@ public class FileKit {
                 }
             }
         }
-        return -1;
+        return Normal.__1;
     }
 
     /**
@@ -1683,7 +1683,7 @@ public class FileKit {
         // 统一使用斜杠
         pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH);
         // 去除开头空白符，末尾空白符合法，不去除
-        pathToUse = StringKit.trim(pathToUse, -1);
+        pathToUse = StringKit.trim(pathToUse, Normal.__1);
         //兼容Windows下的共享目录路径（原始路径如果以\\开头，则保留这种路径）
         if (path.startsWith("\\\\")) {
             pathToUse = Symbol.BACKSLASH + pathToUse;
@@ -1691,7 +1691,7 @@ public class FileKit {
 
         String prefix = Normal.EMPTY;
         int prefixIndex = pathToUse.indexOf(Symbol.COLON);
-        if (prefixIndex > -1) {
+        if (prefixIndex > Normal.__1) {
             // 可能Windows风格路径
             prefix = pathToUse.substring(0, prefixIndex + 1);
             if (StringKit.startWith(prefix, Symbol.C_SLASH)) {
@@ -1800,7 +1800,7 @@ public class FileKit {
      * @return 获取的子路径
      */
     public static Path getPathEle(Path path, int index) {
-        return subPath(path, index, index == -1 ? path.getNameCount() : index + 1);
+        return subPath(path, index, index == Normal.__1 ? path.getNameCount() : index + 1);
     }
 
     /**
@@ -1888,7 +1888,7 @@ public class FileKit {
 
         int begin = 0;
         char c;
-        for (int i = len - 1; i > -1; i--) {
+        for (int i = len - 1; i > Normal.__1; i--) {
             c = filePath.charAt(i);
             if (CharsKit.isFileSeparator(c)) {
                 //查找最后一个路径分隔符(/或者\)
@@ -1940,7 +1940,7 @@ public class FileKit {
             return null;
         }
         int index = fileName.lastIndexOf(Symbol.DOT);
-        if (index == -1) {
+        if (index == Normal.__1) {
             return Normal.EMPTY;
         } else {
             String ext = fileName.substring(index + 1);
@@ -1983,7 +1983,7 @@ public class FileKit {
         int begin = 0;
         int end = len;
         char c;
-        for (int i = len - 1; i > -1; i--) {
+        for (int i = len - 1; i > Normal.__1; i--) {
             c = fileName.charAt(i);
             if (len == end && Symbol.C_DOT == c) {
                 // 查找最后一个文件名和扩展名的分隔符：.
@@ -3620,7 +3620,7 @@ public class FileKit {
         }
 
         final int index = indexOfSuffix(filename);
-        if (index == -1) {
+        if (index == Normal.__1) {
             return filename;
         } else {
             return filename.substring(0, index);
@@ -3641,7 +3641,7 @@ public class FileKit {
         failIfNullBytePresent(filename);
 
         if (null == suffix || suffix.isEmpty()) {
-            return indexOfSuffix(filename) == -1;
+            return indexOfSuffix(filename) == Normal.__1;
         }
         final String fileSuffix = getSuffix(filename);
         return fileSuffix.equals(suffix);
@@ -3661,7 +3661,7 @@ public class FileKit {
         failIfNullBytePresent(filename);
 
         if (null == suffixs || suffixs.length == 0) {
-            return indexOfSuffix(filename) == -1;
+            return indexOfSuffix(filename) == Normal.__1;
         }
         final String fileSuffix = getSuffix(filename);
         for (final String suffix : suffixs) {
@@ -3686,7 +3686,7 @@ public class FileKit {
         failIfNullBytePresent(filename);
 
         if (null == suffixs || suffixs.isEmpty()) {
-            return indexOfSuffix(filename) == -1;
+            return indexOfSuffix(filename) == Normal.__1;
         }
         final String fileSuffix = getSuffix(filename);
         for (final String suffix : suffixs) {

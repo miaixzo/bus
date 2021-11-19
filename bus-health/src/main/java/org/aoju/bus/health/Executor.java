@@ -36,6 +36,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -114,31 +115,13 @@ public final class Executor {
      * string if the command failed
      */
     public static List<String> runNative(String[] cmdToRunWithArgs, String[] envp) {
-        Process p;
         try {
-            p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
+            Process p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
+            return getProcessOutputAndDestroy(p, cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
             Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
-            return new ArrayList<>(0);
         }
-
-        ArrayList<String> sa = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
-            String line;
-            while (null != (line = reader.readLine())) {
-                sa.add(line);
-            }
-            p.waitFor();
-        } catch (IOException e) {
-            Logger.trace("Problem reading output from {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
-            return new ArrayList<>(0);
-        } catch (InterruptedException ie) {
-            Logger.trace("Interrupted while reading output from {}: {}", Arrays.toString(cmdToRunWithArgs),
-                    ie.getMessage());
-            Thread.currentThread().interrupt();
-        }
-        return sa;
+        return Collections.emptyList();
     }
 
     /**
@@ -167,6 +150,26 @@ public final class Executor {
             return sa.get(answerIdx);
         }
         return Normal.EMPTY;
+    }
+
+    private static List<String> getProcessOutputAndDestroy(Process p, String[] cmd) {
+        ArrayList<String> sa = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sa.add(line);
+            }
+            p.waitFor();
+        } catch (IOException e) {
+            Logger.trace("Problem reading output from {}: {}", Arrays.toString(cmd), e.getMessage());
+        } catch (InterruptedException ie) {
+            Logger.trace("Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
+            Thread.currentThread().interrupt();
+        } finally {
+            p.destroy();
+        }
+        return sa;
     }
 
 }
