@@ -54,7 +54,7 @@ public class CitizenIdStrategy extends AbstractProvider {
     private static String cardId(final String cardId, final String shadow) {
         final int prefixLength = 6;
         final String middle = StringKit.fill(10, shadow);
-        return StringKit.buildString(cardId, middle, prefixLength);
+        return StringKit.build(cardId, middle, prefixLength);
     }
 
     @Override

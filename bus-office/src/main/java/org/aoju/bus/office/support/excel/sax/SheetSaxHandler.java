@@ -53,11 +53,11 @@ public class SheetSaxHandler extends DefaultHandler {
     /**
      * 上一次的内容
      */
-    private final TextBuilder lastContent = StringKit.builders();
+    private final TextBuilder lastContent = new TextBuilder();
     /**
      * 上一次的内容
      */
-    private final TextBuilder lastFormula = StringKit.builders();
+    private final TextBuilder lastFormula = new TextBuilder();
     /**
      * 单元格的格式表，对应style.xml
      */

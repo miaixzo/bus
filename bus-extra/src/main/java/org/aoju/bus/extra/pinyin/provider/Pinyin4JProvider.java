@@ -34,7 +34,6 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * Pinyin4j 引擎
@@ -98,7 +97,7 @@ public class Pinyin4JProvider extends AbstractPinyinProvider {
 
     @Override
     public String getPinyin(String text, String separator) {
-        final TextBuilder result = StringKit.builders();
+        final TextBuilder result = new TextBuilder();
         boolean isFirst = true;
         final int strLen = text.length();
         try {

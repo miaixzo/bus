@@ -59,7 +59,7 @@ public class AddressStrategy extends AbstractProvider {
         final Shield shield = context.getShield();
         int length = StringKit.length(value);
         if (length > RIGHT + LEFT) {
-            return StringKit.rightPad(StringKit.left(value, length - RIGHT), length, shield.shadow());
+            return StringKit.padPre(StringKit.left(value, length - RIGHT), length, shield.shadow());
         }
         if (length <= LEFT) {
             return value;

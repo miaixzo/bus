@@ -4227,4 +4227,35 @@ public class CharsKit {
         return ArrayKit.firstNonNull(CharsKit::isNotBlank, texts);
     }
 
+    /**
+     * 检查CharSequence是否以提供的大小写敏感的后缀结尾.
+     *
+     * <pre>
+     * StringKit.endsWithAny(null, null)      = false
+     * StringKit.endsWithAny(null, new String[] {"abc"})  = false
+     * StringKit.endsWithAny("abcxyz", null)     = false
+     * StringKit.endsWithAny("abcxyz", new String[] {""}) = true
+     * StringKit.endsWithAny("abcxyz", new String[] {"xyz"}) = true
+     * StringKit.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringKit.endsWithAny("abcXYZ", "def", "XYZ") = true
+     * StringKit.endsWithAny("abcXYZ", "def", "xyz") = false
+     * </pre>
+     *
+     * @param text 要检查的CharSequence可能为空
+     * @param word 要查找的区分大小写的字符序列可以是空的，也可以包含{@code null}
+     * @return {如果输入{@code sequence}是{@code null}， 并且没有提供{@code searchstring}，
+     * 或者输入{@code sequence}以提供的区分大小写的{@code searchstring}结尾.
+     */
+    public static boolean endsWithAny(final CharSequence text, final CharSequence... word) {
+        if (isEmpty(text) || ArrayKit.isEmpty(word)) {
+            return false;
+        }
+        for (final CharSequence val : word) {
+            if (endWith(text, val)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

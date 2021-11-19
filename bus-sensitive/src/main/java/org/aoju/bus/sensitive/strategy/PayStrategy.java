@@ -51,7 +51,7 @@ public class PayStrategy extends AbstractProvider {
         String agreementNo = object.toString();
         return StringKit.left(agreementNo, 6).concat(
                 StringKit.removeStart(
-                        StringKit.leftPad(
+                        StringKit.padPre(
                                 StringKit.right(agreementNo, 6),
                                 StringKit.length(agreementNo), shield.shadow()
                         ),
