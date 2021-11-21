@@ -28,7 +28,10 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.function.Func1;
-import org.aoju.bus.core.text.*;
+import org.aoju.bus.core.text.ASCIICache;
+import org.aoju.bus.core.text.NamingCase;
+import org.aoju.bus.core.text.TextFormatter;
+import org.aoju.bus.core.text.TextSplitter;
 import org.aoju.bus.core.text.finder.CharFinder;
 import org.aoju.bus.core.text.finder.StringFinder;
 
@@ -2485,22 +2488,23 @@ public class CharsKit {
      * StringKit.repeatAndJoin("?", 5, null)  = "?????"
      * </pre>
      *
-     * @param text        被重复的字符串
-     * @param count       数量
-     * @param conjunction 分界符
+     * @param text      被重复的字符串
+     * @param count     数量
+     * @param delimiter 分界符
      * @return 连接后的字符串
      */
-    public static String repeatAndJoin(CharSequence text, int count, CharSequence conjunction) {
+    public static String repeatAndJoin(CharSequence text, int count, CharSequence delimiter) {
         if (count <= 0) {
             return Normal.EMPTY;
         }
-        final TextBuilder builder = TextBuilder.create();
-        boolean isFirst = true;
+        final StringBuilder builder = new StringBuilder(text.length() * count);
+        builder.append(text);
+        count--;
+
+        final boolean isAppendDelimiter = isNotEmpty(delimiter);
         while (count-- > 0) {
-            if (isFirst) {
-                isFirst = false;
-            } else if (isNotEmpty(conjunction.toString())) {
-                builder.append(conjunction);
+            if (isAppendDelimiter) {
+                builder.append(delimiter);
             }
             builder.append(text);
         }
@@ -2634,30 +2638,30 @@ public class CharsKit {
             replacement = Normal.EMPTY;
         }
 
-        final int strLength = text.length();
+        final int textLength = text.length();
         final int wordLength = word.length();
-        if (fromIndex > strLength) {
+        if (fromIndex > textLength) {
             return toString(text);
         } else if (fromIndex < 0) {
             fromIndex = 0;
         }
 
-        final TextKit result = TextKit.create(strLength + Normal._16);
+        final StringBuilder result = new StringBuilder(textLength - wordLength + replacement.length());
         if (0 != fromIndex) {
             result.append(text.subSequence(0, fromIndex));
         }
 
         int preIndex = fromIndex;
-        int index = fromIndex;
+        int index;
         while ((index = indexOf(text, word, preIndex, ignoreCase)) > -1) {
             result.append(text.subSequence(preIndex, index));
             result.append(replacement);
             preIndex = index + wordLength;
         }
 
-        if (preIndex < strLength) {
+        if (preIndex < textLength) {
             // 结尾部分
-            result.append(text.subSequence(preIndex, strLength));
+            result.append(text.subSequence(preIndex, textLength));
         }
         return result.toString();
     }

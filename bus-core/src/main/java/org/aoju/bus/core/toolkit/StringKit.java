@@ -215,7 +215,7 @@ public class StringKit extends CharsKit {
      * @return 字符串
      */
     public static String toString(byte[] bytes, String charset) {
-        return toString(bytes, isBlank(charset) ? java.nio.charset.Charset.defaultCharset() : java.nio.charset.Charset.forName(charset));
+        return toString(bytes, Charset.charset(charset));
     }
 
     /**
@@ -244,7 +244,7 @@ public class StringKit extends CharsKit {
      * @return 字符串
      */
     public static String toString(Byte[] bytes, String charset) {
-        return toString(bytes, isBlank(charset) ? java.nio.charset.Charset.defaultCharset() : java.nio.charset.Charset.forName(charset));
+        return toString(bytes, Charset.charset(charset));
     }
 
     /**
@@ -344,6 +344,16 @@ public class StringKit extends CharsKit {
         }
 
         return Normal.EMPTY;
+    }
+
+    /**
+     * 调用对象的toString方法，null会返回{@code null}
+     *
+     * @param obj 对象
+     * @return 字符串 or {@code null}
+     */
+    public static String toStringOrNull(Object obj) {
+        return null == obj ? null : obj.toString();
     }
 
     /**
@@ -500,40 +510,29 @@ public class StringKit extends CharsKit {
     }
 
     /**
-     * 将字符串转换为unicode编码
+     * 字符串编码为Unicode形式
      *
-     * @param input 要转换的字符串(主要是包含中文的字符串)
-     * @return 转换后的unicode编码
+     * @param text 被编码的字符串
+     * @return Unicode字符串
      */
-    public static String toUnicode(String input) {
-        StringBuilder unicode = new StringBuilder();
-        for (int i = 0; i < input.length(); i++) {
-            // 取出每一个字符
-            char c = input.charAt(i);
-            String hexStr = Integer.toHexString(c);
-            while (hexStr.length() < 4) {
-                hexStr = Symbol.ZERO + hexStr;
-            }
-            // 转换为unicode
-            unicode.append(Symbol.UNICODE_START_CHAR + hexStr);
-        }
-        return unicode.toString();
+    public static String toUnicode(String text) {
+        return toUnicode(text, true);
     }
 
     /**
      * 字符串编码为Unicode形式
      *
      * @param text        被编码的字符串
-     * @param isSkipAscii 是否跳过ASCII字符(只跳过可见字符)
+     * @param isSkipAscii 是否跳过ASCII字符（只跳过可见字符）
      * @return Unicode字符串
      */
     public static String toUnicode(String text, boolean isSkipAscii) {
-        if (CharsKit.isEmpty(text)) {
+        if (StringKit.isEmpty(text)) {
             return text;
         }
 
         final int len = text.length();
-        final TextKit unicode = TextKit.create(text.length() * 6);
+        final StringBuilder unicode = new StringBuilder(text.length() * 6);
         char c;
         for (int i = 0; i < len; i++) {
             c = text.charAt(i);
@@ -547,72 +546,46 @@ public class StringKit extends CharsKit {
     }
 
     /**
-     * 将unicode编码还原为字符串
-     *
-     * @param input unicode编码的字符串
-     * @return 原始字符串
-     */
-    public static String toUnicodeString(String input) {
-        StringBuilder string = new StringBuilder();
-        String[] hex = input.split("\\\\u");
-        for (int i = 1; i < hex.length; i++) {
-            // 转换出每一个代码点
-            int data = Integer.parseInt(hex[i], Normal._16);
-            // 追加成string
-            string.append((char) data);
-        }
-        return string.toString();
-    }
-
-
-    /**
      * Unicode字符串转为普通字符串
      * Unicode字符串的表现方式为：\\uXXXX
      *
-     * @param unicode     Unicode字符串
-     * @param isSkipAscii 是跳过Ascii
+     * @param text Unicode字符串
      * @return 普通字符串
      */
-    public static String toUnicodeString(String unicode, boolean isSkipAscii) {
-        if (StringKit.isBlank(unicode)) {
-            return unicode;
+    public static String toString(String text) {
+        if (StringKit.isBlank(text)) {
+            return text;
         }
 
-        if (isSkipAscii) {
-            final int len = unicode.length();
-            final TextKit sb = TextKit.create(len);
-            int i = -1;
-            int pos = 0;
-            while ((i = CharsKit.indexOfIgnoreCase(unicode, Symbol.UNICODE_START_CHAR, pos)) != -1) {
-                // 写入Unicode符之前的部分
-                sb.append(unicode, pos, i);
-                pos = i;
-                if (i + 5 < len) {
-                    char c = 0;
-                    try {
-                        c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), Normal._16);
-                        sb.append(c);
-                        // 跳过整个Unicode符
-                        pos = i + 6;
-                    } catch (NumberFormatException e) {
-                        // 非法Unicode符,跳过
-                        // 写入"\\u"
-                        sb.append(unicode, pos, i + 2);
-                        pos = i + 2;
-                    }
-                } else {
-                    // 非Unicode符,结束
-                    pos = i;
-                    break;
+        final int len = text.length();
+        StringBuilder sb = new StringBuilder(len);
+        int i;
+        int pos = 0;
+        while ((i = StringKit.indexOfIgnoreCase(text, Symbol.UNICODE_START_CHAR, pos)) != -1) {
+            // 写入Unicode符之前的部分
+            sb.append(text, pos, i);
+            pos = i;
+            if (i + 5 < len) {
+                char c;
+                try {
+                    c = (char) Integer.parseInt(text.substring(i + 2, i + 6), Normal._16);
+                    sb.append(c);
+                    pos = i + 6;// 跳过整个Unicode符
+                } catch (NumberFormatException e) {
+                    // 非法Unicode符，跳过,  写入"\\u"
+                    sb.append(text, pos, i + 2);
+                    pos = i + 2;
                 }
+            } else {
+                // 非Unicode符，结束
+                break;
             }
-
-            if (pos < len) {
-                sb.append(unicode, pos, len);
-            }
-            return sb.toString();
         }
-        return toUnicodeString(unicode);
+
+        if (pos < len) {
+            sb.append(text, pos, len);
+        }
+        return sb.toString();
     }
 
     /**

@@ -211,11 +211,10 @@ public class TextJoiner implements Appendable, Serializable {
     /**
      * 追加对象到拼接器中
      *
-     * @param <T> 元素类型
      * @param obj 对象，支持数组、集合等
      * @return this
      */
-    public <T> TextJoiner append(Object obj) {
+    public TextJoiner append(Object obj) {
         if (null == obj) {
             append((CharSequence) null);
         } else if (ArrayKit.isArray(obj)) {
