@@ -27,7 +27,9 @@ package org.aoju.bus.starter.image;
 
 import lombok.Data;
 import org.aoju.bus.starter.BusXExtend;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * 影像解析配置
@@ -37,38 +39,56 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since JDK 1.8+
  */
 @Data
+@EnableConfigurationProperties(value = {ImageProperties.Node.class})
 @ConfigurationProperties(prefix = BusXExtend.IMAGE)
 public class ImageProperties {
 
-    /**
-     * 服务器地址
-     */
-    String host;
-    /**
-     * 端口信息
-     */
-    String port;
-    /**
-     * 服务名称
-     */
-    String aeTitle;
-    /**
-     * 原始文件保存路径
-     */
-    String dcmPath;
-    /**
-     * 转换后图片保存路径
-     */
-    String imgPath;
+    @Autowired
+    private Node node;
+
     /**
      * 是否启用opencv
      */
-    boolean opencv;
+    private boolean opencv;
+    /**
+     * 是否启用server
+     */
+    private boolean server;
+    /**
+     * 原始文件保存路径
+     */
+    private String dcmPath;
+    /**
+     * 转换后图片保存路径
+     */
+    private String imgPath;
 
-    String tcsClass;
+    /**
+     * 服务器信息
+     */
+    @Data
+    @ConfigurationProperties(prefix = BusXExtend.IMAGE + ".node")
+    public class Node {
 
-    String sopClass;
+        /**
+         * 服务器地址
+         */
+        private String host;
+        /**
+         * 端口信息
+         */
+        private String port;
+        /**
+         * 服务名称
+         */
+        private String aeTitle;
 
-    String relClass;
+        private String tcsClass;
+
+        private String sopClass;
+
+        private String relClass;
+
+    }
 
 }

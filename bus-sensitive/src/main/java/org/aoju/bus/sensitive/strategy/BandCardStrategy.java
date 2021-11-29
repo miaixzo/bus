@@ -51,7 +51,7 @@ public class BandCardStrategy extends AbstractProvider {
         String bankCard = object.toString();
         return StringKit.left(bankCard, 4).concat(
                 StringKit.removeStart(
-                        StringKit.leftPad(
+                        StringKit.padPre(
                                 StringKit.right(bankCard, 4),
                                 StringKit.length(bankCard), shield.shadow()
                         ),

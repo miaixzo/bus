@@ -1,28 +1,4 @@
-/*********************************************************************************
- *                                                                               *
- * The MIT License (MIT)                                                         *
- *                                                                               *
- * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
- *                                                                               *
- * Permission is hereby granted, free of charge, to any person obtaining a copy  *
- * of this software and associated documentation files (the "Software"), to deal *
- * in the Software without restriction, including without limitation the rights  *
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
- * copies of the Software, and to permit persons to whom the Software is         *
- * furnished to do so, subject to the following conditions:                      *
- *                                                                               *
- * The above copyright notice and this permission notice shall be included in    *
- * all copies or substantial portions of the Software.                           *
- *                                                                               *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
- * THE SOFTWARE.                                                                 *
- *                                                                               *
- ********************************************************************************/
+
 package org.aoju.bus.gitlab.hooks.web;
 
 import org.aoju.bus.gitlab.GitLabApiException;
@@ -129,6 +105,8 @@ public class WebHookManager implements HookManager {
             case PushEvent.X_GITLAB_EVENT:
             case TagPushEvent.X_GITLAB_EVENT:
             case WikiPageEvent.X_GITLAB_EVENT:
+            case DeploymentEvent.X_GITLAB_EVENT:
+            case ReleaseEvent.X_GITLAB_EVENT:
                 break;
 
             default:
@@ -195,6 +173,8 @@ public class WebHookManager implements HookManager {
             case PushEvent.OBJECT_KIND:
             case TagPushEvent.OBJECT_KIND:
             case WikiPageEvent.OBJECT_KIND:
+            case ReleaseEvent.OBJECT_KIND:
+            case DeploymentEvent.OBJECT_KIND:
                 fireEvent(event);
                 break;
 
@@ -271,6 +251,14 @@ public class WebHookManager implements HookManager {
                 fireWikiPageEvent((WikiPageEvent) event);
                 break;
 
+            case ReleaseEvent.OBJECT_KIND:
+                fireReleaseEvent((ReleaseEvent) event);
+                break;
+
+            case DeploymentEvent.OBJECT_KIND:
+                fireDeploymentEvent((DeploymentEvent) event);
+                break;
+
             default:
                 String message = "Unsupported event object_kind, object_kind=" + event.getObjectKind();
                 LOGGER.warning(message);
@@ -331,4 +319,17 @@ public class WebHookManager implements HookManager {
             listener.onWikiPageEvent(wikiPageEvent);
         }
     }
+
+    protected void fireDeploymentEvent(DeploymentEvent deploymentEvent) {
+        for (WebHookListener listener : webhookListeners) {
+            listener.onDeploymentEvent(deploymentEvent);
+        }
+    }
+
+    protected void fireReleaseEvent(ReleaseEvent releaseEvent) {
+        for (WebHookListener listener : webhookListeners) {
+            listener.onReleaseEvent(releaseEvent);
+        }
+    }
+
 }

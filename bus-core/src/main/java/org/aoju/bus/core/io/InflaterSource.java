@@ -34,7 +34,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 /**
- * 解压从另一个源读取的数据.
+ * 解压从另一个源读取的数据
  *
  * @author Kimi Liu
  * @version 6.3.1

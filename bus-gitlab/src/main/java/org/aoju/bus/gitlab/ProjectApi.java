@@ -927,7 +927,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * packagesEnabled (optional) - Enable or disable mvn packages repository feature
      * buildGitStrategy (optional) - set the build git strategy
      * buildCoverageRegex (optional) - set build coverage regex
-     * squashOption (optional) - set squash option for merge requests
+     * ciConfigPath (optional) - Set path to CI configuration file
      *
      * @param project   the Project instance with the configuration for the new project
      * @param importUrl the URL to import the repository from

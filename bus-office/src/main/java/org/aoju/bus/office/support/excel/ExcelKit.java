@@ -195,23 +195,7 @@ public class ExcelKit {
      * @return {@link ExcelReader}
      */
     public static ExcelReader getReader(InputStream bookStream) {
-        return getReader(bookStream, 0, true);
-    }
-
-    /**
-     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
-     * 默认调用第一个sheet
-     *
-     * @param bookStream     Excel文件的流
-     * @param closeAfterRead 读取结束是否关闭流
-     * @return {@link ExcelReader}
-     */
-    public static ExcelReader getReader(InputStream bookStream, boolean closeAfterRead) {
-        try {
-            return getReader(bookStream, 0, closeAfterRead);
-        } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
-        }
+        return getReader(bookStream, 0);
     }
 
     /**
@@ -224,23 +208,7 @@ public class ExcelKit {
      */
     public static ExcelReader getReader(InputStream bookStream, int sheetIndex) {
         try {
-            return new ExcelReader(bookStream, sheetIndex, true);
-        } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
-        }
-    }
-
-    /**
-     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
-     *
-     * @param bookStream     Excel文件的流
-     * @param sheetIndex     sheet序号,0表示第一个sheet
-     * @param closeAfterRead 读取结束是否关闭流
-     * @return {@link ExcelReader}
-     */
-    public static ExcelReader getReader(InputStream bookStream, int sheetIndex, boolean closeAfterRead) {
-        try {
-            return new ExcelReader(bookStream, sheetIndex, closeAfterRead);
+            return new ExcelReader(bookStream, sheetIndex);
         } catch (NoClassDefFoundError e) {
             throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
         }
@@ -256,23 +224,7 @@ public class ExcelKit {
      */
     public static ExcelReader getReader(InputStream bookStream, String sheetName) {
         try {
-            return new ExcelReader(bookStream, sheetName, true);
-        } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
-        }
-    }
-
-    /**
-     * 获取Excel读取器,通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
-     *
-     * @param bookStream     Excel文件的流
-     * @param sheetName      sheet名,第一个默认是sheet1
-     * @param closeAfterRead 读取结束是否关闭流
-     * @return {@link ExcelReader}
-     */
-    public static ExcelReader getReader(InputStream bookStream, String sheetName, boolean closeAfterRead) {
-        try {
-            return new ExcelReader(bookStream, sheetName, closeAfterRead);
+            return new ExcelReader(bookStream, sheetName);
         } catch (NoClassDefFoundError e) {
             throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
         }

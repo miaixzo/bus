@@ -88,7 +88,7 @@ public class GenieBuilder implements
                 .listeners().initializers().build(event.getArgs());
 
         ApplicationEnvironmentPreparedEvent bootstrapEvent = new ApplicationEnvironmentPreparedEvent(
-                bootstrapApplication, event.getArgs(), bootstrapEnvironment);
+                event.getBootstrapContext(), bootstrapApplication, event.getArgs(), bootstrapEnvironment);
 
         application.getListeners().stream()
                 .filter(listener -> listener instanceof ConfigFileApplicationListener)

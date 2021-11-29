@@ -116,5 +116,9 @@ public class BusXExtend {
      * 工作/临时目录等
      */
     public static final String WORK = EXTEND + Symbol.DOT + "work";
+    /**
+     * Elastic支持
+     */
+    public static final String ELASTIC = EXTEND + Symbol.DOT + "elastic";
 
 }

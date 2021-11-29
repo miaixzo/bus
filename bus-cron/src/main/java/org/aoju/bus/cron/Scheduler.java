@@ -302,8 +302,18 @@ public class Scheduler {
      * @return this
      */
     public Scheduler deschedule(String id) {
-        this.repertoire.remove(id);
+        descheduleWithStatus(id);
         return this;
+    }
+
+    /**
+     * 移除Task，并返回是否移除成功
+     *
+     * @param id Task的ID
+     * @return 是否移除成功，{@code false}表示未找到对应ID的任务
+     */
+    public boolean descheduleWithStatus(String id) {
+        return this.repertoire.remove(id);
     }
 
     /**

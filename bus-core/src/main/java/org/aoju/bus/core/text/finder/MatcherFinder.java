@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Matcher;
 
 /**
  * 字符匹配查找器
+ * 查找满足指定{@link Matcher} 匹配的字符所在位置，此类长用于查找某一类字符，如数字等
  *
  * @author Kimi Liu
  * @version 6.3.1
@@ -53,10 +54,18 @@ public class MatcherFinder extends TextFinder {
     @Override
     public int start(int from) {
         Assert.notNull(this.text, "Text to find must be not null!");
-        final int length = text.length();
-        for (int i = from; i < length; i++) {
-            if (matcher.match(text.charAt(i))) {
-                return i;
+        final int limit = getValidEndIndex();
+        if (negative) {
+            for (int i = from; i > limit; i--) {
+                if (matcher.match(text.charAt(i))) {
+                    return i;
+                }
+            }
+        } else {
+            for (int i = from; i < limit; i++) {
+                if (matcher.match(text.charAt(i))) {
+                    return i;
+                }
             }
         }
         return -1;

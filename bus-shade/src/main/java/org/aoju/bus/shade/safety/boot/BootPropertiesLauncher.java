@@ -27,11 +27,8 @@ package org.aoju.bus.shade.safety.boot;
 
 import org.aoju.bus.shade.safety.Launcher;
 import org.springframework.boot.loader.PropertiesLauncher;
-import org.springframework.boot.loader.archive.Archive;
 
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
 
 /**
  * Spring-Boot Properties 启动器
@@ -57,9 +54,8 @@ public class BootPropertiesLauncher extends PropertiesLauncher {
     }
 
     @Override
-    protected ClassLoader createClassLoader(List<Archive> archives) throws Exception {
-        URLClassLoader classLoader = (URLClassLoader) super.createClassLoader(archives);
-        URL[] urls = classLoader.getURLs();
+    protected ClassLoader createClassLoader(URL[] urls) throws Exception {
         return new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
     }
+
 }

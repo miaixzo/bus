@@ -51,7 +51,7 @@ public class PhoneStrategy extends AbstractProvider {
     private static String phone(final String phone, final String shadow) {
         final int prefixLength = 3;
         final String middle = StringKit.fill(4, shadow);
-        return StringKit.buildString(phone, middle, prefixLength);
+        return StringKit.build(phone, middle, prefixLength);
     }
 
     @Override

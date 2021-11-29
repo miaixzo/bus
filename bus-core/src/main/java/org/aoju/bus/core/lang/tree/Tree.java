@@ -26,6 +26,7 @@
 package org.aoju.bus.core.lang.tree;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
 
@@ -212,10 +213,13 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
     /**
      * 设置子节点，设置后会覆盖所有原有子节点
      *
-     * @param children 子节点列表
+     * @param children 子节点列表，如果为{@code null}表示移除子节点
      * @return this
      */
     public Tree<T> setChildren(List<Tree<T>> children) {
+        if (null == children) {
+            this.remove(nodeConfig.getChildrenKey());
+        }
         this.put(nodeConfig.getChildrenKey(), children);
         return this;
     }
@@ -243,6 +247,15 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
     }
 
     /**
+     * 是否有子节点，无子节点则此为叶子节点
+     *
+     * @return 是否有子节点
+     */
+    public boolean hasChild() {
+        return CollKit.isNotEmpty(getChildren());
+    }
+
+    /**
      * 扩展属性
      *
      * @param key   键
@@ -264,6 +277,77 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
         if (CollKit.isNotEmpty(children)) {
             children.forEach((tree) -> tree.walk(consumer));
         }
+    }
+
+    /**
+     * 递归过滤并生成新的树
+     * 通过{@link Filter}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
+     *
+     * @param filter 节点过滤规则函数，只需处理本级节点本身即可
+     * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
+     * @see #filter(Filter)
+     */
+    public Tree<T> filterNew(Filter<Tree<T>> filter) {
+        return cloneTree().filter(filter);
+    }
+
+    /**
+     * 递归过滤当前树，注意此方法会修改当前树
+     * 通过{@link Filter}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
+     *
+     * @param filter 节点过滤规则函数，只需处理本级节点本身即可
+     * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
+     * @see #filterNew(Filter)
+     */
+    public Tree<T> filter(Filter<Tree<T>> filter) {
+        final List<Tree<T>> children = getChildren();
+        if (CollKit.isNotEmpty(children)) {
+            // 递归过滤子节点
+            final List<Tree<T>> filteredChildren = new ArrayList<>(children.size());
+            Tree<T> filteredChild;
+            for (Tree<T> child : children) {
+                filteredChild = child.filter(filter);
+                if (null != filteredChild) {
+                    filteredChildren.add(filteredChild);
+                }
+            }
+            if (CollKit.isNotEmpty(filteredChildren)) {
+                // 子节点有符合过滤条件的节点，则本节点保留
+                return this.setChildren(filteredChildren);
+            } else {
+                this.setChildren(null);
+            }
+        }
+
+        // 子节点都不符合过滤条件，检查本节点
+        return filter.accept(this) ? this : null;
+    }
+
+    /**
+     * 递归克隆当前节点（即克隆整个树，保留字段值）
+     * 注意，此方法只会克隆节点，节点属性如果是引用类型，不会克隆
+     *
+     * @return 新的节点
+     */
+    public Tree<T> cloneTree() {
+        final Tree<T> result = ObjectKit.clone(this);
+        result.setChildren(cloneChildren());
+        return result;
+    }
+
+    /**
+     * 递归复制子节点
+     *
+     * @return 新的子节点列表
+     */
+    private List<Tree<T>> cloneChildren() {
+        final List<Tree<T>> children = getChildren();
+        if (null == children) {
+            return null;
+        }
+        final List<Tree<T>> newChildren = new ArrayList<>(children.size());
+        children.forEach((t) -> newChildren.add(t.cloneTree()));
+        return newChildren;
     }
 
     @Override

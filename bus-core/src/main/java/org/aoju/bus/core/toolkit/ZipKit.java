@@ -1017,15 +1017,17 @@ public class ZipKit {
                 throw new InstrumentException(StringKit.format("File [{}] not exist!", srcFile.getAbsolutePath()));
             }
 
+            // 当 zipFile =  new File("temp.zip") 时, zipFile.getParentFile() == null
+            File parentFile;
             try {
-                final File parentFile = zipFile.getCanonicalFile().getParentFile();
-                // 压缩文件不能位于被压缩的目录内
-                if (srcFile.isDirectory() && parentFile.getCanonicalPath().contains(srcFile.getCanonicalPath())) {
-                    throw new InstrumentException("Zip file path [{}] must not be the child directory of [{}] !", zipFile.getCanonicalPath(), srcFile.getCanonicalPath());
-                }
-
+                parentFile = zipFile.getCanonicalFile().getParentFile();
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                parentFile = zipFile.getParentFile();
+            }
+
+            // 压缩文件不能位于被压缩的目录内
+            if (srcFile.isDirectory() && FileKit.isSub(srcFile, parentFile)) {
+                throw new InstrumentException("Zip file path [{}] must not be the child directory of [{}] !", zipFile.getPath(), srcFile.getPath());
             }
         }
     }

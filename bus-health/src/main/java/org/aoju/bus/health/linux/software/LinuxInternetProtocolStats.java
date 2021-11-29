@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
@@ -161,7 +162,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     private static Pair<byte[], Integer> parseIpAddr(String s) {
         int colon = s.indexOf(Symbol.C_COLON);
         if (colon > 0 && colon < s.length()) {
-            byte[] first = Builder.hexStringToByteArray(s.substring(0, colon));
+            byte[] first = StringKit.hexStringToByte(s.substring(0, colon));
             // Bytes are in __be32 endianness. we must invert each set of 4 bytes
             for (int i = 0; i + 3 < first.length; i += 4) {
                 byte tmp = first[i];

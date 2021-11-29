@@ -38,7 +38,7 @@ public interface Finder {
     /**
      * 返回开始位置，即起始字符位置（包含），未找到返回-1
      *
-     * @param from 查找的开始位置（包含
+     * @param from 查找的开始位置（包含）
      * @return 起始字符位置，未找到返回-1
      */
     int start(int from);

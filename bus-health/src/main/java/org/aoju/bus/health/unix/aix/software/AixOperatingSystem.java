@@ -76,7 +76,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public List<OSProcess> queryAllProcesses() {
-        return getProcessListFromPS("ps -A -o " + PS_COMMAND_ARGS, -1);
+        return getProcessListFromPS("ps -A -o " + PS_COMMAND_ARGS, Normal.__1);
     }
 
     @Override

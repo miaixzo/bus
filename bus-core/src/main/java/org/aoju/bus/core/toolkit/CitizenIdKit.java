@@ -131,6 +131,7 @@ public class CitizenIdKit {
 
     /**
      * 是否有效身份证号，忽略X的大小写
+     * 如果身份证号码中含有空格始终返回{@code false}
      *
      * @param idcard 身份证号,支持18位、15位和港澳台的10位
      * @return 是否有效
@@ -139,7 +140,6 @@ public class CitizenIdKit {
         if (StringKit.isBlank(idcard)) {
             return false;
         }
-        idcard = idcard.trim();
         int length = idcard.length();
         switch (length) {
             case 18:// 18位身份证

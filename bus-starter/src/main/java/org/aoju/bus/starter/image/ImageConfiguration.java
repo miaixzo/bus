@@ -53,36 +53,37 @@ public class ImageConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Centre onStoreSCP() {
-        if (this.properties.opencv) {
+        if (this.properties.isOpencv()) {
             new OpenCVNativeLoader().init();
         }
-
-        if (StringKit.isEmpty(this.properties.aeTitle)) {
-            throw new NullPointerException("The aeTitle cannot be null.");
+        if (this.properties.isServer()) {
+            if (StringKit.isEmpty(this.properties.getNode().getAeTitle())) {
+                throw new NullPointerException("The aeTitle cannot be null.");
+            }
+            if (StringKit.isEmpty(this.properties.getNode().getHost())) {
+                throw new NullPointerException("The host cannot be null.");
+            }
+            if (StringKit.isEmpty(this.properties.getNode().getPort())) {
+                throw new NullPointerException("The port cannot be null.");
+            }
+            Args args = new Args(true);
+            if (StringKit.isNotEmpty(this.properties.getNode().getRelClass())) {
+                args.setExtendSopClassesURL(FileKit.getResource(this.properties.getNode().getRelClass(), ImageConfiguration.class));
+            }
+            if (StringKit.isNotEmpty(this.properties.getNode().getRelClass())) {
+                args.setExtendSopClassesURL(FileKit.getResource(this.properties.getNode().getRelClass(), ImageConfiguration.class));
+            }
+            if (StringKit.isNotEmpty(this.properties.getNode().getSopClass())) {
+                args.setTransferCapabilityFile(FileKit.getResource(this.properties.getNode().getSopClass(), ImageConfiguration.class));
+            }
+            if (StringKit.isNotEmpty(this.properties.getNode().getTcsClass())) {
+                args.setExtendStorageSOPClass(FileKit.getResource(this.properties.getNode().getTcsClass(), ImageConfiguration.class));
+            }
+            return Centre.builder().args(args).efforts(efforts)
+                    .node(new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(), Integer.valueOf(this.properties.getNode().getPort())))
+                    .storeSCP(new StoreSCP(this.properties.getDcmPath())).build();
         }
-        if (StringKit.isEmpty(this.properties.host)) {
-            throw new NullPointerException("The host cannot be null.");
-        }
-        if (StringKit.isEmpty(this.properties.port)) {
-            throw new NullPointerException("The port cannot be null.");
-        }
-        Args args = new Args(true);
-        if (StringKit.isNotEmpty(this.properties.relClass)) {
-            args.setExtendSopClassesURL(FileKit.getResource(this.properties.relClass, ImageConfiguration.class));
-        }
-        if (StringKit.isNotEmpty(this.properties.relClass)) {
-            args.setExtendSopClassesURL(FileKit.getResource(this.properties.relClass, ImageConfiguration.class));
-        }
-        if (StringKit.isNotEmpty(this.properties.sopClass)) {
-            args.setTransferCapabilityFile(FileKit.getResource(this.properties.sopClass, ImageConfiguration.class));
-        }
-        if (StringKit.isNotEmpty(this.properties.tcsClass)) {
-            args.setExtendStorageSOPClass(FileKit.getResource(this.properties.tcsClass, ImageConfiguration.class));
-        }
-
-        return Centre.builder().args(args).efforts(efforts)
-                .node(new Node(this.properties.aeTitle, this.properties.host, Integer.valueOf(this.properties.port)))
-                .storeSCP(new StoreSCP(this.properties.dcmPath)).build();
+        return null;
     }
 
 }
