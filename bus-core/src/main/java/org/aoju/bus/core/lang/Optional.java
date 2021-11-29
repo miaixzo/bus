@@ -224,8 +224,10 @@ public class Optional<T> {
      * String bus = Optional.ofBlankAble("bus").mapOrElse(String::toUpperCase, () -> Console.log("yes")).mapOrElse(String::intern, () -> Console.log("Value is not present~")).get();
      * }</pre>
      *
+     * @param <U>         操作返回值的类型
      * @param mapper      包裹里的值存在时的操作
      * @param emptyAction 包裹里的值不存在时的操作
+     * @return 如果满足条件则返回本身, 不满足条件或者元素本身为空时返回一个返回一个空的{@code Optional}
      * @throws NullPointerException 如果包裹里的值存在时，执行的操作为 {@code null}, 或者包裹里的值不存在时的操作为 {@code null}，则抛出{@code NPE}
      */
     public <U> Optional<U> mapOrElse(Function<? super T, ? extends U> mapper, VoidFunc0 emptyAction) {

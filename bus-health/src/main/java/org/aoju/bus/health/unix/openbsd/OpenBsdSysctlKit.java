@@ -51,6 +51,7 @@ public final class OpenBsdSysctlKit {
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
     private OpenBsdSysctlKit() {
+
     }
 
     /**
@@ -64,7 +65,7 @@ public final class OpenBsdSysctlKit {
         LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(OpenBsdLibc.INT_SIZE));
         Pointer p = new Memory(size.longValue());
         if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, LibCAPI.size_t.ZERO)) {
-            Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+            Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
         return p.getInt(0);

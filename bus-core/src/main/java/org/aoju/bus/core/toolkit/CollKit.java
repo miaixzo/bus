@@ -42,10 +42,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.Optional;
 import java.util.Map.Entry;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
@@ -1397,35 +1394,15 @@ public class CollKit {
     }
 
     /**
-     * 根据指定对象属性去除重复对象
+     * 去重集合
      *
-     * @param <T>        集合元素类型
-     * @param collection 集合
-     * @param field      指定的去重属性名称
+     * @param <T> 集合元素类型
+     * @param key 属性名
      * @return {@link List}
      */
-    public static <T> List<T> distinct(Collection<T> collection, String field) {
-        if (isEmpty(collection)) {
-            return null;
-        }
-        // 根据属性值进行去重
-        Set<T> sets = new TreeSet<>((o1, o2) -> {
-            try {
-                Field field1 = o1.getClass().getDeclaredField(field);
-                Field field2 = o2.getClass().getDeclaredField(field);
-                field1.setAccessible(true);
-                field2.setAccessible(true);
-                Object obj1 = field1.get(o1);
-                Object obj2 = field2.get(o2);
-                // 根据指定属性进行去重
-                return obj1.toString().compareTo(obj2.toString());
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            return 0;
-        });
-        sets.addAll(collection);
-        return new ArrayList(sets);
+    public static <T> Predicate<T> distinct(Function<? super T, ?> key) {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(key.apply(t), Boolean.TRUE) == null;
     }
 
     /**

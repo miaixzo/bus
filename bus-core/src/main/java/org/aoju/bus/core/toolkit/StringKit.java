@@ -552,7 +552,7 @@ public class StringKit extends CharsKit {
      * @param text Unicode字符串
      * @return 普通字符串
      */
-    public static String toString(String text) {
+    public static String toUnicodeString(String text) {
         if (StringKit.isBlank(text)) {
             return text;
         }
