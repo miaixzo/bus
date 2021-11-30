@@ -226,7 +226,7 @@ public class Formula {
             peek = 47;
         }
 
-        return operatPriority[(peek) - offset] >= operatPriority[(cur) - offset];
+        return operatPriority[peek - offset] >= operatPriority[cur - offset];
     }
 
     /**

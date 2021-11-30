@@ -222,35 +222,6 @@ public class SoapX {
 
     /**
      * 设置请求方法
-     *
-     * @param name   方法名及其命名空间
-     * @param params 参数
-     * @return this
-     */
-    public SoapX method(Name name, Map<String, Object> params) {
-        return method(new QName(name.getURI(), name.getLocalName(), name.getPrefix()), params);
-    }
-
-    /**
-     * 设置请求方法
-     *
-     * @param name   方法名及其命名空间
-     * @param params 参数
-     * @return this
-     */
-    public SoapX method(QName name, Map<String, Object> params) {
-        method(name);
-        final String prefix = name.getPrefix();
-        final SOAPBodyElement methodEle = this.methodEle;
-        for (Map.Entry<String, Object> entry : MapKit.wrap(params)) {
-            param(methodEle, entry.getKey(), entry.getValue(), prefix);
-        }
-
-        return this;
-    }
-
-    /**
-     * 设置请求方法
      * 方法名自动识别前缀，前缀和方法名使用“:”分隔
      * 当识别到前缀后，自动添加xmlns属性，关联到默认的namespaceURI
      *
@@ -259,6 +230,22 @@ public class SoapX {
      */
     public SoapX method(String methodName) {
         return method(methodName, ObjectKit.defaultIfNull(this.namespaceURI, XMLConstants.NULL_NS_URI));
+    }
+
+    /**
+     * 设置请求方法
+     *
+     * @param name 方法名及其命名空间
+     * @return this
+     */
+    public SoapX method(QName name) {
+        try {
+            this.methodEle = this.message.getSOAPBody().addBodyElement(name);
+        } catch (SOAPException e) {
+            throw new InstrumentException(e);
+        }
+
+        return this;
     }
 
     /**
@@ -284,16 +271,58 @@ public class SoapX {
     /**
      * 设置请求方法
      *
-     * @param name 方法名及其命名空间
+     * @param name   方法名及其命名空间
+     * @param params 参数
      * @return this
      */
-    public SoapX method(QName name) {
-        try {
-            this.methodEle = this.message.getSOAPBody().addBodyElement(name);
-        } catch (SOAPException e) {
-            throw new InstrumentException(e);
-        }
+    public SoapX method(Name name, Map<String, Object> params) {
+        return method(new QName(name.getURI(), name.getLocalName(), name.getPrefix()), params);
+    }
 
+    /**
+     * 设置请求方法
+     *
+     * @param name   方法名及其命名空间
+     * @param params 参数
+     * @return this
+     */
+    public SoapX method(QName name, Map<String, Object> params) {
+        method(name);
+        final String prefix = name.getPrefix();
+        final SOAPBodyElement methodEle = this.methodEle;
+        for (Map.Entry<String, Object> entry : MapKit.wrap(params)) {
+            param(methodEle, entry.getKey(), entry.getValue(), prefix);
+        }
+        return this;
+    }
+
+    /**
+     * 设置请求方法
+     *
+     * @param name            方法名及其命名空间
+     * @param params          参数
+     * @param useMethodPrefix 是否使用方法的命名空间前缀
+     * @return this
+     */
+    public SoapX method(Name name, Map<String, Object> params, boolean useMethodPrefix) {
+        return method(new QName(name.getURI(), name.getLocalName(), name.getPrefix()), params, useMethodPrefix);
+    }
+
+    /**
+     * 设置请求方法
+     *
+     * @param name            方法名及其命名空间
+     * @param params          参数
+     * @param useMethodPrefix 是否使用方法的命名空间前缀
+     * @return this
+     */
+    public SoapX method(QName name, Map<String, Object> params, boolean useMethodPrefix) {
+        method(name);
+        final String prefix = useMethodPrefix ? name.getPrefix() : null;
+        final SOAPBodyElement methodEle = this.methodEle;
+        for (Map.Entry<String, Object> entry : MapKit.wrap(params)) {
+            param(methodEle, entry.getKey(), entry.getValue(), prefix);
+        }
         return this;
     }
 
@@ -351,7 +380,7 @@ public class SoapX {
      * @param ele    方法节点
      * @param name   参数名
      * @param value  参数值
-     * @param prefix 命名空间前缀
+     * @param prefix 命名空间前缀， {@code null}表示不使用前缀
      * @return {@link SOAPElement}子节点
      */
     public SOAPElement param(SOAPElement ele, String name, Object value, String prefix) {

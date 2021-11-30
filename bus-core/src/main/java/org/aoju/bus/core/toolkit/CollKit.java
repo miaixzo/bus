@@ -1754,14 +1754,14 @@ public class CollKit {
      * @param <E>              集合元素类型
      * @param resultCollection 存放移除结果的集合
      * @param targetCollection 被操作移除元素的集合
-     * @param filter           用于是否移除判断的过滤器
+     * @param predicate        用于是否移除判断的过滤器
      */
-    public static <T extends Collection<E>, E> T removeWithAddIf(T targetCollection, T resultCollection, Predicate<? super E> filter) {
-        Objects.requireNonNull(filter);
+    public static <T extends Collection<E>, E> T removeWithAddIf(T targetCollection, T resultCollection, Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
         final Iterator<E> each = targetCollection.iterator();
         while (each.hasNext()) {
             E next = each.next();
-            if (filter.test(next)) {
+            if (predicate.test(next)) {
                 resultCollection.add(next);
                 each.remove();
             }
@@ -3687,6 +3687,7 @@ public class CollKit {
 
     /**
      * 通过cas操作 实现对指定值内的回环累加
+     * 此方法一般用于大量数据完成回环累加（如数据库中的值大于int最大值）
      *
      * @param modulo     回环周期值
      * @param atomicLong 原子操作类
