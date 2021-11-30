@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
 import java.util.*;
 
 /**
- * 佛历工具
+ * 佛历
  *
  * @author Kimi Liu
  * @version 6.3.1
@@ -304,12 +304,12 @@ public class Buddhist {
         return new Buddhist(lunar);
     }
 
-    public static Buddhist from(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
-        return from(Lunar.from(lunarYear + DEAD_YEAR - 1, lunarMonth, lunarDay, hour, minute, second));
+    public static Buddhist from(int year, int month, int day) {
+        return from(year, month, day, 0, 0, 0);
     }
 
-    public static Buddhist from(int lunarYear, int lunarMonth, int lunarDay) {
-        return from(lunarYear, lunarMonth, lunarDay, 0, 0, 0);
+    public static Buddhist from(int year, int month, int day, int hour, int minute, int second) {
+        return from(Lunar.from(year + DEAD_YEAR - 1, month, day, hour, minute, second));
     }
 
     public Lunar getLunar() {
@@ -482,6 +482,10 @@ public class Buddhist {
 
         @Override
         public String toString() {
+            return name;
+        }
+
+        public String toFullString() {
             StringBuilder s = new StringBuilder();
             s.append(name);
             if (null != result && result.length() > 0) {

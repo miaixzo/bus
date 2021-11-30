@@ -4079,29 +4079,20 @@ public class Lunar {
     }
 
     /**
-     * 获取节气信息，如果无节气，返回空字符串
+     * 获取节气名称，如果无节气，返回空字符串
      *
-     * @param isIncludeTime 是否包含时间
      * @return 节气名称
      */
-    public String getSolarTerm(boolean isIncludeTime) {
+    public String getSolarTerm() {
         String name = Normal.EMPTY;
-        String time = Normal.EMPTY;
-        for (Map.Entry<String, Solar> st : this.solarTerm.entrySet()) {
-            Solar d = st.getValue();
-            if (d.getYear() == solar.getYear()
-                    && d.getMonth() == solar.getMonth()
-                    && d.getDay() == solar.getDay()) {
-                name = st.getKey();
-                time = " " + d.getHour() + Symbol.COLON + d.getMinute() + Symbol.COLON + d.getSecond();
+        for (Map.Entry<String, Solar> jq : solarTerm.entrySet()) {
+            Solar d = jq.getValue();
+            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
+                name = jq.getKey();
                 break;
             }
         }
-        name = convertJieQi(name);
-        if (StringKit.isNotEmpty(time) && isIncludeTime) {
-            name = name + time;
-        }
-        return name;
+        return convertJieQi(name);
     }
 
     /**
@@ -4110,7 +4101,7 @@ public class Lunar {
      * @return 节气对象
      */
     public SolarTerm getCurrentSolarTerm() {
-        String name = getSolarTerm(false);
+        String name = getSolarTerm();
         return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
@@ -4604,6 +4595,24 @@ public class Lunar {
     }
 
     /**
+     * 获取佛历
+     *
+     * @return 佛历
+     */
+    public Buddhist getFoto() {
+        return Buddhist.from(this);
+    }
+
+    /**
+     * 获取道历
+     *
+     * @return 佛历
+     */
+    public Taoist getTao() {
+        return Taoist.from(this);
+    }
+
+    /**
      * 构建字符串内容
      *
      * @param args 可选参数-简化输出
@@ -4650,7 +4659,7 @@ public class Lunar {
                 s.append(f);
                 s.append(Symbol.PARENTHESE_RIGHT);
             }
-            String jq = getSolarTerm(true);
+            String jq = getSolarTerm();
             if (jq.length() > 0) {
                 s.append(" [");
                 s.append(jq);
