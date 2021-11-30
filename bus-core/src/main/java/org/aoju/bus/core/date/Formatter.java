@@ -776,16 +776,6 @@ public class Formatter {
     }
 
     /**
-     * 格式化成yyMMddHHmm后转换为int型
-     *
-     * @param date 日期
-     * @return int
-     */
-    public static int toIntSecond(Date date) {
-        return Integer.parseInt(format(date, Fields.PURE_DATE_MINUTE_PATTERN));
-    }
-
-    /**
      * 使用指定{@link DateParser}解析字符串为{@link Calendar}
      *
      * @param text    日期字符串

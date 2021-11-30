@@ -38,6 +38,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,6 +57,16 @@ public class SheetRidReader extends DefaultHandler {
 
     private final Map<Integer, Integer> ID_RID_MAP = new LinkedHashMap<>();
     private final Map<String, Integer> NAME_RID_MAP = new LinkedHashMap<>();
+
+    /**
+     * 从{@link XSSFReader}中解析sheet名、sheet id等相关信息
+     *
+     * @param reader {@link XSSFReader}
+     * @return SheetRidReader
+     */
+    public static SheetRidReader parse(XSSFReader reader) {
+        return new SheetRidReader().read(reader);
+    }
 
     /**
      * 读取Wordkbook的XML中sheet标签中sheetId和rid的对应关系
@@ -148,6 +159,15 @@ public class SheetRidReader extends DefaultHandler {
             return rid - 1;
         }
         return null;
+    }
+
+    /**
+     * 获取所有sheet名称
+     *
+     * @return sheet名称
+     */
+    public List<String> getSheetNames() {
+        return CollKit.toList(this.NAME_RID_MAP.keySet());
     }
 
     @Override

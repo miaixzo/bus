@@ -174,9 +174,38 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param dest   目标Map
      */
     private void mapToMap(Map source, Map dest) {
-        if (null != dest && null != source) {
-            dest.putAll(source);
-        }
+        source.forEach((key, value) -> {
+            final CopyOptions copyOptions = this.copyOptions;
+            final HashSet<String> ignoreSet = (null != copyOptions.ignoreProperties) ? CollKit.newHashSet(copyOptions.ignoreProperties) : null;
+
+            // 非覆盖模式下，如果目标值存在，则跳过
+            if (false == copyOptions.override && null != dest.get(key)) {
+                return;
+            }
+
+            if (key instanceof CharSequence) {
+                if (CollKit.contains(ignoreSet, key)) {
+                    // 目标属性值被忽略或值提供者无此key时跳过
+                    return;
+                }
+
+                // 对key做映射，映射后为null的忽略之
+                key = copyOptions.editFieldName(copyOptions.getMappedFieldName(key.toString(), false));
+                if (null == key) {
+                    return;
+                }
+
+                value = copyOptions.editFieldValue(key.toString(), value);
+            }
+
+            if ((null == value && copyOptions.ignoreNullValue) || source == value) {
+                // 当允许跳过空时，跳过
+                //值不能为bean本身，防止循环引用，此类也跳过
+                return;
+            }
+
+            dest.put(key, value);
+        });
     }
 
     /**
@@ -186,11 +215,11 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param targetMap 目标的Map
      */
     private void beanToMap(Object bean, Map targetMap) {
-        final HashSet<String> ignoreSet = (null != copyOptions.ignoreProperties) ? CollKit.newHashSet(copyOptions.ignoreProperties) : null;
         final CopyOptions copyOptions = this.copyOptions;
+        final HashSet<String> ignoreSet = (null != copyOptions.ignoreProperties) ? CollKit.newHashSet(copyOptions.ignoreProperties) : null;
 
         BeanKit.descForEach(bean.getClass(), (prop) -> {
-            if (false == prop.isReadable(copyOptions.isTransientSupport())) {
+            if (false == prop.isReadable(copyOptions.transientSupport)) {
                 // 忽略的属性跳过之
                 return;
             }
@@ -203,6 +232,11 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
             // 对key做映射，映射后为null的忽略之
             key = copyOptions.editFieldName(copyOptions.getMappedFieldName(key, false));
             if (null == key) {
+                return;
+            }
+
+            // 非覆盖模式下，如果目标值存在，则跳过
+            if (false == copyOptions.override && null != targetMap.get(key)) {
                 return;
             }
 
@@ -220,7 +254,6 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                 return;
             }
 
-            // since 5.7.15
             value = copyOptions.editFieldValue(key, value);
 
             if ((null == value && copyOptions.ignoreNullValue) || bean == value) {
@@ -257,7 +290,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
 
         // 遍历目标bean的所有属性
         BeanKit.descForEach(actualEditable, (prop) -> {
-            if (false == prop.isWritable(this.copyOptions.isTransientSupport())) {
+            if (false == prop.isWritable(this.copyOptions.transientSupport)) {
                 // 字段不可写，跳过之
                 return;
             }
@@ -288,7 +321,6 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                 return;
             }
 
-            // since 5.7.15
             value = copyOptions.editFieldValue(providerKey, value);
 
             if ((null == value && copyOptions.ignoreNullValue) || bean == value) {
@@ -297,7 +329,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                 return;
             }
 
-            prop.setValue(bean, value, copyOptions.ignoreNullValue, copyOptions.ignoreError);
+            prop.setValue(bean, value, copyOptions.ignoreNullValue, copyOptions.ignoreError, copyOptions.override);
         });
     }
 

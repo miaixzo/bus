@@ -1439,6 +1439,53 @@ public class CharsKit {
     }
 
     /**
+     * 截取部分字符串，这里一个汉字的长度认为是2
+     *
+     * @param text   字符串
+     * @param len    bytes切割到的位置（包含）
+     * @param suffix 切割后加上后缀
+     * @return 切割后的字符串
+     */
+    public static String subPreGbk(CharSequence text, int len, CharSequence suffix) {
+        return subPreGbk(text, len, true) + suffix;
+    }
+
+    /**
+     * 截取部分字符串，这里一个汉字的长度认为是2
+     * 可以自定义halfUp，如len为10，如果截取后最后一个字符是半个字符，{@code true}表示保留，则长度是11，否则长度9
+     *
+     * @param text   字符串
+     * @param len    bytes切割到的位置（包含）
+     * @param halfUp 遇到截取一半的GBK字符，是否保留。
+     * @return 切割后的字符串
+     */
+    public static String subPreGbk(CharSequence text, int len, boolean halfUp) {
+        if (isEmpty(text)) {
+            return toString(text);
+        }
+
+        int counterOfDoubleByte = 0;
+        final byte[] b = bytes(text, Charset.GBK);
+        if (b.length <= len) {
+            return text.toString();
+        }
+        for (int i = 0; i < len; i++) {
+            if (b[i] < 0) {
+                counterOfDoubleByte++;
+            }
+        }
+
+        if (counterOfDoubleByte % 2 != 0) {
+            if (halfUp) {
+                len += 1;
+            } else {
+                len -= 1;
+            }
+        }
+        return new String(b, 0, len, Charset.GBK);
+    }
+
+    /**
      * 切割指定位置之后部分的字符串
      *
      * @param string    字符串
@@ -1783,6 +1830,11 @@ public class CharsKit {
 
     /**
      * 比较两个字符串是否相等
+     * <ul>
+     *     <li>stra和strb都为{@code null}</li>
+     *     <li>忽略大小写使用{@link String#equalsIgnoreCase(String)}判断相等</li>
+     *     <li>不忽略大小写使用{@link String#contentEquals(CharSequence)}判断相等</li>
+     * </ul>
      *
      * @param stra       要比较的字符串
      * @param strb       要比较的字符串
@@ -3640,7 +3692,7 @@ public class CharsKit {
             return text.toString();
         }
 
-        // since 5.7.5，特殊长度
+        // 特殊长度
         switch (maxLength) {
             case 1:
                 return String.valueOf(text.charAt(0));

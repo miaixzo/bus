@@ -188,6 +188,10 @@ public class SyncFinisher {
         return endLatch.getCount();
     }
 
+    public void close() {
+        stop();
+    }
+
     /**
      * 工作者，为一个线程
      */

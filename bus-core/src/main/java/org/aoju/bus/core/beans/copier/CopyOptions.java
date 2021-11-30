@@ -90,11 +90,15 @@ public class CopyOptions implements Serializable {
     /**
      * 反向映射表，自动生成用于反向查找
      */
-    private Map<String, String> reversedFieldMapping;
+    protected Map<String, String> reversedFieldMapping;
     /**
      * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
      */
-    private boolean transientSupport = false;
+    protected boolean transientSupport = false;
+    /**
+     * 是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略。如果覆盖，则不判断直接写
+     */
+    protected boolean override = true;
 
     /**
      * 构造拷贝选项
@@ -279,15 +283,6 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
-     *
-     * @return 是否支持
-     */
-    public boolean isTransientSupport() {
-        return this.transientSupport;
-    }
-
-    /**
      * 设置是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
      *
      * @param transientSupport 是否支持
@@ -295,6 +290,17 @@ public class CopyOptions implements Serializable {
      */
     public CopyOptions setTransientSupport(boolean transientSupport) {
         this.transientSupport = transientSupport;
+        return this;
+    }
+
+    /**
+     * 设置是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略。如果覆盖，则不判断直接写
+     *
+     * @param override 是否覆盖目标值
+     * @return this
+     */
+    public CopyOptions setOverride(boolean override) {
+        this.override = override;
         return this;
     }
 
