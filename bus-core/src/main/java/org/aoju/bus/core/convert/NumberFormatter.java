@@ -74,6 +74,50 @@ public class NumberFormatter {
     };
 
     /**
+     * 格式化-999~999之间的数字
+     * 这个方法显示10~19以下的数字时使用"十一"而非"一十一"
+     *
+     * @param amount           数字
+     * @param isUseTraditional 是否使用繁体
+     * @return 中文
+     */
+    public static String format(int amount, boolean isUseTraditional) {
+        Assert.checkBetween(amount, -999, 999, "Number support only: (-999 ~ 999)！");
+        final String chinese = toChinese(amount, isUseTraditional);
+        if (amount < 20 && amount > 10) {
+            // "十一"而非"一十一"
+            return chinese.substring(1);
+        }
+        return chinese;
+    }
+
+    /**
+     * 阿拉伯数字（支持正负整数）转换成中文
+     *
+     * @param amount           数字
+     * @param isUseTraditional 是否使用繁体
+     * @return 中文
+     */
+    public static String format(long amount, boolean isUseTraditional) {
+        if (0 == amount) {
+            return "零";
+        }
+        Assert.checkBetween(amount, -99_9999_9999_9999.99, 99_9999_9999_9999.99,
+                "Number support only: (-99999999999999.99 ~ 99999999999999.99)！");
+
+        final StringBuilder chineseStr = new StringBuilder();
+
+        // 负数
+        if (amount < 0) {
+            chineseStr.append("负");
+            amount = -amount;
+        }
+
+        chineseStr.append(toChinese(amount, isUseTraditional));
+        return chineseStr.toString();
+    }
+
+    /**
      * 阿拉伯数字转换成中文,小数点后四舍五入保留两位. 使用于整数、小数的转换.
      *
      * @param amount           数字
@@ -97,7 +141,7 @@ public class NumberFormatter {
             return "零";
         }
         Assert.checkBetween(amount, -99_9999_9999_9999.99, 99_9999_9999_9999.99,
-                "Number support only: (-99999999999999.99 ～ 99999999999999.99)！");
+                "Number support only: (-99999999999999.99 ~ 99999999999999.99)！");
 
         final StringBuilder chineseStr = new StringBuilder();
 

@@ -29,6 +29,7 @@ import org.aoju.bus.shade.safety.Launcher;
 import org.springframework.boot.loader.JarLauncher;
 
 import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  * Spring-Boot Jar 启动器
@@ -54,8 +55,12 @@ public class BootJarLauncher extends JarLauncher {
     }
 
     @Override
-    protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-        return new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+    protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
+        URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+        URL[] urls = urlClassLoader.getURLs();
+        ClassLoader cl = new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+        Thread.currentThread().setContextClassLoader(cl);
+        createMainMethodRunner(launchClass, args, classLoader).run();
     }
 
 }

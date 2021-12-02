@@ -322,7 +322,7 @@ public class Formatter {
         final StringBuilder result = StringKit.builder();
 
         // 年
-        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        final String year = String.valueOf(calendar.get(Calendar.YEAR));
         final int length = year.length();
         for (int i = 0; i < length; i++) {
             result.append(NumberFormatter.toChinese(year.charAt(i), false));

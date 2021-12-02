@@ -25,10 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.shade.safety;
 
-import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.System;
 import org.aoju.bus.shade.safety.algorithm.Key;
 import org.aoju.bus.shade.safety.algorithm.SecureRandom;
 import org.aoju.bus.shade.safety.algorithm.SymmetricSecureKey;
@@ -76,9 +74,10 @@ public abstract class Builder {
     public static final String XJAR_KEY_IVSIZE = "ivsize";
     public static final String XJAR_KEY_PASSWORD = "password";
     public static final String XJAR_KEY_HOLD = "hold";
-    public static String BOOT_INF_CLASSES = "BOOT-INF/classes/";
-    public static String BOOT_INF_LIB = "BOOT-INF/lib/";
-    public static String CRLF = System.getProperty("line.separator");
+    public static final String BOOT_INF_CLASSES = "BOOT-INF/classes/";
+    public static final String BOOT_INF_LIB = "BOOT-INF/lib/";
+    public static final String CRLF = System.getProperty("line.separator");
+    public static final String ALGORITHM = "AES";
     public static int DEFAULT_KEYSIZE = Normal._128;
     public static int DEFAULT_IVSIZE = Normal._128;
 
@@ -279,7 +278,7 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException 没有该密钥算法
      */
     public static Key key(String password) throws NoSuchAlgorithmException {
-        return key(Algorithm.AES.getValue(), DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
+        return key("AES", DEFAULT_KEYSIZE, DEFAULT_IVSIZE, password);
     }
 
     /**
@@ -318,7 +317,7 @@ public abstract class Builder {
      * @throws NoSuchAlgorithmException 没有该密钥算法
      */
     public static Key key(String algorithm, int keysize, int ivsize, String password) throws NoSuchAlgorithmException {
-        MessageDigest sha512 = MessageDigest.getInstance(Algorithm.SHA512.getValue());
+        MessageDigest sha512 = MessageDigest.getInstance("SHA-512");
         byte[] seed = sha512.digest(password.getBytes());
         KeyGenerator generator = KeyGenerator.getInstance(algorithm.split("[/]")[0]);
         SecureRandom random = new SecureRandom(seed);
@@ -457,7 +456,7 @@ public abstract class Builder {
     }
 
     public static String absolutize(String path) {
-        return normalize(isAbsolute(path) ? path : System.getProperty(System.USER_DIR) + File.separator + path);
+        return normalize(isAbsolute(path) ? path : System.getProperty("user.dir") + File.separator + path);
     }
 
     public static String normalize(String path) {

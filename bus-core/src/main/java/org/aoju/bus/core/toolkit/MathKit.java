@@ -3208,6 +3208,26 @@ public class MathKit {
     }
 
     /**
+     * 检查是否为奇数
+     *
+     * @param num 被判断的数值
+     * @return 是否是奇数
+     */
+    public static boolean isOdd(int num) {
+        return (num & 1) == 1;
+    }
+
+    /**
+     * 检查是否为偶数
+     *
+     * @param num 被判断的数值
+     * @return 是否是偶数
+     */
+    public static boolean isEven(int num) {
+        return false == isOdd(num);
+    }
+
+    /**
      * 金额元转换为分
      *
      * @param yuan 金额，单位元
