@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * Memory info on OpenBSD
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -47,7 +47,7 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
     private final Supplier<Triple<Integer, Integer, Integer>> usedTotalPgin = Memoize.memoize(
             OpenBsdVirtualMemory::queryVmstat, Memoize.defaultExpiration());
     private final Supplier<Integer> pgout = Memoize.memoize(OpenBsdVirtualMemory::queryUvm, Memoize.defaultExpiration());
-    private final OpenBsdGlobalMemory global;
+    OpenBsdGlobalMemory global;
 
     OpenBsdVirtualMemory(OpenBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;

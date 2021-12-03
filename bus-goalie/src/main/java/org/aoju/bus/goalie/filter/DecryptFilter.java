@@ -27,7 +27,6 @@ package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
@@ -49,7 +48,7 @@ import java.util.Map;
  * 数据解密
  *
  * @author Justubborn
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
@@ -89,7 +88,7 @@ public class DecryptFilter implements WebFilter {
         }
         map.forEach((k, v) -> {
             if (StringKit.isNotBlank(v)) {
-                map.put(k, crypto.decryptStr(v.replaceAll(Symbol.SPACE, Symbol.PLUS), Charset.UTF_8));
+                map.put(k, crypto.decryptStr(v, Charset.UTF_8));
             }
         });
     }

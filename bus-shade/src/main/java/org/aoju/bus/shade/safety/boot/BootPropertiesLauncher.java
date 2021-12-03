@@ -29,13 +29,12 @@ import org.aoju.bus.shade.safety.Launcher;
 import org.springframework.boot.loader.PropertiesLauncher;
 
 import java.net.URL;
-import java.net.URLClassLoader;
 
 /**
  * Spring-Boot Properties 启动器
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class BootPropertiesLauncher extends PropertiesLauncher {
@@ -55,12 +54,8 @@ public class BootPropertiesLauncher extends PropertiesLauncher {
     }
 
     @Override
-    protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
-        URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
-        URL[] urls = urlClassLoader.getURLs();
-        ClassLoader cl = new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
-        Thread.currentThread().setContextClassLoader(cl);
-        createMainMethodRunner(launchClass, args, classLoader).run();
+    protected ClassLoader createClassLoader(URL[] urls) throws Exception {
+        return new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
     }
 
 }

@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class RegEx {
@@ -162,8 +162,8 @@ public class RegEx {
      * 中国澳门 +853 Macao
      * 中国台湾 +886 Taiwan
      */
-    public final static String MOBILE__PATTERN = "(?:0|852|\\+852)?\\d{8}";
-    public final static Pattern MOBILE_HK = Pattern.compile(MOBILE__PATTERN);
+    public final static String MOBILE_HK_PATTERN = "(?:0|852|\\+852)?\\d{8}";
+    public final static Pattern MOBILE_HK = Pattern.compile(MOBILE_HK_PATTERN);
 
     /**
      * 中国澳门移动电话

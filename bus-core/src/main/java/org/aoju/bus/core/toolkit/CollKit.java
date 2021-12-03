@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -1755,7 +1755,6 @@ public class CollKit {
      * @param resultCollection 存放移除结果的集合
      * @param targetCollection 被操作移除元素的集合
      * @param predicate        用于是否移除判断的过滤器
-     * @return 移除结果的集合
      */
     public static <T extends Collection<E>, E> T removeWithAddIf(T targetCollection, T resultCollection, Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
@@ -3360,7 +3359,8 @@ public class CollKit {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return toMap(collection, (v) -> org.aoju.bus.core.lang.Optional.ofNullable(v).map(key).get(), Function.identity(), isParallel);
+        return StreamKit.of(collection, isParallel)
+                .collect(Collectors.toMap(key, Function.identity(), (l, r) -> l));
     }
 
     /**
@@ -3393,9 +3393,9 @@ public class CollKit {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return StreamKit.of(collection, isParallel)
-                .collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)), HashMap::putAll);
+        return StreamKit.of(collection, isParallel).collect(Collectors.toMap(key, value, (l, r) -> l));
     }
+
 
     /**
      * 将collection按照规则(比如有相同的班级id)分类成map

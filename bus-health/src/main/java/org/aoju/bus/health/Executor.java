@@ -44,7 +44,7 @@ import java.util.List;
  * execution.
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -57,10 +57,13 @@ public final class Executor {
     }
 
     private static String[] getDefaultEnv() {
-        if (Platform.isWindows()) {
+        Platform.OS platform = Platform.getCurrentPlatform();
+        if (platform == Platform.OS.WINDOWS) {
             return new String[]{"LANGUAGE=C"};
-        } else {
+        } else if (platform != Platform.OS.UNKNOWN) {
             return new String[]{"LC_ALL=C"};
+        } else {
+            return null;
         }
     }
 
@@ -112,35 +115,11 @@ public final class Executor {
      * string if the command failed
      */
     public static List<String> runNative(String[] cmdToRunWithArgs, String[] envp) {
-        Process p = null;
         try {
-            p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
-            return getProcessOutput(p, cmdToRunWithArgs);
+            Process p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
+            return getProcessOutputAndDestroy(p, cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
             Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
-        } finally {
-            // Ensure all resources are released
-            if (p != null) {
-                // Solaris doesn't close descriptors on destroy so we must handle separately
-                if (Platform.isSolaris()) {
-                    try {
-                        p.getOutputStream().close();
-                    } catch (IOException e) {
-                        // do nothing on failure
-                    }
-                    try {
-                        p.getInputStream().close();
-                    } catch (IOException e) {
-                        // do nothing on failure
-                    }
-                    try {
-                        p.getErrorStream().close();
-                    } catch (IOException e) {
-                        // do nothing on failure
-                    }
-                }
-                p.destroy();
-            }
         }
         return Collections.emptyList();
     }
@@ -173,7 +152,7 @@ public final class Executor {
         return Normal.EMPTY;
     }
 
-    private static List<String> getProcessOutput(Process p, String[] cmd) {
+    private static List<String> getProcessOutputAndDestroy(Process p, String[] cmd) {
         ArrayList<String> sa = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
@@ -187,6 +166,8 @@ public final class Executor {
         } catch (InterruptedException ie) {
             Logger.trace("Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
             Thread.currentThread().interrupt();
+        } finally {
+            p.destroy();
         }
         return sa;
     }

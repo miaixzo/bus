@@ -42,16 +42,16 @@ import java.util.function.Supplier;
  * parsing process ownership. Cache expires after one minute.
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 @ThreadSafe
 public final class UserGroup {
 
     // Temporarily cache users and groups, update each minute
-    private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoize.memoize(UserGroup::getUserMap,
+    private static final Supplier<Map<String, String>> usersIdMap = Memoize.memoize(UserGroup::getUserMap,
             TimeUnit.MINUTES.toNanos(1));
-    private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoize.memoize(UserGroup::getGroupMap,
+    private static final Supplier<Map<String, String>> groupsIdMap = Memoize.memoize(UserGroup::getGroupMap,
             TimeUnit.MINUTES.toNanos(1));
 
     private UserGroup() {
@@ -65,7 +65,7 @@ public final class UserGroup {
      * as the second
      */
     public static String getUser(String userId) {
-        return USERS_ID_MAP.get().getOrDefault(userId, Normal.UNKNOWN);
+        return usersIdMap.get().getOrDefault(userId, Normal.UNKNOWN);
     }
 
     /**
@@ -75,7 +75,7 @@ public final class UserGroup {
      * @return a {@link java.lang.String} object.
      */
     public static String getGroupName(String groupId) {
-        return GROUPS_ID_MAP.get().getOrDefault(groupId, Normal.UNKNOWN);
+        return groupsIdMap.get().getOrDefault(groupId, Normal.UNKNOWN);
     }
 
     private static Map<String, String> getUserMap() {

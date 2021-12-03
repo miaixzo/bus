@@ -43,7 +43,7 @@ import java.util.Map;
  * The perfstat API is thread–safe, and does not require root authority.
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.1
  * @since JDK 1.8+
  */
 public interface Perfstat extends Library {
