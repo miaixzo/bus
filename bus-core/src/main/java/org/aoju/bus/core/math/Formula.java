@@ -62,16 +62,14 @@ public class Formula {
      * @return 计算结果
      */
     public static double conversion(String expression) {
-        final Formula cal = new Formula();
-        expression = transform(expression);
-        return cal.calculate(expression);
+        return (new Formula()).calculate(expression);
     }
 
     /**
      * 将表达式中负数的符号更改
      *
      * @param expression 例如-2+-1*(-3E-2)-(-1) 被转为 ~2+~1*(~3E~2)-(~1)
-     * @return 更改后的表达式
+     * @return 转换后的字符串
      */
     private static String transform(String expression) {
         expression = StringKit.cleanBlank(expression);
@@ -94,47 +92,13 @@ public class Formula {
                 }
             }
         }
-        if (arr[0] == Symbol.C_TILDE || (arr.length > 1 && arr[1] == Symbol.C_PARENTHESE_LEFT)) {
+        if (arr[0] == Symbol.C_TILDE || (arr.length > 1
+                && arr[1] == Symbol.C_PARENTHESE_LEFT)) {
             arr[0] = Symbol.C_MINUS;
             return Symbol.ZERO + new String(arr);
         } else {
             return new String(arr);
         }
-    }
-
-    /**
-     * 按照给定的表达式计算
-     *
-     * @param expression 要计算的表达式例如: 1+2*(3+5)/7
-     * @return 计算结果
-     */
-    public double calculate(String expression) {
-        Stack<String> resultStack = new Stack<>();
-        prepare(expression);
-        // 将后缀式栈反转
-        Collections.reverse(postfixStack);
-        // 参与计算的第一个值，第二个值和算术运算符
-        String firstValue, secondValue, currentValue;
-        while (false == postfixStack.isEmpty()) {
-            currentValue = postfixStack.pop();
-            // 如果不是运算符则存入操作数栈中
-            if (false == isOperator(currentValue.charAt(0))) {
-                currentValue = currentValue.replace(Symbol.TILDE, Symbol.MINUS);
-                resultStack.push(currentValue);
-            } else {
-                // 如果是运算符则从操作数栈中取两个值和该数值一起参与运算
-                secondValue = resultStack.pop();
-                firstValue = resultStack.pop();
-
-                // 将负数标记符改为负号
-                firstValue = firstValue.replace(Symbol.TILDE, Symbol.MINUS);
-                secondValue = secondValue.replace(Symbol.TILDE, Symbol.MINUS);
-
-                BigDecimal tempResult = calculate(firstValue, secondValue, currentValue.charAt(0));
-                resultStack.push(tempResult.toString());
-            }
-        }
-        return Double.parseDouble(resultStack.pop());
     }
 
     /**
@@ -209,24 +173,36 @@ public class Formula {
     }
 
     /**
-     * 利用ASCII码-40做下标去算术符号优先级
+     * 按照给定的表达式计算
      *
-     * @param cur  下标
-     * @param peek peek
-     * @return 优先级
+     * @param expression 要计算的表达式例如: 1+2*(3+5)/7
+     * @return 计算结果
      */
-    public boolean compare(char cur, char peek) {
-        final int offset = 40;
-        if (cur == Symbol.C_PERCENT) {
-            // %优先级最高
-            cur = 47;
-        }
-        if (peek == Symbol.C_PERCENT) {
-            // %优先级最高
-            peek = 47;
-        }
+    public double calculate(String expression) {
+        prepare(transform(expression));
 
-        return operatPriority[peek - offset] >= operatPriority[cur - offset];
+        Stack<String> resultStack = new Stack<>();
+        Collections.reverse(postfixStack);// 将后缀式栈反转
+        String firstValue, secondValue, currentOp;// 参与计算的第一个值，第二个值和算术运算符
+        while (false == postfixStack.isEmpty()) {
+            currentOp = postfixStack.pop();
+            if (false == isOperator(currentOp.charAt(0))) {// 如果不是运算符则存入操作数栈中
+                currentOp = currentOp.replace(Symbol.TILDE, Symbol.MINUS);
+                resultStack.push(currentOp);
+            } else {
+                // 如果是运算符则从操作数栈中取两个值和该数值一起参与运算
+                secondValue = resultStack.pop();
+                firstValue = resultStack.pop();
+
+                // 将负数标记符改为负号
+                firstValue = firstValue.replace(Symbol.TILDE, Symbol.MINUS);
+                secondValue = secondValue.replace(Symbol.TILDE, Symbol.MINUS);
+
+                BigDecimal tempResult = calculate(firstValue, secondValue, currentOp.charAt(0));
+                resultStack.push(tempResult.toString());
+            }
+        }
+        return Double.parseDouble(resultStack.pop());
     }
 
     /**
@@ -256,6 +232,27 @@ public class Formula {
                 throw new IllegalStateException("Unexpected value: " + currentOp);
         }
         return result;
+    }
+
+    /**
+     * 利用ASCII码-40做下标去算术符号优先级
+     *
+     * @param cur  下标
+     * @param peek peek
+     * @return 优先级，如果cur高或相等，返回true，否则false
+     */
+    public boolean compare(char cur, char peek) {
+        final int offset = 40;
+        if (cur == Symbol.C_PERCENT) {
+            // %优先级最高
+            cur = 47;
+        }
+        if (peek == Symbol.C_PERCENT) {
+            // %优先级最高
+            peek = 47;
+        }
+
+        return operatPriority[peek - offset] >= operatPriority[cur - offset];
     }
 
 }

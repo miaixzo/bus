@@ -225,7 +225,7 @@ public class StyleKit {
      * @param format   数据格式
      * @return 数据格式
      */
-    public Short getFormat(Workbook workbook, String format) {
+    public static Short getFormat(Workbook workbook, String format) {
         final DataFormat dataFormat = workbook.createDataFormat();
         return dataFormat.getFormat(format);
     }

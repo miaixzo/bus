@@ -3360,8 +3360,7 @@ public class CollKit {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return StreamKit.of(collection, isParallel)
-                .collect(Collectors.toMap(key, Function.identity(), (l, r) -> l));
+        return toMap(collection, (v) -> org.aoju.bus.core.lang.Optional.ofNullable(v).map(key).get(), Function.identity(), isParallel);
     }
 
     /**
@@ -3394,9 +3393,9 @@ public class CollKit {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return StreamKit.of(collection, isParallel).collect(Collectors.toMap(key, value, (l, r) -> l));
+        return StreamKit.of(collection, isParallel)
+                .collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)), HashMap::putAll);
     }
-
 
     /**
      * 将collection按照规则(比如有相同的班级id)分类成map
