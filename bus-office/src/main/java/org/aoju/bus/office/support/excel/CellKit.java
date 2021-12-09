@@ -181,9 +181,9 @@ public class CellKit {
      */
     public static void setCellValue(Cell cell, Object value, CellStyle style) {
         setCellValue(cell, (CellSetter) cell1 -> {
+            setCellValue(cell, value);
             if (null != style) {
                 cell1.setCellStyle(style);
-                setCellValue(cell, value);
             }
         });
     }

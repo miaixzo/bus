@@ -300,6 +300,10 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
      * @see #filterNew(Filter)
      */
     public Tree<T> filter(Filter<Tree<T>> filter) {
+        if (filter.accept(this)) {
+            // 本节点满足，则包括所有子节点都保留
+            return this;
+        }
         final List<Tree<T>> children = getChildren();
         if (CollKit.isNotEmpty(children)) {
             // 递归过滤子节点
@@ -320,7 +324,7 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
         }
 
         // 子节点都不符合过滤条件，检查本节点
-        return filter.accept(this) ? this : null;
+        return null;
     }
 
     /**

@@ -40,7 +40,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.plugins.AbstractSqlHandler;
+import org.aoju.bus.mapper.handler.AbstractSqlHandler;
 import org.apache.ibatis.reflection.MetaObject;
 
 /**

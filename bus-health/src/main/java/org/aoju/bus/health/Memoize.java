@@ -42,7 +42,7 @@ import java.util.function.Supplier;
 @ThreadSafe
 public final class Memoize {
 
-    private static final Supplier<Long> defaultExpirationNanos = memoize(Memoize::queryExpirationConfig,
+    private static final Supplier<Long> DEFAULT_EXPIRATION_NANOS = memoize(Memoize::queryExpirationConfig,
             TimeUnit.MINUTES.toNanos(1));
 
     private Memoize() {
@@ -61,7 +61,7 @@ public final class Memoize {
      * @return The number of nanoseconds to keep memoized values before refreshing
      */
     public static long defaultExpiration() {
-        return defaultExpirationNanos.get();
+        return DEFAULT_EXPIRATION_NANOS.get();
     }
 
     /**

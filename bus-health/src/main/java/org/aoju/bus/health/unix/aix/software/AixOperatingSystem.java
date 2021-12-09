@@ -64,7 +64,8 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             .collect(Collectors.joining(Symbol.COMMA));
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
-    Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());
+    private final Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses,
+            Memoize.defaultExpiration());
 
     private static long querySystemBootTimeMillis() {
         long bootTime = Who.queryBootTime();

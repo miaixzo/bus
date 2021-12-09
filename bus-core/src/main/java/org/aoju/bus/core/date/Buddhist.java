@@ -291,6 +291,31 @@ public class Buddhist {
             put("12-30", Collections.nCopies(1, new Festival("诸神下降，察访善恶", "犯者男女俱亡")));
         }
     };
+
+    /**
+     * 27星宿，佛教从印度传入中国，印度把28星宿改为27星宿，把牛宿(牛金牛)纳入了女宿(女土蝠)。
+     */
+    public static final String[] XIU_27 = {
+            "角", "亢", "氐", "房", "心", "尾", "箕", "斗", "女", "虚", "危", "室", "壁", "奎",
+            "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸"
+    };
+
+    /**
+     * 每月初一的27星宿偏移
+     */
+    private static final int[] XIU_OFFSET = {11, 13, 15, 17, 19, 21, 24, 0, 2, 4, 7, 9};
+
+    /**
+     * 获取27星宿
+     *
+     * @param month 佛历月
+     * @param day   佛历日
+     * @return 星宿
+     */
+    public static String getXiu(int month, int day) {
+        return XIU_27[(XIU_OFFSET[Math.abs(month) - 1] + day - 1) % XIU_27.length];
+    }
+
     /**
      * 阴历
      */
@@ -359,11 +384,21 @@ public class Buddhist {
         return l;
     }
 
+    /**
+     * 是否月斋
+     *
+     * @return true/false
+     */
     public boolean isMonthZhai() {
         int m = getMonth();
         return 1 == m || 5 == m || 9 == m;
     }
 
+    /**
+     * 是否杨公忌
+     *
+     * @return true/false
+     */
     public boolean isDayYangGong() {
         for (Buddhist.Festival f : getFestivals()) {
             if ("杨公忌".equals(f.getName())) {
@@ -373,11 +408,21 @@ public class Buddhist {
         return false;
     }
 
+    /**
+     * 是否朔望斋
+     *
+     * @return true/false
+     */
     public boolean isDayZhaiShuoWang() {
         int d = getDay();
         return 1 == d || 15 == d;
     }
 
+    /**
+     * 是否六斋日
+     *
+     * @return true/false
+     */
     public boolean isDayZhaiSix() {
         int d = getDay();
         if (8 == d || 14 == d || 15 == d || 23 == d || 29 == d || 30 == d) {
@@ -389,11 +434,21 @@ public class Buddhist {
         return false;
     }
 
+    /**
+     * 是否十斋日
+     *
+     * @return true/false
+     */
     public boolean isDayZhaiTen() {
         int d = getDay();
         return 1 == d || 8 == d || 14 == d || 15 == d || 18 == d || 23 == d || 24 == d || 28 == d || 29 == d || 30 == d;
     }
 
+    /**
+     * 是否观音斋
+     *
+     * @return true/false
+     */
     public boolean isDayZhaiGuanYin() {
         String k = getMonth() + "-" + getDay();
         for (String d : Buddhist.DAY_ZHAI_GUAN_YIN) {
@@ -402,6 +457,69 @@ public class Buddhist {
             }
         }
         return false;
+    }
+
+    /**
+     * 获取星宿
+     *
+     * @return 星宿
+     */
+    public String getXiu() {
+        return Buddhist.getXiu(getMonth(), getDay());
+    }
+
+    /**
+     * 获取宿吉凶
+     *
+     * @return 吉/凶
+     */
+    public String getXiuLuck() {
+        return Lunar.XIU_LUCK.get(getXiu());
+    }
+
+    /**
+     * 获取宿歌诀
+     *
+     * @return 宿歌诀
+     */
+    public String getXiuSong() {
+        return Lunar.XIU_SONG.get(getXiu());
+    }
+
+    /**
+     * 获取政
+     *
+     * @return 政
+     */
+    public String getZheng() {
+        return Lunar.ZHENG.get(getXiu());
+    }
+
+    /**
+     * 获取动物
+     *
+     * @return 动物
+     */
+    public String getAnimal() {
+        return Lunar.ANIMAL.get(getXiu());
+    }
+
+    /**
+     * 获取宫
+     *
+     * @return 宫
+     */
+    public String getGong() {
+        return Lunar.GONG.get(getXiu());
+    }
+
+    /**
+     * 获取兽
+     *
+     * @return 兽
+     */
+    public String getShou() {
+        return Lunar.SHOU.get(getGong());
     }
 
     @Override

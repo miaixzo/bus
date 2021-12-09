@@ -72,6 +72,10 @@ public class DateTime extends Date {
      * 时区
      */
     private TimeZone timeZone;
+    /**
+     * 第一周最少天数
+     */
+    private int firstWeekOfDays;
 
     /**
      * 当前时间
@@ -694,6 +698,9 @@ public class DateTime extends Date {
         }
         final Calendar cal = (null != zone) ? Calendar.getInstance(zone, locale) : Calendar.getInstance(locale);
         cal.setFirstDayOfWeek(firstDayOfWeek.getKey());
+        if (firstWeekOfDays > 0) {
+            cal.setMinimalDaysInFirstWeek(firstWeekOfDays);
+        }
         cal.setTime(this);
         return cal;
     }
@@ -889,6 +896,17 @@ public class DateTime extends Date {
      */
     public DateTime setTimeZone(TimeZone timeZone) {
         this.timeZone = ObjectKit.defaultIfNull(timeZone, TimeZone.getDefault());
+        return this;
+    }
+
+    /**
+     * 设置第一周最少天数
+     *
+     * @param firstWeekOfDays 第一周最少天数
+     * @return this
+     */
+    public DateTime setFirstWeekOfDays(int firstWeekOfDays) {
+        this.firstWeekOfDays = firstWeekOfDays;
         return this;
     }
 
