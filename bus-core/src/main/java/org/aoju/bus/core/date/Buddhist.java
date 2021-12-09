@@ -34,7 +34,7 @@ import java.util.*;
  * 佛历
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Buddhist {

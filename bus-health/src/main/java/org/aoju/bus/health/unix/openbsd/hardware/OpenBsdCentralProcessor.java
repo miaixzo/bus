@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * OpenBSD Central Processor implementation
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {

@@ -42,7 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 非对称基础，提供锁、私钥和公钥的持有
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Asymmetric<T extends Asymmetric<T>> implements Serializable {

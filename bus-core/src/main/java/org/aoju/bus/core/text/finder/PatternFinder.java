@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 通过传入正则表达式，查找指定字符串中匹配正则的开始和结束位置
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class PatternFinder extends TextFinder {

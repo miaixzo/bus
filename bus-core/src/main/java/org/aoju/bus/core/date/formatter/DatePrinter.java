@@ -32,7 +32,7 @@ import java.util.Date;
  * 日期格式化输出接口
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public interface DatePrinter extends DateMotd {

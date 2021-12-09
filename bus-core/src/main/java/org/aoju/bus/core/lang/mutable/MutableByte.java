@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>byte</code> 类型
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @see Byte
  * @since JDK 1.8+
  */

@@ -44,7 +44,7 @@ import java.util.List;
  * execution.
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -117,7 +117,7 @@ public final class Executor {
             p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
             return getProcessOutput(p, cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
-            LOG.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
+            Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
         } finally {
             // Ensure all resources are released
             if (p != null) {

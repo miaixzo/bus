@@ -41,7 +41,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Ciphers {

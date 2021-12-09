@@ -36,7 +36,7 @@ import java.util.List;
  * 返回已知主机的硬编码结果
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public final class BootstrapDns implements DnsX {

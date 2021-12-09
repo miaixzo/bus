@@ -35,7 +35,7 @@ import org.aoju.bus.limiter.execute.LimiterExecutionContext;
  * limiter 降级策略应该由limiter本身实现,这里只是一个简单的替代方案
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public interface Handler {

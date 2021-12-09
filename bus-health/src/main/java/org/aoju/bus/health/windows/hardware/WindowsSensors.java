@@ -41,7 +41,7 @@ import java.util.Objects;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe

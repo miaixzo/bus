@@ -54,7 +54,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class HMac implements Serializable {

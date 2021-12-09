@@ -34,7 +34,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * 获取单元格样式、坐标等信息，或根据单元格信息，装饰转换结果值
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @FunctionalInterface

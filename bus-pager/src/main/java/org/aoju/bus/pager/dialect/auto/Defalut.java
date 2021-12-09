@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 遍历所有实现，找到匹配的实现
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Defalut implements AutoDialect<String> {

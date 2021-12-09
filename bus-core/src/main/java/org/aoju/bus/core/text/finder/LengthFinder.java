@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Assert;
  * 给定一个长度，查找的位置为from + length，一般用于分段截取
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class LengthFinder extends TextFinder {
