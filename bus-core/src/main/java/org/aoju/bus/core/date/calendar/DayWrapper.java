@@ -38,7 +38,7 @@ import java.util.Date;
  * 天/日/Day
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @Data
@@ -186,7 +186,7 @@ public class DayWrapper implements Serializable {
             this.lunar = new Solar(localDateTime.getYear(), localDateTime.getMonthValue(), localDateTime.getDayOfMonth()).getLunar();
             this.lunarDateStr = lunar.toString();
             this.lunarDay = lunar.getDayInChinese();
-            this.solarTerm = lunar.getSolarTerm(false);
+            this.solarTerm = lunar.getSolarTerm();
         }
 
         // 节假日

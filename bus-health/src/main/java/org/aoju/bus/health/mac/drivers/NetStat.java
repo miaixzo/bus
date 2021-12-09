@@ -42,7 +42,7 @@ import java.util.Map;
  * Utility to query NetStat.
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe

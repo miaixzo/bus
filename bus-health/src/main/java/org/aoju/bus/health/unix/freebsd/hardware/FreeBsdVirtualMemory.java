@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * Memory obtained by swapinfo
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -49,7 +49,7 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
     private final Supplier<Long> total = Memoize.memoize(FreeBsdVirtualMemory::querySwapTotal, Memoize.defaultExpiration());
     private final Supplier<Long> pagesIn = Memoize.memoize(FreeBsdVirtualMemory::queryPagesIn, Memoize.defaultExpiration());
     private final Supplier<Long> pagesOut = Memoize.memoize(FreeBsdVirtualMemory::queryPagesOut, Memoize.defaultExpiration());
-    FreeBsdGlobalMemory global;
+    private final FreeBsdGlobalMemory global;
 
     FreeBsdVirtualMemory(FreeBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;

@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class BeanKit {

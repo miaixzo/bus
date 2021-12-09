@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.shade.safety;
 
-import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.shade.safety.algorithm.Key;
 import org.aoju.bus.shade.safety.provider.DecryptorProvider;
@@ -49,7 +48,7 @@ import java.util.jar.Manifest;
  * Spring-Boot 启动器
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Launcher {
@@ -61,7 +60,7 @@ public class Launcher {
 
     public Launcher(String... args) throws Exception {
         this.args = args;
-        String algorithm = Algorithm.AES.getValue();
+        String algorithm = Builder.ALGORITHM;
         int keysize = Builder.DEFAULT_KEYSIZE;
         int ivsize = Builder.DEFAULT_IVSIZE;
         String password = null;

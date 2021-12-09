@@ -38,7 +38,7 @@ import java.io.IOException;
  * 模板引擎抽象类
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @Data

@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Convert {

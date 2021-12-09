@@ -42,7 +42,7 @@ import java.util.HashMap;
  * 对于 {@link InstanceFactory} 的便于使用
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe

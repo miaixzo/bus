@@ -47,7 +47,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 内存缓存支持
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class MemoryCache implements CacheX {

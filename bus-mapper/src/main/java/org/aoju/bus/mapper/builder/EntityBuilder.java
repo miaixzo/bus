@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段关键的一个类
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class EntityBuilder {

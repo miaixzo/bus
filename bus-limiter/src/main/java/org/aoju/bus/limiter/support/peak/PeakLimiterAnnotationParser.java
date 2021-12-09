@@ -32,7 +32,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 
 /**
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class PeakLimiterAnnotationParser extends AbstractParser<PeakLimiter, Peak> {

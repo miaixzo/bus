@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.cell.values;
 
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.office.Builder;
@@ -33,12 +34,14 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.NumberToTextConverter;
 
+import java.util.Date;
+
 /**
  * 数字类型单元格值<br>
  * 单元格值可能为Long、Double、Date
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class NumericCellValue implements CellValue<Object> {
@@ -62,7 +65,12 @@ public class NumericCellValue implements CellValue<Object> {
         if (null != style) {
             // 判断是否为日期
             if (Builder.isDateFormat(cell)) {
-                return DateKit.date(cell.getDateCellValue());
+                // 1899年写入会导致数据错乱，读取到1899年证明这个单元格的信息不关注年月日
+                Date dateCellValue = cell.getDateCellValue();
+                if ("1899".equals(DateKit.format(dateCellValue, Fields.NORM_YEAR_PATTERN))) {
+                    return DateKit.format(dateCellValue, style.getDataFormatString());
+                }
+                return DateKit.date(dateCellValue);
             }
 
             final String format = style.getDataFormatString();

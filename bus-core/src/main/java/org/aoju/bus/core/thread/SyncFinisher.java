@@ -40,7 +40,7 @@ import java.util.concurrent.ExecutorService;
  * 不能保证同时开始
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class SyncFinisher {
@@ -186,6 +186,10 @@ public class SyncFinisher {
      */
     public long count() {
         return endLatch.getCount();
+    }
+
+    public void close() {
+        stop();
     }
 
     /**

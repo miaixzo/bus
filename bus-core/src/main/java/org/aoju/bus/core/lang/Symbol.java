@@ -29,10 +29,16 @@ package org.aoju.bus.core.lang;
  * 标点符号常量
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Symbol {
+
+    /**
+     * 符号: !
+     */
+    public static final char C_BANG = '!';
+    public static final String BANG = Normal.EMPTY + C_BANG;
 
     /**
      * 符号: 0

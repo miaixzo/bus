@@ -33,6 +33,7 @@ import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 
 import java.io.File;
@@ -45,7 +46,7 @@ import java.util.Iterator;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
@@ -79,9 +80,9 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
 
     @Override
     public Excel07SaxReader read(File file, String idOrRidOrSheetName) throws InstrumentException {
-        try {
-            return read(OPCPackage.open(file), idOrRidOrSheetName);
-        } catch (InvalidFormatException e) {
+        try (OPCPackage open = OPCPackage.open(file, PackageAccess.READ)) {
+            return read(open, idOrRidOrSheetName);
+        } catch (InvalidFormatException | IOException e) {
             throw new InstrumentException(e);
         }
     }
@@ -219,7 +220,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         }
 
         // sheetIndex需转换为rid
-        final SheetRidReader ridReader = new SheetRidReader().read(xssfReader);
+        final SheetRidReader ridReader = SheetRidReader.parse(xssfReader);
 
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX)) {
             // name:开头的被认为是sheet名称直接处理

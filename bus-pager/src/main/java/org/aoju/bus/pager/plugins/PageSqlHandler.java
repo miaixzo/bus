@@ -49,7 +49,7 @@ import java.util.Properties;
  * 通用分页拦截器
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @Intercepts(

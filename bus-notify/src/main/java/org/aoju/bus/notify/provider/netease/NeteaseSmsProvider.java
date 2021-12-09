@@ -11,7 +11,7 @@ import java.util.Map;
  * 网易云短信消息
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK1.8+
  */
 public class NeteaseSmsProvider extends NeteaseProvider<NeteaseSmsProperty, Context> {

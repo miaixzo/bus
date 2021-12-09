@@ -43,7 +43,9 @@ import org.bouncycastle.crypto.signers.DSAEncoding;
 import org.bouncycastle.crypto.signers.PlainDSAEncoding;
 import org.bouncycastle.crypto.signers.SM2Signer;
 import org.bouncycastle.crypto.signers.StandardDSAEncoding;
+import org.bouncycastle.util.BigIntegers;
 
+import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -57,7 +59,7 @@ import java.security.PublicKey;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class SM2 extends AbstractCrypto<SM2> {
@@ -514,7 +516,25 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @return D值
      */
     public byte[] getD() {
-        return this.privateKeyParams.getD().toByteArray();
+        return BigIntegers.asUnsignedByteArray(getDBigInteger());
+    }
+
+    /**
+     * 获得私钥D值（编码后的私钥）
+     *
+     * @return D值
+     */
+    public String getDHex() {
+        return getDBigInteger().toString(16);
+    }
+
+    /**
+     * 获得私钥D值
+     *
+     * @return D值
+     */
+    public BigInteger getDBigInteger() {
+        return this.privateKeyParams.getD();
     }
 
     /**

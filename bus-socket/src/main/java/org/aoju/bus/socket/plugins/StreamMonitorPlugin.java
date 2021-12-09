@@ -45,7 +45,7 @@ import java.util.function.BiConsumer;
  * 传输层码流监控插件
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class StreamMonitorPlugin<T> extends AbstractPlugin<T> {

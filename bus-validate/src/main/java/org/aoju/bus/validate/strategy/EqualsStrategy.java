@@ -36,7 +36,7 @@ import java.util.Objects;
  * EQUALS 校验
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class EqualsStrategy implements Matcher<String, Equals> {

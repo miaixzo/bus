@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -1747,6 +1747,46 @@ public class CollKit {
     }
 
     /**
+     * 移除集合中的多个元素，并将结果存放到指定的集合
+     * 此方法直接修改原集合
+     *
+     * @param <T>              集合类型
+     * @param <E>              集合元素类型
+     * @param resultCollection 存放移除结果的集合
+     * @param targetCollection 被操作移除元素的集合
+     * @param predicate        用于是否移除判断的过滤器
+     * @return 移除结果的集合
+     */
+    public static <T extends Collection<E>, E> T removeWithAddIf(T targetCollection, T resultCollection, Predicate<? super E> predicate) {
+        Objects.requireNonNull(predicate);
+        final Iterator<E> each = targetCollection.iterator();
+        while (each.hasNext()) {
+            E next = each.next();
+            if (predicate.test(next)) {
+                resultCollection.add(next);
+                each.remove();
+            }
+        }
+        return resultCollection;
+    }
+
+    /**
+     * 移除集合中的多个元素，并将结果存放到生成的新集合中后返回
+     * 此方法直接修改原集合
+     *
+     * @param <T>              集合类型
+     * @param <E>              集合元素类型
+     * @param targetCollection 被操作移除元素的集合
+     * @param predicate        用于是否移除判断的过滤器
+     * @return 移除结果的集合
+     */
+    public static <T extends Collection<E>, E> List<E> removeWithAddIf(T targetCollection, Predicate<? super E> predicate) {
+        final List<E> removed = new ArrayList<>();
+        removeWithAddIf(targetCollection, removed, predicate);
+        return removed;
+    }
+
+    /**
      * 通过Editor抽取集合元素中的某些值返回为新列表
      * 例如提供的是一个Bean列表,通过Editor接口实现获取某个字段值,返回这个字段值组成的新列表
      *
@@ -3320,8 +3360,7 @@ public class CollKit {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return StreamKit.of(collection, isParallel)
-                .collect(Collectors.toMap(key, Function.identity(), (l, r) -> l));
+        return toMap(collection, (v) -> org.aoju.bus.core.lang.Optional.ofNullable(v).map(key).get(), Function.identity(), isParallel);
     }
 
     /**
@@ -3354,9 +3393,9 @@ public class CollKit {
         if (isEmpty(collection)) {
             return Collections.emptyMap();
         }
-        return StreamKit.of(collection, isParallel).collect(Collectors.toMap(key, value, (l, r) -> l));
+        return StreamKit.of(collection, isParallel)
+                .collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)), HashMap::putAll);
     }
-
 
     /**
      * 将collection按照规则(比如有相同的班级id)分类成map
@@ -3648,6 +3687,7 @@ public class CollKit {
 
     /**
      * 通过cas操作 实现对指定值内的回环累加
+     * 此方法一般用于大量数据完成回环累加（如数据库中的值大于int最大值）
      *
      * @param modulo     回环周期值
      * @param atomicLong 原子操作类

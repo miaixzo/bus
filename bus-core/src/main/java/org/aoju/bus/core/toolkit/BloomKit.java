@@ -32,7 +32,7 @@ import org.aoju.bus.core.bloom.BitSetBloomFilter;
  * 布隆过滤器工具
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class BloomKit {

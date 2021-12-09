@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Formatter {
@@ -322,7 +322,7 @@ public class Formatter {
         final StringBuilder result = StringKit.builder();
 
         // 年
-        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        final String year = String.valueOf(calendar.get(Calendar.YEAR));
         final int length = year.length();
         for (int i = 0; i < length; i++) {
             result.append(NumberFormatter.toChinese(year.charAt(i), false));
@@ -773,16 +773,6 @@ public class Formatter {
             // 时间格式为 HH:mm:ss
             return parse(text, Fields.NORM_DATETIME_FORMAT);
         }
-    }
-
-    /**
-     * 格式化成yyMMddHHmm后转换为int型
-     *
-     * @param date 日期
-     * @return int
-     */
-    public static int toIntSecond(Date date) {
-        return Integer.parseInt(format(date, Fields.PURE_DATE_MINUTE_PATTERN));
     }
 
     /**

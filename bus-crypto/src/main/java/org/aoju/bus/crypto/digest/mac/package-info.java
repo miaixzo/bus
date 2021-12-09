@@ -6,7 +6,7 @@
  * HMAC 还可以使用一个用于计算和确认消息鉴别值的密钥
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 package org.aoju.bus.crypto.digest.mac;

@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -52,7 +52,7 @@ public final class PerfCounterWildcardQuery {
     /**
      * Use a map to cache failed pdh queries
      */
-    private static final Set<String> failedQueryCache = ConcurrentHashMap.newKeySet();
+    private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
 
     private PerfCounterWildcardQuery() {
     }
@@ -75,7 +75,7 @@ public final class PerfCounterWildcardQuery {
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValues(
             Class<T> propertyEnum, String perfObject, String perfWmiClass) {
-        if (!failedQueryCache.contains(perfObject)) {
+        if (!FAILED_QUERY_CACHE.contains(perfObject)) {
             Pair<List<String>, Map<T, List<Long>>> instancesAndValuesMap = queryInstancesAndValuesFromPDH(propertyEnum,
                     perfObject);
             if (!instancesAndValuesMap.getLeft().isEmpty()) {
@@ -83,7 +83,7 @@ public final class PerfCounterWildcardQuery {
             }
             // If we are here, query failed
             Logger.warn("Disabling further attempts to query {}.", perfObject);
-            failedQueryCache.add(perfObject);
+            FAILED_QUERY_CACHE.add(perfObject);
         }
         return queryInstancesAndValuesFromWMI(propertyEnum, perfWmiClass);
     }

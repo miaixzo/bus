@@ -33,7 +33,7 @@ import org.aoju.bus.core.io.VirtualBuffer;
  * 内存池工厂
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public interface BufferFactory {

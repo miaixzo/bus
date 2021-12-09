@@ -40,7 +40,7 @@ import java.lang.reflect.Type;
  * 属性描述
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class PropertyDesc {
@@ -258,7 +258,26 @@ public class PropertyDesc {
      * @return this
      */
     public PropertyDesc setValue(Object bean, Object value, boolean ignoreNull, boolean ignoreError) {
-        if (ignoreNull && null == value) {
+        return setValue(bean, value, ignoreNull, ignoreError, true);
+    }
+
+    /**
+     * 设置属性值，可以自动转换字段类型为目标类型
+     *
+     * @param bean        Bean对象
+     * @param value       属性值，可以为任意类型
+     * @param ignoreNull  是否忽略{@code null}值，true表示忽略
+     * @param ignoreError 是否忽略错误，包括转换错误和注入错误
+     * @param override    是否覆盖目标值，如果不覆盖，会先读取bean的值，非{@code null}则写，否则忽略。如果覆盖，则不判断直接写
+     * @return this
+     */
+    public PropertyDesc setValue(Object bean, Object value, boolean ignoreNull, boolean ignoreError, boolean override) {
+        if (null == value && ignoreNull) {
+            return this;
+        }
+
+        // 非覆盖模式下，如果目标值存在，则跳过
+        if (false == override && null != getValue(bean)) {
             return this;
         }
 
