@@ -38,7 +38,7 @@ import java.util.Date;
  * 样式集合,此样式集合汇集了整个工作簿的样式,用于减少样式的创建和冗余
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class StyleSet implements Serializable {

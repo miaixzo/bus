@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @param <T> 转换后的数据类型
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public abstract class AbstractRowHandler<T> implements RowHandler {

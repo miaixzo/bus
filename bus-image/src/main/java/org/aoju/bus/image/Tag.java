@@ -33,7 +33,7 @@ import org.aoju.bus.image.galaxy.Property;
  * 文件信息标识
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Tag {

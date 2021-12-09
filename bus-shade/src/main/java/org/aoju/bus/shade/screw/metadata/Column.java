@@ -29,7 +29,7 @@ package org.aoju.bus.shade.screw.metadata;
  * 表列接口
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public interface Column {

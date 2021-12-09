@@ -40,14 +40,14 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.plugins.AbstractSqlHandler;
+import org.aoju.bus.mapper.handler.AbstractSqlHandler;
 import org.apache.ibatis.reflection.MetaObject;
 
 /**
  * 抽象 SQL 解析类
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {

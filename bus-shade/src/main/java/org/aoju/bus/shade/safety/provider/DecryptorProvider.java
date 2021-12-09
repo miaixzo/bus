@@ -36,7 +36,7 @@ import java.io.OutputStream;
  * 解密器
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public interface DecryptorProvider {

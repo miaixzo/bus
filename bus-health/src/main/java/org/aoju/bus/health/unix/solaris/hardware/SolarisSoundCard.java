@@ -42,7 +42,7 @@ import java.util.Map;
  * Solaris Sound Card.
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -91,9 +91,9 @@ final class SolarisSoundCard extends AbstractSoundCard {
             }
         }
         List<SoundCard> soundCards = new ArrayList<>();
-        for (String _key : sounds) {
-            soundCards.add(new SolarisSoundCard(productMap.get(_key) + Symbol.SPACE + DEFAULT_AUDIO_DRIVER,
-                    vendorMap.get(_key) + Symbol.SPACE + productMap.get(_key), productMap.get(_key)));
+        for (String s : sounds) {
+            soundCards.add(new SolarisSoundCard(productMap.get(s) + " " + DEFAULT_AUDIO_DRIVER,
+                    vendorMap.get(s) + " " + productMap.get(s), productMap.get(s)));
         }
         return soundCards;
     }

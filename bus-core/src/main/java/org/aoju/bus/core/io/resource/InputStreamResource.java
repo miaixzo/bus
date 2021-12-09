@@ -33,7 +33,7 @@ import java.net.URL;
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class InputStreamResource implements Resource {

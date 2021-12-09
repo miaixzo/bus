@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 支持类型
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Registry {

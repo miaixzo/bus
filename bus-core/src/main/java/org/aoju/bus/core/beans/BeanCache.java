@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.function.Func0;
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public enum BeanCache {

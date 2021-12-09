@@ -47,7 +47,7 @@ import java.util.Map;
  * 表示在线转换任务的默认行为.
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class OnlineMadeInOffice extends AbstractOnlineOffice {

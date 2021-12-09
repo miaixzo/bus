@@ -35,7 +35,7 @@ import java.io.IOException;
  * 由于此对象表示单个请求/响应对(流)，因此不能执行两次.
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public interface NewCall extends Cloneable {

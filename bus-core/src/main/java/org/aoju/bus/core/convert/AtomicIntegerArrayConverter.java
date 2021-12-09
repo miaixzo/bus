@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  * {@link AtomicIntegerArray}转换器
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class AtomicIntegerArrayConverter extends AbstractConverter<AtomicIntegerArray> {

@@ -45,7 +45,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Provides access to kstat information on Solaris
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -132,8 +132,8 @@ public final class KstatKit {
         }
         Pointer p = KS.kstat_data_lookup(ksp, name);
         if (null == p) {
-            if (Logger.get().isError()) {
-                Logger.error("Failed lo lookup kstat value on {}:{}:{} for key {}",
+            if (Logger.get().isDebug()) {
+                Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
                         Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
                         Native.toString(ksp.ks_name, Charset.US_ASCII), name);
             }

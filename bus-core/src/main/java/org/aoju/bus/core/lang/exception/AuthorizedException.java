@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 认证异常
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class AuthorizedException extends UncheckedException {

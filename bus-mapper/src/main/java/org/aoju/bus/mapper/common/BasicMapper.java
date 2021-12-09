@@ -35,7 +35,7 @@ import org.aoju.bus.mapper.common.base.BaseUpdateMapper;
  * 通用Mapper接口,其他接口继承该接口即可
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @RegisterMapper

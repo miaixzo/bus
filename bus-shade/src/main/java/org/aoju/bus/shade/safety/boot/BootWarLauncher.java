@@ -29,12 +29,13 @@ import org.aoju.bus.shade.safety.Launcher;
 import org.springframework.boot.loader.WarLauncher;
 
 import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  * Spring-Boot Jar 启动器
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class BootWarLauncher extends WarLauncher {
@@ -54,8 +55,12 @@ public class BootWarLauncher extends WarLauncher {
     }
 
     @Override
-    protected ClassLoader createClassLoader(URL[] urls) throws Exception {
-        return new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+    protected void launch(String[] args, String launchClass, ClassLoader classLoader) throws Exception {
+        URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+        URL[] urls = urlClassLoader.getURLs();
+        ClassLoader cl = new BootClassLoader(urls, this.getClass().getClassLoader(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+        Thread.currentThread().setContextClassLoader(cl);
+        createMainMethodRunner(launchClass, args, classLoader).run();
     }
 
 }

@@ -19,7 +19,7 @@ import java.util.Map;
  * 我们采取此对象来管理运行时动态编译类生成的字节码
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class JavaClassFileManager extends ForwardingJavaFileManager<JavaFileManager> {

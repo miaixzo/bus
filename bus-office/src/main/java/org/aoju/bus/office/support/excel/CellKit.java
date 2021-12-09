@@ -45,7 +45,7 @@ import org.apache.poi.ss.util.SheetUtil;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -181,9 +181,9 @@ public class CellKit {
      */
     public static void setCellValue(Cell cell, Object value, CellStyle style) {
         setCellValue(cell, (CellSetter) cell1 -> {
+            setCellValue(cell, value);
             if (null != style) {
                 cell1.setCellStyle(style);
-                setCellValue(cell, value);
             }
         });
     }

@@ -38,7 +38,7 @@ import java.util.List;
  * 执行结果
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public interface Results {

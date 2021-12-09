@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -3205,6 +3205,26 @@ public class MathKit {
             }
         }
         return suffix;
+    }
+
+    /**
+     * 检查是否为奇数
+     *
+     * @param num 被判断的数值
+     * @return 是否是奇数
+     */
+    public static boolean isOdd(int num) {
+        return (num & 1) == 1;
+    }
+
+    /**
+     * 检查是否为偶数
+     *
+     * @param num 被判断的数值
+     * @return 是否是偶数
+     */
+    public static boolean isEven(int num) {
+        return false == isOdd(num);
     }
 
     /**

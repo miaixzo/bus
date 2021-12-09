@@ -65,7 +65,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -1130,7 +1130,9 @@ public final class Builder {
                 milliseconds += parseLongOrDefault(m.group(3), 0L) * 60_000L;
             }
             milliseconds += parseLongOrDefault(m.group(4), 0L) * 1000L;
-            milliseconds += (long) (1000 * parseDoubleOrDefault("0." + m.group(5), 0d));
+            if (m.group(5) != null) {
+                milliseconds += (long) (1000 * parseDoubleOrDefault("0." + m.group(5), 0d));
+            }
             return milliseconds;
         }
         return defaultLong;

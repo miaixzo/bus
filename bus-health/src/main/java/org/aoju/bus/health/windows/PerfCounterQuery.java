@@ -41,13 +41,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -72,17 +71,15 @@ public final class PerfCounterQuery {
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
-    private static final ReentrantLock failedQueryCacheLock = new ReentrantLock();
-
     /**
      * Use a thread safe set to cache failed pdh queries
      */
-    private static final Set<String> failedQueryCache = ConcurrentHashMap.newKeySet();
+    private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
 
     /**
      * For XP, use a map to cache localization strings
      */
-    private static final ConcurrentHashMap<String, String> localizeCache = IS_VISTA_OR_GREATER ? null
+    private static final ConcurrentHashMap<String, String> LOCALIZE_CACHE = IS_VISTA_OR_GREATER ? null
             : new ConcurrentHashMap<>();
 
     private PerfCounterQuery() {
@@ -106,14 +103,14 @@ public final class PerfCounterQuery {
      */
     public static <T extends Enum<T>> Map<T, Long> queryValues(Class<T> propertyEnum, String perfObject,
                                                                String perfWmiClass) {
-        if (!failedQueryCache.contains(perfObject)) {
+        if (!FAILED_QUERY_CACHE.contains(perfObject)) {
             Map<T, Long> valueMap = queryValuesFromPDH(propertyEnum, perfObject);
             if (!valueMap.isEmpty()) {
                 return valueMap;
             }
             // If we are here, query failed
             Logger.warn("Disabling further attempts to query {}.", perfObject);
-            failedQueryCache.add(perfObject);
+            FAILED_QUERY_CACHE.add(perfObject);
         }
         return queryValuesFromWMI(propertyEnum, perfWmiClass);
     }
@@ -212,7 +209,7 @@ public final class PerfCounterQuery {
      */
     public static String localizeIfNeeded(String perfObject) {
         return IS_VISTA_OR_GREATER ? perfObject
-                : localizeCache.computeIfAbsent(perfObject, PerfCounterQuery::localizeUsingPerfIndex);
+                : LOCALIZE_CACHE.computeIfAbsent(perfObject, PerfCounterQuery::localizeUsingPerfIndex);
     }
 
     private static String localizeUsingPerfIndex(String perfObject) {

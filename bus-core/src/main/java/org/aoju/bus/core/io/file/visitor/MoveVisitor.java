@@ -36,7 +36,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  * 此类在遍历源目录并移动过程中会自动创建目标目录中不存在的上级目录
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class MoveVisitor extends SimpleFileVisitor<Path> {

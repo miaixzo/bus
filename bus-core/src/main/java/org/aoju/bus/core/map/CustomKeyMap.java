@@ -33,7 +33,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {

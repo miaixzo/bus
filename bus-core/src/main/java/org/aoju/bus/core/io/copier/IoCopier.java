@@ -35,7 +35,7 @@ import org.aoju.bus.core.toolkit.IoKit;
  * @param <S> 拷贝源类型，如InputStream、Reader等
  * @param <T> 拷贝目标类型，如OutputStream、Writer等
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public abstract class IoCopier<S, T> {

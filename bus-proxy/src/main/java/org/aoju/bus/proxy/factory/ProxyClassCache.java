@@ -37,7 +37,7 @@ import java.util.WeakHashMap;
  * 代理类缓存确保每个{@link AbstractProxyClass}/{@link ClassLoader}/代理类数组组合只有一个类
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class ProxyClassCache {

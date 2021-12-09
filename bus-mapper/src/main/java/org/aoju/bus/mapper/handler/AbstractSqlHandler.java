@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.mapper.plugins;
+package org.aoju.bus.mapper.handler;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -35,13 +35,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * SQL 解析处理器
+ * SQL 拦截处理器
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
-public abstract class AbstractSqlHandler {
+public abstract class AbstractSqlHandler implements SQLHandler {
 
     public static final String DELEGATE_BOUNDSQL = "delegate.boundSql";
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";

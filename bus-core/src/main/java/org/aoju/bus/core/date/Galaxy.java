@@ -33,7 +33,7 @@ import java.math.BigDecimal;
  * 银河系、天文计算
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class Galaxy {

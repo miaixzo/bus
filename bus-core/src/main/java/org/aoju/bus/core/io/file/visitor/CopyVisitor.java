@@ -35,7 +35,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  * 文件拷贝的FileVisitor实现，用于递归遍历拷贝目录
  *
  * @author Kimi Liu
- * @version 6.3.1
+ * @version 6.3.2
  * @since JDK 1.8+
  */
 public class CopyVisitor extends SimpleFileVisitor<Path> {
