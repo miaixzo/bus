@@ -76,7 +76,13 @@ public class NumberConverter extends AbstractConverter<Number> {
     }
 
     /**
-     * 转换对象为数字
+     * 转换对象为数字，支持的对象包括：
+     * <ul>
+     *     <li>Number对象</li>
+     *     <li>Boolean</li>
+     *     <li>byte[]</li>
+     *     <li>String</li>
+     * </ul>
      *
      * @param value      对象值
      * @param targetType 目标的数字类型
