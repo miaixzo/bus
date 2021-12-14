@@ -58,27 +58,6 @@ public class EnumConverter extends AbstractConverter<Object> {
         this.enumClass = enumClass;
     }
 
-
-    @Override
-    protected Object convertInternal(Object value) {
-        Enum enumValue = tryConvertEnum(value, this.enumClass);
-        if (null == enumValue && false == value instanceof String) {
-            // 最后尝试先将value转String，再valueOf转换
-            enumValue = Enum.valueOf(this.enumClass, convertString(value));
-        }
-
-        if (null != enumValue) {
-            return enumValue;
-        }
-
-        throw new ConvertException("Can not convert {} to {}", value, this.enumClass);
-    }
-
-    @Override
-    public Class getTargetType() {
-        return this.enumClass;
-    }
-
     /**
      * 尝试找到类似转换的静态方法调用实现转换
      *
@@ -132,6 +111,26 @@ public class EnumConverter extends AbstractConverter<Object> {
             VALUE_OF_METHOD_CACHE.put(enumClass, valueOfMethods);
         }
         return valueOfMethods;
+    }
+
+    @Override
+    protected Object convertInternal(Object value) {
+        Enum enumValue = tryConvertEnum(value, this.enumClass);
+        if (null == enumValue && false == value instanceof String) {
+            // 最后尝试先将value转String，再valueOf转换
+            enumValue = Enum.valueOf(this.enumClass, convertString(value));
+        }
+
+        if (null != enumValue) {
+            return enumValue;
+        }
+
+        throw new ConvertException("Can not convert {} to {}", value, this.enumClass);
+    }
+
+    @Override
+    public Class getTargetType() {
+        return this.enumClass;
     }
 
 }
