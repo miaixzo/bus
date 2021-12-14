@@ -2692,6 +2692,10 @@ public class CharsKit {
 
         final int textLength = text.length();
         final int wordLength = word.length();
+        if (textLength < wordLength) {
+            return toString(text);
+        }
+
         if (fromIndex > textLength) {
             return toString(text);
         } else if (fromIndex < 0) {

@@ -151,14 +151,14 @@ public class Validated extends Provider {
     private List<Property> resolve(Annotation[] annotations) {
         List<Property> list = new ArrayList<>();
         for (Annotation annotation : annotations) {
-            if (this.isAnnotation(annotation)) {
+            if (isAnnotation(annotation)) {
                 Property property = build(annotation, this.object);
                 list.add(property);
             }
         }
         if (ObjectKit.isNotEmpty(this.object)) {
             Class<?> clazz = this.object.getClass();
-            List<Annotation> clazzAnnotations = this.getAnnotation(clazz);
+            List<Annotation> clazzAnnotations = getAnnotation(clazz);
             for (Annotation annotation : clazzAnnotations) {
                 Property property = build(annotation, this.object);
                 list.add(property);
@@ -187,8 +187,6 @@ public class Validated extends Provider {
                 context.setInside(((Valid) annotation).inside());
                 context.setField(((Valid) annotation).value());
                 context.setSkip(((Valid) annotation).skip());
-            } else if (annotation instanceof Group) {
-                context.addGroups(((Group) annotation).value());
             } else if (annotation instanceof Group) {
                 context.addGroups(((Group) annotation).value());
             } else if (annotation instanceof ValidEx) {
@@ -228,7 +226,7 @@ public class Validated extends Provider {
      * @return 校验器属性对象
      */
     public Property build(Annotation annotation, Object object) {
-        Assert.isTrue(this.isAnnotation(annotation), "尝试从非校验注解上获取信息:" + annotation);
+        Assert.isTrue(isAnnotation(annotation), "尝试从非校验注解上获取信息:" + annotation);
         Class<? extends Annotation> annotationType = annotation.annotationType();
         try {
             String[] groups = (String[]) annotationType.getMethod(Builder.GROUP).invoke(annotation);
@@ -265,7 +263,7 @@ public class Validated extends Provider {
             }
             Annotation[] parentAnnos = annotationType.getAnnotations();
             for (Annotation anno : parentAnnos) {
-                if (this.isAnnotation(anno)) {
+                if (isAnnotation(anno)) {
                     property.addParentProperty(build(anno, object));
                 } else if (anno instanceof Array) {
                     property.setArray(true);

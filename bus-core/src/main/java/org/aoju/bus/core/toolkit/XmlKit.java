@@ -583,10 +583,10 @@ public class XmlKit {
      */
     public static Element getElement(Element element, String tagName) {
         final NodeList nodeList = element.getElementsByTagName(tagName);
-        if (null == nodeList || nodeList.getLength() < 1) {
+        final int length = nodeList.getLength();
+        if (length < 1) {
             return null;
         }
-        int length = nodeList.getLength();
         for (int i = 0; i < length; i++) {
             Element childEle = (Element) nodeList.item(i);
             if (null == childEle || childEle.getParentNode() == element) {

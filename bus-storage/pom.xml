@@ -45,7 +45,7 @@
         <lombok.version>1.18.22</lombok.version>
         <aliyun.oss.version>3.4.2</aliyun.oss.version>
         <baidu.bos.version>0.10.48</baidu.bos.version>
-        <huawei.oss.version>3.0.2</huawei.oss.version>
+        <huawei.oss.version>3.21.8</huawei.oss.version>
         <jd.oss.version>1.11.136</jd.oss.version>
         <minio.oss.version>3.0.12</minio.oss.version>
         <qiniu.oss.version>7.2.28</qiniu.oss.version>
@@ -94,7 +94,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.huawei.storage</groupId>
+            <groupId>com.huaweicloud</groupId>
             <artifactId>esdk-obs-java</artifactId>
             <version>${huawei.oss.version}</version>
             <optional>true</optional>

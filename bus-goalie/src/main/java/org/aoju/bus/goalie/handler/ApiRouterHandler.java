@@ -110,8 +110,8 @@ public class ApiRouterHandler {
                 .flatMap(responseEntity -> ServerResponse.ok().headers(headers -> {
                     headers.addAll(responseEntity.getHeaders());
                     headers.remove(HttpHeaders.CONTENT_LENGTH);
-                }).body(BodyInserters.fromDataBuffers(Flux.just(Objects.requireNonNull(responseEntity.getBody())))));
-
+                }).body(null == responseEntity.getBody() ? BodyInserters.empty()
+                        : BodyInserters.fromDataBuffers(Flux.just(responseEntity.getBody()))));
     }
 
 }

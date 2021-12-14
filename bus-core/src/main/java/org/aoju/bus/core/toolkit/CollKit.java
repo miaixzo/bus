@@ -3507,6 +3507,45 @@ public class CollKit {
     }
 
     /**
+     * 将collection按照规则(比如有相同的班级id)分类成map，map中的key为班级id，value为班级名
+     * <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
+     *
+     * @param collection 需要分类的集合
+     * @param key        分类的规则
+     * @param value      分类的规则
+     * @param <E>        collection中的泛型
+     * @param <K>        map中的key类型
+     * @param <V>        List中的value类型
+     * @return 分类后的map
+     */
+    public static <E, K, V> Map<K, List<V>> groupKeyValue(Collection<E> collection, Function<E, K> key,
+                                                          Function<E, V> value) {
+        return groupKeyValue(collection, key, value, false);
+    }
+
+    /**
+     * 将collection按照规则(比如有相同的班级id)分类成map，map中的key为班级id，value为班级名
+     * <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
+     *
+     * @param collection 需要分类的集合
+     * @param key        分类的规则
+     * @param value      分类的规则
+     * @param isParallel 是否并行流
+     * @param <E>        collection中的泛型
+     * @param <K>        map中的key类型
+     * @param <V>        List中的value类型
+     * @return 分类后的map
+     */
+    public static <E, K, V> Map<K, List<V>> groupKeyValue(Collection<E> collection, Function<E, K> key,
+                                                          Function<E, V> value, boolean isParallel) {
+        if (isEmpty(collection)) {
+            return Collections.emptyMap();
+        }
+        return StreamKit.of(collection, isParallel)
+                .collect(Collectors.groupingBy(key, Collectors.mapping(value, Collectors.toList())));
+    }
+
+    /**
      * 将collection转化为List集合，但是两者的泛型不同
      * <B>{@code Collection<E>  ------>  List<T> } </B>
      *

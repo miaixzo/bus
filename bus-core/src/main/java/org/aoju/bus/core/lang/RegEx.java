@@ -162,8 +162,8 @@ public class RegEx {
      * 中国澳门 +853 Macao
      * 中国台湾 +886 Taiwan
      */
-    public final static String MOBILE__PATTERN = "(?:0|852|\\+852)?\\d{8}";
-    public final static Pattern MOBILE_HK = Pattern.compile(MOBILE__PATTERN);
+    public final static String MOBILE_HK_PATTERN = "(?:0|852|\\+852)?\\d{8}";
+    public final static Pattern MOBILE_HK = Pattern.compile(MOBILE_HK_PATTERN);
 
     /**
      * 中国澳门移动电话
