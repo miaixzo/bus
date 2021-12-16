@@ -86,10 +86,7 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
         Map map;
         if (value instanceof Map) {
             final Type[] typeArguments = TypeKit.getTypeArguments(value.getClass());
-            if (null != typeArguments
-                    && 2 == typeArguments.length
-                    && Objects.equals(this.keyType, typeArguments[0])
-                    && Objects.equals(this.valueType, typeArguments[1])) {
+            if (null != typeArguments && 2 == typeArguments.length && Objects.equals(this.keyType, typeArguments[0]) && Objects.equals(this.valueType, typeArguments[1])) {
                 // 对于键值对类型一致的Map对象，不再做转换，直接返回原对象
                 return (Map) value;
             }
@@ -103,6 +100,11 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
             throw new UnsupportedOperationException(StringKit.format("Unsupport toMap value type: {}", value.getClass().getName()));
         }
         return map;
+    }
+
+    @Override
+    public Class<Map<?, ?>> getTargetType() {
+        return (Class<Map<?, ?>>) TypeKit.getClass(this.mapType);
     }
 
     /**
@@ -120,11 +122,6 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
             value = TypeKit.isUnknown(this.valueType) ? entry.getValue() : convert.convert(this.valueType, entry.getValue());
             targetMap.put(key, value);
         }
-    }
-
-    @Override
-    public Class<Map<?, ?>> getTargetType() {
-        return (Class<Map<?, ?>>) TypeKit.getClass(this.mapType);
     }
 
 }

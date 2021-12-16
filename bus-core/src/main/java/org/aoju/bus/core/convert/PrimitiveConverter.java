@@ -73,6 +73,21 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
         this.targetType = clazz;
     }
 
+    @Override
+    protected String convertString(Object value) {
+        return StringKit.trim(super.convertString(value));
+    }
+
+    @Override
+    public Class<Object> getTargetType() {
+        return (Class<Object>) this.targetType;
+    }
+
+    @Override
+    protected Object convertInternal(Object value) {
+        return PrimitiveConverter.convert(value, this.targetType, this::convertString);
+    }
+
     /**
      * 将指定值转换为原始类型的值
      *
@@ -101,21 +116,6 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
         }
 
         throw new ConvertException("Unsupported target type: {}", primitiveClass);
-    }
-
-    @Override
-    protected String convertString(Object value) {
-        return StringKit.trim(super.convertString(value));
-    }
-
-    @Override
-    public Class<Object> getTargetType() {
-        return (Class<Object>) this.targetType;
-    }
-
-    @Override
-    protected Object convertInternal(Object value) {
-        return PrimitiveConverter.convert(value, this.targetType, this::convertString);
     }
 
 }
