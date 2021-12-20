@@ -3100,7 +3100,7 @@ public class CharsKit {
      */
     public static boolean startWith(CharSequence text, CharSequence prefix, boolean ignoreCase, boolean ignoreEquals) {
         if (null == text || null == prefix) {
-            if (false == ignoreEquals) {
+            if (ignoreEquals) {
                 return false;
             }
             return null == text && null == prefix;

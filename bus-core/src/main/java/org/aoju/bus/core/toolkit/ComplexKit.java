@@ -177,7 +177,7 @@ public class ComplexKit {
             }
         }
 
-        if (StringKit.isAllCharMatch(passwd, Character::isDigit) && len >= 6) { // 19881010 or 881010
+        if (StringKit.isAllCharMatch(passwd, Character::isDigit) && len >= 6 && len <= 8) {
             int year = 0;
             if (len == 8 || len == 6) {
                 year = Integer.parseInt(passwd.substring(0, len - 4));

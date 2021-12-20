@@ -701,20 +701,27 @@ public class Images implements Serializable {
      * @return this
      */
     public Images scale(int width, int height) {
-        final java.awt.Image srcImage = getValidSrcImg();
+        return scale(width, height, Image.SCALE_SMOOTH);
+    }
+
+    /**
+     * 缩放图像(按长宽缩放)
+     * 注意：目标长宽与原图不成比例会变形
+     *
+     * @param width     目标宽度
+     * @param height    目标高度
+     * @param scaleType 缩放类型，可选{@link Image#SCALE_SMOOTH}平滑模式或{@link Image#SCALE_DEFAULT}默认模式
+     * @return this
+     */
+    public Images scale(int width, int height, int scaleType) {
+        final Image srcImage = getValidSrcImg();
 
         int srcHeight = srcImage.getHeight(null);
         int srcWidth = srcImage.getWidth(null);
-        int scaleType;
         if (srcHeight == height && srcWidth == width) {
             // 源与目标长宽一致返回原图
             this.targetImage = srcImage;
             return this;
-        } else if (srcHeight < height || srcWidth < width) {
-            // 放大图片使用平滑模式
-            scaleType = java.awt.Image.SCALE_SMOOTH;
-        } else {
-            scaleType = java.awt.Image.SCALE_DEFAULT;
         }
 
         if (FileType.TYPE_PNG.equals(this.fileType)) {
