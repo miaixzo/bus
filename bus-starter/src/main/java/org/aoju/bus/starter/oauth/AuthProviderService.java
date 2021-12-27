@@ -146,6 +146,8 @@ public class AuthProviderService {
             return new WeChatEEProvider(context, extendCache);
         } else if (Registry.WECHAT_MP.equals(type)) {
             return new WeChatMpProvider(context, extendCache);
+        } else if (Registry.WECHAT_MA.equals(type)) {
+            return new WeChatMaProvider(context, extendCache);
         } else if (Registry.WECHAT_OP.equals(type)) {
             return new WeChatOPProvider(context, extendCache);
         } else if (Registry.WEIBO.equals(type)) {
