@@ -835,6 +835,30 @@ public enum Registry implements Complex {
         }
     },
     /**
+     * 微信小程序
+     */
+    WECHAT_MA {
+        @Override
+        public String authorize() {
+            return "https://api.weixin.qq.com/sns/jscode2session";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://api.weixin.qq.com/cgi-bin/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "";
+        }
+
+        @Override
+        public String refresh() {
+            return "";
+        }
+    },
+    /**
      * 新浪微博
      */
     WEIBO {
