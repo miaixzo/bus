@@ -42,7 +42,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import(value = {DruidConfiguration.class, DruidMonitorConfiguration.class})
+@Import({DruidConfiguration.class, DruidMonitorConfiguration.class})
 public @interface EnableDruids {
 
 }

@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Import;
  * @version 6.3.2
  * @since JDK 1.8+
  */
-@Import(value = AspectjValidateProxy.class)
+@Import(AspectjValidateProxy.class)
 public class ValidateConfiguration {
 
 }

@@ -26,7 +26,6 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.linux.ProcPath;
 
@@ -50,14 +49,13 @@ public final class UpTime {
      */
     public static double getSystemUptimeSeconds() {
         String uptime = Builder.getStringFromFile(ProcPath.UPTIME);
-        int spaceIndex = uptime.indexOf(Symbol.C_SPACE);
+        int spaceIndex = uptime.indexOf(' ');
         try {
             if (spaceIndex < 0) {
                 // No space, error
                 return 0d;
-            } else {
-                return Double.parseDouble(uptime.substring(0, spaceIndex));
             }
+            return Double.parseDouble(uptime.substring(0, spaceIndex));
         } catch (NumberFormatException nfe) {
             return 0d;
         }

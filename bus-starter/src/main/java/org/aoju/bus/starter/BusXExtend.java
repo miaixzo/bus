@@ -53,6 +53,10 @@ public class BusXExtend {
      */
     public static final String CACHE = EXTEND + Symbol.DOT + "cache";
     /**
+     * 配置中心
+     */
+    public static final String BRIDGE = EXTEND + Symbol.DOT + "bridge";
+    /**
      * 跨域支持
      */
     public static final String CORS = EXTEND + Symbol.DOT + "cors";

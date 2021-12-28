@@ -155,6 +155,16 @@ public class ID {
     }
 
     /**
+     * 简单获取Snowflake 的 nextId
+     * 终端ID 数据中心ID 默认为1
+     *
+     * @return nextId
+     */
+    public static long getSnowflakeNextId() {
+        return getSnowflake().nextId();
+    }
+
+    /**
      * 获取数据中心ID
      * 数据中心ID依赖于本地网卡MAC地址。
      * 此算法来自于mybatis-plus#Sequence

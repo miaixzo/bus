@@ -45,7 +45,8 @@ import java.util.Map;
 public final class PhysicalDisk {
 
     private static final String PHYSICAL_DISK = "PhysicalDisk";
-    private static final String WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NOT_NAME_TOTAL = "Win32_PerfRawData_PerfDisk_PhysicalDisk WHERE NOT Name=\"_Total\"";
+    private static final String WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NAME_NOT_TOTAL = "" +
+            "Win32_PerfRawData_PerfDisk_PhysicalDisk WHERE Name!=\"_Total\"";
 
     private PhysicalDisk() {
     }
@@ -57,7 +58,7 @@ public final class PhysicalDisk {
      */
     public static Pair<List<String>, Map<PhysicalDiskProperty, List<Long>>> queryDiskCounters() {
         return PerfCounterWildcardQuery.queryInstancesAndValues(PhysicalDiskProperty.class, PHYSICAL_DISK,
-                WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NOT_NAME_TOTAL);
+                WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NAME_NOT_TOTAL);
     }
 
     /**

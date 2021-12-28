@@ -238,15 +238,6 @@ public class Snowflake implements Serializable {
     }
 
     /**
-     * 下一个ID(字符串形式)
-     *
-     * @return ID 字符串形式
-     */
-    public String nextIdStr() {
-        return Long.toString(nextId());
-    }
-
-    /**
      * 保证返回的毫秒数在参数之后(阻塞到下一个毫秒，直到获得新的时间戳)
      *
      * @param lastTimestamp 上次记录的时间
