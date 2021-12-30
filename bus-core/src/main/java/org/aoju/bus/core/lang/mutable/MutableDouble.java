@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>double</code> 类型
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @see Double
  * @since JDK 1.8+
  */

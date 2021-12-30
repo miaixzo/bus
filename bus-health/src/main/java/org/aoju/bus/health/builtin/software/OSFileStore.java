@@ -34,7 +34,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * {@link java.nio.file.FileStore} class, with additional information.
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 @ThreadSafe

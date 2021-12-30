@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
  * BitMap接口，用于将某个int或long值映射到一个数组中，从而判定某个值是否存在
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public interface BitMap {

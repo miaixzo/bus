@@ -45,14 +45,17 @@ import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -3267,18 +3270,6 @@ public class CollKit {
         for (int i = list.size(); i < minLen; i++) {
             list.add(padObj);
         }
-    }
-
-    /**
-     * 使用给定的map将集合中的原素进行属性或者值的重新设定
-     *
-     * @param collection  集合
-     * @param map         映射集
-     * @param keyGenerate 映射键生成函数
-     * @param biConsumer  封装映射到的值函数
-     */
-    public static <E, K, V> void setValueByMap(Collection<E> collection, Map<K, V> map, Function<E, K> keyGenerate, BiConsumer<E, V> biConsumer) {
-        collection.forEach(x -> Optional.ofNullable(map.get(keyGenerate.apply(x))).ifPresent(y -> biConsumer.accept(x, y)));
     }
 
     /**

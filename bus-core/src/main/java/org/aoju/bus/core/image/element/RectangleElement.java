@@ -33,7 +33,7 @@ import java.awt.*;
  * 矩形元素
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class RectangleElement extends AbstractElement<RectangleElement> {

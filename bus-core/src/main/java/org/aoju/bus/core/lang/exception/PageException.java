@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * 分页插件异常
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class PageException extends RuntimeException {

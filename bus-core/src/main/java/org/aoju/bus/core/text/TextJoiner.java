@@ -15,7 +15,7 @@ import java.util.function.Function;
  * 字符连接器（拼接器），通过给定的字符串和多个元素，拼接为一个字符串
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class TextJoiner implements Appendable, Serializable {

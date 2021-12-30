@@ -39,7 +39,7 @@ import org.aoju.bus.crypto.symmetric.SM4;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class SM4Provider implements Provider {

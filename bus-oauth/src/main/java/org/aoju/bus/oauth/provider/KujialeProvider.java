@@ -43,7 +43,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * 酷家乐授权登录
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class KujialeProvider extends AbstractProvider {

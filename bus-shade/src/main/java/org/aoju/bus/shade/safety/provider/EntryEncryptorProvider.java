@@ -31,7 +31,7 @@ import org.aoju.bus.shade.safety.Complex;
  * 记录可过滤的加密器
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider implements EncryptorProvider, Complex<E> {

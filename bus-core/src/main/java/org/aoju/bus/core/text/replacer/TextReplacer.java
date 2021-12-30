@@ -35,7 +35,7 @@ import java.io.Serializable;
  * 通过实现replace方法实现局部替换逻辑
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public abstract class TextReplacer implements Replacer<CharSequence>, Serializable {

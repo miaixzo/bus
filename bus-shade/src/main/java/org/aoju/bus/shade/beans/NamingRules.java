@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 获奖java中需要的驼峰命名
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class NamingRules {

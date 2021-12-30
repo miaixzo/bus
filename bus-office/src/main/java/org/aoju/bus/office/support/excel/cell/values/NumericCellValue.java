@@ -41,7 +41,7 @@ import java.util.Date;
  * 单元格值可能为Long、Double、Date
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class NumericCellValue implements CellValue<Object> {

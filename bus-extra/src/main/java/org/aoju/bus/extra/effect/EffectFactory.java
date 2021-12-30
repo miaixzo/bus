@@ -35,7 +35,7 @@ import java.util.ServiceLoader;
  * 解压缩服务工厂
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public enum EffectFactory {

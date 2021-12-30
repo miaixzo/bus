@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * 此对象遍历结束后,应关闭之,推荐使用方式:
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class LineIterator extends ComputeIterator<String> implements IterableIterator<String>, Closeable, Serializable {

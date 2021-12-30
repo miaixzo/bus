@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 基于ConcurrentHashMap和ReentrantLock实现的一个简单的锁组件
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class JdkLock extends org.aoju.bus.limiter.support.lock.Lock {

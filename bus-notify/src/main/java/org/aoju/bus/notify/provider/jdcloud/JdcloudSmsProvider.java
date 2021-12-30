@@ -8,7 +8,7 @@ import org.aoju.bus.notify.provider.netease.NeteaseProvider;
  * 京东云短信
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK1.8+
  */
 public class JdcloudSmsProvider extends NeteaseProvider<JdcloudSmsProperty, Context> {

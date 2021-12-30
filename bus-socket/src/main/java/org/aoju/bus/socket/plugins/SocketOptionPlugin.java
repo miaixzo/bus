@@ -38,7 +38,7 @@ import java.util.Map;
  * 用于设置Socket Option的插件
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class SocketOptionPlugin<T> extends AbstractPlugin<T> {

@@ -38,7 +38,7 @@ import java.util.Map;
  * 返回值信息处理.
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public interface PlaceBinder {
