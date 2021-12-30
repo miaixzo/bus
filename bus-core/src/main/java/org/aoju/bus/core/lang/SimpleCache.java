@@ -43,7 +43,7 @@ import java.util.function.Predicate;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {

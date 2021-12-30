@@ -52,7 +52,7 @@ import java.security.spec.RSAPublicKeySpec;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class RSA extends Crypto {

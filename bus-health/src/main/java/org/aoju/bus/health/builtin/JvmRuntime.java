@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 运行时信息，包括内存总大小、已用大小、可用大小等
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class JvmRuntime implements Serializable {

@@ -36,7 +36,7 @@ import java.util.Objects;
  * Utility to query WMI class {@code Win32_Processor}
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 @ThreadSafe

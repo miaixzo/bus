@@ -2,7 +2,7 @@
  * 二维码封装，基于zxing库
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 package org.aoju.bus.extra.qrcode;

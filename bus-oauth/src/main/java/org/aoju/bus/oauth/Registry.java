@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.AuthorizedException;
  * 内置的各api需要的url, 用枚举类分平台类型管理
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public enum Registry implements Complex {
@@ -832,6 +832,30 @@ public enum Registry implements Complex {
         @Override
         public String refresh() {
             return "https://api.weixin.qq.com/sns/oauth2/refresh_token";
+        }
+    },
+    /**
+     * 微信小程序
+     */
+    WECHAT_MA {
+        @Override
+        public String authorize() {
+            return "https://api.weixin.qq.com/sns/jscode2session";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://api.weixin.qq.com/cgi-bin/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "";
+        }
+
+        @Override
+        public String refresh() {
+            return "";
         }
     },
     /**

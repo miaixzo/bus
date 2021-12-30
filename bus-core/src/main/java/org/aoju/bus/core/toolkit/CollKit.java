@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -3402,7 +3402,7 @@ public class CollKit {
      * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
      *
      * @param collection 需要分类的集合
-     * @param key        分类的规则
+     * @param key        键分组的规则
      * @param <E>        collection中的泛型
      * @param <K>        map中的key类型
      * @return 分类后的map
@@ -3416,7 +3416,7 @@ public class CollKit {
      * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
      *
      * @param collection 需要分类的集合
-     * @param key        分类的规则
+     * @param key        键分组的规则
      * @param isParallel 是否并行流
      * @param <E>        collection中的泛型
      * @param <K>        map中的key类型

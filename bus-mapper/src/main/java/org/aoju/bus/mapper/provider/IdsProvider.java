@@ -40,7 +40,7 @@ import java.util.Set;
  * ids 如 "1,2,3"
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class IdsProvider extends MapperTemplate {

@@ -46,7 +46,7 @@ import java.util.function.Function;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {
@@ -71,6 +71,21 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
             throw new IllegalArgumentException("[" + clazz + "] is not a primitive class!");
         }
         this.targetType = clazz;
+    }
+
+    @Override
+    protected String convertString(Object value) {
+        return StringKit.trim(super.convertString(value));
+    }
+
+    @Override
+    public Class<Object> getTargetType() {
+        return (Class<Object>) this.targetType;
+    }
+
+    @Override
+    protected Object convertInternal(Object value) {
+        return PrimitiveConverter.convert(value, this.targetType, this::convertString);
     }
 
     /**
@@ -101,21 +116,6 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
         }
 
         throw new ConvertException("Unsupported target type: {}", primitiveClass);
-    }
-
-    @Override
-    protected String convertString(Object value) {
-        return StringKit.trim(super.convertString(value));
-    }
-
-    @Override
-    public Class<Object> getTargetType() {
-        return (Class<Object>) this.targetType;
-    }
-
-    @Override
-    protected Object convertInternal(Object value) {
-        return PrimitiveConverter.convert(value, this.targetType, this::convertString);
     }
 
 }

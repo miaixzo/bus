@@ -32,7 +32,7 @@ import com.github.houbb.pinyin.util.PinyinHelper;
  * houbb Pinyin 引擎
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class HoubbPinyinProvider extends AbstractPinyinProvider {

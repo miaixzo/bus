@@ -46,7 +46,7 @@ import java.util.Map;
  * Teambition授权登录
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class TeambitionProvider extends AbstractProvider {

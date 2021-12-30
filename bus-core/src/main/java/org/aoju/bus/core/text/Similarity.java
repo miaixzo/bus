@@ -33,13 +33,13 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 在hash之后,仍然能保持这种相似性,就称之为局部敏感hash
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class Similarity {
 
     /**
-     * 计算相似度，两个都是空串相似度为1，被认为是相同的串
+     * 利用莱文斯坦距离(Levenshtein distance)算法计算相似度，两个都是空串相似度为1，被认为是相同的串
      * 比较方法为：
      * <ul>
      *     <li>只比较两个字符串字母、数字、汉字部分，其他符号去除</li>

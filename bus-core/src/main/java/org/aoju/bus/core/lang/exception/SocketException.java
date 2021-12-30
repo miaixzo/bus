@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: Socket异常
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class SocketException extends UncheckedException {

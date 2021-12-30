@@ -58,7 +58,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -705,6 +705,74 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 isFirstRow = false;
             }
         }
+        return this;
+    }
+
+    /**
+     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 添加图片到当前sheet中 / 默认图片类型png / 默认的起始坐标和结束坐标都为0
+     *
+     * @param imgFile 图片文件
+     * @param col1    指定起始的列，下标从0开始
+     * @param row1    指定起始的行，下标从0开始
+     * @param col2    指定结束的列，下标从0开始
+     * @param row2    指定结束的行，下标从0开始
+     * @return this
+     */
+    public ExcelWriter writeImg(File imgFile, int col1, int row1, int col2, int row2) {
+        return this.writeImg(imgFile, 0, 0, 0, 0, col1, row1, col2, row2);
+    }
+
+    /**
+     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 添加图片到当前sheet中 / 默认图片类型png
+     *
+     * @param imgFile 图片文件
+     * @param dx1     起始单元格中的x坐标
+     * @param dy1     起始单元格中的y坐标
+     * @param dx2     结束单元格中的x坐标
+     * @param dy2     结束单元格中的y坐标
+     * @param col1    指定起始的列，下标从0开始
+     * @param row1    指定起始的行，下标从0开始
+     * @param col2    指定结束的列，下标从0开始
+     * @param row2    指定结束的行，下标从0开始
+     * @return this
+     */
+    public ExcelWriter writeImg(File imgFile, int dx1, int dy1, int dx2, int dy2, int col1, int row1,
+                                int col2, int row2) {
+        return this.writeImg(imgFile, Workbook.PICTURE_TYPE_PNG, dx1, dy1, dx2, dy2, col1, row1, col2, row2);
+    }
+
+    /**
+     * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 添加图片到当前sheet中
+     *
+     * @param imgFile 图片文件
+     * @param imgType 图片类型，对应poi中Workbook类中的图片类型2-7变量
+     * @param dx1     起始单元格中的x坐标
+     * @param dy1     起始单元格中的y坐标
+     * @param dx2     结束单元格中的x坐标
+     * @param dy2     结束单元格中的y坐标
+     * @param col1    指定起始的列，下标从0开始
+     * @param row1    指定起始的行，下标从0开始
+     * @param col2    指定结束的列，下标从0开始
+     * @param row2    指定结束的行，下标从0开始
+     * @return this
+     */
+    public ExcelWriter writeImg(File imgFile, int imgType, int dx1, int dy1, int dx2,
+                                int dy2, int col1, int row1, int col2, int row2) {
+        Drawing<?> patriarch = this.sheet.createDrawingPatriarch();
+        ClientAnchor anchor = this.workbook.getCreationHelper().createClientAnchor();
+        anchor.setDx1(dx1);
+        anchor.setDy1(dy1);
+        anchor.setDx2(dx2);
+        anchor.setDy2(dy2);
+        anchor.setCol1(col1);
+        anchor.setRow1(row1);
+        anchor.setCol2(col2);
+        anchor.setRow2(row2);
+
+        patriarch.createPicture(anchor, this.workbook.addPicture(FileKit.readBytes(imgFile), imgType));
         return this;
     }
 

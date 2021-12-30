@@ -44,7 +44,7 @@ import java.util.concurrent.TimeoutException;
  * 处理WMI查询
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -162,9 +162,10 @@ public class WmiQueryHandler {
             }
         } catch (TimeoutException e) {
             Logger.warn("WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
-        }
-        if (comInit) {
-            unInitCOM();
+        } finally {
+            if (comInit) {
+                unInitCOM();
+            }
         }
         return result;
     }
@@ -181,7 +182,7 @@ public class WmiQueryHandler {
     protected void handleComException(WbemcliUtil.WmiQuery<?> query, COMException ex) {
         Logger.warn(
                 "COM exception querying {}, which might not be on your system. Will not attempt to query it again. Error was {}: {}",
-                query.getWmiClassName(), ex.getHresult().intValue(), ex.getMessage());
+                query.getWmiClassName(), ex.getHresult() == null ? null : ex.getHresult().intValue(), ex.getMessage());
     }
 
     /**

@@ -50,7 +50,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class StoreSCP extends BasicCStoreSCP {

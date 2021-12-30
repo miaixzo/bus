@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * 过滤器链的基类.
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public abstract class AbstractFilter implements FilterChain {

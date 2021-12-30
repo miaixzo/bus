@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * 如用户传入'_x5116_'会导致乱码，使用此设置器转义为'_x005F_x5116_'
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class EscapeStringCellSetter extends CharSequenceCellSetter {

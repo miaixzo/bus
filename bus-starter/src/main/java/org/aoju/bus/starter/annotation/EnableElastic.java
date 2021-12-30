@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * <p>@description 启用 ElasticSearch </p>
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK1.8+
  */
 @Inherited

@@ -38,7 +38,7 @@ import org.aoju.bus.core.toolkit.RuntimeKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class ID {
@@ -152,6 +152,16 @@ public class ID {
      */
     public static Snowflake getSnowflake() {
         return Instances.singletion(Snowflake.class);
+    }
+
+    /**
+     * 简单获取Snowflake 的 nextId
+     * 终端ID 数据中心ID 默认为1
+     *
+     * @return nextId
+     */
+    public static long getSnowflakeNextId() {
+        return getSnowflake().nextId();
     }
 
     /**

@@ -35,7 +35,7 @@ import org.aoju.bus.core.toolkit.IoKit;
  * @param <S> 拷贝源类型，如InputStream、Reader等
  * @param <T> 拷贝目标类型，如OutputStream、Writer等
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public abstract class IoCopier<S, T> {
@@ -50,6 +50,11 @@ public abstract class IoCopier<S, T> {
      * 进度条
      */
     protected StreamProgress progress;
+
+    /**
+     * 是否每次写出一个buffer内容就执行flush
+     */
+    protected boolean flushEveryBuffer;
 
     /**
      * 构造
@@ -81,6 +86,17 @@ public abstract class IoCopier<S, T> {
      */
     protected int bufferSize(long count) {
         return (int) Math.min(this.bufferSize, count);
+    }
+
+    /**
+     * 设置是否每次写出一个buffer内容就执行flush
+     *
+     * @param flushEveryBuffer 是否每次写出一个buffer内容就执行flush
+     * @return this
+     */
+    public IoCopier<S, T> setFlushEveryBuffer(boolean flushEveryBuffer) {
+        this.flushEveryBuffer = flushEveryBuffer;
+        return this;
     }
 
 }

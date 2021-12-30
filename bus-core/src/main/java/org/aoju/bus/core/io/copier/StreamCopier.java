@@ -38,7 +38,7 @@ import java.io.OutputStream;
  * {@link InputStream} 向 {@link OutputStream} 拷贝
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class StreamCopier extends IoCopier<InputStream, OutputStream> {
@@ -126,6 +126,9 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
                 break;
             }
             target.write(buffer, 0, read);
+            if (flushEveryBuffer) {
+                target.flush();
+            }
 
             numToRead -= read;
             total += read;

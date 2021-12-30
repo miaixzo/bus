@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * Ini file's Section
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public interface IniSection extends ProxyList<IniProperty>, IniElement {

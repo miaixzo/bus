@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 全局扩展配置
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class BusXExtend {
@@ -52,6 +52,10 @@ public class BusXExtend {
      * 缓存配置
      */
     public static final String CACHE = EXTEND + Symbol.DOT + "cache";
+    /**
+     * 配置中心
+     */
+    public static final String BRIDGE = EXTEND + Symbol.DOT + "bridge";
     /**
      * 跨域支持
      */

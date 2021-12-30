@@ -48,7 +48,7 @@ import java.util.Date;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class Snowflake implements Serializable {
@@ -235,15 +235,6 @@ public class Snowflake implements Serializable {
                 (dataCenterId << DATA_CENTER_ID_SHIFT) |
                 (workerId << WORKER_ID_SHIFT) |
                 sequence;
-    }
-
-    /**
-     * 下一个ID(字符串形式)
-     *
-     * @return ID 字符串形式
-     */
-    public String nextIdStr() {
-        return Long.toString(nextId());
     }
 
     /**

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -47,6 +47,7 @@
         <aspectj.version>1.9.6</aspectj.version>
         <persistence.version>2.2</persistence.version>
         <guava.version>30.1.1-jre</guava.version>
+        <vertx.version>3.6.2</vertx.version>
         <guice.version>5.0.1</guice.version>
         <mybatis.version>3.5.7</mybatis.version>
         <mybatis.spring.version>2.0.6</mybatis.spring.version>
@@ -238,6 +239,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+            <version>${vertx.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

@@ -3,7 +3,7 @@
  * 同时定义一套自己的配置文件规范，实现兼容性良好的配置工具
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 package org.aoju.bus.setting;

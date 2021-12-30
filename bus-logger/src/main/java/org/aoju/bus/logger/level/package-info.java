@@ -2,7 +2,7 @@
  * 按照日志级别定义的日志打印接口定义
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8++
  */
 package org.aoju.bus.logger.level;

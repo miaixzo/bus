@@ -27,6 +27,7 @@ package org.aoju.bus.setting;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Dict;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -47,7 +48,7 @@ import java.util.function.Supplier;
  * 非线程安全
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class Builder {
@@ -199,6 +200,133 @@ public class Builder {
             if (isCloseReader) {
                 IoKit.close(reader);
             }
+        }
+    }
+
+    /**
+     * 解析PROPS
+     *
+     * @param result  数据结果
+     * @param content 数据内容
+     */
+    public static void parsePropsMap(Map<String, Object> result, String content) {
+        String[] lines = content.split("\n");
+        for (String line : lines) {
+            if (StringKit.isBlank(line)
+                    || line.startsWith(Symbol.SHAPE)
+                    || line.indexOf(Symbol.EQUAL) < 0) {
+                continue;
+            }
+            // 考虑 value包含=的情况
+            String key = line.substring(0, line.indexOf(Symbol.EQUAL)).trim();
+            String value = line.substring(line.indexOf(Symbol.EQUAL) + 1).trim();
+            if (StringKit.isNotBlank(value)) {
+                result.put(key, value);
+            }
+        }
+    }
+
+    /**
+     * 解析YAML
+     *
+     * @param result  数据结果
+     * @param content 数据内容
+     */
+    public static void parseYamlMap(Map<String, Object> result, String content) {
+        Yaml yaml = new Yaml();
+        try {
+            Map map = yaml.load(content);
+            parseYamlMap(null, result, map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 解析YAML
+     *
+     * @param prefix  前缀信息
+     * @param result  数据结果
+     * @param content 数据内容
+     */
+    public static void parseYamlMap(String prefix, Map<String, Object> result, Map<String, Object> content) {
+        Object value;
+        String currentKey;
+        for (Object key : content.keySet()) {
+            currentKey = prefix == null ? key.toString() : prefix + Symbol.DOT + key.toString();
+            value = content.get(key);
+            if (value instanceof Map) {
+                parseYamlMap(currentKey, result, (Map) value);
+            } else {
+                result.put(currentKey, value);
+            }
+        }
+    }
+
+    /**
+     * 替换本地变量占位符
+     *
+     * @param properties 属性信息
+     * @param value      值信息
+     * @return 替换后的信息
+     */
+    public static String replaceRefValue(java.util.Properties properties, String value) {
+        if (!value.contains(Symbol.DOLLAR + Symbol.BRACE_LEFT)) {
+            return value;
+        } else {
+            String[] segments = value.split("\\$\\{");
+            StringBuilder finalValue = new StringBuilder();
+
+            for (int i = 0; i < segments.length; ++i) {
+                String seg = StringKit.trimToNull(segments[i]);
+                if (!StringKit.isBlank(seg)) {
+                    if (seg.contains(Symbol.BRACE_RIGHT)) {
+                        String refKey = seg.substring(0, seg.indexOf(Symbol.BRACE_RIGHT)).trim();
+                        String withBraceString = null;
+                        if (seg.contains(Symbol.BRACE_LEFT)) {
+                            withBraceString = seg.substring(seg.indexOf(Symbol.BRACE_RIGHT) + 1);
+                        }
+
+                        String defaultValue = null;
+                        int defaultValSpliterIndex = refKey.indexOf(Symbol.COLON);
+                        if (defaultValSpliterIndex > 0) {
+                            defaultValue = refKey.substring(defaultValSpliterIndex + 1);
+                            refKey = refKey.substring(0, defaultValSpliterIndex);
+                        }
+
+                        String refValue = System.getProperty(refKey);
+                        if (StringKit.isBlank(refValue)) {
+                            refValue = System.getenv(refKey);
+                        }
+
+                        if (StringKit.isBlank(refValue)) {
+                            refValue = properties.getProperty(refKey);
+                        }
+
+                        if (StringKit.isBlank(refValue)) {
+                            refValue = defaultValue;
+                        }
+
+                        if (StringKit.isBlank(refValue)) {
+                            finalValue.append(Symbol.DOLLAR + Symbol.BRACE_LEFT + refKey + Symbol.BRACE_RIGHT);
+                        } else {
+                            finalValue.append(refValue);
+                        }
+
+                        if (withBraceString != null) {
+                            finalValue.append(withBraceString);
+                        } else {
+                            String[] segments2 = seg.split("\\}");
+                            if (segments2.length == 2) {
+                                finalValue.append(segments2[1]);
+                            }
+                        }
+                    } else {
+                        finalValue.append(seg);
+                    }
+                }
+            }
+            return finalValue.toString();
         }
     }
 

@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
- * @version 6.3.2
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class EnumConverter extends AbstractConverter<Object> {
@@ -56,6 +56,27 @@ public class EnumConverter extends AbstractConverter<Object> {
      */
     public EnumConverter(Class enumClass) {
         this.enumClass = enumClass;
+    }
+
+
+    @Override
+    protected Object convertInternal(Object value) {
+        Enum enumValue = tryConvertEnum(value, this.enumClass);
+        if (null == enumValue && false == value instanceof String) {
+            // 最后尝试先将value转String，再valueOf转换
+            enumValue = Enum.valueOf(this.enumClass, convertString(value));
+        }
+
+        if (null != enumValue) {
+            return enumValue;
+        }
+
+        throw new ConvertException("Can not convert {} to {}", value, this.enumClass);
+    }
+
+    @Override
+    public Class getTargetType() {
+        return this.enumClass;
     }
 
     /**
@@ -111,26 +132,6 @@ public class EnumConverter extends AbstractConverter<Object> {
             VALUE_OF_METHOD_CACHE.put(enumClass, valueOfMethods);
         }
         return valueOfMethods;
-    }
-
-    @Override
-    protected Object convertInternal(Object value) {
-        Enum enumValue = tryConvertEnum(value, this.enumClass);
-        if (null == enumValue && false == value instanceof String) {
-            // 最后尝试先将value转String，再valueOf转换
-            enumValue = Enum.valueOf(this.enumClass, convertString(value));
-        }
-
-        if (null != enumValue) {
-            return enumValue;
-        }
-
-        throw new ConvertException("Can not convert {} to {}", value, this.enumClass);
-    }
-
-    @Override
-    public Class getTargetType() {
-        return this.enumClass;
     }
 
 }
