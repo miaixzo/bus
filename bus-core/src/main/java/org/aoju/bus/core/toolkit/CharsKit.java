@@ -2765,27 +2765,29 @@ public class CharsKit {
         if (isEmpty(text)) {
             return toString(text);
         }
-        final int strLength = text.length();
+        String original = toString(text);
+        int[] strCodePoints = original.codePoints().toArray();
+        final int strLength = strCodePoints.length;
         if (startInclude > strLength) {
-            return toString(text);
+            return original;
         }
         if (endExclude > strLength) {
             endExclude = strLength;
         }
         if (startInclude > endExclude) {
             // 如果起始位置大于结束位置,不替换
-            return toString(text);
+            return original;
         }
 
-        final char[] chars = new char[strLength];
+        final StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < strLength; i++) {
             if (i >= startInclude && i < endExclude) {
-                chars[i] = replacedChar;
+                stringBuilder.append(replacedChar);
             } else {
-                chars[i] = text.charAt(i);
+                stringBuilder.append(new String(strCodePoints, i, 1));
             }
         }
-        return new String(chars);
+        return stringBuilder.toString();
     }
 
     /**

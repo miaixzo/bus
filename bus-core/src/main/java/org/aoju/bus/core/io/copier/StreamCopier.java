@@ -126,6 +126,9 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
                 break;
             }
             target.write(buffer, 0, read);
+            if (flushEveryBuffer) {
+                target.flush();
+            }
 
             numToRead -= read;
             total += read;

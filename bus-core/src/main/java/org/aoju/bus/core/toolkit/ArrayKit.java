@@ -270,15 +270,12 @@ public class ArrayKit {
      * @return 是否都为空
      */
     public static boolean isAllEmpty(Object... args) {
-        int count = 0;
-        if (isNotEmpty(args)) {
-            for (Object element : args) {
-                if (ObjectKit.isEmpty(element)) {
-                    count++;
-                }
+        for (Object obj : args) {
+            if (false == ObjectKit.isEmpty(obj)) {
+                return false;
             }
         }
-        return count == args.length;
+        return true;
     }
 
     /**

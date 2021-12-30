@@ -45,10 +45,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
@@ -3273,6 +3270,18 @@ public class CollKit {
     }
 
     /**
+     * 使用给定的map将集合中的原素进行属性或者值的重新设定
+     *
+     * @param collection  集合
+     * @param map         映射集
+     * @param keyGenerate 映射键生成函数
+     * @param biConsumer  封装映射到的值函数
+     */
+    public static <E, K, V> void setValueByMap(Collection<E> collection, Map<K, V> map, Function<E, K> keyGenerate, BiConsumer<E, V> biConsumer) {
+        collection.forEach(x -> Optional.ofNullable(map.get(keyGenerate.apply(x))).ifPresent(y -> biConsumer.accept(x, y)));
+    }
+
+    /**
      * 像java11一样获取一个List
      *
      * @param ts  对象
@@ -3402,7 +3411,7 @@ public class CollKit {
      * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
      *
      * @param collection 需要分类的集合
-     * @param key        分类的规则
+     * @param key        键分组的规则
      * @param <E>        collection中的泛型
      * @param <K>        map中的key类型
      * @return 分类后的map
@@ -3416,7 +3425,7 @@ public class CollKit {
      * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
      *
      * @param collection 需要分类的集合
-     * @param key        分类的规则
+     * @param key        键分组的规则
      * @param isParallel 是否并行流
      * @param <E>        collection中的泛型
      * @param <K>        map中的key类型

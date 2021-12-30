@@ -74,8 +74,8 @@ public class Browser extends UserAgent {
             // Quark浏览器
             new Browser("Quark", "Quark", "Quark\\/([\\d\\w\\.\\-]+)"),
 
-            new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg)\\/([\\d\\w\\.\\-]+)"),
-            new Browser("Chrome", "chrome", "chrome\\/([\\d\\w\\.\\-]+)"),
+            new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg|EdgA)\\/([\\d\\w\\.\\-]+)"),
+            new Browser("Chrome", "chrome", OTHER_VERSION),
             new Browser("Firefox", "firefox", OTHER_VERSION),
             new Browser("IEMobile", "iemobile", OTHER_VERSION),
             new Browser("Android Browser", "android", "version\\/([\\d\\w\\.\\-]+)"),
