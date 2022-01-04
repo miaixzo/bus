@@ -36,7 +36,7 @@ import java.util.*;
  * Websockt 的 Stomp 客户端
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class Stomp {

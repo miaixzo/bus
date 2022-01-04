@@ -38,7 +38,7 @@ import java.util.*;
  * 农历日期
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.3.3
  * @since JDK 1.8+
  */
 public class Lunar {
@@ -6045,6 +6045,24 @@ public class Lunar {
          */
         public String getPositionTaiSuiDesc() {
             return POSITION_DESC.get(getPositionTaiSui());
+        }
+
+        /**
+         * 获取三元
+         *
+         * @return 元
+         */
+        public String getYuan() {
+            return YUAN[((year + 2696) / 60) % 3] + "元";
+        }
+
+        /**
+         * 获取九运
+         *
+         * @return 运
+         */
+        public String getYun() {
+            return YUN[((year + 2696) / 20) % 9] + "运";
         }
 
         /**

@@ -13,11 +13,6 @@ public final class CvType {
             CV_64F = 6,
             CV_16F = 7;
 
-    /**
-     * @deprecated please use {@link #CV_16F}
-     */
-    @Deprecated
-    public static final int CV_USRTYPE1 = CV_16F;
 
     // predefined type constants
     public static final int
