@@ -21,7 +21,7 @@
 		<img src="https://img.shields.io/badge/Mysql-8.0-blue.svg">
 	</a>
 	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-3.0.1-yellow.svg">
+		<img src="https://img.shields.io/badge/dubbo-3.0.5-yellow.svg">
 	</a>
 	<a target="_blank" href="http://poi.apache.org">
 		<img src="https://img.shields.io/badge/poi-4.1.2-blue.svg">
