@@ -73,7 +73,8 @@ public class Browser extends UserAgent {
             new Browser("UCBrowser", "UCBrowser", "UCBrowser\\/([\\d\\w\\.\\-]+)"),
             // Quark浏览器
             new Browser("Quark", "Quark", "Quark\\/([\\d\\w\\.\\-]+)"),
-
+            // Lenovo浏览器
+            new Browser("Lenovo", "SLBrowser", "SLBrowser/([\\d\\w\\.\\-]+)"),
             new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg|EdgA)\\/([\\d\\w\\.\\-]+)"),
             new Browser("Chrome", "chrome", OTHER_VERSION),
             new Browser("Firefox", "firefox", OTHER_VERSION),

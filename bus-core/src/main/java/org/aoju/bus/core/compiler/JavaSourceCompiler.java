@@ -68,7 +68,7 @@ public class JavaSourceCompiler {
      * @param parent 父类加载器，null则使用默认类加载器
      */
     private JavaSourceCompiler(ClassLoader parent) {
-        this.parentClassLoader = ObjectKit.defaultIfNull(parent, ClassKit.getClassLoader());
+        this.parentClassLoader = ObjectKit.defaultIfNull(parent, ClassKit::getClassLoader);
     }
 
     /**

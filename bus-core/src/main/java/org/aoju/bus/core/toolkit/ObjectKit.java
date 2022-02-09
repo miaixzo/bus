@@ -83,6 +83,21 @@ public class ObjectKit {
     }
 
     /**
+     * 如果被检查对象为 {@code null}， 返回默认值（由 defaultValueSupplier 提供）；否则直接返回
+     *
+     * @param source               被检查对象
+     * @param defaultValueSupplier 默认值提供者
+     * @param <T>                  对象类型
+     * @return 被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
+     */
+    public static <T> T defaultIfNull(T source, Supplier<? extends T> defaultValueSupplier) {
+        if (isNull(source)) {
+            return defaultValueSupplier.get();
+        }
+        return source;
+    }
+
+    /**
      * 如果给定对象为{@code null} 返回默认值, 如果不为null 返回自定义handle处理后的返回值
      *
      * @param source       Object 类型对象
@@ -96,6 +111,21 @@ public class ObjectKit {
             return handle.get();
         }
         return defaultValue;
+    }
+
+    /**
+     * 如果被检查对象为 {@code null} 或 "" 时，返回默认值（由 defaultValueSupplier 提供）；否则直接返回
+     *
+     * @param text   被检查对象
+     * @param handle 默认值提供者
+     * @param <T>    对象类型（必须实现CharSequence接口）
+     * @return 被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
+     */
+    public static <T extends CharSequence> T defaultIfEmpty(T text, Supplier<? extends T> handle) {
+        if (StringKit.isEmpty(text)) {
+            return handle.get();
+        }
+        return text;
     }
 
     /**
@@ -152,6 +182,21 @@ public class ObjectKit {
      */
     public static <T extends CharSequence> T defaultIfBlank(final T text, final T defaultValue) {
         return StringKit.isBlank(text) ? defaultValue : text;
+    }
+
+    /**
+     * 如果被检查对象为 {@code null} 或 "" 或 空白字符串时，返回默认值（由 defaultValueSupplier 提供）；否则直接返回
+     *
+     * @param text   被检查对象
+     * @param handle 默认值提供者
+     * @param <T>    对象类型（必须实现CharSequence接口）
+     * @return 被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
+     */
+    public static <T extends CharSequence> T defaultIfBlank(T text, Supplier<? extends T> handle) {
+        if (StringKit.isBlank(text)) {
+            return handle.get();
+        }
+        return text;
     }
 
     /**

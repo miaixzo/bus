@@ -148,7 +148,7 @@ public class Solar {
             put("11-28", Collections.nCopies(1, "恩格斯诞辰纪念日"));
             put("12-1", Collections.nCopies(1, "世界艾滋病日"));
             put("12-12", Collections.nCopies(1, "西安事变纪念日"));
-            put("12-13", Collections.nCopies(1, "南京大屠杀纪念日"));
+            put("12-13", Collections.nCopies(1, "国家公祭日"));
             put("12-26", Collections.nCopies(1, "毛泽东诞辰纪念日"));
         }
     };
@@ -415,7 +415,7 @@ public class Solar {
         if (offsetYear < 0) {
             offsetYear = offsetYear + 60;
         }
-        int startYear = today.getYear() - offsetYear;
+        int startYear = lunar.getYear() - offsetYear;
         int hour = 0;
         String timeZhi = timeGanZhi.substring(1);
         for (int i = 0, j = Fields.CN_ZHI.length; i < j; i++) {
@@ -483,6 +483,16 @@ public class Solar {
     }
 
     /**
+     * 获取某年有多少天（平年365天，闰年366天）
+     *
+     * @param year 年
+     * @return 天数
+     */
+    public static int getDaysOfYear(int year) {
+        return isLeapYear(year) ? 366 : 365;
+    }
+
+    /**
      * 获取某年某月有多少天
      *
      * @param year  年
@@ -490,6 +500,9 @@ public class Solar {
      * @return 天数
      */
     public static int getDaysOfMonth(int year, int month) {
+        if (1582 == year && 10 == month) {
+            return 21;
+        }
         int m = month - 1;
         int d = Fields.DAYS_OF_MONTH[m];
         // 公历闰年2月多一天
@@ -497,6 +510,26 @@ public class Solar {
             d++;
         }
         return d;
+    }
+
+    /**
+     * 获取某天为当年的第几天
+     *
+     * @param year  年
+     * @param month 月
+     * @param day   日
+     * @return 第几天
+     */
+    public static int getDaysInYear(int year, int month, int day) {
+        int days = 0;
+        for (int i = 1; i < month; i++) {
+            days += getDaysOfMonth(year, i);
+        }
+        days += day;
+        if (1582 == year && 10 == month && day >= 15) {
+            days -= 10;
+        }
+        return days;
     }
 
     /**
@@ -803,6 +836,52 @@ public class Solar {
             return strYmd;
         }
         return strYmdHms;
+    }
+
+    /**
+     * 获取两个日期之间相差的天数（如果日期a比日期b小，天数为正，如果日期a比日期b大，天数为负）
+     *
+     * @param ay 年a
+     * @param am 月a
+     * @param ad 日a
+     * @param by 年b
+     * @param bm 月b
+     * @param bd 日b
+     * @return 天数
+     */
+    public static int getDays(int ay, int am, int ad, int by, int bm, int bd) {
+        int n;
+        int days;
+        int i;
+        if (ay == by) {
+            n = getDaysInYear(by, bm, bd) - getDaysInYear(ay, am, ad);
+        } else if (ay > by) {
+            days = getDaysOfYear(by) - getDaysInYear(by, bm, bd);
+            for (i = by + 1; i < ay; i++) {
+                days += getDaysOfYear(i);
+            }
+            days += getDaysInYear(ay, am, ad);
+            n = -days;
+        } else {
+            days = getDaysOfYear(ay) - getDaysInYear(ay, am, ad);
+            for (i = ay + 1; i < by; i++) {
+                days += getDaysOfYear(i);
+            }
+            days += getDaysInYear(by, bm, bd);
+            n = days;
+        }
+        return n;
+    }
+
+    /**
+     * 获取两个日期之间相差的天数（如果日期a比日期b小，天数为正，如果日期a比日期b大，天数为负）
+     *
+     * @param calendar0 日期a
+     * @param calendar1 日期b
+     * @return 天数
+     */
+    public static int getDays(Calendar calendar0, Calendar calendar1) {
+        return getDays(calendar0.get(Calendar.YEAR), calendar0.get(Calendar.MONTH) + 1, calendar0.get(Calendar.DATE), calendar1.get(Calendar.YEAR), calendar1.get(Calendar.MONTH) + 1, calendar1.get(Calendar.DATE));
     }
 
     /**
@@ -1550,10 +1629,11 @@ public class Solar {
         public int getIndex() {
             Calendar calendar = Kalendar.calendar(year, month, 1);
             int firstDayWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-            if (firstDayWeek == 0) {
-                firstDayWeek = 7;
+            int offset = firstDayWeek - start;
+            if (offset < 0) {
+                offset += 7;
             }
-            return (int) Math.ceil((this.day + firstDayWeek - this.start) / 7D);
+            return (int) Math.ceil((day + offset) / 7D);
         }
 
         /**

@@ -26,6 +26,7 @@
 package org.aoju.bus.core.text;
 
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
@@ -115,7 +116,9 @@ public class NamingCase {
                     } else if (Character.isLowerCase(preChar)) {
                         // 前一个为小写
                         sb.append(symbol);
-                        if (null == nextChar || Character.isLowerCase(nextChar)) {
+                        if (null == nextChar
+                                || Character.isLowerCase(nextChar)
+                                || CharsKit.isNumber(nextChar)) {
                             //普通首字母大写，如aBcc -> a_bcc
                             c = Character.toLowerCase(c);
                         }

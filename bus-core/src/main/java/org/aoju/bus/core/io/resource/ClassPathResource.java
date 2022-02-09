@@ -89,7 +89,7 @@ public class ClassPathResource extends UriResource {
         this.path = path;
         this.name = StringKit.isBlank(path) ? null : FileKit.getName(path);
 
-        this.classLoader = ObjectKit.defaultIfNull(classLoader, ClassKit.getClassLoader());
+        this.classLoader = ObjectKit.defaultIfNull(classLoader, ClassKit::getClassLoader);
         this.clazz = clazz;
         initUrl();
     }

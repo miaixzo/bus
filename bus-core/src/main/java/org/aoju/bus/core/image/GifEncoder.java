@@ -47,7 +47,6 @@ import java.io.OutputStream;
  *    e.addFrame(image2);
  *    e.finish();
  * </pre>
- * <p>
  *
  * @author Kimi Liu
  * @version 6.3.3

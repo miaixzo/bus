@@ -52,6 +52,7 @@
         <bopomofo4j.version>1.0.0</bopomofo4j.version>
         <houbb.version>0.2.2</houbb.version>
         <jsch.version>0.1.54</jsch.version>
+        <sshj.version>0.32.0</sshj.version>
         <zxing.version>3.4.1</zxing.version>
         <net.version>3.8.0</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
@@ -126,6 +127,12 @@
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
             <version>${jsch.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>sshj</artifactId>
+            <version>${sshj.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

@@ -140,7 +140,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * @return 字符串
      */
     public String toString(java.nio.charset.Charset charset) {
-        return new String(toByteArray(), ObjectKit.defaultIfNull(charset, Charset.defaultCharset()));
+        return new String(toByteArray(), ObjectKit.defaultIfNull(charset, Charset::defaultCharset));
     }
 
 }

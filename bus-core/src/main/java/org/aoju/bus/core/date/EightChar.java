@@ -1156,10 +1156,8 @@ public class EightChar {
             int startTimeZhiIndex = (start.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(start.build(false).substring(11, Normal._16));
             // 时辰差
             int hourDiff = endTimeZhiIndex - startTimeZhiIndex;
-            Calendar endCalendar = Kalendar.calendar(end.getYear(), end.getMonth(), end.getDay());
-            Calendar startCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
             // 天数差
-            int dayDiff = (int) ((endCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / (1000 * 3600 * 24));
+            int dayDiff = Solar.getDays(start.getYear(), start.getMonth(), start.getDay(), end.getYear(), end.getMonth(), end.getDay());
             if (hourDiff < 0) {
                 hourDiff += 12;
                 dayDiff--;

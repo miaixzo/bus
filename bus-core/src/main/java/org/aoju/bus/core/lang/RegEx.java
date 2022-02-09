@@ -42,8 +42,8 @@ public class RegEx {
     /**
      * 正则表达式匹配中文汉字
      */
-    public static final String CHINESE_PATTERN = "[\u4E00-\u9FFF]";
-    public static final Pattern CHINESE = Pattern.compile(CHINESE_PATTERN);
+    public static final String CHINESE_PATTERN = "[\u2E80-\u2EFF\u2F00-\u2FDF\u31C0-\u31EF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uD840\uDC00-\uD869\uDEDF\uD869\uDF00-\uD86D\uDF3F\uD86D\uDF40-\uD86E\uDC1F\uD86E\uDC20-\uD873\uDEAF\uD87E\uDC00-\uD87E\uDE1F]";
+    public static final Pattern CHINESE = Pattern.compile(CHINESE_PATTERN + "+");
 
     /**
      * 正则表达式匹配中文字符串

@@ -53,7 +53,6 @@ import java.util.List;
  *     return ReflectionToStringBuilder.toString(this);
  * }
  * </pre>
- * <p>
  *
  * @author Kimi Liu
  * @version 6.3.3

@@ -183,7 +183,7 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
     }
 
     /**
-     * 获取波尔型属性值
+     * 获取布尔型属性值
      *
      * @param key   属性名
      * @param group 分组名
@@ -194,7 +194,7 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
     }
 
     /**
-     * 获取波尔型型属性值
+     * 获取布尔型型属性值
      *
      * @param key          属性名
      * @param group        分组名

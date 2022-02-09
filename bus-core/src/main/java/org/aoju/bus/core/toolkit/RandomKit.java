@@ -404,6 +404,19 @@ public class RandomKit {
     }
 
     /**
+     * 获得一个随机的字符串（只包含数字和小写字母） 并排除指定字符串
+     *
+     * @param length   字符串的长度
+     * @param elemData 要排除的字符串,如：去重容易混淆的字符串，oO0、lL1、q9Q、pP，不区分大小写
+     * @return 随机字符串
+     */
+    public static String randomStringWithout(int length, String elemData) {
+        String baseStr = Normal.LOWER_NUMBER;
+        baseStr = StringKit.removeAll(baseStr, elemData.toLowerCase().toCharArray());
+        return randomString(baseStr, length);
+    }
+
+    /**
      * 创建指定长度的随机索引
      *
      * @param length 长度

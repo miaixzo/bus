@@ -64,7 +64,7 @@ public class UriResource implements Resource {
      */
     public UriResource(URL url, String name) {
         this.url = url;
-        this.name = ObjectKit.defaultIfNull(name, (null != url) ? FileKit.getName(url.getPath()) : null);
+        this.name = ObjectKit.defaultIfNull(name, () -> (null != url ? FileKit.getName(url.getPath()) : null));
     }
 
     @Override

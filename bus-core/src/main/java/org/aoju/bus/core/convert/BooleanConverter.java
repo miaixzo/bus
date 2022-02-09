@@ -28,7 +28,7 @@ package org.aoju.bus.core.convert;
 import org.aoju.bus.core.toolkit.BooleanKit;
 
 /**
- * 波尔转换器
+ * 布尔转换器
  *
  * @author Kimi Liu
  * @version 6.3.3

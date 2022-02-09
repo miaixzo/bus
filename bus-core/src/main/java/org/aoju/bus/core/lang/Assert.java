@@ -90,7 +90,7 @@ public class Assert {
      * Assert.isTrue(i &gt; 0, "The value must be greater than zero");
      * </pre>
      *
-     * @param expression       波尔值
+     * @param expression       布尔值
      * @param errorMsgTemplate 错误抛出异常附带的消息模板,变量用{}代替
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
@@ -108,7 +108,7 @@ public class Assert {
      * Assert.isTrue(i &gt; 0, "The value must be greater than zero");
      * </pre>
      *
-     * @param expression 波尔值
+     * @param expression 布尔值
      * @throws IllegalArgumentException if expression is {@code false}
      */
     public static void isTrue(boolean expression) throws IllegalArgumentException {
@@ -141,7 +141,7 @@ public class Assert {
      * Assert.isFalse(i &lt; 0, "The value must be greater than zero");
      * </pre>
      *
-     * @param expression       波尔值
+     * @param expression       布尔值
      * @param errorMsgTemplate 错误抛出异常附带的消息模板,变量用{}代替
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
@@ -159,7 +159,7 @@ public class Assert {
      * Assert.isFalse(i &lt; 0);
      * </pre>
      *
-     * @param expression 波尔值
+     * @param expression 布尔值
      * @throws IllegalArgumentException if expression is {@code false}
      */
     public static void isFalse(boolean expression) throws IllegalArgumentException {

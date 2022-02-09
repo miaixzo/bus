@@ -1746,7 +1746,9 @@ public class CharsKit {
             }
         } else {
             int suffixIndex;
-            for (String fragment : split) {
+            String fragment;
+            for (int i = 1; i < split.length; i++) {
+                fragment = split[i];
                 suffixIndex = fragment.indexOf(suffix.toString());
                 if (suffixIndex > 0) {
                     result.add(fragment.substring(0, suffixIndex));
@@ -2330,9 +2332,6 @@ public class CharsKit {
      * @return 切分后的集合，元素类型是经过 mapping 转换后的
      */
     public static <R> List<R> split(CharSequence text, char separator, int limit, boolean ignoreEmpty, Function<String, R> mapping) {
-        if (null == text) {
-            return new ArrayList<>(0);
-        }
         return TextSplitter.split(text.toString(), separator, limit, ignoreEmpty, mapping);
     }
 
@@ -3698,21 +3697,23 @@ public class CharsKit {
             return text.toString();
         }
 
-        // 特殊长度
         switch (maxLength) {
             case 1:
                 return String.valueOf(text.charAt(0));
             case 2:
-                return text.charAt(0) + ".";
+                return text.charAt(0) + Symbol.DOT;
             case 3:
-                return text.charAt(0) + "." + text.charAt(text.length() - 1);
+                return text.charAt(0) + Symbol.DOT + text.charAt(strLength - 1);
+            case 4:
+                return text.charAt(0) + Symbol.DOUBLE_DOT + text.charAt(strLength - 1);
         }
 
-        final int w = maxLength / 2;
+        final int suffixLength = (maxLength - 3) / 2;
+        final int preLength = suffixLength + (maxLength - 3) % 2;
         final String str2 = text.toString();
         return format("{}...{}",
-                str2.substring(0, maxLength - w),
-                str2.substring(strLength - w + 3));
+                str2.substring(0, preLength),
+                str2.substring(strLength - suffixLength));
     }
 
 
@@ -4255,6 +4256,37 @@ public class CharsKit {
     }
 
     /**
+     * 检查CharSequence是否以提供的大小写敏感的后缀结尾.
+     *
+     * <pre>
+     * StringKit.endsWithAny(null, null)      = false
+     * StringKit.endsWithAny(null, new String[] {"abc"})  = false
+     * StringKit.endsWithAny("abcxyz", null)     = false
+     * StringKit.endsWithAny("abcxyz", new String[] {""}) = true
+     * StringKit.endsWithAny("abcxyz", new String[] {"xyz"}) = true
+     * StringKit.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
+     * StringKit.endsWithAny("abcXYZ", "def", "XYZ") = true
+     * StringKit.endsWithAny("abcXYZ", "def", "xyz") = false
+     * </pre>
+     *
+     * @param text 要检查的CharSequence可能为空
+     * @param word 要查找的区分大小写的字符序列可以是空的，也可以包含{@code null}
+     * @return {如果输入{@code sequence}是{@code null}， 并且没有提供{@code searchstring}，
+     * 或者输入{@code sequence}以提供的区分大小写的{@code searchstring}结尾.
+     */
+    public static boolean endsWithAny(final CharSequence text, final CharSequence... word) {
+        if (isEmpty(text) || ArrayKit.isEmpty(word)) {
+            return false;
+        }
+        for (final CharSequence val : word) {
+            if (endWith(text, val)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 返回第一个非{@code null}元素
      *
      * @param texts 多个元素
@@ -4287,37 +4319,6 @@ public class CharsKit {
      */
     public <T extends CharSequence> T firstNonBlank(T... texts) {
         return ArrayKit.firstNonNull(CharsKit::isNotBlank, texts);
-    }
-
-    /**
-     * 检查CharSequence是否以提供的大小写敏感的后缀结尾.
-     *
-     * <pre>
-     * StringKit.endsWithAny(null, null)      = false
-     * StringKit.endsWithAny(null, new String[] {"abc"})  = false
-     * StringKit.endsWithAny("abcxyz", null)     = false
-     * StringKit.endsWithAny("abcxyz", new String[] {""}) = true
-     * StringKit.endsWithAny("abcxyz", new String[] {"xyz"}) = true
-     * StringKit.endsWithAny("abcxyz", new String[] {null, "xyz", "abc"}) = true
-     * StringKit.endsWithAny("abcXYZ", "def", "XYZ") = true
-     * StringKit.endsWithAny("abcXYZ", "def", "xyz") = false
-     * </pre>
-     *
-     * @param text 要检查的CharSequence可能为空
-     * @param word 要查找的区分大小写的字符序列可以是空的，也可以包含{@code null}
-     * @return {如果输入{@code sequence}是{@code null}， 并且没有提供{@code searchstring}，
-     * 或者输入{@code sequence}以提供的区分大小写的{@code searchstring}结尾.
-     */
-    public static boolean endsWithAny(final CharSequence text, final CharSequence... word) {
-        if (isEmpty(text) || ArrayKit.isEmpty(word)) {
-            return false;
-        }
-        for (final CharSequence val : word) {
-            if (endWith(text, val)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

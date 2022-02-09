@@ -410,7 +410,7 @@ public class CellKit {
     public static Cell getMergedRegionCell(Sheet sheet, int x, int y) {
         return ObjectKit.defaultIfNull(
                 getMergedCell(sheet, x, y),
-                SheetUtil.getCell(sheet, y, x));
+                () -> SheetUtil.getCell(sheet, y, x));
     }
 
     /**

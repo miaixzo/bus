@@ -347,7 +347,7 @@ public class SheetSaxHandler extends DefaultHandler {
                 final int numFmtIndex = xssfCellStyle.getDataFormat();
                 this.numFmtString = ObjectKit.defaultIfNull(
                         xssfCellStyle.getDataFormatString(),
-                        BuiltinFormats.getBuiltinFormat(numFmtIndex));
+                        () -> BuiltinFormats.getBuiltinFormat(numFmtIndex));
                 if (CellDataType.NUMBER == this.cellDataType && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }

@@ -515,7 +515,7 @@ public class ServletKit {
      */
     public static void write(HttpServletResponse response, InputStream in, String contentType, String fileName) {
         final String charset = ObjectKit.defaultIfNull(response.getCharacterEncoding(), Charset.DEFAULT_UTF_8);
-        response.setHeader("Content-Disposition", StringKit.format("attachment;filename={}", UriKit.encode(fileName, charset)));
+        response.setHeader("Content-Disposition", StringKit.format("attachment;filename\"{}\"", UriKit.encode(fileName, charset)));
         response.setContentType(contentType);
         write(response, in);
     }

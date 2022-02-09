@@ -160,7 +160,7 @@ public final class CsvWriter implements Closeable, Flushable {
      */
     public CsvWriter(Writer writer, CsvWriteConfig config) {
         this.writer = (writer instanceof BufferedWriter) ? writer : new BufferedWriter(writer);
-        this.config = ObjectKit.defaultIfNull(config, CsvWriteConfig.defaultConfig());
+        this.config = ObjectKit.defaultIfNull(config, CsvWriteConfig::defaultConfig);
     }
 
     /**

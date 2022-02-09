@@ -594,6 +594,20 @@ public class Converter extends Formatter {
     }
 
     /**
+     * {@link TemporalAccessor}转换为 时间戳（从1970-01-01T00:00:00Z开始的毫秒数）
+     * 如果为{@link Month}，调用{@link Month#getValue()}
+     *
+     * @param temporalAccessor Date对象
+     * @return {@link Instant}对象
+     */
+    public static long toEpochMilli(TemporalAccessor temporalAccessor) {
+        if (temporalAccessor instanceof Month) {
+            return ((Month) temporalAccessor).getValue();
+        }
+        return toInstant(temporalAccessor).toEpochMilli();
+    }
+
+    /**
      * Date转ZonedDateTime，时区为系统默认时区
      *
      * @param date Date

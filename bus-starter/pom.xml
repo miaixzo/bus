@@ -47,7 +47,7 @@
         <aspectj.version>1.9.6</aspectj.version>
         <persistence.version>2.2</persistence.version>
         <guava.version>30.1.1-jre</guava.version>
-        <vertx.version>3.6.2</vertx.version>
+        <vertx.version>4.2.3</vertx.version>
         <guice.version>5.0.1</guice.version>
         <mybatis.version>3.5.7</mybatis.version>
         <mybatis.spring.version>2.0.6</mybatis.spring.version>
@@ -55,7 +55,7 @@
         <jsqlparser.version>4.2</jsqlparser.version>
         <mysql.version>8.0.27</mysql.version>
         <druid.version>1.2.8</druid.version>
-        <dubbo.version>3.0.1</dubbo.version>
+        <dubbo.version>3.0.5</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
         <elasticsearch.version>7.14.1</elasticsearch.version>
     </properties>

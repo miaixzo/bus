@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.copier;
 
-
 import org.aoju.bus.core.lang.Filter;
 
 /**

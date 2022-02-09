@@ -2507,8 +2507,8 @@ public class CollKit {
      * @param keys 键列表
      * @return 值列表
      */
-    public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, K... keys) {
-        final ArrayList<V> values = new ArrayList<>();
+    public static <K, V> List<V> valuesOf(Map<K, V> map, K... keys) {
+        final List<V> values = new ArrayList<>();
         for (K k : keys) {
             values.add(map.get(k));
         }
@@ -2525,8 +2525,8 @@ public class CollKit {
      * @param keys 键列表
      * @return 值列表
      */
-    public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterable<K> keys) {
-        return valuesOfKeys(map, keys.iterator());
+    public static <K, V> List<V> valuesOf(Map<K, V> map, Iterable<K> keys) {
+        return valuesOf(map, keys.iterator());
     }
 
     /**
@@ -2539,7 +2539,7 @@ public class CollKit {
      * @param keys 键列表
      * @return 值列表
      */
-    public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterator<K> keys) {
+    public static <K, V> List<V> valuesOf(Map<K, V> map, Iterator<K> keys) {
         final ArrayList<V> values = new ArrayList<>();
         while (keys.hasNext()) {
             values.add(map.get(keys.next()));

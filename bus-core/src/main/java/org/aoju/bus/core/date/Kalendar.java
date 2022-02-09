@@ -190,6 +190,9 @@ public class Kalendar {
         Calendar c = Calendar.getInstance();
         c.set(year, month - 1, day, hour, minute, second);
         c.set(Calendar.MILLISECOND, 0);
+        if (0 == year) {
+            c.add(Calendar.YEAR, 1);
+        }
         return c;
     }
 

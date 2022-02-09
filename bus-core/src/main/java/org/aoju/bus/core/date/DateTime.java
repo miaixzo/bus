@@ -112,7 +112,7 @@ public class DateTime extends Date {
      * @param timeZone 时区
      */
     public DateTime(Date date, TimeZone timeZone) {
-        this(date.getTime(), timeZone);
+        this(ObjectKit.defaultIfNull(date, Date::new).getTime(), timeZone);
     }
 
     /**
@@ -179,7 +179,7 @@ public class DateTime extends Date {
      */
     public DateTime(long timeMillis, TimeZone timeZone) {
         super(timeMillis);
-        this.timeZone = ObjectKit.defaultIfNull(timeZone, TimeZone.getDefault());
+        this.timeZone = ObjectKit.defaultIfNull(timeZone, TimeZone::getDefault);
     }
 
     /**
@@ -895,7 +895,7 @@ public class DateTime extends Date {
      * @return this
      */
     public DateTime setTimeZone(TimeZone timeZone) {
-        this.timeZone = ObjectKit.defaultIfNull(timeZone, TimeZone.getDefault());
+        this.timeZone = ObjectKit.defaultIfNull(timeZone, TimeZone::getDefault);
         return this;
     }
 

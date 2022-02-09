@@ -95,7 +95,7 @@ public class PatternFinder extends TextFinder {
         } else {
             limit = Math.min(endIndex, text.length());
         }
-        return end < limit ? end : Normal.__1;
+        return end <= limit ? end : Normal.__1;
     }
 
     @Override

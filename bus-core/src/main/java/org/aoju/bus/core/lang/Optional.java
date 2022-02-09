@@ -111,7 +111,7 @@ public class Optional<T> {
         try {
             return Optional.ofNullable(supplier.call());
         } catch (Exception e) {
-            final Optional<T> empty = Optional.empty();
+            final Optional<T> empty = new Optional<>(null);
             empty.exception = e;
             return empty;
         }

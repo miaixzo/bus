@@ -134,7 +134,7 @@ public class MethodHandle {
     }
 
     /**
-     * 执行接口或对象中的方法
+     * 执行接口或对象中的特殊方法（private、static等）
      *
      * <pre class="code">
      *     interface Duck {
@@ -180,7 +180,7 @@ public class MethodHandle {
     }
 
     /**
-     * 执行接口或对象中的方法
+     * 执行接口或对象中的特殊方法（private、static等）
      *
      * <pre class="code">
      *     interface Duck {

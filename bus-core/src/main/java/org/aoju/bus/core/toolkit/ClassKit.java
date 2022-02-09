@@ -3591,7 +3591,7 @@ public class ClassKit {
      * @return 服务接口实现列表
      */
     public static <T> ServiceLoader<T> load(Class<T> clazz, ClassLoader loader) {
-        return ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, getClassLoader()));
+        return ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, ClassKit::getClassLoader));
     }
 
     /**

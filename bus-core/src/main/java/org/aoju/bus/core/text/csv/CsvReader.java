@@ -74,7 +74,7 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param config 配置项，null表示默认配置
      */
     public CsvReader(Reader reader, CsvReadConfig config) {
-        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig.defaultConfig());
+        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::defaultConfig);
         this.reader = reader;
     }
 

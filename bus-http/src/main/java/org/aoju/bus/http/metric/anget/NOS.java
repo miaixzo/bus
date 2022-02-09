@@ -49,8 +49,8 @@ public class NOS extends UserAgent {
      */
     public static final List<NOS> OSES = CollKit.newArrayList(
             new NOS("Windows 10 or Windows Server 2016", "windows nt 10\\.0"),
-            new NOS("Windows 8.1 or Winsows Server 2012R2", "windows nt 6\\.3"),
-            new NOS("Windows 8 or Winsows Server 2012", "windows nt 6\\.2"),
+            new NOS("Windows 8.1 or Windows Server 2012R2", "windows nt 6\\.3"),
+            new NOS("Windows 8 or Windows Server 2012", "windows nt 6\\.2"),
             new NOS("Windows Vista", "windows nt 6\\.0"),
             new NOS("Windows 7 or Windows Server 2008R2", "windows nt 6\\.1"),
             new NOS("Windows 2003", "windows nt 5\\.2"),

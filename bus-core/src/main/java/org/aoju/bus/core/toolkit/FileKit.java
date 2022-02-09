@@ -1127,6 +1127,10 @@ public class FileKit {
         try {
             return Files.move(src, target, options);
         } catch (IOException e) {
+            if (e instanceof FileAlreadyExistsException) {
+                // 目标文件已存在，直接抛出异常
+                throw new InstrumentException(e);
+            }
             // 移动失败，可能是跨分区移动导致的，采用递归移动方式
             try {
                 Files.walkFileTree(src, new MoveVisitor(src, target, options));
@@ -3120,7 +3124,12 @@ public class FileKit {
     }
 
     /**
-     * 将列表写入文件,追加模式
+     * 将列表写入文件，追加模式，策略为：
+     * <ul>
+     *     <li>当文件为空，从开头追加，尾部不加空行</li>
+     *     <li>当有内容，换行追加，尾部不加空行</li>
+     *     <li>当有内容，并末尾有空行，依旧换行追加</li>
+     * </ul>
      *
      * @param <T>     集合元素类型
      * @param list    列表

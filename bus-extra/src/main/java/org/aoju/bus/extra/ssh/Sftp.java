@@ -50,7 +50,7 @@ import java.util.Vector;
  * 但是,由于这种传输方式使用了加密/解密技术,所以传输效率比普通的FTP要低得多,如果您对网络安全性要求更高时,可以使用SFTP代替FTP
  *
  * <p>
- * 此类为基于jsch的SFTP实现
+ * 此类基于jsch的SFTP实现
  * 参考：https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html
  * </p>
  *
@@ -314,7 +314,8 @@ public class Sftp extends AbstractFtp {
         try {
             sftpATTRS = this.channel.stat(dir);
         } catch (SftpException e) {
-            if (e.getMessage().contains("No such file")) {
+            final String msg = e.getMessage();
+            if (msg.contains("No such file") || msg.contains("does not exist")) {
                 return false;
             }
             throw new InstrumentException(e);
@@ -497,28 +498,27 @@ public class Sftp extends AbstractFtp {
     }
 
     @Override
-    public void download(String src, File destFile) {
-        get(src, FileKit.getAbsolutePath(destFile));
+    public void download(String src, File dest) {
+        get(src, FileKit.getAbsolutePath(dest));
     }
 
     /**
      * 递归获取远程文件
      *
-     * @param sourcePath 服务器目录
-     * @param destPath   本地目录
+     * @param source 服务器目录
+     * @param dest   本地目录
      */
     @Override
-    public void download(String sourcePath, String destPath) {
+    public void download(String source, String dest) {
         try {
-            Vector<LsEntry> fileAndFolderList = channel.ls(sourcePath);
+            Vector<LsEntry> fileAndFolderList = channel.ls(source);
             for (ChannelSftp.LsEntry item : fileAndFolderList) {
-                String sourcePathPathFile = sourcePath + Symbol.SLASH + item.getFilename();
-                String destinationPathFile = destPath + Symbol.SLASH + item.getFilename();
+                String sourcePathPathFile = source + Symbol.SLASH + item.getFilename();
+                String destinationPathFile = dest + Symbol.SLASH + item.getFilename();
                 if (!item.getAttrs().isDir()) {
                     // 本地不存在文件或者ftp上文件有修改则下载
                     if (!FileKit.exists(destinationPathFile)
                             || (item.getAttrs().getMTime() > (FileKit.lastModifiedTime(destinationPathFile).getTime() / 1000))) {
-                        // Download file from source (source filename, destination filename).
                         channel.get(sourcePathPathFile, destinationPathFile);
                     }
                 } else if (!(Symbol.DOT.equals(item.getFilename()) || Symbol.DOUBLE_DOT.equals(item.getFilename()))) {

@@ -236,6 +236,7 @@ public class Formatter {
 
     /**
      * 格式化日期时间为指定格式
+     * 如果为{@link Month}，调用{@link Month#toString()}
      *
      * @param time      {@link TemporalAccessor}
      * @param formatter 日期格式化器，预定义的格式见：{@link DateTimeFormatter}
@@ -244,6 +245,10 @@ public class Formatter {
     public static String format(TemporalAccessor time, DateTimeFormatter formatter) {
         if (null == time) {
             return null;
+        }
+
+        if (time instanceof Month) {
+            return time.toString();
         }
 
         if (null == formatter) {
@@ -269,6 +274,7 @@ public class Formatter {
 
     /**
      * 格式化日期时间为指定格式
+     * 如果为{@link Month}，调用{@link Month#toString()}
      *
      * @param time   {@link TemporalAccessor}
      * @param format 日期格式
@@ -277,6 +283,10 @@ public class Formatter {
     public static String format(TemporalAccessor time, String format) {
         if (null == time) {
             return null;
+        }
+
+        if (time instanceof Month) {
+            return time.toString();
         }
 
         final DateTimeFormatter formatter = StringKit.isBlank(format)
@@ -478,6 +488,11 @@ public class Formatter {
         result.append(NumberFormatter.format(day, false));
         result.append('日');
 
+        // 只替换年月日，时分秒中零不需要替换
+        String temp = result.toString().replace('零', '〇');
+        result.delete(0, result.length());
+        result.append(temp);
+
         if (withTime) {
             // 时
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -493,7 +508,7 @@ public class Formatter {
             result.append('秒');
         }
 
-        return result.toString().replace('零', '〇');
+        return result.toString();
     }
 
     /**

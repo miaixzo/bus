@@ -366,6 +366,16 @@ public class ReflectKit {
 
     }
 
+    /**
+     * 是否为父类引用字段
+     * 当字段所在类是对象子类时（对象中定义的非static的class），会自动生成一个以"this$0"为名称的字段，指向父类对象
+     *
+     * @param field 字段
+     * @return 是否为父类引用字段
+     */
+    public static boolean isOuterClassField(Field field) {
+        return "this$0".equals(field.getName());
+    }
 
     /**
      * 查找类中的指定参数的构造方法
@@ -771,11 +781,12 @@ public class ReflectKit {
      * @return 是否为equals方法
      */
     public static boolean isEqualsMethod(Method method) {
-        if (null == method || false == ObjectKit.equal(method.getName(), Normal.EQUALS)) {
+        if (method == null ||
+                1 != method.getParameterCount() ||
+                false == Normal.EQUALS.equals(method.getName())) {
             return false;
         }
-        final Class<?>[] paramTypes = method.getParameterTypes();
-        return (1 == paramTypes.length && paramTypes[0] == Object.class);
+        return (method.getParameterTypes()[0] == Object.class);
     }
 
     /**
@@ -785,7 +796,7 @@ public class ReflectKit {
      * @return 是否为hashCode方法
      */
     public static boolean isHashCodeMethod(Method method) {
-        return (null != method && ObjectKit.equal(method.getName(), "hashCode") && method.getParameterTypes().length == 0);
+        return (null != method && ObjectKit.equal(method.getName(), Normal.HASHCODE) && method.getParameterTypes().length == 0);
     }
 
     /**
@@ -795,7 +806,74 @@ public class ReflectKit {
      * @return 是否为toString方法
      */
     public static boolean isToStringMethod(Method method) {
-        return (null != method && ObjectKit.equal(method.getName(), "toString") && method.getParameterTypes().length == 0);
+        return (null != method && ObjectKit.equal(method.getName(), Normal.TOSTRING) && method.getParameterTypes().length == 0);
+    }
+
+    /**
+     * 是否为无参数方法
+     *
+     * @param method 方法
+     * @return 是否为无参数方法
+     */
+    public static boolean isEmptyParam(Method method) {
+        return method.getParameterCount() == 0;
+    }
+
+    /**
+     * 检查给定方法是否为Getter或者Setter方法，规则为：
+     * <ul>
+     *     <li>方法参数必须为0个或1个</li>
+     *     <li>如果是无参方法，则判断是否以“get”或“is”开头</li>
+     *     <li>如果方法参数1个，则判断是否以“set”开头</li>
+     * </ul>
+     *
+     * @param method 方法
+     * @return 是否为Getter或者Setter方法
+     */
+    public static boolean isGetterOrSetterIgnoreCase(Method method) {
+        return isGetterOrSetter(method, true);
+    }
+
+    /**
+     * 检查给定方法是否为Getter或者Setter方法，规则为：
+     * <ul>
+     *     <li>方法参数必须为0个或1个</li>
+     *     <li>方法名称不能是getClass</li>
+     *     <li>如果是无参方法，则判断是否以“get”或“is”开头</li>
+     *     <li>如果方法参数1个，则判断是否以“set”开头</li>
+     * </ul>
+     *
+     * @param method     方法
+     * @param ignoreCase 是否忽略方法名的大小写
+     * @return 是否为Getter或者Setter方法
+     */
+    public static boolean isGetterOrSetter(Method method, boolean ignoreCase) {
+        if (null == method) {
+            return false;
+        }
+
+        // 参数个数必须为0或1
+        final int parameterCount = method.getParameterCount();
+        if (parameterCount > 1) {
+            return false;
+        }
+
+        String name = method.getName();
+        // 跳过getClass这个特殊方法
+        if ("getClass".equals(name)) {
+            return false;
+        }
+        if (ignoreCase) {
+            name = name.toLowerCase();
+        }
+        switch (parameterCount) {
+            case 0:
+                return name.startsWith(Normal.GET) || name.startsWith(Normal.IS);
+            case 1:
+                return name.startsWith(Normal.SET);
+            default:
+                return false;
+        }
     }
 
     /**

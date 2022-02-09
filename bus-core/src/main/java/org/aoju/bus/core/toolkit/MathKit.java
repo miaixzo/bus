@@ -1741,6 +1741,18 @@ public class MathKit {
     }
 
     /**
+     * 比较大小，值相等 返回true
+     * 此方法修复传入long型数据由于没有本类型重载方法,导致数据精度丢失
+     *
+     * @param num1 数字1
+     * @param num2 数字2
+     * @return 是否相等
+     */
+    public static boolean equals(long num1, long num2) {
+        return num1 == num2;
+    }
+
+    /**
      * 比较两个字符是否相同
      *
      * @param c1         字符1

@@ -525,7 +525,7 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @return D值
      */
     public String getDHex() {
-        return getDBigInteger().toString(16);
+        return String.format("%064x", new BigInteger(1, getD()));
     }
 
     /**

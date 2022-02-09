@@ -33,5 +33,16 @@ package org.aoju.bus.core.lang;
  * @since JDK 1.8+
  */
 public enum Align {
-    LEFT, RIGHT, CENTER
+    /**
+     * 左对齐
+     */
+    LEFT,
+    /**
+     * 右对齐
+     */
+    RIGHT,
+    /**
+     * 居中对齐
+     */
+    CENTER
 }

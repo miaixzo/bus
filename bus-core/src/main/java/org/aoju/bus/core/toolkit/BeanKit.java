@@ -158,9 +158,8 @@ public class BeanKit {
      */
     public static boolean hasSetter(Class<?> clazz) {
         if (ClassKit.isNormalClass(clazz)) {
-            final Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                if (method.getParameterTypes().length == 1 && method.getName().startsWith(Normal.SET)) {
+            for (Method method : clazz.getMethods()) {
+                if (method.getParameterCount() == 1 && method.getName().startsWith(Normal.SET)) {
                     // 检测包含标准的setXXX方法即视为标准的JavaBean
                     return true;
                 }
@@ -179,7 +178,7 @@ public class BeanKit {
     public static boolean hasGetter(Class<?> clazz) {
         if (ClassKit.isNormalClass(clazz)) {
             for (Method method : clazz.getMethods()) {
-                if (method.getParameterTypes().length == 0) {
+                if (method.getParameterCount() == 0) {
                     if (method.getName().startsWith(Normal.GET) || method.getName().startsWith(Normal.IS)) {
                         return true;
                     }
@@ -849,7 +848,7 @@ public class BeanKit {
      * @param copyOptions 拷贝选项,见 {@link CopyOptions}
      */
     public static void copyProperties(Object source, Object target, CopyOptions copyOptions) {
-        BeanCopier.create(source, target, ObjectKit.defaultIfNull(copyOptions, CopyOptions.create())).copy();
+        BeanCopier.create(source, target, ObjectKit.defaultIfNull(copyOptions, CopyOptions::create)).copy();
     }
 
     /**

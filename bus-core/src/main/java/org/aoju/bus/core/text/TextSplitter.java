@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
-import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.finder.*;
@@ -52,13 +51,14 @@ public class TextSplitter {
     /**
      * 使用空白符切分字符串
      * 切分后的字符串两边不包含空白符，空串或空白符串并不做为元素之一
+     * 如果为空字符串或者null 则返回空集合
      *
      * @param text  被切分的字符串
      * @param limit 限制分片数
      * @return 切分后的集合
      */
     public static List<String> split(CharSequence text, int limit) {
-        if (StringKit.isEmpty(text)) {
+        if (null == text) {
             return new ArrayList<>(0);
         }
         final SplitIterator SplitIterator = new SplitIterator(text, new MatcherFinder(CharsKit::isBlankChar), limit, true);
@@ -107,6 +107,7 @@ public class TextSplitter {
 
     /**
      * 通过正则切分字符串
+     * 如果为空字符串或者null 则返回空集合
      *
      * @param text        字符串
      * @param separator   分隔符正则{@link Pattern}
@@ -116,8 +117,7 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static List<String> split(String text, Pattern separator, int limit, boolean isTrim, boolean ignoreEmpty) {
-        Assert.notNull(text, "Text must be not null!");
-        if (text.length() < 1) {
+        if (null == text) {
             return new ArrayList<>(0);
         }
         final SplitIterator SplitIterator = new SplitIterator(text, new PatternFinder(separator), limit, ignoreEmpty);
@@ -170,6 +170,7 @@ public class TextSplitter {
 
     /**
      * 切分字符串
+     * 如果为空字符串或者null 则返回空集合
      *
      * @param <R>         切分后的元素类型
      * @param text        被切分的字符串
@@ -181,12 +182,16 @@ public class TextSplitter {
      * @return 切分后的集合，元素类型是经过 mapping 转换后的
      */
     public static <R> List<R> split(CharSequence text, char separator, int limit, boolean ignoreEmpty, boolean ignoreCase, Function<String, R> mapping) {
+        if (null == text) {
+            return new ArrayList<>(0);
+        }
         final SplitIterator SplitIterator = new SplitIterator(text, new CharFinder(separator, ignoreCase), limit, ignoreEmpty);
         return SplitIterator.toList(mapping);
     }
 
     /**
      * 切分字符串
+     * 如果为空字符串或者null 则返回空集合
      *
      * @param text        被切分的字符串
      * @param separator   分隔符字符串
@@ -197,6 +202,9 @@ public class TextSplitter {
      * @return 切分后的集合
      */
     public static List<String> split(CharSequence text, String separator, int limit, boolean isTrim, boolean ignoreEmpty, boolean ignoreCase) {
+        if (null == text) {
+            return new ArrayList<>(0);
+        }
         final SplitIterator SplitIterator = new SplitIterator(text, new StringFinder(separator, ignoreCase), limit, ignoreEmpty);
         return SplitIterator.toList(isTrim);
     }
@@ -440,6 +448,9 @@ public class TextSplitter {
      * @return 截取后的字符串数组
      */
     public static String[] splitByLength(String text, int len) {
+        if (null == text) {
+            return new String[0];
+        }
         SplitIterator SplitIterator = new SplitIterator(text, new LengthFinder(len), -1, false);
         return SplitIterator.toArray(false);
     }

@@ -42,7 +42,7 @@ public class JavaClassFileManager extends ForwardingJavaFileManager<JavaFileMana
      */
     protected JavaClassFileManager(ClassLoader parent, JavaFileManager fileManager) {
         super(fileManager);
-        this.parent = ObjectKit.defaultIfNull(parent, ClassKit.getClassLoader());
+        this.parent = ObjectKit.defaultIfNull(parent, ClassKit::getClassLoader);
     }
 
     /**

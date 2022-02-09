@@ -26,6 +26,7 @@
 package org.aoju.bus.core.map;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * 自定义键的Map,默认HashMap实现
@@ -86,6 +87,26 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
     @Override
     public V replace(K key, V value) {
         return super.replace((K) customKey(key), value);
+    }
+
+    @Override
+    public V getOrDefault(Object key, V defaultValue) {
+        return super.getOrDefault(customKey(key), defaultValue);
+    }
+
+    @Override
+    public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        return super.computeIfPresent((K) customKey(key), remappingFunction);
+    }
+
+    @Override
+    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        return super.compute((K) customKey(key), remappingFunction);
+    }
+
+    @Override
+    public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+        return super.merge((K) customKey(key), value, remappingFunction);
     }
 
     /**

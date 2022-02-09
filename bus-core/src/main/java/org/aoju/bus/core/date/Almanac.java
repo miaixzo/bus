@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.*;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -5423,6 +5424,35 @@ public class Almanac extends Converter {
      */
     public static Date lastYear() {
         return offsetYear(date(), -1);
+    }
+
+    /**
+     * 检查两个时间段是否有时间重叠
+     * 重叠指两个时间段是否有交集
+     *
+     * @param realStartTime 第一个时间段的开始时间
+     * @param realEndTime   第一个时间段的结束时间
+     * @param startTime     第二个时间段的开始时间
+     * @param endTime       第二个时间段的结束时间
+     * @return true 表示时间有重合
+     */
+    public static boolean isOverlap(LocalDateTime realStartTime, LocalDateTime realEndTime, LocalDateTime startTime, LocalDateTime endTime) {
+        return startTime.isAfter(realEndTime) || endTime.isBefore(realStartTime);
+    }
+
+    /**
+     * 检查两个时间段是否有时间重叠
+     * 重叠指两个时间段是否有交集
+     * 需要注意的是比如第一个时间段的结尾是23:59:59 第二天开始需要是00:00:00 相同也是重复
+     *
+     * @param realStartTime 第一个时间段的开始时间
+     * @param realEndTime   第一个时间段的结束时间
+     * @param startTime     第二个时间段的开始时间
+     * @param endTime       第二个时间段的结束时间
+     * @return true 表示没有时间有重合
+     */
+    public static boolean isOverlap(Supplier<LocalDateTime> realStartTime, Supplier<LocalDateTime> realEndTime, Supplier<LocalDateTime> startTime, Supplier<LocalDateTime> endTime) {
+        return isOverlap(realStartTime.get(), realEndTime.get(), startTime.get(), endTime.get());
     }
 
 }

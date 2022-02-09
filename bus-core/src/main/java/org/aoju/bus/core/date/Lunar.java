@@ -66,6 +66,12 @@ public class Lunar {
             "先胜", "友引", "先负", "佛灭", "大安", "赤口"
     };
     /**
+     * 候
+     */
+    public static final String[] HOU = {
+            "初候", "二候", "三候"
+    };
+    /**
      * 物候
      */
     public static final String[] WU_HOU = {
@@ -169,6 +175,27 @@ public class Lunar {
             "渐盈凸", "小望", "望", "既望", "立待", "居待", "寝待", "更待", "渐亏凸", "下弦", "下弦",
             "有明", "有明", "蛾眉残", "蛾眉残", "残", "晓", "晦"
     };
+    /**
+     * 年太岁方位
+     */
+    public static final String[] POSITION_TAI_SUI_YEAR = {
+            "坎", "艮", "艮", "震", "巽", "巽", "离", "坤", "坤", "兑", "坎", "坎"
+    };
+    /**
+     * 天干方位
+     */
+    public static final String[] POSITION_GAN = {
+            "震", "震", "离", "离", "中", "中", "兑", "兑", "坎", "坎"
+    };
+    /**
+     * 地支方位
+     */
+    public static final String[] POSITION_ZHI = {
+            "坎", "中", "震", "震", "中", "离", "离", "中", "兑", "兑", "中", "坎"
+    };
+    /**
+     * 逐日胎神方位
+     */
     public static final String[] POSITION_TAI_DAY = {
             "占门碓 外东南", "碓磨厕 外东南", "厨灶炉 外正南", "仓库门 外正南", "房床栖 外正南", "占门床 外正南",
             "占碓磨 外正南", "厕灶厨 外西南", "仓库炉 外西南", "房床门 外西南", "门碓栖 外西南", "碓磨床 外西南",
@@ -2187,6 +2214,16 @@ public class Lunar {
     private static final int[] LEAP_12 = {37, 56, 113, 132, 151, 189, 208, 227, 246, 284, 303, 341, 360, 379, 417, 436, 458, 477, 496, 515, 534, 572, 591, 629, 648, 667, 697, 716, 792, 811, 830, 868, 906, 925, 944, 963, 982, 1001, 1020, 1039, 1058, 1088, 1153, 1202, 1221, 1240, 1297, 1335, 1392, 1411, 1422, 1430, 1517, 1525, 1536, 1574, 3358, 3472, 3806, 3988, 4751, 4941, 5066, 5123, 5275, 5343, 5438, 5457, 5495, 5533, 5552, 5715, 5810, 5829, 5905, 5924, 6421, 6535, 6793, 6812, 6888, 6907, 7002, 7184, 7260, 7279, 7374, 7556, 7746, 7757, 7776, 7833, 7852, 7871, 7966, 8015, 8110, 8129, 8148, 8224, 8243, 8338, 8406, 8425, 8482, 8501, 8520, 8558, 8596, 8607, 8615, 8645, 8740, 8778, 8835, 8865, 8930, 8960, 8979, 8998, 9017, 9055, 9074, 9093, 9112, 9150, 9188, 9237, 9275, 9332, 9351, 9370, 9408, 9427, 9446, 9457, 9465, 9495, 9560, 9590, 9628, 9647, 9685, 9715, 9742, 9780, 9810, 9818, 9829, 9848, 9867, 9905, 9924, 9943, 9962, 10000};
 
     /**
+     * 元
+     */
+    private static final String[] YUAN = {"下", "上", "中"};
+
+    /**
+     * 运
+     */
+    private static final String[] YUN = {"七", "八", "九", "一", "二", "三", "四", "五", "六"};
+
+    /**
      * 24节气表（对应阳历的准确时刻）
      */
     private final Map<String, Solar> solarTerm = new LinkedHashMap<>();
@@ -3140,18 +3177,14 @@ public class Lunar {
      * @return 节令
      */
     public String getJie() {
-        String jie = Normal.EMPTY;
-        for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i += 2) {
-            String key = Fields.CN_SOLARTERM[i];
+        for (int i = 0, j = JIE_QI_IN_USE.length; i < j; i += 2) {
+            String key = JIE_QI_IN_USE[i];
             Solar d = solarTerm.get(key);
-            if (d.getYear() == solar.getYear()
-                    && d.getMonth() == solar.getMonth()
-                    && d.getDay() == solar.getDay()) {
-                jie = key;
-                break;
+            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
+                return convertJieQi(key);
             }
         }
-        return convertJieQi(jie);
+        return Normal.EMPTY;
     }
 
     /**
@@ -3160,18 +3193,14 @@ public class Lunar {
      * @return 气令
      */
     public String getQi() {
-        String qi = Normal.EMPTY;
-        for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i += 2) {
-            String key = Fields.CN_SOLARTERM[i];
+        for (int i = 1, j = JIE_QI_IN_USE.length; i < j; i += 2) {
+            String key = JIE_QI_IN_USE[i];
             Solar d = solarTerm.get(key);
-            if (d.getYear() == solar.getYear()
-                    && d.getMonth() == solar.getMonth()
-                    && d.getDay() == solar.getDay()) {
-                qi = key;
-                break;
+            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
+                return convertJieQi(key);
             }
         }
-        return convertJieQi(qi);
+        return Normal.EMPTY;
     }
 
     /**
@@ -3412,6 +3441,203 @@ public class Lunar {
      */
     public String getDayPositionCaiDesc() {
         return POSITION_DESC.get(getDayPositionCai());
+    }
+
+    /**
+     * 获取年太岁方位（默认流派2新年以立春零点起算）
+     *
+     * @return 太岁方位，如艮
+     */
+    public String getYearPositionTaiSui() {
+        return getYearPositionTaiSui(2);
+    }
+
+    /**
+     * 获取年太岁方位
+     *
+     * @param sect 流派：2为新年以立春零点起算；1为新年以正月初一起算；3为新年以立春节气交接的时刻起算
+     * @return 太岁方位，如艮
+     */
+    public String getYearPositionTaiSui(int sect) {
+        int yearZhiIndex;
+        switch (sect) {
+            case 1:
+                yearZhiIndex = this.yearZhiIndex;
+                break;
+            case 3:
+                yearZhiIndex = this.yearZhiIndexExact;
+                break;
+            default:
+                yearZhiIndex = this.yearZhiIndexByLiChun;
+        }
+        return POSITION_TAI_SUI_YEAR[yearZhiIndex];
+    }
+
+    /**
+     * 获取年太岁方位描述（默认流派2新年以立春零点起算）
+     *
+     * @return 太岁方位描述，如东北
+     */
+    public String getYearPositionTaiSuiDesc() {
+        return getYearPositionTaiSuiDesc(2);
+    }
+
+    /**
+     * 获取年太岁方位描述
+     *
+     * @param sect 流派：2为新年以立春零点起算；1为新年以正月初一起算；3为新年以立春节气交接的时刻起算
+     * @return 太岁方位描述，如东北
+     */
+    public String getYearPositionTaiSuiDesc(int sect) {
+        return POSITION_DESC.get(getYearPositionTaiSui(sect));
+    }
+
+    protected String getMonthPositionTaiSui(int monthZhiIndex, int monthGanIndex) {
+        String p;
+        int m = monthZhiIndex - BASE_MONTH_ZHI_INDEX;
+        if (m < 0) {
+            m += 12;
+        }
+        switch (m) {
+            case 0:
+            case 4:
+            case 8:
+                p = "艮";
+                break;
+            case 2:
+            case 6:
+            case 10:
+                p = "坤";
+                break;
+            case 3:
+            case 7:
+            case 11:
+                p = "巽";
+                break;
+            default:
+                p = POSITION_GAN[monthGanIndex];
+        }
+        return p;
+    }
+
+    /**
+     * 获取月太岁方位（默认流派2新的一月以节交接当天零点起算）
+     *
+     * @return 太岁方位，如艮
+     */
+    public String getMonthPositionTaiSui() {
+        return getMonthPositionTaiSui(2);
+    }
+
+    /**
+     * 获取月太岁方位
+     *
+     * @param sect 流派：2为新的一月以节交接当天零点起算；3为新的一月以节交接准确时刻起算
+     * @return 太岁方位，如艮
+     */
+    public String getMonthPositionTaiSui(int sect) {
+        int monthZhiIndex;
+        int monthGanIndex;
+        switch (sect) {
+            case 3:
+                monthZhiIndex = this.monthZhiIndexExact;
+                monthGanIndex = this.monthGanIndexExact;
+                break;
+            default:
+                monthZhiIndex = this.monthZhiIndex;
+                monthGanIndex = this.monthGanIndex;
+        }
+        return getMonthPositionTaiSui(monthZhiIndex, monthGanIndex);
+    }
+
+    /**
+     * 获取月太岁方位描述（默认流派2新的一月以节交接当天零点起算）
+     *
+     * @return 太岁方位描述，如东北
+     */
+    public String getMonthPositionTaiSuiDesc() {
+        return getMonthPositionTaiSuiDesc(2);
+    }
+
+    /**
+     * 获取月太岁方位描述
+     *
+     * @param sect 流派：2为新的一月以节交接当天零点起算；3为新的一月以节交接准确时刻起算
+     * @return 太岁方位描述，如东北
+     */
+    public String getMonthPositionTaiSuiDesc(int sect) {
+        return POSITION_DESC.get(getMonthPositionTaiSui(sect));
+    }
+
+    protected String getDayPositionTaiSui(String dayInGanZhi, int yearZhiIndex) {
+        String p;
+        if ("甲子,乙丑,丙寅,丁卯,戊辰,已巳".contains(dayInGanZhi)) {
+            p = "震";
+        } else if ("丙子,丁丑,戊寅,已卯,庚辰,辛巳".contains(dayInGanZhi)) {
+            p = "离";
+        } else if ("戊子,已丑,庚寅,辛卯,壬辰,癸巳".contains(dayInGanZhi)) {
+            p = "中";
+        } else if ("庚子,辛丑,壬寅,癸卯,甲辰,乙巳".contains(dayInGanZhi)) {
+            p = "兑";
+        } else if ("壬子,癸丑,甲寅,乙卯,丙辰,丁巳".contains(dayInGanZhi)) {
+            p = "坎";
+        } else {
+            p = POSITION_TAI_SUI_YEAR[yearZhiIndex];
+        }
+        return p;
+    }
+
+    /**
+     * 获取日太岁方位（默认流派2新年以立春零点起算）
+     *
+     * @return 太岁方位，如艮
+     */
+    public String getDayPositionTaiSui() {
+        return getDayPositionTaiSui(2);
+    }
+
+    /**
+     * 获取日太岁方位
+     *
+     * @param sect 流派：2新年以立春零点起算；1新年以正月初一起算；3新年以立春节气交接的时刻起算
+     * @return 太岁方位，如艮
+     */
+    public String getDayPositionTaiSui(int sect) {
+        String dayInGanZhi;
+        int yearZhiIndex;
+        switch (sect) {
+            case 1:
+                dayInGanZhi = getDayInGanZhi();
+                yearZhiIndex = this.yearZhiIndex;
+                break;
+            case 3:
+                dayInGanZhi = getDayInGanZhi();
+                yearZhiIndex = this.yearZhiIndexExact;
+                break;
+            default:
+                dayInGanZhi = getDayInGanZhiExact2();
+                yearZhiIndex = this.yearZhiIndexByLiChun;
+        }
+        return getDayPositionTaiSui(dayInGanZhi, yearZhiIndex);
+    }
+
+    /**
+     * 获取日太岁方位描述（默认流派2新年以立春零点起算）
+     *
+     * @return 太岁方位描述，如东北
+     */
+    public String getDayPositionTaiSuiDesc() {
+        return getDayPositionTaiSuiDesc(2);
+    }
+
+    /**
+     * 获取日太岁方位描述
+     *
+     * @param sect 流派：2新年以立春零点起算；1新年以正月初一起算；3新年以立春节气交接的时刻起算
+     * @return 太岁方位描述，如东北
+     */
+    public String getDayPositionTaiSuiDesc(int sect) {
+        return POSITION_DESC.get(getDayPositionTaiSui(sect));
     }
 
     /**
@@ -3835,42 +4061,92 @@ public class Lunar {
         return YUE_XIANG[day - 1];
     }
 
+    protected NineStar getYearNineStar(String yearInGanZhi) {
+        int index = getJiaZiIndex(yearInGanZhi) + 1;
+        int yearOffset = 0;
+        if (index != getJiaZiIndex(this.getYearInGanZhi()) + 1) {
+            yearOffset = -1;
+        }
+        int yuan = ((this.year + yearOffset + 2696) / 60) % 3;
+        int offset = (62 + yuan * 3 - index) % 9;
+        if (0 == offset) {
+            offset = 9;
+        }
+        return new NineStar(offset - 1);
+    }
+
     /**
-     * 获取值年九星（流年紫白星起例歌诀：年上吉星论甲子，逐年星逆中宫起；上中下作三元汇，一上四中七下兑。）
+     * 获取值年九星（默认流派2新年以立春零点起算。流年紫白星起例歌诀：年上吉星论甲子，逐年星逆中宫起；上中下作三元汇，一上四中七下兑。）
      *
      * @return 值年九星
      */
     public NineStar getYearNineStar() {
-        int index = -(year - 1900) % 9;
-        if (index < 0) {
-            index += 9;
+        return getYearNineStar(2);
+    }
+
+    /**
+     * 获取值年九星（流年紫白星起例歌诀：年上吉星论甲子，逐年星逆中宫起；上中下作三元汇，一上四中七下兑。）
+     *
+     * @param sect 流派：2为新年以立春零点起算；1为新年以正月初一起算；3为新年以立春节气交接的时刻起算
+     * @return 值年九星
+     */
+    public NineStar getYearNineStar(int sect) {
+        String yearInGanZhi;
+        switch (sect) {
+            case 1:
+                yearInGanZhi = this.getYearInGanZhi();
+                break;
+            case 3:
+                yearInGanZhi = this.getYearInGanZhiExact();
+                break;
+            default:
+                yearInGanZhi = this.getYearInGanZhiByLiChun();
         }
-        return new NineStar(index);
+        return getYearNineStar(yearInGanZhi);
+    }
+
+    protected NineStar getMonthNineStar(int yearZhiIndex, int monthZhiIndex) {
+        int index = yearZhiIndex % 3;
+        int n = 27 - (index * 3);
+        if (monthZhiIndex < BASE_MONTH_ZHI_INDEX) {
+            n -= 3;
+        }
+        int offset = (n - monthZhiIndex) % 9;
+        return new NineStar(offset);
+    }
+
+    /**
+     * 获取值月九星（流派2新的一月以节交接当天零点起算。月紫白星歌诀：子午卯酉八白起，寅申巳亥二黑求，辰戌丑未五黄中。）
+     *
+     * @return 值月九星
+     */
+    public NineStar getMonthNineStar() {
+        return getMonthNineStar(2);
     }
 
     /**
      * 获取值月九星（月紫白星歌诀：子午卯酉八白起，寅申巳亥二黑求，辰戌丑未五黄中。）
      *
+     * @param sect 流派：2为新的一月以节交接当天零点起算；3为新的一月以节交接准确时刻起算
      * @return 值月九星
      */
-    public NineStar getMonthNineStar() {
-        int start = 2;
-        String yearZhi = getYearZhi();
-        if ("子午卯酉".contains(yearZhi)) {
-            start = 8;
-        } else if ("辰戌丑未".contains(yearZhi)) {
-            start = 5;
+    public NineStar getMonthNineStar(int sect) {
+        int yearZhiIndex;
+        int monthZhiIndex;
+        switch (sect) {
+            case 1:
+                yearZhiIndex = this.yearZhiIndex;
+                monthZhiIndex = this.monthZhiIndex;
+                break;
+            case 3:
+                yearZhiIndex = this.yearZhiIndexExact;
+                monthZhiIndex = this.monthZhiIndexExact;
+                break;
+            default:
+                yearZhiIndex = this.yearZhiIndexByLiChun;
+                monthZhiIndex = this.monthZhiIndex;
         }
-        // 寅月起，所以需要-2
-        int monthIndex = monthZhiIndex - 2;
-        if (monthIndex < 0) {
-            monthIndex += 12;
-        }
-        int index = start - monthIndex - 1;
-        while (index < 0) {
-            index += 9;
-        }
-        return new NineStar(index);
+        return getMonthNineStar(yearZhiIndex, monthZhiIndex);
     }
 
     /**
@@ -3881,38 +4157,44 @@ public class Lunar {
      */
     public NineStar getDayNineStar() {
         String solarYmd = solar.build(false);
-        String dongZhi = solarTerm.get("冬至").build(false);
-        String yuShui = solarTerm.get("雨水").build(false);
-        String guYu = solarTerm.get("谷雨").build(false);
-        String xiaZhi = solarTerm.get("夏至").build(false);
-        String chuShu = solarTerm.get("处暑").build(false);
-        String shuangJiang = solarTerm.get("霜降").build(false);
-
-        int start = 6;
-        boolean asc = false;
-        if (solarYmd.compareTo(dongZhi) >= 0 && solarYmd.compareTo(yuShui) < 0) {
-            asc = true;
-            start = 1;
-        } else if (solarYmd.compareTo(yuShui) >= 0 && solarYmd.compareTo(guYu) < 0) {
-            asc = true;
-            start = 7;
-        } else if (solarYmd.compareTo(guYu) >= 0 && solarYmd.compareTo(xiaZhi) < 0) {
-            asc = true;
-            start = 4;
-        } else if (solarYmd.compareTo(xiaZhi) >= 0 && solarYmd.compareTo(chuShu) < 0) {
-            start = 9;
-        } else if (solarYmd.compareTo(chuShu) >= 0 && solarYmd.compareTo(shuangJiang) < 0) {
-            start = 3;
+        Solar dongZhi = solarTerm.get("冬至");
+        Solar dongZhi2 = solarTerm.get("DONG_ZHI");
+        Solar xiaZhi = solarTerm.get("夏至");
+        int dongZhiIndex = getJiaZiIndex(dongZhi.getLunar().getDayInGanZhi());
+        int dongZhiIndex2 = getJiaZiIndex(dongZhi2.getLunar().getDayInGanZhi());
+        int xiaZhiIndex = getJiaZiIndex(xiaZhi.getLunar().getDayInGanZhi());
+        Solar solarShunBai;
+        Solar solarShunBai2;
+        Solar solarNiZi;
+        if (dongZhiIndex > 29) {
+            solarShunBai = dongZhi.next(60 - dongZhiIndex);
+        } else {
+            solarShunBai = dongZhi.next(-dongZhiIndex);
         }
-        int ganZhiIndex = getJiaZiIndex(getDayInGanZhi()) % 9;
-        int index = asc ? start + ganZhiIndex - 1 : start - ganZhiIndex - 1;
-        if (index > 8) {
-            index -= 9;
+        String solarShunBaiYmd = solarShunBai.build(false);
+        if (dongZhiIndex2 > 29) {
+            solarShunBai2 = dongZhi2.next(60 - dongZhiIndex2);
+        } else {
+            solarShunBai2 = dongZhi2.next(-dongZhiIndex2);
         }
-        if (index < 0) {
-            index += 9;
+        String solarShunBaiYmd2 = solarShunBai2.build(false);
+        if (xiaZhiIndex > 29) {
+            solarNiZi = xiaZhi.next(60 - xiaZhiIndex);
+        } else {
+            solarNiZi = xiaZhi.next(-xiaZhiIndex);
         }
-        return new NineStar(index);
+        String solarNiZiYmd = solarNiZi.build(false);
+        int offset = 0;
+        if (solarYmd.compareTo(solarShunBaiYmd) >= 0 && solarYmd.compareTo(solarNiZiYmd) < 0) {
+            offset = Solar.getDays(solarShunBai.getCalendar(), this.getSolar().getCalendar()) % 9;
+        } else if (solarYmd.compareTo(solarNiZiYmd) >= 0 && solarYmd.compareTo(solarShunBaiYmd2) < 0) {
+            offset = 8 - (Solar.getDays(solarNiZi.getCalendar(), this.getSolar().getCalendar()) % 9);
+        } else if (solarYmd.compareTo(solarShunBaiYmd2) >= 0) {
+            offset = Solar.getDays(solarShunBai2.getCalendar(), this.getSolar().getCalendar()) % 9;
+        } else if (solarYmd.compareTo(solarShunBaiYmd) < 0) {
+            offset = (8 + Solar.getDays(this.getSolar().getCalendar(), solarShunBai.getCalendar())) % 9;
+        }
+        return new NineStar(offset);
     }
 
     /**
@@ -3925,25 +4207,20 @@ public class Lunar {
     public NineStar getTimeNineStar() {
         String solarYmd = solar.build(false);
         boolean asc = false;
-        if (solarYmd.compareTo(solarTerm.get("冬至").build(false)) >= 0
-                && solarYmd.compareTo(solarTerm.get("夏至").build(false)) < 0) {
+        if ((solarYmd.compareTo(solarTerm.get("冬至").build(false)) >= 0 && solarYmd.compareTo(solarTerm.get("夏至").build(false)) < 0)) {
+            asc = true;
+        } else if (solarYmd.compareTo(solarTerm.get("DONG_ZHI").build(false)) >= 0) {
             asc = true;
         }
-        int start = asc ? 7 : 3;
+        int start = asc ? 6 : 2;
         String dayZhi = getDayZhi();
         if ("子午卯酉".contains(dayZhi)) {
-            start = asc ? 1 : 9;
+            start = asc ? 0 : 8;
         } else if ("辰戌丑未".contains(dayZhi)) {
-            start = asc ? 4 : 6;
+            start = asc ? 3 : 5;
         }
-        int index = asc ? start + timeZhiIndex - 1 : start - timeZhiIndex - 1;
-        if (index > 8) {
-            index -= 9;
-        }
-        if (index < 0) {
-            index += 9;
-        }
-        return new NineStar(index);
+        int index = asc ? start + timeZhiIndex : start + 9 - timeZhiIndex;
+        return new NineStar(index % 9);
     }
 
     /**
@@ -3961,12 +4238,22 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getNextJie() {
+        return getNextJie(false);
+    }
+
+    /**
+     * 获取下一节令（顺推的第一个节令）
+     *
+     * @param wholeDay 是否按天计
+     * @return 节气
+     */
+    public SolarTerm getNextJie(boolean wholeDay) {
         int l = JIE_QI_IN_USE.length / 2;
         String[] conditions = new String[l];
         for (int i = 0; i < l; i++) {
             conditions[i] = JIE_QI_IN_USE[i * 2];
         }
-        return getNearJieQi(true, conditions);
+        return getNearJieQi(true, conditions, wholeDay);
     }
 
     /**
@@ -3975,12 +4262,22 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getPrevJie() {
+        return getPrevJie(false);
+    }
+
+    /**
+     * 获取上一节令（逆推的第一个节令）
+     *
+     * @param wholeDay 是否按天计
+     * @return 节气
+     */
+    public SolarTerm getPrevJie(boolean wholeDay) {
         int l = JIE_QI_IN_USE.length / 2;
         String[] conditions = new String[l];
         for (int i = 0; i < l; i++) {
             conditions[i] = JIE_QI_IN_USE[i * 2];
         }
-        return getNearJieQi(false, conditions);
+        return getNearJieQi(false, conditions, wholeDay);
     }
 
     /**
@@ -3989,12 +4286,22 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getNextQi() {
+        return getNextQi(false);
+    }
+
+    /**
+     * 获取下一气令（顺推的第一个气令）
+     *
+     * @param wholeDay 是否按天计
+     * @return 节气
+     */
+    public SolarTerm getNextQi(boolean wholeDay) {
         int l = JIE_QI_IN_USE.length / 2;
         String[] conditions = new String[l];
         for (int i = 0; i < l; i++) {
             conditions[i] = JIE_QI_IN_USE[i * 2 + 1];
         }
-        return getNearJieQi(true, conditions);
+        return getNearJieQi(true, conditions, wholeDay);
     }
 
     /**
@@ -4003,12 +4310,22 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getPrevQi() {
+        return getPrevQi(false);
+    }
+
+    /**
+     * 获取上一气令（逆推的第一个气令）
+     *
+     * @param wholeDay 是否按天计
+     * @return 节气
+     */
+    public SolarTerm getPrevQi(boolean wholeDay) {
         int l = JIE_QI_IN_USE.length / 2;
         String[] conditions = new String[l];
         for (int i = 0; i < l; i++) {
             conditions[i] = JIE_QI_IN_USE[i * 2 + 1];
         }
-        return getNearJieQi(false, conditions);
+        return getNearJieQi(false, conditions, wholeDay);
     }
 
     /**
@@ -4017,7 +4334,17 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getNextJieQi() {
-        return getNearJieQi(true, null);
+        return getNextJieQi(false);
+    }
+
+    /**
+     * 获取下一节气（顺推的第一个节气）
+     *
+     * @param wholeDay 是否按天计
+     * @return 节气
+     */
+    public SolarTerm getNextJieQi(boolean wholeDay) {
+        return getNearJieQi(true, null, wholeDay);
     }
 
     /**
@@ -4026,7 +4353,17 @@ public class Lunar {
      * @return 节气
      */
     public SolarTerm getPrevJieQi() {
-        return getNearJieQi(false, null);
+        return getPrevJieQi(false);
+    }
+
+    /**
+     * 获取上一节气（逆推的第一个节气）
+     *
+     * @param wholeDay 是否按天计
+     * @return 节气
+     */
+    public SolarTerm getPrevJieQi(boolean wholeDay) {
+        return getNearJieQi(false, null, wholeDay);
     }
 
     /**
@@ -4034,9 +4371,10 @@ public class Lunar {
      *
      * @param forward    是否顺推，true为顺推，false为逆推
      * @param conditions 过滤条件，如果设置过滤条件，仅返回匹配该名称的
+     * @param wholeDay   是否按天计
      * @return 节气
      */
-    protected SolarTerm getNearJieQi(boolean forward, String[] conditions) {
+    protected SolarTerm getNearJieQi(boolean forward, String[] conditions, boolean wholeDay) {
         String name = null;
         Solar near = null;
         Set<String> filters = new HashSet<>();
@@ -4044,7 +4382,7 @@ public class Lunar {
             Collections.addAll(filters, conditions);
         }
         boolean filter = !filters.isEmpty();
-        String today = solar.build();
+        String today = wholeDay ? solar.build() : solar.build(true);
         for (Map.Entry<String, Solar> entry : solarTerm.entrySet()) {
             String jq = convertJieQi(entry.getKey());
             if (filter) {
@@ -4053,22 +4391,34 @@ public class Lunar {
                 }
             }
             Solar solar = entry.getValue();
-            String day = solar.build();
+            String day = wholeDay ? solar.build() : solar.build(true);
             if (forward) {
                 if (day.compareTo(today) < 0) {
                     continue;
                 }
-                if (null == near || day.compareTo(near.build()) < 0) {
+                if (null == near) {
                     name = jq;
                     near = solar;
+                } else {
+                    String nearDay = wholeDay ? near.build() : solar.build(true);
+                    if (day.compareTo(nearDay) < 0) {
+                        name = jq;
+                        near = solar;
+                    }
                 }
             } else {
                 if (day.compareTo(today) > 0) {
                     continue;
                 }
-                if (null == near || day.compareTo(near.build()) > 0) {
+                if (null == near) {
                     name = jq;
                     near = solar;
+                } else {
+                    String nearDay = wholeDay ? near.build() : solar.build(true);
+                    if (day.compareTo(nearDay) > 0) {
+                        name = jq;
+                        near = solar;
+                    }
                 }
             }
         }
@@ -4084,15 +4434,13 @@ public class Lunar {
      * @return 节气名称
      */
     public String getSolarTerm() {
-        String name = Normal.EMPTY;
         for (Map.Entry<String, Solar> jq : solarTerm.entrySet()) {
             Solar d = jq.getValue();
             if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
-                name = jq.getKey();
-                break;
+                return convertJieQi(jq.getKey());
             }
         }
-        return convertJieQi(name);
+        return Normal.EMPTY;
     }
 
     /**
@@ -4101,8 +4449,13 @@ public class Lunar {
      * @return 节气对象
      */
     public SolarTerm getCurrentSolarTerm() {
-        String name = getSolarTerm();
-        return name.length() > 0 ? new SolarTerm(name, solar) : null;
+        for (Map.Entry<String, Solar> jq : solarTerm.entrySet()) {
+            Solar d = jq.getValue();
+            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
+                return new SolarTerm(convertJieQi(jq.getKey()), d);
+            }
+        }
+        return null;
     }
 
     /**
@@ -4111,8 +4464,14 @@ public class Lunar {
      * @return 节气对象
      */
     public SolarTerm getCurrentJie() {
-        String name = getJie();
-        return name.length() > 0 ? new SolarTerm(name, solar) : null;
+        for (int i = 0, j = JIE_QI_IN_USE.length; i < j; i += 2) {
+            String key = JIE_QI_IN_USE[i];
+            Solar d = solarTerm.get(key);
+            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
+                return new SolarTerm(convertJieQi(key), d);
+            }
+        }
+        return null;
     }
 
     /**
@@ -4121,8 +4480,14 @@ public class Lunar {
      * @return 节气对象
      */
     public SolarTerm getCurrentQi() {
-        String name = getQi();
-        return name.length() > 0 ? new SolarTerm(name, solar) : null;
+        for (int i = 1, j = JIE_QI_IN_USE.length; i < j; i += 2) {
+            String key = JIE_QI_IN_USE[i];
+            Solar d = solarTerm.get(key);
+            if (d.getYear() == solar.getYear() && d.getMonth() == solar.getMonth() && d.getDay() == solar.getDay()) {
+                return new SolarTerm(convertJieQi(key), d);
+            }
+        }
+        return null;
     }
 
     /**
@@ -4440,11 +4805,11 @@ public class Lunar {
      * @return 数九，如果不是数九天，返回null
      */
     public NinePeriod getShuJiu() {
-        Calendar currentCalendar = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
+        Calendar current = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
         Solar start = solarTerm.get("DONG_ZHI");
         Calendar startCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
 
-        if (currentCalendar.compareTo(startCalendar) < 0) {
+        if (current.compareTo(startCalendar) < 0) {
             start = solarTerm.get("冬至");
             startCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
         }
@@ -4452,11 +4817,11 @@ public class Lunar {
         Calendar endCalendar = Kalendar.calendar(start.getYear(), start.getMonth(), start.getDay());
         endCalendar.add(Calendar.DATE, 81);
 
-        if (currentCalendar.compareTo(startCalendar) < 0 || currentCalendar.compareTo(endCalendar) >= 0) {
+        if (current.compareTo(startCalendar) < 0 || current.compareTo(endCalendar) >= 0) {
             return null;
         }
 
-        int days = (int) ((currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        int days = (int) ((current.getTimeInMillis() - startCalendar.getTimeInMillis()) / Fields.Units.DAY.getUnit());
         return new NinePeriod(Fields.CN_NUMBER[days / 9 + 1] + "九", days % 9 + 1);
     }
 
@@ -4485,7 +4850,7 @@ public class Lunar {
             return null;
         }
 
-        int days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        int days = Solar.getDays(start, current);
         if (days < 10) {
             return new Dogdays("初伏", days + 1);
         }
@@ -4493,7 +4858,7 @@ public class Lunar {
         // 第4个庚日，中伏第1天
         start.add(Calendar.DATE, 10);
 
-        days = (int) ((start.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        days = Solar.getDays(start, current);
         if (days < 10) {
             return new Dogdays("中伏", days + 1);
         }
@@ -4502,7 +4867,7 @@ public class Lunar {
         start.add(Calendar.DATE, 10);
         Calendar liQiuCalendar = Kalendar.calendar(liQiu.getYear(), liQiu.getMonth(), liQiu.getDay());
 
-        days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        days = Solar.getDays(start, current);
         // 末伏
         if (liQiuCalendar.compareTo(start) <= 0) {
             if (days < 10) {
@@ -4515,7 +4880,7 @@ public class Lunar {
             }
             // 末伏第1天
             start.add(Calendar.DATE, 10);
-            days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+            days = Solar.getDays(start, current);
             if (days < 10) {
                 return new Dogdays("末伏", days + 1);
             }
@@ -4547,13 +4912,28 @@ public class Lunar {
                 break;
             }
         }
-        Calendar currentCalendar = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
+        Calendar current = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
 
         Solar startSolar = jieQi.getSolar();
-        Calendar startCalendar = Kalendar.calendar(startSolar.getYear(), startSolar.getMonth(), startSolar.getDay());
+        Calendar start = Kalendar.calendar(startSolar.getYear(), startSolar.getMonth(), startSolar.getDay());
 
-        int days = (int) ((currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        int days = Solar.getDays(start, current);
         return WU_HOU[offset * 3 + days / 5 % WU_HOU.length];
+    }
+
+    /**
+     * 获取候
+     *
+     * @return 候
+     */
+    public String getHou() {
+        SolarTerm jieQi = getPrevJieQi(true);
+        String name = jieQi.getName();
+        Calendar current = Kalendar.calendar(solar.getYear(), solar.getMonth(), solar.getDay());
+        Solar startSolar = jieQi.getSolar();
+        Calendar start = Kalendar.calendar(startSolar.getYear(), startSolar.getMonth(), startSolar.getDay());
+        int days = Solar.getDays(start, current);
+        return String.format("%s %s", name, HOU[(days / 5) % HOU.length]);
     }
 
     /**
@@ -5129,6 +5509,16 @@ public class Lunar {
         private int year;
 
         /**
+         * 天干下标
+         */
+        private int ganIndex;
+
+        /**
+         * 地支下标
+         */
+        private int zhiIndex;
+
+        /**
          * 农历月们
          */
         private List<Month> months = new ArrayList<>();
@@ -5145,6 +5535,17 @@ public class Lunar {
          */
         public Year(int lunarYear) {
             this.year = lunarYear;
+            int offset = lunarYear - 4;
+            int yearGanIndex = offset % 10;
+            int yearZhiIndex = offset % 12;
+            if (yearGanIndex < 0) {
+                yearGanIndex += 10;
+            }
+            if (yearZhiIndex < 0) {
+                yearZhiIndex += 12;
+            }
+            this.ganIndex = yearGanIndex;
+            this.zhiIndex = yearZhiIndex;
             compute();
         }
 
@@ -5270,6 +5671,51 @@ public class Lunar {
         }
 
         /**
+         * 获取天干序号，从0开始
+         *
+         * @return 序号
+         */
+        public int getGanIndex() {
+            return ganIndex;
+        }
+
+        /**
+         * 获取地支序号，从0开始
+         *
+         * @return 序号
+         */
+        public int getZhiIndex() {
+            return zhiIndex;
+        }
+
+        /**
+         * 获取天干
+         *
+         * @return 天干
+         */
+        public String getGan() {
+            return Fields.CN_GAN[ganIndex + 1];
+        }
+
+        /**
+         * 获取地支
+         *
+         * @return 地支
+         */
+        public String getZhi() {
+            return Fields.CN_ZHI[zhiIndex + 1];
+        }
+
+        /**
+         * 获取干支
+         *
+         * @return 干支
+         */
+        public String getGanZhi() {
+            return getGan() + getZhi();
+        }
+
+        /**
          * 获取农历月
          *
          * @param lunarMonth 月，1-12，闰月为负数，如闰2月为-2
@@ -5298,30 +5744,38 @@ public class Lunar {
             return 0;
         }
 
-        /**
-         * 获取治水（正月第一个辰日是初几，就是几龙治水）
-         *
-         * @return 治水，如：二龙治水
-         */
-        public String getZhiShui() {
-            int offset = 4 - Solar.from(getMonth(1).getFirstJulianDay()).getLunar().getDayZhiIndex();
-            if (offset < 0) {
-                offset += 12;
-            }
-            return Normal.SIMPLE_DIGITS[offset + 1] + "龙治水";
-        }
-
-        /**
-         * 获取分饼（正月第一个丙日是初几，就是几人分饼）
-         *
-         * @return 分饼，如：六人分饼
-         */
-        public String getFenBing() {
-            int offset = 2 - Solar.from(getMonth(1).getFirstJulianDay()).getLunar().getDayGanIndex();
+        protected String getZaoByGan(int index, String name) {
+            int offset = index - Solar.from(getMonth(1).getFirstJulianDay()).getLunar().getDayGanIndex();
             if (offset < 0) {
                 offset += 10;
             }
-            return Fields.CN_NUMBER[offset + 1] + "人分饼";
+            return name.replaceFirst("几", Fields.CN_NUMBER[offset + 1]);
+        }
+
+        protected String getZaoByZhi(int index, String name) {
+            int offset = index - Solar.from(getMonth(1).getFirstJulianDay()).getLunar().getDayZhiIndex();
+            if (offset < 0) {
+                offset += 12;
+            }
+            return name.replaceFirst("几", Fields.CN_NUMBER[offset + 1]);
+        }
+
+        /**
+         * 获取几鼠偷粮
+         *
+         * @return 几鼠偷粮
+         */
+        public String getTouLiang() {
+            return getZaoByZhi(0, "几鼠偷粮");
+        }
+
+        /**
+         * 获取草子几分
+         *
+         * @return 草子几分
+         */
+        public String getCaoZi() {
+            return getZaoByZhi(0, "草子几分");
         }
 
         /**
@@ -5330,11 +5784,79 @@ public class Lunar {
          * @return 耕田，如：六牛耕田
          */
         public String getGengTian() {
-            int offset = 1 - Solar.from(getMonth(1).getFirstJulianDay()).getLunar().getDayZhiIndex();
-            if (offset < 0) {
-                offset += 12;
-            }
-            return Fields.CN_NUMBER[offset + 1] + "牛耕田";
+            return getZaoByZhi(1, "几牛耕田");
+        }
+
+        /**
+         * 获取花收几分
+         *
+         * @return 花收几分
+         */
+        public String getHuaShou() {
+            return getZaoByZhi(3, "花收几分");
+        }
+
+        /**
+         * 获取治水（正月第一个辰日是初几，就是几龙治水）
+         *
+         * @return 治水，如：二龙治水
+         */
+        public String getZhiShui() {
+            return getZaoByZhi(4, "几龙治水");
+        }
+
+        /**
+         * 获取几马驮谷
+         *
+         * @return 几马驮谷
+         */
+        public String getTuoGu() {
+            return getZaoByZhi(6, "几马驮谷");
+        }
+
+        /**
+         * 获取几鸡抢米
+         *
+         * @return 几鸡抢米
+         */
+        public String getQiangMi() {
+            return getZaoByZhi(9, "几鸡抢米");
+        }
+
+        /**
+         * 获取几姑看蚕
+         *
+         * @return 几姑看蚕
+         */
+        public String getKanCan() {
+            return getZaoByZhi(9, "几姑看蚕");
+        }
+
+        /**
+         * 获取几屠共猪
+         *
+         * @return 几屠共猪
+         */
+        public String getGongZhu() {
+            return getZaoByZhi(11, "几屠共猪");
+        }
+
+        /**
+         * 获取甲田几分
+         *
+         * @return 甲田几分
+         */
+        public String getJiaTian() {
+            return getZaoByGan(0, "甲田几分");
+        }
+
+        /**
+         * 获取分饼（正月第一个丙日是初几，就是几人分饼）
+         *
+         * @return 分饼，如：六人分饼
+         */
+        public String getFenBing() {
+            return getZaoByGan(2, "几人分饼");
         }
 
         /**
@@ -5343,11 +5865,186 @@ public class Lunar {
          * @return 得金，如：一日得金
          */
         public String getDeJin() {
-            int offset = 7 - Solar.from(getMonth(1).getFirstJulianDay()).getLunar().getDayGanIndex();
-            if (offset < 0) {
-                offset += 10;
+            return getZaoByGan(7, "几日得金");
+        }
+
+        /**
+         * 获取几人几丙
+         *
+         * @return 几人几丙
+         */
+        public String getRenBing() {
+            return getZaoByGan(2, getZaoByZhi(2, "几人几丙"));
+        }
+
+        /**
+         * 获取几人几锄
+         *
+         * @return 几人几锄
+         */
+        public String getRenChu() {
+            return getZaoByGan(3, getZaoByZhi(2, "几人几锄"));
+        }
+
+        /**
+         * 获取三元
+         *
+         * @return 元
+         */
+        public String getYuan() {
+            return YUAN[((year + 2696) / 60) % 3] + "元";
+        }
+
+        /**
+         * 获取九运
+         *
+         * @return 运
+         */
+        public String getYun() {
+            return YUN[((year + 2696) / 20) % 9] + "运";
+        }
+
+        /**
+         * 获取九星
+         *
+         * @return 九星
+         */
+        public NineStar getNineStar() {
+            int index = getJiaZiIndex(getGanZhi()) + 1;
+            int yuan = ((this.year + 2696) / 60) % 3;
+            int offset = (62 + yuan * 3 - index) % 9;
+            if (0 == offset) {
+                offset = 9;
             }
-            return Fields.CN_NUMBER[offset + 1] + "日得金";
+            return new NineStar(offset - 1);
+        }
+
+        /**
+         * 获取喜神方位
+         *
+         * @return 喜神方位，如艮
+         */
+        public String getPositionXi() {
+            return POSITION_XI[ganIndex + 1];
+        }
+
+        /**
+         * 获取喜神方位描述
+         *
+         * @return 喜神方位描述，如东北
+         */
+        public String getPositionXiDesc() {
+            return POSITION_DESC.get(getPositionXi());
+        }
+
+        /**
+         * 获取阳贵神方位
+         *
+         * @return 阳贵神方位，如艮
+         */
+        public String getPositionYangGui() {
+            return POSITION_YANG_GUI[ganIndex + 1];
+        }
+
+        /**
+         * 获取阳贵神方位描述
+         *
+         * @return 阳贵神方位描述，如东北
+         */
+        public String getPositionYangGuiDesc() {
+            return POSITION_DESC.get(getPositionYangGui());
+        }
+
+        /**
+         * 获取阴贵神方位
+         *
+         * @return 阴贵神方位，如艮
+         */
+        public String getPositionYinGui() {
+            return POSITION_YIN_GUI[ganIndex + 1];
+        }
+
+        /**
+         * 获取阴贵神方位描述
+         *
+         * @return 阴贵神方位描述，如东北
+         */
+        public String getPositionYinGuiDesc() {
+            return POSITION_DESC.get(getPositionYinGui());
+        }
+
+        /**
+         * 获取福神方位（默认流派：2）
+         *
+         * @return 福神方位，如艮
+         */
+        public String getPositionFu() {
+            return getPositionFu(2);
+        }
+
+        /**
+         * 获取福神方位
+         *
+         * @param sect 流派，1或2
+         * @return 福神方位，如艮
+         */
+        public String getPositionFu(int sect) {
+            return (1 == sect ? POSITION_FU : POSITION_FU_2)[ganIndex + 1];
+        }
+
+        /**
+         * 获取福神方位描述（默认流派：2）
+         *
+         * @return 福神方位描述，如东北
+         */
+        public String getPositionFuDesc() {
+            return getPositionFuDesc(2);
+        }
+
+        /**
+         * 获取福神方位描述
+         *
+         * @param sect 流派，1或2
+         * @return 福神方位描述，如东北
+         */
+        public String getPositionFuDesc(int sect) {
+            return POSITION_DESC.get(getPositionFu(sect));
+        }
+
+        /**
+         * 获取财神方位
+         *
+         * @return 财神方位，如艮
+         */
+        public String getPositionCai() {
+            return POSITION_CAI[ganIndex + 1];
+        }
+
+        /**
+         * 获取财神方位描述
+         *
+         * @return 财神方位描述，如东北
+         */
+        public String getPositionCaiDesc() {
+            return POSITION_DESC.get(getPositionCai());
+        }
+
+        /**
+         * 获取太岁方位
+         *
+         * @return 太岁方位，如艮
+         */
+        public String getPositionTaiSui() {
+            return POSITION_TAI_SUI_YEAR[zhiIndex];
+        }
+
+        /**
+         * 获取太岁方位描述
+         *
+         * @return 太岁方位描述，如东北
+         */
+        public String getPositionTaiSuiDesc() {
+            return POSITION_DESC.get(getPositionTaiSui());
         }
 
         /**
@@ -5460,6 +6157,62 @@ public class Lunar {
          */
         public double getFirstJulianDay() {
             return firstJulianDay;
+        }
+
+        /**
+         * 获取太岁方位
+         *
+         * @return 太岁方位，如艮
+         */
+        public String getPositionTaiSui() {
+            String p;
+            int m = Math.abs(month);
+            switch (m) {
+                case 1:
+                case 5:
+                case 9:
+                    p = "艮";
+                    break;
+                case 3:
+                case 7:
+                case 11:
+                    p = "坤";
+                    break;
+                case 4:
+                case 8:
+                case 12:
+                    p = "巽";
+                    break;
+                default:
+                    p = POSITION_GAN[Solar.from(this.getFirstJulianDay()).getLunar().getMonthGanIndex()];
+            }
+            return p;
+        }
+
+        /**
+         * 获取太岁方位描述
+         *
+         * @return 太岁方位描述，如东北
+         */
+        public String getPositionTaiSuiDesc() {
+            return POSITION_DESC.get(getPositionTaiSui());
+        }
+
+        /**
+         * 获取月九星
+         *
+         * @return 九星
+         */
+        public NineStar getNineStar() {
+            int index = Year.from(year).getZhiIndex() % 3;
+            int m = Math.abs(month);
+            int monthZhiIndex = (13 + m) % 12;
+            int n = 27 - (index * 3);
+            if (monthZhiIndex < BASE_MONTH_ZHI_INDEX) {
+                n -= 3;
+            }
+            int offset = (n - monthZhiIndex) % 9;
+            return new NineStar(offset);
         }
 
         @Override
