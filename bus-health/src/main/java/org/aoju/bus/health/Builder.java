@@ -49,7 +49,6 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.*;
-import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -340,43 +339,7 @@ public final class Builder {
      * @return 系统 CPU 使用率 等信息
      */
     public static Cpu getCpuInfo(long waitingTime) {
-        return getCpuInfo(getProcessor(), waitingTime);
-    }
-
-    /**
-     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
-     *
-     * @param processor   {@link CentralProcessor}
-     * @param waitingTime 设置等待时间
-     * @return 系统 CPU 使用率 等信息
-     */
-    private static Cpu getCpuInfo(CentralProcessor processor, long waitingTime) {
-        Cpu cpu = new Cpu();
-        long[] prevTicks = processor.getSystemCpuLoadTicks();
-        sleep(waitingTime);
-        long[] ticks = processor.getSystemCpuLoadTicks();
-        long nice = ticks[CentralProcessor.TickType.NICE.getIndex()] - prevTicks[CentralProcessor.TickType.NICE.getIndex()];
-        long irq = ticks[CentralProcessor.TickType.IRQ.getIndex()] - prevTicks[CentralProcessor.TickType.IRQ.getIndex()];
-        long softIrq = ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - prevTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()];
-        long steal = ticks[CentralProcessor.TickType.STEAL.getIndex()] - prevTicks[CentralProcessor.TickType.STEAL.getIndex()];
-        long cSys = ticks[CentralProcessor.TickType.SYSTEM.getIndex()] - prevTicks[CentralProcessor.TickType.SYSTEM.getIndex()];
-        long user = ticks[CentralProcessor.TickType.USER.getIndex()] - prevTicks[CentralProcessor.TickType.USER.getIndex()];
-        long ioWait = ticks[CentralProcessor.TickType.IOWAIT.getIndex()] - prevTicks[CentralProcessor.TickType.IOWAIT.getIndex()];
-        long idle = ticks[CentralProcessor.TickType.IDLE.getIndex()] - prevTicks[CentralProcessor.TickType.IDLE.getIndex()];
-        long totalCpu = Math.max(user + nice + cSys + idle + ioWait + irq + softIrq + steal, 0);
-        final DecimalFormat format = new DecimalFormat("#.00");
-        cpu.setCpuNum(processor.getLogicalProcessorCount());
-        cpu.setToTal(totalCpu);
-        cpu.setSys(Double.parseDouble(format.format(cSys <= 0 ? 0 : (100d * cSys / totalCpu))));
-        cpu.setUsed(Double.parseDouble(format.format(user <= 0 ? 0 : (100d * user / totalCpu))));
-        if (totalCpu == 0) {
-            cpu.setWait(0);
-        } else {
-            cpu.setWait(Double.parseDouble(format.format(100d * ioWait / totalCpu)));
-        }
-        cpu.setFree(Double.parseDouble(format.format(idle <= 0 ? 0 : (100d * idle / totalCpu))));
-        cpu.setCpuModel(processor.toString());
-        return cpu;
+        return new Cpu(getProcessor(), waitingTime);
     }
 
     /**

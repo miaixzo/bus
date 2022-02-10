@@ -139,19 +139,34 @@ public class EmojiKit {
      * @return 替换后的字符串
      */
     public static String toHtmlHex(String text) {
-        return EmojiParser.parseToHtmlHexadecimal(text);
+        return toHtml(text, true);
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为HTML表现形式
-     * <p>
-     * 例如：<code>👦🏿</code> 转换为 <code>&amp;#128102;</code>
+     * 将字符串中的Unicode Emoji字符转换为HTML表现形式（Hex方式）
+     * 例如：<code>👦🏿</code> 转换为 <code>&amp;#x1f466;</code>
      *
      * @param text 包含Emoji Unicode字符的字符串
      * @return 替换后的字符串
      */
     public static String toHtml(String text) {
-        return EmojiParser.parseToHtmlHexadecimal(text);
+        return toHtml(text, true);
+    }
+
+    /**
+     * 将字符串中的Unicode Emoji字符转换为HTML表现形式，例如：
+     * <pre>
+     * 如果为hex形式，<code>👦🏿</code> 转换为 <code>&amp;#x1f466;</code>
+     * 否则，<code>👦🏿</code> 转换为 <code>&amp;#128102;</code>
+     * <pre>
+     *
+     * @param text 包含Emoji Unicode字符的字符串
+     * @param isHex 是否hex形式
+     * @return 替换后的字符串
+     */
+    public static String toHtml(String text, boolean isHex) {
+        return isHex ? EmojiParser.parseToHtmlHexadecimal(text) :
+                EmojiParser.parseToHtmlDecimal(text);
     }
 
     /**

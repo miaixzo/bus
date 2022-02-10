@@ -93,4 +93,12 @@ public enum PropertyCache {
         return ignoreCase ? ignoreCasePdCache : pdCache;
     }
 
+    /**
+     * 清空缓存
+     */
+    public void clear() {
+        this.pdCache.clear();
+        this.ignoreCasePdCache.clear();
+    }
+
 }

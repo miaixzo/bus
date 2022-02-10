@@ -70,7 +70,18 @@ public class ArrayIterator<E> implements IterableIterator<E>, Serializable {
      * @throws IllegalArgumentException array对象不为数组抛出此异常
      * @throws NullPointerException     array对象为null
      */
-    public ArrayIterator(final Object array) {
+    public ArrayIterator(E[] array) {
+        this((Object) array);
+    }
+
+    /**
+     * 构造
+     *
+     * @param array 数组
+     * @throws IllegalArgumentException array对象不为数组抛出此异常
+     * @throws NullPointerException     array对象为null
+     */
+    public ArrayIterator(Object array) {
         this(array, 0);
     }
 

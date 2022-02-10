@@ -132,7 +132,7 @@ public class DateKit extends Almanac {
      * @param type  步进单位
      * @return {@link Boundary}
      */
-    public static List<DateTime> rangeToList(Date start, Date end, final Fields.Type type) {
+    public static List<DateTime> rangeToList(Date start, Date end, Fields.Type type) {
         return CollKit.newArrayList((Iterable<DateTime>) range(start, end, type));
     }
 

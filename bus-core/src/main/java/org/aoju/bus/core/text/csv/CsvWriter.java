@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
+import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
@@ -58,6 +59,10 @@ public final class CsvWriter implements Closeable, Flushable {
      * 是否处于新行开始
      */
     private boolean newline = true;
+    /**
+     * 是否首行，即CSV开始的位置，当初始化时默认为true，一旦写入内容，为false
+     */
+    private boolean isFirstLine = true;
 
     /**
      * 构造,覆盖已有文件(如果存在),默认编码UTF-8
@@ -189,13 +194,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @throws InstrumentException IO异常
      */
     public CsvWriter write(String[]... lines) throws InstrumentException {
-        if (ArrayKit.isNotEmpty(lines)) {
-            for (final String[] values : lines) {
-                appendLine(values);
-            }
-            flush();
-        }
-        return this;
+        return write(new ArrayIterator<>(lines));
     }
 
     /**
@@ -204,7 +203,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param lines 多行数据，每行数据可以是集合或者数组
      * @return this
      */
-    public CsvWriter write(Collection<?> lines) {
+    public CsvWriter write(Iterable<?> lines) {
         if (CollKit.isNotEmpty(lines)) {
             for (Object values : lines) {
                 appendLine(Convert.toStrArray(values));
@@ -298,9 +297,14 @@ public final class CsvWriter implements Closeable, Flushable {
     public CsvWriter writeComment(String comment) {
         Assert.notNull(this.config.commentCharacter, "Comment is disable!");
         try {
+            if (isFirstLine) {
+                // 首行不补换行符
+                isFirstLine = false;
+            } else {
+                writer.write(config.lineDelimiter);
+            }
             writer.write(this.config.commentCharacter);
             writer.write(comment);
-            writer.write(config.lineDelimiter);
             newline = true;
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -364,12 +368,17 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param fields 字段列表 ({@code null} 值会被做为空值追加)
      * @throws IOException IO异常
      */
-    private void doAppendLine(final String... fields) throws IOException {
+    private void doAppendLine(String... fields) throws IOException {
         if (null != fields) {
+            if (isFirstLine) {
+                // 首行不补换行符
+                isFirstLine = false;
+            } else {
+                writer.write(config.lineDelimiter);
+            }
             for (String field : fields) {
                 appendField(field);
             }
-            writer.write(config.lineDelimiter);
             newline = true;
         }
     }

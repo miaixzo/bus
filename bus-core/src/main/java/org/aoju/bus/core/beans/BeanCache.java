@@ -53,4 +53,11 @@ public enum BeanCache {
         return bdCache.get(beanClass, supplier);
     }
 
+    /**
+     * 清空全局的Bean属性缓存
+     */
+    public void clear() {
+        this.bdCache.clear();
+    }
+
 }
