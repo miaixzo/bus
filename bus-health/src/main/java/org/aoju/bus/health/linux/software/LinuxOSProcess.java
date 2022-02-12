@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,18 +26,16 @@
 package org.aoju.bus.health.linux.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.IdGroup;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.linux.ProcPath;
-import org.aoju.bus.health.linux.drivers.ProcessStat;
-import org.aoju.bus.health.linux.drivers.UserGroup;
+import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 import org.aoju.bus.health.linux.hardware.LinuxGlobalMemory;
 import org.aoju.bus.logger.Logger;
 
@@ -58,7 +56,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * OSProcess implemenation
+ * OSProcess implementation
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -78,12 +76,12 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
     }
 
-    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
-    private Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
-    private Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
+    private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private final Supplier<List<String>> arguments = Memoize.memoize(this::queryArguments);
+    private final Supplier<Map<String, String>> environmentVariables = Memoize.memoize(this::queryEnvironmentVariables);
     private String name;
     private String path = "";
-    private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
+    private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private String user;
     private String userID;
     private String group;
@@ -117,12 +115,12 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * @param stat   string to read from.
      */
     private static void getMissingDetails(Map<String, String> status, String stat) {
-        if (null == status || null == stat) {
+        if (status == null || stat == null) {
             return;
         }
 
-        int nameStart = stat.indexOf(Symbol.C_PARENTHESE_LEFT);
-        int nameEnd = stat.indexOf(Symbol.C_PARENTHESE_RIGHT);
+        int nameStart = stat.indexOf('(');
+        int nameEnd = stat.indexOf(')');
         if (StringKit.isBlank(status.get("Name")) && nameStart > 0 && nameStart < nameEnd) {
             // remove leading and trailing parentheses
             String statName = stat.substring(nameStart + 1, nameEnd);
@@ -154,7 +152,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private String queryCommandLine() {
         return Arrays
                 .stream(Builder.getStringFromFile(String.format(ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
-                .collect(Collectors.joining(Symbol.SPACE));
+                .collect(Collectors.joining(" "));
     }
 
     @Override
@@ -188,7 +186,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         } catch (IOException e) {
             Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
         }
-        return Normal.EMPTY;
+        return "";
     }
 
     @Override
@@ -272,6 +270,12 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public List<OSThread> getThreadDetails() {
+        return ProcessStat.getThreadIds(getProcessID()).stream().map(id -> new LinuxOSThread(getProcessID(), id))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public long getMinorFaults() {
         return this.minorFaults;
     }
@@ -288,7 +292,6 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     @Override
     public long getOpenFiles() {
-        // subtract 1 from size for header
         return ProcessStat.getFileDescriptorFiles(getProcessID()).length;
     }
 
@@ -304,7 +307,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         if (!path.isEmpty()) {
             try (InputStream is = new FileInputStream(path)) {
                 if (is.read(buffer) == buffer.length) {
-                    return buffer[4] == 1 ? Normal._32 : Normal._64;
+                    return buffer[4] == 1 ? 32 : 64;
                 }
             } catch (IOException e) {
                 Logger.warn("Failed to read process file: {}", path);
@@ -323,16 +326,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // pid 9726's current affinity mask: f
         String[] split = RegEx.SPACES.split(mask);
         try {
-            return new BigInteger(split[split.length - 1], Normal._16).longValue();
+            return new BigInteger(split[split.length - 1], 16).longValue();
         } catch (NumberFormatException e) {
             return 0;
         }
-    }
-
-    @Override
-    public List<OSThread> getThreadDetails() {
-        return ProcessStat.getThreadIds(getProcessID()).stream().map(id -> new LinuxOSThread(getProcessID(), id))
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -351,15 +348,14 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
         // Fetch all the values here
         // check for terminated process race condition after last one.
-        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_IO, getProcessID()), Symbol.COLON);
+        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_IO, getProcessID()), ":");
         Map<String, String> status = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_STATUS, getProcessID()),
-                Symbol.COLON);
+                ":");
         String stat = Builder.getStringFromFile(String.format(ProcPath.PID_STAT, getProcessID()));
         if (stat.isEmpty()) {
             this.state = State.INVALID;
             return false;
         }
-
         // If some details couldn't be read from ProcPath.PID_STATUS try reading it from
         // ProcPath.PID_STAT
         getMissingDetails(status, stat);
@@ -370,7 +366,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // call later, so just get the numeric bits here
         // See man proc for how to parse /proc/[pid]/stat
         long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS,
-                ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
+                ProcessStat.PROC_PID_STAT_LENGTH, ' ');
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to
@@ -399,16 +395,16 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.upTime = now - startTime;
 
         // See man proc for how to parse /proc/[pid]/io
-        this.bytesRead = Builder.parseLongOrDefault(io.getOrDefault("read_bytes", Normal.EMPTY), 0L);
-        this.bytesWritten = Builder.parseLongOrDefault(io.getOrDefault("write_bytes", Normal.EMPTY), 0L);
+        this.bytesRead = Builder.parseLongOrDefault(io.getOrDefault("read_bytes", ""), 0L);
+        this.bytesWritten = Builder.parseLongOrDefault(io.getOrDefault("write_bytes", ""), 0L);
 
         // Don't set open files or bitness or currentWorkingDirectory; fetch on demand.
 
-        this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", Normal.EMPTY))[0];
-        this.user = UserGroup.getUser(userID);
-        this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", Normal.EMPTY))[0];
-        this.group = UserGroup.getGroupName(groupID);
-        this.name = status.getOrDefault("Name", Normal.EMPTY);
+        this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", ""))[0];
+        this.user = IdGroup.getUser(userID);
+        this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", ""))[0];
+        this.group = IdGroup.getGroupName(groupID);
+        this.name = status.getOrDefault("Name", "");
         this.state = ProcessStat.getState(status.getOrDefault("State", "U").charAt(0));
         return true;
     }
@@ -418,7 +414,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * numeric order of the stat in /proc/pid/stat per the man file.
      */
     private enum ProcPidStat {
-        // The parsing implementation in Builder requires these to be declared
+        // The parsing implementation in ParseUtil requires these to be declared
         // in increasing order
         PPID(4), MINOR_FAULTS(10), MAJOR_FAULTS(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),
         START_TIME(22), VSZ(23), RSS(24);

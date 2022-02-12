@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,14 +26,16 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * A CPU.
@@ -45,51 +47,62 @@ import java.util.function.Supplier;
 @ThreadSafe
 public abstract class AbstractCentralProcessor implements CentralProcessor {
 
-    private final Supplier<ProcessorIdentifier> cpuid = Memoize.memoize(this::queryProcessorId);
-    private final Supplier<Long> maxFreq = Memoize.memoize(this::queryMaxFreq, Memoize.defaultExpiration());
-    private final Supplier<long[]> currentFreq = Memoize.memoize(this::queryCurrentFreq, Memoize.defaultExpiration());
-    private final Supplier<Long> contextSwitches = Memoize.memoize(this::queryContextSwitches, Memoize.defaultExpiration());
-    private final Supplier<Long> interrupts = Memoize.memoize(this::queryInterrupts, Memoize.defaultExpiration());
+    private final Supplier<ProcessorIdentifier> cpuid = memoize(this::queryProcessorId);
+    private final Supplier<Long> maxFreq = memoize(this::queryMaxFreq, defaultExpiration());
+    private final Supplier<long[]> currentFreq = memoize(this::queryCurrentFreq, defaultExpiration());
+    private final Supplier<Long> contextSwitches = memoize(this::queryContextSwitches, defaultExpiration());
+    private final Supplier<Long> interrupts = memoize(this::queryInterrupts, defaultExpiration());
 
-    private final Supplier<long[]> systemCpuLoadTicks = Memoize.memoize(this::querySystemCpuLoadTicks, Memoize.defaultExpiration());
-    private final Supplier<long[][]> processorCpuLoadTicks = Memoize.memoize(this::queryProcessorCpuLoadTicks,
-            Memoize.defaultExpiration());
+    private final Supplier<long[]> systemCpuLoadTicks = memoize(this::querySystemCpuLoadTicks, defaultExpiration());
+    private final Supplier<long[][]> processorCpuLoadTicks = memoize(this::queryProcessorCpuLoadTicks,
+            defaultExpiration());
 
-    // 逻辑和物理处理器计数
+    // Logical and Physical Processor Counts
     private final int physicalPackageCount;
     private final int physicalProcessorCount;
     private final int logicalProcessorCount;
 
-    // 处理器信息，在构造函数中初始化
+    // Processor info, initialized in constructor
     private final List<LogicalProcessor> logicalProcessors;
+    private final List<PhysicalProcessor> physicalProcessors;
 
     /**
-     * 创建一个处理器
+     * Create a Processor
      */
     protected AbstractCentralProcessor() {
-        // 填充逻辑处理器阵列
-        this.logicalProcessors = Collections.unmodifiableList(initProcessorCounts());
-        // I初始化处理器数
-        Set<String> physProcPkgs = new HashSet<>();
+        Pair<List<LogicalProcessor>, List<PhysicalProcessor>> processorLists = initProcessorCounts();
+        // Populate logical processor lists.
+        this.logicalProcessors = Collections.unmodifiableList(processorLists.getLeft());
+        if (processorLists.getRight() == null) {
+            Set<Integer> pkgCoreKeys = this.logicalProcessors.stream()
+                    .map(p -> (p.getPhysicalPackageNumber() << 16) + p.getPhysicalProcessorNumber())
+                    .collect(Collectors.toSet());
+            List<PhysicalProcessor> physProcs = pkgCoreKeys.stream().sorted()
+                    .map(k -> new PhysicalProcessor(k >> 16, k & 0xffff)).collect(Collectors.toList());
+            this.physicalProcessors = Collections.unmodifiableList(physProcs);
+        } else {
+            this.physicalProcessors = Collections.unmodifiableList(processorLists.getRight());
+        }
+        // Init processor counts
         Set<Integer> physPkgs = new HashSet<>();
         for (LogicalProcessor logProc : this.logicalProcessors) {
             int pkg = logProc.getPhysicalPackageNumber();
-            physProcPkgs.add(logProc.getPhysicalProcessorNumber() + Symbol.COLON + pkg);
             physPkgs.add(pkg);
         }
         this.logicalProcessorCount = this.logicalProcessors.size();
-        this.physicalProcessorCount = physProcPkgs.size();
+        this.physicalProcessorCount = this.physicalProcessors.size();
         this.physicalPackageCount = physPkgs.size();
     }
 
     /**
-     * 通过编码步进，型号，系列和功能*标志来创建处理器ID
+     * Creates a Processor ID by encoding the stepping, model, family, and feature
+     * flags.
      *
-     * @param stepping CPU步进
-     * @param model    CPU型号
-     * @param family   CPU系列
-     * @param flags    以空格分隔的CPU功能标志列表
-     * @return 处理器ID字符串
+     * @param stepping The CPU stepping
+     * @param model    The CPU model
+     * @param family   The CPU family
+     * @param flags    A space-delimited list of CPU feature flags
+     * @return The Processor ID string
      */
     protected static String createProcessorID(String stepping, String model, String family, String[] flags) {
         long processorIdBytes = 0L;
@@ -100,7 +113,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         processorIdBytes |= steppingL & 0xf;
         // 19:16,7:4 – Model
         processorIdBytes |= (modelL & 0x0f) << 4;
-        processorIdBytes |= (modelL & 0xf0) << Normal._16;
+        processorIdBytes |= (modelL & 0xf0) << 16;
         // 27:20,11:8 – Family
         processorIdBytes |= (familyL & 0x0f) << 8;
         processorIdBytes |= (familyL & 0xf0) << 20;
@@ -108,7 +121,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         for (String flag : flags) {
             switch (flag) { // NOSONAR squid:S1479
                 case "fpu":
-                    processorIdBytes |= 1L << Normal._32;
+                    processorIdBytes |= 1L << 32;
                     break;
                 case "vme":
                     processorIdBytes |= 1L << 33;
@@ -205,16 +218,16 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * 更新逻辑和物理处理器的数量和阵列
+     * Updates logical and physical processor counts and arrays
      *
-     * @return 初始化的逻辑处理器数组
+     * @return An array of initialized Logical Processors and Physical Processors.
      */
-    protected abstract List<LogicalProcessor> initProcessorCounts();
+    protected abstract Pair<List<LogicalProcessor>, List<PhysicalProcessor>> initProcessorCounts();
 
     /**
-     * 更新逻辑和物理处理器的数量和阵列
+     * Updates logical and physical processor counts and arrays
      *
-     * @return 初始化的逻辑处理器数组
+     * @return An array of initialized Logical Processors
      */
     protected abstract ProcessorIdentifier queryProcessorId();
 
@@ -229,9 +242,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * 获得处理器最大频率
+     * Get processor max frequency.
      *
-     * @return 最大频率.
+     * @return The max frequency.
      */
     protected abstract long queryMaxFreq();
 
@@ -247,9 +260,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * 获取处理器当前频率
+     * Get processor current frequency.
      *
-     * @return 当前的频率
+     * @return The current frequency.
      */
     protected abstract long[] queryCurrentFreq();
 
@@ -259,9 +272,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * 获取上下文切换的次数
+     * Get number of context switches
      *
-     * @return 上下文切换次数
+     * @return The context switches
      */
     protected abstract long queryContextSwitches();
 
@@ -271,9 +284,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * 获取中断的数量
+     * Get number of interrupts
      *
-     * @return 中断数量
+     * @return The interrupts
      */
     protected abstract long queryInterrupts();
 
@@ -283,14 +296,19 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     @Override
+    public List<PhysicalProcessor> getPhysicalProcessors() {
+        return this.physicalProcessors;
+    }
+
+    @Override
     public long[] getSystemCpuLoadTicks() {
         return systemCpuLoadTicks.get();
     }
 
     /**
-     * 获取系统CPU负载嘀嗒声
+     * Get the system CPU load ticks
      *
-     * @return 系统CPU负载滴答作响
+     * @return The system CPU load ticks
      */
     protected abstract long[] querySystemCpuLoadTicks();
 
@@ -300,9 +318,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * 获取处理器CPU负载嘀嗒声
+     * Get the processor CPU load ticks
      *
-     * @return 处理器CPU负载滴答作响
+     * @return The processor CPU load ticks
      */
     protected abstract long[][] queryProcessorCpuLoadTicks();
 
@@ -313,16 +331,17 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
                     "Tick array " + oldTicks.length + " should have " + TickType.values().length + " elements");
         }
         long[] ticks = getSystemCpuLoadTicks();
+        // Calculate total
         long total = 0;
         for (int i = 0; i < ticks.length; i++) {
             total += ticks[i] - oldTicks[i];
         }
-        // 根据idle和IOwait的差异计算idle
+        // Calculate idle from difference in idle and IOwait
         long idle = ticks[TickType.IDLE.getIndex()] + ticks[TickType.IOWAIT.getIndex()]
                 - oldTicks[TickType.IDLE.getIndex()] - oldTicks[TickType.IOWAIT.getIndex()];
         Logger.trace("Total ticks: {}  Idle ticks: {}", total, idle);
 
-        return total > 0 && idle >= 0 ? (double) (total - idle) / total : 0d;
+        return total > 0 ? (double) (total - idle) / total : 0d;
     }
 
     @Override
@@ -339,10 +358,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
             for (int i = 0; i < ticks[cpu].length; i++) {
                 total += ticks[cpu][i] - oldTicks[cpu][i];
             }
-            // 根据idle和IOwait的差异计算idle
+            // Calculate idle from difference in idle and IOwait
             long idle = ticks[cpu][TickType.IDLE.getIndex()] + ticks[cpu][TickType.IOWAIT.getIndex()]
                     - oldTicks[cpu][TickType.IDLE.getIndex()] - oldTicks[cpu][TickType.IOWAIT.getIndex()];
             Logger.trace("CPU: {}  Total ticks: {}  Idle ticks: {}", cpu, total, idle);
+            // update
             load[cpu] = total > 0 && idle >= 0 ? (double) (total - idle) / total : 0d;
         }
         return load;
@@ -363,15 +383,43 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return this.physicalPackageCount;
     }
 
+    protected List<PhysicalProcessor> createProcListFromDmesg(List<LogicalProcessor> logProcs,
+                                                              Map<Integer, String> dmesg) {
+        // Check if multiple CPU types
+        boolean isHybrid = dmesg.values().stream().distinct().count() > 1;
+        List<PhysicalProcessor> physProcs = new ArrayList<>();
+        Set<Integer> pkgCoreKeys = new HashSet<>();
+        for (LogicalProcessor logProc : logProcs) {
+            int pkgId = logProc.getPhysicalPackageNumber();
+            int coreId = logProc.getPhysicalProcessorNumber();
+            int pkgCoreKey = (pkgId << 16) + coreId;
+            if (!pkgCoreKeys.contains(pkgCoreKey)) {
+                pkgCoreKeys.add(pkgCoreKey);
+                String idStr = dmesg.getOrDefault(logProc.getProcessorNumber(), "");
+                int efficiency = 0;
+                // ARM v8 big.LITTLE chips just use the # for efficiency class
+                // High-performance CPU (big): Cortex-A73, Cortex-A75, Cortex-A76
+                // High-efficiency CPU (LITTLE): Cortex-A53, Cortex-A55
+                if (isHybrid && idStr.startsWith("ARM Cortex")) {
+                    efficiency = Builder.getFirstIntValue(idStr) >= 70 ? 1 : 0;
+                }
+                physProcs.add(new PhysicalProcessor(pkgId, coreId, efficiency, idStr));
+            }
+        }
+        physProcs.sort(Comparator.comparingInt(PhysicalProcessor::getPhysicalPackageNumber)
+                .thenComparingInt(PhysicalProcessor::getPhysicalProcessorNumber));
+        return physProcs;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getProcessorIdentifier().getName());
-        sb.append(Symbol.LF).append(getPhysicalPackageCount()).append(" physical CPU package(s)");
-        sb.append(Symbol.LF).append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
-        sb.append(Symbol.LF).append(getLogicalProcessorCount()).append(" logical CPU(s)");
-        sb.append(Symbol.C_LF).append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
-        sb.append(Symbol.C_LF).append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
-        sb.append(Symbol.C_LF).append("Microarchitecture: ").append(getProcessorIdentifier().getMicroarchitecture());
+        sb.append("\n ").append(getPhysicalPackageCount()).append(" physical CPU package(s)");
+        sb.append("\n ").append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
+        sb.append("\n ").append(getLogicalProcessorCount()).append(" logical CPU(s)");
+        sb.append('\n').append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
+        sb.append('\n').append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
+        sb.append('\n').append("Microarchitecture: ").append(getProcessorIdentifier().getMicroarchitecture());
         return sb.toString();
     }
 

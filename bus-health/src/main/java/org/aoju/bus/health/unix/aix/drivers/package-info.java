@@ -1,5 +1,5 @@
 /**
- * 提供在AIX上查询信息的函数
+ * Provides functions to query information on AIX
  *
  * @author Kimi Liu
  * @version 6.3.3

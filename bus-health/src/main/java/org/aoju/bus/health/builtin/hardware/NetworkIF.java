@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -62,19 +62,19 @@ public interface NetworkIF {
     String getName();
 
     /**
+     * Interface index.
+     *
+     * @return The index of the network interface.
+     */
+    int getIndex();
+
+    /**
      * Interface description.
      *
      * @return The description of the network interface. On some platforms, this is
      * identical to the name.
      */
     String getDisplayName();
-
-    /**
-     * Interface index.
-     *
-     * @return The index of the network interface.
-     */
-    int getIndex();
 
     /**
      * The {@code ifAlias} as described in RFC 2863.
@@ -85,7 +85,7 @@ public interface NetworkIF {
      * its assigned ifAlias value across reboots, even if an agent chooses a new
      * ifIndex value for the interface.
      * <p>
-     * Only implemented for Windows and Linux.
+     * Only implemented for Windows (Vista and newer) and Linux.
      *
      * @return The {@code ifAlias} of the interface if available, otherwise the
      * empty string.
@@ -110,6 +110,11 @@ public interface NetworkIF {
      *
      * @return The MTU of the network interface.
      * <p>
+     * The value is a 32-bit integer which may be unsigned on some operating
+     * systems. On Windows, some non-physical interfaces (e.g., loopback)
+     * may return a value of -1 which is equivalent to the maximum unsigned
+     * integer value.
+     * <p>
      * This value is set when the {@link NetworkIF} is
      * instantiated and may not be up to date.
      */
@@ -128,7 +133,7 @@ public interface NetworkIF {
     /**
      * The Internet Protocol (IP) v4 address.
      *
-     * @return The IPv4 Addresses.
+     * @return An array of IPv4 Addresses.
      * <p>
      * This value is set when the {@link NetworkIF} is
      * instantiated and may not be up to date.
@@ -138,7 +143,8 @@ public interface NetworkIF {
     /**
      * The Internet Protocol (IP) v4 subnet masks.
      *
-     * @return The IPv4 subnet mask length. Ranges between 0-32.
+     * @return An array of IPv4 subnet mask lengths, corresponding to the IPv4
+     * addresses from {@link #getIPv4addr()}. Ranges between 0-32.
      * <p>
      * This value is set when the {@link NetworkIF} is
      * instantiated and may not be up to date.
@@ -148,7 +154,7 @@ public interface NetworkIF {
     /**
      * The Internet Protocol (IP) v6 address.
      *
-     * @return The IPv6 Addresses.
+     * @return An array of IPv6 Addresses.
      * <p>
      * This value is set when the {@link NetworkIF} is
      * instantiated and may not be up to date.
@@ -158,7 +164,8 @@ public interface NetworkIF {
     /**
      * The Internet Protocol (IP) v6 address.
      *
-     * @return The IPv6 address prefix lengths. Ranges between 0-128.
+     * @return The IPv6 address prefix lengths, corresponding to the IPv6 addresses
+     * from {@link #getIPv6addr()}. Ranges between 0-128.
      * <p>
      * This value is set when the {@link NetworkIF} is
      * instantiated and may not be up to date.
@@ -348,7 +355,6 @@ public interface NetworkIF {
      * @return {@code true} if the update was successful, {@code false} otherwise.
      */
     boolean updateAttributes();
-
 
     /**
      * The current operational state of a network interface.

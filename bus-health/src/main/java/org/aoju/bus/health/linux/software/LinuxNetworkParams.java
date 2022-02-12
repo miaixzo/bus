@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,10 +27,8 @@ package org.aoju.bus.health.linux.software;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
-import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -42,6 +40,8 @@ import org.aoju.bus.logger.Logger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+
+import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * LinuxNetworkParams class.
@@ -62,12 +62,12 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
     public String getDomainName() {
         CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
         hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname;
+        String hostname = "";
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
-            return Normal.EMPTY;
+            return "";
         }
         PointerByReference ptr = new PointerByReference();
         int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
@@ -75,7 +75,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
             if (Logger.get().isError()) {
                 Logger.error("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
             }
-            return Normal.EMPTY;
+            return "";
         }
         CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
         String canonname = info.ai_canonname.trim();
@@ -85,7 +85,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
         if (0 != LibC.INSTANCE.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }
@@ -96,10 +96,10 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
     public String getIpv4DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet -n");
         if (routes.size() <= 2) {
-            return Normal.EMPTY;
+            return "";
         }
 
-        String gateway = Normal.EMPTY;
+        String gateway = "";
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {
@@ -120,10 +120,10 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
     public String getIpv6DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet6 -n");
         if (routes.size() <= 2) {
-            return Normal.EMPTY;
+            return "";
         }
 
-        String gateway = Normal.EMPTY;
+        String gateway = "";
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {

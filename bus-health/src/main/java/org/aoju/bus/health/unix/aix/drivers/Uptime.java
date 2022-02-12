@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -51,9 +51,6 @@ public final class Uptime {
     private static final Pattern UPTIME_FORMAT_AIX = Pattern
             .compile(".*\\sup\\s+((\\d+)\\s+days?,?\\s+)?\\b((\\d+):)?(\\d+)(\\s+min(utes?)?)?,\\s+\\d+\\s+user.+");
 
-    private Uptime() {
-    }
-
     /**
      * Query {@code uptime} to get up time
      *
@@ -64,10 +61,10 @@ public final class Uptime {
         String s = Executor.getFirstAnswer("/usr/bin/uptime");
         Matcher m = UPTIME_FORMAT_AIX.matcher(s);
         if (m.matches()) {
-            if (null != m.group(2)) {
+            if (m.group(2) != null) {
                 uptime += Builder.parseLongOrDefault(m.group(2), 0L) * DAY_MS;
             }
-            if (null != m.group(4)) {
+            if (m.group(4) != null) {
                 uptime += Builder.parseLongOrDefault(m.group(4), 0L) * HOUR_MS;
             }
             uptime += Builder.parseLongOrDefault(m.group(5), 0L) * MINUTE_MS;

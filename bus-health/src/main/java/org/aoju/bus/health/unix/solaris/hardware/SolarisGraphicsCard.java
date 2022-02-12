@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.solaris.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
@@ -67,7 +66,9 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
      * {@link AbstractHardwareAbstractionLayer} to access the
      * graphics cards.
      *
-     * @return List of {@link SolarisGraphicsCard} objects.
+     * @return List of
+     * {@link SolarisGraphicsCard}
+     * objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
         List<GraphicsCard> cardList = new ArrayList<>();
@@ -76,10 +77,10 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
         if (devices.isEmpty()) {
             return cardList;
         }
-        String name = Normal.EMPTY;
-        String vendorId = Normal.EMPTY;
-        String productId = Normal.EMPTY;
-        String classCode = Normal.EMPTY;
+        String name = "";
+        String vendorId = "";
+        String productId = "";
+        String classCode = "";
         List<String> versionInfoList = new ArrayList<>();
         for (String line : devices) {
             // Node 0x... identifies start of a new device. Save previous if it's a graphics
@@ -92,13 +93,13 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
                             versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), 0L));
                 }
                 // Reset strings
-                name = Normal.EMPTY;
+                name = "";
                 vendorId = Normal.UNKNOWN;
                 productId = Normal.UNKNOWN;
-                classCode = Normal.EMPTY;
+                classCode = "";
                 versionInfoList.clear();
             } else {
-                String[] split = line.trim().split(Symbol.COLON, 2);
+                String[] split = line.trim().split(":", 2);
                 if (split.length == 2) {
                     if (split[0].equals("model")) {
                         // This is preferred, always set it

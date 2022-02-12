@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,21 +25,24 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.software;
 
-import com.sun.jna.platform.unix.solaris.LibKstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
 import org.aoju.bus.health.unix.solaris.KstatKit;
-import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 import java.io.File;
 import java.nio.file.PathMatcher;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * The Solaris File System contains {@link OSFileStore}s which
@@ -54,20 +57,20 @@ import java.util.*;
 @ThreadSafe
 public class SolarisFileSystem extends AbstractFileSystem {
 
-    public static final String OSHI_SOLARIS_FS_PATH_EXCLUDES = "health.os.solaris.filesystem.path.excludes";
-    public static final String OSHI_SOLARIS_FS_PATH_INCLUDES = "health.os.solaris.filesystem.path.includes";
-    public static final String OSHI_SOLARIS_FS_VOLUME_EXCLUDES = "health.os.solaris.filesystem.volume.excludes";
-    public static final String OSHI_SOLARIS_FS_VOLUME_INCLUDES = "health.os.solaris.filesystem.volume.includes";
-    // System path mounted as tmpfs
-    private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
+    public static final String SOLARIS_FS_PATH_EXCLUDES = "bus.health.os.solaris.filesystem.path.excludes";
+    public static final String SOLARIS_FS_PATH_INCLUDES = "bus.health.os.solaris.filesystem.path.includes";
+    public static final String SOLARIS_FS_VOLUME_EXCLUDES = "bus.health.os.solaris.filesystem.volume.excludes";
+    public static final String SOLARIS_FS_VOLUME_INCLUDES = "bus.health.os.solaris.filesystem.volume.includes";
+    private static final Supplier<Pair<Long, Long>> FILE_DESC = Memoize
+            .memoize(SolarisFileSystem::queryFileDescriptors, Memoize.defaultExpiration());
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_SOLARIS_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(SOLARIS_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_SOLARIS_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(SOLARIS_FS_PATH_INCLUDES);
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_SOLARIS_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(SOLARIS_FS_VOLUME_EXCLUDES);
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_SOLARIS_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(SOLARIS_FS_VOLUME_INCLUDES);
 
     // Called by SolarisOSFileStore
     static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
@@ -83,7 +86,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
         String key = null;
         String total = null;
         String free = null;
-        String command = "df -g" + (localOnly ? " -l" : Normal.EMPTY);
+        String command = "df -g" + (localOnly ? " -l" : "");
         for (String line : Executor.runNative(command)) {
             /*- Sample Output:
             /                  (/dev/md/dsk/d0    ):         8192 block size          1024 frag size
@@ -91,14 +94,14 @@ public class SolarisFileSystem extends AbstractFileSystem {
              2293351 free files     22282240 filesys id
                  ufs fstype       0x00000004 flag             255 filename length
             */
-            if (line.startsWith(Symbol.SLASH)) {
+            if (line.startsWith("/")) {
                 key = RegEx.SPACES.split(line)[0];
                 total = null;
             } else if (line.contains("available") && line.contains("total files")) {
                 total = Builder.getTextBetweenStrings(line, "available", "total files").trim();
             } else if (line.contains("free files")) {
-                free = Builder.getTextBetweenStrings(line, Normal.EMPTY, "free files").trim();
-                if (null != key && null != total) {
+                free = Builder.getTextBetweenStrings(line, "", "free files").trim();
+                if (key != null && total != null) {
                     inodeFreeMap.put(key, Builder.parseLongOrDefault(free, 0L));
                     inodeTotalMap.put(key, Builder.parseLongOrDefault(total, 0L));
                     key = null;
@@ -123,20 +126,19 @@ public class SolarisFileSystem extends AbstractFileSystem {
             String options = split[3];
 
             // Skip non-local drives if requested, and exclude pseudo file systems
-            // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type))
-                    || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
                     volume, FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                 continue;
             }
 
-            String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
+            String name = path.substring(path.lastIndexOf('/') + 1);
             // Special case for /, pull last element of volume instead
             if (name.isEmpty()) {
-                name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
+                name = volume.substring(volume.lastIndexOf('/') + 1);
             }
 
-            if (null != nameToMatch && !nameToMatch.equals(name)) {
+            if (nameToMatch != null && !nameToMatch.equals(name)) {
                 continue;
             }
             File f = new File(path);
@@ -145,7 +147,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
             long freeSpace = f.getFreeSpace();
 
             String description;
-            if (volume.startsWith("/dev") || path.equals(Symbol.SLASH)) {
+            if (volume.startsWith("/dev") || path.equals("/")) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";
@@ -155,11 +157,18 @@ public class SolarisFileSystem extends AbstractFileSystem {
                 description = "Mount Point";
             }
 
-            fsList.add(new SolarisOSFileStore(name, volume, name, path, options, Normal.EMPTY, Normal.EMPTY, description, type, freeSpace,
+            fsList.add(new SolarisOSFileStore(name, volume, name, path, options, "", "", description, type, freeSpace,
                     usableSpace, totalSpace, inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
                     inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
         }
         return fsList;
+    }
+
+    private static Pair<Long, Long> queryFileDescriptors() {
+        Object[] results = KstatKit.queryKstat2("kstat:/kmem_cache/kmem_default/file_cache", "buf_inuse", "buf_max");
+        long inuse = results[0] == null ? 0L : (long) results[0];
+        long max = results[1] == null ? 0L : (long) results[1];
+        return Pair.of(inuse, max);
     }
 
     @Override
@@ -169,10 +178,14 @@ public class SolarisFileSystem extends AbstractFileSystem {
 
     @Override
     public long getOpenFileDescriptors() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup(null, -1, "file_cache");
+        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+            // Use Kstat2 implementation
+            return FILE_DESC.get().getLeft();
+        }
+        try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+            Kstat ksp = KstatKit.KstatChain.lookup(null, -1, "file_cache");
             // Set values
-            if (null != ksp && KstatChain.read(ksp)) {
+            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "buf_inuse");
             }
         }
@@ -181,10 +194,14 @@ public class SolarisFileSystem extends AbstractFileSystem {
 
     @Override
     public long getMaxFileDescriptors() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup(null, -1, "file_cache");
+        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+            // Use Kstat2 implementation
+            return FILE_DESC.get().getRight();
+        }
+        try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+            Kstat ksp = KstatKit.KstatChain.lookup(null, -1, "file_cache");
             // Set values
-            if (null != ksp && KstatChain.read(ksp)) {
+            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "buf_max");
             }
         }

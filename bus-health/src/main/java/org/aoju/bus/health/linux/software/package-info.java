@@ -1,5 +1,5 @@
 /**
- * Linux系统下的软件和操作系统信息
+ * Provides information about Software and OS on Linux
  *
  * @author Kimi Liu
  * @version 6.3.3

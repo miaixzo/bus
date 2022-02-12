@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,10 +28,7 @@ package org.aoju.bus.health.linux.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
@@ -45,7 +42,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Linux File System contains {@link OSFileStore}s which
@@ -60,20 +60,21 @@ import java.util.*;
 @ThreadSafe
 public class LinuxFileSystem extends AbstractFileSystem {
 
-    public static final String OSHI_LINUX_FS_PATH_EXCLUDES = "health.os.linux.filesystem.path.excludes";
-    public static final String OSHI_LINUX_FS_PATH_INCLUDES = "health.os.linux.filesystem.path.includes";
-    public static final String OSHI_LINUX_FS_VOLUME_EXCLUDES = "health.os.linux.filesystem.volume.excludes";
-    public static final String OSHI_LINUX_FS_VOLUME_INCLUDES = "health.os.linux.filesystem.volume.includes";
+    public static final String LINUX_FS_PATH_EXCLUDES = "bus.health.os.linux.filesystem.path.excludes";
+    public static final String LINUX_FS_PATH_INCLUDES = "bus.health.os.linux.filesystem.path.includes";
+    public static final String LINUX_FS_VOLUME_EXCLUDES = "bus.health.os.linux.filesystem.volume.excludes";
+    public static final String LINUX_FS_VOLUME_INCLUDES = "bus.health.os.linux.filesystem.volume.includes";
 
-    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_PATH_EXCLUDES);
-    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_PATH_INCLUDES);
-    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_VOLUME_EXCLUDES);
-    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_VOLUME_INCLUDES);
+    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(LINUX_FS_PATH_EXCLUDES);
+    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(LINUX_FS_PATH_INCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(LINUX_FS_VOLUME_EXCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(LINUX_FS_VOLUME_INCLUDES);
 
-    private static final String UNICODE_SPACE = "\\\\040";
-
-    // System path mounted as tmpfs
-    private static final List<String> TMP_FS_PATHS = Arrays.asList("/run", "/sys", "/proc", ProcPath.PROC);
+    private static final String UNICODE_SPACE = "\\040";
 
     // called from LinuxOSFileStore
     static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap) {
@@ -83,10 +84,11 @@ public class LinuxFileSystem extends AbstractFileSystem {
     private static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap,
                                                           boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
+
         Map<String, String> labelMap = queryLabelMap();
 
         // Parse /proc/mounts to get fs types
-        List<String> mounts = FileKit.readLines(ProcPath.MOUNTS);
+        List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
         for (String mount : mounts) {
             String[] split = mount.split(" ");
             // As reported in fstab(5) manpage, struct is:
@@ -101,9 +103,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             // Exclude pseudo file systems
-            String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
+            String volume = split[0].replace(UNICODE_SPACE, " ");
             String name = volume;
-            String path = split[1].replace(UNICODE_SPACE, Symbol.SPACE);
+            String path = split[1].replace(UNICODE_SPACE, " ");
             if (path.equals("/")) {
                 name = "/";
             }
@@ -111,7 +113,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
             // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type))
-                    || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
                     volume, FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                 continue;
             }
@@ -119,11 +121,11 @@ public class LinuxFileSystem extends AbstractFileSystem {
             String options = split[3];
 
             // If only updating for one name, skip others
-            if (null != nameToMatch && !nameToMatch.equals(name)) {
+            if (nameToMatch != null && !nameToMatch.equals(name)) {
                 continue;
             }
 
-            String uuid = null != uuidMap ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
+            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], "") : "";
 
             String description;
             if (volume.startsWith("/dev")) {
@@ -138,7 +140,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
             // Add in logical volume found at /dev/mapper, useful when linking
             // file system with drive.
-            String logicalVolume = Normal.EMPTY;
+            String logicalVolume = "";
             String volumeMapperDirectory = "/dev/mapper/";
             Path link = Paths.get(volume);
             if (link.toFile().exists() && Files.isSymbolicLink(link)) {
@@ -215,7 +217,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         if (index < 0 || index > 2) {
             throw new IllegalArgumentException("Index must be between 0 and 2.");
         }
-        List<String> osDescriptors = FileKit.readLines(filename);
+        List<String> osDescriptors = Builder.readFile(filename);
         if (!osDescriptors.isEmpty()) {
             String[] splittedLine = osDescriptors.get(0).split("\\D+");
             return Builder.parseLongOrDefault(splittedLine[index], 0L);
@@ -225,11 +227,11 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
-        //Map of volume with device path as key
+        // Map of volume with device path as key
         Map<String, String> volumeDeviceMap = new HashMap<>();
         File devMapper = new File("/dev/mapper");
         File[] volumes = devMapper.listFiles();
-        if (null != volumes) {
+        if (volumes != null) {
             for (File volume : volumes) {
                 try {
                     volumeDeviceMap.put(volume.getCanonicalPath(), volume.getAbsolutePath());
@@ -242,10 +244,10 @@ public class LinuxFileSystem extends AbstractFileSystem {
         Map<String, String> uuidMap = new HashMap<>();
         File uuidDir = new File("/dev/disk/by-uuid");
         File[] uuids = uuidDir.listFiles();
-        if (null != uuids) {
+        if (uuids != null) {
             for (File uuid : uuids) {
                 try {
-                    // Store UUID as value with path (e.g., /dev/sda1) as key and also as volumes as key
+                    // Store UUID as value with path (e.g., /dev/sda1) and volumes as key
                     String canonicalPath = uuid.getCanonicalPath();
                     uuidMap.put(canonicalPath, uuid.getName().toLowerCase());
                     if (volumeDeviceMap.containsKey(canonicalPath)) {

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,8 +30,8 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
-import org.aoju.bus.health.linux.drivers.CpuInfo;
 import org.aoju.bus.health.linux.drivers.Sysfs;
+import org.aoju.bus.health.linux.drivers.proc.CpuInfo;
 
 import java.util.function.Supplier;
 
@@ -74,8 +74,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String queryManufacturer() {
         String result;
-        if (null == (result = Sysfs.queryBoardVendor())
-                && null == (result = manufacturerModelVersionSerial.get().getA())) {
+        if ((result = Sysfs.queryBoardVendor()) == null
+                && (result = manufacturerModelVersionSerial.get().getA()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -83,17 +83,17 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String queryModel() {
         String result;
-        if (null == (result = Sysfs.queryBoardModel())
-                && null == (result = manufacturerModelVersionSerial.get().getB())) {
+        if ((result = Sysfs.queryBoardModel()) == null
+                && (result = manufacturerModelVersionSerial.get().getB()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
     }
 
     private String queryVersion() {
-        String result;
-        if (null == (result = Sysfs.queryBoardVersion())
-                && null == (result = manufacturerModelVersionSerial.get().getC())) {
+        String result = null;
+        if ((result = Sysfs.queryBoardVersion()) == null
+                && (result = manufacturerModelVersionSerial.get().getC()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -101,8 +101,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String querySerialNumber() {
         String result;
-        if (null == (result = Sysfs.queryBoardSerial())
-                && null == (result = manufacturerModelVersionSerial.get().getD())) {
+        if ((result = Sysfs.queryBoardSerial()) == null
+                && (result = manufacturerModelVersionSerial.get().getD()) == null) {
             return Normal.UNKNOWN;
         }
         return result;

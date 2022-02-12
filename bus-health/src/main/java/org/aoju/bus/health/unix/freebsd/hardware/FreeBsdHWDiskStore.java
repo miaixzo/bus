@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,8 +35,8 @@ import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
-import org.aoju.bus.health.unix.freebsd.drivers.GeomDiskList;
-import org.aoju.bus.health.unix.freebsd.drivers.GeomPartList;
+import org.aoju.bus.health.unix.freebsd.drivers.disk.GeomDiskList;
+import org.aoju.bus.health.unix.freebsd.drivers.disk.GeomPartList;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,14 +89,14 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
             String[] split = RegEx.SPACES.split(line);
             if (split.length > 6 && devices.contains(split[0])) {
                 Triple<String, String, Long> storeInfo = diskInfoMap.get(split[0]);
-                FreeBsdHWDiskStore store = (null == storeInfo)
+                FreeBsdHWDiskStore store = (storeInfo == null)
                         ? new FreeBsdHWDiskStore(split[0], Normal.UNKNOWN, Normal.UNKNOWN, 0L)
                         : new FreeBsdHWDiskStore(split[0], storeInfo.getLeft(), storeInfo.getMiddle(), storeInfo.getRight());
                 store.reads = (long) Builder.parseDoubleOrDefault(split[1], 0d);
                 store.writes = (long) Builder.parseDoubleOrDefault(split[2], 0d);
                 // In KB
-                store.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * Normal._1024);
-                store.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * Normal._1024);
+                store.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * 1024);
+                store.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * 1024);
                 // # transactions
                 store.currentQueueLength = Builder.parseLongOrDefault(split[5], 0L);
                 // In seconds, multiply for ms
@@ -165,8 +165,8 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
             this.reads = (long) Builder.parseDoubleOrDefault(split[1], 0d);
             this.writes = (long) Builder.parseDoubleOrDefault(split[2], 0d);
             // In KB
-            this.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * Normal._1024);
-            this.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * Normal._1024);
+            this.readBytes = (long) (Builder.parseDoubleOrDefault(split[3], 0d) * 1024);
+            this.writeBytes = (long) (Builder.parseDoubleOrDefault(split[4], 0d) * 1024);
             // # transactions
             this.currentQueueLength = Builder.parseLongOrDefault(split[5], 0L);
             // In seconds, multiply for ms

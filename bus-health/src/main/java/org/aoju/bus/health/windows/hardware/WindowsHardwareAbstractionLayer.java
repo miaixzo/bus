@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -71,13 +71,13 @@ public final class WindowsHardwareAbstractionLayer extends AbstractHardwareAbstr
     }
 
     @Override
-    public List<Display> getDisplays() {
-        return WindowsDisplay.getDisplays();
+    public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
+        return WindowsLogicalVolumeGroup.getLogicalVolumeGroups();
     }
 
     @Override
-    public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
-        return WindowsLogicalVolumeGroup.getLogicalVolumeGroups();
+    public List<Display> getDisplays() {
+        return WindowsDisplay.getDisplays();
     }
 
     @Override

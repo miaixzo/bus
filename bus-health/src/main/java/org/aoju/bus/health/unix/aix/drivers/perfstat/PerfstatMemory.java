@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.aix.drivers.perfstat;
 
 import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 
 /**
@@ -40,21 +41,18 @@ public final class PerfstatMemory {
 
     private static final Perfstat PERF = Perfstat.INSTANCE;
 
-    private PerfstatMemory() {
-    }
-
     /**
      * Queries perfstat_memory_total for total memory usage statistics
      *
      * @return usage statistics
      */
-    public static Perfstat.perfstat_memory_total_t queryMemoryTotal() {
-        Perfstat.perfstat_memory_total_t memory = new Perfstat.perfstat_memory_total_t();
+    public static perfstat_memory_total_t queryMemoryTotal() {
+        perfstat_memory_total_t memory = new perfstat_memory_total_t();
         int ret = PERF.perfstat_memory_total(null, memory, memory.size(), 1);
         if (ret > 0) {
             return memory;
         }
-        return new Perfstat.perfstat_memory_total_t();
+        return new perfstat_memory_total_t();
     }
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.openbsd.software;
 
-import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -49,21 +49,22 @@ import java.util.Map;
  * @version 6.3.3
  * @since JDK 1.8+
  */
+@ThreadSafe
 public class OpenBsdFileSystem extends AbstractFileSystem {
 
-    public static final String OSHI_OPENBSD_FS_PATH_EXCLUDES = "health.os.openbsd.filesystem.path.excludes";
-    public static final String OSHI_OPENBSD_FS_PATH_INCLUDES = "health.os.openbsd.filesystem.path.includes";
-    public static final String OSHI_OPENBSD_FS_VOLUME_EXCLUDES = "health.os.openbsd.filesystem.volume.excludes";
-    public static final String OSHI_OPENBSD_FS_VOLUME_INCLUDES = "health.os.openbsd.filesystem.volume.includes";
+    public static final String OPENBSD_FS_PATH_EXCLUDES = "bus.health.os.openbsd.filesystem.path.excludes";
+    public static final String OPENBSD_FS_PATH_INCLUDES = "bus.health.os.openbsd.filesystem.path.includes";
+    public static final String OPENBSD_FS_VOLUME_EXCLUDES = "bus.health.os.openbsd.filesystem.volume.excludes";
+    public static final String OPENBSD_FS_VOLUME_INCLUDES = "bus.health.os.openbsd.filesystem.volume.includes";
 
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_OPENBSD_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(OPENBSD_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_OPENBSD_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(OPENBSD_FS_PATH_INCLUDES);
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_OPENBSD_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(OPENBSD_FS_VOLUME_EXCLUDES);
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_OPENBSD_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(OPENBSD_FS_VOLUME_INCLUDES);
 
     // Called by OpenBsdOSFileStore
     static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
@@ -76,7 +77,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
         // Get inode usage data
         Map<String, Long> inodeFreeMap = new HashMap<>();
         Map<String, Long> inodeUsedlMap = new HashMap<>();
-        String command = "df -i" + (localOnly ? " -l" : Normal.EMPTY);
+        String command = "df -i" + (localOnly ? " -l" : "");
         for (String line : Executor.runNative(command)) {
             /*- Sample Output:
              $ df -i
@@ -128,7 +129,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                     name = volume.substring(volume.lastIndexOf('/') + 1);
                 }
 
-                if (null != nameToMatch && !nameToMatch.equals(name)) {
+                if (nameToMatch != null && !nameToMatch.equals(name)) {
                     continue;
                 }
                 File f = new File(path);
@@ -151,7 +152,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                     description = "Mount Point";
                 }
 
-                fsList.add(new OpenBsdOSFileStore(name, volume, name, path, options, uuid, Normal.EMPTY, description, type,
+                fsList.add(new OpenBsdOSFileStore(name, volume, name, path, options, uuid, "", description, type,
                         freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(volume, 0L),
                         inodeUsedlMap.getOrDefault(volume, 0L) + inodeFreeMap.getOrDefault(volume, 0L)));
             }

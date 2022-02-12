@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,7 +30,6 @@ import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -62,39 +61,38 @@ final class MacFirmware extends AbstractFirmware {
 
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
         byte[] data;
-        if (null != platformExpert) {
+        if (platformExpert != null) {
             IOIterator iter = platformExpert.getChildIterator("IODeviceTree");
-            if (null != iter) {
+            if (iter != null) {
                 IORegistryEntry entry = iter.next();
-                while (null != entry) {
+                while (entry != null) {
                     switch (entry.getName()) {
                         case "rom":
                             data = entry.getByteArrayProperty("vendor");
-                            if (null != data) {
-                                manufacturer = Native.toString(data, Charset.UTF_8);
+                            if (data != null) {
+                                manufacturer = Native.toString(data, StandardCharsets.UTF_8);
                             }
                             data = entry.getByteArrayProperty("version");
-                            if (null != data) {
-                                version = Native.toString(data, Charset.UTF_8);
+                            if (data != null) {
+                                version = Native.toString(data, StandardCharsets.UTF_8);
                             }
                             data = entry.getByteArrayProperty("release-date");
-                            if (null != data) {
-                                releaseDate = Native.toString(data, Charset.UTF_8);
+                            if (data != null) {
+                                releaseDate = Native.toString(data, StandardCharsets.UTF_8);
                             }
                             break;
                         case "chosen":
                             data = entry.getByteArrayProperty("booter-name");
-                            if (null != data) {
-                                name = Native.toString(data, Charset.UTF_8);
+                            if (data != null) {
+                                name = Native.toString(data, StandardCharsets.UTF_8);
                             }
                             break;
                         case "efi":
                             data = entry.getByteArrayProperty("firmware-abi");
-                            if (null != data) {
-                                description = Native.toString(data, Charset.UTF_8);
+                            if (data != null) {
+                                description = Native.toString(data, StandardCharsets.UTF_8);
                             }
                             break;
-
                         default:
                             if (StringKit.isBlank(name)) {
                                 name = entry.getStringProperty("IONameMatch");
@@ -108,19 +106,19 @@ final class MacFirmware extends AbstractFirmware {
             }
             if (StringKit.isBlank(manufacturer)) {
                 data = platformExpert.getByteArrayProperty("manufacturer");
-                if (null != data) {
+                if (data != null) {
                     manufacturer = Native.toString(data, StandardCharsets.UTF_8);
                 }
             }
             if (StringKit.isBlank(version)) {
                 data = platformExpert.getByteArrayProperty("target-type");
-                if (null != data) {
+                if (data != null) {
                     version = Native.toString(data, StandardCharsets.UTF_8);
                 }
             }
             if (StringKit.isBlank(name)) {
                 data = platformExpert.getByteArrayProperty("device_type");
-                if (null != data) {
+                if (data != null) {
                     name = Native.toString(data, StandardCharsets.UTF_8);
                 }
             }

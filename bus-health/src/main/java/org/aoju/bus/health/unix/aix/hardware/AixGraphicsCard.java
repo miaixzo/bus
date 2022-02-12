@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.aix.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
@@ -78,15 +77,15 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 display = true;
             } else if (display && s.toLowerCase().contains("graphics")) {
                 name = s;
-            } else if (display && null != name) {
+            } else if (display && name != null) {
                 if (s.startsWith("Manufacture ID")) {
                     vendor = Builder.removeLeadingDots(s.substring(14));
                 } else if (s.contains("Level")) {
-                    versionInfo.add(s.replaceAll("\\.\\.+", Symbol.EQUAL));
+                    versionInfo.add(s.replaceAll("\\.\\.+", "="));
                 } else if (s.startsWith("Hardware Location Code")) {
                     cardList.add(new AixGraphicsCard(name, Normal.UNKNOWN,
                             StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
-                            versionInfo.isEmpty() ? Normal.UNKNOWN : String.join(Symbol.COMMA, versionInfo), 0L));
+                            versionInfo.isEmpty() ? Normal.UNKNOWN : String.join(",", versionInfo), 0L));
                     display = false;
                 }
             }

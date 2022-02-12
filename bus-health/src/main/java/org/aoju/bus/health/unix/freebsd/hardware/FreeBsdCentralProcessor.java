@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,23 +28,23 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.unix.LibCAPI;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
+import org.aoju.bus.health.unix.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
-import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
-import org.aoju.bus.health.unix.freebsd.FreeBsdLibc.CpTime;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +64,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", Normal.EMPTY).split("\\n|\\r");
         /*-
          * Sample output:
-
+         *
         <groups>
         <group level="1" cache-level="0">
          <cpu count="24" mask="ffffff">0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23</cpu>
@@ -76,7 +76,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
              <cpu count="2" mask="3">0, 1</cpu>
              <flags><flag name="THREAD">THREAD group</flag><flag name="SMT">SMT group</flag></flags>
             </group>
-
+        *
         * Opens with <groups>
         * <group> level 1 identifies all the processors via bitmask, should only be one
         * <group> level 2 separates by physical package
@@ -101,13 +101,13 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                     // NumberFormatException
                     switch (groupLevel) {
                         case 1:
-                            group1 = Long.parseLong(m.group(1), Normal._16);
+                            group1 = Long.parseLong(m.group(1), 16);
                             break;
                         case 2:
-                            group2.add(Long.parseLong(m.group(1), Normal._16));
+                            group2.add(Long.parseLong(m.group(1), 16));
                             break;
                         case 3:
-                            group3.add(Long.parseLong(m.group(1), Normal._16));
+                            group3.add(Long.parseLong(m.group(1), 16));
                             break;
                         default:
                             break;
@@ -185,7 +185,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         // Parsing dmesg.boot is apparently the only reliable source for processor
         // identification in FreeBSD
         long processorIdBits = 0L;
-        List<String> cpuInfo = FileKit.readLines("/var/run/dmesg.boot");
+        List<String> cpuInfo = Builder.readFile("/var/run/dmesg.boot");
         for (String line : cpuInfo) {
             line = line.trim();
             // Prefer hw.model to this one
@@ -203,7 +203,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             } else if (line.startsWith("Features=")) {
                 Matcher m = featuresPattern.matcher(line);
                 if (m.matches()) {
-                    processorIdBits |= Long.decode(m.group(1)) << Normal._32;
+                    processorIdBits |= Long.decode(m.group(1)) << 32;
                 }
                 // No further interest in this file
                 break;
@@ -217,19 +217,42 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
+    protected Pair<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>> initProcessorCounts() {
         List<CentralProcessor.LogicalProcessor> logProcs = parseTopology();
         // Force at least one processor
         if (logProcs.isEmpty()) {
             logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
         }
-        return logProcs;
+        Map<Integer, String> dmesg = new HashMap<>();
+        // cpu0: <Open Firmware CPU> on cpulist0
+        Pattern normal = Pattern.compile("cpu(\\\\d+): (.+) on .*");
+        // CPU 0: ARM Cortex-A53 r0p4 affinity: 0 0
+        Pattern hybrid = Pattern.compile("CPU\\\\s*(\\\\d+): (.+) affinity:.*");
+        for (String s : Builder.readFile("/var/run/dmesg.boot")) {
+            Matcher h = hybrid.matcher(s);
+            if (h.matches()) {
+                int coreId = Builder.parseIntOrDefault(h.group(1), 0);
+                // This always takes priority, overwrite if needed
+                dmesg.put(coreId, h.group(2).trim());
+            } else {
+                Matcher n = normal.matcher(s);
+                if (n.matches()) {
+                    int coreId = Builder.parseIntOrDefault(n.group(1), 0);
+                    // Don't overwrite if h matched earlier
+                    dmesg.putIfAbsent(coreId, n.group(2).trim());
+                }
+            }
+        }
+        if (dmesg.isEmpty()) {
+            return Pair.of(logProcs, null);
+        }
+        return Pair.of(logProcs, createProcListFromDmesg(logProcs, dmesg));
     }
 
     @Override
     public long[] querySystemCpuLoadTicks() {
         long[] ticks = new long[CentralProcessor.TickType.values().length];
-        CpTime cpTime = new CpTime();
+        FreeBsdLibc.CpTime cpTime = new FreeBsdLibc.CpTime();
         BsdSysctlKit.sysctl("kern.cp_time", cpTime);
         ticks[CentralProcessor.TickType.USER.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_USER];
         ticks[CentralProcessor.TickType.NICE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_NICE];
@@ -258,7 +281,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         String freqLevels = BsdSysctlKit.sysctl("dev.cpu.0.freq_levels", Normal.EMPTY);
         // MHz/Watts pairs like: 2501/32000 2187/27125 2000/24000
         for (String s : RegEx.SPACES.split(freqLevels)) {
-            long freq = Builder.parseLongOrDefault(s.split(Symbol.SLASH)[0], -1L);
+            long freq = Builder.parseLongOrDefault(s.split("/")[0], -1L);
             if (max < freq) {
                 max = freq;
             }
@@ -292,13 +315,13 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
 
         // Allocate memory for array of CPTime
-        long size = new CpTime().size();
+        long size = new FreeBsdLibc.CpTime().size();
         long arraySize = size * getLogicalProcessorCount();
         Pointer p = new Memory(arraySize);
         String name = "kern.cp_times";
         // Fetch
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, new LibCAPI.size_t.ByReference(new LibCAPI.size_t(arraySize)), null,
-                LibCAPI.size_t.ZERO)) {
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, new size_t.ByReference(new size_t(arraySize)), null,
+                size_t.ZERO)) {
             Logger.error("Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
             return ticks;
         }
@@ -320,9 +343,9 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryContextSwitches() {
         String name = "vm.stats.sys.v_swtch";
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        size_t.ByReference size = new size_t.ByReference(new size_t(FreeBsdLibc.INT_SIZE));
         Pointer p = new Memory(size.longValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
             return 0L;
         }
         return Builder.unsignedIntToLong(p.getInt(0));
@@ -331,9 +354,9 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryInterrupts() {
         String name = "vm.stats.sys.v_intr";
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(new LibCAPI.size_t(FreeBsdLibc.INT_SIZE));
+        size_t.ByReference size = new size_t.ByReference(new size_t(FreeBsdLibc.INT_SIZE));
         Pointer p = new Memory(size.longValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
             return 0L;
         }
         return Builder.unsignedIntToLong(p.getInt(0));

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
@@ -84,9 +83,9 @@ final class FreeBsdSoundCard extends AbstractSoundCard {
                 if (line.contains("freebsd.driver =") && "pcm".equals(Builder.getSingleQuoteStringValue(line))) {
                     sounds.add(key);
                 } else if (line.contains("info.product")) {
-                    productMap.put(key, Builder.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
+                    productMap.put(key, Builder.getStringBetween(line, '\''));
                 } else if (line.contains("info.vendor")) {
-                    vendorMap.put(key, Builder.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
+                    vendorMap.put(key, Builder.getStringBetween(line, '\''));
                 }
             }
         }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,7 +36,11 @@ import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.WmiQueryHandler;
-import org.aoju.bus.health.windows.drivers.*;
+import org.aoju.bus.health.windows.drivers.perfmon.PhysicalDisk;
+import org.aoju.bus.health.windows.drivers.wmi.Win32DiskDrive;
+import org.aoju.bus.health.windows.drivers.wmi.Win32DiskDriveToDiskPartition;
+import org.aoju.bus.health.windows.drivers.wmi.Win32DiskPartition;
+import org.aoju.bus.health.windows.drivers.wmi.Win32LogicalDiskToPartition;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
@@ -55,7 +59,6 @@ import java.util.stream.Collectors;
 public final class WindowsHWDiskStore extends AbstractHWDiskStore {
 
     private static final String PHYSICALDRIVE_PREFIX = "\\\\.\\PHYSICALDRIVE";
-
     private static final Pattern DEVICE_ID = Pattern.compile(".*\\.DeviceID=\"(.*)\"");
 
     // A reasonable size for the buffer to accommodate the largest possible volume
@@ -110,7 +113,6 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                 // However, alternative calculations require use of a timestamp with 1/64-second
                 // resolution producing unacceptable variation in what should be a monotonically
                 // increasing counter. See extended discussion and experiments here:
-                // https://github.com/oshi/oshi/issues/1504
                 ds.transferTime = stats.diskTimeMap.getOrDefault(index, 0L);
                 ds.timeStamp = stats.timeStamp;
                 // Get partitions
@@ -143,7 +145,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
      * Gets disk stats for the specified index. If the index is null, populates all
      * the maps
      *
-     * @param index he index to populate/update maps for
+     * @param index The index to populate/update maps for
      * @return An object encapsulating maps with the stats
      */
     private static DiskStats queryReadWriteStats(String index) {
@@ -160,14 +162,14 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         List<Long> queueLengthList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.CURRENTDISKQUEUELENGTH);
         List<Long> diskTimeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.PERCENTDISKTIME);
 
-        if (instances.isEmpty() || null == readList || null == readByteList || null == writeList
-                || null == writeByteList || null == queueLengthList || null == diskTimeList) {
+        if (instances.isEmpty() || readList == null || readByteList == null || writeList == null
+                || writeByteList == null || queueLengthList == null || diskTimeList == null) {
             return stats;
         }
         for (int i = 0; i < instances.size(); i++) {
             String name = getIndexFromName(instances.get(i));
             // If index arg passed, only update passed arg
-            if (null != index && !index.equals(name)) {
+            if (index != null && !index.equals(name)) {
                 continue;
             }
             stats.readMap.put(name, readList.get(i));
@@ -307,7 +309,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
 
     @Override
     public boolean updateAttributes() {
-        String index;
+        String index = null;
         List<HWPartition> partitions = getPartitions();
         if (!partitions.isEmpty()) {
             // If a partition exists on this drive, the major property
@@ -319,7 +321,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             // disk has read/write statistics without a partition, and wonder
             // why this branch is even relevant as an option. The author of this
             // comment does not have an answer for this valid question.
-            index = getName().substring(PHYSICALDRIVE_PREFIX.length(), getName().length());
+            index = getName().substring(PHYSICALDRIVE_PREFIX.length());
         } else {
             // The author of this comment cannot fathom a circumstance in which
             // the code reaches this point, but just in case it does, here's the

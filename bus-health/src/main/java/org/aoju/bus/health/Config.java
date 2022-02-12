@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,11 +26,13 @@
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.annotation.NotThreadSafe;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.Properties;
 
 /**
- * The global configuration utility.
+ * The global configuration utility
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -39,10 +41,25 @@ import java.util.Properties;
 @NotThreadSafe
 public final class Config {
 
-    private static final Properties CONFIG = Builder.readProperties(Builder.BUS_HEALTH_PROPERTIES);
+    public static final String PROPERTIES = "bus.health.properties";
+    public static final String FILENAME_PROPERTIES = "bus.health.linux.filename.properties";
+    public static final String MACOS_VERSIONS_PROPERTIES = "bus.health.macos.version.properties";
+    public static final String VM_MAC_ADDR_PROPERTIES = "bus.health.vmmacaddr.properties";
+    public static final String ARCHITECTURE_PROPERTIES = "bus.health.architecture.properties";
 
-    private Config() {
-    }
+    public static final String MEMOIZER_EXPIRATION = "bus.health.memoizer.expiration";
+    public static final String WMI_TIMEOUT = "bus.health.wmi.timeout";
+    public static final String PROC_PATH = "bus.health.proc.path";
+    public static final String PSEUDO_FILESYSTEM_TYPES = "bus.health.pseudo.filesystem.types";
+    public static final String NETWORK_FILESYSTEM_TYPES = "bus.health.network.filesystem.types";
+    public static final String OS_WINDOWS_EVENTLOG = "bus.health.os.windows.eventlog";
+    public static final String OS_WINDOWS_PROCSTATE_SUSPENDED = "bus.health.os.windows.procstate.suspended";
+    public static final String OS_WINDOWS_COMMANDLINE_BATCH = "bus.health.os.windows.commandline.batch";
+    public static final String OS_WINDOWS_HKEYPERFDATA = "bus.health.os.windows.hkeyperfdata";
+    public static final String OS_WINDOWS_CPU_UTILITY = "bus.health.os.windows.cpu.utility";
+    public static final String OS_UNIX_WHOCOMMAND = "bus.health.os.unix.whoCommand";
+
+    private static final Properties CONFIG = readProperties(PROPERTIES);
 
     /**
      * Get the {@code String} property associated with the given key.
@@ -132,11 +149,21 @@ public final class Config {
     }
 
     /**
+     * Read a configuration file from the class path and return its properties
+     *
+     * @param fileName The filename
+     * @return A {@link java.util.Properties} object containing the properties.
+     */
+    public static Properties readProperties(String fileName) {
+        return org.aoju.bus.setting.magic.Properties.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/health/" + fileName, Builder.class);
+    }
+
+    /**
      * Indicates that a configuration value is invalid.
      */
     public static class PropertyException extends RuntimeException {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -7482581936621748005L;
 
         /**
          * @param property The property name

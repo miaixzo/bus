@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.software;
 
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.linux.ProcPath;
-import org.aoju.bus.health.linux.drivers.ProcessStat;
+import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 
 import java.util.Map;
 
@@ -41,6 +41,7 @@ import java.util.Map;
  * @version 6.3.3
  * @since JDK 1.8+
  */
+@ThreadSafe
 public class LinuxOSThread extends AbstractOSThread {
 
     private static final int[] PROC_TASK_STAT_ORDERS = new int[LinuxOSThread.ThreadPidStat.values().length];
@@ -137,7 +138,7 @@ public class LinuxOSThread extends AbstractOSThread {
         this.name = Builder
                 .getStringFromFile(String.format(ProcPath.TASK_COMM, this.getOwningProcessId(), this.threadId));
         Map<String, String> status = Builder.getKeyValueMapFromFile(
-                String.format(ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), Symbol.COLON);
+                String.format(ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), ":");
         String stat = Builder
                 .getStringFromFile(String.format(ProcPath.TASK_STAT, this.getOwningProcessId(), this.threadId));
         if (stat.isEmpty()) {
@@ -146,7 +147,7 @@ public class LinuxOSThread extends AbstractOSThread {
         }
         long now = System.currentTimeMillis();
         long[] statArray = Builder.parseStringToLongArray(stat, PROC_TASK_STAT_ORDERS,
-                ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
+                ProcessStat.PROC_PID_STAT_LENGTH, ' ');
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to
@@ -178,7 +179,7 @@ public class LinuxOSThread extends AbstractOSThread {
      * numeric order of the stat in /proc/pid/task/tid/stat per the man file.
      */
     private enum ThreadPidStat {
-        // The parsing implementation in Builder requires these to be declared
+        // The parsing implementation in ParseUtil requires these to be declared
         // in increasing order
         PPID(4), MINOR_FAULTS(10), MAJOR_FAULT(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),
         START_TIME(22), VSZ(23), RSS(24), START_CODE(26);

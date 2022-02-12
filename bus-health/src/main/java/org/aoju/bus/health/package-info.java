@@ -1,6 +1,8 @@
 /**
- * 跨平台的实现来检索操作系统和硬件信息
- * 如操作系统版本、内存、CPU、磁盘、设备、传感器等以便动态监测系统状态
+ * Provides utilities for parsing, formatting, and other access
+ * Provides a cross-platform implementation to retrieve
+ * Operating System and Hardware Information, such as OS version, memory, CPU,
+ * disk, devices, sensors, etc.
  *
  * @author Kimi Liu
  * @version 6.3.3

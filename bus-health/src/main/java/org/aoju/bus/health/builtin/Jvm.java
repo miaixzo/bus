@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,7 @@
 package org.aoju.bus.health.builtin;
 
 import org.aoju.bus.core.lang.System;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Platform;
 
 import java.io.Serializable;
@@ -102,10 +103,10 @@ public class Jvm implements Serializable {
     public final String toString() {
         StringBuilder builder = new StringBuilder();
 
-        Platform.append(builder, "JavaVM Name:    ", getName());
-        Platform.append(builder, "JavaVM Version: ", getVersion());
-        Platform.append(builder, "JavaVM Vendor:  ", getVendor());
-        Platform.append(builder, "JavaVM Info:    ", getInfo());
+        Builder.append(builder, "JavaVM Name:    ", getName());
+        Builder.append(builder, "JavaVM Version: ", getVersion());
+        Builder.append(builder, "JavaVM Vendor:  ", getVendor());
+        Builder.append(builder, "JavaVM Info:    ", getInfo());
 
         return builder.toString();
     }

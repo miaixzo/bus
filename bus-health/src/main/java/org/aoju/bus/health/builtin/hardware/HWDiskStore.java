@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,9 +30,17 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import java.util.List;
 
 /**
- * 一种存储机构，其中数据通过各种电子、磁、光或机械变化记录到一个或多个旋转磁盘
- * 或闪存(如可移动或固态驱动器)的表面层。与文件系统相比，定义操作系统使用存储的
- * 方式，磁盘存储代表文件系统用于文件存储的硬件
+ * A storage mechanism where data are recorded by various electronic, magnetic,
+ * optical, or mechanical changes to a surface layer of one or more rotating
+ * disks or or flash storage such as a removable or solid state drive. In
+ * constrast to a File System, defining the way an Operating system uses the
+ * storage, the Disk Store represents the hardware which a FileSystem uses for
+ * its File Stores.
+ * <p>
+ * Thread safe for the designed use of retrieving the most recent data. Users
+ * should be aware that the {@link #updateAttributes()} method may update
+ * attributes, including the time stamp, and should externally synchronize such
+ * usage to ensure consistent calculations.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -42,98 +50,100 @@ import java.util.List;
 public interface HWDiskStore {
 
     /**
-     * 磁盘的名称
+     * The disk name
      *
-     * @return 名称
+     * @return the name
      */
     String getName();
 
     /**
-     * 磁盘模式
+     * The disk model
      *
-     * @return 模式
+     * @return the model
      */
     String getModel();
 
     /**
-     * 磁盘序列号(如果可用)
+     * The disk serial number, if available.
      *
-     * @return 序列号
+     * @return the serial number
      */
     String getSerial();
 
     /**
-     * 磁盘的大小
+     * The size of the disk
      *
-     * @return 磁盘大小，以字节为单位
+     * @return the disk size, in bytes
      */
     long getSize();
 
     /**
-     * 从磁盘读取的次数
+     * The number of reads from the disk
      *
-     * @return 操作次数
+     * @return the reads
      */
     long getReads();
 
     /**
-     * 从磁盘读取的字节数
+     * The number of bytes read from the disk
      *
-     * @return 读取的字节数
+     * @return the bytes read
      */
     long getReadBytes();
 
     /**
-     * 写入磁盘的次数
+     * The number of writes to the disk
      *
-     * @return 操作次数
+     * @return the writes
      */
     long getWrites();
 
     /**
-     * 写入磁盘的字节数
+     * The number of bytes written to the disk
      *
-     * @return 写的字节数
+     * @return the bytes written
      */
     long getWriteBytes();
 
     /**
-     * 磁盘队列的长度(#I/O's in progress)
-     * 包括已经发送到设备驱动程序但尚未完成的I/O请求
-     * macOS上不支持
+     * The length of the disk queue (#I/O's in progress). Includes I/O requests that
+     * have been issued to the device driver but have not yet completed. Not
+     * supported on macOS.
      *
-     * @return 当前磁盘队列长度
+     * @return the current disk queue length
      */
     long getCurrentQueueLength();
 
     /**
-     * 读或写所用的时间，以毫秒为单位
+     * The time spent reading or writing, in milliseconds.
      *
-     * @return 传输时间
+     * @return the transfer time
      */
     long getTransferTime();
 
     /**
-     * 这个磁盘上的分区
+     * The partitions on this disk.
      *
-     * @return 这个驱动器上分区的 {@code UnmodifiableList}
+     * @return an {@code UnmodifiableList} of the partitions on this drive.
      */
     List<HWPartition> getPartitions();
 
     /**
-     * 此磁盘的统计信息更新的时间
+     * The time this disk's statistics were updated.
      *
-     * @return 时间戳，以毫秒为单位，从epoch开始
+     * @return the timeStamp, in milliseconds since the epoch.
      */
     long getTimeStamp();
 
     /**
-     * 尽最大努力更新有关驱动器的所有统计信息，而不需要重新创建驱动器列表
-     * 此方法提供了更频繁的单个驱动器统计信息的定期更新，但如果更新所有驱动器
-     * 使用此方法的效率可能会更低。它不会检测可移动驱动器是否已被删除
-     * 并在方法调用之间被另一个驱动器替换
+     * Make a best effort to update all the statistics about the drive without
+     * needing to recreate the drive list. This method provides for more frequent
+     * periodic updates of individual drive statistics but may be less efficient to
+     * use if updating all drives. It will not detect if a removable drive has been
+     * removed and replaced by a different drive in between method calls.
      *
-     * @return 如果更新(可能)成功，则为True;如果没有找到磁盘，则为false
+     * @return True if the update was (probably) successful, false if the disk was
+     * not found
      */
     boolean updateAttributes();
 

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,14 +25,17 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.software;
 
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
-import org.aoju.bus.health.builtin.software.OSProcess;
-import org.aoju.bus.health.windows.drivers.ThreadPerformanceData;
+import org.aoju.bus.health.builtin.software.OSProcess.State;
+import org.aoju.bus.health.windows.drivers.registry.ThreadPerformanceData;
+import org.aoju.bus.health.windows.drivers.registry.ThreadPerformanceData.PerfCounterBlock;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
 
 /**
  * OSThread implementation
@@ -41,11 +44,12 @@ import java.util.Set;
  * @version 6.3.3
  * @since JDK 1.8+
  */
+@ThreadSafe
 public class WindowsOSThread extends AbstractOSThread {
 
     private final int threadId;
     private String name;
-    private OSProcess.State state;
+    private State state;
     private long startMemoryAddress;
     private long contextSwitches;
     private long kernelTime;
@@ -54,7 +58,7 @@ public class WindowsOSThread extends AbstractOSThread {
     private long upTime;
     private int priority;
 
-    public WindowsOSThread(int pid, int tid, String procName, ThreadPerformanceData.PerfCounterBlock pcb) {
+    public WindowsOSThread(int pid, int tid, String procName, PerfCounterBlock pcb) {
         super(pid);
         this.threadId = tid;
         updateAttributes(procName, pcb);
@@ -71,7 +75,7 @@ public class WindowsOSThread extends AbstractOSThread {
     }
 
     @Override
-    public OSProcess.State getState() {
+    public State getState() {
         return state;
     }
 
@@ -117,45 +121,45 @@ public class WindowsOSThread extends AbstractOSThread {
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
                 .buildThreadMapFromRegistry(pids);
         // otherwise performance counters with WMI backup
-        if (null == threads) {
+        if (threads == null) {
             threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(pids);
         }
-        return updateAttributes(this.name.split(Symbol.SLASH)[0], threads.get(getThreadId()));
+        return updateAttributes(this.name.split("/")[0], threads.get(getThreadId()));
     }
 
-    private boolean updateAttributes(String procName, ThreadPerformanceData.PerfCounterBlock pcb) {
-        if (null == pcb) {
-            this.state = OSProcess.State.INVALID;
+    private boolean updateAttributes(String procName, PerfCounterBlock pcb) {
+        if (pcb == null) {
+            this.state = INVALID;
             return false;
-        } else if (pcb.getName().contains(Symbol.SLASH) || procName.isEmpty()) {
+        } else if (pcb.getName().contains("/") || procName.isEmpty()) {
             name = pcb.getName();
         } else {
-            this.name = procName + Symbol.SLASH + pcb.getName();
+            this.name = procName + "/" + pcb.getName();
         }
         if (pcb.getThreadWaitReason() == 5) {
-            state = OSProcess.State.SUSPENDED;
+            state = SUSPENDED;
         } else {
             switch (pcb.getThreadState()) {
                 case 0:
-                    state = OSProcess.State.NEW;
+                    state = NEW;
                     break;
                 case 2:
                 case 3:
-                    state = OSProcess.State.RUNNING;
+                    state = RUNNING;
                     break;
                 case 4:
-                    state = OSProcess.State.STOPPED;
+                    state = STOPPED;
                     break;
                 case 5:
-                    state = OSProcess.State.SLEEPING;
+                    state = SLEEPING;
                     break;
                 case 1:
                 case 6:
-                    state = OSProcess.State.WAITING;
+                    state = WAITING;
                     break;
                 case 7:
                 default:
-                    state = OSProcess.State.OTHER;
+                    state = OTHER;
             }
         }
         startMemoryAddress = pcb.getStartAddress();

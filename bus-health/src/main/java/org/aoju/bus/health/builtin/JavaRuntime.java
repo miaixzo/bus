@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,6 +27,7 @@ package org.aoju.bus.health.builtin;
 
 import org.aoju.bus.core.lang.System;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Platform;
 
 import java.io.Serializable;
@@ -217,15 +218,15 @@ public class JavaRuntime implements Serializable {
     @Override
     public final String toString() {
         StringBuilder builder = new StringBuilder();
-        Platform.append(builder, "Java Runtime Name:      ", getName());
-        Platform.append(builder, "Java Runtime Version:   ", getVersion());
-        Platform.append(builder, "Java Home Dir:          ", getHomeDir());
-        Platform.append(builder, "Java Extension Dirs:    ", getExtDirs());
-        Platform.append(builder, "Java Endorsed Dirs:     ", getEndorsedDirs());
-        Platform.append(builder, "Java Class Path:        ", getClassPath());
-        Platform.append(builder, "Java Class Version:     ", getClassVersion());
-        Platform.append(builder, "Java Library Path:      ", getLibraryPath());
-        Platform.append(builder, "Java Protocol Packages: ", getProtocolPackages());
+        Builder.append(builder, "Java Runtime Name:      ", getName());
+        Builder.append(builder, "Java Runtime Version:   ", getVersion());
+        Builder.append(builder, "Java Home Dir:          ", getHomeDir());
+        Builder.append(builder, "Java Extension Dirs:    ", getExtDirs());
+        Builder.append(builder, "Java Endorsed Dirs:     ", getEndorsedDirs());
+        Builder.append(builder, "Java Class Path:        ", getClassPath());
+        Builder.append(builder, "Java Class Version:     ", getClassVersion());
+        Builder.append(builder, "Java Library Path:      ", getLibraryPath());
+        Builder.append(builder, "Java Protocol Packages: ", getProtocolPackages());
         return builder.toString();
     }
 

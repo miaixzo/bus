@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,6 +27,7 @@ package org.aoju.bus.health.builtin;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.System;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Platform;
 
 import java.io.Serializable;
@@ -117,7 +118,7 @@ public class Java implements Serializable {
         String text = JAVA_VERSION.substring(0, 3);
 
         if (JAVA_VERSION.length() >= 5) {
-            text = text + JAVA_VERSION.substring(4, 5);
+            text = text + JAVA_VERSION.charAt(4);
         }
 
         return Float.parseFloat(text);
@@ -135,10 +136,10 @@ public class Java implements Serializable {
 
         String text = JAVA_VERSION.substring(0, 1);
 
-        text = text + JAVA_VERSION.substring(2, 3);
+        text = text + JAVA_VERSION.charAt(2);
 
         if (JAVA_VERSION.length() >= 5) {
-            text = text + JAVA_VERSION.substring(4, 5);
+            text = text + JAVA_VERSION.charAt(4);
         } else {
             text = text + Symbol.ZERO;
         }
@@ -326,9 +327,9 @@ public class Java implements Serializable {
     public final String toString() {
         StringBuilder builder = new StringBuilder();
 
-        Platform.append(builder, "Java Version:    ", getVersion());
-        Platform.append(builder, "Java Vendor:     ", getVendor());
-        Platform.append(builder, "Java Vendor URL: ", getVendorURL());
+        Builder.append(builder, "Java Version:    ", getVersion());
+        Builder.append(builder, "Java Vendor:     ", getVendor());
+        Builder.append(builder, "Java Vendor URL: ", getVendorURL());
 
         return builder.toString();
     }

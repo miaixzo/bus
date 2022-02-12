@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.drivers.perfstat;
 
-
 import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 
 import java.util.Arrays;
@@ -43,27 +44,24 @@ public final class PerfstatProcess {
 
     private static final Perfstat PERF = Perfstat.INSTANCE;
 
-    private PerfstatProcess() {
-    }
-
     /**
      * Queries perfstat_process for per-process usage statistics
      *
      * @return an array of usage statistics
      */
-    public static Perfstat.perfstat_process_t[] queryProcesses() {
-        Perfstat.perfstat_process_t process = new Perfstat.perfstat_process_t();
+    public static perfstat_process_t[] queryProcesses() {
+        perfstat_process_t process = new perfstat_process_t();
         // With null, null, ..., 0, returns total # of elements
         int procCount = PERF.perfstat_process(null, null, process.size(), 0);
         if (procCount > 0) {
-            Perfstat.perfstat_process_t[] proct = (Perfstat.perfstat_process_t[]) process.toArray(procCount);
-            Perfstat.perfstat_id_t firstprocess = new Perfstat.perfstat_id_t(); // name is ""
+            perfstat_process_t[] proct = (perfstat_process_t[]) process.toArray(procCount);
+            perfstat_id_t firstprocess = new perfstat_id_t(); // name is ""
             int ret = PERF.perfstat_process(firstprocess, proct, process.size(), procCount);
             if (ret > 0) {
                 return Arrays.copyOf(proct, ret);
             }
         }
-        return new Perfstat.perfstat_process_t[0];
+        return new perfstat_process_t[0];
     }
 
 }

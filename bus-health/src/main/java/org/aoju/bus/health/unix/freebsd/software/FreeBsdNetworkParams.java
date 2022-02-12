@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,15 +26,17 @@
 package org.aoju.bus.health.unix.freebsd.software;
 
 import com.sun.jna.Native;
-import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
+import org.aoju.bus.health.unix.CLibrary.Addrinfo;
+import org.aoju.bus.health.unix.FreeBsdLibc;
 import org.aoju.bus.logger.Logger;
+
+import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * FreeBsdNetworkParams class.
@@ -50,7 +52,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getDomainName() {
-        CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
+        Addrinfo hint = new Addrinfo();
         hint.ai_flags = CLibrary.AI_CANONNAME;
         String hostname = getHostName();
 
@@ -62,7 +64,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
             }
             return Normal.EMPTY;
         }
-        CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
+        Addrinfo info = new Addrinfo(ptr.getValue());
         String canonname = info.ai_canonname.trim();
         LIBC.freeaddrinfo(ptr.getValue());
         return canonname;
@@ -70,7 +72,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
         if (0 != LIBC.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }

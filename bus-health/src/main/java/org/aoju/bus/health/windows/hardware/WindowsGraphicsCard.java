@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,7 +36,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 import org.aoju.bus.health.windows.WmiKit;
-import org.aoju.bus.health.windows.drivers.Win32VideoController;
+import org.aoju.bus.health.windows.drivers.wmi.Win32VideoController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,9 +82,9 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 String name = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.NAME, index);
                 Triple<String, String, String> idPair = Builder.parseDeviceIdToVendorProductSerial(
                         WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.PNPDEVICEID, index));
-                String deviceId = null == idPair ? Normal.UNKNOWN : idPair.getRight();
+                String deviceId = idPair == null ? Normal.UNKNOWN : idPair.getMiddle();
                 String vendor = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.ADAPTERCOMPATIBILITY, index);
-                if (null != idPair) {
+                if (idPair != null) {
                     if (StringKit.isBlank(vendor)) {
                         deviceId = idPair.getLeft();
                     } else {

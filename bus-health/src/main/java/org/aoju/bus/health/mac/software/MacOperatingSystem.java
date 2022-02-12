@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,14 +26,14 @@
 package org.aoju.bus.health.mac.software;
 
 import com.sun.jna.platform.mac.SystemB;
-import com.sun.jna.platform.mac.SystemB.ProcTaskAllInfo;
 import com.sun.jna.platform.mac.SystemB.ProcTaskInfo;
 import com.sun.jna.platform.mac.SystemB.Timeval;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.mac.SysctlKit;
@@ -46,7 +46,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * macOS, previously Mac Mac OS) is a series of proprietary
+ * macOS, previously Mac OS X and later OS X) is a series of proprietary
  * graphical operating systems developed and marketed by Apple Inc. since 2001.
  * It is the primary operating system for Apple's Mac computers.
  *
@@ -67,7 +67,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             // Usually this works. If it doesn't, fall back to text parsing.
             // Boot time will be the first consecutive string of digits.
             BOOTTIME = Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
+                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
                     System.currentTimeMillis() / 1000);
         } else {
             // tv now points to a 64-bit timeval structure for boot time.
@@ -80,7 +80,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     private final String osXVersion;
     private final int major;
     private final int minor;
-    private int maxProc = Normal._1024;
+    private int maxProc = 1024;
 
     public MacOperatingSystem() {
         String version = System.getProperty("os.version");
@@ -102,21 +102,13 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         this.maxProc = SysctlKit.sysctl("kern.maxproc", 0x1000);
     }
 
-    private static int getParentProcessPid(int pid) {
-        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
-        if (0 > SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo, taskAllInfo.size())) {
-            return 0;
-        }
-        return taskAllInfo.pbsd.pbi_ppid;
-    }
-
     @Override
     public String queryManufacturer() {
         return "Apple";
     }
 
     @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+    public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         String family = this.major > 10 || (this.major == 10 && this.minor >= 12) ? "macOS"
                 : System.getProperty("os.name");
         String codeName = parseCodeName();
@@ -124,12 +116,26 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         return Pair.of(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
+    private String parseCodeName() {
+        Properties verProps = Config.readProperties(Config.MACOS_VERSIONS_PROPERTIES);
+        String codeName = null;
+        if (this.major > 10) {
+            codeName = verProps.getProperty(Integer.toString(this.major));
+        } else if (this.major == 10) {
+            codeName = verProps.getProperty(this.major + "." + this.minor);
+        }
+        if (StringKit.isBlank(codeName)) {
+            Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
+        }
+        return codeName;
+    }
+
     @Override
     protected int queryBitness(int jvmBitness) {
-        if (jvmBitness == Normal._64 || (this.major == 10 && this.minor > 6)) {
-            return Normal._64;
+        if (jvmBitness == 64 || (this.major == 10 && this.minor > 6)) {
+            return 64;
         }
-        return Builder.parseIntOrDefault(Executor.getFirstAnswer("getconf LONG_BIT"), Normal._32);
+        return Builder.parseIntOrDefault(Executor.getFirstAnswer("getconf LONG_BIT"), 32);
     }
 
     @Override
@@ -158,12 +164,18 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             // is: SystemB.INT_SIZE * (pids + 1)
             if (pids[i] != 0) {
                 OSProcess proc = getProcess(pids[i]);
-                if (null != proc) {
+                if (proc != null) {
                     procs.add(proc);
                 }
             }
         }
         return procs;
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        OSProcess proc = new MacOSProcess(pid, this.minor);
+        return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
     }
 
     @Override
@@ -178,12 +190,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         List<OSProcess> allProcs = queryAllProcesses();
         Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        OSProcess proc = new MacOSProcess(pid, this.minor);
-        return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
     }
 
     @Override
@@ -234,7 +240,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, ProcessFiltering.ALL_PROCESSES, ProcessSorting.PID_ASC, 0)) {
+        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES, OperatingSystem.ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());
@@ -256,7 +262,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         for (File f : files) {
             // remove .plist extension
             String name = f.getName().substring(0, f.getName().length() - 6);
-            int index = name.lastIndexOf(Symbol.C_DOT);
+            int index = name.lastIndexOf('.');
             String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
             if (!running.contains(name) && !running.contains(shortName)) {
                 OSService s = new OSService(name, 0, OSService.State.STOPPED);
@@ -269,55 +275,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
         return WindowInfo.queryDesktopWindows(visibleOnly);
-    }
-
-    private String parseCodeName() {
-        if (this.major > 10) {
-            switch (this.major) {
-                case 12:
-                    return "Monterey";
-                case 11:
-                    return "Big Sur";
-            }
-        } else if (this.major == 10) {
-            switch (this.minor) {
-                case 15:
-                    return "Catalina";
-                case 14:
-                    return "Mojave";
-                case 13:
-                    return "High Sierra";
-                case 12:
-                    return "Sierra";
-                case 11:
-                    return "El Capitan";
-                case 10:
-                    return "Yosemite";
-                case 9:
-                    return "Mavericks";
-                case 8:
-                    return "Mountain Lion";
-                case 7:
-                    return "Lion";
-                case 6:
-                    return "Snow Leopard";
-                case 5:
-                    return "Leopard";
-                case 4:
-                    return "Tiger";
-                case 3:
-                    return "Panther";
-                case 2:
-                    return "Jaguar";
-                case 1:
-                    return "Puma";
-                case 0:
-                    return "Cheetah";
-                default:
-            }
-        }
-        Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
-        return "Big Sur";
     }
 
 }

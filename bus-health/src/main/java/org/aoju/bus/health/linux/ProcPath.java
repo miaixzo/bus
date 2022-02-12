@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,14 +26,16 @@
 package org.aoju.bus.health.linux;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Config;
 
 import java.io.File;
 
 /**
- * 提供对Linux上某些/proc文件系统信息的访问
+ * Provides constants for paths in the {@code /proc} filesystem on Linux.
+ * <p>
+ * If the user desires to configure a custom {@code /proc} path, it must be
+ * declared in the health configuration file or updated in the
+ * {@link Config} class prior to initializing this class.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -42,6 +44,9 @@ import java.io.File;
 @ThreadSafe
 public final class ProcPath {
 
+    /**
+     * The /proc filesystem location.
+     */
     public static final String PROC = queryProcConfig();
 
     public static final String ASOUND = PROC + "/asound/";
@@ -71,14 +76,15 @@ public final class ProcPath {
     public static final String VMSTAT = PROC + "/vmstat";
 
     private ProcPath() {
+
     }
 
     private static String queryProcConfig() {
-        String procPath = Config.get("health.proc.path", "/proc");
+        String procPath = Config.get(Config.PROC_PATH, "/proc");
         // Ensure prefix begins with path separator, but doesn't end with one
-        procPath = Symbol.C_SLASH + procPath.replaceAll("/$|^/", Normal.EMPTY);
+        procPath = '/' + procPath.replaceAll("/$|^/", "");
         if (!new File(procPath).exists()) {
-            throw new Config.PropertyException("health.proc.path", "The path does not exist");
+            throw new Config.PropertyException(Config.PROC_PATH, "The path does not exist");
         }
         return procPath;
     }

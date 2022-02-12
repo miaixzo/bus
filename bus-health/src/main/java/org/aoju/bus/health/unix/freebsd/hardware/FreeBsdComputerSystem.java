@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -57,8 +57,8 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
         String manufacturer = null;
         String model = null;
         String serialNumber = null;
-        String version = null;
         String uuid = null;
+        String version = null;
 
         // $ sudo dmidecode -t system
         // # dmidecode 3.0
@@ -84,8 +84,8 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
         final String manufacturerMarker = "Manufacturer:";
         final String productNameMarker = "Product Name:";
         final String serialNumMarker = "Serial Number:";
-        final String versionMarker = "Version:";
         final String uuidMarker = "UUID:";
+        final String versionMarker = "Version:";
 
         // Only works with root permissions but it's all we've got
         for (final String checkLine : Executor.runNative("dmidecode -t system")) {

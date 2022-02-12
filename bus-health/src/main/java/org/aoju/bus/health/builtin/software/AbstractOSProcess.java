@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -45,7 +45,7 @@ public abstract class AbstractOSProcess implements OSProcess {
 
     private final Supplier<Double> cumulativeCpuLoad = Memoize.memoize(this::queryCumulativeCpuLoad, Memoize.defaultExpiration());
 
-    private int processID;
+    private final int processID;
 
     protected AbstractOSProcess(int pid) {
         this.processID = pid;
@@ -67,7 +67,7 @@ public abstract class AbstractOSProcess implements OSProcess {
 
     @Override
     public double getProcessCpuLoadBetweenTicks(OSProcess priorSnapshot) {
-        if (null != priorSnapshot && this.processID == priorSnapshot.getProcessID()
+        if (priorSnapshot != null && this.processID == priorSnapshot.getProcessID()
                 && getUpTime() > priorSnapshot.getUpTime()) {
             return (getUserTime() - priorSnapshot.getUserTime() + getKernelTime() - priorSnapshot.getKernelTime())
                     / (double) (getUpTime() - priorSnapshot.getUpTime());

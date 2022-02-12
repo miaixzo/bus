@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,10 +29,12 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Memory info on OpenBSD
@@ -44,10 +46,11 @@ import java.util.function.Supplier;
 @ThreadSafe
 final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
 
-    private final Supplier<Triple<Integer, Integer, Integer>> usedTotalPgin = Memoize.memoize(
-            OpenBsdVirtualMemory::queryVmstat, Memoize.defaultExpiration());
-    private final Supplier<Integer> pgout = Memoize.memoize(OpenBsdVirtualMemory::queryUvm, Memoize.defaultExpiration());
     private final OpenBsdGlobalMemory global;
+
+    private final Supplier<Triple<Integer, Integer, Integer>> usedTotalPgin = memoize(
+            OpenBsdVirtualMemory::queryVmstat, defaultExpiration());
+    private final Supplier<Integer> pgout = memoize(OpenBsdVirtualMemory::queryUvm, defaultExpiration());
 
     OpenBsdVirtualMemory(OpenBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;

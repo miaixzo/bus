@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,8 +28,8 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.logger.Logger;
@@ -43,7 +43,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * 网络接口信息
+ * Network interfaces implementation.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -53,24 +53,25 @@ import java.util.stream.Collectors;
 public abstract class AbstractNetworkIF implements NetworkIF {
 
     private final Supplier<Properties> vmMacAddrProps = Memoize.memoize(AbstractNetworkIF::queryVmMacAddrProps);
-    private NetworkInterface networkInterface;
-    private String name;
-    private String displayName;
-    private int index;
-    private long mtu;
-    private String mac;
-    private String[] ipv4;
-    private Short[] subnetMasks;
-    private String[] ipv6;
-    private Short[] prefixLengths;
+    private final NetworkInterface networkInterface;
+    private final String name;
+    private final String displayName;
+    private final int index;
+    private final long mtu;
+    private final String mac;
+    private final String[] ipv4;
+    private final Short[] subnetMasks;
+    private final String[] ipv6;
+    private final Short[] prefixLengths;
 
     /**
      * Construct a {@link NetworkIF} object backed by the specified
      * {@link NetworkInterface}.
      *
      * @param netint The core java {@link NetworkInterface} backing this object.
+     * @throws InstantiationException If a socket exception prevents access to the backing interface.
      */
-    protected AbstractNetworkIF(NetworkInterface netint) {
+    protected AbstractNetworkIF(NetworkInterface netint) throws InstantiationException {
         this(netint, netint.getDisplayName());
     }
 
@@ -81,8 +82,9 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      * @param netint      The core java {@link NetworkInterface} backing this object.
      * @param displayName A string to use for the display name in preference to the
      *                    {@link NetworkInterface} value.
+     * @throws InstantiationException If a socket exception prevents access to the backing interface.
      */
-    protected AbstractNetworkIF(NetworkInterface netint, String displayName) {
+    protected AbstractNetworkIF(NetworkInterface netint, String displayName) throws InstantiationException {
         this.networkInterface = netint;
         try {
             this.name = networkInterface.getName();
@@ -92,12 +94,12 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             this.mtu = Builder.unsignedIntToLong(networkInterface.getMTU());
             // Set MAC
             byte[] hwmac = networkInterface.getHardwareAddress();
-            if (null != hwmac) {
+            if (hwmac != null) {
                 List<String> octets = new ArrayList<>(6);
                 for (byte b : hwmac) {
                     octets.add(String.format("%02x", b));
                 }
-                this.mac = String.join(Symbol.COLON, octets);
+                this.mac = String.join(":", octets);
             } else {
                 this.mac = Normal.UNKNOWN;
             }
@@ -110,8 +112,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress address = interfaceAddress.getAddress();
                 if (address.getHostAddress().length() > 0) {
-                    if (address.getHostAddress().contains(Symbol.COLON)) {
-                        ipv6list.add(address.getHostAddress().split(Symbol.PERCENT)[0]);
+                    if (address.getHostAddress().contains(":")) {
+                        ipv6list.add(address.getHostAddress().split("%")[0]);
                         prefixLengthList.add(interfaceAddress.getNetworkPrefixLength());
                     } else {
                         ipv4list.add(address.getHostAddress());
@@ -125,7 +127,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             this.ipv6 = ipv6list.toArray(new String[0]);
             this.prefixLengths = prefixLengthList.toArray(new Short[0]);
         } catch (SocketException e) {
-            throw new InstrumentException(e.getMessage());
+            throw new InstantiationException(e.getMessage());
         }
     }
 
@@ -137,6 +139,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      */
     protected static List<NetworkInterface> getNetworkInterfaces(boolean includeLocalInterfaces) {
         List<NetworkInterface> interfaces = getAllNetworkInterfaces();
+
         return includeLocalInterfaces ? interfaces
                 : getAllNetworkInterfaces().stream().filter(networkInterface1 -> !isLocalInterface(networkInterface1))
                 .collect(Collectors.toList());
@@ -150,11 +153,10 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private static List<NetworkInterface> getAllNetworkInterfaces() {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            return null == interfaces ? Collections.emptyList() : Collections.list(interfaces);
+            return interfaces == null ? Collections.emptyList() : Collections.list(interfaces);
         } catch (SocketException ex) {
             Logger.error("Socket exception when retrieving interfaces: {}", ex.getMessage());
         }
-
         return Collections.emptyList();
     }
 
@@ -170,7 +172,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     }
 
     private static Properties queryVmMacAddrProps() {
-        return Builder.readProperties(Builder.BUS_HEALTH_ADDR_PROPERTIES);
+        return Config.readProperties(Config.VM_MAC_ADDR_PROPERTIES);
     }
 
     @Override
@@ -184,13 +186,13 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     }
 
     @Override
-    public String getDisplayName() {
-        return this.displayName;
+    public int getIndex() {
+        return this.index;
     }
 
     @Override
-    public int getIndex() {
-        return this.index;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     @Override

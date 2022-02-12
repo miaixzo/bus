@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
@@ -42,9 +43,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 此类表示计算机*系统的整个中央处理单元(CPU)，其中可能包含一个
- * 或多个物理程序包(插槽)，一个或多个物理处理器(核心)和一个或
- * 多个逻辑处理器(操作系统看到的内容，可能包括超线程内核)
+ * This class represents the entire Central Processing Unit (CPU) of a computer
+ * system, which may contain one or more physical packages (sockets), one or
+ * more physical processors (cores), and one or more logical processors (what
+ * the Operating System sees, which may include hyperthreaded cores.)
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -54,84 +56,127 @@ import java.util.regex.Pattern;
 public interface CentralProcessor {
 
     /**
-     * CPU的标识符字符串，包括名称，供应商，步进，型号和系列信息(也称为CPU的签名)
+     * The CPU's identifier strings ,including name, vendor, stepping, model, and
+     * family information (also called the signature of a CPU).
+     * <p>
+     * The Processor Identifier is primarily associated with Intel-based chips.
+     * Attempts are made to provide comparable values for other chip manufacturers.
      *
-     * @return 封装CPU标识符*信息的{@link ProcessorIdentifier}对象
+     * @return a {@link ProcessorIdentifier} object encapsulating CPU identifier
+     * information.
      */
     ProcessorIdentifier getProcessorIdentifier();
 
     /**
-     * 该CPU上逻辑处理器的最大频率(Hz)
+     * Maximum frequeny (in Hz), of the logical processors on this CPU.
      *
-     * @return 最大频率或-1，如果未知
+     * @return The max frequency or -1 if unknown.
      */
     long getMaxFreq();
 
     /**
-     * 尝试返回此CPU上逻辑处理器的当前频率(以Hz为单位)
-     * 在Windows上，根据最大频率的百分比返回估算值
-     * 在具有64个以上逻辑处理器的Windows系统上
-     * 只能返回数组第一部分中当前处理器组的频率。
+     * Attempts to return the current frequency (in Hz), of the logical processors
+     * on this CPU.
+     * <p>
+     * May not be implemented on all Operating Systems.
+     * <p>
+     * On Windows, returns an estimate based on the percent of maximum frequency. On
+     * Windows systems with more than 64 logical processors, may only return
+     * frequencies for the current processor group in the first portion of the
+     * array.
      *
-     * @return 系统上每个逻辑处理器的处理器频率数组
-     * 使用{@link #getLogicalProcessors()} 将这些频率与物理包和处理器相关联
+     * @return An array of processor frequencies for each logical processor on the
+     * system. Use the {@link #getLogicalProcessors()} to correlate these
+     * frequencies with physical packages and processors.
      */
     long[] getCurrentFreq();
 
     /**
-     * 返回CPU逻辑处理器的数组。数组将按照NUMA节点号
-     * 然后是处理器号的*顺序进行排序。此顺序与提供按
-     * 处理器结果的其他方法一致
+     * Returns an {@code UnmodifiableList} of the CPU's logical processors. The list
+     * will be sorted in order of increasing NUMA node number, and then processor
+     * number. This order is consistent with other methods providing per-processor
+     * results.
      *
-     * @return 逻辑处理器阵列
+     * @return An {@code UnmodifiabeList} of logical processors.
      */
     List<LogicalProcessor> getLogicalProcessors();
 
     /**
-     * 通过计算来自{@link #getSystemCpuLoadTicks()}的滴答声与来自先
-     * 前调用的用户提供的值之间的滴答声，返回整个系统的“最近cpu使用情况”
+     * Returns an {@code UnmodifiableList} of the CPU's physical processors. The
+     * list will be sorted in order of increasing core ID.
      *
-     * @param oldTicks 先前对*{@link #getSystemCpuLoadTicks()}的调用的滴答数组
-     * @return CPU负载介于0和1之间(100 ％)
+     * @return An {@code UnmodifiabeList} of physical processors.
+     */
+    List<PhysicalProcessor> getPhysicalProcessors();
+
+    /**
+     * Returns the "recent cpu usage" for the whole system by counting ticks from
+     * {@link #getSystemCpuLoadTicks()} between the user-provided value from a
+     * previous call.
+     *
+     * @param oldTicks A tick array from a previous call to
+     *                 {@link #getSystemCpuLoadTicks()}
+     * @return CPU load between 0 and 1 (100%)
      */
     double getSystemCpuLoadBetweenTicks(long[] oldTicks);
 
     /**
-     * 获取系统范围的CPU负载滴答计数器。返回具有七个元素的数组
-     * 表示在User(0)，Nice(1)，System(2)，Idle(3)IOwait(4)，IOwait(IRQ)(5)
-     * 软件中断/DPC中花费的毫秒数(SoftIRQ(6)或Steal(7)状态。使用 {@link CentralProcessor.TickType#getIndex()}
-     * 来检索适当的索引。通过测量一个时间间隔内的滴答之间的差异，可以计算该间隔内的CPU负载。
-     * <p> 请注意，虽然滴答计数器以毫秒为单位，但它们可能会与(取决于平台的)时钟滴答一起以更大的增量前进
-     * 。例如，默认情况下，Windows时钟滴答是1/64秒(约15或16 *毫秒)，而Linux滴答则取决于发行和配置
-     * 但通常是1/100秒(10毫秒)
-     * <p> Windows上没有Nice和IOWait信息，而macOS上没有IOwait和IRQ信息，因此这些刻度始终为零。
-     * <p> 要使用此方法计算总体空闲时间，请同时包括空闲和IOWait滴答。同样，IRQ，SoftIRQ和Steal ticks应该添加到
-     * System值以得到总数。系统滴答声还包括执行其他*虚拟主机(窃取)的时间
+     * Get System-wide CPU Load tick counters. Returns an array with seven elements
+     * representing milliseconds spent in User (0), Nice (1), System (2), Idle (3),
+     * IOwait (4), Hardware interrupts (IRQ) (5), Software interrupts/DPC (SoftIRQ)
+     * (6), or Steal (7) states. Use
+     * {@link CentralProcessor.TickType#getIndex()} to retrieve the
+     * appropriate index. By measuring the difference between ticks across a time
+     * interval, CPU load over that interval may be calculated.
+     * <p>
+     * Note that while tick counters are in units of milliseconds, they may advance
+     * in larger increments along with (platform dependent) clock ticks. For
+     * example, by default Windows clock ticks are 1/64 of a second (about 15 or 16
+     * milliseconds) and Linux ticks are distribution and configuration dependent
+     * but usually 1/100 of a second (10 milliseconds).
+     * <p>
+     * Nice and IOWait information is not available on Windows, and IOwait and IRQ
+     * information is not available on macOS, so these ticks will always be zero.
+     * <p>
+     * To calculate overall Idle time using this method, include both Idle and
+     * IOWait ticks. Similarly, IRQ, SoftIRQ, and Steal ticks should be added to the
+     * System value to get the total. System ticks also include time executing other
+     * virtual hosts (steal).
      *
-     * @return 7个长值组成的数组，表示在用户，Nice，System，Idle，IOwait，IRQ，SoftIRQ和窃取状态中花费的时间
+     * @return An array of 7 long values representing time spent in User, Nice,
+     * System, Idle, IOwait, IRQ, SoftIRQ, and Steal states.
      */
     long[] getSystemCpuLoadTicks();
 
     /**
-     * 返回指定元素数量的系统负载平均值，最多3个元素，表示1、5和15分钟
-     * 系统负载平均值是排队到可用处理器的可运行实体的数量和在可用处理器上
-     * 运行的可运行实体的数量在一段时间内的平均值的总和。负载平均值的计算
-     * 方法是特定于操作系统的，但通常是一个与时间相关的阻尼平均值
-     * 如果负载平均值不可用，则返回一个负值。此方法的设计目的是提供有关
-     * 系统负载的提示，并且可以频繁地查询平均负载在某些平台(例如Windows)
-     * 上可能不可用，其中实现此方法的成本很高
+     * Returns the system load average for the number of elements specified, up to
+     * 3, representing 1, 5, and 15 minutes. The system load average is the sum of
+     * the number of runnable entities queued to the available processors and the
+     * number of runnable entities running on the available processors averaged over
+     * a period of time. The way in which the load average is calculated is
+     * operating system specific but is typically a damped time-dependent average.
+     * If the load average is not available, a negative value is returned. This
+     * method is designed to provide a hint about the system load and may be queried
+     * frequently.
+     * <p>
+     * The load average may be unavailable on some platforms (e.g., Windows) where
+     * it is expensive to implement this method.
      *
-     * @param nelem 返回的元素数
-     * @return 一个阵列的系统负载平均为1、5和15分钟，阵列的大小由nelem指定;如果不可用，则为负值
+     * @param nelem Number of elements to return.
+     * @return an array of the system load averages for 1, 5, and 15 minutes with
+     * the size of the array specified by nelem; or negative values if not
+     * available.
      */
     double[] getSystemLoadAverage(int nelem);
 
     /**
-     * 返回所有逻辑处理器的“最近cpu使用量”，方法是在用户提供的前一个调用的值之间
-     * 对来自{@link #getProcessorCpuLoadTicks()}的节拍进行计数
+     * Returns the "recent cpu usage" for all logical processors by counting ticks
+     * from {@link #getProcessorCpuLoadTicks()} between the user-provided value from
+     * a previous call.
      *
-     * @param oldTicks 前一个调用{@link #getProcessorCpuLoadTicks()}的tick数组
-     * @return 每个逻辑处理器的CPU负载在0到1(100 %)之间的数组
+     * @param oldTicks A tick array from a previous call to
+     *                 {@link #getProcessorCpuLoadTicks()}
+     * @return array of CPU load between 0 and 1 (100%) for each logical processor
      */
     double[] getProcessorCpuLoadBetweenTicks(long[][] oldTicks);
 
@@ -206,7 +251,7 @@ public interface CentralProcessor {
      * <p>
      * Not available system-wide on macOS.
      *
-     * @return The number of interrupts, if this information is available; -1
+     * @return The number of interrupts, if this information is available; 0
      * otherwise.
      */
     long getInterrupts();
@@ -378,7 +423,108 @@ public interface CentralProcessor {
                     + ", packageNumber=" + physicalPackageNumber + ", numaNode=" + numaNode + ", processorGroup="
                     + processorGroup + "]";
         }
+    }
 
+    /**
+     * A class representing a Physical Processor (a core) providing per-core
+     * statistics that may vary, particularly in hybrid/modular processors.
+     */
+    @Immutable
+    class PhysicalProcessor {
+        private final int physicalPackageNumber;
+        private final int physicalProcessorNumber;
+        private final int efficiency;
+        private final String idString;
+
+        public PhysicalProcessor(int physicalPackageNumber, int physicalProcessorNumber) {
+            this(physicalPackageNumber, physicalProcessorNumber, 0, "");
+        }
+
+        public PhysicalProcessor(int physicalPackageNumber, int physicalProcessorNumber, int efficiency,
+                                 String idString) {
+            this.physicalPackageNumber = physicalPackageNumber;
+            this.physicalProcessorNumber = physicalProcessorNumber;
+            this.efficiency = efficiency;
+            this.idString = idString;
+        }
+
+        /**
+         * Gets the package id. This is also the physical package number which
+         * corresponds to {@link LogicalProcessor#getPhysicalPackageNumber()}.
+         *
+         * @return the physicalProcessorNumber
+         */
+        public int getPhysicalPackageNumber() {
+            return physicalPackageNumber;
+        }
+
+        /**
+         * Gets the core id. This is also the physical processor number which
+         * corresponds to {@link LogicalProcessor#getPhysicalProcessorNumber()}.
+         *
+         * @return the physicalProcessorNumber
+         */
+        public int getPhysicalProcessorNumber() {
+            return physicalProcessorNumber;
+        }
+
+        /**
+         * Gets a platform specific measure of processor performance vs. efficiency,
+         * useful for identifying cores in hybrid/System on Chip (SoC) processors such
+         * as ARM's big.LITTLE architecture, Apple's M1, and Intel's P-core and E-core
+         * hybrid technology. A core with a higher value for the efficiency class has
+         * intrinsically greater performance and less efficiency than a core with a
+         * lower value for the efficiency class.
+         *
+         * @return On Windows 10 and higher, returns the {@code EfficiencyClass} value
+         * from the {@code PROCESSOR_RELATIONSHIP} structure.
+         * <p>
+         * On macOS with Apple Silicon, emulates the same relative efficiency
+         * class values as Windows.
+         * <p>
+         * On Linux, returns the {@code cpu_capacity} value from sysfs. This is
+         * an optional cpu node property representing CPU capacity expressed in
+         * normalized DMIPS/MHz.
+         * <p>
+         * On OpenBSD, FreeBSD, and Solaris with ARM big.LITTLE processors,
+         * emulates the same relative efficiency class values as Windows.
+         * <p>
+         * For unimplemented operating systems or architectures, returns 0.
+         * @see <a href=
+         * "https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_relationship">PROCESSOR_RELATIONSHIP</a>
+         * @see <a href=
+         * "https://www.kernel.org/doc/Documentation/devicetree/bindings/arm/cpu-capacity.txt">cpu-capacity</a>
+         */
+        public int getEfficiency() {
+            return efficiency;
+        }
+
+        /**
+         * Gets a platform specific identification string representing this core. This
+         * string requires user parsing to obtain meaningful information. As this is an
+         * experimental feature, users should not rely on the format.
+         *
+         * @return On Windows, returns the per-core Processor ID (CPUID).
+         * <p>
+         * On macOS, returns a compatibility string from the IO Registry
+         * identifying hybrid cores.
+         * <p>
+         * On Linux, returns the {@code MODALIAS} value for the core's driver.
+         * <p>
+         * On OpenBSD, FreeBSD, and Solaris, returns a per-core CPU
+         * identification string.
+         * <p>
+         * For unimplemented operating systems, returns an empty string.
+         */
+        public String getIdString() {
+            return idString;
+        }
+
+        @Override
+        public String toString() {
+            return "PhysicalProcessor [package/core=" + physicalPackageNumber + "/" + physicalProcessorNumber
+                    + ", efficiency=" + efficiency + ", idString=" + idString + "]";
+        }
     }
 
     /**
@@ -400,7 +546,6 @@ public interface CentralProcessor {
         private final long cpuVendorFreq;
 
         private final Supplier<String> microArchictecture = Memoize.memoize(this::queryMicroarchitecture);
-
 
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
                                    String cpuStepping, String processorID, boolean cpu64bit) {
@@ -502,10 +647,14 @@ public interface CentralProcessor {
          * <p>
          * For processors that do not support the CPUID opcode this field is populated
          * with a comparable hex string. For example, ARM Processors will fill the first
-         * 32 bytes with the MIDR.
+         * 32 bytes with the MIDR. AIX PowerPC Processors will return the machine ID.
          * <p>
          * NOTE: The order of returned bytes is platform and software dependent. Values
          * may be in either Big Endian or Little Endian order.
+         * <p>
+         * NOTE: If health is unable to determine the ProcessorID from native sources, it
+         * will attempt to reconstruct one from available information in the processor
+         * identifier.
          *
          * @return A string representing the Processor ID
          */
@@ -554,7 +703,7 @@ public interface CentralProcessor {
 
         private String queryMicroarchitecture() {
             String arch = null;
-            Properties archProps = Builder.readProperties(Builder.BUS_HEALTH_ARCH_PROPERTIES);
+            Properties archProps = Config.readProperties(Config.ARCHITECTURE_PROPERTIES);
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix

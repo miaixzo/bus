@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,23 +31,22 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
 import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
-import org.aoju.bus.health.windows.PowrProf;
-import org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.LogicalProcessorInformation;
-import org.aoju.bus.health.windows.drivers.ProcessorInformation;
-import org.aoju.bus.health.windows.drivers.SystemInformation;
-import org.aoju.bus.health.windows.drivers.Win32Processor;
+import org.aoju.bus.health.windows.drivers.perfmon.ProcessorInformation;
+import org.aoju.bus.health.windows.drivers.perfmon.SystemInformation;
+import org.aoju.bus.health.windows.drivers.wmi.Win32Processor;
 import org.aoju.bus.logger.Logger;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A CPU, representing all of a system's processors. It may contain multiple
@@ -63,34 +62,52 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     // populated by initProcessorCounts called by the parent constructor
     private Map<String, Integer> numaNodeProcToLogicalProcMap;
 
-    private static int getMatchingPackage(List<WinNT.GROUP_AFFINITY[]> packages, int g, int lp) {
-        for (int i = 0; i < packages.size(); i++) {
-            for (int j = 0; j < packages.get(i).length; j++) {
-                if ((packages.get(i)[j].mask.longValue() & (1L << lp)) > 0 && packages.get(i)[j].group == g) {
-                    return i;
+    // Stores first set of ticks for cpu adjustment
+    private long[] systicks = null;
+    private long[] idleticks = null;
+    private long[] elapsedticks = null;
+    private long[] privticks = null;
+    private long[] procticks = null;
+    private long[] baseticks = null;
+
+    WindowsCentralProcessor() {
+        super();
+        if (ProcessorInformation.USE_CPU_UTILITY) {
+            Pair<List<String>, Map<ProcessorInformation.ProcessorCapacityTickCountProperty, List<Long>>> initialTicks = ProcessorInformation
+                    .queryInitialProcessorCapacityCounters();
+            List<String> instances = initialTicks.getLeft();
+            Map<ProcessorInformation.ProcessorCapacityTickCountProperty, List<Long>> valueMap = initialTicks.getRight();
+            List<Long> systemList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPRIVILEGEDTIME);
+            List<Long> userList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTUSERTIME);
+            // % Processor Time is actually Idle time
+            List<Long> idleList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPROCESSORTIME);
+            // Utility ticks, if configured
+            List<Long> systemUtility = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPRIVILEGEDUTILITY);
+            List<Long> processorUtility = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPROCESSORUTILITY);
+            List<Long> processorUtilityBase = valueMap
+                    .get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPROCESSORUTILITY_BASE);
+            int ncpu = getLogicalProcessorCount();
+            systicks = new long[ncpu];
+            idleticks = new long[ncpu];
+            elapsedticks = new long[ncpu];
+            privticks = new long[ncpu];
+            procticks = new long[ncpu];
+            baseticks = new long[ncpu];
+
+            for (int p = 0; p < instances.size(); p++) {
+                int cpu = instances.get(p).contains(",")
+                        ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
+                        : Builder.parseIntOrDefault(instances.get(p), 0);
+                if (cpu < ncpu) {
+                    systicks[cpu] = systemList.get(p);
+                    idleticks[cpu] = idleList.get(p);
+                    elapsedticks[cpu] = userList.get(p) + idleticks[cpu] + systicks[cpu];
+                    privticks[cpu] = systemUtility.get(p);
+                    procticks[cpu] = processorUtility.get(p);
+                    baseticks[cpu] = processorUtilityBase.get(p);
                 }
             }
         }
-        return 0;
-    }
-
-    private static int getMatchingNumaNode(List<WinNT.NUMA_NODE_RELATIONSHIP> numaNodes, int g, int lp) {
-        for (int j = 0; j < numaNodes.size(); j++) {
-            if ((numaNodes.get(j).groupMask.mask.longValue() & (1L << lp)) > 0
-                    && numaNodes.get(j).groupMask.group == g) {
-                return numaNodes.get(j).nodeNumber;
-            }
-        }
-        return 0;
-    }
-
-    private static int getMatchingCore(List<WinNT.GROUP_AFFINITY> cores, int g, int lp) {
-        for (int j = 0; j < cores.size(); j++) {
-            if ((cores.get(j).mask.longValue() & (1L << lp)) > 0 && cores.get(j).group == g) {
-                return j;
-            }
-        }
-        return 0;
     }
 
     /**
@@ -111,23 +128,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             found = s.equals(key);
         }
         // If key string not found, return empty string
-        return Normal.EMPTY;
-    }
-
-    /**
-     * Iterate over the package mask list and find a matching mask index
-     *
-     * @param packageMaskList The list of bitmasks to iterate
-     * @param logProc         The bit to find matching mask
-     * @return The index of the list which matched the bit
-     */
-    private static int getBitMatchingPackageNumber(List<Long> packageMaskList, int logProc) {
-        for (int i = 0; i < packageMaskList.size(); i++) {
-            if ((packageMaskList.get(i).longValue() & (1L << logProc)) > 0) {
-                return i;
-            }
-        }
-        return 0;
+        return "";
     }
 
     /**
@@ -135,12 +136,12 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = Normal.EMPTY;
-        String cpuName = Normal.EMPTY;
-        String cpuIdentifier = Normal.EMPTY;
-        String cpuFamily = Normal.EMPTY;
-        String cpuModel = Normal.EMPTY;
-        String cpuStepping = Normal.EMPTY;
+        String cpuVendor = "";
+        String cpuName = "";
+        String cpuIdentifier = "";
+        String cpuFamily = "";
+        String cpuModel = "";
+        String cpuStepping = "";
         long cpuVendorFreq = 0L;
         String processorID;
         boolean cpu64bit = false;
@@ -187,9 +188,10 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
+    protected Pair<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>> initProcessorCounts() {
         if (VersionHelpers.IsWindows7OrGreater()) {
-            List<LogicalProcessor> logProcs = LogicalProcessorInformation.getLogicalProcessorInformationEx();
+            Pair<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>> procs = LogicalProcessorInformation
+                    .getLogicalProcessorInformationEx();
             // Save numaNode,Processor lookup for future PerfCounter instance lookup
             // The processor number is based on the Processor Group, so we keep a separate
             // index by NUMA node.
@@ -198,7 +200,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             // 0-indexed list of all lps for array lookup
             int lp = 0;
             this.numaNodeProcToLogicalProcMap = new HashMap<>();
-            for (LogicalProcessor logProc : logProcs) {
+            for (CentralProcessor.LogicalProcessor logProc : procs.getLeft()) {
                 int node = logProc.getNumaNode();
                 // This list is grouped by NUMA node so a change in node will reset this counter
                 if (node != curNode) {
@@ -207,109 +209,10 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                 }
                 numaNodeProcToLogicalProcMap.put(String.format("%d,%d", logProc.getNumaNode(), procNum++), lp++);
             }
-            return logProcs;
+            return procs;
         } else {
             return LogicalProcessorInformation.getLogicalProcessorInformation();
         }
-    }
-
-    private List<CentralProcessor.LogicalProcessor> getLogicalProcessorInformationEx() {
-        // Collect a list of logical processors on each physical core and
-        // package. These will be 64-bit bitmasks.
-        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[] procInfo = Kernel32Util
-                .getLogicalProcessorInformationEx(WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationAll);
-        List<WinNT.GROUP_AFFINITY[]> packages = new ArrayList<>();
-        List<WinNT.NUMA_NODE_RELATIONSHIP> numaNodes = new ArrayList<>();
-        List<WinNT.GROUP_AFFINITY> cores = new ArrayList<>();
-
-        for (int i = 0; i < procInfo.length; i++) {
-            switch (procInfo[i].relationship) {
-                case WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage:
-                    packages.add(((WinNT.PROCESSOR_RELATIONSHIP) procInfo[i]).groupMask);
-                    break;
-                case WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationNumaNode:
-                    numaNodes.add((WinNT.NUMA_NODE_RELATIONSHIP) procInfo[i]);
-                    break;
-                case WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore:
-                    cores.add(((WinNT.PROCESSOR_RELATIONSHIP) procInfo[i]).groupMask[0]);
-                    break;
-                default:
-                    // Ignore Group and Cache info
-                    break;
-            }
-        }
-        // Windows doesn't define core and package numbers, so we sort the lists
-        // so core and package numbers increment consistently with processor
-        // numbers/bitmasks, ordered in groups
-        cores.sort(Comparator.comparing(c -> c.group * 64L + c.mask.longValue()));
-        packages.sort(Comparator.comparing(p -> p[0].group * 64L + p[0].mask.longValue()));
-
-        // Iterate Logical Processors and use bitmasks to match packages, cores,
-        // and NUMA nodes
-        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
-        for (WinNT.GROUP_AFFINITY coreMask : cores) {
-            int group = coreMask.group;
-            long mask = coreMask.mask.longValue();
-            // Iterate mask for logical processor numbers
-            int lowBit = Long.numberOfTrailingZeros(mask);
-            int hiBit = 63 - Long.numberOfLeadingZeros(mask);
-            for (int lp = lowBit; lp <= hiBit; lp++) {
-                if ((mask & (1L << lp)) > 0) {
-                    CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(lp, getMatchingCore(cores, group, lp),
-                            getMatchingPackage(packages, group, lp), getMatchingNumaNode(numaNodes, group, lp), group);
-                    logProcs.add(logProc);
-                }
-            }
-        }
-        // Sort by numaNode and then logical processor number to match
-        // PerfCounter/WMI ordering
-        logProcs.sort(Comparator.comparing(CentralProcessor.LogicalProcessor::getNumaNode)
-                .thenComparing(CentralProcessor.LogicalProcessor::getProcessorNumber));
-        // Save numaNode,Processor lookup for future PerfCounter instance lookup
-        int lp = 0;
-        this.numaNodeProcToLogicalProcMap = new HashMap<>();
-        for (CentralProcessor.LogicalProcessor logProc : logProcs) {
-            numaNodeProcToLogicalProcMap
-                    .put(String.format("%d,%d", logProc.getNumaNode(), logProc.getProcessorNumber()), lp++);
-        }
-        return logProcs;
-    }
-
-    private List<CentralProcessor.LogicalProcessor> getLogicalProcessorInformation() {
-        // Collect a list of logical processors on each physical core and
-        // package. These will be 64-bit bitmasks.
-        List<Long> packageMaskList = new ArrayList<>();
-        List<Long> coreMaskList = new ArrayList<>();
-        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[] processors = Kernel32Util.getLogicalProcessorInformation();
-        for (WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION proc : processors) {
-            if (proc.relationship == WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage) {
-                packageMaskList.add(proc.processorMask.longValue());
-            } else if (proc.relationship == WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore) {
-                coreMaskList.add(proc.processorMask.longValue());
-            }
-        }
-        // Sort the list (natural ordering) so core and package numbers
-        // increment as expected.
-        coreMaskList.sort(null);
-        packageMaskList.sort(null);
-
-        // Assign logical processors to cores and packages
-        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
-        for (int core = 0; core < coreMaskList.size(); core++) {
-            long coreMask = coreMaskList.get(core);
-            // Lowest and Highest set bits, indexing from 0
-            int lowBit = Long.numberOfTrailingZeros(coreMask);
-            int hiBit = 63 - Long.numberOfLeadingZeros(coreMask);
-            // Create logical processors for this core
-            for (int i = lowBit; i <= hiBit; i++) {
-                if ((coreMask & (1L << i)) > 0) {
-                    CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(i, core,
-                            getBitMatchingPackageNumber(packageMaskList, i));
-                    logProcs.add(logProc);
-                }
-            }
-        }
-        return logProcs;
     }
 
     @Override
@@ -320,7 +223,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         // ticks and add them up. Calling the get() method gains the benefit of
         // synchronizing this output with the memoized result of per-processor ticks as
         // well.
-        long[] ticks = new long[TickType.values().length];
+        long[] ticks = new long[CentralProcessor.TickType.values().length];
         // Sum processor ticks
         long[][] procTicks = getProcessorCpuLoadTicks();
         for (int i = 0; i < ticks.length; i++) {
@@ -343,7 +246,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                 long maxFreq = this.getMaxFreq();
                 long[] freqs = new long[getLogicalProcessorCount()];
                 for (int p = 0; p < instances.size(); p++) {
-                    int cpu = instances.get(p).contains(Symbol.COMMA)
+                    int cpu = instances.get(p).contains(",")
                             ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
                             : Builder.parseIntOrDefault(instances.get(p), 0);
                     if (cpu >= getLogicalProcessorCount()) {
@@ -368,22 +271,23 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      * Call CallNTPowerInformation for Processor information and return an array of
      * the specified index
      *
-     * @param fieldIndex The field
+     * @param fieldIndex The field, in order as defined in the
+     *                   {@link  PowrProf} structure.
      * @return The array of values.
      */
     private long[] queryNTPower(int fieldIndex) {
-        ProcessorPowerInformation ppi = new ProcessorPowerInformation();
+        org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation ppi = new org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation();
         long[] freqs = new long[getLogicalProcessorCount()];
         int bufferSize = ppi.size() * freqs.length;
         Memory mem = new Memory(bufferSize);
-        if (0 != PowrProf.INSTANCE.CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, null, 0, mem,
+        if (0 != org.aoju.bus.health.windows.PowrProf.INSTANCE.CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, null, 0, mem,
                 bufferSize)) {
             Logger.error("Unable to get Processor Information");
             Arrays.fill(freqs, -1L);
             return freqs;
         }
         for (int i = 0; i < freqs.length; i++) {
-            ppi = new ProcessorPowerInformation(mem.share(i * (long) ppi.size()));
+            ppi = new org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation(mem.share(i * (long) ppi.size()));
             if (fieldIndex == 1) { // Max
                 freqs[i] = ppi.maxMhz * 1_000_000L;
             } else if (fieldIndex == 2) { // Current
@@ -410,26 +314,54 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
-        Pair<List<String>, Map<ProcessorInformation.ProcessorTickCountProperty, List<Long>>> instanceValuePair = ProcessorInformation
-                .queryProcessorCounters();
-        List<String> instances = instanceValuePair.getLeft();
-        Map<ProcessorInformation.ProcessorTickCountProperty, List<Long>> valueMap = instanceValuePair.getRight();
-        List<Long> systemList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTPRIVILEGEDTIME);
-        List<Long> userList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTUSERTIME);
-        List<Long> irqList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTINTERRUPTTIME);
-        List<Long> softIrqList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTDPCTIME);
-        // % Processor Time is actually Idle time
-        List<Long> idleList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTPROCESSORTIME);
+        List<String> instances;
+        List<Long> systemList;
+        List<Long> userList;
+        List<Long> irqList;
+        List<Long> softIrqList;
+        List<Long> idleList;
+        List<Long> systemUtility = null;
+        List<Long> processorUtility = null;
+        List<Long> processorUtilityBase = null;
+        if (ProcessorInformation.USE_CPU_UTILITY) {
+            Pair<List<String>, Map<ProcessorInformation.ProcessorCapacityTickCountProperty, List<Long>>> instanceValuePair = ProcessorInformation
+                    .queryProcessorCapacityCounters();
+            instances = instanceValuePair.getLeft();
+            Map<ProcessorInformation.ProcessorCapacityTickCountProperty, List<Long>> valueMap = instanceValuePair.getRight();
+            systemList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPRIVILEGEDTIME);
+            userList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTUSERTIME);
+            irqList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTINTERRUPTTIME);
+            softIrqList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTDPCTIME);
+            // % Processor Time is actually Idle time
+            idleList = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPROCESSORTIME);
+            // Utility ticks, if configured
+            systemUtility = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPRIVILEGEDUTILITY);
+            processorUtility = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPROCESSORUTILITY);
+            processorUtilityBase = valueMap.get(ProcessorInformation.ProcessorCapacityTickCountProperty.PERCENTPROCESSORUTILITY_BASE);
+        } else {
+            Pair<List<String>, Map<ProcessorInformation.ProcessorTickCountProperty, List<Long>>> instanceValuePair = ProcessorInformation
+                    .queryProcessorCounters();
+            instances = instanceValuePair.getLeft();
+            Map<ProcessorInformation.ProcessorTickCountProperty, List<Long>> valueMap = instanceValuePair.getRight();
+            systemList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTPRIVILEGEDTIME);
+            userList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTUSERTIME);
+            irqList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTINTERRUPTTIME);
+            softIrqList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTDPCTIME);
+            // % Processor Time is actually Idle time
+            idleList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTPROCESSORTIME);
+        }
 
-        long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
-        if (instances.isEmpty() || null == systemList || null == userList || null == irqList || null == softIrqList
-                || null == idleList) {
+        int ncpu = getLogicalProcessorCount();
+        long[][] ticks = new long[ncpu][CentralProcessor.TickType.values().length];
+        if (instances.isEmpty() || systemList == null || userList == null || irqList == null || softIrqList == null
+                || idleList == null || (ProcessorInformation.USE_CPU_UTILITY
+                && (systemUtility == null || processorUtility == null || processorUtilityBase == null))) {
             return ticks;
         }
         for (int p = 0; p < instances.size(); p++) {
-            int cpu = instances.get(p).contains(Symbol.COMMA) ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
+            int cpu = instances.get(p).contains(",") ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
                     : Builder.parseIntOrDefault(instances.get(p), 0);
-            if (cpu >= getLogicalProcessorCount()) {
+            if (cpu >= ncpu) {
                 continue;
             }
             ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = systemList.get(cpu);
@@ -438,8 +370,43 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             ticks[cpu][CentralProcessor.TickType.SOFTIRQ.getIndex()] = softIrqList.get(cpu);
             ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = idleList.get(cpu);
 
-            // Additional decrement to avoid double counting in the
-            // total array
+            // If users want Task Manager output we have to do some math to get there
+            if (ProcessorInformation.USE_CPU_UTILITY) {
+                // We'll be matching up percentage of elapsed total (base counter)
+                // System currently includes IRQ and SOFTIRQ.
+                long elapsedTime = ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] + ticks[cpu][CentralProcessor.TickType.USER.getIndex()]
+                        + ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()];
+
+                // We have two new capacity numbers, processor (all but idle) and system
+                // (included in processor). To further complicate matters, these are in percent
+                // units so must be divided by 100.
+
+                // Calculate Utility CPU usage since init
+                long deltaBase = processorUtilityBase.get(cpu) - baseticks[cpu];
+
+                if (deltaBase > 0) {
+                    long deltaProc = processorUtility.get(cpu) - procticks[cpu];
+                    long deltaSys = systemUtility.get(cpu) - privticks[cpu]; // subset of proc
+                    double idlePercent = 1d - deltaProc / (100d * deltaBase);
+                    double sysPercent = deltaSys / (100d * deltaBase);
+
+                    // Apply to elapsed ticks
+                    long deltaT = elapsedTime - elapsedticks[cpu];
+                    long newIdle = idleticks[cpu] + Math.round(deltaT * idlePercent);
+                    long newSystem = systicks[cpu] + Math.round(deltaT * sysPercent);
+
+                    // Adjust idle to new, saving the delta
+                    long delta = newIdle - ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()];
+                    ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = newIdle;
+                    // Do the same for system
+                    delta += newSystem - ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()];
+                    ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = newSystem;
+                    // Subtract delta from user
+                    ticks[cpu][CentralProcessor.TickType.USER.getIndex()] -= delta;
+                }
+            }
+
+            // Decrement IRQ to avoid double counting in the total array
             ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] -= ticks[cpu][CentralProcessor.TickType.IRQ.getIndex()]
                     + ticks[cpu][CentralProcessor.TickType.SOFTIRQ.getIndex()];
 

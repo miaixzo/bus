@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,20 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.hardware;
 
-import com.sun.jna.platform.unix.solaris.LibKstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.unix.solaris.KstatKit;
-import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
-import org.aoju.bus.health.unix.solaris.drivers.Iostat;
-import org.aoju.bus.health.unix.solaris.drivers.Lshal;
-import org.aoju.bus.health.unix.solaris.drivers.Prtvtoc;
+import org.aoju.bus.health.unix.solaris.drivers.disk.Iostat;
+import org.aoju.bus.health.unix.solaris.drivers.disk.Lshal;
+import org.aoju.bus.health.unix.solaris.drivers.disk.Prtvtoc;
+import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -92,15 +90,16 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
             String storeName = entry.getKey();
             Quintet<String, String, String, String, Long> val = entry.getValue();
             storeList.add(createStore(storeName, val.getA(), val.getB(), val.getC(), val.getD(), val.getE(),
-                    deviceMap.getOrDefault(storeName, Normal.EMPTY), majorMap.getOrDefault(storeName, 0)));
+                    deviceMap.getOrDefault(storeName, ""), majorMap.getOrDefault(storeName, 0)));
         }
+
         return storeList;
     }
 
     private static SolarisHWDiskStore createStore(String diskName, String model, String vendor, String product,
                                                   String serial, long size, String mount, int major) {
         SolarisHWDiskStore store = new SolarisHWDiskStore(diskName,
-                model.isEmpty() ? (vendor + Symbol.SPACE + product).trim() : model, serial, size);
+                model.isEmpty() ? (vendor + " " + product).trim() : model, serial, size);
         store.partitionList = Collections.unmodifiableList(Prtvtoc.queryPartitions(mount, major).stream()
                 .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
         store.updateAttributes();
@@ -149,9 +148,14 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
 
     @Override
     public boolean updateAttributes() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup(null, 0, getName());
-            if (null != ksp && KstatChain.read(ksp)) {
+        this.timeStamp = System.currentTimeMillis();
+        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+            // Use Kstat2 implementation
+            return updateAttributes2();
+        }
+        try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+            Kstat ksp = KstatKit.KstatChain.lookup(null, 0, getName());
+            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
                 KstatIO data = new KstatIO(ksp.ks_data);
                 this.reads = data.reads;
                 this.writes = data.writes;
@@ -165,6 +169,40 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
             }
         }
         return false;
+    }
+
+    private boolean updateAttributes2() {
+        String fullName = getName();
+        String alpha = fullName;
+        String numeric = "";
+        for (int c = 0; c < fullName.length(); c++) {
+            if (fullName.charAt(c) >= '0' && fullName.charAt(c) <= '9') {
+                alpha = fullName.substring(0, c);
+                numeric = fullName.substring(c);
+                break;
+            }
+        }
+        // Try device style notation
+        Object[] results = KstatKit.queryKstat2("kstat:/disk/" + alpha + "/" + getName() + "/0", "reads", "writes",
+                "nread", "nwritten", "wcnt", "rcnt", "rtime", "snaptime");
+        // If failure try io notation
+        if (results[results.length - 1] == null) {
+            results = KstatKit.queryKstat2("kstat:/disk/" + alpha + "/" + numeric + "/io", "reads", "writes", "nread",
+                    "nwritten", "wcnt", "rcnt", "rtime", "snaptime");
+        }
+        if (results[results.length - 1] == null) {
+            return false;
+        }
+        this.reads = results[0] == null ? 0L : (long) results[0];
+        this.writes = results[1] == null ? 0L : (long) results[1];
+        this.readBytes = results[2] == null ? 0L : (long) results[2];
+        this.writeBytes = results[3] == null ? 0L : (long) results[3];
+        this.currentQueueLength = results[4] == null ? 0L : (long) results[4];
+        this.currentQueueLength += results[5] == null ? 0L : (long) results[5];
+        // rtime and snaptime are nanoseconds, convert to millis
+        this.transferTime = results[6] == null ? 0L : (long) results[6] / 1_000_000L;
+        this.timeStamp = (long) results[7] / 1_000_000L;
+        return true;
     }
 
 }

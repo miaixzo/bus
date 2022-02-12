@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 import org.aoju.bus.health.windows.WmiKit;
-import org.aoju.bus.health.windows.drivers.Win32Bios;
+import org.aoju.bus.health.windows.drivers.wmi.Win32Bios;
 
 import java.util.function.Supplier;
 

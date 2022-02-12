@@ -1,5 +1,5 @@
 /**
- * 提供查询FreeBSD信息的函数
+ * Provides functions to query FreeBSD information
  *
  * @author Kimi Liu
  * @version 6.3.3

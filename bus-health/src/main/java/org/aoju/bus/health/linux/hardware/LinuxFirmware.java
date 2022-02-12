@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -78,7 +78,7 @@ final class LinuxFirmware extends AbstractFirmware {
             String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
             vcManufacturer = copyright[copyright.length - 1];
             // Third line is version
-            vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);
+            vcVersion = vcgencmd.get(2).replace("version ", "");
             return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
         }
         return new VcGenCmdStrings(null, null, null, null, null);
@@ -111,8 +111,7 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryManufacturer() {
         String result;
-        if (null == (result = Sysfs.queryBiosVendor())
-                && null == (result = vcGenCmd.get().manufacturer)) {
+        if ((result = Sysfs.queryBiosVendor()) == null && (result = vcGenCmd.get().manufacturer) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -120,8 +119,7 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryDescription() {
         String result;
-        if (null == (result = Sysfs.queryBiosDescription())
-                && null == (result = vcGenCmd.get().description)) {
+        if ((result = Sysfs.queryBiosDescription()) == null && (result = vcGenCmd.get().description) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -129,8 +127,8 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryVersion() {
         String result;
-        if (null == (result = Sysfs.queryBiosVersion(this.biosNameRev.get().getLeft()))
-                && null == (result = vcGenCmd.get().version)) {
+        if ((result = Sysfs.queryBiosVersion(this.biosNameRev.get().getRight())) == null
+                && (result = vcGenCmd.get().version) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -138,8 +136,7 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryReleaseDate() {
         String result;
-        if (null == (result = Sysfs.queryBiosReleaseDate())
-                && null == (result = vcGenCmd.get().releaseDate)) {
+        if ((result = Sysfs.queryBiosReleaseDate()) == null && (result = vcGenCmd.get().releaseDate) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -147,8 +144,7 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryName() {
         String result;
-        if (null == (result = biosNameRev.get().getLeft())
-                && null == (result = vcGenCmd.get().name)) {
+        if ((result = biosNameRev.get().getLeft()) == null && (result = vcGenCmd.get().name) == null) {
             return Normal.UNKNOWN;
         }
         return result;

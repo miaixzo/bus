@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,18 +26,17 @@
 package org.aoju.bus.health.unix.aix.software;
 
 import com.sun.jna.Native;
-import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
-import org.aoju.bus.health.unix.aix.AixLibc;
+import org.aoju.bus.health.unix.AixLibc;
 import org.aoju.bus.health.unix.aix.drivers.Uptime;
 import org.aoju.bus.health.unix.aix.drivers.Who;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatConfig;
@@ -45,6 +44,7 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProcess;
 
 import java.io.File;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -60,11 +60,9 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
-    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
-            .collect(Collectors.joining(Symbol.COMMA));
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
-    private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
-    private final Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses,
+    private final Supplier<perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
+    private final Supplier<perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses,
             Memoize.defaultExpiration());
 
     private static long querySystemBootTimeMillis() {
@@ -76,18 +74,13 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> queryAllProcesses() {
-        return getProcessListFromPS("ps -A -o " + PS_COMMAND_ARGS, Normal.__1);
-    }
-
-    @Override
     public String queryManufacturer() {
         return "IBM";
     }
 
     @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
-        Perfstat.perfstat_partition_config_t cfg = config.get();
+    public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
+        perfstat_partition_config_t cfg = config.get();
 
         String systemName = System.getProperty("os.name");
         String archName = System.getProperty("os.arch");
@@ -100,12 +93,12 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             releaseNumber = Executor.getFirstAnswer("oslevel -s");
         } else {
             // strip leading date
-            int idx = releaseNumber.lastIndexOf(Symbol.C_SPACE);
+            int idx = releaseNumber.lastIndexOf(' ');
             if (idx > 0 && idx < releaseNumber.length()) {
                 releaseNumber = releaseNumber.substring(idx + 1);
             }
         }
-        return Pair.of(systemName, new OSVersionInfo(versionNumber, archName, releaseNumber));
+        return Pair.of(systemName, new OperatingSystem.OSVersionInfo(versionNumber, archName, releaseNumber));
     }
 
     @Override
@@ -114,7 +107,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             return 64;
         }
         // 9th bit of conf is 64-bit kernel
-        return (config.get().conf & 0x0080_0000) > 0 ? Normal._64 : Normal._32;
+        return (config.get().conf & 0x0080_0000) > 0 ? 64 : 32;
     }
 
     @Override
@@ -128,14 +121,9 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSProcess getProcess(int pid) {
-        List<OSProcess> procs = getProcessListFromPS("ps -o " + PS_COMMAND_ARGS + " -p ", pid);
-        if (procs.isEmpty()) {
-            return null;
-        }
-        return procs.get(0);
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromProcfs(-1);
     }
-
 
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
@@ -144,27 +132,39 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
-    private List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
-        Perfstat.perfstat_process_t[] perfstat = procCpu.get();
-        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
-        if (procList.isEmpty() || procList.size() < 2) {
-            return Collections.emptyList();
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        List<OSProcess> procs = getProcessListFromProcfs(pid);
+        if (procs.isEmpty()) {
+            return null;
         }
-        // Parse array to map of user/system times
-        Map<Integer, Pair<Long, Long>> cpuMap = new HashMap<>();
-        for (Perfstat.perfstat_process_t stat : perfstat) {
-            cpuMap.put((int) stat.pid, Pair.of((long) stat.ucpu_time, (long) stat.scpu_time));
-        }
-        // remove header row
-        procList.remove(0);
-        // Fill list
+        return procs.get(0);
+    }
+
+    private List<OSProcess> getProcessListFromProcfs(int pid) {
         List<OSProcess> procs = new ArrayList<>();
-        for (String proc : procList) {
-            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE);
-            // Check if last (thus all) value populated
-            if (psMap.containsKey(PsKeywords.ARGS)) {
-                procs.add(new AixOSProcess(pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid,
-                        psMap, cpuMap, procCpu));
+        // Fetch user/system times from perfstat
+        perfstat_process_t[] perfstat = procCpu.get();
+        Map<Integer, Pair<Long, Long>> cpuMap = new HashMap<>();
+        for (perfstat_process_t stat : perfstat) {
+            int statpid = (int) stat.pid;
+            if (pid < 0 || statpid == pid) {
+                cpuMap.put(statpid, Pair.of((long) stat.ucpu_time, (long) stat.scpu_time));
+            }
+        }
+
+        // Keys of this map are pids
+        for (Entry<Integer, Pair<Long, Long>> entry : cpuMap.entrySet()) {
+            OSProcess proc = new AixOSProcess(entry.getKey(), entry.getValue(), procCpu);
+            if (proc.getState() != OSProcess.State.INVALID) {
+                procs.add(proc);
             }
         }
         return procs;
@@ -183,7 +183,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     @Override
     public int getThreadCount() {
         long tc = 0L;
-        for (Perfstat.perfstat_process_t proc : procCpu.get()) {
+        for (perfstat_process_t proc : procCpu.get()) {
             tc += proc.num_threads;
         }
         return (int) tc;
@@ -242,7 +242,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         // Get installed services from /etc/rc.d/init.d
         File dir = new File("/etc/rc.d/init.d");
         File[] listFiles;
-        if (dir.exists() && dir.isDirectory() && null != (listFiles = dir.listFiles())) {
+        if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
             for (File file : listFiles) {
                 String installedService = Executor.getFirstAnswer(file.getAbsolutePath() + " status");
                 // Apache httpd daemon is running with PID 3997858.
@@ -254,18 +254,6 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return services;
-    }
-
-    @Override
-    public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        List<OSProcess> allProcs = queryAllProcesses();
-        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
-        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    enum PsKeywords {
-        ST, PID, PPID, USER, UID, GROUP, GID, THCOUNT, PRI, VSIZE, RSSIZE, ETIME, TIME, COMM, PAGEIN, ARGS;
-        // ARGS must always be last
     }
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix;
 
+import com.sun.jna.Platform;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.OSSession;
 
@@ -56,20 +56,17 @@ import java.util.regex.Pattern;
 public final class Who {
 
     // sample format:
-    // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
+    // health pts/0 2020-05-14 21:23 (192.168.1.23)
     private static final Pattern WHO_FORMAT_LINUX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
     private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    // oshi ttys000 May 4 23:50 (192.168.1.23)
+    // health ttys000 May 4 23:50 (192.168.1.23)
     // middle 12 characters from Thu Nov 24 18:22:48 1986
     private static final Pattern WHO_FORMAT_UNIX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
     private static final DateTimeFormatter WHO_DATE_FORMAT_UNIX = new DateTimeFormatterBuilder()
             .appendPattern("MMM d HH:mm").parseDefaulting(ChronoField.YEAR, Year.now().getValue())
             .toFormatter(Locale.US);
-
-    private Who() {
-    }
 
     /**
      * Query {@code who} to get logged in users
@@ -78,10 +75,14 @@ public final class Who {
      */
     public static synchronized List<OSSession> queryWho() {
         List<OSSession> whoList = new ArrayList<>();
-        boolean useUnix = false;
-        for (String s : Executor.runNative("who")) {
-            if (useUnix || !matchLinux(whoList, s)) {
-                useUnix = matchUnix(whoList, s);
+        List<String> who = Executor.runNative("who");
+        for (String s : who) {
+            boolean matched = false;
+            if (Platform.isLinux()) {
+                matched = matchLinux(whoList, s);
+            }
+            if (!matched) {
+                matchUnix(whoList, s);
             }
         }
         return whoList;
@@ -99,9 +100,9 @@ public final class Who {
         if (m.matches()) {
             try {
                 whoList.add(new OSSession(m.group(1), m.group(2),
-                        LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4), WHO_DATE_FORMAT_LINUX)
+                        LocalDateTime.parse(m.group(3) + " " + m.group(4), WHO_DATE_FORMAT_LINUX)
                                 .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-                        null == m.group(5) ? Normal.UNKNOWN : m.group(5)));
+                        m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
                 return true;
             } catch (DateTimeParseException | NullPointerException e) {
                 // shouldn't happen if regex matches and OS is producing sensible dates
@@ -122,14 +123,14 @@ public final class Who {
         if (m.matches()) {
             try {
                 // Missing year, parse date time with current year
-                LocalDateTime login = LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4) + Symbol.SPACE + m.group(5),
+                LocalDateTime login = LocalDateTime.parse(m.group(3) + " " + m.group(4) + " " + m.group(5),
                         WHO_DATE_FORMAT_UNIX);
                 // If this date is in the future, subtract a year
                 if (login.isAfter(LocalDateTime.now())) {
                     login = login.minus(1, ChronoUnit.YEARS);
                 }
                 long millis = login.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-                whoList.add(new OSSession(m.group(1), m.group(2), millis, null == m.group(6) ? Normal.EMPTY : m.group(6)));
+                whoList.add(new OSSession(m.group(1), m.group(2), millis, m.group(6) == null ? "" : m.group(6)));
                 return true;
             } catch (DateTimeParseException | NullPointerException e) {
                 // shouldn't happen if regex matches and OS is producing sensible dates

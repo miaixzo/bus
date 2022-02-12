@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -117,6 +117,20 @@ public class Cpu {
         this.cpuModel = cpuModel;
     }
 
+    /**
+     * 获取每个CPU核心的tick，计算方式为 100 * tick / totalCpu
+     *
+     * @param tick     tick
+     * @param totalCpu CPU总数
+     * @return 平均每个CPU核心的tick
+     */
+    private static double formatDouble(long tick, long totalCpu) {
+        if (0 == totalCpu) {
+            return 0D;
+        }
+        return Double.parseDouble(LOAD_FORMAT.format(tick <= 0 ? 0 : (100d * tick / totalCpu)));
+    }
+
     public Integer getCpuNum() {
         return cpuNum;
     }
@@ -141,22 +155,12 @@ public class Cpu {
         this.sys = sys;
     }
 
-    /**
-     * 获取每个CPU核心的tick，计算方式为 100 * tick / totalCpu
-     *
-     * @param tick     tick
-     * @param totalCpu CPU总数
-     * @return 平均每个CPU核心的tick
-     */
-    private static double formatDouble(long tick, long totalCpu) {
-        if (0 == totalCpu) {
-            return 0D;
-        }
-        return Double.parseDouble(LOAD_FORMAT.format(tick <= 0 ? 0 : (100d * tick / totalCpu)));
-    }
-
     public double getUser() {
         return user;
+    }
+
+    public void setUser(double user) {
+        this.user = user;
     }
 
     public double getWait() {
@@ -181,10 +185,6 @@ public class Cpu {
 
     public void setCpuModel(String cpuModel) {
         this.cpuModel = cpuModel;
-    }
-
-    public void setUser(double user) {
-        this.user = user;
     }
 
     public Ticks getTicks() {

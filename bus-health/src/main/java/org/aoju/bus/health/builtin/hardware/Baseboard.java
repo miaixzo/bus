@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,7 +28,8 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 
 /**
- * 主板信息数据
+ * The Baseboard represents the system board, also called motherboard, logic
+ * board, etc.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -38,30 +39,30 @@ import org.aoju.bus.core.annotation.Immutable;
 public interface Baseboard {
 
     /**
-     * 主板制造商
+     * Get the baseboard manufacturer.
      *
-     * @return 生产厂家
+     * @return The manufacturer.
      */
     String getManufacturer();
 
     /**
-     * 获取主板模型
+     * Get the baseboard model.
      *
-     * @return 模型数据
+     * @return The model.
      */
     String getModel();
 
     /**
-     * 获取主板版本
+     * Get the baseboard version.
      *
-     * @return 版本信息
+     * @return The version.
      */
     String getVersion();
 
     /**
-     * 获取主板的序列号
+     * Get the baseboard serial number.
      *
-     * @return 序列号
+     * @return The serial number.
      */
     String getSerialNumber();
 

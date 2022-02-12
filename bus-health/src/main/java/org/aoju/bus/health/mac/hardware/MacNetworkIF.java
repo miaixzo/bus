@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,12 +26,13 @@
 package org.aoju.bus.health.mac.hardware;
 
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.CoreFoundation;
+import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
+import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import org.aoju.bus.health.mac.SystemConfiguration;
-import org.aoju.bus.health.mac.drivers.NetStat;
+import org.aoju.bus.health.mac.drivers.net.NetStat;
 import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
@@ -68,16 +69,16 @@ public final class MacNetworkIF extends AbstractNetworkIF {
 
     private static String queryIfDisplayName(NetworkInterface netint) {
         String name = netint.getName();
-        CoreFoundation.CFArrayRef ifArray = SystemConfiguration.INSTANCE.SCNetworkInterfaceCopyAll();
-        if (null != ifArray) {
+        CFArrayRef ifArray = SystemConfiguration.INSTANCE.SCNetworkInterfaceCopyAll();
+        if (ifArray != null) {
             try {
                 int count = ifArray.getCount();
                 for (int i = 0; i < count; i++) {
                     Pointer pNetIf = ifArray.getValueAtIndex(i);
                     SystemConfiguration.SCNetworkInterfaceRef scNetIf = new SystemConfiguration.SCNetworkInterfaceRef(pNetIf);
-                    CoreFoundation.CFStringRef cfName = SystemConfiguration.INSTANCE.SCNetworkInterfaceGetBSDName(scNetIf);
+                    CFStringRef cfName = SystemConfiguration.INSTANCE.SCNetworkInterfaceGetBSDName(scNetIf);
                     if (cfName != null && name.equals(cfName.stringValue())) {
-                        CoreFoundation.CFStringRef cfDisplayName = SystemConfiguration.INSTANCE
+                        CFStringRef cfDisplayName = SystemConfiguration.INSTANCE
                                 .SCNetworkInterfaceGetLocalizedDisplayName(scNetIf);
                         return cfDisplayName.stringValue();
                     }

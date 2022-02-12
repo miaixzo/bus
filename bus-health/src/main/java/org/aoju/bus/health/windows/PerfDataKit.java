@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,23 +26,22 @@
 package org.aoju.bus.health.windows;
 
 import com.sun.jna.platform.win32.BaseTSD.DWORD_PTR;
-import com.sun.jna.platform.win32.Pdh;
+import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Pdh.PDH_RAW_COUNTER;
-import com.sun.jna.platform.win32.PdhMsg;
-import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.DWORDByReference;
+import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinDef.LONGLONGByReference;
-import com.sun.jna.platform.win32.WinError;
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.logger.Logger;
 
 /**
- * 帮助类来集中PDH计数器设置的样板部分，并允许应用程序轻松地添加、查询和删除计数器
+ * Helper class to centralize the boilerplate portions of PDH counter setup and
+ * allow applications to easily add, query, and remove counters.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -57,35 +56,32 @@ public final class PerfDataKit {
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
-    private PerfDataKit() {
-    }
-
     /**
-     * 创建一个性能计数器
+     * Create a Performance Counter
      *
-     * @param object   计数器的对象/路径
-     * @param instance 计数器的实例，如果没有实例则为空
-     * @param counter  计数器的名称
-     * @return 封装对象、实例和计数器的PerfCounter对象
+     * @param object   The object/path for the counter
+     * @param instance The instance of the counter, or null if no instance
+     * @param counter  The counter name
+     * @return A PerfCounter object encapsulating the object, instance, and counter
      */
     public static PerfCounter createCounter(String object, String instance, String counter) {
         return new PerfCounter(object, instance, counter);
     }
 
     /**
-     * 更新查询并获取时间戳
+     * Update a query and get the timestamp
      *
-     * @param query 要更新所有计数器的查询
-     * @return 查询中第一个计数器的更新时间戳
+     * @param query The query to update all counters in
+     * @return The update timestamp of the first counter in the query
      */
     public static long updateQueryTimestamp(WinNT.HANDLEByReference query) {
         LONGLONGByReference pllTimeStamp = new LONGLONGByReference();
         int ret = IS_VISTA_OR_GREATER ? PDH.PdhCollectQueryDataWithTime(query.getValue(), pllTimeStamp)
                 : PDH.PdhCollectQueryData(query.getValue());
-        // 由于竞争条件，PDH_NO_DATA初始更新可能失败
+        // Due to race condition, initial update may fail with PDH_NO_DATA.
         int retries = 0;
         while (ret == PdhMsg.PDH_NO_DATA && retries++ < 3) {
-            // 指数后退
+            // Exponential fallback.
             Builder.sleep(1 << retries);
             ret = IS_VISTA_OR_GREATER ? PDH.PdhCollectQueryDataWithTime(query.getValue(), pllTimeStamp)
                     : PDH.PdhCollectQueryData(query.getValue());
@@ -96,18 +92,18 @@ public final class PerfDataKit {
             }
             return 0L;
         }
-        // Perf计数器时间戳是本地时间
+        // Perf Counter timestamp is in local time
         return IS_VISTA_OR_GREATER ? Builder.filetimeToUtcMs(pllTimeStamp.getValue().longValue(), true)
                 : System.currentTimeMillis();
     }
 
     /**
-     * 打开一个pdh查询
+     * Open a pdh query
      *
-     * @param q 指向查询的指针
-     * @return 如果成功, 则为true
+     * @param q pointer to the query
+     * @return true if successful
      */
-    public static boolean openQuery(WinNT.HANDLEByReference q) {
+    public static boolean openQuery(HANDLEByReference q) {
         int ret = PDH.PdhOpenQuery(null, PZERO, q);
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.get().isError()) {
@@ -119,20 +115,21 @@ public final class PerfDataKit {
     }
 
     /**
-     * 关闭一个pdh查询
+     * Close a pdh query
      *
-     * @param q 指向查询的指针
-     * @return 如果成功, 则为true
+     * @param q pointer to the query
+     * @return true if successful
      */
-    public static boolean closeQuery(WinNT.HANDLEByReference q) {
+    public static boolean closeQuery(HANDLEByReference q) {
         return WinError.ERROR_SUCCESS == PDH.PdhCloseQuery(q.getValue());
     }
 
     /**
-     * 获取pdh计数器的值
+     * Get value of pdh counter
      *
-     * @param counter 计数器得到的值
-     * @return 数器的长整型值，或表示错误代码的负值
+     * @param counter The counter to get the value of
+     * @return long value of the counter, or negative value representing an error
+     * code
      */
     public static long queryCounter(WinNT.HANDLEByReference counter) {
         PDH_RAW_COUNTER counterValue = new PDH_RAW_COUNTER();
@@ -147,12 +144,32 @@ public final class PerfDataKit {
     }
 
     /**
-     * 向查询添加pdh计数器
+     * Get value of pdh counter's second value (base counters)
      *
-     * @param query 指向要添加计数器的查询的指针
-     * @param path  PerfMon计数器的字符串名称
-     * @param p     指向计数器的指针
-     * @return 如果成功, 则为true
+     * @param counter The counter to get the value of
+     * @return long value of the counter's second value, or negative value
+     * representing an error code
+     */
+    public static long querySecondCounter(WinNT.HANDLEByReference counter) {
+        PDH_RAW_COUNTER counterValue = new PDH_RAW_COUNTER();
+        int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
+        if (ret != WinError.ERROR_SUCCESS) {
+            if (Logger.get().isWarn()) {
+                Logger.warn("Failed to get counter. Error code: {}", String.format(Formats.formatError(ret)));
+            }
+            return ret;
+        }
+        return counterValue.SecondValue;
+    }
+
+    /**
+     * Adds a pdh counter to a query
+     *
+     * @param query Pointer to the query to add the counter
+     * @param path  String name of the PerfMon counter. For Vista+, must be in
+     *              English. Must localize this path for pre-Vista.
+     * @param p     Pointer to the counter
+     * @return true if successful
      */
     public static boolean addCounter(WinNT.HANDLEByReference query, String path, WinNT.HANDLEByReference p) {
         int ret = IS_VISTA_OR_GREATER ? PDH.PdhAddEnglishCounter(query.getValue(), path, PZERO, p)
@@ -168,12 +185,12 @@ public final class PerfDataKit {
     }
 
     /**
-     * 删除pdh计数器
+     * Remove a pdh counter
      *
-     * @param p 指向计数器的指针
-     * @return 如果成功, 则为true
+     * @param p pointer to the counter
+     * @return true if successful
      */
-    public static boolean removeCounter(WinNT.HANDLEByReference p) {
+    public static boolean removeCounter(HANDLEByReference p) {
         return WinError.ERROR_SUCCESS == PDH.PdhRemoveCounter(p.getValue());
     }
 
@@ -182,49 +199,64 @@ public final class PerfDataKit {
      */
     @Immutable
     public static class PerfCounter {
-        private String object;
-        private String instance;
-        private String counter;
+        private final String object;
+        private final String instance;
+        private final String counter;
+        private final boolean baseCounter;
 
         public PerfCounter(String objectName, String instanceName, String counterName) {
             this.object = objectName;
             this.instance = instanceName;
-            this.counter = counterName;
+            int baseIdx = counterName.indexOf("_Base");
+            if (baseIdx > 0) {
+                this.counter = counterName.substring(0, baseIdx);
+                this.baseCounter = true;
+            } else {
+                this.counter = counterName;
+                this.baseCounter = false;
+            }
         }
 
         /**
-         * @return 返回对象
+         * @return Returns the object.
          */
         public String getObject() {
             return object;
         }
 
         /**
-         * @return 返回实例
+         * @return Returns the instance.
          */
         public String getInstance() {
             return instance;
         }
 
         /**
-         * @return 返回计数器
+         * @return Returns the counter.
          */
         public String getCounter() {
             return counter;
         }
 
         /**
-         * 返回此计数器的路径
+         * @return Returns whether the counter is a base counter
+         */
+        public boolean isBaseCounter() {
+            return baseCounter;
+        }
+
+        /**
+         * Returns the path for this counter
          *
-         * @return 表示计数器路径的字符串
+         * @return A string representing the counter path
          */
         public String getCounterPath() {
             StringBuilder sb = new StringBuilder();
-            sb.append(Symbol.C_BACKSLASH).append(object);
-            if (null != instance) {
-                sb.append(Symbol.C_PARENTHESE_LEFT).append(instance).append(Symbol.C_PARENTHESE_RIGHT);
+            sb.append('\\').append(object);
+            if (instance != null) {
+                sb.append('(').append(instance).append(')');
             }
-            sb.append(Symbol.C_BACKSLASH).append(counter);
+            sb.append('\\').append(counter);
             return sb.toString();
         }
     }

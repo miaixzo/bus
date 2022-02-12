@@ -1,5 +1,6 @@
 /**
- * 提供Mac系统上的内存、电源和处理器等硬件信息
+ * Provides information about hardware such as Memory, Power Sources, and
+ * Processor on Mac systems
  *
  * @author Kimi Liu
  * @version 6.3.3

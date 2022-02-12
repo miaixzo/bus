@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.hardware;
 
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
 import org.aoju.bus.health.unix.solaris.KstatKit;
-import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -52,10 +52,10 @@ public final class SolarisPowerSource extends AbstractPowerSource {
     private static final int KSTAT_BATT_IDX;
 
     static {
-        try (KstatChain kc = KstatKit.openChain()) {
-            if (null != KstatChain.lookup(KSTAT_BATT_MOD[1], 0, null)) {
+        try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+            if (KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[1], 0, null) != null) {
                 KSTAT_BATT_IDX = 1;
-            } else if (null != KstatChain.lookup(KSTAT_BATT_MOD[2], 0, null)) {
+            } else if (KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[2], 0, null) != null) {
                 KSTAT_BATT_IDX = 2;
             } else {
                 KSTAT_BATT_IDX = 0;
@@ -66,7 +66,7 @@ public final class SolarisPowerSource extends AbstractPowerSource {
     public SolarisPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
                               double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
                               double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                              PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+                              CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
                               int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
                               String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
@@ -96,7 +96,7 @@ public final class SolarisPowerSource extends AbstractPowerSource {
         boolean psPowerOnLine = false;
         boolean psCharging = false;
         boolean psDischarging = false;
-        PowerSource.CapacityUnits psCapacityUnits = PowerSource.CapacityUnits.RELATIVE;
+        CapacityUnits psCapacityUnits = CapacityUnits.RELATIVE;
         int psCurrentCapacity = 0;
         int psMaxCapacity = 1;
         int psDesignCapacity = 1;
@@ -110,9 +110,9 @@ public final class SolarisPowerSource extends AbstractPowerSource {
         // If no kstat info, return empty
         if (KSTAT_BATT_IDX > 0) {
             // Get kstat for the battery information
-            try (KstatChain kc = KstatKit.openChain()) {
-                com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp = kc.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BIF0");
-                if (null != ksp) {
+            try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+                Kstat ksp = KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BIF0");
+                if (ksp != null) {
                     // Predicted battery capacity when fully charged.
                     long energyFull = KstatKit.dataLookupLong(ksp, "bif_last_cap");
                     if (energyFull == 0xffffffff || energyFull <= 0) {
@@ -123,9 +123,9 @@ public final class SolarisPowerSource extends AbstractPowerSource {
                     }
                     long unit = KstatKit.dataLookupLong(ksp, "bif_unit");
                     if (unit == 0) {
-                        psCapacityUnits = PowerSource.CapacityUnits.MWH;
+                        psCapacityUnits = CapacityUnits.MWH;
                     } else if (unit == 1) {
-                        psCapacityUnits = PowerSource.CapacityUnits.MAH;
+                        psCapacityUnits = CapacityUnits.MAH;
                     }
                     psDeviceName = KstatKit.dataLookupString(ksp, "bif_model");
                     psSerialNumber = KstatKit.dataLookupString(ksp, "bif_serial");
@@ -134,8 +134,8 @@ public final class SolarisPowerSource extends AbstractPowerSource {
                 }
 
                 // Get kstat for the battery state
-                ksp = kc.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BST0");
-                if (null != ksp) {
+                ksp = KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BST0");
+                if (ksp != null) {
                     // estimated remaining battery capacity
                     long energyNow = KstatKit.dataLookupLong(ksp, "bst_rem_cap");
                     if (energyNow >= 0) {

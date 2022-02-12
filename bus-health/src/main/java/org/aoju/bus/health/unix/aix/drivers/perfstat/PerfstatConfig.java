@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.aix.drivers.perfstat;
 
 import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 
 /**
@@ -40,21 +41,18 @@ public final class PerfstatConfig {
 
     private static final Perfstat PERF = Perfstat.INSTANCE;
 
-    private PerfstatConfig() {
-    }
-
     /**
      * Queries perfstat_partition_config for config
      *
      * @return usage statistics
      */
-    public static Perfstat.perfstat_partition_config_t queryConfig() {
-        Perfstat.perfstat_partition_config_t config = new Perfstat.perfstat_partition_config_t();
+    public static perfstat_partition_config_t queryConfig() {
+        perfstat_partition_config_t config = new perfstat_partition_config_t();
         int ret = PERF.perfstat_partition_config(null, config, config.size(), 1);
         if (ret > 0) {
             return config;
         }
-        return new Perfstat.perfstat_partition_config_t();
+        return new perfstat_partition_config_t();
     }
 
 }

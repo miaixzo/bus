@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -52,6 +52,20 @@ final class FreeBsdFirmware extends AbstractFirmware {
         String manufacturer = null;
         String version = null;
         String releaseDate = Normal.EMPTY;
+
+        // $ sudo dmidecode -t bios
+        // # dmidecode 3.0
+        // Scanning /dev/mem for entry point.
+        // SMBIOS 2.7 present.
+        //
+        // Handle 0x0000, DMI type 0, 24 bytes
+        // BIOS Information
+        // Vendor: Parallels Software International Inc.
+        // Version: 11.2.1 (32626)
+        // Release Date: 07/15/2016
+        // ... <snip> ...
+        // BIOS Revision: 11.2
+        // Firmware Revision: 11.2
 
         final String manufacturerMarker = "Vendor:";
         final String versionMarker = "Version:";

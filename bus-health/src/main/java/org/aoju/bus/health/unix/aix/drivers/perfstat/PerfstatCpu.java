@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,9 @@
 package org.aoju.bus.health.unix.aix.drivers.perfstat;
 
 import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_total_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_id_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 
 /**
@@ -40,21 +43,18 @@ public final class PerfstatCpu {
 
     private static final Perfstat PERF = Perfstat.INSTANCE;
 
-    private PerfstatCpu() {
-    }
-
     /**
      * Queries perfstat_cpu_total for total CPU usage statistics
      *
      * @return usage statistics
      */
-    public static Perfstat.perfstat_cpu_total_t queryCpuTotal() {
-        Perfstat.perfstat_cpu_total_t cpu = new Perfstat.perfstat_cpu_total_t();
+    public static perfstat_cpu_total_t queryCpuTotal() {
+        perfstat_cpu_total_t cpu = new perfstat_cpu_total_t();
         int ret = PERF.perfstat_cpu_total(null, cpu, cpu.size(), 1);
         if (ret > 0) {
             return cpu;
         }
-        return new Perfstat.perfstat_cpu_total_t();
+        return new perfstat_cpu_total_t();
     }
 
     /**
@@ -62,19 +62,19 @@ public final class PerfstatCpu {
      *
      * @return an array of usage statistics
      */
-    public static Perfstat.perfstat_cpu_t[] queryCpu() {
-        Perfstat.perfstat_cpu_t cpu = new Perfstat.perfstat_cpu_t();
+    public static perfstat_cpu_t[] queryCpu() {
+        perfstat_cpu_t cpu = new perfstat_cpu_t();
         // With null, null, ..., 0, returns total # of elements
         int cputotal = PERF.perfstat_cpu(null, null, cpu.size(), 0);
         if (cputotal > 0) {
-            Perfstat.perfstat_cpu_t[] statp = (Perfstat.perfstat_cpu_t[]) cpu.toArray(cputotal);
-            Perfstat.perfstat_id_t firstcpu = new Perfstat.perfstat_id_t(); // name is ""
+            perfstat_cpu_t[] statp = (perfstat_cpu_t[]) cpu.toArray(cputotal);
+            perfstat_id_t firstcpu = new perfstat_id_t(); // name is ""
             int ret = PERF.perfstat_cpu(firstcpu, statp, cpu.size(), cputotal);
             if (ret > 0) {
                 return statp;
             }
         }
-        return new Perfstat.perfstat_cpu_t[0];
+        return new perfstat_cpu_t[0];
     }
 
     /**

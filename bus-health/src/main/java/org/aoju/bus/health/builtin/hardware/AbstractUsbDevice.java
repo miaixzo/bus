@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * USB设备
+ * A USB device
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -61,10 +61,11 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     }
 
     /**
-     * 缩进链接的USB设备的辅助方法
+     * Helper method for indenting chained USB devices
      *
-     * @param usbDevice USB设备进行打印
-     * @param indent    缩进的空格数
+     * @param usbDevice A USB device to print
+     * @param indent    number of spaces to indent
+     * @return The device toString, indented
      */
     private static String indentUsb(UsbDevice usbDevice, int indent) {
         String indentFmt = indent > 4 ? String.format("%%%ds|-- ", indent - 4) : String.format("%%%ds", indent);

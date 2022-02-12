@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,12 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.hardware;
 
-import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.PhysicalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
@@ -39,6 +37,9 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatMemory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Memory obtained by perfstat_memory_total_t
@@ -53,16 +54,16 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
     // AIX has multiple page size units, but for purposes of "pages" in perfstat,
     // the docs specify 4KB pages so we hardcode this
     private static final long PAGESIZE = 4096L;
-    private final Supplier<Perfstat.perfstat_memory_total_t> perfstatMem = Memoize.memoize(AixGlobalMemory::queryPerfstat,
-            Memoize.defaultExpiration());
+    private final Supplier<perfstat_memory_total_t> perfstatMem = memoize(AixGlobalMemory::queryPerfstat,
+            defaultExpiration());
     private final Supplier<List<String>> lscfg;
-    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
 
     AixGlobalMemory(Supplier<List<String>> lscfg) {
         this.lscfg = lscfg;
     }
 
-    private static Perfstat.perfstat_memory_total_t queryPerfstat() {
+    private static perfstat_memory_total_t queryPerfstat() {
         return PerfstatMemory.queryMemoryTotal();
     }
 
@@ -104,7 +105,7 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                         bankLabel = bankLabel.substring(4);
                     }
                 } else if (s.startsWith("Physical Location:")) {
-                    locator = Symbol.SLASH + s.substring(18).trim();
+                    locator = "/" + s.substring(18).trim();
                 } else if (s.startsWith("Size")) {
                     capacity = Builder.parseLongOrDefault(Builder.removeLeadingDots(s.substring(4).trim()),
                             0L) << 20;

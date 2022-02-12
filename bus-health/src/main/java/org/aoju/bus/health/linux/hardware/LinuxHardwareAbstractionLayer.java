@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,6 +27,7 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.*;
+import org.aoju.bus.health.unix.UnixDisplay;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
 
     @Override
     public List<Display> getDisplays() {
-        return LinuxDisplay.getDisplays();
+        return UnixDisplay.getDisplays();
     }
 
     @Override
@@ -99,5 +100,4 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     public List<GraphicsCard> getGraphicsCards() {
         return LinuxGraphicsCard.getGraphicsCards();
     }
-
 }

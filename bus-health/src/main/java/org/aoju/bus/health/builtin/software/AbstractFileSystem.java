@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -43,18 +43,15 @@ import java.util.List;
 @ThreadSafe
 public abstract class AbstractFileSystem implements FileSystem {
 
-    public static final String OSHI_NETWORK_FILESYSTEM_TYPES = "health.network.filesystem.types";
-    public static final String OSHI_PSEUDO_FILESYSTEM_TYPES = "health.pseudo.filesystem.types";
-
     /**
      * FileSystem types which are network-based and should be excluded from
      * local-only lists
      */
-    protected static final List<String> NETWORK_FS_TYPES = Arrays.asList(
-            Config.get(OSHI_NETWORK_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
+    protected static final List<String> NETWORK_FS_TYPES = Arrays
+            .asList(Config.get(Config.NETWORK_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
 
-    protected static final List<String> PSEUDO_FS_TYPES = Arrays.asList(
-            Config.get(OSHI_PSEUDO_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
+    protected static final List<String> PSEUDO_FS_TYPES = Arrays
+            .asList(Config.get(Config.PSEUDO_FILESYSTEM_TYPES, Normal.EMPTY).split(Symbol.COMMA));
 
     @Override
     public List<OSFileStore> getFileStores() {

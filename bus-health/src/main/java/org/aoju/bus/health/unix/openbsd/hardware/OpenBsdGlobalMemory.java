@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,14 +29,15 @@ import com.sun.jna.Memory;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
-import org.aoju.bus.health.unix.openbsd.OpenBsdLibc;
 import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
 
 import java.util.function.Supplier;
 
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
+import static org.aoju.bus.health.unix.OpenBsdLibc.*;
 
 /**
  * Memory obtained by sysctl vm.stats
@@ -48,13 +49,13 @@ import java.util.function.Supplier;
 @ThreadSafe
 final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
 
-    private final Supplier<Long> available = Memoize.memoize(OpenBsdGlobalMemory::queryAvailable, Memoize.defaultExpiration());
+    private final Supplier<Long> available = memoize(OpenBsdGlobalMemory::queryAvailable, defaultExpiration());
 
-    private final Supplier<Long> total = Memoize.memoize(OpenBsdGlobalMemory::queryPhysMem);
+    private final Supplier<Long> total = memoize(OpenBsdGlobalMemory::queryPhysMem);
 
-    private final Supplier<Long> pageSize = Memoize.memoize(OpenBsdGlobalMemory::queryPageSize);
+    private final Supplier<Long> pageSize = memoize(OpenBsdGlobalMemory::queryPageSize);
 
-    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
 
     private static long queryAvailable() {
         long free = 0L;
@@ -67,11 +68,11 @@ final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
             }
         }
         int[] mib = new int[3];
-        mib[0] = OpenBsdLibc.CTL_VFS;
-        mib[1] = OpenBsdLibc.VFS_GENERIC;
-        mib[2] = OpenBsdLibc.VFS_BCACHESTAT;
+        mib[0] = CTL_VFS;
+        mib[1] = VFS_GENERIC;
+        mib[2] = VFS_BCACHESTAT;
         Memory m = OpenBsdSysctlKit.sysctl(mib);
-        OpenBsdLibc.Bcachestats cache = new OpenBsdLibc.Bcachestats(m);
+        Bcachestats cache = new Bcachestats(m);
         return (cache.numbufpages + free + inactive);
     }
 

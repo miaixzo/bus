@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,12 +29,14 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
-import org.aoju.bus.health.unix.solaris.drivers.SystemPages;
+import org.aoju.bus.health.unix.solaris.drivers.kstat.SystemPages;
 
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Memory obtained by kstat
@@ -46,12 +48,12 @@ import java.util.function.Supplier;
 @ThreadSafe
 final class SolarisGlobalMemory extends AbstractGlobalMemory {
 
-    private final Supplier<Pair<Long, Long>> availTotal = Memoize.memoize(SystemPages::queryAvailableTotal,
-            Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> availTotal = memoize(SystemPages::queryAvailableTotal,
+            defaultExpiration());
 
-    private final Supplier<Long> pageSize = Memoize.memoize(SolarisGlobalMemory::queryPageSize);
+    private final Supplier<Long> pageSize = memoize(SolarisGlobalMemory::queryPageSize);
 
-    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
 
     private static long queryPageSize() {
         return Builder.parseLongOrDefault(Executor.getFirstAnswer("pagesize"), 4096L);

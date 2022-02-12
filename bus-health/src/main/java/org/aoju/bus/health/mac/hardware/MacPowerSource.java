@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,7 +35,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
-import org.aoju.bus.health.mac.drivers.WindowInfo;
+import org.aoju.bus.health.mac.CFKit;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public final class MacPowerSource extends AbstractPowerSource {
     public MacPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
                           double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
                           double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                          CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+                          PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
                           int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
                           String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
@@ -80,7 +80,7 @@ public final class MacPowerSource extends AbstractPowerSource {
         boolean psPowerOnLine = false;
         boolean psCharging = false;
         boolean psDischarging = false;
-        CapacityUnits psCapacityUnits = CapacityUnits.RELATIVE;
+        PowerSource.CapacityUnits psCapacityUnits = PowerSource.CapacityUnits.RELATIVE;
         int psCurrentCapacity = 0;
         int psMaxCapacity = 1;
         int psDesignCapacity = 1;
@@ -100,22 +100,22 @@ public final class MacPowerSource extends AbstractPowerSource {
         // across all IOPS entries if there are more than one.
 
         IORegistryEntry smartBattery = IOKitUtil.getMatchingService("AppleSmartBattery");
-        if (null != smartBattery) {
+        if (smartBattery != null) {
             String s = smartBattery.getStringProperty("DeviceName");
-            if (null != s) {
+            if (s != null) {
                 psDeviceName = s;
             }
             s = smartBattery.getStringProperty("Manufacturer");
-            if (null != s) {
+            if (s != null) {
                 psManufacturer = s;
             }
             s = smartBattery.getStringProperty("BatterySerialNumber");
-            if (null != s) {
+            if (s != null) {
                 psSerialNumber = s;
             }
 
             Integer temp = smartBattery.getIntegerProperty("ManufactureDate");
-            if (null != temp) {
+            if (temp != null) {
                 // Bits 0...4 => day (value 1-31; 5 bits)
                 // Bits 5...8 => month (value 1-12; 4 bits)
                 // Bits 9...15 => years since 1980 (value 0-127; 7 bits)
@@ -126,47 +126,47 @@ public final class MacPowerSource extends AbstractPowerSource {
             }
 
             temp = smartBattery.getIntegerProperty("DesignCapacity");
-            if (null != temp) {
+            if (temp != null) {
                 psDesignCapacity = temp;
             }
             temp = smartBattery.getIntegerProperty("MaxCapacity");
-            if (null != temp) {
+            if (temp != null) {
                 psMaxCapacity = temp;
             }
             temp = smartBattery.getIntegerProperty("CurrentCapacity");
-            if (null != temp) {
+            if (temp != null) {
                 psCurrentCapacity = temp;
             }
-            psCapacityUnits = CapacityUnits.MAH;
+            psCapacityUnits = PowerSource.CapacityUnits.MAH;
 
             temp = smartBattery.getIntegerProperty("TimeRemaining");
-            if (null != temp) {
+            if (temp != null) {
                 psTimeRemainingInstant = temp * 60d;
             }
             temp = smartBattery.getIntegerProperty("CycleCount");
-            if (null != temp) {
+            if (temp != null) {
                 psCycleCount = temp;
             }
             temp = smartBattery.getIntegerProperty("Temperature");
-            if (null != temp) {
+            if (temp != null) {
                 psTemperature = temp / 100d;
             }
             temp = smartBattery.getIntegerProperty("Voltage");
-            if (null != temp) {
+            if (temp != null) {
                 psVoltage = temp / 1000d;
             }
             temp = smartBattery.getIntegerProperty("Amperage");
-            if (null != temp) {
+            if (temp != null) {
                 psAmperage = temp;
             }
             psPowerUsageRate = psVoltage * psAmperage;
 
             Boolean bool = smartBattery.getBooleanProperty("ExternalConnected");
-            if (null != bool) {
+            if (bool != null) {
                 psPowerOnLine = bool;
             }
             bool = smartBattery.getBooleanProperty("IsCharging");
-            if (null != bool) {
+            if (bool != null) {
                 psCharging = bool;
             }
             psDischarging = !psCharging;
@@ -199,12 +199,12 @@ public final class MacPowerSource extends AbstractPowerSource {
             // Get values from dictionary (See IOPSKeys.h)
             // Skip if not present
             Pointer result = dictionary.getValue(isPresentKey);
-            if (null != result) {
+            if (result != null) {
                 CFBooleanRef isPresentRef = new CFBooleanRef(result);
                 if (0 != CF.CFBooleanGetValue(isPresentRef)) {
                     // Get name
                     result = dictionary.getValue(nameKey);
-                    String psName = WindowInfo.cfPointerToString(result);
+                    String psName = CFKit.cfPointerToString(result);
                     // Remaining Capacity = current / max
                     double currentCapacity = 0d;
                     if (dictionary.getValueIfPresent(currentCapacityKey, null)) {

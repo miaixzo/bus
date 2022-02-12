@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,8 +26,6 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -44,6 +42,7 @@ import java.time.format.DateTimeFormatter;
  */
 @Immutable
 public class OSSession {
+
     private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final String userName;
@@ -99,8 +98,8 @@ public class OSSession {
     public String toString() {
         String loginStr = loginTime == 0 ? "No login"
                 : LocalDateTime.ofInstant(Instant.ofEpochMilli(loginTime), ZoneId.systemDefault()).format(LOGIN_FORMAT);
-        String hostStr = Normal.EMPTY;
-        if (!host.isEmpty() && !host.equals(Symbol.COLON + Symbol.COLON) && !host.equals("0.0.0.0")) {
+        String hostStr = "";
+        if (!host.isEmpty() && !host.equals("::") && !host.equals("0.0.0.0")) {
             hostStr = ", (" + host + ")";
         }
         return String.format("%s, %s, %s%s", userName, terminalDevice, loginStr, hostStr);

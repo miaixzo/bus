@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,14 +26,14 @@
 package org.aoju.bus.health.unix.aix.hardware;
 
 import com.sun.jna.Native;
-import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_total_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.unix.aix.drivers.Lssrad;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatConfig;
@@ -44,6 +44,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * A CPU
@@ -61,18 +64,18 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
      */
     private static final long USER_HZ = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"),
             100L);
-    private final Supplier<Perfstat.perfstat_cpu_total_t> cpuTotal = Memoize.memoize(PerfstatCpu::queryCpuTotal, Memoize.defaultExpiration());
-    private final Supplier<Perfstat.perfstat_cpu_t[]> cpuProc = Memoize.memoize(PerfstatCpu::queryCpu, Memoize.defaultExpiration());
-    private Perfstat.perfstat_partition_config_t config;
+    private final Supplier<perfstat_cpu_total_t> cpuTotal = memoize(PerfstatCpu::queryCpuTotal, defaultExpiration());
+    private final Supplier<perfstat_cpu_t[]> cpuProc = memoize(PerfstatCpu::queryCpu, defaultExpiration());
+    private perfstat_partition_config_t config;
 
     private static int querySbits() {
         // read from /usr/include/sys/proc.h
-        for (String s : FileKit.readLines("/usr/include/sys/proc.h")) {
+        for (String s : Builder.readFile("/usr/include/sys/proc.h")) {
             if (s.contains("SBITS") && s.contains("#define")) {
-                return Builder.parseLastInt(s, Normal._16);
+                return Builder.parseLastInt(s, 16);
             }
         }
-        return Normal._16;
+        return 16;
     }
 
     @Override
@@ -119,7 +122,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected List<LogicalProcessor> initProcessorCounts() {
+    protected Pair<List<LogicalProcessor>, List<PhysicalProcessor>> initProcessorCounts() {
         this.config = PerfstatConfig.queryConfig();
 
         int physProcs = (int) config.numProcessors.max;
@@ -135,15 +138,15 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         List<LogicalProcessor> logProcs = new ArrayList<>();
         for (int proc = 0; proc < lcpus; proc++) {
             Pair<Integer, Integer> nodePkg = nodePkgMap.get(proc);
-            logProcs.add(new LogicalProcessor(proc, proc / physProcs, null == nodePkg ? 0 : nodePkg.getRight(),
-                    null == nodePkg ? 0 : nodePkg.getLeft()));
+            logProcs.add(new LogicalProcessor(proc, proc / physProcs, nodePkg == null ? 0 : nodePkg.getRight(),
+                    nodePkg == null ? 0 : nodePkg.getLeft()));
         }
-        return logProcs;
+        return Pair.of(logProcs, null);
     }
 
     @Override
     public long[] querySystemCpuLoadTicks() {
-        Perfstat.perfstat_cpu_total_t perfstat = cpuTotal.get();
+        perfstat_cpu_total_t perfstat = cpuTotal.get();
         long[] ticks = new long[TickType.values().length];
         ticks[TickType.USER.ordinal()] = perfstat.user * 1000L / USER_HZ;
         // Skip NICE
@@ -162,11 +165,11 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         // CPU 0 runs at 4204 MHz
         // CPU 1 runs at 4204 MHz
         //
-        // ~/git/oshi$ pmcycles -m
+        // ~/git/health$ pmcycles -m
         // This machine runs at 1000 MHz
 
         long[] freqs = new long[getLogicalProcessorCount()];
-        Arrays.fill(freqs, Normal.__1);
+        Arrays.fill(freqs, -1);
         String freqMarker = "runs at";
         int idx = 0;
         for (final String checkLine : Executor.runNative("pmcycles -m")) {
@@ -182,7 +185,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected long queryMaxFreq() {
-        Perfstat.perfstat_cpu_total_t perfstat = cpuTotal.get();
+        perfstat_cpu_total_t perfstat = cpuTotal.get();
         return perfstat.processorHZ;
     }
 
@@ -201,7 +204,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
-        Perfstat.perfstat_cpu_t[] cpu = cpuProc.get();
+        perfstat_cpu_t[] cpu = cpuProc.get();
         long[][] ticks = new long[cpu.length][TickType.values().length];
         for (int i = 0; i < cpu.length; i++) {
             ticks[i] = new long[TickType.values().length];
@@ -224,7 +227,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryInterrupts() {
-        Perfstat.perfstat_cpu_total_t cpu = cpuTotal.get();
+        perfstat_cpu_total_t cpu = cpuTotal.get();
         return cpu.devintrs + cpu.softintrs;
     }
 

@@ -1,5 +1,6 @@
 /**
- * 提供有关FreeBSD系统上的内存、电源和处理器等硬件的信息
+ * Provides information about hardware such as Memory, Power Sources, and
+ * Processor on FreeBSD systems
  *
  * @author Kimi Liu
  * @version 6.3.3

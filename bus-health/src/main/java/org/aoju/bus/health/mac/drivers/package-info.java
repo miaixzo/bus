@@ -1,5 +1,5 @@
 /**
- * 提供Mac信息查询功能
+ * Provides functions to query Mac info
  *
  * @author Kimi Liu
  * @version 6.3.3

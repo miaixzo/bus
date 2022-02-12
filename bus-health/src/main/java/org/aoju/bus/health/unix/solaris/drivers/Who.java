@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,12 +27,11 @@ package org.aoju.bus.health.unix.solaris.drivers;
 
 import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.health.builtin.software.OSSession;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.solaris.SolarisLibc;
-import org.aoju.bus.health.unix.solaris.SolarisLibc.SolarisUtmpx;
+import org.aoju.bus.health.unix.SolarisLibc;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +47,6 @@ public final class Who {
 
     private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
 
-    private Who() {
-    }
-
     /**
      * Query {@code getutxent} to get logged in users.
      *
@@ -58,25 +54,22 @@ public final class Who {
      */
     public static synchronized List<OSSession> queryUtxent() {
         List<OSSession> whoList = new ArrayList<>();
-        SolarisUtmpx ut;
+        SolarisLibc.SolarisUtmpx ut;
         // Rewind
         LIBC.setutxent();
         try {
             // Iterate
-            while (null != (ut = LIBC.getutxent())) {
+            while ((ut = LIBC.getutxent()) != null) {
                 if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
-                    String user = Native.toString(ut.ut_user, Charset.US_ASCII);
-                    if (!"LOGIN".equals(user)) {
-                        String device = Native.toString(ut.ut_line, Charset.US_ASCII);
-                        String host = Native.toString(ut.ut_host, Charset.US_ASCII);
-                        long loginTime = ut.ut_tv.tv_sec.longValue() * 1000L + ut.ut_tv.tv_usec.longValue() / 1000L;
-                        // Sanity check. If errors, default to who command line
-                        if (user.isEmpty() || device.isEmpty() || loginTime < 0
-                                || loginTime > System.currentTimeMillis()) {
-                            return org.aoju.bus.health.unix.Who.queryWho();
-                        }
-                        whoList.add(new OSSession(user, device, loginTime, host));
+                    String user = Native.toString(ut.ut_user, StandardCharsets.US_ASCII);
+                    String device = Native.toString(ut.ut_line, StandardCharsets.US_ASCII);
+                    String host = Native.toString(ut.ut_host, StandardCharsets.US_ASCII);
+                    long loginTime = ut.ut_tv.tv_sec.longValue() * 1000L + ut.ut_tv.tv_usec.longValue() / 1000L;
+                    // Sanity check. If errors, default to who command line
+                    if (user.isEmpty() || device.isEmpty() || loginTime < 0 || loginTime > System.currentTimeMillis()) {
+                        return org.aoju.bus.health.unix.Who.queryWho();
                     }
+                    whoList.add(new OSSession(user, device, loginTime, host));
                 }
             }
         } finally {

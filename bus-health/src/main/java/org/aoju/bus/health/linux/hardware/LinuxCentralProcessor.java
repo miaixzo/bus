@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,25 +25,33 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.hardware;
 
+import com.sun.jna.platform.linux.Udev;
+import com.sun.jna.platform.linux.Udev.UdevContext;
+import com.sun.jna.platform.linux.Udev.UdevDevice;
+import com.sun.jna.platform.linux.Udev.UdevEnumerate;
+import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.ProcPath;
-import org.aoju.bus.health.linux.drivers.CpuStat;
 import org.aoju.bus.health.linux.drivers.Lshw;
+import org.aoju.bus.health.linux.drivers.proc.CpuStat;
 import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 /**
  * A CPU as defined in Linux /proc.
@@ -54,30 +62,6 @@ import java.util.stream.LongStream;
  */
 @ThreadSafe
 final class LinuxCentralProcessor extends AbstractCentralProcessor {
-
-    // See https://www.kernel.org/doc/Documentation/cpu-freq/user-guide.txt
-    private static final String CPUFREQ_PATH = "health.cpu.freq.path";
-
-    private static Map<Integer, Integer> mapNumaNodes() {
-        Map<Integer, Integer> numaNodeMap = new HashMap<>();
-        // Get numa node info from lscpu
-        List<String> lscpu = Executor.runNative("lscpu -p=cpu,node");
-        // Format:
-        // # comment lines starting with #
-        // # then comma-delimited cpu,node
-        // 0,0
-        // 1,0
-        for (String line : lscpu) {
-            if (line.startsWith(Symbol.SHAPE)) {
-                continue;
-            }
-            String[] split = line.split(Symbol.COMMA);
-            if (split.length == 2) {
-                numaNodeMap.put(Builder.parseIntOrDefault(split[0], 0), Builder.parseIntOrDefault(split[1], 0));
-            }
-        }
-        return numaNodeMap;
-    }
 
     /**
      * Fetches the ProcessorID from dmidecode (if possible with root permissions),
@@ -106,8 +90,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         marker = "eax=";
         for (String checkLine : Executor.runNative("cpuid -1r")) {
             if (checkLine.contains(marker) && checkLine.trim().startsWith("0x00000001")) {
-                String eax = Normal.EMPTY;
-                String edx = Normal.EMPTY;
+                String eax = "";
+                String edx = "";
                 for (String register : RegEx.SPACES.split(checkLine)) {
                     if (register.startsWith("eax=")) {
                         eax = Builder.removeMatchingString(register, "eax=0x");
@@ -147,7 +131,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // 15:4 - PartNum = model
         midrBytes |= Builder.parseLastInt(model, 0) << 4;
         // 19:16 - Architecture = family
-        midrBytes |= Builder.parseLastInt(family, 0) << Normal._16;
+        midrBytes |= Builder.parseLastInt(family, 0) << 16;
         // 31:24 - Implementer = vendor
         midrBytes |= Builder.parseLastInt(vendor, 0) << 24;
 
@@ -156,24 +140,24 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = Normal.EMPTY;
-        String cpuName = Normal.EMPTY;
-        String cpuFamily = Normal.EMPTY;
-        String cpuModel = Normal.EMPTY;
-        String cpuStepping = Normal.EMPTY;
-        long cpuFreq = 0L;
+        String cpuVendor = "";
+        String cpuName = "";
+        String cpuFamily = "";
+        String cpuModel = "";
+        String cpuStepping = "";
         String processorID;
+        long cpuFreq = 0L;
         boolean cpu64bit = false;
 
         StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
         String[] flags = new String[0];
-        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
-            String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
+            String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
             if (splitLine.length < 2) {
                 // special case
                 if (line.startsWith("CPU architecture: ")) {
-                    cpuFamily = line.replace("CPU architecture: ", Normal.EMPTY).trim();
+                    cpuFamily = line.replace("CPU architecture: ", "").trim();
                 }
                 continue;
             }
@@ -183,10 +167,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     cpuVendor = splitLine[1];
                     break;
                 case "model name":
+                case "Processor": // for Orange Pi
                     cpuName = splitLine[1];
                     break;
                 case "flags":
-                    flags = splitLine[1].toLowerCase().split(Symbol.SPACE);
+                    flags = splitLine[1].toLowerCase().split(" ");
                     for (String flag : flags) {
                         if ("lm".equals(flag)) {
                             cpu64bit = true;
@@ -239,7 +224,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             List<String> lscpu = Executor.runNative("lscpu");
             for (String line : lscpu) {
                 if (line.startsWith("Architecture:")) {
-                    cpuVendor = line.replace("Architecture:", Normal.EMPTY).trim();
+                    cpuVendor = line.replace("Architecture:", "").trim();
                 }
             }
         }
@@ -248,35 +233,63 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
-        Map<Integer, Integer> numaNodeMap = mapNumaNodes();
-        List<String> procCpu = FileKit.readLines(ProcPath.CPUINFO);
+    protected Pair<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>> initProcessorCounts() {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
-        int currentProcessor = 0;
-        int currentCore = 0;
-        int currentPackage = 0;
-        boolean first = true;
-        for (String cpu : procCpu) {
-            // Count logical processors
-            if (cpu.startsWith("processor")) {
-                if (!first) {
-                    logProcs.add(new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
-                            numaNodeMap.getOrDefault(currentProcessor, 0)));
-                } else {
-                    first = false;
+        Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
+        Map<Integer, String> modAliasMap = new HashMap<>();
+        // Enumerate CPU topology from sysfs
+        UdevContext udev = Udev.INSTANCE.udev_new();
+        try {
+            UdevEnumerate enumerate = udev.enumerateNew();
+            try {
+                enumerate.addMatchSubsystem("cpu");
+                enumerate.scanDevices();
+                for (UdevListEntry entry = enumerate.getListEntry(); entry != null; entry = entry.getNext()) {
+                    String syspath = entry.getName(); // /sys/devices/system/cpu/cpuX
+                    int processor = Builder.getFirstIntValue(syspath);
+                    int coreId = Builder.getIntFromFile(syspath + "/topology/core_id");
+                    int pkgId = Builder.getIntFromFile(syspath + "/topology/physical_package_id");
+                    int pkgCoreKey = (pkgId << 16) + coreId;
+                    // The cpu_capacity value may not exist, this will just store 0
+                    coreEfficiencyMap.put(pkgCoreKey, Builder.getIntFromFile(syspath + "/cpu_capacity"));
+                    UdevDevice device = udev.deviceNewFromSyspath(syspath);
+                    if (device != null) {
+                        try {
+                            modAliasMap.put(pkgCoreKey, device.getPropertyValue("MODALIAS"));
+                        } finally {
+                            device.unref();
+                        }
+                    }
+                    int nodeId = 0;
+                    String prefix = syspath + "/node";
+                    try (Stream<Path> path = Files.list(Paths.get(syspath))) {
+                        Optional<Path> first = path.filter(p -> p.toString().startsWith(prefix)).findFirst();
+                        if (first.isPresent()) {
+                            nodeId = Builder.getFirstIntValue(first.get().getFileName().toString());
+                        }
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                    logProcs.add(new CentralProcessor.LogicalProcessor(processor, coreId, pkgId, nodeId));
                 }
-                currentProcessor = Builder.parseLastInt(cpu, 0);
-            } else if (cpu.startsWith("core id") || cpu.startsWith("cpu number")) {
-                // Count unique combinations of core id and physical id.
-                currentCore = Builder.parseLastInt(cpu, 0);
-            } else if (cpu.startsWith("physical id")) {
-                currentPackage = Builder.parseLastInt(cpu, 0);
+            } finally {
+                enumerate.unref();
             }
+        } finally {
+            udev.unref();
         }
-        logProcs.add(new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
-                numaNodeMap.getOrDefault(currentProcessor, 0)));
-
-        return logProcs;
+        // Failsafe
+        if (logProcs.isEmpty()) {
+            logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
+            coreEfficiencyMap.put(0, 0);
+        }
+        List<CentralProcessor.PhysicalProcessor> physProcs = coreEfficiencyMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
+                .map(e -> {
+                    int pkgId = e.getKey() >> 16;
+                    int coreId = e.getKey() & 0xffff;
+                    return new CentralProcessor.PhysicalProcessor(pkgId, coreId, e.getValue(), modAliasMap.getOrDefault(e.getKey(), ""));
+                }).collect(Collectors.toList());
+        return Pair.of(logProcs, physProcs);
     }
 
     @Override
@@ -296,29 +309,44 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[] queryCurrentFreq() {
-        String cpuFreqPath = Config.get(CPUFREQ_PATH, Normal.EMPTY);
         long[] freqs = new long[getLogicalProcessorCount()];
         // Attempt to fill array from cpu-freq source
         long max = 0L;
-        for (int i = 0; i < freqs.length; i++) {
-            freqs[i] = Builder.getLongFromFile(cpuFreqPath + "/cpu" + i + "/cpufreq/scaling_cur_freq");
-            if (freqs[i] == 0) {
-                freqs[i] = Builder.getLongFromFile(cpuFreqPath + "/cpu" + i + "/cpufreq/cpuinfo_cur_freq");
+        UdevContext udev = Udev.INSTANCE.udev_new();
+        try {
+            UdevEnumerate enumerate = udev.enumerateNew();
+            try {
+                enumerate.addMatchSubsystem("cpu");
+                enumerate.scanDevices();
+                for (UdevListEntry entry = enumerate.getListEntry(); entry != null; entry = entry.getNext()) {
+                    String syspath = entry.getName(); // /sys/devices/system/cpu/cpuX
+                    int cpu = Builder.getFirstIntValue(syspath);
+                    if (cpu >= 0 && cpu < freqs.length) {
+                        freqs[cpu] = Builder.getLongFromFile(syspath + "/cpufreq/scaling_cur_freq");
+                        if (freqs[cpu] == 0) {
+                            freqs[cpu] = Builder.getLongFromFile(syspath + "/cpufreq/cpuinfo_cur_freq");
+                        }
+                    }
+                    if (max < freqs[cpu]) {
+                        max = freqs[cpu];
+                    }
+                }
+                if (max > 0L) {
+                    // If successful, array is filled with values in KHz.
+                    for (int i = 0; i < freqs.length; i++) {
+                        freqs[i] *= 1000L;
+                    }
+                    return freqs;
+                }
+            } finally {
+                enumerate.unref();
             }
-            if (max < freqs[i]) {
-                max = freqs[i];
-            }
-        }
-        if (max > 0L) {
-            // If successful, array is filled with values in KHz.
-            for (int i = 0; i < freqs.length; i++) {
-                freqs[i] *= 1000L;
-            }
-            return freqs;
+        } finally {
+            udev.unref();
         }
         // If unsuccessful, try from /proc/cpuinfo
         Arrays.fill(freqs, -1);
-        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
+        List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         int proc = 0;
         for (String s : cpuInfo) {
             if (s.toLowerCase().contains("cpu mhz")) {
@@ -333,7 +361,6 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryMaxFreq() {
-        String cpuFreqPath = Config.get(CPUFREQ_PATH, Normal.EMPTY);
         long max = Arrays.stream(this.getCurrentFreq()).max().orElse(-1L);
         // Max of current freq, if populated, is in units of Hz, convert to kHz
         if (max > 0) {
@@ -341,31 +368,49 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
         // Iterating CPUs only gets the existing policy, so we need to iterate the
         // policy directories to find the system-wide policy max
-        File cpufreqdir = new File(cpuFreqPath + "/cpufreq");
-        File[] policies = cpufreqdir.listFiles();
-        if (null != policies) {
-            for (int i = 0; i < policies.length; i++) {
-                File f = policies[i];
-                if (f.getName().startsWith("policy")) {
-                    long freq = Builder.getLongFromFile(cpuFreqPath + "/cpufreq/" + f.getName() + "/scaling_max_freq");
-                    if (freq == 0) {
-                        freq = Builder.getLongFromFile(cpuFreqPath + "/cpufreq/" + f.getName() + "/cpuinfo_max_freq");
-                    }
-                    if (max < freq) {
-                        max = freq;
+        UdevContext udev = Udev.INSTANCE.udev_new();
+        try {
+            UdevEnumerate enumerate = udev.enumerateNew();
+            try {
+                enumerate.addMatchSubsystem("cpu");
+                enumerate.scanDevices();
+                // Find the parent directory of cpuX paths
+                // We only need the first one of the iteration
+                UdevListEntry entry = enumerate.getListEntry();
+                if (entry != null) {
+                    String syspath = entry.getName(); // /sys/devices/system/cpu/cpu0
+                    String cpuFreqPath = syspath.substring(0, syspath.lastIndexOf(File.separatorChar)) + "/cpuFreq";
+                    String policyPrefix = cpuFreqPath + "/policy";
+                    try (Stream<Path> path = Files.list(Paths.get(cpuFreqPath))) {
+                        Optional<Long> maxPolicy = path.filter(p -> p.toString().startsWith(policyPrefix)).map(p -> {
+                            long freq = Builder.getLongFromFile(p + "/scaling_max_freq");
+                            if (freq == 0) {
+                                freq = Builder.getLongFromFile(p + "/cpuinfo_max_freq");
+                            }
+                            return freq;
+                        }).max(Long::compare);
+                        if (maxPolicy.isPresent() && max < maxPolicy.get()) {
+                            max = maxPolicy.get();
+                        }
+                    } catch (IOException e) {
+                        // ignore
                     }
                 }
+            } finally {
+                enumerate.unref();
             }
+        } finally {
+            udev.unref();
         }
-        if (max > 0L) {
-            // If successful, value is in KHz.
-            max *= 1000L;
-            // Cpufreq result assumes intel pstates and is unreliable for AMD processors.
-            // Check lshw as a backup
-            long lshwMax = Lshw.queryCpuCapacity();
-            return lshwMax > max ? lshwMax : max;
+        if (max == 0L) {
+            return -1L;
         }
-        return -1L;
+        // If successful, value is in KHz.
+        max *= 1000L;
+        // Cpufreq result assumes intel pstates and is unreliable for AMD processors.
+        // Check lshw as a backup
+        long lshwMax = Lshw.queryCpuCapacity();
+        return lshwMax > max ? lshwMax : max;
     }
 
     @Override

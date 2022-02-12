@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.freebsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
@@ -132,7 +131,7 @@ public class FreeBsdOSThread extends AbstractOSThread {
         String lwpStr = Integer.toString(this.threadId);
         for (String psOutput : threadList) {
             Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(FreeBsdOSProcess.PsThreadColumns.class, psOutput.trim(),
-                    Symbol.C_SPACE);
+                    ' ');
             if (threadMap.containsKey(FreeBsdOSProcess.PsThreadColumns.PRI) && lwpStr.equals(threadMap.get(FreeBsdOSProcess.PsThreadColumns.LWP))) {
                 return updateAttributes(threadMap);
             }
@@ -140,7 +139,6 @@ public class FreeBsdOSThread extends AbstractOSThread {
         this.state = OSProcess.State.INVALID;
         return false;
     }
-
 
     private boolean updateAttributes(Map<FreeBsdOSProcess.PsThreadColumns, String> threadMap) {
         this.name = threadMap.get(FreeBsdOSProcess.PsThreadColumns.TDNAME);

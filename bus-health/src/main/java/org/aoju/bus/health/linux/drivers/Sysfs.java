@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,6 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 
@@ -39,9 +38,6 @@ import org.aoju.bus.health.Builder;
  */
 @ThreadSafe
 public final class Sysfs {
-
-    private Sysfs() {
-    }
 
     /**
      * Query the vendor from sysfs
@@ -84,6 +80,8 @@ public final class Sysfs {
      * @return The serial number if available, null otherwise
      */
     public static String queryProductSerial() {
+        // These sysfs files accessible by root, or can be chmod'd at boot time
+        // to enable access without root
         String serial = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "product_serial");
         if (!serial.isEmpty() && !"None".equals(serial)) {
             return serial;
@@ -193,7 +191,7 @@ public final class Sysfs {
     public static String queryBiosVersion(String biosRevision) {
         final String biosVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_version").trim();
         if (!biosVersion.isEmpty()) {
-            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + ")");
+            return biosVersion + (StringKit.isBlank(biosRevision) ? "" : " (revision " + biosRevision + ")");
         }
         return null;
     }

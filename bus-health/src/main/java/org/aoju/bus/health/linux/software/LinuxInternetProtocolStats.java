@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,18 +26,13 @@
 package org.aoju.bus.health.linux.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
 import org.aoju.bus.health.linux.ProcPath;
-import org.aoju.bus.health.linux.drivers.ProcessStat;
+import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 import org.aoju.bus.health.unix.NetStat;
 
 import java.util.ArrayList;
@@ -54,104 +49,18 @@ import java.util.Map;
 @ThreadSafe
 public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private static TcpStats getTcpStats(String netstatStr) {
-        long connectionsEstablished = 0;
-        long connectionsActive = 0;
-        long connectionsPassive = 0;
-        long connectionFailures = 0;
-        long connectionsReset = 0;
-        long segmentsSent = 0;
-        long segmentsReceived = 0;
-        long segmentsRetransmitted = 0;
-        long inErrors = 0;
-        long outResets = 0;
-        List<String> netstat = Executor.runNative(netstatStr);
-        for (String s : netstat) {
-            String[] split = s.trim().split(Symbol.SPACE, 2);
-            if (split.length == 2) {
-                switch (split[1]) {
-                    case "connections established":
-                        connectionsEstablished = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "active connection openings":
-                        connectionsActive = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "passive connection openings":
-                        connectionsPassive = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "failed connection attempts":
-                        connectionFailures = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "connection resets received":
-                        connectionsReset = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "segments sent out":
-                        segmentsSent = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "segments received":
-                        segmentsReceived = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "segments retransmitted":
-                        segmentsRetransmitted = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "bad segments received":
-                        inErrors = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "resets sent":
-                        outResets = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-        }
-        return new TcpStats(connectionsEstablished, connectionsActive, connectionsPassive, connectionFailures,
-                connectionsReset, segmentsSent, segmentsReceived, segmentsRetransmitted, inErrors, outResets);
-    }
-
-    private static UdpStats getUdpStats(String netstatStr) {
-        long datagramsSent = 0;
-        long datagramsReceived = 0;
-        long datagramsNoPort = 0;
-        long datagramsReceivedErrors = 0;
-        List<String> netstat = Executor.runNative(netstatStr);
-        for (String s : netstat) {
-            String[] split = s.trim().split(Symbol.SPACE, 2);
-            if (split.length == 2) {
-                switch (split[1]) {
-                    case "packets sent":
-                        datagramsSent = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "packets received":
-                        datagramsReceived = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "packets to unknown port received":
-                        datagramsNoPort = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    case "packet receive errors":
-                        datagramsReceivedErrors = Builder.parseLongOrDefault(split[0], 0L);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        return new UdpStats(datagramsSent, datagramsReceived, datagramsNoPort, datagramsReceivedErrors);
-    }
-
-    private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
-        List<IPConnection> conns = new ArrayList<>();
-        for (String s : FileKit.readLines(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
-            if (s.indexOf(Symbol.C_COLON) >= 0) {
+    private static List<InternetProtocolStats.IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
+        List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
+        for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : ""))) {
+            if (s.indexOf(':') >= 0) {
                 String[] split = RegEx.SPACES.split(s.trim());
                 if (split.length > 9) {
                     Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
                     Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
-                    TcpState state = stateLookup(Builder.hexStringToInt(split[3], 0));
+                    InternetProtocolStats.TcpState state = stateLookup(Builder.hexStringToInt(split[3], 0));
                     Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
                     int inode = Builder.parseIntOrDefault(split[9], 0);
-                    conns.add(new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
+                    conns.add(new InternetProtocolStats.IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
                             state, txQrxQ.getLeft(), txQrxQ.getRight(), pidMap.getOrDefault(inode, -1)));
                 }
             }
@@ -160,9 +69,9 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     private static Pair<byte[], Integer> parseIpAddr(String s) {
-        int colon = s.indexOf(Symbol.C_COLON);
+        int colon = s.indexOf(':');
         if (colon > 0 && colon < s.length()) {
-            byte[] first = StringKit.hexStringToByte(s.substring(0, colon));
+            byte[] first = Builder.hexStringToByteArray(s.substring(0, colon));
             // Bytes are in __be32 endianness. we must invert each set of 4 bytes
             for (int i = 0; i + 3 < first.length; i += 4) {
                 byte tmp = first[i];
@@ -179,7 +88,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     private static Pair<Integer, Integer> parseHexColonHex(String s) {
-        int colon = s.indexOf(Symbol.C_COLON);
+        int colon = s.indexOf(':');
         if (colon > 0 && colon < s.length()) {
             int first = Builder.hexStringToInt(s.substring(0, colon), 0);
             int second = Builder.hexStringToInt(s.substring(colon + 1), 0);
@@ -219,23 +128,23 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     @Override
-    public TcpStats getTCPv4Stats() {
+    public InternetProtocolStats.TcpStats getTCPv4Stats() {
         return NetStat.queryTcpStats("netstat -st4");
     }
 
     @Override
-    public UdpStats getUDPv4Stats() {
+    public InternetProtocolStats.UdpStats getUDPv4Stats() {
         return NetStat.queryUdpStats("netstat -su4");
     }
 
     @Override
-    public UdpStats getUDPv6Stats() {
+    public InternetProtocolStats.UdpStats getUDPv6Stats() {
         return NetStat.queryUdpStats("netstat -su6");
     }
 
     @Override
-    public List<IPConnection> getConnections() {
-        List<IPConnection> conns = new ArrayList<>();
+    public List<InternetProtocolStats.IPConnection> getConnections() {
+        List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         Map<Integer, Integer> pidMap = ProcessStat.querySocketToPidMap();
         conns.addAll(queryConnections("tcp", 4, pidMap));
         conns.addAll(queryConnections("tcp", 6, pidMap));

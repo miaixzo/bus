@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -45,9 +45,6 @@ import java.util.Map.Entry;
  */
 @ThreadSafe
 public final class Lspv {
-
-    private Lspv() {
-    }
 
     /**
      * Query {@code lspv} to get partition info
@@ -138,8 +135,8 @@ public final class Lspv {
             String type = typeMap.get(name);
             long size = ppSize * ppMap.get(name);
             Pair<Integer, Integer> majMin = majMinMap.get(name);
-            int major = null == majMin ? Builder.getFirstIntValue(name) : majMin.getLeft();
-            int minor = null == majMin ? Builder.getFirstIntValue(name) : majMin.getRight();
+            int major = majMin == null ? Builder.getFirstIntValue(name) : majMin.getLeft();
+            int minor = majMin == null ? Builder.getFirstIntValue(name) : majMin.getRight();
             partitions.add(new HWPartition(name, name, type, Normal.EMPTY, size, major, minor, mount));
         }
         return partitions;

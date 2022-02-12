@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,11 +32,11 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
-import org.aoju.bus.core.lang.Normal;
 
 /**
- * C动态库，包含所有基于*nix的操作系统的公共代码。这个类应该被认为是非api的，
- * 因为如果/当它的代码被合并到JNA项目中时，它可能会被删除。
+ * C library with code common to all *nix-based operating systems. This class
+ * should be considered non-API as it may be removed if/when its code is
+ * incorporated into the JNA project.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -46,9 +46,9 @@ public interface CLibrary extends LibCAPI, Library {
 
     int AI_CANONNAME = 2;
 
-    int UT_LINESIZE = Normal._32;
-    int UT_NAMESIZE = Normal._32;
-    int UT_HOSTSIZE = Normal._256;
+    int UT_LINESIZE = 32;
+    int UT_NAMESIZE = 32;
+    int UT_HOSTSIZE = 256;
     int LOGIN_PROCESS = 6; // Session leader of a logged in user.
     int USER_PROCESS = 7; // Normal process.
 
@@ -205,6 +205,30 @@ public interface CLibrary extends LibCAPI, Library {
         }
     }
 
+    @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
+            "ai_next"})
+    class Addrinfo extends Structure {
+        public int ai_flags;
+        public int ai_family;
+        public int ai_socktype;
+        public int ai_protocol;
+        public int ai_addrlen;
+        public Sockaddr.ByReference ai_addr;
+        public String ai_canonname;
+        public ByReference ai_next;
+
+        public Addrinfo() {
+        }
+
+        public Addrinfo(Pointer p) {
+            super(p);
+            read();
+        }
+
+        public static class ByReference extends Addrinfo implements Structure.ByReference {
+        }
+    }
+
     class BsdTcpstat {
         public int tcps_connattempt; // 0
         public int tcps_accepts; // 4
@@ -243,30 +267,6 @@ public interface CLibrary extends LibCAPI, Library {
     class BsdIp6stat {
         public long ip6s_total; // 0
         public long ip6s_localout; // 88
-    }
-
-    @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
-            "ai_next"})
-    class Addrinfo extends Structure {
-        public int ai_flags;
-        public int ai_family;
-        public int ai_socktype;
-        public int ai_protocol;
-        public int ai_addrlen;
-        public Sockaddr.ByReference ai_addr;
-        public String ai_canonname;
-        public ByReference ai_next;
-
-        public Addrinfo() {
-        }
-
-        public Addrinfo(Pointer p) {
-            super(p);
-            read();
-        }
-
-        public static class ByReference extends Addrinfo implements Structure.ByReference {
-        }
     }
 
 }

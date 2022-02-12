@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,27 +27,22 @@ package org.aoju.bus.health;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
-import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.health.builtin.*;
-import org.aoju.bus.health.builtin.hardware.*;
-import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.System;
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -55,7 +50,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,10 +64,6 @@ import java.util.regex.Pattern;
 @ThreadSafe
 public final class Builder {
 
-    public static final String BUS_HEALTH_PROPERTIES = "bus-health.properties";
-    public static final String BUS_HEALTH_ARCH_PROPERTIES = "bus-health-arch.properties";
-    public static final String BUS_HEALTH_ADDR_PROPERTIES = "bus-health-addr.properties";
-
     /**
      * The official/approved path for sysfs information. Note: /sys/class/dmi/id
      * symlinks here
@@ -83,12 +73,37 @@ public final class Builder {
      * The Unix Epoch, a default value when WMI DateTime queries return no value.
      */
     public static final OffsetDateTime UNIX_EPOCH = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
-    private static final String MESSAGE = "{} didn't parse. Returning default. {}";
+    /**
+     * Constant <code>whitespacesColonWhitespace</code>
+     */
+    public static final Pattern whitespacesColonWhitespace = Pattern.compile("\\s+:\\s");
+    /**
+     * Constant <code>notDigits</code>
+     */
+    public static final Pattern notDigits = Pattern.compile("[^0-9]+");
+    /**
+     * Constant <code>startWithNotDigits</code>
+     */
+    public static final Pattern startWithNotDigits = Pattern.compile("^[^0-9]*");
+    /**
+     * Constant <code>forwardSlash</code>
+     */
+    public static final Pattern slash = Pattern.compile("\\/");
+    private static final String GLOB_PREFIX = "glob:";
+    private static final String REGEX_PREFIX = "regex:";
+    private static final String READING_LOG = "Reading file {}";
+    private static final String READ_LOG = "Read {}";
+    private static final String DEFAULT_LOG_MSG = "{} didn't parse. Returning default. {}";
     /**
      * Used for matching
      */
     private static final Pattern HERTZ_PATTERN = Pattern.compile("(\\d+(.\\d+)?) ?([kMGT]?Hz).*");
     private static final Pattern BYTES_PATTERN = Pattern.compile("(\\d+) ?([kMGT]?B).*");
+    private static final Pattern UNITS_PATTERN = Pattern.compile("(\\d+(.\\d+)?)[\\s]?([kKMGT])?");
+    /**
+     * Used to check validity of a hexadecimal string
+     */
+    private static final Pattern VALID_HEX = Pattern.compile("[0-9a-fA-F]+");
     /**
      * Pattern for [dd-[hh:[mm:[ss[.sss]]]]]
      */
@@ -99,10 +114,10 @@ public final class Builder {
     private static final Pattern UUID_PATTERN = Pattern
             .compile(".*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
     /**
-     * Pattern for Windows PnPDeviceID vendor and product ID
+     * Pattern for Windows DeviceID vendor and product ID and serial
      */
     private static final Pattern VENDOR_PRODUCT_ID_SERIAL = Pattern
-            .compile(".*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4}).*");
+            .compile(".*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4})(.*)\\\\(.*)");
     /**
      * Pattern for Linux lspci machine readable
      */
@@ -120,647 +135,28 @@ public final class Builder {
     private static final String GHZ = "GHz";
     private static final String THZ = "THz";
     private static final String PHZ = "PHz";
-    private static final Map<String, Long> MULTIPLIERS;
-    /**
-     * DH时间戳是1601时代，本地时间常量要转换为UTC
-     */
+    private static final Map<String, Long> multipliers;
+    // PDH timestamps are 1601 epoch, local time
+    // Constants to convert to UTC millis
     private static final long EPOCH_DIFF = 11_644_473_600_000L;
-    /**
-     * 此时区在指定日期与UTC的偏移量
-     */
     private static final int TZ_OFFSET = TimeZone.getDefault().getOffset(System.currentTimeMillis());
-    /**
-     * 快速十进制求幂:pow(10,y)——> POWERS_OF_10[y]
-     */
+    // Fast decimal exponentiation: pow(10,y) --> POWERS_OF_10[y]
     private static final long[] POWERS_OF_TEN = {1L, 10L, 100L, 1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L,
             100_000_000L, 1_000_000_000L, 10_000_000_000L, 100_000_000_000L, 1_000_000_000_000L, 10_000_000_000_000L,
             100_000_000_000_000L, 1_000_000_000_000_000L, 10_000_000_000_000_000L, 100_000_000_000_000_000L,
             1_000_000_000_000_000_000L};
-    /**
-     * WMI返回的日期时间格式
-     */
-    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern(Fields.PURE_DATETIME_ICE_PATTERN,
+    // Format returned by WMI for DateTime
+    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ",
             Locale.US);
 
-    private static final String GLOB_PREFIX = "glob:";
-    private static final String REGEX_PREFIX = "regex:";
-
-    /**
-     * 硬件信息
-     */
-    private static final HardwareAbstractionLayer HARDWARE;
-    /**
-     * 系统信息
-     */
-    private static final OperatingSystem OS;
-    /**
-     * 操作系统信息
-     */
-    private static final Platform PLATFORM;
-
     static {
-        MULTIPLIERS = new HashMap<>();
-        MULTIPLIERS.put(HZ, 1L);
-        MULTIPLIERS.put(KHZ, 1_000L);
-        MULTIPLIERS.put(MHZ, 1_000_000L);
-        MULTIPLIERS.put(GHZ, 1_000_000_000L);
-        MULTIPLIERS.put(THZ, 1_000_000_000_000L);
-        MULTIPLIERS.put(PHZ, 1_000_000_000_000_000L);
-        PLATFORM = new Platform();
-        HARDWARE = PLATFORM.getHardware();
-        OS = PLATFORM.getOperatingSystem();
-    }
-
-    private Builder() {
-
-    }
-
-    /**
-     * 获取操作系统相关信息，包括系统版本、文件系统、进程等
-     *
-     * @return 操作系统相关信息
-     */
-    public static OperatingSystem getOs() {
-        return OS;
-    }
-
-    /**
-     * 获取硬件相关信息，包括内存、硬盘、网络设备、显示器、USB、声卡等
-     *
-     * @return 硬件相关信息
-     */
-    public static HardwareAbstractionLayer getHardware() {
-        return HARDWARE;
-    }
-
-    /**
-     * 获取BIOS中计算机相关信息，比如序列号、固件版本等
-     *
-     * @return 获取BIOS中计算机相关信息
-     */
-    public static ComputerSystem getSystem() {
-        return HARDWARE.getComputerSystem();
-    }
-
-    /**
-     * 获取内存相关信息，比如总内存、可用内存等
-     *
-     * @return 内存相关信息
-     */
-    public static GlobalMemory getMemory() {
-        return HARDWARE.getMemory();
-    }
-
-    /**
-     * 获取CPU(处理器)相关信息，比如CPU负载等
-     *
-     * @return CPU(处理器)相关信息
-     */
-    public static CentralProcessor getProcessor() {
-        return HARDWARE.getProcessor();
-    }
-
-
-    /**
-     * 取得Java Virtual Machine Specification的信息
-     *
-     * @return <code>JvmSpecInfo</code>对象
-     */
-    public static JvmSpec getJvmSpecInfo() {
-        return Instances.singletion(JvmSpec.class);
-    }
-
-    /**
-     * 取得Java Virtual Machine Implementation的信息
-     *
-     * @return <code>JvmInfo</code>对象
-     */
-    public static Jvm getJvmInfo() {
-        return Instances.singletion(Jvm.class);
-    }
-
-    /**
-     * 取得Java Specification的信息
-     *
-     * @return <code>JavaSpecInfo</code>对象
-     */
-    public static JavaSpec getJavaSpecInfo() {
-        return Instances.singletion(JavaSpec.class);
-    }
-
-    /**
-     * 取得Java Implementation的信息
-     *
-     * @return <code>JavaInfo</code>对象
-     */
-    public static Java getJavaInfo() {
-        return Instances.singletion(Java.class);
-    }
-
-    /**
-     * 取得当前运行的JRE的信息
-     *
-     * @return <code>JreInfo</code>对象
-     */
-    public static JavaRuntime getJavaRuntimeInfo() {
-        return Instances.singletion(JavaRuntime.class);
-    }
-
-    /**
-     * 取得User的信息
-     *
-     * @return <code>UserInfo</code>对象
-     */
-    public static User getUserInfo() {
-        return Instances.singletion(User.class);
-    }
-
-    /**
-     * 取得当前主机信息
-     *
-     * @return 主机地址信息
-     */
-    public static InetAddress getLocalAddress() {
-        try {
-            InetAddress inetAddress = null;
-            /** 遍历所有的网络接口 */
-            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
-                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-                /** 在所有的网络接口下再遍历IP */
-                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
-                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
-                    if (!inetAddr.isLoopbackAddress()) {// 排除loopback类型地址
-                        if (inetAddr.isSiteLocalAddress()) {
-                            /** 如果是site-local地址,就是它了 */
-                            return inetAddr;
-                        } else if (null == inetAddress) {
-                            /** site-local类型的地址未被发现,先记录候选地址 */
-                            inetAddress = inetAddr;
-                        }
-                    }
-                }
-            }
-            if (null != inetAddress) {
-                return inetAddress;
-            }
-            /**  如果没有发现 non-loopback地址.只能用最次选的方案 */
-            inetAddress = InetAddress.getLocalHost();
-            if (null == inetAddress) {
-                throw new InstrumentException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
-            }
-            return inetAddress;
-        } catch (Exception e) {
-            throw new InstrumentException("Failed to determine LAN address: " + e);
-        }
-    }
-
-    /**
-     * 获取网络相关信息，可能多块网卡
-     *
-     * @return 网络相关信息
-     */
-    public static List<NetworkIF> getNetworkIFs() {
-        return HARDWARE.getNetworkIFs();
-    }
-
-    /**
-     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
-     *
-     * @return 系统 CPU 使用率 等信息
-     */
-    public static Cpu getCpuInfo() {
-        return getCpuInfo(1000);
-    }
-
-    /**
-     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
-     *
-     * @param waitingTime 设置等待时间
-     * @return 系统 CPU 使用率 等信息
-     */
-    public static Cpu getCpuInfo(long waitingTime) {
-        return new Cpu(getProcessor(), waitingTime);
-    }
-
-    /**
-     * 获取传感器相关信息，例如CPU温度、风扇转速等，传感器可能有多个
-     *
-     * @return 传感器相关信息
-     */
-    public static Sensors getSensors() {
-        return HARDWARE.getSensors();
-    }
-
-    /**
-     * 获取磁盘相关信息，可能有多个磁盘(包括可移动磁盘等)
-     *
-     * @return 磁盘相关信息
-     */
-    public static List<HWDiskStore> getDiskStores() {
-        return HARDWARE.getDiskStores();
-    }
-
-    /**
-     * Sleeps for the specified number of milliseconds.
-     *
-     * @param ms How long to sleep
-     */
-    public static void sleep(long ms) {
-        try {
-            Logger.trace("Sleeping for {} ms", ms);
-            Thread.sleep(ms);
-        } catch (InterruptedException e) { // NOSONAR squid:S2142
-            Logger.warn("Interrupted while sleeping for {} ms: {}", ms, e.getMessage());
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    /**
-     * Gets a map containing current working directory info
-     *
-     * @param pid a process ID, optional
-     * @return a map of process IDs to their current working directory. If
-     * {@code pid} is a negative number, all processes are returned;
-     * otherwise the map may contain only a single element for {@code pid}
-     */
-    public static Map<Integer, String> getCwdMap(int pid) {
-        List<String> lsof = Executor.runNative("lsof -F n -d cwd" + (pid < 0 ? Normal.EMPTY : " -p " + pid));
-        Map<Integer, String> cwdMap = new HashMap<>();
-        Integer key = -1;
-        for (String line : lsof) {
-            if (line.isEmpty()) {
-                continue;
-            }
-            switch (line.charAt(0)) {
-                case 'p':
-                    key = Builder.parseIntOrDefault(line.substring(1), -1);
-                    break;
-                case 'n':
-                    cwdMap.put(key, line.substring(1));
-                    break;
-                case 'f':
-                    // ignore the 'cwd' file descriptor
-                default:
-                    break;
-            }
-        }
-        return cwdMap;
-    }
-
-    /**
-     * Gets current working directory info
-     *
-     * @param pid a process ID
-     * @return the current working directory for that process.
-     */
-    public static String getCwd(int pid) {
-        List<String> lsof = Executor.runNative("lsof -F n -d cwd -p " + pid);
-        for (String line : lsof) {
-            if (!line.isEmpty() && line.charAt(0) == 'n') {
-                return line.substring(1).trim();
-            }
-        }
-        return Normal.EMPTY;
-    }
-
-    /**
-     * Read a file and return the long value contained therein. Intended primarily
-     * for Linux /sys filesystem
-     *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise zero
-     */
-    public static long getLongFromFile(String filename) {
-        if (Logger.get().isDebug()) {
-            Logger.debug("Reading file {}", filename);
-        }
-        List<String> read = FileKit.readLines(filename);
-        if (!read.isEmpty()) {
-            if (Logger.get().isTrace()) {
-                Logger.trace("Read {}", read.get(0));
-            }
-            return Builder.parseLongOrDefault(read.get(0), 0L);
-        }
-        return 0L;
-    }
-
-    /**
-     * Convert unsigned int to signed long.
-     *
-     * @param x Signed int representing an unsigned integer
-     * @return long value of x unsigned
-     */
-    public static long getUnsignedInt(int x) {
-        return x & 0x00000000ffffffffL;
-    }
-
-    /**
-     * Read a file and return the int value contained therein. Intended primarily
-     * for Linux /sys filesystem
-     *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise zero
-     */
-    public static int getIntFromFile(String filename) {
-        if (Logger.get().isDebug()) {
-            Logger.debug("Reading file {}", filename);
-        }
-        try {
-            List<String> read = FileKit.readLines(filename);
-            if (!read.isEmpty()) {
-                if (Logger.get().isTrace()) {
-                    Logger.trace("Read {}", read.get(0));
-                }
-                return Integer.parseInt(read.get(0));
-            }
-        } catch (NumberFormatException ex) {
-            Logger.warn("Unable to read value from {}. {}", filename, ex.getMessage());
-        }
-        return 0;
-    }
-
-    /**
-     * Read a file and return the String value contained therein. Intended primarily
-     * for Linux /sys filesystem
-     *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise empty string
-     */
-    public static String getStringFromFile(String filename) {
-        if (Logger.get().isDebug()) {
-            Logger.debug("Reading file {}", filename);
-        }
-        List<String> read = FileKit.readLines(filename);
-        if (!read.isEmpty()) {
-            if (Logger.get().isTrace()) {
-                Logger.trace("Read {}", read.get(0));
-            }
-            return read.get(0);
-        }
-        return Normal.EMPTY;
-    }
-
-    /**
-     * Read a file and return a map of string keys to string values contained
-     * therein. Intended primarily for Linux {@code /proc/[pid]} files to provide
-     * more detailed or accurate information not available in the API.
-     *
-     * @param filename  The file to read
-     * @param separator Character(s) in each line of the file that separate the key and
-     *                  the value.
-     * @return The map contained in the file, delimited by the separator, with the
-     * value whitespace trimmed. If keys and values are not parsed, an empty
-     * map is returned.
-     */
-    public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
-        Map<String, String> map = new HashMap<>();
-        if (Logger.get().isDebug()) {
-            Logger.debug("Reading file {}", filename);
-        }
-        List<String> lines = FileKit.readLines(filename);
-        for (String line : lines) {
-            String[] parts = line.split(separator);
-            if (parts.length == 2) {
-                map.put(parts[0], parts[1].trim());
-            }
-        }
-        return map;
-    }
-
-    /**
-     * Gets the Manufacturer ID from (up to) 3 5-bit characters in bytes 8 and 9
-     *
-     * @param edid The EDID byte array
-     * @return The manufacturer ID
-     */
-    public static String getManufacturerID(byte[] edid) {
-        // Bytes 8-9 are manufacturer ID in 3 5-bit characters.
-        String temp = String
-                .format("%8s%8s", Integer.toBinaryString(edid[8] & 0xFF), Integer.toBinaryString(edid[9] & 0xFF))
-                .replace(Symbol.C_SPACE, '0');
-        Logger.debug("Manufacurer ID: {}", temp);
-        return String.format("%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, Normal._16), 2))).replace(Symbol.AT, Normal.EMPTY);
-    }
-
-    /**
-     * Gets the Product ID, bytes 10 and 11
-     *
-     * @param edid The EDID byte array
-     * @return The product ID
-     */
-    public static String getProductID(byte[] edid) {
-        // Bytes 10-11 are product ID expressed in hex characters
-        return Integer.toHexString(
-                ByteBuffer.wrap(Arrays.copyOfRange(edid, 10, 12)).order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xffff);
-    }
-
-    /**
-     * Gets the Serial number, bytes 12-15
-     *
-     * @param edid The EDID byte array
-     * @return If all 4 bytes represent alphanumeric characters, a 4-character
-     * string, otherwise a hex string.
-     */
-    public static String getSerialNo(byte[] edid) {
-        // Bytes 12-15 are Serial number (last 4 characters)
-        if (Logger.get().isDebug()) {
-            Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, Normal._16)));
-        }
-        return String.format("%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
-                getAlphaNumericOrHex(edid[13]), getAlphaNumericOrHex(edid[12]));
-    }
-
-    private static String getAlphaNumericOrHex(byte b) {
-        return Character.isLetterOrDigit((char) b) ? String.format("%s", (char) b) : String.format("%02X", b);
-    }
-
-    /**
-     * Return the week of year of manufacture
-     *
-     * @param edid The EDID byte array
-     * @return The week of year
-     */
-    public static byte getWeek(byte[] edid) {
-        // Byte 16 is manufacture week
-        return edid[Normal._16];
-    }
-
-    /**
-     * Return the year of manufacture
-     *
-     * @param edid The EDID byte array
-     * @return The year of manufacture
-     */
-    public static int getYear(byte[] edid) {
-        // Byte 17 is manufacture year-1990
-        byte temp = edid[17];
-        Logger.debug("Year-1990: {}", temp);
-        return temp + 1990;
-    }
-
-    /**
-     * Return the EDID version
-     *
-     * @param edid The EDID byte array
-     * @return The EDID version
-     */
-    public static String getVersion(byte[] edid) {
-        // Bytes 18-19 are EDID version
-        return edid[18] + Symbol.DOT + edid[19];
-    }
-
-    /**
-     * Test if this EDID is a digital monitor based on byte 20
-     *
-     * @param edid The EDID byte array
-     * @return True if the EDID represents a digital monitor, false otherwise
-     */
-    public static boolean isDigital(byte[] edid) {
-        // Byte 20 is Video input params
-        return 1 == (edid[20] & 0xff) >> 7;
-    }
-
-    /**
-     * Get monitor width in cm
-     *
-     * @param edid The EDID byte array
-     * @return Monitor width in cm
-     */
-    public static int getHcm(byte[] edid) {
-        // Byte 21 is horizontal size in cm
-        return edid[21];
-    }
-
-    /**
-     * Get monitor height in cm
-     *
-     * @param edid The EDID byte array
-     * @return Monitor height in cm
-     */
-    public static int getVcm(byte[] edid) {
-        // Byte 22 is vertical size in cm
-        return edid[22];
-    }
-
-    /**
-     * Get the VESA descriptors
-     *
-     * @param edid The EDID byte array
-     * @return A 2D array with four 18-byte elements representing VESA descriptors
-     */
-    public static byte[][] getDescriptors(byte[] edid) {
-        byte[][] desc = new byte[4][18];
-        for (int i = 0; i < desc.length; i++) {
-            System.arraycopy(edid, 54 + 18 * i, desc[i], 0, 18);
-        }
-        return desc;
-    }
-
-    /**
-     * Get the VESA descriptor type
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return An integer representing the first four bytes of the VESA descriptor
-     */
-    public static int getDescriptorType(byte[] desc) {
-        return ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 4)).getInt();
-    }
-
-    /**
-     * Parse a detailed timing descriptor
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return A string describing part of the detailed timing descriptor
-     */
-    public static String getTimingDescriptor(byte[] desc) {
-        int clock = ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 2)).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100;
-        int hActive = (desc[2] & 0xff) + ((desc[4] & 0xf0) << 4);
-        int vActive = (desc[5] & 0xff) + ((desc[7] & 0xf0) << 4);
-        return String.format("Clock %dMHz, Active Pixels %dx%d ", clock, hActive, vActive);
-    }
-
-    /**
-     * Parse descriptor range limits
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return A string describing some of the range limits
-     */
-    public static String getDescriptorRangeLimits(byte[] desc) {
-        return String.format("Field Rate %d-%d Hz vertical, %d-%d Hz horizontal, Max clock: %d MHz", desc[5], desc[6],
-                desc[7], desc[8], desc[9] * 10);
-    }
-
-    /**
-     * Parse descriptor text
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return Plain text starting at the 4th byte
-     */
-    public static String getDescriptorText(byte[] desc) {
-        return new String(Arrays.copyOfRange(desc, 4, 18), Charset.US_ASCII).trim();
-    }
-
-    /**
-     * Read a configuration file from the class path and return its properties
-     *
-     * @param fileName The filename
-     * @return A {@link java.util.Properties} object containing the properties.
-     */
-    public static java.util.Properties readProperties(String fileName) {
-        return org.aoju.bus.setting.magic.Properties.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/health/" + fileName, Builder.class);
-    }
-
-    /**
-     * Parse an EDID byte array into user-readable information
-     *
-     * @param edid An EDID byte array
-     * @return User-readable text represented by the EDID
-     */
-    public static String toString(byte[] edid) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("  Manuf. ID=").append(getManufacturerID(edid));
-        sb.append(", Product ID=").append(getProductID(edid));
-        sb.append(", ").append(isDigital(edid) ? "Digital" : "Analog");
-        sb.append(", Serial=").append(getSerialNo(edid));
-        sb.append(", ManufDate=").append(getWeek(edid) * 12 / 52 + 1).append(Symbol.C_SLASH)
-                .append(getYear(edid));
-        sb.append(", EDID v").append(getVersion(edid));
-        int hSize = getHcm(edid);
-        int vSize = getVcm(edid);
-        sb.append(String.format("%n  %d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54, vSize / 2.54));
-        byte[][] desc = getDescriptors(edid);
-        for (byte[] b : desc) {
-            switch (getDescriptorType(b)) {
-                case 0xff:
-                    sb.append("\n  Serial Number: ").append(getDescriptorText(b));
-                    break;
-                case 0xfe:
-                    sb.append("\n  Unspecified Text: ").append(getDescriptorText(b));
-                    break;
-                case 0xfd:
-                    sb.append("\n  Range Limits: ").append(getDescriptorRangeLimits(b));
-                    break;
-                case 0xfc:
-                    sb.append("\n  Monitor Name: ").append(getDescriptorText(b));
-                    break;
-                case 0xfb:
-                    sb.append("\n  White Point Data: ").append(byteArrayToHexString(b));
-                    break;
-                case 0xfa:
-                    sb.append("\n  Standard Timing ID: ").append(byteArrayToHexString(b));
-                    break;
-                default:
-                    if (getDescriptorType(b) <= 0x0f && getDescriptorType(b) >= 0x00) {
-                        sb.append("\n  Manufacturer Data: ").append(byteArrayToHexString(b));
-                    } else {
-                        sb.append("\n  Preferred Timing: ").append(getTimingDescriptor(b));
-                    }
-                    break;
-            }
-        }
-        return sb.toString();
+        multipliers = new HashMap<>();
+        multipliers.put(HZ, 1L);
+        multipliers.put(KHZ, 1_000L);
+        multipliers.put(MHZ, 1_000_000L);
+        multipliers.put(GHZ, 1_000_000_000L);
+        multipliers.put(THZ, 1_000_000_000_000L);
+        multipliers.put(PHZ, 1_000_000_000_000_000L);
     }
 
     /**
@@ -773,7 +169,7 @@ public final class Builder {
         Matcher matcher = HERTZ_PATTERN.matcher(hertz.trim());
         if (matcher.find() && matcher.groupCount() == 3) {
             // Regexp enforces #(.#) format so no test for NFE required
-            double value = Double.valueOf(matcher.group(1)) * MULTIPLIERS.getOrDefault(matcher.group(3), -1L);
+            double value = Double.valueOf(matcher.group(1)) * multipliers.getOrDefault(matcher.group(3), -1L);
             if (value >= 0d) {
                 return (long) value;
             }
@@ -797,7 +193,7 @@ public final class Builder {
                 return Integer.parseInt(ls);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(MESSAGE, s, e);
+            Logger.trace(DEFAULT_LOG_MSG, s, e);
             return i;
         }
     }
@@ -818,7 +214,7 @@ public final class Builder {
                 return Long.parseLong(ls);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(MESSAGE, s, e);
+            Logger.trace(DEFAULT_LOG_MSG, s, e);
             return li;
         }
     }
@@ -834,7 +230,7 @@ public final class Builder {
         try {
             return Double.parseDouble(parseLastString(s));
         } catch (NumberFormatException e) {
-            Logger.trace(MESSAGE, s, e);
+            Logger.trace(DEFAULT_LOG_MSG, s, e);
             return d;
         }
     }
@@ -852,21 +248,42 @@ public final class Builder {
     }
 
     /**
-     * Parse a byte aray into a string of hexadecimal digits including leading zeros
+     * Parse a byte array into a string of hexadecimal digits including all array
+     * bytes as digits
      *
      * @param bytes The byte array to represent
      * @return A string of hex characters corresponding to the bytes. The string is
      * upper case.
      */
     public static String byteArrayToHexString(byte[] bytes) {
-        // Solution copied from https://stackoverflow.com/questions/9655181
-        char[] hexChars = new char[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = Normal.DIGITS_16_UPPER[v >>> 4];
-            hexChars[j * 2 + 1] = Normal.DIGITS_16_UPPER[v & 0x0F];
+        StringBuilder sb = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) {
+            sb.append(Character.forDigit((b & 0xf0) >>> 4, 16));
+            sb.append(Character.forDigit(b & 0x0f, 16));
         }
-        return new String(hexChars);
+        return sb.toString().toUpperCase();
+    }
+
+    /**
+     * Parse a string of hexadecimal digits into a byte array
+     *
+     * @param digits The string to be parsed
+     * @return a byte array with each pair of characters converted to a byte, or
+     * empty array if the string is not valid hex
+     */
+    public static byte[] hexStringToByteArray(String digits) {
+        int len = digits.length();
+        // Check if string is valid hex
+        if (!VALID_HEX.matcher(digits).matches() || (len & 0x1) != 0) {
+            Logger.warn("Invalid hexadecimal string: {}", digits);
+            return new byte[0];
+        }
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) (Character.digit(digits.charAt(i), 16) << 4
+                    | Character.digit(digits.charAt(i + 1), 16));
+        }
+        return data;
     }
 
     /**
@@ -880,7 +297,7 @@ public final class Builder {
      * string length, will be filled with zeroes.
      */
     public static byte[] asciiStringToByteArray(String text, int length) {
-        return Arrays.copyOf(text.getBytes(Charset.US_ASCII), length);
+        return Arrays.copyOf(text.getBytes(StandardCharsets.US_ASCII), length);
     }
 
     /**
@@ -909,13 +326,13 @@ public final class Builder {
     /**
      * Convert a string to an integer representation.
      *
-     * @param text A human readable ASCII string
+     * @param str  A human readable ASCII string
      * @param size Number of characters to convert to the long. May not exceed 8.
      * @return An integer representing the string where each character is treated as
      * a byte
      */
-    public static long strToLong(String text, int size) {
-        return byteArrayToLong(text.getBytes(Charset.US_ASCII), size);
+    public static long strToLong(String str, int size) {
+        return byteArrayToLong(str.getBytes(StandardCharsets.US_ASCII), size);
     }
 
     /**
@@ -957,7 +374,6 @@ public final class Builder {
         return total;
     }
 
-
     /**
      * Convert a byte array to its floating point representation.
      *
@@ -993,6 +409,18 @@ public final class Builder {
     }
 
     /**
+     * Convert an unsigned long to a signed long value by stripping the sign bit.
+     * This method "rolls over" long values greater than the max value but ensures
+     * the result is never negative.
+     *
+     * @param unsignedValue The unsigned long value to convert.
+     * @return The signed long value.
+     */
+    public static long unsignedLongToSignedLong(long unsignedValue) {
+        return unsignedValue & 0x7fff_ffff_ffff_ffffL;
+    }
+
+    /**
      * Parses a string of hex digits to a string where each pair of hex digits
      * represents an ASCII character
      *
@@ -1009,14 +437,14 @@ public final class Builder {
         StringBuilder sb = new StringBuilder();
         try {
             for (int pos = 0; pos < hexString.length(); pos += 2) {
-                charAsInt = Integer.parseInt(hexString.substring(pos, pos + 2), Normal._16);
-                if (charAsInt < Normal._32 || charAsInt > 127) {
+                charAsInt = Integer.parseInt(hexString.substring(pos, pos + 2), 16);
+                if (charAsInt < 32 || charAsInt > 127) {
                     return hexString;
                 }
                 sb.append((char) charAsInt);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(MESSAGE, hexString, e);
+            Logger.trace(DEFAULT_LOG_MSG, hexString, e);
             // Hex failed to parse, just return the existing string
             return hexString;
         }
@@ -1034,7 +462,7 @@ public final class Builder {
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
-            Logger.trace(MESSAGE, s, e);
+            Logger.trace(DEFAULT_LOG_MSG, s, e);
             return defaultInt;
         }
     }
@@ -1048,9 +476,27 @@ public final class Builder {
      */
     public static long parseLongOrDefault(String s, long defaultLong) {
         try {
+            return Long.parseLong(s);
+        } catch (NumberFormatException e) {
+            Logger.trace(DEFAULT_LOG_MSG, s, e);
+            return defaultLong;
+        }
+    }
+
+    /**
+     * Attempts to parse a string to an "unsigned" long. If it fails, returns the
+     * default
+     *
+     * @param s           The string to parse
+     * @param defaultLong The value to return if parsing fails
+     * @return The parsed long containing the same 64 bits that an unsigned long
+     * would contain (which may produce a negative value)
+     */
+    public static long parseUnsignedLongOrDefault(String s, long defaultLong) {
+        try {
             return new BigInteger(s).longValue();
         } catch (NumberFormatException e) {
-            Logger.trace(MESSAGE, s, e);
+            Logger.trace(DEFAULT_LOG_MSG, s, e);
             return defaultLong;
         }
     }
@@ -1066,7 +512,7 @@ public final class Builder {
         try {
             return Double.parseDouble(s);
         } catch (NumberFormatException e) {
-            Logger.trace(MESSAGE, s, e);
+            Logger.trace(DEFAULT_LOG_MSG, s, e);
             return defaultDouble;
         }
     }
@@ -1083,13 +529,13 @@ public final class Builder {
         Matcher m = DHMS.matcher(s);
         if (m.matches()) {
             long milliseconds = 0L;
-            if (null != m.group(1)) {
+            if (m.group(1) != null) {
                 milliseconds += parseLongOrDefault(m.group(1), 0L) * 86_400_000L;
             }
-            if (null != m.group(2)) {
+            if (m.group(2) != null) {
                 milliseconds += parseLongOrDefault(m.group(2), 0L) * 3_600_000L;
             }
-            if (null != m.group(3)) {
+            if (m.group(3) != null) {
                 milliseconds += parseLongOrDefault(m.group(3), 0L) * 60_000L;
             }
             milliseconds += parseLongOrDefault(m.group(4), 0L) * 1000L;
@@ -1123,7 +569,17 @@ public final class Builder {
      * @return the value contained between single tick marks
      */
     public static String getSingleQuoteStringValue(String line) {
-        return getStringBetween(line, Symbol.C_SINGLE_QUOTE);
+        return getStringBetween(line, '\'');
+    }
+
+    /**
+     * Parse a string key = "value" (string)
+     *
+     * @param line the entire string
+     * @return the value contained between double tick marks
+     */
+    public static String getDoubleQuoteStringValue(String line) {
+        return getStringBetween(line, '"');
     }
 
     /**
@@ -1142,7 +598,7 @@ public final class Builder {
     public static String getStringBetween(String line, char c) {
         int firstOcc = line.indexOf(c);
         if (firstOcc < 0) {
-            return Normal.EMPTY;
+            return "";
         }
         return line.substring(firstOcc + 1, line.lastIndexOf(c)).trim();
     }
@@ -1168,7 +624,7 @@ public final class Builder {
      */
     public static int getNthIntValue(String line, int n) {
         // Split the string by non-digits,
-        String[] split = RegEx.NOT_NUMBERS.split(RegEx.WITH_NOT_NUMBERS.matcher(line).replaceFirst(Normal.EMPTY));
+        String[] split = notDigits.split(startWithNotDigits.matcher(line).replaceFirst(""));
         if (split.length >= n) {
             return parseIntOrDefault(split[n - 1], 0);
         }
@@ -1183,11 +639,11 @@ public final class Builder {
      * @return The string with all matching substrings removed
      */
     public static String removeMatchingString(final String original, final String toRemove) {
-        if (null == original || original.isEmpty() || null == toRemove || toRemove.isEmpty()) {
+        if (original == null || original.isEmpty() || toRemove == null || toRemove.isEmpty()) {
             return original;
         }
 
-        int matchIndex = original.indexOf(toRemove, 0);
+        int matchIndex = original.indexOf(toRemove);
         if (matchIndex == -1) {
             return original;
         }
@@ -1195,7 +651,7 @@ public final class Builder {
         StringBuilder buffer = new StringBuilder(original.length() - toRemove.length());
         int currIndex = 0;
         do {
-            buffer.append(original.substring(currIndex, matchIndex));
+            buffer.append(original, currIndex, matchIndex);
             currIndex = matchIndex + toRemove.length();
             matchIndex = original.indexOf(toRemove, currIndex);
         } while (matchIndex != -1);
@@ -1261,7 +717,7 @@ public final class Builder {
                     dashSeen = false;
                     numeric = true;
                 }
-            } else if (indices[parsedIndex] != stringIndex || c == Symbol.C_PLUS || !numeric) {
+            } else if (indices[parsedIndex] != stringIndex || c == '+' || !numeric) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
@@ -1271,7 +727,7 @@ public final class Builder {
                     parsed[parsedIndex] += (c - '0') * Builder.POWERS_OF_TEN[power++];
                 }
                 delimCurrent = false;
-            } else if (c == Symbol.C_MINUS) {
+            } else if (c == '-') {
                 parsed[parsedIndex] *= -1L;
                 delimCurrent = false;
                 dashSeen = true;
@@ -1342,12 +798,12 @@ public final class Builder {
                     dashSeen = false;
                     numeric = true;
                 }
-            } else if (c == Symbol.C_PLUS || !numeric) {
+            } else if (c == '+' || !numeric) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
                 delimCurrent = false;
-            } else if (c == Symbol.C_MINUS) {
+            } else if (c == '-') {
                 delimCurrent = false;
                 dashSeen = true;
             } else {
@@ -1375,10 +831,10 @@ public final class Builder {
      */
     public static String getTextBetweenStrings(String text, String before, String after) {
 
-        String result = Normal.EMPTY;
+        String result = "";
 
         if (text.indexOf(before) >= 0 && text.indexOf(after) >= 0) {
-            result = text.substring(text.indexOf(before) + before.length(), text.length());
+            result = text.substring(text.indexOf(before) + before.length());
             result = result.substring(0, result.indexOf(after));
         }
         return result;
@@ -1452,11 +908,50 @@ public final class Builder {
      */
     public static boolean filePathStartsWith(List<String> prefixList, String path) {
         for (String match : prefixList) {
-            if (path.equals(match) || path.startsWith(match + Symbol.SLASH)) {
+            if (path.equals(match) || path.startsWith(match + "/")) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Parses a string like "53G" or "54.904 M" to its long value.
+     *
+     * @param count A count with a multiplyer like "4096 M"
+     * @return the count parsed to a long
+     */
+    public static long parseMultipliedToLongs(String count) {
+        Matcher matcher = UNITS_PATTERN.matcher(count.trim());
+        String[] mem;
+        if (matcher.find() && matcher.groupCount() == 3) {
+            mem = new String[2];
+            mem[0] = matcher.group(1);
+            mem[1] = matcher.group(3);
+        } else {
+            mem = new String[]{count};
+        }
+
+        double number = Builder.parseDoubleOrDefault(mem[0], 0L);
+        if (mem.length == 2 && mem[1] != null && mem[1].length() >= 1) {
+            switch (mem[1].charAt(0)) {
+                case 'T':
+                    number *= 1_000_000_000_000L;
+                    break;
+                case 'G':
+                    number *= 1_000_000_000L;
+                    break;
+                case 'M':
+                    number *= 1_000_000L;
+                    break;
+                case 'K':
+                case 'k':
+                    number *= 1_000L;
+                    break;
+                default:
+            }
+        }
+        return (long) number;
     }
 
     /**
@@ -1516,7 +1011,7 @@ public final class Builder {
             String vendorId = "0x" + m.group(1).toLowerCase();
             String productId = "0x" + m.group(2).toLowerCase();
             String serial = m.group(4);
-            return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? Normal.EMPTY : serial);
+            return Triple.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains("&") ? "" : serial);
         }
         return null;
     }
@@ -1537,13 +1032,13 @@ public final class Builder {
             // Remove prefix
             if (r.startsWith("memory:")) {
                 // Split to low and high
-                String[] mem = r.substring(7).split(Symbol.MINUS);
+                String[] mem = r.substring(7).split("-");
                 if (mem.length == 2) {
                     try {
                         // Parse the hex strings
-                        bytes += Long.parseLong(mem[1], Normal._16) - Long.parseLong(mem[0], Normal._16) + 1;
+                        bytes += Long.parseLong(mem[1], 16) - Long.parseLong(mem[0], 16) + 1;
                     } catch (NumberFormatException e) {
-                        Logger.trace(MESSAGE, r, e);
+                        Logger.trace(DEFAULT_LOG_MSG, r, e);
                     }
                 }
             }
@@ -1575,7 +1070,7 @@ public final class Builder {
     public static long parseLspciMemorySize(String line) {
         Matcher matcher = LSPCI_MEMORY_SIZE.matcher(line);
         if (matcher.matches()) {
-            return parseDecimalMemorySizeToBinary(matcher.group(1) + Symbol.SPACE + matcher.group(2) + "B");
+            return parseDecimalMemorySizeToBinary(matcher.group(1) + " " + matcher.group(2) + "B");
         }
         return 0;
     }
@@ -1585,14 +1080,14 @@ public final class Builder {
      * list of just the integers. For example, 0 1 4-7 parses to a list containing
      * 0, 1, 4, 5, 6, and 7.
      *
-     * @param text A string containing space-delimited integers or ranges of integers
-     *             with a hyphen
+     * @param str A string containing space-delimited integers or ranges of integers
+     *            with a hyphen
      * @return A list of integers representing the provided range(s).
      */
-    public static List<Integer> parseHyphenatedIntList(String text) {
+    public static List<Integer> parseHyphenatedIntList(String str) {
         List<Integer> result = new ArrayList<>();
-        for (String s : RegEx.SPACES.split(text)) {
-            if (s.contains(Symbol.MINUS)) {
+        for (String s : RegEx.SPACES.split(str)) {
+            if (s.contains("-")) {
                 int first = getFirstIntValue(s);
                 int last = getNthIntValue(s, 2);
                 for (int i = first; i <= last; i++) {
@@ -1627,7 +1122,7 @@ public final class Builder {
      * @return The address as an array of sizteen bytes
      */
     public static byte[] parseIntArrayToIP(int[] ip6) {
-        ByteBuffer bb = ByteBuffer.allocate(Normal._16).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer bb = ByteBuffer.allocate(16).order(ByteOrder.LITTLE_ENDIAN);
         for (int i : ip6) {
             bb.putInt(i);
         }
@@ -1651,17 +1146,6 @@ public final class Builder {
     }
 
     /**
-     * 输出到<code>StringBuilder</code>
-     *
-     * @param builder <code>StringBuilder</code>对象
-     * @param caption 标题
-     * @param value   值
-     */
-    public static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
-    }
-
-    /**
      * Parse an integer array to an IPv4 or IPv6 as appropriate.
      * <p>
      * Intended for use on Utmp structures's {@code ut_addr_v6} element.
@@ -1678,7 +1162,7 @@ public final class Builder {
         if (utAddrV6[1] == 0 && utAddrV6[2] == 0 && utAddrV6[3] == 0) {
             // Special case for all 0's
             if (utAddrV6[0] == 0) {
-                return Symbol.COLON + Symbol.COLON;
+                return "::";
             }
             // Parse using InetAddress
             byte[] ipv4 = ByteBuffer.allocate(4).putInt(utAddrV6[0]).array();
@@ -1690,7 +1174,7 @@ public final class Builder {
             }
         }
         // Parse all 16 bytes
-        byte[] ipv6 = ByteBuffer.allocate(Normal._16).putInt(utAddrV6[0]).putInt(utAddrV6[1]).putInt(utAddrV6[2])
+        byte[] ipv6 = ByteBuffer.allocate(16).putInt(utAddrV6[0]).putInt(utAddrV6[1]).putInt(utAddrV6[2])
                 .putInt(utAddrV6[3]).array();
         try {
             return InetAddress.getByAddress(ipv6).getHostAddress()
@@ -1702,36 +1186,6 @@ public final class Builder {
     }
 
     /**
-     * Gets open files
-     *
-     * @param pid The process ID
-     * @return the number of open files.
-     */
-    public static long getOpenFiles(int pid) {
-        int openFiles = Executor.runNative("lsof -p " + pid).size();
-        return openFiles > 0 ? openFiles - 1L : 0L;
-    }
-
-    /**
-     * Tests if a String matches another String with a wildcard pattern.
-     *
-     * @param text    The String to test
-     * @param pattern The String containing a wildcard pattern where ? represents a
-     *                single character and * represents any number of characters. If the
-     *                first character of the pattern is a carat (^) the test is
-     *                performed against the remaining characters and the result of the
-     *                test is the opposite.
-     * @return True if the String matches or if the first character is ^ and the
-     * remainder of the String does not match.
-     */
-    public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
-            return !wildcardMatch(text, pattern.substring(1));
-        }
-        return text.matches(pattern.replace(Symbol.QUESTION_MARK, Symbol.DOT + Symbol.QUESTION_MARK).replace(Symbol.STAR, Symbol.DOT + Symbol.STAR + Symbol.QUESTION_MARK));
-    }
-
-    /**
      * Parses a string of hex digits to an int value.
      *
      * @param hexString    A sequence of hex digits
@@ -1739,15 +1193,15 @@ public final class Builder {
      * @return The corresponding int value
      */
     public static int hexStringToInt(String hexString, int defaultValue) {
-        if (null != hexString) {
+        if (hexString != null) {
             try {
                 if (hexString.startsWith("0x")) {
-                    return new BigInteger(hexString.substring(2), Normal._16).intValue();
+                    return new BigInteger(hexString.substring(2), 16).intValue();
                 } else {
-                    return new BigInteger(hexString, Normal._16).intValue();
+                    return new BigInteger(hexString, 16).intValue();
                 }
             } catch (NumberFormatException e) {
-                Logger.trace(MESSAGE, hexString, e);
+                Logger.trace(DEFAULT_LOG_MSG, hexString, e);
             }
         }
         // Hex failed to parse, just return the default long
@@ -1755,22 +1209,22 @@ public final class Builder {
     }
 
     /**
-     * Parses a string of hex digits to long value.
+     * Parses a string of hex digits to a long value.
      *
      * @param hexString    A sequence of hex digits
      * @param defaultValue default value to return if parsefails
      * @return The corresponding long value
      */
     public static long hexStringToLong(String hexString, long defaultValue) {
-        if (null != hexString) {
+        if (hexString != null) {
             try {
                 if (hexString.startsWith("0x")) {
-                    return new BigInteger(hexString.substring(2), Normal._16).longValue();
+                    return new BigInteger(hexString.substring(2), 16).longValue();
                 } else {
-                    return new BigInteger(hexString, Normal._16).longValue();
+                    return new BigInteger(hexString, 16).longValue();
                 }
             } catch (NumberFormatException e) {
-                Logger.trace(MESSAGE, hexString, e);
+                Logger.trace(DEFAULT_LOG_MSG, hexString, e);
             }
         }
         // Hex failed to parse, just return the default long
@@ -1785,192 +1239,10 @@ public final class Builder {
      */
     public static String removeLeadingDots(String dotPrefixedStr) {
         int pos = 0;
-        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == Symbol.C_DOT) {
+        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == '.') {
             pos++;
         }
-        return pos < dotPrefixedStr.length() ? dotPrefixedStr.substring(pos) : Normal.EMPTY;
-    }
-
-    /**
-     * Reads the target of a symbolic link
-     *
-     * @param file The file to read
-     * @return The symlink name, or null if the read failed
-     */
-    public static String readSymlinkTarget(File file) {
-        try {
-            return Files.readSymbolicLink(Paths.get(file.getAbsolutePath())).toString();
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Rounds a floating point number to the nearest integer
-     *
-     * @param x the floating point number
-     * @return the integer
-     */
-    public static int roundToInt(double x) {
-        return (int) Math.round(x);
-    }
-
-    /**
-     * Evaluates if file store (identified by {@code path} and {@code volume})
-     * should be excluded or not based on configuration
-     * {@code pathIncludes, pathExcludes, volumeIncludes, volumeExcludes}.
-     * <p>
-     * Inclusion has priority over exclusion. If no exclusion/inclusion pattern is
-     * specified, then filestore is not excluded.
-     *
-     * @param path           Mountpoint of filestore.
-     * @param volume         Filestore volume.
-     * @param pathIncludes   List of patterns for path inclusions.
-     * @param pathExcludes   List of patterns for path exclusions.
-     * @param volumeIncludes List of patterns for volume inclusions.
-     * @param volumeExcludes List of patterns for volume exclusions.
-     * @return {@code true} if file store should be excluded or {@code false}
-     * otherwise.
-     */
-    public static boolean isFileStoreExcluded(String path, String volume,
-                                              List<PathMatcher> pathIncludes,
-                                              List<PathMatcher> pathExcludes,
-                                              List<PathMatcher> volumeIncludes,
-                                              List<PathMatcher> volumeExcludes) {
-        Path p = Paths.get(path);
-        Path v = Paths.get(volume);
-        if (matches(p, pathIncludes) || matches(v, volumeIncludes)) {
-            return false;
-        }
-        return matches(p, pathExcludes) || matches(v, volumeExcludes);
-    }
-
-    /**
-     * Load from config and parse file system include/exclude line.
-     *
-     * @param configPropertyName The config property containing the line to be parsed.
-     * @return List of PathMatchers to be used to match filestore volume and path.
-     */
-    public static List<PathMatcher> loadAndParseFileSystemConfig(String configPropertyName) {
-        String config = Config.get(configPropertyName, Normal.EMPTY);
-        return parseFileSystemConfig(config);
-    }
-
-    /**
-     * Parse file system include/exclude line.
-     *
-     * @param config The config line to be parsed.
-     * @return List of PathMatchers to be used to match filestore volume and path.
-     */
-    public static List<PathMatcher> parseFileSystemConfig(String config) {
-        FileSystem fs = FileSystems.getDefault();
-        List<PathMatcher> patterns = new ArrayList<>();
-        for (String item : config.split(Symbol.COMMA)) {
-            if (item.length() > 0) {
-                // Using glob: prefix as the defult unless user has specified glob or regex. See
-                // https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
-                if (!(item.startsWith(GLOB_PREFIX) || item.startsWith(REGEX_PREFIX))) {
-                    item = GLOB_PREFIX + item;
-                }
-                patterns.add(fs.getPathMatcher(item));
-            }
-        }
-        return patterns;
-    }
-
-    /**
-     * Checks if {@code text} matches any of @param patterns}.
-     *
-     * @param text     The text to be matched.
-     * @param patterns List of patterns.
-     * @return {@code true} if given text matches at least one glob pattern or
-     * {@code false} otherwise.
-     * @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia -
-     * glob (programming)</a>
-     */
-    public static boolean matches(Path text, List<PathMatcher> patterns) {
-        for (PathMatcher pattern : patterns) {
-            if (pattern.matches(text)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Parses a string like "53G" or "54.904 M" to its long value.
-     *
-     * @param count A count with a multiplyer like "4096 M"
-     * @return the count parsed to a long
-     */
-    public static long parseMultipliedToLongs(String count) {
-        Matcher matcher = Pattern.compile("(\\d+(.\\d+)?)[\\s]?([kKMGT])?").matcher(count.trim());
-        String[] mem;
-        if (matcher.find() && matcher.groupCount() == 3) {
-            mem = new String[2];
-            mem[0] = matcher.group(1);
-            mem[1] = matcher.group(3);
-        } else {
-            mem = new String[]{count};
-        }
-
-        double number = parseDoubleOrDefault(mem[0], 0L);
-        if (mem.length == 2 && null != mem[1] && mem[1].length() >= 1) {
-            switch (mem[1].charAt(0)) {
-                case 'T':
-                    number *= 1_000_000_000_000L;
-                    break;
-                case 'G':
-                    number *= 1_000_000_000L;
-                    break;
-                case 'M':
-                    number *= 1_000_000L;
-                    break;
-                case 'K':
-                case 'k':
-                    number *= 1_000L;
-                    break;
-                default:
-            }
-        }
-        return (long) number;
-    }
-
-    /**
-     * Parses a delimited String into an enum map. Multiple consecutive delimiters
-     * are treated as one
-     *
-     * @param <K>    a type extending Enum
-     * @param clazz  The enum class
-     * @param values A delimited String to be parsed into the map
-     * @param delim  the delimiter to use
-     * @return An EnumMap populated in order using the delimited String values. If
-     * there are fewer String values than enum values, the later enum values
-     * are not mapped. The final enum value will contain the remainder of
-     * the String, including excess delimiters.
-     */
-    public static <K extends Enum<K>> Map<K, String> stringToEnumMap(Class<K> clazz, String values, char delim) {
-        EnumMap<K, String> map = new EnumMap<>(clazz);
-        int start = 0;
-        int len = values.length();
-        EnumSet<K> keys = EnumSet.allOf(clazz);
-        int keySize = keys.size();
-        for (K key : keys) {
-            // If this is the last enum, put the index at the end of the string, otherwise
-            // put at delimiter
-            int idx = --keySize == 0 ? len : values.indexOf(delim, start);
-            if (idx >= 0) {
-                map.put(key, values.substring(start, idx));
-                start = idx;
-                do {
-                    start++;
-                } while (start < len && values.charAt(start) == delim);
-            } else {
-                map.put(key, values.substring(start));
-                break;
-            }
-        }
-        return map;
+        return pos < dotPrefixedStr.length() ? dotPrefixedStr.substring(pos) : "";
     }
 
     /**
@@ -1994,7 +1266,7 @@ public final class Builder {
                 }
                 // Otherwise add string and reset start
                 // Intentionally using platform default charset
-                strList.add(new String(bytes, start, end - start, Charset.UTF_8));
+                strList.add(new String(bytes, start, end - start, StandardCharsets.UTF_8));
                 start = end + 1;
             }
         } while (end++ < bytes.length);
@@ -2027,11 +1299,11 @@ public final class Builder {
                 }
                 // Otherwise add string (possibly empty) and reset start
                 // Intentionally using platform default charset
-                strMap.put(key, new String(bytes, start, end - start));
+                strMap.put(key, new String(bytes, start, end - start, StandardCharsets.UTF_8));
                 key = null;
                 start = end + 1;
             } else if (bytes[end] == '=' && key == null) {
-                key = new String(bytes, start, end - start);
+                key = new String(bytes, start, end - start, StandardCharsets.UTF_8);
                 start = end + 1;
             }
         } while (end++ < bytes.length);
@@ -2076,6 +1348,197 @@ public final class Builder {
     }
 
     /**
+     * Parses a delimited String into an enum map. Multiple consecutive delimiters
+     * are treated as one.
+     *
+     * @param <K>    a type extending Enum
+     * @param clazz  The enum class
+     * @param values A delimited String to be parsed into the map
+     * @param delim  the delimiter to use
+     * @return An EnumMap populated in order using the delimited String values. If
+     * there are fewer String values than enum values, the later enum values
+     * are not mapped. The final enum value will contain the remainder of
+     * the String, including excess delimiters.
+     */
+    public static <K extends Enum<K>> Map<K, String> stringToEnumMap(Class<K> clazz, String values, char delim) {
+        EnumMap<K, String> map = new EnumMap<>(clazz);
+        int start = 0;
+        int len = values.length();
+        EnumSet<K> keys = EnumSet.allOf(clazz);
+        int keySize = keys.size();
+        for (K key : keys) {
+            // If this is the last enum, put the index at the end of the string, otherwise
+            // put at delimiter
+            int idx = --keySize == 0 ? len : values.indexOf(delim, start);
+            if (idx >= 0) {
+                map.put(key, values.substring(start, idx));
+                start = idx;
+                do {
+                    start++;
+                } while (start < len && values.charAt(start) == delim);
+            } else {
+                map.put(key, values.substring(start));
+                break;
+            }
+        }
+        return map;
+    }
+
+    /**
+     * Sleeps for the specified number of milliseconds.
+     *
+     * @param ms How long to sleep
+     */
+    public static void sleep(long ms) {
+        try {
+            Logger.trace("Sleeping for {} ms", ms);
+            Thread.sleep(ms);
+        } catch (InterruptedException e) { // NOSONAR squid:S2142
+            Logger.warn("Interrupted while sleeping for {} ms: {}", ms, e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Tests if a String matches another String with a wildcard pattern.
+     *
+     * @param text    The String to test
+     * @param pattern The String containing a wildcard pattern where ? represents a
+     *                single character and * represents any number of characters. If the
+     *                first character of the pattern is a carat (^) the test is
+     *                performed against the remaining characters and the result of the
+     *                test is the opposite.
+     * @return True if the String matches or if the first character is ^ and the
+     * remainder of the String does not match.
+     */
+    public static boolean wildcardMatch(String text, String pattern) {
+        if (pattern.length() > 0 && pattern.charAt(0) == '^') {
+            return !wildcardMatch(text, pattern.substring(1));
+        }
+        return text.matches(pattern.replace("?", ".?").replace("*", ".*?"));
+    }
+
+    /**
+     * Evaluates if file store (identified by {@code path} and {@code volume})
+     * should be excluded or not based on configuration
+     * {@code pathIncludes, pathExcludes, volumeIncludes, volumeExcludes}.
+     * <p>
+     * Inclusion has priority over exclusion. If no exclusion/inclusion pattern is
+     * specified, then filestore is not excluded.
+     *
+     * @param path           Mountpoint of filestore.
+     * @param volume         Filestore volume.
+     * @param pathIncludes   List of patterns for path inclusions.
+     * @param pathExcludes   List of patterns for path exclusions.
+     * @param volumeIncludes List of patterns for volume inclusions.
+     * @param volumeExcludes List of patterns for volume exclusions.
+     * @return {@code true} if file store should be excluded or {@code false}
+     * otherwise.
+     */
+    public static boolean isFileStoreExcluded(String path, String volume, List<PathMatcher> pathIncludes,
+                                              List<PathMatcher> pathExcludes, List<PathMatcher> volumeIncludes, List<PathMatcher> volumeExcludes) {
+        Path p = Paths.get(path);
+        Path v = Paths.get(volume);
+        if (matches(p, pathIncludes) || matches(v, volumeIncludes)) {
+            return false;
+        }
+        return matches(p, pathExcludes) || matches(v, volumeExcludes);
+    }
+
+    /**
+     * Load from config and parse file system include/exclude line.
+     *
+     * @param configPropertyName The config property containing the line to be parsed.
+     * @return List of PathMatchers to be used to match filestore volume and path.
+     */
+    public static List<PathMatcher> loadAndParseFileSystemConfig(String configPropertyName) {
+        String config = Config.get(configPropertyName, "");
+        return parseFileSystemConfig(config);
+    }
+
+    /**
+     * Parse file system include/exclude line.
+     *
+     * @param config The config line to be parsed.
+     * @return List of PathMatchers to be used to match filestore volume and path.
+     */
+    public static List<PathMatcher> parseFileSystemConfig(String config) {
+        FileSystem fs = FileSystems.getDefault(); // can't be closed
+        List<PathMatcher> patterns = new ArrayList<>();
+        for (String item : config.split(",")) {
+            if (item.length() > 0) {
+                // Using glob: prefix as the defult unless user has specified glob or regex. See
+                // https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
+                if (!(item.startsWith(GLOB_PREFIX) || item.startsWith(REGEX_PREFIX))) {
+                    item = GLOB_PREFIX + item;
+                }
+                patterns.add(fs.getPathMatcher(item));
+            }
+        }
+        return patterns;
+    }
+
+    /**
+     * Checks if {@code text} matches any of @param patterns}.
+     *
+     * @param text     The text to be matched.
+     * @param patterns List of patterns.
+     * @return {@code true} if given text matches at least one glob pattern or
+     * {@code false} otherwise.
+     * @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia -
+     * glob (programming)</a>
+     */
+    public static boolean matches(Path text, List<PathMatcher> patterns) {
+        for (PathMatcher pattern : patterns) {
+            if (pattern.matches(text)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Read an entire file at one time. Intended primarily for Linux /proc
+     * filesystem to avoid recalculating file contents on iterative reads.
+     *
+     * @param filename The file to read
+     * @return A list of Strings representing each line of the file, or an empty
+     * list if file could not be read or is empty
+     */
+    public static List<String> readFile(String filename) {
+        return readFile(filename, true);
+    }
+
+    /**
+     * Read an entire file at one time. Intended primarily for Linux /proc
+     * filesystem to avoid recalculating file contents on iterative reads.
+     *
+     * @param filename    The file to read
+     * @param reportError Whether to log errors reading the file
+     * @return A list of Strings representing each line of the file, or an empty
+     * list if file could not be read or is empty
+     */
+    public static List<String> readFile(String filename, boolean reportError) {
+        if (new File(filename).canRead()) {
+            if (Logger.get().isDebug()) {
+                Logger.debug(READING_LOG, filename);
+            }
+            try {
+                return Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                if (reportError) {
+                    Logger.error("Error reading file {}. {}", filename, e.getMessage());
+                } else {
+                    Logger.debug("Error reading file {}. {}", filename, e.getMessage());
+                }
+            }
+        } else if (reportError) {
+            Logger.warn("File not found or not readable: {}", filename);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
      * Read an entire file at one time. Intended primarily for Linux /proc
      * filesystem to avoid recalculating file contents on iterative reads.
      *
@@ -2097,7 +1560,7 @@ public final class Builder {
     public static byte[] readAllBytes(String filename, boolean reportError) {
         if (new File(filename).canRead()) {
             if (Logger.get().isDebug()) {
-                Logger.debug("Reading file {}", filename);
+                Logger.debug(READING_LOG, filename);
             }
             try {
                 return Files.readAllBytes(Paths.get(filename));
@@ -2112,6 +1575,146 @@ public final class Builder {
             Logger.warn("File not found or not readable: {}", filename);
         }
         return new byte[0];
+    }
+
+    /**
+     * Read a file and return the long value contained therein. Intended primarily
+     * for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise zero
+     */
+    public static long getLongFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> read = Builder.readFile(filename, false);
+        if (!read.isEmpty()) {
+            if (Logger.get().isTrace()) {
+                Logger.trace(READ_LOG, read.get(0));
+            }
+            return Builder.parseLongOrDefault(read.get(0), 0L);
+        }
+        return 0L;
+    }
+
+    /**
+     * Read a file and return the unsigned long value contained therein as a long.
+     * Intended primarily for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise zero
+     */
+    public static long getUnsignedLongFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> read = Builder.readFile(filename, false);
+        if (!read.isEmpty()) {
+            if (Logger.get().isTrace()) {
+                Logger.trace(READ_LOG, read.get(0));
+            }
+            return Builder.parseUnsignedLongOrDefault(read.get(0), 0L);
+        }
+        return 0L;
+    }
+
+    /**
+     * Read a file and return the int value contained therein. Intended primarily
+     * for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise zero
+     */
+    public static int getIntFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        try {
+            List<String> read = Builder.readFile(filename, false);
+            if (!read.isEmpty()) {
+                if (Logger.get().isTrace()) {
+                    Logger.trace(READ_LOG, read.get(0));
+                }
+                return Integer.parseInt(read.get(0));
+            }
+        } catch (NumberFormatException ex) {
+            Logger.warn("Unable to read value from {}. {}", filename, ex.getMessage());
+        }
+        return 0;
+    }
+
+    /**
+     * Read a file and return the String value contained therein. Intended primarily
+     * for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise empty string
+     */
+    public static String getStringFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> read = Builder.readFile(filename, false);
+        if (!read.isEmpty()) {
+            if (Logger.get().isTrace()) {
+                Logger.trace(READ_LOG, read.get(0));
+            }
+            return read.get(0);
+        }
+        return "";
+    }
+
+    /**
+     * Read a file and return a map of string keys to string values contained
+     * therein. Intended primarily for Linux {@code /proc/[pid]} files to provide
+     * more detailed or accurate information not available in the API.
+     *
+     * @param filename  The file to read
+     * @param separator Character(s) in each line of the file that separate the key and
+     *                  the value.
+     * @return The map contained in the file, delimited by the separator, with the
+     * value whitespace trimmed. If keys and values are not parsed, an empty
+     * map is returned.
+     */
+    public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
+        Map<String, String> map = new HashMap<>();
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> lines = Builder.readFile(filename, false);
+        for (String line : lines) {
+            String[] parts = line.split(separator);
+            if (parts.length == 2) {
+                map.put(parts[0], parts[1].trim());
+            }
+        }
+        return map;
+    }
+
+    /**
+     * Reads the target of a symbolic link
+     *
+     * @param file The file to read
+     * @return The symlink name, or null if the read failed
+     */
+    public static String readSymlinkTarget(File file) {
+        try {
+            return Files.readSymbolicLink(Paths.get(file.getAbsolutePath())).toString();
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    /**
+     * 输出到<code>StringBuilder</code>
+     *
+     * @param builder <code>StringBuilder</code>对象
+     * @param caption 标题
+     * @param value   值
+     */
+    public static void append(StringBuilder builder, String caption, Object value) {
+        builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
     }
 
 }

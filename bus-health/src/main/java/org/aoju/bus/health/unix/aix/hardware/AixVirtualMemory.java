@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.hardware;
 
-import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 
@@ -45,20 +45,20 @@ final class AixVirtualMemory extends AbstractVirtualMemory {
     // the docs specify 4KB pages so we hardcode this
     private static final long PAGESIZE = 4096L;
     // Memoized perfstat from GlobalMemory
-    private final Supplier<Perfstat.perfstat_memory_total_t> perfstatMem;
+    private final Supplier<perfstat_memory_total_t> perfstatMem;
 
     /**
      * Constructor for SolarisVirtualMemory.
      *
      * @param perfstatMem The memoized perfstat data from the global memory class
      */
-    AixVirtualMemory(Supplier<Perfstat.perfstat_memory_total_t> perfstatMem) {
+    AixVirtualMemory(Supplier<perfstat_memory_total_t> perfstatMem) {
         this.perfstatMem = perfstatMem;
     }
 
     @Override
     public long getSwapUsed() {
-        Perfstat.perfstat_memory_total_t perfstat = perfstatMem.get();
+        perfstat_memory_total_t perfstat = perfstatMem.get();
         return (perfstat.pgsp_total - perfstat.pgsp_free) * PAGESIZE;
     }
 

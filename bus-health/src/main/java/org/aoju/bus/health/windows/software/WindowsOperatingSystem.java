@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,30 +27,39 @@ package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.COM.WbemcliUtil;
+import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
+import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
+import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import com.sun.jna.platform.win32.WinDef.DWORD;
+import com.sun.jna.platform.win32.WinNT.HANDLE;
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
-import org.aoju.bus.health.windows.EnumWindows;
-import org.aoju.bus.health.windows.WinNT;
+import org.aoju.bus.health.windows.WinNT.TOKEN_ELEVATION;
 import org.aoju.bus.health.windows.WmiKit;
-import org.aoju.bus.health.windows.drivers.*;
-import org.aoju.bus.health.windows.drivers.ProcessWtsData.WtsInfo;
-import org.aoju.bus.health.windows.drivers.Win32OperatingSystem.OSVersionProperty;
-import org.aoju.bus.health.windows.drivers.Win32Processor.BitnessProperty;
+import org.aoju.bus.health.windows.drivers.EnumWindows;
+import org.aoju.bus.health.windows.drivers.registry.*;
+import org.aoju.bus.health.windows.drivers.registry.ProcessWtsData.WtsInfo;
+import org.aoju.bus.health.windows.drivers.wmi.Win32OperatingSystem;
+import org.aoju.bus.health.windows.drivers.wmi.Win32OperatingSystem.OSVersionProperty;
+import org.aoju.bus.health.windows.drivers.wmi.Win32Processor;
+import org.aoju.bus.health.windows.drivers.wmi.Win32Processor.BitnessProperty;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
+import static org.aoju.bus.health.builtin.software.OSService.State.*;
 
 /**
  * Microsoft Windows, commonly referred to as Windows, is a group of several
@@ -64,87 +73,44 @@ import java.util.function.Supplier;
 @ThreadSafe
 public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
-    public static final String OSHI_OS_WINDOWS_PROCSTATE_SUSPENDED = "health.os.windows.procstate.suspended";
-    private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(OSHI_OS_WINDOWS_PROCSTATE_SUSPENDED, false);
+    private static final boolean USE_PROCSTATE_SUSPENDED = Config
+            .get(Config.OS_WINDOWS_PROCSTATE_SUSPENDED, false);
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     private static final int TOKENELEVATION = 0x14;
-
-    /**
+    /*
      * OSProcess code will need to know bitness of current process
      */
     private static final boolean X86 = isCurrentX86();
     private static final boolean WOW = isCurrentWow();
-
-    /**
+    /*
      * Windows event log name
      */
-    private static Supplier<String> systemLog = Memoize.memoize(WindowsOperatingSystem::querySystemLog,
+    private static final Supplier<String> systemLog = memoize(WindowsOperatingSystem::querySystemLog,
             TimeUnit.HOURS.toNanos(1));
-
     private static final long BOOTTIME = querySystemBootTime();
 
     static {
         enableDebugPrivilege();
     }
 
-    /**
+    /*
      * Cache full process stats queries. Second query will only populate if first
      * one returns null.
      */
-    private Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoize.memoize(
-            WindowsOperatingSystem::queryProcessMapFromRegistry, Memoize.defaultExpiration());
-    private Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoize.memoize(
-            WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoize.defaultExpiration());
-    /**
+    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = memoize(
+            WindowsOperatingSystem::queryProcessMapFromRegistry, defaultExpiration());
+    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = memoize(
+            WindowsOperatingSystem::queryProcessMapFromPerfCounters, defaultExpiration());
+    /*
      * Cache full thread stats queries. Second query will only populate if first one
      * returns null. Only used if USE_PROCSTATE_SUSPENDED is set true.
      */
-    private Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoize.memoize(
-            WindowsOperatingSystem::queryThreadMapFromRegistry, Memoize.defaultExpiration());
-    private Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoize.memoize(
-            WindowsOperatingSystem::queryThreadMapFromPerfCounters, Memoize.defaultExpiration());
-
-    private static Map<Integer, Integer> getParentPidsFromSnapshot() {
-        Map<Integer, Integer> parentPidMap = new HashMap<>();
-        // Get processes from ToolHelp API for parent PID
-        Tlhelp32.PROCESSENTRY32.ByReference processEntry = new Tlhelp32.PROCESSENTRY32.ByReference();
-        com.sun.jna.platform.win32.WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
-        try {
-            while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
-                parentPidMap.put(processEntry.th32ProcessID.intValue(), processEntry.th32ParentProcessID.intValue());
-            }
-        } finally {
-            Kernel32.INSTANCE.CloseHandle(snapshot);
-        }
-        return parentPidMap;
-    }
-
-    private static String querySystemLog() {
-        String systemLog = Config.get("oshi.os.windows.eventlog", "System");
-        if (systemLog.isEmpty()) {
-            return null;
-        }
-        WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
-        if (null == h) {
-            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
-                    systemLog);
-            return null;
-        }
-        return systemLog;
-    }
-
-    private static long querySystemUptime() {
-        // Uptime is in seconds so divide milliseconds
-        // GetTickCount64 requires Vista (6.0) or later
-        if (IS_VISTA_OR_GREATER) {
-            return Kernel32.INSTANCE.GetTickCount64() / 1000L;
-        } else {
-            // 32 bit rolls over at ~ 49 days
-            return Kernel32.INSTANCE.GetTickCount() / 1000L;
-        }
-    }
+    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = memoize(
+            WindowsOperatingSystem::queryThreadMapFromRegistry, defaultExpiration());
+    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = memoize(
+            WindowsOperatingSystem::queryThreadMapFromPerfCounters, defaultExpiration());
 
     /**
      * Gets suites available on the system and return as a codename
@@ -181,21 +147,62 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         if ((suiteMask & 0x00008000) != 0) {
             suites.add("Home Server");
         }
-        // 0x8000, Home Server, is included in main version name
-        return String.join(Symbol.COMMA, suites);
+        return String.join(",", suites);
+    }
+
+    private static Map<Integer, Integer> getParentPidsFromSnapshot() {
+        Map<Integer, Integer> parentPidMap = new HashMap<>();
+        // Get processes from ToolHelp API for parent PID
+        Tlhelp32.PROCESSENTRY32.ByReference processEntry = new Tlhelp32.PROCESSENTRY32.ByReference();
+        WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
+        try {
+            while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
+                parentPidMap.put(processEntry.th32ProcessID.intValue(), processEntry.th32ParentProcessID.intValue());
+            }
+        } finally {
+            Kernel32.INSTANCE.CloseHandle(snapshot);
+        }
+        return parentPidMap;
+    }
+
+    private static Map<Integer, ProcessPerformanceData.PerfCounterBlock> queryProcessMapFromRegistry() {
+        return ProcessPerformanceData.buildProcessMapFromRegistry(null);
+    }
+
+    private static Map<Integer, ProcessPerformanceData.PerfCounterBlock> queryProcessMapFromPerfCounters() {
+        return ProcessPerformanceData.buildProcessMapFromPerfCounters(null);
+    }
+
+    private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromRegistry() {
+        return ThreadPerformanceData.buildThreadMapFromRegistry(null);
+    }
+
+    private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromPerfCounters() {
+        return ThreadPerformanceData.buildThreadMapFromPerfCounters(null);
+    }
+
+    private static long querySystemUptime() {
+        // Uptime is in seconds so divide milliseconds
+        // GetTickCount64 requires Vista (6.0) or later
+        if (IS_VISTA_OR_GREATER) {
+            return Kernel32.INSTANCE.GetTickCount64() / 1000L;
+        } else {
+            // 32 bit rolls over at ~ 49 days
+            return Kernel32.INSTANCE.GetTickCount() / 1000L;
+        }
     }
 
     private static long querySystemBootTime() {
         String eventLog = systemLog.get();
-        if (null != eventLog) {
+        if (eventLog != null) {
             try {
-                Advapi32Util.EventLogIterator iter = new Advapi32Util.EventLogIterator(null, eventLog, WinNT.EVENTLOG_BACKWARDS_READ);
+                EventLogIterator iter = new EventLogIterator(null, eventLog, WinNT.EVENTLOG_BACKWARDS_READ);
                 // Get the most recent boot event (ID 12) from the Event log. If Windows "Fast
                 // Startup" is enabled we may not see event 12, so also check for most recent ID
                 // 6005 (Event log startup) as a reasonably close backup.
                 long event6005Time = 0L;
                 while (iter.hasNext()) {
-                    Advapi32Util.EventLogRecord record = iter.next();
+                    EventLogRecord record = iter.next();
                     if (record.getStatusCode() == 12) {
                         // Event 12 is system boot. We want this value unless we find two 6005 events
                         // first (may occur with Fast Boot)
@@ -231,7 +238,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * @return {@code true} if debug privileges were successfully enabled.
      */
     private static boolean enableDebugPrivilege() {
-        WinNT.HANDLEByReference hToken = new WinNT.HANDLEByReference();
+        HANDLEByReference hToken = new HANDLEByReference();
         boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
                 WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES, hToken);
         if (!success) {
@@ -262,20 +269,20 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return true;
     }
 
-    private static Map<Integer, ProcessPerformanceData.PerfCounterBlock> queryProcessMapFromRegistry() {
-        return ProcessPerformanceData.buildProcessMapFromRegistry(null);
-    }
-
-    private static Map<Integer, ProcessPerformanceData.PerfCounterBlock> queryProcessMapFromPerfCounters() {
-        return ProcessPerformanceData.buildProcessMapFromPerfCounters(null);
-    }
-
-    private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromRegistry() {
-        return ThreadPerformanceData.buildThreadMapFromRegistry(null);
-    }
-
-    private static Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryThreadMapFromPerfCounters() {
-        return ThreadPerformanceData.buildThreadMapFromPerfCounters(null);
+    private static String querySystemLog() {
+        String systemLog = Config.get(Config.OS_WINDOWS_EVENTLOG, "System");
+        if (systemLog.isEmpty()) {
+            // Use faster boot time approximation
+            return null;
+        }
+        // Check whether it works
+        HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
+        if (h == null) {
+            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
+                    systemLog);
+            return null;
+        }
+        return systemLog;
     }
 
     /**
@@ -288,7 +295,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     private static boolean isCurrentX86() {
-        WinBase.SYSTEM_INFO sysinfo = new WinBase.SYSTEM_INFO();
+        SYSTEM_INFO sysinfo = new SYSTEM_INFO();
         Kernel32.INSTANCE.GetNativeSystemInfo(sysinfo);
         return (0 == sysinfo.processorArchitecture.pi.wProcessorArchitecture.intValue());
     }
@@ -308,7 +315,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * @param h The handle to the processs to check
      * @return true if the process is 32-bit
      */
-    static boolean isWow(com.sun.jna.platform.win32.WinNT.HANDLE h) {
+    static boolean isWow(HANDLE h) {
         if (X86) {
             return true;
         }
@@ -321,13 +328,73 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         if (X86) {
             return true;
         }
-        com.sun.jna.platform.win32.WinNT.HANDLE h = Kernel32.INSTANCE.GetCurrentProcess();
+        HANDLE h = Kernel32.INSTANCE.GetCurrentProcess();
         if (h != null) {
             try {
                 return isWow(h);
             } finally {
                 Kernel32.INSTANCE.CloseHandle(h);
             }
+        }
+        return false;
+    }
+
+    @Override
+    public String queryManufacturer() {
+        return "Microsoft";
+    }
+
+    @Override
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+        String version = System.getProperty("os.name");
+        if (version.startsWith("Windows ")) {
+            version = version.substring(8);
+        }
+
+        String sp = null;
+        int suiteMask = 0;
+        String buildNumber = null;
+        WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
+        if (versionInfo.getResultCount() > 0) {
+            sp = WmiKit.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
+            if (!sp.isEmpty() && !Normal.UNKNOWN.equals(sp)) {
+                version = version + " " + sp.replace("Service Pack ", "SP");
+            }
+            suiteMask = WmiKit.getUint32(versionInfo, OSVersionProperty.SUITEMASK, 0);
+            buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
+        }
+        String codeName = parseCodeName(suiteMask);
+        return Pair.of("Windows", new OSVersionInfo(version, codeName, buildNumber));
+    }
+
+    @Override
+    protected int queryBitness(int jvmBitness) {
+        if (jvmBitness < 64 && System.getenv("ProgramFiles(x86)") != null && IS_VISTA_OR_GREATER) {
+            WmiResult<BitnessProperty> bitnessMap = Win32Processor.queryBitness();
+            if (bitnessMap.getResultCount() > 0) {
+                return WmiKit.getUint16(bitnessMap, BitnessProperty.ADDRESSWIDTH, 0);
+            }
+        }
+        return jvmBitness;
+    }
+
+    @Override
+    public boolean isElevated() {
+        HANDLEByReference hToken = new HANDLEByReference();
+        boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(), WinNT.TOKEN_QUERY,
+                hToken);
+        if (!success) {
+            Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
+            return false;
+        }
+        try {
+            TOKEN_ELEVATION elevation = new TOKEN_ELEVATION();
+            if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation, elevation.size(),
+                    new IntByReference())) {
+                return elevation.TokenIsElevated > 0;
+            }
+        } finally {
+            Kernel32.INSTANCE.CloseHandle(hToken.getValue());
         }
         return false;
     }
@@ -378,9 +445,35 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return procList.isEmpty() ? null : procList.get(0);
     }
 
-    @Override
-    public String queryManufacturer() {
-        return "Microsoft";
+    private List<OSProcess> processMapToList(Collection<Integer> pids) {
+        // Get data from the registry if possible
+        Map<Integer, ProcessPerformanceData.PerfCounterBlock> processMap = processMapFromRegistry.get();
+        // otherwise performance counters with WMI backup
+        if (processMap == null || processMap.isEmpty()) {
+            processMap = (pids == null) ? processMapFromPerfCounters.get()
+                    : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
+        }
+        Map<Integer, ThreadPerformanceData.PerfCounterBlock> threadMap = null;
+        if (USE_PROCSTATE_SUSPENDED) {
+            // Get data from the registry if possible
+            threadMap = threadMapFromRegistry.get();
+            // otherwise performance counters with WMI backup
+            if (threadMap == null || threadMap.isEmpty()) {
+                threadMap = (pids == null) ? threadMapFromPerfCounters.get()
+                        : ThreadPerformanceData.buildThreadMapFromPerfCounters(pids);
+            }
+        }
+
+        Map<Integer, WtsInfo> processWtsMap = ProcessWtsData.queryProcessWtsMap(pids);
+
+        Set<Integer> mapKeys = new HashSet<>(processWtsMap.keySet());
+        mapKeys.retainAll(processMap.keySet());
+
+        List<OSProcess> processList = new ArrayList<>();
+        for (Integer pid : mapKeys) {
+            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap, threadMap));
+        }
+        return processList;
     }
 
     @Override
@@ -414,29 +507,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
-        String version = System.getProperty("os.name");
-        if (version.startsWith("Windows ")) {
-            version = version.substring(8);
-        }
-
-        String sp;
-        int suiteMask = 0;
-        String buildNumber = null;
-        WbemcliUtil.WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
-        if (versionInfo.getResultCount() > 0) {
-            sp = WmiKit.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
-            if (!sp.isEmpty() && !Normal.UNKNOWN.equals(sp)) {
-                version = version + " " + sp.replace("Service Pack ", "SP");
-            }
-            suiteMask = WmiKit.getUint32(versionInfo, OSVersionProperty.SUITEMASK, 0);
-            buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
-        }
-        String codeName = parseCodeName(suiteMask);
-        return Pair.of("Windows", new OSVersionInfo(version, codeName, buildNumber));
-    }
-
-    @Override
     public long getSystemBootTime() {
         return BOOTTIME;
     }
@@ -450,24 +520,23 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     public List<OSService> getServices() {
         try (W32ServiceManager sm = new W32ServiceManager()) {
             sm.open(Winsvc.SC_MANAGER_ENUMERATE_SERVICE);
-            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm.enumServicesStatusExProcess(com.sun.jna.platform.win32.WinNT.SERVICE_WIN32,
+            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm.enumServicesStatusExProcess(WinNT.SERVICE_WIN32,
                     Winsvc.SERVICE_STATE_ALL, null);
             List<OSService> svcArray = new ArrayList<>();
             for (Winsvc.ENUM_SERVICE_STATUS_PROCESS service : services) {
                 State state;
                 switch (service.ServiceStatusProcess.dwCurrentState) {
                     case 1:
-                        state = OSService.State.STOPPED;
+                        state = STOPPED;
                         break;
                     case 4:
-                        state = OSService.State.RUNNING;
+                        state = RUNNING;
                         break;
                     default:
-                        state = OSService.State.OTHER;
+                        state = OTHER;
                         break;
                 }
-                svcArray.add(new OSService(service.lpDisplayName, service.ServiceStatusProcess.dwProcessId,
-                        state));
+                svcArray.add(new OSService(service.lpDisplayName, service.ServiceStatusProcess.dwProcessId, state));
             }
             return svcArray;
         } catch (com.sun.jna.platform.win32.Win32Exception ex) {
@@ -477,70 +546,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public boolean isElevated() {
-        WinNT.HANDLEByReference hToken = new WinNT.HANDLEByReference();
-        boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(), WinNT.TOKEN_QUERY,
-                hToken);
-        if (!success) {
-            Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
-            return false;
-        }
-        try {
-            WinNT.TOKEN_ELEVATION elevation = new WinNT.TOKEN_ELEVATION();
-            if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation, elevation.size(),
-                    new IntByReference())) {
-                return elevation.TokenIsElevated > 0;
-            }
-        } finally {
-            Kernel32.INSTANCE.CloseHandle(hToken.getValue());
-        }
-        return false;
-    }
-
-    @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
         return EnumWindows.queryDesktopWindows(visibleOnly);
     }
 
-    private List<OSProcess> processMapToList(Collection<Integer> pids) {
-        // Get data from the registry if possible
-        Map<Integer, ProcessPerformanceData.PerfCounterBlock> processMap = processMapFromRegistry.get();
-        // otherwise performance counters with WMI backup
-        if (processMap == null || processMap.isEmpty()) {
-            processMap = (pids == null) ? processMapFromPerfCounters.get()
-                    : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
-        }
-        Map<Integer, ThreadPerformanceData.PerfCounterBlock> threadMap = null;
-        if (USE_PROCSTATE_SUSPENDED) {
-            // Get data from the registry if possible
-            threadMap = threadMapFromRegistry.get();
-            // otherwise performance counters with WMI backup
-            if (threadMap == null || threadMap.isEmpty()) {
-                threadMap = (pids == null) ? threadMapFromPerfCounters.get()
-                        : ThreadPerformanceData.buildThreadMapFromPerfCounters(pids);
-            }
-        }
-
-        Map<Integer, WtsInfo> processWtsMap = ProcessWtsData.queryProcessWtsMap(pids);
-
-        Set<Integer> mapKeys = new HashSet<>(processWtsMap.keySet());
-        mapKeys.retainAll(processMap.keySet());
-
-        List<OSProcess> processList = new ArrayList<>();
-        for (Integer pid : mapKeys) {
-            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap, threadMap));
-        }
-        return processList;
-    }
-
-    @Override
-    protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < Normal._64 && null != System.getenv("ProgramFiles(x86)") && IS_VISTA_OR_GREATER) {
-            WbemcliUtil.WmiResult<BitnessProperty> bitnessMap = Win32Processor.queryBitness();
-            if (bitnessMap.getResultCount() > 0) {
-                return WmiKit.getUint16(bitnessMap, BitnessProperty.ADDRESSWIDTH, 0);
-            }
-        }
-        return jvmBitness;
-    }
 }

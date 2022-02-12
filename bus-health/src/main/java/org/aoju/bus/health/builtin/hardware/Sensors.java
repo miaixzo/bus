@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,6 +30,20 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 /**
  * Sensors include hardware sensors to monitor temperature, fan speed, and other
  * information.
+ * <p>
+ * Drivers may or may not exist to collect this data depending on the installed
+ * hardware and Operating System. In addition, software-hardware communication
+ * may suffer intermittent errors when attempting to access this information.
+ * Users should expect, test for, and handle zero values and/or empty arrays
+ * which will result if the OS is unable to provide the information.
+ * <p>
+ * Windows information is retrieved via Windows Management Instrumentation
+ * (WMI). Unfortunately, most hardware providers do not publish values to WMI.
+ * health attempts to retrieve values from
+ * <a href="https://openhardwaremonitor.org/">Open Hardware Monitor</a> if it is
+ * running, in preference to the Microsoft API, which may require elevated
+ * permissions and still may provide no results or unchanging results depending
+ * on the motherboard manufacturer.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -41,7 +55,8 @@ public interface Sensors {
     /**
      * CPU Temperature
      *
-     * @return CPU Temperature in degrees Celsius if available, 0 otherwise.
+     * @return CPU Temperature in degrees Celsius if available, 0 or
+     * {@link Double#NaN} otherwise.
      * <p>
      * On Windows, if not running Open Hardware Monitor, requires elevated
      * permissions and hardware BIOS that supports publishing to WMI. In

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -52,8 +52,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+import static org.aoju.bus.health.Memoize.memoize;
+
 /**
- * 操作系统信息支持
+ * System information. This is the main entry point.
+ * This object provides getters which instantiate the appropriate
+ * platform-specific implementations of {@link OperatingSystem}
+ * (software) and {@link HardwareAbstractionLayer} (hardware).
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -61,19 +66,15 @@ import java.util.function.Supplier;
  */
 public class Platform {
 
-    private static final OS OS_CURRENT_PLATFORM = OS.getValue(getOSType());
-    private static final String NOT_SUPPORTED = "Operating system not supported: ";
-    private final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
-    private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
+    // The platform isn't going to change, and making this static enables easy
+    // access from outside this class
+    private static final OS CURRENT_PLATFORM = OS.getValue(com.sun.jna.Platform.getOSType());
 
-    /**
-     * Getter for the field <code>currentPlatformEnum</code>.
-     *
-     * @return Returns the currentPlatformEnum.
-     */
-    public static OS getCurrentPlatform() {
-        return OS_CURRENT_PLATFORM;
-    }
+    private static final String NOT_SUPPORTED = "Operating system not supported: ";
+
+    private final Supplier<OperatingSystem> os = memoize(Platform::createOperatingSystem);
+
+    private final Supplier<HardwareAbstractionLayer> hardware = memoize(Platform::createHardware);
 
     public static int getOSType() {
         return com.sun.jna.Platform.getOSType();
@@ -425,18 +426,16 @@ public class Platform {
     }
 
     /**
-     * 输出到<code>StringBuilder</code>
+     * Gets the {@link OS} value representing this system.
      *
-     * @param builder <code>StringBuilder</code>对象
-     * @param caption 标题
-     * @param value   值
+     * @return Returns the current platform
      */
-    public static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
+    public static OS getCurrentPlatform() {
+        return CURRENT_PLATFORM;
     }
 
     private static OperatingSystem createOperatingSystem() {
-        switch (OS_CURRENT_PLATFORM) {
+        switch (CURRENT_PLATFORM) {
             case WINDOWS:
                 return new WindowsOperatingSystem();
             case LINUX:
@@ -452,12 +451,12 @@ public class Platform {
             case OPENBSD:
                 return new OpenBsdOperatingSystem();
             default:
-                throw new UnsupportedOperationException(NOT_SUPPORTED + OS_CURRENT_PLATFORM.getName());
+                throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
     }
 
     private static HardwareAbstractionLayer createHardware() {
-        switch (OS_CURRENT_PLATFORM) {
+        switch (CURRENT_PLATFORM) {
             case WINDOWS:
                 return new WindowsHardwareAbstractionLayer();
             case LINUX:
@@ -473,15 +472,15 @@ public class Platform {
             case OPENBSD:
                 return new OpenBsdHardwareAbstractionLayer();
             default:
-                throw new UnsupportedOperationException(NOT_SUPPORTED + OS_CURRENT_PLATFORM.getName());
+                throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
     }
 
     /**
      * Creates a new instance of the appropriate platform-specific
-     * {@link  OperatingSystem}.
+     * {@link OperatingSystem}.
      *
-     * @return A new instance of {@link  OperatingSystem}.
+     * @return A new instance of {@link OperatingSystem}.
      */
     public OperatingSystem getOperatingSystem() {
         return os.get();
@@ -489,18 +488,20 @@ public class Platform {
 
     /**
      * Creates a new instance of the appropriate platform-specific
-     * {@link  HardwareAbstractionLayer}.
+     * {@link HardwareAbstractionLayer}.
      *
-     * @return A new instance of {@link  HardwareAbstractionLayer}.
+     * @return A new instance of {@link HardwareAbstractionLayer}.
      */
     public HardwareAbstractionLayer getHardware() {
         return hardware.get();
     }
 
     /**
-     * Enum of supported operating systems.
+     * An enumeration of supported operating systems. The order of declaration
+     * matches the osType constants in the JNA Platform class.
      */
     public enum OS {
+
         /**
          * macOS
          */
@@ -593,6 +594,7 @@ public class Platform {
         public String getName() {
             return this.name;
         }
+
     }
 
 }

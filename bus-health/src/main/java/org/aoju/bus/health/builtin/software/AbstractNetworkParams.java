@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,11 +26,8 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.logger.Logger;
+import org.aoju.bus.health.Builder;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -59,54 +56,56 @@ public abstract class AbstractNetworkParams implements NetworkParams {
      */
     protected static String searchGateway(List<String> lines) {
         for (String line : lines) {
-            String leftTrimmed = line.replaceFirst("^\\s+", Normal.EMPTY);
+            String leftTrimmed = line.replaceFirst("^\\s+", "");
             if (leftTrimmed.startsWith("gateway:")) {
                 String[] split = RegEx.SPACES.split(leftTrimmed);
                 if (split.length < 2) {
-                    return Normal.EMPTY;
+                    return "";
                 }
-                return split[1].split(Symbol.PERCENT)[0];
+                return split[1].split("%")[0];
             }
         }
-        return Normal.EMPTY;
+        return "";
     }
 
     @Override
     public String getDomainName() {
+        InetAddress localHost;
         try {
-            return InetAddress.getLocalHost().getCanonicalHostName();
+            localHost = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
-            Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
-            return Normal.EMPTY;
+            localHost = InetAddress.getLoopbackAddress();
         }
+        return localHost.getCanonicalHostName();
     }
 
     @Override
     public String getHostName() {
+        InetAddress localHost;
         try {
-            String hn = InetAddress.getLocalHost().getHostName();
-            int dot = hn.indexOf('.');
-            if (dot == -1) {
-                return hn;
-            }
-            return hn.substring(0, dot);
+            localHost = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
-            Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
-            return Normal.EMPTY;
+            localHost = InetAddress.getLoopbackAddress();
         }
+        String hn = localHost.getHostName();
+        int dot = hn.indexOf('.');
+        if (dot == -1) {
+            return hn;
+        }
+        return hn.substring(0, dot);
     }
 
     @Override
     public String[] getDnsServers() {
-        List<String> resolv = FileKit.readLines("/etc/resolv.conf");
+        List<String> resolv = Builder.readFile("/etc/resolv.conf");
         String key = NAMESERVER;
         int maxNameServer = 3;
         List<String> servers = new ArrayList<>();
         for (int i = 0; i < resolv.size() && servers.size() < maxNameServer; i++) {
             String line = resolv.get(i);
             if (line.startsWith(key)) {
-                String value = line.substring(key.length()).replaceFirst("^[ \t]+", Normal.EMPTY);
-                if (value.length() != 0 && value.charAt(0) != Symbol.C_SHAPE && value.charAt(0) != Symbol.C_SEMICOLON) {
+                String value = line.substring(key.length()).replaceFirst("^[ \t]+", "");
+                if (value.length() != 0 && value.charAt(0) != '#' && value.charAt(0) != ';') {
                     String val = value.split("[ \t#;]", 2)[0];
                     servers.add(val);
                 }
@@ -120,7 +119,6 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         return String.format("Host name: %s, Domain name: %s, DNS servers: %s, IPv4 Gateway: %s, IPv6 Gateway: %s",
                 this.getHostName(), this.getDomainName(), Arrays.toString(this.getDnsServers()),
                 this.getIpv4DefaultGateway(), this.getIpv6DefaultGateway());
-
     }
 
 }

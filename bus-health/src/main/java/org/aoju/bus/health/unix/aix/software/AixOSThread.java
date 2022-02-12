@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,14 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.software;
 
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
-
-import java.util.List;
-import java.util.Map;
+import org.aoju.bus.health.unix.AixLibc.AIXLwpsInfo;
+import org.aoju.bus.health.unix.aix.drivers.PsInfo;
 
 /**
  * OSThread implementation
@@ -41,10 +38,12 @@ import java.util.Map;
  * @version 6.3.3
  * @since JDK 1.8+
  */
+@ThreadSafe
 public class AixOSThread extends AbstractOSThread {
 
     private int threadId;
     private OSProcess.State state = OSProcess.State.INVALID;
+    private long startMemoryAddress;
     private long contextSwitches;
     private long kernelTime;
     private long userTime;
@@ -52,9 +51,10 @@ public class AixOSThread extends AbstractOSThread {
     private long upTime;
     private int priority;
 
-    public AixOSThread(int pid, Map<AixOSProcess.PsThreadColumns, String> threadMap) {
+    public AixOSThread(int pid, int tid) {
         super(pid);
-        updateAttributes(threadMap);
+        this.threadId = tid;
+        updateAttributes();
     }
 
     @Override
@@ -65,6 +65,11 @@ public class AixOSThread extends AbstractOSThread {
     @Override
     public OSProcess.State getState() {
         return this.state;
+    }
+
+    @Override
+    public long getStartMemoryAddress() {
+        return this.startMemoryAddress;
     }
 
     @Override
@@ -99,29 +104,15 @@ public class AixOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        List<String> threadListInfoPs = Executor.runNative("ps -m -o THREAD -p " + getOwningProcessId());
-        // 1st row is header, 2nd row is process data.
-        if (threadListInfoPs.size() > 2) {
-            threadListInfoPs.remove(0); // header removed
-            threadListInfoPs.remove(0); // process data removed
-            String tidStr = Integer.toString(this.getThreadId());
-            for (String threadInfo : threadListInfoPs) {
-                Map<AixOSProcess.PsThreadColumns, String> threadMap = Builder.stringToEnumMap(AixOSProcess.PsThreadColumns.class,
-                        threadInfo.trim(), Symbol.C_SPACE);
-                if (threadMap.containsKey(AixOSProcess.PsThreadColumns.COMMAND)
-                        && tidStr.equals(threadMap.get(AixOSProcess.PsThreadColumns.TID))) {
-                    return updateAttributes(threadMap);
-                }
-            }
+        AIXLwpsInfo lwpsinfo = PsInfo.queryLwpsInfo(getOwningProcessId(), getThreadId());
+        if (lwpsinfo == null) {
+            this.state = OSProcess.State.INVALID;
+            return false;
         }
-        this.state = OSProcess.State.INVALID;
-        return false;
-    }
-
-    private boolean updateAttributes(Map<AixOSProcess.PsThreadColumns, String> threadMap) {
-        this.threadId = Builder.parseIntOrDefault(threadMap.get(AixOSProcess.PsThreadColumns.TID), 0);
-        this.state = AixOSProcess.getStateFromOutput(threadMap.get(AixOSProcess.PsThreadColumns.ST).charAt(0));
-        this.priority = Builder.parseIntOrDefault(threadMap.get(AixOSProcess.PsThreadColumns.PRI), 0);
+        this.threadId = (int) lwpsinfo.pr_lwpid; // 64 bit storage but always 32 bit
+        this.startMemoryAddress = lwpsinfo.pr_addr;
+        this.state = AixOSProcess.getStateFromOutput((char) lwpsinfo.pr_sname);
+        this.priority = lwpsinfo.pr_pri;
         return true;
     }
 

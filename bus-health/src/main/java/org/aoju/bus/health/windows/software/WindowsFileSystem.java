@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,19 +29,15 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
-import org.aoju.bus.health.windows.WinNT;
 import org.aoju.bus.health.windows.WmiKit;
-import org.aoju.bus.health.windows.drivers.ProcessInformation;
-import org.aoju.bus.health.windows.drivers.ProcessInformation.HandleCountProperty;
-import org.aoju.bus.health.windows.drivers.Win32LogicalDisk;
-import org.aoju.bus.health.windows.drivers.Win32LogicalDisk.LogicalDiskProperty;
+import org.aoju.bus.health.windows.drivers.perfmon.ProcessInformation;
+import org.aoju.bus.health.windows.drivers.wmi.Win32LogicalDisk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,7 +106,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
         // Determine whether 32-bit or 64-bit handle limit, although both are
         // essentially infinite for practical purposes. See
         // https://blogs.technet.microsoft.com/markrussinovich/2009/09/29/pushing-the-limits-of-windows-handles/
-        if (null == System.getenv("ProgramFiles(x86)")) {
+        if (System.getenv("ProgramFiles(x86)") == null) {
             MAX_WINDOWS_HANDLES = 16_777_216L - 32_768L;
         } else {
             MAX_WINDOWS_HANDLES = 16_777_216L - 65_536L;
@@ -128,13 +124,13 @@ public class WindowsFileSystem extends AbstractFileSystem {
     }
 
     /**
-     * Private method for getting all mounted local drives.
+     * Package private method for getting all mounted local drives.
      *
      * @param volumeToMatch an optional string to filter match, null otherwise
      * @return A list of {@link OSFileStore} objects representing all local mounted
      * volumes
      */
-    public static List<OSFileStore> getLocalVolumes(String volumeToMatch) {
+    static ArrayList<OSFileStore> getLocalVolumes(String volumeToMatch) {
         ArrayList<OSFileStore> fs;
         String volume;
         String strFsType;
@@ -159,7 +155,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
         }
         try {
             do {
-                fstype = new char[Normal._16];
+                fstype = new char[16];
                 name = new char[BUFSIZE];
                 mount = new char[BUFSIZE];
                 pFlags = new IntByReference();
@@ -169,27 +165,27 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 systemFreeBytes = new WinNT.LARGE_INTEGER(0L);
 
                 volume = Native.toString(aVolume);
-                Kernel32.INSTANCE.GetVolumeInformation(volume, name, BUFSIZE, null, null, pFlags, fstype, Normal._16);
+                Kernel32.INSTANCE.GetVolumeInformation(volume, name, BUFSIZE, null, null, pFlags, fstype, 16);
                 final int flags = pFlags.getValue();
                 Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(volume, mount, BUFSIZE, null);
 
                 strMount = Native.toString(mount);
-                if (!strMount.isEmpty() && (null == volumeToMatch || volumeToMatch.equals(volume))) {
+                if (!strMount.isEmpty() && (volumeToMatch == null || volumeToMatch.equals(volume))) {
                     strName = Native.toString(name);
                     strFsType = Native.toString(fstype);
 
                     StringBuilder options = new StringBuilder((FILE_READ_ONLY_VOLUME & flags) == 0 ? "rw" : "ro");
                     String moreOptions = OPTIONS_MAP.entrySet().stream().filter(e -> (e.getKey() & flags) > 0)
-                            .map(Map.Entry::getValue).collect(Collectors.joining(Symbol.COMMA));
+                            .map(Map.Entry::getValue).collect(Collectors.joining(","));
                     if (!moreOptions.isEmpty()) {
-                        options.append(Symbol.C_COMMA).append(moreOptions);
+                        options.append(',').append(moreOptions);
                     }
                     Kernel32.INSTANCE.GetDiskFreeSpaceEx(volume, userFreeBytes, totalBytes, systemFreeBytes);
                     // Parse uuid from volume name
-                    String uuid = Builder.parseUuidOrDefault(volume, Normal.EMPTY);
+                    String uuid = Builder.parseUuidOrDefault(volume, "");
 
                     fs.add(new WindowsOSFileStore(String.format("%s (%s)", strName, strMount), volume, strName,
-                            strMount, options.toString(), uuid, Normal.EMPTY, getDriveType(strMount), strFsType,
+                            strMount, options.toString(), uuid, "", getDriveType(strMount), strFsType,
                             systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue(), 0, 0));
                 }
             } while (Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE));
@@ -211,29 +207,29 @@ public class WindowsFileSystem extends AbstractFileSystem {
         long free;
         long total;
         List<OSFileStore> fs = new ArrayList<>();
-        WmiResult<LogicalDiskProperty> drives = Win32LogicalDisk.queryLogicalDisk(nameToMatch, localOnly);
+        WmiResult<Win32LogicalDisk.LogicalDiskProperty> drives = Win32LogicalDisk.queryLogicalDisk(nameToMatch, localOnly);
         for (int i = 0; i < drives.getResultCount(); i++) {
-            free = WmiKit.getUint64(drives, LogicalDiskProperty.FREESPACE, i);
-            total = WmiKit.getUint64(drives, LogicalDiskProperty.SIZE, i);
-            String description = WmiKit.getString(drives, LogicalDiskProperty.DESCRIPTION, i);
-            String name = WmiKit.getString(drives, LogicalDiskProperty.NAME, i);
-            String label = WmiKit.getString(drives, LogicalDiskProperty.VOLUMENAME, i);
-            String options = WmiKit.getUint16(drives, LogicalDiskProperty.ACCESS, i) == 1 ? "ro" : "rw";
-            int type = WmiKit.getUint32(drives, LogicalDiskProperty.DRIVETYPE, i);
+            free = WmiKit.getUint64(drives, Win32LogicalDisk.LogicalDiskProperty.FREESPACE, i);
+            total = WmiKit.getUint64(drives, Win32LogicalDisk.LogicalDiskProperty.SIZE, i);
+            String description = WmiKit.getString(drives, Win32LogicalDisk.LogicalDiskProperty.DESCRIPTION, i);
+            String name = WmiKit.getString(drives, Win32LogicalDisk.LogicalDiskProperty.NAME, i);
+            String label = WmiKit.getString(drives, Win32LogicalDisk.LogicalDiskProperty.VOLUMENAME, i);
+            String options = WmiKit.getUint16(drives, Win32LogicalDisk.LogicalDiskProperty.ACCESS, i) == 1 ? "ro" : "rw";
+            int type = WmiKit.getUint32(drives, Win32LogicalDisk.LogicalDiskProperty.DRIVETYPE, i);
             String volume;
             if (type != 4) {
                 char[] chrVolume = new char[BUFSIZE];
-                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + Symbol.BACKSLASH, chrVolume, BUFSIZE);
+                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + "\\", chrVolume, BUFSIZE);
                 volume = Native.toString(chrVolume);
             } else {
-                volume = WmiKit.getString(drives, LogicalDiskProperty.PROVIDERNAME, i);
+                volume = WmiKit.getString(drives, Win32LogicalDisk.LogicalDiskProperty.PROVIDERNAME, i);
                 String[] split = volume.split("\\\\");
                 if (split.length > 1 && split[split.length - 1].length() > 0) {
                     description = split[split.length - 1];
                 }
             }
-            fs.add(new WindowsOSFileStore(String.format("%s (%s)", description, name), volume, label, name + Symbol.BACKSLASH,
-                    options, Normal.EMPTY, Normal.EMPTY, getDriveType(name), WmiKit.getString(drives, LogicalDiskProperty.FILESYSTEM, i),
+            fs.add(new WindowsOSFileStore(String.format("%s (%s)", description, name), volume, label, name + "\\",
+                    options, "", "", getDriveType(name), WmiKit.getString(drives, Win32LogicalDisk.LogicalDiskProperty.FILESYSTEM, i),
                     free, free, total, 0, 0));
         }
         return fs;
@@ -264,8 +260,11 @@ public class WindowsFileSystem extends AbstractFileSystem {
 
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
+        // Create list to hold results
+        ArrayList<OSFileStore> result;
+
         // Begin with all the local volumes
-        List<OSFileStore> result = getLocalVolumes(null);
+        result = getLocalVolumes(null);
 
         // Build a map of existing mount point to OSFileStore
         Map<String, OSFileStore> volumeMap = new HashMap<>();
@@ -283,7 +282,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 result.remove(volume);
                 result.add(new WindowsOSFileStore(wmiVolume.getName(), volume.getVolume(),
                         volume.getLabel().isEmpty() ? wmiVolume.getLabel() : volume.getLabel(), volume.getMount(),
-                        volume.getOptions(), volume.getUUID(), Normal.EMPTY, volume.getDescription(), volume.getType(),
+                        volume.getOptions(), volume.getUUID(), "", volume.getDescription(), volume.getType(),
                         volume.getFreeSpace(), volume.getUsableSpace(), volume.getTotalSpace(), 0, 0));
             } else if (!localOnly) {
                 // Otherwise add the new volume in its entirety
@@ -295,10 +294,10 @@ public class WindowsFileSystem extends AbstractFileSystem {
 
     @Override
     public long getOpenFileDescriptors() {
-        Map<HandleCountProperty, List<Long>> valueListMap = ProcessInformation.queryHandles().getRight();
-        List<Long> valueList = valueListMap.get(HandleCountProperty.HANDLECOUNT);
+        Map<ProcessInformation.HandleCountProperty, List<Long>> valueListMap = ProcessInformation.queryHandles().getRight();
+        List<Long> valueList = valueListMap.get(ProcessInformation.HandleCountProperty.HANDLECOUNT);
         long descriptors = 0L;
-        if (null != valueList) {
+        if (valueList != null) {
             for (int i = 0; i < valueList.size(); i++) {
                 descriptors += valueList.get(i);
             }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -36,7 +35,6 @@ import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -75,8 +73,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         if (cardList.isEmpty()) {
             cardList = getGraphicsCardsFromLshw();
         }
-
-        return Collections.unmodifiableList(cardList);
+        return cardList;
     }
 
     // Faster, use as primary
@@ -91,7 +88,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         boolean found = false;
         String lookupDevice = null;
         for (String line : lspci) {
-            String[] split = line.trim().split(Symbol.COLON, 2);
+            String[] split = line.trim().split(":", 2);
             String prefix = split[0];
             // Skip until line contains "VGA"
             if (prefix.equals("Class") && line.contains("VGA")) {
@@ -110,13 +107,13 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
                 } else {
                     if (prefix.equals("Device")) {
                         Pair<String, String> pair = Builder.parseLspciMachineReadable(split[1].trim());
-                        if (null != pair) {
+                        if (pair != null) {
                             name = pair.getLeft();
                             deviceId = "0x" + pair.getRight();
                         }
                     } else if (prefix.equals("Vendor")) {
                         Pair<String, String> pair = Builder.parseLspciMachineReadable(split[1].trim());
-                        if (null != pair) {
+                        if (pair != null) {
                             vendor = pair.getLeft() + " (0x" + pair.getRight() + ")";
                         } else {
                             vendor = split[1].trim();
@@ -160,7 +157,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         long vram = 0;
         int cardNum = 0;
         for (String line : lshw) {
-            String[] split = line.trim().split(Symbol.COLON);
+            String[] split = line.trim().split(":");
             if (split[0].startsWith("*-display")) {
                 // Save previous card
                 if (cardNum++ > 0) {

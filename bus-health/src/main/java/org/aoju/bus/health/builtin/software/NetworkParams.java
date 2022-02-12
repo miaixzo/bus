@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -39,14 +39,14 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 public interface NetworkParams {
 
     /**
-     * Gets the HostName of the machine executing OSHI.
+     * Gets the HostName of the machine executing health.
      *
      * @return the hostname
      */
     String getHostName();
 
     /**
-     * Gets the Domain Name of the machine executing OSHI.
+     * Gets the Domain Name of the machine executing health.
      *
      * @return the domain name
      */

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,8 +26,7 @@
 package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 
 import java.util.ArrayList;
@@ -62,14 +61,14 @@ public final class Xrandr {
         for (String s : xrandr) {
             if (s.contains("EDID")) {
                 sb = new StringBuilder();
-            } else if (null != sb) {
+            } else if (sb != null) {
                 sb.append(s.trim());
-                if (sb.length() < Normal._256) {
+                if (sb.length() < 256) {
                     continue;
                 }
                 String edidStr = sb.toString();
-                byte[] edid = StringKit.hexStringToByte(edidStr);
-                if (edid.length >= Normal._128) {
+                byte[] edid = Builder.hexStringToByteArray(edidStr);
+                if (edid.length >= 128) {
                     displays.add(edid);
                 }
                 sb = null;
@@ -77,4 +76,5 @@ public final class Xrandr {
         }
         return displays;
     }
+
 }

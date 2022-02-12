@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health;
 
+import com.sun.jna.Platform;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -51,10 +52,6 @@ import java.util.List;
 public final class Executor {
 
     private static final String[] DEFAULT_ENV = getDefaultEnv();
-
-    private Executor() {
-
-    }
 
     private static String[] getDefaultEnv() {
         if (Platform.isWindows()) {
@@ -121,8 +118,9 @@ public final class Executor {
         } finally {
             // Ensure all resources are released
             if (p != null) {
-                // Solaris doesn't close descriptors on destroy so we must handle separately
-                if (Platform.isSolaris()) {
+                // Windows and Solaris don't close descriptors on destroy,
+                // so we must handle separately
+                if (Platform.isWindows() || Platform.isSolaris()) {
                     try {
                         p.getOutputStream().close();
                     } catch (IOException e) {
@@ -143,6 +141,24 @@ public final class Executor {
             }
         }
         return Collections.emptyList();
+    }
+
+    private static List<String> getProcessOutput(Process p, String[] cmd) {
+        ArrayList<String> sa = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sa.add(line);
+            }
+            p.waitFor();
+        } catch (IOException e) {
+            Logger.trace("Problem reading output from {}: {}", Arrays.toString(cmd), e.getMessage());
+        } catch (InterruptedException ie) {
+            Logger.trace("Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
+            Thread.currentThread().interrupt();
+        }
+        return sa;
     }
 
     /**
@@ -171,24 +187,6 @@ public final class Executor {
             return sa.get(answerIdx);
         }
         return Normal.EMPTY;
-    }
-
-    private static List<String> getProcessOutput(Process p, String[] cmd) {
-        ArrayList<String> sa = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sa.add(line);
-            }
-            p.waitFor();
-        } catch (IOException e) {
-            Logger.trace("Problem reading output from {}: {}", Arrays.toString(cmd), e.getMessage());
-        } catch (InterruptedException ie) {
-            Logger.trace("Interrupted while reading output from {}: {}", Arrays.toString(cmd), ie.getMessage());
-            Thread.currentThread().interrupt();
-        }
-        return sa;
     }
 
 }

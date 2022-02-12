@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,8 +40,8 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
-import org.aoju.bus.health.mac.drivers.Fsstat;
-import org.aoju.bus.health.mac.drivers.WindowInfo;
+import org.aoju.bus.health.mac.CFKit;
+import org.aoju.bus.health.mac.drivers.disk.Fsstat;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
@@ -60,11 +60,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
 
+    private final long currentQueueLength = 0L;
     private long reads = 0L;
     private long readBytes = 0L;
     private long writes = 0L;
     private long writeBytes = 0L;
-    private long currentQueueLength = 0L;
     private long transferTime = 0L;
     private long timeStamp = 0L;
     private List<HWPartition> partitionList;
@@ -88,7 +88,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
 
         // Open a DiskArbitration session
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
-        if (null == session) {
+        if (session == null) {
             Logger.error("Unable to open session to DiskArbitration framework.");
             return Collections.emptyList();
         }
@@ -96,11 +96,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         // Get IOMedia objects representing whole drives
         List<String> bsdNames = new ArrayList<>();
         IOIterator iter = IOKitUtil.getMatchingServices("IOMedia");
-        if (null != iter) {
+        if (iter != null) {
             IORegistryEntry media = iter.next();
-            while (null != media) {
+            while (media != null) {
                 Boolean whole = media.getBooleanProperty("Whole");
-                if (null != whole && whole) {
+                if (whole != null && whole) {
                     DADiskRef disk = DA.DADiskCreateFromIOMedia(CF.CFAllocatorGetDefault(), session, media);
                     bsdNames.add(DA.DADiskGetBSDName(disk));
                     disk.release();
@@ -123,12 +123,12 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
             // Get the DiskArbitration dictionary for this disk, which has model
             // and size (capacity)
             DADiskRef disk = DA.DADiskCreateFromBSDName(CF.CFAllocatorGetDefault(), session, path);
-            if (null != disk) {
+            if (disk != null) {
                 CFDictionaryRef diskInfo = DA.DADiskCopyDescription(disk);
-                if (null != diskInfo) {
+                if (diskInfo != null) {
                     // Parse out model and size from their respective keys
                     Pointer result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_DEVICE_MODEL));
-                    model = WindowInfo.cfPointerToString(result);
+                    model = CFKit.cfPointerToString(result);
                     result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_MEDIA_SIZE));
                     CFNumberRef sizePtr = new CFNumberRef(result);
                     size = sizePtr.longValue();
@@ -150,13 +150,13 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         modelNameRef.release();
                         propertyDict.release();
 
-                        if (null != serviceIterator) {
+                        if (serviceIterator != null) {
                             IORegistryEntry sdService = serviceIterator.next();
-                            while (null != sdService) {
+                            while (sdService != null) {
                                 // look up the serial number
                                 serial = sdService.getStringProperty("Serial Number");
                                 sdService.release();
-                                if (null != serial) {
+                                if (serial != null) {
                                     break;
                                 }
                                 // iterate
@@ -165,7 +165,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                             }
                             serviceIterator.release();
                         }
-                        if (null == serial) {
+                        if (serial == null) {
                             serial = Normal.EMPTY;
                         }
                     }
@@ -270,20 +270,20 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         // statistics
         String bsdName = getName();
         CFMutableDictionaryRef matchingDict = IOKitUtil.getBSDNameMatchingDict(bsdName);
-        if (null != matchingDict) {
+        if (matchingDict != null) {
             // search for all IOservices that match the bsd name
             IOIterator driveListIter = IOKitUtil.getMatchingServices(matchingDict);
-            if (null != driveListIter) {
+            if (driveListIter != null) {
                 // getMatchingServices releases matchingDict
                 IORegistryEntry drive = driveListIter.next();
                 // Should only match one drive
-                if (null != drive) {
+                if (drive != null) {
                     // Should be an IOMedia object with a parent
                     // IOBlockStorageDriver or AppleAPFSContainerScheme object
                     // Get the properties from the parent
                     if (drive.conformsTo("IOMedia")) {
                         IORegistryEntry parent = drive.getParentEntry("IOService");
-                        if (null != parent && (parent.conformsTo("IOBlockStorageDriver")
+                        if (parent != null && (parent.conformsTo("IOBlockStorageDriver")
                                 || parent.conformsTo("AppleAPFSContainerScheme"))) {
                             CFMutableDictionaryRef properties = parent.createCFProperties();
                             // We now have a properties object with the
@@ -309,13 +309,16 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
 
                             // Total time is in nanoseconds. Add read+write
                             // and convert total to ms
-                            result = statistics.getValue(cfKeyMap.get(CFKey.READ_TIME));
-                            stat.setPointer(result);
-                            long xferTime = stat.longValue();
-                            result = statistics.getValue(cfKeyMap.get(CFKey.WRITE_TIME));
-                            stat.setPointer(result);
-                            xferTime += stat.longValue();
-                            this.transferTime = xferTime / 1_000_000L;
+                            final Pointer readTimeResult = statistics.getValue(cfKeyMap.get(CFKey.READ_TIME));
+                            final Pointer writeTimeResult = statistics.getValue(cfKeyMap.get(CFKey.WRITE_TIME));
+                            // AppleAPFSContainerScheme does not have timer statistics
+                            if (readTimeResult != null && writeTimeResult != null) {
+                                stat.setPointer(readTimeResult);
+                                long xferTime = stat.longValue();
+                                stat.setPointer(writeTimeResult);
+                                xferTime += stat.longValue();
+                                this.transferTime = xferTime / 1_000_000L;
+                            }
 
                             properties.release();
                         } else {
@@ -351,10 +354,10 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         properties.release();
                         propertyDict.release();
 
-                        if (null != serviceIterator) {
+                        if (serviceIterator != null) {
                             // Iterate disks
                             IORegistryEntry sdService = IOKit.INSTANCE.IOIteratorNext(serviceIterator);
-                            while (null != sdService) {
+                            while (sdService != null) {
                                 // look up the BSD Name
                                 String partBsdName = sdService.getStringProperty("BSD Name");
                                 String name = partBsdName;
@@ -363,17 +366,17 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                 // this partition
                                 DADiskRef disk = DA.DADiskCreateFromBSDName(CF.CFAllocatorGetDefault(), session,
                                         partBsdName);
-                                if (null != disk) {
+                                if (disk != null) {
                                     CFDictionaryRef diskInfo = DA.DADiskCopyDescription(disk);
-                                    if (null != diskInfo) {
+                                    if (diskInfo != null) {
                                         // get volume name from its key
                                         result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_MEDIA_NAME));
-                                        type = WindowInfo.cfPointerToString(result);
+                                        type = CFKit.cfPointerToString(result);
                                         result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_VOLUME_NAME));
                                         if (result == null) {
                                             name = type;
                                         } else {
-                                            name = WindowInfo.cfPointerToString(result);
+                                            name = CFKit.cfPointerToString(result);
                                         }
                                         diskInfo.release();
                                     }
@@ -385,8 +388,8 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                 Integer bsdMinor = sdService.getIntegerProperty("BSD Minor");
                                 String uuid = sdService.getStringProperty("UUID");
                                 partitions.add(new HWPartition(partBsdName, name, type,
-                                        null == uuid ? Normal.UNKNOWN : uuid, null == size ? 0L : size,
-                                        null == bsdMajor ? 0 : bsdMajor, null == bsdMinor ? 0 : bsdMinor, mountPoint));
+                                        uuid == null ? Normal.UNKNOWN : uuid, size == null ? 0L : size,
+                                        bsdMajor == null ? 0 : bsdMajor, bsdMinor == null ? 0 : bsdMinor, mountPoint));
                                 // iterate
                                 sdService.release();
                                 sdService = IOKit.INSTANCE.IOIteratorNext(serviceIterator);
@@ -395,7 +398,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                         }
                         this.partitionList = Collections.unmodifiableList(partitions.stream()
                                 .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
-                        if (null != parent) {
+                        if (parent != null) {
                             parent.release();
                         }
                     } else {
@@ -410,19 +413,19 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         return false;
     }
 
-    /*
+    /**
      * Strings to convert to CFStringRef for pointer lookups
      */
     private enum CFKey {
-        IO_PROPERTY_MATCH("IOPropertyMatch"), //
+        IO_PROPERTY_MATCH("IOPropertyMatch"),
 
-        STATISTICS("Statistics"), //
-        READ_OPS("Operations (Read)"), READ_BYTES("Bytes (Read)"), READ_TIME("Total Time (Read)"), //
-        WRITE_OPS("Operations (Write)"), WRITE_BYTES("Bytes (Write)"), WRITE_TIME("Total Time (Write)"), //
+        STATISTICS("Statistics"),
+        READ_OPS("Operations (Read)"), READ_BYTES("Bytes (Read)"), READ_TIME("Total Time (Read)"),
+        WRITE_OPS("Operations (Write)"), WRITE_BYTES("Bytes (Write)"), WRITE_TIME("Total Time (Write)"),
 
-        BSD_UNIT("BSD Unit"), LEAF("Leaf"), WHOLE("Whole"), //
+        BSD_UNIT("BSD Unit"), LEAF("Leaf"), WHOLE("Whole"),
 
-        DA_MEDIA_NAME("DAMediaName"), DA_VOLUME_NAME("DAVolumeName"), DA_MEDIA_SIZE("DAMediaSize"), //
+        DA_MEDIA_NAME("DAMediaName"), DA_VOLUME_NAME("DAVolumeName"), DA_MEDIA_SIZE("DAMediaSize"),
         DA_DEVICE_MODEL("DADeviceModel"), MODEL("Model");
 
         private final String key;

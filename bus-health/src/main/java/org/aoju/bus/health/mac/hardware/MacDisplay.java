@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -69,16 +69,16 @@ final class MacDisplay extends AbstractDisplay {
         List<Display> displays = new ArrayList<>();
         // Iterate IO Registry IODisplayConnect
         IOIterator serviceIterator = IOKitUtil.getMatchingServices("IODisplayConnect");
-        if (null != serviceIterator) {
+        if (serviceIterator != null) {
             CFStringRef cfEdid = CFStringRef.createCFString("IODisplayEDID");
             IORegistryEntry sdService = serviceIterator.next();
-            while (null != sdService) {
+            while (sdService != null) {
                 // Display properties are in a child entry
                 IORegistryEntry properties = sdService.getChildEntry("IOService");
-                if (null != properties) {
+                if (properties != null) {
                     // look up the edid by key
                     CFTypeRef edidRaw = properties.createCFProperty(cfEdid);
-                    if (null != edidRaw) {
+                    if (edidRaw != null) {
                         CFDataRef edid = new CFDataRef(edidRaw.getPointer());
                         // Edid is a byte array of 128 bytes
                         int length = edid.getLength();

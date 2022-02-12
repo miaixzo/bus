@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,6 +31,7 @@ import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil;
 import com.sun.jna.platform.win32.Ole32;
 import com.sun.jna.platform.win32.WinError;
+import com.sun.jna.platform.win32.WinNT;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.logger.Logger;
@@ -41,7 +42,8 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 /**
- * 处理WMI查询
+ * Utility to handle WMI Queries. Designed to be extended with user-customized
+ * behavior.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -52,33 +54,35 @@ public class WmiQueryHandler {
 
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-    private static int globalTimeout = Config.get("health.wmi.timeout", -1);
-    // 创建这个类或子类
+    private static final int globalTimeout = Config.get(Config.WMI_TIMEOUT, -1);
+    // Factory to create this or a subclass
     private static Class<? extends WmiQueryHandler> customClass = null;
 
     static {
         if (globalTimeout == 0 || globalTimeout < -1) {
-            throw new Config.PropertyException("health.wmi.timeout");
+            throw new Config.PropertyException(Config.WMI_TIMEOUT);
         }
     }
 
-    // 缓存失败的wmi类
+    // Cache failed wmi classes
     protected final Set<String> failedWmiClassNames = new HashSet<>();
-    // WMI查询超时
+    // Timeout for WMI queries
     protected int wmiTimeout = globalTimeout;
-    // 首选的线程模型
+    // Preferred threading model
     private int comThreading = Ole32.COINIT_MULTITHREADED;
-    // 安全跟踪初始化
+    // Track initialization of Security
     private boolean securityInitialized = false;
 
     /**
-     * 方法来创建此类的实例。要覆盖这个类，使用{@link #setInstanceClass(Class)}
-     * 来定义一个扩展了{@link WmiQueryHandler}的子类
+     * Factory method to create an instance of this class. To override this class,
+     * use {@link #setInstanceClass(Class)} to define a subclass which extends
+     * {@link WmiQueryHandler}.
      *
-     * @return 类的实例 {@link #setInstanceClass(Class)}
+     * @return An instance of this class or a class defined by
+     * {@link #setInstanceClass(Class)}
      */
     public static synchronized WmiQueryHandler createInstance() {
-        if (null == customClass) {
+        if (customClass == null) {
             return new WmiQueryHandler();
         }
         try {
@@ -171,9 +175,7 @@ public class WmiQueryHandler {
     }
 
     /**
-     * <p>
-     * handleComException.
-     * </p>
+     * COM Exception handler. Logs a warning message.
      *
      * @param query a {@link com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery}
      *              object.
@@ -258,7 +260,7 @@ public class WmiQueryHandler {
     }
 
     /**
-     * Switches the current threading model for COM initialization, as  bus-health is
+     * Switches the current threading model for COM initialization, as health is
      * required to match if an external program has COM initialized already.
      *
      * @return The new threading model after switching

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,8 +26,6 @@
 package org.aoju.bus.health.unix.solaris.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
@@ -47,26 +45,13 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
 
     private static final String PCI_TYPE_USB = "000c";
 
-    /**
-     * <p>
-     * Constructor for SolarisUsbDevice.
-     * </p>
-     *
-     * @param name             a {@link java.lang.String} object.
-     * @param vendor           a {@link java.lang.String} object.
-     * @param vendorId         a {@link java.lang.String} object.
-     * @param productId        a {@link java.lang.String} object.
-     * @param serialNumber     a {@link java.lang.String} object.
-     * @param uniqueDeviceId   a {@link java.lang.String} object.
-     * @param connectedDevices an array of {@link UsbDevice} objects.
-     */
     public SolarisUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
                             String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
     /**
-     * Instantiates a list of {@link  UsbDevice} objects, representing
+     * Instantiates a list of {@link UsbDevice} objects, representing
      * devices connected via a usb port (including internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from
@@ -77,7 +62,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
      * @param tree If true, returns a list of controllers, which requires recursive
      *             iteration of connected devices. If false, returns a flat list of
      *             devices excluding controllers.
-     * @return a list of {@link  UsbDevice} objects.
+     * @return a list of {@link UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree) {
         List<UsbDevice> devices = getUsbDevices();
@@ -110,14 +95,14 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
         }
         // For each item enumerated, store information in the maps
         Map<Integer, String> lastParent = new HashMap<>();
-        String key = Normal.EMPTY;
+        String key = "";
         int indent = 0;
         List<String> usbControllers = new ArrayList<>();
         for (String line : devices) {
             // Node 0x... identifies start of a new tree
             if (line.contains("Node 0x")) {
                 // Remove indent for key
-                key = line.replaceFirst("^\\s*", Normal.EMPTY);
+                key = line.replaceFirst("^\\s*", "");
                 // Calculate indent and store as last parent at this depth
                 int depth = line.length() - key.length();
                 // Store first indent for future use
@@ -164,8 +149,8 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
         List<UsbDevice> controllerDevices = new ArrayList<>();
         for (String controller : usbControllers) {
             // Only do controllers that are USB device type
-            if (PCI_TYPE_USB.equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY))
-                    || "usb".equals(deviceTypeMap.getOrDefault(controller, Normal.EMPTY))) {
+            if (PCI_TYPE_USB.equals(deviceTypeMap.getOrDefault(controller, ""))
+                    || "usb".equals(deviceTypeMap.getOrDefault(controller, ""))) {
                 controllerDevices.add(
                         getDeviceAndChildren(controller, "0000", "0000", nameMap, vendorIdMap, productIdMap, hubMap));
             }
@@ -204,8 +189,8 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorIdMap, productIdMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId), Normal.EMPTY, vendorId, productId,
-                Normal.EMPTY, devPath, usbDevices);
+        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId), "", vendorId, productId,
+                "", devPath, usbDevices);
     }
 
 }

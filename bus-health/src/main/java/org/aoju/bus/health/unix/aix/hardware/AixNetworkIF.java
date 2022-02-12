@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,17 +26,20 @@
 package org.aoju.bus.health.unix.aix.hardware;
 
 import com.sun.jna.Native;
-import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatNetInterface;
+import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * AIXNetworks class.
@@ -48,6 +51,7 @@ import java.util.function.Supplier;
 @ThreadSafe
 public final class AixNetworkIF extends AbstractNetworkIF {
 
+    private final Supplier<perfstat_netinterface_t[]> netstats;
     private long bytesRecv;
     private long bytesSent;
     private long packetsRecv;
@@ -59,9 +63,8 @@ public final class AixNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
 
-    private Supplier<Perfstat.perfstat_netinterface_t[]> netstats;
-
-    public AixNetworkIF(NetworkInterface netint, Supplier<Perfstat.perfstat_netinterface_t[]> netstats) {
+    public AixNetworkIF(NetworkInterface netint, Supplier<perfstat_netinterface_t[]> netstats)
+            throws InstantiationException {
         super(netint);
         this.netstats = netstats;
         updateAttributes();
@@ -74,11 +77,15 @@ public final class AixNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        Supplier<Perfstat.perfstat_netinterface_t[]> netstats = Memoize.memoize(PerfstatNetInterface::queryNetInterfaces,
-                Memoize.defaultExpiration());
+        Supplier<perfstat_netinterface_t[]> netstats = memoize(PerfstatNetInterface::queryNetInterfaces,
+                defaultExpiration());
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            ifList.add(new AixNetworkIF(ni, netstats));
+            try {
+                ifList.add(new AixNetworkIF(ni, netstats));
+            } catch (InstantiationException e) {
+                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+            }
         }
         return ifList;
     }
@@ -135,9 +142,9 @@ public final class AixNetworkIF extends AbstractNetworkIF {
 
     @Override
     public boolean updateAttributes() {
-        Perfstat.perfstat_netinterface_t[] stats = netstats.get();
+        perfstat_netinterface_t[] stats = netstats.get();
         long now = System.currentTimeMillis();
-        for (Perfstat.perfstat_netinterface_t stat : stats) {
+        for (perfstat_netinterface_t stat : stats) {
             String name = Native.toString(stat.name);
             if (name.equals(this.getName())) {
                 this.bytesSent = stat.obytes;

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.openbsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
+import org.aoju.bus.health.builtin.software.InternetProtocolStats;
 import org.aoju.bus.health.unix.NetStat;
 
 /**
@@ -40,19 +41,13 @@ import org.aoju.bus.health.unix.NetStat;
 public class OpenBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
     @Override
-    public TcpStats getTCPv4Stats() {
+    public InternetProtocolStats.TcpStats getTCPv4Stats() {
         return NetStat.queryTcpStats("netstat -s -p tcp");
     }
 
     @Override
-    public UdpStats getUDPv4Stats() {
+    public InternetProtocolStats.UdpStats getUDPv4Stats() {
         return NetStat.queryUdpStats("netstat -s -p udp");
-    }
-
-    @Override
-    public UdpStats getUDPv6Stats() {
-        // Stats are no different for inet6
-        return new UdpStats(0L, 0L, 0L, 0L);
     }
 
 }

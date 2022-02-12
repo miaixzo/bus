@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,6 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
@@ -48,7 +47,7 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 @ThreadSafe
-final class LinuxSensors extends AbstractSensors {
+public final class LinuxSensors extends AbstractSensors {
 
     // Possible sensor types. See sysfs documentation for others, e.g. current
     private static final String TEMP = "temp";
@@ -93,7 +92,7 @@ final class LinuxSensors extends AbstractSensors {
         String tempStr = Executor.getFirstAnswer("vcgencmd measure_temp");
         // temp=50.8'C
         if (tempStr.startsWith("temp=")) {
-            return Builder.parseDoubleOrDefault(tempStr.replaceAll("[^\\d|\\.]+", Normal.EMPTY), 0d);
+            return Builder.parseDoubleOrDefault(tempStr.replaceAll("[^\\d|\\.]+", ""), 0d);
         }
         return 0d;
     }
@@ -107,8 +106,8 @@ final class LinuxSensors extends AbstractSensors {
         // For raspberry pi
         String voltageStr = Executor.getFirstAnswer("vcgencmd measure_volts core");
         // volt=1.20V
-        if (voltageStr.startsWith("volt=") && voltageStr.endsWith("V")) {
-            return Builder.parseDoubleOrDefault(voltageStr.replaceAll("\\^[0-9]+(\\.[0-9]{1,4})?$", Normal.EMPTY), 0d);
+        if (voltageStr.startsWith("volt=")) {
+            return Builder.parseDoubleOrDefault(voltageStr.replaceAll("[^\\d|\\.]+", ""), 0d);
         }
         return 0d;
     }
@@ -154,7 +153,7 @@ final class LinuxSensors extends AbstractSensors {
             String path = sensorPath + i;
             File dir = new File(path);
             File[] matchingFiles = dir.listFiles(sensorFileFilter);
-            if (null != matchingFiles && matchingFiles.length > 0) {
+            if (matchingFiles != null && matchingFiles.length > 0) {
                 this.sensorsMap.put(sensor, String.format("%s/%s", path, sensor));
             }
             i++;
@@ -167,7 +166,7 @@ final class LinuxSensors extends AbstractSensors {
             return queryCpuTemperatureFromVcGenCmd();
         }
         String tempStr = this.sensorsMap.get(TEMP);
-        if (null != tempStr) {
+        if (tempStr != null) {
             long millidegrees = 0;
             if (tempStr.contains(HWMON)) {
                 // First attempt should be CPU temperature at index 1, if available
@@ -206,7 +205,7 @@ final class LinuxSensors extends AbstractSensors {
     public int[] queryFanSpeeds() {
         if (!IS_PI) {
             String fanStr = this.sensorsMap.get(FAN);
-            if (null != fanStr) {
+            if (fanStr != null) {
                 List<Integer> speeds = new ArrayList<>();
                 int fan = 1;
                 for (; ; ) {
@@ -236,11 +235,10 @@ final class LinuxSensors extends AbstractSensors {
             return queryCpuVoltageFromVcGenCmd();
         }
         String voltageStr = this.sensorsMap.get(VOLTAGE);
-        if (null != voltageStr) {
+        if (voltageStr != null) {
             // Should return a single line of millivolt
             return Builder.getIntFromFile(String.format("%s1_input", voltageStr)) / 1000d;
         }
         return 0d;
     }
-
 }

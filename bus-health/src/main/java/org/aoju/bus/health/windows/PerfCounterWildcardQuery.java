@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,13 +34,14 @@ import com.sun.jna.platform.win32.PdhUtil.PdhException;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.windows.PerfDataKit.PerfCounter;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 封装性能计数器查询的信息
+ * Enables queries of Performance Counters using wild cards to filter instances
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -49,13 +50,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @ThreadSafe
 public final class PerfCounterWildcardQuery {
 
-    /**
-     * Use a map to cache failed pdh queries
-     */
+    // Use a thread safe set to cache failed pdh queries
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
-
-    private PerfCounterWildcardQuery() {
-    }
 
     /**
      * Query the a Performance Counter using PDH, with WMI backup on failure, for
@@ -128,13 +124,13 @@ public final class PerfCounterWildcardQuery {
         EnumMap<T, List<Long>> valuesMap = new EnumMap<>(propertyEnum);
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
             // Set up the query and counter handles
-            EnumMap<T, List<PerfDataKit.PerfCounter>> counterListMap = new EnumMap<>(propertyEnum);
+            EnumMap<T, List<PerfCounter>> counterListMap = new EnumMap<>(propertyEnum);
             // Start at 1, first counter defines instance filter
             for (int i = 1; i < props.length; i++) {
                 T prop = props[i];
-                List<PerfDataKit.PerfCounter> counterList = new ArrayList<>(instances.size());
+                List<PerfCounter> counterList = new ArrayList<>(instances.size());
                 for (String instance : instances) {
-                    PerfDataKit.PerfCounter counter = PerfDataKit.createCounter(perfObject, instance,
+                    PerfCounter counter = PerfDataKit.createCounter(perfObject, instance,
                             ((PdhCounterWildcardProperty) prop).getCounter());
                     if (!pdhQueryHandler.addCounterToQuery(counter)) {
                         return Pair.of(Collections.emptyList(), Collections.emptyMap());
@@ -149,7 +145,7 @@ public final class PerfCounterWildcardQuery {
                 for (int i = 1; i < props.length; i++) {
                     T prop = props[i];
                     List<Long> values = new ArrayList<>();
-                    for (PerfDataKit.PerfCounter counter : counterListMap.get(prop)) {
+                    for (PerfCounter counter : counterListMap.get(prop)) {
                         values.add(pdhQueryHandler.queryCounter(counter));
                     }
                     valuesMap.put(prop, values);
@@ -214,15 +210,14 @@ public final class PerfCounterWildcardQuery {
     }
 
     /**
-     * 枚举属性计数器
+     * Contract for Counter Property Enums
      */
     public interface PdhCounterWildcardProperty {
-
         /**
-         * @return 返回计数器枚举的第一个元素将返回实例过滤器，而不是计数器
+         * @return Returns the counter. The first element of the enum will return the
+         * instance filter rather than a counter.
          */
         String getCounter();
-
     }
 
 }

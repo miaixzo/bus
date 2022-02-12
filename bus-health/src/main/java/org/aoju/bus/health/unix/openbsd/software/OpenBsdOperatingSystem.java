@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,13 +26,11 @@
 package org.aoju.bus.health.unix.openbsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
-import org.aoju.bus.health.unix.openbsd.OpenBsdLibc;
+import org.aoju.bus.health.unix.OpenBsdLibc;
 import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
 import org.aoju.bus.logger.Logger;
 
@@ -43,9 +41,6 @@ import java.util.stream.Collectors;
 /**
  * OpenBsd is a free and open-source Unix-like operating system descended from
  * the Berkeley Software Distribution (BSD), which was based on Research Unix.
- * The first version of OpenBsd was released in 1993. In 2005, OpenBsd was the
- * most popular open-source BSD operating system, accounting for more than
- * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -55,7 +50,7 @@ import java.util.stream.Collectors;
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
-            .collect(Collectors.joining(Symbol.COMMA));
+            .collect(Collectors.joining(","));
     private static final long BOOTTIME = querySystemBootTime();
 
     private static List<OSProcess> getProcessListFromPS(int pid) {
@@ -74,7 +69,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE);
+            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
                 procs.add(new OpenBsdOSProcess(
@@ -87,7 +82,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
         return Builder.parseLongOrDefault(
-                Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
+                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
                 System.currentTimeMillis() / 1000);
     }
 
@@ -97,18 +92,18 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+    public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
         int[] mib = new int[2];
         mib[0] = OpenBsdLibc.CTL_KERN;
         mib[1] = OpenBsdLibc.KERN_OSTYPE;
         String family = OpenBsdSysctlKit.sysctl(mib, "OpenBSD");
         mib[1] = OpenBsdLibc.KERN_OSRELEASE;
-        String version = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
+        String version = OpenBsdSysctlKit.sysctl(mib, "");
         mib[1] = OpenBsdLibc.KERN_VERSION;
-        String versionInfo = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
-        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, "").replace(version, Normal.EMPTY).trim();
+        String versionInfo = OpenBsdSysctlKit.sysctl(mib, "");
+        String buildNumber = versionInfo.split(":")[0].replace(family, "").replace(version, "").trim();
 
-        return Pair.of(family, new OSVersionInfo(version, null, buildNumber));
+        return Pair.of(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
 
     @Override
@@ -132,6 +127,20 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSProcess> queryAllProcesses() {
         return getProcessListFromPS(-1);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
     @Override
@@ -191,7 +200,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, ProcessFiltering.ALL_PROCESSES, ProcessSorting.PID_ASC, 0)) {
+        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES, OperatingSystem.ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());
@@ -199,7 +208,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         // Get Directories for stopped services
         File dir = new File("/etc/rc.d");
         File[] listFiles;
-        if (dir.exists() && dir.isDirectory() && null != (listFiles = dir.listFiles())) {
+        if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
             for (File f : listFiles) {
                 String name = f.getName();
                 if (!running.contains(name)) {
@@ -213,23 +222,9 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return services;
     }
 
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        List<OSProcess> allProcs = queryAllProcesses();
-        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
-        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        List<OSProcess> allProcs = queryAllProcesses();
-        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
-        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
     enum PsKeywords {
         STATE, PID, PPID, USER, UID, GROUP, GID, PRI, VSZ, RSS, ETIME, CPUTIME, COMM, MAJFLT, MINFLT, NVCSW, NIVCSW,
-        ARGS; // ARGS must always be last
+        ARGS // ARGS must always be last
     }
 
 }

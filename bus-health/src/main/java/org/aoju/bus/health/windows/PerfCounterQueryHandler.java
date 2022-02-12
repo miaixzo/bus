@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows;
 
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.aoju.bus.core.annotation.NotThreadSafe;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.windows.PerfDataKit.PerfCounter;
@@ -34,7 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 处理性能计数器查询
+ * Utility to handle Performance Counter Queries
+ * This class is not thread safe. Each query handler instance should only be
+ * used in a single thread, preferably in a try-with-resources block.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -44,28 +47,28 @@ import java.util.Map;
 public final class PerfCounterQueryHandler implements AutoCloseable {
 
     // Map of counter handles
-    private final Map<PerfCounter, WinNT.HANDLEByReference> counterHandleMap = new HashMap<>();
+    private final Map<PerfCounter, HANDLEByReference> counterHandleMap = new HashMap<>();
     // The query handle
-    private WinNT.HANDLEByReference queryHandle = null;
+    private HANDLEByReference queryHandle = null;
 
     /**
-     * 开始监视一个性能数据计数器，该计数器附加到一个键为指定字符串的查询
+     * Begin monitoring a Performance Data counter.
      *
-     * @param counter 一个PerfCounter对象
-     * @return 如果成功添加了计数器，则为真
+     * @param counter A PerfCounter object.
+     * @return True if the counter was successfully added to the query.
      */
     public boolean addCounterToQuery(PerfCounter counter) {
-        // 打开一个新查询或获取一个现有查询的句柄
-        if (null == this.queryHandle) {
-            this.queryHandle = new WinNT.HANDLEByReference();
+        // Open a new query or get the handle to an existing one
+        if (this.queryHandle == null) {
+            this.queryHandle = new HANDLEByReference();
             if (!PerfDataKit.openQuery(this.queryHandle)) {
                 Logger.warn("Failed to open a query for PDH counter: {}", counter.getCounterPath());
                 this.queryHandle = null;
                 return false;
             }
         }
-        // 获取新的计数器拦截
-        WinNT.HANDLEByReference p = new WinNT.HANDLEByReference();
+        // Get a new handle for the counter
+        HANDLEByReference p = new HANDLEByReference();
         if (!PerfDataKit.addCounter(this.queryHandle, counter.getCounterPath(), p)) {
             Logger.warn("Failed to add counter for PDH counter: {}", counter.getCounterPath());
             return false;
@@ -75,16 +78,16 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     }
 
     /**
-     * 停止监视附加到键为指定字符串的查询的性能数据计数器
+     * Stop monitoring a Performance Data counter.
      *
-     * @param counter PerfCounter对象
-     * @return 如果成功移除计数器，则为真
+     * @param counter A PerfCounter object
+     * @return True if the counter was successfully removed.
      */
     public boolean removeCounterFromQuery(PerfCounter counter) {
         boolean success = false;
-        WinNT.HANDLEByReference href = counterHandleMap.remove(counter);
-        // 如果句柄不存在，则为空
-        if (null != href) {
+        HANDLEByReference href = counterHandleMap.remove(counter);
+        // null if handle wasn't present
+        if (href != null) {
             success = PerfDataKit.removeCounter(href);
         }
         if (counterHandleMap.isEmpty()) {
@@ -95,28 +98,29 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     }
 
     /**
-     * 停止监视所有性能数据计数器并释放它们的资源
+     * Stop monitoring all Performance Data counters and release their resources
      */
     public void removeAllCounters() {
-        // 删除所有计数器手柄
-        for (WinNT.HANDLEByReference href : counterHandleMap.values()) {
+        // Remove all counters from counterHandle map
+        for (HANDLEByReference href : counterHandleMap.values()) {
             PerfDataKit.removeCounter(href);
         }
         counterHandleMap.clear();
-        // 删除所有的查询
-        if (null != this.queryHandle) {
+        // Remove query
+        if (this.queryHandle != null) {
             PerfDataKit.closeQuery(this.queryHandle);
         }
         this.queryHandle = null;
     }
 
     /**
-     * 更新查询中的所有计数器
+     * Update all counters on this query.
      *
-     * @return 更新所有计数器的时间戳，以从epoch开始的毫秒为单位，如果更新失败则为0
+     * @return The timestamp for the update of all the counters, in milliseconds
+     * since the epoch, or 0 if the update failed
      */
     public long updateQuery() {
-        if (null == queryHandle) {
+        if (queryHandle == null) {
             Logger.warn("Query does not exist to update.");
             return 0L;
         }
@@ -124,10 +128,11 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     }
 
     /**
-     * 查询性能数据计数器的原始计数器值。进一步的数学操作/转换留给调用者
+     * Query the raw counter value of a Performance Data counter. Further
+     * mathematical manipulation/conversion is left to the caller.
      *
-     * @param counter 要查询的计数器
-     * @return 计数器的原始值
+     * @param counter The counter to query
+     * @return The raw value of the counter
      */
     public long queryCounter(PerfCounter counter) {
         if (!counterHandleMap.containsKey(counter)) {
@@ -136,7 +141,8 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
             }
             return 0;
         }
-        long value = PerfDataKit.queryCounter(counterHandleMap.get(counter));
+        long value = counter.isBaseCounter() ? PerfDataKit.querySecondCounter(counterHandleMap.get(counter))
+                : PerfDataKit.queryCounter(counterHandleMap.get(counter));
         if (value < 0) {
             if (Logger.get().isWarn()) {
                 Logger.warn("Error querying counter {}: {}", counter.getCounterPath(),

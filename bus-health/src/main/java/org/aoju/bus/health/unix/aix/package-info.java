@@ -1,5 +1,5 @@
 /**
- * 为AIX提供JNA库扩展
+ * Provides utilities for AIX
  *
  * @author Kimi Liu
  * @version 6.3.3

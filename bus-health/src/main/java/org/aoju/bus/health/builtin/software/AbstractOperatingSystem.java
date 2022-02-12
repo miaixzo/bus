@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,13 +26,12 @@
 package org.aoju.bus.health.builtin.software;
 
 import com.sun.jna.Platform;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -46,8 +45,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {
 
-    public static final String OSHI_OS_UNIX_WHOCOMMAND = "health.os.unix.whoCommand";
-    protected static final boolean USE_WHO_COMMAND = Config.get(OSHI_OS_UNIX_WHOCOMMAND, false);
+    protected static final boolean USE_WHO_COMMAND = Config.get(Config.OS_UNIX_WHOCOMMAND, false);
 
     private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
     private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoize.memoize(this::queryFamilyVersionInfo);
@@ -80,7 +78,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * @param parentPid      The process ID whose children or descendants to return
      * @param allDescendants If false, only gets immediate children of this process. If true,
      *                       gets all descendants.
-     * @return Set of children or descendants of parentPid
+     * @return Set of children or descendants of parentPid, including the parent
      */
     protected static Set<Integer> getChildrenOrDescendants(Map<Integer, Integer> parentPidMap, int parentPid,
                                                            boolean allDescendants) {
@@ -104,7 +102,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     private static Set<Integer> getChildren(Map<Integer, Integer> parentPidMap, int parentPid) {
         return parentPidMap.entrySet().stream()
-                .filter(e -> e.getValue().equals(parentPid) && !e.getKey().equals(parentPid)).map(Map.Entry::getKey)
+                .filter(e -> e.getValue().equals(parentPid) && !e.getKey().equals(parentPid)).map(Entry::getKey)
                 .collect(Collectors.toSet());
     }
 
@@ -134,11 +132,11 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     private int queryPlatformBitness() {
         if (Platform.is64Bit()) {
-            return Normal._64;
+            return 64;
         }
         // Initialize based on JVM Bitness. Individual OS implementations will test
         // if 32-bit JVM running on 64-bit OS
-        int jvmBitness = System.getProperty("os.arch").contains("64") ? Normal._64 : Normal._32;
+        int jvmBitness = System.getProperty("os.arch").contains("64") ? 64 : 32;
         return queryBitness(jvmBitness);
     }
 
@@ -152,14 +150,12 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     @Override
     public List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit) {
-        return queryAllProcesses().stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
-                .sorted(null == sort ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
+        return queryAllProcesses().stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
+                .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
                 .collect(Collectors.toList());
     }
 
     protected abstract List<OSProcess> queryAllProcesses();
-
-    protected abstract List<OSProcess> queryChildProcesses(int parentPid);
 
     @Override
     public List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
@@ -169,15 +165,15 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
         // Extract the parent from the list
         OSProcess parent = childProcs.stream().filter(p -> p.getParentProcessID() == parentPid).findAny().orElse(null);
         // Get the parent's start time
-        long parentStartTime = null == parent ? 0 : parent.getStartTime();
+        long parentStartTime = parent == null ? 0 : parent.getStartTime();
         // Get children after parent
-        return queryChildProcesses(parentPid).stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
+        return queryChildProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
                 .filter(p -> p.getProcessID() != parentPid && p.getStartTime() >= parentStartTime)
-                .sorted(null == sort ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
+                .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
                 .collect(Collectors.toList());
     }
 
-    protected abstract List<OSProcess> queryDescendantProcesses(int parentPid);
+    protected abstract List<OSProcess> queryChildProcesses(int parentPid);
 
     @Override
     public List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter,
@@ -188,18 +184,20 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
         OSProcess parent = descendantProcs.stream().filter(p -> p.getParentProcessID() == parentPid).findAny()
                 .orElse(null);
         // Get the parent's start time
-        long parentStartTime = null == parent ? 0 : parent.getStartTime();
+        long parentStartTime = parent == null ? 0 : parent.getStartTime();
         // Get descendants after parent
-        return queryDescendantProcesses(parentPid).stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
+        return queryDescendantProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
                 .filter(p -> p.getProcessID() != parentPid && p.getStartTime() >= parentStartTime)
-                .sorted(null == sort ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
+                .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
                 .collect(Collectors.toList());
     }
+
+    protected abstract List<OSProcess> queryDescendantProcesses(int parentPid);
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE).append(getVersionInfo());
+        sb.append(getManufacturer()).append(' ').append(getFamily()).append(' ').append(getVersionInfo());
         return sb.toString();
     }
 

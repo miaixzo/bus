@@ -1,5 +1,6 @@
 /**
- * 为公共代码提供抽象类
+ * Provides cross-platform implementation to retrieve OS,
+ * FileSystem, and Process information
  *
  * @author Kimi Liu
  * @version 6.3.3

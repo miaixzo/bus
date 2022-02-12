@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,12 +26,12 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Formats;
 
 import java.util.Arrays;
 
 /**
- * 显示器
+ * A Display
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -43,9 +43,9 @@ public abstract class AbstractDisplay implements Display {
     private final byte[] edid;
 
     /**
-     * 显示器的构造方法
+     * Constructor for AbstractDisplay.
      *
-     * @param edid 表示显示EDID的字节数组
+     * @param edid a byte array representing a display EDID
      */
     protected AbstractDisplay(byte[] edid) {
         this.edid = Arrays.copyOf(edid, edid.length);
@@ -58,7 +58,7 @@ public abstract class AbstractDisplay implements Display {
 
     @Override
     public String toString() {
-        return Builder.toString(this.edid);
+        return Formats.toString(this.edid);
     }
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -57,8 +57,7 @@ public interface ComputerSystem {
      * Get the computer system serial number, if available.
      * <p>
      * Performs a best-effort attempt to retrieve a unique serial number from the
-     * computer system. This may originate from the baseboard, BIOS, processor,
-     * hardware UUID, etc.
+     * computer system. This may originate from the baseboard, BIOS, processor, etc.
      * <p>
      * This value is provided for information only. Caution should be exercised if
      * using this result to "fingerprint" a system for licensing or other purposes,

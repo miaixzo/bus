@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -53,7 +53,7 @@ public class AixUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Instantiates a list of {@link  UsbDevice} objects, representing
+     * Instantiates a list of {@link UsbDevice} objects, representing
      * devices connected via a usb port (including internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from
@@ -65,7 +65,7 @@ public class AixUsbDevice extends AbstractUsbDevice {
      *              iteration of connected devices. If false, returns a flat list of
      *              devices excluding controllers.
      * @param lscfg A memoized lscfg list
-     * @return a list of {@link  UsbDevice} objects.
+     * @return a list of {@link UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree, Supplier<List<String>> lscfg) {
         List<UsbDevice> deviceList = new ArrayList<>();

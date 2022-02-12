@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,7 +28,6 @@ package org.aoju.bus.health.unix.aix.drivers;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -46,9 +45,6 @@ import java.util.Map;
  */
 @ThreadSafe
 public final class Lssrad {
-
-    private Lssrad() {
-    }
 
     /**
      * Query {@code lssrad} to get numa node and physical package info
@@ -84,7 +80,7 @@ public final class Lssrad {
                 if (Character.isDigit(s.charAt(0))) {
                     node = Builder.parseIntOrDefault(t, 0);
                 } else {
-                    if (t.contains(Symbol.DOT)) {
+                    if (t.contains(".")) {
                         String[] split = RegEx.SPACES.split(t, 3);
                         slot = Builder.parseIntOrDefault(split[0], 0);
                         t = split.length > 2 ? split[2] : Normal.EMPTY;

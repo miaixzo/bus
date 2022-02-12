@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.builtin.software;
 
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 
 import java.util.function.Supplier;
@@ -36,6 +37,7 @@ import java.util.function.Supplier;
  * @version 6.3.3
  * @since JDK 1.8+
  */
+@ThreadSafe
 public abstract class AbstractOSThread implements OSThread {
 
     private final Supplier<Double> cumulativeCpuLoad = Memoize.memoize(this::queryCumulativeCpuLoad, Memoize.defaultExpiration());
@@ -62,7 +64,7 @@ public abstract class AbstractOSThread implements OSThread {
 
     @Override
     public double getThreadCpuLoadBetweenTicks(OSThread priorSnapshot) {
-        if (null != priorSnapshot && owningProcessId == priorSnapshot.getOwningProcessId()
+        if (priorSnapshot != null && owningProcessId == priorSnapshot.getOwningProcessId()
                 && getThreadId() == priorSnapshot.getThreadId() && getUpTime() > priorSnapshot.getUpTime()) {
             return (getUserTime() - priorSnapshot.getUserTime() + getKernelTime() - priorSnapshot.getKernelTime())
                     / (double) (getUpTime() - priorSnapshot.getUpTime());

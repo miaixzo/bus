@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,12 +26,10 @@
 package org.aoju.bus.health.mac.software;
 
 import com.sun.jna.Native;
-import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.mac.SystemB;
@@ -41,6 +39,8 @@ import org.aoju.bus.logger.Logger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+
+import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * MacNetworkParams class.
@@ -53,9 +53,7 @@ import java.util.List;
 final class MacNetworkParams extends AbstractNetworkParams {
 
     private static final SystemB SYS = SystemB.INSTANCE;
-
     private static final String IPV6_ROUTE_HEADER = "Internet6:";
-
     private static final String DEFAULT_GATEWAY = "default";
 
     @Override
@@ -85,7 +83,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
         if (0 != SYS.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }
@@ -105,7 +103,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
             if (v6Table && line.startsWith(DEFAULT_GATEWAY)) {
                 String[] fields = RegEx.SPACES.split(line);
                 if (fields.length > 2 && fields[2].contains("G")) {
-                    return fields[1].split(Symbol.PERCENT)[0];
+                    return fields[1].split("%")[0];
                 }
             } else if (line.startsWith(IPV6_ROUTE_HEADER)) {
                 v6Table = true;

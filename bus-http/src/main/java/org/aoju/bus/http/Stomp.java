@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.socket.CoverWebSocket;
 import org.aoju.bus.logger.Logger;
@@ -392,7 +393,7 @@ public class Stomp {
 
         public static Message from(String data) {
             if (null == data || data.trim().isEmpty()) {
-                return new Message(Builder.UNKNOWN, null, data);
+                return new Message(Normal.UNKNOWN, null, data);
             }
 
             int cmdIndex = data.indexOf("\n");

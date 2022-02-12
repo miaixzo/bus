@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -47,9 +46,6 @@ import java.util.List;
  */
 @ThreadSafe
 public final class NetStat {
-
-    private NetStat() {
-    }
 
     /**
      * Query netstat to obtain number of established TCP connections
@@ -81,16 +77,20 @@ public final class NetStat {
         List<InternetProtocolStats.IPConnection> connections = new ArrayList<>();
         List<String> activeConns = Executor.runNative("netstat -n");
         for (String s : activeConns) {
-            String[] split;
+            String[] split = null;
             if (s.startsWith("tcp") || s.startsWith("udp")) {
                 split = RegEx.SPACES.split(s);
                 if (split.length >= 5) {
                     String state = (split.length == 6) ? split[5] : null;
+                    // Substitution if required
+                    if ("SYN_RCVD".equals(state)) {
+                        state = "SYN_RECV";
+                    }
                     String type = split[0];
                     Pair<byte[], Integer> local = parseIP(split[3]);
                     Pair<byte[], Integer> foreign = parseIP(split[4]);
                     connections.add(new InternetProtocolStats.IPConnection(type, local.getLeft(), local.getRight(), foreign.getLeft(), foreign.getRight(),
-                            null == state ? InternetProtocolStats.TcpState.NONE : InternetProtocolStats.TcpState.valueOf(state),
+                            state == null ? InternetProtocolStats.TcpState.NONE : InternetProtocolStats.TcpState.valueOf(state),
                             Builder.parseIntOrDefault(split[2], 0), Builder.parseIntOrDefault(split[1], 0), -1));
                 }
             }
@@ -112,9 +112,9 @@ public final class NetStat {
             } catch (UnknownHostException e) {
                 try {
                     // Try again with trailing ::
-                    if (ip.endsWith(Symbol.COLON) && ip.contains(Symbol.COLON + Symbol.COLON)) {
+                    if (ip.endsWith(":") && ip.contains("::")) {
                         ip = ip + "0";
-                    } else if (ip.endsWith(Symbol.COLON) || ip.contains(Symbol.COLON + Symbol.COLON)) {
+                    } else if (ip.endsWith(":") || ip.contains("::")) {
                         ip = ip + ":0";
                     } else {
                         ip = ip + "::0";

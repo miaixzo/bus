@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -1489,7 +1489,8 @@ public class FileKit {
      * 当给定对象为文件时,直接调用 {@link File#length()}
      * 当给定对象为目录时,遍历目录下的所有文件和目录,递归计算其大小,求和返回
      *
-     * @param file 目录或文件
+     * @param file           目录或文件
+     * @param includeDirSize 是否包括每层目录本身的大小
      * @return 总大小, bytes长度
      */
     public static long size(File file, boolean includeDirSize) {

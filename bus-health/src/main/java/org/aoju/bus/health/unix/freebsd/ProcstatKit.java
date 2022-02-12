@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -45,9 +45,6 @@ import java.util.Map;
 @ThreadSafe
 public final class ProcstatKit {
 
-    private ProcstatKit() {
-    }
-
     /**
      * Gets a map containing current working directory info
      *
@@ -62,7 +59,7 @@ public final class ProcstatKit {
         for (String line : procstat) {
             String[] split = RegEx.SPACES.split(line.trim(), 10);
             if (split.length == 10 && split[2].equals("cwd")) {
-                cwdMap.put(Builder.parseIntOrDefault(split[0], Normal.__1), split[9]);
+                cwdMap.put(Builder.parseIntOrDefault(split[0], -1), split[9]);
             }
         }
         return cwdMap;

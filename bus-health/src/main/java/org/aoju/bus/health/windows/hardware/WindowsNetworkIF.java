@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,9 +27,10 @@ package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.IPHlpAPI;
+import com.sun.jna.platform.win32.IPHlpAPI.MIB_IFROW;
+import com.sun.jna.platform.win32.IPHlpAPI.MIB_IF_ROW2;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
@@ -66,7 +67,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
     private String ifAlias;
-    private IfOperStatus ifOperStatus;
+    private NetworkIF.IfOperStatus ifOperStatus;
 
     public WindowsNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
@@ -162,7 +163,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     }
 
     @Override
-    public IfOperStatus getIfOperStatus() {
+    public NetworkIF.IfOperStatus getIfOperStatus() {
         return ifOperStatus;
     }
 
@@ -171,7 +172,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
         // MIB_IFROW2 requires Vista (6.0) or later.
         if (IS_VISTA_OR_GREATER) {
             // Create new MIB_IFROW2 and set index to this interface index
-            IPHlpAPI.MIB_IF_ROW2 ifRow = new IPHlpAPI.MIB_IF_ROW2();
+            MIB_IF_ROW2 ifRow = new MIB_IF_ROW2();
             ifRow.InterfaceIndex = queryNetworkInterface().getIndex();
             if (0 != IPHlpAPI.INSTANCE.GetIfEntry2(ifRow)) {
                 // Error, abort
@@ -192,10 +193,10 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             this.inDrops = ifRow.InDiscards; // closest proxy
             this.speed = ifRow.ReceiveLinkSpeed;
             this.ifAlias = Native.toString(ifRow.Alias);
-            this.ifOperStatus = IfOperStatus.byValue(ifRow.OperStatus);
+            this.ifOperStatus = NetworkIF.IfOperStatus.byValue(ifRow.OperStatus);
         } else {
             // Create new MIB_IFROW and set index to this interface index
-            IPHlpAPI.MIB_IFROW ifRow = new IPHlpAPI.MIB_IFROW();
+            MIB_IFROW ifRow = new MIB_IFROW();
             ifRow.dwIndex = queryNetworkInterface().getIndex();
             if (0 != IPHlpAPI.INSTANCE.GetIfEntry(ifRow)) {
                 // Error, abort
@@ -214,8 +215,8 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             this.collisions = Builder.unsignedIntToLong(ifRow.dwOutDiscards); // closest proxy
             this.inDrops = Builder.unsignedIntToLong(ifRow.dwInDiscards); // closest proxy
             this.speed = Builder.unsignedIntToLong(ifRow.dwSpeed);
-            this.ifAlias = Normal.EMPTY; // not supported by MIB_IFROWs
-            this.ifOperStatus = IfOperStatus.UNKNOWN;
+            this.ifAlias = ""; // not supported by MIB_IFROW
+            this.ifOperStatus = NetworkIF.IfOperStatus.UNKNOWN; // not supported
         }
         this.timeStamp = System.currentTimeMillis();
         return true;

@@ -1,5 +1,5 @@
 /**
- * 提供关于macOS上的软件和操作系统的信息
+ * Provides information about Software and OS on macOS
  *
  * @author Kimi Liu
  * @version 6.3.3

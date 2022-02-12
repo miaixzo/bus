@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -52,9 +52,6 @@ public final class Xwininfo {
     private static final String[] NET_CLIENT_LIST_STACKING = RegEx.SPACES.split("xprop -root _NET_CLIENT_LIST_STACKING");
     private static final String[] XWININFO_ROOT_TREE = RegEx.SPACES.split("xwininfo -root -tree");
     private static final String[] XPROP_NET_WM_PID_ID = RegEx.SPACES.split("xprop _NET_WM_PID -id");
-
-    private Xwininfo() {
-    }
 
     /**
      * Gets windows on the operating system's GUI desktop.

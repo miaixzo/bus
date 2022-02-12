@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,7 +40,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * 电源支持
+ * A Power Source
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -110,18 +110,19 @@ public abstract class AbstractPowerSource implements PowerSource {
                 return LinuxPowerSource.getPowerSources();
             case SOLARIS:
                 return SolarisPowerSource.getPowerSources();
-            case AIX:
-                return AixPowerSource.getPowerSources();
             case FREEBSD:
                 return FreeBsdPowerSource.getPowerSources();
+            case AIX:
+                return AixPowerSource.getPowerSources();
             default:
-                throw new UnsupportedOperationException("Operating system not supported: " + Platform.getOSType());
+                throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
         }
     }
 
     /**
      * Estimated time remaining on power source, formatted as HH:mm
      *
+     * @param timeInSeconds The time remaining, in seconds
      * @return formatted String of time remaining
      */
     private static String formatTimeRemaining(double timeInSeconds) {
@@ -272,6 +273,7 @@ public abstract class AbstractPowerSource implements PowerSource {
                 return true;
             }
         }
+        // Didn't find this battery
         return false;
     }
 

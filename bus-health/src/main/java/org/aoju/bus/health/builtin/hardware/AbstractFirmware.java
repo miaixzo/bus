@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,7 +29,7 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 
 /**
- * 固件数据
+ * Firmware data.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -60,7 +60,7 @@ public abstract class AbstractFirmware implements Firmware {
         sb.append("name=").append(getName()).append(", ");
         sb.append("description=").append(getDescription()).append(", ");
         sb.append("version=").append(getVersion()).append(", ");
-        sb.append("release date=").append(null == getReleaseDate() ? "unknown" : getReleaseDate());
+        sb.append("release date=").append(getReleaseDate() == null ? "unknown" : getReleaseDate());
         return sb.toString();
     }
 

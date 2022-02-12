@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,8 +31,8 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 
 /**
- * 电源配置文件数据。这个类应该被认为是非api的，因为如
- * 果/当它的代码被合并到JNA项目中时，它可能会被删除
+ * Power profile stats. This class should be considered non-API as it may be
+ * removed if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -41,7 +41,7 @@ import com.sun.jna.Structure.FieldOrder;
 public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
 
     /**
-     * 常量 <code>INSTANCE</code>
+     * Constant <code>INSTANCE</code>
      */
     PowrProf INSTANCE = Native.load("PowrProf", PowrProf.class);
 
@@ -51,7 +51,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     }
 
     /**
-     * 包含有关系统电池当前状态的信息
+     * Contains information about the current state of the system battery.
      */
     @FieldOrder({"acOnLine", "batteryPresent", "charging", "discharging", "spare1", "tag", "maxCapacity",
             "remainingCapacity", "rate", "estimatedTime", "defaultAlert1", "defaultAlert2"})
@@ -80,7 +80,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     }
 
     /**
-     * 包含有关处理器的信息
+     * Contains information about a processor.
      */
     @FieldOrder({"number", "maxMhz", "currentMhz", "mhzLimit", "maxIdleState", "currentIdleState"})
     class ProcessorPowerInformation extends Structure {
@@ -101,6 +101,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
+    // MOVE?
     @FieldOrder({"BatteryTag", "InformationLevel", "AtRate"})
     class BATTERY_QUERY_INFORMATION extends Structure {
         public int BatteryTag;

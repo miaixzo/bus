@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * 硬件信息特定于平台的实现所使用的公共字段或方法
+ * Common fields or methods used by platform-specific implementations of
+ * HardwareAbstractionLayer
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -55,9 +56,9 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     }
 
     /**
-     * 实例化特定于平台的{@link ComputerSystem}对象
+     * Instantiates the platform-specific {@link ComputerSystem} object
      *
-     * @return 特定于平台的 {@link ComputerSystem} 对象
+     * @return platform-specific {@link ComputerSystem} object
      */
     protected abstract ComputerSystem createComputerSystem();
 
@@ -67,9 +68,9 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     }
 
     /**
-     * 实例化特定于平台的{@link CentralProcessor}对象
+     * Instantiates the platform-specific {@link CentralProcessor} object
      *
-     * @return 特定于平台的 {@link CentralProcessor} 对象
+     * @return platform-specific {@link CentralProcessor} object
      */
     protected abstract CentralProcessor createProcessor();
 
@@ -79,9 +80,9 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     }
 
     /**
-     * 实例化特定于平台的{@link GlobalMemory}对象
+     * Instantiates the platform-specific {@link GlobalMemory} object
      *
-     * @return 特定于平台的 {@link GlobalMemory} 对象
+     * @return platform-specific {@link GlobalMemory} object
      */
     protected abstract GlobalMemory createMemory();
 
@@ -90,16 +91,16 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
         return sensors.get();
     }
 
+    /**
+     * Instantiates the platform-specific {@link Sensors} object
+     *
+     * @return platform-specific {@link Sensors} object
+     */
+    protected abstract Sensors createSensors();
+
     @Override
     public List<NetworkIF> getNetworkIFs() {
         return getNetworkIFs(false);
     }
-
-    /**
-     * 实例化特定于平台的{@link Sensors}对象
-     *
-     * @return 特定于平台的 {@link Sensors} 对象
-     */
-    protected abstract Sensors createSensors();
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,6 @@
 package org.aoju.bus.health.unix.aix.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
 
 import java.time.LocalDateTime;
@@ -51,9 +50,6 @@ public final class Who {
     private static final Pattern BOOT_FORMAT_AIX = Pattern.compile("\\D+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2}).*");
     private static final DateTimeFormatter BOOT_DATE_FORMAT_AIX = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    private Who() {
-    }
-
     /**
      * Query {@code who -b} to get boot time
      *
@@ -64,7 +60,7 @@ public final class Who {
         Matcher m = BOOT_FORMAT_AIX.matcher(s);
         if (m.matches()) {
             try {
-                return LocalDateTime.parse(m.group(1) + Symbol.SPACE + m.group(2), BOOT_DATE_FORMAT_AIX)
+                return LocalDateTime.parse(m.group(1) + " " + m.group(2), BOOT_DATE_FORMAT_AIX)
                         .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             } catch (DateTimeParseException | NullPointerException e) {
                 // Shouldn't happen with regex matching

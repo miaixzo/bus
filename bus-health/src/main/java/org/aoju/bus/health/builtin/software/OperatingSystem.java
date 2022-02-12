@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,10 +28,10 @@ package org.aoju.bus.health.builtin.software;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.software.OSProcess.State;
 import org.aoju.bus.health.unix.Who;
 import org.aoju.bus.health.unix.Xwininfo;
 
@@ -43,6 +43,9 @@ import java.util.stream.Collectors;
  * An operating system (OS) is the software on a computer that manages the way
  * different programs use its hardware, and regulates the ways that a user
  * controls the computer.
+ * <p>
+ * Considered thread safe, but see remarks for the {@link #getSessions()}
+ * method.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -52,45 +55,23 @@ import java.util.stream.Collectors;
 public interface OperatingSystem {
 
     /**
-     * Gets currently logged in users.
-     * <p>
-     * On macOS, Linux, and Unix systems, the default implementation uses native
-     * code (see {@code man getutxent}) that is not thread safe. OSHI's use of this
-     * code is synchronized and may be used in a multi-threaded environment without
-     * introducing any additional conflicts. Users should note, however, that other
-     * operating system code may access the same native code.
-     * <p>
-     * The {@link Who#queryWho()} method produces similar output
-     * parsing the output of the Posix-standard {@code who} command, and may
-     * internally employ reentrant code on some platforms. Users may opt to use this
-     * command-line variant by default using the {@code oshi.os.unix.whoCommand}
-     * configuration property.
+     * Get the Operating System family.
      *
-     * @return A list of {@link OSSession} objects representing
-     * logged-in users
-     */
-    default List<OSSession> getSessions() {
-        return Who.queryWho();
-    }
-
-    /**
-     * Operating system family.
-     *
-     * @return String.
+     * @return the family
      */
     String getFamily();
 
     /**
-     * Manufacturer.
+     * Get the Operating System manufacturer.
      *
-     * @return String.
+     * @return the manufacturer
      */
     String getManufacturer();
 
     /**
-     * Operating system version information.
+     * Get Operating System version information.
      *
-     * @return Version information.
+     * @return version information
      */
     OSVersionInfo getVersionInfo();
 
@@ -111,7 +92,7 @@ public interface OperatingSystem {
     /**
      * Gets currently running processes. No order is guaranteed.
      *
-     * @return A list of {@link  OSProcess} objects for the
+     * @return A list of {@link OSProcess} objects for the
      * specified number (or all) of currently running processes, sorted as
      * specified. The list may contain null elements or processes with a
      * state of {@link OSProcess.State#INVALID} if a process terminates
@@ -132,7 +113,7 @@ public interface OperatingSystem {
      *               common comparators are available in {@link ProcessSorting}. May be
      *               {@code null} for no sorting.
      * @param limit  Max number of results to return, or 0 to return all results
-     * @return A list of {@link  OSProcess} objects, optionally
+     * @return A list of {@link OSProcess} objects, optionally
      * filtered, sorted, and limited to the specified number.
      * <p>
      * The list may contain processes with a state of
@@ -140,7 +121,6 @@ public interface OperatingSystem {
      * iteration.
      */
     List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit);
-
 
     /**
      * Gets information on a {@link Collection} of currently running processes. This
@@ -154,6 +134,15 @@ public interface OperatingSystem {
         return pids.stream().map(this::getProcess).filter(Objects::nonNull).filter(ProcessFiltering.VALID_PROCESS)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Gets information on a currently running process
+     *
+     * @param pid A process ID
+     * @return An {@link OSProcess} object for the specified
+     * process id if it is running; null otherwise
+     */
+    OSProcess getProcess(int pid);
 
     /**
      * Gets currently running child processes of provided parent PID, optionally
@@ -201,39 +190,6 @@ public interface OperatingSystem {
      */
     List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
                                            int limit);
-
-    /**
-     * Gets information on a currently running process
-     *
-     * @param pid A process ID
-     * @return An {@link OSProcess} object for the specified
-     * process id if it is running; null otherwise
-     */
-    OSProcess getProcess(int pid);
-
-    /**
-     * Gets windows on the operating system's GUI desktop.
-     * <p>
-     * On Unix-like systems, reports X11 windows only, which may be limited to the
-     * current display and will not report windows used by other window managers.
-     * <p>
-     * While not a guarantee, a best effort is made to return windows in
-     * foreground-to-background order. This ordering may be used along with
-     * {@link OSDesktopWindow#getOrder()} to (probably) determine the frontmost
-     * window.
-     *
-     * @param visibleOnly Whether to restrict the list to only windows visible to the user.
-     *                    <p>
-     *                    This is a best effort attempt at a reasonable definition of
-     *                    visibility. Visible windows may be completely transparent.
-     * @return A list of {@link OSDesktopWindow} objects
-     * representing the desktop windows.
-     */
-    default List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
-        // Default X11 implementation for Unix-like operating systems.
-        // Overridden on Windows and macOS
-        return Xwininfo.queryXWindows(visibleOnly);
-    }
 
     /**
      * Gets the current process ID
@@ -306,21 +262,66 @@ public interface OperatingSystem {
     }
 
     /**
+     * Gets currently logged in users.
+     * <p>
+     * On macOS, Linux, and Unix systems, the default implementation uses native
+     * code (see {@code man getutxent}) that is not thread safe. health's use of this
+     * code is synchronized and may be used in a multi-threaded environment without
+     * introducing any additional conflicts. Users should note, however, that other
+     * operating system code may access the same native code.
+     * <p>
+     * The {@link Who#queryWho()} method produces similar output
+     * parsing the output of the Posix-standard {@code who} command, and may
+     * internally employ reentrant code on some platforms. Users may opt to use this
+     * command-line variant by default using the {@code bus.health.os.unix.whoCommand}
+     * configuration property.
+     *
+     * @return A list of {@link OSSession} objects representing
+     * logged-in users
+     */
+    default List<OSSession> getSessions() {
+        return Who.queryWho();
+    }
+
+    /**
+     * Gets windows on the operating system's GUI desktop.
+     * <p>
+     * On Unix-like systems, reports X11 windows only, which may be limited to the
+     * current display and will not report windows used by other window managers.
+     * <p>
+     * While not a guarantee, a best effort is made to return windows in
+     * foreground-to-background order. This ordering may be used along with
+     * {@link OSDesktopWindow#getOrder()} to (probably) determine the frontmost
+     * window.
+     *
+     * @param visibleOnly Whether to restrict the list to only windows visible to the user.
+     *                    <p>
+     *                    This is a best effort attempt at a reasonable definition of
+     *                    visibility. Visible windows may be completely transparent.
+     * @return A list of {@link OSDesktopWindow} objects
+     * representing the desktop windows.
+     */
+    default List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
+        // Default X11 implementation for Unix-like operating systems.
+        // Overridden on Windows and macOS
+        return Xwininfo.queryXWindows(visibleOnly);
+    }
+
+    /**
      * Constants which may be used to filter Process lists in
      * {@link #getProcesses(Predicate, Comparator, int)},
      * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
      * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
     final class ProcessFiltering {
-
         /**
          * No filtering.
          */
         public static final Predicate<OSProcess> ALL_PROCESSES = p -> true;
         /**
-         * Exclude processes with {@link OSProcess.State#INVALID} process state.
+         * Exclude processes with {@link State#INVALID} process state.
          */
-        public static final Predicate<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
+        public static final Predicate<OSProcess> VALID_PROCESS = p -> !p.getState().equals(State.INVALID);
         /**
          * Exclude child processes. Only include processes which are their own parent.
          */
@@ -328,11 +329,14 @@ public interface OperatingSystem {
         /**
          * Only incude 64-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == Normal._64;
+        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
         /**
          * Only include 32-bit processes.
          */
-        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == Normal._32;
+        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+
+        private ProcessFiltering() {
+        }
     }
 
     /**
@@ -342,7 +346,6 @@ public interface OperatingSystem {
      * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
     final class ProcessSorting {
-
         /**
          * No sorting
          */
@@ -380,6 +383,8 @@ public interface OperatingSystem {
         public static final Comparator<OSProcess> NAME_ASC = Comparator.comparing(OSProcess::getName,
                 String.CASE_INSENSITIVE_ORDER);
 
+        private ProcessSorting() {
+        }
     }
 
     /**
@@ -403,9 +408,9 @@ public interface OperatingSystem {
             this.codeName = codeName;
             this.buildNumber = buildNumber;
 
-            StringBuilder sb = new StringBuilder(null != getVersion() ? getVersion() : Normal.UNKNOWN);
+            StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Normal.UNKNOWN);
             if (!StringKit.isBlank(getCodeName())) {
-                sb.append(" (").append(getCodeName()).append(Symbol.C_PARENTHESE_RIGHT);
+                sb.append(" (").append(getCodeName()).append(')');
             }
             if (!StringKit.isBlank(getBuildNumber())) {
                 sb.append(" build ").append(getBuildNumber());

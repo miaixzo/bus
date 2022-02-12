@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,7 +28,6 @@ package org.aoju.bus.health.unix.freebsd.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
@@ -38,10 +37,13 @@ import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.io.File;
 import java.nio.file.PathMatcher;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * The FreeBSD File System contains {@link  OSFileStore}s which
+ * The FreeBSD File System contains {@link OSFileStore}s which
  * are a storage pool, device, partition, volume, concrete file system or other
  * implementation specific means of file storage.
  *
@@ -52,30 +54,30 @@ import java.util.*;
 @ThreadSafe
 public final class FreeBsdFileSystem extends AbstractFileSystem {
 
-    public static final String OSHI_FREEBSD_FS_PATH_EXCLUDES = "health.os.freebsd.filesystem.path.excludes";
-    public static final String OSHI_FREEBSD_FS_PATH_INCLUDES = "health.os.freebsd.filesystem.path.includes";
-    public static final String OSHI_FREEBSD_FS_VOLUME_EXCLUDES = "health.os.freebsd.filesystem.volume.excludes";
-    public static final String OSHI_FREEBSD_FS_VOLUME_INCLUDES = "health.os.freebsd.filesystem.volume.includes";
-    // System path mounted as tmpfs
-    private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
+    public static final String FREEBSD_FS_PATH_EXCLUDES = "bus.health.os.freebsd.filesystem.path.excludes";
+    public static final String FREEBSD_FS_PATH_INCLUDES = "bus.health.os.freebsd.filesystem.path.includes";
+    public static final String FREEBSD_FS_VOLUME_EXCLUDES = "bus.health.os.freebsd.filesystem.volume.excludes";
+    public static final String FREEBSD_FS_VOLUME_INCLUDES = "bus.health.os.freebsd.filesystem.volume.includes";
+
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_PATH_EXCLUDES);
+            .loadAndParseFileSystemConfig(FREEBSD_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_PATH_INCLUDES);
+            .loadAndParseFileSystemConfig(FREEBSD_FS_PATH_INCLUDES);
     private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_VOLUME_EXCLUDES);
+            .loadAndParseFileSystemConfig(FREEBSD_FS_VOLUME_EXCLUDES);
     private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_VOLUME_INCLUDES);
+            .loadAndParseFileSystemConfig(FREEBSD_FS_VOLUME_INCLUDES);
 
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
-        // Find any partition UUIDs and map them
+        // TODO map mount point to UUID?
+        // is /etc/fstab useful for this?
         Map<String, String> uuidMap = new HashMap<>();
         // Now grab dmssg output
         String device = Normal.EMPTY;
         for (String line : Executor.runNative("geom part list")) {
             if (line.contains("Name: ")) {
-                device = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
+                device = line.substring(line.lastIndexOf(' ') + 1);
             }
             // If we aren't working with a current partition, continue
             if (device.isEmpty()) {
@@ -83,7 +85,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             }
             line = line.trim();
             if (line.startsWith("rawuuid:")) {
-                uuidMap.put(device, line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1));
+                uuidMap.put(device, line.substring(line.lastIndexOf(' ') + 1));
                 device = Normal.EMPTY;
             }
         }
@@ -98,7 +100,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             Filesystem    1K-blocks   Used   Avail Capacity iused  ifree %iused  Mounted on
             /dev/twed0s1a   2026030 584112 1279836    31%    2751 279871    1%   /
             */
-            if (line.startsWith(Symbol.SLASH)) {
+            if (line.startsWith("/")) {
                 String[] split = RegEx.SPACES.split(line);
                 if (split.length > 7) {
                     inodeFreeMap.put(split[0], Builder.parseLongOrDefault(split[6], 0L));
@@ -126,16 +128,16 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             String options = split[3];
 
             // Skip non-local drives if requested, and exclude pseudo file systems
-            if ((localOnly && NETWORK_FS_TYPES.contains(type)) || PSEUDO_FS_TYPES.contains(type) || path.equals("/dev")
-                    || Builder.filePathStartsWith(TMP_FS_PATHS, path)
-                    || volume.startsWith("rpool") && !path.equals(Symbol.SLASH)) {
+            if ((localOnly && NETWORK_FS_TYPES.contains(type))
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
+                    volume, FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                 continue;
             }
 
-            String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
+            String name = path.substring(path.lastIndexOf('/') + 1);
             // Special case for /, pull last element of volume instead
             if (name.isEmpty()) {
-                name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
+                name = volume.substring(volume.lastIndexOf('/') + 1);
             }
             File f = new File(path);
             long totalSpace = f.getTotalSpace();
@@ -143,7 +145,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             long freeSpace = f.getFreeSpace();
 
             String description;
-            if (volume.startsWith("/dev") || path.equals(Symbol.SLASH)) {
+            if (volume.startsWith("/dev") || path.equals("/")) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";

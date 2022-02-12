@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,7 +28,7 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 
 /**
- * 抽象声卡
+ * An abstract Sound Card
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -37,16 +37,16 @@ import org.aoju.bus.core.annotation.Immutable;
 @Immutable
 public abstract class AbstractSoundCard implements SoundCard {
 
-    private String kernelVersion;
-    private String name;
-    private String codec;
+    private final String kernelVersion;
+    private final String name;
+    private final String codec;
 
     /**
-     * 抽象声卡构造函数
+     * Abstract Sound Card Constructor
      *
-     * @param kernelVersion 版本
-     * @param name          名称
-     * @param codec         编解码器
+     * @param kernelVersion The version
+     * @param name          The name
+     * @param codec         The codec
      */
     protected AbstractSoundCard(String kernelVersion, String name, String codec) {
         this.kernelVersion = kernelVersion;

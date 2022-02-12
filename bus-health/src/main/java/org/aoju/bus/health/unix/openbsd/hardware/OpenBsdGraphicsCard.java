@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -66,11 +66,11 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
 
     /**
      * public method used by
-     * {@link  AbstractHardwareAbstractionLayer} to access the
+     * {@link AbstractHardwareAbstractionLayer} to access the
      * graphics cards.
      *
      * @return List of
-     * {@link  OpenBsdGraphicsCard}
+     * {@link OpenBsdGraphicsCard}
      * objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
@@ -113,8 +113,8 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
                         vendorId = "0x" + line.substring(idx + 11, idx + 15);
                     }
                     idx = line.indexOf("Product ID: ");
-                    if (idx >= 0 && line.length() >= idx + Normal._16) {
-                        productId = "0x" + line.substring(idx + 12, idx + Normal._16);
+                    if (idx >= 0 && line.length() >= idx + 16) {
+                        productId = "0x" + line.substring(idx + 12, idx + 16);
                     }
                     if (line.contains(PCI_CLASS_DISPLAY)) {
                         classCodeFound = true;

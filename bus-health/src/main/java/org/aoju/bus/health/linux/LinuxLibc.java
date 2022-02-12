@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,8 +32,8 @@ import com.sun.jna.platform.linux.LibC;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
- * Linux C动态库，这个类应该被认为是非api的，
- * 因为如果/当它的代码被合并到JNA项目中时，它可能会被删除
+ * Linux C Library. This class should be considered non-API as it may be removed
+ * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
  * @version 6.3.3

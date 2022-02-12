@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,22 +28,23 @@ package org.aoju.bus.health.unix.openbsd.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
-import org.aoju.bus.health.unix.openbsd.drivers.disk.Disklabel;
+import org.aoju.bus.health.unix.openbsd.drivers.Disklabel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * OpenBSD hard disk implementation.
@@ -55,8 +56,7 @@ import java.util.regex.Pattern;
 @ThreadSafe
 public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
-    private final Supplier<List<String>> iostat = Memoize.memoize(
-            OpenBsdHWDiskStore::querySystatIostat, Memoize.defaultExpiration());
+    private final Supplier<List<String>> iostat = memoize(OpenBsdHWDiskStore::querySystatIostat, defaultExpiration());
     private final long currentQueueLength = 0L;
     private long reads = 0L;
     private long readBytes = 0L;
@@ -81,17 +81,17 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
         // Get list of disks from sysctl
         // hw.disknames=sd0:2cf69345d371cd82,cd0:,sd1:
-        String[] devices = OpenBsdSysctlKit.sysctl("hw.disknames", Normal.EMPTY).split(Symbol.COMMA);
+        String[] devices = OpenBsdSysctlKit.sysctl("hw.disknames", Normal.EMPTY).split(",");
         OpenBsdHWDiskStore store;
         String diskName;
         for (String device : devices) {
-            diskName = device.split(Symbol.COLON)[0];
+            diskName = device.split(":")[0];
             // get partitions using disklabel command (requires root)
             Quartet<String, String, Long, List<HWPartition>> diskdata = Disklabel.getDiskParams(diskName);
             String model = diskdata.getA();
             long size = diskdata.getC();
             if (size <= 1) {
-                if (null == dmesg) {
+                if (dmesg == null) {
                     dmesg = Executor.runNative("dmesg");
                 }
                 Pattern diskAt = Pattern.compile(diskName + " at .*<(.+)>.*");
@@ -217,4 +217,5 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
         }
         return diskFound;
     }
+
 }

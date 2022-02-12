@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,8 @@
 package org.aoju.bus.health.linux.hardware;
 
 import com.sun.jna.platform.linux.Udev;
+import com.sun.jna.platform.linux.Udev.UdevContext;
+import com.sun.jna.platform.linux.Udev.UdevDevice;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
@@ -61,38 +63,20 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
     private String ifAlias;
-    private IfOperStatus ifOperStatus;
+    private NetworkIF.IfOperStatus ifOperStatus;
 
     public LinuxNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint, queryIfModel(netint));
         updateAttributes();
     }
 
-    /**
-     * Gets network interfaces on this machine
-     *
-     * @param includeLocalInterfaces include local interfaces in the result
-     * @return A list of {@link NetworkIF} objects representing the interfaces
-     */
-    public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            try {
-                ifList.add(new LinuxNetworkIF(ni));
-            } catch (InstantiationException e) {
-                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
-            }
-        }
-        return ifList;
-    }
-
     private static String queryIfModel(NetworkInterface netint) {
         String name = netint.getName();
-        Udev.UdevContext udev = Udev.INSTANCE.udev_new();
-        if (null != udev) {
+        UdevContext udev = Udev.INSTANCE.udev_new();
+        if (udev != null) {
             try {
-                Udev.UdevDevice device = udev.deviceNewFromSyspath("/sys/class/net/" + name);
-                if (null != device) {
+                UdevDevice device = udev.deviceNewFromSyspath("/sys/class/net/" + name);
+                if (device != null) {
                     try {
                         String devVendor = device.getPropertyValue("ID_VENDOR_FROM_DATABASE");
                         String devModel = device.getPropertyValue("ID_MODEL_FROM_DATABASE");
@@ -113,23 +97,41 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         return name;
     }
 
-    private static IfOperStatus parseIfOperStatus(String operState) {
+    /**
+     * Gets network interfaces on this machine
+     *
+     * @param includeLocalInterfaces include local interfaces in the result
+     * @return A list of {@link NetworkIF} objects representing the interfaces
+     */
+    public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
+        List<NetworkIF> ifList = new ArrayList<>();
+        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
+            try {
+                ifList.add(new LinuxNetworkIF(ni));
+            } catch (InstantiationException e) {
+                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+            }
+        }
+        return ifList;
+    }
+
+    private static NetworkIF.IfOperStatus parseIfOperStatus(String operState) {
         switch (operState) {
             case "up":
-                return IfOperStatus.UP;
+                return NetworkIF.IfOperStatus.UP;
             case "down":
-                return IfOperStatus.DOWN;
+                return NetworkIF.IfOperStatus.DOWN;
             case "testing":
-                return IfOperStatus.TESTING;
+                return NetworkIF.IfOperStatus.TESTING;
             case "dormant":
-                return IfOperStatus.DORMANT;
+                return NetworkIF.IfOperStatus.DORMANT;
             case "notpresent":
-                return IfOperStatus.NOT_PRESENT;
+                return NetworkIF.IfOperStatus.NOT_PRESENT;
             case "lowerlayerdown":
-                return IfOperStatus.LOWER_LAYER_DOWN;
+                return NetworkIF.IfOperStatus.LOWER_LAYER_DOWN;
             case "unknown":
             default:
-                return IfOperStatus.UNKNOWN;
+                return NetworkIF.IfOperStatus.UNKNOWN;
         }
     }
 
@@ -199,7 +201,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     }
 
     @Override
-    public IfOperStatus getIfOperStatus() {
+    public NetworkIF.IfOperStatus getIfOperStatus() {
         return ifOperStatus;
     }
 
@@ -230,15 +232,15 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         this.timeStamp = System.currentTimeMillis();
         this.ifType = Builder.getIntFromFile(ifTypePath);
         this.connectorPresent = Builder.getIntFromFile(carrierPath) > 0;
-        this.bytesSent = Builder.getLongFromFile(txBytesPath);
-        this.bytesRecv = Builder.getLongFromFile(rxBytesPath);
-        this.packetsSent = Builder.getLongFromFile(txPacketsPath);
-        this.packetsRecv = Builder.getLongFromFile(rxPacketsPath);
-        this.outErrors = Builder.getLongFromFile(txErrorsPath);
-        this.inErrors = Builder.getLongFromFile(rxErrorsPath);
-        this.collisions = Builder.getLongFromFile(collisionsPath);
-        this.inDrops = Builder.getLongFromFile(rxDropsPath);
-        long speedMiB = Builder.getLongFromFile(ifSpeed);
+        this.bytesSent = Builder.getUnsignedLongFromFile(txBytesPath);
+        this.bytesRecv = Builder.getUnsignedLongFromFile(rxBytesPath);
+        this.packetsSent = Builder.getUnsignedLongFromFile(txPacketsPath);
+        this.packetsRecv = Builder.getUnsignedLongFromFile(rxPacketsPath);
+        this.outErrors = Builder.getUnsignedLongFromFile(txErrorsPath);
+        this.inErrors = Builder.getUnsignedLongFromFile(rxErrorsPath);
+        this.collisions = Builder.getUnsignedLongFromFile(collisionsPath);
+        this.inDrops = Builder.getUnsignedLongFromFile(rxDropsPath);
+        long speedMiB = Builder.getUnsignedLongFromFile(ifSpeed);
         // speed may be -1 from file.
         this.speed = speedMiB < 0 ? 0 : speedMiB << 20;
         this.ifAlias = Builder.getStringFromFile(ifAliasPath);

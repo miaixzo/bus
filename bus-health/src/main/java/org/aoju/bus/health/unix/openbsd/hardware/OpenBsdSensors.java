@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,12 +30,14 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.defaultExpiration;
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Sensors
@@ -47,8 +49,8 @@ import java.util.function.Supplier;
 @ThreadSafe
 final class OpenBsdSensors extends AbstractSensors {
 
-    private final Supplier<Triple<Double, int[], Double>> tempFanVolts = Memoize.memoize(OpenBsdSensors::querySensors,
-            Memoize.defaultExpiration());
+    private final Supplier<Triple<Double, int[], Double>> tempFanVolts = memoize(OpenBsdSensors::querySensors,
+            defaultExpiration());
 
     private static Triple<Double, int[], Double> querySensors() {
         double volts = 0d;

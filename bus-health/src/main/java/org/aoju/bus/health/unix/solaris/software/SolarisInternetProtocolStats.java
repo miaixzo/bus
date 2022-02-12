@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,10 +26,10 @@
 package org.aoju.bus.health.unix.solaris.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
+import org.aoju.bus.health.builtin.software.InternetProtocolStats;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ import java.util.List;
 @ThreadSafe
 public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private static TcpStats getTcpStats() {
+    private static InternetProtocolStats.TcpStats getTcpStats() {
         long connectionsEstablished = 0;
         long connectionsActive = 0;
         long connectionsPassive = 0;
@@ -62,8 +62,8 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             String[] stats = splitOnPrefix(s, "tcp");
             // Now of form tcpXX = 123
             for (String stat : stats) {
-                if (null != stat) {
-                    String[] split = stat.split(Symbol.EQUAL);
+                if (stat != null) {
+                    String[] split = stat.split("=");
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "tcpCurrEstab":
@@ -104,11 +104,11 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
                 }
             }
         }
-        return new TcpStats(connectionsEstablished, connectionsActive, connectionsPassive, connectionFailures,
+        return new InternetProtocolStats.TcpStats(connectionsEstablished, connectionsActive, connectionsPassive, connectionFailures,
                 connectionsReset, segmentsSent, segmentsReceived, segmentsRetransmitted, inErrors, outResets);
     }
 
-    private static UdpStats getUdpStats() {
+    private static InternetProtocolStats.UdpStats getUdpStats() {
         long datagramsSent = 0;
         long datagramsReceived = 0;
         long datagramsNoPort = 0;
@@ -121,8 +121,8 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
             String[] stats = splitOnPrefix(s, "udp");
             // Now of form udpXX = 123
             for (String stat : stats) {
-                if (null != stat) {
-                    String[] split = stat.split(Symbol.EQUAL);
+                if (stat != null) {
+                    String[] split = stat.split("=");
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "udpOutDatagrams":
@@ -144,7 +144,7 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
                 }
             }
         }
-        return new UdpStats(datagramsSent, datagramsReceived, datagramsNoPort, datagramsReceivedErrors);
+        return new InternetProtocolStats.UdpStats(datagramsSent, datagramsReceived, datagramsNoPort, datagramsReceivedErrors);
     }
 
     private static String[] splitOnPrefix(String s, String prefix) {
@@ -163,12 +163,12 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
     }
 
     @Override
-    public TcpStats getTCPv4Stats() {
+    public InternetProtocolStats.TcpStats getTCPv4Stats() {
         return getTcpStats();
     }
 
     @Override
-    public UdpStats getUDPv4Stats() {
+    public InternetProtocolStats.UdpStats getUDPv4Stats() {
         return getUdpStats();
     }
 

@@ -1,4 +1,9 @@
 /**
- * 提供有关OpenBSD系统上的内存、电源和处理器等硬件的信息
+ * Provides information about hardware such as Memory, Power Sources, and
+ * Processor on OpenBSD systems
+ *
+ * @author Kimi Liu
+ * @version 6.3.3
+ * @since JDK 1.8+
  */
 package org.aoju.bus.health.unix.openbsd.hardware;

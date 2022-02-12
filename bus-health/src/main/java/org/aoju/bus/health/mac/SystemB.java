@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,12 +29,11 @@ import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
- * 系统类。这个类应该被认为是非api的，因为如果/当
- * 它的代码被合并到JNA项目中时，它可能会被删除
+ * System class. This class should be considered non-API as it may be removed
+ * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -51,10 +50,10 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     int SOCKINFO_IN = 1;
     int SOCKINFO_TCP = 2;
 
-    int UTX_USERSIZE = Normal._256;
-    int UTX_LINESIZE = Normal._32;
+    int UTX_USERSIZE = 256;
+    int UTX_LINESIZE = 32;
     int UTX_IDSIZE = 4;
-    int UTX_HOSTSIZE = Normal._256;
+    int UTX_HOSTSIZE = 256;
 
     int AF_INET = 2; // The Internet Protocol version 4 (IPv4) address family.
     int AF_INET6 = 30; // The Internet Protocol version 6 (IPv6) address family.
@@ -84,7 +83,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public short ut_type; // type of this entry
         public Timeval ut_tv; // time entry was created
         public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
-        public byte[] ut_pad = new byte[Normal._16]; // reserved for future use
+        public byte[] ut_pad = new byte[16]; // reserved for future use
     }
 
     /**

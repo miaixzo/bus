@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,12 +26,13 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.health.Memoize;
 
 import java.util.function.Supplier;
 
+import static org.aoju.bus.health.Memoize.memoize;
+
 /**
- * 计算机系统数据
+ * Computer System data.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -40,9 +41,9 @@ import java.util.function.Supplier;
 @Immutable
 public abstract class AbstractComputerSystem implements ComputerSystem {
 
-    private final Supplier<Firmware> firmware = Memoize.memoize(this::createFirmware);
+    private final Supplier<Firmware> firmware = memoize(this::createFirmware);
 
-    private final Supplier<Baseboard> baseboard = Memoize.memoize(this::createBaseboard);
+    private final Supplier<Baseboard> baseboard = memoize(this::createBaseboard);
 
     @Override
     public Firmware getFirmware() {
@@ -50,9 +51,9 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
     }
 
     /**
-     * 实例化特定于平台的{@link Firmware}对象
+     * Instantiates the platform-specific {@link Firmware} object
      *
-     * @return 特定于平台的{@link Firmware}对象
+     * @return platform-specific {@link Firmware} object
      */
     protected abstract Firmware createFirmware();
 
@@ -62,9 +63,9 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
     }
 
     /**
-     * 实例化特定于平台的{@link Baseboard}对象
+     * Instantiates the platform-specific {@link Baseboard} object
      *
-     * @return 特定于平台的{@link Baseboard}对象
+     * @return platform-specific {@link Baseboard} object
      */
     protected abstract Baseboard createBaseboard();
 

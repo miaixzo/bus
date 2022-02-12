@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -41,12 +41,11 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
+import org.aoju.bus.health.mac.CFKit;
 import org.aoju.bus.health.mac.SysctlKit;
-import org.aoju.bus.health.mac.drivers.WindowInfo;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -62,8 +61,8 @@ import java.util.stream.Collectors;
 /**
  * The Mac File System contains {@link OSFileStore}s which are
  * a storage pool, device, partition, volume, concrete file system or other
- * implementation specific means of file storage. In Mac OS, these are found
- * in the /Volumes directory.
+ * implementation specific means of file storage. In macOS, these are found in
+ * the /Volumes directory.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -72,20 +71,22 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class MacFileSystem extends AbstractFileSystem {
 
-    public static final String OSHI_MAC_FS_PATH_EXCLUDES = "health.os.mac.filesystem.path.excludes";
-    public static final String OSHI_MAC_FS_PATH_INCLUDES = "health.os.mac.filesystem.path.includes";
-    public static final String OSHI_MAC_FS_VOLUME_EXCLUDES = "health.os.mac.filesystem.volume.excludes";
-    public static final String OSHI_MAC_FS_VOLUME_INCLUDES = "health.os.mac.filesystem.volume.includes";
+    public static final String MAC_FS_PATH_EXCLUDES = "bus.health.os.mac.filesystem.path.excludes";
+    public static final String MAC_FS_PATH_INCLUDES = "bus.health.os.mac.filesystem.path.includes";
+    public static final String MAC_FS_VOLUME_EXCLUDES = "bus.health.os.mac.filesystem.volume.excludes";
+    public static final String MAC_FS_VOLUME_INCLUDES = "bus.health.os.mac.filesystem.volume.includes";
+
+    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(MAC_FS_PATH_EXCLUDES);
+    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(MAC_FS_PATH_INCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(MAC_FS_VOLUME_EXCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(MAC_FS_VOLUME_INCLUDES);
+
     // Regexp matcher for /dev/disk1 etc.
     private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
-    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_MAC_FS_PATH_EXCLUDES);
-    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_MAC_FS_PATH_INCLUDES);
-    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_MAC_FS_VOLUME_EXCLUDES);
-    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
-            .loadAndParseFileSystemConfig(OSHI_MAC_FS_VOLUME_INCLUDES);
 
     // User specifiable flags.
     private static final int MNT_RDONLY = 0x00000001;
@@ -137,11 +138,12 @@ public class MacFileSystem extends AbstractFileSystem {
         OPTIONS_MAP.put(MNT_NOATIME, "noatime");
     }
 
-    public static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
+    // Called by MacOSFileStore
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
         return getFileStoreMatching(nameToMatch, false);
     }
 
-    public static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
+    private static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
         // Use getfsstat to find fileSystems
@@ -152,7 +154,7 @@ public class MacFileSystem extends AbstractFileSystem {
             // with bsd names
             DASessionRef session = DiskArbitration.INSTANCE
                     .DASessionCreate(CoreFoundation.INSTANCE.CFAllocatorGetDefault());
-            if (null == session) {
+            if (session == null) {
                 Logger.error("Unable to open session to DiskArbitration framework.");
             } else {
                 CFStringRef daVolumeNameKey = CFStringRef.createCFString("DAVolumeName");
@@ -166,7 +168,6 @@ public class MacFileSystem extends AbstractFileSystem {
                     // Mount to name will match canonical path., e.g., /dev/disk0s2
                     // Byte arrays are null-terminated strings
 
-                    // Get volume name
                     // Get volume and path name, and type
                     String volume = Native.toString(fs[f].f_mntfromname, StandardCharsets.UTF_8);
                     String path = Native.toString(fs[f].f_mntonname, StandardCharsets.UTF_8);
@@ -175,7 +176,7 @@ public class MacFileSystem extends AbstractFileSystem {
                     final int flags = fs[f].f_flags;
 
                     // Skip non-local drives if requested, and exclude pseudo file systems
-                    if ((localOnly && (flags & MNT_LOCAL) == 0) || !path.equals(Symbol.SLASH)
+                    if ((localOnly && (flags & MNT_LOCAL) == 0) || !path.equals("/")
                             && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
                             FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                         continue;
@@ -188,22 +189,21 @@ public class MacFileSystem extends AbstractFileSystem {
                             || NETWORK_FS_TYPES.contains(type)) {
                         description = "Network Drive";
                     }
-
                     File file = new File(path);
                     String name = file.getName();
                     // getName() for / is still blank, so:
                     if (name.isEmpty()) {
                         name = file.getPath();
                     }
-                    if (null != nameToMatch && !nameToMatch.equals(name)) {
+                    if (nameToMatch != null && !nameToMatch.equals(name)) {
                         continue;
                     }
 
                     StringBuilder options = new StringBuilder((MNT_RDONLY & flags) == 0 ? "rw" : "ro");
                     String moreOptions = OPTIONS_MAP.entrySet().stream().filter(e -> (e.getKey() & flags) > 0)
-                            .map(Map.Entry::getValue).collect(Collectors.joining(Symbol.COMMA));
+                            .map(Map.Entry::getValue).collect(Collectors.joining(","));
                     if (!moreOptions.isEmpty()) {
-                        options.append(Symbol.C_COMMA).append(moreOptions);
+                        options.append(',').append(moreOptions);
                     }
 
                     String uuid = Normal.EMPTY;
@@ -215,29 +215,29 @@ public class MacFileSystem extends AbstractFileSystem {
                         // which has volumename
                         DADiskRef disk = DiskArbitration.INSTANCE.DADiskCreateFromBSDName(
                                 CoreFoundation.INSTANCE.CFAllocatorGetDefault(), session, volume);
-                        if (null != disk) {
+                        if (disk != null) {
                             CFDictionaryRef diskInfo = DiskArbitration.INSTANCE.DADiskCopyDescription(disk);
-                            if (null != diskInfo) {
+                            if (diskInfo != null) {
                                 // get volume name from its key
                                 Pointer result = diskInfo.getValue(daVolumeNameKey);
-                                name = WindowInfo.cfPointerToString(result);
+                                name = CFKit.cfPointerToString(result);
                                 diskInfo.release();
                             }
                             disk.release();
                         }
                         // Search for bsd name in IOKit registry for UUID
                         CFMutableDictionaryRef matchingDict = IOKitUtil.getBSDNameMatchingDict(bsdName);
-                        if (null != matchingDict) {
+                        if (matchingDict != null) {
                             // search for all IOservices that match the bsd name
                             IOIterator fsIter = IOKitUtil.getMatchingServices(matchingDict);
-                            if (null != fsIter) {
+                            if (fsIter != null) {
                                 // getMatchingServices releases matchingDict
                                 // Should only match one logical drive
                                 IORegistryEntry fsEntry = fsIter.next();
-                                if (null != fsEntry && fsEntry.conformsTo("IOMedia")) {
+                                if (fsEntry != null && fsEntry.conformsTo("IOMedia")) {
                                     // Now get the UUID
                                     uuid = fsEntry.getStringProperty("UUID");
-                                    if (null != uuid) {
+                                    if (uuid != null) {
                                         uuid = uuid.toLowerCase();
                                     }
                                     fsEntry.release();
@@ -248,7 +248,7 @@ public class MacFileSystem extends AbstractFileSystem {
                     }
 
                     fsList.add(new MacOSFileStore(name, volume, name, path, options.toString(),
-                            null == uuid ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
+                            uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
                             file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
                 }
                 daVolumeNameKey.release();

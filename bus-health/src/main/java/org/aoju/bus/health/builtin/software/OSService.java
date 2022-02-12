@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,6 +31,9 @@ import org.aoju.bus.core.annotation.Immutable;
  * Operating system services are responsible for the management of platform
  * resources, including the processor, memory, files, and input and output. They
  * generally shield applications from the implementation details of the machine.
+ * <p>
+ * This class is provided for information purposes only. Interpretation of the
+ * meaning of services is platform-dependent.
  *
  * @author Kimi Liu
  * @version 6.3.3

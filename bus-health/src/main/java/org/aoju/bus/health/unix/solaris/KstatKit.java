@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,16 +28,21 @@ package org.aoju.bus.health.unix.solaris;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.solaris.LibKstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
+import org.aoju.bus.health.unix.Kstat2;
+import org.aoju.bus.health.unix.Kstat2.Kstat2Handle;
+import org.aoju.bus.health.unix.Kstat2.Kstat2Map;
+import org.aoju.bus.health.unix.Kstat2.Kstat2MatcherList;
 import org.aoju.bus.logger.Logger;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -51,16 +56,12 @@ import java.util.concurrent.locks.ReentrantLock;
 @ThreadSafe
 public final class KstatKit {
 
+    public static final ReentrantLock CHAIN = new ReentrantLock();
     private static final LibKstat KS = LibKstat.INSTANCE;
-
     // Opens the kstat chain. Automatically closed on exit.
     // Only one thread may access the chain at any time, so we wrap this object in
     // the KstatChain class which locks the class until closed.
     private static final KstatCtl KC = KS.kstat_open();
-    private static final ReentrantLock CHAIN = new ReentrantLock();
-
-    private KstatKit() {
-    }
 
     /**
      * Create a copy of the Kstat chain and lock it for use by this object.
@@ -84,19 +85,19 @@ public final class KstatKit {
      *             applicable
      * @return The value as a String.
      */
-    public static String dataLookupString(LibKstat.Kstat ksp, String name) {
+    public static String dataLookupString(Kstat ksp, String name) {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
         Pointer p = KS.kstat_data_lookup(ksp, name);
-        if (null == p) {
-            Logger.debug("Failed lo lookup kstat value for key {}", name);
-            return Normal.EMPTY;
+        if (p == null) {
+            Logger.debug("Failed to lookup kstat value for key {}", name);
+            return "";
         }
         KstatNamed data = new KstatNamed(p);
         switch (data.data_type) {
             case LibKstat.KSTAT_DATA_CHAR:
-                return Native.toString(data.value.charc, Charset.UTF_8);
+                return Native.toString(data.value.charc, StandardCharsets.UTF_8);
             case LibKstat.KSTAT_DATA_INT32:
                 return Integer.toString(data.value.i32);
             case LibKstat.KSTAT_DATA_UINT32:
@@ -109,7 +110,7 @@ public final class KstatKit {
                 return data.value.str.addr.getString(0);
             default:
                 Logger.error("Unimplemented kstat data type {}", data.data_type);
-                return Normal.EMPTY;
+                return "";
         }
     }
 
@@ -126,16 +127,16 @@ public final class KstatKit {
      * @return The value as a long. If the data type is a character or string type,
      * returns 0 and logs an error.
      */
-    public static long dataLookupLong(LibKstat.Kstat ksp, String name) {
+    public static long dataLookupLong(Kstat ksp, String name) {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
         Pointer p = KS.kstat_data_lookup(ksp, name);
-        if (null == p) {
+        if (p == null) {
             if (Logger.get().isDebug()) {
                 Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
-                        Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
-                        Native.toString(ksp.ks_name, Charset.US_ASCII), name);
+                        Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
+                        Native.toString(ksp.ks_name, StandardCharsets.US_ASCII), name);
             }
             return 0L;
         }
@@ -153,6 +154,77 @@ public final class KstatKit {
                 Logger.error("Unimplemented or non-numeric kstat data type {}", data.data_type);
                 return 0L;
         }
+    }
+
+    /**
+     * Query Kstat2 with a single map
+     *
+     * @param mapStr The map to query
+     * @param names  Names of data to query
+     * @return An object array with the data corresponding to the names
+     */
+    public static Object[] queryKstat2(String mapStr, String... names) {
+        Object[] result = new Object[names.length];
+        Kstat2MatcherList matchers = new Kstat2MatcherList();
+        KstatKit.CHAIN.lock();
+        try {
+            matchers.addMatcher(Kstat2.KSTAT2_M_STRING, mapStr);
+            Kstat2Handle handle = new Kstat2Handle();
+            try {
+                Kstat2Map map = handle.lookupMap(mapStr);
+                for (int i = 0; i < names.length; i++) {
+                    result[i] = map.getValue(names[i]);
+                }
+            } finally {
+                handle.close();
+            }
+        } catch (Kstat2.Kstat2StatusException e) {
+            Logger.debug("Failed to get stats on {} for names {}: {}", mapStr, Arrays.toString(names), e.getMessage());
+        } finally {
+            KstatKit.CHAIN.unlock();
+            matchers.free();
+        }
+        return result;
+    }
+
+    /**
+     * Query Kstat2 iterating over maps using a wildcard indicating a 0-indexed
+     * list, such as a cpu.
+     *
+     * @param beforeStr The part of the string before the wildcard
+     * @param afterStr  The part of the string after the wildcard
+     * @param names     Names of data to query
+     * @return A list of object arrays with the data corresponding to the names
+     */
+    public static List<Object[]> queryKstat2List(String beforeStr, String afterStr, String... names) {
+        List<Object[]> results = new ArrayList<>();
+        int s = 0;
+        Kstat2MatcherList matchers = new Kstat2MatcherList();
+        KstatKit.CHAIN.lock();
+        try {
+            matchers.addMatcher(Kstat2.KSTAT2_M_GLOB, beforeStr + "*" + afterStr);
+            Kstat2Handle handle = new Kstat2Handle();
+            try {
+                for (s = 0; s < Integer.MAX_VALUE; s++) {
+                    Object[] result = new Object[names.length];
+                    Kstat2Map map = handle.lookupMap(beforeStr + s + afterStr);
+                    for (int i = 0; i < names.length; i++) {
+                        result[i] = map.getValue(names[i]);
+                    }
+                    results.add(result);
+                }
+            } finally {
+                handle.close();
+            }
+        } catch (Kstat2.Kstat2StatusException e) {
+            // Expected to end iteration
+            Logger.debug("Failed to get stats on {}{}{} for names {}: {}", beforeStr, s, afterStr, Arrays.toString(names),
+                    e.getMessage());
+        } finally {
+            KstatKit.CHAIN.unlock();
+            matchers.free();
+        }
+        return results;
     }
 
     /**
@@ -184,14 +256,14 @@ public final class KstatKit {
          * @param ksp The kstat from which to retrieve data
          * @return {@code true} if successful; {@code false} otherwise
          */
-        public static boolean read(LibKstat.Kstat ksp) {
+        public static boolean read(Kstat ksp) {
             int retry = 0;
             while (0 > KS.kstat_read(KC, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.get().isDebug()) {
                         Logger.debug("Failed to read kstat {}:{}:{}",
-                                Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
-                                Native.toString(ksp.ks_name, Charset.US_ASCII));
+                                Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
+                                Native.toString(ksp.ks_name, StandardCharsets.US_ASCII));
                     }
                     return false;
                 }
@@ -213,7 +285,7 @@ public final class KstatKit {
          * @return The first match of the requested Kstat structure if found, or
          * {@code null}
          */
-        public static LibKstat.Kstat lookup(String module, int instance, String name) {
+        public static Kstat lookup(String module, int instance, String name) {
             return KS.kstat_lookup(KC, module, instance, name);
         }
 
@@ -231,12 +303,12 @@ public final class KstatKit {
          * @return All matches of the requested Kstat structure if found, or an empty
          * list otherwise
          */
-        public static List<LibKstat.Kstat> lookupAll(String module, int instance, String name) {
-            List<LibKstat.Kstat> kstats = new ArrayList<>();
-            for (LibKstat.Kstat ksp = KS.kstat_lookup(KC, module, instance, name); null != ksp; ksp = ksp.next()) {
-                if ((null == module || module.equals(Native.toString(ksp.ks_module, Charset.US_ASCII)))
+        public static List<Kstat> lookupAll(String module, int instance, String name) {
+            List<Kstat> kstats = new ArrayList<>();
+            for (Kstat ksp = KS.kstat_lookup(KC, module, instance, name); ksp != null; ksp = ksp.next()) {
+                if ((module == null || module.equals(Native.toString(ksp.ks_module, StandardCharsets.US_ASCII)))
                         && (instance < 0 || instance == ksp.ks_instance)
-                        && (null == name || name.equals(Native.toString(ksp.ks_name, Charset.US_ASCII)))) {
+                        && (name == null || name.equals(Native.toString(ksp.ks_name, StandardCharsets.US_ASCII)))) {
                     kstats.add(ksp);
                 }
             }

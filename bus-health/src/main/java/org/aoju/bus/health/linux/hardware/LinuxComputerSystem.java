@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,6 +32,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 import org.aoju.bus.health.linux.drivers.*;
+import org.aoju.bus.health.linux.drivers.proc.CpuInfo;
 
 import java.util.function.Supplier;
 
@@ -55,7 +56,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryManufacturer() {
         String result;
-        if (null == (result = Sysfs.querySystemVendor()) && null == (result = CpuInfo.queryCpuManufacturer())) {
+        if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -63,8 +64,8 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryModel() {
         String result;
-        if (null == (result = Sysfs.queryProductModel()) && null == (result = DeviceTree.queryModel())
-                && null == (result = Lshw.queryModel())) {
+        if ((result = Sysfs.queryProductModel()) == null && (result = Devicetree.queryModel()) == null
+                && (result = Lshw.queryModel()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -72,10 +73,8 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String querySerialNumber() {
         String result;
-        if (null == (result = Sysfs.queryProductSerial())
-                && null == (result = Dmidecode.querySerialNumber())
-                && null == (result = Lshal.querySerialNumber())
-                && null == (result = Lshw.querySerialNumber())) {
+        if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
+                && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -83,10 +82,8 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryUUID() {
         String result;
-        if (null == (result = Sysfs.queryUUID())
-                && null == (result = Dmidecode.queryUUID())
-                && null == (result = Lshal.queryUUID())
-                && null == (result = Lshw.queryUUID())) {
+        if ((result = Sysfs.queryUUID()) == null && (result = Dmidecode.queryUUID()) == null
+                && (result = Lshal.queryUUID()) == null && (result = Lshw.queryUUID()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -108,6 +105,11 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     @Override
+    public String getHardwareUUID() {
+        return uuid.get();
+    }
+
+    @Override
     public Firmware createFirmware() {
         return new LinuxFirmware();
     }
@@ -115,11 +117,6 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     @Override
     public Baseboard createBaseboard() {
         return new LinuxBaseboard();
-    }
-
-    @Override
-    public String getHardwareUUID() {
-        return uuid.get();
     }
 
 }

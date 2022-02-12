@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
@@ -51,7 +50,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Instantiates a list of {@link  UsbDevice} objects, representing
+     * Instantiates a list of {@link UsbDevice} objects, representing
      * devices connected via a usb port (including internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from
@@ -62,7 +61,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
      * @param tree If true, returns a list of controllers, which requires recursive
      *             iteration of connected devices. If false, returns a flat list of
      *             devices excluding controllers.
-     * @return a list of {@link  UsbDevice} objects.
+     * @return a list of {@link UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree) {
         List<UsbDevice> devices = getUsbDevices();
@@ -190,7 +189,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
+        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
                 vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
                 usbDevices);
     }

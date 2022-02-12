@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,15 +28,16 @@ package org.aoju.bus.health.mac.drivers;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation.*;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.builtin.software.OSDesktopWindow;
+import org.aoju.bus.health.mac.CFKit;
 import org.aoju.bus.health.mac.CoreGraphics;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.aoju.bus.health.mac.CoreGraphics.*;
 
 /**
  * Utility to query desktop windows
@@ -48,10 +49,6 @@ import java.util.List;
 @ThreadSafe
 public final class WindowInfo {
 
-    private WindowInfo() {
-
-    }
-
     /**
      * Gets windows on the operating system's GUI desktop.
      *
@@ -61,9 +58,9 @@ public final class WindowInfo {
      */
     public static List<OSDesktopWindow> queryDesktopWindows(boolean visibleOnly) {
         CFArrayRef windowInfo = CoreGraphics.INSTANCE.CGWindowListCopyWindowInfo(
-                visibleOnly ? CoreGraphics.kCGWindowListOptionOnScreenOnly | CoreGraphics.kCGWindowListExcludeDesktopElements
-                        : CoreGraphics.kCGWindowListOptionAll,
-                CoreGraphics.kCGNullWindowID);
+                visibleOnly ? kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements
+                        : kCGWindowListOptionAll,
+                kCGNullWindowID);
         int numWindows = windowInfo.getCount();
         // Prepare a list to return
         List<OSDesktopWindow> windowList = new ArrayList<>();
@@ -83,7 +80,7 @@ public final class WindowInfo {
                 CFDictionaryRef windowRef = new CFDictionaryRef(result);
                 // Now get information from the dictionary.
                 result = windowRef.getValue(kCGWindowIsOnscreen); // Optional key, check for null
-                boolean visible = null == result || new CFBooleanRef(result).booleanValue();
+                boolean visible = result == null || new CFBooleanRef(result).booleanValue();
                 if (!visibleOnly || visible) {
                     result = windowRef.getValue(kCGWindowNumber); // kCFNumberSInt64Type
                     long windowNumber = new CFNumberRef(result).longValue();
@@ -95,23 +92,23 @@ public final class WindowInfo {
                     int windowLayer = new CFNumberRef(result).intValue();
 
                     result = windowRef.getValue(kCGWindowBounds);
-                    CoreGraphics.CGRect rect = new CoreGraphics.CGRect();
+                    CGRect rect = new CGRect();
                     CoreGraphics.INSTANCE.CGRectMakeWithDictionaryRepresentation(new CFDictionaryRef(result), rect);
-                    Rectangle windowBounds = new Rectangle(Builder.roundToInt(rect.origin.x),
-                            Builder.roundToInt(rect.origin.y), Builder.roundToInt(rect.size.width),
-                            Builder.roundToInt(rect.size.height));
+                    Rectangle windowBounds = new Rectangle(Formats.roundToInt(rect.origin.x),
+                            Formats.roundToInt(rect.origin.y), Formats.roundToInt(rect.size.width),
+                            Formats.roundToInt(rect.size.height));
 
                     // Note: the Quartz name returned by this field is rarely used
                     result = windowRef.getValue(kCGWindowName); // Optional key, check for null
-                    String windowName = cfPointerToString(result, false);
+                    String windowName = CFKit.cfPointerToString(result, false);
                     // This is the program running the window, use as name if name blank or add in
                     // parenthesis
                     result = windowRef.getValue(kCGWindowOwnerName); // Optional key, check for null
-                    String windowOwnerName = cfPointerToString(result, false);
+                    String windowOwnerName = CFKit.cfPointerToString(result, false);
                     if (windowName.isEmpty()) {
                         windowName = windowOwnerName;
                     } else {
-                        windowName = windowName + Symbol.PARENTHESE_LEFT + windowOwnerName + Symbol.PARENTHESE_RIGHT;
+                        windowName = windowName + "(" + windowOwnerName + ")";
                     }
 
                     windowList.add(new OSDesktopWindow(windowNumber, windowName, windowOwnerName, windowBounds,
@@ -131,36 +128,6 @@ public final class WindowInfo {
         }
 
         return windowList;
-    }
-
-    /**
-     * /** Convert a pointer to a CFString into a String.
-     *
-     * @param result Pointer to the CFString
-     * @return a CFString or "unknown" if it has no value
-     */
-    public static String cfPointerToString(Pointer result) {
-        return cfPointerToString(result, true);
-    }
-
-    /**
-     * Convert a pointer to a CFString into a String.
-     *
-     * @param result        Pointer to the CFString
-     * @param returnUnknown Whether to return the "unknown" string
-     * @return a CFString including a possible empty one if {@code returnUnknown} is
-     * false, or "unknown" if it is true
-     */
-    public static String cfPointerToString(Pointer result, boolean returnUnknown) {
-        String s = Normal.EMPTY;
-        if (result != null) {
-            CFStringRef cfs = new CFStringRef(result);
-            s = cfs.stringValue();
-        }
-        if (returnUnknown && s.isEmpty()) {
-            return Normal.UNKNOWN;
-        }
-        return s;
     }
 
 }

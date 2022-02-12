@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,18 +28,19 @@ package org.aoju.bus.health.windows.software;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.IPHlpAPI;
+import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
+import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Kernel32Util;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.logger.Logger;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                 return fields[2];
             }
         }
-        return Normal.EMPTY;
+        return "";
     }
 
     private static String parseIpv6Route() {
@@ -74,16 +75,16 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
                 return fields[3];
             }
         }
-        return Normal.EMPTY;
+        return "";
     }
 
     @Override
     public String getDomainName() {
-        char[] buffer = new char[Normal._256];
+        char[] buffer = new char[256];
         IntByReference bufferSize = new IntByReference(buffer.length);
         if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
             Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return Normal.EMPTY;
+            return "";
         }
         return Native.toString(buffer);
     }
@@ -103,14 +104,14 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
             Logger.error("Failed to get network parameters. Error code: {}", ret);
             return new String[0];
         }
-        IPHlpAPI.FIXED_INFO fixedInfo = new IPHlpAPI.FIXED_INFO(buffer);
+        FIXED_INFO fixedInfo = new FIXED_INFO(buffer);
 
         List<String> list = new ArrayList<>();
-        IPHlpAPI.IP_ADDR_STRING dns = fixedInfo.DnsServerList;
-        while (null != dns) {
+        IP_ADDR_STRING dns = fixedInfo.DnsServerList;
+        while (dns != null) {
             // a char array of size 16.
             // This array holds an IPv4 address in dotted decimal notation.
-            String addr = Native.toString(dns.IpAddress.String, Charset.US_ASCII);
+            String addr = Native.toString(dns.IpAddress.String, StandardCharsets.US_ASCII);
             int nullPos = addr.indexOf(0);
             if (nullPos != -1) {
                 addr = addr.substring(0, nullPos);

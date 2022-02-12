@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -44,6 +44,10 @@ public abstract class AbstractOSFileStore implements OSFileStore {
     private String options;
     private String uuid;
 
+    protected AbstractOSFileStore() {
+
+    }
+
     protected AbstractOSFileStore(String name, String volume, String label, String mount, String options, String uuid) {
         this.name = name;
         this.volume = volume;
@@ -51,9 +55,6 @@ public abstract class AbstractOSFileStore implements OSFileStore {
         this.mount = mount;
         this.options = options;
         this.uuid = uuid;
-    }
-
-    protected AbstractOSFileStore() {
     }
 
     @Override

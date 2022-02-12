@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,13 +29,12 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.platform.unix.LibCAPI;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.logger.Logger;
 
-
 /**
- * 提供对Mac OS上的sysctl调用的访问
+ * Provides access to sysctl calls on macOS
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -46,21 +45,17 @@ public final class SysctlKit {
 
     private static final String SYSCTL_FAIL = "Failed sysctl call: {}, Error code: {}";
 
-    private SysctlKit() {
-
-    }
-
     /**
-     * 执行带有int结果的sysctl调用
+     * Executes a sysctl call with an int result
      *
-     * @param name 系统的名称
-     * @param def  默认int值
-     * @return 如果调用成功，则调用的int结果;否则默认
+     * @param name name of the sysctl
+     * @param def  default int value
+     * @return The int result of the call if successful; the default otherwise
      */
     public static int sysctl(String name, int def) {
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(com.sun.jna.platform.mac.SystemB.INT_SIZE);
+        size_t.ByReference size = new size_t.ByReference(com.sun.jna.platform.mac.SystemB.INT_SIZE);
         Pointer p = new Memory(size.longValue());
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
             Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -68,16 +63,16 @@ public final class SysctlKit {
     }
 
     /**
-     * 执行带有长结果的sysctl调用
+     * Executes a sysctl call with a long result
      *
-     * @param name 系统的名称
-     * @param def  默认的长整型值
-     * @return 如果调用成功，则调用返回的长整型结果;否则默认
+     * @param name name of the sysctl
+     * @param def  default long value
+     * @return The long result of the call if successful; the default otherwise
      */
     public static long sysctl(String name, long def) {
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(com.sun.jna.platform.mac.SystemB.UINT64_SIZE);
+        size_t.ByReference size = new size_t.ByReference(com.sun.jna.platform.mac.SystemB.UINT64_SIZE);
         Pointer p = new Memory(size.longValue());
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -85,22 +80,22 @@ public final class SysctlKit {
     }
 
     /**
-     * 执行带有字符串结果的sysctl调用
+     * Executes a sysctl call with a String result
      *
-     * @param name 系统的名称
-     * @param def  默认字符串值
-     * @return 如果调用成功，则调用返回的字符串结果;否则默认
+     * @param name name of the sysctl
+     * @param def  default String value
+     * @return The String result of the call if successful; the default otherwise
      */
     public static String sysctl(String name, String def) {
-        // 第一次调用空指针来获取大小值
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference();
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, LibCAPI.size_t.ZERO)) {
+        // Call first time with null pointer to get value of size
+        size_t.ByReference size = new size_t.ByReference();
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
-        // 为空终止字符串的大小添加1
+        // Add 1 to size for null terminated string
         Pointer p = new Memory(size.longValue() + 1L);
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
@@ -108,15 +103,15 @@ public final class SysctlKit {
     }
 
     /**
-     * 执行带有结构结果的sysctl调用
+     * Executes a sysctl call with a Structure result
      *
-     * @param name   系统的名称
-     * @param struct 构造结果
-     * @return 如果结构成功填充为真，则为假
+     * @param name   name of the sysctl
+     * @param struct structure for the result
+     * @return True if structure is successfuly populated, false otherwise
      */
     public static boolean sysctl(String name, Structure struct) {
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), new LibCAPI.size_t.ByReference(struct.size()), null,
-                LibCAPI.size_t.ZERO)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), new size_t.ByReference(struct.size()), null,
+                size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return false;
         }
@@ -132,13 +127,13 @@ public final class SysctlKit {
      * otherwise. Its value on failure is undefined.
      */
     public static Memory sysctl(String name) {
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference();
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, LibCAPI.size_t.ZERO)) {
+        size_t.ByReference size = new size_t.ByReference();
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }
         Memory m = new Memory(size.longValue());
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, size_t.ZERO)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }

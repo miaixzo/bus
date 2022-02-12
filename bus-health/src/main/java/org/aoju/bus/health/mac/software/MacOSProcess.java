@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,25 +28,25 @@ package org.aoju.bus.health.mac.software;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.unix.LibCAPI;
+import com.sun.jna.platform.mac.SystemB;
+import com.sun.jna.platform.mac.SystemB.*;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.mac.SysctlKit;
-import org.aoju.bus.health.mac.SystemB;
-import org.aoju.bus.health.mac.ThreadInfo;
+import org.aoju.bus.health.mac.drivers.ThreadInfo;
 import org.aoju.bus.logger.Logger;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
 
 /**
- * OSProcess implemenation
+ * OSProcess implementation
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -60,7 +60,7 @@ public class MacOSProcess extends AbstractOSProcess {
     // 64-bit flag
     private static final int P_LP64 = 0x4;
     /*
-     * Mac OS States:
+     * macOS States:
      */
     private static final int SSLEEP = 1; // sleeping on high priority
     private static final int SWAIT = 2; // sleeping on low priority
@@ -69,9 +69,9 @@ public class MacOSProcess extends AbstractOSProcess {
     private static final int SZOMB = 5; // intermediate state in process termination
     private static final int SSTOP = 6; // process being traced
 
-    private int minorVersion;
-    private Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoize.memoize(this::queryArgsAndEnvironment);
-    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private final int minorVersion;
+    private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoize.memoize(this::queryArgsAndEnvironment);
+    private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private String name = Normal.EMPTY;
     private String path = Normal.EMPTY;
     private String currentWorkingDirectory;
@@ -119,7 +119,7 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        return String.join(Symbol.SPACE, getArguments());
+        return String.join(" ", getArguments());
     }
 
     @Override
@@ -147,9 +147,9 @@ public class MacOSProcess extends AbstractOSProcess {
         // Allocate memory for arguments
         Memory procargs = new Memory(ARGMAX);
         procargs.clear();
-        LibCAPI.size_t.ByReference size = new LibCAPI.size_t.ByReference(ARGMAX);
+        size_t.ByReference size = new size_t.ByReference(ARGMAX);
         // Fetch arguments
-        if (0 == com.sun.jna.platform.mac.SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, LibCAPI.size_t.ZERO)) {
+        if (0 == SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, size_t.ZERO)) {
             // Procargs contains an int representing total # of args, followed by a
             // null-terminated execpath string and then the arguments, each
             // null-terminated (possible multiple consecutive nulls),
@@ -158,9 +158,9 @@ public class MacOSProcess extends AbstractOSProcess {
             // null-terminated envs in similar format
             int nargs = procargs.getInt(0);
             // Sanity check
-            if (nargs > 0 && nargs <= Normal._1024) {
+            if (nargs > 0 && nargs <= 1024) {
                 // Skip first int (containing value of nargs)
-                long offset = com.sun.jna.platform.mac.SystemB.INT_SIZE;
+                long offset = SystemB.INT_SIZE;
                 // Skip exec_command, as
                 offset += procargs.getString(offset).length();
                 // Iterate character by character using offset
@@ -237,6 +237,23 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public List<OSThread> getThreadDetails() {
+        long now = System.currentTimeMillis();
+        List<OSThread> details = new ArrayList<>();
+        List<ThreadInfo.ThreadStats> stats = ThreadInfo.queryTaskThreads(getProcessID());
+        for (ThreadInfo.ThreadStats stat : stats) {
+            // For long running threads the start time calculation can overestimate
+            long start = now - stat.getUpTime();
+            if (start < this.getStartTime()) {
+                start = this.getStartTime();
+            }
+            details.add(new MacOSThread(getProcessID(), stat.getThreadId(), stat.getState(), stat.getSystemTime(),
+                    stat.getUserTime(), start, now - start, stat.getPriority()));
+        }
+        return details;
+    }
+
+    @Override
     public int getPriority() {
         return this.priority;
     }
@@ -299,23 +316,6 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     @Override
-    public List<OSThread> getThreadDetails() {
-        long now = System.currentTimeMillis();
-        List<OSThread> details = new ArrayList<>();
-        List<ThreadInfo.ThreadStats> stats = ThreadInfo.queryTaskThreads(getProcessID());
-        for (ThreadInfo.ThreadStats stat : stats) {
-            // For long running threads the start time calculation can overestimate
-            long start = now - stat.getUpTime();
-            if (start < this.getStartTime()) {
-                start = this.getStartTime();
-            }
-            details.add(new MacOSThread(getProcessID(), stat.getThreadId(), stat.getState(), stat.getSystemTime(),
-                    stat.getUserTime(), start, now - start, stat.getPriority()));
-        }
-        return details;
-    }
-
-    @Override
     public long getMinorFaults() {
         return this.minorFaults;
     }
@@ -333,7 +333,7 @@ public class MacOSProcess extends AbstractOSProcess {
     @Override
     public boolean updateAttributes() {
         long now = System.currentTimeMillis();
-        SystemB.ProcTaskAllInfo taskAllInfo = new SystemB.ProcTaskAllInfo();
+        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
         if (0 > SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo,
                 taskAllInfo.size()) || taskAllInfo.ptinfo.pti_threadnum < 1) {
             this.state = State.INVALID;
@@ -343,14 +343,14 @@ public class MacOSProcess extends AbstractOSProcess {
         if (0 < SystemB.INSTANCE.proc_pidpath(getProcessID(), buf, SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
             this.path = buf.getString(0).trim();
             // Overwrite name with last part of path
-            String[] pathSplit = this.path.split(Symbol.SLASH);
+            String[] pathSplit = this.path.split("/");
             if (pathSplit.length > 0) {
                 this.name = pathSplit[pathSplit.length - 1];
             }
         }
         if (this.name.isEmpty()) {
             // pbi_comm contains first 16 characters of name
-            this.name = Native.toString(taskAllInfo.pbsd.pbi_comm, Charset.UTF_8);
+            this.name = Native.toString(taskAllInfo.pbsd.pbi_comm, StandardCharsets.UTF_8);
         }
 
         switch (taskAllInfo.pbsd.pbi_status) {
@@ -378,13 +378,13 @@ public class MacOSProcess extends AbstractOSProcess {
         }
         this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
         this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);
-        SystemB.Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
-        if (null != pwuid) {
+        Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
+        if (pwuid != null) {
             this.user = pwuid.pw_name;
         }
         this.groupID = Integer.toString(taskAllInfo.pbsd.pbi_gid);
-        SystemB.Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
-        if (null != grgid) {
+        Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
+        if (grgid != null) {
             this.group = grgid.gr_name;
         }
         this.threadCount = taskAllInfo.ptinfo.pti_threadnum;
@@ -396,28 +396,21 @@ public class MacOSProcess extends AbstractOSProcess {
         this.startTime = taskAllInfo.pbsd.pbi_start_tvsec * 1000L + taskAllInfo.pbsd.pbi_start_tvusec / 1000L;
         this.upTime = now - this.startTime;
         this.openFiles = taskAllInfo.pbsd.pbi_nfiles;
-        this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? Normal._32 : Normal._64;
+        this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? 32 : 64;
         this.majorFaults = taskAllInfo.ptinfo.pti_pageins;
         // testing using getrusage confirms pti_faults includes both major and minor
-        this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins;
+        this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins; // NOSONAR squid:S2184
         this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
         if (this.minorVersion >= 9) {
-            SystemB.RUsageInfoV2 rUsageInfoV2 = new SystemB.RUsageInfoV2();
+            RUsageInfoV2 rUsageInfoV2 = new RUsageInfoV2();
             if (0 == SystemB.INSTANCE.proc_pid_rusage(getProcessID(), SystemB.RUSAGE_INFO_V2, rUsageInfoV2)) {
                 this.bytesRead = rUsageInfoV2.ri_diskio_bytesread;
                 this.bytesWritten = rUsageInfoV2.ri_diskio_byteswritten;
             }
         }
-        SystemB.VnodePathInfo vpi = new SystemB.VnodePathInfo();
+        VnodePathInfo vpi = new VnodePathInfo();
         if (0 < SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDVNODEPATHINFO, 0, vpi, vpi.size())) {
-            int len = 0;
-            for (byte b : vpi.pvi_cdir.vip_path) {
-                if (b == 0) {
-                    break;
-                }
-                len++;
-            }
-            this.currentWorkingDirectory = new String(vpi.pvi_cdir.vip_path, 0, len, Charset.US_ASCII);
+            this.currentWorkingDirectory = Native.toString(vpi.pvi_cdir.vip_path, StandardCharsets.US_ASCII);
         }
         return true;
     }

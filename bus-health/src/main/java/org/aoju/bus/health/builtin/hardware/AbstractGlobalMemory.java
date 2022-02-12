@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 内存信息
+ * Memory info.
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -47,7 +47,8 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
 
     @Override
     public List<PhysicalMemory> getPhysicalMemory() {
-        // dmidecode需要sudo权限，但在Linux和Unix上是唯一的选择
+        // dmidecode requires sudo permission but is the only option on Linux
+        // and Unix
         List<PhysicalMemory> pmList = new ArrayList<>();
         List<String> dmi = Executor.runNative("dmidecode --type 17");
         int bank = 0;

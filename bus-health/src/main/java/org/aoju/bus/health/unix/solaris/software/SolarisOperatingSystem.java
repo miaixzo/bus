@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,23 +25,24 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.software;
 
-import com.sun.jna.platform.unix.solaris.LibKstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
-import org.aoju.bus.health.linux.drivers.ProcessStat;
+import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
+import org.aoju.bus.health.unix.SolarisLibc;
 import org.aoju.bus.health.unix.solaris.KstatKit;
-import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
-import org.aoju.bus.health.unix.solaris.SolarisLibc;
 import org.aoju.bus.health.unix.solaris.drivers.Who;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -56,53 +57,62 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
-    static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name).map(String::toLowerCase)
-            .collect(Collectors.joining(Symbol.COMMA));
-    private static final String PS_FIELDS = "s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args";
-    private static final String PROCESS_LIST_FOR_PID_COMMAND = "ps -o " + PS_FIELDS + " -p ";
-    private static final String PROCESS_LIST_COMMAND = "ps -eo " + PS_FIELDS;
+    private static final String VERSION;
+    private static final String BUILD_NUMBER;
+    public static final boolean IS_11_4_OR_HIGHER = "11.4".compareTo(SolarisOperatingSystem.BUILD_NUMBER) <= 0;
+    private static final Supplier<Pair<Long, Long>> BOOT_UPTIME = Memoize
+            .memoize(SolarisOperatingSystem::queryBootAndUptime, Memoize.defaultExpiration());
     private static final long BOOTTIME = querySystemBootTime();
 
-    private static List<OSProcess> queryAllProcessesFromPS() {
-        return getProcessListFromPS("ps -eo " + PS_COMMAND_ARGS, -1);
+    static {
+        String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
+        VERSION = split[0];
+        BUILD_NUMBER = split.length > 1 ? split[1] : "";
     }
 
-    private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
+    private static List<OSProcess> queryAllProcessesFromPrStat() {
+        return getProcessListFromProcfs(-1);
+    }
+
+    private static List<OSProcess> getProcessListFromProcfs(int pid) {
         List<OSProcess> procs = new ArrayList<>();
-        List<String> procList = Executor.runNative(psCommand);
-        if (procList.size() > 1) {
-            // Get a map by pid of prstat output
-            List<String> prstatList = pid < 0 ? Executor.runNative("prstat -v 1 1")
-                    : Executor.runNative("prstat -v -p " + pid + " 1 1");
-            Map<String, String> prstatRowMap = new HashMap<>();
-            for (String s : prstatList) {
-                String row = s.trim();
-                int idx = row.indexOf(Symbol.C_SPACE);
-                if (idx > 0) {
-                    prstatRowMap.put(row.substring(0, idx), row);
-                }
+
+        File[] numericFiles = null;
+        if (pid < 0) {
+            // If no pid, get process files in proc
+            File directory = new File("/proc");
+            numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        } else {
+            // If pid specified just find that file
+            File pidFile = new File("/proc/" + pid);
+            if (pidFile.exists()) {
+                numericFiles = new File[1];
+                numericFiles[0] = pidFile;
             }
-            // remove header row and iterate proc list
-            procList.remove(0);
-            for (String proc : procList) {
-                Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE);
-                // Check if last (thus all) value populated
-                if (psMap.containsKey(PsKeywords.ARGS)) {
-                    String pidStr = psMap.get(PsKeywords.PID);
-                    Map<PrstatKeywords, String> prstatMap = Builder.stringToEnumMap(PrstatKeywords.class,
-                            prstatRowMap.getOrDefault(pidStr, ""), Symbol.C_SPACE);
-                    procs.add(new SolarisOSProcess(pid < 0 ? Builder.parseIntOrDefault(pidStr, 0) : pid, psMap,
-                            prstatMap));
-                }
+        }
+        if (numericFiles == null) {
+            return procs;
+        }
+
+        // Iterate files
+        for (File pidFile : numericFiles) {
+            int pidNum = Builder.parseIntOrDefault(pidFile.getName(), 0);
+            OSProcess proc = new SolarisOSProcess(pidNum);
+            if (proc.getState() != OSProcess.State.INVALID) {
+                procs.add(proc);
             }
         }
         return procs;
     }
 
     private static long querySystemUptime() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
-            if (null != ksp) {
+        if (IS_11_4_OR_HIGHER) {
+            // Use Kstat2 implementation
+            return BOOT_UPTIME.get().getRight();
+        }
+        try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+            Kstat ksp = KstatKit.KstatChain.lookup("unix", 0, "system_misc");
+            if (ksp != null) {
                 // Snap Time is in nanoseconds; divide for seconds
                 return ksp.ks_snaptime / 1_000_000_000L;
             }
@@ -111,41 +121,27 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     private static long querySystemBootTime() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
-            if (null != ksp && KstatChain.read(ksp)) {
+        if (IS_11_4_OR_HIGHER) {
+            // Use Kstat2 implementation
+            return BOOT_UPTIME.get().getLeft();
+        }
+        try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+            Kstat ksp = KstatKit.KstatChain.lookup("unix", 0, "system_misc");
+            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "boot_time");
             }
         }
         return System.currentTimeMillis() / 1000L - querySystemUptime();
     }
 
-    private static void addChildrenToDescendantSet(String parentPid, Set<String> descendantPids, boolean recurse) {
-        // Get list of children
-        Set<String> childPids = new HashSet<>();
-        for (String s : Executor.runNative("pgrep -P " + parentPid)) {
-            String pid = s.trim();
-            if (!pid.equals(parentPid) && !descendantPids.contains(pid)) {
-                childPids.add(pid);
-            }
-        }
-        // Add to descendant set
-        descendantPids.addAll(childPids);
-        // Recurse
-        if (recurse) {
-            for (String pid : childPids) {
-                addChildrenToDescendantSet(pid, descendantPids, true);
-            }
-        }
-    }
+    private static Pair<Long, Long> queryBootAndUptime() {
+        Object[] results = KstatKit.queryKstat2("/misc/unix/system_misc", "boot_time", "snaptime");
 
-    @Override
-    public OSProcess getProcess(int pid) {
-        List<OSProcess> procs = getProcessListFromPS("ps -o " + PS_COMMAND_ARGS + " -p " + pid, pid);
-        if (procs.isEmpty()) {
-            return null;
-        }
-        return procs.get(0);
+        long boot = results[0] == null ? System.currentTimeMillis() : (long) results[0];
+        // Snap Time is in nanoseconds; divide for seconds
+        long snap = results[1] == null ? 0L : (long) results[1] / 1_000_000_000L;
+
+        return Pair.of(boot, snap);
     }
 
     @Override
@@ -154,22 +150,16 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
-        String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
-        String version = split[0];
-        String buildNumber = null;
-        if (split.length > 1) {
-            buildNumber = split[1];
-        }
-        return Pair.of("SunOS", new OperatingSystem.OSVersionInfo(version, "Solaris", buildNumber));
+    public Pair<String, OperatingSystem.OSVersionInfo> queryFamilyVersionInfo() {
+        return Pair.of("SunOS", new OperatingSystem.OSVersionInfo(VERSION, "Solaris", BUILD_NUMBER));
     }
 
     @Override
     protected int queryBitness(int jvmBitness) {
-        if (jvmBitness == Normal._64) {
-            return Normal._64;
+        if (jvmBitness == 64) {
+            return 64;
         }
-        return Builder.parseIntOrDefault(Executor.getFirstAnswer("isainfo -b"), Normal._32);
+        return Builder.parseIntOrDefault(Executor.getFirstAnswer("isainfo -b"), 32);
     }
 
     @Override
@@ -185,6 +175,34 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        List<OSProcess> procs = getProcessListFromProcfs(pid);
+        if (procs.isEmpty()) {
+            return null;
+        }
+        return procs.get(0);
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return queryAllProcessesFromPrStat();
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcessesFromPrStat();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcessesFromPrStat();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
     @Override
@@ -229,7 +247,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         List<String> legacySvcs = new ArrayList<>();
         File dir = new File("/etc/init.d");
         File[] listFiles;
-        if (dir.exists() && dir.isDirectory() && null != (listFiles = dir.listFiles())) {
+        if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
             for (File f : listFiles) {
                 legacySvcs.add(f.getName());
             }
@@ -257,7 +275,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                     }
                     services.add(new OSService(name, 0, OSService.State.STOPPED));
                 }
-            } else if (line.startsWith(Symbol.SPACE)) {
+            } else if (line.startsWith(" ")) {
                 String[] split = RegEx.SPACES.split(line.trim());
                 if (split.length == 3) {
                     services.add(new OSService(split[2], Builder.parseIntOrDefault(split[1], 0), OSService.State.RUNNING));
@@ -272,33 +290,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return services;
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return queryAllProcessesFromPS();
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        List<OSProcess> allProcs = queryAllProcessesFromPS();
-        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
-        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        List<OSProcess> allProcs = queryAllProcessesFromPS();
-        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
-        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
-    }
-
-    enum PsKeywords {
-        S, PID, PPID, USER, UID, GROUP, GID, NLWP, PRI, VSZ, RSS, ETIME, TIME, COMM, ARGS; // ARGS must always be last
-    }
-
-    enum PrstatKeywords {
-        PID, USERNAME, USR, SYS, TRP, TFL, DFL, LCK, SLP, LAT, VCX, ICX, SCL, SIG, PROCESS_NLWP; // prstat -v
     }
 
 }

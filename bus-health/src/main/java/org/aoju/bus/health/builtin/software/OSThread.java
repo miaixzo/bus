@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -24,8 +24,6 @@
  *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.builtin.software;
-
-import org.aoju.bus.core.lang.Normal;
 
 /**
  * Represents a Thread/Task on the operating system.
@@ -51,7 +49,7 @@ public interface OSThread {
      * @return Returns the name of the task/thread.
      */
     default String getName() {
-        return Normal.EMPTY;
+        return "";
     }
 
     /**
@@ -102,6 +100,8 @@ public interface OSThread {
     /**
      * A snapshot of the context switches the thread has done. Since the context
      * switches could be voluntary and non-voluntary, this gives the sum of both.
+     * <p>
+     * Not available on AIX.
      *
      * @return sum of both voluntary and involuntary context switches.
      */

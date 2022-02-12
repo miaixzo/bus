@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,16 +28,16 @@ package org.aoju.bus.health.unix.aix.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Hardware data obtained from lsattr
@@ -49,7 +49,7 @@ import java.util.function.Supplier;
 @Immutable
 final class AixComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<LsattrStrings> lsattrStrings = Memoize.memoize(AixComputerSystem::readLsattr);
+    private final Supplier<LsattrStrings> lsattrStrings = memoize(AixComputerSystem::readLsattr);
     private final Supplier<List<String>> lscfg;
 
     AixComputerSystem(Supplier<List<String>> lscfg) {
@@ -65,6 +65,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
         String model = null;
         String serialNumber = null;
         String uuid = null;
+
         /*-
         fwversion       IBM,RG080425_d79e22_r                Firmware version and revision levels                False
         modelname       IBM,9114-275                         Machine name                                        False
@@ -79,11 +80,10 @@ final class AixComputerSystem extends AbstractComputerSystem {
         final String uuidMarker = "os_uuid";
         final String fwPlatformVersionMarker = "Platform Firmware level is";
 
-
         for (final String checkLine : Executor.runNative("lsattr -El sys0")) {
             if (checkLine.startsWith(fwVersionMarker)) {
                 fwVersion = checkLine.split(fwVersionMarker)[1].trim();
-                int comma = fwVersion.indexOf(Symbol.C_COMMA);
+                int comma = fwVersion.indexOf(',');
                 if (comma > 0 && fwVersion.length() > comma) {
                     fwVendor = fwVersion.substring(0, comma);
                     fwVersion = fwVersion.substring(comma + 1);
@@ -91,13 +91,16 @@ final class AixComputerSystem extends AbstractComputerSystem {
                 fwVersion = RegEx.SPACES.split(fwVersion)[0];
             } else if (checkLine.startsWith(modelMarker)) {
                 model = checkLine.split(modelMarker)[1].trim();
-                int comma = model.indexOf(Symbol.C_COMMA);
+                int comma = model.indexOf(',');
                 if (comma > 0 && model.length() > comma) {
                     manufacturer = model.substring(0, comma);
                     model = model.substring(comma + 1);
                 }
                 model = RegEx.SPACES.split(model)[0];
             } else if (checkLine.startsWith(systemIdMarker)) {
+                serialNumber = checkLine.split(systemIdMarker)[1].trim();
+                serialNumber = RegEx.SPACES.split(serialNumber)[0];
+            } else if (checkLine.startsWith(uuidMarker)) {
                 uuid = checkLine.split(uuidMarker)[1].trim();
                 uuid = RegEx.SPACES.split(uuid)[0];
             }
@@ -147,7 +150,6 @@ final class AixComputerSystem extends AbstractComputerSystem {
     }
 
     private static final class LsattrStrings {
-
         private final String biosVendor;
         private final String biosPlatformVersion;
         private final String biosVersion;

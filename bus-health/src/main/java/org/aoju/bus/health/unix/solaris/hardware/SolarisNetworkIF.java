@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.hardware;
 
-import com.sun.jna.platform.unix.solaris.LibKstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import org.aoju.bus.health.unix.solaris.KstatKit;
-import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
+import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
+import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
 
-    public SolarisNetworkIF(NetworkInterface netint) {
+    public SolarisNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
         updateAttributes();
     }
@@ -71,7 +72,11 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            ifList.add(new SolarisNetworkIF(ni));
+            try {
+                ifList.add(new SolarisNetworkIF(ni));
+            } catch (InstantiationException e) {
+                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+            }
         }
         return ifList;
     }
@@ -128,12 +133,18 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
 
     @Override
     public boolean updateAttributes() {
-        try (KstatChain kc = KstatKit.openChain()) {
-            LibKstat.Kstat ksp = KstatChain.lookup("link", -1, getName());
-            if (null == ksp) { // Solaris 10 compatibility
-                ksp = KstatChain.lookup(null, -1, getName());
+        // Initialize to a sane default value
+        this.timeStamp = System.currentTimeMillis();
+        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+            // Use Kstat2 implementation
+            return updateAttributes2();
+        }
+        try (KstatKit.KstatChain kc = KstatKit.openChain()) {
+            Kstat ksp = KstatKit.KstatChain.lookup("link", -1, getName());
+            if (ksp == null) { // Solaris 10 compatibility
+                ksp = KstatKit.KstatChain.lookup(null, -1, getName());
             }
-            if (null != ksp && KstatChain.read(ksp)) {
+            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
                 this.bytesSent = KstatKit.dataLookupLong(ksp, "obytes64");
                 this.bytesRecv = KstatKit.dataLookupLong(ksp, "rbytes64");
                 this.packetsSent = KstatKit.dataLookupLong(ksp, "opackets64");
@@ -149,6 +160,25 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
             }
         }
         return false;
+    }
+
+    private boolean updateAttributes2() {
+        Object[] results = KstatKit.queryKstat2("kstat:/net/link/" + getName() + "/0", "obytes64", "rbytes64",
+                "opackets64", "ipackets64", "oerrors", "ierrors", "collisions", "dl_idrops", "ifspeed", "snaptime");
+        if (results[results.length - 1] == null) {
+            return false;
+        }
+        this.bytesSent = results[0] == null ? 0L : (long) results[0];
+        this.bytesRecv = results[1] == null ? 0L : (long) results[1];
+        this.packetsSent = results[2] == null ? 0L : (long) results[2];
+        this.packetsRecv = results[3] == null ? 0L : (long) results[3];
+        this.outErrors = results[4] == null ? 0L : (long) results[4];
+        this.collisions = results[5] == null ? 0L : (long) results[5];
+        this.inDrops = results[6] == null ? 0L : (long) results[6];
+        this.speed = results[7] == null ? 0L : (long) results[7];
+        // Snap time in ns; convert to ms
+        this.timeStamp = (long) results[8] / 1_000_000L;
+        return true;
     }
 
 }

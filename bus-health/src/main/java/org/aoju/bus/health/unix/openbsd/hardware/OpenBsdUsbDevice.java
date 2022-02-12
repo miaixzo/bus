@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.openbsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
@@ -103,14 +102,14 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                 parent = line.substring(11);
             } else if (line.startsWith("addr ")) {
                 // addr 01: 8086:0000 Intel, EHCI root hub
-                if (line.indexOf(Symbol.C_COLON) == 7 && line.indexOf(Symbol.C_COMMA) >= 18) {
+                if (line.indexOf(':') == 7 && line.indexOf(',') >= 18) {
                     key = parent + line.substring(0, 7);
-                    String[] split = line.substring(Normal._8).trim().split(Symbol.COMMA);
+                    String[] split = line.substring(8).trim().split(",");
                     if (split.length > 1) {
                         // 0 = vid:pid vendor
                         String vendorStr = split[0].trim();
-                        int idx1 = vendorStr.indexOf(Symbol.C_COLON);
-                        int idx2 = vendorStr.indexOf(Symbol.C_SPACE);
+                        int idx1 = vendorStr.indexOf(':');
+                        int idx2 = vendorStr.indexOf(' ');
                         if (idx1 >= 0 && idx2 >= 0) {
                             vendorIdMap.put(key, vendorStr.substring(0, idx1));
                             productIdMap.put(key, vendorStr.substring(idx1 + 1, idx2));
@@ -133,7 +132,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                 // Since all we need is the serial...
                 int idx = line.indexOf("iSerial ");
                 if (idx >= 0) {
-                    serialMap.put(key, line.substring(idx + Normal._8).trim());
+                    serialMap.put(key, line.substring(idx + 8).trim());
                 }
                 key = Normal.EMPTY;
             }
@@ -182,7 +181,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new OpenBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
+        return new OpenBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
                 vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
                 usbDevices);
     }

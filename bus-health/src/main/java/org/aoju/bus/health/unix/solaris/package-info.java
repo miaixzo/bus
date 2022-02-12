@@ -1,5 +1,5 @@
 /**
- * 为Solaris提供JNA库的扩展
+ * Provides utilities for Solaris
  *
  * @author Kimi Liu
  * @version 6.3.3

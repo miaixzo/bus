@@ -1,5 +1,5 @@
 /**
- * 提供windows查询信息的函数
+ * Provides functions to query information in windows
  *
  * @author Kimi Liu
  * @version 6.3.3

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,7 @@
 package org.aoju.bus.health.unix.aix.hardware;
 
 import com.sun.jna.Native;
-import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public final class AixHWDiskStore extends AbstractHWDiskStore {
 
-    private final Supplier<Perfstat.perfstat_disk_t[]> diskStats;
+    private final Supplier<perfstat_disk_t[]> diskStats;
 
     private long reads = 0L;
     private long readBytes = 0L;
@@ -62,7 +62,7 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
     private long timeStamp = 0L;
     private List<HWPartition> partitionList;
 
-    private AixHWDiskStore(String name, String model, String serial, long size, Supplier<Perfstat.perfstat_disk_t[]> diskStats) {
+    private AixHWDiskStore(String name, String model, String serial, long size, Supplier<perfstat_disk_t[]> diskStats) {
         super(name, model, serial, size);
         this.diskStats = diskStats;
     }
@@ -73,14 +73,14 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
      * @param diskStats Memoized supplier of disk statistics
      * @return a list of {@link HWDiskStore} objects representing the disks
      */
-    public static List<HWDiskStore> getDisks(Supplier<Perfstat.perfstat_disk_t[]> diskStats) {
+    public static List<HWDiskStore> getDisks(Supplier<perfstat_disk_t[]> diskStats) {
         Map<String, Pair<Integer, Integer>> majMinMap = Ls.queryDeviceMajorMinor();
         List<AixHWDiskStore> storeList = new ArrayList<>();
-        for (Perfstat.perfstat_disk_t disk : diskStats.get()) {
+        for (perfstat_disk_t disk : diskStats.get()) {
             String storeName = Native.toString(disk.name);
             Pair<String, String> ms = Lscfg.queryModelSerial(storeName);
-            String model = null == ms.getLeft() ? Native.toString(disk.description) : ms.getLeft();
-            String serial = null == ms.getRight() ? Normal.UNKNOWN : ms.getRight();
+            String model = ms.getLeft() == null ? Native.toString(disk.description) : ms.getLeft();
+            String serial = ms.getRight() == null ? Normal.UNKNOWN : ms.getRight();
             storeList.add(createStore(storeName, model, serial, disk.size << 20, diskStats, majMinMap));
         }
         return storeList.stream()
@@ -90,7 +90,7 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static AixHWDiskStore createStore(String diskName, String model, String serial, long size,
-                                              Supplier<Perfstat.perfstat_disk_t[]> diskStats, Map<String, Pair<Integer, Integer>> majMinMap) {
+                                              Supplier<perfstat_disk_t[]> diskStats, Map<String, Pair<Integer, Integer>> majMinMap) {
         AixHWDiskStore store = new AixHWDiskStore(diskName, model.isEmpty() ? Normal.UNKNOWN : model, serial, size,
                 diskStats);
         store.partitionList = Collections.unmodifiableList(Lspv.queryLogicalVolumes(diskName, majMinMap).stream()
@@ -101,37 +101,37 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
     }
 
     @Override
-    public long getReads() {
+    public synchronized long getReads() {
         return reads;
     }
 
     @Override
-    public long getReadBytes() {
+    public synchronized long getReadBytes() {
         return readBytes;
     }
 
     @Override
-    public long getWrites() {
+    public synchronized long getWrites() {
         return writes;
     }
 
     @Override
-    public long getWriteBytes() {
+    public synchronized long getWriteBytes() {
         return writeBytes;
     }
 
     @Override
-    public long getCurrentQueueLength() {
+    public synchronized long getCurrentQueueLength() {
         return currentQueueLength;
     }
 
     @Override
-    public long getTransferTime() {
+    public synchronized long getTransferTime() {
         return transferTime;
     }
 
     @Override
-    public long getTimeStamp() {
+    public synchronized long getTimeStamp() {
         return timeStamp;
     }
 
@@ -141,21 +141,32 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
     }
 
     @Override
-    public boolean updateAttributes() {
-        for (Perfstat.perfstat_disk_t stat : diskStats.get()) {
+    public synchronized boolean updateAttributes() {
+        long now = System.currentTimeMillis();
+        for (perfstat_disk_t stat : diskStats.get()) {
             String name = Native.toString(stat.name);
             if (name.equals(this.getName())) {
                 // we only have total transfers so estimate read/write ratio from blocks
                 long blks = stat.rblks + stat.wblks;
-                this.reads = stat.xfers;
-                if (blks > 0L) {
-                    this.writes = stat.xfers * stat.wblks / blks;
-                    this.reads -= this.writes;
+                if (blks == 0L) {
+                    this.reads = stat.xfers;
+                    this.writes = 0L;
+                } else {
+                    long approximateReads = Math.round(stat.xfers * stat.rblks / (double) blks);
+                    long approximateWrites = stat.xfers - approximateReads;
+                    // Enforce monotonic increase
+                    if (approximateReads > this.reads) {
+                        this.reads = approximateReads;
+                    }
+                    if (approximateWrites > this.writes) {
+                        this.writes = approximateWrites;
+                    }
                 }
                 this.readBytes = stat.rblks * stat.bsize;
                 this.writeBytes = stat.wblks * stat.bsize;
                 this.currentQueueLength = stat.qdepth;
                 this.transferTime = stat.time;
+                this.timeStamp = now;
                 return true;
             }
         }

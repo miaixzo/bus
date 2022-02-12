@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,15 +27,17 @@ package org.aoju.bus.health.linux.drivers;
 
 import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.OSSession;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.LinuxLibc.LinuxUtmpx;
-import org.aoju.bus.health.unix.CLibrary;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.aoju.bus.health.unix.CLibrary.LOGIN_PROCESS;
+import static org.aoju.bus.health.unix.CLibrary.USER_PROCESS;
 
 /**
  * Utility to query logged in users.
@@ -49,9 +51,6 @@ public final class Who {
 
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
 
-    private Who() {
-    }
-
     /**
      * Query {@code getutxent} to get logged in users.
      *
@@ -64,8 +63,8 @@ public final class Who {
         LIBC.setutxent();
         try {
             // Iterate
-            while (null != (ut = LIBC.getutxent())) {
-                if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
+            while ((ut = LIBC.getutxent()) != null) {
+                if (ut.ut_type == USER_PROCESS || ut.ut_type == LOGIN_PROCESS) {
                     String user = Native.toString(ut.ut_user, Charset.defaultCharset());
                     String device = Native.toString(ut.ut_line, Charset.defaultCharset());
                     String host = Builder.parseUtAddrV6toIP(ut.ut_addr_v6);

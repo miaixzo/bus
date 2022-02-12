@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,8 +26,6 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
@@ -48,7 +46,7 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 @Immutable
-final class LinuxSoundCard extends AbstractSoundCard {
+public final class LinuxSoundCard extends AbstractSoundCard {
 
     private static final String CARD_FOLDER = "card";
     private static final String CARDS_FILE = "cards";
@@ -75,7 +73,7 @@ final class LinuxSoundCard extends AbstractSoundCard {
         File cardsDirectory = new File(ProcPath.ASOUND);
         List<File> cardFolders = new ArrayList<>();
         File[] allContents = cardsDirectory.listFiles();
-        if (null != allContents) {
+        if (allContents != null) {
             for (File card : allContents) {
                 if (card.getName().startsWith(CARD_FOLDER) && card.isDirectory()) {
                     cardFolders.add(card);
@@ -102,8 +100,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
 
     /**
      * Retrieves the codec of the sound card contained in the <b>codec</b> file. The
-     * name of the codec is always the first line of that file.
-     * <b>Working</b>
+     * name of the codec is always the first line of that file. <br>
+     * <b>Working</b> <br>
      * This converts the codec file into key value pairs using the {@link Builder}
      * class and then returns the value of the <b>Codec</b> key.
      *
@@ -111,23 +109,23 @@ final class LinuxSoundCard extends AbstractSoundCard {
      * @return The name of the codec
      */
     private static String getCardCodec(File cardDir) {
-        String cardCodec = Normal.EMPTY;
+        String cardCodec = "";
         File[] cardFiles = cardDir.listFiles();
-        if (null != cardFiles) {
+        if (cardFiles != null) {
             for (File file : cardFiles) {
                 if (file.getName().startsWith("codec")) {
                     if (!file.isDirectory()) {
-                        cardCodec = Builder.getKeyValueMapFromFile(file.getPath(), Symbol.COLON).get("Codec");
+                        cardCodec = Builder.getKeyValueMapFromFile(file.getPath(), ":").get("Codec");
                     } else {
                         // on various centos environments, this is a subdirectory
                         // each file is usually named something like
                         // codec#0-0
                         // example : ac97#0-0
                         File[] codecs = file.listFiles();
-                        if (null != codecs) {
+                        if (codecs != null) {
                             for (File codec : codecs) {
-                                if (!codec.isDirectory() && codec.getName().contains(Symbol.SHAPE)) {
-                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf(Symbol.C_SHAPE));
+                                if (!codec.isDirectory() && codec.getName().contains("#")) {
+                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf('#'));
                                     break;
                                 }
                             }
@@ -153,8 +151,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
      */
     private static String getCardName(File file) {
         String cardName = "Not Found..";
-        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(ProcPath.ASOUND + Symbol.SLASH + CARDS_FILE, Symbol.COLON);
-        String cardId = Builder.getStringFromFile(file.getPath() + Symbol.SLASH + ID_FILE);
+        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(ProcPath.ASOUND + "/" + CARDS_FILE, ":");
+        String cardId = Builder.getStringFromFile(file.getPath() + "/" + ID_FILE);
         for (Map.Entry<String, String> entry : cardNamePairs.entrySet()) {
             if (entry.getKey().contains(cardId)) {
                 cardName = entry.getValue();
@@ -166,10 +164,10 @@ final class LinuxSoundCard extends AbstractSoundCard {
 
     /**
      * public method used by
-     * {@link  AbstractHardwareAbstractionLayer} to access the
+     * {@link AbstractHardwareAbstractionLayer} to access the
      * sound cards.
      *
-     * @return List of {@link  LinuxSoundCard} objects.
+     * @return List of {@link LinuxSoundCard} objects.
      */
     public static List<SoundCard> getSoundCards() {
         List<SoundCard> soundCards = new ArrayList<>();

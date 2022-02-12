@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,26 +25,38 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.software;
 
-import com.sun.jna.platform.unix.aix.Perfstat;
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.IdGroup;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
+import org.aoju.bus.health.unix.AixLibc.AIXLwpsInfo;
+import org.aoju.bus.health.unix.AixLibc.AixPsInfo;
 import org.aoju.bus.health.unix.aix.drivers.PsInfo;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatCpu;
+import org.aoju.bus.logger.Logger;
 
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
- * OSProcess implemenation
+ * OSProcess implementation
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -52,15 +64,17 @@ import java.util.function.Supplier;
  */
 @ThreadSafe
 public class AixOSProcess extends AbstractOSProcess {
+
     private final Supplier<Long> affinityMask = Memoize.memoize(PerfstatCpu::queryCpuAffinityMask, Memoize.defaultExpiration());
-
-    private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
-    private Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoize.memoize(this::queryCommandlineEnvironment);
-    private String commandLineBackup;
-    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
-
+    private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
+    private final Supplier<AixPsInfo> psinfo = Memoize.memoize(this::queryPsInfo, Memoize.defaultExpiration());
+    private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoize.memoize(this::queryCommandlineEnvironment);
+    // Memoized copy from OperatingSystem
+    private final Supplier<perfstat_process_t[]> procCpu;
     private String name;
     private String path = Normal.EMPTY;
+    private String commandLineBackup;
+    private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private String user;
     private String userID;
     private String group;
@@ -77,15 +91,11 @@ public class AixOSProcess extends AbstractOSProcess {
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
-    private long majorFaults;
-    // Memoized copy from OperatingSystem
-    private Supplier<Perfstat.perfstat_process_t[]> procCpu;
 
-    public AixOSProcess(int pid, Map<AixOperatingSystem.PsKeywords, String> psMap, Map<Integer, Pair<Long, Long>> cpuMap,
-                        Supplier<Perfstat.perfstat_process_t[]> procCpu) {
+    public AixOSProcess(int pid, Pair<Long, Long> userSysCpuTime, Supplier<perfstat_process_t[]> procCpu) {
         super(pid);
         this.procCpu = procCpu;
-        updateAttributes(psMap, cpuMap);
+        updateAttributes(userSysCpuTime);
     }
 
     /***
@@ -126,9 +136,8 @@ public class AixOSProcess extends AbstractOSProcess {
         return state;
     }
 
-    @Override
-    public String getCommandLine() {
-        return this.commandLine.get();
+    private AixPsInfo queryPsInfo() {
+        return PsInfo.queryPsInfo(this.getProcessID());
     }
 
     @Override
@@ -139,6 +148,11 @@ public class AixOSProcess extends AbstractOSProcess {
     @Override
     public String getPath() {
         return this.path;
+    }
+
+    @Override
+    public String getCommandLine() {
+        return this.commandLine.get();
     }
 
     private String queryCommandLine() {
@@ -157,41 +171,21 @@ public class AixOSProcess extends AbstractOSProcess {
     }
 
     private Pair<List<String>, Map<String, String>> queryCommandlineEnvironment() {
-        return PsInfo.queryArgsEnv(getProcessID());
-    }
-
-    @Override
-    public long getAffinityMask() {
-        // Need to capture BND field from ps
-        // ps -m -o THREAD -p 12345
-        // BND field for PID is either a dash (all processors) or the processor it's
-        // bound to, do 1L << # to get mask
-        long mask = 0L;
-        List<String> processAffinityInfoList = Executor.runNative("ps -m -o THREAD -p " + getProcessID());
-        if (processAffinityInfoList.size() > 2) { // what happens when the process has not thread?
-            processAffinityInfoList.remove(0); // remove header row
-            processAffinityInfoList.remove(0); // remove process row
-            for (String processAffinityInfo : processAffinityInfoList) { // affinity information is in thread row
-                Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class,
-                        processAffinityInfo.trim(), Symbol.C_SPACE);
-                if (threadMap.containsKey(PsThreadColumns.COMMAND)
-                        && threadMap.get(PsThreadColumns.ST).charAt(0) != 'Z') { // only non-zombie threads
-                    String bnd = threadMap.get(PsThreadColumns.BND);
-                    if (bnd.charAt(0) == '-') { // affinity to all processors
-                        return this.affinityMask.get();
-                    } else {
-                        int affinity = Builder.parseIntOrDefault(bnd, 0);
-                        mask |= 1L << affinity;
-                    }
-                }
-            }
-        }
-        return mask;
+        return PsInfo.queryArgsEnv(getProcessID(), psinfo.get());
     }
 
     @Override
     public String getCurrentWorkingDirectory() {
-        return Builder.getCwd(getProcessID());
+        try {
+            String cwdLink = "/proc" + getProcessID() + "/cwd";
+            String cwd = new File(cwdLink).getCanonicalPath();
+            if (!cwd.equals(cwdLink)) {
+                return cwd;
+            }
+        } catch (IOException e) {
+            Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
+        }
+        return Normal.EMPTY;
     }
 
     @Override
@@ -276,7 +270,11 @@ public class AixOSProcess extends AbstractOSProcess {
 
     @Override
     public long getOpenFiles() {
-        return Builder.getOpenFiles(getProcessID());
+        try (Stream<Path> fd = Files.list(Paths.get("/proc/" + getProcessID() + "/fd"))) {
+            return fd.count();
+        } catch (IOException e) {
+            return 0L;
+        }
     }
 
     @Override
@@ -289,9 +287,9 @@ public class AixOSProcess extends AbstractOSProcess {
         for (String line : pflags) {
             if (line.contains("data model")) {
                 if (line.contains("LP32")) {
-                    return Normal._32;
+                    return 32;
                 } else if (line.contains("LP64")) {
-                    return Normal._64;
+                    return 64;
                 }
             }
         }
@@ -299,91 +297,94 @@ public class AixOSProcess extends AbstractOSProcess {
     }
 
     @Override
-    public List<OSThread> getThreadDetails() {
-        List<String> threadListInfoPs = Executor.runNative("ps -m -o THREAD -p " + getProcessID());
-        // 1st row is header, 2nd row is process data.
-        if (threadListInfoPs.size() > 2) {
-            List<OSThread> threads = new ArrayList<>();
-            threadListInfoPs.remove(0); // header removed
-            threadListInfoPs.remove(0); // process data removed
-            for (String threadInfo : threadListInfoPs) {
-                Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class,
-                        threadInfo.trim(), Symbol.C_SPACE);
-                if (threadMap.containsKey(PsThreadColumns.COMMAND)) {
-                    threads.add(new AixOSThread(getProcessID(), threadMap));
-                }
+    public long getAffinityMask() {
+        long mask = 0L;
+        // Need to capture pr_bndpro for all threads
+        // Get process files in proc
+        File directory = new File(String.format("/proc/%d/lwp", getProcessID()));
+        File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        if (numericFiles == null) {
+            return mask;
+        }
+        // Iterate files
+        for (File lwpidFile : numericFiles) {
+            int lwpidNum = Builder.parseIntOrDefault(lwpidFile.getName(), 0);
+            AIXLwpsInfo info = PsInfo.queryLwpsInfo(getProcessID(), lwpidNum);
+            if (info != null) {
+                mask |= info.pr_bindpro;
             }
+        }
+        mask &= affinityMask.get();
+        return mask;
+    }
+
+    @Override
+    public List<OSThread> getThreadDetails() {
+        List<OSThread> threads = new ArrayList<>();
+
+        // Get process files in proc
+        File directory = new File(String.format("/proc/%d/lwp", getProcessID()));
+        File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
+        if (numericFiles == null) {
             return threads;
         }
-        return Collections.emptyList();
+
+        // Iterate files
+        for (File lwpidFile : numericFiles) {
+            int lwpidNum = Builder.parseIntOrDefault(lwpidFile.getName(), 0);
+            OSThread thread = new AixOSThread(getProcessID(), lwpidNum);
+            if (thread.getState() != OSProcess.State.INVALID) {
+                threads.add(thread);
+            }
+        }
+        return threads;
     }
 
     @Override
     public boolean updateAttributes() {
-        Perfstat.perfstat_process_t[] perfstat = procCpu.get();
-        List<String> procList = Executor
-                .runNative("ps -o " + AixOperatingSystem.PS_COMMAND_ARGS + " -p " + getProcessID());
-        // Parse array to map of user/system times
-        Map<Integer, Pair<Long, Long>> cpuMap = new HashMap<>();
-        for (Perfstat.perfstat_process_t stat : perfstat) {
-            cpuMap.put((int) stat.pid, Pair.of((long) stat.ucpu_time, (long) stat.scpu_time));
-        }
-        if (procList.size() > 1) {
-            Map<AixOperatingSystem.PsKeywords, String> psMap = Builder.stringToEnumMap(AixOperatingSystem.PsKeywords.class, procList.get(1).trim(), ' ');
-            // Check if last (thus all) value populated
-            if (psMap.containsKey(AixOperatingSystem.PsKeywords.ARGS)) {
-                return updateAttributes(psMap, cpuMap);
+        perfstat_process_t[] perfstat = procCpu.get();
+        for (perfstat_process_t stat : perfstat) {
+            int statpid = (int) stat.pid;
+            if (statpid == getProcessID()) {
+                return updateAttributes(Pair.of((long) stat.ucpu_time, (long) stat.scpu_time));
             }
         }
         this.state = State.INVALID;
         return false;
     }
 
-    @Override
-    public long getMajorFaults() {
-        return this.majorFaults;
-    }
+    private boolean updateAttributes(Pair<Long, Long> userSysCpuTime) {
+        AixPsInfo info = psinfo.get();
+        if (info == null) {
+            this.state = OSProcess.State.INVALID;
+            return false;
+        }
 
-    private boolean updateAttributes(Map<AixOperatingSystem.PsKeywords, String> psMap, Map<Integer, Pair<Long, Long>> cpuMap) {
         long now = System.currentTimeMillis();
-        this.state = getStateFromOutput(psMap.get(AixOperatingSystem.PsKeywords.ST).charAt(0));
-        this.parentProcessID = Builder.parseIntOrDefault(psMap.get(AixOperatingSystem.PsKeywords.PPID), 0);
-        this.user = psMap.get(AixOperatingSystem.PsKeywords.USER);
-        this.userID = psMap.get(AixOperatingSystem.PsKeywords.UID);
-        this.group = psMap.get(AixOperatingSystem.PsKeywords.GROUP);
-        this.groupID = psMap.get(AixOperatingSystem.PsKeywords.GID);
-        this.threadCount = Builder.parseIntOrDefault(psMap.get(AixOperatingSystem.PsKeywords.THCOUNT), 0);
-        this.priority = Builder.parseIntOrDefault(psMap.get(AixOperatingSystem.PsKeywords.PRI), 0);
+        this.state = getStateFromOutput((char) info.pr_lwp.pr_sname);
+        this.parentProcessID = (int) info.pr_ppid;
+        this.userID = Long.toString(info.pr_euid);
+        this.user = IdGroup.getUser(this.userID);
+        this.groupID = Long.toString(info.pr_egid);
+        this.group = IdGroup.getGroupName(this.groupID);
+        this.threadCount = info.pr_nlwp;
+        this.priority = info.pr_lwp.pr_pri;
         // These are in KB, multiply
-        this.virtualSize = Builder.parseLongOrDefault(psMap.get(AixOperatingSystem.PsKeywords.VSIZE), 0) << 10;
-        this.residentSetSize = Builder.parseLongOrDefault(psMap.get(AixOperatingSystem.PsKeywords.RSSIZE), 0) << 10;
-        long elapsedTime = Builder.parseDHMSOrDefault(psMap.get(AixOperatingSystem.PsKeywords.ETIME), 0L);
-        if (cpuMap.containsKey(getProcessID())) {
-            Pair<Long, Long> userSystem = cpuMap.get(getProcessID());
-            this.userTime = userSystem.getLeft();
-            this.kernelTime = userSystem.getRight();
-        } else {
-            this.userTime = Builder.parseDHMSOrDefault(psMap.get(AixOperatingSystem.PsKeywords.TIME), 0L);
-            this.kernelTime = 0L;
-        }
-        // Avoid divide by zero for processes up less than a second
+        this.virtualSize = info.pr_size * 1024;
+        this.residentSetSize = info.pr_rssize * 1024;
+        this.startTime = info.pr_start.tv_sec * 1000L + info.pr_start.tv_nsec / 1_000_000L;
+        // Avoid divide by zero for processes up less than a millisecond
+        long elapsedTime = now - this.startTime;
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
-        while (this.upTime < this.userTime + this.kernelTime) {
-            this.upTime += 500L;
+        this.userTime = userSysCpuTime.getLeft();
+        this.kernelTime = userSysCpuTime.getRight();
+        this.commandLineBackup = Native.toString(info.pr_psargs);
+        this.path = RegEx.SPACES.split(commandLineBackup)[0];
+        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        if (this.name.isEmpty()) {
+            this.name = Native.toString(info.pr_fname);
         }
-        this.startTime = now - this.upTime;
-        this.name = psMap.get(AixOperatingSystem.PsKeywords.COMM);
-        this.majorFaults = Builder.parseLongOrDefault(psMap.get(AixOperatingSystem.PsKeywords.PAGEIN), 0L);
-        this.commandLineBackup = psMap.get(AixOperatingSystem.PsKeywords.ARGS);
-        this.path = RegEx.SPACES.split(this.commandLineBackup)[0];
         return true;
-    }
-
-    /*
-     * Package-private for use by AIXOSThread
-     */
-    enum PsThreadColumns {
-        USER, PID, PPID, TID, ST, CP, PRI, SC, WCHAN, F, TT, BND, COMMAND;
     }
 
 }

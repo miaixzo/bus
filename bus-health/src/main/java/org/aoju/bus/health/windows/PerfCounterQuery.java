@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,7 +33,7 @@ import com.sun.jna.platform.win32.PdhUtil.PdhException;
 import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.Win32Exception;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.health.windows.PerfDataKit.PerfCounter;
 import org.aoju.bus.logger.Logger;
 
 import java.util.EnumMap;
@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 封装性能计数器查询的信息
+ * Enables queries of Performance Counters using wild cards to filter instances
  *
  * @author Kimi Liu
  * @version 6.3.3
@@ -52,39 +52,19 @@ import java.util.concurrent.ConcurrentHashMap;
 @ThreadSafe
 public final class PerfCounterQuery {
 
-    /**
-     * 常量 <code>TOTAL_INSTANCE="_Total"</code>
+    /*
+     * Multiple classes use these constants
      */
     public static final String TOTAL_INSTANCE = "_Total";
-    /**
-     * 常量 <code>TOTAL_INSTANCES="*_Total"</code>
-     */
     public static final String TOTAL_INSTANCES = "*_Total";
-    /**
-     * 常量 <code>NOT_TOTAL_INSTANCE="^ + TOTAL_INSTANCE"</code>
-     */
-    public static final String NOT_TOTAL_INSTANCE = Symbol.CARET + TOTAL_INSTANCE;
-    /**
-     * 常量 <code>NOT_TOTAL_INSTANCES="^ + TOTAL_INSTANCES"</code>
-     */
-    public static final String NOT_TOTAL_INSTANCES = Symbol.CARET + TOTAL_INSTANCES;
-
+    public static final String NOT_TOTAL_INSTANCE = "^" + TOTAL_INSTANCE;
+    public static final String NOT_TOTAL_INSTANCES = "^" + TOTAL_INSTANCES;
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
-
-    /**
-     * Use a thread safe set to cache failed pdh queries
-     */
+    // Use a thread safe set to cache failed pdh queries
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
-
-    /**
-     * For XP, use a map to cache localization strings
-     */
+    // For XP, use a map to cache localization strings
     private static final ConcurrentHashMap<String, String> LOCALIZE_CACHE = IS_VISTA_OR_GREATER ? null
             : new ConcurrentHashMap<>();
-
-    private PerfCounterQuery() {
-
-    }
 
     /**
      * Query the a Performance Counter using PDH, with WMI backup on failure, for
@@ -133,12 +113,12 @@ public final class PerfCounterQuery {
         T[] props = propertyEnum.getEnumConstants();
         // If pre-Vista, localize the perfObject
         String perfObjectLocalized = PerfCounterQuery.localizeIfNeeded(perfObject);
-        EnumMap<T, PerfDataKit.PerfCounter> counterMap = new EnumMap<>(propertyEnum);
+        EnumMap<T, PerfCounter> counterMap = new EnumMap<>(propertyEnum);
         EnumMap<T, Long> valueMap = new EnumMap<>(propertyEnum);
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
             // Set up the query and counter handles
             for (T prop : props) {
-                PerfDataKit.PerfCounter counter = PerfDataKit.createCounter(perfObjectLocalized,
+                PerfCounter counter = PerfDataKit.createCounter(perfObjectLocalized,
                         ((PdhCounterProperty) prop).getInstance(), ((PdhCounterProperty) prop).getCounter());
                 counterMap.put(prop, counter);
                 if (!pdhQueryHandler.addCounterToQuery(counter)) {
@@ -233,16 +213,16 @@ public final class PerfCounterQuery {
     }
 
     /**
-     * 属性枚举计数器
+     * Contract for Counter Property Enums
      */
     public interface PdhCounterProperty {
         /**
-         * @return 返回的实例
+         * @return Returns the instance.
          */
         String getInstance();
 
         /**
-         * @return 返回计数器
+         * @return Returns the counter.
          */
         String getCounter();
     }

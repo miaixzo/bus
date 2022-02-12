@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,9 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.Guid;
+import com.sun.jna.platform.win32.Guid.GUID;
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
@@ -36,6 +35,7 @@ import org.aoju.bus.health.builtin.hardware.UsbDevice;
 import org.aoju.bus.health.windows.drivers.DeviceTree;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 @Immutable
 public class WindowsUsbDevice extends AbstractUsbDevice {
 
-    private static final Guid.GUID GUID_DEVINTERFACE_USB_HOST_CONTROLLER = new Guid.GUID(
+    private static final GUID GUID_DEVINTERFACE_USB_HOST_CONTROLLER = new GUID(
             "{3ABF6F2D-71C4-462A-8A92-1E6861E6AF27}");
 
     public WindowsUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
@@ -134,7 +134,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         }
         // Iterate the parent map looking for children
         Set<Integer> childDeviceSet = parentMap.entrySet().stream().filter(e -> e.getValue().equals(device))
-                .map(Map.Entry::getKey).collect(Collectors.toSet());
+                .map(Entry::getKey).collect(Collectors.toSet());
         // Recursively find those children and put in a list
         List<UsbDevice> childDevices = new ArrayList<>();
         for (Integer child : childDeviceSet) {
@@ -149,7 +149,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
         if (nameMap.containsKey(device)) {
             String name = nameMap.get(device);
             if (name.isEmpty()) {
-                name = vendorId + Symbol.COLON + productId;
+                name = vendorId + ":" + productId;
             }
             String deviceId = deviceIdMap.get(device);
             String mfg = mfgMap.get(device);

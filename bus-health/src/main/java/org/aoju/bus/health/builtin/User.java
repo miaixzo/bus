@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,14 +37,14 @@ import org.aoju.bus.health.Platform;
  */
 public class User {
 
+    private final String USER_HOME = Platform.get(System.USER_HOME, false);
+    private final String USER_DIR = Platform.get(System.USER_DIR, false);
+    private final String USER_LANGUAGE = Platform.get(System.USER_LANGUAGE, false);
+    private final String USER_COUNTRY = null == Platform.get(System.USER_COUNTRY, false)
+            ? Platform.get(System.USER_REGION, false) : Platform.get(System.USER_COUNTRY, false);
+    private final String JAVA_IO_TMPDIR = Platform.get(System.IO_TMPDIR, false);
     private String USER_ID;
     private String USER_NAME = Platform.get(System.USER_NAME, false);
-    private String USER_HOME = Platform.get(System.USER_HOME, false);
-    private String USER_DIR = Platform.get(System.USER_DIR, false);
-    private String USER_LANGUAGE = Platform.get(System.USER_LANGUAGE, false);
-    private String USER_COUNTRY = null == Platform.get(System.USER_COUNTRY, false)
-            ? Platform.get(System.USER_REGION, false) : Platform.get(System.USER_COUNTRY, false);
-    private String JAVA_IO_TMPDIR = Platform.get(System.IO_TMPDIR, false);
 
     /**
      * <p>

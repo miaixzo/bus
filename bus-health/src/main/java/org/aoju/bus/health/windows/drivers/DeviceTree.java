@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,12 @@
 package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.Memory;
-import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Cfgmgr32;
+import com.sun.jna.platform.win32.Cfgmgr32Util;
+import com.sun.jna.platform.win32.Guid.GUID;
+import com.sun.jna.platform.win32.SetupApi;
+import com.sun.jna.platform.win32.SetupApi.SP_DEVINFO_DATA;
+import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Quintet;
@@ -34,6 +39,7 @@ import org.aoju.bus.core.lang.tuple.Quintet;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.sun.jna.platform.win32.Cfgmgr32.*;
 import static com.sun.jna.platform.win32.SetupApi.DIGCF_DEVICEINTERFACE;
 import static com.sun.jna.platform.win32.SetupApi.DIGCF_PRESENT;
 import static com.sun.jna.platform.win32.WinBase.INVALID_HANDLE_VALUE;
@@ -53,9 +59,6 @@ public final class DeviceTree {
     private static final SetupApi SA = SetupApi.INSTANCE;
     private static final Cfgmgr32 C32 = Cfgmgr32.INSTANCE;
 
-    private DeviceTree() {
-    }
-
     /**
      * Queries devices matching the specified device interface and returns maps
      * representing device tree relationships, name, device ID, and manufacturer
@@ -73,13 +76,13 @@ public final class DeviceTree {
      * manufacturer.
      */
     public static Quintet<Set<Integer>, Map<Integer, Integer>, Map<Integer, String>, Map<Integer, String>, Map<Integer, String>> queryDeviceTree(
-            Guid.GUID guidDevInterface) {
+            GUID guidDevInterface) {
         Map<Integer, Integer> parentMap = new HashMap<>();
         Map<Integer, String> nameMap = new HashMap<>();
         Map<Integer, String> deviceIdMap = new HashMap<>();
         Map<Integer, String> mfgMap = new HashMap<>();
         // Get device IDs for the top level devices
-        WinNT.HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
+        HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
         if (!INVALID_HANDLE_VALUE.equals(hDevInfo)) {
             try {
                 // Create re-usable native allocations
@@ -88,7 +91,7 @@ public final class DeviceTree {
                 // Enumerate Device Info using BFS queue
                 Queue<Integer> deviceTree = new ArrayDeque<>();
                 // Get the enumeration object
-                SetupApi.SP_DEVINFO_DATA devInfoData = new SetupApi.SP_DEVINFO_DATA();
+                SP_DEVINFO_DATA devInfoData = new SP_DEVINFO_DATA();
                 devInfoData.cbSize = devInfoData.size();
                 for (int i = 0; SA.SetupDiEnumDeviceInfo(hDevInfo, i, devInfoData); i++) {
                     deviceTree.add(devInfoData.DevInst);
@@ -105,19 +108,19 @@ public final class DeviceTree {
                         deviceIdMap.put(node, deviceId);
                         // Prefer friendly name over desc if it is present.
                         // If neither, use class (service)
-                        String name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_FRIENDLYNAME, buf, size);
+                        String name = getDevNodeProperty(node, CM_DRP_FRIENDLYNAME, buf, size);
                         if (name.isEmpty()) {
-                            name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_DEVICEDESC, buf, size);
+                            name = getDevNodeProperty(node, CM_DRP_DEVICEDESC, buf, size);
                         }
                         if (name.isEmpty()) {
-                            name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_CLASS, buf, size);
-                            String svc = getDevNodeProperty(node, Cfgmgr32.CM_DRP_SERVICE, buf, size);
+                            name = getDevNodeProperty(node, CM_DRP_CLASS, buf, size);
+                            String svc = getDevNodeProperty(node, CM_DRP_SERVICE, buf, size);
                             if (!svc.isEmpty()) {
                                 name = name + " (" + svc + ")";
                             }
                         }
                         nameMap.put(node, name);
-                        mfgMap.put(node, getDevNodeProperty(node, Cfgmgr32.CM_DRP_MFG, buf, size));
+                        mfgMap.put(node, getDevNodeProperty(node, CM_DRP_MFG, buf, size));
 
                         // Add any children to the queue, tracking the parent node
                         if (ERROR_SUCCESS == C32.CM_Get_Child(child, node, 0)) {

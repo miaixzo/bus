@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -59,13 +59,13 @@ final class MacComputerSystem extends AbstractComputerSystem {
         String serialNumber = null;
         String uuid = null;
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
-        if (null != platformExpert) {
+        if (platformExpert != null) {
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
-            if (null != data) {
+            if (data != null) {
                 manufacturer = Native.toString(data, StandardCharsets.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("model");
-            if (null != data) {
+            if (data != null) {
                 model = Native.toString(data, StandardCharsets.UTF_8);
             }
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");

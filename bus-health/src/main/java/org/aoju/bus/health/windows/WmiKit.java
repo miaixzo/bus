@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,11 +26,10 @@
 package org.aoju.bus.health.windows;
 
 import com.sun.jna.platform.win32.COM.Wbemcli;
-import com.sun.jna.platform.win32.COM.WbemcliUtil;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Variant;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
 import java.time.OffsetDateTime;
@@ -55,9 +54,6 @@ public final class WmiKit {
 
     private static final String CLASS_CAST_MSG = "%s is not a %s type. CIM Type is %d and VT type is %d";
 
-    private WmiKit() {
-    }
-
     /**
      * Translate a WmiQuery to the actual query string
      *
@@ -66,12 +62,12 @@ public final class WmiKit {
      * @param query The WmiQuery object
      * @return The string that is queried in WMI
      */
-    public static <T extends Enum<T>> String queryToString(WbemcliUtil.WmiQuery<T> query) {
+    public static <T extends Enum<T>> String queryToString(WmiQuery<T> query) {
         T[] props = query.getPropertyEnum().getEnumConstants();
         StringBuilder sb = new StringBuilder("SELECT ");
         sb.append(props[0].name());
         for (int i = 1; i < props.length; i++) {
-            sb.append(Symbol.C_COMMA).append(props[i].name());
+            sb.append(',').append(props[i].name());
         }
         sb.append(" FROM ").append(query.getWmiClassName());
         return sb.toString();
@@ -87,7 +83,7 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, an empty-string otherwise
      */
-    public static <T extends Enum<T>> String getString(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> String getString(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_STRING) {
             return getStr(result, property, index);
         }
@@ -105,11 +101,11 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, an empty-string otherwise
      */
-    public static <T extends Enum<T>> String getDateString(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> String getDateString(WmiResult<T> result, T property, int index) {
         OffsetDateTime dateTime = getDateTime(result, property, index);
         // Null result returns the Epoch
         if (dateTime.equals(Builder.UNIX_EPOCH)) {
-            return Normal.EMPTY;
+            return "";
         }
         return dateTime.toLocalDate().toString();
     }
@@ -125,7 +121,7 @@ public final class WmiKit {
      * @return The stored value if non-null, otherwise the constant
      * {@link Builder#UNIX_EPOCH}
      */
-    public static <T extends Enum<T>> OffsetDateTime getDateTime(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> OffsetDateTime getDateTime(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_DATETIME) {
             return Builder.parseCimDateTimeToOffset(getStr(result, property, index));
         }
@@ -143,7 +139,7 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, an empty-string otherwise
      */
-    public static <T extends Enum<T>> String getRefString(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> String getRefString(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_REFERENCE) {
             return getStr(result, property, index);
         }
@@ -151,10 +147,10 @@ public final class WmiKit {
                 result.getCIMType(property), result.getVtType(property)));
     }
 
-    private static <T extends Enum<T>> String getStr(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    private static <T extends Enum<T>> String getStr(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (null == o) {
-            return Normal.EMPTY;
+        if (o == null) {
+            return "";
         } else if (result.getVtType(property) == Variant.VT_BSTR) {
             return (String) o;
         }
@@ -174,9 +170,9 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null and parseable as a long, 0 otherwise
      */
-    public static <T extends Enum<T>> long getUint64(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> long getUint64(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (null == o) {
+        if (o == null) {
             return 0L;
         } else if (result.getCIMType(property) == Wbemcli.CIM_UINT64 && result.getVtType(property) == Variant.VT_BSTR) {
             return Builder.parseLongOrDefault((String) o, 0L);
@@ -197,7 +193,7 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, 0 otherwise
      */
-    public static <T extends Enum<T>> int getUint32(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> int getUint32(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_UINT32) {
             return getInt(result, property, index);
         }
@@ -215,7 +211,7 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, 0 otherwise
      */
-    public static <T extends Enum<T>> long getUint32asLong(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> long getUint32asLong(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_UINT32) {
             return getInt(result, property, index) & 0xFFFFFFFFL;
         }
@@ -235,7 +231,7 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, 0 otherwise
      */
-    public static <T extends Enum<T>> int getSint32(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> int getSint32(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_SINT32) {
             return getInt(result, property, index);
         }
@@ -255,7 +251,7 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, 0 otherwise
      */
-    public static <T extends Enum<T>> int getUint16(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> int getUint16(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_UINT16) {
             return getInt(result, property, index);
         }
@@ -263,9 +259,9 @@ public final class WmiKit {
                 result.getCIMType(property), result.getVtType(property)));
     }
 
-    private static <T extends Enum<T>> int getInt(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    private static <T extends Enum<T>> int getInt(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (null == o) {
+        if (o == null) {
             return 0;
         } else if (result.getVtType(property) == Variant.VT_I4) {
             return (int) o;
@@ -284,9 +280,9 @@ public final class WmiKit {
      * @param index    The index (row) to fetch
      * @return The stored value if non-null, 0 otherwise
      */
-    public static <T extends Enum<T>> float getFloat(WbemcliUtil.WmiResult<T> result, T property, int index) {
+    public static <T extends Enum<T>> float getFloat(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
-        if (null == o) {
+        if (o == null) {
             return 0f;
         } else if (result.getCIMType(property) == Wbemcli.CIM_REAL32 && result.getVtType(property) == Variant.VT_R4) {
             return (float) o;

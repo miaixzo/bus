@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,7 +35,6 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
 
@@ -52,29 +51,17 @@ import java.util.*;
 public class MacUsbDevice extends AbstractUsbDevice {
 
     private static final CoreFoundation CF = CoreFoundation.INSTANCE;
+
     private static final String IOUSB = "IOUSB";
     private static final String IOSERVICE = "IOService";
 
-    /**
-     * <p>
-     * Constructor for MacUsbDevice.
-     * </p>
-     *
-     * @param name             a {@link java.lang.String} object.
-     * @param vendor           a {@link java.lang.String} object.
-     * @param vendorId         a {@link java.lang.String} object.
-     * @param productId        a {@link java.lang.String} object.
-     * @param serialNumber     a {@link java.lang.String} object.
-     * @param uniqueDeviceId   a {@link java.lang.String} object.
-     * @param connectedDevices an array of {@link UsbDevice} objects.
-     */
     public MacUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
                         String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
     /**
-     * Instantiates a list of {@link  UsbDevice} objects, representing
+     * Instantiates a list of {@link UsbDevice} objects, representing
      * devices connected via a usb port (including internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from
@@ -85,7 +72,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param tree If true, returns a list of controllers, which requires recursive
      *             iteration of connected devices. If false, returns a flat list of
      *             devices excluding controllers.
-     * @return a list of {@link  UsbDevice} objects.
+     * @return a list of {@link UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree) {
         List<UsbDevice> devices = getUsbDevices();
@@ -115,18 +102,18 @@ public class MacUsbDevice extends AbstractUsbDevice {
         // Iterate over children of root in the IOUSB plane. This does not include
         // controllers so we have to check their parents
         IOIterator iter = root.getChildIterator(IOUSB);
-        if (null != iter) {
+        if (iter != null) {
             // Define keys
             CFStringRef locationIDKey = CFStringRef.createCFString("locationID");
             CFStringRef ioPropertyMatchKey = CFStringRef.createCFString("IOPropertyMatch");
 
             // Get the device directly under each controller
             IORegistryEntry device = iter.next();
-            while (null != device) {
+            while (device != null) {
                 long id = 0L;
                 // The parent of this device in IOService plane is the controller
                 IORegistryEntry controller = device.getParentEntry(IOSERVICE);
-                if (null != controller) {
+                if (controller != null) {
                     // Unique global identifier for this controller
                     id = controller.getRegistryEntryID();
                     // Populate other data for the controller
@@ -135,7 +122,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
                     // the locationID. Use that to search for matching PCI device to obtain
                     // more information for the controller
                     CFTypeRef ref = controller.createCFProperty(locationIDKey);
-                    if (null != ref) {
+                    if (ref != null) {
                         getControllerIdByLocation(id, ref, locationIDKey, ioPropertyMatchKey, vendorIdMap,
                                 productIdMap);
                         ref.release();
@@ -191,29 +178,29 @@ public class MacUsbDevice extends AbstractUsbDevice {
         nameMap.put(id, device.getName().trim());
         // Get vendor and store in map
         String vendor = device.getStringProperty("USB Vendor Name");
-        if (null != vendor) {
+        if (vendor != null) {
             vendorMap.put(id, vendor.trim());
         }
         // Get vendorId and store in map
         Long vendorId = device.getLongProperty("idVendor");
-        if (null != vendorId) {
+        if (vendorId != null) {
             vendorIdMap.put(id, String.format("%04x", 0xffff & vendorId));
         }
         // Get productId and store in map
         Long productId = device.getLongProperty("idProduct");
-        if (null != productId) {
+        if (productId != null) {
             productIdMap.put(id, String.format("%04x", 0xffff & productId));
         }
         // Get serial and store in map
         String serial = device.getStringProperty("USB Serial Number");
-        if (null != serial) {
+        if (serial != null) {
             serialMap.put(id, serial.trim());
         }
 
         // Now get this device's children (if any) and recurse
         IOIterator childIter = device.getChildIterator(IOUSB);
         IORegistryEntry childDevice = childIter.next();
-        while (null != childDevice) {
+        while (childDevice != null) {
             addDeviceAndChildrenToMaps(childDevice, id, nameMap, vendorMap, vendorIdMap, productIdMap, serialMap,
                     hubMap);
 
@@ -262,23 +249,23 @@ public class MacUsbDevice extends AbstractUsbDevice {
         // Iterate matching services looking for devices whose parents have the
         // vendor and device ids
         boolean found = false;
-        if (null != serviceIterator) {
+        if (serviceIterator != null) {
             IORegistryEntry matchingService = serviceIterator.next();
-            while (null != matchingService && !found) {
+            while (matchingService != null && !found) {
                 // Get the parent, which contains the keys we need
                 IORegistryEntry parent = matchingService.getParentEntry(IOSERVICE);
                 // look up the vendor-id by key
                 // vendor-id is a byte array of 4 bytes
-                if (null != parent) {
+                if (parent != null) {
                     byte[] vid = parent.getByteArrayProperty("vendor-id");
-                    if (null != vid && vid.length >= 2) {
+                    if (vid != null && vid.length >= 2) {
                         vendorIdMap.put(id, String.format("%02x%02x", vid[1], vid[0]));
                         found = true;
                     }
                     // look up the device-id by key
                     // device-id is a byte array of 4 bytes
                     byte[] pid = parent.getByteArrayProperty("device-id");
-                    if (null != pid && pid.length >= 2) {
+                    if (pid != null && pid.length >= 2) {
                         productIdMap.put(id, String.format("%02x%02x", pid[1], pid[0]));
                         found = true;
                     }
@@ -319,7 +306,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
                     serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new MacUsbDevice(nameMap.getOrDefault(registryEntryId, vendorId + Symbol.COLON + productId),
+        return new MacUsbDevice(nameMap.getOrDefault(registryEntryId, vendorId + ":" + productId),
                 vendorMap.getOrDefault(registryEntryId, Normal.EMPTY), vendorId, productId,
                 serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId), usbDevices);
     }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
@@ -53,7 +52,7 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
     public FreeBsdPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
                               double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
                               double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                              CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+                              PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
                               int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
                               String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
@@ -76,16 +75,16 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         double psRemainingCapacityPercent = 1d;
         double psTimeRemainingEstimated = -1d; // -1 = unknown, -2 = unlimited
         double psPowerUsageRate = 0d;
-        int psVoltage = Normal.__1;
+        int psVoltage = -1;
         double psAmperage = 0d;
         boolean psPowerOnLine = false;
         boolean psCharging = false;
         boolean psDischarging = false;
-        CapacityUnits psCapacityUnits = CapacityUnits.RELATIVE;
+        PowerSource.CapacityUnits psCapacityUnits = PowerSource.CapacityUnits.RELATIVE;
         int psCurrentCapacity = 0;
         int psMaxCapacity = 1;
         int psDesignCapacity = 1;
-        int psCycleCount = Normal.__1;
+        int psCycleCount = -1;
         LocalDate psManufactureDate = null;
 
         double psTemperature = 0d;
@@ -110,7 +109,7 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         List<String> acpiconf = Executor.runNative("acpiconf -i 0");
         Map<String, String> psMap = new HashMap<>();
         for (String line : acpiconf) {
-            String[] split = line.split(Symbol.COLON, 2);
+            String[] split = line.split(":", 2);
             if (split.length > 1) {
                 String value = split[1].trim();
                 if (!value.isEmpty()) {
@@ -124,35 +123,35 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         String psChemistry = psMap.getOrDefault("Type", Normal.UNKNOWN);
         String psManufacturer = psMap.getOrDefault("OEM info", Normal.UNKNOWN);
         String cap = psMap.get("Design capacity");
-        if (null != cap) {
+        if (cap != null) {
             psDesignCapacity = Builder.getFirstIntValue(cap);
             if (cap.toLowerCase().contains("mah")) {
-                psCapacityUnits = CapacityUnits.MAH;
+                psCapacityUnits = PowerSource.CapacityUnits.MAH;
             } else if (cap.toLowerCase().contains("mwh")) {
-                psCapacityUnits = CapacityUnits.MWH;
+                psCapacityUnits = PowerSource.CapacityUnits.MWH;
             }
         }
         cap = psMap.get("Last full capacity");
-        if (null != cap) {
+        if (cap != null) {
             psMaxCapacity = Builder.getFirstIntValue(cap);
         } else {
             psMaxCapacity = psDesignCapacity;
         }
         double psTimeRemainingInstant = psTimeRemainingEstimated;
         String time = psMap.get("Remaining time");
-        if (null != time) {
-            String[] hhmm = time.split(Symbol.COLON);
+        if (time != null) {
+            String[] hhmm = time.split(":");
             if (hhmm.length == 2) {
                 psTimeRemainingInstant = 3600d * Builder.parseIntOrDefault(hhmm[0], 0)
                         + 60d * Builder.parseIntOrDefault(hhmm[1], 0);
             }
         }
         String rate = psMap.get("Present rate");
-        if (null != rate) {
+        if (rate != null) {
             psPowerUsageRate = Builder.getFirstIntValue(rate);
         }
         String volts = psMap.get("Present voltage");
-        if (null != volts) {
+        if (volts != null) {
             psVoltage = Builder.getFirstIntValue(volts);
             if (psVoltage != 0) {
                 psAmperage = psPowerUsageRate / psVoltage;
