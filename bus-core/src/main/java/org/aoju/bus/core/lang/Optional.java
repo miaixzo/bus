@@ -103,6 +103,8 @@ public class Optional<T> {
     }
 
     /**
+     * 传入一段操作，包裹异常
+     *
      * @param supplier 操作
      * @param <T>      类型
      * @return 操作执行后的值

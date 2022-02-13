@@ -411,7 +411,7 @@ public class HashKit {
                 if (ucChar <= 'Z' && ucChar >= 'A') {
                     ucChar = (char) (ucChar + Normal._32);
                 }
-                hash += (3 * i * ucChar * ucChar + 5 * i * ucChar + 7 * i + 11 * ucChar) % 16777216;
+                hash += (3L * i * ucChar * ucChar + 5L * i * ucChar + 7L * i + 11 * ucChar) % 16777216;
             }
         } else {
             for (i = 1; i <= 96; i++) {
@@ -419,7 +419,7 @@ public class HashKit {
                 if (ucChar <= 'Z' && ucChar >= 'A') {
                     ucChar = (char) (ucChar + Normal._32);
                 }
-                hash += (3 * i * ucChar * ucChar + 5 * i * ucChar + 7 * i + 11 * ucChar) % 16777216;
+                hash += (3L * i * ucChar * ucChar + 5L * i * ucChar + 7L * i + 11 * ucChar) % 16777216;
             }
         }
         if (hash < 0) {

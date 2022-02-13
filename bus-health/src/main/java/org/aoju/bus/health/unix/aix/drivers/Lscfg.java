@@ -110,6 +110,14 @@ public final class Lscfg {
         String model = null;
         String serial = null;
         for (String s : Executor.runNative("lscfg -vl " + device)) {
+            // Default model to description at end of first line
+            if (model == null && s.contains(device)) {
+                String locDesc = s.split(device)[1].trim();
+                int idx = locDesc.indexOf(' ');
+                if (idx > 0) {
+                    model = locDesc.substring(idx).trim();
+                }
+            }
             if (s.contains(modelMarker)) {
                 model = Builder.removeLeadingDots(s.split(modelMarker)[1].trim());
             } else if (s.contains(serialMarker)) {

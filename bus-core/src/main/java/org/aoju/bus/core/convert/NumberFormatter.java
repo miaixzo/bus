@@ -204,6 +204,27 @@ public class NumberFormatter {
     }
 
     /**
+     * 阿拉伯数字（支持正负整数）四舍五入后转换成中文节权位简洁计数单位，例如 -5_5555 =》 -5.56万
+     *
+     * @param amount 数字
+     * @return 中文
+     */
+    public static String format(long amount) {
+        if (amount < 1_0000 && amount > -1_0000) {
+            return String.valueOf(amount);
+        }
+        String res;
+        if (amount < 1_0000_0000 && amount > -1_0000_0000) {
+            res = MathKit.div(amount, 1_0000, 2) + "万";
+        } else if (amount < 1_0000_0000_0000L && amount > -1_0000_0000_0000L) {
+            res = MathKit.div(amount, 1_0000_0000, 2) + "亿";
+        } else {
+            res = MathKit.div(amount, 1_0000_0000_0000L, 2) + "万亿";
+        }
+        return res;
+    }
+
+    /**
      * 数字字符转中文，非数字字符原样返回
      *
      * @param c                数字字符

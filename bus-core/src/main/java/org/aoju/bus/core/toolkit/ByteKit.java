@@ -305,16 +305,27 @@ public class ByteKit {
      * @return the int
      */
     public static int getInt(byte[] data, ByteOrder byteOrder) {
+        return bytesToInt(data, 0, byteOrder);
+    }
+
+    /**
+     * byte[]转int值
+     *
+     * @param data      byte数组
+     * @param byteOrder 端序
+     * @return int值
+     */
+    public static int bytesToInt(byte[] data, int start, ByteOrder byteOrder) {
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
-            return data[3] & 0xFF |
-                    (data[2] & 0xFF) << 8 |
-                    (data[1] & 0xFF) << Normal._16 |
-                    (data[0] & 0xFF) << 24;
+            return data[start] & 0xFF |
+                    (data[1 + start] & 0xFF) << 8 |
+                    (data[2 + start] & 0xFF) << 16 |
+                    (data[3 + start] & 0xFF) << 24;
         } else {
-            return data[0] & 0xFF |
-                    (data[1] & 0xFF) << 8 |
-                    (data[2] & 0xFF) << Normal._16 |
-                    (data[3] & 0xFF) << 24;
+            return data[3 + start] & 0xFF |
+                    (data[2 + start] & 0xFF) << 8 |
+                    (data[1 + start] & 0xFF) << 16 |
+                    (data[start] & 0xFF) << 24;
         }
     }
 
@@ -336,16 +347,28 @@ public class ByteKit {
      * @return the long
      */
     public static long getLong(byte[] data, ByteOrder byteOrder) {
+        return bytesToLong(data, 0, byteOrder);
+    }
+
+    /**
+     * byte数组转long
+     *
+     * @param data      byte数组
+     * @param start     计算数组开始位置
+     * @param byteOrder 端序
+     * @return long值
+     */
+    public static long bytesToLong(byte[] data, int start, ByteOrder byteOrder) {
         long values = 0;
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
-            for (int i = 0; i < Long.BYTES; i++) {
-                values <<= Byte.SIZE;
-                values |= (data[i] & 0xff);
-            }
-        } else {
             for (int i = (Long.BYTES - 1); i >= 0; i--) {
                 values <<= Byte.SIZE;
-                values |= (data[i] & 0xff);
+                values |= (data[i + start] & 0xff);
+            }
+        } else {
+            for (int i = 0; i < Long.BYTES; i++) {
+                values <<= Byte.SIZE;
+                values |= (data[i + start] & 0xff);
             }
         }
 
