@@ -64,7 +64,7 @@ public class AioQuickServer<T> {
      * Server端服务配置。
      * 调用AioQuickServer的各setXX()方法，都是为了设置config的各配置项
      */
-    private final ServerConfig<T> config = new ServerConfig<>();
+    private final ServerConfig config = new ServerConfig();
     /**
      * 内存池
      */

@@ -39,7 +39,7 @@ import java.util.Map;
  * @version 6.3.3
  * @since JDK 1.8+
  */
-public class ServerConfig<T> {
+public class ServerConfig {
 
     /**
      * 消息体缓存大小,字节
@@ -74,19 +74,22 @@ public class ServerConfig<T> {
     /**
      * 消息处理器
      */
-    private MessageProcessor<T> processor;
+    private MessageProcessor processor;
     /**
      * 协议编解码
      */
-    private Protocol<T> protocol;
+    private Protocol protocol;
+
     /**
      * Socket 配置
      */
     private Map<SocketOption<Object>, Object> socketOptions;
+
     /**
      * 线程数
      */
     private int threadNum = 1;
+
     /**
      * 内存池工厂
      */
@@ -145,22 +148,22 @@ public class ServerConfig<T> {
         return monitor;
     }
 
-    public Protocol<T> getProtocol() {
+    public Protocol getProtocol() {
         return protocol;
     }
 
-    public void setProtocol(Protocol<T> protocol) {
+    public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
     }
 
-    public MessageProcessor<T> getProcessor() {
+    public MessageProcessor getProcessor() {
         return processor;
     }
 
     /**
      * @param processor 消息处理器
      */
-    public void setProcessor(MessageProcessor<T> processor) {
+    public void setProcessor(MessageProcessor processor) {
         this.processor = processor;
         this.monitor = (processor instanceof NetMonitor) ? (NetMonitor) processor : null;
     }

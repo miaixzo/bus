@@ -60,11 +60,17 @@ public final class VirtualBuffer {
      */
     private int parentLimit;
 
+    /**
+     * 缓冲区容量
+     */
+    private int capacity;
+
     VirtualBuffer(PageBuffer pageBuffer, ByteBuffer buffer, int parentPosition, int parentLimit) {
         this.pageBuffer = pageBuffer;
         this.buffer = buffer;
         this.parentPosition = parentPosition;
         this.parentLimit = parentLimit;
+        updateCapacity();
     }
 
     public static VirtualBuffer wrap(ByteBuffer buffer) {
@@ -77,6 +83,7 @@ public final class VirtualBuffer {
 
     void setParentPosition(int parentPosition) {
         this.parentPosition = parentPosition;
+        updateCapacity();
     }
 
     int getParentLimit() {
@@ -85,6 +92,15 @@ public final class VirtualBuffer {
 
     void setParentLimit(int parentLimit) {
         this.parentLimit = parentLimit;
+        updateCapacity();
+    }
+
+    private void updateCapacity() {
+        capacity = this.parentLimit - this.parentPosition;
+    }
+
+    public int getCapacity() {
+        return capacity;
     }
 
     /**

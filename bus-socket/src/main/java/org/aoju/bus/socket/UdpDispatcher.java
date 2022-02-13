@@ -38,13 +38,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @version 6.3.3
  * @since JDK 1.8+
  */
-public class UdpDispatcher<T> implements Runnable {
+public class UdpDispatcher implements Runnable {
 
-    public final RequestTask EXECUTE_TASK_OR_SHUTDOWN = new RequestTask(null, null);
+    public final static RequestTask EXECUTE_TASK_OR_SHUTDOWN = new RequestTask(null, null);
     private final BlockingQueue<RequestTask> taskQueue = new LinkedBlockingQueue<>();
-    private final MessageProcessor<T> processor;
+    private final MessageProcessor processor;
 
-    public UdpDispatcher(MessageProcessor<T> processor) {
+    public UdpDispatcher(MessageProcessor processor) {
         this.processor = processor;
     }
 
@@ -58,7 +58,9 @@ public class UdpDispatcher<T> implements Runnable {
                     break;
                 }
                 processor.process(unit.session, unit.request);
-                unit.session.writeBuffer().flush();
+                if (!unit.session.isInvalid()) {
+                    unit.session.writeBuffer().flush();
+                }
             } catch (InterruptedException e) {
                 Logger.info("InterruptedException", e);
             } catch (Exception e) {
@@ -70,27 +72,27 @@ public class UdpDispatcher<T> implements Runnable {
     /**
      * 任务分发
      *
-     * @param session 会话
-     * @param request 任务
+     * @param session the session
+     * @param request the request
      */
-    public void dispatch(UdpAioSession session, T request) {
+    public void dispatch(UdpAioSession session, Object request) {
         dispatch(new RequestTask(session, request));
     }
 
     /**
      * 任务分发
      *
-     * @param requestTask 任务
+     * @param requestTask the requestTask
      */
     public void dispatch(RequestTask requestTask) {
         taskQueue.offer(requestTask);
     }
 
-    class RequestTask {
+    static class RequestTask {
         UdpAioSession session;
-        T request;
+        Object request;
 
-        public RequestTask(UdpAioSession session, T request) {
+        public RequestTask(UdpAioSession session, Object request) {
             this.session = session;
             this.request = request;
         }

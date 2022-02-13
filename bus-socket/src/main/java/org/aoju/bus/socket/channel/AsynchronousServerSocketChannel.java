@@ -121,7 +121,6 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
                 acceptWorker.addRegister(selector -> {
                     try {
                         selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-                        selectionKey.attach(AsynchronousServerSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         acceptCompletionHandler.failed(e, attachment);
                     }

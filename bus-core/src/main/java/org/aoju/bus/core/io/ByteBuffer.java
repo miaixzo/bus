@@ -380,7 +380,9 @@ public class ByteBuffer extends ByteString {
      */
     public Thread newThread(Runnable target, String name) {
         assertEnabled();
-        return new ThreadKit.FastBufferThread(target, name);
+        ThreadKit.FastBufferThread thread = new ThreadKit.FastBufferThread(target, name);
+        thread.setPageIndex((int) (thread.getId() % pageBuffers.length));
+        return thread;
     }
 
     /**
@@ -405,6 +407,5 @@ public class ByteBuffer extends ByteString {
     public void release() {
         enabled = false;
     }
-
 
 }

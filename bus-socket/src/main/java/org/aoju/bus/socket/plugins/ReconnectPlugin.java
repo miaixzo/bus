@@ -41,14 +41,14 @@ import java.nio.channels.AsynchronousChannelGroup;
 public class ReconnectPlugin<T> extends AbstractPlugin<T> {
 
     private final AsynchronousChannelGroup asynchronousChannelGroup;
-    private final AioQuickClient<T> client;
+    private final AioQuickClient client;
     private boolean shutdown = false;
 
-    public ReconnectPlugin(AioQuickClient<T> client) {
+    public ReconnectPlugin(AioQuickClient client) {
         this(client, null);
     }
 
-    public ReconnectPlugin(AioQuickClient<T> client, AsynchronousChannelGroup asynchronousChannelGroup) {
+    public ReconnectPlugin(AioQuickClient client, AsynchronousChannelGroup asynchronousChannelGroup) {
         this.client = client;
         this.asynchronousChannelGroup = asynchronousChannelGroup;
     }

@@ -104,7 +104,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         this.readExecutorService = readExecutorService;
         this.readWorkers = new Worker[threadNum];
         for (int i = 0; i < threadNum; i++) {
-            readWorkers[i] = new Worker(selectionKey -> {
+            readWorkers[i] = new Worker(Selector.open(), selectionKey -> {
                 AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
                 asynchronousSocketChannel.doRead(true);
             });
@@ -118,7 +118,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         this.writeWorkers = new Worker[writeThreadNum];
 
         for (int i = 0; i < writeThreadNum; i++) {
-            writeWorkers[i] = new Worker(selectionKey -> {
+            writeWorkers[i] = new Worker(Selector.open(), selectionKey -> {
                 AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
                 if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) > 0) {
                     asynchronousSocketChannel.doWrite();
@@ -133,7 +133,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         acceptExecutorService = getSingleThreadExecutor("bus-socket:connect");
         acceptWorkers = new Worker[acceptThreadNum];
         for (int i = 0; i < acceptThreadNum; i++) {
-            acceptWorkers[i] = new Worker(selectionKey -> {
+            acceptWorkers[i] = new Worker(Selector.open(), selectionKey -> {
                 if (selectionKey.isAcceptable()) {
                     AsynchronousServerSocketChannel serverSocketChannel = (AsynchronousServerSocketChannel) selectionKey.attachment();
                     serverSocketChannel.doAccept();
@@ -158,7 +158,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
     public synchronized void registerFuture(Consumer<Selector> register, int opType) throws IOException {
         if (futureWorker == null) {
             futureExecutorService = getSingleThreadExecutor("bus-socket:future");
-            futureWorker = new Worker(selectionKey -> {
+            futureWorker = new Worker(Selector.open(), selectionKey -> {
                 AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
                 switch (opType) {
                     case SelectionKey.OP_READ:
@@ -271,20 +271,18 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
     }
 
     class Worker implements Runnable {
+
         /**
          * 当前Worker绑定的Selector
          */
         private final Selector selector;
-        /**
-         * 待注册的事件
-         */
-        private final ConcurrentLinkedQueue<Consumer<Selector>> registers = new ConcurrentLinkedQueue<>();
         private final Consumer<SelectionKey> consumer;
+        private final ConcurrentLinkedQueue<Consumer<Selector>> consumers = new ConcurrentLinkedQueue<>();
         int invoker = 0;
         private Thread workerThread;
 
-        Worker(Consumer<SelectionKey> consumer) throws IOException {
-            this.selector = Selector.open();
+        Worker(Selector selector, Consumer<SelectionKey> consumer) {
+            this.selector = selector;
             this.consumer = consumer;
         }
 
@@ -292,7 +290,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
          * 注册事件
          */
         final void addRegister(Consumer<Selector> register) {
-            registers.offer(register);
+            consumers.offer(register);
             selector.wakeup();
         }
 
@@ -305,13 +303,12 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
             workerThread = Thread.currentThread();
             // 优先获取SelectionKey,若无关注事件触发则阻塞在selector.select(),减少select被调用次数
             Set<SelectionKey> keySet = selector.selectedKeys();
-            Consumer<Selector> register;
             try {
                 while (running) {
-                    while ((register = registers.poll()) != null) {
-                        register.accept(selector);
+                    Consumer<Selector> selectorConsumer;
+                    while ((selectorConsumer = consumers.poll()) != null) {
+                        selectorConsumer.accept(selector);
                     }
-
                     selector.select();
                     // 执行本次已触发待处理的事件
                     for (SelectionKey key : keySet) {
@@ -330,6 +327,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
                 }
             }
         }
+
     }
 
 }

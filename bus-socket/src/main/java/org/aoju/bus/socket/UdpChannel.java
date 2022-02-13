@@ -63,7 +63,7 @@ public class UdpChannel<Request> {
     private final ConcurrentLinkedQueue<ResponseUnit> responseTasks;
     private final Semaphore writeSemaphore = new Semaphore(1);
     private final UdpBootstrap.Worker worker;
-    ServerConfig<Request> config;
+    ServerConfig config;
     /**
      * 真实的UDP通道
      */

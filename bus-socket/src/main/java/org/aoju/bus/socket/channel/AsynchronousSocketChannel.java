@@ -45,31 +45,88 @@ import java.util.concurrent.TimeUnit;
  */
 public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSocketChannel {
 
+    /**
+     * 实际的Socket通道
+     */
     private final SocketChannel channel;
+    /**
+     * 处理当前连接IO事件的资源组
+     */
     private final AsynchronousChannelGroup group;
+    /**
+     * 处理 read 事件的线程资源
+     */
     private final AsynchronousChannelGroup.Worker readWorker;
+    /**
+     * 处理 write 事件的线程资源
+     */
     private final AsynchronousChannelGroup.Worker writeWorker;
+    /**
+     * 处理 connect 事件的线程资源
+     */
     private final AsynchronousChannelGroup.Worker connectWorker;
+    /**
+     * 用于接收 read 通道数据的缓冲区，经解码后腾出缓冲区以供下一批数据的读取
+     */
     private ByteBuffer readBuffer;
+    /**
+     * 用于接收 read 通道数据的缓冲区集合
+     */
     private ByteBufferArray scatteringReadBuffer;
+    /**
+     * 存放待输出数据的缓冲区
+     */
     private ByteBuffer writeBuffer;
+    /**
+     * 存放待输出数据的缓冲区集合
+     */
     private ByteBufferArray gatheringWriteBuffer;
+    /**
+     * read 回调事件处理器
+     */
     private CompletionHandler<Number, Object> readCompletionHandler;
+    /**
+     * write 回调事件处理器
+     */
     private CompletionHandler<Number, Object> writeCompletionHandler;
+    /**
+     * connect 回调事件处理器
+     */
     private CompletionHandler<Void, Object> connectCompletionHandler;
     private FutureCompletionHandler<Void, Void> connectFuture;
     private FutureCompletionHandler<? extends Number, Object> readFuture;
     private FutureCompletionHandler<? extends Number, Object> writeFuture;
+    /**
+     * read 回调事件关联绑定的附件对象
+     */
     private Object readAttachment;
+    /**
+     * write 回调事件关联绑定的附件对象
+     */
     private Object writeAttachment;
+    /**
+     * connect 回调事件关联绑定的附件对象
+     */
     private Object connectAttachment;
     private SelectionKey readSelectionKey;
     private SelectionKey readFutureSelectionKey;
     private SelectionKey writeSelectionKey;
     private SelectionKey connectSelectionKey;
+    /**
+     * 当前是否正在执行 write 操作
+     */
     private boolean writePending;
+    /**
+     * 当前是否正在执行 read 操作
+     */
     private boolean readPending;
+    /**
+     * 当前是否正在执行 connect 操作
+     */
     private boolean connectionPending;
+    /**
+     * 远程连接的地址
+     */
     private SocketAddress remote;
 
     public AsynchronousSocketChannel(AsynchronousChannelGroup group, SocketChannel channel) throws IOException {
@@ -276,7 +333,6 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 connectWorker.addRegister(selector -> {
                     try {
                         connectSelectionKey = channel.register(selector, SelectionKey.OP_CONNECT);
-                        connectSelectionKey.attach(AsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         connectCompletionHandler.failed(e, connectAttachment);
                     }
@@ -330,7 +386,6 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 group.registerFuture(selector -> {
                     try {
                         readFutureSelectionKey = channel.register(selector, SelectionKey.OP_READ);
-                        readFutureSelectionKey.attach(AsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         e.printStackTrace();
                         doRead(true);
@@ -357,7 +412,6 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 readWorker.addRegister(selector -> {
                     try {
                         readSelectionKey = channel.register(selector, SelectionKey.OP_READ);
-                        readSelectionKey.attach(AsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         readCompletionHandler.failed(e, readAttachment);
                     }
@@ -425,7 +479,6 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 group.registerFuture(selector -> {
                     try {
                         SelectionKey readSelectionKey = channel.register(selector, SelectionKey.OP_WRITE);
-                        readSelectionKey.attach(AsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         e.printStackTrace();
                         doWrite();
@@ -451,7 +504,6 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 writeWorker.addRegister(selector -> {
                     try {
                         writeSelectionKey = channel.register(selector, SelectionKey.OP_WRITE);
-                        writeSelectionKey.attach(AsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         writeCompletionHandler.failed(e, writeAttachment);
                     }
