@@ -28,7 +28,7 @@ package org.aoju.bus.starter.cache;
 import lombok.Data;
 import org.aoju.bus.cache.CacheX;
 import org.aoju.bus.starter.BusXExtend;
-import org.aoju.bus.starter.druid.DruidProperties;
+import org.aoju.bus.starter.jdbc.JdbcProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -63,6 +63,6 @@ public class CacheProperties {
     /**
      * 存储信息
      */
-    private DruidProperties provider;
+    private JdbcProperties provider;
 
 }

@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.annotation;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.starter.druid.DruidConfiguration;
+import org.aoju.bus.starter.jdbc.JdbcConfiguration;
 import org.aoju.bus.starter.mapper.MapperConfiguration;
 import org.aoju.bus.starter.mapper.MapperFactoryBean;
 import org.aoju.bus.starter.mapper.MapperScannerRegistrar;
@@ -46,7 +46,7 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({DruidConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class})
+@Import({JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class})
 public @interface EnableMapper {
 
     /**

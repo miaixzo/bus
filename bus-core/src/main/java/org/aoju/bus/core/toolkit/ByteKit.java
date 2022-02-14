@@ -312,6 +312,7 @@ public class ByteKit {
      * byte[]转int值
      *
      * @param data      byte数组
+     * @param start     计算数组开始位置
      * @param byteOrder 端序
      * @return int值
      */

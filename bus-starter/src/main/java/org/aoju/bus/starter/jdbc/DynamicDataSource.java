@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.druid;
+package org.aoju.bus.starter.jdbc;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -52,7 +52,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * 单例句柄
      */
     private static DynamicDataSource instance;
-    private static byte[] lock = Normal.EMPTY_BYTE_ARRAY;
+    private static final byte[] lock = Normal.EMPTY_BYTE_ARRAY;
 
     /**
      * 单例方法
@@ -94,7 +94,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     @Override
     public void setTargetDataSources(Map<Object, Object> map) {
         super.setTargetDataSources(map);
-        this.keySet.add(map.keySet());
+        keySet.add(map.keySet());
         this.afterPropertiesSet();
     }
 

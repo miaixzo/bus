@@ -23,25 +23,22 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.annotation;
-
-import org.aoju.bus.starter.druid.DruidConfiguration;
-import org.springframework.context.annotation.Import;
+package org.aoju.bus.starter.jdbc;
 
 import java.lang.annotation.*;
 
 /**
- * 启用Druid 支持
+ * 多数据源支持
  *
  * @author Kimi Liu
  * @version 6.3.3
  * @since JDK 1.8+
  */
-@Inherited
-@Documented
-@Target({ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Import(DruidConfiguration.class)
-public @interface EnableDruid {
+@Documented
+public @interface DataSource {
+
+    String value() default "dataSource";
 
 }

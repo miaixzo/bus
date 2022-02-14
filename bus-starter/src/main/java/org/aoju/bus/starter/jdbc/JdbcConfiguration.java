@@ -23,10 +23,11 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.druid;
+package org.aoju.bus.starter.jdbc;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
+import com.zaxxer.hikari.HikariDataSource;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -63,23 +64,23 @@ import java.util.Map;
  * @version 6.3.3
  * @since JDK 1.8+
  */
-@ConditionalOnClass(DruidDataSource.class)
-@EnableConfigurationProperties(DruidProperties.class)
+@ConditionalOnClass(value = {HikariDataSource.class, DruidDataSource.class})
+@EnableConfigurationProperties(JdbcProperties.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
-@Import(AspectjDruidProxy.class)
-public class DruidConfiguration {
+@Import(AspectjJdbcProxy.class)
+public class JdbcConfiguration {
 
     private static final ConfigurationPropertyNameAliases aliases;
 
     static {
         aliases = new ConfigurationPropertyNameAliases();
-        aliases.addAliases("url", new String[]{"jdbc-url"});
-        aliases.addAliases("username", new String[]{"user"});
+        aliases.addAliases("url", "jdbc-url");
+        aliases.addAliases("username", "user");
     }
 
     private final Map<Object, Object> sourceMap = new HashMap<>();
     @Autowired
-    DruidProperties properties;
+    JdbcProperties properties;
 
     /**
      * 初始化数据源/多数据源
@@ -94,7 +95,7 @@ public class DruidConfiguration {
         sourceMap.put("dataSource", defaultDatasource);
         if (ObjectKit.isNotEmpty(this.properties.getMulti())) {
             Logger.info("Enabled Multiple DataSource");
-            List<DruidProperties> list = this.properties.getMulti();
+            List<JdbcProperties> list = this.properties.getMulti();
             for (int i = 0; i < list.size(); i++) {
                 Map config = beanToMap(list.get(i));
                 if ((boolean) config.getOrDefault("extend", Boolean.TRUE)) {
@@ -179,13 +180,20 @@ public class DruidConfiguration {
      */
     private void bind(DataSource result, Map properties) {
         ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
-        Binder binder = new Binder(new ConfigurationPropertySource[]{source.withAliases(aliases)});
+        Binder binder = new Binder(source.withAliases(aliases));
         binder.bind(ConfigurationPropertyName.EMPTY, Bindable.ofInstance(result));
     }
 
+    /**
+     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的，
+     * 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
+     *
+     * @param clazz      连接池信息
+     * @param properties 配置信息
+     */
     private <T extends DataSource> T bind(Class<T> clazz, Map properties) {
         ConfigurationPropertySource source = new MapConfigurationPropertySource(properties);
-        Binder binder = new Binder(new ConfigurationPropertySource[]{source.withAliases(aliases)});
+        Binder binder = new Binder(source.withAliases(aliases));
         return binder.bind(ConfigurationPropertyName.EMPTY, Bindable.of(clazz)).get();
     }
 

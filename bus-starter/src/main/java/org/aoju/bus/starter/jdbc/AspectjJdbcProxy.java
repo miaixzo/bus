@@ -23,57 +23,69 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.druid;
+package org.aoju.bus.starter.jdbc;
 
-import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.logger.Logger;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
+
+import java.lang.reflect.Method;
 
 /**
- * Druid 监控配置项
+ * AOP切面切点
  *
  * @author Kimi Liu
  * @version 6.3.3
  * @since JDK 1.8+
  */
-@Data
-@ConfigurationProperties(prefix = BusXExtend.DRUID)
-public class DruidMonitorProperties {
+@Order(-1)
+@Aspect
+public class AspectjJdbcProxy {
 
     /**
-     * 监控信息显示页面
+     * 扫描所有含有@DataSource注解的类
      */
-    private String DruidStatView;
-    /**
-     * 监控拦截器
-     */
-    private String DruidWebStatFilter;
-    /**
-     * IP白名单
-     */
-    private String allow;
+    @Pointcut("@annotation(org.aoju.bus.starter.jdbc.DataSource)" +
+            "||execution(* *(@org.aoju.bus.starter.jdbc.DataSource (*), ..))")
+    public void match() {
+
+    }
 
     /**
-     * IP黑名单
+     * 执行结果,使用around方式监控
+     *
+     * @param point 切点
+     * @return 返回结果
+     * @throws Throwable 异常
      */
-    private String deny;
-    /**
-     * 登录账号
-     */
-    private String loginUsername;
-    /**
-     * 登录密码
-     */
-    private String loginPassword;
-
-    /**
-     * 是否能够重置数据
-     */
-    private String resetEnable;
-
-    /**
-     * 添加不需要忽略的格式信息
-     */
-    private String exclusions;
+    @Around("match()")
+    public Object around(ProceedingJoinPoint point) throws Throwable {
+        // 获取执行方法
+        Method method = ((MethodSignature) point.getSignature()).getMethod();
+        // 获取方法的@DataSource注解
+        DataSource dataSource = method.getAnnotation(DataSource.class);
+        if (!StringKit.hasLength(dataSource.value())) {
+            // 获取类级别的@DataSource注解
+            dataSource = method.getDeclaringClass().getAnnotation(DataSource.class);
+        }
+        if (null != dataSource) {
+            // 设置数据源key值
+            DataSourceHolder.setKey(dataSource.value());
+            Logger.info("Switch datasource to [{}] in method [{}]",
+                    DataSourceHolder.getKey(), point.getSignature());
+        }
+        // 继续执行该方法
+        Object object = point.proceed();
+        // 恢复默认数据源
+        DataSourceHolder.remove();
+        Logger.info("Restore datasource to [{}] in method [{}]",
+                DataSourceHolder.getKey(), point.getSignature());
+        return object;
+    }
 
 }

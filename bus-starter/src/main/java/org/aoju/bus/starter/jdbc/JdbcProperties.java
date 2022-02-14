@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.druid;
+package org.aoju.bus.starter.jdbc;
 
 import lombok.Data;
 import org.aoju.bus.starter.BusXExtend;
@@ -40,7 +40,7 @@ import java.util.List;
  */
 @Data
 @ConfigurationProperties(prefix = BusXExtend.DATASOURCE)
-public class DruidProperties {
+public class JdbcProperties {
 
     /**
      * 数据源名称
@@ -134,6 +134,6 @@ public class DruidProperties {
     /**
      * 多数据源支持
      */
-    private List<DruidProperties> multi;
+    private List<JdbcProperties> multi;
 
 }

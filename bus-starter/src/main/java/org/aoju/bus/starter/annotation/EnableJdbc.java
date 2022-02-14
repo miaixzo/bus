@@ -23,22 +23,25 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.druid;
+package org.aoju.bus.starter.annotation;
+
+import org.aoju.bus.starter.jdbc.JdbcConfiguration;
+import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
 /**
- * 多数据源支持
+ * 启用Druid 支持
  *
  * @author Kimi Liu
  * @version 6.3.3
  * @since JDK 1.8+
  */
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER})
-@Retention(RetentionPolicy.RUNTIME)
+@Inherited
 @Documented
-public @interface DataSource {
-
-    String value() default "dataSource";
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Import(JdbcConfiguration.class)
+public @interface EnableJdbc {
 
 }
