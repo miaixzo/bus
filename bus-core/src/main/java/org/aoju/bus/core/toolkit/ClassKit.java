@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -64,7 +64,7 @@ import java.util.jar.Manifest;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ClassKit {
@@ -3591,7 +3591,7 @@ public class ClassKit {
      * @return 服务接口实现列表
      */
     public static <T> ServiceLoader<T> load(Class<T> clazz, ClassLoader loader) {
-        return ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, getClassLoader()));
+        return ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, ClassKit::getClassLoader));
     }
 
     /**

@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class JavaSourceCompiler {
@@ -68,7 +68,7 @@ public class JavaSourceCompiler {
      * @param parent 父类加载器，null则使用默认类加载器
      */
     private JavaSourceCompiler(ClassLoader parent) {
-        this.parentClassLoader = ObjectKit.defaultIfNull(parent, ClassKit.getClassLoader());
+        this.parentClassLoader = ObjectKit.defaultIfNull(parent, ClassKit::getClassLoader);
     }
 
     /**

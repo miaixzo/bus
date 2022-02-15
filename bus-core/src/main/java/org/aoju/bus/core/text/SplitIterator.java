@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -41,7 +41,7 @@ import java.util.function.Function;
  * 此迭代器非线程安全
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class SplitIterator extends ComputeIterator<String> implements Serializable {
@@ -76,7 +76,7 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
     /**
      * 构造
      *
-     * @param text            文本
+     * @param text            文本，不能为{@code null}
      * @param separatorFinder 分隔符匹配器
      * @param limit           限制数量，小于等于0表示无限制
      * @param ignoreEmpty     是否忽略
@@ -125,9 +125,8 @@ public class SplitIterator extends ComputeIterator<String> implements Serializab
         }
 
         // 找到新的分隔符位置
-        final int end = finder.end(start);
         final String result = text.substring(offset, start);
-        offset = end;
+        offset = finder.end(start);
 
         if (ignoreEmpty && result.isEmpty()) {
             // 发现空串且需要忽略时，跳过之

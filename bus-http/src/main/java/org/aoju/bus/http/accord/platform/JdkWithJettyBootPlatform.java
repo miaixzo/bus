@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -41,7 +41,7 @@ import java.util.List;
  * OpenJDK 7 or OpenJDK 8 with {@code org.mortbay.jetty.alpn/alpn-boot} 在引导类路径中.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class JdkWithJettyBootPlatform extends Platform {

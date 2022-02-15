@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,9 +29,20 @@ package org.aoju.bus.core.lang;
  * 对齐方式枚举
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public enum Align {
-    LEFT, RIGHT, CENTER
+    /**
+     * 左对齐
+     */
+    LEFT,
+    /**
+     * 右对齐
+     */
+    RIGHT,
+    /**
+     * 居中对齐
+     */
+    CENTER
 }

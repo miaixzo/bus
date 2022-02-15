@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -43,7 +43,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class NumberFormatter {
@@ -201,6 +201,27 @@ public class NumberFormatter {
         }
 
         return chineseStr.toString();
+    }
+
+    /**
+     * 阿拉伯数字（支持正负整数）四舍五入后转换成中文节权位简洁计数单位，例如 -5_5555 =》 -5.56万
+     *
+     * @param amount 数字
+     * @return 中文
+     */
+    public static String format(long amount) {
+        if (amount < 1_0000 && amount > -1_0000) {
+            return String.valueOf(amount);
+        }
+        String res;
+        if (amount < 1_0000_0000 && amount > -1_0000_0000) {
+            res = MathKit.div(amount, 1_0000, 2) + "万";
+        } else if (amount < 1_0000_0000_0000L && amount > -1_0000_0000_0000L) {
+            res = MathKit.div(amount, 1_0000_0000, 2) + "亿";
+        } else {
+            res = MathKit.div(amount, 1_0000_0000_0000L, 2) + "万亿";
+        }
+        return res;
     }
 
     /**

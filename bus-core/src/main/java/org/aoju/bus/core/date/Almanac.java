@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.*;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Almanac extends Converter {
@@ -2642,7 +2643,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取秒级别的开始时间，即忽略毫秒部分
+     * 修改秒级别的开始时间，即忽略毫秒部分
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2652,7 +2653,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取秒级别的结束时间，即毫秒设置为999
+     * 修改秒级别的结束时间，即毫秒设置为999
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2702,7 +2703,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某小时的开始时间
+     * 修改某小时的开始时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2712,7 +2713,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某小时的结束时间
+     * 修改某小时的结束时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2762,7 +2763,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某天的开始时间
+     * 修改某天的开始时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2772,7 +2773,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某天的结束时间
+     * 修改某天的结束时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2802,7 +2803,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取给定日期当前周的开始时间，周一定为一周的开始时间
+     * 修改给定日期当前周的开始时间，周一定为一周的开始时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2812,7 +2813,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取给定日期当前周的开始时间
+     * 修改给定日期当前周的开始时间
      *
      * @param calendar           日期 {@link Calendar}
      * @param isMondayAsFirstDay 是否周一做为一周的第一天(false表示周日做为第一天)
@@ -2825,7 +2826,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某周的结束时间，周日定为一周的结束
+     * 修改某周的结束时间，周日定为一周的结束
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2835,7 +2836,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某周的结束时间
+     * 修改某周的结束时间
      *
      * @param calendar          日期 {@link Calendar}
      * @param isSundayAsLastDay 是否周日做为一周的最后一天(false表示周六做为最后一天)
@@ -2867,7 +2868,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某月的开始时间
+     * 修改某月的开始时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2877,7 +2878,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某月的结束时间
+     * 修改某月的结束时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2907,7 +2908,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某季度的开始时间
+     * 修改某季度的开始时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2919,7 +2920,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某季度的结束时间
+     * 修改某季度的结束时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2951,7 +2952,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某年的开始时间
+     * 修改某年的开始时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -2961,7 +2962,7 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 获取某年的结束时间
+     * 修改某年的结束时间
      *
      * @param calendar 日期 {@link Calendar}
      * @return {@link Calendar}
@@ -3930,6 +3931,80 @@ public class Almanac extends Converter {
         return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
                 cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA);
+    }
+
+    /**
+     * 比较两个日期是否为同一天
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为同一天
+     */
+    public static boolean isSameDay(final Date date1, final Date date2) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return isSameDay(Converter.toCalendar(date1), Converter.toCalendar(date2));
+    }
+
+    /**
+     * 比较两个日期是否为同一周
+     *
+     * @param cal1  日期1
+     * @param cal2  日期2
+     * @param isMon 是否为周一。国内第一天为星期一，国外第一天为星期日
+     * @return 是否为同一周
+     */
+    public static boolean isSameWeek(Calendar cal1, Calendar cal2, boolean isMon) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        // 防止比较前修改原始Calendar对象
+        cal1 = (Calendar) cal1.clone();
+        cal2 = (Calendar) cal2.clone();
+        // 把所传日期设置为其当前周的第一天
+        // 比较设置后的两个日期是否是同一天：true 代表同一周
+        if (isMon) {
+            cal1.setFirstDayOfWeek(Calendar.MONDAY);
+            cal1.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            cal2.setFirstDayOfWeek(Calendar.MONDAY);
+            cal2.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        } else {
+            cal1.setFirstDayOfWeek(Calendar.SUNDAY);
+            cal1.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            cal2.setFirstDayOfWeek(Calendar.SUNDAY);
+            cal2.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        }
+        return isSameDay(cal1, cal2);
+    }
+
+    /**
+     * 比较两个日期是否为同一周
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @param isMon 是否为周一。国内第一天为星期一，国外第一天为星期日
+     * @return 是否为同一周
+     */
+    public static boolean isSameWeek(final Date date1, final Date date2, boolean isMon) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return isSameWeek(Converter.toCalendar(date1), Converter.toCalendar(date2), isMon);
+    }
+
+    /**
+     * 比较两个日期是否为同一月
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为同一月
+     */
+    public static boolean isSameMonth(final Date date1, final Date date2) {
+        if (date1 == null || date2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return isSameMonth(Converter.toCalendar(date1), Converter.toCalendar(date2));
     }
 
     /**
@@ -5423,6 +5498,35 @@ public class Almanac extends Converter {
      */
     public static Date lastYear() {
         return offsetYear(date(), -1);
+    }
+
+    /**
+     * 检查两个时间段是否有时间重叠
+     * 重叠指两个时间段是否有交集
+     *
+     * @param realStartTime 第一个时间段的开始时间
+     * @param realEndTime   第一个时间段的结束时间
+     * @param startTime     第二个时间段的开始时间
+     * @param endTime       第二个时间段的结束时间
+     * @return true 表示时间有重合
+     */
+    public static boolean isOverlap(LocalDateTime realStartTime, LocalDateTime realEndTime, LocalDateTime startTime, LocalDateTime endTime) {
+        return startTime.isAfter(realEndTime) || endTime.isBefore(realStartTime);
+    }
+
+    /**
+     * 检查两个时间段是否有时间重叠
+     * 重叠指两个时间段是否有交集
+     * 需要注意的是比如第一个时间段的结尾是23:59:59 第二天开始需要是00:00:00 相同也是重复
+     *
+     * @param realStartTime 第一个时间段的开始时间
+     * @param realEndTime   第一个时间段的结束时间
+     * @param startTime     第二个时间段的开始时间
+     * @param endTime       第二个时间段的结束时间
+     * @return true 表示没有时间有重合
+     */
+    public static boolean isOverlap(Supplier<LocalDateTime> realStartTime, Supplier<LocalDateTime> realEndTime, Supplier<LocalDateTime> startTime, Supplier<LocalDateTime> endTime) {
+        return isOverlap(realStartTime.get(), realEndTime.get(), startTime.get(), endTime.get());
     }
 
 }

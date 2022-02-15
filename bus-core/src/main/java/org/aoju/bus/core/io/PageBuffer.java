@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * ByteBuffer内存页
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class PageBuffer {
@@ -97,8 +97,9 @@ public class PageBuffer {
      */
     public VirtualBuffer allocate(final int size) {
         VirtualBuffer virtualBuffer;
-        if (Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
-            virtualBuffer = pagePool[(int) (Thread.currentThread().getId() % pagePool.length)].allocate0(size);
+        Thread thread = Thread.currentThread();
+        if (thread instanceof ThreadKit.FastBufferThread) {
+            virtualBuffer = pagePool[((ThreadKit.FastBufferThread) thread).getPageIndex()].allocate0(size);
         } else {
             virtualBuffer = allocate0(size);
         }
@@ -112,12 +113,9 @@ public class PageBuffer {
      * @return 虚拟内存对象
      */
     private VirtualBuffer allocate0(final int size) {
-        if (size > buffer.capacity()) {
-            return null;
-        }
         idle = false;
         VirtualBuffer cleanBuffer = cleanBuffers.poll();
-        if (null != cleanBuffer && cleanBuffer.getParentLimit() - cleanBuffer.getParentPosition() >= size) {
+        if (cleanBuffer != null && cleanBuffer.getCapacity() >= size) {
             cleanBuffer.buffer().clear();
             cleanBuffer.buffer(cleanBuffer.buffer());
             return cleanBuffer;
@@ -127,7 +125,7 @@ public class PageBuffer {
             if (null != cleanBuffer) {
                 clean0(cleanBuffer);
                 while (null != (cleanBuffer = cleanBuffers.poll())) {
-                    if (cleanBuffer.getParentLimit() - cleanBuffer.getParentPosition() >= size) {
+                    if (cleanBuffer.getCapacity() >= size) {
                         cleanBuffer.buffer().clear();
                         cleanBuffer.buffer(cleanBuffer.buffer());
                         return cleanBuffer;
@@ -196,12 +194,12 @@ public class PageBuffer {
      * @return 申请到的内存块, 若空间不足则范围null
      */
     private VirtualBuffer allocate(int size, VirtualBuffer freeChunk) {
-        final int remaining = freeChunk.getParentLimit() - freeChunk.getParentPosition();
-        if (remaining < size) {
+        final int capacity = freeChunk.getCapacity();
+        if (capacity < size) {
             return null;
         }
         VirtualBuffer bufferChunk;
-        if (remaining == size) {
+        if (capacity == size) {
             buffer.limit(freeChunk.getParentLimit());
             buffer.position(freeChunk.getParentPosition());
             freeChunk.buffer(buffer.slice());

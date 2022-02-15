@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>6.3.3</version>
+    <version>6.3.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.6.0</spring.boot.version>
+        <spring.boot.version>2.6.3</spring.boot.version>
         <lombok.version>1.18.22</lombok.version>
         <guice.version>5.0.1</guice.version>
         <jedis.version>3.6.1</jedis.version>
@@ -52,7 +52,7 @@
         <guava.version>30.1.1-jre</guava.version>
         <hession.version>4.0.65</hession.version>
         <druid.version>1.2.8</druid.version>
-        <mysql.version>8.0.27</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
     </properties>
 
     <dependencies>
@@ -168,6 +168,12 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <version>${spring.boot.version}</version>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.zaxxer</groupId>
+                    <artifactId>HikariCP</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -38,7 +38,7 @@ import java.lang.reflect.Method;
  * 方法句柄{@link java.lang.invoke.MethodHandle}封装工具类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class MethodHandle {
@@ -134,7 +134,7 @@ public class MethodHandle {
     }
 
     /**
-     * 执行接口或对象中的方法
+     * 执行接口或对象中的特殊方法（private、static等）
      *
      * <pre class="code">
      *     interface Duck {
@@ -180,7 +180,7 @@ public class MethodHandle {
     }
 
     /**
-     * 执行接口或对象中的方法
+     * 执行接口或对象中的特殊方法（private、static等）
      *
      * <pre class="code">
      *     interface Duck {

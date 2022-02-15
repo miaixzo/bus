@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -45,7 +45,7 @@ import java.util.*;
  * CSV行解析器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public final class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
@@ -101,7 +101,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      */
     public CsvParser(final Reader reader, CsvReadConfig config) {
         this.reader = Objects.requireNonNull(reader, "reader must not be null");
-        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig.defaultConfig());
+        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::defaultConfig);
     }
 
     @Override
@@ -272,7 +272,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                     inQuotes = false;
                 } else {
                     // 字段内容中新行
-                    if (isLineEnd(c)) {
+                    if (isLineEnd(c, preChar)) {
                         inQuotesLineCount++;
                     }
                 }
@@ -331,10 +331,11 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     /**
      * 是否行结束符
      *
-     * @param c 符号
+     * @param c       符号
+     * @param preChar 前一个字符
      * @return 是否结束
      */
-    private boolean isLineEnd(char c) {
+    private boolean isLineEnd(char c, int preChar) {
         return (c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR;
     }
 

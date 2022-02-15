@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,27 +25,30 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.openbsd.hardware;
 
+import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
 import java.util.List;
 import java.util.function.Supplier;
 
+import static org.aoju.bus.health.Memoize.memoize;
+
 /**
  * OpenBSD Firmware implementation
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
+@Immutable
 public class OpenBsdFirmware extends AbstractFirmware {
 
-    private final Supplier<Triple<String, String, String>> manufVersRelease = Memoize.memoize(OpenBsdFirmware::readDmesg);
+    private final Supplier<Triple<String, String, String>> manufVersRelease = memoize(OpenBsdFirmware::readDmesg);
 
     private static Triple<String, String, String> readDmesg() {
         String version = null;

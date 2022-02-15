@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -39,7 +39,7 @@ import java.util.NoSuchElementException;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ArrayIterator<E> implements IterableIterator<E>, Serializable {
@@ -70,7 +70,18 @@ public class ArrayIterator<E> implements IterableIterator<E>, Serializable {
      * @throws IllegalArgumentException array对象不为数组抛出此异常
      * @throws NullPointerException     array对象为null
      */
-    public ArrayIterator(final Object array) {
+    public ArrayIterator(E[] array) {
+        this((Object) array);
+    }
+
+    /**
+     * 构造
+     *
+     * @param array 数组
+     * @throws IllegalArgumentException array对象不为数组抛出此异常
+     * @throws NullPointerException     array对象为null
+     */
+    public ArrayIterator(Object array) {
         this(array, 0);
     }
 

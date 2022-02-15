@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -45,7 +45,7 @@ import java.util.List;
  * sheetData标签内容读取处理器
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class SheetSaxHandler extends DefaultHandler {
@@ -347,7 +347,7 @@ public class SheetSaxHandler extends DefaultHandler {
                 final int numFmtIndex = xssfCellStyle.getDataFormat();
                 this.numFmtString = ObjectKit.defaultIfNull(
                         xssfCellStyle.getDataFormatString(),
-                        BuiltinFormats.getBuiltinFormat(numFmtIndex));
+                        () -> BuiltinFormats.getBuiltinFormat(numFmtIndex));
                 if (CellDataType.NUMBER == this.cellDataType && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }

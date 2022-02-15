@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -61,7 +61,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class IoKit {
@@ -260,10 +260,44 @@ public class IoKit {
         Assert.notNull(outChannel, "Out channel is null!");
 
         try {
-            return inChannel.transferTo(0, inChannel.size(), outChannel);
+            return copySafely(inChannel, outChannel);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 文件拷贝实现
+     *
+     * <pre>
+     * FileChannel#transferTo 或 FileChannel#transferFrom 的实现是平台相关的，需要确保低版本平台的兼容性
+     * 例如 android 7以下平台在使用 ZipInputStream 解压文件的过程中，
+     * 通过 FileChannel#transferFrom 传输到文件时，其返回值可能小于 totalBytes，不处理将导致文件内容缺失
+     *
+     * // 错误写法，dstChannel.transferFrom 返回值小于 zipEntry.getSize()，导致解压后文件内容缺失
+     * try (InputStream srcStream = zipFile.getInputStream(zipEntry);
+     * 		ReadableByteChannel srcChannel = Channels.newChannel(srcStream);
+     * 		FileOutputStream fos = new FileOutputStream(saveFile);
+     * 		FileChannel dstChannel = fos.getChannel()) {
+     * 		dstChannel.transferFrom(srcChannel, 0, zipEntry.getSize());
+     *  }
+     * </pre>
+     *
+     * @param inChannel  输入通道
+     * @param outChannel 输出通道
+     * @return 输入通道的字节数
+     * @throws IOException 发生IO错误
+     */
+    private static long copySafely(FileChannel inChannel, FileChannel outChannel) throws IOException {
+        final long totalBytes = inChannel.size();
+        // 确保文件内容不会缺失
+        for (long pos = 0, remaining = totalBytes; remaining > 0; ) {
+            // 实际传输的字节数
+            final long writeBytes = inChannel.transferTo(pos, remaining, outChannel);
+            pos += writeBytes;
+            remaining -= writeBytes;
+        }
+        return totalBytes;
     }
 
     /**

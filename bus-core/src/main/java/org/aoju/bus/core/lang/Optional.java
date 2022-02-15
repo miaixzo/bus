@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  *
  * @param <T> 包裹里元素的类型
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @see java.util.Optional
  * @since JDK 1.8+
  */
@@ -103,6 +103,8 @@ public class Optional<T> {
     }
 
     /**
+     * 传入一段操作，包裹异常
+     *
      * @param supplier 操作
      * @param <T>      类型
      * @return 操作执行后的值
@@ -111,7 +113,7 @@ public class Optional<T> {
         try {
             return Optional.ofNullable(supplier.call());
         } catch (Exception e) {
-            final Optional<T> empty = Optional.empty();
+            final Optional<T> empty = new Optional<>(null);
             empty.exception = e;
             return empty;
         }

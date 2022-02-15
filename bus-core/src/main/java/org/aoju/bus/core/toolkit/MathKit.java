@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -1738,6 +1738,18 @@ public class MathKit {
      */
     public static boolean equals(float num1, float num2) {
         return Float.floatToIntBits(num1) == Float.floatToIntBits(num2);
+    }
+
+    /**
+     * 比较大小，值相等 返回true
+     * 此方法修复传入long型数据由于没有本类型重载方法,导致数据精度丢失
+     *
+     * @param num1 数字1
+     * @param num2 数字2
+     * @return 是否相等
+     */
+    public static boolean equals(long num1, long num2) {
+        return num1 == num2;
     }
 
     /**

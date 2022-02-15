@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.copier;
 
-
 import org.aoju.bus.core.lang.Filter;
 
 /**
@@ -35,7 +34,7 @@ import org.aoju.bus.core.lang.Filter;
  * @param <T> 拷贝的对象
  * @param <C> 本类的类型 用于set方法返回本对象,方便流式编程
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<T> {

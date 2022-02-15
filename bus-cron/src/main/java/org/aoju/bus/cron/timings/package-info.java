@@ -4,7 +4,7 @@
  * 指针周期性地跳动，跳动到一个槽位，就执行该槽位的定时任务
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 package org.aoju.bus.cron.timings;

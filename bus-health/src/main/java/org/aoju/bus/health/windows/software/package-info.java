@@ -1,8 +1,8 @@
 /**
- * Windows系统的软件和操作系统信息
+ * Provides information about Software and OS on Windows
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 package org.aoju.bus.health.windows.software;

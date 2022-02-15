@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -50,7 +50,7 @@ import java.util.function.Consumer;
  *
  * @param <R> 请求信息
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class UdpBootstrap<R> {
@@ -68,11 +68,11 @@ public class UdpBootstrap<R> {
     /**
      * 服务配置
      */
-    private final ServerConfig<R> config = new ServerConfig<>();
+    private final ServerConfig config = new ServerConfig();
 
     private Worker worker;
 
-    private UdpDispatcher<R>[] workerGroup;
+    private UdpDispatcher[] workerGroup;
     private ExecutorService executorService;
 
     private boolean running = true;
@@ -182,7 +182,7 @@ public class UdpBootstrap<R> {
                 netMonitor.beforeRead(aioSession);
                 netMonitor.afterRead(aioSession, buffer.remaining());
             }
-            R request;
+            Object request;
             // 解码
             try {
                 request = config.getProtocol().decode(buffer, aioSession);
@@ -205,7 +205,7 @@ public class UdpBootstrap<R> {
         running = false;
         worker.selector.wakeup();
 
-        for (UdpDispatcher<R> dispatcher : workerGroup) {
+        for (UdpDispatcher dispatcher : workerGroup) {
             dispatcher.dispatch(dispatcher.EXECUTE_TASK_OR_SHUTDOWN);
         }
         executorService.shutdown();

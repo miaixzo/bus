@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -59,7 +59,7 @@ import java.security.PublicKey;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class SM2 extends AbstractCrypto<SM2> {
@@ -525,7 +525,7 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @return D值
      */
     public String getDHex() {
-        return getDBigInteger().toString(16);
+        return String.format("%064x", new BigInteger(1, getD()));
     }
 
     /**

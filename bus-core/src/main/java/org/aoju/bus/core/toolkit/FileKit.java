@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -56,7 +56,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -832,6 +832,39 @@ public class FileKit {
     }
 
     /**
+     * 安全地级联创建目录 (确保并发环境下能创建成功)
+     *
+     * <pre>
+     *     并发环境下，假设 test 目录不存在，如果线程A mkdirs "test/A" 目录，线程B mkdirs "test/B"目录，
+     *     其中一个线程可能会失败，进而导致以下代码抛出 FileNotFoundException 异常
+     *
+     *     file.getParentFile().mkdirs(); // 父目录正在被另一个线程创建中，返回 false
+     *     file.createNewFile(); // 抛出 IO 异常，因为该线程无法感知到父目录已被创建
+     * </pre>
+     *
+     * @param dir 待创建的目录
+     * @return true表示创建成功，false表示创建失败
+     */
+    public static boolean mkdirsSafely(File dir) {
+        if (dir == null) {
+            return false;
+        }
+        if (dir.isDirectory()) {
+            return true;
+        }
+        // 高并发场景下，可以看到 i 处于 1 ~ 3 之间
+        for (int i = 1; i <= 5; i++) {
+            // 如果文件已存在，也会返回 false，所以该值不能作为是否能创建的依据，因此不对其进行处理
+            dir.mkdirs();
+            if (dir.exists()) {
+                return true;
+            }
+            ThreadKit.sleep(1);
+        }
+        return dir.exists();
+    }
+
+    /**
      * 创建临时文件
      * 创建后的文件名为 prefix[Randon].tmp
      *
@@ -1127,6 +1160,10 @@ public class FileKit {
         try {
             return Files.move(src, target, options);
         } catch (IOException e) {
+            if (e instanceof FileAlreadyExistsException) {
+                // 目标文件已存在，直接抛出异常
+                throw new InstrumentException(e);
+            }
             // 移动失败，可能是跨分区移动导致的，采用递归移动方式
             try {
                 Files.walkFileTree(src, new MoveVisitor(src, target, options));
@@ -1436,25 +1473,39 @@ public class FileKit {
 
     /**
      * 计算目录或文件的总大小
+     * 当给定对象为文件时，直接调用 {@link File#length()}
+     * 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
+     * 此方法不包括目录本身的占用空间大小。
+     *
+     * @param file 目录或文件,null或者文件不存在返回0
+     * @return 总大小，bytes长度
+     */
+    public static long size(File file) {
+        return size(file, false);
+    }
+
+    /**
+     * 计算目录或文件的总大小
      * 当给定对象为文件时,直接调用 {@link File#length()}
      * 当给定对象为目录时,遍历目录下的所有文件和目录,递归计算其大小,求和返回
      *
-     * @param file 目录或文件
+     * @param file           目录或文件
+     * @param includeDirSize 是否包括每层目录本身的大小
      * @return 总大小, bytes长度
      */
-    public static long size(File file) {
+    public static long size(File file, boolean includeDirSize) {
         if (null == file || false == file.exists() || isSymlink(file)) {
             return 0;
         }
 
         if (file.isDirectory()) {
-            long size = 0L;
+            long size = includeDirSize ? file.length() : 0;
             File[] subFiles = file.listFiles();
             if (ArrayKit.isEmpty(subFiles)) {
-                return 0L;// empty directory
+                return 0L;
             }
-            for (int i = 0; i < subFiles.length; i++) {
-                size += size(subFiles[i]);
+            for (File subFile : subFiles) {
+                size += size(subFile, includeDirSize);
             }
             return size;
         } else {
@@ -3120,7 +3171,12 @@ public class FileKit {
     }
 
     /**
-     * 将列表写入文件,追加模式
+     * 将列表写入文件，追加模式，策略为：
+     * <ul>
+     *     <li>当文件为空，从开头追加，尾部不加空行</li>
+     *     <li>当有内容，换行追加，尾部不加空行</li>
+     *     <li>当有内容，并末尾有空行，依旧换行追加</li>
+     * </ul>
      *
      * @param <T>     集合元素类型
      * @param list    列表

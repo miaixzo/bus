@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -39,7 +39,7 @@ import java.net.URL;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class UriResource implements Resource {
@@ -64,7 +64,7 @@ public class UriResource implements Resource {
      */
     public UriResource(URL url, String name) {
         this.url = url;
-        this.name = ObjectKit.defaultIfNull(name, (null != url) ? FileKit.getName(url.getPath()) : null);
+        this.name = ObjectKit.defaultIfNull(name, () -> (null != url ? FileKit.getName(url.getPath()) : null));
     }
 
     @Override

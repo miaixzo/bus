@@ -118,7 +118,29 @@ public class Imgproc {
             ADAPTIVE_THRESH_GAUSSIAN_C = 1;
 
 
-    // C++: enum ColorConversionCodes (cv.ColorConversionCodes)
+    /**
+     * Finds lines in a set of points using the standard Hough transform.
+     * <p>
+     * The function finds lines in a set of points using a modification of the Hough transform.
+     * INCLUDE: snippets/imgproc_HoughLinesPointSet.cpp
+     *
+     * @param point      Input vector of points. Each vector must be encoded as a Point vector \((x,y)\). Type must be CV_32FC2 or CV_32SC2.
+     * @param lines      Output vector of found lines. Each vector is encoded as a vector&lt;Vec3d&gt; \((votes, rho, theta)\).
+     *                   The larger the value of 'votes', the higher the reliability of the Hough line.
+     * @param lines_max  Max count of Hough lines.
+     * @param threshold  Accumulator threshold parameter. Only those lines are returned that get enough
+     *                   votes ( \(&gt;\texttt{threshold}\) ).
+     * @param min_rho    Minimum value for \(\rho\) for the accumulator (Note: \(\rho\) can be negative. The absolute value \(|\rho|\) is the distance of a line to the origin.).
+     * @param max_rho    Maximum value for \(\rho\) for the accumulator.
+     * @param rho_step   Distance resolution of the accumulator.
+     * @param min_theta  Minimum angle value of the accumulator in radians.
+     * @param max_theta  Maximum angle value of the accumulator in radians.
+     * @param theta_step Angle resolution of the accumulator in radians.
+     */
+    public static void HoughLinesPointSet(Mat point, Mat lines, int lines_max, int threshold, double min_rho, double max_rho, double rho_step, double min_theta, double max_theta, double theta_step) {
+        HoughLinesPointSet_0(point.nativeObj, lines.nativeObj, lines_max, threshold, min_rho, max_rho, rho_step, min_theta, max_theta, theta_step);
+    }    // C++: enum ColorConversionCodes (cv.ColorConversionCodes)
+
     public static final int
             COLOR_BGR2BGRA = 0,
             COLOR_RGB2RGBA = COLOR_BGR2BGRA,
@@ -293,6 +315,14 @@ public class Imgproc {
             COLOR_BayerGB2BGR = 47,
             COLOR_BayerRG2BGR = 48,
             COLOR_BayerGR2BGR = 49,
+            COLOR_BayerRGGB2BGR = COLOR_BayerBG2BGR,
+            COLOR_BayerGRBG2BGR = COLOR_BayerGB2BGR,
+            COLOR_BayerBGGR2BGR = COLOR_BayerRG2BGR,
+            COLOR_BayerGBRG2BGR = COLOR_BayerGR2BGR,
+            COLOR_BayerRGGB2RGB = COLOR_BayerBGGR2BGR,
+            COLOR_BayerGRBG2RGB = COLOR_BayerGBRG2BGR,
+            COLOR_BayerBGGR2RGB = COLOR_BayerRGGB2BGR,
+            COLOR_BayerGBRG2RGB = COLOR_BayerGRBG2BGR,
             COLOR_BayerBG2RGB = COLOR_BayerRG2BGR,
             COLOR_BayerGB2RGB = COLOR_BayerGR2BGR,
             COLOR_BayerRG2RGB = COLOR_BayerBG2BGR,
@@ -301,10 +331,22 @@ public class Imgproc {
             COLOR_BayerGB2GRAY = 87,
             COLOR_BayerRG2GRAY = 88,
             COLOR_BayerGR2GRAY = 89,
+            COLOR_BayerRGGB2GRAY = COLOR_BayerBG2GRAY,
+            COLOR_BayerGRBG2GRAY = COLOR_BayerGB2GRAY,
+            COLOR_BayerBGGR2GRAY = COLOR_BayerRG2GRAY,
+            COLOR_BayerGBRG2GRAY = COLOR_BayerGR2GRAY,
             COLOR_BayerBG2BGR_VNG = 62,
             COLOR_BayerGB2BGR_VNG = 63,
             COLOR_BayerRG2BGR_VNG = 64,
             COLOR_BayerGR2BGR_VNG = 65,
+            COLOR_BayerRGGB2BGR_VNG = COLOR_BayerBG2BGR_VNG,
+            COLOR_BayerGRBG2BGR_VNG = COLOR_BayerGB2BGR_VNG,
+            COLOR_BayerBGGR2BGR_VNG = COLOR_BayerRG2BGR_VNG,
+            COLOR_BayerGBRG2BGR_VNG = COLOR_BayerGR2BGR_VNG,
+            COLOR_BayerRGGB2RGB_VNG = COLOR_BayerBGGR2BGR_VNG,
+            COLOR_BayerGRBG2RGB_VNG = COLOR_BayerGBRG2BGR_VNG,
+            COLOR_BayerBGGR2RGB_VNG = COLOR_BayerRGGB2BGR_VNG,
+            COLOR_BayerGBRG2RGB_VNG = COLOR_BayerGRBG2BGR_VNG,
             COLOR_BayerBG2RGB_VNG = COLOR_BayerRG2BGR_VNG,
             COLOR_BayerGB2RGB_VNG = COLOR_BayerGR2BGR_VNG,
             COLOR_BayerRG2RGB_VNG = COLOR_BayerBG2BGR_VNG,
@@ -313,6 +355,14 @@ public class Imgproc {
             COLOR_BayerGB2BGR_EA = 136,
             COLOR_BayerRG2BGR_EA = 137,
             COLOR_BayerGR2BGR_EA = 138,
+            COLOR_BayerRGGB2BGR_EA = COLOR_BayerBG2BGR_EA,
+            COLOR_BayerGRBG2BGR_EA = COLOR_BayerGB2BGR_EA,
+            COLOR_BayerBGGR2BGR_EA = COLOR_BayerRG2BGR_EA,
+            COLOR_BayerGBRG2BGR_EA = COLOR_BayerGR2BGR_EA,
+            COLOR_BayerRGGB2RGB_EA = COLOR_BayerBGGR2BGR_EA,
+            COLOR_BayerGRBG2RGB_EA = COLOR_BayerGBRG2BGR_EA,
+            COLOR_BayerBGGR2RGB_EA = COLOR_BayerRGGB2BGR_EA,
+            COLOR_BayerGBRG2RGB_EA = COLOR_BayerGRBG2BGR_EA,
             COLOR_BayerBG2RGB_EA = COLOR_BayerRG2BGR_EA,
             COLOR_BayerGB2RGB_EA = COLOR_BayerGR2BGR_EA,
             COLOR_BayerRG2RGB_EA = COLOR_BayerBG2BGR_EA,
@@ -321,6 +371,14 @@ public class Imgproc {
             COLOR_BayerGB2BGRA = 140,
             COLOR_BayerRG2BGRA = 141,
             COLOR_BayerGR2BGRA = 142,
+            COLOR_BayerRGGB2BGRA = COLOR_BayerBG2BGRA,
+            COLOR_BayerGRBG2BGRA = COLOR_BayerGB2BGRA,
+            COLOR_BayerBGGR2BGRA = COLOR_BayerRG2BGRA,
+            COLOR_BayerGBRG2BGRA = COLOR_BayerGR2BGRA,
+            COLOR_BayerRGGB2RGBA = COLOR_BayerBGGR2BGRA,
+            COLOR_BayerGRBG2RGBA = COLOR_BayerGBRG2BGRA,
+            COLOR_BayerBGGR2RGBA = COLOR_BayerRGGB2BGRA,
+            COLOR_BayerGBRG2RGBA = COLOR_BayerGRBG2BGRA,
             COLOR_BayerBG2RGBA = COLOR_BayerRG2BGRA,
             COLOR_BayerGB2RGBA = COLOR_BayerGR2BGRA,
             COLOR_BayerRG2RGBA = COLOR_BayerBG2BGRA,
@@ -604,8 +662,6 @@ public class Imgproc {
      * @param log_eps Detection threshold: -log10(NFA) &gt; log_eps. Used only when advance refinement is chosen.
      * @param density_th Minimal density of aligned region points in the enclosing rectangle.
      * @param n_bins Number of bins in pseudo-ordering of gradient modulus.
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine, double scale, double sigma_scale, double quant, double ang_th, double log_eps, double density_th, int n_bins) {
@@ -625,8 +681,6 @@ public class Imgproc {
      * @param ang_th Gradient angle tolerance in degrees.
      * @param log_eps Detection threshold: -log10(NFA) &gt; log_eps. Used only when advance refinement is chosen.
      * @param density_th Minimal density of aligned region points in the enclosing rectangle.
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine, double scale, double sigma_scale, double quant, double ang_th, double log_eps, double density_th) {
@@ -645,8 +699,6 @@ public class Imgproc {
      * @param quant Bound to the quantization error on the gradient norm.
      * @param ang_th Gradient angle tolerance in degrees.
      * @param log_eps Detection threshold: -log10(NFA) &gt; log_eps. Used only when advance refinement is chosen.
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine, double scale, double sigma_scale, double quant, double ang_th, double log_eps) {
@@ -664,8 +716,6 @@ public class Imgproc {
      * @param sigma_scale Sigma for Gaussian filter. It is computed as sigma = sigma_scale/scale.
      * @param quant Bound to the quantization error on the gradient norm.
      * @param ang_th Gradient angle tolerance in degrees.
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine, double scale, double sigma_scale, double quant, double ang_th) {
@@ -682,8 +732,6 @@ public class Imgproc {
      * @param scale The scale of the image that will be used to find the lines. Range (0..1].
      * @param sigma_scale Sigma for Gaussian filter. It is computed as sigma = sigma_scale/scale.
      * @param quant Bound to the quantization error on the gradient norm.
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine, double scale, double sigma_scale, double quant) {
@@ -699,8 +747,6 @@ public class Imgproc {
      * @param refine The way found lines will be refined, see #LineSegmentDetectorModes
      * @param scale The scale of the image that will be used to find the lines. Range (0..1].
      * @param sigma_scale Sigma for Gaussian filter. It is computed as sigma = sigma_scale/scale.
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine, double scale, double sigma_scale) {
@@ -715,8 +761,6 @@ public class Imgproc {
      *
      * @param refine The way found lines will be refined, see #LineSegmentDetectorModes
      * @param scale The scale of the image that will be used to find the lines. Range (0..1].
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine, double scale) {
@@ -730,8 +774,6 @@ public class Imgproc {
      * to edit those, as to tailor it for their own application.
      *
      * @param refine The way found lines will be refined, see #LineSegmentDetectorModes
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector(int refine) {
@@ -744,8 +786,6 @@ public class Imgproc {
      * The LineSegmentDetector algorithm is defined using the standard values. Only advanced users may want
      * to edit those, as to tailor it for their own application.
      *
-     *
-     * <b>Note:</b> Implementation has been removed due original code license conflict
      * @return automatically generated
      */
     public static LineSegmentDetector createLineSegmentDetector() {
@@ -3325,25 +3365,42 @@ public class Imgproc {
     //
 
     /**
-     * Finds lines in a set of points using the standard Hough transform.
+     * Resizes an image.
+     * <p>
+     * The function resize resizes the image src down to or up to the specified size. Note that the
+     * initial dst type or size are not taken into account. Instead, the size and type are derived from
+     * the {@code src},{@code dsize},{@code fx}, and {@code fy}. If you want to resize src so that it fits the pre-created dst,
+     * you may call the function as follows:
+     * <code>
+     * // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
+     * resize(src, dst, dst.size(), 0, 0, interpolation);
+     * </code>
+     * If you want to decimate the image by factor of 2 in each direction, you can call the function this
+     * way:
+     * <code>
+     * // specify fx and fy and let the function compute the destination image size.
+     * resize(src, dst, Size(), 0.5, 0.5, interpolation);
+     * </code>
+     * To shrink an image, it will generally look best with #INTER_AREA interpolation, whereas to
+     * enlarge an image, it will generally look best with c#INTER_CUBIC (slow) or #INTER_LINEAR
+     * (faster but still looks OK).
      *
-     * The function finds lines in a set of points using a modification of the Hough transform.
-     * INCLUDE: snippets/imgproc_HoughLinesPointSet.cpp
-     * @param point Input vector of points. Each vector must be encoded as a Point vector \((x,y)\). Type must be CV_32FC2 or CV_32SC2.
-     * @param lines Output vector of found lines. Each vector is encoded as a vector&lt;Vec3d&gt; \((votes, rho, theta)\).
-     * The larger the value of 'votes', the higher the reliability of the Hough line.
-     * @param lines_max Max count of hough lines.
-     * @param threshold Accumulator threshold parameter. Only those lines are returned that get enough
-     * votes ( \(&gt;\texttt{threshold}\) )
-     * @param min_rho Minimum Distance value of the accumulator in pixels.
-     * @param max_rho Maximum Distance value of the accumulator in pixels.
-     * @param rho_step Distance resolution of the accumulator in pixels.
-     * @param min_theta Minimum angle value of the accumulator in radians.
-     * @param max_theta Maximum angle value of the accumulator in radians.
-     * @param theta_step Angle resolution of the accumulator in radians.
+     * @param src           input image.
+     * @param dst           output image; it has the size dsize (when it is non-zero) or the size computed from
+     *                      src.size(), fx, and fy; the type of dst is the same as of src.
+     * @param dsize         output image size; if it equals zero ({@code None} in Python), it is computed as:
+     *                      \(\texttt{dsize = Size(round(fx*src.cols), round(fy*src.rows))}\)
+     *                      Either dsize or both fx and fy must be non-zero.
+     * @param fx            scale factor along the horizontal axis; when it equals 0, it is computed as
+     *                      \(\texttt{(double)dsize.width/src.cols}\)
+     * @param fy            scale factor along the vertical axis; when it equals 0, it is computed as
+     *                      \(\texttt{(double)dsize.height/src.rows}\)
+     * @param interpolation interpolation method, see #InterpolationFlags
+     *                      <p>
+     *                      SEE:  warpAffine, warpPerspective, remap
      */
-    public static void HoughLinesPointSet(Mat point, Mat lines, int lines_max, int threshold, double min_rho, double max_rho, double rho_step, double min_theta, double max_theta, double theta_step) {
-        HoughLinesPointSet_0(point.nativeObj, lines.nativeObj, lines_max, threshold, min_rho, max_rho, rho_step, min_theta, max_theta, theta_step);
+    public static void resize(Mat src, Mat dst, Size dsize, double fx, double fy, int interpolation) {
+        resize_0(src.nativeObj, dst.nativeObj, dsize.width, dsize.height, fx, fy, interpolation);
     }
 
 
@@ -4005,46 +4062,7 @@ public class Imgproc {
      * @param src input image.
      * @param dst output image; it has the size dsize (when it is non-zero) or the size computed from
      * src.size(), fx, and fy; the type of dst is the same as of src.
-     * @param dsize output image size; if it equals zero, it is computed as:
-     *  \(\texttt{dsize = Size(round(fx*src.cols), round(fy*src.rows))}\)
-     *  Either dsize or both fx and fy must be non-zero.
-     * @param fx scale factor along the horizontal axis; when it equals 0, it is computed as
-     * \(\texttt{(double)dsize.width/src.cols}\)
-     * @param fy scale factor along the vertical axis; when it equals 0, it is computed as
-     * \(\texttt{(double)dsize.height/src.rows}\)
-     * @param interpolation interpolation method, see #InterpolationFlags
-     *
-     * SEE:  warpAffine, warpPerspective, remap
-     */
-    public static void resize(Mat src, Mat dst, Size dsize, double fx, double fy, int interpolation) {
-        resize_0(src.nativeObj, dst.nativeObj, dsize.width, dsize.height, fx, fy, interpolation);
-    }
-
-    /**
-     * Resizes an image.
-     *
-     * The function resize resizes the image src down to or up to the specified size. Note that the
-     * initial dst type or size are not taken into account. Instead, the size and type are derived from
-     * the {@code src},{@code dsize},{@code fx}, and {@code fy}. If you want to resize src so that it fits the pre-created dst,
-     * you may call the function as follows:
-     * <code>
-     *     // explicitly specify dsize=dst.size(); fx and fy will be computed from that.
-     *     resize(src, dst, dst.size(), 0, 0, interpolation);
-     * </code>
-     * If you want to decimate the image by factor of 2 in each direction, you can call the function this
-     * way:
-     * <code>
-     *     // specify fx and fy and let the function compute the destination image size.
-     *     resize(src, dst, Size(), 0.5, 0.5, interpolation);
-     * </code>
-     * To shrink an image, it will generally look best with #INTER_AREA interpolation, whereas to
-     * enlarge an image, it will generally look best with c#INTER_CUBIC (slow) or #INTER_LINEAR
-     * (faster but still looks OK).
-     *
-     * @param src input image.
-     * @param dst output image; it has the size dsize (when it is non-zero) or the size computed from
-     * src.size(), fx, and fy; the type of dst is the same as of src.
-     * @param dsize output image size; if it equals zero, it is computed as:
+     * @param dsize output image size; if it equals zero ({@code None} in Python), it is computed as:
      *  \(\texttt{dsize = Size(round(fx*src.cols), round(fy*src.rows))}\)
      *  Either dsize or both fx and fy must be non-zero.
      * @param fx scale factor along the horizontal axis; when it equals 0, it is computed as
@@ -4082,7 +4100,7 @@ public class Imgproc {
      * @param src input image.
      * @param dst output image; it has the size dsize (when it is non-zero) or the size computed from
      * src.size(), fx, and fy; the type of dst is the same as of src.
-     * @param dsize output image size; if it equals zero, it is computed as:
+     * @param dsize output image size; if it equals zero ({@code None} in Python), it is computed as:
      *  \(\texttt{dsize = Size(round(fx*src.cols), round(fy*src.rows))}\)
      *  Either dsize or both fx and fy must be non-zero.
      * @param fx scale factor along the horizontal axis; when it equals 0, it is computed as
@@ -4119,7 +4137,7 @@ public class Imgproc {
      * @param src input image.
      * @param dst output image; it has the size dsize (when it is non-zero) or the size computed from
      * src.size(), fx, and fy; the type of dst is the same as of src.
-     * @param dsize output image size; if it equals zero, it is computed as:
+     * @param dsize output image size; if it equals zero ({@code None} in Python), it is computed as:
      *  \(\texttt{dsize = Size(round(fx*src.cols), round(fy*src.rows))}\)
      *  Either dsize or both fx and fy must be non-zero.
      * \(\texttt{(double)dsize.width/src.cols}\)
@@ -4129,6 +4147,56 @@ public class Imgproc {
      */
     public static void resize(Mat src, Mat dst, Size dsize) {
         resize_3(src.nativeObj, dst.nativeObj, dsize.width, dsize.height);
+    }
+
+    /**
+     * Remaps an image to semilog-polar coordinates space.
+     *
+     * @param src    Source image
+     * @param dst    Destination image. It will have same size and type as src.
+     * @param center The transformation center; where the output precision is maximal
+     * @param M      Magnitude scale parameter. It determines the radius of the bounding circle to transform too.
+     * @param flags  A combination of interpolation methods, see #InterpolationFlags
+     *
+     *               <b>Note:</b>
+     *               <ul>
+     *                 <li>
+     *                  The function can not operate in-place.
+     *                 </li>
+     *                 <li>
+     *                  To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are measured from 0 to 360 with accuracy about 0.3 degrees.
+     *                 </li>
+     *               </ul>
+     *               <p>
+     *               SEE: cv::linearPolar
+     * @deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius, flags+WARP_POLAR_LOG);
+     * <p>
+     * <p>
+     * Transform the source image using the following transformation (See REF: polar_remaps_reference_image "Polar remaps reference image d)"):
+     * \(\begin{array}{l}
+     * dst( \rho , \phi ) = src(x,y) \\
+     * dst.size() \leftarrow src.size()
+     * \end{array}\)
+     * <p>
+     * where
+     * \(\begin{array}{l}
+     * I = (dx,dy) = (x - center.x,y - center.y) \\
+     * \rho = M \cdot log_e(\texttt{magnitude} (I)) ,\\
+     * \phi = Kangle \cdot \texttt{angle} (I) \\
+     * \end{array}\)
+     * <p>
+     * and
+     * \(\begin{array}{l}
+     * M = src.cols / log_e(maxRadius) \\
+     * Kangle = src.rows / 2\Pi \\
+     * \end{array}\)
+     * <p>
+     * The function emulates the human "foveal" vision and can be used for fast scale and
+     * rotation-invariant template matching, for object tracking and so forth.
+     */
+    @Deprecated
+    public static void logPolar(Mat src, Mat dst, Point center, double M, int flags) {
+        logPolar_0(src.nativeObj, dst.nativeObj, center.x, center.y, M, flags);
     }
 
 
@@ -4728,6 +4796,68 @@ public class Imgproc {
         getRectSubPix_1(image.nativeObj, patchSize.width, patchSize.height, center.x, center.y, patch.nativeObj);
     }
 
+
+    //
+    // C++:  void cv::logPolar(Mat src, Mat& dst, Point2f center, double M, int flags)
+    //
+
+    /**
+     * Remaps an image to polar coordinates space.
+     *
+     * @param src       Source image
+     * @param dst       Destination image. It will have same size and type as src.
+     * @param center    The transformation center;
+     * @param maxRadius The radius of the bounding circle to transform. It determines the inverse magnitude scale parameter too.
+     * @param flags     A combination of interpolation methods, see #InterpolationFlags
+     *
+     *                  <b>Note:</b>
+     *                  <ul>
+     *                    <li>
+     *                     The function can not operate in-place.
+     *                    </li>
+     *                    <li>
+     *                     To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are measured from 0 to 360 with accuracy about 0.3 degrees.
+     *                    </li>
+     *                  </ul>
+     *                  <p>
+     *                  SEE: cv::logPolar
+     * @deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius, flags)
+     * <p>
+     * <p>
+     * Transform the source image using the following transformation (See REF: polar_remaps_reference_image "Polar remaps reference image c)"):
+     * \(\begin{array}{l}
+     * dst( \rho , \phi ) = src(x,y) \\
+     * dst.size() \leftarrow src.size()
+     * \end{array}\)
+     * <p>
+     * where
+     * \(\begin{array}{l}
+     * I = (dx,dy) = (x - center.x,y - center.y) \\
+     * \rho = Kmag \cdot \texttt{magnitude} (I) ,\\
+     * \phi = angle \cdot \texttt{angle} (I)
+     * \end{array}\)
+     * <p>
+     * and
+     * \(\begin{array}{l}
+     * Kx = src.cols / maxRadius \\
+     * Ky = src.rows / 2\Pi
+     * \end{array}\)
+     */
+    @Deprecated
+    public static void linearPolar(Mat src, Mat dst, Point center, double maxRadius, int flags) {
+        linearPolar_0(src.nativeObj, dst.nativeObj, center.x, center.y, maxRadius, flags);
+    }
+
+
+    //
+    // C++:  void cv::linearPolar(Mat src, Mat& dst, Point2f center, double maxRadius, int flags)
+    //
+
+    public static void integral(Mat src, Mat sum, int sdepth) {
+        integral_0(src.nativeObj, sum.nativeObj, sdepth);
+    }
+
+
     //
     // C++:  void cv::warpPolar(Mat src, Mat& dst, Size dsize, Point2f center, double maxRadius, int flags)
     //
@@ -4854,36 +4984,6 @@ public class Imgproc {
 
 
     //
-    // C++:  void cv::integral(Mat src, Mat& sum, int sdepth = -1)
-    //
-
-    public static void integral(Mat src, Mat sum, int sdepth) {
-        integral_0(src.nativeObj, sum.nativeObj, sdepth);
-    }
-
-    public static void integral(Mat src, Mat sum) {
-        integral_1(src.nativeObj, sum.nativeObj);
-    }
-
-
-    //
-    // C++:  void cv::integral(Mat src, Mat& sum, Mat& sqsum, int sdepth = -1, int sqdepth = -1)
-    //
-
-    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth, int sqdepth) {
-        integral2_0(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth, sqdepth);
-    }
-
-    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth) {
-        integral2_1(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth);
-    }
-
-    public static void integral2(Mat src, Mat sum, Mat sqsum) {
-        integral2_2(src.nativeObj, sum.nativeObj, sqsum.nativeObj);
-    }
-
-
-    //
     // C++:  void cv::integral(Mat src, Mat& sum, Mat& sqsum, Mat& tilted, int sdepth = -1, int sqdepth = -1)
     //
 
@@ -4999,6 +5099,46 @@ public class Imgproc {
      */
     public static void integral3(Mat src, Mat sum, Mat sqsum, Mat tilted) {
         integral3_2(src.nativeObj, sum.nativeObj, sqsum.nativeObj, tilted.nativeObj);
+    }
+
+
+    //
+    // C++:  void cv::integral(Mat src, Mat& sum, int sdepth = -1)
+    //
+
+    public static void integral(Mat src, Mat sum) {
+        integral_1(src.nativeObj, sum.nativeObj);
+    }
+
+    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth, int sqdepth) {
+        integral2_0(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth, sqdepth);
+    }
+
+
+    //
+    // C++:  void cv::integral(Mat src, Mat& sum, Mat& sqsum, int sdepth = -1, int sqdepth = -1)
+    //
+
+    public static void integral2(Mat src, Mat sum, Mat sqsum, int sdepth) {
+        integral2_1(src.nativeObj, sum.nativeObj, sqsum.nativeObj, sdepth);
+    }
+
+    public static void integral2(Mat src, Mat sum, Mat sqsum) {
+        integral2_2(src.nativeObj, sum.nativeObj, sqsum.nativeObj);
+    }
+
+    /**
+     *
+     *
+     * variant without {@code mask} parameter
+     * @param src1 automatically generated
+     * @param src2 automatically generated
+     * @param weights1 automatically generated
+     * @param weights2 automatically generated
+     * @param dst automatically generated
+     */
+    public static void blendLinear(Mat src1, Mat src2, Mat weights1, Mat weights2, Mat dst) {
+        blendLinear_0(src1.nativeObj, src2.nativeObj, weights1.nativeObj, weights2.nativeObj, dst.nativeObj);
     }
 
 
@@ -6789,8 +6929,28 @@ public class Imgproc {
     // C++:  void cv::blendLinear(Mat src1, Mat src2, Mat weights1, Mat weights2, Mat& dst)
     //
 
-    public static void blendLinear(Mat src1, Mat src2, Mat weights1, Mat weights2, Mat dst) {
-        blendLinear_0(src1.nativeObj, src2.nativeObj, weights1.nativeObj, weights2.nativeObj, dst.nativeObj);
+    /**
+     * computes the connected components labeled image of boolean image
+     *
+     * image with 4 or 8 way connectivity - returns N, the total number of labels [0, N-1] where 0
+     * represents the background label. ltype specifies the output label image type, an important
+     * consideration based on the total number of labels or alternatively the total number of pixels in
+     * the source image. ccltype specifies the connected components labeling algorithm to use, currently
+     * Bolelli (Spaghetti) CITE: Bolelli2019, Grana (BBDT) CITE: Grana2010 and Wu's (SAUF) CITE: Wu2009 algorithms
+     * are supported, see the #ConnectedComponentsAlgorithmsTypes for details. Note that SAUF algorithm forces
+     * a row major ordering of labels while Spaghetti and BBDT do not.
+     * This function uses parallel version of the algorithms if at least one allowed
+     * parallel framework is enabled and if the rows of the image are at least twice the number returned by #getNumberOfCPUs.
+     *
+     * @param image the 8-bit single-channel image to be labeled
+     * @param labels destination labeled image
+     * @param connectivity 8 or 4 for 8-way or 4-way connectivity respectively
+     * @param ltype output image label type. Currently CV_32S and CV_16U are supported.
+     * @param ccltype connected components algorithm type (see the #ConnectedComponentsAlgorithmsTypes).
+     * @return automatically generated
+     */
+    public static int connectedComponentsWithAlgorithm(Mat image, Mat labels, int connectivity, int ltype, int ccltype) {
+        return connectedComponentsWithAlgorithm_0(image.nativeObj, labels.nativeObj, connectivity, ltype, ccltype);
     }
 
 
@@ -7188,26 +7348,32 @@ public class Imgproc {
     //
 
     /**
-     * computes the connected components labeled image of boolean image
+     * computes the connected components labeled image of boolean image and also produces a statistics output for each label
      *
      * image with 4 or 8 way connectivity - returns N, the total number of labels [0, N-1] where 0
      * represents the background label. ltype specifies the output label image type, an important
      * consideration based on the total number of labels or alternatively the total number of pixels in
      * the source image. ccltype specifies the connected components labeling algorithm to use, currently
-     * Grana (BBDT) and Wu's (SAUF) CITE: Wu2009 algorithms are supported, see the #ConnectedComponentsAlgorithmsTypes
-     * for details. Note that SAUF algorithm forces a row major ordering of labels while BBDT does not.
-     * This function uses parallel version of both Grana and Wu's algorithms if at least one allowed
+     * Bolelli (Spaghetti) CITE: Bolelli2019, Grana (BBDT) CITE: Grana2010 and Wu's (SAUF) CITE: Wu2009 algorithms
+     * are supported, see the #ConnectedComponentsAlgorithmsTypes for details. Note that SAUF algorithm forces
+     * a row major ordering of labels while Spaghetti and BBDT do not.
+     * This function uses parallel version of the algorithms (statistics included) if at least one allowed
      * parallel framework is enabled and if the rows of the image are at least twice the number returned by #getNumberOfCPUs.
      *
      * @param image the 8-bit single-channel image to be labeled
      * @param labels destination labeled image
+     * @param stats statistics output for each label, including the background label.
+     * Statistics are accessed via stats(label, COLUMN) where COLUMN is one of
+     * #ConnectedComponentsTypes, selecting the statistic. The data type is CV_32S.
+     * @param centroids centroid output for each label, including the background label. Centroids are
+     * accessed via centroids(label, 0) for x and centroids(label, 1) for y. The data type CV_64F.
      * @param connectivity 8 or 4 for 8-way or 4-way connectivity respectively
      * @param ltype output image label type. Currently CV_32S and CV_16U are supported.
-     * @param ccltype connected components algorithm type (see the #ConnectedComponentsAlgorithmsTypes).
+     * @param ccltype connected components algorithm type (see #ConnectedComponentsAlgorithmsTypes).
      * @return automatically generated
      */
-    public static int connectedComponentsWithAlgorithm(Mat image, Mat labels, int connectivity, int ltype, int ccltype) {
-        return connectedComponentsWithAlgorithm_0(image.nativeObj, labels.nativeObj, connectivity, ltype, ccltype);
+    public static int connectedComponentsWithStatsWithAlgorithm(Mat image, Mat labels, Mat stats, Mat centroids, int connectivity, int ltype, int ccltype) {
+        return connectedComponentsWithStatsWithAlgorithm_0(image.nativeObj, labels.nativeObj, stats.nativeObj, centroids.nativeObj, connectivity, ltype, ccltype);
     }
 
 
@@ -7241,9 +7407,7 @@ public class Imgproc {
     }
 
     /**
-     *
-     *
-     * @param image the 8-bit single-channel image to be labeled
+     * @param image  the 8-bit single-channel image to be labeled
      * @param labels destination labeled image
      * @return automatically generated
      */
@@ -7257,31 +7421,37 @@ public class Imgproc {
     //
 
     /**
-     * computes the connected components labeled image of boolean image and also produces a statistics output for each label
+     * Finds contours in a binary image.
      *
-     * image with 4 or 8 way connectivity - returns N, the total number of labels [0, N-1] where 0
-     * represents the background label. ltype specifies the output label image type, an important
-     * consideration based on the total number of labels or alternatively the total number of pixels in
-     * the source image. ccltype specifies the connected components labeling algorithm to use, currently
-     * Grana's (BBDT) and Wu's (SAUF) CITE: Wu2009 algorithms are supported, see the #ConnectedComponentsAlgorithmsTypes
-     * for details. Note that SAUF algorithm forces a row major ordering of labels while BBDT does not.
-     * This function uses parallel version of both Grana and Wu's algorithms (statistics included) if at least one allowed
-     * parallel framework is enabled and if the rows of the image are at least twice the number returned by #getNumberOfCPUs.
+     * The function retrieves contours from the binary image using the algorithm CITE: Suzuki85 . The contours
+     * are a useful tool for shape analysis and object detection and recognition. See squares.cpp in the
+     * OpenCV sample directory.
+     * <b>Note:</b> Since opencv 3.2 source image is not modified by this function.
      *
-     * @param image the 8-bit single-channel image to be labeled
-     * @param labels destination labeled image
-     * @param stats statistics output for each label, including the background label.
-     * Statistics are accessed via stats(label, COLUMN) where COLUMN is one of
-     * #ConnectedComponentsTypes, selecting the statistic. The data type is CV_32S.
-     * @param centroids centroid output for each label, including the background label. Centroids are
-     * accessed via centroids(label, 0) for x and centroids(label, 1) for y. The data type CV_64F.
-     * @param connectivity 8 or 4 for 8-way or 4-way connectivity respectively
-     * @param ltype output image label type. Currently CV_32S and CV_16U are supported.
-     * @param ccltype connected components algorithm type (see #ConnectedComponentsAlgorithmsTypes).
-     * @return automatically generated
+     * @param image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero
+     * pixels remain 0's, so the image is treated as binary . You can use #compare, #inRange, #threshold ,
+     * #adaptiveThreshold, #Canny, and others to create a binary image out of a grayscale or color one.
+     * If mode equals to #RETR_CCOMP or #RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
+     * @param contours Detected contours. Each contour is stored as a vector of points (e.g.
+     * std::vector&lt;std::vector&lt;cv::Point&gt; &gt;).
+     * @param hierarchy Optional output vector (e.g. std::vector&lt;cv::Vec4i&gt;), containing information about the image topology. It has
+     * as many elements as the number of contours. For each i-th contour contours[i], the elements
+     * hierarchy[i][0] , hierarchy[i][1] , hierarchy[i][2] , and hierarchy[i][3] are set to 0-based indices
+     * in contours of the next and previous contours at the same hierarchical level, the first child
+     * contour and the parent contour, respectively. If for the contour i there are no next, previous,
+     * parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
+     * <b>Note:</b> In Python, hierarchy is nested inside a top level array. Use hierarchy[0][i] to access hierarchical elements of i-th contour.
+     * @param mode Contour retrieval mode, see #RetrievalModes
+     * @param method Contour approximation method, see #ContourApproximationModes
+     * @param offset Optional offset by which every contour point is shifted. This is useful if the
+     * contours are extracted from the image ROI and then they should be analyzed in the whole image
+     * context.
      */
-    public static int connectedComponentsWithStatsWithAlgorithm(Mat image, Mat labels, Mat stats, Mat centroids, int connectivity, int ltype, int ccltype) {
-        return connectedComponentsWithStatsWithAlgorithm_0(image.nativeObj, labels.nativeObj, stats.nativeObj, centroids.nativeObj, connectivity, ltype, ccltype);
+    public static void findContours(Mat image, List<MatOfPoint> contours, Mat hierarchy, int mode, int method, Point offset) {
+        Mat contours_mat = new Mat();
+        findContours_0(image.nativeObj, contours_mat.nativeObj, hierarchy.nativeObj, mode, method, offset.x, offset.y);
+        Converters.Mat_to_vector_vector_Point(contours_mat, contours);
+        contours_mat.release();
     }
 
 
@@ -7362,39 +7532,7 @@ public class Imgproc {
      * in contours of the next and previous contours at the same hierarchical level, the first child
      * contour and the parent contour, respectively. If for the contour i there are no next, previous,
      * parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
-     * @param mode Contour retrieval mode, see #RetrievalModes
-     * @param method Contour approximation method, see #ContourApproximationModes
-     * @param offset Optional offset by which every contour point is shifted. This is useful if the
-     * contours are extracted from the image ROI and then they should be analyzed in the whole image
-     * context.
-     */
-    public static void findContours(Mat image, List<MatOfPoint> contours, Mat hierarchy, int mode, int method, Point offset) {
-        Mat contours_mat = new Mat();
-        findContours_0(image.nativeObj, contours_mat.nativeObj, hierarchy.nativeObj, mode, method, offset.x, offset.y);
-        Converters.Mat_to_vector_vector_Point(contours_mat, contours);
-        contours_mat.release();
-    }
-
-    /**
-     * Finds contours in a binary image.
-     *
-     * The function retrieves contours from the binary image using the algorithm CITE: Suzuki85 . The contours
-     * are a useful tool for shape analysis and object detection and recognition. See squares.cpp in the
-     * OpenCV sample directory.
-     * <b>Note:</b> Since opencv 3.2 source image is not modified by this function.
-     *
-     * @param image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero
-     * pixels remain 0's, so the image is treated as binary . You can use #compare, #inRange, #threshold ,
-     * #adaptiveThreshold, #Canny, and others to create a binary image out of a grayscale or color one.
-     * If mode equals to #RETR_CCOMP or #RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
-     * @param contours Detected contours. Each contour is stored as a vector of points (e.g.
-     * std::vector&lt;std::vector&lt;cv::Point&gt; &gt;).
-     * @param hierarchy Optional output vector (e.g. std::vector&lt;cv::Vec4i&gt;), containing information about the image topology. It has
-     * as many elements as the number of contours. For each i-th contour contours[i], the elements
-     * hierarchy[i][0] , hierarchy[i][1] , hierarchy[i][2] , and hierarchy[i][3] are set to 0-based indices
-     * in contours of the next and previous contours at the same hierarchical level, the first child
-     * contour and the parent contour, respectively. If for the contour i there are no next, previous,
-     * parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
+     * <b>Note:</b> In Python, hierarchy is nested inside a top level array. Use hierarchy[0][i] to access hierarchical elements of i-th contour.
      * @param mode Contour retrieval mode, see #RetrievalModes
      * @param method Contour approximation method, see #ContourApproximationModes
      * contours are extracted from the image ROI and then they should be analyzed in the whole image
@@ -7405,6 +7543,24 @@ public class Imgproc {
         findContours_1(image.nativeObj, contours_mat.nativeObj, hierarchy.nativeObj, mode, method);
         Converters.Mat_to_vector_vector_Point(contours_mat, contours);
         contours_mat.release();
+    }
+
+    /**
+     * Draws an arrow segment pointing from the first point to the second one.
+     * <p>
+     * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
+     *
+     * @param img       Image.
+     * @param pt1       The point the arrow starts from.
+     * @param pt2       The point the arrow points to.
+     * @param color     Line color.
+     * @param thickness Line thickness.
+     * @param line_type Type of the line. See #LineTypes
+     * @param shift     Number of fractional bits in the point coordinates.
+     * @param tipLength The length of the arrow tip in relation to the arrow length
+     */
+    public static void arrowedLine(Mat img, Point pt1, Point pt2, Scalar color, int thickness, int line_type, int shift, double tipLength) {
+        arrowedLine_0(img.nativeObj, pt1.x, pt1.y, pt2.x, pt2.y, color.val[0], color.val[1], color.val[2], color.val[3], thickness, line_type, shift, tipLength);
     }
 
 
@@ -8191,25 +8347,7 @@ public class Imgproc {
     //
 
     /**
-     * Draws a arrow segment pointing from the first point to the second one.
-     *
-     * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
-     *
-     * @param img Image.
-     * @param pt1 The point the arrow starts from.
-     * @param pt2 The point the arrow points to.
-     * @param color Line color.
-     * @param thickness Line thickness.
-     * @param line_type Type of the line. See #LineTypes
-     * @param shift Number of fractional bits in the point coordinates.
-     * @param tipLength The length of the arrow tip in relation to the arrow length
-     */
-    public static void arrowedLine(Mat img, Point pt1, Point pt2, Scalar color, int thickness, int line_type, int shift, double tipLength) {
-        arrowedLine_0(img.nativeObj, pt1.x, pt1.y, pt2.x, pt2.y, color.val[0], color.val[1], color.val[2], color.val[3], thickness, line_type, shift, tipLength);
-    }
-
-    /**
-     * Draws a arrow segment pointing from the first point to the second one.
+     * Draws an arrow segment pointing from the first point to the second one.
      *
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
@@ -8226,7 +8364,7 @@ public class Imgproc {
     }
 
     /**
-     * Draws a arrow segment pointing from the first point to the second one.
+     * Draws an arrow segment pointing from the first point to the second one.
      *
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
@@ -8242,7 +8380,7 @@ public class Imgproc {
     }
 
     /**
-     * Draws a arrow segment pointing from the first point to the second one.
+     * Draws an arrow segment pointing from the first point to the second one.
      *
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
@@ -8257,17 +8395,52 @@ public class Imgproc {
     }
 
     /**
-     * Draws a arrow segment pointing from the first point to the second one.
-     *
+     * Draws an arrow segment pointing from the first point to the second one.
+     * <p>
      * The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
      *
-     * @param img Image.
-     * @param pt1 The point the arrow starts from.
-     * @param pt2 The point the arrow points to.
+     * @param img   Image.
+     * @param pt1   The point the arrow starts from.
+     * @param pt2   The point the arrow points to.
      * @param color Line color.
      */
     public static void arrowedLine(Mat img, Point pt1, Point pt2, Scalar color) {
         arrowedLine_4(img.nativeObj, pt1.x, pt1.y, pt2.x, pt2.y, color.val[0], color.val[1], color.val[2], color.val[3]);
+    }
+
+    /**
+     * Draws contours outlines or filled contours.
+     * <p>
+     * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area
+     * bounded by the contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve
+     * connected components from the binary image and label them: :
+     * INCLUDE: snippets/imgproc_drawContours.cpp
+     *
+     * @param image      Destination image.
+     * @param contours   All the input contours. Each contour is stored as a point vector.
+     * @param contourIdx Parameter indicating a contour to draw. If it is negative, all the contours are drawn.
+     * @param color      Color of the contours.
+     * @param thickness  Thickness of lines the contours are drawn with. If it is negative (for example,
+     *                   thickness=#FILLED ), the contour interiors are drawn.
+     * @param lineType   Line connectivity. See #LineTypes
+     * @param hierarchy  Optional information about hierarchy. It is only needed if you want to draw only
+     *                   some of the contours (see maxLevel ).
+     * @param maxLevel   Maximal level for drawn contours. If it is 0, only the specified contour is drawn.
+     *                   If it is 1, the function draws the contour(s) and all the nested contours. If it is 2, the function
+     *                   draws the contours, all the nested contours, all the nested-to-nested contours, and so on. This
+     *                   parameter is only taken into account when there is hierarchy available.
+     * @param offset     Optional contour shift parameter. Shift all the drawn contours by the specified
+     *                   \(\texttt{offset}=(dx,dy)\) .
+     *                   <b>Note:</b> When thickness=#FILLED, the function is designed to handle connected components with holes correctly
+     *                   even when no hierarchy data is provided. This is done by analyzing all the outlines together
+     *                   using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
+     *                   contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
+     *                   of contours, or iterate over the collection using contourIdx parameter.
+     */
+    public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color, int thickness, int lineType, Mat hierarchy, int maxLevel, Point offset) {
+        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
+        Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
+        drawContours_0(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType, hierarchy.nativeObj, maxLevel, offset.x, offset.y);
     }
 
 
@@ -8966,44 +9139,9 @@ public class Imgproc {
      * If it is 1, the function draws the contour(s) and all the nested contours. If it is 2, the function
      * draws the contours, all the nested contours, all the nested-to-nested contours, and so on. This
      * parameter is only taken into account when there is hierarchy available.
-     * @param offset Optional contour shift parameter. Shift all the drawn contours by the specified
      * \(\texttt{offset}=(dx,dy)\) .
      * <b>Note:</b> When thickness=#FILLED, the function is designed to handle connected components with holes correctly
-     * even when no hierarchy date is provided. This is done by analyzing all the outlines together
-     * using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
-     * contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
-     * of contours, or iterate over the collection using contourIdx parameter.
-     */
-    public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color, int thickness, int lineType, Mat hierarchy, int maxLevel, Point offset) {
-        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
-        Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
-        drawContours_0(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType, hierarchy.nativeObj, maxLevel, offset.x, offset.y);
-    }
-
-    /**
-     * Draws contours outlines or filled contours.
-     *
-     * The function draws contour outlines in the image if \(\texttt{thickness} \ge 0\) or fills the area
-     * bounded by the contours if \(\texttt{thickness}&lt;0\) . The example below shows how to retrieve
-     * connected components from the binary image and label them: :
-     * INCLUDE: snippets/imgproc_drawContours.cpp
-     *
-     * @param image Destination image.
-     * @param contours All the input contours. Each contour is stored as a point vector.
-     * @param contourIdx Parameter indicating a contour to draw. If it is negative, all the contours are drawn.
-     * @param color Color of the contours.
-     * @param thickness Thickness of lines the contours are drawn with. If it is negative (for example,
-     * thickness=#FILLED ), the contour interiors are drawn.
-     * @param lineType Line connectivity. See #LineTypes
-     * @param hierarchy Optional information about hierarchy. It is only needed if you want to draw only
-     * some of the contours (see maxLevel ).
-     * @param maxLevel Maximal level for drawn contours. If it is 0, only the specified contour is drawn.
-     * If it is 1, the function draws the contour(s) and all the nested contours. If it is 2, the function
-     * draws the contours, all the nested contours, all the nested-to-nested contours, and so on. This
-     * parameter is only taken into account when there is hierarchy available.
-     * \(\texttt{offset}=(dx,dy)\) .
-     * <b>Note:</b> When thickness=#FILLED, the function is designed to handle connected components with holes correctly
-     * even when no hierarchy date is provided. This is done by analyzing all the outlines together
+     * even when no hierarchy data is provided. This is done by analyzing all the outlines together
      * using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
      * contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
      * of contours, or iterate over the collection using contourIdx parameter.
@@ -9036,7 +9174,7 @@ public class Imgproc {
      * parameter is only taken into account when there is hierarchy available.
      * \(\texttt{offset}=(dx,dy)\) .
      * <b>Note:</b> When thickness=#FILLED, the function is designed to handle connected components with holes correctly
-     * even when no hierarchy date is provided. This is done by analyzing all the outlines together
+     * even when no hierarchy data is provided. This is done by analyzing all the outlines together
      * using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
      * contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
      * of contours, or iterate over the collection using contourIdx parameter.
@@ -9068,7 +9206,7 @@ public class Imgproc {
      * parameter is only taken into account when there is hierarchy available.
      * \(\texttt{offset}=(dx,dy)\) .
      * <b>Note:</b> When thickness=#FILLED, the function is designed to handle connected components with holes correctly
-     * even when no hierarchy date is provided. This is done by analyzing all the outlines together
+     * even when no hierarchy data is provided. This is done by analyzing all the outlines together
      * using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
      * contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
      * of contours, or iterate over the collection using contourIdx parameter.
@@ -9099,7 +9237,7 @@ public class Imgproc {
      * parameter is only taken into account when there is hierarchy available.
      * \(\texttt{offset}=(dx,dy)\) .
      * <b>Note:</b> When thickness=#FILLED, the function is designed to handle connected components with holes correctly
-     * even when no hierarchy date is provided. This is done by analyzing all the outlines together
+     * even when no hierarchy data is provided. This is done by analyzing all the outlines together
      * using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
      * contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
      * of contours, or iterate over the collection using contourIdx parameter.
@@ -9129,7 +9267,7 @@ public class Imgproc {
      * parameter is only taken into account when there is hierarchy available.
      * \(\texttt{offset}=(dx,dy)\) .
      * <b>Note:</b> When thickness=#FILLED, the function is designed to handle connected components with holes correctly
-     * even when no hierarchy date is provided. This is done by analyzing all the outlines together
+     * even when no hierarchy data is provided. This is done by analyzing all the outlines together
      * using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
      * contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
      * of contours, or iterate over the collection using contourIdx parameter.
@@ -9139,6 +9277,9 @@ public class Imgproc {
         Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
         drawContours_5(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
+
+    // C++:  void cv::integral(Mat src, Mat& sum, Mat& sqsum, Mat& tilted, int sdepth = -1, int sqdepth = -1)
+    private static native void integral3_0(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, long tilted_nativeObj, int sdepth, int sqdepth);
 
 
     //
@@ -9635,6 +9776,7 @@ public static Size getTextSize(String text, int fontFace, double fontScale, int 
 
     // C++:  Mat cv::getPerspectiveTransform(Mat src, Mat dst, int solveMethod = DECOMP_LU)
     private static native long getPerspectiveTransform_0(long src_nativeObj, long dst_nativeObj, int solveMethod);
+
     private static native long getPerspectiveTransform_1(long src_nativeObj, long dst_nativeObj);
 
     // C++:  Mat cv::getAffineTransform(vector_Point2f src, vector_Point2f dst)
@@ -9642,6 +9784,7 @@ public static Size getTextSize(String text, int fontFace, double fontScale, int 
 
     // C++:  void cv::getRectSubPix(Mat image, Size patchSize, Point2f center, Mat& patch, int patchType = -1)
     private static native void getRectSubPix_0(long image_nativeObj, double patchSize_width, double patchSize_height, double center_x, double center_y, long patch_nativeObj, int patchType);
+
     private static native void getRectSubPix_1(long image_nativeObj, double patchSize_width, double patchSize_height, double center_x, double center_y, long patch_nativeObj);
 
     // C++:  void cv::logPolar(Mat src, Mat& dst, Point2f center, double M, int flags)
@@ -9653,6 +9796,11 @@ public static Size getTextSize(String text, int fontFace, double fontScale, int 
     // C++:  void cv::warpPolar(Mat src, Mat& dst, Size dsize, Point2f center, double maxRadius, int flags)
     private static native void warpPolar_0(long src_nativeObj, long dst_nativeObj, double dsize_width, double dsize_height, double center_x, double center_y, double maxRadius, int flags);
 
+    private static native void integral3_1(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, long tilted_nativeObj, int sdepth);
+
+    private static native void integral3_2(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, long tilted_nativeObj);
+
+
     // C++:  void cv::integral(Mat src, Mat& sum, int sdepth = -1)
     private static native void integral_0(long src_nativeObj, long sum_nativeObj, int sdepth);
     private static native void integral_1(long src_nativeObj, long sum_nativeObj);
@@ -9661,11 +9809,6 @@ public static Size getTextSize(String text, int fontFace, double fontScale, int 
     private static native void integral2_0(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, int sdepth, int sqdepth);
     private static native void integral2_1(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, int sdepth);
     private static native void integral2_2(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj);
-
-    // C++:  void cv::integral(Mat src, Mat& sum, Mat& sqsum, Mat& tilted, int sdepth = -1, int sqdepth = -1)
-    private static native void integral3_0(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, long tilted_nativeObj, int sdepth, int sqdepth);
-    private static native void integral3_1(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, long tilted_nativeObj, int sdepth);
-    private static native void integral3_2(long src_nativeObj, long sum_nativeObj, long sqsum_nativeObj, long tilted_nativeObj);
 
     // C++:  void cv::accumulate(Mat src, Mat& dst, Mat mask = Mat())
     private static native void accumulate_0(long src_nativeObj, long dst_nativeObj, long mask_nativeObj);

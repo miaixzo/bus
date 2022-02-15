@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,7 +34,7 @@ import java.util.List;
  * 网络操作系统
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class NOS extends UserAgent {
@@ -49,8 +49,8 @@ public class NOS extends UserAgent {
      */
     public static final List<NOS> OSES = CollKit.newArrayList(
             new NOS("Windows 10 or Windows Server 2016", "windows nt 10\\.0"),
-            new NOS("Windows 8.1 or Winsows Server 2012R2", "windows nt 6\\.3"),
-            new NOS("Windows 8 or Winsows Server 2012", "windows nt 6\\.2"),
+            new NOS("Windows 8.1 or Windows Server 2012R2", "windows nt 6\\.3"),
+            new NOS("Windows 8 or Windows Server 2012", "windows nt 6\\.2"),
             new NOS("Windows Vista", "windows nt 6\\.0"),
             new NOS("Windows 7 or Windows Server 2008R2", "windows nt 6\\.1"),
             new NOS("Windows 2003", "windows nt 5\\.2"),

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -44,7 +44,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class RandomKit {
@@ -401,6 +401,19 @@ public class RandomKit {
      */
     public static String randomStringUpper(int length) {
         return randomString(Normal.LOWER_NUMBER, length).toUpperCase();
+    }
+
+    /**
+     * 获得一个随机的字符串（只包含数字和小写字母） 并排除指定字符串
+     *
+     * @param length   字符串的长度
+     * @param elemData 要排除的字符串,如：去重容易混淆的字符串，oO0、lL1、q9Q、pP，不区分大小写
+     * @return 随机字符串
+     */
+    public static String randomStringWithout(int length, String elemData) {
+        String baseStr = Normal.LOWER_NUMBER;
+        baseStr = StringKit.removeAll(baseStr, elemData.toLowerCase().toCharArray());
+        return randomString(baseStr, length);
     }
 
     /**

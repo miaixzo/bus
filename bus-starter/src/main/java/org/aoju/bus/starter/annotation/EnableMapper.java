@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.annotation;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.starter.druid.DruidConfiguration;
+import org.aoju.bus.starter.jdbc.JdbcConfiguration;
 import org.aoju.bus.starter.mapper.MapperConfiguration;
 import org.aoju.bus.starter.mapper.MapperFactoryBean;
 import org.aoju.bus.starter.mapper.MapperScannerRegistrar;
@@ -39,14 +39,14 @@ import java.lang.annotation.*;
  * 开启 Mybatis/Mapper
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Inherited
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({DruidConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class})
+@Import({JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class})
 public @interface EnableMapper {
 
     /**

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Normal;
  * 推荐使用FNV1算法
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class HashKit {
@@ -411,7 +411,7 @@ public class HashKit {
                 if (ucChar <= 'Z' && ucChar >= 'A') {
                     ucChar = (char) (ucChar + Normal._32);
                 }
-                hash += (3 * i * ucChar * ucChar + 5 * i * ucChar + 7 * i + 11 * ucChar) % 16777216;
+                hash += (3L * i * ucChar * ucChar + 5L * i * ucChar + 7L * i + 11 * ucChar) % 16777216;
             }
         } else {
             for (i = 1; i <= 96; i++) {
@@ -419,7 +419,7 @@ public class HashKit {
                 if (ucChar <= 'Z' && ucChar >= 'A') {
                     ucChar = (char) (ucChar + Normal._32);
                 }
-                hash += (3 * i * ucChar * ucChar + 5 * i * ucChar + 7 * i + 11 * ucChar) % 16777216;
+                hash += (3L * i * ucChar * ucChar + 5L * i * ucChar + 7L * i + 11 * ucChar) % 16777216;
             }
         }
         if (hash < 0) {

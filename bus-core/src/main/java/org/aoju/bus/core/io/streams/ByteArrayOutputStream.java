@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,7 +40,7 @@ import java.io.OutputStream;
  * 避免重新分配内存块而是分配新增的缓冲区,缓冲区不会被GC,数据也不会被拷贝到其他缓冲区
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ByteArrayOutputStream extends OutputStream {
@@ -140,7 +140,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * @return 字符串
      */
     public String toString(java.nio.charset.Charset charset) {
-        return new String(toByteArray(), ObjectKit.defaultIfNull(charset, Charset.defaultCharset()));
+        return new String(toByteArray(), ObjectKit.defaultIfNull(charset, Charset::defaultCharset));
     }
 
 }

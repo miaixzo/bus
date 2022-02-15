@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2022 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,14 +37,11 @@ import java.util.List;
  * Utility to query lscfg
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @ThreadSafe
 public final class Lscfg {
-
-    private Lscfg() {
-    }
 
     /**
      * Query {@code lscfg -vp} to get all hardware devices
@@ -113,6 +110,14 @@ public final class Lscfg {
         String model = null;
         String serial = null;
         for (String s : Executor.runNative("lscfg -vl " + device)) {
+            // Default model to description at end of first line
+            if (model == null && s.contains(device)) {
+                String locDesc = s.split(device)[1].trim();
+                int idx = locDesc.indexOf(' ');
+                if (idx > 0) {
+                    model = locDesc.substring(idx).trim();
+                }
+            }
             if (s.contains(modelMarker)) {
                 model = Builder.removeLeadingDots(s.split(modelMarker)[1].trim());
             } else if (s.contains(serialMarker)) {

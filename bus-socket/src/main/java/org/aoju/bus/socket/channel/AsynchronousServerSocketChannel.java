@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
 
 /**
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class AsynchronousServerSocketChannel extends java.nio.channels.AsynchronousServerSocketChannel {
@@ -121,7 +121,6 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
                 acceptWorker.addRegister(selector -> {
                     try {
                         selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-                        selectionKey.attach(AsynchronousServerSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         acceptCompletionHandler.failed(e, attachment);
                     }

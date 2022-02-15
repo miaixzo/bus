@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,7 +40,7 @@ import java.util.TimeZone;
  * 日期转换
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Converter extends Formatter {
@@ -591,6 +591,20 @@ public class Converter extends Formatter {
      */
     public static long toEpochMilli(ZonedDateTime zonedDateTime) {
         return zonedDateTime.toInstant().toEpochMilli();
+    }
+
+    /**
+     * {@link TemporalAccessor}转换为 时间戳（从1970-01-01T00:00:00Z开始的毫秒数）
+     * 如果为{@link Month}，调用{@link Month#getValue()}
+     *
+     * @param temporalAccessor Date对象
+     * @return {@link Instant}对象
+     */
+    public static long toEpochMilli(TemporalAccessor temporalAccessor) {
+        if (temporalAccessor instanceof Month) {
+            return ((Month) temporalAccessor).getValue();
+        }
+        return toInstant(temporalAccessor).toEpochMilli();
     }
 
     /**

@@ -70,7 +70,7 @@ dependencies {
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-gitlab</artifactId>
-    <version>6.3.3</version>
+    <version>6.3.5</version>
 </dependency>
 ```
 

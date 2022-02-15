@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,7 +33,6 @@ import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.*;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -41,7 +40,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class FileWriter extends FileWrapper {
@@ -180,7 +179,7 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InstrumentException IO异常
      */
-    public <T> File writeLines(Collection<T> list) throws InstrumentException {
+    public <T> File writeLines(Iterable<T> list) throws InstrumentException {
         return writeLines(list, false);
     }
 
@@ -192,7 +191,7 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InstrumentException IO异常
      */
-    public <T> File appendLines(Collection<T> list) throws InstrumentException {
+    public <T> File appendLines(Iterable<T> list) throws InstrumentException {
         return writeLines(list, true);
     }
 
@@ -205,7 +204,7 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InstrumentException IO异常
      */
-    public <T> File writeLines(Collection<T> list, boolean isAppend) throws InstrumentException {
+    public <T> File writeLines(Iterable<T> list, boolean isAppend) throws InstrumentException {
         return writeLines(list, null, isAppend);
     }
 
@@ -219,12 +218,22 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InstrumentException IO异常
      */
-    public <T> File writeLines(Collection<T> list, LineSeparator lineSeparator, boolean isAppend) throws InstrumentException {
+    public <T> File writeLines(Iterable<T> list, LineSeparator lineSeparator, boolean isAppend) throws InstrumentException {
         try (PrintWriter writer = getPrintWriter(isAppend)) {
+            boolean isFirst = true;
             for (T t : list) {
                 if (null != t) {
+                    if (isFirst) {
+                        isFirst = false;
+                        if (isAppend && FileKit.isNotEmpty(this.file)) {
+                            // 追加模式下且文件非空，补充换行符
+                            printNewLine(writer, lineSeparator);
+                        }
+                    } else {
+                        printNewLine(writer, lineSeparator);
+                    }
                     writer.print(t);
-                    printNewLine(writer, lineSeparator);
+
                     writer.flush();
                 }
             }

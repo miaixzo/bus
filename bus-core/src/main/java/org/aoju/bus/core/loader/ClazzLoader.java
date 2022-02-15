@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @param <T> {@link Resource}接口实现类
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ClazzLoader<T extends Resource> extends SecureClassLoader {
@@ -31,8 +31,8 @@ public class ClazzLoader<T extends Resource> extends SecureClassLoader {
      * @param resourceMap       资源map
      */
     public ClazzLoader(ClassLoader parentClassLoader, Map<String, T> resourceMap) {
-        super(ObjectKit.defaultIfNull(parentClassLoader, ClassKit.getClassLoader()));
-        this.resourceMap = ObjectKit.defaultIfNull(resourceMap, new HashMap<>());
+        super(ObjectKit.defaultIfNull(parentClassLoader, ClassKit::getClassLoader));
+        this.resourceMap = ObjectKit.defaultIfNull(resourceMap, HashMap::new);
         this.cacheClassMap = new HashMap<>();
     }
 

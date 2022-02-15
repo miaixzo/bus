@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,7 +28,7 @@ package org.aoju.bus.starter.cache;
 import lombok.Data;
 import org.aoju.bus.cache.CacheX;
 import org.aoju.bus.starter.BusXExtend;
-import org.aoju.bus.starter.druid.DruidProperties;
+import org.aoju.bus.starter.jdbc.JdbcProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ import java.util.Map;
  * 缓存相关配置
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Data
@@ -63,6 +63,6 @@ public class CacheProperties {
     /**
      * 存储信息
      */
-    private DruidProperties provider;
+    private JdbcProperties provider;
 
 }

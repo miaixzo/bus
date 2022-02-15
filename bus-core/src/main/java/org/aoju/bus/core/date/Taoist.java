@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org 6tail and other contributors.                *
+ * Copyright (c) 2015-2022 aoju.org 6tail and other contributors.                *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,7 +35,7 @@ import java.util.*;
  * 道历
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Taoist {
@@ -55,6 +55,12 @@ public class Taoist {
      * 五腊日
      */
     public static final String[] WU_LA = {"1-1", "5-5", "7-7", "10-1", "12-8"};
+
+    /**
+     * 暗戊
+     */
+    public static final String[] AN_WU = {"未", "戌", "辰", "寅", "午", "子", "酉", "申", "巳", "亥", "卯", "丑"};
+
     /**
      * 日期对应的节日
      */
@@ -331,6 +337,62 @@ public class Taoist {
      */
     public boolean isDayBaHui() {
         return BA_HUI.containsKey(lunar.getDayInGanZhi());
+    }
+
+    /**
+     * 是否明戊日
+     *
+     * @return true/false
+     */
+    public boolean isDayMingWu() {
+        return "戊".equals(lunar.getDayGan());
+    }
+
+    /**
+     * 是否暗戊日
+     *
+     * @return true/false
+     */
+    public boolean isDayAnWu() {
+        return lunar.getDayZhi().equals(AN_WU[Math.abs(getMonth()) - 1]);
+    }
+
+    /**
+     * 是否戊日
+     *
+     * @return true/false
+     */
+    public boolean isDayWu() {
+        return isDayMingWu() || isDayAnWu();
+    }
+
+    /**
+     * 是否天赦日
+     *
+     * @return true/false
+     */
+    public boolean isDayTianShe() {
+        boolean ret = false;
+        String mz = lunar.getMonthZhi();
+        String dgz = lunar.getDayInGanZhi();
+        if ("寅卯辰".contains(mz)) {
+            if ("戊寅".equals(dgz)) {
+                ret = true;
+            }
+        } else if ("巳午未".contains(mz)) {
+            if ("甲午".equals(dgz)) {
+                ret = true;
+            }
+        } else if ("申酉戌".contains(mz)) {
+            if ("戊申".equals(dgz)) {
+                ret = true;
+            }
+        } else if ("亥子丑".contains(mz)) {
+            if ("甲子".equals(dgz)) {
+                ret = true;
+            }
+        }
+        return ret;
     }
 
     @Override

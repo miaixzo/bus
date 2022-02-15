@@ -466,12 +466,23 @@ public class Mat {
     // C++: Mat Mat::mul(Mat m, double scale = 1)
     //
 
-    // javadoc: Mat::mul(m, scale)
+    private static native long n_matMul(long nativeObj, long m_nativeObj);
+
+    /**
+     * Element-wise multiplication with scale factor
+     *
+     * @param m     operand with with which to perform element-wise multiplication
+     * @param scale scale factor
+     */
     public Mat mul(Mat m, double scale) {
         return new Mat(n_mul(nativeObj, m.nativeObj, scale));
     }
 
-    // javadoc: Mat::mul(m)
+    /**
+     * Element-wise multiplication
+     *
+     * @param m operand with with which to perform element-wise multiplication
+     */
     public Mat mul(Mat m) {
         return new Mat(n_mul(nativeObj, m.nativeObj));
     }
@@ -1128,37 +1139,31 @@ public class Mat {
         return cols();
     }
 
+    /**
+     * Matrix multiplication
+     *
+     * @param m operand with with which to perform matrix multiplication
+     * @see Core#gemm(Mat, Mat, double, Mat, double, Mat, int)
+     */
+    public Mat matMul(Mat m) {
+        return new Mat(n_matMul(nativeObj, m.nativeObj));
+    }
+
     // javadoc:Mat::at(clazz, row, col)
+    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
-            return (Atable<T>)new AtableByte(this, row, col);
+            return (Atable<T>) new AtableByte(this, row, col);
         } else if (clazz == Double.class || clazz == double.class) {
-            return (Atable<T>)new AtableDouble(this, row, col);
+            return (Atable<T>) new AtableDouble(this, row, col);
         } else if (clazz == Float.class || clazz == float.class) {
-            return (Atable<T>)new AtableFloat(this, row, col);
+            return (Atable<T>) new AtableFloat(this, row, col);
         } else if (clazz == Integer.class || clazz == int.class) {
             return (Atable<T>)new AtableInteger(this, row, col);
         } else if (clazz == Short.class || clazz == short.class) {
             return (Atable<T>)new AtableShort(this, row, col);
         } else {
             throw new RuntimeException("Unsupported class type");
-        }
-    }
-
-    // javadoc:Mat::at(clazz, idx)
-    public <T> Atable<T> at(Class<T> clazz, int[] idx) {
-        if (clazz == Byte.class || clazz == byte.class) {
-            return (Atable<T>)new AtableByte(this, idx);
-        } else if (clazz == Double.class || clazz == double.class) {
-            return (Atable<T>)new AtableDouble(this, idx);
-        } else if (clazz == Float.class || clazz == float.class) {
-            return (Atable<T>)new AtableFloat(this, idx);
-        } else if (clazz == Integer.class || clazz == int.class) {
-            return (Atable<T>)new AtableInteger(this, idx);
-        } else if (clazz == Short.class || clazz == short.class) {
-            return (Atable<T>)new AtableShort(this, idx);
-        } else {
-            throw new RuntimeException("Unsupported class parameter");
         }
     }
 
@@ -1729,6 +1734,24 @@ public class Mat {
     private static native long n_mul(long nativeObj, long m_nativeObj, double scale);
 
     private static native long n_mul(long nativeObj, long m_nativeObj);
+
+    // javadoc:Mat::at(clazz, idx)
+    @SuppressWarnings("unchecked")
+    public <T> Atable<T> at(Class<T> clazz, int[] idx) {
+        if (clazz == Byte.class || clazz == byte.class) {
+            return (Atable<T>) new AtableByte(this, idx);
+        } else if (clazz == Double.class || clazz == double.class) {
+            return (Atable<T>) new AtableDouble(this, idx);
+        } else if (clazz == Float.class || clazz == float.class) {
+            return (Atable<T>) new AtableFloat(this, idx);
+        } else if (clazz == Integer.class || clazz == int.class) {
+            return (Atable<T>) new AtableInteger(this, idx);
+        } else if (clazz == Short.class || clazz == short.class) {
+            return (Atable<T>) new AtableShort(this, idx);
+        } else {
+            throw new RuntimeException("Unsupported class parameter");
+        }
+    }
 
     // C++: static Mat Mat::ones(int rows, int cols, int type)
     private static native long n_ones(int rows, int cols, int type);

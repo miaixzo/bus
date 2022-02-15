@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ThreadKit {
@@ -50,7 +50,6 @@ public class ThreadKit {
      *    1. 初始线程数为corePoolSize指定的大小
      *    2. 没有最大线程数限制
      *    3. 默认使用LinkedBlockingQueue，默认队列大小为1024
-     *    4. 当运行线程大于corePoolSize放入队列，队列满后抛出异常
      * </pre>
      *
      * @param corePoolSize 同时执行的线程数大小
@@ -623,8 +622,19 @@ public class ThreadKit {
 
 
     public static final class FastBufferThread extends Thread {
+
+        private int pageIndex;
+
         public FastBufferThread(Runnable target, String name) {
             super(target, name);
+        }
+
+        public int getPageIndex() {
+            return pageIndex;
+        }
+
+        public void setPageIndex(int pageIndex) {
+            this.pageIndex = pageIndex;
         }
     }
 

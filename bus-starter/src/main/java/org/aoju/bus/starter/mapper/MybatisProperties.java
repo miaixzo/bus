@@ -20,7 +20,7 @@ import java.util.Properties;
  * mybatis配置项
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Data

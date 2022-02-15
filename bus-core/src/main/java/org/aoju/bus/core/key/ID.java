@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,7 @@
 package org.aoju.bus.core.key;
 
 import org.aoju.bus.core.instance.Instances;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.NetKit;
 import org.aoju.bus.core.toolkit.RuntimeKit;
@@ -38,7 +39,7 @@ import org.aoju.bus.core.toolkit.RuntimeKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ID {
@@ -173,8 +174,17 @@ public class ID {
      * @return 数据中心ID
      */
     public static long getDataCenterId(long maxDatacenterId) {
+        Assert.isTrue(maxDatacenterId > 0, "maxDatacenterId must be > 0");
+        if (maxDatacenterId == Long.MAX_VALUE) {
+            maxDatacenterId -= 1;
+        }
         long id = 1L;
-        final byte[] mac = NetKit.getLocalHardwareAddress();
+        byte[] mac = null;
+        try {
+            mac = NetKit.getLocalHardwareAddress();
+        } catch (InstrumentException ignore) {
+            // ignore
+        }
         if (null != mac) {
             id = ((0x000000FF & (long) mac[mac.length - 2])
                     | (0x0000FF00 & (((long) mac[mac.length - 1]) << 8))) >> 6;

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
+ * Copyright (c) 2015-2022 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,7 +35,7 @@ import java.util.Properties;
  * 使用提供的 Configuration 可以在纯 Java 或者 Spring(mybatis-spring-1.3.0+) 模式中使用
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Configuration extends org.apache.ibatis.session.Configuration {

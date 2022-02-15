@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
- * AIO传输层会话。
+ * AIO传输层会话
  * <p>
  * AioSession为bus-socket最核心的类，封装{@link AsynchronousSocketChannel} API接口，简化IO操作
  * 其中开放给用户使用的接口为：
@@ -61,7 +61,7 @@ import java.util.function.Consumer;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class TcpAioSession<T> extends AioSession {
@@ -89,7 +89,7 @@ public class TcpAioSession<T> extends AioSession {
     /**
      * 服务配置
      */
-    private final ServerConfig<T> serverConfig;
+    private final ServerConfig serverConfig;
     /**
      * 是否读通道以至末尾
      */
@@ -117,7 +117,7 @@ public class TcpAioSession<T> extends AioSession {
      * @param completionWriteHandler 写回调
      * @param pageBuffer             绑定内存页
      */
-    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig<T> config, CompletionReadHandler<T> completionReadHandler, CompletionWriteHandler<T> completionWriteHandler, PageBuffer pageBuffer) {
+    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig config, CompletionReadHandler<T> completionReadHandler, CompletionWriteHandler<T> completionWriteHandler, PageBuffer pageBuffer) {
         this.channel = channel;
         this.completionReadHandler = completionReadHandler;
         this.completionWriteHandler = completionWriteHandler;
@@ -158,7 +158,7 @@ public class TcpAioSession<T> extends AioSession {
         if (null == writeBuffer) {
             writeBuffer = byteBuf.poll();
         } else if (!writeBuffer.buffer().hasRemaining()) {
-            byteBuf.reuse(writeBuffer);
+            writeBuffer.clean();
             writeBuffer = byteBuf.poll();
         }
 
@@ -225,7 +225,7 @@ public class TcpAioSession<T> extends AioSession {
      *
      * @return sessionId
      */
-    public final String getSessionID() {
+    public String getSessionID() {
         return "aioSession-" + hashCode();
     }
 
@@ -234,7 +234,7 @@ public class TcpAioSession<T> extends AioSession {
      *
      * @return 是否失效
      */
-    public final boolean isInvalid() {
+    public boolean isInvalid() {
         return status != SESSION_STATUS_ENABLED;
     }
 
@@ -252,9 +252,9 @@ public class TcpAioSession<T> extends AioSession {
             return;
         }
         final ByteBuffer readBuffer = this.readBuffer.buffer();
-        final MessageProcessor<T> messageProcessor = serverConfig.getProcessor();
+        final MessageProcessor messageProcessor = serverConfig.getProcessor();
         while (readBuffer.hasRemaining() && status == SESSION_STATUS_ENABLED) {
-            T dataEntry;
+            Object dataEntry;
             try {
                 dataEntry = serverConfig.getProtocol().decode(readBuffer, this);
             } catch (Exception e) {
@@ -365,7 +365,7 @@ public class TcpAioSession<T> extends AioSession {
         }
     }
 
-    public ServerConfig<T> getServerConfig() {
+    public ServerConfig getServerConfig() {
         return this.serverConfig;
     }
 

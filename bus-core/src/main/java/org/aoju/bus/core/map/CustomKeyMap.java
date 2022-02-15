@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,6 +26,7 @@
 package org.aoju.bus.core.map;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * 自定义键的Map,默认HashMap实现
@@ -33,10 +34,12 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 构造
@@ -86,6 +89,26 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
     @Override
     public V replace(K key, V value) {
         return super.replace((K) customKey(key), value);
+    }
+
+    @Override
+    public V getOrDefault(Object key, V defaultValue) {
+        return super.getOrDefault(customKey(key), defaultValue);
+    }
+
+    @Override
+    public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        return super.computeIfPresent((K) customKey(key), remappingFunction);
+    }
+
+    @Override
+    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+        return super.compute((K) customKey(key), remappingFunction);
+    }
+
+    @Override
+    public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+        return super.merge((K) customKey(key), value, remappingFunction);
     }
 
     /**

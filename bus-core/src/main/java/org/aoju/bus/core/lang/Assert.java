@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * 断言某些对象或值是否符合规定,否则抛出异常 经常用于做变量检查
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Assert {
@@ -90,7 +90,7 @@ public class Assert {
      * Assert.isTrue(i &gt; 0, "The value must be greater than zero");
      * </pre>
      *
-     * @param expression       波尔值
+     * @param expression       布尔值
      * @param errorMsgTemplate 错误抛出异常附带的消息模板,变量用{}代替
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
@@ -108,7 +108,7 @@ public class Assert {
      * Assert.isTrue(i &gt; 0, "The value must be greater than zero");
      * </pre>
      *
-     * @param expression 波尔值
+     * @param expression 布尔值
      * @throws IllegalArgumentException if expression is {@code false}
      */
     public static void isTrue(boolean expression) throws IllegalArgumentException {
@@ -141,7 +141,7 @@ public class Assert {
      * Assert.isFalse(i &lt; 0, "The value must be greater than zero");
      * </pre>
      *
-     * @param expression       波尔值
+     * @param expression       布尔值
      * @param errorMsgTemplate 错误抛出异常附带的消息模板,变量用{}代替
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
@@ -159,7 +159,7 @@ public class Assert {
      * Assert.isFalse(i &lt; 0);
      * </pre>
      *
-     * @param expression 波尔值
+     * @param expression 布尔值
      * @throws IllegalArgumentException if expression is {@code false}
      */
     public static void isFalse(boolean expression) throws IllegalArgumentException {

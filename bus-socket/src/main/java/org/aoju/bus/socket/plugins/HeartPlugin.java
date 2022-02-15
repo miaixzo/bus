@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 心跳插件
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
@@ -144,7 +144,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
 
     private void registerHeart(final AioSession session, final long heartRate) {
         if (heartRate <= 0) {
-            Logger.info("sesssion:{} 因心跳超时时间为:{},终止启动心跳监测任务", session, heartRate);
+            Logger.info("session:{} 因心跳超时时间为:{},终止启动心跳监测任务", session, heartRate);
             return;
         }
         Logger.debug("session:{}注册心跳任务,超时时间:{}", session, heartRate);

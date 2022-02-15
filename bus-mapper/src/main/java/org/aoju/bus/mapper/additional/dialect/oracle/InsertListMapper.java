@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org mybatis.io and other contributors.           *
+ * Copyright (c) 2015-2022 aoju.org mybatis.io and other contributors.           *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,7 +37,7 @@ import java.util.List;
  * 因INSERT ALL语法不支持序列，可手工获取序列并设置至Entity或绑定触发器
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @RegisterMapper
