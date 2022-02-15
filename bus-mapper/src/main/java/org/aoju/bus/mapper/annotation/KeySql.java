@@ -40,7 +40,7 @@ import java.lang.annotation.Target;
  * 主键策略，用于替换 JPA 中的复杂用法
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

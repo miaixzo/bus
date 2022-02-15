@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * 名字转换样式,注解的优先级高于全局配置
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Target({ElementType.TYPE})

@@ -35,7 +35,7 @@ import java.util.Map;
  * 字符串格式化工具
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class TextFormatter {

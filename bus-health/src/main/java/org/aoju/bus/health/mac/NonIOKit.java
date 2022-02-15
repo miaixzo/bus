@@ -36,7 +36,7 @@ import com.sun.jna.ptr.NativeLongByReference;
  * (drivers and nubs) through the device-interface mechanism.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public interface NonIOKit extends com.sun.jna.platform.mac.IOKit {

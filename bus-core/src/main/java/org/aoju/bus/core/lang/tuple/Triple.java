@@ -44,7 +44,7 @@ import java.util.Objects;
  * @param <M> 中间元素类型
  * @param <R> 右元素类型
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @ThreadSafe

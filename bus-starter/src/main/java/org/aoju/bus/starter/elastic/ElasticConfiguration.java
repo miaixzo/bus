@@ -46,7 +46,7 @@ import java.util.List;
  * <p>@description ElasticSearch 规则配置 </p>
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK1.8+
  */
 @EnableConfigurationProperties(ElasticProperties.class)

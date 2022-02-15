@@ -29,7 +29,7 @@ package org.aoju.bus.core.thread;
  * 保证ExecutorService在对象回收时正常结束
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ExecutorService extends DelegatedService {

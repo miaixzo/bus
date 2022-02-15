@@ -34,7 +34,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 final class ExtMemoryOutputStream extends MemoryCacheImageOutputStream

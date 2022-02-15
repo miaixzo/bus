@@ -33,7 +33,7 @@ import java.io.Serializable;
  * 文本查找抽象类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public abstract class TextFinder implements Finder, Serializable {

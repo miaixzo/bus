@@ -37,7 +37,7 @@ import org.aoju.bus.logger.Logger;
  * 自动创建对应的json解析器
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class JsonFactory {

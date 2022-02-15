@@ -35,7 +35,7 @@ import org.aoju.bus.mapper.common.RowBoundsMapper;
  * 通用Mapper接口
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @RegisterMapper

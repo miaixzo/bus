@@ -34,7 +34,7 @@ import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
  * 执行到office进程的连接.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ConnectRetryable extends AbstractRetryable {

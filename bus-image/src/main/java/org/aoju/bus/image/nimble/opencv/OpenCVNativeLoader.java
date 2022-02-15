@@ -40,7 +40,7 @@ import java.io.IOException;
  * 2. 加载失败会重试加载jar中的opencv动态库
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {

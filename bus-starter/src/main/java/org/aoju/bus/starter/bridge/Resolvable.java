@@ -29,7 +29,7 @@ package org.aoju.bus.starter.bridge;
  * 服务端-信息处理
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public interface Resolvable {

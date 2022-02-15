@@ -41,7 +41,7 @@ import java.util.List;
  * db2 数据库查询
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Db2DataBaseQuery extends AbstractDatabaseQuery {

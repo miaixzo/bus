@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  * 通用Builder
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class GenericBuilder<T> implements Builder<T> {

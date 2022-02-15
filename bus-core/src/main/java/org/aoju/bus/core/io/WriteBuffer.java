@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public final class WriteBuffer extends OutputStream {

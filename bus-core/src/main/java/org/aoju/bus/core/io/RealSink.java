@@ -35,7 +35,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public final class RealSink implements BufferSink {

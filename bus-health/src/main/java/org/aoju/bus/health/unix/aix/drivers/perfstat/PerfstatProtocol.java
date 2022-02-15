@@ -34,7 +34,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * Utility to query performance stats for network interfaces
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @ThreadSafe

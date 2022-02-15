@@ -48,7 +48,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 钉钉登录
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class DingTalkProvider extends AbstractProvider {

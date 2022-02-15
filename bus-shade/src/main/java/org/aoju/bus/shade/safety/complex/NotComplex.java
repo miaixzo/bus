@@ -31,7 +31,7 @@ import org.aoju.bus.shade.safety.Complex;
  * 非门逻辑规则
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class NotComplex<E> implements Complex<E> {

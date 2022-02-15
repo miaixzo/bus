@@ -43,7 +43,7 @@ import java.util.List;
  * usage to ensure consistent calculations.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -36,7 +36,7 @@ import java.util.Properties;
  *
  * @param <K> 缓存key类型
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public interface AutoDialect<K> {

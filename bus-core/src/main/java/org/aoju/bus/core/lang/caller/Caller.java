@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.CallerKit;
  * 可以通过此接口的实现类方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public interface Caller {

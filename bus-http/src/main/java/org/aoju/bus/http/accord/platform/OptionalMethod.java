@@ -34,7 +34,7 @@ import java.lang.reflect.Modifier;
  *
  * @param <T> 方法所在的对象类型，通常是接口或基类
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class OptionalMethod<T> {

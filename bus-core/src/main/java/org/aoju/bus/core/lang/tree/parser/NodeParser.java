@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.tree.Tree;
  *
  * @param <T> 转换的实体 为数据源里的对象类型
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @FunctionalInterface

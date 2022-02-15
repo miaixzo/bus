@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * Memory obtained by /proc/meminfo and sysinfo.totalram
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @ThreadSafe
