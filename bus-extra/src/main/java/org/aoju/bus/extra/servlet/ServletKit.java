@@ -84,8 +84,8 @@ public class ServletKit {
      * @return 获得请求体
      */
     public static String getBody(ServletRequest request) {
-        try {
-            return IoKit.read(request.getReader());
+        try (final BufferedReader reader = request.getReader()) {
+            return IoKit.read(reader);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -113,7 +113,7 @@ public class ServletKit {
      * @param request     ServletRequest
      * @param bean        Bean
      * @param copyOptions 注入时的设置
-     * @return Bean
+     * @return the bean
      */
     public static <T> T fillBean(final ServletRequest request, T bean, CopyOptions copyOptions) {
         final String beanName = StringKit.lowerFirst(bean.getClass().getSimpleName());
@@ -152,7 +152,7 @@ public class ServletKit {
      * @param request       {@link ServletRequest}
      * @param bean          Bean
      * @param isIgnoreError 是否忽略注入错误
-     * @return Bean
+     * @return the bean
      */
     public static <T> T fillBean(ServletRequest request, T bean, boolean isIgnoreError) {
         return fillBean(request, bean, CopyOptions.create().setIgnoreError(isIgnoreError));
@@ -165,7 +165,7 @@ public class ServletKit {
      * @param request       ServletRequest
      * @param beanClass     Bean Class
      * @param isIgnoreError 是否忽略注入错误
-     * @return Bean
+     * @return the bean
      */
     public static <T> T toBean(ServletRequest request, Class<T> beanClass, boolean isIgnoreError) {
         return fillBean(request, ReflectKit.newInstanceIfPossible(beanClass), isIgnoreError);
@@ -245,7 +245,6 @@ public class ServletKit {
 
         return headerMap;
     }
-
 
     /**
      * 忽略大小写获得请求header中的信息
@@ -373,7 +372,7 @@ public class ServletKit {
      * @param httpServletRequest {@link HttpServletRequest}
      * @return Cookie map
      */
-    public static Map<String, Cookie> readCookie(HttpServletRequest httpServletRequest) {
+    public static Map<String, Cookie> getCookie(HttpServletRequest httpServletRequest) {
         final Cookie[] cookies = httpServletRequest.getCookies();
         if (ArrayKit.isEmpty(cookies)) {
             return MapKit.empty();
@@ -392,8 +391,8 @@ public class ServletKit {
      * @param name               cookie名称
      * @return Cookie对象
      */
-    public static Cookie readCookie(HttpServletRequest httpServletRequest, String name) {
-        return readCookie(httpServletRequest).get(name);
+    public static Cookie getCookie(HttpServletRequest httpServletRequest, String name) {
+        return getCookie(httpServletRequest).get(name);
     }
 
     /**
