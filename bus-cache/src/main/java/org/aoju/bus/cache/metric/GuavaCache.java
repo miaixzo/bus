@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * Guava 缓存支持
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class GuavaCache implements CacheX {

@@ -20,7 +20,7 @@ import java.util.*;
  * 客户端-配置中心
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class BridgePropertyLoader implements PropertySourceLoader, Ordered {

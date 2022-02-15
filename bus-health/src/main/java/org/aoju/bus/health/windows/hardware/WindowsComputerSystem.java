@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from WMI.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Immutable

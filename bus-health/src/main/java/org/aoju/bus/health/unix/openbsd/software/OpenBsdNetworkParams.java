@@ -33,7 +33,7 @@ import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
  * OpenBsdNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @ThreadSafe

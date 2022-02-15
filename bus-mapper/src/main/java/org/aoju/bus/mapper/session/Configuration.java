@@ -35,7 +35,7 @@ import java.util.Properties;
  * 使用提供的 Configuration 可以在纯 Java 或者 Spring(mybatis-spring-1.3.0+) 模式中使用
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Configuration extends org.apache.ibatis.session.Configuration {

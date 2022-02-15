@@ -31,7 +31,7 @@ import org.aoju.bus.office.Builder;
  * PureJava 系统流程管理器实现类.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class PureJavaProcessManager implements ProcessManager {

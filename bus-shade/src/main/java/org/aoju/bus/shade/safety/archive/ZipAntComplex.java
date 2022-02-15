@@ -33,7 +33,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
  * Zip记录Ant表达式规则
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ZipAntComplex extends AntComplex<ZipArchiveEntry> implements Complex<ZipArchiveEntry> {

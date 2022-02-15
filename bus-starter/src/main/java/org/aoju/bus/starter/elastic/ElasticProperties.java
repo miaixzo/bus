@@ -38,7 +38,7 @@ import java.util.List;
  * <p>@description ElasticSearch 配置属性类 </p>
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK1.8+
  */
 @Data

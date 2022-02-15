@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 逻辑删除
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD, ElementType.METHOD})

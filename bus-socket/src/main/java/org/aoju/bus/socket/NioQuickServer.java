@@ -44,7 +44,7 @@ import java.util.Iterator;
  * 基于NIO的Socket服务端实现
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class NioQuickServer implements Closeable {

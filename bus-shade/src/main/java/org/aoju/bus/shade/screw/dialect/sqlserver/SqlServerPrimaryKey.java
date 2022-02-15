@@ -33,7 +33,7 @@ import org.aoju.bus.shade.screw.metadata.PrimaryKey;
  * sqlserver table primary
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Data

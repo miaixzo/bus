@@ -38,7 +38,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * 无缝支持 LogBack
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Slf4jLog extends AbstractAware {

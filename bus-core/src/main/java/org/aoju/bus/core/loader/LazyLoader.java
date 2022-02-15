@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  * 持有一个计算延迟的值
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class LazyLoader<T> implements Supplier<T>, Serializable {

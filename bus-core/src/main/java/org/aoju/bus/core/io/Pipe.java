@@ -32,7 +32,7 @@ import java.io.IOException;
  * 通常每个线程都由自己的线程访问:生产者线程向接收器写入数据，消费者线程从源读取数据
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public final class Pipe {

@@ -50,7 +50,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * 2. 设备服务进程
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @lombok.Builder

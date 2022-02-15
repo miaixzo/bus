@@ -32,7 +32,7 @@ import lombok.EqualsAndHashCode;
  * DataModel
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @Data

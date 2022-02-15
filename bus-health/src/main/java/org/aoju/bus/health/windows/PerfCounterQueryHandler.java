@@ -40,7 +40,7 @@ import java.util.Map;
  * used in a single thread, preferably in a try-with-resources block.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @NotThreadSafe

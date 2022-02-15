@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Normal;
  * 这个池是一个线程安全的静态单例
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public final class LifeCycle {

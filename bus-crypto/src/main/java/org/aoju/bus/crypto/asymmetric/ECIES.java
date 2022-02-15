@@ -34,7 +34,7 @@ import java.security.PublicKey;
  * 此算法必须引入Bouncy Castle库
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ECIES extends Crypto {

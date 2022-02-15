@@ -37,7 +37,7 @@ import org.aoju.bus.health.unix.Kstat2.Kstat2NV.UNION.StringsArr;
  * Kstat2 is available in Solaris 11.4 and later.
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public interface Kstat2 extends Library {
@@ -490,7 +490,7 @@ public interface Kstat2 extends Library {
      * {@code kstat2_status} values in {@code kstat2.h}
      *
      * @author Kimi Liu
-     * @version 6.3.3
+     * @version 6.3.5
      * @since JDK 1.8+
      */
     class Kstat2StatusException extends RuntimeException {

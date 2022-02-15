@@ -46,7 +46,7 @@ import java.util.List;
  * 重写此类及{@link BaseEntity} 业务类继承新类
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>

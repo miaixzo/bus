@@ -45,7 +45,7 @@ import java.util.zip.ZipInputStream;
  * Zip文件或流读取器，一般用于Zip文件解压
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class ZipReader implements Closeable {

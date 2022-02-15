@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * 这些指令设置了哪些响应可以存储，以及哪些请求可以由存储的响应来满足的策略
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public final class CacheControl {

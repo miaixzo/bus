@@ -41,7 +41,7 @@ import java.util.Properties;
  * 早期版本默认实现，获取连接再获取 url，这种方式通用性强，但是性能低，处理不好关闭连接时容易出问题
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 public class Early implements AutoDialect<String> {

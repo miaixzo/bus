@@ -48,7 +48,7 @@ import static com.sun.jna.platform.mac.SystemB.PROC_ALL_PIDS;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @version 6.3.3
+ * @version 6.3.5
  * @since JDK 1.8+
  */
 @ThreadSafe
