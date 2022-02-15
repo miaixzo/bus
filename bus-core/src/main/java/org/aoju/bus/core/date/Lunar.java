@@ -6046,24 +6046,6 @@ public class Lunar {
         }
 
         /**
-         * 获取三元
-         *
-         * @return 元
-         */
-        public String getYuan() {
-            return YUAN[((year + 2696) / 60) % 3] + "元";
-        }
-
-        /**
-         * 获取九运
-         *
-         * @return 运
-         */
-        public String getYun() {
-            return YUN[((year + 2696) / 20) % 9] + "运";
-        }
-
-        /**
          * 构建字符串内容
          *
          * @param args 可选参数-简化输出
