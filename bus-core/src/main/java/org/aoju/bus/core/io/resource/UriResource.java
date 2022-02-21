@@ -33,6 +33,7 @@ import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -46,6 +47,7 @@ public class UriResource implements Resource {
 
     protected URL url;
     protected String name;
+    private long lastModified = 0;
 
     /**
      * 构造
@@ -59,12 +61,24 @@ public class UriResource implements Resource {
     /**
      * 构造
      *
+     * @param uri URI
+     */
+    public UriResource(URI uri) {
+        this(UriKit.url(uri), null);
+    }
+
+    /**
+     * 构造
+     *
      * @param url  URL,允许为空
      * @param name 资源名称
      */
     public UriResource(URL url, String name) {
         this.url = url;
         this.name = ObjectKit.defaultIfNull(name, () -> (null != url ? FileKit.getName(url.getPath()) : null));
+        if (null != url && UriKit.isFileURL(url)) {
+            this.lastModified = FileKit.file(url).lastModified();
+        }
     }
 
     @Override
@@ -83,6 +97,11 @@ public class UriResource implements Resource {
             throw new InstrumentException("Resource URL is null!");
         }
         return UriKit.getStream(url);
+    }
+
+    @Override
+    public boolean isModified() {
+        return (0 != this.lastModified) && this.lastModified != getFile().lastModified();
     }
 
     /**

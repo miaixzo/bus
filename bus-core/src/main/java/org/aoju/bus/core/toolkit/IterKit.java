@@ -779,7 +779,7 @@ public class IterKit {
      *
      * @param <E>      集合元素类型
      * @param iterator 集合
-     * @param filter   过滤器接口
+     * @param filter   过滤器接口，删除{@link Filter#accept(Object)}为{@code false}的元素
      * @return 编辑后的集合
      */
     public static <E> Iterator<E> filter(Iterator<E> iterator, Filter<E> filter) {
@@ -793,6 +793,28 @@ public class IterKit {
             }
         }
         return iterator;
+    }
+
+    /**
+     * 过滤{@link Iterator}并将过滤后满足条件的元素添加到List中
+     *
+     * @param <E>    元素类型
+     * @param iter   {@link Iterator}
+     * @param filter 过滤器，保留{@link Filter#accept(Object)}为{@code true}的元素
+     * @return ArrayList
+     */
+    public static <E> List<E> filterToList(Iterator<E> iter, Filter<E> filter) {
+        final List<E> result = new ArrayList<>();
+        if (null != iter) {
+            E ele;
+            while (iter.hasNext()) {
+                ele = iter.next();
+                if (null == filter || filter.accept(ele)) {
+                    result.add(ele);
+                }
+            }
+        }
+        return result;
     }
 
     /**

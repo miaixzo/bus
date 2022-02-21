@@ -3826,23 +3826,25 @@ public class CollKit {
 
     /**
      * 将指定元素交换到指定索引位置,其他元素的索引值不变
-     * 交换会修改原List
+     * 交换会修改原List如果集合中有多个相同元素，只交换第一个找到的元素
      *
      * @param <T>         处理参数类型
      * @param list        列表
      * @param element     需交换元素
      * @param targetIndex 目标索引
      */
-    public static <T> void swapIndex(List<T> list, T element, Integer targetIndex) {
-        if (isEmpty(list) || !list.contains(element)) {
-            return;
+    public static <T> void swapTo(List<T> list, T element, Integer targetIndex) {
+        if (isNotEmpty(list)) {
+            final int index = list.indexOf(element);
+            if (index >= 0) {
+                Collections.swap(list, index, targetIndex);
+            }
         }
-        Collections.swap(list, list.indexOf(element), targetIndex);
     }
 
     /**
      * 将指定元素交换到指定元素位置,其他元素的索引值不变
-     * 交换会修改原List
+     * 交换会修改原List如果集合中有多个相同元素，只交换第一个找到的元素
      *
      * @param <T>           处理参数类型
      * @param list          列表
@@ -3850,10 +3852,12 @@ public class CollKit {
      * @param targetElement 目标元素
      */
     public static <T> void swapElement(List<T> list, T element, T targetElement) {
-        if (isEmpty(list) || !list.contains(targetElement)) {
-            return;
+        if (isNotEmpty(list)) {
+            final int targetIndex = list.indexOf(targetElement);
+            if (targetIndex >= 0) {
+                swapTo(list, element, targetIndex);
+            }
         }
-        swapIndex(list, element, list.indexOf(targetElement));
     }
 
     /**

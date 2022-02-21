@@ -28,9 +28,10 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.date.*;
 import org.aoju.bus.core.lang.Fields;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 时间工具类
@@ -125,7 +126,69 @@ public class DateKit extends Almanac {
     }
 
     /**
-     * 创建日期范围生成器
+     * 两个时间区间取交集
+     *
+     * @param start 开始区间
+     * @param end   结束区间
+     * @return true 包含
+     */
+    public static List<DateTime> rangeContains(Boundary start, Boundary end) {
+        List<DateTime> startDateTimes = CollKit.newArrayList((Iterable<DateTime>) start);
+        List<DateTime> endDateTimes = CollKit.newArrayList((Iterable<DateTime>) end);
+        return startDateTimes.stream().filter(endDateTimes::contains).collect(Collectors.toList());
+    }
+
+    /**
+     * 两个时间区间取差集(end - start)
+     *
+     * @param start 开始区间
+     * @param end   结束区间
+     * @return true 包含
+     */
+    public static List<DateTime> rangeNotContains(Boundary start, Boundary end) {
+        List<DateTime> startDateTimes = CollKit.newArrayList((Iterable<DateTime>) start);
+        List<DateTime> endDateTimes = CollKit.newArrayList((Iterable<DateTime>) end);
+        return endDateTimes.stream().filter(item -> !startDateTimes.contains(item)).collect(Collectors.toList());
+    }
+
+    /**
+     * 按日期范围遍历，执行 function
+     *
+     * @param start 起始日期时间（包括）
+     * @param end   结束日期时间
+     * @param type  步进单位
+     * @param func  每次遍历要执行的 function
+     * @param <T>   Date经过函数处理结果类型
+     * @return 结果列表
+     */
+    public static <T> List<T> rangeFunc(Date start, Date end, final Fields.Type type, Function<Date, T> func) {
+        if (start == null || end == null || start.after(end)) {
+            return Collections.emptyList();
+        }
+        ArrayList<T> list = new ArrayList<>();
+        for (DateTime date : range(start, end, type)) {
+            list.add(func.apply(date));
+        }
+        return list;
+    }
+
+    /**
+     * 按日期范围遍历，执行 consumer
+     *
+     * @param start    起始日期时间（包括）
+     * @param end      结束日期时间
+     * @param type     步进单位
+     * @param consumer 每次遍历要执行的 consumer
+     */
+    public static void rangeConsume(Date start, Date end, final Fields.Type type, Consumer<Date> consumer) {
+        if (start == null || end == null || start.after(end)) {
+            return;
+        }
+        range(start, end, type).forEach(consumer);
+    }
+
+    /**
+     * 根据步进单位获取起始日期时间和结束日期时间的时间区间集合
      *
      * @param start 起始日期时间
      * @param end   结束日期时间
@@ -137,12 +200,12 @@ public class DateKit extends Almanac {
     }
 
     /**
-     * 创建日期范围生成器
+     * 根据步进单位和步进获取起始日期时间和结束日期时间的时间区间集合
      *
      * @param start 起始日期时间
      * @param end   结束日期时间
      * @param type  步进单位
-     * @param step  步进数
+     * @param step  步进
      * @return {@link Boundary}
      */
     public static List<DateTime> rangeToList(Date start, Date end, final Fields.Type type, int step) {

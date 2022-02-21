@@ -38,6 +38,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
@@ -47,7 +48,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * 设置相关系统参数信息.
+ * 设置相关系统参数信息
  *
  * @author Kimi Liu
  * @version 6.3.5
@@ -64,6 +65,17 @@ public class SpringBuilder implements ApplicationContextAware {
 
     public static ConfigurableApplicationContext getContext() {
         return SpringBuilder.context;
+    }
+
+    /**
+     * 发布事件
+     *
+     * @param event 待发布的事件，事件必须是{@link ApplicationEvent}的子类
+     */
+    public static void publishEvent(ApplicationEvent event) {
+        if (null != context) {
+            context.publishEvent(event);
+        }
     }
 
     public static void setContext(ConfigurableApplicationContext context) {
@@ -262,6 +274,24 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
+     * 发布事件
+     * Spring 4.2+ 版本事件可以不再是{@link ApplicationEvent}的子类
+     *
+     * @param event 待发布的事件
+     */
+    public static void publishEvent(Object event) {
+        if (null != context) {
+            context.publishEvent(event);
+        }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        System.setProperty("user.timezone", "Asia/Shanghai");
+        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
+    }
+
+    /**
      * 获取应用程序名称
      *
      * @return 应用程序名称
@@ -295,12 +325,6 @@ public class SpringBuilder implements ApplicationContextAware {
      */
     public static boolean isTestMode() {
         return "test".equalsIgnoreCase(getActiveProfile());
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
     }
 
 }

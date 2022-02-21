@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
+import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.toolkit.MapKit;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -40,7 +40,9 @@ import java.util.function.Supplier;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class MapBuilder<K, V> implements Serializable {
+public class MapBuilder<K, V> implements Builder<Map<K, V>> {
+
+    private static final long serialVersionUID = 1L;
 
     private final Map<K, V> map;
 

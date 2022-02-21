@@ -32,6 +32,7 @@ import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -42,10 +43,13 @@ import java.nio.file.Path;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class FileResource implements Resource {
+public class FileResource implements Resource, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final File file;
     private final String name;
+    private final long lastModified;
 
     /**
      * 构造，文件名使用文件本身的名字，带扩展名
@@ -75,6 +79,7 @@ public class FileResource implements Resource {
         Assert.notNull(file, "File must be not null !");
         this.file = file;
         this.name = ObjectKit.defaultIfNull(fileName, file::getName);
+        this.lastModified = file.lastModified();
     }
 
     /**
@@ -101,13 +106,9 @@ public class FileResource implements Resource {
         return FileKit.getInputStream(this.file);
     }
 
-    /**
-     * 获取文件
-     *
-     * @return 文件
-     */
-    public File getFile() {
-        return this.file;
+    @Override
+    public boolean isModified() {
+        return this.lastModified != file.lastModified();
     }
 
     /**
@@ -118,6 +119,15 @@ public class FileResource implements Resource {
     @Override
     public String toString() {
         return this.file.toString();
+    }
+
+    /**
+     * 获取文件
+     *
+     * @return 文件
+     */
+    public File getFile() {
+        return this.file;
     }
 
 }

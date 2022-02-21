@@ -877,6 +877,53 @@ public class FileKit {
     }
 
     /**
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Randon].tmp
+     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定
+     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}
+     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}
+     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响
+     *
+     * @return 临时文件
+     * @throws InstrumentException IO异常
+     */
+    public static File createTempFile() throws InstrumentException {
+        return createTempFile("bus", null, null, true);
+    }
+
+    /**
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Randon].suffix
+     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定
+     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}
+     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}
+     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响
+     *
+     * @param suffix    后缀，如果null则使用默认.tmp
+     * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
+     * @return 临时文件
+     * @throws InstrumentException IO异常
+     */
+    public static File createTempFile(String suffix, boolean isReCreat) throws InstrumentException {
+        return createTempFile("bus", suffix, null, isReCreat);
+    }
+
+    /**
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Randon].suffix
+     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定
+     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}
+     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}
+     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响
+     *
+     * @param prefix    前缀，至少3个字符
+     * @param suffix    后缀，如果null则使用默认.tmp
+     * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
+     * @return 临时文件
+     * @throws InstrumentException IO异常
+     */
+    public static File createTempFile(String prefix, String suffix, boolean isReCreat) throws InstrumentException {
+        return createTempFile(prefix, suffix, null, isReCreat);
+    }
+
+    /**
      * 创建临时文件
      * 创建后的文件名为 prefix[Randon].tmp
      *
@@ -1431,7 +1478,7 @@ public class FileKit {
     /**
      * 返回最后一个目录分隔符的索引
      * <p>
-     * 此方法将处理Unix或Windows格式的文件。
+     * 此方法将处理Unix或Windows格式的文件
      * 返回最后一个正斜杠或反斜杠的位置.
      * </p>
      *
@@ -1475,7 +1522,7 @@ public class FileKit {
      * 计算目录或文件的总大小
      * 当给定对象为文件时，直接调用 {@link File#length()}
      * 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
-     * 此方法不包括目录本身的占用空间大小。
+     * 此方法不包括目录本身的占用空间大小
      *
      * @param file 目录或文件,null或者文件不存在返回0
      * @return 总大小，bytes长度
@@ -3915,13 +3962,24 @@ public class FileKit {
      * @return 资源列表
      */
     public static List<URL> getResources(String resource) {
-        final Enumeration<URL> resources;
-        try {
-            resources = ClassKit.getClassLoader().getResources(resource);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-        return CollKit.newArrayList(resources);
+        return getResources(resource, null);
+    }
+
+    /**
+     * 获取指定路径下的资源列表
+     * 路径格式必须为目录格式,用/分隔，例如:
+     *
+     * <pre>
+     * config/a
+     * spring/xml
+     * </pre>
+     *
+     * @param resource 资源路径
+     * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
+     * @return 资源列表
+     */
+    public static List<URL> getResources(String resource, Filter<URL> filter) {
+        return IterKit.filterToList(getResourceIter(resource), filter);
     }
 
     /**

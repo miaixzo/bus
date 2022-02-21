@@ -3334,7 +3334,7 @@ public class Lunar {
     /**
      * 获取日喜神方位
      *
-     * @return 喜神方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionXi() {
         return POSITION_XI[dayGanIndex];
@@ -3343,7 +3343,7 @@ public class Lunar {
     /**
      * 获取日喜神方位描述
      *
-     * @return 喜神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionXiDesc() {
         return POSITION_DESC.get(getDayPositionXi());
@@ -3352,7 +3352,7 @@ public class Lunar {
     /**
      * 获取日阳贵神方位
      *
-     * @return 阳贵神方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionYangGui() {
         return POSITION_YANG_GUI[dayGanIndex];
@@ -3361,7 +3361,7 @@ public class Lunar {
     /**
      * 获取日阳贵神方位描述
      *
-     * @return 阳贵神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionYangGuiDesc() {
         return POSITION_DESC.get(getDayPositionYangGui());
@@ -3370,7 +3370,7 @@ public class Lunar {
     /**
      * 获取日阴贵神方位
      *
-     * @return 阴贵神方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionYinGui() {
         return POSITION_YIN_GUI[dayGanIndex];
@@ -3379,7 +3379,7 @@ public class Lunar {
     /**
      * 获取日阴贵神方位描述
      *
-     * @return 阴贵神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionYinGuiDesc() {
         return POSITION_DESC.get(getDayPositionYinGui());
@@ -3388,7 +3388,7 @@ public class Lunar {
     /**
      * 获取日福神方位（默认流派：2）
      *
-     * @return 福神方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionFu() {
         return getDayPositionFu(2);
@@ -3398,7 +3398,7 @@ public class Lunar {
      * 获取日福神方位
      *
      * @param sect 流派，1或2
-     * @return 福神方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionFu(int sect) {
         return (1 == sect ? POSITION_FU : POSITION_FU_2)[dayGanIndex + 1];
@@ -3407,7 +3407,7 @@ public class Lunar {
     /**
      * 获取日福神方位描述（默认流派：2）
      *
-     * @return 福神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionFuDesc() {
         return getDayPositionFuDesc(2);
@@ -3417,7 +3417,7 @@ public class Lunar {
      * 获取日福神方位描述
      *
      * @param sect 流派，1或2
-     * @return 福神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionFuDesc(int sect) {
         return POSITION_DESC.get(getDayPositionFu(sect));
@@ -3426,7 +3426,7 @@ public class Lunar {
     /**
      * 获取日财神方位
      *
-     * @return 财神方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionCai() {
         return POSITION_CAI[dayGanIndex];
@@ -3435,7 +3435,7 @@ public class Lunar {
     /**
      * 获取日财神方位描述
      *
-     * @return 财神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionCaiDesc() {
         return POSITION_DESC.get(getDayPositionCai());
@@ -3444,7 +3444,7 @@ public class Lunar {
     /**
      * 获取年太岁方位（默认流派2新年以立春零点起算）
      *
-     * @return 太岁方位，如艮
+     * @return 方位，如艮
      */
     public String getYearPositionTaiSui() {
         return getYearPositionTaiSui(2);
@@ -3454,7 +3454,7 @@ public class Lunar {
      * 获取年太岁方位
      *
      * @param sect 流派：2为新年以立春零点起算；1为新年以正月初一起算；3为新年以立春节气交接的时刻起算
-     * @return 太岁方位，如艮
+     * @return 方位，如艮
      */
     public String getYearPositionTaiSui(int sect) {
         int yearZhiIndex;
@@ -3484,7 +3484,7 @@ public class Lunar {
      * 获取年太岁方位描述
      *
      * @param sect 流派：2为新年以立春零点起算；1为新年以正月初一起算；3为新年以立春节气交接的时刻起算
-     * @return 太岁方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getYearPositionTaiSuiDesc(int sect) {
         return POSITION_DESC.get(getYearPositionTaiSui(sect));
@@ -3496,20 +3496,15 @@ public class Lunar {
         if (m < 0) {
             m += 12;
         }
+        m = m % 4;
         switch (m) {
             case 0:
-            case 4:
-            case 8:
                 p = "艮";
                 break;
             case 2:
-            case 6:
-            case 10:
                 p = "坤";
                 break;
             case 3:
-            case 7:
-            case 11:
                 p = "巽";
                 break;
             default:
@@ -3521,7 +3516,7 @@ public class Lunar {
     /**
      * 获取月太岁方位（默认流派2新的一月以节交接当天零点起算）
      *
-     * @return 太岁方位，如艮
+     * @return 方位，如艮
      */
     public String getMonthPositionTaiSui() {
         return getMonthPositionTaiSui(2);
@@ -3531,7 +3526,7 @@ public class Lunar {
      * 获取月太岁方位
      *
      * @param sect 流派：2为新的一月以节交接当天零点起算；3为新的一月以节交接准确时刻起算
-     * @return 太岁方位，如艮
+     * @return 方位，如艮
      */
     public String getMonthPositionTaiSui(int sect) {
         int monthZhiIndex;
@@ -3551,7 +3546,7 @@ public class Lunar {
     /**
      * 获取月太岁方位描述（默认流派2新的一月以节交接当天零点起算）
      *
-     * @return 太岁方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getMonthPositionTaiSuiDesc() {
         return getMonthPositionTaiSuiDesc(2);
@@ -3561,7 +3556,7 @@ public class Lunar {
      * 获取月太岁方位描述
      *
      * @param sect 流派：2为新的一月以节交接当天零点起算；3为新的一月以节交接准确时刻起算
-     * @return 太岁方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getMonthPositionTaiSuiDesc(int sect) {
         return POSITION_DESC.get(getMonthPositionTaiSui(sect));
@@ -3588,7 +3583,7 @@ public class Lunar {
     /**
      * 获取日太岁方位（默认流派2新年以立春零点起算）
      *
-     * @return 太岁方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionTaiSui() {
         return getDayPositionTaiSui(2);
@@ -3598,7 +3593,7 @@ public class Lunar {
      * 获取日太岁方位
      *
      * @param sect 流派：2新年以立春零点起算；1新年以正月初一起算；3新年以立春节气交接的时刻起算
-     * @return 太岁方位，如艮
+     * @return 方位，如艮
      */
     public String getDayPositionTaiSui(int sect) {
         String dayInGanZhi;
@@ -3622,7 +3617,7 @@ public class Lunar {
     /**
      * 获取日太岁方位描述（默认流派2新年以立春零点起算）
      *
-     * @return 太岁方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionTaiSuiDesc() {
         return getDayPositionTaiSuiDesc(2);
@@ -3632,7 +3627,7 @@ public class Lunar {
      * 获取日太岁方位描述
      *
      * @param sect 流派：2新年以立春零点起算；1新年以正月初一起算；3新年以立春节气交接的时刻起算
-     * @return 太岁方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getDayPositionTaiSuiDesc(int sect) {
         return POSITION_DESC.get(getDayPositionTaiSui(sect));
@@ -3641,7 +3636,7 @@ public class Lunar {
     /**
      * 获取时辰喜神方位
      *
-     * @return 喜神方位，如艮
+     * @return 方位，如艮
      */
     public String getTimePositionXi() {
         return POSITION_XI[timeGanIndex];
@@ -3659,7 +3654,7 @@ public class Lunar {
     /**
      * 获取时辰阳贵神方位
      *
-     * @return 阳贵神方位，如艮
+     * @return 方位，如艮
      */
     public String getTimePositionYangGui() {
         return POSITION_YANG_GUI[timeGanIndex];
@@ -3668,7 +3663,7 @@ public class Lunar {
     /**
      * 获取时辰阳贵神方位描述
      *
-     * @return 阳贵神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getTimePositionYangGuiDesc() {
         return POSITION_DESC.get(getTimePositionYangGui());
@@ -3677,7 +3672,7 @@ public class Lunar {
     /**
      * 获取时辰阴贵神方位
      *
-     * @return 阴贵神方位，如艮
+     * @return 方位，如艮
      */
     public String getTimePositionYinGui() {
         return POSITION_YIN_GUI[timeGanIndex];
@@ -3686,7 +3681,7 @@ public class Lunar {
     /**
      * 获取时辰阴贵神方位描述
      *
-     * @return 阴贵神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getTimePositionYinGuiDesc() {
         return POSITION_DESC.get(getTimePositionYinGui());
@@ -3695,7 +3690,7 @@ public class Lunar {
     /**
      * 获取时辰福神方位，默认流派2
      *
-     * @return 福神方位，如艮
+     * @return 方位，如艮
      */
     public String getTimePositionFu() {
         return getTimePositionFu(2);
@@ -3705,7 +3700,7 @@ public class Lunar {
      * 获取时辰福神方位
      *
      * @param sect 流派，1或2
-     * @return 福神方位，如艮
+     * @return 方位，如艮
      */
     public String getTimePositionFu(int sect) {
         return (1 == sect ? POSITION_FU : POSITION_FU_2)[timeGanIndex + 1];
@@ -3714,7 +3709,7 @@ public class Lunar {
     /**
      * 获取时辰福神方位描述，默认流派2
      *
-     * @return 福神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getTimePositionFuDesc() {
         return getTimePositionFuDesc(2);
@@ -3724,7 +3719,7 @@ public class Lunar {
      * 获取时辰福神方位描述
      *
      * @param sect 流派，1或2
-     * @return 福神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getTimePositionFuDesc(int sect) {
         return POSITION_DESC.get(getTimePositionFu(sect));
@@ -3733,7 +3728,7 @@ public class Lunar {
     /**
      * 获取时辰财神方位
      *
-     * @return 财神方位，如艮
+     * @return 方位，如艮
      */
     public String getTimePositionCai() {
         return POSITION_CAI[timeGanIndex];
@@ -3742,7 +3737,7 @@ public class Lunar {
     /**
      * 获取时辰财神方位描述
      *
-     * @return 财神方位描述，如东北
+     * @return 方位描述，如东北
      */
     public String getTimePositionCaiDesc() {
         return POSITION_DESC.get(getTimePositionCai());
@@ -4076,7 +4071,7 @@ public class Lunar {
     /**
      * 获取值年九星（默认流派2新年以立春零点起算。流年紫白星起例歌诀：年上吉星论甲子，逐年星逆中宫起；上中下作三元汇，一上四中七下兑。）
      *
-     * @return 值年九星
+     * @return 九星
      */
     public NineStar getYearNineStar() {
         return getYearNineStar(2);
@@ -4086,7 +4081,7 @@ public class Lunar {
      * 获取值年九星（流年紫白星起例歌诀：年上吉星论甲子，逐年星逆中宫起；上中下作三元汇，一上四中七下兑。）
      *
      * @param sect 流派：2为新年以立春零点起算；1为新年以正月初一起算；3为新年以立春节气交接的时刻起算
-     * @return 值年九星
+     * @return 九星
      */
     public NineStar getYearNineStar(int sect) {
         String yearInGanZhi;
@@ -4116,7 +4111,7 @@ public class Lunar {
     /**
      * 获取值月九星（流派2新的一月以节交接当天零点起算。月紫白星歌诀：子午卯酉八白起，寅申巳亥二黑求，辰戌丑未五黄中。）
      *
-     * @return 值月九星
+     * @return 九星
      */
     public NineStar getMonthNineStar() {
         return getMonthNineStar(2);
@@ -4126,7 +4121,7 @@ public class Lunar {
      * 获取值月九星（月紫白星歌诀：子午卯酉八白起，寅申巳亥二黑求，辰戌丑未五黄中。）
      *
      * @param sect 流派：2为新的一月以节交接当天零点起算；3为新的一月以节交接准确时刻起算
-     * @return 值月九星
+     * @return 九星
      */
     public NineStar getMonthNineStar(int sect) {
         int yearZhiIndex;
@@ -4151,7 +4146,7 @@ public class Lunar {
      * 获取值日九星
      * （日家紫白星歌诀：日家白法不难求，二十四气六宫周；冬至雨水及谷雨，阳顺一七四中游；夏至处暑霜降后，九三六星逆行求。）
      *
-     * @return 值日九星
+     * @return 九星
      */
     public NineStar getDayNineStar() {
         String solarYmd = solar.build(false);
@@ -4200,7 +4195,7 @@ public class Lunar {
      * 时家紫白星歌诀：三元时白最为佳，冬至阳生顺莫差，孟日七宫仲一白，季日四绿发萌芽，每把时辰起甲子，本时星耀照光华，
      * 时星移入中宫去，顺飞八方逐细查。夏至阴生逆回首，孟归三碧季加六，仲在九宫时起甲，依然掌中逆轮跨。
      *
-     * @return 值时九星
+     * @return 九星
      */
     public NineStar getTimeNineStar() {
         String solarYmd = solar.build(false);
@@ -5920,7 +5915,7 @@ public class Lunar {
         /**
          * 获取喜神方位
          *
-         * @return 喜神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionXi() {
             return POSITION_XI[ganIndex + 1];
@@ -5929,7 +5924,7 @@ public class Lunar {
         /**
          * 获取喜神方位描述
          *
-         * @return 喜神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionXiDesc() {
             return POSITION_DESC.get(getPositionXi());
@@ -5938,7 +5933,7 @@ public class Lunar {
         /**
          * 获取阳贵神方位
          *
-         * @return 阳贵神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionYangGui() {
             return POSITION_YANG_GUI[ganIndex + 1];
@@ -5947,7 +5942,7 @@ public class Lunar {
         /**
          * 获取阳贵神方位描述
          *
-         * @return 阳贵神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionYangGuiDesc() {
             return POSITION_DESC.get(getPositionYangGui());
@@ -5956,7 +5951,7 @@ public class Lunar {
         /**
          * 获取阴贵神方位
          *
-         * @return 阴贵神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionYinGui() {
             return POSITION_YIN_GUI[ganIndex + 1];
@@ -5965,7 +5960,7 @@ public class Lunar {
         /**
          * 获取阴贵神方位描述
          *
-         * @return 阴贵神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionYinGuiDesc() {
             return POSITION_DESC.get(getPositionYinGui());
@@ -5974,7 +5969,7 @@ public class Lunar {
         /**
          * 获取福神方位（默认流派：2）
          *
-         * @return 福神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionFu() {
             return getPositionFu(2);
@@ -5984,7 +5979,7 @@ public class Lunar {
          * 获取福神方位
          *
          * @param sect 流派，1或2
-         * @return 福神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionFu(int sect) {
             return (1 == sect ? POSITION_FU : POSITION_FU_2)[ganIndex + 1];
@@ -5993,7 +5988,7 @@ public class Lunar {
         /**
          * 获取福神方位描述（默认流派：2）
          *
-         * @return 福神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionFuDesc() {
             return getPositionFuDesc(2);
@@ -6003,7 +5998,7 @@ public class Lunar {
          * 获取福神方位描述
          *
          * @param sect 流派，1或2
-         * @return 福神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionFuDesc(int sect) {
             return POSITION_DESC.get(getPositionFu(sect));
@@ -6012,7 +6007,7 @@ public class Lunar {
         /**
          * 获取财神方位
          *
-         * @return 财神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionCai() {
             return POSITION_CAI[ganIndex + 1];
@@ -6021,7 +6016,7 @@ public class Lunar {
         /**
          * 获取财神方位描述
          *
-         * @return 财神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionCaiDesc() {
             return POSITION_DESC.get(getPositionCai());
@@ -6030,7 +6025,7 @@ public class Lunar {
         /**
          * 获取太岁方位
          *
-         * @return 太岁方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionTaiSui() {
             return POSITION_TAI_SUI_YEAR[zhiIndex];
@@ -6039,10 +6034,20 @@ public class Lunar {
         /**
          * 获取太岁方位描述
          *
-         * @return 太岁方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionTaiSuiDesc() {
             return POSITION_DESC.get(getPositionTaiSui());
+        }
+
+        /**
+         * 获取往后推几年的阴历年，如果要往前推，则年数用负数
+         *
+         * @param n 年数
+         * @return 阴历年
+         */
+        public Year next(int n) {
+            return Year.from(year + n);
         }
 
         /**
@@ -6160,26 +6165,20 @@ public class Lunar {
         /**
          * 获取太岁方位
          *
-         * @return 太岁方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionTaiSui() {
             String p;
-            int m = Math.abs(month);
+            int m = Math.abs(month) % 4;
             switch (m) {
+                case 0:
+                    p = "巽";
+                    break;
                 case 1:
-                case 5:
-                case 9:
                     p = "艮";
                     break;
                 case 3:
-                case 7:
-                case 11:
                     p = "坤";
-                    break;
-                case 4:
-                case 8:
-                case 12:
-                    p = "巽";
                     break;
                 default:
                     p = POSITION_GAN[Solar.from(this.getFirstJulianDay()).getLunar().getMonthGanIndex()];
@@ -6190,7 +6189,7 @@ public class Lunar {
         /**
          * 获取太岁方位描述
          *
-         * @return 太岁方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionTaiSuiDesc() {
             return POSITION_DESC.get(getPositionTaiSui());
@@ -6211,6 +6210,73 @@ public class Lunar {
             }
             int offset = (n - monthZhiIndex) % 9;
             return new NineStar(offset);
+        }
+
+        /**
+         * 获取往后推几个月的阴历月，如果要往前推，则月数用负数
+         *
+         * @param n 月数
+         * @return 阴历月
+         */
+        public Month next(int n) {
+            if (0 == n) {
+                return Month.from(year, month);
+            } else if (n > 0) {
+                int rest = n;
+                int ny = year;
+                int iy = ny;
+                int im = month;
+                int index = 0;
+                List<Month> months = Year.from(ny).getMonths();
+                while (true) {
+                    int size = months.size();
+                    for (int i = 0; i < size; i++) {
+                        Month m = months.get(i);
+                        if (m.getYear() == iy && m.getMonth() == im) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    int more = size - index - 1;
+                    if (rest < more) {
+                        break;
+                    }
+                    rest -= more;
+                    Month lastMonth = months.get(size - 1);
+                    iy = lastMonth.getYear();
+                    im = lastMonth.getMonth();
+                    ny++;
+                    months = Year.from(ny).getMonths();
+                }
+                return months.get(index + rest);
+            } else {
+                int rest = -n;
+                int ny = year;
+                int iy = ny;
+                int im = month;
+                int index = 0;
+                List<Month> months = Year.from(ny).getMonths();
+                while (true) {
+                    int size = months.size();
+                    for (int i = 0; i < size; i++) {
+                        Month m = months.get(i);
+                        if (m.getYear() == iy && m.getMonth() == im) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    if (rest <= index) {
+                        break;
+                    }
+                    rest -= index;
+                    Month firstMonth = months.get(0);
+                    iy = firstMonth.getYear();
+                    im = firstMonth.getMonth();
+                    ny--;
+                    months = Year.from(ny).getMonths();
+                }
+                return months.get(index - rest);
+            }
         }
 
         @Override
@@ -6297,7 +6363,7 @@ public class Lunar {
         /**
          * 获取喜神方位
          *
-         * @return 喜神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionXi() {
             return POSITION_XI[ganIndex + 1];
@@ -6306,7 +6372,7 @@ public class Lunar {
         /**
          * 获取喜神方位描述
          *
-         * @return 喜神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionXiDesc() {
             return POSITION_DESC.get(getPositionXi());
@@ -6315,7 +6381,7 @@ public class Lunar {
         /**
          * 获取阳贵神方位
          *
-         * @return 阳贵神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionYangGui() {
             return POSITION_YANG_GUI[ganIndex + 1];
@@ -6324,7 +6390,7 @@ public class Lunar {
         /**
          * 获取阳贵神方位描述
          *
-         * @return 阳贵神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionYangGuiDesc() {
             return POSITION_DESC.get(getPositionYangGui());
@@ -6342,7 +6408,7 @@ public class Lunar {
         /**
          * 获取阴贵神方位描述
          *
-         * @return 阴贵神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionYinGuiDesc() {
             return POSITION_DESC.get(getPositionYinGui());
@@ -6351,7 +6417,7 @@ public class Lunar {
         /**
          * 获取福神方位
          *
-         * @return 福神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionFu() {
             return getPositionFu(2);
@@ -6361,7 +6427,7 @@ public class Lunar {
          * 获取福神方位
          *
          * @param sect 流派，1或2
-         * @return 福神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionFu(int sect) {
             return (1 == sect ? POSITION_FU : POSITION_FU_2)[ganIndex + 1];
@@ -6380,7 +6446,7 @@ public class Lunar {
          * 获取福神方位描述
          *
          * @param sect 流派，1或2
-         * @return 福神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionFuDesc(int sect) {
             return POSITION_DESC.get(getPositionFu(sect));
@@ -6389,7 +6455,7 @@ public class Lunar {
         /**
          * 获取财神方位
          *
-         * @return 财神方位，如艮
+         * @return 方位，如艮
          */
         public String getPositionCai() {
             return POSITION_CAI[ganIndex + 1];
@@ -6398,7 +6464,7 @@ public class Lunar {
         /**
          * 获取财神方位描述
          *
-         * @return 财神方位描述，如东北
+         * @return 方位描述，如东北
          */
         public String getPositionCaiDesc() {
             return POSITION_DESC.get(getPositionCai());
