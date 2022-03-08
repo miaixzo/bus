@@ -1008,6 +1008,21 @@ public class Formatter {
     }
 
     /**
+     * 检查两个时间段是否有时间重叠
+     * 重叠指两个时间段是否有交集
+     *
+     * @param realStartTime 第一个时间段的开始时间
+     * @param realEndTime   第一个时间段的结束时间
+     * @param startTime     第二个时间段的开始时间
+     * @param endTime       第二个时间段的结束时间
+     * @return true 表示时间有重合
+     */
+    public static boolean isOverlap(Date realStartTime, Date realEndTime,
+                                    Date startTime, Date endTime) {
+        return startTime.after(realEndTime) || endTime.before(realStartTime);
+    }
+
+    /**
      * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期
      * 将以下字符替换为"-"
      * <pre>

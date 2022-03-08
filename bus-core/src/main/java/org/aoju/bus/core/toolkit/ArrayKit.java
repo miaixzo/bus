@@ -589,7 +589,7 @@ public class ArrayKit {
                 }
             }
         }
-        return false;
+        return array == null;
     }
 
     /**

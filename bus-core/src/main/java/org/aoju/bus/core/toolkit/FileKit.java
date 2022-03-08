@@ -2041,6 +2041,11 @@ public class FileKit {
         if (index == Normal.__1) {
             return Normal.EMPTY;
         } else {
+            int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
+            String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
+            if (StringKit.containsAny(substr, new String[]{"tar.bz2", "tar.Z", "tar.gz", "tar.xz"})) {
+                return substr;
+            }
             String ext = fileName.substring(index + 1);
             // 扩展名中不能包含路径相关的符号
             return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;

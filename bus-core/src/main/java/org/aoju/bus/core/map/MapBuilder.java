@@ -155,6 +155,16 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     }
 
     /**
+     * 清空Map
+     *
+     * @return this
+     */
+    public MapBuilder<K, V> clear() {
+        this.map.clear();
+        return this;
+    }
+
+    /**
      * 创建后的map
      *
      * @return 创建后的map

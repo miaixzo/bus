@@ -40,7 +40,7 @@ import java.util.TreeMap;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class CaseInsensitiveTreeMap<K, V> extends CustomKeyMap<K, V> {
+public class CaseInsensitiveTreeMap<K, V> extends CaseInsensitiveMap<K, V> {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,20 +54,20 @@ public class CaseInsensitiveTreeMap<K, V> extends CustomKeyMap<K, V> {
     /**
      * 构造
      *
-     * @param m Map
+     * @param map 初始Map
      */
-    public CaseInsensitiveTreeMap(Map<? extends K, ? extends V> m) {
+    public CaseInsensitiveTreeMap(Map<? extends K, ? extends V> map) {
         this();
-        this.putAll(m);
+        this.putAll(map);
     }
 
     /**
      * 构造
      *
-     * @param m Map
+     * @param map 初始Map，键值对会被复制到新的TreeMap中
      */
-    public CaseInsensitiveTreeMap(SortedMap<? extends K, ? extends V> m) {
-        super(new TreeMap<K, V>(m));
+    public CaseInsensitiveTreeMap(SortedMap<? extends K, ? extends V> map) {
+        super(new TreeMap<K, V>(map));
     }
 
     /**
@@ -77,20 +77,6 @@ public class CaseInsensitiveTreeMap<K, V> extends CustomKeyMap<K, V> {
      */
     public CaseInsensitiveTreeMap(Comparator<? super K> comparator) {
         super(new TreeMap<>(comparator));
-    }
-
-    /**
-     * 将Key转为小写
-     *
-     * @param key KEY
-     * @return 小写KEY
-     */
-    @Override
-    protected Object customKey(Object key) {
-        if (key instanceof CharSequence) {
-            key = key.toString().toLowerCase();
-        }
-        return key;
     }
 
 }

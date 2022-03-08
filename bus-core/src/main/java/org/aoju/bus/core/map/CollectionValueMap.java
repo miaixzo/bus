@@ -41,7 +41,7 @@ import java.util.Map;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class CollectionValueMap<K, V> extends AbsCollValueMap<K, V, Collection<V>> {
+public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V, Collection<V>> {
 
     private final Func0<Collection<V>> collectionCreateFunc;
 

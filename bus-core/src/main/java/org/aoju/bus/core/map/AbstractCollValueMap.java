@@ -41,7 +41,7 @@ import java.util.Map;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends MapWrapper<K, C> {
+public abstract class AbstractCollValueMap<K, V, C extends Collection<V>> extends MapWrapper<K, C> {
 
     /**
      * 默认集合初始大小
@@ -51,7 +51,7 @@ public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends Map
     /**
      * 构造
      */
-    public AbsCollValueMap() {
+    public AbstractCollValueMap() {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
@@ -60,7 +60,7 @@ public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends Map
      *
      * @param initialCapacity 初始大小
      */
-    public AbsCollValueMap(int initialCapacity) {
+    public AbstractCollValueMap(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
@@ -69,7 +69,7 @@ public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends Map
      *
      * @param m Map
      */
-    public AbsCollValueMap(Map<? extends K, C> m) {
+    public AbstractCollValueMap(Map<? extends K, C> m) {
         this(DEFAULT_LOAD_FACTOR, m);
     }
 
@@ -79,7 +79,7 @@ public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends Map
      * @param loadFactor 加载因子
      * @param m          Map
      */
-    public AbsCollValueMap(float loadFactor, Map<? extends K, C> m) {
+    public AbstractCollValueMap(float loadFactor, Map<? extends K, C> m) {
         this(m.size(), loadFactor);
         this.putAll(m);
     }
@@ -90,7 +90,7 @@ public abstract class AbsCollValueMap<K, V, C extends Collection<V>> extends Map
      * @param initialCapacity 初始大小
      * @param loadFactor      加载因子
      */
-    public AbsCollValueMap(int initialCapacity, float loadFactor) {
+    public AbstractCollValueMap(int initialCapacity, float loadFactor) {
         super(new HashMap<>(initialCapacity, loadFactor));
     }
 
