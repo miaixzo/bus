@@ -37,10 +37,20 @@ import java.util.Collection;
  */
 public class AnyFilter extends MixFilter implements Filter {
 
+    /**
+     * 构造
+     *
+     * @param filters 过滤器
+     */
     public AnyFilter(Filter... filters) {
         super(filters);
     }
 
+    /**
+     * 构造
+     *
+     * @param filters 过滤器
+     */
     public AnyFilter(Collection<? extends Filter> filters) {
         super(filters);
     }

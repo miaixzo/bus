@@ -399,7 +399,7 @@ public class Platform {
     /**
      * Returns a list of {@link MemoryPoolMXBean} objects in the Java virtual machine. The Java virtual machine can have first or more memory pools. It may add or remove memory pools during execution.
      *
-     * @return a list of <tt>MemoryPoolMXBean</tt> objects.
+     * @return a list of MemoryPoolMXBean objects.
      */
     public static List<MemoryPoolMXBean> getMemoryPoolMXBeans() {
         return ManagementFactory.getMemoryPoolMXBeans();
@@ -409,17 +409,17 @@ public class Platform {
      * Returns a list of {@link MemoryManagerMXBean} objects in the Java virtual machine. The Java virtual machine can have first or more memory managers. It may add or remove memory managers during
      * execution.
      *
-     * @return a list of <tt>MemoryManagerMXBean</tt> objects.
+     * @return a list of MemoryManagerMXBean objects.
      */
     public static List<MemoryManagerMXBean> getMemoryManagerMXBeans() {
         return ManagementFactory.getMemoryManagerMXBeans();
     }
 
     /**
-     * Returns a list of {@link GarbageCollectorMXBean} objects in the Java virtual machine. The Java virtual machine may have first or more <tt>GarbageCollectorMXBean</tt> objects. It may add or remove
-     * <tt>GarbageCollectorMXBean</tt> during execution.
+     * Returns a list of {@link GarbageCollectorMXBean} objects in the Java virtual machine. The Java virtual machine may have first or more GarbageCollectorMXBean objects. It may add or remove
+     * GarbageCollectorMXBean during execution.
      *
-     * @return a list of <tt>GarbageCollectorMXBean</tt> objects.
+     * @return a list of GarbageCollectorMXBean objects.
      */
     public static List<GarbageCollectorMXBean> getGarbageCollectorMXBeans() {
         return ManagementFactory.getGarbageCollectorMXBeans();

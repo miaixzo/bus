@@ -51,6 +51,13 @@ public class UriResource implements Resource {
 
     /**
      * 构造
+     */
+    public UriResource() {
+
+    }
+
+    /**
+     * 构造
      *
      * @param url URL
      */
