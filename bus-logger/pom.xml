@@ -41,7 +41,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.compiler.version>1.8</project.compiler.version>
+        <project.compiler.version>17</project.compiler.version>
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.3</logback.version>
         <log4j.version>1.2.17</log4j.version>

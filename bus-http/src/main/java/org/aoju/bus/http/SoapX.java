@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import jakarta.xml.soap.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
@@ -35,7 +36,6 @@ import org.aoju.bus.http.magic.HttpResponse;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import javax.xml.soap.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

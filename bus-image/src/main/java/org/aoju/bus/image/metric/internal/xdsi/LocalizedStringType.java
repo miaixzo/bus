@@ -27,7 +27,7 @@ package org.aoju.bus.image.metric.internal.xdsi;
 
 import org.aoju.bus.core.lang.Charset;
 
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.xdsi;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.*;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.annotation.*;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;

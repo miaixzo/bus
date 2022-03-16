@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.xdsi;
 
-import javax.activation.DataHandler;
-import javax.xml.bind.annotation.*;
+import jakarta.activation.DataHandler;
+import jakarta.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 

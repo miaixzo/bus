@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import jakarta.xml.bind.*;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.w3c.dom.Document;
@@ -37,7 +38,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.bind.*;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;

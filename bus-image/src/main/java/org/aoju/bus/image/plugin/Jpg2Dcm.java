@@ -38,7 +38,7 @@ import org.aoju.bus.image.nimble.codec.jpeg.JPEG;
 import org.aoju.bus.image.nimble.codec.jpeg.JPEGHeader;
 import org.aoju.bus.image.nimble.codec.mpeg.MPEGHeader;
 
-import javax.activation.FileTypeMap;
+import jakarta.activation.FileTypeMap;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.Arrays;
