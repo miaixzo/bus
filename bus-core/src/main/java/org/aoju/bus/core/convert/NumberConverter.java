@@ -178,14 +178,14 @@ public class NumberConverter extends AbstractConverter<Number> {
             return StringKit.isBlank(valueStr) ? null : MathKit.parseFloat(valueStr);
         } else if (Double.class == targetType) {
             if (value instanceof Number) {
-                return ((Number) value).doubleValue();
+                return MathKit.toDouble((Number) value);
             } else if (value instanceof Boolean) {
                 return BooleanKit.toDoubleObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply((value));
             return StringKit.isBlank(valueStr) ? null : MathKit.parseDouble(valueStr);
         } else if (DoubleAdder.class == targetType) {
-            final Number number = convert(value, Long.class, toStrFunc);
+            final Number number = convert(value, Double.class, toStrFunc);
             if (null != number) {
                 final DoubleAdder doubleAdder = new DoubleAdder();
                 doubleAdder.add(number.doubleValue());

@@ -210,6 +210,25 @@ public class BeanKit {
      * 判断Bean是否包含值为<code>null</code>的属性
      * 对象本身为<code>null</code>也返回true
      *
+     * @param bean Bean对象
+     * @return 是否包含值为<code>null</code>的属性,<code>true</code> - 包含 / <code>false</code> - 不包含
+     */
+    public static boolean hasNullField(Object bean) {
+        if (null == bean) {
+            return true;
+        }
+        for (Field field : ReflectKit.getFields(bean.getClass())) {
+            if (null == ReflectKit.getFieldValue(bean, field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断Bean是否包含值为<code>null</code>的属性
+     * 对象本身为<code>null</code>也返回true
+     *
      * @param bean             Bean对象
      * @param ignoreFiledNames 忽略检查的字段名
      * @return 是否包含值为<code>null</code>的属性，<code>true</code> - 包含 / <code>false</code> - 不包含
@@ -224,25 +243,6 @@ public class BeanKit {
             }
             if ((false == ArrayKit.contains(ignoreFiledNames, field.getName()))
                     && null == ReflectKit.getFieldValue(bean, field)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 判断Bean是否包含值为<code>null</code>的属性
-     * 对象本身为<code>null</code>也返回true
-     *
-     * @param bean Bean对象
-     * @return 是否包含值为<code>null</code>的属性,<code>true</code> - 包含 / <code>false</code> - 不包含
-     */
-    public static boolean hasNullField(Object bean) {
-        if (null == bean) {
-            return true;
-        }
-        for (Field field : ReflectKit.getFields(bean.getClass())) {
-            if (null == ReflectKit.getFieldValue(bean, field)) {
                 return true;
             }
         }
@@ -1159,6 +1159,29 @@ public class BeanKit {
             editor.edit(field);
         }
         return bean;
+    }
+
+    /**
+     * 获取Getter或Setter方法名对应的字段名称，规则如下：
+     * <ul>
+     *     <li>getXxxx获取为xxxx，如getName得到name</li>
+     *     <li>setXxxx获取为xxxx，如setName得到name</li>
+     *     <li>isXxxx获取为xxxx，如isName得到name</li>
+     *     <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
+     * </ul>
+     *
+     * @param getterOrSetterName Getter或Setter方法名
+     * @return 字段名称
+     * @throws IllegalArgumentException 非Getter或Setter方法
+     */
+    public static String getFieldName(String getterOrSetterName) {
+        if (getterOrSetterName.startsWith("get") || getterOrSetterName.startsWith("set")) {
+            return StringKit.removePreAndLowerFirst(getterOrSetterName, 3);
+        } else if (getterOrSetterName.startsWith("is")) {
+            return StringKit.removePreAndLowerFirst(getterOrSetterName, 2);
+        } else {
+            throw new IllegalArgumentException("Invalid Getter or Setter name: " + getterOrSetterName);
+        }
     }
 
     /**

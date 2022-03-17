@@ -26,6 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.annotation.Alias;
+import org.aoju.bus.core.collection.UniqueKeySet;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -744,34 +745,47 @@ public class ReflectKit {
      */
     public static Method[] getMethods(Class<?> beanClass) throws SecurityException {
         Assert.notNull(beanClass);
-        return METHODS_CACHE.get(beanClass, () -> getMethods(beanClass, true));
+        return METHODS_CACHE.get(beanClass,
+                () -> getMethods(beanClass, true, true));
     }
 
     /**
-     * 获得一个类中所有方法列表,直接反射获取,无缓存
+     * 获得一个类中所有方法列表，直接反射获取，无缓存
+     * 接口获取方法和默认方法，获取的方法包括：
+     * <ul>
+     *     <li>本类中的所有方法（包括static方法）</li>
+     *     <li>父类中的所有方法（包括static方法）</li>
+     *     <li>Object中（包括static方法）</li>
+     * </ul>
      *
-     * @param beanClass             类
-     * @param withSuperClassMethods 是否包括父类的方法列表
+     * @param beanClass            类或接口
+     * @param withSupers           是否包括父类或接口的方法列表
+     * @param withMethodFromObject 是否包括Object中的方法
      * @return 方法列表
      * @throws SecurityException 安全检查异常
      */
-    public static Method[] getMethods(Class<?> beanClass, boolean withSuperClassMethods) throws SecurityException {
+    public static Method[] getMethods(Class<?> beanClass, boolean withSupers, boolean withMethodFromObject) throws SecurityException {
         Assert.notNull(beanClass);
 
-        Method[] allMethods = null;
-        Class<?> searchType = beanClass;
-        Method[] declaredMethods;
-        while (null != searchType) {
-            declaredMethods = searchType.getDeclaredMethods();
-            if (null == allMethods) {
-                allMethods = declaredMethods;
-            } else {
-                allMethods = ArrayKit.append(allMethods, declaredMethods);
-            }
-            searchType = withSuperClassMethods ? searchType.getSuperclass() : null;
+        if (beanClass.isInterface()) {
+            // 对于接口，直接调用Class.getMethods方法获取所有方法，因为接口都是public方法
+            return withSupers ? beanClass.getMethods() : beanClass.getDeclaredMethods();
         }
 
-        return allMethods;
+        final UniqueKeySet<String, Method> result = new UniqueKeySet<>(true, ReflectKit::getUniqueKey);
+        Class<?> searchType = beanClass;
+        while (searchType != null) {
+            if (false == withMethodFromObject && Object.class == searchType) {
+                break;
+            }
+            result.addAllIfAbsent(Arrays.asList(searchType.getDeclaredMethods()));
+            result.addAllIfAbsent(getDefaultMethodsFromInterface(searchType));
+
+
+            searchType = (withSupers && false == searchType.isInterface()) ? searchType.getSuperclass() : null;
+        }
+
+        return result.toArray(new Method[0]);
     }
 
     /**
@@ -1100,6 +1114,49 @@ public class ReflectKit {
             accessibleObject.setAccessible(true);
         }
         return accessibleObject;
+    }
+
+    /**
+     * 获取方法的唯一键，结构为:
+     * <pre>
+     *     返回类型#方法名:参数1类型,参数2类型...
+     * </pre>
+     *
+     * @param method 方法
+     * @return 方法唯一键
+     */
+    private static String getUniqueKey(Method method) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(method.getReturnType().getName()).append('#');
+        sb.append(method.getName());
+        Class<?>[] parameters = method.getParameterTypes();
+        for (int i = 0; i < parameters.length; i++) {
+            if (i == 0) {
+                sb.append(Symbol.C_COLON);
+            } else {
+                sb.append(Symbol.C_COMMA);
+            }
+            sb.append(parameters[i].getName());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 获取类对应接口中的非抽象方法（default方法）
+     *
+     * @param clazz 类
+     * @return 方法列表
+     */
+    private static List<Method> getDefaultMethodsFromInterface(Class<?> clazz) {
+        List<Method> result = new ArrayList<>();
+        for (Class<?> ifc : clazz.getInterfaces()) {
+            for (Method m : ifc.getMethods()) {
+                if (false == ClassKit.isAbstract(m)) {
+                    result.add(m);
+                }
+            }
+        }
+        return result;
     }
 
 }

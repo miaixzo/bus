@@ -322,16 +322,18 @@ public class ConverterRegistry {
         // 包装类转换器
         defaultConverterMap.put(Number.class, new NumberConverter());
         defaultConverterMap.put(Integer.class, new NumberConverter(Integer.class));
-        defaultConverterMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));// since 3.0.8
+        defaultConverterMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));
         defaultConverterMap.put(Long.class, new NumberConverter(Long.class));
-        defaultConverterMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));// since 3.0.8
+        defaultConverterMap.put(LongAdder.class, new NumberConverter(LongAdder.class));
+        defaultConverterMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));
         defaultConverterMap.put(Byte.class, new NumberConverter(Byte.class));
         defaultConverterMap.put(Short.class, new NumberConverter(Short.class));
         defaultConverterMap.put(Float.class, new NumberConverter(Float.class));
         defaultConverterMap.put(Double.class, new NumberConverter(Double.class));
+        defaultConverterMap.put(DoubleAdder.class, new NumberConverter(DoubleAdder.class));
         defaultConverterMap.put(Character.class, new CharacterConverter());
         defaultConverterMap.put(Boolean.class, new BooleanConverter());
-        defaultConverterMap.put(AtomicBoolean.class, new AtomicBooleanConverter());// since 3.0.8
+        defaultConverterMap.put(AtomicBoolean.class, new AtomicBooleanConverter());
         defaultConverterMap.put(BigDecimal.class, new NumberConverter(BigDecimal.class));
         defaultConverterMap.put(BigInteger.class, new NumberConverter(BigInteger.class));
         defaultConverterMap.put(CharSequence.class, new StringConverter());
@@ -378,6 +380,7 @@ public class ConverterRegistry {
         defaultConverterMap.put(Currency.class, new CurrencyConverter());
         defaultConverterMap.put(UUID.class, new UUIDConverter());
         defaultConverterMap.put(StackTraceElement.class, new StackTraceConverter());
+        defaultConverterMap.put(Optional.class, new OptionalConverter());
         defaultConverterMap.put(Optional.class, new OptionalConverter());
 
         return this;

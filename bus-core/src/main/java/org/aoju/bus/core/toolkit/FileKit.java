@@ -809,7 +809,7 @@ public class FileKit {
             return null;
         }
         if (false == dir.exists()) {
-            dir.mkdirs();
+            mkdirsSafely(dir, 5, 1);
         }
         return dir;
     }
@@ -832,6 +832,32 @@ public class FileKit {
     }
 
     /**
+     * 创建所给文件或目录的父目录
+     *
+     * @param file 文件或目录
+     * @return 父目录
+     */
+    public static File mkParentDirs(File file) {
+        if (null == file) {
+            return null;
+        }
+        return mkdir(getParent(file, 1));
+    }
+
+    /**
+     * 创建父文件夹，如果存在直接返回此文件夹
+     *
+     * @param path 文件夹路径，使用POSIX格式，无论哪个平台
+     * @return 创建的目录
+     */
+    public static File mkParentDirs(String path) {
+        if (path == null) {
+            return null;
+        }
+        return mkParentDirs(file(path));
+    }
+
+    /**
      * 安全地级联创建目录 (确保并发环境下能创建成功)
      *
      * <pre>
@@ -842,27 +868,29 @@ public class FileKit {
      *     file.createNewFile(); // 抛出 IO 异常，因为该线程无法感知到父目录已被创建
      * </pre>
      *
-     * @param dir 待创建的目录
+     * @param dir         待创建的目录
+     * @param tryCount    最大尝试次数
+     * @param sleepMillis 线程等待的毫秒数
      * @return true表示创建成功，false表示创建失败
      */
-    public static boolean mkdirsSafely(File dir) {
+    public static boolean mkdirsSafely(File dir, int tryCount, long sleepMillis) {
         if (dir == null) {
             return false;
         }
         if (dir.isDirectory()) {
             return true;
         }
-        // 高并发场景下，可以看到 i 处于 1 ~ 3 之间
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= tryCount; i++) { // 高并发场景下，可以看到 i 处于 1 ~ 3 之间
             // 如果文件已存在，也会返回 false，所以该值不能作为是否能创建的依据，因此不对其进行处理
             dir.mkdirs();
             if (dir.exists()) {
                 return true;
             }
-            ThreadKit.sleep(1);
+            ThreadKit.sleep(sleepMillis);
         }
         return dir.exists();
     }
+
 
     /**
      * 创建临时文件

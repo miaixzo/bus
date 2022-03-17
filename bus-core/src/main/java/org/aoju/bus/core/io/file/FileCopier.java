@@ -279,24 +279,24 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      */
     private void internalCopyFile(File src, File dest) throws InstrumentException {
         if (null != copyFilter && false == copyFilter.accept(src)) {
-            //被过滤的文件跳过
+            // 被过滤的文件跳过
             return;
         }
 
         // 如果已经存在目标文件,切为不覆盖模式,跳过之
         if (dest.exists()) {
             if (dest.isDirectory()) {
-                //目标为目录,目录下创建同名文件
+                // 目标为目录,目录下创建同名文件
                 dest = new File(dest, src.getName());
             }
 
             if (dest.exists() && false == isOverride) {
-                //非覆盖模式跳过
+                // 非覆盖模式跳过
                 return;
             }
         } else {
-            //路径不存在则创建父目录
-            dest.getParentFile().mkdirs();
+            // 路径不存在则创建父目录
+            FileKit.mkParentDirs(dest);
         }
 
         final List<CopyOption> optionList = new ArrayList<>(2);

@@ -74,6 +74,27 @@ public class NumberFormatter {
     };
 
     /**
+     * 阿拉伯数字（支持正负整数）四舍五入后转换成中文节权位简洁计数单位，例如 -5_5555 = -5.56万
+     *
+     * @param amount 数字
+     * @return 中文
+     */
+    public static String format(long amount) {
+        if (amount < 1_0000 && amount > -1_0000) {
+            return String.valueOf(amount);
+        }
+        String res;
+        if (amount < 1_0000_0000 && amount > -1_0000_0000) {
+            res = MathKit.div(amount, 1_0000, 2) + "万";
+        } else if (amount < 1_0000_0000_0000L && amount > -1_0000_0000_0000L) {
+            res = MathKit.div(amount, 1_0000_0000, 2) + "亿";
+        } else {
+            res = MathKit.div(amount, 1_0000_0000_0000L, 2) + "万亿";
+        }
+        return res;
+    }
+
+    /**
      * 格式化-999~999之间的数字
      * 这个方法显示10~19以下的数字时使用"十一"而非"一十一"
      *
@@ -84,7 +105,7 @@ public class NumberFormatter {
     public static String format(int amount, boolean isUseTraditional) {
         Assert.checkBetween(amount, -999, 999, "Number support only: (-999 ~ 999)！");
         final String chinese = toChinese(amount, isUseTraditional);
-        if (amount < 20 && amount > 10) {
+        if (amount < 20 && amount >= 10) {
             // "十一"而非"一十一"
             return chinese.substring(1);
         }
@@ -137,6 +158,20 @@ public class NumberFormatter {
      * @return 中文
      */
     public static String format(double amount, boolean isUseTraditional, boolean isMoneyMode) {
+        return format(amount, isUseTraditional, isMoneyMode, "负", "元");
+    }
+
+    /**
+     * 阿拉伯数字转换成中文,小数点后四舍五入保留两位. 使用于整数、小数的转换.
+     *
+     * @param amount           数字
+     * @param isUseTraditional 是否使用繁体
+     * @param isMoneyMode      是否金额模式
+     * @param negativeName     负号转换名称 如：负、(负数)
+     * @param unitName         单位名称 如：元、圆
+     * @return 中文
+     */
+    public static String format(double amount, boolean isUseTraditional, boolean isMoneyMode, String negativeName, String unitName) {
         if (0 == amount) {
             return "零";
         }
@@ -147,7 +182,7 @@ public class NumberFormatter {
 
         // 负数
         if (amount < 0) {
-            chineseStr.append("负");
+            chineseStr.append(StringKit.isNullOrUndefined(negativeName) ? "负" : negativeName);
             amount = -amount;
         }
 
@@ -162,7 +197,7 @@ public class NumberFormatter {
             // 金额模式下，无需“零元”
             chineseStr.append(toChinese(yuan, isUseTraditional));
             if (isMoneyMode) {
-                chineseStr.append("元");
+                chineseStr.append(StringKit.isNullOrUndefined(unitName) ? "元" : unitName);
             }
         }
 
@@ -201,27 +236,6 @@ public class NumberFormatter {
         }
 
         return chineseStr.toString();
-    }
-
-    /**
-     * 阿拉伯数字（支持正负整数）四舍五入后转换成中文节权位简洁计数单位，例如 -5_5555 =》 -5.56万
-     *
-     * @param amount 数字
-     * @return 中文
-     */
-    public static String format(long amount) {
-        if (amount < 1_0000 && amount > -1_0000) {
-            return String.valueOf(amount);
-        }
-        String res;
-        if (amount < 1_0000_0000 && amount > -1_0000_0000) {
-            res = MathKit.div(amount, 1_0000, 2) + "万";
-        } else if (amount < 1_0000_0000_0000L && amount > -1_0000_0000_0000L) {
-            res = MathKit.div(amount, 1_0000_0000, 2) + "亿";
-        } else {
-            res = MathKit.div(amount, 1_0000_0000_0000L, 2) + "万亿";
-        }
-        return res;
     }
 
     /**
