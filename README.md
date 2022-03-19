@@ -9,7 +9,7 @@
 		<img src="https://img.shields.io/badge/maven--central-v6.3.1-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
-		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
+		<img src="https://travis-ci.org/aoju/bus.svg?branch=main">
 	</a>
 	<a target="_blank" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">
 		<img src="https://img.shields.io/badge/JDK-1.8+-green.svg">
@@ -136,10 +136,10 @@ implementation 'org.aoju:bus-all:x.x.x'
 
 源码分为两个分支，功能如下：
 
-| 分支       | 作用                                                          |
-|-----------|---------------------------------------------------------------|
-| master    | 主分支，即稳定版本使用的分支，与中央库提交的jar一致，不接收任何PR或修改 |
-| develop   | 开发分支，默认为下个版本的更新或者修复等，接受修改或PR             |
+| 分支   | 作用                                                          |
+|------|---------------------------------------------------------------|
+| main | 主分支，即稳定版本使用的分支，与中央库提交的jar一致，不接收任何PR或修改 |
+| dev  | 开发分支，默认为下个版本的更新或者修复等，接受修改或PR             |
 
 ## 意见建议
 

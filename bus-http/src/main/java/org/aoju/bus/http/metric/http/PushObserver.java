@@ -71,7 +71,7 @@ public interface PushObserver {
      * 描述服务器打算为其推送响应的请求
      *
      * @param streamId       务器发起的流ID:偶数
-     * @param requestHeaders 最低限度包括{@code:method}、{@code:scheme}、{@code:authority}和{@code:path}
+     * @param requestHeaders 最低限度包括 method、scheme、authority和path
      * @return the true/false
      */
     boolean onRequest(int streamId, List<HttpHeaders> requestHeaders);
@@ -80,7 +80,7 @@ public interface PushObserver {
      * 推送请求对应的响应标头。当{@code last}为真时，则没有后续的数据帧
      *
      * @param streamId        服务器发起的流ID:偶数.
-     * @param responseHeaders 最少包含{@code:status}
+     * @param responseHeaders 最少包含status
      * @param last            如果为真，则没有响应数据
      * @return the true/false
      */

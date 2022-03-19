@@ -41,7 +41,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.compiler.version>1.8</project.compiler.version>
+        <project.compiler.version>17</project.compiler.version>
         <javassist.version>3.27.0-GA</javassist.version>
         <hession.version>4.0.63</hession.version>
         <cglib.version>3.3.0</cglib.version>
@@ -77,6 +77,11 @@
             <artifactId>hessian</artifactId>
             <version>${hession.version}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.corba</groupId>
+            <artifactId>glassfish-corba-orb</artifactId>
+            <version>4.2.0</version>
         </dependency>
     </dependencies>
 

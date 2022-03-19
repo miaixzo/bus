@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.annotation.AnnoProxy;
 import org.aoju.bus.core.annotation.Element;
 
 import java.lang.annotation.*;
@@ -225,6 +226,19 @@ public class AnnoKit {
     public static void setValue(Annotation annotation, String annotationField, Object value) {
         final Map memberValues = (Map) ReflectKit.getFieldValue(Proxy.getInvocationHandler(annotation), "memberValues");
         memberValues.put(annotationField, value);
+    }
+
+    /**
+     * 获取别名支持后的注解
+     *
+     * @param annotationEle  被注解的类
+     * @param annotationType 注解类型Class
+     * @param <T>            注解类型
+     * @return 别名支持后的注解
+     */
+    public static <T extends Annotation> T getAnnotationAlias(AnnotatedElement annotationEle, Class<T> annotationType) {
+        final T annotation = getAnnotation(annotationEle, annotationType);
+        return (T) Proxy.newProxyInstance(annotationType.getClassLoader(), new Class[]{annotationType}, new AnnoProxy<>(annotation));
     }
 
 }

@@ -28,9 +28,11 @@ package org.aoju.bus.core.lang;
 import org.aoju.bus.core.beans.PathExpression;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.BasicType;
+import org.aoju.bus.core.lang.function.Func0;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.LambdaKit;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -562,6 +564,22 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
             key = key.toLowerCase();
         }
         return key;
+    }
+
+    /**
+     * 通过lambda批量设置值
+     * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * <pre>
+     *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
+     *     Dict.create().setFields(user::getNickname, user::getUsername);
+     * </pre>
+     *
+     * @param fields lambda,不能为空
+     * @return this
+     */
+    public Dict setFields(Func0<?>... fields) {
+        Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.callWithRuntimeException()));
+        return this;
     }
 
 }

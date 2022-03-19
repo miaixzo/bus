@@ -61,4 +61,9 @@ public interface IniSection extends ProxyList<IniProperty>, IniElement {
      */
     List<IniProperty> getList(Supplier<List<IniProperty>> listSupplier);
 
+    @Override
+    default boolean isEmpty() {
+        return ProxyList.super.isEmpty();
+    }
+
 }

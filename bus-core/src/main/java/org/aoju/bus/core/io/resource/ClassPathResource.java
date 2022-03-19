@@ -82,7 +82,7 @@ public class ClassPathResource extends UriResource {
      * @param clazz               {@link Class} 用于定位路径
      */
     public ClassPathResource(String pathBaseClassLoader, ClassLoader classLoader, Class<?> clazz) {
-        super(null);
+        super();
         Assert.notNull(pathBaseClassLoader, "Path must not be null");
 
         final String path = normalizePath(pathBaseClassLoader);

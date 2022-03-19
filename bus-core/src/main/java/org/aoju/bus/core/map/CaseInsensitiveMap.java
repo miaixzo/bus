@@ -38,7 +38,7 @@ import java.util.Map;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
+public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
 
     /**
      * 构造
@@ -58,22 +58,23 @@ public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
 
     /**
      * 构造
+     * 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改
      *
-     * @param m Map
+     * @param map 被包装的自定义Map创建器
      */
-    public CaseInsensitiveMap(Map<? extends K, ? extends V> m) {
-        this(DEFAULT_LOAD_FACTOR, m);
+    public CaseInsensitiveMap(Map<? extends K, ? extends V> map) {
+        this(DEFAULT_LOAD_FACTOR, map);
     }
 
     /**
      * 构造
      *
      * @param loadFactor 加载因子
-     * @param m          Map
+     * @param map        Map
      */
-    public CaseInsensitiveMap(float loadFactor, Map<? extends K, ? extends V> m) {
-        this(m.size(), loadFactor);
-        this.putAll(m);
+    public CaseInsensitiveMap(float loadFactor, Map<? extends K, ? extends V> map) {
+        this(map.size(), loadFactor);
+        this.putAll(map);
     }
 
     /**
@@ -83,21 +84,22 @@ public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
      * @param loadFactor      加载因子
      */
     public CaseInsensitiveMap(int initialCapacity, float loadFactor) {
-        super(new HashMap<>(initialCapacity, loadFactor));
+        this(MapBuilder.create(new HashMap<>(initialCapacity, loadFactor)));
     }
 
     /**
-     * 将Key转为小写
+     * 构造
+     * 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改
      *
-     * @param key KEY
-     * @return 小写KEY
+     * @param emptyMapBuilder 被包装的自定义Map创建器
      */
-    @Override
-    protected Object customKey(Object key) {
-        if (key instanceof CharSequence) {
-            key = key.toString().toLowerCase();
-        }
-        return key;
+    CaseInsensitiveMap(MapBuilder<K, V> emptyMapBuilder) {
+        super(emptyMapBuilder.build(), (key) -> {
+            if (key instanceof CharSequence) {
+                key = key.toString().toLowerCase();
+            }
+            return (K) key;
+        });
     }
 
 }

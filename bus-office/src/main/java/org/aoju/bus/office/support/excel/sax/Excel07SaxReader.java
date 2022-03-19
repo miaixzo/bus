@@ -151,7 +151,7 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
 
         // 获取共享字符串表
         try {
-            this.handler.sharedStringsTable = xssfReader.getSharedStringsTable();
+            this.handler.sharedStrings = xssfReader.getSharedStringsTable();
         } catch (IOException e) {
             throw new InstrumentException(e);
         } catch (InvalidFormatException e) {

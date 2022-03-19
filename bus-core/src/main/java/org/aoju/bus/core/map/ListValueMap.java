@@ -36,7 +36,7 @@ import java.util.*;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class ListValueMap<K, V> extends AbsCollValueMap<K, V, List<V>> {
+public class ListValueMap<K, V> extends AbstractCollValueMap<K, V, List<V>> {
 
     /**
      * 构造

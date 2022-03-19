@@ -48,7 +48,7 @@ public class FieldMethod {
     private Method method;
 
     /**
-     * Getter method for property <tt>field</tt>.
+     * Getter method for property field.
      *
      * @return property value of field
      */
@@ -57,7 +57,7 @@ public class FieldMethod {
     }
 
     /**
-     * Setter method for property <tt>field</tt>.
+     * Setter method for property field.
      *
      * @param field value to be assigned to property field
      */
@@ -66,7 +66,7 @@ public class FieldMethod {
     }
 
     /**
-     * Getter method for property <tt>method</tt>.
+     * Getter method for property method.
      *
      * @return property value of method
      */
@@ -75,7 +75,7 @@ public class FieldMethod {
     }
 
     /**
-     * Setter method for property <tt>method</tt>.
+     * Setter method for property method.
      *
      * @param method value to be assigned to property method
      */

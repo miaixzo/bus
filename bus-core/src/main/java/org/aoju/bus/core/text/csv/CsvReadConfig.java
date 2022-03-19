@@ -39,10 +39,6 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     private static final long serialVersionUID = 1L;
 
     /**
-     * 是否首行做为标题行,默认false
-     */
-    protected boolean containsHeader;
-    /**
      * 是否跳过空白行,默认true
      */
     protected boolean skipEmptyRows = true;
@@ -62,6 +58,10 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
      * 每个字段是否去除两边空白符
      */
     protected boolean trimField;
+    /**
+     * 指定标题行号，-1表示无标题行
+     */
+    protected long headerLineNo = -1;
 
     /**
      * 默认配置
@@ -74,12 +74,24 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
 
     /**
      * 设置是否首行做为标题行,默认false
+     * 当设置为{@code true}时，默认标题行号是{@link #beginLineNo}，{@code false}为-1，表示无行号
      *
      * @param containsHeader 是否首行做为标题行,默认false
      * @return this
+     * @see #setHeaderLineNo(long)
      */
     public CsvReadConfig setContainsHeader(boolean containsHeader) {
-        this.containsHeader = containsHeader;
+        return setHeaderLineNo(containsHeader ? beginLineNo : -1);
+    }
+
+    /**
+     * 设置标题行行号，默认-1，表示无标题行
+     *
+     * @param headerLineNo 标题行行号，-1表示无标题行
+     * @return this
+     */
+    public CsvReadConfig setHeaderLineNo(long headerLineNo) {
+        this.headerLineNo = headerLineNo;
         return this;
     }
 

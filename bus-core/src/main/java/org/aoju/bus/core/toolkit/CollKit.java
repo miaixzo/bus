@@ -1605,12 +1605,13 @@ public class CollKit {
      * @return 过滤后的数组
      */
     public static <T> Collection<T> filter(Collection<T> collection, Editor<T> editor) {
-        Collection<T> collection2 = ObjectKit.clone(collection);
-        try {
-            collection2.clear();
-        } catch (UnsupportedOperationException e) {
-            // 克隆后的对象不支持清空,说明为不可变集合对象,使用默认的ArrayList保存结果
-            collection2 = new ArrayList<>();
+        if (null == collection || null == editor) {
+            return collection;
+        }
+
+        final Collection<T> collection2 = create(collection.getClass());
+        if (isEmpty(collection)) {
+            return collection2;
         }
 
         T modified;
@@ -3826,23 +3827,25 @@ public class CollKit {
 
     /**
      * 将指定元素交换到指定索引位置,其他元素的索引值不变
-     * 交换会修改原List
+     * 交换会修改原List如果集合中有多个相同元素，只交换第一个找到的元素
      *
      * @param <T>         处理参数类型
      * @param list        列表
      * @param element     需交换元素
      * @param targetIndex 目标索引
      */
-    public static <T> void swapIndex(List<T> list, T element, Integer targetIndex) {
-        if (isEmpty(list) || !list.contains(element)) {
-            return;
+    public static <T> void swapTo(List<T> list, T element, Integer targetIndex) {
+        if (isNotEmpty(list)) {
+            final int index = list.indexOf(element);
+            if (index >= 0) {
+                Collections.swap(list, index, targetIndex);
+            }
         }
-        Collections.swap(list, list.indexOf(element), targetIndex);
     }
 
     /**
      * 将指定元素交换到指定元素位置,其他元素的索引值不变
-     * 交换会修改原List
+     * 交换会修改原List如果集合中有多个相同元素，只交换第一个找到的元素
      *
      * @param <T>           处理参数类型
      * @param list          列表
@@ -3850,10 +3853,12 @@ public class CollKit {
      * @param targetElement 目标元素
      */
     public static <T> void swapElement(List<T> list, T element, T targetElement) {
-        if (isEmpty(list) || !list.contains(targetElement)) {
-            return;
+        if (isNotEmpty(list)) {
+            final int targetIndex = list.indexOf(targetElement);
+            if (targetIndex >= 0) {
+                swapTo(list, element, targetIndex);
+            }
         }
-        swapIndex(list, element, list.indexOf(targetElement));
     }
 
     /**

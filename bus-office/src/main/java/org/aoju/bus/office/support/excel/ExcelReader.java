@@ -390,7 +390,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 读取Excel为Bean的列表
      *
      * @param <T>            Bean类型
-     * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略,,从0开始计数
+     * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略,从0开始计数
      * @param startRowIndex  起始行(包含,从0开始计数)
      * @param beanType       每行对应Bean的类型
      * @return Map的列表

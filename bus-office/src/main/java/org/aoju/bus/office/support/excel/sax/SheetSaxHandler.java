@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.aoju.bus.office.support.excel.cell.FormulaCellValue;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
-import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.xml.sax.Attributes;
@@ -65,7 +65,7 @@ public class SheetSaxHandler extends DefaultHandler {
     /**
      * excel 2007 的共享字符串表,对应sharedString.xml
      */
-    protected SharedStringsTable sharedStringsTable;
+    protected SharedStrings sharedStrings;
     /**
      * sheet的索引，从0开始
      */
@@ -291,7 +291,7 @@ public class SheetSaxHandler extends DefaultHandler {
         fillBlankCell(preCoordinate, curCoordinate, false);
 
         final String contentStr = StringKit.trim(lastContent);
-        Object value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStringsTable, this.numFmtString);
+        Object value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString);
         if (false == this.lastFormula.isEmpty()) {
             value = new FormulaCellValue(StringKit.trim(lastFormula), value);
         }

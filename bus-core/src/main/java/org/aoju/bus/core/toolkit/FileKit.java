@@ -809,7 +809,7 @@ public class FileKit {
             return null;
         }
         if (false == dir.exists()) {
-            dir.mkdirs();
+            mkdirsSafely(dir, 5, 1);
         }
         return dir;
     }
@@ -832,6 +832,32 @@ public class FileKit {
     }
 
     /**
+     * 创建所给文件或目录的父目录
+     *
+     * @param file 文件或目录
+     * @return 父目录
+     */
+    public static File mkParentDirs(File file) {
+        if (null == file) {
+            return null;
+        }
+        return mkdir(getParent(file, 1));
+    }
+
+    /**
+     * 创建父文件夹，如果存在直接返回此文件夹
+     *
+     * @param path 文件夹路径，使用POSIX格式，无论哪个平台
+     * @return 创建的目录
+     */
+    public static File mkParentDirs(String path) {
+        if (path == null) {
+            return null;
+        }
+        return mkParentDirs(file(path));
+    }
+
+    /**
      * 安全地级联创建目录 (确保并发环境下能创建成功)
      *
      * <pre>
@@ -842,27 +868,29 @@ public class FileKit {
      *     file.createNewFile(); // 抛出 IO 异常，因为该线程无法感知到父目录已被创建
      * </pre>
      *
-     * @param dir 待创建的目录
+     * @param dir         待创建的目录
+     * @param tryCount    最大尝试次数
+     * @param sleepMillis 线程等待的毫秒数
      * @return true表示创建成功，false表示创建失败
      */
-    public static boolean mkdirsSafely(File dir) {
+    public static boolean mkdirsSafely(File dir, int tryCount, long sleepMillis) {
         if (dir == null) {
             return false;
         }
         if (dir.isDirectory()) {
             return true;
         }
-        // 高并发场景下，可以看到 i 处于 1 ~ 3 之间
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= tryCount; i++) { // 高并发场景下，可以看到 i 处于 1 ~ 3 之间
             // 如果文件已存在，也会返回 false，所以该值不能作为是否能创建的依据，因此不对其进行处理
             dir.mkdirs();
             if (dir.exists()) {
                 return true;
             }
-            ThreadKit.sleep(1);
+            ThreadKit.sleep(sleepMillis);
         }
         return dir.exists();
     }
+
 
     /**
      * 创建临时文件
@@ -874,6 +902,53 @@ public class FileKit {
      */
     public static File createTempFile(File dir) throws InstrumentException {
         return createTempFile("create", null, dir, true);
+    }
+
+    /**
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Randon].tmp
+     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定
+     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}
+     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}
+     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响
+     *
+     * @return 临时文件
+     * @throws InstrumentException IO异常
+     */
+    public static File createTempFile() throws InstrumentException {
+        return createTempFile("bus", null, null, true);
+    }
+
+    /**
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Randon].suffix
+     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定
+     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}
+     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}
+     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响
+     *
+     * @param suffix    后缀，如果null则使用默认.tmp
+     * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
+     * @return 临时文件
+     * @throws InstrumentException IO异常
+     */
+    public static File createTempFile(String suffix, boolean isReCreat) throws InstrumentException {
+        return createTempFile("bus", suffix, null, isReCreat);
+    }
+
+    /**
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Randon].suffix
+     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定
+     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}
+     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}
+     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响
+     *
+     * @param prefix    前缀，至少3个字符
+     * @param suffix    后缀，如果null则使用默认.tmp
+     * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
+     * @return 临时文件
+     * @throws InstrumentException IO异常
+     */
+    public static File createTempFile(String prefix, String suffix, boolean isReCreat) throws InstrumentException {
+        return createTempFile(prefix, suffix, null, isReCreat);
     }
 
     /**
@@ -1431,7 +1506,7 @@ public class FileKit {
     /**
      * 返回最后一个目录分隔符的索引
      * <p>
-     * 此方法将处理Unix或Windows格式的文件。
+     * 此方法将处理Unix或Windows格式的文件
      * 返回最后一个正斜杠或反斜杠的位置.
      * </p>
      *
@@ -1475,7 +1550,7 @@ public class FileKit {
      * 计算目录或文件的总大小
      * 当给定对象为文件时，直接调用 {@link File#length()}
      * 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
-     * 此方法不包括目录本身的占用空间大小。
+     * 此方法不包括目录本身的占用空间大小
      *
      * @param file 目录或文件,null或者文件不存在返回0
      * @return 总大小，bytes长度
@@ -1994,6 +2069,11 @@ public class FileKit {
         if (index == Normal.__1) {
             return Normal.EMPTY;
         } else {
+            int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
+            String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
+            if (StringKit.containsAny(substr, new String[]{"tar.bz2", "tar.Z", "tar.gz", "tar.xz"})) {
+                return substr;
+            }
             String ext = fileName.substring(index + 1);
             // 扩展名中不能包含路径相关的符号
             return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;
@@ -3915,13 +3995,24 @@ public class FileKit {
      * @return 资源列表
      */
     public static List<URL> getResources(String resource) {
-        final Enumeration<URL> resources;
-        try {
-            resources = ClassKit.getClassLoader().getResources(resource);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-        return CollKit.newArrayList(resources);
+        return getResources(resource, null);
+    }
+
+    /**
+     * 获取指定路径下的资源列表
+     * 路径格式必须为目录格式,用/分隔，例如:
+     *
+     * <pre>
+     * config/a
+     * spring/xml
+     * </pre>
+     *
+     * @param resource 资源路径
+     * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
+     * @return 资源列表
+     */
+    public static List<URL> getResources(String resource, Filter<URL> filter) {
+        return IterKit.filterToList(getResourceIter(resource), filter);
     }
 
     /**

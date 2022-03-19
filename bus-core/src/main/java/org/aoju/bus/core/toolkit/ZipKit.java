@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.compress.*;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Normal;
@@ -37,7 +38,6 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -897,6 +897,7 @@ public class ZipKit {
 
     /**
      * 获取Zip文件中指定目录下的所有文件，只显示文件，不显示目录
+     * 此方法并不会关闭{@link ZipFile}
      *
      * @param zipFile Zip文件
      * @param dir     目录前缀(目录前缀不包含开头的/)
@@ -910,7 +911,7 @@ public class ZipKit {
 
         final List<String> fileNames = new ArrayList<>();
         String name;
-        for (ZipEntry entry : Collections.list(zipFile.entries())) {
+        for (ZipEntry entry : new EnumerationIterator<>(zipFile.entries())) {
             name = entry.getName();
             if (StringKit.isEmpty(dir) || name.startsWith(dir)) {
                 final String nameSuffix = StringKit.removePrefix(name, dir);

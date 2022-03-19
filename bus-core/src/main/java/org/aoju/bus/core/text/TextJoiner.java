@@ -302,6 +302,11 @@ public class TextJoiner implements Appendable, Serializable {
 
     @Override
     public TextJoiner append(CharSequence csq) {
+        return append(csq, 0, StringKit.length(csq));
+    }
+
+    @Override
+    public TextJoiner append(CharSequence csq, int startInclude, int endExclude) {
         if (null == csq) {
             switch (this.nullMode) {
                 case IGNORE:
@@ -318,7 +323,7 @@ public class TextJoiner implements Appendable, Serializable {
             if (wrapElement && StringKit.isNotEmpty(this.prefix)) {
                 appendable.append(prefix);
             }
-            appendable.append(csq);
+            appendable.append(csq, startInclude, endExclude);
             if (wrapElement && StringKit.isNotEmpty(this.suffix)) {
                 appendable.append(suffix);
             }
@@ -326,11 +331,6 @@ public class TextJoiner implements Appendable, Serializable {
             throw new InstrumentException(e);
         }
         return this;
-    }
-
-    @Override
-    public TextJoiner append(CharSequence csq, int startInclude, int endExclude) {
-        return append(StringKit.sub(csq, startInclude, endExclude));
     }
 
     @Override
@@ -343,14 +343,42 @@ public class TextJoiner implements Appendable, Serializable {
         if (null == this.appendable) {
             return emptyResult;
         }
+        String result = this.appendable.toString();
         if (false == wrapElement && StringKit.isNotEmpty(this.suffix)) {
-            try {
-                this.appendable.append(this.suffix);
-            } catch (IOException e) {
-                throw new InstrumentException(e);
+            result += this.suffix;
+        }
+        return result;
+    }
+
+    /**
+     * 合并一个StrJoiner 到当前的StrJoiner
+     * 合并规则为，在尾部直接追加，当存在{@link #prefix}时，如果{@link #wrapElement}为{@code false}，则去除之
+     *
+     * @param strJoiner 其他的StrJoiner
+     * @return this
+     */
+    public TextJoiner merge(TextJoiner strJoiner) {
+        if (null != strJoiner && null != strJoiner.appendable) {
+            final String otherStr = strJoiner.toString();
+            if (strJoiner.wrapElement) {
+                this.append(otherStr);
+            } else {
+                this.append(otherStr, this.prefix.length(), otherStr.length());
             }
         }
-        return this.appendable.toString();
+        return this;
+    }
+
+    /**
+     * 长度
+     * 长度计算方式为prefix + suffix + content
+     * 此方法结果与toString().length()一致
+     *
+     * @return 长度，如果结果为{@code null}，返回-1
+     */
+    public int length() {
+        return (this.appendable != null ? this.appendable.toString().length() + suffix.length() :
+                null == this.emptyResult ? -1 : emptyResult.length());
     }
 
     /**

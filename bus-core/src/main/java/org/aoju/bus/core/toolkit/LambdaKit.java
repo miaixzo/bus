@@ -26,6 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.SimpleCache;
+import org.aoju.bus.core.lang.function.Func0;
 import org.aoju.bus.core.lang.function.Func1;
 
 import java.io.Serializable;
@@ -55,14 +56,73 @@ public class LambdaKit {
     }
 
     /**
+     * 解析lambda表达式,加了缓存
+     * 该缓存可能会在任意不定的时间被清除
+     *
+     * @param <R>  Lambda返回类型
+     * @param func 需要解析的 lambda 对象（无参方法）
+     * @return 返回解析后的结果
+     */
+    public static <R> SerializedLambda resolve(Func0<R> func) {
+        return _resolve(func);
+    }
+
+    /**
      * 获取lambda表达式函数（方法）名称
      *
-     * @param <T>  Lambda类型
+     * @param <P>  Lambda参数类型
      * @param func 函数（无参方法）
      * @return 函数名称
      */
-    public static <T> String getMethodName(Func1<T, ?> func) {
+    public static <P> String getMethodName(Func1<P, ?> func) {
         return resolve(func).getImplMethodName();
+    }
+
+    /**
+     * 获取lambda表达式函数（方法）名称
+     *
+     * @param <R>  Lambda返回类型
+     * @param func 函数（无参方法）
+     * @return 函数名称
+     */
+    public static <R> String getMethodName(Func0<R> func) {
+        return resolve(func).getImplMethodName();
+    }
+
+    /**
+     * 获取lambda表达式Getter或Setter函数（方法）对应的字段名称，规则如下：
+     * <ul>
+     *     <li>getXxxx获取为xxxx，如getName得到name</li>
+     *     <li>setXxxx获取为xxxx，如setName得到name</li>
+     *     <li>isXxxx获取为xxxx，如isName得到name</li>
+     *     <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
+     * </ul>
+     *
+     * @param <T>  Lambda类型
+     * @param func 函数（无参方法）
+     * @return 方法名称
+     * @throws IllegalArgumentException 非Getter或Setter方法
+     */
+    public static <T> String getFieldName(Func1<T, ?> func) throws IllegalArgumentException {
+        return BeanKit.getFieldName(getMethodName(func));
+    }
+
+    /**
+     * 获取lambda表达式Getter或Setter函数（方法）对应的字段名称，规则如下：
+     * <ul>
+     *     <li>getXxxx获取为xxxx，如getName得到name</li>
+     *     <li>setXxxx获取为xxxx，如setName得到name</li>
+     *     <li>isXxxx获取为xxxx，如isName得到name</li>
+     *     <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
+     * </ul>
+     *
+     * @param <T>  Lambda类型
+     * @param func 函数（无参方法）
+     * @return 方法名称
+     * @throws IllegalArgumentException 非Getter或Setter方法
+     */
+    public static <T> String getFieldName(Func0<T> func) throws IllegalArgumentException {
+        return BeanKit.getFieldName(getMethodName(func));
     }
 
     /**

@@ -51,6 +51,9 @@ public abstract class AbstractElement<T extends AbstractElement> {
      */
     private float alpha = 1.0f;
 
+    /**
+     * @return the int
+     */
     public int getX() {
         return x;
     }
@@ -60,6 +63,9 @@ public abstract class AbstractElement<T extends AbstractElement> {
         return (T) this;
     }
 
+    /**
+     * @return the int
+     */
     public int getY() {
         return y;
     }
@@ -78,6 +84,9 @@ public abstract class AbstractElement<T extends AbstractElement> {
         return (T) this;
     }
 
+    /**
+     * @return the float
+     */
     public float getAlpha() {
         return alpha;
     }

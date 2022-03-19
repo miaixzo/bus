@@ -136,4 +136,9 @@ public class IniSectionImpl extends AbstractElement implements IniSection {
         return properties;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return super.isEmpty();
+    }
+
 }

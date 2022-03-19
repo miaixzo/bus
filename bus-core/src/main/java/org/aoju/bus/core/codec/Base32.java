@@ -54,7 +54,14 @@ public final class Base32 {
         int digit;
         int currByte;
         int nextByte;
-        StringBuilder base32 = new StringBuilder((bytes.length + 7) * 8 / 5);
+
+        int encodeLen = bytes.length * 8 / 5;
+        if (encodeLen != 0) {
+            int[] BASE32_FILL = {-1, 4, 1, 6, 3};
+            encodeLen = encodeLen + 1 + BASE32_FILL[(bytes.length * 8) % 5];
+        }
+
+        StringBuilder base32 = new StringBuilder(encodeLen);
 
         while (i < bytes.length) {
             currByte = (bytes[i] >= 0) ? bytes[i] : (bytes[i] + Normal._256);
@@ -81,7 +88,7 @@ public final class Base32 {
             base32.append(Normal.ENCODE_32_TABLE[digit]);
         }
 
-        return base32.toString();
+        return StringKit.fillAfter(base32.toString(), '=', encodeLen);
     }
 
     /**
@@ -124,7 +131,8 @@ public final class Base32 {
      */
     public static byte[] decode(final String base32) {
         int i, index, lookup, offset, digit;
-        byte[] bytes = new byte[base32.length() * 5 / 8];
+        int len = base32.endsWith("=") ? base32.indexOf("=") * 5 / 8 : base32.length() * 5 / 8;
+        byte[] bytes = new byte[len];
 
         for (i = 0, index = 0, offset = 0; i < base32.length(); i++) {
             lookup = base32.charAt(i) - Symbol.C_ZERO;

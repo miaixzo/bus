@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
+import org.aoju.bus.core.toolkit.ObjectKit;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -51,7 +53,7 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, S
      */
     protected static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
 
-    private final Map<K, V> raw;
+    private Map<K, V> raw;
 
     /**
      * 构造
@@ -212,6 +214,13 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, S
     @Override
     public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         return raw.merge(key, value, remappingFunction);
+    }
+
+    @Override
+    public MapWrapper<K, V> clone() throws CloneNotSupportedException {
+        @SuppressWarnings("unchecked") final MapWrapper<K, V> clone = (MapWrapper<K, V>) super.clone();
+        clone.raw = ObjectKit.clone(raw);
+        return clone;
     }
 
 }

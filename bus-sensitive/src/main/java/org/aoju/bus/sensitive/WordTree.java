@@ -96,8 +96,7 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @return this
      */
     public WordTree addWords(String... words) {
-        HashSet<String> wordsSet = CollKit.newHashSet(words);
-        for (String word : wordsSet) {
+        for (String word : CollKit.newHashSet(words)) {
             addWord(word);
         }
         return this;

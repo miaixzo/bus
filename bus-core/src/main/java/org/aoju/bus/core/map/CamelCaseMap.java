@@ -40,7 +40,7 @@ import java.util.Map;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class CamelCaseMap<K, V> extends CustomKeyMap<K, V> {
+public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
 
     /**
      * 构造
@@ -71,7 +71,7 @@ public class CamelCaseMap<K, V> extends CustomKeyMap<K, V> {
      * 构造
      *
      * @param loadFactor 加载因子
-     * @param map        Map
+     * @param map        初始Map，数据会被默认拷贝到一个新的HashMap中
      */
     public CamelCaseMap(float loadFactor, Map<? extends K, ? extends V> map) {
         this(map.size(), loadFactor);
@@ -85,21 +85,22 @@ public class CamelCaseMap<K, V> extends CustomKeyMap<K, V> {
      * @param loadFactor      加载因子
      */
     public CamelCaseMap(int initialCapacity, float loadFactor) {
-        super(new HashMap<>(initialCapacity, loadFactor));
+        this(MapBuilder.create(new HashMap<>(initialCapacity, loadFactor)));
     }
 
     /**
-     * 将Key转为驼峰风格,如果key为字符串的话
+     * 构造<br>
+     * 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改
      *
-     * @param key KEY
-     * @return 驼峰Key
+     * @param emptyMapBuilder Map构造器，必须构造空的Map
      */
-    @Override
-    protected Object customKey(Object key) {
-        if (null != key && key instanceof CharSequence) {
-            key = StringKit.toCamelCase(key.toString());
-        }
-        return key;
+    CamelCaseMap(MapBuilder<K, V> emptyMapBuilder) {
+        super(emptyMapBuilder.build(), (key) -> {
+            if (key instanceof CharSequence) {
+                key = StringKit.toCamelCase(key.toString());
+            }
+            return (K) key;
+        });
     }
 
 }

@@ -36,7 +36,7 @@ import org.aoju.bus.health.Builder;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class Devicetree {
+public final class DeviceTree {
 
     /**
      * Query the model from the devicetree

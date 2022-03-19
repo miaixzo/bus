@@ -634,12 +634,18 @@ public class MapKit {
      * @return 过滤后的Map
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, Editor<Entry<K, V>> editor) {
-        final Map<K, V> map2 = ObjectKit.clone(map);
-        if (isEmpty(map2)) {
+        if (null == map || null == editor) {
+            return map;
+        }
+
+        Map<K, V> map2 = ReflectKit.newInstanceIfPossible(map.getClass());
+        if (null == map2) {
+            map2 = new HashMap<>(map.size(), 1f);
+        }
+        if (isEmpty(map)) {
             return map2;
         }
 
-        map2.clear();
         Entry<K, V> modified;
         for (Entry<K, V> entry : map.entrySet()) {
             modified = editor.edit(entry);
@@ -690,12 +696,18 @@ public class MapKit {
      * @return Map 结果,结果的Map类型与原Map保持一致
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, K... keys) {
-        final Map<K, V> map2 = ObjectKit.clone(map);
-        if (isEmpty(map2)) {
+        if (null == map || null == keys) {
+            return map;
+        }
+
+        Map<K, V> map2 = ReflectKit.newInstanceIfPossible(map.getClass());
+        if (null == map2) {
+            map2 = new HashMap<>(map.size(), 1f);
+        }
+        if (isEmpty(map)) {
             return map2;
         }
 
-        map2.clear();
         for (K key : keys) {
             if (map.containsKey(key)) {
                 map2.put(key, map.get(key));

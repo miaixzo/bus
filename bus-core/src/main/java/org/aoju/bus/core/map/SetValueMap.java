@@ -36,7 +36,7 @@ import java.util.*;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class SetValueMap<K, V> extends AbsCollValueMap<K, V, Set<V>> {
+public class SetValueMap<K, V> extends AbstractCollValueMap<K, V, Set<V>> {
 
     /**
      * 构造

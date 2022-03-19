@@ -158,6 +158,16 @@ public class Ftp extends AbstractFtp {
     }
 
     /**
+     * 构造
+     *
+     * @param client 自定义实例化好的{@link FTPClient}
+     */
+    public Ftp(FTPClient client) {
+        super(FtpConfig.create());
+        this.client = client;
+    }
+
+    /**
      * 初始化连接
      *
      * @return this

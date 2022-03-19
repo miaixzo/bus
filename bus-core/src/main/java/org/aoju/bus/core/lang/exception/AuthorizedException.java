@@ -36,26 +36,57 @@ public class AuthorizedException extends UncheckedException {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 构造
+     */
     public AuthorizedException() {
         super();
     }
 
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
     public AuthorizedException(String message) {
         super(message);
     }
 
+    /**
+     * 构造
+     *
+     * @param format 格式
+     * @param args   参数
+     */
     public AuthorizedException(String format, Object... args) {
         super(format, args);
     }
 
+    /**
+     * 构造
+     *
+     * @param message 消息
+     * @param cause   异常
+     */
     public AuthorizedException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * 构造
+     *
+     * @param cause 异常
+     */
     public AuthorizedException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
     public AuthorizedException(String errcode, String errmsg) {
         super(errcode, errmsg);
     }

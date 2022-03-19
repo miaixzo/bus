@@ -348,13 +348,12 @@ public final class UnoUrl {
     /**
      * 返回已解码的用户名，如果不存在，则返回空字符串.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code username()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username@host/}</td><td>{@code "username"}</td></tr>
-     * <tr><td>{@code http://username:password@host/}</td><td>{@code "username"}</td></tr>
-     * <tr><td>{@code http://a%20b:c%20d@host/}</td><td>{@code "a b"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code ""}</li>
+     * <li>{@code http://username@host/}{@code "username"}</li>
+     * <li>{@code http://username:password@host/}{@code "username"}</li>
+     * <li>{@code http://a%20b:c%20d@host/}{@code "a b"}</li>
+     * </ul>
      *
      * @return 用户信息
      */
@@ -365,13 +364,12 @@ public final class UnoUrl {
     /**
      * 返回密码，如果没有设置则返回空字符串.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code encodedPassword()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username@host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username:password@host/}</td><td>{@code "password"}</td></tr>
-     * <tr><td>{@code http://a%20b:c%20d@host/}</td><td>{@code "c%20d"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code ""}</li>
+     * <li>{@code http://username@host/}{@code ""}</li>
+     * <li>{@code http://username:password@host/}{@code "password"}</li>
+     * <li>{@code http://a%20b:c%20d@host/}{@code "c%20d"}</li>
+     * </ul>
      *
      * @return 返回密码
      */
@@ -385,13 +383,12 @@ public final class UnoUrl {
     /**
      * 返回已解码的密码，如果不存在，则返回空字符串.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code password()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username@host/}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://username:password@host/}</td><td>{@code "password"}</td></tr>
-     * <tr><td>{@code http://a%20b:c%20d@host/}</td><td>{@code "c d"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code ""}</li>
+     * <li>{@code http://username@host/}{@code ""}</li>
+     * <li>{@code http://username:password@host/}{@code "password"}</li>
+     * <li>{@code http://a%20b:c%20d@host/}{@code "c d"}</li>
+     * </ul>
      *
      * @return 返回已解码的密码
      */
@@ -407,13 +404,12 @@ public final class UnoUrl {
      *   <li>An encoded IDN, like {@code xn--n3h.net}.
      * </ul>
      *
-     * <table summary="">
-     *   <tr><th>URL</th><th>{@code host()}</th></tr>
-     *   <tr><td>{@code http://android.com/}</td><td>{@code "android.com"}</td></tr>
-     *   <tr><td>{@code http://127.0.0.1/}</td><td>{@code "127.0.0.1"}</td></tr>
-     *   <tr><td>{@code http://[::1]/}</td><td>{@code "::1"}</td></tr>
-     *   <tr><td>{@code http://xn--n3h.net/}</td><td>{@code "xn--n3h.net"}</td></tr>
-     * </table>
+     * <ul>
+     *   <li>{@code http://android.com/}{@code "android.com"}</li>
+     *   <li>{@code http://127.0.0.1/}{@code "127.0.0.1"}</li>
+     *   <li>{@code http://[::1]/}{@code "::1"}</li>
+     *   <li>{@code http://xn--n3h.net/}{@code "xn--n3h.net"}</li>
+     * </ul>
      *
      * @return 主机host
      */
@@ -422,12 +418,11 @@ public final class UnoUrl {
     }
 
     /**
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code port()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code 80}</td></tr>
-     * <tr><td>{@code http://host:8000/}</td><td>{@code 8000}</td></tr>
-     * <tr><td>{@code https://host/}</td><td>{@code 443}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code 80}</li>
+     * <li>{@code http://host:8000/}{@code 8000}</li>
+     * <li>{@code https://host/}{@code 443}</li>
+     * </ul>
      *
      * @return 端口
      */
@@ -439,12 +434,11 @@ public final class UnoUrl {
      * Returns the number of segments in this URL's path. This is also the number of slashes in the
      * URL's path, like 3 in {@code http://host/a/b/c}. This is always at least 1.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code pathSize()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code 1}</td></tr>
-     * <tr><td>{@code http://host/a/b/c}</td><td>{@code 3}</td></tr>
-     * <tr><td>{@code http://host/a/b/c/}</td><td>{@code 4}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code 1}</li>
+     * <li>{@code http://host/a/b/c}{@code 3}</li>
+     * <li>{@code http://host/a/b/c/}{@code 4}</li>
+     * </ul>
      *
      * @return the size
      */
@@ -455,12 +449,11 @@ public final class UnoUrl {
     /**
      * 该URL编码后用于HTTP资源解析。返回的路径将以{@code /}开始
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code encodedPath()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code /}</td></tr>
-     * <tr><td>{@code http://host/a/b/c}</td><td>{@code "/a/b/c"}</td></tr>
-     * <tr><td>{@code http://host/a/b%20c/d}</td><td>{@code "/a/b%20c/d"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code /}</li>
+     * <li>{@code http://host/a/b/c}{@code "/a/b/c"}</li>
+     * <li>{@code http://host/a/b%20c/d}{@code "/a/b%20c/d"}</li>
+     * </ul>
      *
      * @return URL的完整路径
      */
@@ -474,12 +467,11 @@ public final class UnoUrl {
      * 返回一个已编码的路径段列表 {@code ["a", "b", "c"]} for the URL {@code
      * http://host/a/b/c}. 这个列表从不为空，尽管它可能包含一个空字符串.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code encodedPathSegments()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code [""]}</td></tr>
-     * <tr><td>{@code http://host/a/b/c}</td><td>{@code ["a", "b", "c"]}</td></tr>
-     * <tr><td>{@code http://host/a/b%20c/d}</td><td>{@code ["a", "b%20c", "d"]}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code [""]}</li>
+     * <li>{@code http://host/a/b/c}{@code ["a", "b", "c"]}</li>
+     * <li>{@code http://host/a/b%20c/d}{@code ["a", "b%20c", "d"]}</li>
+     * </ul>
      *
      * @return 路径段列表
      */
@@ -500,12 +492,11 @@ public final class UnoUrl {
      * Returns a list of path segments like {@code ["a", "b", "c"]} for the URL {@code
      * http://host/a/b/c}. This list is never empty though it may contain a single empty string.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code pathSegments()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code [""]}</td></tr>
-     * <tr><td>{@code http://host/a/b/c"}</td><td>{@code ["a", "b", "c"]}</td></tr>
-     * <tr><td>{@code http://host/a/b%20c/d"}</td><td>{@code ["a", "b c", "d"]}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code [""]}</li>
+     * <li>{@code http://host/a/b/c"}{@code ["a", "b", "c"]}</li>
+     * <li>{@code http://host/a/b%20c/d"}{@code ["a", "b c", "d"]}</li>
+     * </ul>
      *
      * @return the string
      */
@@ -518,15 +509,14 @@ public final class UnoUrl {
      * may be null (for URLs with no query), empty (for URLs with an empty query) or non-empty (all
      * other URLs).
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code encodedQuery()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code
-     * "a=apple&k=key+lime"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "a=apple&a=apricot"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "a=apple&b"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}null</li>
+     * <li>{@code http://host/?}{@code ""}</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code
+     * "a=apple&k=key+lime"}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code "a=apple&a=apricot"}</li>
+     * <li>{@code http://host/?a=apple&b}{@code "a=apple&b"}</li>
+     * </ul>
      *
      * @return the string
      */
@@ -542,15 +532,14 @@ public final class UnoUrl {
      * prefer {@link #queryParameterName} and {@link #queryParameterValue} because these methods offer
      * direct access to individual query parameters.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code query()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "a=apple&k=key
-     * lime"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "a=apple&a=apricot"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "a=apple&b"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}null</li>
+     * <li>{@code http://host/?}{@code ""}</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code "a=apple&k=key
+     * lime"}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code "a=apple&a=apricot"}</li>
+     * <li>{@code http://host/?a=apple&b}{@code "a=apple&b"}</li>
+     * </ul>
      *
      * @return the string
      */
@@ -566,14 +555,13 @@ public final class UnoUrl {
      * http://host/?a=apple&b=banana}. If this URL has no query this returns 0. Otherwise it returns
      * one more than the number of {@code "&"} separators in the query.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code querySize()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code 0}</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code 1}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code 2}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code 2}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code 2}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code 0}</li>
+     * <li>{@code http://host/?}{@code 1}</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code 2}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code 2}</li>
+     * <li>{@code http://host/?a=apple&b}{@code 2}</li>
+     * </ul>
      *
      * @return the int
      */
@@ -585,14 +573,13 @@ public final class UnoUrl {
      * Returns the first query parameter named {@code name} decoded using UTF-8, or null if there is
      * no such query parameter.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code queryParameter("a")}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "apple"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "apple"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "apple"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}null</li>
+     * <li>{@code http://host/?}null</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code "apple"}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code "apple"}</li>
+     * <li>{@code http://host/?a=apple&b}{@code "apple"}</li>
+     * </ul>
      *
      * @param name 名称
      * @return the string
@@ -611,14 +598,13 @@ public final class UnoUrl {
      * Returns the distinct query parameter names in this URL, like {@code ["a", "b"]} for {@code
      * http://host/?a=apple&b=banana}. If this URL has no query this returns the empty set.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterNames()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code [""]}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code ["a", "k"]}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code ["a"]}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code ["a", "b"]}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code []}</li>
+     * <li>{@code http://host/?}{@code [""]}</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code ["a", "k"]}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code ["a"]}</li>
+     * <li>{@code http://host/?a=apple&b}{@code ["a", "b"]}</li>
+     * </ul>
      *
      * @return the set
      */
@@ -636,18 +622,16 @@ public final class UnoUrl {
      * URL. For example this returns {@code ["banana"]} for {@code queryParameterValue("b")} on {@code
      * http://host/?a=apple&b=banana}.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterValues("a")}</th><th>{@code
-     * queryParameterValues("b")}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>{@code []}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code []}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code ["apple"]}</td><td>{@code
-     * []}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code ["apple",
-     * "apricot"]}</td><td>{@code []}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code ["apple"]}</td><td>{@code
-     * [null]}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}{@code []}{@code []}</li>
+     * <li>{@code http://host/?}{@code []}{@code []}</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code ["apple"]}{@code
+     * []}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code ["apple",
+     * "apricot"]}{@code []}</li>
+     * <li>{@code http://host/?a=apple&b}{@code ["apple"]}{@code
+     * [null]}</li>
+     * </ul>
      *
      * @param name 名称
      * @return the list
@@ -668,17 +652,15 @@ public final class UnoUrl {
      * for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This throws if
      * {@code index} is not less than the {@linkplain #querySize query size}.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterName(0)}</th><th>{@code
-     * queryParameterName(1)}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>exception</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>{@code ""}</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "a"}</td><td>{@code
-     * "k"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "a"}</td><td>{@code
-     * "a"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "a"}</td><td>{@code "b"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}exceptionexception</li>
+     * <li>{@code http://host/?}{@code ""}exception</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code "a"}{@code
+     * "k"}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code "a"}{@code
+     * "a"}</li>
+     * <li>{@code http://host/?a=apple&b}{@code "a"}{@code "b"}</li>
+     * </ul>
      *
      * @param index 索引
      * @return the string
@@ -693,17 +675,15 @@ public final class UnoUrl {
      * "apple"} for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This
      * throws if {@code index} is not less than the {@linkplain #querySize query size}.
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code queryParameterValue(0)}</th><th>{@code
-     * queryParameterValue(1)}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>exception</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?}</td><td>null</td><td>exception</td></tr>
-     * <tr><td>{@code http://host/?a=apple&k=key+lime}</td><td>{@code "apple"}</td><td>{@code
-     * "key lime"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&a=apricot}</td><td>{@code "apple"}</td><td>{@code
-     * "apricot"}</td></tr>
-     * <tr><td>{@code http://host/?a=apple&b}</td><td>{@code "apple"}</td><td>null</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}exceptionexception</li>
+     * <li>{@code http://host/?}nullexception</li>
+     * <li>{@code http://host/?a=apple&k=key+lime}{@code "apple"}{@code
+     * "key lime"}</li>
+     * <li>{@code http://host/?a=apple&a=apricot}{@code "apple"}{@code
+     * "apricot"}</li>
+     * <li>{@code http://host/?a=apple&b}{@code "apple"}null</li>
+     * </ul>
      *
      * @param index 索引
      * @return the string
@@ -715,13 +695,12 @@ public final class UnoUrl {
 
     /**
      * 返回这个URL的片段 {@code "abc"} for {@code http://host/#abc}. 如果URL没有片段，则返回null
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code encodedFragment()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/#}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/#abc}</td><td>{@code "abc"}</td></tr>
-     * <tr><td>{@code http://host/#abc|def}</td><td>{@code "abc|def"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}null</li>
+     * <li>{@code http://host/#}{@code ""}</li>
+     * <li>{@code http://host/#abc}{@code "abc"}</li>
+     * <li>{@code http://host/#abc|def}{@code "abc|def"}</li>
+     * </ul>
      *
      * @return the string
      */
@@ -733,13 +712,12 @@ public final class UnoUrl {
 
     /**
      * 返回这个URL的片段 {@code "abc"} for {@code http://host/#abc}. 如果URL没有片段，则返回null
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code fragment()}</th></tr>
-     * <tr><td>{@code http://host/}</td><td>null</td></tr>
-     * <tr><td>{@code http://host/#}</td><td>{@code ""}</td></tr>
-     * <tr><td>{@code http://host/#abc}</td><td>{@code "abc"}</td></tr>
-     * <tr><td>{@code http://host/#abc|def}</td><td>{@code "abc|def"}</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://host/}null</li>
+     * <li>{@code http://host/#}{@code ""}</li>
+     * <li>{@code http://host/#abc}{@code "abc"}</li>
+     * <li>{@code http://host/#abc|def}{@code "abc|def"}</li>
+     * </ul>
      *
      * @return the string
      */
@@ -800,14 +778,13 @@ public final class UnoUrl {
     /**
      * 通常，这个方法不应该用来测试一个域是否有效或可路由。相反，DNS是推荐的信息来源
      *
-     * <table summary="">
-     * <tr><th>URL</th><th>{@code topPrivateDomain()}</th></tr>
-     * <tr><td>{@code http://google.com}</td><td>{@code "google.com"}</td></tr>
-     * <tr><td>{@code http://adwords.google.co.uk}</td><td>{@code "google.co.uk"}</td></tr>
-     * <tr><td>{@code http://co.uk}</td><td>null</td></tr>
-     * <tr><td>{@code http://localhost}</td><td>null</td></tr>
-     * <tr><td>{@code http://127.0.0.1}</td><td>null</td></tr>
-     * </table>
+     * <ul>
+     * <li>{@code http://google.com}{@code "google.com"}</li>
+     * <li>{@code http://adwords.google.co.uk}{@code "google.co.uk"}</li>
+     * <li>{@code http://co.uk}null</li>
+     * <li>{@code http://localhost}null</li>
+     * <li>{@code http://127.0.0.1}null</li>
+     * </ul>
      *
      * @return the string
      */

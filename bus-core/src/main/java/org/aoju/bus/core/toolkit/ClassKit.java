@@ -784,6 +784,16 @@ public class ClassKit {
     }
 
     /**
+     * 是否抽象方法
+     *
+     * @param method 方法
+     * @return 是否抽象方法
+     */
+    public static boolean isAbstract(Method method) {
+        return BeanKit.hasModifier(method, BeanKit.ModifierType.ABSTRACT);
+    }
+
+    /**
      * 是否为抽象类
      *
      * @param clazz 类
