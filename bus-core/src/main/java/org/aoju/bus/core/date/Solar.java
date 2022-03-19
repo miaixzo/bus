@@ -1637,6 +1637,21 @@ public class Solar {
         }
 
         /**
+         * 获取当前日期是在当年第几周
+         *
+         * @return 周序号，从1开始
+         */
+        public int getIndexInYear() {
+            Calendar c = Kalendar.calendar(year, 1, 1);
+            int firstDayWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+            int offset = firstDayWeek - start;
+            if (offset < 0) {
+                offset += 7;
+            }
+            return (int) Math.ceil((Solar.getDaysInYear(year, month, day) + offset) / 7D);
+        }
+
+        /**
          * 周推移
          *
          * @param weeks         推移的周数，负数为倒推
