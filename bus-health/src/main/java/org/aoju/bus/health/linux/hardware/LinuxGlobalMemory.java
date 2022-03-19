@@ -29,11 +29,11 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
 import org.aoju.bus.health.linux.ProcPath;
+import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -48,8 +48,7 @@ import java.util.function.Supplier;
 @ThreadSafe
 public final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
-    public static final long PAGE_SIZE = Builder
-            .parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
+    private static final long PAGE_SIZE = LinuxOperatingSystem.getPageSize();
 
     private final Supplier<Pair<Long, Long>> availTotal = Memoize.memoize(LinuxGlobalMemory::readMemInfo, Memoize.defaultExpiration());
 

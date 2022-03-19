@@ -28,7 +28,7 @@ package org.aoju.bus.health.unix.aix.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
-import org.aoju.bus.health.unix.AixLibc.AIXLwpsInfo;
+import org.aoju.bus.health.unix.AixLibc;
 import org.aoju.bus.health.unix.aix.drivers.PsInfo;
 
 /**
@@ -104,7 +104,7 @@ public class AixOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        AIXLwpsInfo lwpsinfo = PsInfo.queryLwpsInfo(getOwningProcessId(), getThreadId());
+        AixLibc.AixLwpsInfo lwpsinfo = PsInfo.queryLwpsInfo(getOwningProcessId(), getThreadId());
         if (lwpsinfo == null) {
             this.state = OSProcess.State.INVALID;
             return false;

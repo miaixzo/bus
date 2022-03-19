@@ -40,6 +40,7 @@ import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.Who;
+import org.aoju.bus.health.linux.drivers.proc.Auxv;
 import org.aoju.bus.health.linux.drivers.proc.CpuStat;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 import org.aoju.bus.health.linux.drivers.proc.UpTime;
@@ -71,8 +72,25 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     /**
      * Jiffies per second, used for process time counters.
      */
-    private static final long USER_HZ = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"),
-            100L);
+    private static final long USER_HZ;
+    private static final long PAGE_SIZE;
+
+    static {
+        Map<Integer, Long> auxv = Auxv.queryAuxv();
+        long hz = auxv.getOrDefault(Auxv.AT_CLKTCK, 0L);
+        if (hz > 0) {
+            USER_HZ = hz;
+        } else {
+            USER_HZ = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
+        }
+        long pagesz = Auxv.queryAuxv().getOrDefault(Auxv.AT_PAGESZ, 0L);
+        if (pagesz > 0) {
+            PAGE_SIZE = pagesz;
+        } else {
+            PAGE_SIZE = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
+        }
+    }
+
     /**
      * OS Name for manufacturer
      */
@@ -425,6 +443,15 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public static long getHz() {
         return USER_HZ;
+    }
+
+    /**
+     * Gets Page Size, for converting memory stats from pages to bytes
+     *
+     * @return Page Size
+     */
+    public static long getPageSize() {
+        return PAGE_SIZE;
     }
 
     @Override

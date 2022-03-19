@@ -49,7 +49,7 @@ public final class SystemPages {
      * size for bytes.
      */
     public static Pair<Long, Long> queryAvailableTotal() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return queryAvailableTotal2();
         }
@@ -57,9 +57,9 @@ public final class SystemPages {
         long memTotal = 0;
         // Get first result
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup(null, -1, "system_pages");
+            Kstat ksp = kc.lookup(null, -1, "system_pages");
             // Set values
-            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+            if (ksp != null && kc.read(ksp)) {
                 memAvailable = KstatKit.dataLookupLong(ksp, "availrmem"); // not a typo
                 memTotal = KstatKit.dataLookupLong(ksp, "physmem");
             }

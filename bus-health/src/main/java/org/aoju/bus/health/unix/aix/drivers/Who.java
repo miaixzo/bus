@@ -56,7 +56,10 @@ public final class Who {
      * @return Boot time in milliseconds since the epoch
      */
     public static long queryBootTime() {
-        String s = Executor.getFirstAnswer("/usr/bin/who -b");
+        String s = Executor.getFirstAnswer("who -b");
+        if (s.isEmpty()) {
+            s = Executor.getFirstAnswer("/usr/bin/who -b");
+        }
         Matcher m = BOOT_FORMAT_AIX.matcher(s);
         if (m.matches()) {
             try {

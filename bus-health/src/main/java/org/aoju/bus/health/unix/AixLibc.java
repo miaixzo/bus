@@ -26,8 +26,9 @@
 package org.aoju.bus.health.unix;
 
 import com.sun.jna.Native;
-import com.sun.jna.Structure;
-import com.sun.jna.Structure.FieldOrder;
+import org.aoju.bus.health.Builder;
+
+import java.nio.ByteBuffer;
 
 /**
  * C library. This class should be considered non-API as it may be removed
@@ -45,10 +46,7 @@ public interface AixLibc extends CLibrary {
     int PRFNSZ = 16;
     int PRARGSZ = 80;
 
-    @FieldOrder({"pr_flag", "pr_flag2", "pr_nlwp", "pr__pad1", "pr_uid", "pr_euid", "pr_gid", "pr_egid", "pr_pid",
-            "pr_ppid", "pr_pgid", "pr_sid", "pr_ttydev", "pr_addr", "pr_size", "pr_rssize", "pr_start", "pr_time",
-            "pr_cid", "pr__pad2", "pr_argc", "pr_argv", "pr_envp", "pr_fname", "pr_psargs", "pr__pad", "pr_lwp"})
-    class AixPsInfo extends Structure {
+    class AixPsInfo {
         public int pr_flag; // process flags from proc struct p_flag
         public int pr_flag2; // process flags from proc struct p_flag2
         public int pr_nlwp; // number of threads in process
@@ -75,27 +73,43 @@ public interface AixLibc extends CLibrary {
         public byte[] pr_fname = new byte[PRFNSZ]; // last component of exec()ed pathname
         public byte[] pr_psargs = new byte[PRARGSZ]; // initial characters of arg list
         public long[] pr__pad = new long[8]; // reserved for future use
-        public AIXLwpsInfo pr_lwp; // "representative" thread info
+        public AixLwpsInfo pr_lwp; // "representative" thread info
 
-        public AixPsInfo() {
-            super();
+        public AixPsInfo(ByteBuffer buff) {
+            this.pr_flag = Builder.readIntFromBuffer(buff);
+            this.pr_flag2 = Builder.readIntFromBuffer(buff);
+            this.pr_nlwp = Builder.readIntFromBuffer(buff);
+            this.pr__pad1 = Builder.readIntFromBuffer(buff);
+            this.pr_uid = Builder.readLongFromBuffer(buff);
+            this.pr_euid = Builder.readLongFromBuffer(buff);
+            this.pr_gid = Builder.readLongFromBuffer(buff);
+            this.pr_egid = Builder.readLongFromBuffer(buff);
+            this.pr_pid = Builder.readLongFromBuffer(buff);
+            this.pr_ppid = Builder.readLongFromBuffer(buff);
+            this.pr_pgid = Builder.readLongFromBuffer(buff);
+            this.pr_sid = Builder.readLongFromBuffer(buff);
+            this.pr_ttydev = Builder.readLongFromBuffer(buff);
+            this.pr_addr = Builder.readLongFromBuffer(buff);
+            this.pr_size = Builder.readLongFromBuffer(buff);
+            this.pr_rssize = Builder.readLongFromBuffer(buff);
+            this.pr_start = new Timestruc(buff);
+            this.pr_time = new Timestruc(buff);
+            this.pr_cid = Builder.readShortFromBuffer(buff);
+            this.pr__pad2 = Builder.readShortFromBuffer(buff);
+            this.pr_argc = Builder.readIntFromBuffer(buff);
+            this.pr_argv = Builder.readLongFromBuffer(buff);
+            this.pr_envp = Builder.readLongFromBuffer(buff);
+            Builder.readByteArrayFromBuffer(buff, this.pr_fname);
+            Builder.readByteArrayFromBuffer(buff, this.pr_psargs);
+            for (int i = 0; i < pr__pad.length; i++) {
+                this.pr__pad[i] = Builder.readLongFromBuffer(buff);
+            }
+            this.pr_lwp = new AixLwpsInfo(buff);
         }
 
-        public AixPsInfo(byte[] bytes) {
-            super();
-            // Truncate bytes and pad with 0 if necessary
-            byte[] structBytes = new byte[size()];
-            System.arraycopy(bytes, 0, structBytes, 0, structBytes.length);
-            // Write bytes to native
-            this.getPointer().write(0, structBytes, 0, structBytes.length);
-            // Read bytes to struct
-            read();
-        }
     }
 
-    @FieldOrder({"pr_lwpid", "pr_addr", "pr_wchan", "pr_flag", "pr_wtype", "pr_state", "pr_sname", "pr_nice", "pr_pri",
-            "pr_policy", "pr_clname", "pr_onpro", "pr_bindpro"})
-    class AIXLwpsInfo extends Structure {
+    class AixLwpsInfo {
         public long pr_lwpid; // thread id
         public long pr_addr; // internal address of thread
         public long pr_wchan; // wait addr for sleeping thread
@@ -110,30 +124,36 @@ public interface AixLibc extends CLibrary {
         public int pr_onpro; // processor on which thread last ran
         public int pr_bindpro; // processor to which thread is bound
 
-        public AIXLwpsInfo() {
-            super();
-        }
-
-        public AIXLwpsInfo(byte[] bytes) {
-            super();
-            // Truncate bytes and pad with 0 if necessary
-            byte[] structBytes = new byte[size()];
-            System.arraycopy(bytes, 0, structBytes, 0, structBytes.length);
-            // Write bytes to native
-            this.getPointer().write(0, structBytes, 0, structBytes.length);
-            // Read bytes to struct
-            read();
+        public AixLwpsInfo(ByteBuffer buff) {
+            this.pr_lwpid = Builder.readLongFromBuffer(buff);
+            this.pr_addr = Builder.readLongFromBuffer(buff);
+            this.pr_wchan = Builder.readLongFromBuffer(buff);
+            this.pr_flag = Builder.readIntFromBuffer(buff);
+            this.pr_wtype = Builder.readByteFromBuffer(buff);
+            this.pr_state = Builder.readByteFromBuffer(buff);
+            this.pr_sname = Builder.readByteFromBuffer(buff);
+            this.pr_nice = Builder.readByteFromBuffer(buff);
+            this.pr_pri = Builder.readIntFromBuffer(buff);
+            this.pr_policy = Builder.readIntFromBuffer(buff);
+            Builder.readByteArrayFromBuffer(buff, this.pr_clname);
+            this.pr_onpro = Builder.readIntFromBuffer(buff);
+            this.pr_bindpro = Builder.readIntFromBuffer(buff);
         }
     }
 
     /**
      * 64-bit timestruc required for psinfo structure
      */
-    @FieldOrder({"tv_sec", "tv_nsec", "pad"})
-    class Timestruc extends Structure {
+    class Timestruc {
         public long tv_sec; // seconds
         public int tv_nsec; // nanoseconds
         public int pad; // nanoseconds
+
+        public Timestruc(ByteBuffer buff) {
+            this.tv_sec = Builder.readLongFromBuffer(buff);
+            this.tv_nsec = Builder.readIntFromBuffer(buff);
+            this.pad = Builder.readIntFromBuffer(buff);
+        }
     }
 
 }

@@ -28,6 +28,7 @@ package org.aoju.bus.health.windows.drivers.perfmon;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.PerfCounterQuery;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -40,17 +41,17 @@ import java.util.Map;
 @ThreadSafe
 public final class PagingFile {
 
-    private static final String PAGING_FILE = "Paging File";
-    private static final String WIN32_PERF_RAW_DATA_PERF_OS_PAGING_FILE = "Win32_PerfRawData_PerfOS_PagingFile";
-
     /**
      * Returns paging file counters
      *
      * @return Paging file counters for memory.
      */
     public static Map<PagingPercentProperty, Long> querySwapUsed() {
-        return PerfCounterQuery.queryValues(PagingPercentProperty.class, PAGING_FILE,
-                WIN32_PERF_RAW_DATA_PERF_OS_PAGING_FILE);
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Collections.emptyMap();
+        }
+        return PerfCounterQuery.queryValues(PagingPercentProperty.class, PerfmonConsts.PAGING_FILE,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PAGING_FILE);
     }
 
     /**

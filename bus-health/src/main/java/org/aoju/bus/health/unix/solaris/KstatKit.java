@@ -31,6 +31,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
+import org.aoju.bus.core.annotation.GuardeBy;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
@@ -38,12 +39,14 @@ import org.aoju.bus.health.unix.Kstat2;
 import org.aoju.bus.health.unix.Kstat2.Kstat2Handle;
 import org.aoju.bus.health.unix.Kstat2.Kstat2Map;
 import org.aoju.bus.health.unix.Kstat2.Kstat2MatcherList;
+import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
 import org.aoju.bus.logger.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -56,21 +59,28 @@ import java.util.concurrent.locks.ReentrantLock;
 @ThreadSafe
 public final class KstatKit {
 
-    public static final ReentrantLock CHAIN = new ReentrantLock();
-    private static final LibKstat KS = LibKstat.INSTANCE;
-    // Opens the kstat chain. Automatically closed on exit.
+    private static final Lock CHAIN = new ReentrantLock();
     // Only one thread may access the chain at any time, so we wrap this object in
-    // the KstatChain class which locks the class until closed.
-    private static final KstatCtl KC = KS.kstat_open();
+    // the KstatChain class locked until the lock is released on auto-close.
+    @GuardeBy("CHAIN")
+    private static KstatCtl kstatCtl = null;
+
+    private KstatKit() {
+
+    }
 
     /**
-     * Create a copy of the Kstat chain and lock it for use by this object.
+     * Lock the Kstat chain for use by this object until it's closed.
      *
      * @return A locked copy of the chain. It should be unlocked/released when you
      * are done with it with {@link KstatChain#close()}.
      */
-    public static KstatChain openChain() {
-        return new KstatChain();
+    public static synchronized KstatChain openChain() {
+        CHAIN.lock();
+        if (kstatCtl == null) {
+            kstatCtl = LibKstat.INSTANCE.kstat_open();
+        }
+        return new KstatChain(kstatCtl);
     }
 
     /**
@@ -89,7 +99,7 @@ public final class KstatKit {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
-        Pointer p = KS.kstat_data_lookup(ksp, name);
+        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
             Logger.debug("Failed to lookup kstat value for key {}", name);
             return "";
@@ -131,7 +141,7 @@ public final class KstatKit {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
-        Pointer p = KS.kstat_data_lookup(ksp, name);
+        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
             if (Logger.get().isDebug()) {
                 Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
@@ -164,6 +174,10 @@ public final class KstatKit {
      * @return An object array with the data corresponding to the names
      */
     public static Object[] queryKstat2(String mapStr, String... names) {
+        if (!SolarisOperatingSystem.HAS_KSTAT2) {
+            throw new UnsupportedOperationException(
+                    "Kstat2 requires Solaris 11.4+. Use SolarisOperatingSystem#HAS_KSTAT2 to test this.");
+        }
         Object[] result = new Object[names.length];
         Kstat2MatcherList matchers = new Kstat2MatcherList();
         KstatKit.CHAIN.lock();
@@ -197,6 +211,10 @@ public final class KstatKit {
      * @return A list of object arrays with the data corresponding to the names
      */
     public static List<Object[]> queryKstat2List(String beforeStr, String afterStr, String... names) {
+        if (!SolarisOperatingSystem.HAS_KSTAT2) {
+            throw new UnsupportedOperationException(
+                    "Kstat2 requires Solaris 11.4+. Use SolarisOperatingSystem#HAS_KSTAT2 to test this.");
+        }
         List<Object[]> results = new ArrayList<>();
         int s = 0;
         Kstat2MatcherList matchers = new Kstat2MatcherList();
@@ -231,16 +249,19 @@ public final class KstatKit {
      * A copy of the Kstat chain, encapsulating a {@code kstat_ctl_t} object. Only
      * one thread may actively use this object at any time.
      * <p>
-     * Instantiating this object is accomplished using the
-     * {@link KstatKit#openChain} method. It locks and updates the chain and is the
-     * equivalent of calling {@link LibKstat#kstat_open}. The control object should
-     * be closed with {@link #close}, the equivalent of calling
-     * {@link LibKstat#kstat_close}
+     * The chain is created once calling {@link LibKstat#kstat_open} and then this
+     * object is instantiated using the {@link KstatKit#openChain} method.
+     * Instantiating this object updates the chain using
+     * {@link LibKstat#kstat_chain_update}. The control object should be closed with
+     * {@link #close}, which releases the lock and allows another instance to be
+     * instantiated.
      */
     public static final class KstatChain implements AutoCloseable {
 
-        private KstatChain() {
-            CHAIN.lock();
+        private final KstatCtl localCtlRef;
+
+        private KstatChain(KstatCtl ctl) {
+            this.localCtlRef = ctl;
             update();
         }
 
@@ -256,9 +277,10 @@ public final class KstatKit {
          * @param ksp The kstat from which to retrieve data
          * @return {@code true} if successful; {@code false} otherwise
          */
-        public static boolean read(Kstat ksp) {
+        @GuardeBy("CHAIN")
+        public boolean read(Kstat ksp) {
             int retry = 0;
-            while (0 > KS.kstat_read(KC, ksp, null)) {
+            while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.get().isDebug()) {
                         Logger.debug("Failed to read kstat {}:{}:{}",
@@ -285,8 +307,9 @@ public final class KstatKit {
          * @return The first match of the requested Kstat structure if found, or
          * {@code null}
          */
-        public static Kstat lookup(String module, int instance, String name) {
-            return KS.kstat_lookup(KC, module, instance, name);
+        @GuardeBy("CHAIN")
+        public Kstat lookup(String module, int instance, String name) {
+            return LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name);
         }
 
         /**
@@ -303,9 +326,11 @@ public final class KstatKit {
          * @return All matches of the requested Kstat structure if found, or an empty
          * list otherwise
          */
-        public static List<Kstat> lookupAll(String module, int instance, String name) {
+        @GuardeBy("CHAIN")
+        public List<Kstat> lookupAll(String module, int instance, String name) {
             List<Kstat> kstats = new ArrayList<>();
-            for (Kstat ksp = KS.kstat_lookup(KC, module, instance, name); ksp != null; ksp = ksp.next()) {
+            for (Kstat ksp = LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name); ksp != null; ksp = ksp
+                    .next()) {
                 if ((module == null || module.equals(Native.toString(ksp.ks_module, StandardCharsets.US_ASCII)))
                         && (instance < 0 || instance == ksp.ks_instance)
                         && (name == null || name.equals(Native.toString(ksp.ks_name, StandardCharsets.US_ASCII)))) {
@@ -325,8 +350,9 @@ public final class KstatKit {
          * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or -1 on
          * failure.
          */
-        public static int update() {
-            return KS.kstat_chain_update(KC);
+        @GuardeBy("CHAIN")
+        public int update() {
+            return LibKstat.INSTANCE.kstat_chain_update(localCtlRef);
         }
 
         /**

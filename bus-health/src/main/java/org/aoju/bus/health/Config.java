@@ -57,9 +57,24 @@ public final class Config {
     public static final String OS_WINDOWS_COMMANDLINE_BATCH = "bus.health.os.windows.commandline.batch";
     public static final String OS_WINDOWS_HKEYPERFDATA = "bus.health.os.windows.hkeyperfdata";
     public static final String OS_WINDOWS_CPU_UTILITY = "bus.health.os.windows.cpu.utility";
+
+    public static final String OS_WINDOWS_PERFDISK_DIABLED = "bus.os.windows.perfdisk.disabled";
+    public static final String OS_WINDOWS_PERFOS_DIABLED = "bus.os.windows.perfos.disabled";
+    public static final String OS_WINDOWS_PERFPROC_DIABLED = "bus.os.windows.perfproc.disabled";
+
     public static final String OS_UNIX_WHOCOMMAND = "bus.health.os.unix.whoCommand";
 
     private static final Properties CONFIG = readProperties(PROPERTIES);
+
+    /**
+     * Get the property associated with the given key.
+     *
+     * @param key The property key
+     * @return The property value if it exists, or null otherwise
+     */
+    public static String get(String key) {
+        return CONFIG.getProperty(key);
+    }
 
     /**
      * Get the {@code String} property associated with the given key.

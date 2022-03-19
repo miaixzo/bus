@@ -108,10 +108,11 @@ public interface Kstat2 extends Library {
      * to become out of date. The kstat2_update() function should be called
      * periodically to resynchronise the two views.
      *
-     * @param handle The handle to be updated.
+     * @param handle
+     *            The handle to be updated.
      * @return Upon successful completion, returns a int value of
-     * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-     * KSTAT2_S_OK is returned.
+     *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+     *         KSTAT2_S_OK is returned.
      */
     int kstat2_update(Kstat2Handle handle);
 
@@ -120,10 +121,11 @@ public interface Kstat2 extends Library {
      * handle. It is the caller's responsibility to free any allocated matcher list
      * by calling the kstat2_free_matcher_list() function.
      *
-     * @param handle A reference to the handle to close.
+     * @param handle
+     *            A reference to the handle to close.
      * @return Upon successful completion, returns a int value of
-     * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-     * KSTAT2_S_OK is returned.
+     *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+     *         KSTAT2_S_OK is returned.
      */
     int kstat2_close(PointerByReference /* Kstat2Handle */ handle);
 
@@ -131,20 +133,22 @@ public interface Kstat2 extends Library {
      * Allocates a new matcher list to allow matchers to be provided to the
      * {@link Kstat2#kstat2_open(PointerByReference, Kstat2MatcherList)} function.
      *
-     * @param matchers Receives a pointer to the allocated matcher list.
+     * @param matchers
+     *            Receives a pointer to the allocated matcher list.
      * @return Upon successful completion, returns a int value of
-     * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-     * KSTAT2_S_OK is returned.
+     *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+     *         KSTAT2_S_OK is returned.
      */
     int kstat2_alloc_matcher_list(PointerByReference /* Kstat2MatcherList */ matchers);
 
     /**
      * Frees the resources associated with the matcher list.
      *
-     * @param matchers A pointer to the {@link Kstat2MatcherList} to be freed.
+     * @param matchers
+     *            A pointer to the {@link Kstat2MatcherList} to be freed.
      * @return Upon successful completion, returns a int value of
-     * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-     * KSTAT2_S_OK is returned.
+     *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+     *         KSTAT2_S_OK is returned.
      */
     int kstat2_free_matcher_list(PointerByReference /* Kstat2MatcherList */ matchers);
 
@@ -157,26 +161,32 @@ public interface Kstat2 extends Library {
      * {@link Kstat2#KSTAT2_M_RE} which performs a Perl Compatible Regular
      * Expression (PCRE) match using {@code pcre_exec}.
      *
-     * @param type     The type of matcher, from the {@code kstat2_match_type_t}
-     *                 enumeration.
-     * @param match    The string to match.
-     * @param matchers The list to which to append the matcher.
+     * @param type
+     *            The type of matcher, from the {@code kstat2_match_type_t}
+     *            enumeration.
+     * @param match
+     *            The string to match.
+     * @param matchers
+     *            The list to which to append the matcher.
      * @return Upon successful completion, returns a int value of
-     * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-     * KSTAT2_S_OK is returned.
+     *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+     *         KSTAT2_S_OK is returned.
      */
     int kstat2_add_matcher(int type, String match, Kstat2MatcherList matchers);
 
     /**
      * Obtains a reference to a kstat2 map given the URI of the map.
      *
-     * @param handle The handle to obtain the map from.
-     * @param uri    The string to match.
-     * @param map    Receives a reference to the relevant map.
+     * @param handle
+     *            The handle to obtain the map from.
+     * @param uri
+     *            The string to match.
+     * @param map
+     *            Receives a reference to the relevant map.
      * @return Upon successful completion, the function will set the map parameter
-     * to reference the relevant map and {@link Kstat2#KSTAT2_S_OK} will be
-     * returned. If the requested item cannot be found, the map reference
-     * will be set to {@code NULL} and an error will be returned.
+     *         to reference the relevant map and {@link Kstat2#KSTAT2_S_OK} will be
+     *         returned. If the requested item cannot be found, the map reference
+     *         will be set to {@code NULL} and an error will be returned.
      */
     int kstat2_lookup_map(Kstat2Handle handle, String uri, PointerByReference /* Kstat2Map */ map);
 
@@ -185,19 +195,23 @@ public interface Kstat2 extends Library {
      * reference returned is managed by the library and must not be passed to
      * free().
      *
-     * @param map  The map from which to retrieve the data.
-     * @param name The uri of the data to retrieve.
-     * @param nv   Receives a reference to the name/value data.
+     * @param map
+     *            The map from which to retrieve the data.
+     * @param name
+     *            The uri of the data to retrieve.
+     * @param nv
+     *            Receives a reference to the name/value data.
      * @return Upon successful completion, returns {@link Kstat2#KSTAT2_S_OK}. If
-     * there is an error performing the requested operation, an error code
-     * will be returned.
+     *         there is an error performing the requested operation, an error code
+     *         will be returned.
      */
     int kstat2_map_get(Kstat2Map map, String name, PointerByReference /* Kstat2NV */ nv);
 
     /**
      * Gives a descriptive error message for the supplied status value.
      *
-     * @param status A value in the {@code kstat2_status} enumeration.
+     * @param status
+     *            A value in the {@code kstat2_status} enumeration.
      * @return A descriptive string for the supplied status code.
      */
     String kstat2_status_string(int status);
@@ -206,7 +220,7 @@ public interface Kstat2 extends Library {
      * Opaque kstat handle.
      */
     class Kstat2Handle extends PointerType {
-        private final PointerByReference ref = new PointerByReference();
+        private PointerByReference ref = new PointerByReference();
 
         /**
          * Instantiates and opens a new Kstat2Handle with no filtering. All of the
@@ -222,11 +236,12 @@ public interface Kstat2 extends Library {
          * Convenience method for
          * {@link Kstat2#kstat2_open(PointerByReference, Kstat2MatcherList)}.
          *
-         * @param matchers Only kstats that match one or more of the provided matchers will
-         *                 be available. If a NULL or empty matcher list is provided, all of
-         *                 the system's kstats will be available. Restricting the number of
-         *                 kstats available will improve performance and reduce the memory
-         *                 footprint.
+         * @param matchers
+         *            Only kstats that match one or more of the provided matchers will
+         *            be available. If a NULL or empty matcher list is provided, all of
+         *            the system's kstats will be available. Restricting the number of
+         *            kstats available will improve performance and reduce the memory
+         *            footprint.
          */
         public Kstat2Handle(Kstat2MatcherList matchers) {
             super();
@@ -244,8 +259,8 @@ public interface Kstat2 extends Library {
          * to become out of date.
          *
          * @return Upon successful completion, returns a int value of
-         * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-         * KSTAT2_S_OK is returned.
+         *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+         *         KSTAT2_S_OK is returned.
          */
         public int update() {
             return INSTANCE.kstat2_update(this);
@@ -256,7 +271,8 @@ public interface Kstat2 extends Library {
          * {@link Kstat2#kstat2_lookup_map(Kstat2Handle, String, PointerByReference)}
          * that obtains a reference to a kstat2 map given the URI of the map.
          *
-         * @param uri The URI of the map to return.
+         * @param uri
+         *            The URI of the map to return.
          * @return A reference to the map.
          */
         public Kstat2Map lookupMap(String uri) {
@@ -274,8 +290,8 @@ public interface Kstat2 extends Library {
          * it allocated on open.
          *
          * @return Upon successful completion, returns a int value of
-         * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-         * KSTAT2_S_OK is returned.
+         *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+         *         KSTAT2_S_OK is returned.
          */
         public int close() {
             return INSTANCE.kstat2_close(ref);
@@ -286,7 +302,7 @@ public interface Kstat2 extends Library {
      * Opaque kstat match list.
      */
     class Kstat2MatcherList extends PointerType {
-        private final PointerByReference ref = new PointerByReference();
+        private PointerByReference ref = new PointerByReference();
 
         /**
          * Instantiates a new Kstat2MatcherList, allocating the necessary resources.
@@ -316,12 +332,14 @@ public interface Kstat2 extends Library {
          * {@link Kstat2#KSTAT2_M_RE} which performs a Perl Compatible Regular
          * Expression (PCRE) match using {@code pcre_exec}.
          *
-         * @param type  The type of matcher, from the {@code kstat2_match_type_t}
-         *              enumeration.
-         * @param match The string to match.
+         * @param type
+         *            The type of matcher, from the {@code kstat2_match_type_t}
+         *            enumeration.
+         * @param match
+         *            The string to match.
          * @return Upon successful completion, returns a int value of
-         * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-         * KSTAT2_S_OK is returned.
+         *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+         *         KSTAT2_S_OK is returned.
          */
         public int addMatcher(int type, String match) {
             return INSTANCE.kstat2_add_matcher(type, match, this);
@@ -333,8 +351,8 @@ public interface Kstat2 extends Library {
          * resources associated with the matcher list.
          *
          * @return Upon successful completion, returns a int value of
-         * {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
-         * KSTAT2_S_OK is returned.
+         *         {@link Kstat2#KSTAT2_S_OK}. If an error occurs a value other than
+         *         KSTAT2_S_OK is returned.
          */
         public int free() {
             return INSTANCE.kstat2_free_matcher_list(ref);
@@ -359,7 +377,8 @@ public interface Kstat2 extends Library {
          * {@link Kstat2#kstat2_map_get(Kstat2Map, String, PointerByReference)} that
          * retrieves the name/value (nv) pair identified by the supplied name.
          *
-         * @param name The uri of the data to retrieve.
+         * @param name
+         *            The uri of the data to retrieve.
          * @return The name/value data.
          */
         public Kstat2NV mapGet(String name) {
@@ -377,24 +396,25 @@ public interface Kstat2 extends Library {
          * retrieves the name/value (nv) pair identified by the supplied name and
          * returns the value as an object.
          *
-         * @param name The name of the data to retrieve.
+         * @param name
+         *            The name of the data to retrieve.
          * @return If the value is of type {@link Kstat2#KSTAT2_NVVT_MAP}, a
-         * {@link Kstat2Map} is returned.
-         * <p>
-         * If the value is of type {@link Kstat2#KSTAT2_NVVT_INT}, a
-         * {@link long} is returned.
-         * <p>
-         * If the value is of type {@link Kstat2#KSTAT2_NVVT_INTS}, an array of
-         * {@link long} is returned.
-         * <p>
-         * If the value is of type {@link Kstat2#KSTAT2_NVVT_STR}, a
-         * {@link String} is returned.
-         * <p>
-         * If the value is of type {@link Kstat2#KSTAT2_NVVT_STRS}, an array of
-         * {@link String} is returned.
-         * <p>
-         * If no value exists for this property (error or invalid data
-         * {@link Kstat2#KSTAT2_NVF_INVAL}), returns {@code null}.
+         *         {@link Kstat2Map} is returned.
+         *         <p>
+         *         If the value is of type {@link Kstat2#KSTAT2_NVVT_INT}, a
+         *         {@link long} is returned.
+         *         <p>
+         *         If the value is of type {@link Kstat2#KSTAT2_NVVT_INTS}, an array of
+         *         {@link long} is returned.
+         *         <p>
+         *         If the value is of type {@link Kstat2#KSTAT2_NVVT_STR}, a
+         *         {@link String} is returned.
+         *         <p>
+         *         If the value is of type {@link Kstat2#KSTAT2_NVVT_STRS}, an array of
+         *         {@link String} is returned.
+         *         <p>
+         *         If no value exists for this property (error or invalid data
+         *         {@link Kstat2#KSTAT2_NVF_INVAL}), returns {@code null}.
          */
         public Object getValue(String name) {
             try {
@@ -433,6 +453,25 @@ public interface Kstat2 extends Library {
         public short flags; // Flags of the pair
         public UNION data; // Data value
 
+        public static class UNION extends Union {
+            public Kstat2Map map;
+            public long integerVal;
+            public IntegersArr integers;
+            public StringsArr strings;
+
+            @FieldOrder({"addr", "len"})
+            public static class IntegersArr extends Structure {
+                public Pointer addr;
+                public int len; // length of array
+            }
+
+            @FieldOrder({"addr", "len"})
+            public static class StringsArr extends Structure {
+                public Pointer addr;
+                public int len; // length of array
+            }
+        }
+
         public Kstat2NV() {
             super();
         }
@@ -463,25 +502,6 @@ public interface Kstat2 extends Library {
                     break;
             }
             data.read();
-        }
-
-        public static class UNION extends Union {
-            public Kstat2Map map;
-            public long integerVal;
-            public IntegersArr integers;
-            public StringsArr strings;
-
-            @FieldOrder({"addr", "len"})
-            public static class IntegersArr extends Structure {
-                public Pointer addr;
-                public int len; // length of array
-            }
-
-            @FieldOrder({"addr", "len"})
-            public static class StringsArr extends Structure {
-                public Pointer addr;
-                public int len; // length of array
-            }
         }
     }
 
@@ -535,4 +555,5 @@ public interface Kstat2 extends Library {
         }
 
     }
+
 }

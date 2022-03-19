@@ -53,9 +53,9 @@ public final class SolarisPowerSource extends AbstractPowerSource {
 
     static {
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            if (KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[1], 0, null) != null) {
+            if (kc.lookup(KSTAT_BATT_MOD[1], 0, null) != null) {
                 KSTAT_BATT_IDX = 1;
-            } else if (KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[2], 0, null) != null) {
+            } else if (kc.lookup(KSTAT_BATT_MOD[2], 0, null) != null) {
                 KSTAT_BATT_IDX = 2;
             } else {
                 KSTAT_BATT_IDX = 0;
@@ -111,7 +111,7 @@ public final class SolarisPowerSource extends AbstractPowerSource {
         if (KSTAT_BATT_IDX > 0) {
             // Get kstat for the battery information
             try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-                Kstat ksp = KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BIF0");
+                Kstat ksp = kc.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BIF0");
                 if (ksp != null) {
                     // Predicted battery capacity when fully charged.
                     long energyFull = KstatKit.dataLookupLong(ksp, "bif_last_cap");
@@ -134,7 +134,7 @@ public final class SolarisPowerSource extends AbstractPowerSource {
                 }
 
                 // Get kstat for the battery state
-                ksp = KstatKit.KstatChain.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BST0");
+                ksp = kc.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BST0");
                 if (ksp != null) {
                     // estimated remaining battery capacity
                     long energyNow = KstatKit.dataLookupLong(ksp, "bst_rem_cap");
