@@ -64,30 +64,6 @@
             <version>${lombok.version}</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>3.0.0</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.jws</groupId>
-            <artifactId>jakarta.jws-api</artifactId>
-            <version>3.0.0</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.ws</groupId>
-            <artifactId>jakarta.xml.ws-api</artifactId>
-            <version>3.0.0</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
-            <version>2.0.0</version>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
     <build>

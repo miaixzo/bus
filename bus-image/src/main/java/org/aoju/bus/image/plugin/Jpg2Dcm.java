@@ -26,7 +26,6 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -38,7 +37,6 @@ import org.aoju.bus.image.nimble.codec.jpeg.JPEG;
 import org.aoju.bus.image.nimble.codec.jpeg.JPEGHeader;
 import org.aoju.bus.image.nimble.codec.mpeg.MPEGHeader;
 
-import jakarta.activation.FileTypeMap;
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -122,7 +120,7 @@ public class Jpg2Dcm {
 
     private void toFileType(File infile) {
         try {
-            inFileType = FileType.valueOf(infile);
+            inFileType = FileType.valueOf(infile.getName());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(MessageFormat.format("invalid-file-ext", infile));
         }
@@ -197,11 +195,6 @@ public class Jpg2Dcm {
             this.tsuid = tsuid;
         }
 
-        static FileType valueOf(File file) {
-            String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(file);
-            return valueOf(contentType.substring(contentType.lastIndexOf(Symbol.SLASH) + 1));
-        }
-
         public String getSOPClassUID() {
             return cuid;
         }
@@ -211,6 +204,7 @@ public class Jpg2Dcm {
         }
 
         abstract boolean parseHeader(Jpg2Dcm main);
+
     }
 
 }
