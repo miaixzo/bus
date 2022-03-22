@@ -4766,8 +4766,10 @@ public class Almanac extends Converter {
      * 检查两个时间段是否有时间重叠
      * 重叠指两个时间段是否有交集
      *
-     * <li>x>x>b||a>y 无交集</li>
-     * <li>x>有交集的逻辑为 !(x>b||a>y) 根据德摩根公式，可化简为 x<=b && a<=y</li>
+     * <ol>
+     *      <li>x &gt; b || a &gt; y 无交集</li>
+     *      <li>则有交集的逻辑为 !(x &gt; b || a &gt; y) 根据德摩根公式，可化简为 x &lt;= b &amp;&amp; a &lt;= y</li>
+     * </ol>
      *
      * @param realStartTime 第一个时间段的开始时间
      * @param realEndTime   第一个时间段的结束时间
