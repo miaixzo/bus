@@ -56,7 +56,7 @@ import java.util.Objects;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class AuthorizeFilter implements WebFilter {

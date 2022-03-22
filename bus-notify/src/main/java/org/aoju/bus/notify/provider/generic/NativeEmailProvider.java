@@ -53,7 +53,7 @@ import java.util.List;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, Context> {
 

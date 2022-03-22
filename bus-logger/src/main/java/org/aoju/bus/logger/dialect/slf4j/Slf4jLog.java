@@ -39,7 +39,7 @@ import org.slf4j.spi.LocationAwareLogger;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class Slf4jLog extends AbstractAware {
 

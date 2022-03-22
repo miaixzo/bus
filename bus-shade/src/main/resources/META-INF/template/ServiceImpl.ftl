@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 *
 * @version: ${version}
 * @author: ${author}
-* @since JDK 1.8+
+* @since Java 17+
 */
 <#if isDubbo=="true" >
     @org.apache.dubbo.config.annotation.DubboService

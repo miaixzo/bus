@@ -38,7 +38,7 @@ import org.aoju.bus.health.unix.Kstat2.Kstat2NV.UNION.StringsArr;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public interface Kstat2 extends Library {
 
@@ -491,7 +491,7 @@ public interface Kstat2 extends Library {
      *
      * @author Kimi Liu
      * @version 6.3.5
-     * @since JDK 1.8+
+     * @since Java 17+
      */
     class Kstat2StatusException extends RuntimeException {
 

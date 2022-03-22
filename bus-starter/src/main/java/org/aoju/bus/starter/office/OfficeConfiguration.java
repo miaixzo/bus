@@ -48,7 +48,7 @@ import java.util.stream.Stream;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
 @EnableConfigurationProperties(OfficeProperties.class)

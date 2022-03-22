@@ -48,7 +48,7 @@ import java.nio.charset.Charset;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 2)
 public class FormatFilter implements WebFilter {

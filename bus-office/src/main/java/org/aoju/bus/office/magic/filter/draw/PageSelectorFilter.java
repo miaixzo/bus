@@ -41,7 +41,7 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class PageSelectorFilter implements Filter {
 

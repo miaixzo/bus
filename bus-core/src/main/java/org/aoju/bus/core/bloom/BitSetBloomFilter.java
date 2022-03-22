@@ -39,7 +39,7 @@ import java.util.BitSet;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class BitSetBloomFilter implements BloomFilter {
 

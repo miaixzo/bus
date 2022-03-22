@@ -34,7 +34,7 @@ import org.apache.dubbo.rpc.Filter;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class BaseDubboFilter implements Filter, Filter.Listener {
 

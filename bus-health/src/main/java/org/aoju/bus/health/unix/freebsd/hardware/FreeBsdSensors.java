@@ -37,7 +37,7 @@ import org.aoju.bus.health.unix.FreeBsdLibc;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 final class FreeBsdSensors extends AbstractSensors {

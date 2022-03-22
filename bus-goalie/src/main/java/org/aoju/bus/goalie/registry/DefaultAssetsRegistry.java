@@ -33,7 +33,7 @@ import org.aoju.bus.goalie.Assets;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class DefaultAssetsRegistry extends AbstractRegistry<Assets> implements AssetsRegistry {
 

@@ -33,7 +33,7 @@ import java.io.Serializable;
  * @param <T> 建造对象类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public interface Builder<T> extends Serializable {
 

@@ -33,7 +33,7 @@ import org.aoju.bus.logger.LogFactory;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class Log4jLogFactory extends LogFactory {
 

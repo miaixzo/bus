@@ -35,7 +35,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 public final class Win32DiskDriveToDiskPartition {

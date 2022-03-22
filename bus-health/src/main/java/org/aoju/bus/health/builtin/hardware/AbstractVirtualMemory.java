@@ -34,7 +34,7 @@ import org.aoju.bus.health.Formats;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 public abstract class AbstractVirtualMemory implements VirtualMemory {

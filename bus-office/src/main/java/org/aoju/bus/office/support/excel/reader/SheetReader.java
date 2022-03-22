@@ -33,7 +33,7 @@ import org.apache.poi.ss.usermodel.Sheet;
  * @param <T> 读取的数据类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface SheetReader<T> {

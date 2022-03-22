@@ -42,7 +42,7 @@ import java.util.Set;
  * @param <V> 值类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
 

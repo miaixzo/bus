@@ -35,7 +35,7 @@ import java.io.Serializable;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface VoidFunc0 extends Serializable {

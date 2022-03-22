@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.exception.ConvertException;
  * @param <T> 强制转换到的类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class CastConverter<T> extends AbstractConverter<T> {
 

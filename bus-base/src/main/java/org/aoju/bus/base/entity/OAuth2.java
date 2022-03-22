@@ -35,7 +35,7 @@ import javax.persistence.Transient;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -32,7 +32,7 @@ import org.aoju.bus.image.galaxy.data.Attributes;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class StoredValue {
 

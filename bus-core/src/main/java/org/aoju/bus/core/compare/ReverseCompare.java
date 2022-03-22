@@ -34,7 +34,7 @@ import java.util.Comparator;
  * @param <E> 被比较对象类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class ReverseCompare<E> implements Comparator<E>, Serializable {
 

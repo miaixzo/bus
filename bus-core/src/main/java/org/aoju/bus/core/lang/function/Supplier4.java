@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * @param <P4> 参数四 类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface Supplier4<T, P1, P2, P3, P4> {

@@ -43,7 +43,7 @@ import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 final class FreeBsdNetworkParams extends AbstractNetworkParams {

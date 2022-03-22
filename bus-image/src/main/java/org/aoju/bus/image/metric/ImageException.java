@@ -38,7 +38,7 @@ import org.aoju.bus.image.galaxy.data.ValidationResult;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class ImageException extends RelevantException {
 

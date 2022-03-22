@@ -37,7 +37,7 @@ import java.io.Serializable;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class Java implements Serializable {
 
@@ -261,7 +261,7 @@ public class Java implements Serializable {
      * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
-     * @return 如果当前Java版本为1.8, 则返回<code>true</code>
+     * @return 如果当前Java版本为8, 则返回<code>true</code>
      */
     public final boolean isJava18() {
         return IS_JAVA_1_8;

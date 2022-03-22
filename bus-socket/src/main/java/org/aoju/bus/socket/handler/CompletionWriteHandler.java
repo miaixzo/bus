@@ -36,7 +36,7 @@ import java.nio.channels.CompletionHandler;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
 

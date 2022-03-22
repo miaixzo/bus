@@ -64,7 +64,7 @@ import java.util.List;
  * @see Different
  * @see DifferentResult
  * @see ToStringStyle
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class DifferentBuilder implements Builder<DifferentResult> {
 

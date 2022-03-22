@@ -30,7 +30,7 @@ package org.aoju.bus.shade.safety.algorithm;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public final class AsymmetricSecureKey extends SecureKey implements AsymmetricKey {
 

@@ -43,7 +43,7 @@ import java.util.function.Consumer;
  * @param <T> ID类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 

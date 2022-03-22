@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 @EnableConfigurationProperties(ElasticProperties.class)
 public class ElasticConfiguration {

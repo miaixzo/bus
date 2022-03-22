@@ -40,7 +40,7 @@ import java.util.*;
  * @param <V> 值类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 

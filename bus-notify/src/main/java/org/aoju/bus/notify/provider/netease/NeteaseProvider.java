@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 public abstract class NeteaseProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
 

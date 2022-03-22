@@ -37,7 +37,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * @param <E> 第五个元素的类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 public class Quintet<A, B, C, D, E> {

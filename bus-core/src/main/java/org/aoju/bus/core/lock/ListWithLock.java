@@ -38,7 +38,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * @param <T> 所涉及对象的类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class ListWithLock<T> extends ObjWithLock<List<T>> {
 

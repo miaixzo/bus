@@ -35,7 +35,7 @@ import java.security.cert.X509Certificate;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class DefaultTrustManager extends X509ExtendedTrustManager {
 

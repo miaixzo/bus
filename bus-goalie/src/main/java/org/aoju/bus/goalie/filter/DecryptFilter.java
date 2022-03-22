@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class DecryptFilter implements WebFilter {

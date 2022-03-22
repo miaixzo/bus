@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.tree.Tree;
  * @param <T> 转换的实体 为数据源里的对象类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface NodeParser<T, E> {

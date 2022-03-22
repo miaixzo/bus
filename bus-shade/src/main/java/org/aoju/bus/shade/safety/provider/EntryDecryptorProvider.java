@@ -32,7 +32,7 @@ import org.aoju.bus.shade.safety.Complex;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class EntryDecryptorProvider<E> extends WrappedDecryptorProvider implements DecryptorProvider, Complex<E> {
 

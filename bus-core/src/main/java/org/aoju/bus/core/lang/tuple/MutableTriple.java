@@ -33,7 +33,7 @@ package org.aoju.bus.core.lang.tuple;
  * @param <R> 左元素类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableTriple<L, M, R> extends Triple<L, M, R> {
 

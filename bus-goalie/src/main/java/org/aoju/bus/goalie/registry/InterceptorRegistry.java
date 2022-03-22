@@ -32,7 +32,7 @@ import org.aoju.bus.goalie.Registry;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8++
+ * @since Java 17++
  */
 public interface InterceptorRegistry extends Registry {
 

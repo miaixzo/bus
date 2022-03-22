@@ -53,7 +53,7 @@ import java.util.TreeMap;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 public class AliyunProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
 

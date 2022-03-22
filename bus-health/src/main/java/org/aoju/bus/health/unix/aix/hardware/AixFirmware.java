@@ -33,7 +33,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Immutable
 final class AixFirmware extends AbstractFirmware {

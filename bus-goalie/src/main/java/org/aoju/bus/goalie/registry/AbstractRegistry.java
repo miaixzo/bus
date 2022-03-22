@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBean {
 

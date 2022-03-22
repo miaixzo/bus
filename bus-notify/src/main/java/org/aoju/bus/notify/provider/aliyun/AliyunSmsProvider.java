@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 public class AliyunSmsProvider extends AliyunProvider<AliyunSmsProperty, Context> {
 

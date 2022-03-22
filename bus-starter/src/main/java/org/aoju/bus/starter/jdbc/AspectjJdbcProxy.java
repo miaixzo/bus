@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Order(-1)
 @Aspect

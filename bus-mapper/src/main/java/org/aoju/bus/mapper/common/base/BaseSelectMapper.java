@@ -34,7 +34,7 @@ import org.aoju.bus.mapper.common.base.select.*;
  * @param <T> 不能为空
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @RegisterMapper
 public interface BaseSelectMapper<T> extends

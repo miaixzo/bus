@@ -63,7 +63,7 @@ import java.util.Set;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class NativeDCMImageReader extends ImageReader implements Closeable {
 
@@ -863,7 +863,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
     /**
      * @author Kimi Liu
      * @version 6.3.5
-     * @since JDK 1.8+
+     * @since Java 17+
      */
     public static class NativeDCMImageReadParam extends ImageReadParam {
 

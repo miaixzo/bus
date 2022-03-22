@@ -36,7 +36,7 @@ import java.util.Map;
  * @param <V> 值类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
 

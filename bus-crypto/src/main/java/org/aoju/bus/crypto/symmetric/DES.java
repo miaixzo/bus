@@ -41,7 +41,7 @@ import javax.crypto.spec.IvParameterSpec;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class DES extends Crypto {
 

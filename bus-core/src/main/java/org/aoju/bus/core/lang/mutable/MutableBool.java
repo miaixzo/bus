@@ -31,7 +31,7 @@ package org.aoju.bus.core.lang.mutable;
  * @author Kimi Liu
  * @version 6.3.5
  * @see Boolean
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
 

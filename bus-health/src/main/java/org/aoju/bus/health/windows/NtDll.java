@@ -37,7 +37,7 @@ import com.sun.jna.win32.W32APIOptions;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public interface NtDll extends com.sun.jna.platform.win32.NtDll {
 

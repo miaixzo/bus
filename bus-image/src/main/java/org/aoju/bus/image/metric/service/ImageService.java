@@ -30,7 +30,7 @@ import org.aoju.bus.image.metric.DimseRQHandler;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public interface ImageService extends DimseRQHandler {
 

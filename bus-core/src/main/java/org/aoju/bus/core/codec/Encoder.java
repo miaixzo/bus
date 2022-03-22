@@ -32,7 +32,7 @@ package org.aoju.bus.core.codec;
  * @param <R> 编码后的数据类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public interface Encoder<T, R> {
 

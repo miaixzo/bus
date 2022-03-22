@@ -33,7 +33,7 @@ package org.aoju.bus.core.lang.function;
  * @param <P3> 参数三类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface Consumer3<P1, P2, P3> {

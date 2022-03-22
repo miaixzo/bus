@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * @author Kimi Liu
  * @version 6.3.5
  * @see Integer
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
 

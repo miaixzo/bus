@@ -41,7 +41,7 @@ import org.aoju.bus.core.lang.Symbol;
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public enum LineSeparator {
 

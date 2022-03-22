@@ -32,7 +32,7 @@ import org.apache.poi.xwpf.usermodel.Document;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public enum PicType {
     EMF(Document.PICTURE_TYPE_EMF),

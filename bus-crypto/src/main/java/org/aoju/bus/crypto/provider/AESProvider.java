@@ -39,7 +39,7 @@ import org.aoju.bus.crypto.symmetric.AES;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class AESProvider implements Provider {
 

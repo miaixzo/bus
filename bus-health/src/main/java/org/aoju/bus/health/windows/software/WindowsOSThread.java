@@ -42,7 +42,7 @@ import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 public class WindowsOSThread extends AbstractOSThread {

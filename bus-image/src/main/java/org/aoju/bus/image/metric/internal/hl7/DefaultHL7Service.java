@@ -28,7 +28,7 @@ package org.aoju.bus.image.metric.internal.hl7;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class DefaultHL7Service extends DefaultHL7Listener
         implements HL7Service {

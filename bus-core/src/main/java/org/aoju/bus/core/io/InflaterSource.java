@@ -38,7 +38,7 @@ import java.util.zip.Inflater;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public final class InflaterSource implements Source {
 

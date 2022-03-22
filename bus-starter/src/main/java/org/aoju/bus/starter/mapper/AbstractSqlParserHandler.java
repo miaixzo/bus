@@ -48,7 +48,7 @@ import org.apache.ibatis.reflection.MetaObject;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
 

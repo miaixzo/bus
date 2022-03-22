@@ -36,7 +36,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
  * @param <T> 不能为空
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @RegisterMapper
 public interface UpdateByConditionSelectiveMapper<T> {

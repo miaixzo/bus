@@ -39,7 +39,7 @@ import java.util.Map;
  * @param <C> 集合类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class AbstractCollValueMap<K, V, C extends Collection<V>> extends MapWrapper<K, C> {
 

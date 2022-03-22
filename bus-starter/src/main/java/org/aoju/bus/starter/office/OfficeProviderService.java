@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Component
 @RequiredArgsConstructor

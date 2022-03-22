@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class GlobalExceptionHandler extends Controller implements ErrorWebExceptionHandler {
 

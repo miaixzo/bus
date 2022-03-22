@@ -45,7 +45,7 @@ import java.util.function.Function;
  * @param <V> 值对象
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class UniqueKeySet<K, V> extends AbstractSet<V> implements Serializable {
 

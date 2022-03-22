@@ -45,7 +45,7 @@ import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public interface CoreGraphics extends Library {
 

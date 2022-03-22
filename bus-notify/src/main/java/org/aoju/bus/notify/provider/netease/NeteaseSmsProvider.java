@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 public class NeteaseSmsProvider extends NeteaseProvider<NeteaseSmsProperty, Context> {
 

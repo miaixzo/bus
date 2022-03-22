@@ -47,7 +47,7 @@ import static com.sun.jna.platform.win32.IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNE
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats {

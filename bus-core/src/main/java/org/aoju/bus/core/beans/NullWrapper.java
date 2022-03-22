@@ -31,7 +31,7 @@ package org.aoju.bus.core.beans;
  * @param <T> Null值对应的类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class NullWrapper<T> {
 

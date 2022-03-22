@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  * @param <V> Value类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 

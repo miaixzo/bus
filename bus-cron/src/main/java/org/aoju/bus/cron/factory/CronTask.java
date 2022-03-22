@@ -32,7 +32,7 @@ import org.aoju.bus.cron.pattern.CronPattern;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class CronTask implements Task {
 

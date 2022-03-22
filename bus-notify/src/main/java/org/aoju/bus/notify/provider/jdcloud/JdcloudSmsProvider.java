@@ -9,7 +9,7 @@ import org.aoju.bus.notify.provider.netease.NeteaseProvider;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 public class JdcloudSmsProvider extends NeteaseProvider<JdcloudSmsProperty, Context> {
 

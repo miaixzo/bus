@@ -35,7 +35,7 @@ import org.aoju.bus.core.lang.Filter;
  * @param <C> 本类的类型 用于set方法返回本对象,方便流式编程
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<T> {
 

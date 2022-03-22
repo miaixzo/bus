@@ -41,7 +41,7 @@ import java.util.Map;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @WebFilter(filterName = "TraceFilter", urlPatterns = "/*", dispatcherTypes = DispatcherType.REQUEST)
 public class TraceFilter implements Filter {

@@ -44,7 +44,7 @@ import java.util.Set;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)
 public class LimitFilter implements WebFilter {

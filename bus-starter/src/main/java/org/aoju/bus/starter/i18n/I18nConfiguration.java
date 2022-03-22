@@ -40,7 +40,7 @@ import javax.validation.Validator;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @EnableConfigurationProperties(value = {I18nProperties.class})
 public class I18nConfiguration {

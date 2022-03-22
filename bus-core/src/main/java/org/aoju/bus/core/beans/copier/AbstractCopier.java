@@ -35,7 +35,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
  * @param <T> 目标对象类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public abstract class AbstractCopier<S, T> implements Copier<T> {
 

@@ -58,7 +58,7 @@ import java.util.Properties;
  *
  * @author Kimi Liu
  * @version 6.0.6
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {

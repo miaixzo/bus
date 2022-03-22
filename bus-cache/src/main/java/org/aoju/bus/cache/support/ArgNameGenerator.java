@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class ArgNameGenerator {
 
@@ -86,7 +86,7 @@ public class ArgNameGenerator {
         return xArgs;
     }
 
-    // Java1.8之后提供了获取参数名方法, 但需要编译时添加`–parameters`参数支持, 如`javac –parameters`, 不然参数名为'arg0'
+    // Java 8 之后提供了获取参数名方法, 但需要编译时添加`–parameters`参数支持, 如`javac –parameters`, 不然参数名为'arg0'
     private static String[] doGetArgNamesWithJava8(Method method) {
         Parameter[] parameters = method.getParameters();
         String[] argNames = Arrays.stream(parameters).map(Parameter::getName).toArray(String[]::new);

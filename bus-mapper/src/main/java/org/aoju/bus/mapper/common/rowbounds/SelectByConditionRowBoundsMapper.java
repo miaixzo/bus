@@ -38,7 +38,7 @@ import java.util.List;
  * @param <T> 不能为空
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @RegisterMapper
 public interface SelectByConditionRowBoundsMapper<T> {

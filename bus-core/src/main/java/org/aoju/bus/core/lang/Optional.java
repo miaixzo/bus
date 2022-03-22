@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  * @author Kimi Liu
  * @version 6.3.5
  * @see java.util.Optional
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class Optional<T> {
 

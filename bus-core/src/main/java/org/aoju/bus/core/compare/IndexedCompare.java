@@ -37,7 +37,7 @@ import java.util.Comparator;
  * @param <T> 被排序元素类型
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class IndexedCompare<T> implements Comparator<T> {
 

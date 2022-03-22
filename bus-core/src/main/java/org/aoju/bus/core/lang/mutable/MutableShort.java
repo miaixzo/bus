@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * @author Kimi Liu
  * @version 6.3.5
  * @see Short
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
 

@@ -35,7 +35,7 @@ import org.aoju.bus.notify.magic.Property;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK1.8+
+ * @since Java 17+
  */
 @Getter
 @Setter

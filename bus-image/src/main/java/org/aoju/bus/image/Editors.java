@@ -31,7 +31,7 @@ import org.aoju.bus.image.metric.AttributeContext;
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface Editors {

@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * @author Kimi Liu
  * @version 6.3.5
  * @see Long
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableLong extends Number implements Comparable<MutableLong>, Mutable<Number> {
 

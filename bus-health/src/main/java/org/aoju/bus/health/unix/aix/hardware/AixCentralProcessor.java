@@ -53,7 +53,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @ThreadSafe
 final class AixCentralProcessor extends AbstractCentralProcessor {

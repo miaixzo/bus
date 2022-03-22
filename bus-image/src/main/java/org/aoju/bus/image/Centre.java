@@ -51,7 +51,7 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @lombok.Builder
 @NoArgsConstructor

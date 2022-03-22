@@ -34,7 +34,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 /**
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Data
 @EnableConfigurationProperties(value = {SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class})

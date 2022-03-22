@@ -57,7 +57,7 @@ import java.security.cert.CertificateException;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public final class RetryAndFollowUp implements Interceptor {
 

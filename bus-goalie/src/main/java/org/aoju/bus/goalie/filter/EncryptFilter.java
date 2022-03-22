@@ -57,7 +57,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @author Justubborn
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class EncryptFilter implements WebFilter {

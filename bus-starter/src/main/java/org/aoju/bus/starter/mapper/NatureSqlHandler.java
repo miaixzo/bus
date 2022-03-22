@@ -54,7 +54,7 @@ import java.util.regex.Matcher;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Intercepts(value = {
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),

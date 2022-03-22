@@ -489,7 +489,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 - 4线程1000连接压测120秒
 - tomcat.max-threads=1000，
 - 业务代码执行时间均为1000ms
-- JDK1.8
+- Java 17+
 - Zoookeeper和Redis和应用处于同一主机
 - Zookeeper为3节点
 
@@ -505,7 +505,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 - 4线程1000连接压测120秒
 - tomcat.max-threads=1000，
 - 业务代码执行时间均为1000ms
-- JDK1.8
+- Java 17+
 - Zoookeeper和Redis和应用处于同一主机
 
 |                  | AVG RT    | AVG-QPS |

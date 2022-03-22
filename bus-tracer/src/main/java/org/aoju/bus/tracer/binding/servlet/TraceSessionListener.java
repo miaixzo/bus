@@ -40,7 +40,7 @@ import javax.servlet.http.HttpSessionListener;
  *
  * @author Kimi Liu
  * @version 6.3.5
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @WebListener("TraceSessionListener to create sessionIds on session creation and remove it instead from the Builder backend on session termination.")
 public class TraceSessionListener implements HttpSessionListener {
