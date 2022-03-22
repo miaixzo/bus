@@ -84,7 +84,8 @@ public class Divice extends UserAgent {
             GOOGLE_TV,
             new Divice("htcFlyer", "htc_flyer"),
             new Divice("Symbian", "symbian(os)?"),
-            new Divice("Blackberry", "blackberry")
+            new Divice("Blackberry", "blackberry"),
+            new Divice("Android", "XiaoMi|MI")
     );
 
     /**

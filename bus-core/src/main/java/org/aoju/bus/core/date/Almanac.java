@@ -36,9 +36,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.*;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -4763,6 +4763,24 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 检查两个时间段是否有时间重叠
+     * 重叠指两个时间段是否有交集
+     *
+     * <li>x>x>b||a>y 无交集</li>
+     * <li>x>有交集的逻辑为 !(x>b||a>y) 根据德摩根公式，可化简为 x<=b && a<=y</li>
+     *
+     * @param realStartTime 第一个时间段的开始时间
+     * @param realEndTime   第一个时间段的结束时间
+     * @param startTime     第二个时间段的开始时间
+     * @param endTime       第二个时间段的结束时间
+     * @return true 表示时间有重合
+     */
+    public static boolean isOverlap(ChronoLocalDateTime<?> realStartTime, ChronoLocalDateTime<?> realEndTime,
+                                    ChronoLocalDateTime<?> startTime, ChronoLocalDateTime<?> endTime) {
+        return startTime.isBefore(realEndTime) && endTime.isAfter(realStartTime);
+    }
+
+    /**
      * 判断传入的日期是否 &gt;=今天
      *
      * @param date 待判断的日期
@@ -5498,35 +5516,6 @@ public class Almanac extends Converter {
      */
     public static Date lastYear() {
         return offsetYear(date(), -1);
-    }
-
-    /**
-     * 检查两个时间段是否有时间重叠
-     * 重叠指两个时间段是否有交集
-     *
-     * @param realStartTime 第一个时间段的开始时间
-     * @param realEndTime   第一个时间段的结束时间
-     * @param startTime     第二个时间段的开始时间
-     * @param endTime       第二个时间段的结束时间
-     * @return true 表示时间有重合
-     */
-    public static boolean isOverlap(LocalDateTime realStartTime, LocalDateTime realEndTime, LocalDateTime startTime, LocalDateTime endTime) {
-        return startTime.isAfter(realEndTime) || endTime.isBefore(realStartTime);
-    }
-
-    /**
-     * 检查两个时间段是否有时间重叠
-     * 重叠指两个时间段是否有交集
-     * 需要注意的是比如第一个时间段的结尾是23:59:59 第二天开始需要是00:00:00 相同也是重复
-     *
-     * @param realStartTime 第一个时间段的开始时间
-     * @param realEndTime   第一个时间段的结束时间
-     * @param startTime     第二个时间段的开始时间
-     * @param endTime       第二个时间段的结束时间
-     * @return true 表示没有时间有重合
-     */
-    public static boolean isOverlap(Supplier<LocalDateTime> realStartTime, Supplier<LocalDateTime> realEndTime, Supplier<LocalDateTime> startTime, Supplier<LocalDateTime> endTime) {
-        return isOverlap(realStartTime.get(), realEndTime.get(), startTime.get(), endTime.get());
     }
 
 }

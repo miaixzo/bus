@@ -28,13 +28,12 @@ package org.aoju.bus.core.codec;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
-import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -278,6 +277,48 @@ public class Base64 {
     }
 
     /**
+     * 编码为Base64
+     *
+     * @param src     源字符信息
+     * @param srcPos  开始位置
+     * @param srcLen  长度
+     * @param dest    字符信息
+     * @param destPos 开始位置
+     */
+    public static void encode(byte[] src, int srcPos, int srcLen, char[] dest,
+                              int destPos) {
+        if (srcPos < 0 || srcLen < 0 || srcLen > src.length - srcPos)
+            throw new IndexOutOfBoundsException();
+        int destLen = (srcLen * 4 / 3 + 3) & ~3;
+        if (destPos < 0 || destLen > dest.length - destPos)
+            throw new IndexOutOfBoundsException();
+        byte b1, b2, b3;
+        int n = srcLen / 3;
+        int r = srcLen - 3 * n;
+        while (n-- > 0) {
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+                    | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b2 & 0x0F) << 2)
+                    | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
+            dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[b3 & 0x3F];
+        }
+        if (r > 0)
+            if (r == 1) {
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)];
+                dest[destPos++] = Symbol.C_EQUAL;
+                dest[destPos++] = Symbol.C_EQUAL;
+            } else {
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+                        | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
+                dest[destPos++] = CharsKit.getChars(Normal.ENCODE_64_TABLE)[(b2 & 0x0F) << 2];
+                dest[destPos++] = Symbol.C_EQUAL;
+            }
+    }
+
+    /**
      * base64解码
      *
      * @param source 被解码的base64字符串
@@ -365,6 +406,81 @@ public class Base64 {
     }
 
     /**
+     * 解码Base64
+     *
+     * @param in     输入
+     * @param pos    开始位置
+     * @param length 长度
+     * @return 解码后的bytes
+     */
+    public static byte[] decode(byte[] in, int pos, int length) {
+        if (ArrayKit.isEmpty(in)) {
+            return in;
+        }
+
+        final MutableInt offset = new MutableInt(pos);
+
+        byte sestet0;
+        byte sestet1;
+        byte sestet2;
+        byte sestet3;
+        int maxPos = pos + length - 1;
+        int octetId = 0;
+        byte[] octet = new byte[length * 3 / 4];// over-estimated if non-base64 characters present
+        while (offset.intValue() <= maxPos) {
+            sestet0 = getNextValidDecodeByte(in, offset, maxPos);
+            sestet1 = getNextValidDecodeByte(in, offset, maxPos);
+            sestet2 = getNextValidDecodeByte(in, offset, maxPos);
+            sestet3 = getNextValidDecodeByte(in, offset, maxPos);
+
+            if (PADDING != sestet1) {
+                octet[octetId++] = (byte) ((sestet0 << 2) | (sestet1 >>> 4));
+            }
+            if (PADDING != sestet2) {
+                octet[octetId++] = (byte) (((sestet1 & 0xf) << 4) | (sestet2 >>> 2));
+            }
+            if (PADDING != sestet3) {
+                octet[octetId++] = (byte) (((sestet2 & 3) << 6) | sestet3);
+            }
+        }
+
+        if (octetId == octet.length) {
+            return octet;
+        } else {
+            // 如果有非Base64字符混入，则实际结果比解析的要短，截取之
+            return (byte[]) ArrayKit.copy(octet, new byte[octetId], octetId);
+        }
+    }
+
+    /**
+     * 解码Base64
+     *
+     * @param ch  字符信息
+     * @param off 结束为止
+     * @param len 长度
+     * @param out 输出流
+     */
+    public static void decode(char[] ch, int off, int len, OutputStream out) {
+        try {
+            byte b2, b3;
+            while ((len -= 2) >= 0) {
+                out.write((byte) ((Normal.DECODE_64_TABLE[ch[off++]] << 2)
+                        | ((b2 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 4)));
+                if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
+                    break;
+                out.write((byte) ((b2 << 4)
+                        | ((b3 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 2)));
+                if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
+                    break;
+                out.write((byte) ((b3 << 6) | Normal.DECODE_64_TABLE[ch[off++]]));
+            }
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+
+    }
+
+    /**
      * 检查是否为Base64
      *
      * @param base64 Base64的bytes
@@ -417,53 +533,6 @@ public class Base64 {
      */
     public static boolean isBase64Code(byte octet) {
         return octet == Symbol.C_EQUAL || (octet >= 0 && octet < Normal.DECODE_64_TABLE.length && Normal.DECODE_64_TABLE[octet] != -1);
-    }
-
-    /**
-     * 解码Base64
-     *
-     * @param in     输入
-     * @param pos    开始位置
-     * @param length 长度
-     * @return 解码后的bytes
-     */
-    public static byte[] decode(byte[] in, int pos, int length) {
-        if (ArrayKit.isEmpty(in)) {
-            return in;
-        }
-
-        final MutableInt offset = new MutableInt(pos);
-
-        byte sestet0;
-        byte sestet1;
-        byte sestet2;
-        byte sestet3;
-        int maxPos = pos + length - 1;
-        int octetId = 0;
-        byte[] octet = new byte[length * 3 / 4];// over-estimated if non-base64 characters present
-        while (offset.intValue() <= maxPos) {
-            sestet0 = getNextValidDecodeByte(in, offset, maxPos);
-            sestet1 = getNextValidDecodeByte(in, offset, maxPos);
-            sestet2 = getNextValidDecodeByte(in, offset, maxPos);
-            sestet3 = getNextValidDecodeByte(in, offset, maxPos);
-
-            if (PADDING != sestet1) {
-                octet[octetId++] = (byte) ((sestet0 << 2) | (sestet1 >>> 4));
-            }
-            if (PADDING != sestet2) {
-                octet[octetId++] = (byte) (((sestet1 & 0xf) << 4) | (sestet2 >>> 2));
-            }
-            if (PADDING != sestet3) {
-                octet[octetId++] = (byte) (((sestet2 & 3) << 6) | sestet3);
-            }
-        }
-
-        if (octetId == octet.length) {
-            return octet;
-        } else {
-            // 如果有非Base64字符混入，则实际结果比解析的要短，截取之
-            return (byte[]) ArrayKit.copy(octet, new byte[octetId], octetId);
-        }
     }
 
     /**
