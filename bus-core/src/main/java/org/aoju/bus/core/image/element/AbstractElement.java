@@ -52,45 +52,78 @@ public abstract class AbstractElement<T extends AbstractElement> {
     private float alpha = 1.0f;
 
     /**
+     * 获取坐标x
+     *
      * @return the int
      */
     public int getX() {
         return x;
     }
 
+    /**
+     * 设置坐标x
+     *
+     * @param x 坐标
+     * @return this
+     */
     public T setX(int x) {
         this.x = x;
         return (T) this;
     }
 
     /**
+     * 获取坐标y
+     *
      * @return the int
      */
     public int getY() {
         return y;
     }
 
+    /**
+     * 设置坐标y
+     *
+     * @param y 坐标
+     * @return this
+     */
     public T setY(int y) {
         this.y = y;
         return (T) this;
     }
 
+    /**
+     * @return the boolean
+     */
     public boolean isCenter() {
         return center;
     }
 
+    /**
+     * 设置位置
+     *
+     * @param center 中心位置
+     * @return this
+     */
     public T setCenter(boolean center) {
         this.center = center;
         return (T) this;
     }
 
     /**
+     * 获取透明度
+     *
      * @return the float
      */
     public float getAlpha() {
         return alpha;
     }
 
+    /**
+     * 设置透明度
+     *
+     * @param alpha 透明度
+     * @return this
+     */
     public T setAlpha(float alpha) {
         this.alpha = alpha;
         return (T) this;

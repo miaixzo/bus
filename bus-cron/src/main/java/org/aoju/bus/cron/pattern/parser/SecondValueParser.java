@@ -25,6 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.exception.CrontabException;
+import org.aoju.bus.cron.pattern.matcher.MatcherTable;
+
 /**
  * 秒值处理
  *
@@ -33,5 +36,14 @@ package org.aoju.bus.cron.pattern.parser;
  * @since JDK 1.8+
  */
 public class SecondValueParser extends MinuteValueParser {
+
+    @Override
+    public void parseTo(MatcherTable matcherTable, String pattern) {
+        try {
+            matcherTable.secondMatchers.add(parseAsValueMatcher(pattern));
+        } catch (Exception e) {
+            throw new CrontabException("Invalid pattern [{}], parsing 'second' field error!", pattern);
+        }
+    }
 
 }

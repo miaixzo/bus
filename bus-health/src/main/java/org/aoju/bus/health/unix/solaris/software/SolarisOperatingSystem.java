@@ -58,25 +58,22 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
-    private static final String VERSION;
-    private static final String BUILD_NUMBER;
-
-    static {
-        String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
-        VERSION = split[0];
-        BUILD_NUMBER = split.length > 1 ? split[1] : "";
-    }
-
     /**
      * This static field identifies if the kstat2 library (available in Solaris 11.4
      * or greater) can be loaded.
      */
     public static final boolean HAS_KSTAT2;
+    private static final String VERSION;
+    private static final String BUILD_NUMBER;
     private static final Supplier<Pair<Long, Long>> BOOT_UPTIME = Memoize
             .memoize(SolarisOperatingSystem::queryBootAndUptime, Memoize.defaultExpiration());
     private static final long BOOTTIME = querySystemBootTime();
 
     static {
+        String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
+        VERSION = split[0];
+        BUILD_NUMBER = split.length > 1 ? split[1] : "";
+
         Kstat2 lib = null;
         try {
             lib = Kstat2.INSTANCE;

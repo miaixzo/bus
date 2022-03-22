@@ -25,15 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern;
 
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.DateKit;
-import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.cron.pattern.matcher.AlwaysTrueValueMatcher;
-import org.aoju.bus.cron.pattern.matcher.DayOfMonthValueMatcher;
-import org.aoju.bus.cron.pattern.matcher.ValueMatcher;
-import org.aoju.bus.cron.pattern.matcher.ValueMatcherBuilder;
-import org.aoju.bus.cron.pattern.parser.*;
+import org.aoju.bus.cron.pattern.matcher.MatcherTable;
+import org.aoju.bus.cron.pattern.parser.CronPatternParser;
 
 import java.util.*;
 
@@ -97,85 +94,100 @@ import java.util.*;
  */
 public class CronPattern {
 
-    private static final ValueParser SECOND_VALUE_PARSER = new SecondValueParser();
-    private static final ValueParser MINUTE_VALUE_PARSER = new MinuteValueParser();
-    private static final ValueParser HOUR_VALUE_PARSER = new HourValueParser();
-    private static final ValueParser DAY_OF_MONTH_VALUE_PARSER = new DayOfMonthValueParser();
-    private static final ValueParser MONTH_VALUE_PARSER = new MonthValueParser();
-    private static final ValueParser DAY_OF_WEEK_VALUE_PARSER = new DayOfWeekValueParser();
-    private static final ValueParser YEAR_VALUE_PARSER = new YearValueParser();
-
-    private String pattern;
-
-    /**
-     * 秒字段匹配列表
-     */
-    private List<ValueMatcher> secondMatchers = new ArrayList<>();
-    /**
-     * 分字段匹配列表
-     */
-    private List<ValueMatcher> minuteMatchers = new ArrayList<>();
-    /**
-     * 时字段匹配列表
-     */
-    private List<ValueMatcher> hourMatchers = new ArrayList<>();
-    /**
-     * 每月几号字段匹配列表
-     */
-    private List<ValueMatcher> dayOfMonthMatchers = new ArrayList<>();
-    /**
-     * 月字段匹配列表
-     */
-    private List<ValueMatcher> monthMatchers = new ArrayList<>();
-    /**
-     * 星期字段匹配列表
-     */
-    private List<ValueMatcher> dayOfWeekMatchers = new ArrayList<>();
-    /**
-     * 年字段匹配列表
-     */
-    private List<ValueMatcher> yearMatchers = new ArrayList<>();
-    /**
-     * 匹配器个数,取决于复合任务表达式中的单一表达式个数
-     */
-    private int matcherSize;
+    private final String pattern;
+    private final MatcherTable matcherTable;
 
     /**
      * 构造
      *
      * @param pattern 表达式
-     * @see CronPattern
      */
     public CronPattern(String pattern) {
         this.pattern = pattern;
-        parseGroupPattern(pattern);
+        this.matcherTable = CronPatternParser.create().parse(pattern);
     }
 
     /**
-     * 是否匹配日(指定月份的第几天)
+     * 列举指定日期之后（到开始日期对应年年底）内第一个匹配表达式的日期
      *
-     * @param matcher    {@link ValueMatcher}
-     * @param dayOfMonth 日
-     * @param month      月
-     * @param isLeapYear 是否闰年
-     * @return 是否匹配
+     * @param pattern       表达式
+     * @param start         起始时间
+     * @param isMatchSecond 是否匹配秒
+     * @return 日期
      */
-    private static boolean isMatchDayOfMonth(ValueMatcher matcher, int dayOfMonth, int month, boolean isLeapYear) {
-        return ((matcher instanceof DayOfMonthValueMatcher)
-                ? ((DayOfMonthValueMatcher) matcher).match(dayOfMonth, month, isLeapYear)
-                : matcher.match(dayOfMonth));
+    public static Date nextDateAfter(CronPattern pattern, Date start, boolean isMatchSecond) {
+        List<Date> matchedDates = matchedDates(pattern, start.getTime(), DateKit.endOfYear(start).getTime(), 1, isMatchSecond);
+        if (CollKit.isNotEmpty(matchedDates)) {
+            return matchedDates.get(0);
+        }
+        return null;
     }
 
     /**
-     * 是否匹配指定的日期时间位置
+     * 列举指定日期之后（到开始日期对应年年底）内所有匹配表达式的日期
      *
-     * @param matchers 匹配器列表
-     * @param index    位置
-     * @param value    被匹配的值
-     * @return 是否匹配
+     * @param patternStr    表达式字符串
+     * @param start         起始时间
+     * @param count         列举数量
+     * @param isMatchSecond 是否匹配秒
+     * @return 日期列表
      */
-    private static boolean isMatch(List<ValueMatcher> matchers, int index, int value) {
-        return (matchers.size() > index) ? matchers.get(index).match(value) : true;
+    public static List<Date> matchedDates(String patternStr, Date start, int count, boolean isMatchSecond) {
+        return matchedDates(patternStr, start, DateKit.endOfYear(start), count, isMatchSecond);
+    }
+
+    /**
+     * 列举指定日期范围内所有匹配表达式的日期
+     *
+     * @param patternStr    表达式字符串
+     * @param start         起始时间
+     * @param end           结束时间
+     * @param count         列举数量
+     * @param isMatchSecond 是否匹配秒
+     * @return 日期列表
+     */
+    public static List<Date> matchedDates(String patternStr, Date start, Date end, int count, boolean isMatchSecond) {
+        return matchedDates(patternStr, start.getTime(), end.getTime(), count, isMatchSecond);
+    }
+
+    /**
+     * 列举指定日期范围内所有匹配表达式的日期
+     *
+     * @param patternStr    表达式字符串
+     * @param start         起始时间
+     * @param end           结束时间
+     * @param count         列举数量
+     * @param isMatchSecond 是否匹配秒
+     * @return 日期列表
+     */
+    public static List<Date> matchedDates(String patternStr, long start, long end, int count, boolean isMatchSecond) {
+        return matchedDates(new CronPattern(patternStr), start, end, count, isMatchSecond);
+    }
+
+    /**
+     * 列举指定日期范围内所有匹配表达式的日期
+     *
+     * @param pattern       表达式
+     * @param start         起始时间
+     * @param end           结束时间
+     * @param count         列举数量
+     * @param isMatchSecond 是否匹配秒
+     * @return 日期列表
+     */
+    public static List<Date> matchedDates(CronPattern pattern, long start, long end, int count, boolean isMatchSecond) {
+        Assert.isTrue(start < end, "Start date is later than end !");
+
+        final List<Date> result = new ArrayList<>(count);
+        long step = isMatchSecond ? Fields.Units.SECOND.getUnit() : Fields.Units.MINUTE.getUnit();
+        for (long i = start; i < end; i += step) {
+            if (pattern.match(i, isMatchSecond)) {
+                result.add(DateKit.date(i));
+                if (result.size() >= count) {
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -211,113 +223,20 @@ public class CronPattern {
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
     public boolean match(GregorianCalendar calendar, boolean isMatchSecond) {
-        final int second = calendar.get(Calendar.SECOND);
+        final int second = isMatchSecond ? calendar.get(Calendar.SECOND) : -1;
         final int minute = calendar.get(Calendar.MINUTE);
         final int hour = calendar.get(Calendar.HOUR_OF_DAY);
         final int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         final int month = calendar.get(Calendar.MONTH) + 1;// 月份从1开始
-        final int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 星期从0开始,0和7都表示周日
+        final int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 星期从0开始，0和7都表示周日
         final int year = calendar.get(Calendar.YEAR);
 
-        boolean eval;
-        for (int i = 0; i < matcherSize; i++) {
-            eval = (isMatchSecond ? secondMatchers.get(i).match(second) : true) // 匹配秒(非秒匹配模式下始终返回true)
-                    && minuteMatchers.get(i).match(minute)// 匹配分
-                    && hourMatchers.get(i).match(hour)// 匹配时
-                    && isMatchDayOfMonth(dayOfMonthMatchers.get(i), dayOfMonth, month, calendar.isLeapYear(year))// 匹配日
-                    && monthMatchers.get(i).match(month) // 匹配月
-                    && dayOfWeekMatchers.get(i).match(dayOfWeek)// 匹配周
-                    && isMatch(yearMatchers, i, year);// 匹配年
-            if (eval) {
-                return true;
-            }
-        }
-        return false;
+        return this.matcherTable.match(second, minute, hour, dayOfMonth, month, dayOfWeek, year);
     }
 
     @Override
     public String toString() {
         return this.pattern;
-    }
-
-    /**
-     * 解析复合任务表达式
-     *
-     * @param groupPattern 复合表达式
-     */
-    private void parseGroupPattern(String groupPattern) {
-        List<String> patternList = StringKit.split(groupPattern, Symbol.C_OR);
-        for (String pattern : patternList) {
-            parseSinglePattern(pattern);
-        }
-    }
-
-    /**
-     * 解析单一定时任务表达式
-     *
-     * @param pattern 表达式
-     */
-    private void parseSinglePattern(String pattern) {
-        final String[] parts = pattern.split("\\s");
-
-        int offset = 0;// 偏移量用于兼容Quartz表达式,当表达式有6或7项时,第一项为秒
-        if (parts.length == 6 || parts.length == 7) {
-            offset = 1;
-        } else if (parts.length != 5) {
-            throw new InstrumentException("RegEx [{}] is invalid, it must be 5-7 parts!", pattern);
-        }
-
-        // 秒
-        if (1 == offset) {// 支持秒的表达式
-            try {
-                this.secondMatchers.add(ValueMatcherBuilder.build(parts[0], SECOND_VALUE_PARSER));
-            } catch (Exception e) {
-                throw new InstrumentException("Invalid pattern [{}], parsing 'second' field error!", pattern);
-            }
-        } else {// 不支持秒的表达式,则第一位按照表达式生成时间的秒数赋值,表示整分匹配
-            this.secondMatchers.add(ValueMatcherBuilder.build(String.valueOf(DateKit.date().second()), SECOND_VALUE_PARSER));
-        }
-        // 分
-        try {
-            this.minuteMatchers.add(ValueMatcherBuilder.build(parts[0 + offset], MINUTE_VALUE_PARSER));
-        } catch (Exception e) {
-            throw new InstrumentException("Invalid pattern [{}], parsing 'minute' field error!", pattern);
-        }
-        // 小时
-        try {
-            this.hourMatchers.add(ValueMatcherBuilder.build(parts[1 + offset], HOUR_VALUE_PARSER));
-        } catch (Exception e) {
-            throw new InstrumentException("Invalid pattern [{}], parsing 'hour' field error!", pattern);
-        }
-        // 每月第几天
-        try {
-            this.dayOfMonthMatchers.add(ValueMatcherBuilder.build(parts[2 + offset], DAY_OF_MONTH_VALUE_PARSER));
-        } catch (Exception e) {
-            throw new InstrumentException("Invalid pattern [{}], parsing 'day of month' field error!", pattern);
-        }
-        // 月
-        try {
-            this.monthMatchers.add(ValueMatcherBuilder.build(parts[3 + offset], MONTH_VALUE_PARSER));
-        } catch (Exception e) {
-            throw new InstrumentException("Invalid pattern [{}], parsing 'month' field error!", pattern);
-        }
-        // 星期几
-        try {
-            this.dayOfWeekMatchers.add(ValueMatcherBuilder.build(parts[4 + offset], DAY_OF_WEEK_VALUE_PARSER));
-        } catch (Exception e) {
-            throw new InstrumentException("Invalid pattern [{}], parsing 'day of week' field error!", pattern);
-        }
-        // 年
-        if (parts.length == 7) {// 支持年的表达式
-            try {
-                this.yearMatchers.add(ValueMatcherBuilder.build(parts[6], YEAR_VALUE_PARSER));
-            } catch (Exception e) {
-                throw new InstrumentException("Invalid pattern [{}], parsing 'year' field error!", pattern);
-            }
-        } else {// 不支持年的表达式,全部匹配
-            this.secondMatchers.add(new AlwaysTrueValueMatcher());
-        }
-        matcherSize++;
     }
 
 }

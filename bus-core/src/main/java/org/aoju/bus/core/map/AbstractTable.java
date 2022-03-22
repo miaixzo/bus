@@ -158,9 +158,10 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     }
 
     private class Values extends AbstractCollection<V> {
+
         @Override
         public Iterator<V> iterator() {
-            return new TransIter<>(cellSet().iterator(), Cell::getValue);
+            return new TransIterator<>(cellSet().iterator(), Cell::getValue);
         }
 
         @Override
@@ -249,7 +250,13 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
     }
 
-    public class TransIter<F, T> implements Iterator<T> {
+    /**
+     * 转换迭代器
+     *
+     * @param <F> 对象
+     * @param <T> 对象
+     */
+    public class TransIterator<F, T> implements Iterator<T> {
 
         private final Iterator<? extends F> backingIterator;
         private final Function<? super F, ? extends T> func;
@@ -260,7 +267,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
          * @param backingIterator 源{@link Iterator}
          * @param func            转换函数
          */
-        public TransIter(Iterator<? extends F> backingIterator, Function<? super F, ? extends T> func) {
+        public TransIterator(Iterator<? extends F> backingIterator, Function<? super F, ? extends T> func) {
             this.backingIterator = Assert.notNull(backingIterator);
             this.func = Assert.notNull(func);
         }

@@ -88,6 +88,7 @@ public class BCD {
      * @return BCD
      */
     public static byte[] ascToBcd(byte[] ascii) {
+        Assert.notNull(ascii, "Ascii must be not null!");
         return ascToBcd(ascii, ascii.length);
     }
 

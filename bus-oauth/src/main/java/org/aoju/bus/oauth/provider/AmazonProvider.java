@@ -54,7 +54,7 @@ public class AmazonProvider extends AbstractProvider {
         if ("S256".equalsIgnoreCase(codeChallengeMethod)) {
             // https://tools.ietf.org/html/rfc7636#section-4.2
             // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier))
-            return new String(Base64.encodeUrlSafe(digest(codeVerifier), true), StandardCharsets.US_ASCII);
+            return new String(Base64.encode(digest(codeVerifier), true, true), StandardCharsets.US_ASCII);
         } else {
             return codeVerifier;
         }

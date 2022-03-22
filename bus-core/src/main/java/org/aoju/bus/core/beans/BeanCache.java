@@ -38,8 +38,13 @@ import org.aoju.bus.core.lang.function.Func0;
  */
 public enum BeanCache {
 
+    /**
+     * 实例
+     */
     INSTANCE;
-
+    /**
+     * 缓存
+     */
     private final SimpleCache<Class<?>, BeanDesc> bdCache = new SimpleCache<>();
 
     /**

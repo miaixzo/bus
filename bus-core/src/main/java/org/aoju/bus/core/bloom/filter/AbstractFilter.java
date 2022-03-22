@@ -40,7 +40,14 @@ import org.aoju.bus.core.bloom.bitmap.LongMap;
 public abstract class AbstractFilter implements BloomFilter {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 容量
+     */
     protected long size = 0;
+    /**
+     * BitMap接口
+     */
     private BitMap bm = null;
 
     /**

@@ -140,6 +140,11 @@ public class ByteBuffer extends ByteString {
         return toByteString().toAsciiLowercase();
     }
 
+    @Override
+    public ByteString toAsciiUppercase() {
+        return toByteString().toAsciiUppercase();
+    }
+
     /**
      * 内存回收任务
      */
@@ -161,11 +166,6 @@ public class ByteBuffer extends ByteString {
             }
         }
     }, 500, 1000, TimeUnit.MILLISECONDS);
-
-    @Override
-    public ByteString toAsciiUppercase() {
-        return toByteString().toAsciiUppercase();
-    }
 
     @Override
     public ByteString md5() {
@@ -407,5 +407,6 @@ public class ByteBuffer extends ByteString {
     public void release() {
         enabled = false;
     }
+
 
 }

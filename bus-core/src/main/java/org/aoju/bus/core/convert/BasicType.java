@@ -37,8 +37,50 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since JDK 1.8+
  */
 public enum BasicType {
-
-    BYTE, SHORT, INT, INTEGER, LONG, DOUBLE, FLOAT, BOOLEAN, CHAR, CHARACTER, STRING;
+    /**
+     * byte
+     */
+    BYTE,
+    /**
+     * short
+     */
+    SHORT,
+    /**
+     * int
+     */
+    INT,
+    /**
+     * integer
+     */
+    INTEGER,
+    /**
+     * long
+     */
+    LONG,
+    /**
+     * double
+     */
+    DOUBLE,
+    /**
+     * float
+     */
+    FLOAT,
+    /**
+     * boolean
+     */
+    BOOLEAN,
+    /**
+     * char
+     */
+    CHAR,
+    /**
+     * character
+     */
+    CHARACTER,
+    /**
+     * string
+     */
+    STRING;
 
     /**
      * 包装类型为Key,原始类型为Value,例如： Integer.class = int.class.

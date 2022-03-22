@@ -48,11 +48,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * 所有数据源的key集合
      */
     private static final Set<Object> keySet = new LinkedHashSet<>();
+    private static final byte[] lock = Normal.EMPTY_BYTE_ARRAY;
     /**
      * 单例句柄
      */
     private static DynamicDataSource instance;
-    private static final byte[] lock = Normal.EMPTY_BYTE_ARRAY;
 
     /**
      * 单例方法

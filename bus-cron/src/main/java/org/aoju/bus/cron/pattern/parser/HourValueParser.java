@@ -25,6 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.exception.CrontabException;
+import org.aoju.bus.cron.pattern.matcher.MatcherTable;
+
 /**
  * 小时值处理
  *
@@ -32,10 +35,19 @@ package org.aoju.bus.cron.pattern.parser;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class HourValueParser extends SimpleValueParser {
+public class HourValueParser extends AbstractValueParser {
 
     public HourValueParser() {
         super(0, 23);
+    }
+
+    @Override
+    public void parseTo(MatcherTable matcherTable, String pattern) {
+        try {
+            matcherTable.hourMatchers.add(parseAsValueMatcher(pattern));
+        } catch (Exception e) {
+            throw new CrontabException("Invalid pattern [{}], parsing 'hour' field error!", pattern);
+        }
     }
 
 }

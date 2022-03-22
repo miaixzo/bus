@@ -23,70 +23,50 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.cron.pattern.parser;
+package org.aoju.bus.core.loader;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 /**
- * 简易值转换器 将给定String值转为int
- *
  * @author Kimi Liu
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class SimpleValueParser implements ValueParser {
+public abstract class AtomicLoader<T> implements Supplier<T>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 最小值(包括)
+     * 被加载对象的引用
      */
-    protected int min;
-    /**
-     * 最大值(包括)
-     */
-    protected int max;
+    private final AtomicReference<T> reference = new AtomicReference<>();
 
     /**
-     * 构造
+     * 获取一个对象，第一次调用此方法时初始化对象然后返回，之后调用此方法直接返回原对象
+     */
+    @Override
+    public T get() {
+        T result = reference.get();
+
+        if (result == null) {
+            result = init();
+            if (false == reference.compareAndSet(null, result)) {
+                // 其它线程已经创建好此对象
+                result = reference.get();
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 初始化被加载的对象<br>
+     * 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
      *
-     * @param min 最小值(包括)
-     * @param max 最大值(包括)
+     * @return 被加载的对象
      */
-    public SimpleValueParser(int min, int max) {
-        if (min > max) {
-            this.min = max;
-            this.max = min;
-        } else {
-            this.min = min;
-            this.max = max;
-        }
-    }
-
-    @Override
-    public int parse(String value) throws InstrumentException {
-        if ("L".equalsIgnoreCase(value)) {
-            return max;
-        }
-
-        int i;
-        try {
-            i = Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw new InstrumentException("Invalid integer value: [{}]", value);
-        }
-        if (i < min || i > max) {
-            throw new InstrumentException("Value [{}] out of range: [{} , {}]", i, min, max);
-        }
-        return i;
-    }
-
-    @Override
-    public int getMin() {
-        return this.min;
-    }
-
-    @Override
-    public int getMax() {
-        return this.max;
-    }
+    protected abstract T init();
 
 }

@@ -36,6 +36,9 @@ import org.aoju.bus.core.lang.Symbol;
  */
 public class AntFilter extends RegexFilter implements Filter {
 
+    /**
+     * 符号
+     */
     public static final String[] SYMBOLS = {
             Symbol.BACKSLASH, Symbol.DOLLAR, Symbol.PARENTHESE_LEFT,
             Symbol.PARENTHESE_RIGHT, Symbol.PLUS, Symbol.DOT,
@@ -43,6 +46,11 @@ public class AntFilter extends RegexFilter implements Filter {
             Symbol.BRACE_LEFT, Symbol.BRACE_RIGHT, Symbol.OR
     };
 
+    /**
+     * 构造
+     *
+     * @param ant ANT风格路径表达式
+     */
     public AntFilter(String ant) {
         super(convert(ant));
     }

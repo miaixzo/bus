@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Collections;
@@ -39,26 +41,46 @@ import java.util.List;
  */
 public class BoolArrayValueMatcher implements ValueMatcher {
 
-    boolean[] bValues;
+    /**
+     * 用户定义此字段的最小值
+     */
+    private final int minValue;
+    /**
+     * 数组值
+     */
+    private final boolean[] values;
 
     public BoolArrayValueMatcher(List<Integer> intValueList) {
-        bValues = new boolean[Collections.max(intValueList) + 1];
+        Assert.isTrue(CollKit.isNotEmpty(intValueList), "Values must be not empty!");
+        values = new boolean[Collections.max(intValueList) + 1];
+        int min = Integer.MAX_VALUE;
         for (Integer value : intValueList) {
-            bValues[value] = true;
+            min = Math.min(min, value);
+            values[value] = true;
         }
+        this.minValue = min;
     }
 
     @Override
     public boolean match(Integer value) {
-        if (null == value || value >= bValues.length) {
+        if (null == value || value >= values.length) {
             return false;
         }
-        return bValues[value];
+        return values[value];
+    }
+
+    /**
+     * 获取表达式定义的最小值
+     *
+     * @return 最小值
+     */
+    public int getMinValue() {
+        return this.minValue;
     }
 
     @Override
     public String toString() {
-        return StringKit.format("Matcher:{}", new Object[]{this.bValues});
+        return StringKit.format("Matcher:{}", new Object[]{this.values});
     }
 
 }

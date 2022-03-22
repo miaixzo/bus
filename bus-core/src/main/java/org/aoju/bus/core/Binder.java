@@ -87,10 +87,24 @@ public class Binder {
     private final boolean ignoreUnresolvablePlaceholders;
     private PropertySource source;
 
+    /**
+     * 构造
+     *
+     * @param placeholderPrefix 占位符前缀
+     * @param placeholderSuffix 占位符后缀
+     */
     public Binder(String placeholderPrefix, String placeholderSuffix) {
         this(placeholderPrefix, placeholderSuffix, null, true);
     }
 
+    /**
+     * 构造
+     *
+     * @param placeholderPrefix              占位符前缀
+     * @param placeholderSuffix              占位符后缀
+     * @param valueSeparator                 值分隔符
+     * @param ignoreUnresolvablePlaceholders 忽略不可解析的占位符
+     */
     public Binder(String placeholderPrefix,
                   String placeholderSuffix,
                   String valueSeparator,
@@ -234,6 +248,14 @@ public class Binder {
         return parseStringValue(value, properties, new HashSet<>());
     }
 
+    /**
+     * 替换字符串
+     *
+     * @param value               字符串
+     * @param properties          属性
+     * @param visitedPlaceholders 参数占位符
+     * @return 替换后的字符串
+     */
     protected String parseStringValue(String value, Properties properties,
                                       Set<String> visitedPlaceholders) {
         StringBuilder result = new StringBuilder(value);

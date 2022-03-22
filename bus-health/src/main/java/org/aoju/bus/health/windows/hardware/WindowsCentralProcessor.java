@@ -62,9 +62,6 @@ import java.util.function.Supplier;
 @ThreadSafe
 final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
-    // populated by initProcessorCounts called by the parent constructor
-    private Map<String, Integer> numaNodeProcToLogicalProcMap;
-
     // Whether to match task manager using Processor Utility ticks
     private static final boolean USE_CPU_UTILITY = VersionHelpers.IsWindows8OrGreater()
             && Config.get(Config.OS_WINDOWS_CPU_UTILITY, false);
@@ -73,6 +70,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     private final Supplier<Pair<List<String>, Map<ProcessorInformation.ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
             ? Memoize.memoize(WindowsCentralProcessor::queryProcessorUtilityCounters, TimeUnit.MILLISECONDS.toNanos(300L))
             : null;
+    // populated by initProcessorCounts called by the parent constructor
+    private Map<String, Integer> numaNodeProcToLogicalProcMap;
     // Store the initial query and start the memoizer expiration
     private Map<ProcessorInformation.ProcessorUtilityTickCountProperty, List<Long>> initialUtilityCounters = USE_CPU_UTILITY
             ? processorUtilityCounters.get().getRight()

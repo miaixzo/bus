@@ -5,7 +5,7 @@ import org.aoju.bus.core.lang.function.VoidFunc0;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -98,7 +98,7 @@ public class Optional<T> {
      * @param <T>   包裹里元素的类型
      * @return 一个包裹里元素可能为空的 {@code Optional}
      */
-    public static <T> Optional<List<T>> ofEmptyAble(List<T> value) {
+    public static <T, R extends Collection<T>> Optional<R> ofEmptyAble(R value) {
         return CollKit.isEmpty(value) ? empty() : new Optional<>(value);
     }
 
@@ -138,7 +138,6 @@ public class Optional<T> {
      * 判断包裹里元素的值是否不存在，不存在为 {@code true}，否则为{@code false}
      *
      * @return 包裹里元素的值不存在 则为 {@code true}，否则为{@code false}
-     * @since 11 这是jdk11{@link java.util.Optional}中的新函数
      */
     public boolean isEmpty() {
         return value == null;

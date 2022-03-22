@@ -35,44 +35,36 @@ import java.util.function.Supplier;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class LazyLoader<T> implements Supplier<T>, Serializable {
-
-    private transient volatile Supplier<? extends T> supplier;
-
-    private T value;
-
-    private LazyLoader(final Supplier<T> supplier) {
-        this.supplier = supplier;
-    }
+public abstract class LazyLoader<T> implements Supplier<T>, Serializable {
 
     /**
-     * 创建惰性的新实例
-     *
-     * @param supplier 供应者
-     * @param <T>      泛型标记
-     * @return Lazy
+     * 被加载对象
      */
-    public static <T> LazyLoader<T> of(final Supplier<T> supplier) {
-        return new LazyLoader<>(supplier);
-    }
+    private volatile T object;
 
     /**
-     * 返回值。值将在第一次调用时计算
-     *
-     * @return 懒惰的值
+     * 获取一个对象，第一次调用此方法时初始化对象然后返回，之后调用此方法直接返回原对象
      */
     @Override
     public T get() {
-        return null == supplier ? value : computeValue();
+        T result = object;
+        if (result == null) {
+            synchronized (this) {
+                result = object;
+                if (result == null) {
+                    object = result = init();
+                }
+            }
+        }
+        return result;
     }
 
-    private synchronized T computeValue() {
-        final Supplier<? extends T> s = supplier;
-        if (null != s) {
-            value = s.get();
-            supplier = null;
-        }
-        return value;
-    }
+    /**
+     * 初始化被加载的对象
+     * 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
+     *
+     * @return 被加载的对象
+     */
+    protected abstract T init();
 
 }

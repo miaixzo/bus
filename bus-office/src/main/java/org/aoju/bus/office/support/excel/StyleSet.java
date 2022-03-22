@@ -44,11 +44,6 @@ import java.util.Date;
 public class StyleSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 工作簿引用
-     */
-    private final Workbook workbook;
     /**
      * 标题样式
      */
@@ -69,6 +64,10 @@ public class StyleSet implements Serializable {
      * 默认链接样式
      */
     protected final CellStyle cellStyleForHyperlink;
+    /**
+     * 工作簿引用
+     */
+    private final Workbook workbook;
 
     /**
      * 构造

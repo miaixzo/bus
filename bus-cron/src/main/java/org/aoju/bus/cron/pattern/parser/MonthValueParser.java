@@ -25,16 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.cron.pattern.matcher.MatcherTable;
 
 /**
  * 月份值处理
+ * 限定于1-12，1表示一月，支持别名（忽略大小写），如一月是{@code jan}
  *
  * @author Kimi Liu
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class MonthValueParser extends SimpleValueParser {
+public class MonthValueParser extends AbstractValueParser {
 
     /**
      * Months aliases.
@@ -51,6 +54,15 @@ public class MonthValueParser extends SimpleValueParser {
             return super.parse(value);
         } catch (Exception e) {
             return parseAlias(value);
+        }
+    }
+
+    @Override
+    public void parseTo(MatcherTable matcherTable, String pattern) {
+        try {
+            matcherTable.monthMatchers.add(parseAsValueMatcher(pattern));
+        } catch (Exception e) {
+            throw new CrontabException("Invalid pattern [{}], parsing 'month' field error!", pattern);
         }
     }
 

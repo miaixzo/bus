@@ -26,8 +26,14 @@
 package org.aoju.bus.cron.pattern.parser;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.cron.pattern.matcher.DayOfMonthValueMatcher;
+import org.aoju.bus.cron.pattern.matcher.MatcherTable;
+import org.aoju.bus.cron.pattern.matcher.ValueMatcher;
+
+import java.util.List;
 
 /**
  * 每月的几号值处理
@@ -37,7 +43,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class DayOfMonthValueParser extends SimpleValueParser {
+public class DayOfMonthValueParser extends AbstractValueParser {
 
     public DayOfMonthValueParser() {
         super(1, 31);
@@ -45,12 +51,27 @@ public class DayOfMonthValueParser extends SimpleValueParser {
 
     @Override
     public int parse(String value) throws InstrumentException {
-        //每月最后一天
+        // 每月最后一天
         if ("L".equalsIgnoreCase(value) || ObjectKit.equal(value, "32")) {
             return Normal._32;
         } else {
             return super.parse(value);
         }
+    }
+
+    @Override
+    public void parseTo(MatcherTable matcherTable, String pattern) {
+        try {
+            matcherTable.dayOfMonthMatchers.add(parseAsValueMatcher(pattern));
+        } catch (Exception e) {
+            throw new CrontabException("Invalid pattern [{}], parsing 'day of month' field error!", pattern);
+        }
+    }
+
+    @Override
+    protected ValueMatcher buildValueMatcher(List<Integer> values) {
+        // 考虑每月的天数不同，且存在闰年情况，日匹配单独使用
+        return new DayOfMonthValueMatcher(values);
     }
 
 }

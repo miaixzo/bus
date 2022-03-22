@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.cron.pattern.matcher.MatcherTable;
 
 /**
  * 星期值处理
@@ -35,7 +37,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class DayOfWeekValueParser extends SimpleValueParser {
+public class DayOfWeekValueParser extends AbstractValueParser {
 
     /**
      * 周的别名
@@ -59,6 +61,15 @@ public class DayOfWeekValueParser extends SimpleValueParser {
         }
     }
 
+    @Override
+    public void parseTo(MatcherTable matcherTable, String pattern) {
+        try {
+            matcherTable.dayOfWeekMatchers.add(parseAsValueMatcher(pattern));
+        } catch (Exception e) {
+            throw new CrontabException("Invalid pattern [{}], parsing 'day of week' field error!", pattern);
+        }
+    }
+
     /**
      * 解析别名
      *
@@ -68,7 +79,7 @@ public class DayOfWeekValueParser extends SimpleValueParser {
      */
     private int parseAlias(String value) throws InstrumentException {
         if ("L".equalsIgnoreCase(value)) {
-            //最后一天为星期六
+            // 最后一天为星期六
             return ALIASES.length - 1;
         }
 

@@ -39,14 +39,29 @@ import java.util.Collection;
  */
 public class AllFilter extends MixFilter implements Filter {
 
+    /**
+     * 构造
+     *
+     * @param filters 过滤器
+     */
     public AllFilter(Filter... filters) {
         super(filters);
     }
 
+    /**
+     * 构造
+     *
+     * @param filters 过滤器
+     */
     public AllFilter(Collection<? extends Filter> filters) {
         super(filters);
     }
 
+    /**
+     * @param name 资源名称,即相对路径
+     * @param url  资源URL地址
+     * @return the boolean
+     */
     public boolean filtrate(String name, URL url) {
         Filter[] filters = this.filters.toArray(new Filter[0]);
         for (Filter filter : filters) {
@@ -57,6 +72,10 @@ public class AllFilter extends MixFilter implements Filter {
         return true;
     }
 
+    /**
+     * @param filter 过滤器
+     * @return the object
+     */
     public AllFilter mix(Filter filter) {
         add(filter);
         return this;

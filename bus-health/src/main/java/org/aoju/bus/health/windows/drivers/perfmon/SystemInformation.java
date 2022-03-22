@@ -43,6 +43,18 @@ public final class SystemInformation {
 
 
     /**
+     * Returns system context switch counters.
+     *
+     * @return Context switches counter for the total of all processors.
+     */
+    public static Map<ContextSwitchProperty, Long> queryContextSwitchCounters() {
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Collections.emptyMap();
+        }
+        return PerfCounterQuery.queryValues(ContextSwitchProperty.class, PerfmonConsts.SYSTEM, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
+    }
+
+    /**
      * Context switch property
      */
     public enum ContextSwitchProperty implements PerfCounterQuery.PdhCounterProperty {
@@ -65,18 +77,6 @@ public final class SystemInformation {
         public String getCounter() {
             return counter;
         }
-    }
-
-    /**
-     * Returns system context switch counters.
-     *
-     * @return Context switches counter for the total of all processors.
-     */
-    public static Map<ContextSwitchProperty, Long> queryContextSwitchCounters() {
-        if (PerfmonDisabled.PERF_OS_DISABLED) {
-            return Collections.emptyMap();
-        }
-        return PerfCounterQuery.queryValues(ContextSwitchProperty.class, PerfmonConsts.SYSTEM, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
     }
 
 }

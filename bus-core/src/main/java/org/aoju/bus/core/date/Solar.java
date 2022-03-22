@@ -547,6 +547,52 @@ public class Solar {
     }
 
     /**
+     * 获取两个日期之间相差的天数（如果日期a比日期b小，天数为正，如果日期a比日期b大，天数为负）
+     *
+     * @param ay 年a
+     * @param am 月a
+     * @param ad 日a
+     * @param by 年b
+     * @param bm 月b
+     * @param bd 日b
+     * @return 天数
+     */
+    public static int getDays(int ay, int am, int ad, int by, int bm, int bd) {
+        int n;
+        int days;
+        int i;
+        if (ay == by) {
+            n = getDaysInYear(by, bm, bd) - getDaysInYear(ay, am, ad);
+        } else if (ay > by) {
+            days = getDaysOfYear(by) - getDaysInYear(by, bm, bd);
+            for (i = by + 1; i < ay; i++) {
+                days += getDaysOfYear(i);
+            }
+            days += getDaysInYear(ay, am, ad);
+            n = -days;
+        } else {
+            days = getDaysOfYear(ay) - getDaysInYear(ay, am, ad);
+            for (i = ay + 1; i < by; i++) {
+                days += getDaysOfYear(i);
+            }
+            days += getDaysInYear(by, bm, bd);
+            n = days;
+        }
+        return n;
+    }
+
+    /**
+     * 获取两个日期之间相差的天数（如果日期a比日期b小，天数为正，如果日期a比日期b大，天数为负）
+     *
+     * @param calendar0 日期a
+     * @param calendar1 日期b
+     * @return 天数
+     */
+    public static int getDays(Calendar calendar0, Calendar calendar1) {
+        return getDays(calendar0.get(Calendar.YEAR), calendar0.get(Calendar.MONTH) + 1, calendar0.get(Calendar.DATE), calendar1.get(Calendar.YEAR), calendar1.get(Calendar.MONTH) + 1, calendar1.get(Calendar.DATE));
+    }
+
+    /**
      * 是否闰年
      *
      * @return true/false 闰年/非闰年
@@ -836,52 +882,6 @@ public class Solar {
             return strYmd;
         }
         return strYmdHms;
-    }
-
-    /**
-     * 获取两个日期之间相差的天数（如果日期a比日期b小，天数为正，如果日期a比日期b大，天数为负）
-     *
-     * @param ay 年a
-     * @param am 月a
-     * @param ad 日a
-     * @param by 年b
-     * @param bm 月b
-     * @param bd 日b
-     * @return 天数
-     */
-    public static int getDays(int ay, int am, int ad, int by, int bm, int bd) {
-        int n;
-        int days;
-        int i;
-        if (ay == by) {
-            n = getDaysInYear(by, bm, bd) - getDaysInYear(ay, am, ad);
-        } else if (ay > by) {
-            days = getDaysOfYear(by) - getDaysInYear(by, bm, bd);
-            for (i = by + 1; i < ay; i++) {
-                days += getDaysOfYear(i);
-            }
-            days += getDaysInYear(ay, am, ad);
-            n = -days;
-        } else {
-            days = getDaysOfYear(ay) - getDaysInYear(ay, am, ad);
-            for (i = ay + 1; i < by; i++) {
-                days += getDaysOfYear(i);
-            }
-            days += getDaysInYear(by, bm, bd);
-            n = days;
-        }
-        return n;
-    }
-
-    /**
-     * 获取两个日期之间相差的天数（如果日期a比日期b小，天数为正，如果日期a比日期b大，天数为负）
-     *
-     * @param calendar0 日期a
-     * @param calendar1 日期b
-     * @return 天数
-     */
-    public static int getDays(Calendar calendar0, Calendar calendar1) {
-        return getDays(calendar0.get(Calendar.YEAR), calendar0.get(Calendar.MONTH) + 1, calendar0.get(Calendar.DATE), calendar1.get(Calendar.YEAR), calendar1.get(Calendar.MONTH) + 1, calendar1.get(Calendar.DATE));
     }
 
     /**

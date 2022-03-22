@@ -25,9 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.codec.provider.Base32Provider;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
@@ -40,7 +39,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public final class Base32 {
+public class Base32 {
 
     /**
      * 编码
@@ -49,46 +48,7 @@ public final class Base32 {
      * @return base32
      */
     public static String encode(final byte[] bytes) {
-        int i = 0;
-        int index = 0;
-        int digit;
-        int currByte;
-        int nextByte;
-
-        int encodeLen = bytes.length * 8 / 5;
-        if (encodeLen != 0) {
-            int[] BASE32_FILL = {-1, 4, 1, 6, 3};
-            encodeLen = encodeLen + 1 + BASE32_FILL[(bytes.length * 8) % 5];
-        }
-
-        StringBuilder base32 = new StringBuilder(encodeLen);
-
-        while (i < bytes.length) {
-            currByte = (bytes[i] >= 0) ? bytes[i] : (bytes[i] + Normal._256);
-
-            if (index > 3) {
-                if ((i + 1) < bytes.length) {
-                    nextByte = (bytes[i + 1] >= 0) ? bytes[i + 1] : (bytes[i + 1] + 256);
-                } else {
-                    nextByte = 0;
-                }
-
-                digit = currByte & (0xFF >> index);
-                index = (index + 5) % 8;
-                digit <<= index;
-                digit |= nextByte >> (8 - index);
-                i++;
-            } else {
-                digit = (currByte >> (8 - (index + 5))) & 0x1F;
-                index = (index + 5) % 8;
-                if (index == 0) {
-                    i++;
-                }
-            }
-            base32.append(Normal.ENCODE_32_TABLE[digit]);
-        }
-
-        return StringKit.fillAfter(base32.toString(), '=', encodeLen);
+        return Base32Provider.INSTANCE.encode(bytes);
     }
 
     /**
@@ -108,19 +68,39 @@ public final class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(String source, String charset) {
+    public static String encode(String source, java.nio.charset.Charset charset) {
         return encode(StringKit.bytes(source, charset));
     }
 
     /**
-     * base32编码
+     * 编码
+     *
+     * @param bytes 数据（Hex模式）
+     * @return base32
+     */
+    public static String encodeHex(final byte[] bytes) {
+        return Base32Provider.INSTANCE.encode(bytes, true);
+    }
+
+    /**
+     * base32编码（Hex模式）
+     *
+     * @param source 被编码的base32字符串
+     * @return 被加密后的字符串
+     */
+    public static String encodeHex(String source) {
+        return encodeHex(source, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
+     * base32编码（Hex模式）
      *
      * @param source  被编码的base32字符串
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(String source, java.nio.charset.Charset charset) {
-        return encode(StringKit.bytes(source, charset));
+    public static String encodeHex(String source, java.nio.charset.Charset charset) {
+        return encodeHex(StringKit.bytes(source, charset));
     }
 
     /**
@@ -129,49 +109,8 @@ public final class Base32 {
      * @param base32 base32编码
      * @return 数据
      */
-    public static byte[] decode(final String base32) {
-        int i, index, lookup, offset, digit;
-        int len = base32.endsWith("=") ? base32.indexOf("=") * 5 / 8 : base32.length() * 5 / 8;
-        byte[] bytes = new byte[len];
-
-        for (i = 0, index = 0, offset = 0; i < base32.length(); i++) {
-            lookup = base32.charAt(i) - Symbol.C_ZERO;
-
-            /* Skip chars outside the lookup table */
-            if (lookup < 0 || lookup >= Normal.DECODE_32_TABLE.length) {
-                continue;
-            }
-
-            digit = Normal.DECODE_32_TABLE[lookup];
-
-            /* If this digit is not in the table, ignore it */
-            if (digit == 0xFF) {
-                continue;
-            }
-
-            if (index <= 3) {
-                index = (index + 5) % 8;
-                if (index == 0) {
-                    bytes[offset] |= digit;
-                    offset++;
-                    if (offset >= bytes.length) {
-                        break;
-                    }
-                } else {
-                    bytes[offset] |= digit << (8 - index);
-                }
-            } else {
-                index = (index + 5) % 8;
-                bytes[offset] |= (digit >>> index);
-                offset++;
-
-                if (offset >= bytes.length) {
-                    break;
-                }
-                bytes[offset] |= digit << (8 - index);
-            }
-        }
-        return bytes;
+    public static byte[] decode(String base32) {
+        return Base32Provider.INSTANCE.decode(base32);
     }
 
     /**
@@ -181,18 +120,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String decodeStr(String source) {
-        return decodeStr(source, Charset.UTF_8);
-    }
-
-    /**
-     * base32解码
-     *
-     * @param source  被解码的base32字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
-     */
-    public static String decodeStr(String source, String charset) {
-        return StringKit.toString(decode(source), charset);
+        return decodeStr(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -204,6 +132,37 @@ public final class Base32 {
      */
     public static String decodeStr(String source, java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
+    }
+
+    /**
+     * 解码
+     *
+     * @param base32 base32编码
+     * @return 数据
+     */
+    public static byte[] decodeHex(String base32) {
+        return Base32Provider.INSTANCE.decode(base32, true);
+    }
+
+    /**
+     * base32解码
+     *
+     * @param source 被解码的base32字符串
+     * @return 被加密后的字符串
+     */
+    public static String decodeStrHex(String source) {
+        return decodeStrHex(source, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
+     * base32解码
+     *
+     * @param source  被解码的base32字符串
+     * @param charset 字符集
+     * @return 被加密后的字符串
+     */
+    public static String decodeStrHex(String source, java.nio.charset.Charset charset) {
+        return StringKit.toString(decodeHex(source), charset);
     }
 
 }

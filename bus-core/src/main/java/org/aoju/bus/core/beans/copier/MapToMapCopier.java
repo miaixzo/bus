@@ -23,78 +23,70 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.beans.copier.provider;
+package org.aoju.bus.core.beans.copier;
 
-import org.aoju.bus.core.beans.PropertyDesc;
-import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.BeanKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.TypeKit;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
- * Bean的值提供者
+ * Map属性拷贝到Map中的拷贝器
  *
  * @author Kimi Liu
  * @version 6.3.5
  * @since JDK 1.8+
  */
-public class BeanValueProvider implements ValueProvider<String> {
+public class MapToMapCopier extends AbstractCopier<Map, Map> {
 
-    final Map<String, PropertyDesc> sourcePdMap;
-    private final Object source;
-    private final boolean ignoreError;
+    /**
+     * 目标的类型（用于泛型类注入）
+     */
+    private final Type targetType;
 
     /**
      * 构造
      *
-     * @param bean        Bean
-     * @param ignoreCase  是否忽略字段大小写
-     * @param ignoreError 是否忽略字段值读取错误
+     * @param source      来源Map
+     * @param target      目标Bean对象
+     * @param targetType  目标泛型类型
+     * @param copyOptions 拷贝选项
      */
-    public BeanValueProvider(Object bean, boolean ignoreCase, boolean ignoreError) {
-        this.source = bean;
-        this.ignoreError = ignoreError;
-        sourcePdMap = BeanKit.getBeanDesc(source.getClass()).getPropMap(ignoreCase);
+    public MapToMapCopier(Map source, Map target, Type targetType, CopyOptions copyOptions) {
+        super(source, target, copyOptions);
+        this.targetType = targetType;
     }
 
     @Override
-    public Object value(String key, Type valueType) {
-        PropertyDesc sourcePd = sourcePdMap.get(key);
-        if (null == sourcePd && (Boolean.class == valueType || boolean.class == valueType)) {
-            // boolean类型字段字段名支持两种方式
-            sourcePd = sourcePdMap.get(StringKit.upperFirstAndAddPre(key, Normal.IS));
-        }
-
-        Object result = null;
-        if (null != sourcePd) {
-            final Method getter = sourcePd.getGetter();
-            if (null != getter) {
-                try {
-                    result = getter.invoke(source);
-                } catch (Exception e) {
-                    if (false == ignoreError) {
-                        throw new InstrumentException("Inject [{}] error!", key);
-                    }
-                }
-                // 尝试转换为目标类型，失败将返回原类型
-                final Object convertValue = Convert.convertWithCheck(valueType, result, null, ignoreError);
-                if (null != convertValue) {
-                    result = convertValue;
-                }
+    public Map copy() {
+        this.source.forEach((sKey, sValue) -> {
+            if (null == sKey) {
+                return;
             }
-        }
-        return result;
-    }
+            final String sKeyStr = copyOptions.editFieldName(sKey.toString());
+            // 对key做转换，转换后为null的跳过
+            if (null == sKeyStr) {
+                return;
+            }
 
-    @Override
-    public boolean containsKey(String key) {
-        return sourcePdMap.containsKey(key) || sourcePdMap.containsKey(StringKit.upperFirstAndAddPre(key, Normal.IS));
+            final Object targetValue = target.get(sKeyStr);
+            // 非覆盖模式下，如果目标值存在，则跳过
+            if (false == copyOptions.override && null != targetValue) {
+                return;
+            }
+
+            // 获取目标值真实类型并转换源值
+            final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
+            if (null != typeArguments) {
+                sValue = Convert.convertWithCheck(typeArguments[1], sValue, null, this.copyOptions.ignoreError);
+                sValue = copyOptions.editFieldValue(sKeyStr, sValue);
+            }
+
+            // 目标赋值
+            target.put(sKeyStr, sValue);
+        });
+        return this.target;
     }
 
 }

@@ -45,6 +45,10 @@ public class DelimiterFrameDecoder implements SocketDecoder {
      */
     private final List<ByteBuffer> bufferList;
     /**
+     * 位置信息
+     */
+    private final int reposition;
+    /**
      * 消息结束标志
      */
     private byte[] endFLag;
@@ -56,10 +60,6 @@ public class DelimiterFrameDecoder implements SocketDecoder {
      * 是否解析完成
      */
     private boolean finishRead;
-    /**
-     * 位置信息
-     */
-    private final int reposition;
     /**
      * 位置信息
      */

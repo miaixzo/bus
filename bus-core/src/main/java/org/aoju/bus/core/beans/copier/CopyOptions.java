@@ -26,8 +26,7 @@
 package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.lang.Editor;
-import org.aoju.bus.core.toolkit.MapKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.ArrayKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -38,10 +37,9 @@ import java.util.function.BiPredicate;
 /**
  * 属性拷贝选项
  * 包括：
- * 1、限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性,
- * 例如一个类我只想复制其父类的一些属性,就可以将editable设置为父类
- * 2、是否忽略空值,当源对象的值为null时,true: 忽略,false: 注入
- * 3、忽略的属性列表,设置一个属性列表,不拷贝这些属性值
+ * 1、限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
+ * 2、是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
+ * 3、忽略的属性列表，设置一个属性列表，不拷贝这些属性值
  *
  * @author Kimi Liu
  * @version 6.3.5
@@ -52,21 +50,14 @@ public class CopyOptions implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性,例如一个类我只想复制其父类的一些属性,就可以将editable设置为父类
+     * 限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
+     * 如果目标对象是Map，源对象是Bean，则作用于源对象上
      */
     protected Class<?> editable;
     /**
-     * 是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
+     * 是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
      */
     protected boolean ignoreNullValue;
-    /**
-     * 忽略的目标对象中属性列表,设置一个属性列表,不拷贝这些属性值
-     */
-    protected BiPredicate<Field, Object> propertiesFilter;
-    /**
-     * 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
-     */
-    protected String[] ignoreProperties;
     /**
      * 是否忽略字段注入错误
      */
@@ -76,29 +67,29 @@ public class CopyOptions implements Serializable {
      */
     protected boolean ignoreCase;
     /**
-     * 拷贝属性的字段映射,用于不同的属性之前拷贝做对应表用
-     */
-    protected Map<String, String> fieldMapping;
-    /**
-     * 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
-     */
-    protected Editor<String> fieldNameEditor;
-    /**
-     * 反向映射表，自动生成用于反向查找
+     * 字段属性值编辑器，用于自定义属性值转换规则，例如null转""等
      */
     protected BiFunction<String, Object, Object> fieldValueEditor;
     /**
-     * 反向映射表，自动生成用于反向查找
-     */
-    protected Map<String, String> reversedFieldMapping;
-    /**
      * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
      */
-    protected boolean transientSupport = false;
+    protected boolean transientSupport = true;
     /**
      * 是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略。如果覆盖，则不判断直接写
      */
     protected boolean override = true;
+    /**
+     * 属性过滤器，断言通过的属性才会被复制
+     * 断言参数中Field为源对象的字段对象,如果源对象为Map，使用目标对象，Object为源对象的对应值
+     */
+    private BiPredicate<Field, Object> propertiesFilter;
+    /**
+     * 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
+     * 规则为，{@link Editor#edit(Object)}属性为源对象的字段名称或key，返回值为目标对象的字段名称或key
+     */
+    private Editor<String> fieldNameEditor;
+
+    //region create
 
     /**
      * 构造拷贝选项
@@ -118,7 +109,7 @@ public class CopyOptions implements Serializable {
         this.propertiesFilter = (f, v) -> true;
         this.editable = editable;
         this.ignoreNullValue = ignoreNullValue;
-        this.ignoreProperties = ignoreProperties;
+        this.setIgnoreProperties(ignoreProperties);
     }
 
     /**
@@ -143,7 +134,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 设置限制的类或接口,必须为目标对象的实现接口或父类,用于限制拷贝的属性
+     * 设置限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
      *
      * @param editable 限制的类或接口
      * @return this
@@ -154,9 +145,9 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 设置是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
+     * 设置是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
      *
-     * @param ignoreNullVall 是否忽略空值,当源对象的值为null时,true: 忽略而不注入此值,false: 注入null
+     * @param ignoreNullVall 是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
      * @return this
      */
     public CopyOptions setIgnoreNullValue(boolean ignoreNullVall) {
@@ -175,6 +166,7 @@ public class CopyOptions implements Serializable {
 
     /**
      * 属性过滤器，断言通过的属性才会被复制
+     * {@link BiPredicate#test(Object, Object)}返回{@code true}则属性通过，{@code false}不通过，抛弃之
      *
      * @param propertiesFilter 属性过滤器
      * @return this
@@ -191,8 +183,7 @@ public class CopyOptions implements Serializable {
      * @return this
      */
     public CopyOptions setIgnoreProperties(String... ignoreProperties) {
-        this.ignoreProperties = ignoreProperties;
-        return this;
+        return setPropertiesFilter((field, o) -> false == ArrayKit.contains(ignoreProperties, field.getName()));
     }
 
     /**
@@ -242,8 +233,7 @@ public class CopyOptions implements Serializable {
      * @return this
      */
     public CopyOptions setFieldMapping(Map<String, String> fieldMapping) {
-        this.fieldMapping = fieldMapping;
-        return this;
+        return setFieldNameEditor((key -> fieldMapping.getOrDefault(key, key)));
     }
 
     /**
@@ -305,23 +295,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 获得映射后的字段名
-     * 当非反向，则根据源字段名获取目标字段名，反之根据目标字段名获取源字段名。
-     *
-     * @param fieldName 字段名
-     * @param reversed  是否反向映射
-     * @return 映射后的字段名
-     */
-    protected String getMappedFieldName(String fieldName, boolean reversed) {
-        Map<String, String> mapping = reversed ? getReversedMapping() : this.fieldMapping;
-        if (MapKit.isEmpty(mapping)) {
-            return fieldName;
-        }
-        return ObjectKit.defaultIfNull(mapping.get(fieldName), fieldName);
-    }
-
-    /**
-     * 编辑字段值
+     * 转换字段名为编辑后的字段名
      *
      * @param fieldName 字段名
      * @return 编辑后的字段名
@@ -331,18 +305,14 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 获取反转之后的映射
+     * 测试是否保留字段，{@code true}保留，{@code false}不保留
      *
-     * @return 反转映射
+     * @param field 字段
+     * @param value 值
+     * @return 是否保留
      */
-    private Map<String, String> getReversedMapping() {
-        if (null == this.fieldMapping) {
-            return null;
-        }
-        if (null == this.reversedFieldMapping) {
-            reversedFieldMapping = MapKit.reverse(this.fieldMapping);
-        }
-        return reversedFieldMapping;
+    protected boolean testPropertyFilter(Field field, Object value) {
+        return null == this.propertiesFilter || this.propertiesFilter.test(field, value);
     }
 
 }

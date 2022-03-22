@@ -39,14 +39,18 @@ import java.util.*;
  */
 public class Buddhist {
 
+    /**
+     * 佛历年
+     */
     public static final int DEAD_YEAR = -543;
     /**
      * 观音斋日期
      */
-    public static final String[] DAY_ZHAI_GUAN_YIN = {
-            "1-8", "2-7", "2-9", "2-19", "3-3", "3-6", "3-13", "4-22", "5-3", "5-17",
-            "6-16", "6-18", "6-19", "6-23", "7-13", "8-16", "9-19", "9-23", "10-2", "11-19", "11-24", "12-25"
-    };
+    public static final String[] DAY_ZHAI_GUAN_YIN = {"1-8", "2-7", "2-9", "2-19", "3-3", "3-6", "3-13", "4-22", "5-3", "5-17", "6-16", "6-18", "6-19", "6-23", "7-13", "8-16", "9-19", "9-23", "10-2", "11-19", "11-24", "12-25"};
+    /**
+     * 27星宿，佛教从印度传入中国，印度把28星宿改为27星宿，把牛宿(牛金牛)纳入了女宿(女土蝠)。
+     */
+    public static final String[] XIU_27 = {"角", "亢", "氐", "房", "心", "尾", "箕", "斗", "女", "虚", "危", "室", "壁", "奎", "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸"};
     private static final String DJ = "犯者夺纪";
     private static final String JS = "犯者减寿";
     private static final String SS = "犯者损寿";
@@ -291,19 +295,23 @@ public class Buddhist {
             put("12-30", Collections.nCopies(1, new Festival("诸神下降，察访善恶", "犯者男女俱亡")));
         }
     };
-
-    /**
-     * 27星宿，佛教从印度传入中国，印度把28星宿改为27星宿，把牛宿(牛金牛)纳入了女宿(女土蝠)。
-     */
-    public static final String[] XIU_27 = {
-            "角", "亢", "氐", "房", "心", "尾", "箕", "斗", "女", "虚", "危", "室", "壁", "奎",
-            "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸"
-    };
-
     /**
      * 每月初一的27星宿偏移
      */
     private static final int[] XIU_OFFSET = {11, 13, 15, 17, 19, 21, 24, 0, 2, 4, 7, 9};
+    /**
+     * 阴历
+     */
+    private final Lunar lunar;
+
+    /**
+     * 构造
+     *
+     * @param lunar 农历年
+     */
+    public Buddhist(Lunar lunar) {
+        this.lunar = lunar;
+    }
 
     /**
      * 获取27星宿
@@ -317,30 +325,56 @@ public class Buddhist {
     }
 
     /**
-     * 阴历
+     * 日期转佛历
+     *
+     * @param lunar 农历年
+     * @return this
      */
-    private final Lunar lunar;
-
-    public Buddhist(Lunar lunar) {
-        this.lunar = lunar;
-    }
-
     public static Buddhist from(Lunar lunar) {
         return new Buddhist(lunar);
     }
 
+    /**
+     * 日期转佛历
+     *
+     * @param year  年
+     * @param month 月
+     * @param day   日
+     * @return this
+     */
     public static Buddhist from(int year, int month, int day) {
         return from(year, month, day, 0, 0, 0);
     }
 
+    /**
+     * 日期转佛历
+     *
+     * @param year   年
+     * @param month  月
+     * @param day    日
+     * @param hour   小时
+     * @param minute 分钟
+     * @param second 秒
+     * @return this
+     */
     public static Buddhist from(int year, int month, int day, int hour, int minute, int second) {
         return from(Lunar.from(year + DEAD_YEAR - 1, month, day, hour, minute, second));
     }
 
+    /**
+     * 获取农历年
+     *
+     * @return the lunar
+     */
     public Lunar getLunar() {
         return lunar;
     }
 
+    /**
+     * 获取年
+     *
+     * @return the int
+     */
     public int getYear() {
         int sy = lunar.getSolar().getYear();
         int y = sy - DEAD_YEAR;
@@ -350,14 +384,29 @@ public class Buddhist {
         return y;
     }
 
+    /**
+     * 获取月
+     *
+     * @return the int
+     */
     public int getMonth() {
         return lunar.getMonth();
     }
 
+    /**
+     * 获取天
+     *
+     * @return the int
+     */
     public int getDay() {
         return lunar.getDay();
     }
 
+    /**
+     * 获取中国年
+     *
+     * @return the string
+     */
     public String getYearInChinese() {
         String y = getYear() + "";
         StringBuilder s = new StringBuilder();
@@ -367,14 +416,29 @@ public class Buddhist {
         return s.toString();
     }
 
+    /**
+     * 获取农历月
+     *
+     * @return the string
+     */
     public String getMonthInChinese() {
         return lunar.getMonthInChinese();
     }
 
+    /**
+     * 获取农历天
+     *
+     * @return the string
+     */
     public String getDayInChinese() {
         return lunar.getDayInChinese();
     }
 
+    /**
+     * 获取佛历因果犯忌
+     *
+     * @return the list
+     */
     public List<Buddhist.Festival> getFestivals() {
         List<Buddhist.Festival> l = new ArrayList<>();
         List<Buddhist.Festival> fs = Buddhist.FESTIVAL.get(getMonth() + "-" + getDay());
@@ -527,6 +591,11 @@ public class Buddhist {
         return getYearInChinese() + "年" + getMonthInChinese() + "月" + getDayInChinese();
     }
 
+    /**
+     * 转换为String
+     *
+     * @return the string
+     */
     public String toFullString() {
         StringBuilder s = new StringBuilder();
         s.append(this);
@@ -563,6 +632,14 @@ public class Buddhist {
          */
         private final String remark;
 
+        /**
+         * 构造
+         *
+         * @param name       名称
+         * @param result     结果
+         * @param everyMonth 月份
+         * @param remark     备注
+         */
         public Festival(String name, String result, boolean everyMonth, String remark) {
             this.name = name;
             this.result = null == result ? Normal.EMPTY : result;
@@ -570,30 +647,68 @@ public class Buddhist {
             this.remark = null == remark ? Normal.EMPTY : remark;
         }
 
+        /**
+         * 构造
+         *
+         * @param name 名称
+         */
         public Festival(String name) {
             this(name, null);
         }
 
+        /**
+         * 构造
+         *
+         * @param name   名称
+         * @param result 结果
+         */
         public Festival(String name, String result) {
             this(name, result, false);
         }
 
+        /**
+         * 构造
+         *
+         * @param name       名称
+         * @param result     结果
+         * @param everyMonth 月份
+         */
         public Festival(String name, String result, boolean everyMonth) {
             this(name, result, everyMonth, null);
         }
 
+        /**
+         * 名称
+         *
+         * @return the string
+         */
         public String getName() {
             return name;
         }
 
+        /**
+         * 结果
+         *
+         * @return the string
+         */
         public String getResult() {
             return result;
         }
 
+        /**
+         * 是否为每个月
+         *
+         * @return the boolean
+         */
         public boolean isEveryMonth() {
             return everyMonth;
         }
 
+        /**
+         * 备注
+         *
+         * @return the string
+         */
         public String getRemark() {
             return remark;
         }
@@ -603,6 +718,11 @@ public class Buddhist {
             return name;
         }
 
+        /**
+         * 转换为字符串
+         *
+         * @return the string
+         */
         public String toFullString() {
             StringBuilder s = new StringBuilder();
             s.append(name);

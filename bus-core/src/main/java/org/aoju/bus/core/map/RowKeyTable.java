@@ -58,7 +58,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     public RowKeyTable() {
         this(new HashMap<>());
     }
-    //endregion
 
     /**
      * 构造
@@ -156,7 +155,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
-            return new TransIter<>(columnKeySet.iterator(),
+            return new TransIterator<>(columnKeySet.iterator(),
                     c -> new AbstractMap.SimpleEntry<>(c, getColumn(c)));
         }
 

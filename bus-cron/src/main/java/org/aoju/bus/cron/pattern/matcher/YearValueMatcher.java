@@ -37,15 +37,23 @@ import java.util.List;
  */
 public class YearValueMatcher implements ValueMatcher {
 
-    private List<Integer> valueList;
+    /**
+     * 值列表
+     */
+    private List<Integer> list;
 
-    public YearValueMatcher(List<Integer> intValueList) {
-        this.valueList = intValueList;
+    /**
+     * 构造
+     *
+     * @param list 列表年份
+     */
+    public YearValueMatcher(List<Integer> list) {
+        this.list = list;
     }
 
     @Override
     public boolean match(Integer t) {
-        return valueList.contains(t);
+        return list.contains(t);
     }
 
 }

@@ -40,8 +40,16 @@ import java.util.List;
  */
 public class AggregateTranslator extends CharSequenceTranslator {
 
+    /**
+     * 转换器列表
+     */
     private final List<CharSequenceTranslator> translators = new ArrayList<>();
 
+    /**
+     * 构造
+     *
+     * @param translators 转换器
+     */
     public AggregateTranslator(final CharSequenceTranslator... translators) {
         if (null != translators) {
             for (final CharSequenceTranslator translator : translators) {

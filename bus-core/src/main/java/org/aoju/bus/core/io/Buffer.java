@@ -1926,6 +1926,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     public static final class UnsafeCursor implements Closeable {
+
         public Buffer buffer;
         public boolean readWrite;
         public long offset = -1L;

@@ -74,6 +74,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     private static final long USER_HZ;
     private static final long PAGE_SIZE;
+    /**
+     * OS Name for manufacturer
+     */
+    private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
+    // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
+    private static final int[] PPID_INDEX = {3};
 
     static {
         Map<Integer, Long> auxv = Auxv.queryAuxv();
@@ -90,13 +96,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             PAGE_SIZE = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
         }
     }
-
-    /**
-     * OS Name for manufacturer
-     */
-    private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
-    // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
-    private static final int[] PPID_INDEX = {3};
 
     static {
         long tempBT = CpuStat.getBootTime();

@@ -52,11 +52,11 @@ public class ValueMatcherBuilder {
      *
      * @param value  某个时间字段
      * @param parser 针对这个时间字段的解析器
-     * @return List
+     * @return the list
      */
     public static ValueMatcher build(String value, ValueParser parser) {
         if (isMatchAllStr(value)) {
-            //兼容Quartz的"?"表达式,不会出现互斥情况,与"*"作用相同
+            // 兼容Quartz的"?"表达式,不会出现互斥情况,与"*"作用相同
             return new AlwaysTrueValueMatcher();
         }
 
@@ -66,10 +66,10 @@ public class ValueMatcherBuilder {
         }
 
         if (parser instanceof DayOfMonthValueParser) {
-            //考虑每月的天数不同,且存在闰年情况,日匹配单独使用
+            // 考虑每月的天数不同,且存在闰年情况,日匹配单独使用
             return new DayOfMonthValueMatcher(values);
         } else if (parser instanceof YearValueParser) {
-            //考虑年数字太大,不适合boolean数组,单独使用列表遍历匹配
+            // 考虑年数字太大,不适合boolean数组,单独使用列表遍历匹配
             return new YearValueMatcher(values);
         } else {
             return new BoolArrayValueMatcher(values);
@@ -86,7 +86,7 @@ public class ValueMatcherBuilder {
      *
      * @param value  子表达式值
      * @param parser 针对这个字段的解析器
-     * @return 值列表
+     * @return the list
      */
     private static List<Integer> parseArray(String value, ValueParser parser) {
         final List<Integer> values = new ArrayList<>();
@@ -109,7 +109,7 @@ public class ValueMatcherBuilder {
      *
      * @param value  表达式值
      * @param parser 针对这个时间字段的解析器
-     * @return List
+     * @return the list
      */
     private static List<Integer> parseStep(String value, ValueParser parser) {
         final List<String> parts = StringKit.split(value, Symbol.C_SLASH);
@@ -143,14 +143,14 @@ public class ValueMatcherBuilder {
      * @param value  范围表达式
      * @param step   步进
      * @param parser 针对这个时间字段的解析器
-     * @return List
+     * @return the list
      */
     private static List<Integer> parseRange(String value, int step, ValueParser parser) {
         final List<Integer> results = new ArrayList<>();
 
         // 全部匹配形式
         if (value.length() <= 2) {
-            //根据步进的第一个数字确定起始时间,类似于 12/3则从12(秒、分等)开始
+            // 根据步进的第一个数字确定起始时间,类似于 12/3则从12(秒、分等)开始
             int minValue = parser.getMin();
             if (false == isMatchAllStr(value)) {
                 try {
@@ -159,7 +159,7 @@ public class ValueMatcherBuilder {
                     throw new InstrumentException("Invalid field value: [{}]", value);
                 }
             } else {
-                //在全匹配模式下,如果步进不存在,表示步进为1
+                // 在全匹配模式下,如果步进不存在,表示步进为1
                 if (step < 1) {
                     step = 1;
                 }
@@ -169,23 +169,23 @@ public class ValueMatcherBuilder {
                 if (minValue > maxValue) {
                     throw new InstrumentException("Invalid value {} > {}", minValue, maxValue);
                 }
-                //有步进
+                // 有步进
                 for (int i = minValue; i <= maxValue; i += step) {
                     results.add(i);
                 }
             } else {
-                //固定时间
+                // 固定时间
                 results.add(minValue);
             }
             return results;
         }
 
-        //Range模式
+        // Range模式
         List<String> parts = StringKit.split(value, Symbol.C_MINUS);
         int size = parts.size();
         if (size == 1) {// 普通值
             final int v1 = parser.parse(value);
-            if (step > 0) {//类似 20/2的形式
+            if (step > 0) {// 类似 20/2的形式
                 MathKit.appendRange(v1, parser.getMax(), step, results);
             } else {
                 results.add(v1);
@@ -194,7 +194,7 @@ public class ValueMatcherBuilder {
             final int v1 = parser.parse(parts.get(0));
             final int v2 = parser.parse(parts.get(1));
             if (step < 1) {
-                //在range模式下,如果步进不存在,表示步进为1
+                // 在range模式下,如果步进不存在,表示步进为1
                 step = 1;
             }
             if (v1 < v2) {// 正常范围,例如：2-5
@@ -203,7 +203,7 @@ public class ValueMatcherBuilder {
                 MathKit.appendRange(v1, parser.getMax(), step, results);
                 MathKit.appendRange(parser.getMin(), v2, step, results);
             } else {// v1 == v2,此时与单值模式一致
-                if (step > 0) {//类似 20/2的形式
+                if (step > 0) {// 类似 20/2的形式
                     MathKit.appendRange(v1, parser.getMax(), step, results);
                 } else {
                     results.add(v1);

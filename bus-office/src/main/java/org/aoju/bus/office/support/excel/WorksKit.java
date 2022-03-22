@@ -56,7 +56,18 @@ public class WorksKit {
      * @return {@link Workbook}
      */
     public static Workbook createBook(String excelFilePath) {
-        return createBook(FileKit.file(excelFilePath), null);
+        return createBook(excelFilePath, false);
+    }
+
+    /**
+     * 创建或加载工作簿
+     *
+     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param readOnly      是否只读模式打开，true:是（不可编辑），false:否（可编辑）
+     * @return {@link Workbook}
+     */
+    public static Workbook createBook(String excelFilePath, boolean readOnly) {
+        return createBook(FileKit.file(excelFilePath), null, readOnly);
     }
 
     /**
@@ -66,7 +77,18 @@ public class WorksKit {
      * @return {@link Workbook}
      */
     public static Workbook createBook(File excelFile) {
-        return createBook(excelFile, null);
+        return createBook(excelFile, false);
+    }
+
+    /**
+     * 创建或加载工作簿
+     *
+     * @param excelFile Excel文件
+     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
+     * @return {@link Workbook}
+     */
+    public static Workbook createBook(File excelFile, boolean readOnly) {
+        return createBook(excelFile, null, readOnly);
     }
 
     /**
@@ -101,8 +123,20 @@ public class WorksKit {
      * @return {@link Workbook}
      */
     public static Workbook createBook(File excelFile, String password) {
+        return createBook(excelFile, password, false);
+    }
+
+    /**
+     * 创建或加载工作簿
+     *
+     * @param excelFile Excel文件
+     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
+     * @return {@link Workbook}
+     */
+    public static Workbook createBook(File excelFile, String password, boolean readOnly) {
         try {
-            return WorkbookFactory.create(excelFile, password);
+            return WorkbookFactory.create(excelFile, password, readOnly);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -158,7 +192,18 @@ public class WorksKit {
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(String excelFilePath) {
-        return createSXSSFBook(FileKit.file(excelFilePath), null);
+        return createSXSSFBook(excelFilePath, false);
+    }
+
+    /**
+     * 创建或加载SXSSFWorkbook工作簿
+     *
+     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param readOnly      是否只读模式打开，true:是（不可编辑），false:否（可编辑）
+     * @return {@link SXSSFWorkbook}
+     */
+    public static SXSSFWorkbook createSXSSFBook(String excelFilePath, boolean readOnly) {
+        return createSXSSFBook(FileKit.file(excelFilePath), null, readOnly);
     }
 
     /**
@@ -168,7 +213,18 @@ public class WorksKit {
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(File excelFile) {
-        return createSXSSFBook(excelFile, null);
+        return createSXSSFBook(excelFile, false);
+    }
+
+    /**
+     * 创建或加载SXSSFWorkbook工作簿
+     *
+     * @param excelFile Excel文件
+     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
+     * @return {@link SXSSFWorkbook}
+     */
+    public static SXSSFWorkbook createSXSSFBook(File excelFile, boolean readOnly) {
+        return createSXSSFBook(excelFile, null, readOnly);
     }
 
     /**
@@ -179,7 +235,20 @@ public class WorksKit {
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(File excelFile, String password) {
-        return toSXSSFBook(createBook(excelFile, password));
+        return createSXSSFBook(excelFile, password, false);
+    }
+
+
+    /**
+     * 创建或加载SXSSFWorkbook工作簿
+     *
+     * @param excelFile Excel文件
+     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
+     * @return {@link SXSSFWorkbook}
+     */
+    public static SXSSFWorkbook createSXSSFBook(File excelFile, String password, boolean readOnly) {
+        return toSXSSFBook(createBook(excelFile, password, readOnly));
     }
 
     /**
@@ -220,6 +289,18 @@ public class WorksKit {
      */
     public static SXSSFWorkbook createSXSSFBook(int rowAccessWindowSize) {
         return new SXSSFWorkbook(rowAccessWindowSize);
+    }
+
+    /**
+     * 创建空的{@link SXSSFWorkbook}，用于大批量数据写出
+     *
+     * @param rowAccessWindowSize   在内存中的行数，-1表示不限制，此时需要手动刷出
+     * @param compressTmpFiles      是否使用Gzip压缩临时文件
+     * @param useSharedStringsTable 是否使用共享字符串表，一般大量重复字符串时开启可节省内存
+     * @return {@link SXSSFWorkbook}
+     */
+    public static SXSSFWorkbook createSXSSFBook(int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable) {
+        return new SXSSFWorkbook(null, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
     }
 
     /**
@@ -280,7 +361,6 @@ public class WorksKit {
     }
 
     /**
-     *
      * sheet是否为空
      *
      * @param sheet {@link Sheet}
@@ -295,7 +375,6 @@ public class WorksKit {
      *
      * @param book 工作簿
      * @return SXSSFWorkbook
-
      */
     private static SXSSFWorkbook toSXSSFBook(Workbook book) {
         if (book instanceof SXSSFWorkbook) {

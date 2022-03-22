@@ -25,14 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -55,9 +56,13 @@ public class MySQLHitting extends AbstractHitting {
     protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
         return () -> {
             try {
-                DruidDataSource druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(context);
-                druidDataSource.init();
-                JdbcTemplate template = new JdbcTemplate(druidDataSource);
+                Properties properties = new Properties();
+                for (String key : context.keySet()) {
+                    properties.setProperty(key, context.get(key).toString());
+                }
+
+                HikariDataSource dataSource = new HikariDataSource(new HikariConfig(properties));
+                JdbcTemplate template = new JdbcTemplate(dataSource);
                 template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +
                         "id BIGINT     PRIMARY KEY AUTO_INCREMENT," +
                         "pattern       VARCHAR(64) NOT NULL UNIQUE," +

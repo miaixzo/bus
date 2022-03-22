@@ -36,7 +36,13 @@ import org.aoju.bus.core.lang.Normal;
  */
 public interface BitMap {
 
+    /**
+     * 长度32
+     */
     int MACHINE32 = Normal._32;
+    /**
+     * 长度64
+     */
     int MACHINE64 = Normal._64;
 
     /**

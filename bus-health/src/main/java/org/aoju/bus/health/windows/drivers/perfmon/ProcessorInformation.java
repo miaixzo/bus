@@ -47,78 +47,7 @@ public final class ProcessorInformation {
 
     private static final boolean IS_WIN7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
 
-    /**
-     * Processor performance counters
-     */
-    public enum ProcessorTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
-        // First element defines WMI instance name field and PDH instance filter
-        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
-        // Remaining elements define counters
-        PERCENTDPCTIME("% DPC Time"), //
-        PERCENTINTERRUPTTIME("% Interrupt Time"), //
-        PERCENTPRIVILEGEDTIME("% Privileged Time"), //
-        PERCENTPROCESSORTIME("% Processor Time"), //
-        PERCENTUSERTIME("% User Time");
-
-        private final String counter;
-
-        ProcessorTickCountProperty(String counter) {
-            this.counter = counter;
-        }
-
-        @Override
-        public String getCounter() {
-            return counter;
-        }
-    }
-
     private ProcessorInformation() {
-    }
-
-    /**
-     * System interrupts counters
-     */
-    public enum InterruptsProperty implements PerfCounterQuery.PdhCounterProperty {
-        INTERRUPTSPERSEC(PerfCounterQuery.TOTAL_INSTANCE, "Interrupts/sec");
-
-        private final String instance;
-        private final String counter;
-
-        InterruptsProperty(String instance, String counter) {
-            this.instance = instance;
-            this.counter = counter;
-        }
-
-        @Override
-        public String getInstance() {
-            return instance;
-        }
-
-        @Override
-        public String getCounter() {
-            return counter;
-        }
-    }
-
-    /**
-     * Processor Frequency counters. Requires Win7 or greater
-     */
-    public enum ProcessorFrequencyProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
-        // First element defines WMI instance name field and PDH instance filter
-        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
-        // Remaining elements define counters
-        PERCENTOFMAXIMUMFREQUENCY("% of Maximum Frequency");
-
-        private final String counter;
-
-        ProcessorFrequencyProperty(String counter) {
-            this.counter = counter;
-        }
-
-        @Override
-        public String getCounter() {
-            return counter;
-        }
     }
 
     /**
@@ -173,6 +102,77 @@ public final class ProcessorInformation {
         }
         return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorFrequencyProperty.class, PerfmonConsts.PROCESSOR_INFORMATION,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
+    }
+
+    /**
+     * Processor performance counters
+     */
+    public enum ProcessorTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+        // First element defines WMI instance name field and PDH instance filter
+        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
+        // Remaining elements define counters
+        PERCENTDPCTIME("% DPC Time"), //
+        PERCENTINTERRUPTTIME("% Interrupt Time"), //
+        PERCENTPRIVILEGEDTIME("% Privileged Time"), //
+        PERCENTPROCESSORTIME("% Processor Time"), //
+        PERCENTUSERTIME("% User Time");
+
+        private final String counter;
+
+        ProcessorTickCountProperty(String counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
+        }
+    }
+
+    /**
+     * System interrupts counters
+     */
+    public enum InterruptsProperty implements PerfCounterQuery.PdhCounterProperty {
+        INTERRUPTSPERSEC(PerfCounterQuery.TOTAL_INSTANCE, "Interrupts/sec");
+
+        private final String instance;
+        private final String counter;
+
+        InterruptsProperty(String instance, String counter) {
+            this.instance = instance;
+            this.counter = counter;
+        }
+
+        @Override
+        public String getInstance() {
+            return instance;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
+        }
+    }
+
+    /**
+     * Processor Frequency counters. Requires Win7 or greater
+     */
+    public enum ProcessorFrequencyProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+        // First element defines WMI instance name field and PDH instance filter
+        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
+        // Remaining elements define counters
+        PERCENTOFMAXIMUMFREQUENCY("% of Maximum Frequency");
+
+        private final String counter;
+
+        ProcessorFrequencyProperty(String counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
+        }
     }
 
     /**

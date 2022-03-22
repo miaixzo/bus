@@ -28,6 +28,7 @@ package org.aoju.bus.office.support.excel.sax;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -150,13 +151,8 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         }
 
         // 获取共享字符串表
-        try {
-            this.handler.sharedStrings = xssfReader.getSharedStringsTable();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } catch (InvalidFormatException e) {
-            throw new InstrumentException(e);
-        }
+        // POI-5.2.0开始返回值有所变更，导致实际使用时提示方法未找到，此处使用反射调用，解决不同版本返回值变更问题
+        this.handler.sharedStrings = ReflectKit.invoke(xssfReader, "getSharedStringsTable");
 
         return readSheets(xssfReader, idOrRidOrSheetName);
     }

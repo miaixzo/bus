@@ -1,4 +1,3 @@
-
 package org.aoju.bus.gitlab.hooks.web;
 
 import org.aoju.bus.gitlab.GitLabApiException;

@@ -43,7 +43,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,10 +64,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * 单元格值处理接口
      */
     private CellEditor cellEditor;
-    /**
-     * 标题别名
-     */
-    private Map<String, String> headerAlias = new HashMap<>();
 
     /**
      * 构造
@@ -82,7 +77,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 构造
      *
-     * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
+     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
      * @param sheetIndex    sheet序号,0表示第一个sheet
      */
     public ExcelReader(String excelFilePath, int sheetIndex) {
@@ -96,7 +91,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param sheetIndex sheet序号,0表示第一个sheet
      */
     public ExcelReader(File bookFile, int sheetIndex) {
-        this(WorksKit.createBook(bookFile), sheetIndex);
+        this(WorksKit.createBook(bookFile, true), sheetIndex);
+        this.destFile = bookFile;
     }
 
     /**
@@ -106,7 +102,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param sheetName sheet名,第一个默认是sheet1
      */
     public ExcelReader(File bookFile, String sheetName) {
-        this(WorksKit.createBook(bookFile), sheetName);
+        this(WorksKit.createBook(bookFile, true), sheetName);
+        this.destFile = bookFile;
     }
 
     /**
@@ -179,49 +176,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      */
     public ExcelReader setCellEditor(CellEditor cellEditor) {
         this.cellEditor = cellEditor;
-        return this;
-    }
-
-    /**
-     * 获得标题行的别名Map
-     *
-     * @return 别名Map
-     */
-    public Map<String, String> getHeaderAlias() {
-        return headerAlias;
-    }
-
-    /**
-     * 设置标题行的别名Map
-     *
-     * @param headerAlias 别名Map
-     * @return this
-     */
-    public ExcelReader setHeaderAlias(Map<String, String> headerAlias) {
-        this.headerAlias = headerAlias;
-        return this;
-    }
-
-    /**
-     * 增加标题别名
-     *
-     * @param header 标题
-     * @param alias  别名
-     * @return this
-     */
-    public ExcelReader addHeaderAlias(String header, String alias) {
-        this.headerAlias.put(header, alias);
-        return this;
-    }
-
-    /**
-     * 去除标题别名
-     *
-     * @param header 标题
-     * @return this
-     */
-    public ExcelReader removeHeaderAlias(String header) {
-        this.headerAlias.remove(header);
         return this;
     }
 
@@ -502,7 +456,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @return {@link ExcelWriter}
      */
     public ExcelWriter getWriter() {
-        return new ExcelWriter(this.sheet);
+        return ExcelKit.getWriter(this.destFile, this.sheet.getSheetName());
     }
 
     /**

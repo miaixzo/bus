@@ -326,7 +326,7 @@ public class ExcelKit {
      *
      * @return {@link BigExcelWriter}
      */
-    public static ExcelWriter getBigWriter() {
+    public static BigExcelWriter getBigWriter() {
         try {
             return new BigExcelWriter();
         } catch (NoClassDefFoundError e) {
@@ -342,7 +342,7 @@ public class ExcelKit {
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link BigExcelWriter}
      */
-    public static ExcelWriter getBigWriter(int rowAccessWindowSize) {
+    public static BigExcelWriter getBigWriter(int rowAccessWindowSize) {
         try {
             return new BigExcelWriter(rowAccessWindowSize);
         } catch (NoClassDefFoundError e) {

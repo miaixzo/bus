@@ -25,6 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.cron.pattern.matcher.MatcherTable;
+import org.aoju.bus.cron.pattern.matcher.ValueMatcher;
+
 /**
  * 值处理接口
  * 值处理用于限定表达式中相应位置的值范围,并转换表达式值为int值
@@ -61,5 +64,27 @@ public interface ValueParser {
      * @return 最大值
      */
     int getMax();
+
+    /**
+     * 解析表达式后，加入到{@link MatcherTable}的对应列表中
+     *
+     * @param matcherTable {@link MatcherTable}
+     * @param pattern      对应时间部分的表达式
+     */
+    void parseTo(MatcherTable matcherTable, String pattern);
+
+    /**
+     * 解析表达式对应部分为{@link ValueMatcher}，支持的表达式包括：
+     * <ul>
+     *     <li>单值或通配符形式，如 <strong>a</strong> 或 <strong>*</strong></li>
+     *     <li>数组形式，如 <strong>1,2,3</strong></li>
+     *     <li>间隔形式，如 <strong>a&#47;b</strong> 或 <strong>*&#47;b</strong></li>
+     *     <li>范围形式，如 <strong>3-8</strong></li>
+     * </ul>
+     *
+     * @param pattern 对应时间部分的表达式
+     * @return {@link ValueMatcher}
+     */
+    ValueMatcher parseAsValueMatcher(String pattern);
 
 }
