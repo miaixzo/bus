@@ -45,7 +45,7 @@ import java.util.List;
  * 超类为{@link Factory}，它支持子类化而不仅仅是实现接口
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractFactory extends Factory {

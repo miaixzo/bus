@@ -33,7 +33,7 @@ import java.io.Writer;
  * 以支持转换一次最多替换一个字符
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class CodePointTranslator extends CharSequenceTranslator {

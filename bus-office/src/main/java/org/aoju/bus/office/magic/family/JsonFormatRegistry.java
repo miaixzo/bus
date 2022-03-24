@@ -40,7 +40,7 @@ import java.util.Map;
  * 包含office支持的{@code DocumentFormat}集合，该集合已从JSON源加载.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class JsonFormatRegistry extends SimpleFormatRegistry {

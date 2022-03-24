@@ -38,11 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 简易值转换器。将给定String值转为int，并限定最大值和最小值
+ * 简易值转换器将给定String值转为int，并限定最大值和最小值
  * 此类同时识别{@code L} 为最大值
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractValueParser implements ValueParser {
@@ -117,12 +117,12 @@ public abstract class AbstractValueParser implements ValueParser {
      * 多个时间使用逗号分隔
      *
      * @param value 某个时间字段
-     * @return List
+     * @return the list
      */
     @Override
     public ValueMatcher parseAsValueMatcher(String value) {
         if (isMatchAllStr(value)) {
-            // 兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
+            //兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
             return new AlwaysTrueValueMatcher();
         }
 
@@ -216,12 +216,12 @@ public abstract class AbstractValueParser implements ValueParser {
 
         // 全部匹配形式
         if (value.length() <= 2) {
-            // 根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
+            //根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
             int minValue = getMin();
             if (false == isMatchAllStr(value)) {
                 minValue = Math.max(minValue, parse(value));
             } else {
-                // 在全匹配模式下，如果步进不存在，表示步进为1
+                //在全匹配模式下，如果步进不存在，表示步进为1
                 if (step < 1) {
                     step = 1;
                 }
@@ -231,18 +231,18 @@ public abstract class AbstractValueParser implements ValueParser {
                 if (minValue > maxValue) {
                     throw new CrontabException("Invalid value {} > {}", minValue, maxValue);
                 }
-                // 有步进
+                //有步进
                 for (int i = minValue; i <= maxValue; i += step) {
                     results.add(i);
                 }
             } else {
-                // 固定时间
+                //固定时间
                 results.add(minValue);
             }
             return results;
         }
 
-        // Range模式
+        //Range模式
         List<String> parts = StringKit.split(value, '-');
         int size = parts.size();
         if (size == 1) {// 普通值
@@ -256,7 +256,7 @@ public abstract class AbstractValueParser implements ValueParser {
             final int v1 = parse(parts.get(0));
             final int v2 = parse(parts.get(1));
             if (step < 1) {
-                // 在range模式下，如果步进不存在，表示步进为1
+                //在range模式下，如果步进不存在，表示步进为1
                 step = 1;
             }
             if (v1 < v2) {// 正常范围，例如：2-5

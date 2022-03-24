@@ -31,7 +31,7 @@ import org.aoju.bus.extra.pinyin.PinyinProvider;
  * 拼音默认实现
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractPinyinProvider implements PinyinProvider {

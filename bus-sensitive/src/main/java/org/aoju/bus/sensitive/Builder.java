@@ -42,7 +42,7 @@ import java.util.List;
  * 2.主要供单独的字符串处理使用
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public final class Builder {

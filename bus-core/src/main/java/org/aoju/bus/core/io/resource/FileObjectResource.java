@@ -40,7 +40,7 @@ import java.nio.charset.Charset;
  * {@link FileObject} 资源包装
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class FileObjectResource implements Resource {

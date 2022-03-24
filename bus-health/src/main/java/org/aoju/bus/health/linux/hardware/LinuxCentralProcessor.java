@@ -57,7 +57,7 @@ import java.util.stream.Stream;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

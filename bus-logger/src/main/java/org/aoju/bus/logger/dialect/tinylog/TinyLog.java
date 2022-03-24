@@ -40,7 +40,7 @@ import org.tinylog.provider.ProviderRegistry;
  * tinylog2 log.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class TinyLog extends AbstractAware {

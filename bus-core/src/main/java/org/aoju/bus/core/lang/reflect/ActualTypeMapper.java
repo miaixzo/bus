@@ -39,7 +39,7 @@ import java.util.Map;
  * 泛型变量和泛型实际类型映射关系缓存
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ActualTypeMapper {

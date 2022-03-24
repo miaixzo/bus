@@ -36,7 +36,7 @@ import java.io.IOException;
  * 基于lzo算法的数据解压缩
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class LzoProvider implements EffectProvider {

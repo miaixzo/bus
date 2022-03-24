@@ -38,7 +38,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 如果使用 vesta(https://gitee.com/robertleepeak/vesta-id-generator) 来生成 ID，假设已经提供了 vesta 的 idService
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface GenId<T> {

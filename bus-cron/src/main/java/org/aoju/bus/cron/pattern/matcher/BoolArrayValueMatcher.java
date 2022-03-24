@@ -36,7 +36,7 @@ import java.util.List;
  * 将表达式中的数字值列表转换为Boolean数组,匹配时匹配相应数组位
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class BoolArrayValueMatcher implements ValueMatcher {
@@ -67,6 +67,23 @@ public class BoolArrayValueMatcher implements ValueMatcher {
             return false;
         }
         return values[value];
+    }
+
+    @Override
+    public int nextAfter(int value) {
+        if (value > minValue) {
+            while (value < values.length) {
+                if (values[value]) {
+                    return value;
+                }
+                value++;
+            }
+        }
+
+        // 两种情况返回最小值
+        // 一是给定值小于最小值，那下一个匹配值就是最小值
+        // 二是给定值大于最大值，那下一个匹配值也是下一轮的最小值
+        return minValue;
     }
 
     /**

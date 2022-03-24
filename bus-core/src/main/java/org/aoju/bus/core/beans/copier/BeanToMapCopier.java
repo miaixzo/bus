@@ -38,7 +38,7 @@ import java.util.Map;
  * Bean属性拷贝到Map中的拷贝器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class BeanToMapCopier extends AbstractCopier<Object, Map> {

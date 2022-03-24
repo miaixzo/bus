@@ -37,7 +37,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 此实现方式可以指定Hash算法
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class BitMapBloomFilter implements BloomFilter {

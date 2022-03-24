@@ -38,7 +38,7 @@ import java.util.List;
  * 查询数据库信息
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface DatabaseQuery {

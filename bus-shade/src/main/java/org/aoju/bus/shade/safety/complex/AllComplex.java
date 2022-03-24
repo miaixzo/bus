@@ -35,7 +35,7 @@ import java.util.Collection;
  * 如果没有规则的时候则认为所有规则都满足
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class AllComplex<E> extends MixComplex<E> implements Complex<E> {

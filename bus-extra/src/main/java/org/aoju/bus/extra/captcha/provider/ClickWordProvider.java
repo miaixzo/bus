@@ -33,7 +33,7 @@ import java.awt.*;
  * 点选文字验证码
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ClickWordProvider extends AbstractProvider {

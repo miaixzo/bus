@@ -35,7 +35,7 @@ import javax.crypto.spec.IvParameterSpec;
  * ChaCha系列流密码，作为salsa密码的改良版，具有更强的抵抗密码分析攻击的特性，“20”表示该算法有20轮的加密计算
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ChaCha20 extends Crypto {

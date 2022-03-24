@@ -35,7 +35,7 @@ import java.net.URLClassLoader;
  * Spring-Boot Jar 启动器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class BootWarLauncher extends WarLauncher {

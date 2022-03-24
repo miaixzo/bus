@@ -29,7 +29,7 @@ package org.aoju.bus.proxy.factory;
  * 代理类生成器生成特定类型的代理(拦截器、调用程序等)
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface ProxyClass {

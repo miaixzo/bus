@@ -34,7 +34,7 @@ import java.io.*;
  * 无操作解密器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class NopDecryptorProvider implements DecryptorProvider {

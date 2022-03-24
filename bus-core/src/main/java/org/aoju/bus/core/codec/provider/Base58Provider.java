@@ -37,7 +37,7 @@ import java.util.Arrays;
  * 此编码器不包括校验码、版本等信息
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]> {

@@ -47,7 +47,7 @@ import java.util.Iterator;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {

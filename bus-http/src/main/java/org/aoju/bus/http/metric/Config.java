@@ -33,7 +33,7 @@ import java.util.ServiceLoader;
  * 配置器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface Config {

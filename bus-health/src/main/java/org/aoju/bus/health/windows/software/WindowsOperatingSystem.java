@@ -67,7 +67,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.*;
  * and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

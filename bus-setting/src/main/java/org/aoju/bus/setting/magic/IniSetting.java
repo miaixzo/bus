@@ -44,7 +44,7 @@ import java.util.StringJoiner;
  * 如果您想创建Ini，则可以{@link Builder}
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class IniSetting extends ArrayList<IniElement> {

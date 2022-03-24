@@ -39,7 +39,7 @@ import java.util.List;
  * 当前校验的上下文信息
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @Data

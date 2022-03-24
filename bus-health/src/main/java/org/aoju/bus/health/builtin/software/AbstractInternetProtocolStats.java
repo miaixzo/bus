@@ -33,7 +33,7 @@ import java.util.List;
  * Common implementations for IP Stats
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractInternetProtocolStats implements InternetProtocolStats {

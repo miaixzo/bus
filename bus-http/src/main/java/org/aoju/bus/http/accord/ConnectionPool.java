@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * 该类实现了哪些连接保持开放以供将来使用的策略
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public final class ConnectionPool {

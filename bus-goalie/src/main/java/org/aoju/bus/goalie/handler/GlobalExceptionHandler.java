@@ -49,7 +49,7 @@ import java.util.Map;
  * 异常处理
  *
  * @author Justubborn
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class GlobalExceptionHandler extends Controller implements ErrorWebExceptionHandler {

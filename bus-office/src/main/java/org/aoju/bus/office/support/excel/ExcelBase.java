@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {

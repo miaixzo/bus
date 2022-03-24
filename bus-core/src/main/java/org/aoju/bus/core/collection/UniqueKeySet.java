@@ -44,7 +44,7 @@ import java.util.function.Function;
  * @param <K> 唯一键类型
  * @param <V> 值对象
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class UniqueKeySet<K, V> extends AbstractSet<V> implements Serializable {

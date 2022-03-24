@@ -29,7 +29,7 @@ package org.aoju.bus.base.mapper;
  * Core Mapper 接口
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface Mapper<T> extends org.aoju.bus.mapper.Mapper<T> {

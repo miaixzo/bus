@@ -46,7 +46,7 @@ import java.util.Objects;
  * @param <L> 左元素类型
  * @param <R> 右元素类型
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

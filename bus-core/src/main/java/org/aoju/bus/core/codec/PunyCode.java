@@ -37,7 +37,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 参考：https://blog.csdn.net/a19881029/article/details/18262671
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class PunyCode {

@@ -52,7 +52,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * A CPU
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

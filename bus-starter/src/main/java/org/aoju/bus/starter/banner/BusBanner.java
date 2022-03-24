@@ -39,7 +39,7 @@ import java.io.PrintStream;
  * 旗标生成器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class BusBanner implements Banner {

@@ -46,7 +46,7 @@ import java.util.Map;
  * 必须启动所提供的office管理器才能被此转换器使用.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class LocalOfficeProvider extends AbstractProvider {

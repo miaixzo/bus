@@ -38,7 +38,7 @@ import java.util.Arrays;
  * 证书管理
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class X509TrustManager implements javax.net.ssl.X509TrustManager {

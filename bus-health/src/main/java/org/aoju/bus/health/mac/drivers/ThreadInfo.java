@@ -43,7 +43,7 @@ import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
  * Utility to query threads for a process
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

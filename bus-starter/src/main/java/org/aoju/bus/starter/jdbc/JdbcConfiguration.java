@@ -60,7 +60,7 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ConditionalOnClass(value = {HikariDataSource.class})

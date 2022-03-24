@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  * 并可以跳过读取和关闭该源
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public final class Http1Codec implements HttpCodec {

@@ -32,7 +32,7 @@ import org.aoju.bus.mapper.entity.EntityTable;
  * 解析实体类接口
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface EntityResolve {

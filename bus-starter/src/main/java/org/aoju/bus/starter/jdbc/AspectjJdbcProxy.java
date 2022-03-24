@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
  * AOP切面切点
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @Order(-1)

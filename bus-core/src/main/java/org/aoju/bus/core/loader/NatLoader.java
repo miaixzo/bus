@@ -42,7 +42,7 @@ import java.util.Enumeration;
  * Jar包资源加载器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class NatLoader extends StdLoader implements Loader {

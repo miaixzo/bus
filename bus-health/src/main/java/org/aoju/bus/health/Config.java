@@ -35,7 +35,7 @@ import java.util.Properties;
  * The global configuration utility
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @NotThreadSafe

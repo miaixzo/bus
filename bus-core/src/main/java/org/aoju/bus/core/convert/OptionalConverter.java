@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Optional;
  * {@link Optional}对象转换器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class OptionalConverter extends AbstractConverter<Optional<?>> {

@@ -37,7 +37,7 @@ import java.io.OutputStream;
  * 大数据量Excel写出
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class BigExcelWriter extends ExcelWriter {

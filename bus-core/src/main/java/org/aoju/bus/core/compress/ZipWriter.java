@@ -42,7 +42,7 @@ import java.util.zip.ZipOutputStream;
  * Zip生成封装
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ZipWriter implements Closeable {

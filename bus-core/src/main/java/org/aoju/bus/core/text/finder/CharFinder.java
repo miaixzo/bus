@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 查找指定字符在字符串中的位置信息
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class CharFinder extends TextFinder {

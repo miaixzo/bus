@@ -32,7 +32,7 @@ import org.aoju.bus.health.builtin.hardware.CentralProcessor;
  * CPU负载时间信息
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Ticks {

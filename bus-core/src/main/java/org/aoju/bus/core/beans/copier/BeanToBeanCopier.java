@@ -40,7 +40,7 @@ import java.util.Map;
  * @param <S> 源Bean类型
  * @param <T> 目标Bean类型
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {

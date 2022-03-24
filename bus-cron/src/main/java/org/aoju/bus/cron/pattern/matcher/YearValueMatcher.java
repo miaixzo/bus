@@ -32,7 +32,7 @@ import java.util.List;
  * 考虑年数字太大,不适合boolean数组,单独使用列表遍历匹配
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class YearValueMatcher implements ValueMatcher {
@@ -54,6 +54,18 @@ public class YearValueMatcher implements ValueMatcher {
     @Override
     public boolean match(Integer t) {
         return list.contains(t);
+    }
+
+    @Override
+    public int nextAfter(int value) {
+        for (Integer year : list) {
+            if (year >= value) {
+                return year;
+            }
+        }
+
+        // 年无效，此表达式整体无效
+        return -1;
     }
 
 }

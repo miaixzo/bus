@@ -45,7 +45,7 @@ import javax.crypto.spec.IvParameterSpec;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class SM4 extends Crypto {

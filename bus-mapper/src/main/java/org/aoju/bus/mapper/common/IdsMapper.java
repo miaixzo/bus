@@ -34,7 +34,7 @@ import org.aoju.bus.mapper.common.ids.SelectByIdsMapper;
  *
  * @param <T> 不能为空
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @RegisterMapper

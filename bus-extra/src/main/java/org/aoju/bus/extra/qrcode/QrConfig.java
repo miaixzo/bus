@@ -41,7 +41,7 @@ import java.util.Map;
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class QrConfig {

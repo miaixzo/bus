@@ -35,7 +35,7 @@ import java.lang.annotation.*;
  * 规则，自动放置于路径开始部分；不做method做版本，避免难以维护
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17++
  */
 @Target({ElementType.METHOD, ElementType.TYPE})

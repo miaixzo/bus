@@ -36,7 +36,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 例如十进制数57，在二进制写作111001，在16进制写作39
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]> {

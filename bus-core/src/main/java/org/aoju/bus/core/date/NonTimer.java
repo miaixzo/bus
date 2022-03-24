@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.DateKit;
  * 计算某个过程花费的时间,精确到毫秒
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class NonTimer {

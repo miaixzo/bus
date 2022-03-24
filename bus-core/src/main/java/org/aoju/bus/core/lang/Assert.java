@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * 断言某些对象或值是否符合规定,否则抛出异常 经常用于做变量检查
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Assert {

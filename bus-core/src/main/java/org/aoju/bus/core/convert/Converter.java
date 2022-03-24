@@ -29,7 +29,7 @@ package org.aoju.bus.core.convert;
  * 转换器接口,实现类型转换
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface Converter<T> {

@@ -31,7 +31,7 @@ import java.util.*;
  * 可以读取的一组索引值 {@link BufferSource#select}.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class AbstractBlending extends AbstractList<ByteString> implements RandomAccess {

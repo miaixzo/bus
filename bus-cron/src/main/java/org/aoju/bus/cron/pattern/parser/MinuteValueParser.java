@@ -25,29 +25,21 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
-import org.aoju.bus.core.lang.exception.CrontabException;
-import org.aoju.bus.cron.pattern.matcher.MatcherTable;
-
 /**
  * 分钟值处理
+ * 限定于0-59
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class MinuteValueParser extends AbstractValueParser {
 
+    /**
+     * 构造
+     */
     public MinuteValueParser() {
         super(0, 59);
-    }
-
-    @Override
-    public void parseTo(MatcherTable matcherTable, String pattern) {
-        try {
-            matcherTable.minuteMatchers.add(parseAsValueMatcher(pattern));
-        } catch (Exception e) {
-            throw new CrontabException("Invalid pattern [{}], parsing 'minute' field error!", pattern);
-        }
     }
 
 }

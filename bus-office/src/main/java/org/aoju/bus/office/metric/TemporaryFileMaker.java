@@ -31,7 +31,7 @@ import java.io.File;
  * 提供创建临时文件的服务.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface TemporaryFileMaker {

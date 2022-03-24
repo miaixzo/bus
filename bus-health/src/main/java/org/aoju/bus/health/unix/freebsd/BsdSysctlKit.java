@@ -38,7 +38,7 @@ import org.aoju.bus.logger.Logger;
  * Provides access to sysctl calls on FreeBSD
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

@@ -6,7 +6,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 加解密异常
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class CryptoException extends UncheckedException {

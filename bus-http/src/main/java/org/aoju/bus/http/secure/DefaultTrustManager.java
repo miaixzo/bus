@@ -34,7 +34,7 @@ import java.security.cert.X509Certificate;
  * 默认信任管理器，默认信任所有客户端和服务端证书
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultTrustManager extends X509ExtendedTrustManager {

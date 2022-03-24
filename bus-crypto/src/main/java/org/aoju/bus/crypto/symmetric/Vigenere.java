@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.Normal;
  * 算法实现来自：https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Vigenere {

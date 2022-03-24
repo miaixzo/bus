@@ -37,7 +37,7 @@ import java.util.Map;
  * 日期校验
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class DateStrategy implements Matcher<Object, Date> {

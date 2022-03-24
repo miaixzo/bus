@@ -33,7 +33,7 @@ import java.io.Serializable;
  * Murmur3 32bit、64bit、128bit 哈希算法实现
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Murmur implements Serializable {

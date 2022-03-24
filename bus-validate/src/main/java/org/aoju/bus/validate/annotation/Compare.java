@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 参数值比较验证注解
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @Target({ElementType.FIELD, ElementType.PARAMETER})

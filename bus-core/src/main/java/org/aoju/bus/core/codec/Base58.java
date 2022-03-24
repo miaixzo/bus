@@ -41,7 +41,7 @@ import java.util.Arrays;
  * 规范见：https://en.bitcoin.it/wiki/Base58Check_encoding
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Base58 {

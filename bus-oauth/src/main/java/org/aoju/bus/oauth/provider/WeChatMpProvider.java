@@ -45,7 +45,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * 微信公众平台登录
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class WeChatMpProvider extends AbstractProvider {

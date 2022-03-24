@@ -35,7 +35,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * 身份证号码校验
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class CitizenIdStrategy implements Matcher<String, CitizenId> {

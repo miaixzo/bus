@@ -37,7 +37,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 签约协议号脱敏格式为前6位后6位保留明文,中间脱敏
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class PayStrategy extends AbstractProvider {

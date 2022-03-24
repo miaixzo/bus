@@ -29,7 +29,7 @@ package org.aoju.bus.http.bodys;
  * 不可重复的请求体
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface UnrepeatableBody {

@@ -29,7 +29,7 @@ package org.aoju.bus.mapper;
  * 标记接口,继承该接口的接口,在MapperScannerConfigurer#setMarkerInterface时,会自动注册到通用Mapper
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface Marker {

@@ -32,7 +32,7 @@ import java.util.TimeZone;
  * {@link ZoneId}和{@link TimeZone}相关封装
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ZoneKit {

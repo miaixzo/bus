@@ -61,7 +61,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * (software) and {@link HardwareAbstractionLayer} (hardware).
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Platform {

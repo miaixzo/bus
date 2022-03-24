@@ -29,7 +29,7 @@ package org.aoju.bus.mapper.criteria;
  * 执行 SQL 的时机
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public enum Order {

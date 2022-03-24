@@ -50,7 +50,7 @@ import java.util.TreeMap;
  * 喜马拉雅登录
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class XmlyProvider extends AbstractProvider {

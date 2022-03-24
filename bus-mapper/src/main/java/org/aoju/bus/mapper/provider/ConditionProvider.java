@@ -36,7 +36,7 @@ import org.apache.ibatis.mapping.SqlCommandType;
  * ConditionProvider实现类，基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ConditionProvider extends MapperTemplate {

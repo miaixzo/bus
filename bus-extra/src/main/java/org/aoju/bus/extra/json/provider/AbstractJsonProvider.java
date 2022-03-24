@@ -31,7 +31,7 @@ import org.aoju.bus.extra.json.JsonProvider;
  * 默认解析器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractJsonProvider implements JsonProvider {

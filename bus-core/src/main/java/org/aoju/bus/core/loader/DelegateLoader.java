@@ -29,7 +29,7 @@ package org.aoju.bus.core.loader;
  * 委派的资源加载器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class DelegateLoader extends ResourceLoader implements Loader {

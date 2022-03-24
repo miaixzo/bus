@@ -37,7 +37,7 @@ import java.io.IOException;
  * 因为数据不是缓冲的，所以只能传输一次
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public final class StreamedBody extends OutputStreamBody implements UnrepeatableBody {

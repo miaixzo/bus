@@ -55,7 +55,7 @@ import java.util.Objects;
  * 访问鉴权
  *
  * @author Justubborn
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)

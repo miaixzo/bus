@@ -33,7 +33,7 @@ import java.util.Set;
  * 可以是 xml、yml、protobuf 等任何一种格式的数据
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface Wapper {

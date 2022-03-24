@@ -34,7 +34,7 @@ import java.util.*;
  * 或Java(通过JDK 9)上不可用的密码套件
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public final class CipherSuite {

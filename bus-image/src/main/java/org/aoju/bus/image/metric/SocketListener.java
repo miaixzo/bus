@@ -30,7 +30,7 @@ import java.net.SocketAddress;
 
 /**
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface SocketListener extends Closeable {

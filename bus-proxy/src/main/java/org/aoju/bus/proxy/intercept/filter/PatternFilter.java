@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  * 如果方法的名称与提供的正则表达式(JDK regex)模式字符串匹配，则方法筛选器实现返回true
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class PatternFilter implements MethodFilter {

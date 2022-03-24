@@ -35,7 +35,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * SqlServerProvider实现类，特殊方法实现类
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class SqlServerProvider extends MapperTemplate {

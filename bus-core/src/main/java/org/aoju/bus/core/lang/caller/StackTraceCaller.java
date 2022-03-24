@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 通过StackTrace方式获取调用者 此方式效率最低,不推荐使用
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class StackTraceCaller implements Caller {

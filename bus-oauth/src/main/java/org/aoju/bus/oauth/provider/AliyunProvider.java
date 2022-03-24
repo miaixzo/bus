@@ -38,7 +38,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 阿里云登录
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class AliyunProvider extends AbstractProvider {

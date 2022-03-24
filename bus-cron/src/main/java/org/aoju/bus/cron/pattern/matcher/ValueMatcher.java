@@ -32,9 +32,17 @@ import org.aoju.bus.core.lang.Matcher;
  * 用于匹配日期位中对应数字是否匹配
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface ValueMatcher extends Matcher<Integer> {
+
+    /**
+     * 获取指定值之后的匹配值，也可以是指定值本身
+     *
+     * @param value 指定的值
+     * @return 匹配到的值或之后的值
+     */
+    int nextAfter(int value);
 
 }

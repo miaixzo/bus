@@ -7,7 +7,7 @@ import java.util.Iterator;
  *
  * @param <T> 节点类型
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface IterableIterator<T> extends Iterable<T>, Iterator<T> {

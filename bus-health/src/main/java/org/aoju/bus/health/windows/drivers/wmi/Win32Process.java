@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * Utility to query WMI class {@code Win32_Process}
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * {@link AtomicBoolean}转换器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class AtomicBooleanConverter extends AbstractConverter<AtomicBoolean> {

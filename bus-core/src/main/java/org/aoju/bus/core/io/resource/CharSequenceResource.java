@@ -40,7 +40,7 @@ import java.nio.charset.Charset;
  * {@link CharSequence}资源，字符串做为资源
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class CharSequenceResource implements Resource {

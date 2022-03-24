@@ -32,7 +32,7 @@ import java.util.ListIterator;
 
 /**
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface ProxyList<E> extends List<E> {

@@ -29,7 +29,7 @@ package org.aoju.bus.mapper.handler;
  * SQL 拦截处理器
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public interface SQLHandler {

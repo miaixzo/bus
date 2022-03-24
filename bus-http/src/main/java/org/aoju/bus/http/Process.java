@@ -29,7 +29,7 @@ package org.aoju.bus.http;
  * 进度（上传或下载）
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class Process {

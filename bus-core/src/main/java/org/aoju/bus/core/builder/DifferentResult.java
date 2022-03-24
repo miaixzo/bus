@@ -38,7 +38,7 @@ import java.util.List;
  * 该方法返回一个字符串，该字符串描述对象之间不同的字段.
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class DifferentResult implements Iterable<Different<?>> {

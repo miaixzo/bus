@@ -57,7 +57,7 @@ import java.util.Map;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public final class Properties extends java.util.Properties implements BasicType<String>, OptBasicType<String> {

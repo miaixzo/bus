@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
-import org.aoju.bus.core.lang.exception.CrontabException;
-import org.aoju.bus.cron.pattern.matcher.MatcherTable;
 import org.aoju.bus.cron.pattern.matcher.ValueMatcher;
 import org.aoju.bus.cron.pattern.matcher.YearValueMatcher;
 
@@ -34,24 +32,16 @@ import java.util.List;
 
 /**
  * 年值处理
+ * 年的限定在1970-2099年
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class YearValueParser extends AbstractValueParser {
 
     public YearValueParser() {
         super(1970, 2099);
-    }
-
-    @Override
-    public void parseTo(MatcherTable matcherTable, String pattern) {
-        try {
-            matcherTable.yearMatchers.add(parseAsValueMatcher(pattern));
-        } catch (Exception e) {
-            throw new CrontabException("Invalid pattern [{}], parsing 'year' field error!", pattern);
-        }
     }
 
     @Override

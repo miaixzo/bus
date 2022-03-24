@@ -45,7 +45,7 @@ import java.util.*;
  * CSV行解析器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public final class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
@@ -398,6 +398,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
 
         /**
          * 读取到缓存
+         * 全量读取，会重置Buffer中所有数据
          *
          * @param reader {@link Reader}
          */

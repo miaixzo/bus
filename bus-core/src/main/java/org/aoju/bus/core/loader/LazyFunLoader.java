@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  *
  * @param <T> 被加载对象类型
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class LazyFunLoader<T> extends LazyLoader<T> {

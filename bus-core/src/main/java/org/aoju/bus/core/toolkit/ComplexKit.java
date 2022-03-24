@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 来自：https://github.com/venshine/CheckPasswordStrength
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class ComplexKit {

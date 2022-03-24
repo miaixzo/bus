@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractProvider implements Provider {

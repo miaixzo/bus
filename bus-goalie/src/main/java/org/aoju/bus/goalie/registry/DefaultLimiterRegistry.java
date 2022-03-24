@@ -32,7 +32,7 @@ import org.aoju.bus.goalie.metric.Limiter;
  * 限流注册
  *
  * @author Justubborn
- * @version 6.3.5
+ * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultLimiterRegistry extends AbstractRegistry<Limiter> implements LimiterRegistry {
