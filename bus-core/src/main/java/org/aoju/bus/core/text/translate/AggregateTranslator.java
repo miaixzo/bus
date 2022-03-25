@@ -35,13 +35,21 @@ import java.util.List;
  * 第一个转换器使用输入中的代码点
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class AggregateTranslator extends CharSequenceTranslator {
 
+    /**
+     * 转换器列表
+     */
     private final List<CharSequenceTranslator> translators = new ArrayList<>();
 
+    /**
+     * 构造
+     *
+     * @param translators 转换器
+     */
     public AggregateTranslator(final CharSequenceTranslator... translators) {
         if (null != translators) {
             for (final CharSequenceTranslator translator : translators) {

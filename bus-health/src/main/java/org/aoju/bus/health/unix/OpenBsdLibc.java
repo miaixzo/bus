@@ -35,8 +35,8 @@ import com.sun.jna.Structure.FieldOrder;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface OpenBsdLibc extends CLibrary {
 

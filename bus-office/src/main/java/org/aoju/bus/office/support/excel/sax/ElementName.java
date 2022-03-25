@@ -29,8 +29,8 @@ package org.aoju.bus.office.support.excel.sax;
  * 标签名枚举
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public enum ElementName {
 

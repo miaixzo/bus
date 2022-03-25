@@ -4,7 +4,7 @@
 
 ## 运行环境
 
-要求JDK1.8+
+要求java 17+
 
 ## 快速开始
 
@@ -14,7 +14,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-core</artifactId>
-    <version>6.3.5</version>
+    <version>6.5.0</version>
 </dependency>
 ```
 
@@ -24,7 +24,7 @@
 
 ## **功能特性**
 
-* 纯JDK的API，无第三方依赖
+* 纯Java的API，无第三方依赖
 * 支持多种路径风格的资源加载
 * 完全惰性加载，避免性能浪费
 * 可自定义资源过滤器实现精确加载

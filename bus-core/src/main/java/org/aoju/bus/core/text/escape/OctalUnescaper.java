@@ -40,8 +40,8 @@ import java.io.Writer;
  * 1 to 377. This is because parsing Java is the main use case.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class OctalUnescaper extends CharSequenceTranslator {
 

@@ -35,8 +35,8 @@ import java.util.List;
  * 返回结果公用
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

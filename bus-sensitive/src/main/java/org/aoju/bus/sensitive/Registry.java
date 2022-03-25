@@ -41,8 +41,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 注解和实现之间映射
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class Registry {
 

@@ -35,8 +35,8 @@ import java.util.List;
  * 指定结束标识的解码器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class DelimiterFrameDecoder implements SocketDecoder {
 
@@ -44,6 +44,10 @@ public class DelimiterFrameDecoder implements SocketDecoder {
      * 存储已解析的数据
      */
     private final List<ByteBuffer> bufferList;
+    /**
+     * 位置信息
+     */
+    private final int reposition;
     /**
      * 消息结束标志
      */
@@ -56,10 +60,6 @@ public class DelimiterFrameDecoder implements SocketDecoder {
      * 是否解析完成
      */
     private boolean finishRead;
-    /**
-     * 位置信息
-     */
-    private final int reposition;
     /**
      * 位置信息
      */

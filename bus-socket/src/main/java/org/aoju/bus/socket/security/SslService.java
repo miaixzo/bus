@@ -43,8 +43,8 @@ import java.security.cert.X509Certificate;
  * keytool -genkey -validity 36000 -alias www.aoju.org -keyalg RSA -keystore server.keystore
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class SslService {
 
@@ -107,24 +107,6 @@ public class SslService {
         }
     }
 
-    private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
-        @Override
-        public void completed(Integer result, HandshakeModel attachment) {
-            if (result == -1) {
-                attachment.setEof(true);
-            }
-            synchronized (attachment) {
-                doHandshake(attachment);
-            }
-        }
-
-        @Override
-        public void failed(Throwable exc, HandshakeModel attachment) {
-            attachment.setEof(true);
-            attachment.getHandshakeCallback().callback();
-        }
-    };
-
     HandshakeModel createSSLEngine(AsynchronousSocketChannel socketChannel, PageBuffer pageBuffer) {
         try {
             HandshakeModel handshakeModel = new HandshakeModel();
@@ -160,6 +142,24 @@ public class SslService {
         }
 
     }
+
+    private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
+        @Override
+        public void completed(Integer result, HandshakeModel attachment) {
+            if (result == -1) {
+                attachment.setEof(true);
+            }
+            synchronized (attachment) {
+                doHandshake(attachment);
+            }
+        }
+
+        @Override
+        public void failed(Throwable exc, HandshakeModel attachment) {
+            attachment.setEof(true);
+            attachment.getHandshakeCallback().callback();
+        }
+    };
 
     /**
      * 纯异步实现的SSL握手,

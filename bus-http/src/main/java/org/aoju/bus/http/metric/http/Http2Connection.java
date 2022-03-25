@@ -53,8 +53,8 @@ import java.util.concurrent.*;
  * 到远程对等点的套接字连接。连接主机可以发送和接收数据流.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class Http2Connection implements Closeable {
 

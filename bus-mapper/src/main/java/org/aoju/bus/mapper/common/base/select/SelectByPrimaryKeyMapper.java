@@ -34,8 +34,8 @@ import org.apache.ibatis.annotations.SelectProvider;
  *
  * @param <T> 不能为空
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @RegisterMapper
 public interface SelectByPrimaryKeyMapper<T> {

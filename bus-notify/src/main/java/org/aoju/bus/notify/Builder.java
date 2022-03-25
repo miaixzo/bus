@@ -35,8 +35,8 @@ import org.aoju.bus.core.lang.Symbol;
  * 构造信息
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Setter
 public class Builder {

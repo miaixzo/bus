@@ -31,9 +31,9 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>int</code> 类型
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @see Integer
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableInt extends Number implements Comparable<MutableInt>, Mutable<Number> {
 

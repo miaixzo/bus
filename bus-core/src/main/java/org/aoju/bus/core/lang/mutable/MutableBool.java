@@ -29,9 +29,9 @@ package org.aoju.bus.core.lang.mutable;
  * 可变 <code>boolean</code> 类型
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @see Boolean
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
 

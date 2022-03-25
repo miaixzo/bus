@@ -51,8 +51,8 @@ import java.util.function.Supplier;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public class SolarisFileSystem extends AbstractFileSystem {
@@ -178,14 +178,14 @@ public class SolarisFileSystem extends AbstractFileSystem {
 
     @Override
     public long getOpenFileDescriptors() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return FILE_DESC.get().getLeft();
         }
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup(null, -1, "file_cache");
+            Kstat ksp = kc.lookup(null, -1, "file_cache");
             // Set values
-            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+            if (ksp != null && kc.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "buf_inuse");
             }
         }
@@ -194,14 +194,14 @@ public class SolarisFileSystem extends AbstractFileSystem {
 
     @Override
     public long getMaxFileDescriptors() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return FILE_DESC.get().getRight();
         }
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup(null, -1, "file_cache");
+            Kstat ksp = kc.lookup(null, -1, "file_cache");
             // Set values
-            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+            if (ksp != null && kc.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "buf_max");
             }
         }

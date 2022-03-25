@@ -35,19 +35,32 @@ import java.util.Enumeration;
  * ANT风格路径资源加载器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class AntLoader extends PatternLoader implements Loader {
 
+    /**
+     * 构造
+     */
     public AntLoader() {
         this(new StdLoader());
     }
 
+    /**
+     * 构造
+     *
+     * @param classLoader 加载器
+     */
     public AntLoader(ClassLoader classLoader) {
         this(new StdLoader(classLoader));
     }
 
+    /**
+     * 构造
+     *
+     * @param delegate 类加载代理
+     */
     public AntLoader(Loader delegate) {
         super(delegate);
     }
@@ -61,6 +74,12 @@ public class AntLoader extends PatternLoader implements Loader {
         }
     }
 
+    /**
+     * 加载路径处理
+     *
+     * @param ant ANT风格路径表达式
+     * @return the string
+     */
     protected String path(String ant) {
         int index = Integer.MAX_VALUE - 1;
         if (ant.contains(Symbol.STAR) && ant.indexOf(Symbol.C_STAR) < index) index = ant.indexOf(Symbol.C_STAR);
@@ -69,10 +88,22 @@ public class AntLoader extends PatternLoader implements Loader {
         return ant.substring(0, ant.lastIndexOf(Symbol.C_SLASH, index) + 1);
     }
 
+    /**
+     * 是否递归
+     *
+     * @param ant ANT风格路径表达式
+     * @return the boolean
+     */
     protected boolean recursively(String ant) {
         return true;
     }
 
+    /**
+     * 过滤器
+     *
+     * @param ant ANT风格路径表达式
+     * @return the 过滤器
+     */
     protected Filter filter(String ant) {
         return new AntFilter(ant);
     }

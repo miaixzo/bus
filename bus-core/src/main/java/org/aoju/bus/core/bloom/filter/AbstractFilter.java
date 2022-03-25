@@ -34,13 +34,20 @@ import org.aoju.bus.core.bloom.bitmap.LongMap;
  * 抽象Bloom过滤器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractFilter implements BloomFilter {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 容量
+     */
     protected long size = 0;
+    /**
+     * BitMap接口
+     */
     private BitMap bm = null;
 
     /**

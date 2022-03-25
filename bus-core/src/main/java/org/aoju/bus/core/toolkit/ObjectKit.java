@@ -46,8 +46,8 @@ import java.util.function.Supplier;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ObjectKit {
 

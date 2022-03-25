@@ -40,8 +40,8 @@ import org.aoju.bus.logger.Logger;
  * Provides access to sysctl calls on OpenBSD
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class OpenBsdSysctlKit {

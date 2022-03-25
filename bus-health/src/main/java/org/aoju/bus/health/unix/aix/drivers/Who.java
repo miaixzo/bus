@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
  * Utility to query logged in users.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class Who {
@@ -56,7 +56,10 @@ public final class Who {
      * @return Boot time in milliseconds since the epoch
      */
     public static long queryBootTime() {
-        String s = Executor.getFirstAnswer("/usr/bin/who -b");
+        String s = Executor.getFirstAnswer("who -b");
+        if (s.isEmpty()) {
+            s = Executor.getFirstAnswer("/usr/bin/who -b");
+        }
         Matcher m = BOOT_FORMAT_AIX.matcher(s);
         if (m.matches()) {
             try {

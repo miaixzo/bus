@@ -40,6 +40,7 @@ import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.Who;
+import org.aoju.bus.health.linux.drivers.proc.Auxv;
 import org.aoju.bus.health.linux.drivers.proc.CpuStat;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
 import org.aoju.bus.health.linux.drivers.proc.UpTime;
@@ -54,8 +55,8 @@ import java.util.*;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public class LinuxOperatingSystem extends AbstractOperatingSystem {
@@ -71,14 +72,30 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     /**
      * Jiffies per second, used for process time counters.
      */
-    private static final long USER_HZ = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"),
-            100L);
+    private static final long USER_HZ;
+    private static final long PAGE_SIZE;
     /**
      * OS Name for manufacturer
      */
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
     private static final int[] PPID_INDEX = {3};
+
+    static {
+        Map<Integer, Long> auxv = Auxv.queryAuxv();
+        long hz = auxv.getOrDefault(Auxv.AT_CLKTCK, 0L);
+        if (hz > 0) {
+            USER_HZ = hz;
+        } else {
+            USER_HZ = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
+        }
+        long pagesz = Auxv.queryAuxv().getOrDefault(Auxv.AT_PAGESZ, 0L);
+        if (pagesz > 0) {
+            PAGE_SIZE = pagesz;
+        } else {
+            PAGE_SIZE = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
+        }
+    }
 
     static {
         long tempBT = CpuStat.getBootTime();
@@ -425,6 +442,15 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public static long getHz() {
         return USER_HZ;
+    }
+
+    /**
+     * Gets Page Size, for converting memory stats from pages to bytes
+     *
+     * @return Page Size
+     */
+    public static long getPageSize() {
+        return PAGE_SIZE;
     }
 
     @Override

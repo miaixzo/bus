@@ -33,8 +33,8 @@ import org.apache.dubbo.rpc.Filter;
  * 基础dubbo过滤器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class BaseDubboFilter implements Filter, Filter.Listener {
 

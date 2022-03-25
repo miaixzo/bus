@@ -29,8 +29,8 @@ package org.aoju.bus.office.process;
  * 包含用于查询正在运行的进程所需的信息.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ProcessQuery {
 

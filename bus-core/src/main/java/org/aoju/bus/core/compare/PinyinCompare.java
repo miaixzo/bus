@@ -34,8 +34,8 @@ import java.util.Locale;
  * 按照GBK拼音顺序对给定的汉字字符串排序
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class PinyinCompare implements Comparator<String>, Serializable {
 

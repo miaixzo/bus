@@ -37,8 +37,8 @@ import java.util.List;
  * Sensors from prtpicl
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 final class SolarisSensors extends AbstractSensors {

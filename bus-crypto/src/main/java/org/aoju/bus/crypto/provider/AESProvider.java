@@ -38,8 +38,8 @@ import org.aoju.bus.crypto.symmetric.AES;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class AESProvider implements Provider {
 

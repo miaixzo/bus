@@ -37,8 +37,8 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 明明是数组,实现却只能是一个
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class BuiltInStrategy extends AbstractProvider {
 

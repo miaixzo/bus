@@ -43,8 +43,8 @@ import java.util.stream.StreamSupport;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class CsvReader implements Iterable<CsvRow>, Closeable {
 

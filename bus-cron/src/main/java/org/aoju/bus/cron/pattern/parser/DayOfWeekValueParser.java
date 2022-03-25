@@ -25,20 +25,21 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CrontabException;
 
 /**
  * 星期值处理
- * 1表示星期一,2表示星期二,依次类推,0和7都可以表示星期日
+ * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
+ * {@code L}表示周六
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
-public class DayOfWeekValueParser extends SimpleValueParser {
+public class DayOfWeekValueParser extends AbstractValueParser {
 
     /**
-     * 周的别名
+     * Weeks aliases.
      */
     private static final String[] ALIASES = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
 
@@ -48,10 +49,10 @@ public class DayOfWeekValueParser extends SimpleValueParser {
 
     /**
      * 对于星期提供转换
-     * 1表示星期一,2表示星期二,依次类推,0和7都可以表示星期日
+     * 1表示星期一，2表示星期二，依次类推，0和7都可以表示星期日
      */
     @Override
-    public int parse(String value) throws InstrumentException {
+    public int parse(String value) throws CrontabException {
         try {
             return super.parse(value) % 7;
         } catch (Exception e) {
@@ -64,11 +65,11 @@ public class DayOfWeekValueParser extends SimpleValueParser {
      *
      * @param value 别名值
      * @return 月份int值
-     * @throws InstrumentException 异常
+     * @throws CrontabException 无效别名抛出此异常
      */
-    private int parseAlias(String value) throws InstrumentException {
+    private int parseAlias(String value) throws CrontabException {
         if ("L".equalsIgnoreCase(value)) {
-            //最后一天为星期六
+            // 最后一天为星期六
             return ALIASES.length - 1;
         }
 
@@ -77,7 +78,7 @@ public class DayOfWeekValueParser extends SimpleValueParser {
                 return i;
             }
         }
-        throw new InstrumentException("Invalid month alias: {}", value);
+        throw new CrontabException("Invalid month alias: {}", value);
     }
 
 }

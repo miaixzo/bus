@@ -37,8 +37,8 @@ import java.io.InputStream;
  * 负责使用office管理器执行文档的转换.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface Provider {
 

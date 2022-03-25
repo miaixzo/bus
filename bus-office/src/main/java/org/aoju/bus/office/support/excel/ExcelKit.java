@@ -43,8 +43,8 @@ import java.io.OutputStream;
  * Excel工具类
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ExcelKit {
 
@@ -326,7 +326,7 @@ public class ExcelKit {
      *
      * @return {@link BigExcelWriter}
      */
-    public static ExcelWriter getBigWriter() {
+    public static BigExcelWriter getBigWriter() {
         try {
             return new BigExcelWriter();
         } catch (NoClassDefFoundError e) {
@@ -342,7 +342,7 @@ public class ExcelKit {
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link BigExcelWriter}
      */
-    public static ExcelWriter getBigWriter(int rowAccessWindowSize) {
+    public static BigExcelWriter getBigWriter(int rowAccessWindowSize) {
         try {
             return new BigExcelWriter(rowAccessWindowSize);
         } catch (NoClassDefFoundError e) {

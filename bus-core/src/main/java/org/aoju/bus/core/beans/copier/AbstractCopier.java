@@ -23,70 +23,46 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.cron.pattern.parser;
+package org.aoju.bus.core.beans.copier;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.copier.Copier;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 /**
- * 简易值转换器 将给定String值转为int
+ * 抽象的对象拷贝封装，提供来源对象、目标对象持有
  *
+ * @param <S> 来源对象类型
+ * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
-public class SimpleValueParser implements ValueParser {
+public abstract class AbstractCopier<S, T> implements Copier<T> {
 
     /**
-     * 最小值(包括)
+     * 源对象
      */
-    protected int min;
+    protected final S source;
     /**
-     * 最大值(包括)
+     * 目标对象
      */
-    protected int max;
+    protected final T target;
+    /**
+     * 拷贝选项
+     */
+    protected final CopyOptions copyOptions;
 
     /**
      * 构造
      *
-     * @param min 最小值(包括)
-     * @param max 最大值(包括)
+     * @param source      源对象
+     * @param target      目标对象
+     * @param copyOptions 拷贝选项
      */
-    public SimpleValueParser(int min, int max) {
-        if (min > max) {
-            this.min = max;
-            this.max = min;
-        } else {
-            this.min = min;
-            this.max = max;
-        }
-    }
-
-    @Override
-    public int parse(String value) throws InstrumentException {
-        if ("L".equalsIgnoreCase(value)) {
-            return max;
-        }
-
-        int i;
-        try {
-            i = Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw new InstrumentException("Invalid integer value: [{}]", value);
-        }
-        if (i < min || i > max) {
-            throw new InstrumentException("Value [{}] out of range: [{} , {}]", i, min, max);
-        }
-        return i;
-    }
-
-    @Override
-    public int getMin() {
-        return this.min;
-    }
-
-    @Override
-    public int getMax() {
-        return this.max;
+    public AbstractCopier(S source, T target, CopyOptions copyOptions) {
+        this.source = source;
+        this.target = target;
+        this.copyOptions = ObjectKit.defaultIfNull(copyOptions, CopyOptions::create);
     }
 
 }

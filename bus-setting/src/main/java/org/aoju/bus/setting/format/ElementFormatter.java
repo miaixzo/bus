@@ -31,8 +31,8 @@ import org.aoju.bus.setting.magic.IniElement;
  * 将字符串值格式设置为{@link IniElement}
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface ElementFormatter<E extends IniElement> {
 

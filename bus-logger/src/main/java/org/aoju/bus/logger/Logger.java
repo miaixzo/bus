@@ -33,8 +33,8 @@ import org.aoju.bus.logger.level.Level;
  * 静态日志类,用于在不引入日志对象的情况下打印日志
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class Logger {
 

@@ -28,10 +28,10 @@ package org.aoju.bus.health.windows.drivers.perfmon;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.health.Config;
 import org.aoju.bus.health.windows.PerfCounterQuery;
 import org.aoju.bus.health.windows.PerfCounterWildcardQuery;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,25 +39,16 @@ import java.util.Map;
  * Utility to query Processor performance counter
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class ProcessorInformation {
 
-    public static final boolean USE_CPU_UTILITY = VersionHelpers.IsWindows8OrGreater()
-            && Config.get(Config.OS_WINDOWS_CPU_UTILITY, false);
-    private static final String PROCESSOR = "Processor";
-    private static final String PROCESSOR_INFORMATION = "Processor Information";
-    // For Win7+ ... NAME field includes NUMA nodes
-    private static final String WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL = "Win32_PerfRawData_Counters_ProcessorInformation WHERE NOT Name LIKE \"%_Total\"";
-    // For Vista- ... Older systems just have processor #
-    private static final String WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL = "Win32_PerfRawData_PerfOS_Processor WHERE Name!=\"_Total\"";
-    private static final String WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL = "Win32_PerfRawData_PerfOS_Processor WHERE Name=\"_Total\"";
     private static final boolean IS_WIN7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
-    private static final Pair<List<String>, Map<ProcessorCapacityTickCountProperty, List<Long>>> INITIAL_CAPACITY_TICKS = USE_CPU_UTILITY
-            ? queryProcessorCapacityCounters()
-            : null;
+
+    private ProcessorInformation() {
+    }
 
     /**
      * Returns processor performance counters.
@@ -65,10 +56,13 @@ public final class ProcessorInformation {
      * @return Performance Counters for processors.
      */
     public static Pair<List<String>, Map<ProcessorTickCountProperty, List<Long>>> queryProcessorCounters() {
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
         return IS_WIN7_OR_GREATER ? PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class,
-                PROCESSOR_INFORMATION, WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL)
-                : PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class, PROCESSOR,
-                WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL);
+                PerfmonConsts.PROCESSOR_INFORMATION, PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL)
+                : PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class, PerfmonConsts.PROCESSOR,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL);
     }
 
     /**
@@ -76,21 +70,12 @@ public final class ProcessorInformation {
      *
      * @return Performance Counters for processor capacity.
      */
-    public static Pair<List<String>, Map<ProcessorCapacityTickCountProperty, List<Long>>> queryProcessorCapacityCounters() {
-        if (!USE_CPU_UTILITY) {
-            return null;
+    public static Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>> queryProcessorCapacityCounters() {
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorCapacityTickCountProperty.class,
-                PROCESSOR_INFORMATION, WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
-    }
-
-    /**
-     * Returns initial processor capacity performance counters.
-     *
-     * @return initial Performance Counters for processor capacity.
-     */
-    public static Pair<List<String>, Map<ProcessorCapacityTickCountProperty, List<Long>>> queryInitialProcessorCapacityCounters() {
-        return INITIAL_CAPACITY_TICKS;
+        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorUtilityTickCountProperty.class,
+                PerfmonConsts.PROCESSOR_INFORMATION, PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 
     /**
@@ -99,8 +84,11 @@ public final class ProcessorInformation {
      * @return Interrupts counter for the total of all processors.
      */
     public static Map<InterruptsProperty, Long> queryInterruptCounters() {
-        return PerfCounterQuery.queryValues(InterruptsProperty.class, PROCESSOR,
-                WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL);
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Collections.emptyMap();
+        }
+        return PerfCounterQuery.queryValues(InterruptsProperty.class, PerfmonConsts.PROCESSOR,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL);
     }
 
     /**
@@ -109,8 +97,11 @@ public final class ProcessorInformation {
      * @return Processor frequency counter for each processor.
      */
     public static Pair<List<String>, Map<ProcessorFrequencyProperty, List<Long>>> queryFrequencyCounters() {
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorFrequencyProperty.class, PROCESSOR_INFORMATION,
-                WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
+        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorFrequencyProperty.class, PerfmonConsts.PROCESSOR_INFORMATION,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 
     /**
@@ -129,34 +120,6 @@ public final class ProcessorInformation {
         private final String counter;
 
         ProcessorTickCountProperty(String counter) {
-            this.counter = counter;
-        }
-
-        @Override
-        public String getCounter() {
-            return counter;
-        }
-    }
-
-    /**
-     * Processor performance counters including utility counters
-     */
-    public enum ProcessorCapacityTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
-        // First element defines WMI instance name field and PDH instance filter
-        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
-        // Remaining elements define counters
-        PERCENTDPCTIME("% DPC Time"), //
-        PERCENTINTERRUPTTIME("% Interrupt Time"), //
-        PERCENTPRIVILEGEDTIME("% Privileged Time"), //
-        PERCENTPROCESSORTIME("% Processor Time"), //
-        PERCENTPRIVILEGEDUTILITY("% Privileged Utility"), //
-        PERCENTPROCESSORUTILITY("% Processor Utility"), //
-        PERCENTPROCESSORUTILITY_BASE("% Processor Utility_Base"), //
-        PERCENTUSERTIME("% User Time");
-
-        private final String counter;
-
-        ProcessorCapacityTickCountProperty(String counter) {
             this.counter = counter;
         }
 
@@ -203,6 +166,37 @@ public final class ProcessorInformation {
         private final String counter;
 
         ProcessorFrequencyProperty(String counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
+        }
+    }
+
+    /**
+     * Processor performance counters including utility counters
+     */
+    public enum ProcessorUtilityTickCountProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+        // First element defines WMI instance name field and PDH instance filter
+        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
+        // Remaining elements define counters
+        PERCENTDPCTIME("% DPC Time"), //
+        PERCENTINTERRUPTTIME("% Interrupt Time"), //
+        PERCENTPRIVILEGEDTIME("% Privileged Time"), //
+        PERCENTPROCESSORTIME("% Processor Time"), //
+        // The above 3 counters are 100ns base type
+        // For PDH accessible as secondary counter in any of them
+        TIMESTAMP_SYS100NS("% Processor Time_Base"), //
+        PERCENTPRIVILEGEDUTILITY("% Privileged Utility"), //
+        PERCENTPROCESSORUTILITY("% Processor Utility"), //
+        PERCENTPROCESSORUTILITY_BASE("% Processor Utility_Base"), //
+        PERCENTUSERTIME("% User Time");
+
+        private final String counter;
+
+        ProcessorUtilityTickCountProperty(String counter) {
             this.counter = counter;
         }
 

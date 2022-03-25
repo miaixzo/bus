@@ -34,8 +34,8 @@ import org.aoju.bus.base.entity.OAuth2;
  * 认证及委托处理
  *
  * @author Justubborn
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Data
 public class Delegate {

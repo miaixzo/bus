@@ -307,8 +307,8 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.3.5
-     * @since JDK 1.8+
+     * @version 6.5.0
+     * @since Java 17+
      */
     public static class Client extends CoverHttp<Client> {
 
@@ -457,8 +457,8 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.3.5
-     * @since JDK 1.8+
+     * @version 6.5.0
+     * @since Java 17+
      */
     public static class Message extends AbstractBody {
 

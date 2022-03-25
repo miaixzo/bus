@@ -35,8 +35,8 @@ import java.util.*;
  * 八字
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class EightChar {
 
@@ -580,13 +580,24 @@ public class EightChar {
     }
 
     /**
-     * 获取运
+     * 使用默认流派1获取运
      *
      * @param gender 性别：1男，0女
      * @return 运
      */
     public Yun getYun(int gender) {
-        return new Yun(this, gender);
+        return getYun(gender, 1);
+    }
+
+    /**
+     * 获取运
+     *
+     * @param gender 性别：1男，0女
+     * @param sect   流派，1按天数和时辰数计算，3天1年，1天4个月，1时辰10天；2按分钟数计算
+     * @return 运
+     */
+    public Yun getYun(int gender, int sect) {
+        return new Yun(this, gender, sect);
     }
 
     /**
@@ -1127,8 +1138,29 @@ public class EightChar {
          * 起运天数
          */
         private int startDay;
+        /**
+         * 起运小时数
+         */
+        private int startHour;
 
+        /**
+         * 使用默认流派1初始化运
+         *
+         * @param eightChar 八字
+         * @param gender    性别，1男，0女
+         */
         public Yun(EightChar eightChar, int gender) {
+            this(eightChar, gender, 1);
+        }
+
+        /**
+         * 初始化运
+         *
+         * @param eightChar 八字
+         * @param gender    性别，1男，0女
+         * @param sect      流派，1按天数和时辰数计算，3天1年，1天4个月，1时辰10天；2按分钟数计算
+         */
+        public Yun(EightChar eightChar, int gender, int sect) {
             this.lunar = eightChar.getLunar();
             this.gender = gender;
             // 阳
@@ -1136,13 +1168,13 @@ public class EightChar {
             // 男
             boolean man = 1 == gender;
             forward = (yang && man) || (!yang && !man);
-            compute();
+            compute(sect);
         }
 
         /**
          * 起运计算
          */
-        private void compute() {
+        private void compute(int sect) {
             // 上节
             Lunar.SolarTerm prev = lunar.getPrevJie();
             // 下节
@@ -1152,24 +1184,46 @@ public class EightChar {
             // 阳男阴女顺推，阴男阳女逆推
             Solar start = forward ? current : prev.getSolar();
             Solar end = forward ? next.getSolar() : current;
-            int endTimeZhiIndex = (end.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(end.build(false).substring(11, Normal._16));
-            int startTimeZhiIndex = (start.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(start.build(false).substring(11, Normal._16));
-            // 时辰差
-            int hourDiff = endTimeZhiIndex - startTimeZhiIndex;
-            // 天数差
-            int dayDiff = Solar.getDays(start.getYear(), start.getMonth(), start.getDay(), end.getYear(), end.getMonth(), end.getDay());
-            if (hourDiff < 0) {
-                hourDiff += 12;
-                dayDiff--;
+
+            int year;
+            int month;
+            int day;
+            int hour = 0;
+
+            if (2 == sect) {
+                long minutes = (end.getCalendar().getTimeInMillis() - start.getCalendar().getTimeInMillis()) / 60000;
+                long y = minutes / 4320;
+                minutes -= y * 4320;
+                long m = minutes / 360;
+                minutes -= m * 360;
+                long d = minutes / 12;
+                minutes -= d * 12;
+                long h = minutes * 2;
+                year = (int) y;
+                month = (int) m;
+                day = (int) d;
+                hour = (int) h;
+            } else {
+                int endTimeZhiIndex = (end.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(end.build(false).substring(11, Normal._16));
+                int startTimeZhiIndex = (start.getHour() == 23) ? 11 : Lunar.getTimeZhiIndex(start.build(false).substring(11, Normal._16));
+                // 时辰差
+                int hourDiff = endTimeZhiIndex - startTimeZhiIndex;
+                // 天数差
+                int dayDiff = Solar.getDays(start.getYear(), start.getMonth(), start.getDay(), end.getYear(), end.getMonth(), end.getDay());
+                if (hourDiff < 0) {
+                    hourDiff += 12;
+                    dayDiff--;
+                }
+                int monthDiff = hourDiff * 10 / 30;
+                month = dayDiff * 4 + monthDiff;
+                day = hourDiff * 10 - monthDiff * 30;
+                year = month / 12;
+                month = month - year * 12;
             }
-            int monthDiff = hourDiff * 10 / 30;
-            int month = dayDiff * 4 + monthDiff;
-            int day = hourDiff * 10 - monthDiff * 30;
-            int year = month / 12;
-            month = month - year * 12;
             this.startYear = year;
             this.startMonth = month;
             this.startDay = day;
+            this.startHour = hour;
         }
 
         /**
@@ -1209,6 +1263,15 @@ public class EightChar {
         }
 
         /**
+         * 获取起运小时数
+         *
+         * @return 起运小时数
+         */
+        public int getStartHour() {
+            return startHour;
+        }
+
+        /**
          * 是否顺推
          *
          * @return true/false
@@ -1228,10 +1291,11 @@ public class EightChar {
          */
         public Solar getStartSolar() {
             Solar birth = lunar.getSolar();
-            Calendar calendar = Kalendar.calendar(birth.getYear(), birth.getMonth(), birth.getDay());
+            Calendar calendar = Kalendar.calendar(birth.getYear(), birth.getMonth(), birth.getDay(), birth.getHour(), birth.getMinute(), birth.getSecond());
             calendar.add(Calendar.YEAR, startYear);
             calendar.add(Calendar.MONTH, startMonth);
             calendar.add(Calendar.DATE, startDay);
+            calendar.add(Calendar.HOUR, startHour);
             return Solar.from(calendar);
         }
 

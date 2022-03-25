@@ -31,14 +31,21 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 值匹配,始终返回<code>true</code>
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class AlwaysTrueValueMatcher implements ValueMatcher {
+
+    public static AlwaysTrueValueMatcher INSTANCE = new AlwaysTrueValueMatcher();
 
     @Override
     public boolean match(Integer t) {
         return true;
+    }
+
+    @Override
+    public int nextAfter(int value) {
+        return value;
     }
 
     @Override

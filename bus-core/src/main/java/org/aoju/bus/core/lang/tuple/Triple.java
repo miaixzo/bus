@@ -44,8 +44,8 @@ import java.util.Objects;
  * @param <M> 中间元素类型
  * @param <R> 右元素类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Serializable {

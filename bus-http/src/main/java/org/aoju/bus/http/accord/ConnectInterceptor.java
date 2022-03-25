@@ -39,8 +39,8 @@ import java.io.IOException;
  * 打开到目标服务器的连接并继续到下一个拦截器.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class ConnectInterceptor implements Interceptor {
 

@@ -48,8 +48,8 @@ import java.util.regex.Pattern;
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class DiskLruCache implements Closeable, Flushable {
 
@@ -219,6 +219,18 @@ public final class DiskLruCache implements Closeable, Flushable {
         }
     }
 
+    private BufferSink newJournalWriter() throws FileNotFoundException {
+        Sink fileSink = fileSystem.appendingSink(journalFile);
+        Sink faultHidingSink = new FaultHideSink(fileSink) {
+            @Override
+            protected void onException(IOException e) {
+                assert (Thread.holdsLock(DiskLruCache.this));
+                hasJournalErrors = true;
+            }
+        };
+        return IoKit.buffer(faultHidingSink);
+    }
+
     private final Runnable cleanupRunnable = new Runnable() {
         public void run() {
             synchronized (DiskLruCache.this) {
@@ -244,18 +256,6 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
     };
-
-    private BufferSink newJournalWriter() throws FileNotFoundException {
-        Sink fileSink = fileSystem.appendingSink(journalFile);
-        Sink faultHidingSink = new FaultHideSink(fileSink) {
-            @Override
-            protected void onException(IOException e) {
-                assert (Thread.holdsLock(DiskLruCache.this));
-                hasJournalErrors = true;
-            }
-        };
-        return IoKit.buffer(faultHidingSink);
-    }
 
     private void readJournalLine(String line) throws IOException {
         int firstSpace = line.indexOf(Symbol.C_SPACE);
@@ -966,5 +966,6 @@ public final class DiskLruCache implements Closeable, Flushable {
             }
         }
     }
+
 
 }

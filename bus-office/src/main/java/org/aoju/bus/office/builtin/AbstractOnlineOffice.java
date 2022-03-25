@@ -31,8 +31,8 @@ import org.aoju.bus.office.provider.SourceDocumentProvider;
  * 所有在线office任务实现的基类.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractOnlineOffice extends AbstractOffice {
 

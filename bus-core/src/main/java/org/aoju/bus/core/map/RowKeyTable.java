@@ -39,8 +39,8 @@ import java.util.*;
  * @param <C> 列类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
@@ -58,7 +58,6 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     public RowKeyTable() {
         this(new HashMap<>());
     }
-    //endregion
 
     /**
      * 构造
@@ -156,7 +155,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
-            return new TransIter<>(columnKeySet.iterator(),
+            return new TransIterator<>(columnKeySet.iterator(),
                     c -> new AbstractMap.SimpleEntry<>(c, getColumn(c)));
         }
 

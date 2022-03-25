@@ -36,8 +36,8 @@ import java.io.IOException;
  * Httpd使用协议这个词来标识HTTP消息是如何构造的
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public enum Protocol {
 

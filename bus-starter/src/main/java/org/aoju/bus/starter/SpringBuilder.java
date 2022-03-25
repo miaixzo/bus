@@ -51,8 +51,8 @@ import java.util.Map;
  * 设置相关系统参数信息
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Component
 public class SpringBuilder implements ApplicationContextAware {
@@ -67,6 +67,12 @@ public class SpringBuilder implements ApplicationContextAware {
         return SpringBuilder.context;
     }
 
+    public static void setContext(ConfigurableApplicationContext context) {
+        Assert.notNull(context, "Could not found context for spring.");
+        SpringBuilder.context = context;
+        SpringHolder.alive = true;
+    }
+
     /**
      * 发布事件
      *
@@ -76,12 +82,6 @@ public class SpringBuilder implements ApplicationContextAware {
         if (null != context) {
             context.publishEvent(event);
         }
-    }
-
-    public static void setContext(ConfigurableApplicationContext context) {
-        Assert.notNull(context, "Could not found context for spring.");
-        SpringBuilder.context = context;
-        SpringHolder.alive = true;
     }
 
     /**
@@ -285,12 +285,6 @@ public class SpringBuilder implements ApplicationContextAware {
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
-    }
-
     /**
      * 获取应用程序名称
      *
@@ -325,6 +319,12 @@ public class SpringBuilder implements ApplicationContextAware {
      */
     public static boolean isTestMode() {
         return "test".equalsIgnoreCase(getActiveProfile());
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        System.setProperty("user.timezone", "Asia/Shanghai");
+        SpringBuilder.context = (ConfigurableApplicationContext) applicationContext;
     }
 
 }

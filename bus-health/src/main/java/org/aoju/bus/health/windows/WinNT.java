@@ -30,8 +30,8 @@ import com.sun.jna.Structure.FieldOrder;
 
 /**
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface WinNT extends com.sun.jna.platform.win32.WinNT {
 

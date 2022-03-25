@@ -37,8 +37,8 @@ import org.aoju.bus.health.unix.Kstat2.Kstat2NV.UNION.StringsArr;
  * Kstat2 is available in Solaris 11.4 and later.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface Kstat2 extends Library {
 
@@ -206,7 +206,7 @@ public interface Kstat2 extends Library {
      * Opaque kstat handle.
      */
     class Kstat2Handle extends PointerType {
-        private final PointerByReference ref = new PointerByReference();
+        private PointerByReference ref = new PointerByReference();
 
         /**
          * Instantiates and opens a new Kstat2Handle with no filtering. All of the
@@ -286,7 +286,7 @@ public interface Kstat2 extends Library {
      * Opaque kstat match list.
      */
     class Kstat2MatcherList extends PointerType {
-        private final PointerByReference ref = new PointerByReference();
+        private PointerByReference ref = new PointerByReference();
 
         /**
          * Instantiates a new Kstat2MatcherList, allocating the necessary resources.
@@ -490,8 +490,8 @@ public interface Kstat2 extends Library {
      * {@code kstat2_status} values in {@code kstat2.h}
      *
      * @author Kimi Liu
-     * @version 6.3.5
-     * @since JDK 1.8+
+     * @version 6.5.0
+     * @since Java 17+
      */
     class Kstat2StatusException extends RuntimeException {
 
@@ -535,4 +535,5 @@ public interface Kstat2 extends Library {
         }
 
     }
+
 }

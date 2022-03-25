@@ -37,8 +37,8 @@ import java.util.Set;
  * 基于emoji-java的Emoji表情工具类
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class EmojiKit {
 
@@ -160,7 +160,7 @@ public class EmojiKit {
      * 否则，<code>👦🏿</code> 转换为 <code>&amp;#128102;</code>
      * </pre>
      *
-     * @param text 包含Emoji Unicode字符的字符串
+     * @param text  包含Emoji Unicode字符的字符串
      * @param isHex 是否hex形式
      * @return 替换后的字符串
      */

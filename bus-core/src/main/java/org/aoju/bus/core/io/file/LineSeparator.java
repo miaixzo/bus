@@ -37,11 +37,11 @@ import org.aoju.bus.core.lang.Symbol;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @see #MAC
  * @see #LINUX
  * @see #WINDOWS
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public enum LineSeparator {
 

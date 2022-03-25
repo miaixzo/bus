@@ -31,8 +31,8 @@ import java.io.Serializable;
  * 过滤器BitMap在32位机器上.这个类能发生更好的效果.一般情况下建议使用此类
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class IntMap implements BitMap, Serializable {
 

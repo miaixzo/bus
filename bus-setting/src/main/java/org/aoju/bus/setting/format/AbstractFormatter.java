@@ -32,8 +32,8 @@ import org.aoju.bus.setting.magic.IniElement;
  * 除了CommentElementFormatter之外，所有元素格式化程序都还需要注释元素格式化程序
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractFormatter<E extends IniElement> implements ElementFormatter<E> {
 

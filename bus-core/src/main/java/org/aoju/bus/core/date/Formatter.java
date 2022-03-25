@@ -57,8 +57,8 @@ import java.util.concurrent.TimeUnit;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class Formatter {
 
@@ -1011,6 +1011,11 @@ public class Formatter {
      * 检查两个时间段是否有时间重叠
      * 重叠指两个时间段是否有交集
      *
+     * <ol>
+     *      <li>x &gt; b || a &gt; y 无交集</li>
+     *      <li>则有交集的逻辑为 !(x &gt; b || a &gt; y) 根据德摩根公式，可化简为 x &lt;= b &amp;&amp; a &lt;= y</li>
+     * </ol>
+     *
      * @param realStartTime 第一个时间段的开始时间
      * @param realEndTime   第一个时间段的结束时间
      * @param startTime     第二个时间段的开始时间
@@ -1019,7 +1024,7 @@ public class Formatter {
      */
     public static boolean isOverlap(Date realStartTime, Date realEndTime,
                                     Date startTime, Date endTime) {
-        return startTime.after(realEndTime) || endTime.before(realStartTime);
+        return startTime.before(realEndTime) && endTime.after(realStartTime);
     }
 
     /**

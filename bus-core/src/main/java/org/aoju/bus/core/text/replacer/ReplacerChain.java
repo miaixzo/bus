@@ -36,8 +36,8 @@ import java.util.List;
  * 字符串替换链，用于组合多个字符串替换逻辑
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ReplacerChain extends TextReplacer implements Chain<TextReplacer, ReplacerChain> {
 

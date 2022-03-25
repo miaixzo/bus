@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.windows.PerfCounterQuery;
 import org.aoju.bus.health.windows.PerfCounterWildcardQuery;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,16 +38,11 @@ import java.util.Map;
  * Utility to query Process Information performance counter
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class ProcessInformation {
-
-    private static final String WIN32_PERFPROC_PROCESS = "Win32_PerfRawData_PerfProc_Process";
-    private static final String PROCESS = "Process";
-    private static final String WIN32_PERFPROC_PROCESS_WHERE_NOT_NAME_LIKE_TOTAL = WIN32_PERFPROC_PROCESS
-            + " WHERE NOT Name LIKE \"%_Total\"";
 
     /**
      * Returns process counters.
@@ -54,8 +50,11 @@ public final class ProcessInformation {
      * @return Process counters for each process.
      */
     public static Pair<List<String>, Map<ProcessPerformanceProperty, List<Long>>> queryProcessCounters() {
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessPerformanceProperty.class, PROCESS,
-                WIN32_PERFPROC_PROCESS_WHERE_NOT_NAME_LIKE_TOTAL);
+        if (PerfmonDisabled.PERF_PROC_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
+        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessPerformanceProperty.class, PerfmonConsts.PROCESS,
+                PerfmonConsts.WIN32_PERFPROC_PROCESS_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 
     /**
@@ -64,8 +63,11 @@ public final class ProcessInformation {
      * @return Process handle counters for each process.
      */
     public static Pair<List<String>, Map<HandleCountProperty, List<Long>>> queryHandles() {
-        return PerfCounterWildcardQuery.queryInstancesAndValues(HandleCountProperty.class, PROCESS,
-                WIN32_PERFPROC_PROCESS);
+        if (PerfmonDisabled.PERF_PROC_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
+        return PerfCounterWildcardQuery.queryInstancesAndValues(HandleCountProperty.class, PerfmonConsts.PROCESS,
+                PerfmonConsts.WIN32_PERFPROC_PROCESS);
     }
 
     /**

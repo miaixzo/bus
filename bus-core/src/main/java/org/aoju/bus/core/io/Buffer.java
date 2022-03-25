@@ -47,8 +47,8 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
 
@@ -1926,6 +1926,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     public static final class UnsafeCursor implements Closeable {
+
         public Buffer buffer;
         public boolean readWrite;
         public long offset = -1L;

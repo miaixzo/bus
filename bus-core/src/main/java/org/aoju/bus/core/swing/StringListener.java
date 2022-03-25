@@ -36,8 +36,8 @@ import java.io.Serializable;
  * 剪贴板字符串内容监听
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class StringListener implements ClipboardListener, Serializable {
 

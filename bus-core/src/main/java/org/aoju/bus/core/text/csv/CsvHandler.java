@@ -29,8 +29,8 @@ package org.aoju.bus.core.text.csv;
  * CSV的行处理器，实现此接口用于按照行处理数据
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface CsvHandler {

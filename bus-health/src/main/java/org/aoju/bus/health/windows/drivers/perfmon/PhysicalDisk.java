@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.windows.PerfCounterQuery;
 import org.aoju.bus.health.windows.PerfCounterWildcardQuery;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,14 +38,11 @@ import java.util.Map;
  * Utility to query PhysicalDisk performance counter
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class PhysicalDisk {
-
-    private static final String PHYSICAL_DISK = "PhysicalDisk";
-    private static final String WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NAME_NOT_TOTAL = "Win32_PerfRawData_PerfDisk_PhysicalDisk WHERE Name!=\"_Total\"";
 
     /**
      * Returns physical disk performance counters.
@@ -52,8 +50,11 @@ public final class PhysicalDisk {
      * @return Performance Counters for physical disks.
      */
     public static Pair<List<String>, Map<PhysicalDiskProperty, List<Long>>> queryDiskCounters() {
-        return PerfCounterWildcardQuery.queryInstancesAndValues(PhysicalDiskProperty.class, PHYSICAL_DISK,
-                WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NAME_NOT_TOTAL);
+        if (PerfmonDisabled.PERF_DISK_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
+        return PerfCounterWildcardQuery.queryInstancesAndValues(PhysicalDiskProperty.class, PerfmonConsts.PHYSICAL_DISK,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_DISK_PHYSICAL_DISK_WHERE_NAME_NOT_TOTAL);
     }
 
     /**

@@ -33,8 +33,8 @@ import org.aoju.bus.core.lang.Matcher;
  * 查找满足指定{@link Matcher} 匹配的字符所在位置，此类长用于查找某一类字符，如数字等
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class MatcherFinder extends TextFinder {
 

@@ -39,8 +39,8 @@ import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
  * AixNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 final class AixNetworkParams extends AbstractNetworkParams {

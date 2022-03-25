@@ -45,8 +45,8 @@ import java.util.List;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class LinuxPowerSource extends AbstractPowerSource {
@@ -105,7 +105,8 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                         UdevDevice device = udev.deviceNewFromSyspath(syspath);
                         if (device != null) {
                             try {
-                                if (Builder.parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_PRESENT"),
+                                if (Builder.parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_PRESENT"), 1) > 0
+                                        && Builder.parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_ONLINE"),
                                         1) > 0) {
                                     psName = getOrDefault(device, "POWER_SUPPLY_NAME", name);
                                     String status = device.getPropertyValue("POWER_SUPPLY_STATUS");

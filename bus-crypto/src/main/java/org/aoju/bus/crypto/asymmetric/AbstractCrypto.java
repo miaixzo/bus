@@ -33,8 +33,8 @@ import java.security.PublicKey;
  *
  * @param <T> 返回自身类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractCrypto<T extends AbstractCrypto<T>> extends Asymmetric<T>
         implements Encryptor, Decryptor {

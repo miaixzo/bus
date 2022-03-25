@@ -4,8 +4,8 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 版本异常
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class VersionException extends UncheckedException {
 

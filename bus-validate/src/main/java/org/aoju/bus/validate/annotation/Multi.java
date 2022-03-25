@@ -35,8 +35,8 @@ import java.lang.annotation.*;
  * 多重校验器, 可以配置多个校验器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

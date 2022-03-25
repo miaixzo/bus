@@ -33,8 +33,8 @@ import java.lang.annotation.*;
  * cron处理程序的注解
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

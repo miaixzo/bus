@@ -33,8 +33,8 @@ import java.util.Objects;
  * 提供默认值的Map
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class TolerantMap<K, V> extends MapWrapper<K, V> {
 

@@ -31,17 +31,17 @@ package org.aoju.bus.core.codec;
  * @param <T> 被编码的数据类型
  * @param <R> 编码后的数据类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface Encoder<T, R> {
 
     /**
      * 执行编码
      *
-     * @param encoded 被编码的数据
+     * @param data 被编码的数据
      * @return 编码后的数据
      */
-    R encode(T encoded);
+    R encode(T data);
 
 }

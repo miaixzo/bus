@@ -36,8 +36,8 @@ import java.util.Objects;
  * Utility to query WMI class {@code Win32_OperatingSystem}
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class Win32OperatingSystem {

@@ -42,8 +42,8 @@ import java.io.OutputStream;
  * 使用尚未应用于转换器的源格式的所有转换作业实现的基类.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractNorm implements OptionalSource {
 

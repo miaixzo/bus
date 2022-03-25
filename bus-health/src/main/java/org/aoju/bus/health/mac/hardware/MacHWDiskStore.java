@@ -51,8 +51,8 @@ import java.util.stream.Collectors;
  * Mac hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class MacHWDiskStore extends AbstractHWDiskStore {

@@ -4,7 +4,7 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
 
 ## 运行环境
 
-要求JDK1.8+
+要求Java 17+
 
 *
 * 通常情况下仅需实现{@link org.aoju.bus.socket.Protocol}、{@link org.aoju.bus.socket.process.MessageProcessor}即可

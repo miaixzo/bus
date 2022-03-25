@@ -47,8 +47,8 @@ import java.util.concurrent.TimeUnit;
  * 服务来自缓存的请求并将响应写入缓存。
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class CacheInterceptor implements Interceptor {
 

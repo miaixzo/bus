@@ -45,8 +45,8 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Memory obtained by perfstat_memory_total_t
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 final class AixGlobalMemory extends AbstractGlobalMemory {

@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.jdbc;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.google.common.collect.Maps;
 import com.zaxxer.hikari.HikariDataSource;
 import org.aoju.bus.core.lang.Algorithm;
@@ -61,10 +60,10 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
-@ConditionalOnClass(value = {HikariDataSource.class, DruidDataSource.class})
+@ConditionalOnClass(value = {HikariDataSource.class})
 @EnableConfigurationProperties(JdbcProperties.class)
 @AutoConfigureBefore(DataSourceAutoConfiguration.class)
 @Import(AspectjJdbcProxy.class)

@@ -36,7 +36,6 @@ import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
-import org.aoju.bus.health.linux.hardware.LinuxGlobalMemory;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -59,8 +58,8 @@ import java.util.stream.Collectors;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public class LinuxOSProcess extends AbstractOSProcess {
@@ -383,7 +382,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.threadCount = (int) statArray[ProcPidStat.THREAD_COUNT.ordinal()];
         this.priority = (int) statArray[ProcPidStat.PRIORITY.ordinal()];
         this.virtualSize = statArray[ProcPidStat.VSZ.ordinal()];
-        this.residentSetSize = statArray[ProcPidStat.RSS.ordinal()] * LinuxGlobalMemory.PAGE_SIZE;
+        this.residentSetSize = statArray[ProcPidStat.RSS.ordinal()] * LinuxOperatingSystem.getPageSize();
         this.kernelTime = statArray[ProcPidStat.KERNEL_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.userTime = statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.minorFaults = statArray[ProcPidStat.MINOR_FAULTS.ordinal()];

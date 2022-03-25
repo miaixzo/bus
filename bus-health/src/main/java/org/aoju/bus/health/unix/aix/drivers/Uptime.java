@@ -36,8 +36,8 @@ import java.util.regex.Pattern;
  * Utility to query up time.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class Uptime {
@@ -58,7 +58,13 @@ public final class Uptime {
      */
     public static long queryUpTime() {
         long uptime = 0L;
-        String s = Executor.getFirstAnswer("/usr/bin/uptime");
+        String s = Executor.getFirstAnswer("uptime");
+        if (s.isEmpty()) {
+            s = Executor.getFirstAnswer("w");
+        }
+        if (s.isEmpty()) {
+            s = Executor.getFirstAnswer("/usr/bin/uptime");
+        }
         Matcher m = UPTIME_FORMAT_AIX.matcher(s);
         if (m.matches()) {
             if (m.group(2) != null) {

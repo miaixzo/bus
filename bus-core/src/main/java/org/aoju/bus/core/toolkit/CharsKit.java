@@ -49,8 +49,8 @@ import java.util.regex.Pattern;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class CharsKit {
 
@@ -1141,7 +1141,7 @@ public class CharsKit {
         }
 
         final String str2 = text.toString();
-        if (str2.toLowerCase().startsWith(prefix.toString().toLowerCase())) {
+        if (startWithIgnoreCase(text, prefix)) {
             return subSuf(str2, prefix.length());// 截取后半段
         }
         return str2;
@@ -1162,6 +1162,36 @@ public class CharsKit {
         final String str2 = text.toString();
         if (str2.endsWith(suffix.toString())) {
             return subPre(str2, str2.length() - suffix.length());// 截取前半段
+        }
+        return str2;
+    }
+
+    /**
+     * 去掉指定后缀，并小写首字母
+     *
+     * @param str    字符串
+     * @param suffix 后缀
+     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     */
+    public static String removeSufAndLowerFirst(CharSequence str, CharSequence suffix) {
+        return lowerFirst(removeSuffix(str, suffix));
+    }
+
+    /**
+     * 忽略大小写去掉指定后缀
+     *
+     * @param str    字符串
+     * @param suffix 后缀
+     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     */
+    public static String removeSuffixIgnoreCase(CharSequence str, CharSequence suffix) {
+        if (isEmpty(str) || isEmpty(suffix)) {
+            return toString(str);
+        }
+
+        final String str2 = str.toString();
+        if (endWithIgnoreCase(str, suffix)) {
+            return subPre(str2, str2.length() - suffix.length());
         }
         return str2;
     }
@@ -2427,6 +2457,20 @@ public class CharsKit {
     }
 
     /**
+     * 截取第一个字串的部分字符，与第二个字符串比较（长度一致），判断截取的子串是否相同
+     * 任意一个字符串为null返回false
+     *
+     * @param str1       第一个字符串
+     * @param start1     第一个字符串开始的位置
+     * @param str2       第二个字符串
+     * @param ignoreCase 是否忽略大小写
+     * @return 子串是否相同
+     */
+    public static boolean isSubEquals(CharSequence str1, int start1, CharSequence str2, boolean ignoreCase) {
+        return isSubEquals(str1, start1, str2, 0, str2.length(), ignoreCase);
+    }
+
+    /**
      * 截取两个字符串的不同部分(长度一致),判断截取的子串是否相同
      * 任意一个字符串为null返回false
      *
@@ -2734,7 +2778,7 @@ public class CharsKit {
     }
 
     /**
-     * 替换指定字符串的指定区间内字符为指定字符串，字符串只重复一次<br>
+     * 替换指定字符串的指定区间内字符为指定字符串，字符串只重复一次
      * 此方法使用{@link String#codePoints()}完成拆分替换
      *
      * @param text         字符串
@@ -3146,12 +3190,8 @@ public class CharsKit {
             return null == text && null == prefix;
         }
 
-        boolean isStartWith;
-        if (ignoreCase) {
-            isStartWith = text.toString().toLowerCase().startsWith(prefix.toString().toLowerCase());
-        } else {
-            isStartWith = text.toString().startsWith(prefix.toString());
-        }
+        boolean isStartWith = text.toString()
+                .regionMatches(ignoreCase, 0, prefix.toString(), 0, prefix.length());
 
         if (isStartWith) {
             return (false == ignoreEquals) || (false == equals(text, prefix, ignoreCase));
@@ -3231,22 +3271,43 @@ public class CharsKit {
      * 是否以指定字符串结尾
      * 如果给定的字符串和开头字符串都为null则返回true,否则任意一个值为null返回false
      *
-     * @param text         被监测字符串
-     * @param suffix       结尾字符串
-     * @param isIgnoreCase 是否忽略大小写
+     * @param text       被监测字符串
+     * @param suffix     结尾字符串
+     * @param ignoreCase 是否忽略大小写
      * @return 是否以指定字符串结尾
      */
-    public static boolean endWith(CharSequence text, CharSequence suffix, boolean isIgnoreCase) {
+    public static boolean endWith(CharSequence text, CharSequence suffix, boolean ignoreCase) {
+        return endWith(text, suffix, ignoreCase, false);
+    }
+
+    /**
+     * 是否以指定字符串结尾
+     * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     *
+     * @param text         被监测字符串
+     * @param suffix       结尾字符串
+     * @param ignoreCase   是否忽略大小写
+     * @param ignoreEquals 是否忽略字符串相等的情况
+     * @return 是否以指定字符串结尾
+     */
+    public static boolean endWith(CharSequence text, CharSequence suffix, boolean ignoreCase, boolean ignoreEquals) {
         if (null == text || null == suffix) {
+            if (ignoreEquals) {
+                return false;
+            }
             return null == text && null == suffix;
         }
 
-        if (isIgnoreCase) {
-            return text.toString().toLowerCase().endsWith(suffix.toString().toLowerCase());
-        } else {
-            return text.toString().endsWith(suffix.toString());
+        final int strOffset = text.length() - suffix.length();
+        boolean isEndWith = text.toString()
+                .regionMatches(ignoreCase, strOffset, suffix.toString(), 0, suffix.length());
+
+        if (isEndWith) {
+            return (false == ignoreEquals) || (false == equals(text, suffix, ignoreCase));
         }
+        return false;
     }
+
 
     /**
      * 是否以指定字符串结尾
@@ -3553,7 +3614,7 @@ public class CharsKit {
             // 如果被监测字符串和
             return null == testStr;
         }
-        return text.toString().toLowerCase().contains(testStr.toString().toLowerCase());
+        return indexOfIgnoreCase(text, testStr) > -1;
     }
 
     /**

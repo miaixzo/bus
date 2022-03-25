@@ -28,20 +28,18 @@ package org.aoju.bus.health.windows.drivers.perfmon;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.PerfCounterQuery;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
  * Utility to query Memory performance counter
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class MemoryInformation {
-
-    private static final String MEMORY = "Memory";
-    private static final String WIN32_PERF_RAW_DATA_PERF_OS_MEMORY = "Win32_PerfRawData_PerfOS_Memory";
 
     /**
      * Returns page swap counters
@@ -49,7 +47,10 @@ public final class MemoryInformation {
      * @return Page swap counters for memory.
      */
     public static Map<PageSwapProperty, Long> queryPageSwaps() {
-        return PerfCounterQuery.queryValues(PageSwapProperty.class, MEMORY, WIN32_PERF_RAW_DATA_PERF_OS_MEMORY);
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Collections.emptyMap();
+        }
+        return PerfCounterQuery.queryValues(PageSwapProperty.class, PerfmonConsts.MEMORY, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_MEMORY);
     }
 
     /**

@@ -29,8 +29,8 @@ import org.aoju.bus.image.Device;
 
 /**
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  * @since April 2019
  */
 public class KeycloakClient {

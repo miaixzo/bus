@@ -56,8 +56,8 @@ import java.util.*;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ImageKit {
 

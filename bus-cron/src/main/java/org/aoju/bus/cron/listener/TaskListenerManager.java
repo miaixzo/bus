@@ -35,8 +35,8 @@ import java.util.List;
  * 监听调度器,统一管理监听
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class TaskListenerManager {
 

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Collections;
@@ -34,31 +36,68 @@ import java.util.List;
  * 将表达式中的数字值列表转换为Boolean数组,匹配时匹配相应数组位
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class BoolArrayValueMatcher implements ValueMatcher {
 
-    boolean[] bValues;
+    /**
+     * 用户定义此字段的最小值
+     */
+    private final int minValue;
+    /**
+     * 数组值
+     */
+    private final boolean[] values;
 
     public BoolArrayValueMatcher(List<Integer> intValueList) {
-        bValues = new boolean[Collections.max(intValueList) + 1];
+        Assert.isTrue(CollKit.isNotEmpty(intValueList), "Values must be not empty!");
+        values = new boolean[Collections.max(intValueList) + 1];
+        int min = Integer.MAX_VALUE;
         for (Integer value : intValueList) {
-            bValues[value] = true;
+            min = Math.min(min, value);
+            values[value] = true;
         }
+        this.minValue = min;
     }
 
     @Override
     public boolean match(Integer value) {
-        if (null == value || value >= bValues.length) {
+        if (null == value || value >= values.length) {
             return false;
         }
-        return bValues[value];
+        return values[value];
+    }
+
+    @Override
+    public int nextAfter(int value) {
+        if (value > minValue) {
+            while (value < values.length) {
+                if (values[value]) {
+                    return value;
+                }
+                value++;
+            }
+        }
+
+        // 两种情况返回最小值
+        // 一是给定值小于最小值，那下一个匹配值就是最小值
+        // 二是给定值大于最大值，那下一个匹配值也是下一轮的最小值
+        return minValue;
+    }
+
+    /**
+     * 获取表达式定义的最小值
+     *
+     * @return 最小值
+     */
+    public int getMinValue() {
+        return this.minValue;
     }
 
     @Override
     public String toString() {
-        return StringKit.format("Matcher:{}", new Object[]{this.bValues});
+        return StringKit.format("Matcher:{}", new Object[]{this.values});
     }
 
 }

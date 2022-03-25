@@ -33,8 +33,8 @@ import org.aoju.bus.proxy.Invocation;
  * 只在方法被提供的MethodFilter接受的情况下调用它
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class FilteredInterceptor implements Interceptor {
 

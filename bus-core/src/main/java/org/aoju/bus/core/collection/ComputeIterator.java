@@ -10,8 +10,8 @@ import java.util.NoSuchElementException;
  * 当无下一个节点时，须返回{@code null}表示遍历结束
  *
  * @param <T> 节点类型
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class ComputeIterator<T> implements Iterator<T> {
 

@@ -53,8 +53,8 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class Ftp extends AbstractFtp {
 
@@ -272,6 +272,15 @@ public class Ftp extends AbstractFtp {
     }
 
     /**
+     * 是否执行完操作返回当前目录
+     *
+     * @return 执行完操作是否返回当前目录
+     */
+    public boolean isBackToPwd() {
+        return this.backToPwd;
+    }
+
+    /**
      * 设置执行完操作是否返回当前目录
      *
      * @param backToPwd 执行完操作是否返回当前目录
@@ -280,15 +289,6 @@ public class Ftp extends AbstractFtp {
     public Ftp setBackToPwd(boolean backToPwd) {
         this.backToPwd = backToPwd;
         return this;
-    }
-
-    /**
-     * 是否执行完操作返回当前目录
-     *
-     * @return 执行完操作是否返回当前目录
-     */
-    public boolean isBackToPwd() {
-        return this.backToPwd;
     }
 
     /**

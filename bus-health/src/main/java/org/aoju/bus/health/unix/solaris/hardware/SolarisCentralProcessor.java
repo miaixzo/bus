@@ -44,8 +44,8 @@ import java.util.regex.Pattern;
  * A CPU
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 final class SolarisCentralProcessor extends AbstractCentralProcessor {
@@ -204,7 +204,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected ProcessorIdentifier queryProcessorId() {
         boolean cpu64bit = "64".equals(Executor.getFirstAnswer("isainfo -b").trim());
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return queryProcessorId2(cpu64bit);
         }
@@ -217,9 +217,9 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
         // Get first result
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup(CPU_INFO, -1, null);
+            Kstat ksp = kc.lookup(CPU_INFO, -1, null);
             // Set values
-            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+            if (ksp != null && kc.read(ksp)) {
                 cpuVendor = KstatKit.dataLookupString(ksp, "vendor_id");
                 cpuName = KstatKit.dataLookupString(ksp, "brand");
                 cpuFamily = KstatKit.dataLookupString(ksp, "family");
@@ -237,16 +237,16 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected Pair<List<LogicalProcessor>, List<PhysicalProcessor>> initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return Pair.of(initProcessorCounts2(numaNodeMap), null);
         }
         List<LogicalProcessor> logProcs = new ArrayList<>();
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            List<Kstat> kstats = KstatKit.KstatChain.lookupAll(CPU_INFO, -1, null);
+            List<Kstat> kstats = kc.lookupAll(CPU_INFO, -1, null);
 
             for (Kstat ksp : kstats) {
-                if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+                if (ksp != null && kc.read(ksp)) {
                     int procId = logProcs.size(); // 0-indexed
                     String chipId = KstatKit.dataLookupString(ksp, "chip_id");
                     String coreId = KstatKit.dataLookupString(ksp, "core_id");
@@ -294,7 +294,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[] queryCurrentFreq() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return queryCurrentFreq2(getLogicalProcessorCount());
         }
@@ -302,8 +302,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         Arrays.fill(freqs, -1);
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
             for (int i = 0; i < freqs.length; i++) {
-                for (Kstat ksp : KstatKit.KstatChain.lookupAll(CPU_INFO, i, null)) {
-                    if (KstatKit.KstatChain.read(ksp)) {
+                for (Kstat ksp : kc.lookupAll(CPU_INFO, i, null)) {
+                    if (kc.read(ksp)) {
                         freqs[i] = KstatKit.dataLookupLong(ksp, "current_clock_Hz");
                     }
                 }
@@ -314,14 +314,14 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryMaxFreq() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return queryMaxFreq2();
         }
         long max = -1L;
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            for (Kstat ksp : KstatKit.KstatChain.lookupAll(CPU_INFO, 0, null)) {
-                if (KstatKit.KstatChain.read(ksp)) {
+            for (Kstat ksp : kc.lookupAll(CPU_INFO, 0, null)) {
+                if (kc.read(ksp)) {
                     String suppFreq = KstatKit.dataLookupString(ksp, "supported_frequencies_Hz");
                     if (!suppFreq.isEmpty()) {
                         for (String s : suppFreq.split(":")) {
@@ -354,20 +354,20 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return queryProcessorCpuLoadTicks2(getLogicalProcessorCount());
         }
         long[][] ticks = new long[getLogicalProcessorCount()][TickType.values().length];
         int cpu = -1;
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            for (Kstat ksp : KstatKit.KstatChain.lookupAll("cpu", -1, "sys")) {
+            for (Kstat ksp : kc.lookupAll("cpu", -1, "sys")) {
                 // This is a new CPU
                 if (++cpu >= ticks.length) {
                     // Shouldn't happen
                     break;
                 }
-                if (KstatKit.KstatChain.read(ksp)) {
+                if (kc.read(ksp)) {
                     ticks[cpu][TickType.IDLE.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_idle");
                     ticks[cpu][TickType.SYSTEM.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_kernel");
                     ticks[cpu][TickType.USER.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_user");
@@ -379,7 +379,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryContextSwitches() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return queryContextSwitches2();
         }
@@ -393,7 +393,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryInterrupts() {
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return queryInterrupts2();
         }

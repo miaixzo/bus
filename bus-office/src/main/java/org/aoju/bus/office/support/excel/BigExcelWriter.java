@@ -37,8 +37,8 @@ import java.io.OutputStream;
  * 大数据量Excel写出
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class BigExcelWriter extends ExcelWriter {
 
@@ -140,6 +140,20 @@ public class BigExcelWriter extends ExcelWriter {
      */
     public BigExcelWriter(Sheet sheet) {
         super(sheet);
+    }
+
+    /**
+     * 构造<br>
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流<br>
+     * 若写出到文件，需要调用{@link #flush(File)} 写出到文件
+     *
+     * @param rowAccessWindowSize   在内存中的行数，-1表示不限制，此时需要手动刷出
+     * @param compressTmpFiles      是否使用Gzip压缩临时文件
+     * @param useSharedStringsTable 是否使用共享字符串表，一般大量重复字符串时开启可节省内存
+     * @param sheetName             写出的sheet名称
+     */
+    public BigExcelWriter(int rowAccessWindowSize, boolean compressTmpFiles, boolean useSharedStringsTable, String sheetName) {
+        this(WorksKit.createSXSSFBook(rowAccessWindowSize, compressTmpFiles, useSharedStringsTable), sheetName);
     }
 
     @Override

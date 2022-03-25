@@ -42,8 +42,8 @@ import java.util.regex.Pattern;
  * Graphics Card info obtained from pciconf
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Immutable
 final class OpenBsdGraphicsCard extends AbstractGraphicsCard {

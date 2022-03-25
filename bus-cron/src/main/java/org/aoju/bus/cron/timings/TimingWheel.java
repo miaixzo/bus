@@ -10,8 +10,8 @@ import java.util.function.Consumer;
  * 一个单独的线程推进时间一槽一槽的移动，并执行槽中的任务
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class TimingWheel {
 

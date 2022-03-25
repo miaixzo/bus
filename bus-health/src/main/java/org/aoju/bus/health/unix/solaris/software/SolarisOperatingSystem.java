@@ -34,6 +34,7 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
+import org.aoju.bus.health.unix.Kstat2;
 import org.aoju.bus.health.unix.SolarisLibc;
 import org.aoju.bus.health.unix.solaris.KstatKit;
 import org.aoju.bus.health.unix.solaris.drivers.Who;
@@ -51,15 +52,19 @@ import java.util.stream.Collectors;
  * after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
+    /**
+     * This static field identifies if the kstat2 library (available in Solaris 11.4
+     * or greater) can be loaded.
+     */
+    public static final boolean HAS_KSTAT2;
     private static final String VERSION;
     private static final String BUILD_NUMBER;
-    public static final boolean IS_11_4_OR_HIGHER = "11.4".compareTo(SolarisOperatingSystem.BUILD_NUMBER) <= 0;
     private static final Supplier<Pair<Long, Long>> BOOT_UPTIME = Memoize
             .memoize(SolarisOperatingSystem::queryBootAndUptime, Memoize.defaultExpiration());
     private static final long BOOTTIME = querySystemBootTime();
@@ -68,6 +73,14 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
         VERSION = split[0];
         BUILD_NUMBER = split.length > 1 ? split[1] : "";
+
+        Kstat2 lib = null;
+        try {
+            lib = Kstat2.INSTANCE;
+        } catch (UnsatisfiedLinkError e) {
+            // 11.3 or earlier, no kstat2
+        }
+        HAS_KSTAT2 = lib != null;
     }
 
     private static List<OSProcess> queryAllProcessesFromPrStat() {
@@ -106,12 +119,12 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     private static long querySystemUptime() {
-        if (IS_11_4_OR_HIGHER) {
+        if (HAS_KSTAT2) {
             // Use Kstat2 implementation
             return BOOT_UPTIME.get().getRight();
         }
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup("unix", 0, "system_misc");
+            Kstat ksp = kc.lookup("unix", 0, "system_misc");
             if (ksp != null) {
                 // Snap Time is in nanoseconds; divide for seconds
                 return ksp.ks_snaptime / 1_000_000_000L;
@@ -121,13 +134,13 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     private static long querySystemBootTime() {
-        if (IS_11_4_OR_HIGHER) {
+        if (HAS_KSTAT2) {
             // Use Kstat2 implementation
             return BOOT_UPTIME.get().getLeft();
         }
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup("unix", 0, "system_misc");
-            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+            Kstat ksp = kc.lookup("unix", 0, "system_misc");
+            if (ksp != null && kc.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "boot_time");
             }
         }

@@ -66,8 +66,8 @@ import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public class WindowsOSProcess extends AbstractOSProcess {
@@ -90,7 +90,6 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private String name;
     private final Supplier<Pair<String, String>> userInfo = memoize(this::queryUserInfo);
     private String path;
-    private final Supplier<String> commandLine = memoize(this::queryCommandLine);
     private int parentProcessID;
     private int threadCount;
     private int priority;
@@ -99,6 +98,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private long kernelTime;
     private long userTime;
     private long startTime;
+    private final Supplier<String> commandLine = memoize(this::queryCommandLine);
     private final Supplier<List<String>> args = memoize(this::queryArguments);
     private State state = INVALID;
     private long upTime;

@@ -31,8 +31,8 @@ package org.aoju.bus.core.lang.tuple;
  * @param <L> 左元素类型
  * @param <R> 左元素类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class MutablePair<L, R> extends Pair<L, R> {
 

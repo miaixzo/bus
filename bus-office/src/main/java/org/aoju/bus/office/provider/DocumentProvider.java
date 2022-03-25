@@ -33,8 +33,8 @@ import java.io.File;
  * 为文档提供转换过程所需的物理文件和格式的接口.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface DocumentProvider {
 

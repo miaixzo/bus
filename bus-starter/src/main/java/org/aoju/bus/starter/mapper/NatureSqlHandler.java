@@ -53,8 +53,8 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Intercepts(value = {
         @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),

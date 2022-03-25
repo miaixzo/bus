@@ -38,8 +38,8 @@ import java.util.List;
  * Sound card data obtained via AppleHDA kext
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Immutable
 final class MacSoundCard extends AbstractSoundCard {

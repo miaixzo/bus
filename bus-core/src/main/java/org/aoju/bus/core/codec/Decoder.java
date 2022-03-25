@@ -31,8 +31,8 @@ package org.aoju.bus.core.codec;
  * @param <T> 被解码的数据类型
  * @param <R> 解码后的数据类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface Decoder<T, R> {
 

@@ -42,8 +42,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 由12个字节组成,分割如下:
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ObjectID implements Comparable<ObjectID>, Serializable {
 

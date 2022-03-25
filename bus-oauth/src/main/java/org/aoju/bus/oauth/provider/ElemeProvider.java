@@ -53,8 +53,8 @@ import java.util.TreeMap;
  * 注：集成的是正式环境,非沙箱环境
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ElemeProvider extends AbstractProvider {
 

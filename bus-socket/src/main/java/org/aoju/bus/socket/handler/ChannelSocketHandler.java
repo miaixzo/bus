@@ -31,8 +31,8 @@ import java.nio.channels.SocketChannel;
  * NIO数据处理接口，通过实现此接口，可以从{@link SocketChannel}中读写数据
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface ChannelSocketHandler {

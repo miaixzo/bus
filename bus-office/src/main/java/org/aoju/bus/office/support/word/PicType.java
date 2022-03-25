@@ -31,8 +31,8 @@ import org.apache.poi.xwpf.usermodel.Document;
  * Word中的图片类型
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public enum PicType {
     EMF(Document.PICTURE_TYPE_EMF),

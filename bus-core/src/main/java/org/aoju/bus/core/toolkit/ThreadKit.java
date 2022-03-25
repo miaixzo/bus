@@ -26,23 +26,25 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Console;
-import org.aoju.bus.core.thread.ExecutorBuilder;
-import org.aoju.bus.core.thread.GlobalThread;
-import org.aoju.bus.core.thread.NamedThreadFactory;
-import org.aoju.bus.core.thread.ThreadBuilder;
+import org.aoju.bus.core.thread.*;
 
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.StampedLock;
 import java.util.function.Supplier;
 
 /**
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ThreadKit {
+
+    private static final AtomicNoLock NO_LOCK = new AtomicNoLock();
 
     /**
      * 新建一个线程池
@@ -481,7 +483,6 @@ public class ThreadKit {
 
     /**
      * 获取进程的主线程
-     * from Voovan
      *
      * @return 进程的主线程
      */
@@ -636,6 +637,34 @@ public class ThreadKit {
         public void setPageIndex(int pageIndex) {
             this.pageIndex = pageIndex;
         }
+    }
+
+    /**
+     * 创建{@link StampedLock}锁
+     *
+     * @return {@link StampedLock}锁
+     */
+    public static StampedLock createStampLock() {
+        return new StampedLock();
+    }
+
+    /**
+     * 创建{@link ReentrantReadWriteLock}锁
+     *
+     * @param fair 是否公平锁
+     * @return {@link ReentrantReadWriteLock}锁
+     */
+    public static ReentrantReadWriteLock createReadWriteLock(boolean fair) {
+        return new ReentrantReadWriteLock(fair);
+    }
+
+    /**
+     * 获取单例的无锁对象
+     *
+     * @return {@link AtomicNoLock}
+     */
+    public static AtomicNoLock getNoLock() {
+        return NO_LOCK;
     }
 
 }

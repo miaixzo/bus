@@ -37,8 +37,8 @@ import java.util.List;
  * 因INSERT ALL语法不支持序列，可手工获取序列并设置至Entity或绑定触发器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @RegisterMapper
 public interface InsertListMapper<T> {

@@ -44,8 +44,8 @@ import java.io.InputStream;
  * 所有文档转换器实现的基类.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractProvider implements Provider {
 

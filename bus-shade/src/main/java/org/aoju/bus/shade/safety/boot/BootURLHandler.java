@@ -46,8 +46,8 @@ import java.util.Set;
  * 加密的URL处理器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class BootURLHandler extends Handler {
 

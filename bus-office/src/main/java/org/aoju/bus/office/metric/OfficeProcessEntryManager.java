@@ -49,8 +49,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * OfficeProcessManagerPoolEntry还负责在达到每个进程的最大任务数时重新启动office进程.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
 

@@ -41,8 +41,8 @@ import java.util.Set;
  * @param <C> 列键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
 

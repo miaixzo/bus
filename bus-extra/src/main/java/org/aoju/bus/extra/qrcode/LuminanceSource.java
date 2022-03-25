@@ -33,8 +33,8 @@ import java.awt.image.BufferedImage;
  * {@link BufferedImage} 图片二维码源
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class LuminanceSource extends com.google.zxing.LuminanceSource {
 

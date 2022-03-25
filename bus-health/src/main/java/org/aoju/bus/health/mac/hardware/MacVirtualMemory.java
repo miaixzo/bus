@@ -44,8 +44,8 @@ import java.util.function.Supplier;
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 final class MacVirtualMemory extends AbstractVirtualMemory {

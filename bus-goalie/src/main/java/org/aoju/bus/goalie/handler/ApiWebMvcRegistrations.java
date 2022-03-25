@@ -34,8 +34,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * spring boot专用，避免继承webconfigurationsupport对spring的自动配置侵入和破坏
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8++
+ * @version 6.5.0
+ * @since Java 17++
  */
 public class ApiWebMvcRegistrations implements WebMvcRegistrations {
 

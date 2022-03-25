@@ -38,10 +38,6 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.unix.SolarisLibc;
 import org.aoju.bus.logger.Logger;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,8 +47,8 @@ import java.util.Map;
  * Utility to query /proc/psinfo
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class PsInfo {
@@ -62,6 +58,9 @@ public final class PsInfo {
     private static final long PAGE_SIZE = Builder.parseLongOrDefault(Executor.getFirstAnswer("pagesize"),
             4096L);
 
+    private PsInfo() {
+    }
+
     /**
      * Reads /proc/pid/psinfo and returns data in a structure
      *
@@ -69,12 +68,7 @@ public final class PsInfo {
      * @return A structure containing information for the requested process
      */
     public static SolarisLibc.SolarisPsInfo queryPsInfo(int pid) {
-        Path path = Paths.get(String.format("/proc/%d/psinfo", pid));
-        try {
-            return new SolarisLibc.SolarisPsInfo(Files.readAllBytes(path));
-        } catch (IOException e) {
-            return null;
-        }
+        return new SolarisLibc.SolarisPsInfo(Builder.readAllBytesAsBuffer(String.format("/proc/%d/psinfo", pid)));
     }
 
     /**
@@ -85,12 +79,7 @@ public final class PsInfo {
      * @return A structure containing information for the requested thread
      */
     public static SolarisLibc.SolarisLwpsInfo queryLwpsInfo(int pid, int tid) {
-        Path path = Paths.get(String.format("/proc/%d/lwp/%d/lwpsinfo", pid, tid));
-        try {
-            return new SolarisLibc.SolarisLwpsInfo(Files.readAllBytes(path));
-        } catch (IOException e) {
-            return null;
-        }
+        return new SolarisLibc.SolarisLwpsInfo(Builder.readAllBytesAsBuffer(String.format("/proc/%d/lwp/%d/lwpsinfo", pid, tid)));
     }
 
     /**
@@ -100,12 +89,7 @@ public final class PsInfo {
      * @return A structure containing information for the requested process
      */
     public static SolarisLibc.SolarisPrUsage queryPrUsage(int pid) {
-        Path path = Paths.get(String.format("/proc/%d/usage", pid));
-        try {
-            return new SolarisLibc.SolarisPrUsage(Files.readAllBytes(path));
-        } catch (IOException e) {
-            return null;
-        }
+        return new SolarisLibc.SolarisPrUsage(Builder.readAllBytesAsBuffer(String.format("/proc/%d/usage", pid)));
     }
 
     /**
@@ -116,12 +100,7 @@ public final class PsInfo {
      * @return A structure containing information for the requested thread
      */
     public static SolarisLibc.SolarisPrUsage queryPrUsage(int pid, int tid) {
-        Path path = Paths.get(String.format("/proc/%d/lwp/%d/usage", pid, tid));
-        try {
-            return new SolarisLibc.SolarisPrUsage(Files.readAllBytes(path));
-        } catch (IOException e) {
-            return null;
-        }
+        return new SolarisLibc.SolarisPrUsage(Builder.readAllBytesAsBuffer(String.format("/proc/%d/lwp/%d/usage", pid, tid)));
     }
 
     /**

@@ -31,9 +31,9 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>short</code> 类型
  *
  * @author Kimi Liu
- * @version 6.3.5
+ * @version 6.5.0
  * @see Short
- * @since JDK 1.8+
+ * @since Java 17+
  */
 public class MutableShort extends Number implements Comparable<MutableShort>, Mutable<Number> {
 

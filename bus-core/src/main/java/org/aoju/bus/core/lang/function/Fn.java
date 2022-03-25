@@ -37,8 +37,8 @@ import java.util.function.Function;
  * @param <T> 参数类型
  * @param <R> 返回值类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface Fn<T, R> extends Function<T, R>, Serializable {

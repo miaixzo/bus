@@ -45,8 +45,8 @@ import java.util.stream.StreamSupport;
  * 启动监听器，初始化相关配置
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class GenieBuilder implements
         ApplicationListener<ApplicationEnvironmentPreparedEvent>,

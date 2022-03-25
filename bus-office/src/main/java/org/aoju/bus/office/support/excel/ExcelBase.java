@@ -33,16 +33,19 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.Closeable;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Excel基础类,用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
 
@@ -51,6 +54,10 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      */
     protected boolean isClosed;
     /**
+     * 目标文件，如果用户读取为流或自行创建的Workbook或Sheet,此参数为{@code null}
+     */
+    protected File destFile;
+    /**
      * 工作簿
      */
     protected Workbook workbook;
@@ -58,6 +65,10 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * Excel中对应的Sheet
      */
     protected Sheet sheet;
+    /**
+     * 标题行别名
+     */
+    protected Map<String, String> headerAlias;
 
     /**
      * 构造
@@ -459,6 +470,64 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      */
     public int getColumnCount(int rowNum) {
         return this.sheet.getRow(rowNum).getLastCellNum();
+    }
+
+    /**
+     * 获得标题行的别名Map
+     *
+     * @return 别名Map
+     */
+    public Map<String, String> getHeaderAlias() {
+        return headerAlias;
+    }
+
+    /**
+     * 设置标题行的别名Map
+     *
+     * @param headerAlias 别名Map
+     * @return this
+     */
+    public T setHeaderAlias(Map<String, String> headerAlias) {
+        this.headerAlias = headerAlias;
+        return (T) this;
+    }
+
+    /**
+     * 增加标题别名
+     *
+     * @param header 标题
+     * @param alias  别名
+     * @return this
+     */
+    public T addHeaderAlias(String header, String alias) {
+        Map<String, String> headerAlias = this.headerAlias;
+        if (null == headerAlias) {
+            headerAlias = new LinkedHashMap<>();
+        }
+        this.headerAlias = headerAlias;
+        this.headerAlias.put(header, alias);
+        return (T) this;
+    }
+
+    /**
+     * 去除标题别名
+     *
+     * @param header 标题
+     * @return this
+     */
+    public T removeHeaderAlias(String header) {
+        this.headerAlias.remove(header);
+        return (T) this;
+    }
+
+    /**
+     * 清空标题别名，key为Map中的key，value为别名
+     *
+     * @return this
+     */
+    public T clearHeaderAlias() {
+        this.headerAlias = null;
+        return (T) this;
     }
 
     /**

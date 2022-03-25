@@ -46,8 +46,8 @@ import java.util.stream.Collectors;
  * Solaris hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class SolarisHWDiskStore extends AbstractHWDiskStore {
@@ -149,13 +149,13 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
     @Override
     public boolean updateAttributes() {
         this.timeStamp = System.currentTimeMillis();
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return updateAttributes2();
         }
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup(null, 0, getName());
-            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+            Kstat ksp = kc.lookup(null, 0, getName());
+            if (ksp != null && kc.read(ksp)) {
                 KstatIO data = new KstatIO(ksp.ks_data);
                 this.reads = data.reads;
                 this.writes = data.writes;

@@ -34,8 +34,8 @@ import org.aoju.bus.core.lang.Symbol;
  * 使二进制和十进制之间的转换得以快捷的进行
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class BCD {
 
@@ -88,6 +88,7 @@ public class BCD {
      * @return BCD
      */
     public static byte[] ascToBcd(byte[] ascii) {
+        Assert.notNull(ascii, "Ascii must be not null!");
         return ascToBcd(ascii, ascii.length);
     }
 

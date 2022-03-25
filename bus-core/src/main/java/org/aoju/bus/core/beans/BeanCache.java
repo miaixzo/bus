@@ -33,13 +33,18 @@ import org.aoju.bus.core.lang.function.Func0;
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public enum BeanCache {
 
+    /**
+     * 实例
+     */
     INSTANCE;
-
+    /**
+     * 缓存
+     */
     private final SimpleCache<Class<?>, BeanDesc> bdCache = new SimpleCache<>();
 
     /**

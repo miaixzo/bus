@@ -27,12 +27,13 @@ package org.aoju.bus.cron.pattern.parser;
 
 /**
  * 小时值处理
+ * 小时被限定在0-23
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
-public class HourValueParser extends SimpleValueParser {
+public class HourValueParser extends AbstractValueParser {
 
     public HourValueParser() {
         super(0, 23);

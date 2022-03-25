@@ -35,8 +35,8 @@ import java.nio.charset.Charset;
  * 以便调用者可以进行小的写操作没有性能损失
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface BufferSink extends Sink, WritableByteChannel {
 

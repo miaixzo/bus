@@ -33,7 +33,7 @@ import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +42,8 @@ import java.util.Map;
  *
  * @param <T> 读取类型
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractSheetReader<T> implements SheetReader<T> {
 
@@ -66,7 +66,7 @@ public abstract class AbstractSheetReader<T> implements SheetReader<T> {
     /**
      * 标题别名
      */
-    private Map<String, String> headerAlias = new HashMap<>();
+    private Map<String, String> headerAlias;
 
     /**
      * 构造
@@ -114,6 +114,11 @@ public abstract class AbstractSheetReader<T> implements SheetReader<T> {
      * @param alias  别名
      */
     public void addHeaderAlias(String header, String alias) {
+        Map<String, String> headerAlias = this.headerAlias;
+        if (null == headerAlias) {
+            headerAlias = new LinkedHashMap<>();
+        }
+        this.headerAlias = headerAlias;
         this.headerAlias.put(header, alias);
     }
 
@@ -149,7 +154,10 @@ public abstract class AbstractSheetReader<T> implements SheetReader<T> {
         }
 
         final String header = headerObj.toString();
-        return ObjectKit.defaultIfNull(this.headerAlias.get(header), header);
+        if (null != this.headerAlias) {
+            return ObjectKit.defaultIfNull(this.headerAlias.get(header), header);
+        }
+        return header;
     }
 
     /**

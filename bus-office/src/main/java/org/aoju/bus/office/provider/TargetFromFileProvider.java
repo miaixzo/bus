@@ -34,8 +34,8 @@ import java.io.File;
  * 当转换过程不再需要目标文件时，提供应用行为的接口.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class TargetFromFileProvider extends AbstractTargetProvider
         implements TargetDocumentProvider {

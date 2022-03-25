@@ -29,8 +29,8 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface IHL7ApplicationCache {
 

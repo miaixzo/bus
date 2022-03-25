@@ -35,8 +35,8 @@ import java.util.List;
  * 设备信息
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class Divice extends UserAgent {
 
@@ -84,7 +84,8 @@ public class Divice extends UserAgent {
             GOOGLE_TV,
             new Divice("htcFlyer", "htc_flyer"),
             new Divice("Symbian", "symbian(os)?"),
-            new Divice("Blackberry", "blackberry")
+            new Divice("Blackberry", "blackberry"),
+            new Divice("Android", "XiaoMi|MI")
     );
 
     /**

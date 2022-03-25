@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.windows.PerfCounterQuery;
 import org.aoju.bus.health.windows.PerfCounterWildcardQuery;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,14 +38,11 @@ import java.util.Map;
  * Utility to query Thread Information performance counter
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class ThreadInformation {
-
-    private static final String THREAD = "Thread";
-    private static final String WIN32_PERF_RAW_DATA_PERF_PROC_THREAD = "Win32_PerfRawData_PerfProc_Thread WHERE NOT Name LIKE \"%_Total\"";
 
     /**
      * Returns thread counters.
@@ -52,8 +50,11 @@ public final class ThreadInformation {
      * @return Thread counters for each thread.
      */
     public static Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> queryThreadCounters() {
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class, THREAD,
-                WIN32_PERF_RAW_DATA_PERF_PROC_THREAD);
+        if (PerfmonDisabled.PERF_PROC_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
+        return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class, PerfmonConsts.THREAD,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 
     /**
@@ -63,15 +64,15 @@ public final class ThreadInformation {
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
-        PERCENTUSERTIME("% User Time"),
-        PERCENTPRIVILEGEDTIME("% Privileged Time"),
-        ELAPSEDTIME("Elapsed Time"),
-        PRIORITYCURRENT("Priority Current"),
-        STARTADDRESS("Start Address"),
-        THREADSTATE("Thread State"),
-        THREADWAITREASON("Thread Wait Reason"),
-        IDPROCESS("ID Process"),
-        IDTHREAD("ID Thread"),
+        PERCENTUSERTIME("% User Time"), //
+        PERCENTPRIVILEGEDTIME("% Privileged Time"), //
+        ELAPSEDTIME("Elapsed Time"), //
+        PRIORITYCURRENT("Priority Current"), //
+        STARTADDRESS("Start Address"), //
+        THREADSTATE("Thread State"), //
+        THREADWAITREASON("Thread Wait Reason"), // 5 is SUSPENDED
+        IDPROCESS("ID Process"), //
+        IDTHREAD("ID Thread"), //
         CONTEXTSWITCHESPERSEC("Context Switches/sec");
 
         private final String counter;

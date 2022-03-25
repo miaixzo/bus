@@ -29,8 +29,8 @@ package org.aoju.bus.core.lang;
  * 加解密算法类型
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public enum Algorithm {
 
@@ -56,7 +56,9 @@ public enum Algorithm {
      * RSA算法，此算法用了RSA/None/NoPadding
      */
     EC("EC"),
-
+    /**
+     * ECDSA
+     */
     ECDSA("ECDSA"),
 
     /***************************** 非对称-签名算法 *****************************/
@@ -69,14 +71,26 @@ public enum Algorithm {
      * MD2/MD5带有RSA加密签名算法
      */
     MD2WITHRSA("MD2withRSA"),
+    /**
+     * MD5withRSA
+     */
     MD5withRSA("MD5withRSA"),
 
     /**
      * 使用SHA-*和RSA的签名算法
      */
     SHA1WITHRSA("SHA1withRSA"),
+    /**
+     * SHA256withRSA
+     */
     SHA256WITHRSA("SHA256withRSA"),
+    /**
+     * SHA384withRSA
+     */
     SHA384WITHRSA("SHA384withRSA"),
+    /**
+     * SHA512withRSA
+     */
     SHA512WITHRSA("SHA512withRSA"),
 
     /**
@@ -87,39 +101,92 @@ public enum Algorithm {
      * 采用SHA-1签名算法的DSA
      */
     SHA1WITHDSA("SHA1withDSA"),
-
     /**
      * ECDSA签名算法
      */
     NONEWITHECDSA("NONEwithECDSA"),
+    /**
+     * SHA1withECDSA
+     */
     SHA1WITHECDSA("SHA1withECDSA"),
+    /**
+     * SHA256withECDSA
+     */
     SHA256WITHECDSA("SHA256withECDSA"),
+    /**
+     * SHA384withECDSA
+     */
     SHA384WITHECDSA("SHA384withECDSA"),
+    /**
+     * SHA512withECDSA
+     */
     SHA512WITHECDSA("SHA512withECDSA"),
 
     /**
-     * 需要BC库加入支持
+     * SHA256WithRSA/PSS
      */
     SHA256WITHRSA_PSS("SHA256WithRSA/PSS"),
+    /**
+     * SHA384WithRSA/PSS
+     */
     SHA384WITHRSA_PSS("SHA384WithRSA/PSS"),
+    /**
+     * SHA512WithRSA/PSS
+     */
     SHA512WITHRSA_PSS("SHA512WithRSA/PSS"),
 
     /****************************** 摘要-算法类型 *****************************/
 
+    /**
+     * MD2
+     */
     MD2("MD2"),
+    /**
+     * MD5
+     */
     MD5("MD5"),
+    /**
+     * SHA-1
+     */
     SHA1("SHA-1"),
+    /**
+     * SHA-256
+     */
     SHA256("SHA-256"),
+    /**
+     * SHA-384
+     */
     SHA384("SHA-384"),
+    /**
+     * SHA-512
+     */
     SHA512("SHA-512"),
+    /**
+     * SHA1PRNG
+     */
     SHA1PRNG("SHA1PRNG"),
 
     /***************************** 摘要-HMAC算法 *****************************/
 
+    /**
+     * HmacMD5
+     */
     HMACMD5("HmacMD5"),
+    /**
+     * HmacSHA1
+     */
     HMACSHA1("HmacSHA1"),
+    /**
+     * HmacSHA256
+     */
     HMACSHA256("HmacSHA256"),
+    /**
+     * HmacSHA384
+     */
     HMACSHA384("HmacSHA384"),
+    /**
+     * HmacSHA512
+     */
     HMACSHA512("HmacSHA512"),
     /**
      * HmacSM3算法实现，需要BouncyCastle库支持
@@ -132,7 +199,13 @@ public enum Algorithm {
      * 默认的AES加密方式：AES/ECB/PKCS5Padding
      */
     AES("AES"),
+    /**
+     * ARCFOUR
+     */
     ARCFOUR("ARCFOUR"),
+    /**
+     * Blowfish
+     */
     BLOWFISH("Blowfish"),
     /**
      * 默认的DES加密方式：DES/ECB/PKCS5Padding
@@ -152,8 +225,17 @@ public enum Algorithm {
      */
     RC4("RC4"),
 
+    /**
+     * PBEWithMD5AndDES
+     */
     PBEWITHMD5ANDDES("PBEWithMD5AndDES"),
+    /**
+     * PBEWithSHA1AndDESede
+     */
     PBEWITHSHA1ANDDESEDE("PBEWithSHA1AndDESede"),
+    /**
+     * PBEWithSHA1AndRC2_40
+     */
     PBEWITHSHA1ANDRC2_40("PBEWithSHA1AndRC2_40"),
 
     /******************************* 国密算法 *******************************/

@@ -35,8 +35,8 @@ import java.util.Set;
  * 混合过滤器
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class MixComplex<E> implements Complex<E> {
 

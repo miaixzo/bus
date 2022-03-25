@@ -34,8 +34,8 @@ import org.apache.ibatis.mapping.MappedStatement;
  * BaseUpdateProvider实现类，基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class BaseUpdateProvider extends MapperTemplate {
 

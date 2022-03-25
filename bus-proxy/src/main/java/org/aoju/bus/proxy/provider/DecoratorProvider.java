@@ -34,8 +34,8 @@ import org.aoju.bus.proxy.Provider;
  * 例如,通过{@link SingletonProvider 高速缓存它}
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class DecoratorProvider implements Provider {
 

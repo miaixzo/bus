@@ -39,8 +39,8 @@ import java.util.Set;
  * 核心实现使用了递归获取指定元素上的注解以及注解的注解,以实现复合注解的获取
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class Element implements AnnotatedElement {
 

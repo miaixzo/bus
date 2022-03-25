@@ -52,8 +52,8 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class BeanDesc implements Serializable {
 
@@ -216,7 +216,7 @@ public class BeanDesc implements Serializable {
      * @param field      字段
      * @param methods    类中所有的Getter或Setter方法
      * @param ignoreCase 是否忽略大小写匹配
-     * @return PropDesc
+     * @return this
      */
     private PropertyDesc findProp(Field field, Method[] methods, boolean ignoreCase) {
         final String fieldName = field.getName();

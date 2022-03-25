@@ -30,8 +30,8 @@ package org.aoju.bus.core.text.finder;
  * 通过调用{@link #start(int)}查找开始位置，再调用{@link #end(int)}找结束位置
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface Finder {
 

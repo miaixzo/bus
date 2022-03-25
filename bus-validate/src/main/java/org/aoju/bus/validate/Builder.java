@@ -34,8 +34,8 @@ import java.lang.annotation.Annotation;
  * 当前框架内预定义的校验器名称
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class Builder extends Validator {
 

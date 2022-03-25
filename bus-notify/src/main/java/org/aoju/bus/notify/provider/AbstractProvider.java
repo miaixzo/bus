@@ -37,8 +37,8 @@ import java.util.List;
  * 抽象类
  *
  * @author Justubborn
- * @version 6.3.5
- * @since JDK1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @AllArgsConstructor
 public abstract class AbstractProvider<T extends Property, K extends Context> implements Provider<T> {

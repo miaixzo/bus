@@ -47,8 +47,8 @@ import java.io.OutputStream;
  * 实现类通过实现{@link #createImage(String)} 方法生成图片对象
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractProvider implements CaptchaProvider {
 

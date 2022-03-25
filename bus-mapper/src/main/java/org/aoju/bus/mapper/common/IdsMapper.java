@@ -34,8 +34,8 @@ import org.aoju.bus.mapper.common.ids.SelectByIdsMapper;
  *
  * @param <T> 不能为空
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @RegisterMapper
 public interface IdsMapper<T> extends SelectByIdsMapper<T>, DeleteByIdsMapper<T> {

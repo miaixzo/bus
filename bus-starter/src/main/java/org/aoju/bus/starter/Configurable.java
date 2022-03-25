@@ -41,8 +41,8 @@ import java.util.Properties;
  * 将作为一个名为PropertiesPropertySource的属性源添加
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 100)
 public class Configurable implements EnvironmentPostProcessor {

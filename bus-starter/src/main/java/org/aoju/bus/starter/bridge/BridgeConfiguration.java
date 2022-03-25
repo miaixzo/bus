@@ -35,8 +35,8 @@ import org.springframework.context.annotation.Import;
  * 配置中心
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @EnableConfigurationProperties(BridgeProperties.class)
 @Import({BridgePropertyLoader.class})

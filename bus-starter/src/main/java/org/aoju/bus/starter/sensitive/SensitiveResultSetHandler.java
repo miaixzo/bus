@@ -53,7 +53,7 @@ import java.util.Properties;
  *
  * @author Kimi Liu
  * @version 6.0.6
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
 public class SensitiveResultSetHandler extends AbstractSqlHandler implements Interceptor {

@@ -47,8 +47,8 @@ import java.nio.channels.AsynchronousSocketChannel;
  * 非必要情况下请勿使用该接口，未来可能会调整接口设计
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface NetMonitor {
 

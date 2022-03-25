@@ -34,8 +34,8 @@ import java.lang.annotation.*;
  * 3. 如果是普通字段/MAP,则不做处理
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Documented
 @Target(ElementType.FIELD)

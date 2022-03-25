@@ -32,8 +32,8 @@ import java.util.Set;
  * 应该足以满足我们的大部分需求.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class DefaultFormatRegistry {
 

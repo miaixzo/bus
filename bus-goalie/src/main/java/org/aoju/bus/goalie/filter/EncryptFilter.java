@@ -56,8 +56,8 @@ import java.nio.charset.StandardCharsets;
  * 数据加密
  *
  * @author Justubborn
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class EncryptFilter implements WebFilter {

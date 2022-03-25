@@ -44,8 +44,8 @@ import java.util.*;
  * Utility to query Logical Processor Information
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class LogicalProcessorInformation {

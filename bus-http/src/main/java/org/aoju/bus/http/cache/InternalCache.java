@@ -35,8 +35,8 @@ import java.io.IOException;
  * 应用程序不应该实现这个:而是使用{@link Cache}
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public interface InternalCache {
 

@@ -34,8 +34,8 @@ import org.aoju.bus.core.lang.caller.StackTraceCaller;
  * 调用者 可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class CallerKit {
 

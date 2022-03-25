@@ -31,8 +31,8 @@ import java.lang.annotation.*;
  * 元注解
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

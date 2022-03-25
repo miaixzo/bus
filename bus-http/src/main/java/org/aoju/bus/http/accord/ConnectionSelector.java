@@ -41,8 +41,8 @@ import java.util.List;
  * 可能会使用不同的协议重试连接。实例是有状态的，应该创建并用于单个连接尝试
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public final class ConnectionSelector {
 

@@ -54,8 +54,8 @@ import java.security.spec.AlgorithmParameterSpec;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class HMac implements Serializable {
 
@@ -182,7 +182,8 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public String digestBase64(String data, Charset charset, boolean isUrlSafe) {
-        return StringKit.toString(Base64.encode(digest(data, charset), false, isUrlSafe));
+        final byte[] digest = digest(data, charset);
+        return isUrlSafe ? Base64.encodeUrlSafe(digest) : Base64.encode(digest);
     }
 
     /**

@@ -38,7 +38,7 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
-import org.aoju.bus.health.unix.AixLibc.AIXLwpsInfo;
+import org.aoju.bus.health.unix.AixLibc;
 import org.aoju.bus.health.unix.AixLibc.AixPsInfo;
 import org.aoju.bus.health.unix.aix.drivers.PsInfo;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatCpu;
@@ -59,8 +59,8 @@ import java.util.stream.Stream;
  * OSProcess implementation
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public class AixOSProcess extends AbstractOSProcess {
@@ -309,7 +309,7 @@ public class AixOSProcess extends AbstractOSProcess {
         // Iterate files
         for (File lwpidFile : numericFiles) {
             int lwpidNum = Builder.parseIntOrDefault(lwpidFile.getName(), 0);
-            AIXLwpsInfo info = PsInfo.queryLwpsInfo(getProcessID(), lwpidNum);
+            AixLibc.AixLwpsInfo info = PsInfo.queryLwpsInfo(getProcessID(), lwpidNum);
             if (info != null) {
                 mask |= info.pr_bindpro;
             }

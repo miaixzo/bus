@@ -38,8 +38,8 @@ import java.io.File;
  * {@link Config} class prior to initializing this class.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class ProcPath {
@@ -50,6 +50,7 @@ public final class ProcPath {
     public static final String PROC = queryProcConfig();
 
     public static final String ASOUND = PROC + "/asound/";
+    public static final String AUXV = PROC + "/self/auxv";
     public static final String CPUINFO = PROC + "/cpuinfo";
     public static final String DISKSTATS = PROC + "/diskstats";
     public static final String MEMINFO = PROC + "/meminfo";

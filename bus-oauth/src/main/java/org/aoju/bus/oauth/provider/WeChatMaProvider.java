@@ -14,7 +14,6 @@ import org.aoju.bus.oauth.magic.Message;
 
 /**
  * @author Justubborn
- * @since 2021/12/24
  */
 public class WeChatMaProvider extends AbstractProvider {
 

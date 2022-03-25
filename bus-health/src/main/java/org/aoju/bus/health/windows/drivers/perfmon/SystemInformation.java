@@ -28,20 +28,19 @@ package org.aoju.bus.health.windows.drivers.perfmon;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.PerfCounterQuery;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
  * Utility to query System performance counter
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class SystemInformation {
 
-    private static final String SYSTEM = "System";
-    private static final String WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM = "Win32_PerfRawData_PerfOS_System";
 
     /**
      * Returns system context switch counters.
@@ -49,7 +48,10 @@ public final class SystemInformation {
      * @return Context switches counter for the total of all processors.
      */
     public static Map<ContextSwitchProperty, Long> queryContextSwitchCounters() {
-        return PerfCounterQuery.queryValues(ContextSwitchProperty.class, SYSTEM, WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Collections.emptyMap();
+        }
+        return PerfCounterQuery.queryValues(ContextSwitchProperty.class, PerfmonConsts.SYSTEM, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
     }
 
     /**

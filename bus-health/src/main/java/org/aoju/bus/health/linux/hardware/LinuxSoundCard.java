@@ -42,8 +42,8 @@ import java.util.Map;
  * Sound card data obtained via /proc/asound directory
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Immutable
 public final class LinuxSoundCard extends AbstractSoundCard {

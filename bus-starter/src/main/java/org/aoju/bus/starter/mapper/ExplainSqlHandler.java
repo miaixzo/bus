@@ -46,8 +46,8 @@ import org.apache.ibatis.session.RowBounds;
  * 防止全表更新与删除
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 public class ExplainSqlHandler extends AbstractSqlParserHandler implements Interceptor {

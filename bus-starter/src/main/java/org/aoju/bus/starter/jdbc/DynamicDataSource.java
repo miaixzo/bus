@@ -39,8 +39,8 @@ import java.util.Set;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {
 
@@ -48,11 +48,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * 所有数据源的key集合
      */
     private static final Set<Object> keySet = new LinkedHashSet<>();
+    private static final byte[] lock = Normal.EMPTY_BYTE_ARRAY;
     /**
      * 单例句柄
      */
     private static DynamicDataSource instance;
-    private static final byte[] lock = Normal.EMPTY_BYTE_ARRAY;
 
     /**
      * 单例方法

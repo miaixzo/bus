@@ -38,8 +38,8 @@ import java.util.Map;
  * 转换器不会抛出转换异常,转换失败时会返回{@code null}
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractConverter<T> implements Converter<T>, Serializable {
 

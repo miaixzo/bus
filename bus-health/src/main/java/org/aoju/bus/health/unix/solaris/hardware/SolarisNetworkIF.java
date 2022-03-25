@@ -41,8 +41,8 @@ import java.util.List;
  * SolarisNetworks class.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public final class SolarisNetworkIF extends AbstractNetworkIF {
@@ -135,16 +135,16 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
     public boolean updateAttributes() {
         // Initialize to a sane default value
         this.timeStamp = System.currentTimeMillis();
-        if (SolarisOperatingSystem.IS_11_4_OR_HIGHER) {
+        if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
             return updateAttributes2();
         }
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
-            Kstat ksp = KstatKit.KstatChain.lookup("link", -1, getName());
+            Kstat ksp = kc.lookup("link", -1, getName());
             if (ksp == null) { // Solaris 10 compatibility
-                ksp = KstatKit.KstatChain.lookup(null, -1, getName());
+                ksp = kc.lookup(null, -1, getName());
             }
-            if (ksp != null && KstatKit.KstatChain.read(ksp)) {
+            if (ksp != null && kc.read(ksp)) {
                 this.bytesSent = KstatKit.dataLookupLong(ksp, "obytes64");
                 this.bytesRecv = KstatKit.dataLookupLong(ksp, "rbytes64");
                 this.packetsSent = KstatKit.dataLookupLong(ksp, "opackets64");

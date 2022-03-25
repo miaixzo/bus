@@ -33,8 +33,8 @@ import org.aoju.bus.setting.magic.IniCommentImpl;
  * 将字符串值格式设置为{@link IniComment}
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class CommentFormatter extends AbstractFormatter<IniComment> {
 

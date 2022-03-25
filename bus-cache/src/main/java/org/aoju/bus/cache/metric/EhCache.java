@@ -47,8 +47,8 @@ import java.util.Map;
  * 具有快速、精干等特点
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class EhCache implements CacheX {
 

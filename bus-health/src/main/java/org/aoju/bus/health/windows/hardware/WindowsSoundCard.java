@@ -40,8 +40,8 @@ import java.util.List;
  * Sound Card data obtained from registry
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Immutable
 final class WindowsSoundCard extends AbstractSoundCard {

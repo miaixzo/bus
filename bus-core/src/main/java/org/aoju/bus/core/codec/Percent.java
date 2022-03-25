@@ -46,8 +46,8 @@ import java.util.BitSet;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class Percent implements Serializable {
 
@@ -152,6 +152,8 @@ public class Percent implements Serializable {
 
     /**
      * 是否将空格编码为+
+     * 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用<br>
+     * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
      *
      * @param encodeSpaceAsPlus 是否将空格编码为+
      * @return this
@@ -195,6 +197,7 @@ public class Percent implements Serializable {
                     continue;
                 }
 
+                // 兼容双字节的Unicode符处理（如部分emoji）
                 byte[] ba = buf.toByteArray();
                 for (byte toEncode : ba) {
                     // Converting each byte in the buffer

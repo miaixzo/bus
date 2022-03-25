@@ -31,8 +31,8 @@ import org.aoju.bus.core.toolkit.ArrayKit;
  * 方式获取调用者
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class SecurityCaller extends SecurityManager implements Caller {
 

@@ -60,8 +60,8 @@ import java.util.regex.Pattern;
  * 实用方法工具
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class Builder {
 

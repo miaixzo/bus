@@ -45,8 +45,8 @@ import java.util.Map;
  * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public class SheetRidReader extends DefaultHandler {
 

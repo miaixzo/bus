@@ -54,8 +54,8 @@ import java.util.Map;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @ThreadSafe
 public class LinuxFileSystem extends AbstractFileSystem {

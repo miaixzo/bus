@@ -33,8 +33,8 @@ import java.lang.annotation.*;
  * 用于自定义策略生效条件的注解
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)

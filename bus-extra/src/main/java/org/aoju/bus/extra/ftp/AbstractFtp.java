@@ -40,8 +40,8 @@ import java.util.List;
  * 抽象FTP类,用于定义通用的FTP方法
  *
  * @author Kimi Liu
- * @version 6.3.5
- * @since JDK 1.8+
+ * @version 6.5.0
+ * @since Java 17+
  */
 public abstract class AbstractFtp implements Closeable {
 
