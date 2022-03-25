@@ -496,16 +496,6 @@ public class ThreadKit {
     }
 
     /**
-     * 获取当前线程的线程组
-     *
-     * @return 线程组
-     */
-    public static ThreadGroup currentThreadGroup() {
-        final SecurityManager s = System.getSecurityManager();
-        return (null != s) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-    }
-
-    /**
      * 创建线程工厂
      *
      * @param prefix   线程名前缀

@@ -26,7 +26,6 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -103,7 +102,7 @@ public class NamedThreadFactory implements ThreadFactory {
     public NamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon, UncaughtExceptionHandler handler) {
         this.prefix = StringKit.isBlank(prefix) ? "Thread" : prefix;
         if (null == threadGroup) {
-            threadGroup = ThreadKit.currentThreadGroup();
+            threadGroup = Thread.currentThread().getThreadGroup();
         }
         this.group = threadGroup;
         this.isDeamon = isDeamon;

@@ -52,8 +52,6 @@ import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 import java.util.*;
@@ -77,16 +75,25 @@ public class ClassKit {
      * 原始类型名和其class对应表,例如：int = int.class
      */
     private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
+    /**
+     * 包装原始类型
+     */
     private static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new HashMap<>();
+    /**
+     * 访问测试
+     */
     private static final int ACCESS_TEST =
             Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
     /**
-     * Array of primitive number types ordered by "promotability"
+     * 按"promotability"排序的原始数字类型数组
      */
     private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = {
             Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE,
             Long.TYPE, Float.TYPE, Double.TYPE
     };
+    /**
+     * 类缓存信息
+     */
     private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
 
     static {
@@ -1054,11 +1061,11 @@ public class ClassKit {
      * @return 类加载器
      */
     public static ClassLoader getClassLoader() {
-        ClassLoader classLoader = getContextClassLoader();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (null == classLoader) {
             classLoader = ClassKit.class.getClassLoader();
             if (null == classLoader) {
-                classLoader = getSystemClassLoader();
+                classLoader = ClassLoader.getSystemClassLoader();
             }
         }
         return classLoader;
@@ -1127,38 +1134,6 @@ public class ClassKit {
             return bean;
         }
         return BeanCopier.create(valueProvider, bean, copyOptions).copy();
-    }
-
-    /**
-     * 获取当前线程的{@link ClassLoader}
-     *
-     * @return 当前线程的class loader
-     * @see Thread#getContextClassLoader()
-     */
-    public static ClassLoader getContextClassLoader() {
-        if (null == System.getSecurityManager()) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            // 绕开权限检查
-            return AccessController.doPrivileged(
-                    (PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
-        }
-    }
-
-    /**
-     * 获取系统{@link ClassLoader}
-     *
-     * @return 系统{@link ClassLoader}
-     * @see ClassLoader#getSystemClassLoader()
-     */
-    public static ClassLoader getSystemClassLoader() {
-        if (null == System.getSecurityManager()) {
-            return ClassLoader.getSystemClassLoader();
-        } else {
-            // 绕开权限检查
-            return AccessController.doPrivileged(
-                    (PrivilegedAction<ClassLoader>) ClassLoader::getSystemClassLoader);
-        }
     }
 
     /**
