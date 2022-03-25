@@ -69,7 +69,7 @@ public class DayOfWeekValueParser extends AbstractValueParser {
      */
     private int parseAlias(String value) throws CrontabException {
         if ("L".equalsIgnoreCase(value)) {
-            //最后一天为星期六
+            // 最后一天为星期六
             return ALIASES.length - 1;
         }
 
