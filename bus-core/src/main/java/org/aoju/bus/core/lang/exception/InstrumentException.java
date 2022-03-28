@@ -60,4 +60,8 @@ public class InstrumentException extends UncheckedException {
         super(errcode, errmsg);
     }
 
+    public InstrumentException(Throwable cause, String format, Object... args) {
+        super(String.format(format, args), cause);
+    }
+
 }

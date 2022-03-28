@@ -261,7 +261,7 @@ public class MapperBuilder {
 
     /**
      * 配置完成后，执行下面的操作
-     * <br>处理configuration中全部的MappedStatement
+     * 处理configuration中全部的MappedStatement
      *
      * @param configuration 配置
      */

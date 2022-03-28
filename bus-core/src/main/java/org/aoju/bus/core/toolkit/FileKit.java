@@ -41,7 +41,9 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.lang.System;
-import java.net.*;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
@@ -3694,21 +3696,26 @@ public class FileKit {
      * @return the string {@link MediaType}
      */
     public static String getMediaType(String path) {
-        try {
-            FileNameMap fileNameMap = URLConnection.getFileNameMap();
-            String contentType = fileNameMap.getContentTypeFor(URLEncoder.encode(path, Charset.DEFAULT_UTF_8));
-            if (ObjectKit.isNull(contentType)) {
-                if (path.endsWith(".css")) {
-                    contentType = "text/css";
-                } else if (path.endsWith(".js")) {
-                    contentType = "application/x-javascript";
-                }
+        String contentType = URLConnection.getFileNameMap().getContentTypeFor(path);
+        if (null == contentType) {
+            // 补充一些常用的mimeType
+            if (StringKit.endWithIgnoreCase(path, ".css")) {
+                contentType = "text/css";
+            } else if (StringKit.endWithIgnoreCase(path, ".js")) {
+                contentType = "application/x-javascript";
+            } else if (StringKit.endWithIgnoreCase(path, ".rar")) {
+                contentType = "application/x-rar-compressed";
+            } else if (StringKit.endWithIgnoreCase(path, ".7z")) {
+                contentType = "application/x-7z-compressed";
             }
-            return contentType;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         }
-        return null;
+
+        // 补充
+        if (null == contentType) {
+            contentType = getMediaType(Paths.get(path));
+        }
+
+        return contentType;
     }
 
     /**

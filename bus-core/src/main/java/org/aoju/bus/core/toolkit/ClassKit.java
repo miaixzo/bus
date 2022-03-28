@@ -1196,6 +1196,9 @@ public class ClassKit {
     public static Class<?> loadClass(String name, ClassLoader classLoader, boolean isInitialized) throws InstrumentException {
         Assert.notNull(name, "Name must not be null");
 
+        // 自动将包名中的"/"替换为"."
+        name = name.replace(Symbol.SLASH, Symbol.DOT);
+
         // 加载原始类型和缓存中的类
         Class<?> clazz = loadPrimitiveClass(name);
         if (null == clazz) {

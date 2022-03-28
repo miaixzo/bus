@@ -1386,7 +1386,7 @@ public class Images implements Serializable {
     }
 
     /**
-     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}，<br>
+     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}，
      * 则坐标修正为基于图形中心，否则基于左上角
      *
      * @param rectangle  矩形

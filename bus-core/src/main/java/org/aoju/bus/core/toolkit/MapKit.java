@@ -36,6 +36,8 @@ import org.aoju.bus.core.map.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * Map相关工具类
@@ -714,6 +716,24 @@ public class MapKit {
             }
         }
         return map2;
+    }
+
+    /**
+     * 通过biFunction自定义一个规则，此规则将原Map中的元素转换成新的元素，生成新的Map返回
+     * 变更过程通过传入的 {@link BiFunction} 实现来返回一个值可以为不同类型的 {@link Map}
+     *
+     * @param map        原有的map
+     * @param biFunction {@code lambda}，参数包含{@code key},{@code value}，返回值会作为新的{@code value}
+     * @param <K>        {@code key}的类型
+     * @param <V>        {@code value}的类型
+     * @param <R>        新的，修改后的{@code value}的类型
+     * @return 值可以为不同类型的 {@link Map
+     */
+    public static <K, V, R> Map<K, R> map(Map<K, V> map, BiFunction<K, V, R> biFunction) {
+        if (null == map || null == biFunction) {
+            return newHashMap();
+        }
+        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, m -> biFunction.apply(m.getKey(), m.getValue())));
     }
 
     /**

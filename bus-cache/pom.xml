@@ -45,7 +45,7 @@
         <spring.boot.version>2.6.3</spring.boot.version>
         <lombok.version>1.18.22</lombok.version>
         <guice.version>5.0.1</guice.version>
-        <jedis.version>3.6.1</jedis.version>
+        <jedis.version>4.2.0</jedis.version>
         <xmemcached.version>2.4.7</xmemcached.version>
         <ehcache.version>3.9.4</ehcache.version>
         <curator.version>4.3.0</curator.version>

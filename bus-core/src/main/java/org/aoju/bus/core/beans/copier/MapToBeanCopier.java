@@ -120,7 +120,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
     }
 
     /**
-     * 查找Map对应Bean的名称<br>
+     * 查找Map对应Bean的名称
      * 尝试原名称、转驼峰名称、isXxx去掉is的名称
      *
      * @param targetPropertyDescMap 目标bean的属性描述Map

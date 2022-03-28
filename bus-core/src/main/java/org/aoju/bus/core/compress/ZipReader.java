@@ -25,9 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
+import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.ZipKit;
 
 import java.io.Closeable;
@@ -92,22 +94,22 @@ public class ZipReader implements Closeable {
     }
 
     /**
-     * 创建{@link ZipReader}
+     * 创建ZipReader
      *
      * @param zipFile 生成的Zip文件
      * @param charset 编码
-     * @return {@link ZipReader}
+     * @return this
      */
     public static ZipReader of(File zipFile, Charset charset) {
         return new ZipReader(zipFile, charset);
     }
 
     /**
-     * 创建{@link ZipReader}
+     * 创建ZipReader
      *
      * @param in      Zip输入的流，一般为输入文件流
      * @param charset 编码
-     * @return {@link ZipReader}
+     * @return this
      */
     public static ZipReader of(InputStream in, Charset charset) {
         return new ZipReader(in, charset);
@@ -115,6 +117,7 @@ public class ZipReader implements Closeable {
 
     /**
      * 获取指定路径的文件流
+     * 如果是文件模式，则直接获取Entry对应的流，如果是流模式，则遍历entry后，找到对应流返回
      *
      * @param path 路径
      * @return 文件流
@@ -127,7 +130,17 @@ public class ZipReader implements Closeable {
                 return ZipKit.get(zipFile, entry);
             }
         } else {
-            throw new UnsupportedOperationException("Zip stream mode not support get!");
+            try {
+                this.in.reset();
+                ZipEntry zipEntry;
+                while (null != (zipEntry = in.getNextEntry())) {
+                    if (zipEntry.getName().equals(path)) {
+                        return this.in;
+                    }
+                }
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
         }
 
         return null;
@@ -141,19 +154,37 @@ public class ZipReader implements Closeable {
      * @throws InstrumentException IO异常
      */
     public File readTo(File outFile) throws InstrumentException {
+        return readTo(outFile, null);
+    }
+
+    /**
+     * 解压到指定目录中
+     *
+     * @param outFile     解压到的目录
+     * @param entryFilter 过滤器，排除不需要的文件
+     * @return 解压的目录
+     * @throws InstrumentException IO异常
+     */
+    public File readTo(File outFile, Filter<ZipEntry> entryFilter) throws InstrumentException {
         read((zipEntry) -> {
-            File outItemFile = FileKit.file(outFile, zipEntry.getName());
-            if (zipEntry.isDirectory()) {
-                outItemFile.mkdirs();
-            } else {
-                InputStream in;
-                if (null != this.zipFile) {
-                    in = ZipKit.get(this.zipFile, zipEntry);
-                } else {
-                    in = this.in;
+            if (null == entryFilter || entryFilter.accept(zipEntry)) {
+                String path = zipEntry.getName();
+                if (FileKit.isWindows()) {
+                    path = StringKit.replace(path, "*", "_");
                 }
-                // 文件
-                FileKit.writeFromStream(in, outItemFile, false);
+                final File outItemFile = FileKit.file(outFile, path);
+                if (zipEntry.isDirectory()) {
+                    outItemFile.mkdirs();
+                } else {
+                    InputStream in;
+                    if (null != this.zipFile) {
+                        in = ZipKit.get(this.zipFile, zipEntry);
+                    } else {
+                        in = this.in;
+                    }
+                    // 文件
+                    FileKit.writeFromStream(in, outItemFile, false);
+                }
             }
         });
         return outFile;

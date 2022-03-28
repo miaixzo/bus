@@ -331,7 +331,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将流的内容写入文件<br>
+     * 将流的内容写入文件
      * 此方法会自动关闭输入流
      *
      * @param in 输入流，不关闭

@@ -105,7 +105,7 @@ public class DateTimeMatcher {
      * @param hour       小时
      * @param dayOfMonth 天
      * @param month      月
-     * @param dayOfWeek  周几
+     * @param dayOfWeek  周，从0开始，0和7都表示周日
      * @param year       年
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */

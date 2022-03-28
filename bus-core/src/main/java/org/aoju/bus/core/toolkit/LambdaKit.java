@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.function.Func0;
 import org.aoju.bus.core.lang.function.Func1;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandleInfo;
 import java.lang.invoke.SerializedLambda;
 
 /**
@@ -44,7 +45,7 @@ public class LambdaKit {
     private static final SimpleCache<String, SerializedLambda> cache = new SimpleCache<>();
 
     /**
-     * 解析lambda表达式,加了缓存。
+     * 解析lambda表达式,加了缓存
      * 该缓存可能会在任意不定的时间被清除
      *
      * @param <T>  Lambda类型
@@ -90,6 +91,37 @@ public class LambdaKit {
     }
 
     /**
+     * 通过对象的方法或类的静态方法引用，获取lambda实现类
+     *
+     * @param func lambda
+     * @param <R>  类型
+     * @return lambda实现类
+     * @throws IllegalArgumentException 如果是不支持的方法引用，抛出该异常，见{@link LambdaKit#checkLambdaTypeCanGetClass}
+     */
+    public static <R> Class<R> getRealClass(Func0<?> func) {
+        final SerializedLambda lambda = resolve(func);
+        checkLambdaTypeCanGetClass(lambda.getImplMethodKind());
+        return ClassKit.loadClass(lambda.getImplClass());
+    }
+
+    /**
+     * 通过对象的方法或类的静态方法引用，然后根据{@link SerializedLambda#getInstantiatedMethodType()}获取lambda实现类
+     * 传入lambda有参数且含有返回值的情况能够匹配到此方法：
+     *
+     * @param func lambda
+     * @param <P>  方法调用方类型
+     * @param <R>  返回值类型
+     * @return lambda实现类
+     * @throws IllegalArgumentException 如果是不支持的方法引用，抛出该异常，见{@link LambdaKit#checkLambdaTypeCanGetClass}
+     */
+    public static <P, R> Class<P> getRealClass(Func1<P, R> func) {
+        final SerializedLambda lambda = resolve(func);
+        checkLambdaTypeCanGetClass(lambda.getImplMethodKind());
+        final String instantiatedMethodType = lambda.getInstantiatedMethodType();
+        return ClassKit.loadClass(StringKit.sub(instantiatedMethodType, 2, StringKit.indexOf(instantiatedMethodType, ';')));
+    }
+
+    /**
      * 获取lambda表达式Getter或Setter函数（方法）对应的字段名称，规则如下：
      * <ul>
      *     <li>getXxxx获取为xxxx，如getName得到name</li>
@@ -126,7 +158,20 @@ public class LambdaKit {
     }
 
     /**
-     * 解析lambda表达式,加了缓存。
+     * 检查是否为支持的类型
+     *
+     * @param implMethodKind 支持的lambda类型
+     * @throws IllegalArgumentException 如果是不支持的方法引用，抛出该异常
+     */
+    private static void checkLambdaTypeCanGetClass(int implMethodKind) {
+        if (implMethodKind != MethodHandleInfo.REF_invokeVirtual &&
+                implMethodKind != MethodHandleInfo.REF_invokeStatic) {
+            throw new IllegalArgumentException("该lambda不是合适的方法引用");
+        }
+    }
+
+    /**
+     * 解析lambda表达式,加了缓存
      * 该缓存可能会在任意不定的时间被清除
      *
      * @param func 需要解析的 lambda 对象

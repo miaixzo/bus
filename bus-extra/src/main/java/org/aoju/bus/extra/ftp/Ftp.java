@@ -350,7 +350,7 @@ public class Ftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历<br>
+     * 遍历某个目录下所有文件和目录，不会递归遍历
      * 此方法自动过滤"."和".."两种目录
      *
      * @param path   目录

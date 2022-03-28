@@ -204,7 +204,7 @@ public class CitizenIdKit {
      * <p>
      * 判断18位身份证的合法性
      * </p>
-     * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，由十七位数字本体码和一位数字校验码组成。<br>
+     * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，由十七位数字本体码和一位数字校验码组成
      * 排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。
      * <p>
      * 顺序码: 表示在同一地址码所标识的区域范围内，对同年、同月、同 日出生的人编定的顺序号，顺序码的奇数分配给男性，偶数分配 给女性。
@@ -513,6 +513,36 @@ public class CitizenIdKit {
         if (len == CHINA_ID_MIN_LENGTH || len == CHINA_ID_MAX_LENGTH) {
             String province = idcard.substring(0, 2);
             return AREA_CODE.get(province) + Symbol.COMMA + idcard.substring(0, 5);
+        }
+        return null;
+    }
+
+    /**
+     * 根据身份编号获取地市级编码，只支持15或18位身份证号码
+     * 获取编码为4位
+     *
+     * @param idcard 身份编码
+     * @return 地市级编码
+     */
+    public static String getCityCodeByIdCard(String idcard) {
+        int len = idcard.length();
+        if (len == CHINA_ID_MIN_LENGTH || len == CHINA_ID_MAX_LENGTH) {
+            return idcard.substring(0, 4);
+        }
+        return null;
+    }
+
+    /**
+     * 根据身份编号获取区县级编码，只支持15或18位身份证号码
+     * 获取编码为6位
+     *
+     * @param idcard 身份编码
+     * @return 地市级编码
+     */
+    public static String getDistrictCodeByIdCard(String idcard) {
+        int len = idcard.length();
+        if (len == CHINA_ID_MIN_LENGTH || len == CHINA_ID_MAX_LENGTH) {
+            return idcard.substring(0, 6);
         }
         return null;
     }

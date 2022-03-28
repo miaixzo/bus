@@ -26,9 +26,12 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.function.Func1;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 枚举工具类
@@ -243,6 +246,60 @@ public class EnumKit {
             map.put(e.name(), ReflectKit.getFieldValue(e, fieldName));
         }
         return map;
+    }
+
+    /**
+     * 通过 某字段对应值 获取 枚举，获取不到时为 {@code null}
+     *
+     * @param enumClass 枚举类
+     * @param predicate 条件
+     * @param <E>       枚举类型
+     * @return 对应枚举 ，获取不到时为 {@code null}
+     */
+    public static <E extends Enum<E>> E getBy(Class<E> enumClass, Predicate<? super E> predicate) {
+        return Arrays.stream(enumClass.getEnumConstants())
+                .filter(predicate).findFirst().orElse(null);
+    }
+
+    /**
+     * 通过 某字段对应值 获取 枚举，获取不到时为 {@code null}
+     *
+     * @param condition 条件字段
+     * @param value     条件字段值
+     * @param <E>       枚举类型
+     * @param <C>       字段类型
+     * @return 对应枚举 ，获取不到时为 {@code null}
+     */
+    public static <E extends Enum<E>, C> E getBy(Func1<E, C> condition, C value) {
+        Class<E> implClass = LambdaKit.getRealClass(condition);
+        if (Enum.class.equals(implClass)) {
+            implClass = LambdaKit.getRealClass(condition);
+        }
+        return Arrays.stream(implClass.getEnumConstants()).filter(e -> condition.callWithRuntimeException(e).equals(value)).findAny().orElse(null);
+    }
+
+    /**
+     * 通过 某字段对应值 获取 枚举中另一字段值，获取不到时为 {@code null}
+     *
+     * @param field     你想要获取的字段
+     * @param condition 条件字段
+     * @param value     条件字段值
+     * @param <E>       枚举类型
+     * @param <F>       想要获取的字段类型
+     * @param <C>       条件字段类型
+     * @return 对应枚举中另一字段值 ，获取不到时为 {@code null}
+     */
+    public static <E extends Enum<E>, F, C> F getFieldBy(Func1<E, F> field,
+                                                         Function<E, C> condition, C value) {
+        Class<E> implClass = LambdaKit.getRealClass(field);
+        if (Enum.class.equals(implClass)) {
+            implClass = LambdaKit.getRealClass(field);
+        }
+        return Arrays.stream(implClass.getEnumConstants())
+                // 过滤
+                .filter(e -> condition.apply(e).equals(value))
+                // 获取第一个并转换为结果
+                .findFirst().map(field::callWithRuntimeException).orElse(null);
     }
 
     /**
