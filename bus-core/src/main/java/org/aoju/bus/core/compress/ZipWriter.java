@@ -157,34 +157,6 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 对文件或文件目录进行压缩
-     *
-     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩），{@code null}表示不过滤
-     * @param files      要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
-     * @return this
-     * @throws InstrumentException IO异常
-     */
-    public ZipWriter add(boolean withSrcDir, FileFilter filter, File... files) throws InstrumentException {
-        for (File file : files) {
-            // 如果只是压缩一个文件，则需要截取该文件的父目录
-            String srcRootDir;
-            try {
-                srcRootDir = file.getCanonicalPath();
-                if ((false == file.isDirectory()) || withSrcDir) {
-                    // 若是文件，则将父目录完整路径都截取掉；若设置包含目录，则将上级目录全部截取掉，保留本目录名
-                    srcRootDir = file.getCanonicalFile().getParentFile().getCanonicalPath();
-                }
-            } catch (IOException e) {
-                throw new InstrumentException(e);
-            }
-
-            _add(file, srcRootDir, filter);
-        }
-        return this;
-    }
-
-    /**
      * 添加资源到压缩包，添加后关闭资源流
      *
      * @param resources 需要压缩的资源，资源的路径为{@link Resource#getName()}
@@ -220,6 +192,58 @@ public class ZipWriter implements Closeable {
         }
 
         return putEntry(path, in);
+    }
+
+    /**
+     * 对流中的数据加入到压缩文件
+     * 路径列表和流列表长度必须一致
+     *
+     * @param paths 流数据在压缩文件中的路径或文件名
+     * @param ins   要压缩的源，添加完成后自动关闭流
+     * @return 压缩文件
+     * @throws InstrumentException IO异常
+     */
+    public ZipWriter add(String[] paths, InputStream[] ins) throws InstrumentException {
+        if (ArrayKit.isEmpty(paths) || ArrayKit.isEmpty(ins)) {
+            throw new IllegalArgumentException("Paths or ins is empty !");
+        }
+        if (paths.length != ins.length) {
+            throw new IllegalArgumentException("Paths length is not equals to ins length !");
+        }
+
+        for (int i = 0; i < paths.length; i++) {
+            add(paths[i], ins[i]);
+        }
+
+        return this;
+    }
+
+    /**
+     * 对文件或文件目录进行压缩
+     *
+     * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
+     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩），{@code null}表示不过滤
+     * @param files      要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
+     * @return this
+     * @throws InstrumentException IO异常
+     */
+    public ZipWriter add(boolean withSrcDir, FileFilter filter, File... files) throws InstrumentException {
+        for (File file : files) {
+            // 如果只是压缩一个文件，则需要截取该文件的父目录
+            String srcRootDir;
+            try {
+                srcRootDir = file.getCanonicalPath();
+                if ((false == file.isDirectory()) || withSrcDir) {
+                    // 若是文件，则将父目录完整路径都截取掉；若设置包含目录，则将上级目录全部截取掉，保留本目录名
+                    srcRootDir = file.getCanonicalFile().getParentFile().getCanonicalPath();
+                }
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
+
+            _add(file, srcRootDir, filter);
+        }
+        return this;
     }
 
     @Override

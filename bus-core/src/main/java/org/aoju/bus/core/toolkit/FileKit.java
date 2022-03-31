@@ -1333,7 +1333,13 @@ public class FileKit {
 
     /**
      * 给定路径已经是绝对路径
-     * 此方法并没有针对路径做标准化,建议先执行{@link #normalize(String)}方法标准化路径后判断
+     * 此方法并没有针对路径做标准化，建议先执行{@link #normalize(String)}方法标准化路径后判断
+     * 绝对路径判断条件是：
+     * <ul>
+     *     <li>以/开头的路径</li>
+     *     <li>满足类似于 c:/xxxxx，其中祖母随意，不区分大小写</li>
+     *     <li>满足类似于 d:\xxxxx，其中祖母随意，不区分大小写</li>
+     * </ul>
      *
      * @param path 需要检查的Path
      * @return 是否已经是绝对路径
@@ -1342,7 +1348,7 @@ public class FileKit {
         if (StringKit.isEmpty(path)) {
             return false;
         }
-        return Symbol.C_SLASH == path.charAt(0) || path.matches("^[a-zA-Z]:[/\\\\].*");
+        return Symbol.C_SLASH == path.charAt(0) || PatternKit.isMatch("^[a-zA-Z]:[/\\\\].*", path);
     }
 
 

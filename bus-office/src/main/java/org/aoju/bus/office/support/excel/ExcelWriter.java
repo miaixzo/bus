@@ -205,8 +205,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter reset() {
         resetRow();
-        this.aliasComparator = null;
-        this.headLocationCache = null;
         return this;
     }
 
@@ -1191,7 +1189,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 为指定的key列表添加标题别名,如果没有定义key的别名,在onlyAlias为false时使用原key
+     * 为指定的key列表添加标题别名，如果没有定义key的别名，在onlyAlias为false时使用原key
+     * key为别名，value为字段值
      *
      * @param rowMap 键列表
      * @return 别名列表
@@ -1202,17 +1201,16 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
 
         final Map<Object, Object> filteredMap = MapKit.newHashMap(rowMap.size(), true);
-        String aliasName;
-        for (Entry<?, ?> entry : rowMap.entrySet()) {
-            aliasName = this.headerAlias.get(entry.getKey());
+        rowMap.forEach((key, value) -> {
+            final String aliasName = this.headerAlias.get(StringKit.toString(key));
             if (null != aliasName) {
                 // 别名键值对加入
-                filteredMap.put(aliasName, entry.getValue());
+                filteredMap.put(aliasName, value);
             } else if (false == this.onlyAlias) {
                 // 保留无别名设置的键值对
-                filteredMap.put(entry.getKey(), entry.getValue());
+                filteredMap.put(key, value);
             }
-        }
+        });
         return filteredMap;
     }
 

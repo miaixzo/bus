@@ -25,15 +25,21 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.collection.CopiedIterator;
+import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.collection.EnumerationIterator;
+import org.aoju.bus.core.collection.FilterIterator;
+import org.aoju.bus.core.collection.NodeListIterator;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Matcher;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.text.TextJoiner;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -605,11 +611,7 @@ public class IterKit {
      * @return List
      */
     public static <E> List<E> toList(Iterator<E> iterator) {
-        final List<E> list = new ArrayList<>();
-        while (iterator.hasNext()) {
-            list.add(iterator.next());
-        }
-        return list;
+        return CollKit.toList(iterator);
     }
 
     /**
@@ -658,10 +660,7 @@ public class IterKit {
      * @return 第一个元素
      */
     public static <T> T getFirst(Iterator<T> iterator) {
-        if (null != iterator && iterator.hasNext()) {
-            return iterator.next();
-        }
-        return null;
+        return get(iterator, 0);
     }
 
     /**
@@ -718,29 +717,22 @@ public class IterKit {
      * @return 元素类型, 当列表为空或元素全部为null时, 返回null
      */
     public static Class<?> getElementType(Iterable<?> iterable) {
-        if (null != iterable) {
-            final Iterator<?> iterator = iterable.iterator();
-            return getElementType(iterator);
-        }
-        return null;
+        return getElementType(get(iterable));
     }
 
     /**
      * 获得{@link Iterator}对象的元素类型(通过第一个非空元素判断)
      * 注意,此方法至少会调用多次next方法
      *
-     * @param iterator {@link Iterator}
-     * @return 元素类型, 当列表为空或元素全部为null时, 返回null
+     * @param iterator {@link Iterator}，为 {@code null}返回{@code null}
+     * @return 元素类型，当列表为空或元素全部为{@code null}时，返回{@code null}
      */
     public static Class<?> getElementType(Iterator<?> iterator) {
-        final Iterator<?> iter2 = new CopiedIterator<>(iterator);
-        while (iter2.hasNext()) {
-            final Object t = iter2.next();
-            if (null != t) {
-                return t.getClass();
-            }
+        if (null == iterator) {
+            return null;
         }
-        return null;
+        final Object ele = getFirstNoneNull(iterator);
+        return null == ele ? null : ele.getClass();
     }
 
     /**
@@ -801,20 +793,22 @@ public class IterKit {
      * @param <E>    元素类型
      * @param iter   {@link Iterator}
      * @param filter 过滤器，保留{@link Filter#accept(Object)}为{@code true}的元素
-     * @return ArrayList
+     * @return the list
      */
     public static <E> List<E> filterToList(Iterator<E> iter, Filter<E> filter) {
-        final List<E> result = new ArrayList<>();
-        if (null != iter) {
-            E ele;
-            while (iter.hasNext()) {
-                ele = iter.next();
-                if (null == filter || filter.accept(ele)) {
-                    result.add(ele);
-                }
-            }
-        }
-        return result;
+        return toList(filtered(iter, filter));
+    }
+
+    /**
+     * 获取一个新的 {@link FilterIterator}，用于过滤指定元素
+     *
+     * @param iterator 被包装的 {@link Iterator}
+     * @param filter   过滤断言，当{@link Filter#accept(Object)}为{@code true}时保留元素，{@code false}抛弃元素
+     * @param <E>      元素类型
+     * @return {@link FilterIterator}
+     */
+    public static <E> FilterIterator<E> filtered(final Iterator<? extends E> iterator, final Filter<? super E> filter) {
+        return new FilterIterator<>(iterator, filter);
     }
 
     /**
@@ -924,6 +918,153 @@ public class IterKit {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * 遍历{@link Iterator}
+     * 当consumer为{@code null}表示不处理，但是依旧遍历{@link Iterator}
+     *
+     * @param iterator {@link Iterator}
+     * @param consumer 节点消费，{@code null}表示不处理
+     * @param <E>      元素类型
+     */
+    public static <E> void forEach(final Iterator<E> iterator, final Consumer<? super E> consumer) {
+        if (iterator != null) {
+            while (iterator.hasNext()) {
+                final E element = iterator.next();
+                if (null != consumer) {
+                    consumer.accept(element);
+                }
+            }
+        }
+    }
+
+    /**
+     * 拼接 {@link Iterator}为字符串
+     *
+     * @param iterator {@link Iterator}
+     * @param <E>      元素类型
+     * @return 字符串
+     */
+    public static <E> String toString(final Iterator<E> iterator) {
+        return toString(iterator, ObjectKit::toString);
+    }
+
+    /**
+     * 拼接 {@link Iterator}为字符串
+     *
+     * @param iterator  {@link Iterator}
+     * @param transFunc 元素转字符串函数
+     * @param <E>       元素类型
+     * @return 字符串
+     */
+    public static <E> String toString(final Iterator<E> iterator, final Function<? super E, String> transFunc) {
+        return toString(iterator, transFunc, ", ", "[", "]");
+    }
+
+    /**
+     * 拼接 {@link Iterator}为字符串
+     *
+     * @param iterator  {@link Iterator}
+     * @param transFunc 元素转字符串函数
+     * @param delimiter 分隔符
+     * @param prefix    前缀
+     * @param suffix    后缀
+     * @param <E>       元素类型
+     * @return 字符串
+     */
+    public static <E> String toString(final Iterator<E> iterator,
+                                      final Function<? super E, String> transFunc,
+                                      final String delimiter,
+                                      final String prefix,
+                                      final String suffix) {
+        final TextJoiner textJoiner = TextJoiner.of(delimiter, prefix, suffix);
+        textJoiner.append(iterator, transFunc);
+        return textJoiner.toString();
+    }
+
+    /**
+     * 获取{@link Iterator}
+     *
+     * @param iterable {@link Iterable}
+     * @param <T>      元素类型
+     * @return 当iterable为null返回{@code null}，否则返回对应的{@link Iterator}
+     */
+    public static <T> Iterator<T> get(Iterable<T> iterable) {
+        return null == iterable ? null : iterable.iterator();
+    }
+
+    /**
+     * 遍历{@link Iterator}，获取指定index位置的元素
+     *
+     * @param iterator {@link Iterator}
+     * @param index    位置
+     * @param <E>      元素类型
+     * @return 元素，找不到元素返回{@code null}
+     */
+    public static <E> E get(final Iterator<E> iterator, int index) {
+        Assert.isTrue(index >= 0, "[index] must be >= 0");
+        while (iterator.hasNext()) {
+            index--;
+            if (-1 == index) {
+                return iterator.next();
+            }
+            iterator.next();
+        }
+        return null;
+    }
+
+    /**
+     * 从给定的对象中获取可能存在的{@link Iterator}，规则如下：
+     * <ul>
+     *   <li>null - null</li>
+     *   <li>Iterator - 直接返回</li>
+     *   <li>Enumeration - {@link EnumerationIterator}</li>
+     *   <li>Collection - 调用{@link Collection#iterator()}</li>
+     *   <li>Map - Entry的{@link Iterator}</li>
+     *   <li>Dictionary - values (elements) enumeration returned as iterator</li>
+     *   <li>array - {@link ArrayIterator}</li>
+     *   <li>NodeList - {@link NodeListIterator}</li>
+     *   <li>Node - 子节点</li>
+     *   <li>object with iterator() public method，通过反射访问</li>
+     *   <li>object - 单对象的{@link ArrayIterator}</li>
+     * </ul>
+     *
+     * @param obj 可以获取{@link Iterator}的对象
+     * @return {@link Iterator}，如果提供对象为{@code null}，返回{@code null}
+     */
+    public static Iterator<?> get(final Object obj) {
+        if (obj == null) {
+            return null;
+        } else if (obj instanceof Iterator) {
+            return (Iterator<?>) obj;
+        } else if (obj instanceof Iterable) {
+            return ((Iterable<?>) obj).iterator();
+        } else if (ArrayKit.isArray(obj)) {
+            return new ArrayIterator<>(obj);
+        } else if (obj instanceof Enumeration) {
+            return new EnumerationIterator<>((Enumeration<?>) obj);
+        } else if (obj instanceof Map) {
+            return ((Map<?, ?>) obj).entrySet().iterator();
+        } else if (obj instanceof NodeList) {
+            return new NodeListIterator((NodeList) obj);
+        } else if (obj instanceof Node) {
+            // 遍历子节点
+            return new NodeListIterator(((Node) obj).getChildNodes());
+        } else if (obj instanceof Dictionary) {
+            return new EnumerationIterator<>(((Dictionary<?, ?>) obj).elements());
+        }
+
+        // 反射获取
+        try {
+            final Object iterator = ReflectKit.invoke(obj, "iterator");
+            if (iterator instanceof Iterator) {
+                return (Iterator<?>) iterator;
+            }
+        } catch (final RuntimeException ignore) {
+            // ignore
+        }
+        return new ArrayIterator<>(new Object[]{obj});
     }
 
 }

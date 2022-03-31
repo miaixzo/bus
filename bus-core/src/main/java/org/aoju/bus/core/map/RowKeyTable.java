@@ -28,6 +28,7 @@ package org.aoju.bus.core.map;
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.collection.ComputeIterator;
 import org.aoju.bus.core.toolkit.IterKit;
+import org.aoju.bus.core.toolkit.MapKit;
 
 import java.util.*;
 
@@ -57,6 +58,15 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
      */
     public RowKeyTable() {
         this(new HashMap<>());
+    }
+
+    /**
+     * 构造
+     *
+     * @param isLinked 是否有序，有序则使用{@link java.util.LinkedHashMap}作为原始Map
+     */
+    public RowKeyTable(boolean isLinked) {
+        this(MapKit.newHashMap(isLinked), () -> MapKit.newHashMap(isLinked));
     }
 
     /**
@@ -156,7 +166,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
             return new TransIterator<>(columnKeySet.iterator(),
-                    c -> new AbstractMap.SimpleEntry<>(c, getColumn(c)));
+                    c -> MapKit.entry(c, getColumn(c)));
         }
 
         @Override

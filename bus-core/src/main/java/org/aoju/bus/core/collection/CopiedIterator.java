@@ -56,11 +56,18 @@ public class CopiedIterator<E> implements IterableIterator<E>, Serializable {
      * @param iterator 被复制的Iterator
      */
     public CopiedIterator(Iterator<E> iterator) {
-        final List<E> eleList = CollKit.newArrayList(iterator);
+        final List<E> eleList = CollKit.toList(iterator);
         this.listIterator = eleList.iterator();
     }
 
-    public static <V> CopiedIterator<V> copyOf(Iterator<V> iterator) {
+    /**
+     * 根据已有{@link Iterator}，返回新的{@code CopiedIter}
+     *
+     * @param iterator {@link Iterator}
+     * @param <E>      元素类型
+     * @return {@code CopiedIter}
+     */
+    public static <E> CopiedIterator<E> copyOf(Iterator<E> iterator) {
         return new CopiedIterator<>(iterator);
     }
 
@@ -82,11 +89,6 @@ public class CopiedIterator<E> implements IterableIterator<E>, Serializable {
     @Override
     public void remove() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("This is a read-only iterator.");
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return this;
     }
 
 }
