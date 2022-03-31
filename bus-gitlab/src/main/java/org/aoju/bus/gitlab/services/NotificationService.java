@@ -23,10 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.service;
+package org.aoju.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.gitlab.GitLabApiForm;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
@@ -38,6 +37,7 @@ public abstract class NotificationService {
 
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";
     public static final String NOTIFY_ONLY_DEFAULT_BRANCH_PROP = "notify_only_default_branch";
+    public static final String BRANCHES_TO_BE_NOTIFIED_PROP = "branches_to_be_notified";
     public static final String PUSH_CHANNEL_PROP = "push_channel";
     public static final String ISSUE_CHANNEL_PROP = "issue_channel";
     public static final String CONFIDENTIAL_ISSUE_CHANNEL_PROP = "confidential_issue_channel";
@@ -57,7 +57,7 @@ public abstract class NotificationService {
     public static final String PROJECT_URL_PROP = "project_url";
     public static final String PUSH_EVENTS_PROP = "push_events";
 
-    private Integer id;
+    private Long id;
     private String title;
     private String slug;
     private Date createdAt;
@@ -80,11 +80,11 @@ public abstract class NotificationService {
 
     public abstract GitLabApiForm servicePropertiesForm();
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -289,6 +289,7 @@ public abstract class NotificationService {
     }
 
     @JsonIgnore
+    @SuppressWarnings("unchecked")
     protected <T> T getProperty(String prop, T defaultValue) {
 
         Object value = (properties != null ? properties.get(prop) : null);
@@ -307,7 +308,7 @@ public abstract class NotificationService {
 
     protected void setProperty(String prop, Object value) {
         if (properties == null) {
-            properties = new HashMap<>(Normal._16);
+            properties = new HashMap<>(16);
         }
 
         properties.put(prop, value);

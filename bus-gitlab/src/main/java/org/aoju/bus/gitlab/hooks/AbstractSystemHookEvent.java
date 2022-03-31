@@ -23,32 +23,46 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab.hooks;
 
-import org.aoju.bus.gitlab.hooks.web.MergeRequestEvent;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
+public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
-    public static final String X_GITLAB_EVENT = "System Hook";
-    public static final String MERGE_REQUEST_EVENT = "merge_request";
-
-    private String eventType;
-
-    @Override
-    public String getObjectKind() {
-        return (MERGE_REQUEST_EVENT);
-    }
+    private String requestUrl;
+    private String requestQueryString;
+    private String requestSecretToken;
 
     @Override
-    public String getEventName() {
-        return (MERGE_REQUEST_EVENT);
+    @JsonIgnore
+    public String getRequestUrl() {
+        return (requestUrl);
     }
 
-    public String getEventType() {
-        return eventType;
+    @Override
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
     }
 
-    public void setEvent_type(String eventType) {
-        this.eventType = eventType;
+    @Override
+    @JsonIgnore
+    public String getRequestQueryString() {
+        return (requestQueryString);
+    }
+
+    @Override
+    public void setRequestQueryString(String requestQueryString) {
+        this.requestQueryString = requestQueryString;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getRequestSecretToken() {
+        return (requestSecretToken);
+    }
+
+    @Override
+    public void setRequestSecretToken(String requestSecretToken) {
+        this.requestSecretToken = requestSecretToken;
     }
 }

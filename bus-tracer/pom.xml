@@ -45,7 +45,7 @@
         <spring.boot.version>2.6.3</spring.boot.version>
         <lombok.version>1.18.22</lombok.version>
         <dubbo.version>3.0.5</dubbo.version>
-        <servlet.version>4.0.1</servlet.version>
+        <servlet.version>4.0.4</servlet.version>
         <cxf.version>2.7.18</cxf.version>
         <httpclient.version>4.5.13</httpclient.version>
         <httpclient5.version>5.0</httpclient5.version>
@@ -112,8 +112,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <version>${servlet.version}</version>
             <optional>true</optional>
         </dependency>

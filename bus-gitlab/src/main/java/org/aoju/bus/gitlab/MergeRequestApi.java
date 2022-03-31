@@ -136,7 +136,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return all merge requests for the specified project
      * @throws GitLabApiException if any exception occurs
      */
@@ -149,7 +149,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param page            the page to get
      * @param perPage         the number of MergeRequest instances per page
      * @return all merge requests for the specified project
@@ -166,7 +166,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param itemsPerPage    the number of MergeRequest instances that will be fetched per page
      * @return all merge requests for the specified project
      * @throws GitLabApiException if any exception occurs
@@ -180,7 +180,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a Stream with all merge requests for the specified project
      * @throws GitLabApiException if any exception occurs
      */
@@ -193,7 +193,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests?state=:state</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param state           the state parameter can be used to get only merge requests with a given state (opened, closed, or merged) or all of them (all).
      * @return all merge requests for the specified project
      * @throws GitLabApiException if any exception occurs
@@ -207,7 +207,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param state           the state parameter can be used to get only merge requests with a given state (opened, closed, or merged) or all of them (all).
      * @param page            the page to get
      * @param perPage         the number of MergeRequest instances per page
@@ -229,7 +229,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param state           the state parameter can be used to get only merge requests with a given state (opened, closed, or merged) or all of them (all).
      * @param itemsPerPage    the number of MergeRequest instances that will be fetched per page
      * @return all merge requests for the specified project
@@ -246,7 +246,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests?state=:state</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param state           the state parameter can be used to get only merge requests with a given state (opened, closed, or merged) or all of them (all).
      * @return a Stream with all the merge requests for the specified project
      * @throws GitLabApiException if any exception occurs
@@ -262,12 +262,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_id</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return the specified MergeRequest instance
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest getMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest getMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return getMergeRequest(projectIdOrPath, mergeRequestIid, null, null, null);
     }
 
@@ -276,7 +276,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid</code></pre>
      *
-     * @param projectIdOrPath            the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath            the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid            the internal ID of the merge request
      * @param renderHtml                 if true response includes rendered HTML for title and description, can be null
      * @param includeDivergedCommitCount if true response includes the commits behind the target branch, can be null
@@ -284,7 +284,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return a MergeRequest instance as specified by the parameters
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest getMergeRequest(Object projectIdOrPath, Integer mergeRequestIid,
+    public MergeRequest getMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
                                         Boolean renderHtml, Boolean includeDivergedCommitCount, Boolean includeRebaseInProgress) throws GitLabApiException {
 
         GitLabApiForm queryParams = new GitLabApiForm()
@@ -304,11 +304,11 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_id</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return the specified MergeRequest as an Optional instance instance
      */
-    public Optional<MergeRequest> getOptionalMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) {
+    public Optional<MergeRequest> getOptionalMergeRequest(Object projectIdOrPath, Long mergeRequestIid) {
         return getOptionalMergeRequest(projectIdOrPath, mergeRequestIid, null, null, null);
     }
 
@@ -319,14 +319,14 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_id</code></pre>
      *
-     * @param projectIdOrPath            the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath            the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid            the internal ID of the merge request
      * @param renderHtml                 if true response includes rendered HTML for title and description, can be null
      * @param includeDivergedCommitCount if true response includes the commits behind the target branch, can be null
      * @param includeRebaseInProgress    if true response includes whether a rebase operation is in progress, can be null
      * @return the specified MergeRequest as an Optional instance instance
      */
-    public Optional<MergeRequest> getOptionalMergeRequest(Object projectIdOrPath, Integer mergeRequestIid,
+    public Optional<MergeRequest> getOptionalMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
                                                           Boolean renderHtml, Boolean includeDivergedCommitCount, Boolean includeRebaseInProgress) {
         try {
             return (Optional.ofNullable(getMergeRequest(projectIdOrPath, mergeRequestIid, renderHtml, includeDivergedCommitCount, includeRebaseInProgress)));
@@ -342,7 +342,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/commits</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a list containing the commits for the specified merge request
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
@@ -358,7 +358,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/commits</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param page            the page to get
      * @param perPage         the number of commits per page
@@ -379,7 +379,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/commits</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager containing the commits for the specified merge request
@@ -397,7 +397,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/commits</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a Stream containing the commits for the specified merge request
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
@@ -411,12 +411,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/versions</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a List of merge request diff versions for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public List<MergeRequestDiff> getMergeRequestDiffs(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public List<MergeRequestDiff> getMergeRequestDiffs(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getMergeRequestDiffs(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).all());
     }
 
@@ -425,13 +425,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/versions</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param itemsPerPage    the number of MergeRequest instances that will be fetched per page
      * @return a Pager of merge request diff versions for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<MergeRequestDiff> getMergeRequestDiffs(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
+    public Pager<MergeRequestDiff> getMergeRequestDiffs(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage) throws GitLabApiException {
         return (new Pager<MergeRequestDiff>(this, MergeRequestDiff.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "versions"));
     }
@@ -441,12 +441,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/versions</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a Stream of merge request diff versions for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<MergeRequestDiff> getMergeRequestDiffsStream(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public Stream<MergeRequestDiff> getMergeRequestDiffsStream(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getMergeRequestDiffs(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).stream());
     }
 
@@ -455,14 +455,14 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param versionId       the ID of the merge request diff version
      * @return a MergeRequestDiff instance for the specified MR diff version
      * @throws GitLabApiException if any exception occurs
      */
     public MergeRequestDiff getMergeRequestDiff(Object projectIdOrPath,
-                                                Integer mergeRequestIid, Integer versionId) throws GitLabApiException {
+                                                Long mergeRequestIid, Long versionId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "merge_requests", mergeRequestIid, "versions", versionId);
         return (response.readEntity(MergeRequestDiff.class));
@@ -473,13 +473,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param versionId       the ID of the merge request diff version
      * @return the specified MergeRequestDiff as an Optional instance instance
      */
     public Optional<MergeRequestDiff> getOptionalMergeRequestDiff(
-            Object projectIdOrPath, Integer mergeRequestIid, Integer versionId) {
+            Object projectIdOrPath, Long mergeRequestIid, Long versionId) {
         try {
             return (Optional.ofNullable(getMergeRequestDiff(projectIdOrPath, mergeRequestIid, versionId)));
         } catch (GitLabApiException glae) {
@@ -492,7 +492,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param params          a MergeRequestParams instance holding the info to create the merge request
      * @return the created MergeRequest instance
      * @throws GitLabApiException if any exception occurs
@@ -509,7 +509,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath    the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath    the project in the form of an Long(ID), String(path), or Project instance
      * @param sourceBranch       the source branch, required
      * @param targetBranch       the target branch, required
      * @param title              the title for the merge request, required
@@ -524,8 +524,8 @@ public class MergeRequestApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      * @since GitLab Starter 8.17, GitLab CE 11.0.
      */
-    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch, String title, String description, Integer assigneeId,
-                                           Integer targetProjectId, String[] labels, Integer milestoneId, Boolean removeSourceBranch, Boolean squash) throws GitLabApiException {
+    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch, String title, String description, Long assigneeId,
+                                           Long targetProjectId, String[] labels, Long milestoneId, Boolean removeSourceBranch, Boolean squash) throws GitLabApiException {
 
         MergeRequestParams params = new MergeRequestParams()
                 .withSourceBranch(sourceBranch)
@@ -547,7 +547,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath    the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath    the project in the form of an Long(ID), String(path), or Project instance
      * @param sourceBranch       the source branch, required
      * @param targetBranch       the target branch, required
      * @param title              the title for the merge request, required
@@ -560,8 +560,8 @@ public class MergeRequestApi extends AbstractApi {
      * @return the created MergeRequest instance
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch, String title, String description, Integer assigneeId,
-                                           Integer targetProjectId, String[] labels, Integer milestoneId, Boolean removeSourceBranch) throws GitLabApiException {
+    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch, String title, String description, Long assigneeId,
+                                           Long targetProjectId, String[] labels, Long milestoneId, Boolean removeSourceBranch) throws GitLabApiException {
 
         MergeRequestParams params = new MergeRequestParams()
                 .withSourceBranch(sourceBranch)
@@ -582,7 +582,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sourceBranch    the source branch, required
      * @param targetBranch    the target branch, required
      * @param title           the title for the merge request, required
@@ -591,7 +591,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return the created MergeRequest instance
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch, String title, String description, Integer assigneeId)
+    public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch, String title, String description, Long assigneeId)
             throws GitLabApiException {
 
         MergeRequestParams params = new MergeRequestParams()
@@ -609,13 +609,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request to update
      * @param params          a MergeRequestParams instance holding the info to update the merge request
      * @return the updated merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest updateMergeRequest(Object projectIdOrPath, Integer mergeRequestIid, MergeRequestParams params) throws GitLabApiException {
+    public MergeRequest updateMergeRequest(Object projectIdOrPath, Long mergeRequestIid, MergeRequestParams params) throws GitLabApiException {
         GitLabApiForm form = params.getForm(false);
         Response response = put(Response.Status.OK, form.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid);
@@ -629,7 +629,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid</code></pre>
      *
-     * @param projectIdOrPath    the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath    the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid    the internal ID of the merge request to update
      * @param targetBranch       the target branch, optional
      * @param title              the title for the merge request
@@ -647,9 +647,9 @@ public class MergeRequestApi extends AbstractApi {
      * @return the updated merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest updateMergeRequest(Object projectIdOrPath, Integer mergeRequestIid,
-                                           String targetBranch, String title, Integer assigneeId, String description,
-                                           StateEvent stateEvent, String labels, Integer milestoneId, Boolean removeSourceBranch,
+    public MergeRequest updateMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
+                                           String targetBranch, String title, Long assigneeId, String description,
+                                           StateEvent stateEvent, String labels, Long milestoneId, Boolean removeSourceBranch,
                                            Boolean squash, Boolean discussionLocked, Boolean allowCollaboration)
             throws GitLabApiException {
 
@@ -681,11 +681,11 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/merge_requests/:merge_request_iid</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public void deleteMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public void deleteMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -707,13 +707,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/merge</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param params          the MergeRequest instance holding the parameters for accepting the merge request
      * @return the merged merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Integer mergeRequestIid,
+    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
                                            AcceptMergeRequestParams params) throws GitLabApiException {
         Response response = put(Response.Status.OK, params.getForm().asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "merge");
@@ -732,12 +732,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/merge</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return the merged merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (acceptMergeRequest(projectIdOrPath, mergeRequestIid, null, null, null, null));
     }
 
@@ -754,7 +754,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/merge</code></pre>
      *
-     * @param projectIdOrPath            the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath            the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid            the internal ID of the merge request
      * @param mergeCommitMessage,        custom merge commit message, optional
      * @param shouldRemoveSourceBranch,  if true removes the source branch, optional
@@ -762,7 +762,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return the merged merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Integer mergeRequestIid,
+    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
                                            String mergeCommitMessage, Boolean shouldRemoveSourceBranch, Boolean mergeWhenPipelineSucceeds)
             throws GitLabApiException {
         return (acceptMergeRequest(projectIdOrPath, mergeRequestIid, mergeCommitMessage,
@@ -782,7 +782,7 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/merge</code></pre>
      *
-     * @param projectIdOrPath            the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath            the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid            the internal ID of the merge request
      * @param mergeCommitMessage,        custom merge commit message, optional
      * @param shouldRemoveSourceBranch,  if true removes the source branch, optional
@@ -791,7 +791,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return the merged merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Integer mergeRequestIid,
+    public MergeRequest acceptMergeRequest(Object projectIdOrPath, Long mergeRequestIid,
                                            String mergeCommitMessage, Boolean shouldRemoveSourceBranch, Boolean mergeWhenPipelineSucceeds, String sha)
             throws GitLabApiException {
 
@@ -821,12 +821,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return the updated merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest cancelMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest cancelMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -843,12 +843,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/approvals</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a MergeRequest instance with approval information included
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest getMergeRequestApprovals(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest getMergeRequestApprovals(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getApprovals(projectIdOrPath, mergeRequestIid));
     }
 
@@ -859,12 +859,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/approvals</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a MergeRequest instance with approval information included
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest getApprovals(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest getApprovals(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -880,12 +880,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/approval_state</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a ApprovalState instance with approval state
      * @throws GitLabApiException if any exception occurs
      */
-    public ApprovalState getApprovalState(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public ApprovalState getApprovalState(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -902,12 +902,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/approval_rules</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a List of ApprovalRule instances for the specified merge request.
      * @throws GitLabApiException if any exception occurs
      */
-    public List<ApprovalRule> getApprovalRules(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public List<ApprovalRule> getApprovalRules(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getApprovalRules(projectIdOrPath, mergeRequestIid, -1).all());
     }
 
@@ -917,13 +917,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/approval_rules</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param itemsPerPage    the number of ApprovalRule instances that will be fetched per page
      * @return a Pager of ApprovalRule instances for the specified merge request.
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<ApprovalRule> getApprovalRules(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
+    public Pager<ApprovalRule> getApprovalRules(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -939,12 +939,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/approval_rules</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a Stream of ApprovalRule instances for the specified merge request.
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<ApprovalRule> getApprovalRulesStream(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public Stream<ApprovalRule> getApprovalRulesStream(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getApprovalRules(projectIdOrPath, mergeRequestIid, -1).stream());
     }
 
@@ -954,15 +954,15 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/approval_rules</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param projectRuleId   the ID of a project-level approval rule
      * @param params          the ApprovalRuleParams instance holding the parameters for the approval rule
      * @return a ApprovalRule instance with approval configuration
      * @throws GitLabApiException if any exception occurs
      */
-    public ApprovalRule createApprovalRule(Object projectIdOrPath, Integer mergeRequestIid,
-                                           Integer projectRuleId, ApprovalRuleParams params) throws GitLabApiException {
+    public ApprovalRule createApprovalRule(Object projectIdOrPath, Long mergeRequestIid,
+                                           Long projectRuleId, ApprovalRuleParams params) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -981,15 +981,15 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param approvalRuleId  the ID of the approval rule
      * @param params          the ApprovalRuleParams instance holding the parameters for the approval rule update
      * @return a ApprovalRule instance with approval configuration
      * @throws GitLabApiException if any exception occurs
      */
-    public ApprovalRule updateApprovalRule(Object projectIdOrPath, Integer mergeRequestIid,
-                                           Integer approvalRuleId, ApprovalRuleParams params) throws GitLabApiException {
+    public ApprovalRule updateApprovalRule(Object projectIdOrPath, Long mergeRequestIid,
+                                           Long approvalRuleId, ApprovalRuleParams params) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -1011,12 +1011,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param approvalRuleId  the ID of the approval rule
      * @throws GitLabApiException if any exception occurs
      */
-    public void deleteApprovalRule(Object projectIdOrPath, Integer mergeRequestIid, Integer approvalRuleId) throws GitLabApiException {
+    public void deleteApprovalRule(Object projectIdOrPath, Long mergeRequestIid, Long approvalRuleId) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -1037,13 +1037,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/approve</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param sha             the HEAD of the merge request, optional
      * @return a MergeRequest instance with approval information included
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest approveMergeRequest(Object projectIdOrPath, Integer mergeRequestIid, String sha) throws GitLabApiException {
+    public MergeRequest approveMergeRequest(Object projectIdOrPath, Long mergeRequestIid, String sha) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -1061,12 +1061,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/unapprove</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a MergeRequest instance with approval information included
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest unapproveMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest unapproveMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
 
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
@@ -1081,12 +1081,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/changes</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the IID of the merge request to get
      * @return a merge request including its changes
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest getMergeRequestChanges(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest getMergeRequestChanges(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "changes");
         return (response.readEntity(MergeRequest.class));
     }
@@ -1096,12 +1096,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/participants</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the IID of the merge request to get
      * @return a List containing all participants for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Participant> getParticipants(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public List<Participant> getParticipants(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getParticipants(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).all());
     }
 
@@ -1110,14 +1110,14 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/participants</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the IID of the merge request to get
      * @param page            the page to get
      * @param perPage         the number of projects per page
      * @return a List containing all participants for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Participant> getParticipants(Object projectIdOrPath, Integer mergeRequestIid, int page, int perPage) throws GitLabApiException {
+    public List<Participant> getParticipants(Object projectIdOrPath, Long mergeRequestIid, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "participants");
         return (response.readEntity(new GenericType<List<Participant>>() {
@@ -1129,13 +1129,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/participants</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the IID of the merge request to get
      * @param itemsPerPage    the number of Participant instances that will be fetched per page
      * @return a Pager containing all participants for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Participant> getParticipants(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
+    public Pager<Participant> getParticipants(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage) throws GitLabApiException {
         return new Pager<Participant>(this, Participant.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "participants");
     }
@@ -1145,12 +1145,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/participants</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the IID of the merge request to get
      * @return a Stream containing all participants for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Participant> getParticipantsStream(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public Stream<Participant> getParticipantsStream(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getParticipants(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).stream());
     }
 
@@ -1164,7 +1164,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return a List containing all the issues that would be closed by merging the provided merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Issue> getClosesIssues(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public List<Issue> getClosesIssues(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getClosesIssues(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).all());
     }
 
@@ -1180,7 +1180,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return a List containing all the issues that would be closed by merging the provided merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Issue> getClosesIssues(Object projectIdOrPath, Integer mergeRequestIid, int page, int perPage) throws GitLabApiException {
+    public List<Issue> getClosesIssues(Object projectIdOrPath, Long mergeRequestIid, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "closes_issues");
         return (response.readEntity(new GenericType<List<Issue>>() {
@@ -1198,7 +1198,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return a Pager containing all the issues that would be closed by merging the provided merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Issue> getClosesIssues(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
+    public Pager<Issue> getClosesIssues(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage) throws GitLabApiException {
         return new Pager<Issue>(this, Issue.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "closes_issues");
     }
@@ -1213,7 +1213,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return a Stream containing all the issues that would be closed by merging the provided merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Issue> getClosesIssuesStream(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public Stream<Issue> getClosesIssuesStream(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getClosesIssues(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).stream());
     }
 
@@ -1227,7 +1227,7 @@ public class MergeRequestApi extends AbstractApi {
      * @return a List containing all the issues that would be closed by merging the provided merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Issue> getApprovalStatus(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public List<Issue> getApprovalStatus(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getClosesIssues(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).all());
     }
 
@@ -1239,12 +1239,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/rebase</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request to rebase
      * @return the merge request info containing the status of a merge request rebase
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest rebaseMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest rebaseMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         Response response = put(Response.Status.ACCEPTED, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "rebase");
         return (response.readEntity(MergeRequest.class));
@@ -1255,12 +1255,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request being rebased
      * @return the merge request info containing the status of a merge request rebase
      * @throws GitLabApiException if any exception occurs
      */
-    public MergeRequest getRebaseStatus(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public MergeRequest getRebaseStatus(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return getMergeRequest(projectIdOrPath, mergeRequestIid, null, null, true);
     }
 
@@ -1269,12 +1269,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/pipelines</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a list containing the pipelines for the specified merge request
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public List<Pipeline> getMergeRequestPipelines(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public List<Pipeline> getMergeRequestPipelines(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getMergeRequestPipelines(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).all());
     }
 
@@ -1283,13 +1283,13 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/pipelines</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @param itemsPerPage    the number of Pipeline instances that will be fetched per page
      * @return a Pager containing the pipelines for the specified merge request
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Pager<Pipeline> getMergeRequestPipelines(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
+    public Pager<Pipeline> getMergeRequestPipelines(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage) throws GitLabApiException {
         return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "pipelines"));
     }
@@ -1299,12 +1299,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/merge_requests/:merge_request_iid/pipelines</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a Stream containing the pipelines for the specified merge request
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Stream<Pipeline> getMergeRequestPipelinesStream(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public Stream<Pipeline> getMergeRequestPipelinesStream(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getMergeRequestPipelines(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).stream());
     }
 
@@ -1319,12 +1319,12 @@ public class MergeRequestApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/pipelines</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param mergeRequestIid the internal ID of the merge request
      * @return a Pipeline instance with the newly created pipeline info
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Pipeline createMergeRequestPipeline(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public Pipeline createMergeRequestPipeline(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         Response response = post(Response.Status.CREATED, (Form) null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "pipelines");
         return (response.readEntity(Pipeline.class));

@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.service;
+package org.aoju.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.aoju.bus.gitlab.GitLabApiForm;

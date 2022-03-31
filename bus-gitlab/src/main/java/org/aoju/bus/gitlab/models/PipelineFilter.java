@@ -27,9 +27,6 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.aoju.bus.gitlab.Constants;
-import org.aoju.bus.gitlab.Constants.PipelineOrderBy;
-import org.aoju.bus.gitlab.Constants.PipelineScope;
-import org.aoju.bus.gitlab.Constants.SortOrder;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
 import java.util.Date;
@@ -42,7 +39,7 @@ public class PipelineFilter {
     /**
      * {@link Constants.PipelineScope} The scope of pipelines, one of: running, pending, finished, branches, tags
      */
-    private PipelineScope scope;
+    private Constants.PipelineScope scope;
 
     /**
      * {@link Constants.PipelineScope} The status of pipelines, one of: running, pending, success, failed, canceled, skipped, created
@@ -87,15 +84,15 @@ public class PipelineFilter {
     /**
      * {@link Constants.PipelineOrderBy} Order pipelines by id, status, ref, updated_at or user_id (default: id).
      */
-    private PipelineOrderBy orderBy;
+    private Constants.PipelineOrderBy orderBy;
 
     /**
      * {@link Constants.SortOrder} Return issues sorted in asc or desc order. Default is desc.
      */
-    private SortOrder sort;
+    private Constants.SortOrder sort;
 
 
-    public void setScope(PipelineScope scope) {
+    public void setScope(Constants.PipelineScope scope) {
         this.scope = scope;
     }
 
@@ -131,15 +128,15 @@ public class PipelineFilter {
         this.updatedBefore = updatedBefore;
     }
 
-    public void setOrderBy(PipelineOrderBy orderBy) {
+    public void setOrderBy(Constants.PipelineOrderBy orderBy) {
         this.orderBy = orderBy;
     }
 
-    public void setSort(SortOrder sort) {
+    public void setSort(Constants.SortOrder sort) {
         this.sort = sort;
     }
 
-    public PipelineFilter withScope(PipelineScope scope) {
+    public PipelineFilter withScope(Constants.PipelineScope scope) {
         this.scope = scope;
         return this;
     }
@@ -184,12 +181,12 @@ public class PipelineFilter {
         return this;
     }
 
-    public PipelineFilter withOrderBy(PipelineOrderBy orderBy) {
+    public PipelineFilter withOrderBy(Constants.PipelineOrderBy orderBy) {
         this.orderBy = orderBy;
         return this;
     }
 
-    public PipelineFilter withSort(SortOrder sort) {
+    public PipelineFilter withSort(Constants.SortOrder sort) {
         this.sort = sort;
         return this;
     }

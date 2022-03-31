@@ -33,7 +33,7 @@ import java.util.List;
 
 public class Deployable {
 
-    private Integer id;
+    private Long id;
     private DeploymentStatus status;
     private String stage;
     private String name;
@@ -52,11 +52,11 @@ public class Deployable {
     private Runner runner;
     private Date artifactsExpireAt;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

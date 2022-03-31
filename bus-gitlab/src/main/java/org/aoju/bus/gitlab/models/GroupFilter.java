@@ -25,8 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.Constants.GroupOrderBy;
-import org.aoju.bus.gitlab.Constants.SortOrder;
+import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
 import java.util.List;
@@ -39,12 +38,13 @@ public class GroupFilter {
     private List<Integer> skipGroups;
     private Boolean allAvailable;
     private String search;
-    private GroupOrderBy orderBy;
-    private SortOrder sort;
+    private Constants.GroupOrderBy orderBy;
+    private Constants.SortOrder sort;
     private Boolean statistics;
     private Boolean withCustomAttributes;
     private Boolean owned;
     private AccessLevel accessLevel;
+    private Boolean topLevelOnly;
 
     /**
      * Do not include the provided groups IDs.
@@ -86,7 +86,7 @@ public class GroupFilter {
      * @param orderBy specifies what field to order by
      * @return the reference to this GroupFilter instance
      */
-    public GroupFilter withOrderBy(GroupOrderBy orderBy) {
+    public GroupFilter withOrderBy(Constants.GroupOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
@@ -97,7 +97,7 @@ public class GroupFilter {
      * @param sort sort direction, ASC or DESC
      * @return the reference to this GroupFilter instance
      */
-    public GroupFilter withSortOder(SortOrder sort) {
+    public GroupFilter withSortOder(Constants.SortOrder sort) {
         this.sort = sort;
         return (this);
     }
@@ -147,6 +147,17 @@ public class GroupFilter {
     }
 
     /**
+     * Limit by groups which are top level groups
+     *
+     * @param topLevelOnly if true, limit to groups which are top level groups
+     * @return the reference to this GroupFilter instance
+     */
+    public GroupFilter withTopLevelOnly(Boolean topLevelOnly) {
+        this.topLevelOnly = topLevelOnly;
+        return (this);
+    }
+
+    /**
      * Get the query params specified by this filter.
      *
      * @return a GitLabApiForm instance holding the query parameters for this GroupFilter instance
@@ -162,6 +173,7 @@ public class GroupFilter {
                 .withParam("with_custom_attributes", withCustomAttributes)
                 .withParam("owned", owned)
                 .withParam("min_access_level", accessLevel)
+                .withParam("top_level_only", topLevelOnly)
         );
     }
 }

@@ -173,7 +173,7 @@ public class SystemHooksApi extends AbstractApi {
      * @param hookId the ID of the system hook to delete
      * @throws GitLabApiException if any exception occurs
      */
-    public void deleteSystemHook(Integer hookId) throws GitLabApiException {
+    public void deleteSystemHook(Long hookId) throws GitLabApiException {
 
         if (hookId == null) {
             throw new RuntimeException("hookId cannot be null");
@@ -208,7 +208,7 @@ public class SystemHooksApi extends AbstractApi {
      * @param hookId the ID of the system hook to test
      * @throws GitLabApiException if any exception occurs
      */
-    public void testSystemHook(Integer hookId) throws GitLabApiException {
+    public void testSystemHook(Long hookId) throws GitLabApiException {
 
         if (hookId == null) {
             throw new RuntimeException("hookId cannot be null");

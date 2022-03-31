@@ -32,10 +32,10 @@ public class SearchBlob {
     private String basename;
     private String data;
     private String filename;
-    private Integer id;
+    private Long id;
     private String ref;
     private Integer startline;
-    private Integer projectId;
+    private Long projectId;
 
     public String getBasename() {
         return basename;
@@ -61,11 +61,11 @@ public class SearchBlob {
         this.filename = filename;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -85,11 +85,11 @@ public class SearchBlob {
         this.startline = startline;
     }
 
-    public Integer getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 

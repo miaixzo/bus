@@ -32,7 +32,7 @@ public class ReleaseEvent extends AbstractEvent {
     public static final String X_GITLAB_EVENT = "Release Hook";
     public static final String OBJECT_KIND = "release";
 
-    private Integer id;
+    private Long id;
     private String createdAt;
     private String description;
     private String name;
@@ -44,6 +44,7 @@ public class ReleaseEvent extends AbstractEvent {
     private EventReleaseAssets assets;
     private EventCommit commit;
 
+    @Override
     public String getObjectKind() {
         return (OBJECT_KIND);
     }
@@ -53,11 +54,11 @@ public class ReleaseEvent extends AbstractEvent {
             throw new RuntimeException("Invalid object_kind (" + objectKind + "), must be '" + OBJECT_KIND + "'");
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(final Integer id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -145,5 +146,4 @@ public class ReleaseEvent extends AbstractEvent {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
-
 }

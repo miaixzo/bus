@@ -60,7 +60,7 @@
         <lzo.version>1.0.6</lzo.version>
         <lz4.version>1.3.0</lz4.version>
         <snappy.version>1.1.7.6</snappy.version>
-        <servlet.version>4.0.1</servlet.version>
+        <servlet.version>4.0.4</servlet.version>
     </properties>
 
     <dependencies>
@@ -191,8 +191,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <version>${servlet.version}</version>
             <optional>true</optional>
         </dependency>

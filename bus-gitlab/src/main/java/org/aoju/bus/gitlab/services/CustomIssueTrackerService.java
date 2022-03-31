@@ -23,74 +23,78 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab.services;
 
-import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.GitLabApiForm;
 
-import java.util.Date;
+public class CustomIssueTrackerService extends NotificationService {
 
-public class KeySystemHookEvent extends AbstractSystemHookEvent {
-
-    public static final String KEY_CREATE_EVENT = "key_create";
-    public static final String KEY_DESTROY_EVENT = "key_destroy";
-
-    private Date createdAt;
-    private Date updatedAt;
-    private String eventName;
-    private String username;
-    private String key;
-    private Integer id;
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public String getEventName() {
-        return this.eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
+    /**
+     * Get the form data for this service based on it's properties.
+     *
+     * @return the form data for this service based on it's properties
+     */
     @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
+    public GitLabApiForm servicePropertiesForm() {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam(DESCRIPTION_PROP, getDescription())
+                .withParam(ISSUES_URL_PROP, getIssuesUrl(), true)
+                .withParam(NEW_ISSUE_URL_PROP, getNewIssueUrl(), true)
+                .withParam(PROJECT_URL_PROP, getProjectUrl(), true)
+                .withParam(PUSH_EVENTS_PROP, getPushEvents())
+                .withParam(TITLE_PROP, getTitle());
+        return formData;
+    }
+
+    public String getNewIssueUrl() {
+        return this.getProperty(NEW_ISSUE_URL_PROP);
+    }
+
+    public void setNewIssueUrl(String endpoint) {
+        this.setProperty(NEW_ISSUE_URL_PROP, endpoint);
+    }
+
+    public CustomIssueTrackerService withNewIssueUrl(String endpoint) {
+        setNewIssueUrl(endpoint);
+        return this;
+    }
+
+    public String getIssuesUrl() {
+        return this.getProperty(ISSUES_URL_PROP);
+    }
+
+    public void setIssuesUrl(String endpoint) {
+        this.setProperty(ISSUES_URL_PROP, endpoint);
+    }
+
+    public CustomIssueTrackerService withIssuesUrl(String endpoint) {
+        setIssuesUrl(endpoint);
+        return this;
+    }
+
+    public String getProjectUrl() {
+        return this.getProperty(PROJECT_URL_PROP);
+    }
+
+    public void setProjectUrl(String endpoint) {
+        this.setProperty(PROJECT_URL_PROP, endpoint);
+    }
+
+    public CustomIssueTrackerService withProjectUrl(String endpoint) {
+        setProjectUrl(endpoint);
+        return this;
+    }
+
+    public String getDescription() {
+        return this.getProperty(DESCRIPTION_PROP);
+    }
+
+    public void setDescription(String description) {
+        this.setProperty(DESCRIPTION_PROP, description);
+    }
+
+    public CustomIssueTrackerService withDescription(String description) {
+        setDescription(description);
+        return this;
     }
 }

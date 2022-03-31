@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class ExportStatus {
 
-    private Integer id;
+    private Long id;
     private String description;
     private String name;
     private String nameWithNamespace;
@@ -48,11 +48,11 @@ public class ExportStatus {
     @JsonProperty("_links")
     private Map<String, String> links;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

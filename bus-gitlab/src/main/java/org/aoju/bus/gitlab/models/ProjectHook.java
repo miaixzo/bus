@@ -34,13 +34,13 @@ public class ProjectHook {
     private Boolean buildEvents;
     private Date createdAt;
     private Boolean enableSslVerification;
-    private Integer id;
+    private Long id;
     private Boolean issuesEvents;
     private Boolean mergeRequestsEvents;
     private Boolean noteEvents;
     private Boolean jobEvents;
     private Boolean pipelineEvents;
-    private Integer projectId;
+    private Long projectId;
     private Boolean pushEvents;
     private Boolean tagPushEvents;
     private String url;
@@ -79,11 +79,11 @@ public class ProjectHook {
         this.enableSslVerification = enableSslVerification;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -127,11 +127,11 @@ public class ProjectHook {
         this.pipelineEvents = pipelineEvents;
     }
 
-    public Integer getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 

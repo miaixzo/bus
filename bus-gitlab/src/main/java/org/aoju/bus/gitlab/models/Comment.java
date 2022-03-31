@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.Constants.LineType;
+import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
@@ -34,7 +34,7 @@ public class Comment {
 
     private Author author;
     private Date createdAt;
-    private LineType lineType;
+    private Constants.LineType lineType;
     private String path;
     private Integer line;
     private String note;
@@ -55,11 +55,11 @@ public class Comment {
         this.createdAt = createdAt;
     }
 
-    public LineType getLineType() {
+    public Constants.LineType getLineType() {
         return lineType;
     }
 
-    public void setLineType(LineType lineType) {
+    public void setLineType(Constants.LineType lineType) {
         this.lineType = lineType;
     }
 

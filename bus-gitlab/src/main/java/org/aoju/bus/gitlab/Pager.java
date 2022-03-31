@@ -71,12 +71,12 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private int totalItems;
     private int currentPage;
     private int kaminariNextPage;
+    private List<String> pageParam = new ArrayList<>(1);
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
     private AbstractApi api;
     private MultivaluedMap<String, String> queryParams;
     private Object[] pathArgs;
-    private List<String> pageParam = new ArrayList<>(1);
     private JavaType javaType;
 
     /**

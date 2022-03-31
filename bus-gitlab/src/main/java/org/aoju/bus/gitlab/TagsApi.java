@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.AccessLevel;
 import org.aoju.bus.gitlab.models.ProtectedTag;
 import org.aoju.bus.gitlab.models.Release;
@@ -324,7 +323,7 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteTag(Object projectIdOrPath, String tagName) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "tags", urlEncode(tagName));
     }
 
@@ -484,5 +483,4 @@ public class TagsApi extends AbstractApi {
     public void unprotectTag(Object projectIdOrPath, String name) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "protected_tags", urlEncode(name));
     }
-
 }

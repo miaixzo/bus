@@ -29,16 +29,16 @@ import org.aoju.bus.gitlab.support.JacksonJson;
 
 public class Membership {
 
-    private Integer sourceId;
+    private Long sourceId;
     private String sourceName;
     private MembershipSourceType sourceType;
     private AccessLevel accessLevel;
 
-    public Integer getSourceId() {
+    public Long getSourceId() {
         return sourceId;
     }
 
-    public void setSourceId(Integer sourceId) {
+    public void setSourceId(Long sourceId) {
         this.sourceId = sourceId;
     }
 

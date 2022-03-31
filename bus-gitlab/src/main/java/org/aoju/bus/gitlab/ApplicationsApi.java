@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.models.Application;
 
 import javax.ws.rs.core.GenericType;
@@ -135,7 +134,7 @@ public class ApplicationsApi extends AbstractApi {
             throw new GitLabApiException("scopes cannot be null or empty");
         }
 
-        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(Symbol.COMMA));
+        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(","));
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("name", name, true)
                 .withParam("redirect_uri", redirectUri, true)
@@ -152,7 +151,7 @@ public class ApplicationsApi extends AbstractApi {
      * @param applicationId the ID of the OUAUTH Application to delete
      * @throws GitLabApiException if any exception occurs
      */
-    public void deleteApplication(Integer applicationId) throws GitLabApiException {
+    public void deleteApplication(Long applicationId) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "applications", applicationId);
     }
 }

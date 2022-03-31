@@ -34,22 +34,22 @@ import java.util.Date;
 
 public class EventLabel {
 
-    private Integer id;
+    private Long id;
     private String title;
     private String color;
-    private Integer projectId;
+    private Long projectId;
     private Date createdAt;
     private Date updatedAt;
     private Boolean template;
     private String description;
     private LabelType type;
-    private Integer groupId;
+    private Long groupId;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -69,11 +69,11 @@ public class EventLabel {
         this.color = color;
     }
 
-    public Integer getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 
@@ -117,11 +117,11 @@ public class EventLabel {
         this.type = type;
     }
 
-    public Integer getGroupId() {
+    public Long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(Integer groupId) {
+    public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
 

@@ -29,18 +29,18 @@ import org.aoju.bus.gitlab.support.JacksonJson;
 
 public class GpgSignature {
 
-    private Integer gpgKeyId;
+    private Long gpgKeyId;
     private String gpgKeyPrimaryKeyid;
     private String gpgKeyUserName;
     private String gpgKeyUserEmail;
     private String verificationStatus;
     private String gpgKeySubkeyId;
 
-    public Integer getGpgKeyId() {
+    public Long getGpgKeyId() {
         return gpgKeyId;
     }
 
-    public void setGpgKeyId(Integer gpgKeyId) {
+    public void setGpgKeyId(Long gpgKeyId) {
         this.gpgKeyId = gpgKeyId;
     }
 

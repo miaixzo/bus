@@ -23,28 +23,31 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab.hooks;
 
+import org.aoju.bus.gitlab.models.Visibility;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
-public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
+public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String NEW_GROUP_MEMBER_EVENT = "user_add_to_group";
-    public static final String GROUP_MEMBER_REMOVED_EVENT = "user_remove_from_group";
+    public static final String NEW_TEAM_MEMBER_EVENT = "user_add_to_team";
+    public static final String TEAM_MEMBER_REMOVED_EVENT = "user_remove_from_team";
 
     private Date createdAt;
     private Date updatedAt;
     private String eventName;
-    private String groupAccess;
-    private String groupName;
-    private String groupPath;
-    private Integer groupId;
+    private String projectAccess;
+    private String projectName;
+    private String projectPath;
+    private Long projectId;
+    private String projectPathWithNamespace;
     private String userEmail;
     private String userName;
     private String userUsername;
-    private Integer userId;
+    private Long userId;
+    private Visibility projectVisibility;
 
     public Date getCreatedAt() {
         return createdAt;
@@ -62,6 +65,7 @@ public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
         this.updatedAt = updatedAt;
     }
 
+    @Override
     public String getEventName() {
         return this.eventName;
     }
@@ -70,36 +74,44 @@ public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
         this.eventName = eventName;
     }
 
-    public String getGroupAccess() {
-        return groupAccess;
+    public String getProjectAccess() {
+        return projectAccess;
     }
 
-    public void setGroupAccess(String groupAccess) {
-        this.groupAccess = groupAccess;
+    public void setProjectAccess(String projectAccess) {
+        this.projectAccess = projectAccess;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
-    public String getGroupPath() {
-        return groupPath;
+    public String getProjectPath() {
+        return projectPath;
     }
 
-    public void setGroupPath(String groupPath) {
-        this.groupPath = groupPath;
+    public void setProjectPath(String projectPath) {
+        this.projectPath = projectPath;
     }
 
-    public Integer getGroupId() {
-        return groupId;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public String getProjectPathWithNamespace() {
+        return projectPathWithNamespace;
+    }
+
+    public void setProjectPathWithNamespace(String projectPathWithNamespace) {
+        this.projectPathWithNamespace = projectPathWithNamespace;
     }
 
     public String getUserEmail() {
@@ -126,12 +138,20 @@ public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
         this.userUsername = userUsername;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Visibility getProjectVisibility() {
+        return projectVisibility;
+    }
+
+    public void setProjectVisibility(Visibility projectVisibility) {
+        this.projectVisibility = projectVisibility;
     }
 
     @Override

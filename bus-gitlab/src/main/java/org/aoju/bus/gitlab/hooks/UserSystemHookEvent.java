@@ -23,38 +23,100 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab.hooks;
 
 import org.aoju.bus.gitlab.support.JacksonJson;
 
-public class RepositoryChange {
+import java.util.Date;
 
-    private String after;
-    private String before;
-    private String ref;
+public class UserSystemHookEvent extends AbstractSystemHookEvent {
 
-    public String getAfter() {
-        return this.after;
+    public static final String USER_CREATE_EVENT = "user_create";
+    public static final String USER_DESTROY_EVENT = "user_destroy";
+    public static final String USER_RENAME_EVENT = "user_rename";
+    public static final String USER_FAILED_LOGIN_EVENT = "user_failed_login";
+
+    private String eventName;
+    private Date createdAt;
+    private Date updatedAt;
+    private String email;
+    private String name;
+    private String username;
+    private Long userId;
+    private String oldUsername;
+    private String state;
+
+    @Override
+    public String getEventName() {
+        return this.eventName;
     }
 
-    public void setAfter(String after) {
-        this.after = after;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
-    public String getBefore() {
-        return this.before;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setBefore(String before) {
-        this.before = before;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getRef() {
-        return this.ref;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getOldUsername() {
+        return oldUsername;
+    }
+
+    public void setOldUsername(String oldUsername) {
+        this.oldUsername = oldUsername;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     @Override

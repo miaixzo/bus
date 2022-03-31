@@ -27,16 +27,16 @@ package org.aoju.bus.gitlab.models;
 
 public class Application {
 
-    private Integer id;
+    private Long id;
     private String applicationId;
     private String applicationName;
     private String callbackUrl;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

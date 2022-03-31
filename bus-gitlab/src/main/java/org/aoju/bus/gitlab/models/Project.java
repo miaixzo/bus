@@ -28,9 +28,7 @@ package org.aoju.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.aoju.bus.gitlab.Constants.AutoDevopsDeployStrategy;
-import org.aoju.bus.gitlab.Constants.BuildGitStrategy;
-import org.aoju.bus.gitlab.Constants.SquashOption;
+import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.ProjectLicense;
 import org.aoju.bus.gitlab.support.JacksonJson;
 import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
@@ -40,20 +38,18 @@ import java.util.List;
 
 public class Project {
 
-    private String buildCoverageRegex;
-
     private Integer approvalsBeforeMerge;
     private Boolean archived;
     private String avatarUrl;
     private Boolean containerRegistryEnabled;
     private Date createdAt;
-    private Integer creatorId;
+    private Long creatorId;
     private String defaultBranch;
     private String description;
     private Integer forksCount;
     private Project forkedFromProject;
     private String httpUrlToRepo;
-    private Integer id;
+    private Long id;
     private Boolean isPublic;
     private Boolean issuesEnabled;
     private Boolean jobsEnabled;
@@ -95,7 +91,8 @@ public class Project {
     private String licenseUrl;
     private ProjectLicense license;
     private List<CustomAttribute> customAttributes;
-    private BuildGitStrategy buildGitStrategy;
+    private String buildCoverageRegex;
+    private Constants.BuildGitStrategy buildGitStrategy;
     private String readmeUrl;
     private Boolean canCreateMergeRequestIn;
     private ImportStatus.Status importStatus;
@@ -104,11 +101,11 @@ public class Project {
     private String ciConfigPath;
     private Boolean removeSourceBranchAfterMerge;
     private Boolean autoDevopsEnabled;
-    private AutoDevopsDeployStrategy autoDevopsDeployStrategy;
+    private Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy;
     private Boolean autocloseReferencedIssues;
     private Boolean emailsDisabled;
     private String suggestionCommitMessage;
-    private SquashOption squashOption;
+    private Constants.SquashOption squashOption;
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
 
@@ -177,11 +174,11 @@ public class Project {
         this.createdAt = createdAt;
     }
 
-    public Integer getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(Integer creatorId) {
+    public void setCreatorId(Long creatorId) {
         this.creatorId = creatorId;
     }
 
@@ -235,15 +232,15 @@ public class Project {
         this.httpUrlToRepo = httpUrlToRepo;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Project withId(Integer id) {
+    public Project withId(Long id) {
         this.id = id;
         return (this);
     }
@@ -347,7 +344,7 @@ public class Project {
         return (this);
     }
 
-    public Project withNamespaceId(int namespaceId) {
+    public Project withNamespaceId(long namespaceId) {
         this.namespace = new Namespace();
         this.namespace.setId(namespaceId);
         return (this);
@@ -725,14 +722,6 @@ public class Project {
         return (JacksonJson.toJsonString(this));
     }
 
-    public BuildGitStrategy getBuildGitStrategy() {
-        return buildGitStrategy;
-    }
-
-    public void setBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
-        this.buildGitStrategy = buildGitStrategy;
-    }
-
     public String getBuildCoverageRegex() {
         return buildCoverageRegex;
     }
@@ -746,7 +735,15 @@ public class Project {
         return this;
     }
 
-    public Project withBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
+    public Constants.BuildGitStrategy getBuildGitStrategy() {
+        return buildGitStrategy;
+    }
+
+    public void setBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
+        this.buildGitStrategy = buildGitStrategy;
+    }
+
+    public Project withBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
         this.buildGitStrategy = buildGitStrategy;
         return this;
     }
@@ -820,11 +817,11 @@ public class Project {
         this.autoDevopsEnabled = autoDevopsEnabled;
     }
 
-    public AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
+    public Constants.AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
         return autoDevopsDeployStrategy;
     }
 
-    public void setAutoDevopsDeployStrategy(AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
+    public void setAutoDevopsDeployStrategy(Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
         this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
     }
 
@@ -862,15 +859,15 @@ public class Project {
         return this;
     }
 
-    public SquashOption getSquashOption() {
+    public Constants.SquashOption getSquashOption() {
         return squashOption;
     }
 
-    public void setSquashOption(SquashOption squashOption) {
+    public void setSquashOption(Constants.SquashOption squashOption) {
         this.squashOption = squashOption;
     }
 
-    public Project withSquashOption(SquashOption squashOption) {
+    public Project withSquashOption(Constants.SquashOption squashOption) {
         this.squashOption = squashOption;
         return this;
     }

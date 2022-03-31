@@ -23,78 +23,98 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.service;
+package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.GitLabApiForm;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
-public class CustomIssueTrackerService extends NotificationService {
+public class IssueEvent {
+    private Long id;
+    private User user;
+    private String createdAt;
+    private ResourceType resourceType;
+    private Long resourceId;
+    private String state;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
+    }
+
+    public Long getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(Long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
 
     /**
-     * Get the form data for this service based on it's properties.
-     *
-     * @return the form data for this service based on it's properties
+     * Enum to use for specifying the state events resource type.
      */
-    @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam(DESCRIPTION_PROP, getDescription())
-                .withParam(ISSUES_URL_PROP, getIssuesUrl(), true)
-                .withParam(NEW_ISSUE_URL_PROP, getNewIssueUrl(), true)
-                .withParam(PROJECT_URL_PROP, getProjectUrl(), true)
-                .withParam(PUSH_EVENTS_PROP, getPushEvents())
-                .withParam(TITLE_PROP, getTitle());
-        return formData;
-    }
+    public enum ResourceType {
 
-    public String getNewIssueUrl() {
-        return this.getProperty(NEW_ISSUE_URL_PROP);
-    }
+        ISSUE;
 
-    public void setNewIssueUrl(String endpoint) {
-        this.setProperty(NEW_ISSUE_URL_PROP, endpoint);
-    }
+        private static JacksonJsonEnumHelper<ResourceType> enumHelper = new JacksonJsonEnumHelper<>(ResourceType.class,
+                true, true);
 
-    public CustomIssueTrackerService withNewIssueUrl(String endpoint) {
-        setNewIssueUrl(endpoint);
-        return this;
-    }
+        @JsonCreator
+        public static ResourceType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
 
-    public String getIssuesUrl() {
-        return this.getProperty(ISSUES_URL_PROP);
-    }
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
 
-    public void setIssuesUrl(String endpoint) {
-        this.setProperty(ISSUES_URL_PROP, endpoint);
-    }
-
-    public CustomIssueTrackerService withIssuesUrl(String endpoint) {
-        setIssuesUrl(endpoint);
-        return this;
-    }
-
-    public String getProjectUrl() {
-        return this.getProperty(PROJECT_URL_PROP);
-    }
-
-    public void setProjectUrl(String endpoint) {
-        this.setProperty(PROJECT_URL_PROP, endpoint);
-    }
-
-    public CustomIssueTrackerService withProjectUrl(String endpoint) {
-        setProjectUrl(endpoint);
-        return this;
-    }
-
-    public String getDescription() {
-        return this.getProperty(DESCRIPTION_PROP);
-    }
-
-    public void setDescription(String description) {
-        this.setProperty(DESCRIPTION_PROP, description);
-    }
-
-    public CustomIssueTrackerService withDescription(String description) {
-        setDescription(description);
-        return this;
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

@@ -32,9 +32,9 @@ import java.util.List;
 
 public class Epic {
 
-    private Integer id;
-    private Integer iid;
-    private Integer groupId;
+    private Long id;
+    private Long iid;
+    private Long groupId;
     private String title;
     private String description;
     private Author author;
@@ -44,27 +44,27 @@ public class Epic {
     private Date createdAt;
     private Date updatedAt;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getIid() {
+    public Long getIid() {
         return iid;
     }
 
-    public void setIid(Integer iid) {
+    public void setIid(Long iid) {
         this.iid = iid;
     }
 
-    public Integer getGroupId() {
+    public Long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(Integer groupId) {
+    public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
 

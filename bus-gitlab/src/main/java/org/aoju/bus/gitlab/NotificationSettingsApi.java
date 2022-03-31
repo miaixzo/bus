@@ -92,7 +92,7 @@ public class NotificationSettingsApi extends AbstractApi {
      * @return a NotificationSettings instance containing the specified group's notification settings
      * @throws GitLabApiException if any exception occurs
      */
-    public NotificationSettings getGroupNotificationSettings(int groupId) throws GitLabApiException {
+    public NotificationSettings getGroupNotificationSettings(long groupId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "groups", groupId, "notification_settings");
         return (response.readEntity(NotificationSettings.class));
     }
@@ -107,7 +107,7 @@ public class NotificationSettingsApi extends AbstractApi {
      * @return a NotificationSettings instance containing the updated group notification settings
      * @throws GitLabApiException if any exception occurs
      */
-    public NotificationSettings updateGroupNotificationSettings(int groupId, NotificationSettings settings) throws GitLabApiException {
+    public NotificationSettings updateGroupNotificationSettings(long groupId, NotificationSettings settings) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("level", settings.getLevel())
@@ -142,7 +142,7 @@ public class NotificationSettingsApi extends AbstractApi {
      * @return a NotificationSettings instance containing the specified project's notification settings
      * @throws GitLabApiException if any exception occurs
      */
-    public NotificationSettings getProjectNotificationSettings(int projectId) throws GitLabApiException {
+    public NotificationSettings getProjectNotificationSettings(long projectId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "projects", projectId, "notification_settings");
         return (response.readEntity(NotificationSettings.class));
     }
@@ -157,7 +157,7 @@ public class NotificationSettingsApi extends AbstractApi {
      * @return a NotificationSettings instance containing the updated project notification settings
      * @throws GitLabApiException if any exception occurs
      */
-    public NotificationSettings updateProjectNotificationSettings(int projectId, NotificationSettings settings) throws GitLabApiException {
+    public NotificationSettings updateProjectNotificationSettings(long projectId, NotificationSettings settings) throws GitLabApiException {
 
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("level", settings.getLevel())

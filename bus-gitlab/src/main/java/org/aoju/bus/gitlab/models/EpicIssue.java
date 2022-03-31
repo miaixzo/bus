@@ -40,21 +40,25 @@ public class EpicIssue extends Issue {
     private Map<String, String> links;
 
     private Boolean subscribed;
-    private Integer epicIssueId;
+    private Long epicIssueId;
     private Integer relativePosition;
 
+    @Override
     public Integer getDownvotes() {
         return downvotes;
     }
 
+    @Override
     public void setDownvotes(Integer downvotes) {
         this.downvotes = downvotes;
     }
 
+    @Override
     public Integer getUpvotes() {
         return upvotes;
     }
 
+    @Override
     public void setUpvotes(Integer upvotes) {
         this.upvotes = upvotes;
     }
@@ -76,19 +80,21 @@ public class EpicIssue extends Issue {
         return (links.get(name));
     }
 
+    @Override
     public Boolean getSubscribed() {
         return subscribed;
     }
 
+    @Override
     public void setSubscribed(Boolean subscribed) {
         this.subscribed = subscribed;
     }
 
-    public Integer getEpicIssueId() {
+    public Long getEpicIssueId() {
         return epicIssueId;
     }
 
-    public void setEpicIssueId(Integer epicIssueId) {
+    public void setEpicIssueId(Long epicIssueId) {
         this.epicIssueId = epicIssueId;
     }
 

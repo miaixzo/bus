@@ -23,29 +23,23 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab.hooks;
 
 import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.util.Date;
 
-public class GroupSystemHookEvent extends AbstractSystemHookEvent {
+public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String GROUP_CREATE_EVENT = "group_create";
-    public static final String GROUP_DESTROY_EVENT = "group_destroy";
-    public static final String GROUP_RENAME_EVENT = "group_rename";
+    public static final String KEY_CREATE_EVENT = "key_create";
+    public static final String KEY_DESTROY_EVENT = "key_destroy";
 
     private Date createdAt;
     private Date updatedAt;
     private String eventName;
-    private String name;
-    private String path;
-    private String fullPath;
-    private Integer groupId;
-    private String ownerEmail;
-    private String ownerName;
-    private String oldPath;
-    private String oldFullPath;
+    private String username;
+    private String key;
+    private Long id;
 
     public Date getCreatedAt() {
         return createdAt;
@@ -71,68 +65,28 @@ public class GroupSystemHookEvent extends AbstractSystemHookEvent {
         this.eventName = eventName;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getPath() {
-        return path;
+    public String getKey() {
+        return key;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getFullPath() {
-        return fullPath;
+    public Long getId() {
+        return id;
     }
 
-    public void setFullPath(String fullPath) {
-        this.fullPath = fullPath;
-    }
-
-    public Integer getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getOwnerEmail() {
-        return ownerEmail;
-    }
-
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
-    }
-
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
-    public String getOldPath() {
-        return oldPath;
-    }
-
-    public void setOldPath(String oldPath) {
-        this.oldPath = oldPath;
-    }
-
-    public String getOldFullPath() {
-        return oldFullPath;
-    }
-
-    public void setOldFullPath(String oldFullPath) {
-        this.oldFullPath = oldFullPath;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override

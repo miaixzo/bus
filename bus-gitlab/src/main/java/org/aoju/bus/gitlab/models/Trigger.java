@@ -29,7 +29,7 @@ import java.util.Date;
 
 public class Trigger {
 
-    private Integer id;
+    private Long id;
     private String description;
     private Date createdAt;
     private Date lastUsed;
@@ -37,11 +37,11 @@ public class Trigger {
     private Date updatedAt;
     private User owner;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

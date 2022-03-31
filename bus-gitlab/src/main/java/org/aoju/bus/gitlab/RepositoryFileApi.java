@@ -147,6 +147,29 @@ public class RepositoryFileApi extends AbstractApi {
     }
 
     /**
+     * Get file from repository. Allows you to receive information about file in repository like name, size, content.
+     * Note that file content is Base64 encoded.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files</code></pre>
+     *
+     * @param filePath  (required) - Full path to the file. Ex. lib/class.rb
+     * @param projectId (required) - the project ID
+     * @param ref       (required) - The name of branch, tag or commit
+     * @return a RepositoryFile instance with the file info and file content
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 6.0, replaced by {@link #getFile(Object, String, String)}
+     */
+    @Deprecated
+    public RepositoryFile getFile(String filePath, Long projectId, String ref) throws GitLabApiException {
+
+        if (isApiVersion(ApiVersion.V3)) {
+            return (getFileV3(filePath, projectId, ref));
+        } else {
+            return (getFile(projectId, filePath, ref, true));
+        }
+    }
+
+    /**
      * Get file from repository. Allows you to receive information about file in repository like name, size, and optionally content.
      * Note that file content is Base64 encoded.
      *
@@ -168,6 +191,28 @@ public class RepositoryFileApi extends AbstractApi {
         Form form = new Form();
         addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
         Response response = get(Response.Status.OK, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath));
+        return (response.readEntity(RepositoryFile.class));
+    }
+
+    /**
+     * Get file from repository. Allows you to receive information about file in repository like name, size, content.
+     * Note that file content is Base64 encoded.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files</code></pre>
+     *
+     * @param filePath  (required) - Full path to new file. Ex. lib/class.rb
+     * @param projectId (required) - the project ID
+     * @param ref       (required) - The name of branch, tag or commit
+     * @return a RepositoryFile instance with the file info
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 6.0
+     */
+    @Deprecated
+    protected RepositoryFile getFileV3(String filePath, Long projectId, String ref) throws GitLabApiException {
+        Form form = new Form();
+        addFormParam(form, "file_path", filePath, true);
+        addFormParam(form, "ref", ref, true);
+        Response response = get(Response.Status.OK, form.asMap(), "projects", projectId, "repository", "files");
         return (response.readEntity(RepositoryFile.class));
     }
 
@@ -205,6 +250,30 @@ public class RepositoryFileApi extends AbstractApi {
     }
 
     /**
+     * Create new file in repository
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/repository/files</code></pre>
+     * <p>
+     * file_path (required) - Full path to new file. Ex. lib/class.rb
+     * branch_name (required) - The name of branch
+     * encoding (optional) - 'text' or 'base64'. Text is default.
+     * content (required) - File content
+     * commit_message (required) - Commit message
+     *
+     * @param file          a ReposityoryFile instance with info for the file to create
+     * @param projectId     the project ID
+     * @param branchName    the name of branch
+     * @param commitMessage the commit message
+     * @return a RepositoryFile instance with the created file info
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 6.0, replaced by {@link #createFile(Object, RepositoryFile, String, String)}
+     */
+    @Deprecated
+    public RepositoryFile createFile(RepositoryFile file, Long projectId, String branchName, String commitMessage) throws GitLabApiException {
+        return (createFile(projectId, file, branchName, commitMessage));
+    }
+
+    /**
      * Update existing file in repository
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/files</code></pre>
@@ -235,6 +304,30 @@ public class RepositoryFileApi extends AbstractApi {
         }
 
         return (response.readEntity(RepositoryFile.class));
+    }
+
+    /**
+     * Update existing file in repository
+     *
+     * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/files</code></pre>
+     * <p>
+     * file_path (required) - Full path to new file. Ex. lib/class.rb
+     * branch_name (required) - The name of branch
+     * encoding (optional) - 'text' or 'base64'. Text is default.
+     * content (required) - File content
+     * commit_message (required) - Commit message
+     *
+     * @param file          a ReposityoryFile instance with info for the file to update
+     * @param projectId     the project ID
+     * @param branchName    the name of branch
+     * @param commitMessage the commit message
+     * @return a RepositoryFile instance with the updated file info
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 6.0, replaced by {@link #updateFile(Object, RepositoryFile, String, String)}
+     */
+    @Deprecated
+    public RepositoryFile updateFile(RepositoryFile file, Long projectId, String branchName, String commitMessage) throws GitLabApiException {
+        return (updateFile(projectId, file, branchName, commitMessage));
     }
 
     /**
@@ -273,6 +366,27 @@ public class RepositoryFileApi extends AbstractApi {
     }
 
     /**
+     * Delete existing file in repository
+     *
+     * <pre><code>GitLab Endpoint: DELETE /projects/:id/repository/files</code></pre>
+     * <p>
+     * file_path (required) - Full path to file. Ex. lib/class.rb
+     * branch_name (required) - The name of branch
+     * commit_message (required) - Commit message
+     *
+     * @param filePath      full path to new file. Ex. lib/class.rb
+     * @param projectId     the project ID
+     * @param branchName    the name of branch
+     * @param commitMessage the commit message
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 6.0, replaced by {@link #deleteFile(Object, String, String, String)}
+     */
+    @Deprecated
+    public void deleteFile(String filePath, Long projectId, String branchName, String commitMessage) throws GitLabApiException {
+        deleteFile(projectId, filePath, branchName, commitMessage);
+    }
+
+    /**
      * Get the raw file for the file by commit sha and path. Thye file will be saved to the specified directory.
      * If the file already exists in the directory it will be overwritten.
      * <p>
@@ -282,7 +396,7 @@ public class RepositoryFileApi extends AbstractApi {
      * V4:
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:filepath</code></pre>
      *
-     * @param projectIdOrPath    the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath    the project in the form of an Long(ID), String(path), or Project instance
      * @param commitOrBranchName the commit or branch name to get the file for
      * @param filepath           the path of the file to get
      * @param directory          the File instance of the directory to save the file to, if null will use "java.io.tmpdir"
@@ -324,7 +438,7 @@ public class RepositoryFileApi extends AbstractApi {
      * V4:
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:filepath</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param ref             the commit or branch name to get the file contents for
      * @param filepath        the path of the file to get
      * @return an InputStream to read the raw file from
@@ -381,7 +495,7 @@ public class RepositoryFileApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:file_path/blame</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param filePath        the path of the file to get the blame for
      * @param ref             the name of branch, tag or commit
      * @return a List of Blame instances for the specified filePath and ref
@@ -397,7 +511,7 @@ public class RepositoryFileApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:file_path/blame</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param filePath        the path of the file to get the blame for
      * @param ref             the name of branch, tag or commit
      * @param itemsPerPage    the number of Project instances that will be fetched per page
@@ -416,7 +530,7 @@ public class RepositoryFileApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:file_path/blame</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param filePath        the path of the file to get the blame for
      * @param ref             the name of branch, tag or commit
      * @return a Stream of Blame instances for the specified filePath and ref

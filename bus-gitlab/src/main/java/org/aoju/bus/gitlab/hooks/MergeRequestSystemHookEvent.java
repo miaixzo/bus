@@ -23,37 +23,32 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.service;
+package org.aoju.bus.gitlab.hooks;
 
-import org.aoju.bus.gitlab.GitLabApiForm;
+import org.aoju.bus.gitlab.hooks.web.MergeRequestEvent;
 
-public class ExternalWikiService extends NotificationService {
+public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
 
-    public static final String WIKIURL_KEY_PROP = "external_wiki_url";
+    public static final String X_GITLAB_EVENT = "System Hook";
+    public static final String MERGE_REQUEST_EVENT = "merge_request";
 
-    /**
-     * Get the form data for this service based on it's properties.
-     *
-     * @return the form data for this service based on it's properties
-     */
+    private String eventType;
+
     @Override
-    public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("external_wiki_url", getExternalWikiUrl(), true);
-        return formData;
+    public String getObjectKind() {
+        return (MERGE_REQUEST_EVENT);
     }
 
-    public String getExternalWikiUrl() {
-        return this.getProperty(WIKIURL_KEY_PROP);
+    @Override
+    public String getEventName() {
+        return (MERGE_REQUEST_EVENT);
     }
 
-    public void setExternalWikiUrl(String endpoint) {
-        this.setProperty(WIKIURL_KEY_PROP, endpoint);
+    public String getEventType() {
+        return eventType;
     }
 
-
-    public ExternalWikiService withExternalWikiUrl(String endpoint) {
-        setExternalWikiUrl(endpoint);
-        return this;
+    public void setEvent_type(String eventType) {
+        this.eventType = eventType;
     }
 }

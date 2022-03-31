@@ -23,46 +23,33 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.aoju.bus.gitlab.models.Key;
 
-public abstract class AbstractSystemHookEvent implements SystemHookEvent {
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import java.util.Collections;
 
-    private String requestUrl;
-    private String requestQueryString;
-    private String requestSecretToken;
-
-    @Override
-    @JsonIgnore
-    public String getRequestUrl() {
-        return (requestUrl);
+/**
+ * See:
+ * https://docs.gitlab.com/ee/api/keys.html#get-user-by-fingerprint-of-ssh-key
+ */
+public class KeysApi extends AbstractApi {
+    public KeysApi(GitLabApi gitLabApi) {
+        super(gitLabApi);
     }
 
-    @Override
-    public void setRequestUrl(String requestUrl) {
-        this.requestUrl = requestUrl;
-    }
-
-    @Override
-    @JsonIgnore
-    public String getRequestQueryString() {
-        return (requestQueryString);
-    }
-
-    @Override
-    public void setRequestQueryString(String requestQueryString) {
-        this.requestQueryString = requestQueryString;
-    }
-
-    @Override
-    @JsonIgnore
-    public String getRequestSecretToken() {
-        return (requestSecretToken);
-    }
-
-    @Override
-    public void setRequestSecretToken(String requestSecretToken) {
-        this.requestSecretToken = requestSecretToken;
+    /**
+     * @param fingerprint The md5 hash of a ssh public key with : separating the bytes Or SHA256:$base64hash
+     * @return The Key which includes the user who owns the key
+     * @throws GitLabApiException If anything goes wrong
+     */
+    public Key getUserBySSHKeyFingerprint(String fingerprint) throws GitLabApiException {
+        MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+        queryParams.put("fingerprint", Collections.singletonList(fingerprint));
+        Response response = get(Response.Status.OK, queryParams, "keys");
+        return response.readEntity(Key.class);
     }
 }

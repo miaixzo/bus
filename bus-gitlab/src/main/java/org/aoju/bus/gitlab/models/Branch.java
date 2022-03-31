@@ -115,7 +115,6 @@ public class Branch {
         this.webUrl = webUrl;
     }
 
-
     public Branch withCommit(Commit commit) {
         this.commit = commit;
         return this;
@@ -128,6 +127,19 @@ public class Branch {
 
     public Branch withDevelopersCanPush(Boolean developersCanPush) {
         this.developersCanPush = developersCanPush;
+        return this;
+    }
+
+    /**
+     * Set the merged attribute
+     *
+     * @param merged
+     * @return Current branch instance
+     * @deprecated Use {@link #withMerged(Boolean)} instead
+     */
+    @Deprecated
+    public Branch withDerged(Boolean merged) {
+        this.merged = merged;
         return this;
     }
 

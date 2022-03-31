@@ -23,14 +23,14 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab.hooks;
 
 import org.aoju.bus.gitlab.hooks.web.AbstractPushEvent;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
-public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
+public class TagPushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
-    public static final String PUSH_EVENT = "push";
+    public static final String TAG_PUSH_EVENT = "tag_push";
 
     @Override
     public String toString() {

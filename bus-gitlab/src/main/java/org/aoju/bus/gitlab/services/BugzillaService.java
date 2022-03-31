@@ -23,103 +23,78 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks.system;
+package org.aoju.bus.gitlab.services;
 
-import org.aoju.bus.gitlab.hooks.web.EventProject;
-import org.aoju.bus.gitlab.support.JacksonJson;
+import org.aoju.bus.gitlab.GitLabApiForm;
 
-import java.util.List;
+public class BugzillaService extends NotificationService {
 
-public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
-
-    public static final String REPOSITORY_UPDATE_EVENT = "repository_update";
-
-    private String eventName;
-    private Integer userId;
-    private String userName;
-    private String userEmail;
-    private String userAvatar;
-
-    private Integer projectId;
-    private EventProject project;
-
-    private List<RepositoryChange> changes;
-    private List<String> refs;
-
-    public String getEventName() {
-        return (eventName);
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
-    public Integer getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return this.userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserAvatar() {
-        return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
-    }
-
-    public Integer getProjectId() {
-        return this.projectId;
-    }
-
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
-    public EventProject getProject() {
-        return project;
-    }
-
-    public void setProject(EventProject project) {
-        this.project = project;
-    }
-
-    public List<RepositoryChange> getChanges() {
-        return changes;
-    }
-
-    public void setChanges(List<RepositoryChange> changes) {
-        this.changes = changes;
-    }
-
-    public List<String> getRefs() {
-        return refs;
-    }
-
-    public void setRefs(List<String> refs) {
-        this.refs = refs;
-    }
-
+    /**
+     * Get the form data for this service based on it's properties.
+     *
+     * @return the form data for this service based on it's properties
+     */
     @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
+    public GitLabApiForm servicePropertiesForm() {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam(DESCRIPTION_PROP, getDescription())
+                .withParam(ISSUES_URL_PROP, getIssuesUrl(), true)
+                .withParam(NEW_ISSUE_URL_PROP, getNewIssueUrl(), true)
+                .withParam(PROJECT_URL_PROP, getProjectUrl(), true)
+                .withParam(PUSH_EVENTS_PROP, getPushEvents())
+                .withParam(TITLE_PROP, getTitle());
+        return formData;
+    }
+
+    public String getNewIssueUrl() {
+        return this.getProperty(NEW_ISSUE_URL_PROP);
+    }
+
+    public void setNewIssueUrl(String endpoint) {
+        this.setProperty(NEW_ISSUE_URL_PROP, endpoint);
+    }
+
+    public BugzillaService withNewIssueUrl(String endpoint) {
+        setNewIssueUrl(endpoint);
+        return this;
+    }
+
+    public String getIssuesUrl() {
+        return this.getProperty(ISSUES_URL_PROP);
+    }
+
+    public void setIssuesUrl(String endpoint) {
+        this.setProperty(ISSUES_URL_PROP, endpoint);
+    }
+
+    public BugzillaService withIssuesUrl(String endpoint) {
+        setIssuesUrl(endpoint);
+        return this;
+    }
+
+    public String getProjectUrl() {
+        return this.getProperty(PROJECT_URL_PROP);
+    }
+
+    public void setProjectUrl(String endpoint) {
+        this.setProperty(PROJECT_URL_PROP, endpoint);
+    }
+
+    public BugzillaService withProjectUrl(String endpoint) {
+        setProjectUrl(endpoint);
+        return this;
+    }
+
+    public String getDescription() {
+        return this.getProperty(DESCRIPTION_PROP);
+    }
+
+    public void setDescription(String description) {
+        this.setProperty(DESCRIPTION_PROP, description);
+    }
+
+    public BugzillaService withDescription(String description) {
+        setDescription(description);
+        return this;
     }
 }

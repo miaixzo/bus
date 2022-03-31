@@ -23,12 +23,12 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.service;
+package org.aoju.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
-public class MattermostService extends NotificationService {
+public class SlackService extends NotificationService {
 
     private String defaultChannel;
 
@@ -66,43 +66,43 @@ public class MattermostService extends NotificationService {
         return formData;
     }
 
-    public MattermostService withPushEvents(Boolean pushEvents) {
+    public SlackService withPushEvents(Boolean pushEvents) {
         return withPushEvents(pushEvents, this);
     }
 
-    public MattermostService withIssuesEvents(Boolean issuesEvents) {
+    public SlackService withIssuesEvents(Boolean issuesEvents) {
         return withIssuesEvents(issuesEvents, this);
     }
 
-    public MattermostService withConfidentialIssuesEvents(Boolean confidentialIssuesEvents) {
+    public SlackService withConfidentialIssuesEvents(Boolean confidentialIssuesEvents) {
         return withConfidentialIssuesEvents(confidentialIssuesEvents, this);
     }
 
-    public MattermostService withMergeRequestsEvents(Boolean mergeRequestsEvents) {
+    public SlackService withMergeRequestsEvents(Boolean mergeRequestsEvents) {
         return withMergeRequestsEvents(mergeRequestsEvents, this);
     }
 
-    public MattermostService withTagPushEvents(Boolean tagPushEvents) {
+    public SlackService withTagPushEvents(Boolean tagPushEvents) {
         return withTagPushEvents(tagPushEvents, this);
     }
 
-    public MattermostService withNoteEvents(Boolean noteEvents) {
+    public SlackService withNoteEvents(Boolean noteEvents) {
         return withNoteEvents(noteEvents, this);
     }
 
-    public MattermostService withConfidentialNoteEvents(Boolean confidentialNoteEvents) {
+    public SlackService withConfidentialNoteEvents(Boolean confidentialNoteEvents) {
         return withConfidentialNoteEvents(confidentialNoteEvents, this);
     }
 
-    public MattermostService withPipelineEvents(Boolean pipelineEvents) {
+    public SlackService withPipelineEvents(Boolean pipelineEvents) {
         return withPipelineEvents(pipelineEvents, this);
     }
 
-    public MattermostService withWikiPageEvents(Boolean wikiPageEvents) {
+    public SlackService withWikiPageEvents(Boolean wikiPageEvents) {
         return withWikiPageEvents(wikiPageEvents, this);
     }
 
-    public MattermostService withJobEvents(Boolean jobEvents) {
+    public SlackService withJobEvents(Boolean jobEvents) {
         return withPipelineEvents(jobEvents, this);
     }
 
@@ -115,7 +115,7 @@ public class MattermostService extends NotificationService {
         setProperty(WEBHOOK_PROP, webhook);
     }
 
-    public MattermostService withWebhook(String webhook) {
+    public SlackService withWebhook(String webhook) {
         setWebhook(webhook);
         return (this);
     }
@@ -129,7 +129,7 @@ public class MattermostService extends NotificationService {
         setProperty(USERNAME_PROP, username);
     }
 
-    public MattermostService withUsername(String username) {
+    public SlackService withUsername(String username) {
         setUsername(username);
         return (this);
     }
@@ -143,7 +143,7 @@ public class MattermostService extends NotificationService {
         this.defaultChannel = defaultChannel;
     }
 
-    public MattermostService withDefaultChannelk(String defaultChannel) {
+    public SlackService withDefaultChannelk(String defaultChannel) {
         this.defaultChannel = defaultChannel;
         return (this);
     }
@@ -157,23 +157,54 @@ public class MattermostService extends NotificationService {
         setProperty(NOTIFY_ONLY_BROKEN_PIPELINES_PROP, notifyOnlyBrokenPipelines);
     }
 
-    public MattermostService withNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
+    public SlackService withNotifyOnlyBrokenPipelines(Boolean notifyOnlyBrokenPipelines) {
         setNotifyOnlyBrokenPipelines(notifyOnlyBrokenPipelines);
         return (this);
     }
 
     @JsonIgnore
+    @Deprecated
     public Boolean getNotifyOnlyDefaultBranch() {
         return ((Boolean) getProperty(NOTIFY_ONLY_DEFAULT_BRANCH_PROP, Boolean.FALSE));
     }
 
+    /**
+     * @param notifyOnlyDefaultBranch
+     * @deprecated use {@link SlackService#setBranchesToBeNotified(BranchesToBeNotified)}
+     */
+    @Deprecated
     public void setNotifyOnlyDefaultBranch(Boolean notifyOnlyDefaultBranch) {
         setProperty(NOTIFY_ONLY_DEFAULT_BRANCH_PROP, notifyOnlyDefaultBranch);
     }
 
-    public MattermostService withNotifyOnlyDefaultBranch(Boolean notifyOnlyDefaultBranch) {
+    /**
+     * @param notifyOnlyDefaultBranch
+     * @deprecated use {@link SlackService#withBranchesToBeNotified(BranchesToBeNotified)}
+     */
+    @Deprecated
+    public SlackService withNotifyOnlyDefaultBranch(Boolean notifyOnlyDefaultBranch) {
         setNotifyOnlyDefaultBranch(notifyOnlyDefaultBranch);
         return (this);
+    }
+
+    @JsonIgnore
+    public BranchesToBeNotified getBranchesToBeNotified() {
+        String branchesToBeNotified = getProperty(BRANCHES_TO_BE_NOTIFIED_PROP);
+
+        if (branchesToBeNotified == null || branchesToBeNotified.isEmpty()) {
+            return null;
+        }
+
+        return (BranchesToBeNotified.valueOf(branchesToBeNotified.toUpperCase()));
+    }
+
+    public void setBranchesToBeNotified(BranchesToBeNotified branchesToBeNotified) {
+        setProperty(BRANCHES_TO_BE_NOTIFIED_PROP, branchesToBeNotified.toString());
+    }
+
+    public SlackService withBranchesToBeNotified(BranchesToBeNotified branchesToBeNotified) {
+        setBranchesToBeNotified(branchesToBeNotified);
+        return this;
     }
 
     @JsonIgnore
@@ -185,7 +216,7 @@ public class MattermostService extends NotificationService {
         setProperty(PUSH_CHANNEL_PROP, pushChannel);
     }
 
-    public MattermostService withPushChannel(String pushChannel) {
+    public SlackService withPushChannel(String pushChannel) {
         setPushChannel(pushChannel);
         return (this);
     }
@@ -199,7 +230,7 @@ public class MattermostService extends NotificationService {
         setProperty(ISSUE_CHANNEL_PROP, issueChannel);
     }
 
-    public MattermostService withIssueChannel(String issueChannel) {
+    public SlackService withIssueChannel(String issueChannel) {
         setIssueChannel(issueChannel);
         return (this);
     }
@@ -213,7 +244,7 @@ public class MattermostService extends NotificationService {
         setProperty(CONFIDENTIAL_ISSUE_CHANNEL_PROP, confidentialIssueChannel);
     }
 
-    public MattermostService withConfidentialIssueChannel(String confidentialIssueChannel) {
+    public SlackService withConfidentialIssueChannel(String confidentialIssueChannel) {
         setConfidentialIssueChannel(confidentialIssueChannel);
         return (this);
     }
@@ -227,7 +258,7 @@ public class MattermostService extends NotificationService {
         setProperty(MERGE_REQUEST_CHANNEL_PROP, mergeRequestChannel);
     }
 
-    public MattermostService withMergeRequestChannel(String mergeRequestChannel) {
+    public SlackService withMergeRequestChannel(String mergeRequestChannel) {
         setMergeRequestChannel(mergeRequestChannel);
         return (this);
     }
@@ -241,7 +272,7 @@ public class MattermostService extends NotificationService {
         setProperty(NOTE_CHANNEL_PROP, noteChannel);
     }
 
-    public MattermostService withNoteChannel(String noteChannel) {
+    public SlackService withNoteChannel(String noteChannel) {
         setNoteChannel(noteChannel);
         return (this);
     }
@@ -255,7 +286,7 @@ public class MattermostService extends NotificationService {
         setProperty(NOTE_CHANNEL_PROP, noteChannel);
     }
 
-    public MattermostService withConfidentialNoteChannel(String confidentialNoteChannel) {
+    public SlackService withConfidentialNoteChannel(String confidentialNoteChannel) {
         setConfidentialNoteChannel(confidentialNoteChannel);
         return (this);
     }
@@ -269,7 +300,7 @@ public class MattermostService extends NotificationService {
         setProperty(TAG_PUSH_CHANNEL_PROP, tagPushChannel);
     }
 
-    public MattermostService withTagPushChannel(String tagPushChannel) {
+    public SlackService withTagPushChannel(String tagPushChannel) {
         setTagPushChannel(tagPushChannel);
         return (this);
     }
@@ -283,7 +314,7 @@ public class MattermostService extends NotificationService {
         setProperty(PIPELINE_CHANNEL_PROP, pipelineChannel);
     }
 
-    public MattermostService withPipelineChannel(String pipelineChannel) {
+    public SlackService withPipelineChannel(String pipelineChannel) {
         setPipelineChannel(pipelineChannel);
         return (this);
     }
@@ -297,7 +328,7 @@ public class MattermostService extends NotificationService {
         setProperty(WIKI_PAGE_CHANNEL_PROP, wikiPageChannel);
     }
 
-    public MattermostService withWikiPageChannel(String wikiPageChannel) {
+    public SlackService withWikiPageChannel(String wikiPageChannel) {
         setWikiPageChannel(wikiPageChannel);
         return (this);
     }
