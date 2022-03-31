@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.software;
 
+import com.sun.jna.platform.unix.solaris.Kstat2;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
@@ -34,7 +35,6 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.linux.drivers.proc.ProcessStat;
-import org.aoju.bus.health.unix.Kstat2;
 import org.aoju.bus.health.unix.SolarisLibc;
 import org.aoju.bus.health.unix.solaris.KstatKit;
 import org.aoju.bus.health.unix.solaris.drivers.Who;
