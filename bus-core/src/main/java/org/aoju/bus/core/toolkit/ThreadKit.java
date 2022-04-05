@@ -149,6 +149,67 @@ public class ThreadKit {
     }
 
     /**
+     * 获取一个新的线程池，默认的策略如下
+     * <pre>
+     *     1. 核心线程数与最大线程数为nThreads指定的大小
+     *     2. 默认使用{@link LinkedBlockingQueue}，默认队列大小为1024
+     *     3. 如果isBlocked为{code true}，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
+     * </pre>
+     *
+     * @param nThreads         线程池大小
+     * @param threadNamePrefix 线程名称前缀
+     * @param isBlocked        是否使用{@link BlockPolicy}策略
+     * @return {@link ExecutorService}
+     */
+    public static ExecutorService newFixedExecutor(int nThreads, String threadNamePrefix, boolean isBlocked) {
+        return newFixedExecutor(nThreads, 1024, threadNamePrefix, isBlocked);
+    }
+
+    /**
+     * 获取一个新的线程池，默认的策略如下
+     * <pre>
+     *     1. 核心线程数与最大线程数为nThreads指定的大小
+     *     2. 默认使用{@link LinkedBlockingQueue}
+     *     3. 如果isBlocked为{code true}，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
+     * </pre>
+     *
+     * @param nThreads         线程池大小
+     * @param maximumQueueSize 队列大小
+     * @param threadNamePrefix 线程名称前缀
+     * @param isBlocked        是否使用{@link BlockPolicy}策略
+     * @return {@link ExecutorService}
+     */
+    public static ExecutorService newFixedExecutor(int nThreads, int maximumQueueSize, String threadNamePrefix, boolean isBlocked) {
+        return newFixedExecutor(nThreads, maximumQueueSize, threadNamePrefix,
+                (isBlocked ? RejectPolicy.BLOCK : RejectPolicy.ABORT).getValue());
+    }
+
+    /**
+     * 获得一个新的线程池，默认策略如下
+     * <pre>
+     *     1. 核心线程数与最大线程数为nThreads指定的大小
+     *     2. 默认使用 {@link LinkedBlockingQueue}
+     * </pre>
+     *
+     * @param nThreads         线程池大小
+     * @param maximumQueueSize 队列大小
+     * @param threadNamePrefix 线程名称前缀
+     * @param handler          拒绝策略
+     * @return {@link ExecutorService}
+     */
+    public static ExecutorService newFixedExecutor(int nThreads,
+                                                   int maximumQueueSize,
+                                                   String threadNamePrefix,
+                                                   RejectedExecutionHandler handler) {
+        return ExecutorBuilder.create()
+                .setCorePoolSize(nThreads).setMaxPoolSize(nThreads)
+                .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
+                .setThreadFactory(createThreadFactory(threadNamePrefix))
+                .setHandler(handler)
+                .build();
+    }
+
+    /**
      * 直接在公共线程池中执行线程
      *
      * @param runnable 可运行对象
@@ -415,6 +476,17 @@ public class ThreadKit {
      */
     public static ThreadBuilder createThreadFactoryBuilder() {
         return ThreadBuilder.create();
+    }
+
+    /**
+     * 创建自定义线程名称前缀的{@link ThreadFactory}
+     *
+     * @param threadNamePrefix 线程名称前缀
+     * @return {@link ThreadFactory}
+     * @see ThreadBuilder#build()
+     */
+    public static ThreadFactory createThreadFactory(String threadNamePrefix) {
+        return ThreadBuilder.create().setNamePrefix(threadNamePrefix).build();
     }
 
     /**

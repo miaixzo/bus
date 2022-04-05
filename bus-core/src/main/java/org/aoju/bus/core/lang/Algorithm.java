@@ -192,6 +192,10 @@ public enum Algorithm {
      * HmacSM3算法实现，需要BouncyCastle库支持
      */
     HMACSM3("HmacSM3"),
+    /**
+     * SM4 CMAC模式实现，需要BouncyCastle库支持
+     */
+    SM4CMAC("SM4CMAC"),
 
     /***************************** 对称-算法类型 *****************************/
 

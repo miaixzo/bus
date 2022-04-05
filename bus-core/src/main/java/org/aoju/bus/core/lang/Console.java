@@ -437,12 +437,6 @@ public class Console {
 
     public static class Table {
 
-        private static final char ROW_LINE = Symbol.C_MINUS;
-        private static final char COLUMN_LINE = Symbol.C_OR;
-        private static final char CORNER = Symbol.C_PLUS;
-        private static final char SPACE = '\u3000';
-        private static final char LF = Symbol.C_LF;
-
         /**
          * 表格头信息
          */
@@ -503,9 +497,9 @@ public class Console {
         private void fillColumns(List<String> l, String[] columns) {
             for (int i = 0; i < columns.length; i++) {
                 String column = columns[i];
-                String col = Convert.toSBC(column);
-                l.add(col);
-                int width = col.length();
+                column = Convert.toSBC(column);
+                l.add(column);
+                int width = column.length();
                 if (width > columnCharNumber.get(i)) {
                     columnCharNumber.set(i, width);
                 }
@@ -535,25 +529,26 @@ public class Console {
          * @param list 表头列表或者表体列表
          */
         private void fillRow(StringBuilder sb, List<List<String>> list) {
-            for (List<String> r : list) {
-                for (int i = 0; i < r.size(); i++) {
+            final char SPACE = '\u3000';
+            for (List<String> row : list) {
+                for (int i = 0; i < row.size(); i++) {
                     if (i == 0) {
-                        sb.append(COLUMN_LINE);
+                        sb.append(Symbol.C_OR);
                     }
-                    String header = r.get(i);
+                    String value = row.get(i);
                     sb.append(SPACE);
-                    sb.append(header);
+                    sb.append(value);
                     sb.append(SPACE);
-                    int l = header.length();
-                    int lw = columnCharNumber.get(i);
-                    if (lw > l) {
-                        for (int j = 0; j < (lw - l); j++) {
+                    int length = value.length();
+                    int maxLength = columnCharNumber.get(i);
+                    if (maxLength > length) {
+                        for (int j = 0; j < (maxLength - length); j++) {
                             sb.append(SPACE);
                         }
                     }
-                    sb.append(COLUMN_LINE);
+                    sb.append(Symbol.C_OR);
                 }
-                sb.append(LF);
+                sb.append(Symbol.C_LF);
             }
         }
 
@@ -563,12 +558,12 @@ public class Console {
          * @param sb StringBuilder
          */
         private void fillBorder(StringBuilder sb) {
-            sb.append(CORNER);
+            sb.append(Symbol.C_PLUS);
             for (Integer width : columnCharNumber) {
-                sb.append(Convert.toSBC(StringKit.fillAfter(Normal.EMPTY, ROW_LINE, width + 2)));
-                sb.append(CORNER);
+                sb.append(Convert.toSBC(StringKit.fillAfter(Normal.EMPTY, Symbol.C_MINUS, width + 2)));
+                sb.append(Symbol.C_PLUS);
             }
-            sb.append(LF);
+            sb.append(Symbol.C_LF);
         }
 
         /**

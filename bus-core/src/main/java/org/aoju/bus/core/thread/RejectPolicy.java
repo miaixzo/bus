@@ -57,7 +57,11 @@ public enum RejectPolicy {
     /**
      * 由主线程来直接执行
      */
-    CALLER_RUNS(new ThreadPoolExecutor.CallerRunsPolicy());
+    CALLER_RUNS(new ThreadPoolExecutor.CallerRunsPolicy()),
+    /**
+     * 当任务队列过长时处于阻塞状态，直到添加到队列中，固定并发数去访问，并且不希望丢弃任务时使用此策略
+     */
+    BLOCK(new BlockPolicy());
 
     private final RejectedExecutionHandler value;
 

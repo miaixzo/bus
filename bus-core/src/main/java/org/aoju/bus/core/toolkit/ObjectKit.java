@@ -28,7 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.compare.NormalCompare;
 import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
+import org.aoju.bus.core.io.streams.FastByteOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -517,7 +517,7 @@ public class ObjectKit {
         if (null == obj || false == (obj instanceof Serializable)) {
             return null;
         }
-        final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        final FastByteOutputStream byteOut = new FastByteOutputStream();
         ObjectOutputStream out = null;
         try {
             out = new ObjectOutputStream(byteOut);
@@ -1531,7 +1531,7 @@ public class ObjectKit {
         if (false == (obj instanceof Serializable)) {
             return null;
         }
-        final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        final FastByteOutputStream byteOut = new FastByteOutputStream();
         IoKit.writeObjects(byteOut, false, (Serializable) obj);
         return byteOut.toByteArray();
     }

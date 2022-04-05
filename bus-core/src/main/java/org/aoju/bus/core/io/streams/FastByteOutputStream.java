@@ -43,11 +43,11 @@ import java.io.OutputStream;
  * @version 6.5.0
  * @since Java 17+
  */
-public class ByteArrayOutputStream extends OutputStream {
+public class FastByteOutputStream extends OutputStream {
 
     private final FastByteBuffer buffer;
 
-    public ByteArrayOutputStream() {
+    public FastByteOutputStream() {
         this(Normal._1024);
     }
 
@@ -56,7 +56,7 @@ public class ByteArrayOutputStream extends OutputStream {
      *
      * @param size 预估大小
      */
-    public ByteArrayOutputStream(int size) {
+    public FastByteOutputStream(int size) {
         buffer = new FastByteBuffer(size);
     }
 

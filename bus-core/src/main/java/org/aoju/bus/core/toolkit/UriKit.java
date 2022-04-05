@@ -1642,7 +1642,7 @@ public class UriKit {
      * @param value 值
      * @return this
      */
-    public UriKit addQuery(String key, String value) {
+    public UriKit addQuery(String key, Object value) {
         if (StringKit.isEmpty(key)) {
             return this;
         }

@@ -27,7 +27,7 @@ package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
+import org.aoju.bus.core.io.streams.FastByteOutputStream;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
@@ -1047,7 +1047,7 @@ public class Builder {
      * @return 编码后的bytes
      */
     public static byte[] encode(String asn1Encoding, ASN1Encodable... elements) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final FastByteOutputStream out = new FastByteOutputStream();
         encode(asn1Encoding, out, elements);
         return out.toByteArray();
     }

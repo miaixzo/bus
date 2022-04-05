@@ -9,13 +9,13 @@
 		<img src="https://img.shields.io/badge/maven--central-v6.5.0-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
-		<img src="https://travis-ci.org/aoju/bus.svg?branch=main">
+		<img src="https://travis-ci.com/aoju/bus.svg?branch=main">
 	</a>
 	<a target="_blank" href="https://jdk.java.net/">
 		<img src="https://img.shields.io/badge/Java-17+-green.svg">
 	</a>
 	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-2.6.3-brightgreen.svg">
+		<img src="https://img.shields.io/badge/Spring Boot-2.6.6-brightgreen.svg">
 	</a>
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
