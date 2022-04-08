@@ -727,7 +727,7 @@ public class MapKit {
      * @param <K>        {@code key}的类型
      * @param <V>        {@code value}的类型
      * @param <R>        新的，修改后的{@code value}的类型
-     * @return 值可以为不同类型的 {@link Map
+     * @return 值可以为不同类型的 {@link Map}
      */
     public static <K, V, R> Map<K, R> map(Map<K, V> map, BiFunction<K, V, R> biFunction) {
         if (null == map || null == biFunction) {

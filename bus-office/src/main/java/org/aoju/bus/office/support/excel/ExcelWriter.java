@@ -1152,7 +1152,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
 
         fileName = StringKit.addSuffixIfNot(UriKit.encodeAll(fileName, charset), isXlsx() ? FileType.TYPE_XLSX : FileType.TYPE_XLS);
-        return StringKit.format("attachment; filename=\"{}\"; filename*={}''{}", fileName, charset.name(), fileName);
+        return StringKit.format("attachment; filename=\"{}\"", fileName);
     }
 
     /**

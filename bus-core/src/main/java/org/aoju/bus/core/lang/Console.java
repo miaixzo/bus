@@ -497,8 +497,8 @@ public class Console {
         private void fillColumns(List<String> l, String[] columns) {
             for (int i = 0; i < columns.length; i++) {
                 String column = columns[i];
-                column = Convert.toSBC(column);
-                l.add(column);
+                String col = Convert.toSBC(column);
+                l.add(col);
                 int width = column.length();
                 if (width > columnCharNumber.get(i)) {
                     columnCharNumber.set(i, width);
@@ -515,40 +515,49 @@ public class Console {
         public String toString() {
             StringBuilder sb = new StringBuilder();
             fillBorder(sb);
-            fillRow(sb, HEADER_LIST);
+            fillRows(sb, HEADER_LIST);
             fillBorder(sb);
-            fillRow(sb, BODY_LIST);
+            fillRows(sb, BODY_LIST);
             fillBorder(sb);
             return sb.toString();
         }
 
         /**
-         * 填充表头或者表体信息
+         * 填充表头或者表体信息（多行）
          *
          * @param sb   内容
          * @param list 表头列表或者表体列表
          */
-        private void fillRow(StringBuilder sb, List<List<String>> list) {
-            final char SPACE = '\u3000';
+        private void fillRows(StringBuilder sb, List<List<String>> list) {
             for (List<String> row : list) {
-                for (int i = 0; i < row.size(); i++) {
-                    if (i == 0) {
-                        sb.append(Symbol.C_OR);
-                    }
-                    String value = row.get(i);
-                    sb.append(SPACE);
-                    sb.append(value);
-                    sb.append(SPACE);
-                    int length = value.length();
-                    int maxLength = columnCharNumber.get(i);
-                    if (maxLength > length) {
-                        for (int j = 0; j < (maxLength - length); j++) {
-                            sb.append(SPACE);
-                        }
-                    }
-                    sb.append(Symbol.C_OR);
-                }
+                sb.append(Symbol.C_OR);
+                fillRow(sb, row);
                 sb.append(Symbol.C_LF);
+            }
+        }
+
+        /**
+         * 填充一行数据
+         *
+         * @param sb  内容
+         * @param row 一行数据
+         */
+        private void fillRow(StringBuilder sb, List<String> row) {
+            final int size = row.size();
+            String value;
+            for (int i = 0; i < size; i++) {
+                value = row.get(i);
+                sb.append(Symbol.C_SPACE);
+                sb.append(value);
+                sb.append(Symbol.C_SPACE);
+                int length = value.length();
+                int maxLength = columnCharNumber.get(i);
+                if (maxLength > length) {
+                    for (int j = 0; j < (maxLength - length); j++) {
+                        sb.append(Symbol.C_SPACE);
+                    }
+                }
+                sb.append(Symbol.C_OR);
             }
         }
 
@@ -560,7 +569,7 @@ public class Console {
         private void fillBorder(StringBuilder sb) {
             sb.append(Symbol.C_PLUS);
             for (Integer width : columnCharNumber) {
-                sb.append(Convert.toSBC(StringKit.fillAfter(Normal.EMPTY, Symbol.C_MINUS, width + 2)));
+                sb.append(StringKit.repeat(Symbol.C_MINUS, width + 2));
                 sb.append(Symbol.C_PLUS);
             }
             sb.append(Symbol.C_LF);

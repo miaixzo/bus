@@ -26,11 +26,14 @@
 package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.lang.Editor;
+import org.aoju.bus.core.lang.function.Func1;
 import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.LambdaKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
@@ -184,6 +187,19 @@ public class CopyOptions implements Serializable {
      */
     public CopyOptions setIgnoreProperties(String... ignoreProperties) {
         return setPropertiesFilter((field, o) -> false == ArrayKit.contains(ignoreProperties, field.getName()));
+    }
+
+    /**
+     * 设置忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值，Lambda方式
+     *
+     * @param <P>   参数类型
+     * @param <R>   返回值类型
+     * @param funcs 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
+     * @return this
+     */
+    public <P, R> CopyOptions setIgnoreProperties(Func1<P, R>... funcs) {
+        final Set<String> ignoreProperties = ArrayKit.mapToSet(funcs, LambdaKit::getFieldName);
+        return setPropertiesFilter((field, o) -> false == ignoreProperties.contains(field.getName()));
     }
 
     /**

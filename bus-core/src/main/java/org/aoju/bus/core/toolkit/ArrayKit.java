@@ -8964,6 +8964,19 @@ public class ArrayKit {
     }
 
     /**
+     * 按照指定规则，将一种类型的数组元素提取后转换为{@link Set}
+     *
+     * @param array 被转换的数组
+     * @param func  转换规则函数
+     * @param <T>   原数组类型
+     * @param <R>   目标数组类型
+     * @return 转换后的数组
+     */
+    public static <T, R> Set<R> mapToSet(T[] array, Function<? super T, ? extends R> func) {
+        return Arrays.stream(array).map(func).collect(Collectors.toSet());
+    }
+
+    /**
      * 判断两个数组是否相等，判断依据包括数组长度和每个元素都相等
      *
      * @param array1 数组1
