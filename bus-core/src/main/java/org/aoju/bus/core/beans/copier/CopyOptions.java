@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
+import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.convert.TypeConverter;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.function.Func1;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -32,6 +34,7 @@ import org.aoju.bus.core.toolkit.LambdaKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -74,11 +77,11 @@ public class CopyOptions implements Serializable {
      */
     protected BiFunction<String, Object, Object> fieldValueEditor;
     /**
-     * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
+     * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略
      */
     protected boolean transientSupport = true;
     /**
-     * 是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略。如果覆盖，则不判断直接写
+     * 是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略如果覆盖，则不判断直接写
      */
     protected boolean override = true;
     /**
@@ -91,8 +94,11 @@ public class CopyOptions implements Serializable {
      * 规则为，{@link Editor#edit(Object)}属性为源对象的字段名称或key，返回值为目标对象的字段名称或key
      */
     private Editor<String> fieldNameEditor;
-
-    //region create
+    /**
+     * 自定义类型转换器，默认使用全局万能转换器转换
+     */
+    protected TypeConverter converter = (type, value) ->
+            Convert.convertWithCheck(type, value, null, ignoreError);
 
     /**
      * 构造拷贝选项
@@ -289,7 +295,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 设置是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
+     * 设置是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略
      *
      * @param transientSupport 是否支持
      * @return this
@@ -300,7 +306,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 设置是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略。如果覆盖，则不判断直接写
+     * 设置是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略如果覆盖，则不判断直接写
      *
      * @param override 是否覆盖目标值
      * @return this
@@ -308,6 +314,30 @@ public class CopyOptions implements Serializable {
     public CopyOptions setOverride(boolean override) {
         this.override = override;
         return this;
+    }
+
+    /**
+     * 设置自定义类型转换器，默认使用全局万能转换器转换
+     *
+     * @param converter 转换器
+     * @return this
+     */
+    public CopyOptions setConverter(TypeConverter converter) {
+        this.converter = converter;
+        return this;
+    }
+
+    /**
+     * 使用自定义转换器转换字段值
+     * 如果自定义转换器为{@code null}，则返回原值
+     *
+     * @param targetType 目标类型
+     * @param fieldValue 字段值
+     * @return 编辑后的字段值
+     */
+    protected Object convertField(Type targetType, Object fieldValue) {
+        return (null != this.converter) ?
+                this.converter.convert(targetType, fieldValue) : fieldValue;
     }
 
     /**

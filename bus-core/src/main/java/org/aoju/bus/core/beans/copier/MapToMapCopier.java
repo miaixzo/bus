@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
-import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
@@ -79,7 +78,7 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
             // 获取目标值真实类型并转换源值
             final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
             if (null != typeArguments) {
-                sValue = Convert.convertWithCheck(typeArguments[1], sValue, null, this.copyOptions.ignoreError);
+                sValue = this.copyOptions.convertField(typeArguments[1], sValue);
                 sValue = copyOptions.editFieldValue(sKeyStr, sValue);
             }
 

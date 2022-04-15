@@ -45,6 +45,9 @@ import java.util.List;
  */
 public class JarLoaders extends URLClassLoader {
 
+    /**
+     * 构造
+     */
     public JarLoaders() {
         this(new URL[]{});
     }
@@ -56,6 +59,16 @@ public class JarLoaders extends URLClassLoader {
      */
     public JarLoaders(URL[] urls) {
         super(urls, ClassKit.getClassLoader());
+    }
+
+    /**
+     * 构造
+     *
+     * @param urls        被加载的URL
+     * @param classLoader 类加载器
+     */
+    public JarLoaders(URL[] urls, ClassLoader classLoader) {
+        super(urls, classLoader);
     }
 
     /**

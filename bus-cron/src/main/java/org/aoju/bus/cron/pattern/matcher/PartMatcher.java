@@ -28,14 +28,14 @@ package org.aoju.bus.cron.pattern.matcher;
 import org.aoju.bus.core.lang.Matcher;
 
 /**
- * 值匹配器
+ * 表达式中的某个位置部分匹配器
  * 用于匹配日期位中对应数字是否匹配
  *
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public interface ValueMatcher extends Matcher<Integer> {
+public interface PartMatcher extends Matcher<Integer> {
 
     /**
      * 获取指定值之后的匹配值，也可以是指定值本身

@@ -26,6 +26,7 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.lang.function.Func0;
+import org.aoju.bus.core.lang.mutable.MutableObject;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -90,7 +91,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     public V get(K key) {
         lock.readLock().lock();
         try {
-            return cache.get(key);
+            return cache.get(MutableObject.of(key));
         } finally {
             lock.readLock().unlock();
         }
@@ -123,7 +124,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
             keyLock.lock();
             try {
                 // 双重检查，防止在竞争锁的过程中已经有其它线程写入
-                v = cache.get(key);
+                v = get(key);
                 if (null == v || (null != validPredicate && false == validPredicate.test(v))) {
                     try {
                         v = supplier.call();

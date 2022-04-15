@@ -130,7 +130,7 @@ public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
             numToRead -= read;
             total += read;
             if (null != progress) {
-                progress.progress(total);
+                progress.progress(this.count, total);
             }
         }
 

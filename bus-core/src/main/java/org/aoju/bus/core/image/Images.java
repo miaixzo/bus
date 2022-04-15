@@ -892,38 +892,110 @@ public class Images implements Serializable {
 
     /**
      * 给图片添加文字水印
+     * 此方法只在给定位置写出一个水印字符串
      *
      * @param pressText 水印文字
      * @param color     水印的字体颜色
      * @param font      {@link Font} 字体相关信息
-     * @param x         修正值  默认在中间,偏移量相对于中间偏移
-     * @param y         修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
+     * @param x         修正值。 默认在中间，偏移量相对于中间偏移
+     * @param y         修正值。 默认在中间，偏移量相对于中间偏移
+     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
     public Images pressText(String pressText, Color color, Font font, int x, int y, float alpha) {
+        return pressText(pressText, color, font, new Point(x, y), alpha);
+    }
+
+    /**
+     * 给图片添加文字水印
+     * 此方法只在给定位置写出一个水印字符串
+     *
+     * @param pressText 水印文字
+     * @param color     水印的字体颜色
+     * @param font      {@link Font} 字体相关信息
+     * @param point     绘制字符串的位置坐标
+     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @return 处理后的图像
+     */
+    public Images pressText(String pressText, Color color, Font font, Point point, float alpha) {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.fileType);
-        final Graphics2D g = targetImage.createGraphics();
 
         if (null == font) {
             // 默认字体
-            font = new Font("Courier", Font.PLAIN, (int) (targetImage.getHeight() * 0.75));
+            font = Fonts.createSansSerifFont((int) (targetImage.getHeight() * 0.75));
         }
 
-        // 抗锯齿
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setColor(color);
-        g.setFont(font);
+        final Graphics2D g = targetImage.createGraphics();
         // 透明度
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
-        // 在指定坐标绘制水印文字
-        final FontMetrics metrics = g.getFontMetrics(font);
-        final int textLength = metrics.stringWidth(pressText);
-        final int textHeight = metrics.getAscent() - metrics.getLeading() - metrics.getDescent();
-        g.drawString(pressText, Math.abs(targetImage.getWidth() - textLength) / 2 + x, Math.abs(targetImage.getHeight() + textHeight) / 2 + y);
+
+        // 绘制
+        if (positionBaseCentre) {
+            // 基于中心绘制
+            Graphics.drawString(g, pressText, font, color,
+                    new Rectangle(point.x, point.y, targetImage.getWidth(), targetImage.getHeight()));
+        } else {
+            // 基于左上角绘制
+            Graphics.drawString(g, pressText, font, color, point);
+        }
+
+        // 收笔
         g.dispose();
         this.targetImage = targetImage;
 
+        return this;
+    }
+
+    /**
+     * 给图片添加全屏文字水印
+     *
+     * @param pressText  水印文字，文件间的间隔使用尾部添加空格方式实现
+     * @param color      水印的字体颜色
+     * @param font       {@link Font} 字体相关信息
+     * @param lineHeight 行高
+     * @param degree     旋转角度，（单位：弧度），以圆点（0,0）为圆心，正代表顺时针，负代表逆时针
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @return 处理后的图像
+     */
+    public Images pressTextFull(String pressText, Color color, Font font, int lineHeight, int degree, float alpha) {
+        final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.fileType);
+
+        if (null == font) {
+            // 默认字体
+            font = Fonts.createSansSerifFont((int) (targetImage.getHeight() * 0.75));
+        }
+        final int targetHeight = targetImage.getHeight();
+        final int targetWidth = targetImage.getWidth();
+
+        // 创建画笔，并设置透明度和角度
+        final Graphics2D g = targetImage.createGraphics();
+        g.setColor(color);
+        // 基于图片中心旋转
+        g.rotate(Math.toRadians(degree), targetWidth >> 1, targetHeight >> 1);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
+
+        //获取字符串本身的长宽
+        Dimension dimension;
+        try {
+            dimension = Fonts.getDimension(g.getFontMetrics(font), pressText);
+        } catch (Exception e) {
+            // 此处报告bug某些情况下会抛出IndexOutOfBoundsException，在此做容错处理
+            dimension = new Dimension(targetWidth / 3, targetHeight / 3);
+        }
+        final int intervalHeight = dimension.height * lineHeight;
+        // 在画笔按照画布中心旋转后，达到45度时，上下左右会出现空白区，此处各延申长款的1.5倍实现全覆盖
+        int y = -targetHeight >> 1;
+        while (y < targetHeight * 1.5) {
+            int x = -targetWidth >> 1;
+            while (x < targetWidth * 1.5) {
+                Graphics.drawString(g, pressText, font, color, new Point(x, y));
+                x += dimension.width;
+            }
+            y += intervalHeight;
+        }
+        g.dispose();
+
+        this.targetImage = targetImage;
         return this;
     }
 

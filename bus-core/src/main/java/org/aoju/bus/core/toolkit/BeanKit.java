@@ -43,6 +43,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -504,10 +505,23 @@ public class BeanKit {
      * @return Bean对象
      */
     public static <T> T toBean(Object source, Class<T> clazz, CopyOptions options) {
-        if (null == source) {
+        return toBean(source, () -> ReflectKit.newInstanceIfPossible(clazz), options);
+    }
+
+    /**
+     * 对象或Map转Bean
+     *
+     * @param <T>            转换的Bean类型
+     * @param source         Bean对象或Map
+     * @param targetSupplier 目标的Bean创建器
+     * @param options        属性拷贝选项
+     * @return Bean对象
+     */
+    public static <T> T toBean(Object source, Supplier<T> targetSupplier, CopyOptions options) {
+        if (null == source || null == targetSupplier) {
             return null;
         }
-        final T target = ReflectKit.newInstanceIfPossible(clazz);
+        final T target = targetSupplier.get();
         copyProperties(source, target, options);
         return target;
     }

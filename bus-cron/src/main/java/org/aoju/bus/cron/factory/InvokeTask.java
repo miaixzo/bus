@@ -26,7 +26,7 @@
 package org.aoju.bus.cron.factory;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -44,14 +44,13 @@ import java.lang.reflect.Method;
  */
 public class InvokeTask implements Task {
 
-    private Class<?> clazz;
-    private Object obj;
-    private Method method;
+    private final Object obj;
+    private final Method method;
 
     /**
      * 构造
      *
-     * @param classNameWithMethodName 类名与方法名的字符串表示,方法名和类名使用#隔开或者.隔开
+     * @param classNameWithMethodName 类名与方法名的字符串表示，方法名和类名使用#隔开或者.隔开
      */
     public InvokeTask(String classNameWithMethodName) {
         int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_SHAPE);
@@ -59,7 +58,7 @@ public class InvokeTask implements Task {
             splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_DOT);
         }
         if (splitIndex <= 0) {
-            throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
+            throw new CrontabException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
         // 类
@@ -67,18 +66,18 @@ public class InvokeTask implements Task {
         if (StringKit.isBlank(className)) {
             throw new IllegalArgumentException("Class name is blank !");
         }
-        this.clazz = ClassKit.loadClass(className);
-        if (null == this.clazz) {
+        final Class<?> clazz = ClassKit.loadClass(className);
+        if (null == clazz) {
             throw new IllegalArgumentException("Load class with name of [" + className + "] fail !");
         }
-        this.obj = ReflectKit.newInstanceIfPossible(this.clazz);
+        this.obj = ReflectKit.newInstanceIfPossible(clazz);
 
         // 方法
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
         if (StringKit.isBlank(methodName)) {
             throw new IllegalArgumentException("Method name is blank !");
         }
-        this.method = ClassKit.getPublicMethod(this.clazz, methodName);
+        this.method = ClassKit.getPublicMethod(clazz, methodName);
         if (null == this.method) {
             throw new IllegalArgumentException("No method with name of [" + methodName + "] !");
         }
@@ -87,9 +86,9 @@ public class InvokeTask implements Task {
     @Override
     public void execute() {
         try {
-            ReflectKit.invoke(this.obj, this.method, new Object[]{});
-        } catch (InstrumentException e) {
-            throw new InstrumentException(e.getCause());
+            ReflectKit.invoke(this.obj, this.method);
+        } catch (CrontabException e) {
+            throw new CrontabException(e.getCause());
         }
     }
 

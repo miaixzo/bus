@@ -23,59 +23,92 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.cron.pattern.matcher;
+package org.aoju.bus.cron.pattern;
 
-import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Normal;
-
-import java.util.List;
+import org.aoju.bus.core.builder.Builder;
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.text.TextJoiner;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
- * 每月第几天匹配
- * 考虑每月的天数不同,切存在闰年情况,日匹配单独使用
+ * 定时任务表达式构建器
  *
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
+public class CronBuilder implements Builder<String> {
+
+    private static final long serialVersionUID = 1L;
+
+    final String[] parts = new String[7];
 
     /**
-     * 构造
+     * 创建构建器
      *
-     * @param intValueList 匹配的日值
+     * @return CronPatternBuilder
      */
-    public DayOfMonthValueMatcher(List<Integer> intValueList) {
-        super(intValueList);
+    public static CronBuilder of() {
+        return new CronBuilder();
     }
 
     /**
-     * 是否为本月最后一天，规则如下：
-     * <pre>
-     * 1、闰年2月匹配是否为29
-     * 2、其它月份是否匹配最后一天的日期（可能为30或者31）
-     * </pre>
+     * 设置值
      *
-     * @param value      被检查的值
-     * @param month      月份
-     * @param isLeapYear 是否闰年
-     * @return 是否为本月最后一天
+     * @param part   部分，如秒、分、时等
+     * @param values 时间值列表
+     * @return this
      */
-    private static boolean isLastDayOfMonth(int value, int month, boolean isLeapYear) {
-        return value == Fields.Month.getLastDay(month, isLeapYear);
+    public CronBuilder setValues(Part part, int... values) {
+        for (int value : values) {
+            part.checkValue(value);
+        }
+        return set(part, ArrayKit.join(values, ","));
     }
 
     /**
-     * 给定的日期是否匹配当前匹配器
+     * 设置区间
      *
-     * @param value      被检查的值，此处为日
-     * @param month      实际的月份
-     * @param isLeapYear 是否闰年
-     * @return 是否匹配
+     * @param part  部分，如秒、分、时等
+     * @param begin 起始值
+     * @param end   结束值
+     * @return this
      */
-    public boolean match(int value, int month, boolean isLeapYear) {
-        return (super.match(value)
-                || (value > 27 && match(Normal._32) && isLastDayOfMonth(value, month, isLeapYear)));
+    public CronBuilder setRange(Part part, int begin, int end) {
+        Assert.notNull(part);
+        part.checkValue(begin);
+        part.checkValue(end);
+        return set(part, StringKit.format("{}-{}", begin, end));
+    }
+
+    /**
+     * 设置对应部分的定时任务值
+     *
+     * @param part  部分，如秒、分、时等
+     * @param value 表达式值，如"*"、"1,2"、"5-12"等
+     * @return this
+     */
+    public CronBuilder set(Part part, String value) {
+        parts[part.ordinal()] = value;
+        return this;
+    }
+
+    @Override
+    public String build() {
+        for (int i = Part.MINUTE.ordinal(); i < Part.YEAR.ordinal(); i++) {
+            // 从分到周，用户未设置使用默认值
+            // 秒和年如果不设置，忽略之
+            if (StringKit.isBlank(parts[i])) {
+                parts[i] = "*";
+            }
+        }
+
+        return TextJoiner.of(Symbol.SPACE)
+                .setNullMode(TextJoiner.NullMode.IGNORE)
+                .append(this.parts)
+                .toString();
     }
 
 }

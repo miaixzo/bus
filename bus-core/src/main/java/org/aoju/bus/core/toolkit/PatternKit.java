@@ -26,9 +26,13 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.*;
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.mutable.Mutable;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 
 import java.lang.reflect.InvocationTargetException;
@@ -366,7 +370,7 @@ public class PatternKit {
      * @param template      生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 新字符串
      */
-    public static String extractMultiAndDelPre(Pattern pattern, Holder<CharSequence> contentHolder, String template) {
+    public static String extractMultiAndDelPre(Pattern pattern, Mutable<CharSequence> contentHolder, String template) {
         if (null == contentHolder || null == pattern || null == template) {
             return null;
         }
@@ -396,7 +400,7 @@ public class PatternKit {
      * @param template      生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 按照template拼接后的字符串
      */
-    public static String extractMultiAndDelPre(String regex, Holder<CharSequence> contentHolder, String template) {
+    public static String extractMultiAndDelPre(String regex, Mutable<CharSequence> contentHolder, String template) {
         if (null == contentHolder || null == regex || null == template) {
             return null;
         }

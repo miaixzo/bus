@@ -60,7 +60,7 @@ public class NamedThreadFactory implements ThreadFactory {
     /**
      * 是否守护线程
      */
-    private final boolean isDeamon;
+    private final boolean isDaemon;
     /**
      * 无法捕获的异常统一处理
      */
@@ -74,10 +74,10 @@ public class NamedThreadFactory implements ThreadFactory {
      * 构造
      *
      * @param prefix   线程名前缀
-     * @param isDeamon 是否守护线程
+     * @param isDaemon 是否守护线程
      */
-    public NamedThreadFactory(String prefix, boolean isDeamon) {
-        this(prefix, null, isDeamon);
+    public NamedThreadFactory(String prefix, boolean isDaemon) {
+        this(prefix, null, isDaemon);
     }
 
     /**
@@ -85,10 +85,10 @@ public class NamedThreadFactory implements ThreadFactory {
      *
      * @param prefix      线程名前缀
      * @param threadGroup 线程组,可以为null
-     * @param isDeamon    是否守护线程
+     * @param isDaemon    是否守护线程
      */
-    public NamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon) {
-        this(prefix, threadGroup, isDeamon, null);
+    public NamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDaemon) {
+        this(prefix, threadGroup, isDaemon, null);
     }
 
     /**
@@ -96,16 +96,16 @@ public class NamedThreadFactory implements ThreadFactory {
      *
      * @param prefix      线程名前缀
      * @param threadGroup 线程组,可以为null
-     * @param isDeamon    是否守护线程
+     * @param isDaemon    是否守护线程
      * @param handler     未捕获异常处理
      */
-    public NamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon, UncaughtExceptionHandler handler) {
+    public NamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDaemon, UncaughtExceptionHandler handler) {
         this.prefix = StringKit.isBlank(prefix) ? "Thread" : prefix;
         if (null == threadGroup) {
             threadGroup = Thread.currentThread().getThreadGroup();
         }
         this.group = threadGroup;
-        this.isDeamon = isDeamon;
+        this.isDaemon = isDaemon;
         this.handler = handler;
     }
 
@@ -115,11 +115,11 @@ public class NamedThreadFactory implements ThreadFactory {
 
         //守护线程
         if (false == t.isDaemon()) {
-            if (isDeamon) {
+            if (isDaemon) {
                 // 原线程为非守护则设置为守护
                 t.setDaemon(true);
             }
-        } else if (false == isDeamon) {
+        } else if (false == isDaemon) {
             // 原线程为守护则还原为非守护
             t.setDaemon(false);
         }

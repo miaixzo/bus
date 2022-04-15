@@ -25,51 +25,57 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.MathKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.cron.pattern.matcher.AlwaysTrueValueMatcher;
-import org.aoju.bus.cron.pattern.matcher.BoolArrayValueMatcher;
-import org.aoju.bus.cron.pattern.matcher.ValueMatcher;
+import org.aoju.bus.cron.pattern.Part;
+import org.aoju.bus.cron.pattern.matcher.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 简易值转换器将给定String值转为int，并限定最大值和最小值
- * 此类同时识别{@code L} 为最大值
+ * 定时任务表达式各个部分的解析器，根据{@link Part}指定不同部分，解析为{@link PartMatcher}
+ * 每个部分支持：
+ * <ul>
+ *   <li><strong>*</strong> ：表示匹配这个位置所有的时间</li>
+ *   <li><strong>?</strong> ：表示匹配这个位置任意的时间（与"*"作用一致）</li>
+ *   <li><strong>L</strong> ：表示匹配这个位置允许的最大值</li>
+ *   <li><strong>*&#47;2</strong> ：表示间隔时间，例如在分上，表示每两分钟，同样*可以使用数字列表代替，逗号分隔</li>
+ *   <li><strong>2-8</strong> ：表示连续区间，例如在分上，表示2,3,4,5,6,7,8分</li>
+ *   <li><strong>2,3,5,8</strong> ：表示列表</li>
+ *   <li><strong>wed</strong> ：表示周别名</li>
+ *   <li><strong>jan</strong> ：表示月别名</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public abstract class AbstractValueParser implements ValueParser {
+public class PartParser {
 
-    /**
-     * 最小值（包括）
-     */
-    protected int min;
-    /**
-     * 最大值（包括）
-     */
-    protected int max;
+    private final Part part;
 
     /**
      * 构造
      *
-     * @param min 最小值（包括）
-     * @param max 最大值（包括）
+     * @param part 对应解析的部分枚举
      */
-    public AbstractValueParser(int min, int max) {
-        if (min > max) {
-            this.min = max;
-            this.max = min;
-        } else {
-            this.min = min;
-            this.max = max;
-        }
+    public PartParser(Part part) {
+        this.part = part;
+    }
+
+    /**
+     * 创建解析器
+     *
+     * @param part 对应解析的部分枚举
+     * @return 解析器
+     */
+    public static PartParser of(Part part) {
+        return new PartParser(part);
     }
 
     /**
@@ -83,66 +89,37 @@ public abstract class AbstractValueParser implements ValueParser {
         return (1 == value.length()) && ("*".equals(value) || "?".equals(value));
     }
 
-    @Override
-    public int parse(String value) throws CrontabException {
-        if ("L".equalsIgnoreCase(value)) {
-            // L表示最大值
-            return max;
-        }
-
-        int i;
-        try {
-            i = Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            throw new CrontabException("Invalid integer value: '{}'", value);
-        }
-        if (i < min || i > max) {
-            throw new CrontabException("Value {} out of range: [{} , {}]", i, min, max);
-        }
-        return i;
-    }
-
-    @Override
-    public int getMin() {
-        return this.min;
-    }
-
-    @Override
-    public int getMax() {
-        return this.max;
-    }
-
     /**
-     * 处理定时任务表达式每个时间字段
-     * 多个时间使用逗号分隔
+     * 将表达式解析为{@link PartMatcher}
+     * <ul>
+     *     <li>* 或者 ? 返回{@link AlwaysTrueMatcher}</li>
+     *     <li>{@link Part#DAY_OF_MONTH} 返回{@link DayOfMonthMatcher}</li>
+     *     <li>{@link Part#YEAR} 返回{@link YearValueMatcher}</li>
+     *     <li>其他 返回{@link BoolArrayMatcher}</li>
+     * </ul>
      *
-     * @param value 某个时间字段
-     * @return the list
+     * @param value 表达式
+     * @return {@link PartMatcher}
      */
-    @Override
-    public ValueMatcher parseAsValueMatcher(String value) {
+    public PartMatcher parse(String value) {
         if (isMatchAllStr(value)) {
-            // 兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
-            return new AlwaysTrueValueMatcher();
+            //兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
+            return new AlwaysTrueMatcher();
         }
 
-        List<Integer> values = parseArray(value);
+        final List<Integer> values = parseArray(value);
         if (values.size() == 0) {
-            throw new CrontabException("Invalid field: [{}]", value);
+            throw new CrontabException("Invalid part value: [{}]", value);
         }
 
-        return buildValueMatcher(values);
-    }
-
-    /**
-     * 根据解析的数字值列表构建{@link ValueMatcher}
-     * 默认为{@link BoolArrayValueMatcher}，如果有特殊实现，子类须重写此方法
-     *
-     * @param values 数字值列表
-     * @return {@link ValueMatcher}
-     */
-    protected ValueMatcher buildValueMatcher(List<Integer> values) {
-        return new BoolArrayValueMatcher(values);
+        switch (this.part) {
+            case DAY_OF_MONTH:
+                return new DayOfMonthMatcher(values);
+            case YEAR:
+                return new YearValueMatcher(values);
+            default:
+                return new BoolArrayMatcher(values);
+        }
     }
 
     /**
@@ -186,7 +163,7 @@ public abstract class AbstractValueParser implements ValueParser {
         if (size == 1) {// 普通形式
             results = parseRange(value, -1);
         } else if (size == 2) {// 间隔形式
-            final int step = parse(parts.get(1));
+            final int step = parseNumber(parts.get(1));
             if (step < 1) {
                 throw new CrontabException("Non positive divisor for field: [{}]", value);
             }
@@ -216,61 +193,118 @@ public abstract class AbstractValueParser implements ValueParser {
 
         // 全部匹配形式
         if (value.length() <= 2) {
-            // 根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
-            int minValue = getMin();
+            //根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
+            int minValue = part.getMin();
             if (false == isMatchAllStr(value)) {
-                minValue = Math.max(minValue, parse(value));
+                minValue = Math.max(minValue, parseNumber(value));
             } else {
-                // 在全匹配模式下，如果步进不存在，表示步进为1
+                //在全匹配模式下，如果步进不存在，表示步进为1
                 if (step < 1) {
                     step = 1;
                 }
             }
             if (step > 0) {
-                final int maxValue = getMax();
+                final int maxValue = part.getMax();
                 if (minValue > maxValue) {
                     throw new CrontabException("Invalid value {} > {}", minValue, maxValue);
                 }
-                // 有步进
+                //有步进
                 for (int i = minValue; i <= maxValue; i += step) {
                     results.add(i);
                 }
             } else {
-                // 固定时间
+                //固定时间
                 results.add(minValue);
             }
             return results;
         }
 
-        // Range模式
+        //Range模式
         List<String> parts = StringKit.split(value, '-');
         int size = parts.size();
         if (size == 1) {// 普通值
-            final int v1 = parse(value);
-            if (step > 0) {// 类似 20/2的形式
-                MathKit.appendRange(v1, getMax(), step, results);
+            final int v1 = parseNumber(value);
+            if (step > 0) {//类似 20/2的形式
+                MathKit.appendRange(v1, part.getMax(), step, results);
             } else {
                 results.add(v1);
             }
         } else if (size == 2) {// range值
-            final int v1 = parse(parts.get(0));
-            final int v2 = parse(parts.get(1));
+            final int v1 = parseNumber(parts.get(0));
+            final int v2 = parseNumber(parts.get(1));
             if (step < 1) {
-                // 在range模式下，如果步进不存在，表示步进为1
+                //在range模式下，如果步进不存在，表示步进为1
                 step = 1;
             }
             if (v1 < v2) {// 正常范围，例如：2-5
                 MathKit.appendRange(v1, v2, step, results);
             } else if (v1 > v2) {// 逆向范围，反选模式，例如：5-2
-                MathKit.appendRange(v1, getMax(), step, results);
-                MathKit.appendRange(getMin(), v2, step, results);
+                MathKit.appendRange(v1, part.getMax(), step, results);
+                MathKit.appendRange(part.getMin(), v2, step, results);
             } else {// v1 == v2，此时与单值模式一致
-                MathKit.appendRange(v1, getMax(), step, results);
+                MathKit.appendRange(v1, part.getMax(), step, results);
             }
         } else {
             throw new CrontabException("Invalid syntax of field: [{}]", value);
         }
         return results;
+    }
+
+    /**
+     * 解析单个int值，支持别名
+     *
+     * @param value 被解析的值
+     * @return 解析结果
+     * @throws CrontabException 当无效数字或无效别名时抛出
+     */
+    private int parseNumber(String value) throws CrontabException {
+        int i;
+        try {
+            i = Integer.parseInt(value);
+        } catch (NumberFormatException ignore) {
+            i = parseAlias(value);
+        }
+
+        // 支持负数
+        if (i < 0) {
+            i += part.getMax();
+        }
+
+        // 周日可以用0或7表示，统一转换为0
+        if (Part.DAY_OF_WEEK.equals(this.part) && Fields.Week.Sun.getKey() == i) {
+            i = Fields.Week.Sun.ordinal();
+        }
+
+        return part.checkValue(i);
+    }
+
+    /**
+     * 解析别名支持包括：
+     * <ul>
+     *     <li><strong>L 表示最大值</strong></li>
+     *     <li>{@link Part#MONTH}和{@link Part#DAY_OF_WEEK}别名</li>
+     * </ul>
+     *
+     * @param name 别名
+     * @return 解析int值
+     * @throws CrontabException 无匹配别名时抛出异常
+     */
+    private int parseAlias(String name) throws CrontabException {
+        if ("L".equalsIgnoreCase(name)) {
+            // L表示最大值
+            return part.getMax();
+        }
+
+        switch (this.part) {
+            case MONTH:
+                // 月份从1开始
+                return Fields.Month.valueOf(name).ordinal();
+            case DAY_OF_WEEK:
+                // 周从0开始，0表示周日
+                return Fields.Month.valueOf(name).ordinal();
+        }
+
+        throw new CrontabException("Invalid alias value: [{}]", name);
     }
 
 }

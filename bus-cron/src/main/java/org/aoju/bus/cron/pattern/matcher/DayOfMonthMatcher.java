@@ -25,79 +25,57 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.toolkit.CollKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.lang.Fields;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
- * 将表达式中的数字值列表转换为Boolean数组,匹配时匹配相应数组位
+ * 每月第几天匹配
+ * 考虑每月的天数不同，且存在闰年情况，日匹配单独使用
  *
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public class BoolArrayValueMatcher implements ValueMatcher {
+public class DayOfMonthMatcher extends BoolArrayMatcher {
 
     /**
-     * 用户定义此字段的最小值
-     */
-    private final int minValue;
-    /**
-     * 数组值
-     */
-    private final boolean[] values;
-
-    public BoolArrayValueMatcher(List<Integer> intValueList) {
-        Assert.isTrue(CollKit.isNotEmpty(intValueList), "Values must be not empty!");
-        values = new boolean[Collections.max(intValueList) + 1];
-        int min = Integer.MAX_VALUE;
-        for (Integer value : intValueList) {
-            min = Math.min(min, value);
-            values[value] = true;
-        }
-        this.minValue = min;
-    }
-
-    @Override
-    public boolean match(Integer value) {
-        if (null == value || value >= values.length) {
-            return false;
-        }
-        return values[value];
-    }
-
-    @Override
-    public int nextAfter(int value) {
-        if (value > minValue) {
-            while (value < values.length) {
-                if (values[value]) {
-                    return value;
-                }
-                value++;
-            }
-        }
-
-        // 两种情况返回最小值
-        // 一是给定值小于最小值，那下一个匹配值就是最小值
-        // 二是给定值大于最大值，那下一个匹配值也是下一轮的最小值
-        return minValue;
-    }
-
-    /**
-     * 获取表达式定义的最小值
+     * 构造
      *
-     * @return 最小值
+     * @param intValueList 匹配的日值
      */
-    public int getMinValue() {
-        return this.minValue;
+    public DayOfMonthMatcher(List<Integer> intValueList) {
+        super(intValueList);
     }
 
-    @Override
-    public String toString() {
-        return StringKit.format("Matcher:{}", new Object[]{this.values});
+    /**
+     * 是否为本月最后一天，规则如下：
+     * <pre>
+     * 1、闰年2月匹配是否为29
+     * 2、其它月份是否匹配最后一天的日期（可能为30或者31）
+     * </pre>
+     *
+     * @param value      被检查的值
+     * @param month      月份，从1开始
+     * @param isLeapYear 是否闰年
+     * @return 是否为本月最后一天
+     */
+    private static boolean isLastDayOfMonth(int value, int month, boolean isLeapYear) {
+        return value == Fields.Month.getLastDay(month - 1, isLeapYear);
+    }
+
+    /**
+     * 给定的日期是否匹配当前匹配器
+     *
+     * @param value      被检查的值，此处为日
+     * @param month      实际的月份，从1开始
+     * @param isLeapYear 是否闰年
+     * @return 是否匹配
+     */
+    public boolean match(int value, int month, boolean isLeapYear) {
+        return (super.match(value) // 在约定日范围内的某一天
+                // 匹配器中用户定义了最后一天（31表示最后一天）
+                || (value > 27 && match(31) && isLastDayOfMonth(value, month, isLeapYear)));
     }
 
 }

@@ -23,48 +23,34 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.lang;
+package org.aoju.bus.cron.pattern.matcher;
 
-import org.aoju.bus.core.lang.mutable.MutableObject;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
- * 为不可变的对象引用提供一个可变的包装,在java中支持引用传递
+ * 所有值匹配，始终返回{@code true}
  *
- * @param <T> 所持有值类型
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public final class Holder<T> extends MutableObject<T> {
+public class AlwaysTrueMatcher implements PartMatcher {
 
-    /**
-     * 构造
-     */
-    public Holder() {
+    public static AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();
 
+    @Override
+    public boolean match(Integer t) {
+        return true;
     }
 
-    /**
-     * 构造
-     *
-     * @param value 被包装的对象
-     */
-    public Holder(T value) {
-        super(value);
+    @Override
+    public int nextAfter(int value) {
+        return value;
     }
 
-    /**
-     * 新建Holder类,持有指定值,当值为空时抛出空指针异常
-     *
-     * @param <T>   被持有的对象类型
-     * @param value 值,不能为空
-     * @return Holder
-     */
-    public static <T> Holder<T> of(T value) throws NullPointerException {
-        if (null == value) {
-            throw new NullPointerException("Holder can not hold a null value!");
-        }
-        return new Holder<>(value);
+    @Override
+    public String toString() {
+        return StringKit.format("[Matcher]: always true.");
     }
 
 }

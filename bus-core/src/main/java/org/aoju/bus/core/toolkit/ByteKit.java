@@ -511,7 +511,9 @@ public class ByteKit {
      * @return bytes
      */
     public static byte[] get(Number number, ByteOrder byteOrder) {
-        if (number instanceof Double) {
+        if (number instanceof Byte) {
+            return new byte[]{number.byteValue()};
+        } else if (number instanceof Double) {
             return getBytes((Double) number, byteOrder);
         } else if (number instanceof Long) {
             return getBytes((Long) number, byteOrder);

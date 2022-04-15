@@ -23,34 +23,57 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.cron.pattern.matcher;
+package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.lang.management.ManagementFactory;
+
 /**
- * 值匹配,始终返回<code>true</code>
+ * 进程ID单例封装
+ * 第一次访问时调用{@link ManagementFactory#getRuntimeMXBean()}获取PID信息，之后直接使用缓存值
  *
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public class AlwaysTrueValueMatcher implements ValueMatcher {
+public enum Pid {
 
-    public static AlwaysTrueValueMatcher INSTANCE = new AlwaysTrueValueMatcher();
+    INSTANCE;
 
-    @Override
-    public boolean match(Integer t) {
-        return true;
+    private final int pid;
+
+    Pid() {
+        this.pid = getPid();
     }
 
-    @Override
-    public int nextAfter(int value) {
-        return value;
+    /**
+     * 获取当前进程ID，首先获取进程名称，读取@前的ID值，如果不存在，则读取进程名的hash值
+     *
+     * @return 进程ID
+     * @throws InstrumentException 进程名称为空
+     */
+    private static int getPid() throws InstrumentException {
+        final String processName = ManagementFactory.getRuntimeMXBean().getName();
+        if (StringKit.isBlank(processName)) {
+            throw new InstrumentException("Process name is blank!");
+        }
+        final int atIndex = processName.indexOf('@');
+        if (atIndex > 0) {
+            return Integer.parseInt(processName.substring(0, atIndex));
+        } else {
+            return processName.hashCode();
+        }
     }
 
-    @Override
-    public String toString() {
-        return StringKit.format("[Matcher]: always true.");
+    /**
+     * 获取PID值
+     *
+     * @return pid
+     */
+    public int get() {
+        return this.pid;
     }
 
 }

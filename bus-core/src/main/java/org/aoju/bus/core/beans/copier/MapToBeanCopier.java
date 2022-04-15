@@ -26,7 +26,6 @@
 package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.beans.PropertyDesc;
-import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.map.MapWrapper;
@@ -110,7 +109,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
 
             // 获取目标字段真实类型并转换源值
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
-            Object newValue = Convert.convertWithCheck(fieldType, sValue, null, this.copyOptions.ignoreError);
+            Object newValue = this.copyOptions.convertField(fieldType, sValue);
             newValue = copyOptions.editFieldValue(sKeyStr, newValue);
 
             // 目标赋值

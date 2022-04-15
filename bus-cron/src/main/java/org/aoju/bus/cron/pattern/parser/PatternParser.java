@@ -25,40 +25,41 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.CrontabException;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.cron.pattern.matcher.AlwaysTrueValueMatcher;
-import org.aoju.bus.cron.pattern.matcher.DateTimeMatcher;
-import org.aoju.bus.cron.pattern.matcher.MatcherTable;
-import org.aoju.bus.cron.pattern.matcher.ValueMatcher;
+import org.aoju.bus.cron.pattern.Part;
+import org.aoju.bus.cron.pattern.matcher.AlwaysTrueMatcher;
+import org.aoju.bus.cron.pattern.matcher.PartMatcher;
+import org.aoju.bus.cron.pattern.matcher.PatternMatcher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 定时任务表达式解析器，用于将表达式字符串解析为{@link MatcherTable}
+ * 定时任务表达式解析器，用于将表达式字符串解析为{@link PatternMatcher}的列表
  *
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public class CronPatternParser {
+public class PatternParser {
 
-    private static final ValueParser SECOND_VALUE_PARSER = new SecondValueParser();
-    private static final ValueParser MINUTE_VALUE_PARSER = new MinuteValueParser();
-    private static final ValueParser HOUR_VALUE_PARSER = new HourValueParser();
-    private static final ValueParser DAY_OF_MONTH_VALUE_PARSER = new DayOfMonthValueParser();
-    private static final ValueParser MONTH_VALUE_PARSER = new MonthValueParser();
-    private static final ValueParser DAY_OF_WEEK_VALUE_PARSER = new DayOfWeekValueParser();
-    private static final ValueParser YEAR_VALUE_PARSER = new YearValueParser();
+    private static final PartParser SECOND_VALUE_PARSER = PartParser.of(Part.SECOND);
+    private static final PartParser MINUTE_VALUE_PARSER = PartParser.of(Part.MINUTE);
+    private static final PartParser HOUR_VALUE_PARSER = PartParser.of(Part.HOUR);
+    private static final PartParser DAY_OF_MONTH_VALUE_PARSER = PartParser.of(Part.DAY_OF_MONTH);
+    private static final PartParser MONTH_VALUE_PARSER = PartParser.of(Part.MONTH);
+    private static final PartParser DAY_OF_WEEK_VALUE_PARSER = PartParser.of(Part.DAY_OF_WEEK);
+    private static final PartParser YEAR_VALUE_PARSER = PartParser.of(Part.YEAR);
 
     /**
-     * 解析表达式到匹配表中
+     * 解析表达式到匹配列表中
      *
      * @param cronPattern 复合表达式
-     * @return {@link MatcherTable}
+     * @return {@link List}
      */
-    public static MatcherTable parse(String cronPattern) {
+    public static List<PatternMatcher> parse(String cronPattern) {
         return parseGroupPattern(cronPattern);
     }
 
@@ -69,57 +70,58 @@ public class CronPatternParser {
      * </pre>
      *
      * @param groupPattern 复合表达式
-     * @return {@link MatcherTable}
+     * @return {@link List}
      */
-    private static MatcherTable parseGroupPattern(String groupPattern) {
-        final List<String> patternList = StringKit.split(groupPattern, '|');
-        final MatcherTable matcherTable = new MatcherTable(patternList.size());
+    private static List<PatternMatcher> parseGroupPattern(String groupPattern) {
+        final List<String> patternList = StringKit.splitTrim(groupPattern, '|');
+        final List<PatternMatcher> patternMatchers = new ArrayList<>(patternList.size());
         for (String pattern : patternList) {
-            matcherTable.matchers.add(parseSinglePattern(pattern));
+            patternMatchers.add(parseSingle(pattern));
         }
-        return matcherTable;
+        return patternMatchers;
     }
 
     /**
      * 解析单一定时任务表达式
      *
      * @param pattern 表达式
-     * @return {@link DateTimeMatcher}
+     * @return {@link PatternMatcher}
      */
-    private static DateTimeMatcher parseSinglePattern(String pattern) {
-        final String[] parts = pattern.split("\\s");
+    private static PatternMatcher parseSingle(String pattern) {
+        final String[] parts = pattern.split("\\s+");
+        Assert.checkBetween(parts.length, 5, 7,
+                () -> new CrontabException("Pattern [{}] is invalid, it must be 5-7 parts!", pattern));
 
-        int offset = 0;// 偏移量用于兼容Quartz表达式，当表达式有6或7项时，第一项为秒
+        // 偏移量用于兼容Quartz表达式，当表达式有6或7项时，第一项为秒
+        int offset = 0;
         if (parts.length == 6 || parts.length == 7) {
             offset = 1;
-        } else if (parts.length != 5) {
-            throw new CrontabException("Pattern [{}] is invalid, it must be 5-7 parts!", pattern);
         }
 
-        // 秒，如果不支持秒的表达式，则第一位按照表达式生成时间的秒数赋值，表示整分匹配
-        final String secondPart = (1 == offset) ? parts[0] : String.valueOf(DateKit.date().second());
+        // 秒，如果不支持秒的表达式，则第一位赋值0，表示整分匹配
+        final String secondPart = (1 == offset) ? parts[0] : "0";
 
         // 年
-        ValueMatcher yearMatcher;
+        PartMatcher yearMatcher;
         if (parts.length == 7) {// 支持年的表达式
-            yearMatcher = YEAR_VALUE_PARSER.parseAsValueMatcher(parts[6]);
+            yearMatcher = YEAR_VALUE_PARSER.parse(parts[6]);
         } else {// 不支持年的表达式，全部匹配
-            yearMatcher = AlwaysTrueValueMatcher.INSTANCE;
+            yearMatcher = AlwaysTrueMatcher.INSTANCE;
         }
 
-        return new DateTimeMatcher(
+        return new PatternMatcher(
                 // 秒
-                SECOND_VALUE_PARSER.parseAsValueMatcher(secondPart),
+                SECOND_VALUE_PARSER.parse(secondPart),
                 // 分
-                MINUTE_VALUE_PARSER.parseAsValueMatcher(parts[offset]),
+                MINUTE_VALUE_PARSER.parse(parts[offset]),
                 // 时
-                HOUR_VALUE_PARSER.parseAsValueMatcher(parts[1 + offset]),
+                HOUR_VALUE_PARSER.parse(parts[1 + offset]),
                 // 天
-                DAY_OF_MONTH_VALUE_PARSER.parseAsValueMatcher(parts[2 + offset]),
+                DAY_OF_MONTH_VALUE_PARSER.parse(parts[2 + offset]),
                 // 月
-                MONTH_VALUE_PARSER.parseAsValueMatcher(parts[3 + offset]),
+                MONTH_VALUE_PARSER.parse(parts[3 + offset]),
                 // 周
-                DAY_OF_WEEK_VALUE_PARSER.parseAsValueMatcher(parts[4 + offset]),
+                DAY_OF_WEEK_VALUE_PARSER.parse(parts[4 + offset]),
                 // 年
                 yearMatcher
         );

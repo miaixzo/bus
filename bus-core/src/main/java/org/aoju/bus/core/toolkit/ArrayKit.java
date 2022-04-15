@@ -32,6 +32,7 @@ import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
+import org.aoju.bus.core.text.TextJoiner;
 
 import java.lang.System;
 import java.lang.reflect.Array;
@@ -8023,39 +8024,24 @@ public class ArrayKit {
     /**
      * 以 conjunction 为分隔符将数组转换为字符串
      *
-     * @param <T>         被处理的集合
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @param prefix      每个元素添加的前缀，null表示不添加
-     * @param suffix      每个元素添加的后缀，null表示不添加
+     * @param <T>       被处理的集合
+     * @param array     数组
+     * @param delimiter 分隔符
+     * @param prefix    每个元素添加的前缀，null表示不添加
+     * @param suffix    每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
      */
-    public static <T> String join(T[] array, CharSequence conjunction, String prefix, String suffix) {
+    public static <T> String join(T[] array, CharSequence delimiter, String prefix, String suffix) {
         if (null == array) {
             return null;
         }
 
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (T item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            if (ArrayKit.isArray(item)) {
-                sb.append(join(ArrayKit.wrap(item), conjunction, prefix, suffix));
-            } else if (item instanceof Iterable<?>) {
-                sb.append(CollKit.join((Iterable<?>) item, conjunction, prefix, suffix));
-            } else if (item instanceof Iterator<?>) {
-                sb.append(IterKit.join((Iterator<?>) item, conjunction, prefix, suffix));
-            } else {
-                sb.append(StringKit.wrap(StringKit.toString(item), prefix, suffix));
-            }
-        }
-        return sb.toString();
+        return TextJoiner.of(delimiter, prefix, suffix)
+                // 每个元素都添加前后缀
+                .setWrapElement(true)
+                .append(array)
+                .toString();
     }
-
 
     /**
      * 以 conjunction 为分隔符将数组转换为字符串
@@ -8067,226 +8053,7 @@ public class ArrayKit {
      * @return 连接后的字符串
      */
     public static <T> String join(T[] array, CharSequence conjunction, Editor<T> editor) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (T item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            if (null != editor) {
-                item = editor.edit(item);
-            }
-            if (null != item) {
-                sb.append(StringKit.toString(item));
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(long[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (long item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(int[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (int item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(short[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (short item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(char[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (char item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(byte[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (byte item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(boolean[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (boolean item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(float[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (float item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param array       数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(double[] array, CharSequence conjunction) {
-        if (null == array) {
-            return null;
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for (double item : array) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sb.append(conjunction);
-            }
-            sb.append(item);
-        }
-        return sb.toString();
+        return TextJoiner.of(conjunction).append(array, (t) -> String.valueOf(editor.edit(t))).toString();
     }
 
     /**
@@ -8298,39 +8065,15 @@ public class ArrayKit {
      */
     public static String join(Object array, CharSequence conjunction) {
         if (null == array) {
-            throw new NullPointerException("Array must be not null!");
+            return null;
         }
         if (false == isArray(array)) {
             throw new IllegalArgumentException(StringKit.format("[{}] is not a Array!", array.getClass()));
         }
 
-        final Class<?> componentType = array.getClass().getComponentType();
-        if (componentType.isPrimitive()) {
-            final String componentTypeName = componentType.getName();
-            switch (componentTypeName) {
-                case "long":
-                    return join((long[]) array, conjunction);
-                case "int":
-                    return join((int[]) array, conjunction);
-                case "short":
-                    return join((short[]) array, conjunction);
-                case "char":
-                    return join((char[]) array, conjunction);
-                case "byte":
-                    return join((byte[]) array, conjunction);
-                case "boolean":
-                    return join((boolean[]) array, conjunction);
-                case "float":
-                    return join((float[]) array, conjunction);
-                case "double":
-                    return join((double[]) array, conjunction);
-                default:
-                    throw new InstrumentException("Unknown primitive type: [{}]", componentTypeName);
-            }
-        } else {
-            return join((Object[]) array, conjunction);
-        }
+        return TextJoiner.of(conjunction).append(array).toString();
     }
+
 
     /**
      * 取最小值
