@@ -27,6 +27,7 @@ package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.collection.ComputeIterator;
+import org.aoju.bus.core.collection.TransitionIterator;
 import org.aoju.bus.core.toolkit.IterKit;
 import org.aoju.bus.core.toolkit.MapKit;
 
@@ -165,7 +166,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
-            return new TransIterator<>(columnKeySet.iterator(),
+            return new TransitionIterator<>(columnKeySet.iterator(),
                     c -> MapKit.entry(c, getColumn(c)));
         }
 

@@ -33,6 +33,7 @@ import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.cron.pattern.matcher.PatternMatcher;
 import org.aoju.bus.cron.pattern.parser.PatternParser;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -132,8 +133,27 @@ public class CronPattern {
         final int hour = calendar.get(Calendar.HOUR_OF_DAY);
         final int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         final int month = calendar.get(Calendar.MONTH) + 1;// 月份从1开始
-        final int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 星期从0开始，0和7都表示周日
+        final int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 星期从1开始，1都表示周日
         final int year = calendar.get(Calendar.YEAR);
+        return new int[]{second, minute, hour, dayOfMonth, month, dayOfWeek, year};
+    }
+
+    /**
+     * 获取处理后的字段列表
+     * 月份从1开始，周从0开始
+     *
+     * @param dateTime      {@link Calendar}
+     * @param isMatchSecond 是否匹配秒，{@link false}则秒返回-1
+     * @return 字段值列表
+     */
+    static int[] getFields(LocalDateTime dateTime, boolean isMatchSecond) {
+        final int second = isMatchSecond ? dateTime.getSecond() : -1;
+        final int minute = dateTime.getMinute();
+        final int hour = dateTime.getHour();
+        final int dayOfMonth = dateTime.getDayOfMonth();
+        final int month = dateTime.getMonthValue();// 月份从1开始
+        final int dayOfWeek = Fields.Week.getByCode(dateTime.getDayOfWeek().getValue()).getKey() - 1; // 星期从1开始，1表示周日
+        final int year = dateTime.getYear();
         return new int[]{second, minute, hour, dayOfMonth, month, dayOfWeek, year};
     }
 
@@ -269,6 +289,17 @@ public class CronPattern {
             }
         }
         return false;
+    }
+
+    /**
+     * 给定时间是否匹配定时任务表达式
+     *
+     * @param dateTime      时间
+     * @param isMatchSecond 是否匹配秒
+     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
+     */
+    public boolean match(LocalDateTime dateTime, boolean isMatchSecond) {
+        return match(getFields(dateTime, isMatchSecond));
     }
 
     /**

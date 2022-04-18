@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.thread.AtomicNoLock;
+import org.aoju.bus.core.lock.AtomicNoLock;
 
 import java.io.Serializable;
 import java.util.Iterator;

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.lang.SimpleCache;
 import org.aoju.bus.core.lang.function.Func0;
 import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.map.WeakMap;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandleInfo;
@@ -42,7 +42,7 @@ import java.lang.invoke.SerializedLambda;
  */
 public class LambdaKit {
 
-    private static final SimpleCache<String, SerializedLambda> cache = new SimpleCache<>();
+    private static final WeakMap<String, SerializedLambda> cache = new WeakMap<>();
 
     /**
      * 解析lambda表达式,加了缓存
@@ -178,7 +178,7 @@ public class LambdaKit {
      * @return 返回解析后的结果
      */
     private static SerializedLambda _resolve(Serializable func) {
-        return cache.get(func.getClass().getName(), () -> ReflectKit.invoke(func, "writeReplace"));
+        return cache.computeIfAbsent(func.getClass().getName(), () -> ReflectKit.invoke(func, "writeReplace"));
     }
 
 }

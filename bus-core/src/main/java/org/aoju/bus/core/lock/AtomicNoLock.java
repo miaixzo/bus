@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.thread;
+package org.aoju.bus.core.lock;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -37,6 +37,8 @@ import java.util.concurrent.locks.Lock;
  * @since Java 17+
  */
 public class AtomicNoLock implements Lock {
+
+    public static AtomicNoLock INSTANCE = new AtomicNoLock();
 
     @Override
     public void lock() {

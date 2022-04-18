@@ -37,7 +37,9 @@ import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableObject;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.loader.JarLoaders;
+import org.aoju.bus.core.map.WeakMap;
 
 import javax.tools.*;
 import java.beans.IntrospectionException;
@@ -94,7 +96,7 @@ public class ClassKit {
     /**
      * 类缓存信息
      */
-    private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
+    private static final WeakMap<Pair<String, ClassLoader>, Class<?>> CLASS_CACHE = new WeakMap<>();
 
     static {
         List<Class<?>> primitiveTypes = new ArrayList<>(Normal._32);
@@ -1198,49 +1200,18 @@ public class ClassKit {
 
         // 自动将包名中的"/"替换为"."
         name = name.replace(Symbol.SLASH, Symbol.DOT);
+        if (null == classLoader) {
+            classLoader = getClassLoader();
+        }
 
         // 加载原始类型和缓存中的类
         Class<?> clazz = loadPrimitiveClass(name);
-        if (null == clazz) {
-            clazz = CLASS_CACHE.get(name);
+        if (clazz == null) {
+            final String finalName = name;
+            final ClassLoader finalClassLoader = classLoader;
+            clazz = CLASS_CACHE.computeIfAbsent(Pair.of(name, classLoader), (key) -> doLoadClass(finalName, finalClassLoader, isInitialized));
         }
-        if (null != clazz) {
-            return clazz;
-        }
-
-        if (name.endsWith(Symbol.BRACKET)) {
-            // 对象数组"java.lang.String[]"风格
-            final String elementClassName = name.substring(0, name.length() - Symbol.BRACKET.length());
-            final Class<?> elementClass = loadClass(elementClassName, classLoader, isInitialized);
-            clazz = Array.newInstance(elementClass, 0).getClass();
-        } else if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(Symbol.SEMICOLON)) {
-            // "[Ljava.lang.String;" 风格
-            final String elementName = name.substring(Symbol.NON_PREFIX.length(), name.length() - 1);
-            final Class<?> elementClass = loadClass(elementName, classLoader, isInitialized);
-            clazz = Array.newInstance(elementClass, 0).getClass();
-        } else if (name.startsWith(Symbol.BRACKET_LEFT)) {
-            // "[[I" 或 "[[Ljava.lang.String;" 风格
-            final String elementName = name.substring(Symbol.BRACKET_LEFT.length());
-            final Class<?> elementClass = loadClass(elementName, classLoader, isInitialized);
-            clazz = Array.newInstance(elementClass, 0).getClass();
-        } else {
-            // 加载普通类
-            if (null == classLoader) {
-                classLoader = getClassLoader();
-            }
-            try {
-                clazz = Class.forName(name, isInitialized, classLoader);
-            } catch (ClassNotFoundException ex) {
-                // 尝试获取内部类,例如java.lang.Thread.State = java.lang.Thread$State
-                clazz = tryLoadInnerClass(name, classLoader, isInitialized);
-                if (null == clazz) {
-                    throw new InstrumentException(ex);
-                }
-            }
-        }
-
-        // 加入缓存并返回
-        return CLASS_CACHE.put(name, clazz);
+        return clazz;
     }
 
     /**
@@ -1313,28 +1284,6 @@ public class ClassKit {
         } catch (Throwable ex) {
             return false;
         }
-    }
-
-    /**
-     * 尝试转换并加载内部类,例如java.lang.Thread.State = java.lang.Thread$State
-     *
-     * @param name          类名
-     * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
-     * @param isInitialized 是否初始化类(调用static模块内容和初始化static属性)
-     * @return 类名对应的类
-     */
-    private static Class<?> tryLoadInnerClass(String name, ClassLoader classLoader, boolean isInitialized) {
-        // 尝试获取内部类,例如java.lang.Thread.State = java.lang.Thread$State
-        final int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
-        if (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位,因此>0
-            final String innerClassName = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);
-            try {
-                return Class.forName(innerClassName, isInitialized, classLoader);
-            } catch (ClassNotFoundException ex2) {
-                // 尝试获取内部类失败时,忽略之
-            }
-        }
-        return null;
     }
 
     /**
@@ -3755,6 +3704,71 @@ public class ClassKit {
      */
     public static JavaSourceCompiler getCompiler(ClassLoader parent) {
         return JavaSourceCompiler.create(parent);
+    }
+
+    /**
+     * 加载非原始类类，无缓存
+     *
+     * @param name          类名
+     * @param classLoader   {@link ClassLoader}
+     * @param isInitialized 是否初始化
+     * @return 类
+     */
+    private static Class<?> doLoadClass(String name, ClassLoader classLoader, boolean isInitialized) {
+        Class<?> clazz;
+        if (name.endsWith(Symbol.BRACKET)) {
+            // 对象数组"java.lang.String[]"风格
+            final String elementClassName = name.substring(0, name.length() - Symbol.BRACKET.length());
+            final Class<?> elementClass = loadClass(elementClassName, classLoader, isInitialized);
+            clazz = Array.newInstance(elementClass, 0).getClass();
+        } else if (name.startsWith(Symbol.NON_PREFIX) && name.endsWith(Symbol.SEMICOLON)) {
+            // "[Ljava.lang.String;" 风格
+            final String elementName = name.substring(Symbol.NON_PREFIX.length(), name.length() - 1);
+            final Class<?> elementClass = loadClass(elementName, classLoader, isInitialized);
+            clazz = Array.newInstance(elementClass, 0).getClass();
+        } else if (name.startsWith(Symbol.BRACKET_LEFT)) {
+            // "[[I" 或 "[[Ljava.lang.String;" 风格
+            final String elementName = name.substring(Symbol.BRACKET_LEFT.length());
+            final Class<?> elementClass = loadClass(elementName, classLoader, isInitialized);
+            clazz = Array.newInstance(elementClass, 0).getClass();
+        } else {
+            // 加载普通类
+            if (null == classLoader) {
+                classLoader = getClassLoader();
+            }
+            try {
+                clazz = Class.forName(name, isInitialized, classLoader);
+            } catch (ClassNotFoundException ex) {
+                // 尝试获取内部类,例如java.lang.Thread.State = java.lang.Thread$State
+                clazz = tryLoadInnerClass(name, classLoader, isInitialized);
+                if (null == clazz) {
+                    throw new InstrumentException(ex);
+                }
+            }
+        }
+        return clazz;
+    }
+
+    /**
+     * 尝试转换并加载内部类，例如java.lang.Thread.State - java.lang.Thread$State
+     *
+     * @param name          类名
+     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
+     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     * @return 类名对应的类
+     */
+    private static Class<?> tryLoadInnerClass(String name, ClassLoader classLoader, boolean isInitialized) {
+        // 尝试获取内部类，例如java.lang.Thread.State = java.lang.Thread$State
+        final int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
+        if (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位，因此>0
+            final String innerClassName = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);
+            try {
+                return Class.forName(innerClassName, isInitialized, classLoader);
+            } catch (ClassNotFoundException ex2) {
+                // 尝试获取内部类失败时，忽略之。
+            }
+        }
+        return null;
     }
 
     public enum Interfaces {

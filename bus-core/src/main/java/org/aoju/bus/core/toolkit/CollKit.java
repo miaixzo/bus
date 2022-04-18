@@ -25,10 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.collection.ArrayIterator;
-import org.aoju.bus.core.collection.EnumerationIterator;
-import org.aoju.bus.core.collection.IteratorEnumeration;
-import org.aoju.bus.core.collection.SimpleCollector;
+import org.aoju.bus.core.collection.*;
 import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
@@ -1402,6 +1399,30 @@ public class CollKit {
     public static <T> Predicate<T> distinct(Function<? super T, ?> key) {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(key.apply(t), Boolean.TRUE) == null;
+    }
+
+    /**
+     * 根据函数生成的KEY去重集合，如根据Bean的某个或者某些字段完成去重
+     * 去重可选是保留最先加入的值还是后加入的值
+     *
+     * @param <T>        集合元素类型
+     * @param <K>        唯一键类型
+     * @param collection 集合
+     * @param override   是否覆盖模式，如果为{@code true}，加入的新值会覆盖相同key的旧值，否则会忽略新加值
+     * @return {@link ArrayList}
+     */
+    public static <T, K> List<T> distinct(Collection<T> collection, Function<T, K> uniqueGenerator, boolean override) {
+        if (isEmpty(collection)) {
+            return new ArrayList<>();
+        }
+
+        final UniqueKeySet<K, T> set = new UniqueKeySet<>(true, uniqueGenerator);
+        if (override) {
+            set.addAll(collection);
+        } else {
+            set.addAllIfAbsent(collection);
+        }
+        return new ArrayList<>(set);
     }
 
     /**
@@ -3270,6 +3291,19 @@ public class CollKit {
         for (int i = list.size(); i < minLen; i++) {
             list.add(padObj);
         }
+    }
+
+    /**
+     * 使用给定的转换函数，转换源集合为新类型的集合
+     *
+     * @param <F>        源元素类型
+     * @param <T>        目标元素类型
+     * @param collection 集合
+     * @param function   转换函数
+     * @return 新类型的集合
+     */
+    public static <F, T> Collection<T> trans(Collection<F> collection, Function<? super F, ? extends T> function) {
+        return new TransitionCollection<>(collection, function);
     }
 
     /**

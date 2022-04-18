@@ -112,6 +112,16 @@ public class PatternMatcher {
     }
 
     /**
+     * 给定周的值是否匹配定时任务表达式对应部分
+     *
+     * @param dayOfWeekValue dayOfMonth值，星期从0开始，0和7都表示周日
+     * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
+     */
+    public boolean matchWeek(int dayOfWeekValue) {
+        return matchers[5].match(dayOfWeekValue);
+    }
+
+    /**
      * 给定时间是否匹配定时任务表达式
      *
      * @param second     秒数，-1表示不匹配此项

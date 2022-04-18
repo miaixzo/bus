@@ -4410,7 +4410,7 @@ public class CharsKit {
      * @param <T>   元素类型
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      */
-    public <T extends CharSequence> T firstNonNull(T... texts) {
+    public static <T extends CharSequence> T firstNonNull(T... texts) {
         return ArrayKit.firstNonNull(texts);
     }
 
@@ -4422,7 +4422,7 @@ public class CharsKit {
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      * @see #isNotEmpty(CharSequence)
      */
-    public <T extends CharSequence> T firstNonEmpty(T... texts) {
+    public static <T extends CharSequence> T firstNonEmpty(T... texts) {
         return ArrayKit.firstNonNull(CharsKit::isNotEmpty, texts);
     }
 
@@ -4434,7 +4434,7 @@ public class CharsKit {
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      * @see #isNotBlank(CharSequence)
      */
-    public <T extends CharSequence> T firstNonBlank(T... texts) {
+    public static <T extends CharSequence> T firstNonBlank(T... texts) {
         return ArrayKit.firstNonNull(CharsKit::isNotBlank, texts);
     }
 

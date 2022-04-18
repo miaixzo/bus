@@ -27,7 +27,6 @@ package org.aoju.bus.core.instance;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.SimpleCache;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.function.Func0;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -35,7 +34,7 @@ import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 实例化工具类
@@ -51,7 +50,8 @@ public final class Instances {
     /**
      * 如果对象池中存在此对象
      */
-    private static final SimpleCache<String, Object> POOL = new SimpleCache<>(new HashMap<>());
+
+    private static final ConcurrentHashMap<String, Object> POOL = new ConcurrentHashMap<>();
 
     private Instances() {
 
@@ -140,7 +140,7 @@ public final class Instances {
      * @return 单例对象
      */
     public static <T> T singletion(String key, Func0<T> supplier) {
-        return (T) POOL.get(key, supplier::call);
+        return (T) POOL.computeIfAbsent(key, (k) -> supplier.callWithRuntimeException());
     }
 
     /**
