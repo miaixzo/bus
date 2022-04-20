@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
         <spring.boot.version>2.6.6</spring.boot.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <dubbo.version>3.0.5</dubbo.version>
         <servlet.version>4.0.4</servlet.version>
         <cxf.version>2.7.18</cxf.version>

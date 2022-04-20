@@ -43,9 +43,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
         <spring.boot.version>2.6.6</spring.boot.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <guice.version>5.0.1</guice.version>
-        <jedis.version>4.2.1</jedis.version>
+        <jedis.version>4.2.2</jedis.version>
         <xmemcached.version>2.4.7</xmemcached.version>
         <ehcache.version>3.9.4</ehcache.version>
         <curator.version>4.3.0</curator.version>
