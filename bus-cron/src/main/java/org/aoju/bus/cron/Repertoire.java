@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.cron.factory.CronTask;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,10 +48,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @version 6.5.0
  * @since Java 17+
  */
-public class Repertoire {
+public class Repertoire implements Serializable {
 
     public static final int DEFAULT_CAPACITY = 10;
-
+    private static final long serialVersionUID = 1L;
     private final ReadWriteLock lock;
 
     private final List<String> ids;
@@ -91,7 +92,7 @@ public class Repertoire {
         writeLock.lock();
         try {
             if (ids.contains(id)) {
-                throw new InstrumentException("Id [{}] has been existed!", id);
+                throw new CrontabException("Id [{}] has been existed!", id);
             }
             ids.add(id);
             patterns.add(pattern);

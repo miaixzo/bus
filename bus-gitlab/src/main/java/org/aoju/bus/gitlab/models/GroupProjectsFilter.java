@@ -25,8 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.Constants.ProjectOrderBy;
-import org.aoju.bus.gitlab.Constants.SortOrder;
+import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
 /**
@@ -36,8 +35,8 @@ public class GroupProjectsFilter {
 
     private Boolean archived;
     private Visibility visibility;
-    private ProjectOrderBy orderBy;
-    private SortOrder sort;
+    private Constants.ProjectOrderBy orderBy;
+    private Constants.SortOrder sort;
     private String search;
     private Boolean simple;
     private Boolean owned;
@@ -76,7 +75,7 @@ public class GroupProjectsFilter {
      * @param orderBy specifies what field to order by
      * @return the reference to this ProjectFilter instance
      */
-    public GroupProjectsFilter withOrderBy(ProjectOrderBy orderBy) {
+    public GroupProjectsFilter withOrderBy(Constants.ProjectOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
@@ -87,7 +86,7 @@ public class GroupProjectsFilter {
      * @param sort sort direction, ASC or DESC
      * @return the reference to this ProjectFilter instance
      */
-    public GroupProjectsFilter withSortOder(SortOrder sort) {
+    public GroupProjectsFilter withSortOder(Constants.SortOrder sort) {
         this.sort = sort;
         return (this);
     }

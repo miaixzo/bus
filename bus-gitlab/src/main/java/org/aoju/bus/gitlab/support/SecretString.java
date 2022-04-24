@@ -86,4 +86,5 @@ public class SecretString implements CharSequence, AutoCloseable {
         clear();
         super.finalize();
     }
+
 }

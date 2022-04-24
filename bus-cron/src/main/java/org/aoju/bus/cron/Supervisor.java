@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,13 +36,14 @@ import java.util.List;
  * @version 6.5.0
  * @since Java 17+
  */
-public class Supervisor {
+public class Supervisor implements Serializable {
 
-    protected Scheduler scheduler;
+    private static final long serialVersionUID = 1L;
     /**
      * 启动器列表
      */
-    protected List<Launcher> launchers = new ArrayList<>();
+    protected final List<Launcher> launchers = new ArrayList<>();
+    protected Scheduler scheduler;
 
     public Supervisor(Scheduler scheduler) {
         this.scheduler = scheduler;
@@ -58,6 +60,7 @@ public class Supervisor {
         synchronized (this.launchers) {
             this.launchers.add(launcher);
         }
+        // 子线程是否为daemon线程取决于父线程，因此此处无需显示调用
         this.scheduler.threadExecutor.execute(launcher);
         return launcher;
     }

@@ -33,9 +33,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.aoju.bus.gitlab.Constants.TodoAction;
-import org.aoju.bus.gitlab.Constants.TodoState;
-import org.aoju.bus.gitlab.Constants.TodoType;
+import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
 import java.io.IOException;
@@ -43,25 +41,25 @@ import java.util.Date;
 
 public class Todo {
 
-    private Integer id;
+    private Long id;
     private Project project;
     private Author author;
-    private TodoAction actionName;
-    private TodoType targetType;
+    private Constants.TodoAction actionName;
+    private Constants.TodoType targetType;
 
     @JsonDeserialize(using = TargetDeserializer.class)
     private Object target;
 
     private String targetUrl;
     private String body;
-    private TodoState state;
+    private Constants.TodoState state;
     private Date createdAt;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -81,19 +79,19 @@ public class Todo {
         this.author = author;
     }
 
-    public TodoAction getActionName() {
+    public Constants.TodoAction getActionName() {
         return actionName;
     }
 
-    public void setActionName(TodoAction actionName) {
+    public void setActionName(Constants.TodoAction actionName) {
         this.actionName = actionName;
     }
 
-    public TodoType getTargetType() {
+    public Constants.TodoType getTargetType() {
         return targetType;
     }
 
-    public void setTargetType(TodoType targetType) {
+    public void setTargetType(Constants.TodoType targetType) {
         this.targetType = targetType;
     }
 
@@ -121,11 +119,11 @@ public class Todo {
         this.body = body;
     }
 
-    public TodoState getState() {
+    public Constants.TodoState getState() {
         return state;
     }
 
-    public void setState(TodoState state) {
+    public void setState(Constants.TodoState state) {
         this.state = state;
     }
 
@@ -139,22 +137,22 @@ public class Todo {
 
     @JsonIgnore
     public Issue getIssueTarget() {
-        return (targetType == TodoType.ISSUE ? (Issue) target : null);
+        return (targetType == Constants.TodoType.ISSUE ? (Issue) target : null);
     }
 
     @JsonIgnore
     public MergeRequest getMergeRequestTarget() {
-        return (targetType == TodoType.MERGE_REQUEST ? (MergeRequest) target : null);
+        return (targetType == Constants.TodoType.MERGE_REQUEST ? (MergeRequest) target : null);
     }
 
     @JsonIgnore
     public boolean isIssueTodo() {
-        return (targetType == TodoType.ISSUE);
+        return (targetType == Constants.TodoType.ISSUE);
     }
 
     @JsonIgnore
     public boolean isMergeRequestTodo() {
-        return (targetType == TodoType.MERGE_REQUEST);
+        return (targetType == Constants.TodoType.MERGE_REQUEST);
     }
 
     @Override

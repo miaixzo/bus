@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans;
 
-import org.aoju.bus.core.lang.SimpleCache;
 import org.aoju.bus.core.lang.function.Func0;
+import org.aoju.bus.core.map.ReferenceMap;
+import org.aoju.bus.core.map.WeakMap;
 
 import java.beans.PropertyDescriptor;
 import java.util.Map;
@@ -43,8 +44,8 @@ public enum PropertyCache {
 
     INSTANCE;
 
-    private final SimpleCache<Class<?>, Map<String, PropertyDescriptor>> pdCache = new SimpleCache<>();
-    private final SimpleCache<Class<?>, Map<String, PropertyDescriptor>> ignoreCasePdCache = new SimpleCache<>();
+    private final WeakMap<Class<?>, Map<String, PropertyDescriptor>> pdCache = new WeakMap<>();
+    private final WeakMap<Class<?>, Map<String, PropertyDescriptor>> ignoreCasePdCache = new WeakMap<>();
 
     /**
      * 获得属性名和{@link PropertyDescriptor}Map映射
@@ -69,7 +70,7 @@ public enum PropertyCache {
             Class<?> beanClass,
             boolean ignoreCase,
             Func0<Map<String, PropertyDescriptor>> supplier) {
-        return getCache(ignoreCase).get(beanClass, supplier);
+        return getCache(ignoreCase).computeIfAbsent(beanClass, (key) -> supplier.callWithRuntimeException());
     }
 
     /**
@@ -84,21 +85,21 @@ public enum PropertyCache {
     }
 
     /**
-     * 根据是否忽略字段名的大小写，返回不用Cache对象
-     *
-     * @param ignoreCase 是否忽略大小写
-     * @return SimpleCache
-     */
-    private SimpleCache<Class<?>, Map<String, PropertyDescriptor>> getCache(boolean ignoreCase) {
-        return ignoreCase ? ignoreCasePdCache : pdCache;
-    }
-
-    /**
      * 清空缓存
      */
     public void clear() {
         this.pdCache.clear();
         this.ignoreCasePdCache.clear();
+    }
+
+    /**
+     * 根据是否忽略字段名的大小写，返回不用Cache对象
+     *
+     * @param ignoreCase 是否忽略大小写
+     * @return {@link ReferenceMap}
+     */
+    private ReferenceMap<Class<?>, Map<String, PropertyDescriptor>> getCache(boolean ignoreCase) {
+        return ignoreCase ? ignoreCasePdCache : pdCache;
     }
 
 }

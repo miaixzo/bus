@@ -120,5 +120,4 @@ public interface WebHookListener extends java.util.EventListener {
      */
     default void onReleaseEvent(ReleaseEvent releaseEvent) {
     }
-
 }

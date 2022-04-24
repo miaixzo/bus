@@ -26,6 +26,7 @@
 package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
@@ -181,14 +182,14 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     public Set<Map.Entry<K, V>> entrySet() {
         final Set<Map.Entry<K, V>> hashSet = new LinkedHashSet<>();
         for (int i = 0; i < size(); i++) {
-            hashSet.add(new SimpleEntry<>(keys.get(i), values.get(i)));
+            hashSet.add(MapKit.entry(keys.get(i), values.get(i)));
         }
         return hashSet;
     }
 
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
-        return new Iterator<Map.Entry<K, V>>() {
+        return new Iterator<>() {
             private final Iterator<K> keysIter = keys.iterator();
             private final Iterator<V> valuesIter = values.iterator();
 
@@ -199,7 +200,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
             @Override
             public Map.Entry<K, V> next() {
-                return new SimpleEntry<>(keysIter.next(), valuesIter.next());
+                return MapKit.entry(keysIter.next(), valuesIter.next());
             }
 
             @Override

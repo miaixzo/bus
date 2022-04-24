@@ -315,7 +315,7 @@ public class Sftp extends AbstractFtp {
             sftpATTRS = this.channel.stat(dir);
         } catch (SftpException e) {
             final String msg = e.getMessage();
-            if (msg.contains("No such file") || msg.contains("does not exist")) {
+            if (StringKit.containsAnyIgnoreCase(msg, "No such file", "does not exist")) {
                 return false;
             }
             throw new InstrumentException(e);

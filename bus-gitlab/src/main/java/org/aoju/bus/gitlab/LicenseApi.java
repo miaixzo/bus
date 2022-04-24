@@ -133,7 +133,7 @@ public class LicenseApi extends AbstractApi {
      * @return a License instance for the delete license
      * @throws GitLabApiException if any exception occurs
      */
-    public License deleteLicense(Integer licenseId) throws GitLabApiException {
+    public License deleteLicense(Long licenseId) throws GitLabApiException {
         Response response = delete(Response.Status.OK, null, "license", licenseId);
         return (response.readEntity(License.class));
     }

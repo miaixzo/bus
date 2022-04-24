@@ -27,7 +27,6 @@ package org.aoju.bus.tracer;
 
 import org.aoju.bus.tracer.backend.TraceBackendProvider;
 
-import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
 
@@ -121,11 +120,7 @@ public class Resolver {
         }
 
         private static ClassLoader doPrivileged(GetClassLoader action) {
-            if (null != System.getSecurityManager()) {
-                return AccessController.doPrivileged(action);
-            } else {
-                return action.run();
-            }
+            return action.run();
         }
 
         public ClassLoader run() {

@@ -26,7 +26,6 @@
 package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.beans.PropertyDesc;
-import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.TypeKit;
@@ -102,7 +101,7 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
 
             // 获取目标字段真实类型并转换源值
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
-            sValue = Convert.convertWithCheck(fieldType, sValue, null, this.copyOptions.ignoreError);
+            sValue = this.copyOptions.convertField(fieldType, sValue);
             sValue = copyOptions.editFieldValue(sFieldName, sValue);
 
             // 目标赋值

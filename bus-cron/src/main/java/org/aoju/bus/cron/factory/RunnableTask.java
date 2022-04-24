@@ -34,7 +34,7 @@ package org.aoju.bus.cron.factory;
  */
 public class RunnableTask implements Task {
 
-    private Runnable runnable;
+    private final Runnable runnable;
 
     public RunnableTask(Runnable runnable) {
         this.runnable = runnable;

@@ -25,18 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
-import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Fields;
+import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.setting.magic.PopSetting;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 定时任务工具类
@@ -47,18 +44,17 @@ import java.util.List;
  * @version 6.5.0
  * @since Java 17+
  */
-public final class Builder {
+public class Builder {
 
     /**
      * Crontab配置文件
      */
     public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
+    public static final String CRONTAB_CONFIG_PATH2 = "cron.setting";
 
+    private static final Lock lock = new ReentrantLock();
     private static final Scheduler scheduler = new Scheduler();
     private static PopSetting crontabSetting;
-
-    private Builder() {
-    }
 
     /**
      * 自定义定时任务配置文件
@@ -72,7 +68,7 @@ public final class Builder {
     /**
      * 自定义定时任务配置文件路径
      *
-     * @param cronSettingPath 定时任务配置文件路径(相对绝对都可)
+     * @param cronSettingPath 定时任务配置文件路径（相对绝对都可）
      */
     public static void setCronSetting(String cronSettingPath) {
         try {
@@ -175,32 +171,48 @@ public final class Builder {
     /**
      * 开始
      *
-     * @param isDeamon 是否以守护线程方式启动,如果为true,则在调用{@link #stop()}方法后执行的定时任务立即结束,否则等待执行完毕才结束
+     * @param isDaemon 是否以守护线程方式启动,如果为true,则在调用{@link #stop()}方法后执行的定时任务立即结束,否则等待执行完毕才结束
      */
-    synchronized public static void start(boolean isDeamon) {
-        if (null == crontabSetting) {
-            setCronSetting(CRONTAB_CONFIG_PATH);
-        }
+    synchronized public static void start(boolean isDaemon) {
         if (scheduler.isStarted()) {
-            throw new InstrumentException("Scheduler has been started, please stop it first!");
+            throw new CrontabException("Scheduler has been started, please stop it first!");
+        }
+
+        lock.lock();
+        try {
+            if (null == crontabSetting) {
+                // 尝试查找config/cron.setting
+                setCronSetting(CRONTAB_CONFIG_PATH);
+            }
+            // 尝试查找cron.setting
+            if (null == crontabSetting) {
+                setCronSetting(CRONTAB_CONFIG_PATH2);
+            }
+        } finally {
+            lock.unlock();
         }
 
         schedule(crontabSetting);
-        scheduler.start(isDeamon);
+        scheduler.start(isDaemon);
     }
 
     /**
      * 重新启动定时任务
      * 此方法会清除动态加载的任务,重新启动后,守护线程与否与之前保持一致
      */
-    synchronized public static void restart() {
-        if (null != crontabSetting) {
-            //重新读取配置文件
-            crontabSetting.load();
-        }
-        if (scheduler.isStarted()) {
-            //关闭并清除已有任务
-            stop();
+    public static void restart() {
+        lock.lock();
+        try {
+            if (null != crontabSetting) {
+                //重新读取配置文件
+                crontabSetting.load();
+            }
+            if (scheduler.isStarted()) {
+                //关闭并清除已有任务
+                stop();
+            }
+        } finally {
+            lock.unlock();
         }
 
         //重新加载任务
@@ -212,74 +224,8 @@ public final class Builder {
     /**
      * 停止
      */
-    synchronized public static void stop() {
+    public static void stop() {
         scheduler.stop(true);
-    }
-
-    /**
-     * 列举指定日期之后(到开始日期对应年年底)内所有匹配表达式的日期
-     *
-     * @param patternStr    表达式字符串
-     * @param start         起始时间
-     * @param count         列举数量
-     * @param isMatchSecond 是否匹配秒
-     * @return 日期列表
-     */
-    public static List<Date> matchedDates(String patternStr, Date start, int count, boolean isMatchSecond) {
-        return matchedDates(patternStr, start, DateKit.endOfYear(start), count, isMatchSecond);
-    }
-
-    /**
-     * 列举指定日期范围内所有匹配表达式的日期
-     *
-     * @param patternStr    表达式字符串
-     * @param start         起始时间
-     * @param end           结束时间
-     * @param count         列举数量
-     * @param isMatchSecond 是否匹配秒
-     * @return 日期列表
-     */
-    public static List<Date> matchedDates(String patternStr, Date start, Date end, int count, boolean isMatchSecond) {
-        return matchedDates(patternStr, start.getTime(), end.getTime(), count, isMatchSecond);
-    }
-
-    /**
-     * 列举指定日期范围内所有匹配表达式的日期
-     *
-     * @param patternStr    表达式字符串
-     * @param start         起始时间
-     * @param end           结束时间
-     * @param count         列举数量
-     * @param isMatchSecond 是否匹配秒
-     * @return 日期列表
-     */
-    public static List<Date> matchedDates(String patternStr, long start, long end, int count, boolean isMatchSecond) {
-        return matchedDates(new CronPattern(patternStr), start, end, count, isMatchSecond);
-    }
-
-    /**
-     * 列举指定日期范围内所有匹配表达式的日期
-     *
-     * @param pattern       表达式
-     * @param start         起始时间
-     * @param end           结束时间
-     * @param count         列举数量
-     * @param isMatchSecond 是否匹配秒
-     * @return 日期列表
-     */
-    public static List<Date> matchedDates(CronPattern pattern, long start, long end, int count, boolean isMatchSecond) {
-        Assert.isTrue(start < end, "Start date is later than end !");
-        final List<Date> result = new ArrayList<>(count);
-        long step = isMatchSecond ? Fields.Units.SECOND.getUnit() : Fields.Units.MINUTE.getUnit();
-        for (long i = start; i < end; i += step) {
-            if (pattern.match(i, isMatchSecond)) {
-                result.add(DateKit.date(i));
-                if (result.size() >= count) {
-                    break;
-                }
-            }
-        }
-        return result;
     }
 
 }

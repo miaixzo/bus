@@ -156,7 +156,7 @@ public class Config {
 
     /**
      * 设置全局的schema,默认为空，如果设置了值，操作表时的sql会是schema.tablename
-     * <br>如果同时设置了catalog,优先使用catalog.tablename
+     * 如果同时设置了catalog,优先使用catalog.tablename
      *
      * @param schema 数据模型
      */
@@ -178,7 +178,7 @@ public class Config {
 
     /**
      * 序列的获取规则,使用{num}格式化参数，默认值为{0}.nextval，针对Oracle
-     * <br>可选参数一共3个，对应0,1,2,3分别为SequenceName，ColumnName, PropertyName，TableName
+     * 可选参数一共3个，对应0,1,2,3分别为SequenceName，ColumnName, PropertyName，TableName
      *
      * @param seqFormat 规则
      */

@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <jna.version>5.10.0</jna.version>
+        <jna.version>5.11.0</jna.version>
     </properties>
 
     <dependencies>
@@ -62,12 +62,6 @@
             <artifactId>jna-platform</artifactId>
             <version>${jna.version}</version>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

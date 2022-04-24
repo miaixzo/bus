@@ -26,8 +26,6 @@
 package org.aoju.bus.gitlab.models;
 
 import org.aoju.bus.gitlab.Constants;
-import org.aoju.bus.gitlab.Constants.ProjectOrderBy;
-import org.aoju.bus.gitlab.Constants.SortOrder;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
 import java.util.Date;
@@ -39,8 +37,8 @@ public class ProjectFilter {
 
     private Boolean archived;
     private Visibility visibility;
-    private ProjectOrderBy orderBy;
-    private SortOrder sort;
+    private Constants.ProjectOrderBy orderBy;
+    private Constants.SortOrder sort;
     private String search;
     private Boolean searchNamespaces;
     private Boolean simple;
@@ -55,8 +53,8 @@ public class ProjectFilter {
     private Boolean wikiChecksumFailed;
     private Boolean repositoryChecksumFailed;
     private AccessLevel minAccessLevel;
-    private Integer idAfter;
-    private Integer idBefore;
+    private Long idAfter;
+    private Long idBefore;
     private Date lastActivityAfter;
     private Date lastActivityBefore;
     private String repositoryStorage;
@@ -89,7 +87,7 @@ public class ProjectFilter {
      * @param orderBy specifies what field to order by
      * @return the reference to this ProjectFilter instance
      */
-    public ProjectFilter withOrderBy(ProjectOrderBy orderBy) {
+    public ProjectFilter withOrderBy(Constants.ProjectOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
@@ -100,7 +98,7 @@ public class ProjectFilter {
      * @param sort sort direction, ASC or DESC
      * @return the reference to this ProjectFilter instance
      */
-    public ProjectFilter withSortOder(SortOrder sort) {
+    public ProjectFilter withSortOder(Constants.SortOrder sort) {
         this.sort = sort;
         return (this);
     }
@@ -252,6 +250,19 @@ public class ProjectFilter {
     }
 
     /**
+     * Limit by current user minimal access level
+     *
+     * @param minAccessLevel limit by current user minimal access level
+     * @return the reference to this ProjectFilter instance
+     * @deprecated Replaced by {@link #withMinAccessLevel(AccessLevel) getComponentAt}
+     */
+    @Deprecated
+    public ProjectFilter minAccessLevel(AccessLevel minAccessLevel) {
+        this.minAccessLevel = minAccessLevel;
+        return (this);
+    }
+
+    /**
      * Limit by current user minimal access level.
      *
      * @param minAccessLevel limit by current user minimal access level
@@ -268,7 +279,7 @@ public class ProjectFilter {
      * @param idAfter limit results to projects with IDs greater than the specified project ID
      * @return the reference to this ProjectFilter instance
      */
-    public ProjectFilter withIdAfter(Integer idAfter) {
+    public ProjectFilter withIdAfter(Long idAfter) {
         this.idAfter = idAfter;
         return (this);
     }
@@ -279,7 +290,7 @@ public class ProjectFilter {
      * @param idBefore limit results to projects with IDs less than the specified project ID
      * @return the reference to this ProjectFilter instance
      */
-    public ProjectFilter withIdBefore(Integer idBefore) {
+    public ProjectFilter withIdBefore(Long idBefore) {
         this.idBefore = idBefore;
         return (this);
     }

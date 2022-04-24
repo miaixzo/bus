@@ -28,6 +28,7 @@ package org.aoju.bus.cron.listener;
 import org.aoju.bus.cron.Executor;
 import org.aoju.bus.logger.Logger;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,9 @@ import java.util.List;
  * @version 6.5.0
  * @since Java 17+
  */
-public class TaskListenerManager {
+public class TaskListenerManager implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final List<TaskListener> listeners = new ArrayList<>();
 
@@ -75,7 +78,9 @@ public class TaskListenerManager {
      */
     public void notifyTaskStart(Executor executor) {
         synchronized (listeners) {
-            for (TaskListener listener : listeners) {
+            TaskListener listener;
+            for (TaskListener taskListener : listeners) {
+                listener = taskListener;
                 if (null != listener) {
                     listener.onStart(executor);
                 }

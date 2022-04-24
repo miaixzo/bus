@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
+import org.aoju.bus.core.io.streams.FastByteOutputStream;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -519,7 +519,7 @@ public class RuntimeKit {
      * @return 堆栈转为的字符串
      */
     public static String getStackTrace(Throwable throwable, int limit, Map<Character, String> replaceCharToStrMap) {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final FastByteOutputStream baos = new FastByteOutputStream();
         throwable.printStackTrace(new PrintStream(baos));
 
         final String exceptionStr = baos.toString();

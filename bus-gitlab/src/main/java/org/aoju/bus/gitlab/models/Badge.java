@@ -32,14 +32,21 @@ import org.aoju.bus.gitlab.support.JacksonJsonEnumHelper;
 
 public class Badge {
 
+    private Long id;
     private String name;
-
-    private Integer id;
     private String linkUrl;
     private String imageUrl;
     private String renderedLinkUrl;
     private String renderedImageUrl;
     private BadgeKind kind;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -47,14 +54,6 @@ public class Badge {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getLinkUrl() {

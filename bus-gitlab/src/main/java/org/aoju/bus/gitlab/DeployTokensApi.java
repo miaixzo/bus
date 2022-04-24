@@ -44,6 +44,10 @@ public class DeployTokensApi extends AbstractApi {
         super(gitLabApi);
     }
 
+    /* ************************************************************************************************
+     * Global Deploy Token API
+     */
+
     /**
      * Get a list of all deploy tokens across the GitLab instance. This endpoint requires admin access.
      *
@@ -90,7 +94,7 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_tokens</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of DeployToken
      * @throws GitLabApiException if any exception occurs
      */
@@ -103,7 +107,7 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_tokens</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance@param projectId the ID of the project
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance@param projectId the ID of the project
      * @param itemsPerPage    the number of DeployToken instances that will be fetched per page
      * @return a Pager of DeployToken
      * @throws GitLabApiException if any exception occurs
@@ -118,7 +122,7 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/deploy_tokens</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a list of DeployToken
      * @throws GitLabApiException if any exception occurs
      */
@@ -131,11 +135,11 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/deploy_tokens</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param name            the new deploy token’s name, required
      * @param expiresAt       expiration date for the deploy token. Currently documented as not required but api fails if not provided. Does not expire if no value is provided.
      * @param username        the username for deploy token. Currently documented as not required but api fails if not provided. Default is gitlab+deploy-token-{n}
-     * @param scopes          indicates the deploy token scopes. Must be at least one of {@link Constants.DeployTokenScope}.
+     * @param scopes          indicates the deploy token scopes. Must be at least one of {@link DeployTokenScope}.
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
@@ -155,11 +159,11 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/deploy_tokens/:token_id</code></pre>
      *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param tokenId         the ID of the deploy token to delete
      * @throws GitLabApiException if any exception occurs
      */
-    public void deleteProjectDeployToken(Object projectIdOrPath, Integer tokenId) throws GitLabApiException {
+    public void deleteProjectDeployToken(Object projectIdOrPath, Long tokenId) throws GitLabApiException {
 
         if (tokenId == null) {
             throw new RuntimeException("tokenId cannot be null");
@@ -177,7 +181,7 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups/:id/deploy_tokens</code></pre>
      *
-     * @param groupIdOrPath the group in the form of an Integer(ID), String(path), or Group instance
+     * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a list of DeployToken
      * @throws GitLabApiException if any exception occurs
      */
@@ -190,7 +194,7 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups/:id/deploy_tokens</code></pre>
      *
-     * @param groupIdOrPath the group in the form of an Integer(ID), String(path), or Group instance@param groupId the ID of the group
+     * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance@param groupId the ID of the group
      * @param itemsPerPage  the number of DeployToken instances that will be fetched per page
      * @return a Pager of DeployToken
      * @throws GitLabApiException if any exception occurs
@@ -205,7 +209,7 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: GET /groups/:id/deploy_tokens</code></pre>
      *
-     * @param groupIdOrPath the group in the form of an Integer(ID), String(path), or Group instance
+     * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @return a list of DeployToken
      * @throws GitLabApiException if any exception occurs
      */
@@ -218,11 +222,11 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: POST /groups/:id/deploy_tokens</code></pre>
      *
-     * @param groupIdOrPath the group in the form of an Integer(ID), String(path), or Group instance
+     * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param name          the new deploy token’s name, required
      * @param expiresAt     expiration date for the deploy token. Currently documented as not required but api fails if not provided. Does not expire if no value is provided.
      * @param username      the username for deploy token. Currently documented as not required but api fails if not provided. Default is gitlab+deploy-token-{n}
-     * @param scopes        indicates the deploy token scopes. Must be at least one of {@link Constants.DeployTokenScope}.
+     * @param scopes        indicates the deploy token scopes. Must be at least one of {@link DeployTokenScope}.
      * @return an DeployToken instance with info on the added deploy token
      * @throws GitLabApiException if any exception occurs
      */
@@ -242,11 +246,11 @@ public class DeployTokensApi extends AbstractApi {
      *
      * <pre><code>GitLab Endpoint: DELETE /groups/:id/deploy_tokens/:token_id</code></pre>
      *
-     * @param groupIdOrPath the group in the form of an Integer(ID), String(path), or Group instance
+     * @param groupIdOrPath the group in the form of an Long(ID), String(path), or Group instance
      * @param tokenId       the ID of the deploy token to delete
      * @throws GitLabApiException if any exception occurs
      */
-    public void deleteGroupDeployToken(Object groupIdOrPath, Integer tokenId) throws GitLabApiException {
+    public void deleteGroupDeployToken(Object groupIdOrPath, Long tokenId) throws GitLabApiException {
 
         if (tokenId == null) {
             throw new RuntimeException("tokenId cannot be null");

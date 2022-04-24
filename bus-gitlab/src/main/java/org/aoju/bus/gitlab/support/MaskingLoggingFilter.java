@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.support;
 
-import org.aoju.bus.core.lang.Header;
 import org.glassfish.jersey.message.MessageUtils;
 
 import javax.annotation.Priority;
@@ -62,7 +61,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * Default list of header names that should be masked.
      */
     public static final List<String> DEFAULT_MASKED_HEADER_NAMES =
-            Collections.unmodifiableList(Arrays.asList("PRIVATE-TOKEN", Header.AUTHORIZATION, Header.PROXY_AUTHORIZATION));
+            Collections.unmodifiableList(Arrays.asList("PRIVATE-TOKEN", "Authorization", "Proxy-Authorization"));
 
     /**
      * Prefix for request log entries.

@@ -26,7 +26,6 @@
 package org.aoju.bus.core.map;
 
 import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
  * 自定义键的Map,默认HashMap实现
@@ -37,9 +36,7 @@ import java.util.function.BiFunction;
  * @version 6.5.0
  * @since Java 17+
  */
-public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
-
-    private static final long serialVersionUID = 1L;
+public abstract class CustomKeyMap<K, V> extends TransitionMap<K, V> {
 
     /**
      * 构造
@@ -52,71 +49,8 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
     }
 
     @Override
-    public V get(Object key) {
-        return super.get(customKey(key));
+    protected V customValue(Object value) {
+        return (V) value;
     }
-
-    @Override
-    public V put(K key, V value) {
-        return super.put((K) customKey(key), value);
-    }
-
-    @Override
-    public void putAll(Map<? extends K, ? extends V> map) {
-        map.forEach(this::put);
-    }
-
-    @Override
-    public boolean containsKey(Object key) {
-        return super.containsKey(customKey(key));
-    }
-
-    @Override
-    public V remove(Object key) {
-        return super.remove(customKey(key));
-    }
-
-    @Override
-    public boolean remove(Object key, Object value) {
-        return super.remove(customKey(key), value);
-    }
-
-    @Override
-    public boolean replace(K key, V oldValue, V newValue) {
-        return super.replace((K) customKey(key), oldValue, newValue);
-    }
-
-    @Override
-    public V replace(K key, V value) {
-        return super.replace((K) customKey(key), value);
-    }
-
-    @Override
-    public V getOrDefault(Object key, V defaultValue) {
-        return super.getOrDefault(customKey(key), defaultValue);
-    }
-
-    @Override
-    public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        return super.computeIfPresent((K) customKey(key), remappingFunction);
-    }
-
-    @Override
-    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        return super.compute((K) customKey(key), remappingFunction);
-    }
-
-    @Override
-    public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
-        return super.merge((K) customKey(key), value, remappingFunction);
-    }
-
-    /**
-     * 自定义键
-     *
-     * @param key KEY
-     * @return 自定义KEY
-     */
-    protected abstract Object customKey(Object key);
 
 }

@@ -26,6 +26,7 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -129,7 +130,7 @@ public class HealthCheckInfo {
 
         @Override
         public HealthCheckItem deserialize(JsonParser jsonParser, DeserializationContext ctx)
-                throws IOException {
+                throws IOException, JsonProcessingException {
 
             HealthCheckItem healthCheckItem = null;
             JsonNode tree = jsonParser.readValueAsTree();
@@ -143,5 +144,4 @@ public class HealthCheckInfo {
             return (healthCheckItem);
         }
     }
-
 }

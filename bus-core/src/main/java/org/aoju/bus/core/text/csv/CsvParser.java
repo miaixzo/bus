@@ -416,7 +416,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         }
 
         /**
-         * 先获取当前字符，再将当前位置后移一位<br>
+         * 先获取当前字符，再将当前位置后移一位
          * 此方法不检查是否到了数组末尾，请自行使用{@link #hasRemaining()}判断。
          *
          * @return 当前位置字符

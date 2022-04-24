@@ -42,6 +42,8 @@ import java.util.function.Supplier;
  */
 public class GenericBuilder<T> implements Builder<T> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 实例化器
      */

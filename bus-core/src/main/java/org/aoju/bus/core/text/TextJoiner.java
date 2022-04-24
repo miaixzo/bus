@@ -4,6 +4,8 @@ import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.IterKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.IOException;
@@ -200,11 +202,11 @@ public class TextJoiner implements Appendable, Serializable {
     /**
      * 设置当没有任何元素加入时，默认返回的字符串，默认""
      *
-     * @param emptyResult 默认字符串
+     * @param text 默认字符串
      * @return this
      */
-    public TextJoiner setEmptyResult(String emptyResult) {
-        this.emptyResult = emptyResult;
+    public TextJoiner setEmptyResult(String text) {
+        this.emptyResult = text;
         return this;
     }
 
@@ -224,7 +226,7 @@ public class TextJoiner implements Appendable, Serializable {
         } else if (obj instanceof Iterable) {
             append(((Iterable<?>) obj).iterator());
         } else {
-            append(String.valueOf(obj));
+            append(ObjectKit.toString(obj));
         }
         return this;
     }
@@ -262,60 +264,60 @@ public class TextJoiner implements Appendable, Serializable {
     /**
      * 追加数组中的元素到拼接器中
      *
-     * @param <T>       元素类型
-     * @param array     元素数组
-     * @param toStrFunc 元素对象转换为字符串的函数
+     * @param <T>   元素类型
+     * @param array 元素数组
+     * @param func  元素对象转换为字符串的函数
      * @return this
      */
-    public <T> TextJoiner append(T[] array, Function<T, ? extends CharSequence> toStrFunc) {
-        return append((Iterator<T>) new ArrayIterator<>(array), toStrFunc);
+    public <T> TextJoiner append(T[] array, Function<T, ? extends CharSequence> func) {
+        return append((Iterator<T>) new ArrayIterator<>(array), func);
     }
 
     /**
      * 追加{@link Iterator}中的元素到拼接器中
      *
-     * @param <T>       元素类型
-     * @param iterable  元素列表
-     * @param toStrFunc 元素对象转换为字符串的函数
+     * @param <E>      元素类型
+     * @param iterable 元素列表
+     * @param func     元素对象转换为字符串的函数
      * @return this
      */
-    public <T> TextJoiner append(Iterable<T> iterable, Function<T, ? extends CharSequence> toStrFunc) {
-        return append(null == iterable ? null : iterable.iterator(), toStrFunc);
+    public <E> TextJoiner append(Iterable<E> iterable, Function<? super E, ? extends CharSequence> func) {
+        return append(IterKit.get(iterable), func);
     }
 
     /**
      * 追加{@link Iterator}中的元素到拼接器中
      *
-     * @param <T>       元素类型
-     * @param iterator  元素列表
-     * @param toStrFunc 元素对象转换为字符串的函数
+     * @param <E>      元素类型
+     * @param iterator 元素列表
+     * @param func     元素对象转换为字符串的函数
      * @return this
      */
-    public <T> TextJoiner append(Iterator<T> iterator, Function<T, ? extends CharSequence> toStrFunc) {
+    public <E> TextJoiner append(Iterator<E> iterator, Function<? super E, ? extends CharSequence> func) {
         if (null != iterator) {
             while (iterator.hasNext()) {
-                append(toStrFunc.apply(iterator.next()));
+                append(func.apply(iterator.next()));
             }
         }
         return this;
     }
 
     @Override
-    public TextJoiner append(CharSequence csq) {
-        return append(csq, 0, StringKit.length(csq));
+    public TextJoiner append(CharSequence text) {
+        return append(text, 0, StringKit.length(text));
     }
 
     @Override
-    public TextJoiner append(CharSequence csq, int startInclude, int endExclude) {
-        if (null == csq) {
+    public TextJoiner append(CharSequence text, int startInclude, int endExclude) {
+        if (null == text) {
             switch (this.nullMode) {
                 case IGNORE:
                     return this;
                 case TO_EMPTY:
-                    csq = Normal.EMPTY;
+                    text = Normal.EMPTY;
                     break;
                 case NULL_STRING:
-                    csq = Normal.NULL;
+                    text = Normal.NULL;
             }
         }
         try {
@@ -323,7 +325,7 @@ public class TextJoiner implements Appendable, Serializable {
             if (wrapElement && StringKit.isNotEmpty(this.prefix)) {
                 appendable.append(prefix);
             }
-            appendable.append(csq, startInclude, endExclude);
+            appendable.append(text, startInclude, endExclude);
             if (wrapElement && StringKit.isNotEmpty(this.suffix)) {
                 appendable.append(suffix);
             }
@@ -351,19 +353,19 @@ public class TextJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 合并一个StrJoiner 到当前的StrJoiner
+     * 合并一个TextJoiner 到当前的TextJoiner
      * 合并规则为，在尾部直接追加，当存在{@link #prefix}时，如果{@link #wrapElement}为{@code false}，则去除之
      *
-     * @param strJoiner 其他的StrJoiner
+     * @param joiner 其他的TextJoiner
      * @return this
      */
-    public TextJoiner merge(TextJoiner strJoiner) {
-        if (null != strJoiner && null != strJoiner.appendable) {
-            final String otherStr = strJoiner.toString();
-            if (strJoiner.wrapElement) {
-                this.append(otherStr);
+    public TextJoiner merge(TextJoiner joiner) {
+        if (null != joiner && null != joiner.appendable) {
+            final String val = joiner.toString();
+            if (joiner.wrapElement) {
+                this.append(val);
             } else {
-                this.append(otherStr, this.prefix.length(), otherStr.length());
+                this.append(val, this.prefix.length(), val.length());
             }
         }
         return this;

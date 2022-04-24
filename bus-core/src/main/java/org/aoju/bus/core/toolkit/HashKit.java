@@ -250,7 +250,7 @@ public class HashKit {
             hash ^= ((hash << 5) + text.charAt(i) + (hash >> 2));
         }
 
-        return hash & 0x7FFFFFFF;
+        return Math.abs(hash) & 0x7FFFFFFF;
     }
 
     /**
@@ -454,6 +454,42 @@ public class HashKit {
         long hash = text.hashCode();
         hash <<= Normal._32;
         hash |= fnvHash(text);
+        return hash;
+    }
+
+    /**
+     * HF Hash算法
+     *
+     * @param data 字符串
+     * @return hash结果
+     */
+    public static long hfHash(String data) {
+        int length = data.length();
+        long hash = 0;
+
+        for (int i = 0; i < length; i++) {
+            hash += (long) data.charAt(i) * 3 * i;
+        }
+
+        if (hash < 0) {
+            hash = -hash;
+        }
+
+        return hash;
+    }
+
+    /**
+     * HFIP Hash算法
+     *
+     * @param data 字符串
+     * @return hash结果
+     */
+    public static long hfIpHash(String data) {
+        int length = data.length();
+        long hash = 0;
+        for (int i = 0; i < length; i++) {
+            hash += data.charAt(i % 4) ^ data.charAt(i);
+        }
         return hash;
     }
 

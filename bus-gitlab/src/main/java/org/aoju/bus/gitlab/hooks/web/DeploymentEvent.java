@@ -35,7 +35,7 @@ public class DeploymentEvent extends AbstractEvent {
 
     private String status;
     private String statusChangedAt;
-    private Integer deployableId;
+    private Long deployableId;
     private String deployableUrl;
     private String environment;
     private EventProject project;
@@ -45,6 +45,7 @@ public class DeploymentEvent extends AbstractEvent {
     private String commitUrl;
     private String commitTitle;
 
+    @Override
     public String getObjectKind() {
         return (OBJECT_KIND);
     }
@@ -70,11 +71,11 @@ public class DeploymentEvent extends AbstractEvent {
         this.statusChangedAt = statusChangedAt;
     }
 
-    public Integer getDeployableId() {
+    public Long getDeployableId() {
         return deployableId;
     }
 
-    public void setDeployableId(Integer deployableId) {
+    public void setDeployableId(Long deployableId) {
         this.deployableId = deployableId;
     }
 
@@ -146,5 +147,4 @@ public class DeploymentEvent extends AbstractEvent {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
-
 }

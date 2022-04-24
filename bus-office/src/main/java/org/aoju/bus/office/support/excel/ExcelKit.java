@@ -26,10 +26,7 @@
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.core.toolkit.PatternKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.PoiChecker;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.sax.ExcelSaxReader;
@@ -227,6 +224,21 @@ public class ExcelKit {
             return new ExcelReader(bookStream, sheetName);
         } catch (NoClassDefFoundError e) {
             throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+        }
+    }
+
+    /**
+     * 获取Excel读取器，通过调用{@link ExcelReader}的read或readXXX方法读取Excel内容
+     *
+     * @param bookFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param sheetName    sheet名，第一个默认是sheet1
+     * @return {@link ExcelReader}
+     */
+    public static ExcelReader getReader(String bookFilePath, String sheetName) {
+        try {
+            return new ExcelReader(bookFilePath, sheetName);
+        } catch (NoClassDefFoundError e) {
+            throw new InstrumentException(ObjectKit.defaultIfNull(e.getCause(), e), PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 

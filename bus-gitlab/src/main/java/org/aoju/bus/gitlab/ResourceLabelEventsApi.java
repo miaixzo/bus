@@ -54,7 +54,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return a List of LabelEvent for the specified issue
      * @throws GitLabApiException if any exception occurs
      */
-    public List<LabelEvent> getIssueLabelEvents(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
+    public List<LabelEvent> getIssueLabelEvents(Object projectIdOrPath, Long issueIid) throws GitLabApiException {
         return (getIssueLabelEvents(projectIdOrPath, issueIid, getDefaultPerPage()).all());
     }
 
@@ -69,7 +69,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return the Pager of LabelEvent instances for the specified issue IID
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<LabelEvent> getIssueLabelEvents(Object projectIdOrPath, Integer issueIid, int itemsPerPage) throws GitLabApiException {
+    public Pager<LabelEvent> getIssueLabelEvents(Object projectIdOrPath, Long issueIid, int itemsPerPage) throws GitLabApiException {
         return (new Pager<LabelEvent>(this, LabelEvent.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "resource_label_events"));
     }
@@ -84,7 +84,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return a Stream of LabelEvent for the specified issue
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<LabelEvent> getIssueLabelEventsStream(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
+    public Stream<LabelEvent> getIssueLabelEventsStream(Object projectIdOrPath, Long issueIid) throws GitLabApiException {
         return (getIssueLabelEvents(projectIdOrPath, issueIid, getDefaultPerPage()).stream());
     }
 
@@ -99,7 +99,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return LabelEvent instance for the specified project issue
      * @throws GitLabApiException if any exception occurs
      */
-    public LabelEvent getIssueLabelEvent(Object projectIdOrPath, Integer issueIid, Integer resourceLabelEventId) throws GitLabApiException {
+    public LabelEvent getIssueLabelEvent(Object projectIdOrPath, Long issueIid, Long resourceLabelEventId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "issues", issueIid, "resource_label_events", resourceLabelEventId);
         return (response.readEntity(LabelEvent.class));
@@ -117,7 +117,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalIssueLabelEvent(Object projectIdOrPath,
-                                                           Integer issueIid, Integer resourceLabelEventId) throws GitLabApiException {
+                                                           Long issueIid, Long resourceLabelEventId) throws GitLabApiException {
 
         try {
             return (Optional.ofNullable(getIssueLabelEvent(projectIdOrPath, issueIid, resourceLabelEventId)));
@@ -136,7 +136,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return a List of LabelEvent for the specified epic
      * @throws GitLabApiException if any exception occurs
      */
-    public List<LabelEvent> getEpicLabelEvents(Object projectIdOrPath, Integer epicId) throws GitLabApiException {
+    public List<LabelEvent> getEpicLabelEvents(Object projectIdOrPath, Long epicId) throws GitLabApiException {
         return (getEpicLabelEvents(projectIdOrPath, epicId, getDefaultPerPage()).all());
     }
 
@@ -151,7 +151,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return the Pager of LabelEvent instances for the specified epic
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<LabelEvent> getEpicLabelEvents(Object projectIdOrPath, Integer epicId, int itemsPerPage) throws GitLabApiException {
+    public Pager<LabelEvent> getEpicLabelEvents(Object projectIdOrPath, Long epicId, int itemsPerPage) throws GitLabApiException {
         return (new Pager<LabelEvent>(this, LabelEvent.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "epics", epicId, "resource_label_events"));
     }
@@ -166,7 +166,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return a Stream of LabelEvent for the specified epic
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<LabelEvent> getEpicLabelEventsStream(Object projectIdOrPath, Integer epicId) throws GitLabApiException {
+    public Stream<LabelEvent> getEpicLabelEventsStream(Object projectIdOrPath, Long epicId) throws GitLabApiException {
         return (getEpicLabelEvents(projectIdOrPath, epicId, getDefaultPerPage()).stream());
     }
 
@@ -181,7 +181,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return LabelEvent instance for the specified epic label event
      * @throws GitLabApiException if any exception occurs
      */
-    public LabelEvent getEpicLabelEvent(Object projectIdOrPath, Integer epicId, Integer resourceLabelEventId) throws GitLabApiException {
+    public LabelEvent getEpicLabelEvent(Object projectIdOrPath, Long epicId, Long resourceLabelEventId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "epics", epicId, "resource_label_events", resourceLabelEventId);
         return (response.readEntity(LabelEvent.class));
@@ -199,7 +199,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalEpicLabelEvent(Object projectIdOrPath,
-                                                          Integer epicId, Integer resourceLabelEventId) throws GitLabApiException {
+                                                          Long epicId, Long resourceLabelEventId) throws GitLabApiException {
 
         try {
             return (Optional.ofNullable(getEpicLabelEvent(projectIdOrPath, epicId, resourceLabelEventId)));
@@ -218,7 +218,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return a List of LabelEvent for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public List<LabelEvent> getMergeRequestLabelEvents(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public List<LabelEvent> getMergeRequestLabelEvents(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getMergeRequestLabelEvents(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).all());
     }
 
@@ -233,7 +233,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return the Pager of LabelEvent instances for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<LabelEvent> getMergeRequestLabelEvents(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
+    public Pager<LabelEvent> getMergeRequestLabelEvents(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage) throws GitLabApiException {
         return (new Pager<LabelEvent>(this, LabelEvent.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "resource_label_events"));
     }
@@ -248,7 +248,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return a Stream of LabelEvent for the specified merge request
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<LabelEvent> getMergeRequestLabelEventsStream(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
+    public Stream<LabelEvent> getMergeRequestLabelEventsStream(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
         return (getMergeRequestLabelEvents(projectIdOrPath, mergeRequestIid, getDefaultPerPage()).stream());
     }
 
@@ -263,7 +263,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @return LabelEvent instance for the specified epic label event
      * @throws GitLabApiException if any exception occurs
      */
-    public LabelEvent getMergeRequestLabelEvent(Object projectIdOrPath, Integer mergeRequestIid, Integer resourceLabelEventId) throws GitLabApiException {
+    public LabelEvent getMergeRequestLabelEvent(Object projectIdOrPath, Long mergeRequestIid, Long resourceLabelEventId) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "merge_requests", mergeRequestIid, "resource_label_events", resourceLabelEventId);
         return (response.readEntity(LabelEvent.class));
@@ -281,7 +281,7 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalMergeRequestLabelEvent(Object projectIdOrPath,
-                                                                  Integer mergeRequestIid, Integer resourceLabelEventId) throws GitLabApiException {
+                                                                  Long mergeRequestIid, Long resourceLabelEventId) throws GitLabApiException {
 
         try {
             return (Optional.ofNullable(getMergeRequestLabelEvent(projectIdOrPath, mergeRequestIid, resourceLabelEventId)));

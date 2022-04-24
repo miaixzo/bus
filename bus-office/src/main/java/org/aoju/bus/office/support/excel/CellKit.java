@@ -245,6 +245,9 @@ public class CellKit {
      * @return {@link Row}
      */
     public static Cell getCell(Row row, int cellIndex) {
+        if (null == row) {
+            return null;
+        }
         Cell cell = row.getCell(cellIndex);
         if (null == cell) {
             return new NullCell(row, cellIndex);

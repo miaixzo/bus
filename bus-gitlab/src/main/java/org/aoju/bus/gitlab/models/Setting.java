@@ -71,6 +71,14 @@ public enum Setting {
     ALLOW_GROUP_OWNERS_TO_MANAGE_LDAP(Boolean.class),
 
     /**
+     * Allow requests to the local network from hooks and services.
+     *
+     * @deprecated Use allow_local_requests_from_web_hooks_and_services instead
+     */
+    @Deprecated
+    ALLOW_LOCAL_REQUESTS_FROM_HOOKS_AND_SERVICES(Boolean.class),
+
+    /**
      * Allow requests to the local network from system hooks.
      */
     ALLOW_LOCAL_REQUESTS_FROM_SYSTEM_HOOKS(Boolean.class),
@@ -132,6 +140,23 @@ public enum Setting {
      * or if the project is public.
      */
     CHECK_NAMESPACE_PLAN(Boolean.class),
+
+    /**
+     * required by: {@link #CLIENTSIDE_SENTRY_DSN} Clientside Sentry Data Source Name.
+     * removed by the following commit https://gitlab.com/gitlab-org/gitlab/commit/31c8ca6defd36bd08209ecc8c5913631c316ce37
+     *
+     * @deprecated Will be removed in a future version of gitlab4j-api
+     */
+    @Deprecated
+    CLIENTSIDE_SENTRY_DSN(String.class),
+
+    /**
+     * (<strong>If enabled, requires:</strong> {@link #CLIENTSIDE_SENTRY_DSN}) Enable Sentry error reporting for the client side.
+     *
+     * @deprecated Will be removed in a future version of gitlab4j-api
+     */
+    @Deprecated
+    CLIENTSIDE_SENTRY_ENABLED(Boolean.class),
 
     /**
      * Custom hostname (for private commit emails).
@@ -219,10 +244,28 @@ public enum Setting {
     DOMAIN_BLACKLIST_ENABLED(Boolean.class),
 
     /**
+     * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
+     *
+     * @deprecated Use {@link Setting#DOMAIN_BLACKLIST} instead. Will be removed in API v5
+     * see https://gitlab.com/gitlab-org/gitlab/commit/85776fa3ffba6f641cf981cb0107f0e4ba882f3e#40f8529fa8ed874d8e312edb04db18420bf06d31_185_185
+     */
+    @Deprecated
+    DOMAIN_BLACKLIST_RAW(String.class),
+
+    /**
      * Force people to use only corporate emails for sign-up. Default is null,
      * meaning there is no restriction.
      */
     DOMAIN_WHITELIST(String[].class),
+
+    /**
+     * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
+     *
+     * @deprecated Use {@link #DOMAIN_WHITELIST} instead. Will be removed in API v5
+     * see https://gitlab.com/gitlab-org/gitlab/commit/85776fa3ffba6f641cf981cb0107f0e4ba882f3e#40f8529fa8ed874d8e312edb04db18420bf06d31_185_185
+     */
+    @Deprecated
+    DOMAIN_WHITELIST_RAW(String.class),
 
     /**
      * The minimum allowed bit length of an uploaded DSA key. Default is 0 (no
@@ -281,6 +324,16 @@ public enum Setting {
      * AWS IAM secret access key
      */
     EKS_SECRET_ACCESS_KEY(String.class),
+
+    /**
+     * (PREMIUM | SILVER) Use the experimental elasticsearch indexer. More info:
+     * https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer
+     * Ruby indexer was removed and go indexer is no more experimental.
+     *
+     * @deprecated removed in Gitlab 12.3. see https://gitlab.com/gitlab-org/gitlab/commit/82ba4a6a5c78501413012a9f2a918aa7353917a0?view=parallel#fbf64e6b8170f05f1b940fb05902d29f9eba3633_223_223
+     */
+    @Deprecated
+    ELASTICSEARCH_EXPERIMENTAL_INDEXER(Boolean.class),
 
     /**
      * (PREMIUM | SILVER) Enable Elasticsearch indexing
@@ -540,6 +593,8 @@ public enum Setting {
     /**
      * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
      * Was added with this commit https://gitlab.com/gitlab-org/gitlab/commit/30e7f01877fd436e21efdf0974d42d8fc83f4883
+     *
+     * @since 2019-07-18
      */
     LOGIN_RECAPTCHA_PROTECTION_ENABLED(Boolean.class),
 
@@ -652,6 +707,15 @@ public enum Setting {
     PAGES_DOMAIN_VERIFICATION_ENABLED(Boolean.class),
 
     /**
+     * NOT DOCUMENTED: but it's returned by a call to /api/v4/application/settings
+     * Present for retro-compatibility purpose. See https://gitlab.com/gitlab-org/gitlab/commit/63b2082979efe182daf78e8269b252ccc73f93fc#958cb0573403da359fda7dac60baf49147a5c538_166_181
+     *
+     * @deprecated Use {@link #PASSWORD_AUTHENTICATION_ENABLED_FOR_WEB} instead.
+     */
+    @Deprecated
+    PASSWORD_AUTHENTICATION_ENABLED(Boolean.class),
+
+    /**
      * Enable authentication for Git over HTTP(S) via a GitLab account password. Default is true.
      */
     PASSWORD_AUTHENTICATION_ENABLED_FOR_GIT(Boolean.class),
@@ -662,9 +726,25 @@ public enum Setting {
     PASSWORD_AUTHENTICATION_ENABLED_FOR_WEB(Boolean.class),
 
     /**
+     * ID of the group that is allowed to toggle the performance bar.
+     *
+     * @deprecated Use {@link #PERFORMANCE_BAR_ALLOWED_GROUP_PATH} instead.
+     */
+    @Deprecated
+    PERFORMANCE_BAR_ALLOWED_GROUP_ID(Integer.class),
+
+    /**
      * Path of the group that is allowed to toggle the performance bar.
      */
     PERFORMANCE_BAR_ALLOWED_GROUP_PATH(String.class),
+
+    /**
+     * Allow enabling the performance bar.
+     *
+     * @deprecated Pass performance_bar_allowed_group_path: nil instead
+     */
+    @Deprecated
+    PERFORMANCE_BAR_ENABLED(Boolean.class),
 
     /**
      * (<strong>If enabled, requires:</strong> {@link #PLANTUML_URL}) Enable PlantUML integration.
@@ -808,6 +888,15 @@ public enum Setting {
      * Text on the login page.
      */
     SIGN_IN_TEXT(String.class),
+
+    /**
+     * Flag indicating if password authentication is enabled for the web interface.
+     * Documentation lists this as a String, but it s a Boolean.
+     *
+     * @deprecated Use {@link #PASSWORD_AUTHENTICATION_ENABLED_FOR_WEB} instead
+     */
+    @Deprecated
+    SIGNIN_ENABLED(Boolean.class),
 
     /**
      * Enable registration. Default is true.
@@ -1146,9 +1235,14 @@ public enum Setting {
             return;
         }
 
-        StringBuilder shouldBe = new StringBuilder(types[0].getSimpleName());
-        for (int i = 1; i < types.length; i++) {
-            shouldBe.append(" | ").append(types[i].getSimpleName());
+        StringBuilder shouldBe;
+        if (type != null) {
+            shouldBe = new StringBuilder(type.getSimpleName());
+        } else {
+            shouldBe = new StringBuilder(types[0].getSimpleName());
+            for (int i = 1; i < types.length; i++) {
+                shouldBe.append(" | ").append(types[i].getSimpleName());
+            }
         }
 
         String errorMsg = String.format("'%s' value is of incorrect type, is %s, should be %s",

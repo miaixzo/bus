@@ -40,9 +40,7 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
  * @version 6.5.0
  * @since Java 17+
  */
-public class BCHMacEngine implements MacEngine {
-
-    private Mac mac;
+public class BCHMacEngine extends BCMacEngine {
 
     /**
      * 构造
@@ -72,7 +70,17 @@ public class BCHMacEngine implements MacEngine {
      * @param params 参数，例如密钥可以用{@link KeyParameter}
      */
     public BCHMacEngine(Digest digest, CipherParameters params) {
-        init(digest, params);
+        this(new HMac(digest), params);
+    }
+
+    /**
+     * 构造
+     *
+     * @param mac    {@link HMac}
+     * @param params 参数，例如密钥可以用{@link KeyParameter}
+     */
+    public BCHMacEngine(HMac mac, CipherParameters params) {
+        super(mac, params);
     }
 
     /**
@@ -81,47 +89,10 @@ public class BCHMacEngine implements MacEngine {
      * @param digest 摘要算法
      * @param params 参数，例如密钥可以用{@link KeyParameter}
      * @return this
+     * @see #init(Mac, CipherParameters)
      */
     public BCHMacEngine init(Digest digest, CipherParameters params) {
-        mac = new HMac(digest);
-        mac.init(params);
-        return this;
-    }
-
-    /**
-     * 获得 {@link Mac}
-     *
-     * @return {@link Mac}
-     */
-    public Mac getMac() {
-        return mac;
-    }
-
-    @Override
-    public void update(byte[] in, int inOff, int len) {
-        this.mac.update(in, inOff, len);
-    }
-
-    @Override
-    public byte[] doFinal() {
-        final byte[] result = new byte[getMacLength()];
-        this.mac.doFinal(result, 0);
-        return result;
-    }
-
-    @Override
-    public void reset() {
-        this.mac.reset();
-    }
-
-    @Override
-    public int getMacLength() {
-        return mac.getMacSize();
-    }
-
-    @Override
-    public String getAlgorithm() {
-        return this.mac.getAlgorithmName();
+        return (BCHMacEngine) init(new HMac(digest), params);
     }
 
 }

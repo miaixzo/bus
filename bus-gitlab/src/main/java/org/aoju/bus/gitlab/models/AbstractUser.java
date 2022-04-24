@@ -36,7 +36,7 @@ public abstract class AbstractUser<U extends AbstractUser<U>> {
     private String avatarUrl;
     private Date createdAt;
     private String email;
-    private Integer id;
+    private Long id;
     private String name;
     private String state;
     private String username;
@@ -66,11 +66,11 @@ public abstract class AbstractUser<U extends AbstractUser<U>> {
         this.email = email;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -106,41 +106,49 @@ public abstract class AbstractUser<U extends AbstractUser<U>> {
         this.webUrl = webUrl;
     }
 
+    @SuppressWarnings("unchecked")
     public U withAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
         return (U) this;
     }
 
+    @SuppressWarnings("unchecked")
     public U withCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
         return (U) this;
     }
 
+    @SuppressWarnings("unchecked")
     public U withEmail(String email) {
         this.email = email;
         return (U) this;
     }
 
-    public U withId(Integer id) {
+    @SuppressWarnings("unchecked")
+    public U withId(Long id) {
         this.id = id;
         return (U) this;
     }
 
+    @SuppressWarnings("unchecked")
     public U withName(String name) {
         this.name = name;
         return (U) this;
     }
 
+    @SuppressWarnings("unchecked")
     public U withState(String state) {
         this.state = state;
         return (U) this;
     }
 
+    @SuppressWarnings("unchecked")
     public U withUsername(String username) {
         this.username = username;
         return (U) this;
     }
 
+    @SuppressWarnings("unchecked")
     public U withWebUrl(String webUrl) {
         this.webUrl = webUrl;
         return (U) this;

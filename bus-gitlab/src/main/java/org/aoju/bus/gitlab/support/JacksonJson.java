@@ -31,8 +31,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.aoju.bus.gitlab.models.User;
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -122,10 +122,11 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      *
      * @param postData a String holding the POST data
      * @return a JsonNode instance containing the parsed JSON
+     * @throws JsonParseException   when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
      * @throws IOException          if an error occurs reading the JSON data
      */
-    public JsonNode readTree(String postData) throws JsonMappingException, IOException {
+    public JsonNode readTree(String postData) throws JsonParseException, JsonMappingException, IOException {
         return (objectMapper.readTree(postData));
     }
 
@@ -134,9 +135,11 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      *
      * @param reader the Reader instance that contains the JSON data
      * @return a JsonNode instance containing the parsed JSON
-     * @throws IOException if an error occurs reading the JSON data
+     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonMappingException if a JSON error occurs
+     * @throws IOException          if an error occurs reading the JSON data
      */
-    public JsonNode readTree(Reader reader) throws IOException {
+    public JsonNode readTree(Reader reader) throws JsonParseException, JsonMappingException, IOException {
         return (objectMapper.readTree(reader));
     }
 
@@ -147,9 +150,11 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      * @param returnType an instance of this type class will be returned
      * @param tree       the JsonNode instance that contains the JSON data
      * @return an instance of the provided class containing the  data from the tree
-     * @throws IOException if an error occurs reading the JSON data
+     * @throws JsonParseException   when an error occurs parsing the provided JSON
+     * @throws JsonMappingException if a JSON error occurs
+     * @throws IOException          if an error occurs reading the JSON data
      */
-    public <T> T unmarshal(Class<T> returnType, JsonNode tree) throws IOException {
+    public <T> T unmarshal(Class<T> returnType, JsonNode tree) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
         return (objectMapper.treeToValue(tree, returnType));
     }
@@ -177,10 +182,11 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      * @param returnType an instance of this type class will be returned
      * @param postData   a String holding the POST data
      * @return an instance of the provided class containing the parsed data from the string
+     * @throws JsonParseException   when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
      * @throws IOException          if an error occurs reading the JSON data
      */
-    public <T> T unmarshal(Class<T> returnType, String postData) throws JsonMappingException, IOException {
+    public <T> T unmarshal(Class<T> returnType, String postData) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(returnType);
         return (objectMapper.readValue(postData, returnType));
     }
@@ -209,10 +215,11 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      * @param returnType an instance of this type class will be contained in the returned List
      * @param postData   a String holding the POST data
      * @return a List of the provided class containing the parsed data from the string
+     * @throws JsonParseException   when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
      * @throws IOException          if an error occurs reading the JSON data
      */
-    public <T> List<T> unmarshalList(Class<T> returnType, String postData) throws JsonMappingException, IOException {
+    public <T> List<T> unmarshalList(Class<T> returnType, String postData) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(null);
         CollectionType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, returnType);
         return (objectMapper.readValue(postData, javaType));
@@ -242,10 +249,11 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      * @param returnType an instance of this type class will be contained the values of the Map
      * @param jsonData   the String containing the JSON data
      * @return a Map containing the parsed data from the String
+     * @throws JsonParseException   when an error occurs parsing the provided JSON
      * @throws JsonMappingException if a JSON error occurs
      * @throws IOException          if an error occurs reading the JSON data
      */
-    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData) throws JsonMappingException, IOException {
+    public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData) throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(null);
         return (objectMapper.readValue(jsonData, new TypeReference<Map<String, T>>() {
         }));
@@ -286,7 +294,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     public static class DateOnlySerializer extends JsonSerializer<Date> {
 
         @Override
-        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException, JsonProcessingException {
             String dateString = ISO8601.dateOnly(date);
             gen.writeString(dateString);
         }
@@ -349,7 +357,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
 
         @Override
         public List<User> deserialize(JsonParser jsonParser, DeserializationContext context)
-                throws IOException {
+                throws IOException, JsonProcessingException {
 
             JsonNode tree = jsonParser.readValueAsTree();
             int numUsers = tree.size();

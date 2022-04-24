@@ -132,9 +132,9 @@ public class Scaner {
     }
 
     /**
-     * 扫描包路径下和所有在classpath中加载的类，满足class过滤器条件的所有class文件，<br>
-     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException<br>
-     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理<br>
+     * 扫描包路径下和所有在classpath中加载的类，满足class过滤器条件的所有class文件，
+     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
+     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
      *
      * @param packageName 包路径 com | com. | com.abs | com.abs.
      * @param classFilter class过滤器，过滤掉不需要的class

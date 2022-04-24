@@ -116,28 +116,15 @@ public class WorksKit {
     }
 
     /**
-     * 创建或加载工作簿，只读模式
+     * 创建新的空白Excel工作簿
      *
-     * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param isXlsx 是否为xlsx格式的Excel
      * @return {@link Workbook}
      */
-    public static Workbook createBook(File excelFile, String password) {
-        return createBook(excelFile, password, false);
-    }
-
-    /**
-     * 创建或加载工作簿
-     *
-     * @param excelFile Excel文件
-     * @param password  Excel工作簿密码，如果无密码传{@code null}
-     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
-     * @return {@link Workbook}
-     */
-    public static Workbook createBook(File excelFile, String password, boolean readOnly) {
+    public static Workbook createBook(boolean isXlsx) {
         try {
-            return WorkbookFactory.create(excelFile, password, readOnly);
-        } catch (Exception e) {
+            return WorkbookFactory.create(isXlsx);
+        } catch (IOException e) {
             throw new InstrumentException(e);
         }
     }
@@ -150,6 +137,17 @@ public class WorksKit {
      */
     public static Workbook createBook(InputStream in) {
         return createBook(in, null);
+    }
+
+    /**
+     * 创建或加载工作簿，只读模式
+     *
+     * @param excelFile Excel文件
+     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @return {@link Workbook}
+     */
+    public static Workbook createBook(File excelFile, String password) {
+        return createBook(excelFile, password, false);
     }
 
     /**
@@ -170,19 +168,19 @@ public class WorksKit {
     }
 
     /**
-     * 根据文件类型创建新的工作簿，文件路径
+     * 创建或加载工作簿
      *
-     * @param isXlsx 是否为xlsx格式的Excel
+     * @param excelFile Excel文件
+     * @param password  Excel工作簿密码，如果无密码传{@code null}
+     * @param readOnly  是否只读模式打开，true:是（不可编辑），false:否（可编辑）
      * @return {@link Workbook}
      */
-    public static Workbook createBook(boolean isXlsx) {
-        Workbook workbook;
-        if (isXlsx) {
-            workbook = new XSSFWorkbook();
-        } else {
-            workbook = new org.apache.poi.hssf.usermodel.HSSFWorkbook();
+    public static Workbook createBook(File excelFile, String password, boolean readOnly) {
+        try {
+            return WorkbookFactory.create(excelFile, password, readOnly);
+        } catch (Exception e) {
+            throw new InstrumentException(e);
         }
-        return workbook;
     }
 
     /**
@@ -198,22 +196,22 @@ public class WorksKit {
     /**
      * 创建或加载SXSSFWorkbook工作簿
      *
+     * @param excelFile Excel文件
+     * @return {@link SXSSFWorkbook}
+     */
+    public static SXSSFWorkbook createSXSSFBook(File excelFile) {
+        return createSXSSFBook(excelFile, false);
+    }
+
+    /**
+     * 创建或加载SXSSFWorkbook工作簿
+     *
      * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
      * @param readOnly      是否只读模式打开，true:是（不可编辑），false:否（可编辑）
      * @return {@link SXSSFWorkbook}
      */
     public static SXSSFWorkbook createSXSSFBook(String excelFilePath, boolean readOnly) {
         return createSXSSFBook(FileKit.file(excelFilePath), null, readOnly);
-    }
-
-    /**
-     * 创建或加载SXSSFWorkbook工作簿
-     *
-     * @param excelFile Excel文件
-     * @return {@link SXSSFWorkbook}
-     */
-    public static SXSSFWorkbook createSXSSFBook(File excelFile) {
-        return createSXSSFBook(excelFile, false);
     }
 
     /**
@@ -237,7 +235,6 @@ public class WorksKit {
     public static SXSSFWorkbook createSXSSFBook(File excelFile, String password) {
         return createSXSSFBook(excelFile, password, false);
     }
-
 
     /**
      * 创建或加载SXSSFWorkbook工作簿

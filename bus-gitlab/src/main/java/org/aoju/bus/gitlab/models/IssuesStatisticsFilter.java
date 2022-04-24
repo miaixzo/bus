@@ -26,7 +26,6 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.IssueScope;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.GitLabApiForm;
@@ -43,10 +42,10 @@ public class IssuesStatisticsFilter {
     private List<String> labels;
     private String milestone;
     private IssueScope scope;
-    private Integer authorId;
-    private Integer assigneeId;
+    private Long authorId;
+    private Long assigneeId;
     private String myReactionEmoji;
-    private List<Integer> iids;
+    private List<Long> iids;
     private String search;
     private String in;
     private Date createdAfter;
@@ -60,7 +59,7 @@ public class IssuesStatisticsFilter {
         return (this);
     }
 
-    public IssuesStatisticsFilter withIids(List<Integer> iids) {
+    public IssuesStatisticsFilter withIids(List<Long> iids) {
         this.iids = iids;
         return (this);
     }
@@ -75,12 +74,12 @@ public class IssuesStatisticsFilter {
         return (this);
     }
 
-    public IssuesStatisticsFilter withAuthorId(Integer authorId) {
+    public IssuesStatisticsFilter withAuthorId(Long authorId) {
         this.authorId = authorId;
         return (this);
     }
 
-    public IssuesStatisticsFilter withAssigneeId(Integer assigneeId) {
+    public IssuesStatisticsFilter withAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;
         return (this);
     }
@@ -129,7 +128,7 @@ public class IssuesStatisticsFilter {
     public GitLabApiForm getQueryParams() throws GitLabApiException {
 
         return (new GitLabApiForm()
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("iids", iids)
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)

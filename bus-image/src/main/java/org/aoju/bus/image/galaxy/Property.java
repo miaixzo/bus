@@ -30,8 +30,6 @@ import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
@@ -44,10 +42,6 @@ import java.util.regex.Pattern;
  * @since Java 17+
  */
 public class Property implements Serializable {
-
-    public static String LINE_SEPARATOR = AccessController.doPrivileged(
-            (PrivilegedAction<String>) () -> System.getProperty("line.separator")
-    );
 
     private final String name;
     private final Object value;
@@ -101,7 +95,7 @@ public class Property implements Serializable {
     public static StringBuilder appendLine(StringBuilder sb, Object... ss) {
         for (Object s : ss)
             sb.append(s);
-        return sb.append(LINE_SEPARATOR);
+        return sb.append(System.getProperty("line.separator"));
     }
 
     public static String concat(String[] ss, char delim) {

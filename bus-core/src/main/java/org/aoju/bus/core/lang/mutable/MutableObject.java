@@ -69,6 +69,10 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
         this.value = value;
     }
 
+    public static <T> MutableObject<T> of(T value) {
+        return new MutableObject<>(value);
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (null == obj) {

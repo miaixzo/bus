@@ -28,7 +28,9 @@ package org.aoju.bus.cron;
 import org.aoju.bus.cron.factory.CronTask;
 import org.aoju.bus.cron.factory.Task;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,20 +41,30 @@ import java.util.List;
  * @version 6.5.0
  * @since Java 17+
  */
-public class Manager {
+public class Manager implements Serializable {
 
-    protected Scheduler scheduler;
+    private static final long serialVersionUID = 1L;
     /**
      * 执行器列表
      */
-    private List<Executor> executors = new ArrayList<>();
+    private final List<Executor> executors = new ArrayList<>();
+    protected Scheduler scheduler;
 
     public Manager(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     /**
-     * 启动 TaskExecutor
+     * 获取所有正在执行的任务调度执行器
+     *
+     * @return 任务执行器列表
+     */
+    public List<Executor> getExecutors() {
+        return Collections.unmodifiableList(this.executors);
+    }
+
+    /**
+     * 启动 执行器TaskExecutor，即启动作业
      *
      * @param task {@link Task}
      * @return {@link Executor}

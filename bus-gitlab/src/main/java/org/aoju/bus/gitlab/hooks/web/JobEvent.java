@@ -39,7 +39,7 @@ public class JobEvent extends AbstractEvent {
     private Boolean tag;
     private String beforeSha;
     private String sha;
-    private Integer jobId;
+    private Long jobId;
     private String jobName;
     private String jobStage;
     private String jobStatus;
@@ -48,12 +48,13 @@ public class JobEvent extends AbstractEvent {
     private Integer jobDuration;
     private Boolean jobAllowFailure;
     private String jobFailureReason;
-    private Integer projectId;
+    private Long projectId;
     private String projectName;
     private User user;
     private BuildCommit commit;
     private EventRepository repository;
 
+    @Override
     public String getObjectKind() {
         return (OBJECT_KIND);
     }
@@ -95,11 +96,11 @@ public class JobEvent extends AbstractEvent {
         this.sha = sha;
     }
 
-    public Integer getJobId() {
+    public Long getJobId() {
         return jobId;
     }
 
-    public void setJobId(Integer jobId) {
+    public void setJobId(Long jobId) {
         this.jobId = jobId;
     }
 
@@ -167,11 +168,11 @@ public class JobEvent extends AbstractEvent {
         this.jobFailureReason = jobFailureReason;
     }
 
-    public Integer getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 

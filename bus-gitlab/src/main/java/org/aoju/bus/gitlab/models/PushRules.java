@@ -31,8 +31,8 @@ import java.util.Date;
 
 public class PushRules {
 
-    private Integer id;
-    private Integer projectId;
+    private Long id;
+    private Long projectId;
     private String commitMessageRegex;
     private String commitMessageNegativeRegex;
     private String branchNameRegex;
@@ -46,23 +46,23 @@ public class PushRules {
     private Boolean commitCommitterCheck;
     private Boolean rejectUnsignedCommits;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 
-    public PushRules withProjectId(Integer projectId) {
+    public PushRules withProjectId(Long projectId) {
         this.projectId = projectId;
         return (this);
     }

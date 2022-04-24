@@ -27,6 +27,7 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.Constants.Encoding;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.support.JacksonJson;
@@ -56,9 +57,9 @@ public class CommitAction {
      * @return the content of the File as a String
      * @throws IOException if any error occurs
      */
-    public static String getFileContentAsString(File file, Encoding encoding) throws IOException {
+    public static String getFileContentAsString(File file, Constants.Encoding encoding) throws IOException {
 
-        if (encoding == Encoding.BASE64) {
+        if (encoding == Constants.Encoding.BASE64) {
 
             try (FileInputStream stream = new FileInputStream(file)) {
                 byte data[] = new byte[(int) file.length()];
@@ -69,20 +70,6 @@ public class CommitAction {
         } else {
             return (new String(Files.readAllBytes(file.toPath())));
         }
-    }
-
-    public CommitAction withFileContent(File file, String filePath, Encoding encoding) throws GitLabApiException {
-
-        this.encoding = (encoding != null ? encoding : Encoding.TEXT);
-        this.filePath = filePath;
-
-        try {
-            content = getFileContentAsString(file, this.encoding);
-        } catch (IOException e) {
-            throw new GitLabApiException(e);
-        }
-
-        return (this);
     }
 
     public Action getAction() {
@@ -179,6 +166,20 @@ public class CommitAction {
     public CommitAction withFileContent(String filePath, Encoding encoding) throws GitLabApiException {
         File file = new File(filePath);
         return (withFileContent(file, filePath, encoding));
+    }
+
+    public CommitAction withFileContent(File file, String filePath, Encoding encoding) throws GitLabApiException {
+
+        this.encoding = (encoding != null ? encoding : Encoding.TEXT);
+        this.filePath = filePath;
+
+        try {
+            content = getFileContentAsString(file, this.encoding);
+        } catch (IOException e) {
+            throw new GitLabApiException(e);
+        }
+
+        return (this);
     }
 
     @Override

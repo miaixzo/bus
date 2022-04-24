@@ -33,7 +33,7 @@ import org.aoju.bus.core.io.copier.ReaderWriterCopier;
 import org.aoju.bus.core.io.copier.StreamCopier;
 import org.aoju.bus.core.io.streams.BOMInputStream;
 import org.aoju.bus.core.io.streams.BOMReader;
-import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
+import org.aoju.bus.core.io.streams.FastByteOutputStream;
 import org.aoju.bus.core.io.streams.NullOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
@@ -488,7 +488,7 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, String charsetName) throws InstrumentException {
-        ByteArrayOutputStream out = read(in);
+        FastByteOutputStream out = read(in);
         return StringKit.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
     }
 
@@ -501,7 +501,7 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static String read(InputStream in, java.nio.charset.Charset charset) throws InstrumentException {
-        ByteArrayOutputStream out = read(in);
+        FastByteOutputStream out = read(in);
         return null == charset ? out.toString() : out.toString(charset);
     }
 
@@ -512,7 +512,7 @@ public class IoKit {
      * @return 输出流
      * @throws InstrumentException 异常
      */
-    public static ByteArrayOutputStream read(InputStream in) throws InstrumentException {
+    public static FastByteOutputStream read(InputStream in) throws InstrumentException {
         return read(in, true);
     }
 
@@ -524,17 +524,17 @@ public class IoKit {
      * @return 输出流
      * @throws InstrumentException IO异常
      */
-    public static ByteArrayOutputStream read(InputStream in, boolean isClose) throws InstrumentException {
-        final ByteArrayOutputStream out;
+    public static FastByteOutputStream read(InputStream in, boolean isClose) throws InstrumentException {
+        final FastByteOutputStream out;
         if (in instanceof FileInputStream) {
             // 文件流的长度是可预见的，此时直接读取效率更高
             try {
-                out = new ByteArrayOutputStream(in.available());
+                out = new FastByteOutputStream(in.available());
             } catch (IOException e) {
                 throw new InstrumentException(e);
             }
         } else {
-            out = new ByteArrayOutputStream();
+            out = new FastByteOutputStream();
         }
         try {
             copy(in, out);
@@ -632,7 +632,7 @@ public class IoKit {
      * @throws InstrumentException IO异常
      */
     public static String read(ReadableByteChannel channel, java.nio.charset.Charset charset) throws InstrumentException {
-        ByteArrayOutputStream out = read(channel);
+        FastByteOutputStream out = read(channel);
         return null == charset ? out.toString() : out.toString(charset);
     }
 
@@ -643,8 +643,8 @@ public class IoKit {
      * @return 输出流
      * @throws InstrumentException IO异常
      */
-    public static ByteArrayOutputStream read(ReadableByteChannel channel) throws InstrumentException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public static FastByteOutputStream read(ReadableByteChannel channel) throws InstrumentException {
+        final FastByteOutputStream out = new FastByteOutputStream();
         copy(channel, Channels.newChannel(out));
         return out;
     }
@@ -709,20 +709,9 @@ public class IoKit {
             return Normal.EMPTY_BYTE_ARRAY;
         }
 
-        byte[] b = new byte[length];
-        int readLength;
-        try {
-            readLength = in.read(b);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-        if (readLength > 0 && readLength < length) {
-            byte[] b2 = new byte[readLength];
-            System.arraycopy(b, 0, b2, 0, readLength);
-            return b2;
-        } else {
-            return b;
-        }
+        final FastByteOutputStream out = new FastByteOutputStream(length);
+        copy(in, out, DEFAULT_BUFFER_SIZE, length, null);
+        return out.toByteArray();
     }
 
     /**
@@ -942,12 +931,12 @@ public class IoKit {
     }
 
     /**
-     * {@link ByteArrayOutputStream}转为{@link ByteArrayInputStream}
+     * {@link FastByteOutputStream}转为{@link ByteArrayInputStream}
      *
      * @param out {@link java.io.ByteArrayOutputStream}
      * @return 字节流
      */
-    public static ByteArrayInputStream toStream(ByteArrayOutputStream out) {
+    public static ByteArrayInputStream toStream(FastByteOutputStream out) {
         if (out == null) {
             return null;
         }

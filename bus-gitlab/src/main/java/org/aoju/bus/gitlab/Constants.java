@@ -182,6 +182,56 @@ public interface Constants {
     }
 
     /**
+     * Enum to use for ordering the results of getPackages().
+     */
+    public enum PackageOrderBy {
+
+        NAME, CREATED_AT, VERSION, TYPE, PROJECT_PATH;
+
+        private static JacksonJsonEnumHelper<PackageOrderBy> enumHelper = new JacksonJsonEnumHelper<>(PackageOrderBy.class);
+
+        @JsonCreator
+        public static PackageOrderBy forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for filtering the results of getPackages().
+     */
+    public enum PackageStatus {
+
+        DEFAULT, HIDDEN, PROCESSING;
+
+        private static JacksonJsonEnumHelper<PackageStatus> enumHelper = new JacksonJsonEnumHelper<>(PackageStatus.class);
+
+        @JsonCreator
+        public static PackageStatus forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
      * Enum to use for ordering the results of getProjects().
      */
     public enum ProjectOrderBy {
@@ -313,6 +363,31 @@ public interface Constants {
 
         @JsonCreator
         public static DeploymentOrderBy forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for ordering the results of getContibutors().
+     */
+    public enum ContributorOrderBy {
+
+        NAME, EMAIL, COMMITS;
+
+        private static JacksonJsonEnumHelper<ContributorOrderBy> enumHelper = new JacksonJsonEnumHelper<>(ContributorOrderBy.class);
+
+        @JsonCreator
+        public static ContributorOrderBy forValue(String value) {
             return enumHelper.forValue(value);
         }
 
@@ -555,7 +630,7 @@ public interface Constants {
      */
     public enum ActionType {
 
-        CREATED, UPDATED, CLOSED, REOPENED, PUSHED, COMMENTED, MERGED, JOINED, LEFT, DESTROYED, EXPIRED, REMOVED;
+        CREATED, UPDATED, OPENED, CLOSED, REOPENED, PUSHED, COMMENTED, MERGED, JOINED, LEFT, DESTROYED, EXPIRED, REMOVED, DELETED, APPROVED, ACCEPTED, IMPORTED;
 
         private static JacksonJsonEnumHelper<ActionType> enumHelper = new JacksonJsonEnumHelper<>(ActionType.class);
 
@@ -1032,6 +1107,30 @@ public interface Constants {
 
         @JsonCreator
         public static AutoDevopsDeployStrategy forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum to use for specifying the Event scope.
+     */
+    public enum EventScope {
+        ALL;
+
+        private static JacksonJsonEnumHelper<EventScope> enumHelper = new JacksonJsonEnumHelper<>(EventScope.class);
+
+        @JsonCreator
+        public static EventScope forValue(String value) {
             return enumHelper.forValue(value);
         }
 

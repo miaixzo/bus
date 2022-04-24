@@ -25,13 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.collection.TransitionIterator;
 import org.aoju.bus.core.toolkit.IterKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * 抽象{@link Table}接口实现
@@ -161,7 +160,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
         @Override
         public Iterator<V> iterator() {
-            return new TransIterator<>(cellSet().iterator(), Cell::getValue);
+            return new TransitionIterator<>(cellSet().iterator(), Cell::getValue);
         }
 
         @Override
@@ -247,44 +246,6 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             if (rowEntry.getValue().isEmpty()) {
                 rowIterator.remove();
             }
-        }
-    }
-
-    /**
-     * 转换迭代器
-     *
-     * @param <F> 对象
-     * @param <T> 对象
-     */
-    public class TransIterator<F, T> implements Iterator<T> {
-
-        private final Iterator<? extends F> backingIterator;
-        private final Function<? super F, ? extends T> func;
-
-        /**
-         * 构造
-         *
-         * @param backingIterator 源{@link Iterator}
-         * @param func            转换函数
-         */
-        public TransIterator(Iterator<? extends F> backingIterator, Function<? super F, ? extends T> func) {
-            this.backingIterator = Assert.notNull(backingIterator);
-            this.func = Assert.notNull(func);
-        }
-
-        @Override
-        public final boolean hasNext() {
-            return backingIterator.hasNext();
-        }
-
-        @Override
-        public final T next() {
-            return func.apply(backingIterator.next());
-        }
-
-        @Override
-        public final void remove() {
-            backingIterator.remove();
         }
     }
 

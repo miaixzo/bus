@@ -36,6 +36,8 @@ import org.aoju.bus.core.map.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * Map相关工具类
@@ -89,20 +91,6 @@ public class MapKit {
     /**
      * 新建一个HashMap
      *
-     * @param <K>     Key类型
-     * @param <V>     Value类型
-     * @param size    初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75 + 1
-     * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
-     * @return HashMap对象
-     */
-    public static <K, V> HashMap<K, V> newHashMap(int size, boolean isOrder) {
-        int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR) + 1;
-        return isOrder ? new LinkedHashMap<>(initialCapacity) : new HashMap<>(initialCapacity);
-    }
-
-    /**
-     * 新建一个HashMap
-     *
      * @param <K>  Key类型
      * @param <V>  Value类型
      * @param size 初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
@@ -134,6 +122,20 @@ public class MapKit {
      */
     public static <K, V> TreeMap<K, V> newTreeMap(Comparator<? super K> comparator) {
         return new TreeMap<>(comparator);
+    }
+
+    /**
+     * 新建一个HashMap
+     *
+     * @param <K>      Key类型
+     * @param <V>      Value类型
+     * @param size     初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75 + 1
+     * @param isLinked Map的Key是否有序，有序返回 {@link LinkedHashMap}，否则返回 {@link HashMap}
+     * @return HashMap对象
+     */
+    public static <K, V> HashMap<K, V> newHashMap(int size, boolean isLinked) {
+        int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR) + 1;
+        return isLinked ? new LinkedHashMap<>(initialCapacity) : new HashMap<>(initialCapacity);
     }
 
     /**
@@ -717,6 +719,24 @@ public class MapKit {
     }
 
     /**
+     * 通过biFunction自定义一个规则，此规则将原Map中的元素转换成新的元素，生成新的Map返回
+     * 变更过程通过传入的 {@link BiFunction} 实现来返回一个值可以为不同类型的 {@link Map}
+     *
+     * @param map        原有的map
+     * @param biFunction {@code lambda}，参数包含{@code key},{@code value}，返回值会作为新的{@code value}
+     * @param <K>        {@code key}的类型
+     * @param <V>        {@code value}的类型
+     * @param <R>        新的，修改后的{@code value}的类型
+     * @return 值可以为不同类型的 {@link Map}
+     */
+    public static <K, V, R> Map<K, R> map(Map<K, V> map, BiFunction<K, V, R> biFunction) {
+        if (null == map || null == biFunction) {
+            return newHashMap();
+        }
+        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, m -> biFunction.apply(m.getKey(), m.getValue())));
+    }
+
+    /**
      * Map的键和值互换
      *
      * @param <T> 键和值类型
@@ -1272,6 +1292,36 @@ public class MapKit {
                 map.clear();
             }
         }
+    }
+
+    /**
+     * 将键和值转换为{@link AbstractMap.SimpleImmutableEntry}
+     * 返回的Entry不可变
+     *
+     * @param key   键
+     * @param value 值
+     * @param <K>   键类型
+     * @param <V>   值类型
+     * @return {@link AbstractMap.SimpleImmutableEntry}
+     */
+    public static <K, V> Map.Entry<K, V> entry(K key, V value) {
+        return entry(key, value, true);
+    }
+
+    /**
+     * 将键和值转换为{@link AbstractMap.SimpleEntry} 或者 {@link AbstractMap.SimpleImmutableEntry}
+     *
+     * @param key         键
+     * @param value       值
+     * @param <K>         键类型
+     * @param <V>         值类型
+     * @param isImmutable 是否不可变Entry
+     * @return {@link AbstractMap.SimpleEntry} 或者 {@link AbstractMap.SimpleImmutableEntry}
+     */
+    public static <K, V> Map.Entry<K, V> entry(K key, V value, boolean isImmutable) {
+        return isImmutable ?
+                new AbstractMap.SimpleEntry<>(key, value) :
+                new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
 }

@@ -26,6 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Console;
+import org.aoju.bus.core.lock.AtomicNoLock;
 import org.aoju.bus.core.thread.*;
 
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -149,6 +150,67 @@ public class ThreadKit {
     }
 
     /**
+     * 获取一个新的线程池，默认的策略如下
+     * <pre>
+     *     1. 核心线程数与最大线程数为nThreads指定的大小
+     *     2. 默认使用{@link LinkedBlockingQueue}，默认队列大小为1024
+     *     3. 如果isBlocked为{code true}，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
+     * </pre>
+     *
+     * @param nThreads         线程池大小
+     * @param threadNamePrefix 线程名称前缀
+     * @param isBlocked        是否使用{@link BlockPolicy}策略
+     * @return {@link ExecutorService}
+     */
+    public static ExecutorService newFixedExecutor(int nThreads, String threadNamePrefix, boolean isBlocked) {
+        return newFixedExecutor(nThreads, 1024, threadNamePrefix, isBlocked);
+    }
+
+    /**
+     * 获取一个新的线程池，默认的策略如下
+     * <pre>
+     *     1. 核心线程数与最大线程数为nThreads指定的大小
+     *     2. 默认使用{@link LinkedBlockingQueue}
+     *     3. 如果isBlocked为{code true}，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
+     * </pre>
+     *
+     * @param nThreads         线程池大小
+     * @param maximumQueueSize 队列大小
+     * @param threadNamePrefix 线程名称前缀
+     * @param isBlocked        是否使用{@link BlockPolicy}策略
+     * @return {@link ExecutorService}
+     */
+    public static ExecutorService newFixedExecutor(int nThreads, int maximumQueueSize, String threadNamePrefix, boolean isBlocked) {
+        return newFixedExecutor(nThreads, maximumQueueSize, threadNamePrefix,
+                (isBlocked ? RejectPolicy.BLOCK : RejectPolicy.ABORT).getValue());
+    }
+
+    /**
+     * 获得一个新的线程池，默认策略如下
+     * <pre>
+     *     1. 核心线程数与最大线程数为nThreads指定的大小
+     *     2. 默认使用 {@link LinkedBlockingQueue}
+     * </pre>
+     *
+     * @param nThreads         线程池大小
+     * @param maximumQueueSize 队列大小
+     * @param threadNamePrefix 线程名称前缀
+     * @param handler          拒绝策略
+     * @return {@link ExecutorService}
+     */
+    public static ExecutorService newFixedExecutor(int nThreads,
+                                                   int maximumQueueSize,
+                                                   String threadNamePrefix,
+                                                   RejectedExecutionHandler handler) {
+        return ExecutorBuilder.create()
+                .setCorePoolSize(nThreads).setMaxPoolSize(nThreads)
+                .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
+                .setThreadFactory(createThreadFactory(threadNamePrefix))
+                .setHandler(handler)
+                .build();
+    }
+
+    /**
      * 直接在公共线程池中执行线程
      *
      * @param runnable 可运行对象
@@ -161,12 +223,12 @@ public class ThreadKit {
      * 执行异步方法
      *
      * @param runnable 需要执行的方法体
-     * @param isDeamon 是否守护线程 守护线程会在主线程结束后自动结束
+     * @param isDaemon 是否守护线程 守护线程会在主线程结束后自动结束
      * @return 执行的方法体
      */
-    public static Runnable excAsync(final Runnable runnable, boolean isDeamon) {
+    public static Runnable excAsync(final Runnable runnable, boolean isDaemon) {
         Thread thread = new Thread(() -> runnable.run());
-        thread.setDaemon(isDeamon);
+        thread.setDaemon(isDaemon);
         thread.start();
 
         return runnable;
@@ -263,12 +325,12 @@ public class ThreadKit {
      *
      * @param runnable {@link Runnable}
      * @param name     线程名
-     * @param isDeamon 是否守护线程
+     * @param isDaemon 是否守护线程
      * @return {@link Thread}
      */
-    public static Thread newThread(Runnable runnable, String name, boolean isDeamon) {
+    public static Thread newThread(Runnable runnable, String name, boolean isDaemon) {
         final Thread t = new Thread(null, runnable, name);
-        t.setDaemon(isDeamon);
+        t.setDaemon(isDaemon);
         return t;
     }
 
@@ -418,6 +480,17 @@ public class ThreadKit {
     }
 
     /**
+     * 创建自定义线程名称前缀的{@link ThreadFactory}
+     *
+     * @param threadNamePrefix 线程名称前缀
+     * @return {@link ThreadFactory}
+     * @see ThreadBuilder#build()
+     */
+    public static ThreadFactory createThreadFactory(String threadNamePrefix) {
+        return ThreadBuilder.create().setNamePrefix(threadNamePrefix).build();
+    }
+
+    /**
      * 结束线程,调用此方法后,线程将抛出 {@link InterruptedException}异常
      *
      * @param thread 线程
@@ -496,24 +569,14 @@ public class ThreadKit {
     }
 
     /**
-     * 获取当前线程的线程组
-     *
-     * @return 线程组
-     */
-    public static ThreadGroup currentThreadGroup() {
-        final SecurityManager s = System.getSecurityManager();
-        return (null != s) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-    }
-
-    /**
      * 创建线程工厂
      *
      * @param prefix   线程名前缀
-     * @param isDeamon 是否守护线程
+     * @param isDaemon 是否守护线程
      * @return the object
      */
-    public static ThreadFactory newNamedThreadFactory(String prefix, boolean isDeamon) {
-        return new NamedThreadFactory(prefix, isDeamon);
+    public static ThreadFactory newNamedThreadFactory(String prefix, boolean isDaemon) {
+        return new NamedThreadFactory(prefix, isDaemon);
     }
 
     /**
@@ -521,11 +584,11 @@ public class ThreadKit {
      *
      * @param prefix      线程名前缀
      * @param threadGroup 线程组,可以为null
-     * @param isDeamon    是否守护线程
+     * @param isDaemon    是否守护线程
      * @return the object
      */
-    public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon) {
-        return new NamedThreadFactory(prefix, threadGroup, isDeamon);
+    public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDaemon) {
+        return new NamedThreadFactory(prefix, threadGroup, isDaemon);
     }
 
     /**
@@ -533,12 +596,12 @@ public class ThreadKit {
      *
      * @param prefix      线程名前缀
      * @param threadGroup 线程组,可以为null
-     * @param isDeamon    是否守护线程
+     * @param isDaemon    是否守护线程
      * @param handler     未捕获异常处理
      * @return the object
      */
-    public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon, UncaughtExceptionHandler handler) {
-        return new NamedThreadFactory(prefix, threadGroup, isDeamon, handler);
+    public static ThreadFactory newNamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDaemon, UncaughtExceptionHandler handler) {
+        return new NamedThreadFactory(prefix, threadGroup, isDaemon, handler);
     }
 
     /**

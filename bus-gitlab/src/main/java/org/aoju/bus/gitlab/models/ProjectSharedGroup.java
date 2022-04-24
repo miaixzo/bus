@@ -29,16 +29,16 @@ import org.aoju.bus.gitlab.support.JacksonJson;
 
 public class ProjectSharedGroup {
 
-    private Integer groupId;
+    private Long groupId;
     private String groupName;
     private String groupFullPath;
     private AccessLevel groupAccessLevel;
 
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
 

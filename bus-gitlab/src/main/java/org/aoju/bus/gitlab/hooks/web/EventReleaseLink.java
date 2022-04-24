@@ -28,18 +28,17 @@ package org.aoju.bus.gitlab.hooks.web;
 import org.aoju.bus.gitlab.support.JacksonJson;
 
 public class EventReleaseLink {
-
-    private Integer id;
+    private Long id;
     private Boolean external;
     private String linkType;
     private String name;
     private String url;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(final Integer id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -79,5 +78,4 @@ public class EventReleaseLink {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
-
 }

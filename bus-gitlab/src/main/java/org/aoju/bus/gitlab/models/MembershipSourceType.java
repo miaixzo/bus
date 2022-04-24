@@ -38,7 +38,7 @@ public enum MembershipSourceType {
      */
     NAMESPACE;
 
-    private static JacksonJsonEnumHelper<MembershipSourceType> enumHelper = new JacksonJsonEnumHelper<>(MembershipSourceType.class);
+    private static JacksonJsonEnumHelper<MembershipSourceType> enumHelper = new JacksonJsonEnumHelper<>(MembershipSourceType.class, true);
 
     @JsonCreator
     public static MembershipSourceType forValue(String value) {

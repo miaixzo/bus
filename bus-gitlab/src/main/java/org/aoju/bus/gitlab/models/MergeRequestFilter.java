@@ -26,27 +26,22 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants;
-import org.aoju.bus.gitlab.Constants.*;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
 import java.util.Date;
 import java.util.List;
-
-import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ALL;
-import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
 
 /**
  * This class is used to filter merge requests when getting lists of them.
  */
 public class MergeRequestFilter {
 
-    private Integer projectId;
-    private List<Integer> iids;
-    private MergeRequestState state;
-    private MergeRequestOrderBy orderBy;
-    private SortOrder sort;
+    private Long projectId;
+    private List<Long> iids;
+    private Constants.MergeRequestState state;
+    private Constants.MergeRequestOrderBy orderBy;
+    private Constants.SortOrder sort;
     private String milestone;
     private Boolean simpleView;
     private List<String> labels;
@@ -54,81 +49,81 @@ public class MergeRequestFilter {
     private Date createdBefore;
     private Date updatedAfter;
     private Date updatedBefore;
-    private MergeRequestScope scope;
+    private Constants.MergeRequestScope scope;
 
     /**
      * Filter MR by created by the given user id. Combine with scope=all or scope=assigned_to_me
      */
-    private Integer authorId;
-    private Integer assigneeId;
+    private Long authorId;
+    private Long assigneeId;
     private String myReactionEmoji;
     private String sourceBranch;
     private String targetBranch;
     private String search;
-    private MergeRequestSearchIn in;
+    private Constants.MergeRequestSearchIn in;
     private Boolean wip;
 
-    public Integer getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(Integer projectId) {
+    public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 
-    public MergeRequestFilter withProjectId(Integer projectId) {
+    public MergeRequestFilter withProjectId(Long projectId) {
         this.projectId = projectId;
         return (this);
     }
 
-    public List<Integer> getIids() {
+    public List<Long> getIids() {
         return iids;
     }
 
-    public void setIids(List<Integer> iids) {
+    public void setIids(List<Long> iids) {
         this.iids = iids;
     }
 
-    public MergeRequestFilter withIids(List<Integer> iids) {
+    public MergeRequestFilter withIids(List<Long> iids) {
         this.iids = iids;
         return (this);
     }
 
-    public MergeRequestState getState() {
+    public Constants.MergeRequestState getState() {
         return state;
     }
 
-    public void setState(MergeRequestState state) {
+    public void setState(Constants.MergeRequestState state) {
         this.state = state;
     }
 
-    public MergeRequestFilter withState(MergeRequestState state) {
+    public MergeRequestFilter withState(Constants.MergeRequestState state) {
         this.state = state;
         return (this);
     }
 
-    public MergeRequestOrderBy getOrderBy() {
+    public Constants.MergeRequestOrderBy getOrderBy() {
         return orderBy;
     }
 
-    public void setOrderBy(MergeRequestOrderBy orderBy) {
+    public void setOrderBy(Constants.MergeRequestOrderBy orderBy) {
         this.orderBy = orderBy;
     }
 
-    public MergeRequestFilter withOrderBy(MergeRequestOrderBy orderBy) {
+    public MergeRequestFilter withOrderBy(Constants.MergeRequestOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
 
-    public SortOrder getSort() {
+    public Constants.SortOrder getSort() {
         return sort;
     }
 
-    public void setSort(SortOrder sort) {
+    public void setSort(Constants.SortOrder sort) {
         this.sort = sort;
     }
 
-    public MergeRequestFilter withSort(SortOrder sort) {
+    public MergeRequestFilter withSort(Constants.SortOrder sort) {
         this.sort = sort;
         return (this);
     }
@@ -224,41 +219,41 @@ public class MergeRequestFilter {
         return (this);
     }
 
-    public MergeRequestScope getScope() {
+    public Constants.MergeRequestScope getScope() {
         return scope;
     }
 
-    public void setScope(MergeRequestScope scope) {
+    public void setScope(Constants.MergeRequestScope scope) {
         this.scope = scope;
     }
 
-    public MergeRequestFilter withScope(MergeRequestScope scope) {
+    public MergeRequestFilter withScope(Constants.MergeRequestScope scope) {
         this.scope = scope;
         return (this);
     }
 
-    public Integer getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(Integer authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
-    public MergeRequestFilter withAuthorId(Integer authorId) {
+    public MergeRequestFilter withAuthorId(Long authorId) {
         this.authorId = authorId;
         return (this);
     }
 
-    public Integer getAssigneeId() {
+    public Long getAssigneeId() {
         return assigneeId;
     }
 
-    public void setAssigneeId(Integer assigneeId) {
+    public void setAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;
     }
 
-    public MergeRequestFilter withAssigneeId(Integer assigneeId) {
+    public MergeRequestFilter withAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;
         return (this);
     }
@@ -315,15 +310,15 @@ public class MergeRequestFilter {
         return (this);
     }
 
-    public MergeRequestSearchIn getIn() {
+    public Constants.MergeRequestSearchIn getIn() {
         return in;
     }
 
-    public void setIn(MergeRequestSearchIn in) {
+    public void setIn(Constants.MergeRequestSearchIn in) {
         this.in = in;
     }
 
-    public MergeRequestFilter withIn(MergeRequestSearchIn in) {
+    public MergeRequestFilter withIn(Constants.MergeRequestSearchIn in) {
         this.in = in;
         return (this);
     }
@@ -357,7 +352,7 @@ public class MergeRequestFilter {
                 .withParam("sort", sort)
                 .withParam("milestone", milestone)
                 .withParam("view", (simpleView != null && simpleView ? "simple" : null))
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("created_after", createdAfter)
                 .withParam("created_before", createdBefore)
                 .withParam("updated_after", updatedAfter)
@@ -371,7 +366,7 @@ public class MergeRequestFilter {
                 .withParam("in", in)
                 .withParam("wip", (wip == null ? null : wip ? "yes" : "no"));
 
-        if (authorId != null && (scope == ALL || scope == ASSIGNED_TO_ME)) {
+        if (authorId != null && (scope == Constants.MergeRequestScope.ALL || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
             params.withParam("author_id", authorId);
         }
         return params;

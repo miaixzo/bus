@@ -31,7 +31,7 @@ import java.util.List;
 
 public class ApprovalRule {
 
-    private Integer id;
+    private Long id;
     private String name;
     private String ruleType;
     private List<User> eligibleApprovers;
@@ -43,11 +43,11 @@ public class ApprovalRule {
     private List<User> approvedBy;
     private Boolean approved;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -973,6 +973,23 @@ public class CharsKit {
     }
 
     /**
+     * 在给定字符串末尾填充指定字符，以达到给定长度
+     * 如果字符串本身的长度大于等于length，返回原字符串
+     *
+     * @param str       字符串
+     * @param fixedChar 补充的字符
+     * @param length    补充到的长度
+     * @return 补充后的字符串
+     */
+    public static String fixLength(CharSequence str, char fixedChar, int length) {
+        final int fixedLength = length - str.length();
+        if (fixedLength <= 0) {
+            return str.toString();
+        }
+        return str + repeat(fixedChar, fixedLength);
+    }
+
+    /**
      * 字符串去空格
      *
      * @param text 原始字符串
@@ -4393,7 +4410,7 @@ public class CharsKit {
      * @param <T>   元素类型
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      */
-    public <T extends CharSequence> T firstNonNull(T... texts) {
+    public static <T extends CharSequence> T firstNonNull(T... texts) {
         return ArrayKit.firstNonNull(texts);
     }
 
@@ -4405,7 +4422,7 @@ public class CharsKit {
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      * @see #isNotEmpty(CharSequence)
      */
-    public <T extends CharSequence> T firstNonEmpty(T... texts) {
+    public static <T extends CharSequence> T firstNonEmpty(T... texts) {
         return ArrayKit.firstNonNull(CharsKit::isNotEmpty, texts);
     }
 
@@ -4417,7 +4434,7 @@ public class CharsKit {
      * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
      * @see #isNotBlank(CharSequence)
      */
-    public <T extends CharSequence> T firstNonBlank(T... texts) {
+    public static <T extends CharSequence> T firstNonBlank(T... texts) {
         return ArrayKit.firstNonNull(CharsKit::isNotBlank, texts);
     }
 

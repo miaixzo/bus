@@ -300,7 +300,7 @@ public final class Expression implements Serializable, Cloneable {
             throw pe;
         } catch (Exception e) {
             throw new ParseException("Illegal cron expression format ("
-                    + e.toString() + ")", 0);
+                    + e + ")", 0);
         }
     }
 
@@ -958,7 +958,7 @@ public final class Expression implements Serializable, Cloneable {
     public Date getTimeAfter(Date afterTime) {
 
         // Computation is based on Gregorian year only.
-        Calendar cl = new java.util.GregorianCalendar(getTimeZone());
+        Calendar cl = new GregorianCalendar(getTimeZone());
 
         // move ahead one second, since we're computing the time *after* the
         // given time
@@ -1213,10 +1213,7 @@ public final class Expression implements Serializable, Cloneable {
                         daysToAdd = dow + (7 - cDow);
                     }
 
-                    boolean dayShifted = false;
-                    if (daysToAdd > 0) {
-                        dayShifted = true;
-                    }
+                    boolean dayShifted = daysToAdd > 0;
 
                     day += daysToAdd;
                     int weekOfMonth = day / 7;

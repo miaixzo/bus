@@ -128,7 +128,7 @@ public class TodosApi extends AbstractApi {
      * @return Stream of Todo instances
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Todo> getTodos(TodoAction action, Integer authorId, Integer projectId, Integer groupId, TodoState state, TodoType type) throws GitLabApiException {
+    public List<Todo> getTodos(TodoAction action, Long authorId, Long projectId, Long groupId, TodoState state, TodoType type) throws GitLabApiException {
         return (getTodos(action, authorId, projectId, groupId, state, type, getDefaultPerPage()).all());
     }
 
@@ -146,7 +146,7 @@ public class TodosApi extends AbstractApi {
      * @return Stream of Todo instances
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<Todo> getTodosStream(TodoAction action, Integer authorId, Integer projectId, Integer groupId, TodoState state, TodoType type) throws GitLabApiException {
+    public Stream<Todo> getTodosStream(TodoAction action, Long authorId, Long projectId, Long groupId, TodoState state, TodoType type) throws GitLabApiException {
         return (getTodos(action, authorId, projectId, groupId, state, type, getDefaultPerPage()).stream());
     }
 
@@ -167,7 +167,7 @@ public class TodosApi extends AbstractApi {
      * @return a list of pages in todo for the specified range
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Todo> getTodos(TodoAction action, Integer authorId, Integer projectId, Integer groupId, TodoState state, TodoType type, int itemsPerPage) throws GitLabApiException {
+    public Pager<Todo> getTodos(TodoAction action, Long authorId, Long projectId, Long groupId, TodoState state, TodoType type, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("action", action, false)
                 .withParam("author_id", authorId, false)
@@ -188,7 +188,7 @@ public class TodosApi extends AbstractApi {
      * @return todo instance with info on the created page
      * @throws GitLabApiException if any exception occurs
      */
-    public Todo markAsDone(Integer todoId) throws GitLabApiException {
+    public Todo markAsDone(Long todoId) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm();
         Response response = post(Response.Status.OK, formData, "todos", todoId, "mark_as_done");
         return (response.readEntity(Todo.class));

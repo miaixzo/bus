@@ -26,7 +26,6 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.Constants.IssueOrderBy;
 import org.aoju.bus.gitlab.Constants.IssueScope;
@@ -71,12 +70,12 @@ public class IssueFilter {
     /**
      * Return issues created by the given user id.
      */
-    private Integer authorId;
+    private Long authorId;
 
     /**
      * Return issues assigned to the given user id.
      */
-    private Integer assigneeId;
+    private Long assigneeId;
 
     /**
      * Return issues reacted by the authenticated user by the given emoji.
@@ -160,19 +159,19 @@ public class IssueFilter {
         this.scope = scope;
     }
 
-    public Integer getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(Integer authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
-    public Integer getAssigneeId() {
+    public Long getAssigneeId() {
         return assigneeId;
     }
 
-    public void setAssigneeId(Integer assigneeId) {
+    public void setAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;
     }
 
@@ -266,12 +265,12 @@ public class IssueFilter {
         return (this);
     }
 
-    public IssueFilter withAuthorId(Integer authorId) {
+    public IssueFilter withAuthorId(Long authorId) {
         this.authorId = authorId;
         return (this);
     }
 
-    public IssueFilter withAssigneeId(Integer assigneeId) {
+    public IssueFilter withAssigneeId(Long assigneeId) {
         this.assigneeId = assigneeId;
         return (this);
     }
@@ -329,7 +328,7 @@ public class IssueFilter {
         return (new GitLabApiForm()
                 .withParam("iids", iids)
                 .withParam("state", state)
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)
                 .withParam("author_id", authorId)

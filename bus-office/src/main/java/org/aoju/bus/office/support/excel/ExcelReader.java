@@ -146,6 +146,15 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
         this(book.getSheet(sheetName));
     }
 
+    /**
+     * 构造
+     *
+     * @param excelFilePath Excel文件路径，绝对路径或相对于ClassPath路径
+     * @param sheetName     sheet名，第一个默认是sheet1
+     */
+    public ExcelReader(String excelFilePath, String sheetName) {
+        this(FileKit.file(excelFilePath), sheetName);
+    }
 
     /**
      * 是否忽略空行

@@ -25,30 +25,23 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 
 /**
  * 年匹配
- * 考虑年数字太大,不适合boolean数组,单独使用列表遍历匹配
+ * 考虑年数字太大，不适合boolean数组，单独使用{@link LinkedHashSet}匹配
  *
  * @author Kimi Liu
  * @version 6.5.0
  * @since Java 17+
  */
-public class YearValueMatcher implements ValueMatcher {
+public class YearValueMatcher implements PartMatcher {
 
-    /**
-     * 值列表
-     */
-    private List<Integer> list;
+    private final LinkedHashSet<Integer> list;
 
-    /**
-     * 构造
-     *
-     * @param list 列表年份
-     */
-    public YearValueMatcher(List<Integer> list) {
-        this.list = list;
+    public YearValueMatcher(Collection<Integer> list) {
+        this.list = new LinkedHashSet<>(list);
     }
 
     @Override

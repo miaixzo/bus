@@ -51,5 +51,4 @@ public class EventReleaseSource {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
-
 }

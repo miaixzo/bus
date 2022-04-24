@@ -89,7 +89,7 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
     }
 
     /**
-     * 构造<br>
+     * 构造
      * 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改
      *
      * @param emptyMapBuilder Map构造器，必须构造空的Map

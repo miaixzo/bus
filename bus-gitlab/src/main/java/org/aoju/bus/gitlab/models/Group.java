@@ -33,10 +33,7 @@ import java.util.List;
 
 public class Group {
 
-    private Date createdAt;
-
-
-    private Integer id;
+    private Long id;
     private String name;
     private String path;
     private String description;
@@ -47,19 +44,21 @@ public class Group {
     private Boolean requestAccessEnabled;
     private String fullName;
     private String fullPath;
-    private Integer parentId;
+    private Long parentId;
     private Integer sharedRunnersMinutesLimit;
     private Statistics statistics;
     private List<Project> projects;
     private List<Project> sharedProjects;
+    private Date createdAt;
+    private String runnersToken;
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
 
-    public Integer getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -143,11 +142,11 @@ public class Group {
         this.fullPath = fullPath;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
@@ -199,7 +198,15 @@ public class Group {
         this.createdAt = createdAt;
     }
 
-    public Group withId(Integer id) {
+    public String getRunnersToken() {
+        return runnersToken;
+    }
+
+    public void setRunnersToken(String runnersToken) {
+        this.runnersToken = runnersToken;
+    }
+
+    public Group withId(Long id) {
         this.id = id;
         return this;
     }
@@ -254,7 +261,7 @@ public class Group {
         return this;
     }
 
-    public Group withParentId(Integer parentId) {
+    public Group withParentId(Long parentId) {
         this.parentId = parentId;
         return this;
     }
