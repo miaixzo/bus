@@ -42,7 +42,6 @@ import java.util.List;
  * 文本绘制器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TextPainter implements Painter {

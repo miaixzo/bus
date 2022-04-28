@@ -40,19 +40,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日志工厂类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class LogFactory {
 
     /**
+     * 日志对象缓存
+     */
+    private final Map<Object, Log> logCache;
+    /**
      * 日志框架名,用于打印当前所用日志框架
      */
     protected String name;
-    /**
-     * 日志对象缓存
-     */
-    private Map<Object, Log> logCache;
 
     /**
      * 构造

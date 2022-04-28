@@ -32,7 +32,6 @@ import org.aoju.bus.mapper.entity.EntityTable;
  * 生成 SQL，初始化时执行
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface GenSql {

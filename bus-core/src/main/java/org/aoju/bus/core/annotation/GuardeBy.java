@@ -34,7 +34,6 @@ import java.lang.annotation.*;
  * 有助于代码的维护与审查,以及一些自动化的分析工具找到潜在的安全性错误
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Documented

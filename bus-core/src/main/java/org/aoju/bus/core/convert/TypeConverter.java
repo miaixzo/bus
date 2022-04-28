@@ -31,7 +31,6 @@ import java.lang.reflect.Type;
  * 类型转换接口函数，根据给定的值和目标类型，由用户自定义转换规则。
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @FunctionalInterface

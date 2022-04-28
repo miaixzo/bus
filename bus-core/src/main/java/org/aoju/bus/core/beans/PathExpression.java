@@ -41,7 +41,6 @@ import java.util.*;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PathExpression implements Serializable {

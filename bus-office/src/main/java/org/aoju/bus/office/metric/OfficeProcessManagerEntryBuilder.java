@@ -34,7 +34,6 @@ import java.io.File;
  * 当需要office实例来执行转换时，该类保存{@link OfficeProcessEntryManager}的配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OfficeProcessManagerEntryBuilder extends OfficeProcessManagerBuilder

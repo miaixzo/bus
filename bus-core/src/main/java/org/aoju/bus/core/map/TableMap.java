@@ -38,13 +38,19 @@ import java.util.*;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
 
     private final List<K> keys;
     private final List<V> values;
+
+    /**
+     * 构造
+     */
+    public TableMap() {
+        this(10);
+    }
 
     /**
      * 构造
@@ -170,7 +176,16 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
     @Override
     public Set<K> keySet() {
-        return new HashSet<>(keys);
+        return new HashSet<>(this.keys);
+    }
+
+    /**
+     * 获取所有键，可重复，不可修改
+     *
+     * @return 键列表
+     */
+    public List<K> keys() {
+        return Collections.unmodifiableList(this.keys);
     }
 
     @Override

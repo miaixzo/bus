@@ -31,7 +31,6 @@ import lombok.*;
  * 授权所需的token
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17++
  */
 @Getter

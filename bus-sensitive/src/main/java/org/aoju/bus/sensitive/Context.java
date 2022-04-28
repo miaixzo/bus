@@ -26,7 +26,7 @@
 package org.aoju.bus.sensitive;
 
 import lombok.Data;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.sensitive.annotation.Shield;
 
 import java.lang.reflect.Field;
@@ -37,7 +37,6 @@ import java.util.List;
  * 脱敏的执行上下文
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

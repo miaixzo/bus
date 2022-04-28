@@ -26,11 +26,11 @@
 package org.aoju.bus.oauth.provider;
 
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.exception.AuthorizedException;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.UriKit;
@@ -57,7 +57,6 @@ import java.util.stream.Collectors;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractProvider implements Provider {

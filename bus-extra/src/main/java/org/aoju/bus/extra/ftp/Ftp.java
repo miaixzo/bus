@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.extra.ftp;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -53,7 +53,6 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Ftp extends AbstractFtp {
@@ -416,7 +415,7 @@ public class Ftp extends AbstractFtp {
     }
 
     /**
-     * 判断ftp服务器文件是否存在
+     * 判断ftp服务器目录内是否还有子元素（目录或文件）
      *
      * @param path 文件路径
      * @return 是否存在

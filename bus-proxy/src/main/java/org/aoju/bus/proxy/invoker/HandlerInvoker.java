@@ -34,7 +34,6 @@ import java.lang.reflect.Method;
  * 适配器类，将JDK的{@link InvocationHandler}接口调整为Commons Proxy的{@link Invoker}接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class HandlerInvoker implements Invoker {

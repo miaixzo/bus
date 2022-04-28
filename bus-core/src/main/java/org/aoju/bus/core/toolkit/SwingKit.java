@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.swing.ClipboardListener;
 import org.aoju.bus.core.swing.ClipboardMonitor;
 import org.aoju.bus.core.swing.ImageSelection;
@@ -44,7 +44,6 @@ import java.net.URI;
  * 显示器等相关工具
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SwingKit {

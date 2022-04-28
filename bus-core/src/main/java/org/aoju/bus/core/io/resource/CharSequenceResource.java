@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -40,7 +40,6 @@ import java.nio.charset.Charset;
  * {@link CharSequence}资源，字符串做为资源
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CharSequenceResource implements Resource {

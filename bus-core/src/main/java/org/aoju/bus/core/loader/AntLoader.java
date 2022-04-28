@@ -35,7 +35,6 @@ import java.util.Enumeration;
  * ANT风格路径资源加载器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AntLoader extends PatternLoader implements Loader {

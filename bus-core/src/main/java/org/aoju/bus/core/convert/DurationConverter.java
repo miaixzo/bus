@@ -32,7 +32,6 @@ import java.time.temporal.TemporalAmount;
  * {@link Duration}对象转换器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DurationConverter extends AbstractConverter<Duration> {

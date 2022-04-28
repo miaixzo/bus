@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.resource;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Parser;
@@ -47,7 +47,6 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class LimitedResourceScanner implements LimitedResourceSource {

@@ -51,7 +51,6 @@ import java.util.concurrent.TimeUnit;
  * 此实现使用{@linkplain NewCall}发送请求和接收响应
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class HttpURLConnection extends java.net.HttpURLConnection implements Callback {

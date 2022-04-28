@@ -38,14 +38,13 @@ import org.aoju.bus.logger.level.Level;
  * 利用System.out.println()打印日志
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ConsoleLog extends AbstractAware {
 
-    private static String logFormat = "[{date}] [{level}] {name}: {msg}";
+    private static final String logFormat = "[{date}] [{level}] {name}: {msg}";
     private static Level currentLevel = Level.DEBUG;
-    private String name;
+    private final String name;
 
     /**
      * 构造
@@ -137,7 +136,7 @@ public class ConsoleLog extends AbstractAware {
         }
 
         final Dict dict = Dict.create()
-                .set("date", DateKit.today())
+                .set("date", DateKit.now())
                 .set("level", level.toString())
                 .set("name", this.name)
                 .set("msg", StringKit.format(format, arguments));

@@ -53,7 +53,6 @@ import java.util.function.Function;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NumberConverter extends AbstractConverter<Number> {

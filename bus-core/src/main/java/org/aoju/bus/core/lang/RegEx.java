@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RegEx {

@@ -29,7 +29,6 @@ package org.aoju.bus.core.io;
  * Stream进度条
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface StreamProgress {

@@ -28,7 +28,7 @@ package org.aoju.bus.pager.parser;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.aoju.bus.core.lang.exception.PageException;
+import org.aoju.bus.core.exception.PageException;
 import org.aoju.bus.logger.Logger;
 
 import java.util.List;
@@ -37,7 +37,6 @@ import java.util.List;
  * 处理 Order by
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OrderByParser {

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.provider;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Provider;
 
 import java.rmi.NotBoundException;
@@ -40,7 +40,6 @@ import java.rmi.server.RMIClientSocketFactory;
  * 通过在RMI注册表中查找来提供对象
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RmiProvider implements Provider {

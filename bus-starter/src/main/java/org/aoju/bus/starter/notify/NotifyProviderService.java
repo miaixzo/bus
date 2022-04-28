@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.notify;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
@@ -43,7 +43,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通知提供服务
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 public class NotifyProviderService {

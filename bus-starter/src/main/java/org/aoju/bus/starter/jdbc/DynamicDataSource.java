@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.starter.jdbc;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
@@ -39,7 +39,6 @@ import java.util.Set;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DynamicDataSource extends AbstractRoutingDataSource {

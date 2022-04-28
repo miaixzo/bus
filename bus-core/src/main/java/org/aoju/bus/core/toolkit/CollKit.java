@@ -30,8 +30,8 @@ import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.convert.ConverterRegistry;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.System;
 import java.lang.reflect.Array;
@@ -51,7 +51,6 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CollKit {
@@ -732,6 +731,9 @@ public class CollKit {
      * @see IterKit#join(Iterable, CharSequence)
      */
     public static <T> String join(Iterable<T> iterable, CharSequence conjunction) {
+        if (null == iterable) {
+            return null;
+        }
         return IterKit.join(iterable, conjunction);
     }
 
@@ -746,6 +748,9 @@ public class CollKit {
      * @see IterKit#join(Iterator, CharSequence)
      */
     public static <T> String join(Iterator<T> iterator, CharSequence conjunction) {
+        if (null == iterator) {
+            return null;
+        }
         return IterKit.join(iterator, conjunction);
     }
 
@@ -2494,28 +2499,6 @@ public class CollKit {
      */
     public static <T> T getLast(Collection<T> collection) {
         return get(collection, -1);
-    }
-
-    /**
-     * 获得{@link Iterable}对象的元素类型(通过第一个非空元素判断)
-     *
-     * @param iterable {@link Iterable}
-     * @return 元素类型, 当列表为空或元素全部为null时, 返回null
-     * @see IterKit#getElementType(Iterable)
-     */
-    public static Class<?> getElementType(Iterable<?> iterable) {
-        return IterKit.getElementType(iterable);
-    }
-
-    /**
-     * 获得{@link Iterator}对象的元素类型(通过第一个非空元素判断)
-     *
-     * @param iterator {@link Iterator}
-     * @return 元素类型, 当列表为空或元素全部为null时, 返回null
-     * @see IterKit#getElementType(Iterator)
-     */
-    public static Class<?> getElementType(Iterator<?> iterator) {
-        return IterKit.getElementType(iterator);
     }
 
     /**

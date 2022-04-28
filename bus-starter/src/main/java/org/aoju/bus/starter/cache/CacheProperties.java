@@ -37,7 +37,6 @@ import java.util.Map;
  * 缓存相关配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

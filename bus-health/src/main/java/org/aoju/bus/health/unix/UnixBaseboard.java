@@ -32,7 +32,6 @@ import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
  * Baseboard data obtained by a calling class
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

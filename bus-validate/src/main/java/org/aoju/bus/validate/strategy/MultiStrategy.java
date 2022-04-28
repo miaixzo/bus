@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.lang.exception.NoSuchException;
+import org.aoju.bus.core.exception.NoSuchException;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.Registry;
 import org.aoju.bus.validate.annotation.Multi;
@@ -38,7 +38,6 @@ import java.util.List;
  * 多规则匹配校验
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MultiStrategy implements Matcher<Object, Multi> {

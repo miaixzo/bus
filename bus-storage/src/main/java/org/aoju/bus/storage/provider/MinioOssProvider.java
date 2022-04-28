@@ -30,9 +30,9 @@ import io.minio.MinioClient;
 import io.minio.Result;
 import io.minio.errors.*;
 import io.minio.messages.Item;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -55,7 +55,6 @@ import java.util.stream.StreamSupport;
  * 存储服务-MinIO
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MinioOssProvider extends AbstractProvider {
@@ -158,14 +157,14 @@ public class MinioOssProvider extends AbstractProvider {
                                     storageItem.setExtend(extend);
                                     return storageItem;
                                 } catch (InvalidBucketNameException |
-                                        NoSuchAlgorithmException |
-                                        InsufficientDataException |
-                                        IOException |
-                                        InvalidKeyException |
-                                        NoResponseException |
-                                        XmlPullParserException |
-                                        ErrorResponseException |
-                                        InternalException e) {
+                                         NoSuchAlgorithmException |
+                                         InsufficientDataException |
+                                         IOException |
+                                         InvalidKeyException |
+                                         NoResponseException |
+                                         XmlPullParserException |
+                                         ErrorResponseException |
+                                         InternalException e) {
                                     return Message.builder()
                                             .errcode(Builder.ErrorCode.FAILURE.getCode())
                                             .errmsg(Builder.ErrorCode.FAILURE.getMsg())

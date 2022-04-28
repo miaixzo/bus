@@ -35,7 +35,6 @@ import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
  * Utility to query geom part list
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

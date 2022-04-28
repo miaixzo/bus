@@ -35,7 +35,6 @@ import java.util.List;
  * 通用聚合查询接口,特殊方法
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @RegisterMapper

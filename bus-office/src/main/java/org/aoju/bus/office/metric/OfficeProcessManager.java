@@ -26,8 +26,8 @@
 package org.aoju.bus.office.metric;
 
 import com.sun.star.lang.DisposedException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.thread.NamedThreadFactory;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
@@ -39,7 +39,6 @@ import java.util.concurrent.*;
  * OfficeProcessManager负责管理一个office流程以及到这个office流程的连接(桥接).
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OfficeProcessManager {

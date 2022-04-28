@@ -37,7 +37,6 @@ import java.util.zip.Deflater;
  * 只在应用程序行为需要时调用{@link #flush}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class GzipSink implements Sink {

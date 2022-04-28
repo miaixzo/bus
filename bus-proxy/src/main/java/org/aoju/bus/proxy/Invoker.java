@@ -31,7 +31,6 @@ import java.lang.reflect.Method;
  * 调用程序负责处理方法调用
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Invoker {

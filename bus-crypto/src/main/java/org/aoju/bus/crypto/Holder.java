@@ -31,7 +31,6 @@ import java.security.Provider;
  * 全局单例的 org.bouncycastle.jce.provider.BouncyCastleProvider 对象
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Holder {

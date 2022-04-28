@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.core.lang.exception.HttpUncheckException;
+import org.aoju.bus.core.exception.HttpUncheckException;
 import org.aoju.bus.http.Builder;
 
 import java.io.IOException;
@@ -35,7 +35,6 @@ import java.io.IOException;
  * 可能已经用替代协议进行了多次尝试，但没有一次成功
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class RouteException extends HttpUncheckException {

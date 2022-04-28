@@ -35,7 +35,6 @@ import java.util.Objects;
  *
  * @param <T> ID类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TreeNode<T> implements Node<T> {

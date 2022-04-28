@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
  * Simple Guava Cache
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class GuavaCache<K, V> implements Cache<K, V> {

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
+import org.aoju.bus.core.exception.CrontabException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.CrontabException;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.setting.magic.PopSetting;
@@ -41,7 +41,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Builder {

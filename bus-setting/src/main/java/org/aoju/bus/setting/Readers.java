@@ -50,7 +50,6 @@ import java.util.function.Supplier;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Readers {

@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Import;
  * 数据校验配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Import(AspectjValidateProxy.class)

@@ -43,7 +43,6 @@ import static org.aoju.bus.health.mac.CoreGraphics.*;
  * Utility to query desktop windows
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

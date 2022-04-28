@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.http.bodys;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Process;
 import org.aoju.bus.http.Response;
@@ -44,7 +44,6 @@ import java.net.URLDecoder;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ResultBody extends AbstractBody implements Body {

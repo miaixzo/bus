@@ -33,7 +33,6 @@ import java.lang.annotation.*;
  * 配置注解，用于添加前缀
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})

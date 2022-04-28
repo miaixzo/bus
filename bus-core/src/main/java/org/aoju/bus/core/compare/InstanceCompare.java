@@ -34,7 +34,6 @@ import java.util.Comparator;
  *
  * @param <T> 用于比较的对象类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class InstanceCompare<T> implements Comparator<T> {

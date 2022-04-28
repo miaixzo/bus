@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.storage.provider;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.Provider;
 
@@ -43,7 +43,6 @@ import java.net.URL;
  * 预定义存储实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractProvider implements Provider {

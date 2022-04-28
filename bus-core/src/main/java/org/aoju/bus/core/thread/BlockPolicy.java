@@ -34,7 +34,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 有时候在线程池内访问第三方接口，只希望固定并发数去访问，并且不希望丢弃任务时使用此策略，队列满的时候会处于阻塞状态(例如刷库的场景)
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BlockPolicy implements RejectedExecutionHandler {

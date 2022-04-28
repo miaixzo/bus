@@ -36,7 +36,6 @@ import java.util.function.Function;
  * @param <F> 对象
  * @param <T> 对象
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TransitionIterator<F, T> implements Iterator<T> {

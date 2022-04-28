@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.watchers;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.UriKit;
@@ -45,7 +45,6 @@ import java.nio.file.*;
  * 递归监听目录时,并不会监听新创建的目录
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class WatchMonitor extends WatchServer {

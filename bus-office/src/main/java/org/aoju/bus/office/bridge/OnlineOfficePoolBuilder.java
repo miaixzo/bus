@@ -36,7 +36,6 @@ import java.io.File;
  * 该类提供{@link AbstractOfficePoolManager}的配置.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OnlineOfficePoolBuilder extends OnlineOfficeEntryBuilder

@@ -33,7 +33,6 @@ import java.util.*;
  * 用于{@link ProxyClass}实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractProxyClass implements ProxyClass {

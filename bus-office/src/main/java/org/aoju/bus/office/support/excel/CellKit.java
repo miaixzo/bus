@@ -45,7 +45,6 @@ import org.apache.poi.ss.util.SheetUtil;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CellKit {

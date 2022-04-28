@@ -34,7 +34,6 @@ import org.aoju.bus.core.lang.Normal;
  * CF String retrieving
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

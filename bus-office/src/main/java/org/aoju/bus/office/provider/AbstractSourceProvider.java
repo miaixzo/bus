@@ -31,7 +31,6 @@ import java.io.File;
  * 所有源文档规范实现的基类.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractSourceProvider extends AbstractDocumentProvider

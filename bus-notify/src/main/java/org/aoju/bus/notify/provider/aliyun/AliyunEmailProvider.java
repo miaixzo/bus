@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.notify.Context;
@@ -41,7 +41,6 @@ import java.util.*;
  * 阿里云邮件
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AliyunEmailProvider extends AliyunProvider<AliyunEmailProperty, Context> {

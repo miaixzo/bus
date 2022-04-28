@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Results;
 import org.aoju.bus.http.Results.State;
@@ -41,7 +41,6 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class TaskExecutor {

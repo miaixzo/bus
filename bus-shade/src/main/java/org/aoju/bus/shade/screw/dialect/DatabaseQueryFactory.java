@@ -26,7 +26,7 @@
 package org.aoju.bus.shade.screw.dialect;
 
 import lombok.Data;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
@@ -38,7 +38,6 @@ import java.sql.SQLException;
  * 数据库查询工厂
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data
@@ -83,7 +82,7 @@ public class DatabaseQueryFactory implements Serializable {
             // 实例化
             return constructor.newInstance(dataSource);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-                | InvocationTargetException | SQLException e) {
+                 | InvocationTargetException | SQLException e) {
             throw new InstrumentException(e);
         }
     }

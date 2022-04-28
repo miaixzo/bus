@@ -43,7 +43,6 @@ import java.util.concurrent.locks.Lock;
  * 在调用append方法后会缓存于内存,只有超过容量后才会一次性写入文件,因此内存中随时有剩余未写入文件的内容,在最后必须调用flush方法将剩余内容刷入文件
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FileAppender implements Serializable {

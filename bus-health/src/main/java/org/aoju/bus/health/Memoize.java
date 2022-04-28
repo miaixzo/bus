@@ -36,7 +36,6 @@ import java.util.function.Supplier;
  * rather than recalculating it.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

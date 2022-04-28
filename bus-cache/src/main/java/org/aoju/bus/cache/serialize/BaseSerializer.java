@@ -27,7 +27,6 @@ package org.aoju.bus.cache.serialize;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface BaseSerializer {

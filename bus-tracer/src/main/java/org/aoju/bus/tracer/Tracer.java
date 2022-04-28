@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.tracer;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.tracer.backend.TraceBackendProvider;
 
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Tracer {

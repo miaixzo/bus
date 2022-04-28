@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.copier;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.StreamProgress;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -41,7 +41,6 @@ import java.nio.channels.WritableByteChannel;
  * {@link ReadableByteChannel} 向 {@link WritableByteChannel} 拷贝
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteChannel> {

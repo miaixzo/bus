@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect.oracle;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.dialect.AbstractDatabaseQuery;
@@ -53,7 +53,6 @@ import java.util.stream.Collectors;
  * 所以，只能够通过自定义SQL来了
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OracleDataBaseQuery extends AbstractDatabaseQuery {

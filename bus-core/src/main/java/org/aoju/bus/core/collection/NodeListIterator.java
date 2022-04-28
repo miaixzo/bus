@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
  * 此 iterator 不支持 {@link #remove()} 方法
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NodeListIterator implements ResettableIterator<Node> {

@@ -34,7 +34,6 @@ import java.util.List;
  * 数据库信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

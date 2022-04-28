@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
  * 网络操作系统
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NOS extends UserAgent {

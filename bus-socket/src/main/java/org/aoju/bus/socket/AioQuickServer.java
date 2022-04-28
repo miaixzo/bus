@@ -52,7 +52,6 @@ import java.util.function.Function;
  *
  * @param <T> 消息对象类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AioQuickServer<T> {

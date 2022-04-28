@@ -32,7 +32,6 @@ import org.aoju.bus.cron.Executor;
  * 继承此监听后实现需要的方法即可
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SimpleTaskListener implements TaskListener {

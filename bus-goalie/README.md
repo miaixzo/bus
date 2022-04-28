@@ -137,7 +137,8 @@ public class CustomFilter implements WebFilter {
 
 - **@ClientVersion**
 
-> * 通过此注解，可以通过接口header中的cv,terminal参数路由倒不同的处理方法（handler method，基于RequestMappingHandlerMapping中的getCustom**Condition方法扩展）；
+> * 通过此注解，可以通过接口header中的cv,terminal参数路由倒不同的处理方法（handler method，基于RequestMappingHandlerMapping中的getCustom**
+    Condition方法扩展）；
 
 - **@VersionMapping**
 

@@ -26,10 +26,10 @@
 package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.io.streams.FastByteOutputStream;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.asymmetric.RSA;
 import org.aoju.bus.crypto.asymmetric.SM2;
@@ -97,7 +97,6 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Builder {

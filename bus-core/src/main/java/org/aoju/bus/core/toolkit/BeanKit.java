@@ -30,10 +30,10 @@ import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 
 import java.beans.*;
@@ -51,7 +51,6 @@ import java.util.stream.Collectors;
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BeanKit {
@@ -568,46 +567,6 @@ public class BeanKit {
                 CopyOptions.create()
                         .setIgnoreCase(true)
                         .setIgnoreError(ignoreError));
-    }
-
-    /**
-     * Map转换为Bean对象
-     *
-     * @param <T>           Bean类型
-     * @param map           {@link Map}
-     * @param beanClass     Bean Class
-     * @param isIgnoreError 是否忽略注入错误
-     * @return Bean
-     */
-    public static <T> T mapToBean(Map<?, ?> map, Class<T> beanClass, boolean isIgnoreError) {
-        return fillBeanWithMap(map, ReflectKit.newInstance(beanClass), isIgnoreError);
-    }
-
-    /**
-     * Map转换为Bean对象
-     *
-     * @param <T>         Bean类型
-     * @param map         {@link Map}
-     * @param beanClass   Bean Class
-     * @param copyOptions 转Bean选项
-     * @return Bean
-     */
-    public static <T> T mapToBean(Map<?, ?> map, Class<T> beanClass, CopyOptions copyOptions) {
-        return fillBeanWithMap(map, ReflectKit.newInstance(beanClass), copyOptions);
-    }
-
-    /**
-     * Map转换为Bean对象
-     * 忽略大小写
-     *
-     * @param <T>           Bean类型
-     * @param map           Map
-     * @param beanClass     Bean Class
-     * @param isIgnoreError 是否忽略注入错误
-     * @return Bean
-     */
-    public static <T> T mapToBeanIgnoreCase(Map<?, ?> map, Class<T> beanClass, boolean isIgnoreError) {
-        return fillBeanWithMapIgnoreCase(map, ReflectKit.newInstance(beanClass), isIgnoreError);
     }
 
     /**

@@ -37,7 +37,6 @@ import java.util.ListIterator;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Fragments extends ArrayList<Object> implements Value {

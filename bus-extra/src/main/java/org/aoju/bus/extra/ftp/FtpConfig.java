@@ -32,7 +32,6 @@ import java.nio.charset.Charset;
  * FTP配置项参数信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FtpConfig implements Serializable {

@@ -27,10 +27,10 @@ package org.aoju.bus.base.advice;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.spring.Controller;
-import org.aoju.bus.core.lang.exception.BusinessException;
-import org.aoju.bus.core.lang.exception.CrontabException;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.lang.exception.ValidateException;
+import org.aoju.bus.core.exception.BusinessException;
+import org.aoju.bus.core.exception.CrontabException;
+import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.toolkit.RuntimeKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -49,7 +49,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * 异常信息拦截处理
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ControllerAdvice

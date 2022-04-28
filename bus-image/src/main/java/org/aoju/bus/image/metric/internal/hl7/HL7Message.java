@@ -34,7 +34,6 @@ import java.util.ArrayList;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class HL7Message extends ArrayList<HL7Segment> {

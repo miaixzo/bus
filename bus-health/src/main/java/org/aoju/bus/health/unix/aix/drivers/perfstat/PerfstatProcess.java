@@ -36,7 +36,6 @@ import java.util.Arrays;
  * Utility to query performance stats for processes
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.generic;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -52,7 +52,6 @@ import java.util.List;
  * 电子邮件消息
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, Context> {

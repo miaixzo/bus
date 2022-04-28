@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.Map;
@@ -35,7 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 支持类型
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Registry {

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.cron.factory;
 
+import org.aoju.bus.core.exception.CrontabException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -39,7 +39,6 @@ import java.lang.reflect.Method;
  * 如果是静态方法直接执行,如果是对象方法,需要类有默认的构造方法
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class InvokeTask implements Task {

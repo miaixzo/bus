@@ -49,7 +49,6 @@ import static com.sun.jna.platform.win32.WinError.ERROR_SUCCESS;
  * Utility to query device interfaces via Config Manager Device Tree functions
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

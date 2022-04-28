@@ -30,7 +30,6 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class ThreadLocalHashSet<T> extends InheritableThreadLocal<Set<T>> {

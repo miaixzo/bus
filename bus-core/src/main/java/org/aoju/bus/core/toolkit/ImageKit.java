@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.image.Removal;
 import org.aoju.bus.core.io.resource.Resource;
@@ -34,7 +35,6 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
@@ -56,7 +56,6 @@ import java.util.*;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ImageKit {

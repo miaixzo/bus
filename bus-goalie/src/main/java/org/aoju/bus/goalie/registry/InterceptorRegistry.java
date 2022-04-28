@@ -31,7 +31,6 @@ import org.aoju.bus.goalie.Registry;
  * 数据序列化
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17++
  */
 public interface InterceptorRegistry extends Registry {

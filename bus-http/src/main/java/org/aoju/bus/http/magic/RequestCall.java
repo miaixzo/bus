@@ -35,7 +35,6 @@ import java.io.IOException;
  * 请求调用者
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RequestCall {

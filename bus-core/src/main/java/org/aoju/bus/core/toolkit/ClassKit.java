@@ -33,9 +33,9 @@ import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.compiler.JavaSourceCompiler;
 import org.aoju.bus.core.convert.BasicType;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.loader.JarLoaders;
@@ -64,7 +64,6 @@ import java.util.jar.Manifest;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ClassKit {
@@ -916,25 +915,41 @@ public class ClassKit {
      */
     public static Object getDefaultValue(Class<?> clazz) {
         if (clazz.isPrimitive()) {
-            if (long.class == clazz) {
-                return 0L;
-            } else if (int.class == clazz) {
-                return 0;
-            } else if (short.class == clazz) {
-                return (short) 0;
-            } else if (char.class == clazz) {
-                return (char) 0;
-            } else if (byte.class == clazz) {
-                return (byte) 0;
-            } else if (double.class == clazz) {
-                return 0D;
-            } else if (float.class == clazz) {
-                return 0f;
-            } else if (boolean.class == clazz) {
-                return false;
-            }
+            return getPrimitiveDefaultValue(clazz);
         }
+        return null;
+    }
 
+    /**
+     * 获取指定原始类型分的默认值
+     * 默认值规则为：
+     *
+     * <pre>
+     * 1、如果为原始类型，返回0
+     * 2、非原始类型返回{@code null}
+     * </pre>
+     *
+     * @param clazz 类
+     * @return 默认值
+     */
+    public static Object getPrimitiveDefaultValue(Class<?> clazz) {
+        if (long.class == clazz) {
+            return 0L;
+        } else if (int.class == clazz) {
+            return 0;
+        } else if (short.class == clazz) {
+            return (short) 0;
+        } else if (char.class == clazz) {
+            return (char) 0;
+        } else if (byte.class == clazz) {
+            return (byte) 0;
+        } else if (double.class == clazz) {
+            return 0D;
+        } else if (float.class == clazz) {
+            return 0f;
+        } else if (boolean.class == clazz) {
+            return false;
+        }
         return null;
     }
 

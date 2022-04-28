@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Import;
  * 脱敏配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @EnableConfigurationProperties(value = {SensitiveProperties.class})

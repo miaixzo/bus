@@ -30,7 +30,6 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 class ThreadLocalMap<K, V> extends InheritableThreadLocal<Map<K, V>> {

@@ -41,7 +41,6 @@ import java.util.Map;
  * 数据库方言 hsqldb
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Hsqldb extends AbstractPaging {

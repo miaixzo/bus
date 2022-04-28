@@ -36,7 +36,6 @@ import java.util.Set;
  * 查找替换器，通过查找指定关键字，替换对应的值
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class LookupReplacer extends TextReplacer {

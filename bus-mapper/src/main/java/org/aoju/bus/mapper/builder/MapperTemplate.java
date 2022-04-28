@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.entity.Config;
 import org.aoju.bus.mapper.entity.EntityColumn;
@@ -55,7 +55,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通用Mapper模板类，扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class MapperTemplate {

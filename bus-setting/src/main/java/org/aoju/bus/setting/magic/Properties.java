@@ -26,6 +26,7 @@
 package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.getter.BasicType;
 import org.aoju.bus.core.getter.OptBasicType;
 import org.aoju.bus.core.io.resource.ClassPathResource;
@@ -37,7 +38,6 @@ import org.aoju.bus.core.io.watchers.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.logger.Logger;
 
@@ -57,7 +57,6 @@ import java.util.Map;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class Properties extends java.util.Properties implements BasicType<String>, OptBasicType<String> {

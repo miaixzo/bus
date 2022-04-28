@@ -56,7 +56,6 @@ import java.util.function.Supplier;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

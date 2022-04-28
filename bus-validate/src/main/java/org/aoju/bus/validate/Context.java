@@ -26,7 +26,7 @@
 package org.aoju.bus.validate;
 
 import lombok.Data;
-import org.aoju.bus.core.lang.exception.ValidateException;
+import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.validators.Checker;
@@ -39,7 +39,6 @@ import java.util.List;
  * 当前校验的上下文信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

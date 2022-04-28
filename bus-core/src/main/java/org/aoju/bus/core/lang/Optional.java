@@ -19,7 +19,6 @@ import java.util.stream.Stream;
  *
  * @param <T> 包裹里元素的类型
  * @author Kimi Liu
- * @version 6.5.0
  * @see java.util.Optional
  * @since Java 17+
  */

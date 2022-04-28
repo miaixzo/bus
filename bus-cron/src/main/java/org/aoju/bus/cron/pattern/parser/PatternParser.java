@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.exception.CrontabException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.cron.pattern.Part;
 import org.aoju.bus.cron.pattern.matcher.AlwaysTrueMatcher;
@@ -40,7 +40,6 @@ import java.util.List;
  * 定时任务表达式解析器，用于将表达式字符串解析为{@link PatternMatcher}的列表
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PatternParser {

@@ -38,7 +38,6 @@ import java.util.*;
  * 农历日期
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Lunar {
@@ -1022,7 +1021,7 @@ public class Lunar {
             put("1-25", Collections.nCopies(1, "填仓节"));
             put("1-30", Collections.nCopies(1, "正月晦"));
             put("2-1", Collections.nCopies(1, "中和节"));
-            put("2-2", Collections.nCopies(1, "春社"));
+            put("2-2", Collections.nCopies(1, "社日节"));
             put("3-3", Collections.nCopies(1, "上巳节"));
             put("5-20", Collections.nCopies(1, "分龙节"));
             put("5-25", Collections.nCopies(1, "会龙节"));
@@ -3310,6 +3309,27 @@ public class Lunar {
         if (null != fs) {
             l.addAll(fs);
         }
+        String solarYmd = solar.toYmd();
+        if (solarYmd.equals(solarTerm.get("清明").next(-1).build())) {
+            l.add("寒食节");
+        }
+        Solar jq = solarTerm.get("立春");
+        int offset = 4 - jq.getLunar().getDayGanIndex();
+        if (offset < 0) {
+            offset += 10;
+        }
+        if (solarYmd.equals(jq.next(offset + 40).toYmd())) {
+            l.add("春社");
+        }
+
+        jq = solarTerm.get("立秋");
+        offset = 4 - jq.getLunar().getDayGanIndex();
+        if (offset < 0) {
+            offset += 10;
+        }
+        if (solarYmd.equals(jq.next(offset + 40).toYmd())) {
+            l.add("秋社");
+        }
         return l;
     }
 
@@ -3531,14 +3551,12 @@ public class Lunar {
     public String getMonthPositionTaiSui(int sect) {
         int monthZhiIndex;
         int monthGanIndex;
-        switch (sect) {
-            case 3:
-                monthZhiIndex = this.monthZhiIndexExact;
-                monthGanIndex = this.monthGanIndexExact;
-                break;
-            default:
-                monthZhiIndex = this.monthZhiIndex;
-                monthGanIndex = this.monthGanIndex;
+        if (sect == 3) {
+            monthZhiIndex = this.monthZhiIndexExact;
+            monthGanIndex = this.monthGanIndexExact;
+        } else {
+            monthZhiIndex = this.monthZhiIndex;
+            monthGanIndex = this.monthGanIndex;
         }
         return getMonthPositionTaiSui(monthZhiIndex, monthGanIndex);
     }
@@ -6615,7 +6633,7 @@ public class Lunar {
             //顺逆
             String solarYmd = lunar.getSolar().build(false);
             Map<String, Solar> jieQi = lunar.getSolarTermTable();
-            boolean asc = solarYmd.compareTo(jieQi.get("冬至").build(false)) >= 0 && solarYmd.compareTo(jieQi.get("夏至").build(false)) < 0;
+            boolean asc = solarYmd.compareTo(jieQi.get("冬至").toYmd()) >= 0 && solarYmd.compareTo(jieQi.get("夏至").toYmd()) < 0;
             int start = asc ? 7 : 3;
             String dayZhi = lunar.getDayZhi();
             if ("子午卯酉".contains(dayZhi)) {

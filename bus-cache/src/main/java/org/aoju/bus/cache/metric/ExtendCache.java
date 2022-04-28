@@ -29,7 +29,6 @@ package org.aoju.bus.cache.metric;
  * 缓存接口,方便用户扩展
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface ExtendCache {

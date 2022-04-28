@@ -27,9 +27,9 @@ package org.aoju.bus.starter.jdbc;
 
 import com.google.common.collect.Maps;
 import com.zaxxer.hikari.HikariDataSource;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
@@ -60,7 +60,6 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ConditionalOnClass(value = {HikariDataSource.class})

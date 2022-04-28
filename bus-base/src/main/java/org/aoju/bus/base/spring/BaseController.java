@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 基础请求封装
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BaseController<Service extends BaseService<T>, T> extends Controller {

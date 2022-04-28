@@ -31,7 +31,6 @@ import java.lang.annotation.*;
  * 忽略该属性
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Documented

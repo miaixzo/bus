@@ -1,10 +1,10 @@
 package org.aoju.bus.core.compiler;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.StringResource;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
 import javax.tools.DiagnosticCollector;
@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JavaSourceCompiler {

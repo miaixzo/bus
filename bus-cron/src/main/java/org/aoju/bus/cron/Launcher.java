@@ -31,7 +31,6 @@ package org.aoju.bus.cron;
  * 检查完毕后启动器结束
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Launcher implements Runnable {

@@ -26,8 +26,8 @@
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.crypto.Builder;
 
 import java.io.Serializable;
@@ -42,7 +42,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * 非对称基础，提供锁、私钥和公钥的持有
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Asymmetric<T extends Asymmetric<T>> implements Serializable {

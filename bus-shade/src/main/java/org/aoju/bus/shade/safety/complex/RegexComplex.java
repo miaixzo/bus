@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
  * 正则表达式规则
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class RegexComplex<E> implements Complex<E> {

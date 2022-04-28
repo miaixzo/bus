@@ -8,7 +8,6 @@ import org.aoju.bus.notify.provider.netease.NeteaseProvider;
  * 七牛云短信
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BaiduSmsProvider extends NeteaseProvider<BaiduSmsProperty, Context> {

@@ -26,6 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
@@ -37,7 +38,6 @@ import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.streams.BOMInputStream;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.lang.System;
@@ -49,6 +49,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -58,7 +59,6 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FileKit {
@@ -4024,7 +4024,7 @@ public class FileKit {
      * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
      * @return 资源列表
      */
-    public static List<URL> getResources(String resource, Filter<URL> filter) {
+    public static List<URL> getResources(String resource, Predicate<URL> filter) {
         return IterKit.filterToList(getResourceIter(resource), filter);
     }
 

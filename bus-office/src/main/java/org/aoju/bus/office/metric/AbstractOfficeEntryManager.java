@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.thread.NamedThreadFactory;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.builtin.MadeInOffice;
@@ -38,7 +38,6 @@ import java.util.concurrent.*;
  * 这个抽象类从未将可用性设置为true 只有当管理器停止时，可用性才设置为false.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractOfficeEntryManager implements OfficeManager {

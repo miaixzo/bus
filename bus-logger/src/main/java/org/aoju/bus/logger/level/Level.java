@@ -29,7 +29,6 @@ package org.aoju.bus.logger.level;
  * 日志等级
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum Level {

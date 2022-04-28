@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder.resolve;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.annotation.ColumnType;
@@ -51,7 +51,6 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultEntityResolve implements EntityResolve {

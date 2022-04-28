@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
  * 各个平台 scope 类的统一接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OauthScope {

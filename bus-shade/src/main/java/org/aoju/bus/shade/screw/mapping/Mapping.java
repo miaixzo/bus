@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.mapping;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -43,7 +43,6 @@ import java.util.*;
  * 映射器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Mapping {

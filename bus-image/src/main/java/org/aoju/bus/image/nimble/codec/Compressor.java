@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
@@ -49,7 +49,6 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Compressor extends Decompressor implements Closeable {

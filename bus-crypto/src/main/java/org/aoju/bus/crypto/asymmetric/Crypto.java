@@ -26,9 +26,9 @@
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.io.streams.FastByteOutputStream;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Ciphers;
 
@@ -51,7 +51,6 @@ import java.security.spec.AlgorithmParameterSpec;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Crypto extends AbstractCrypto<Crypto> {

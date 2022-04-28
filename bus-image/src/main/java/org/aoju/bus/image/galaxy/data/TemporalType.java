@@ -33,7 +33,6 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum TemporalType {

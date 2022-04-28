@@ -29,7 +29,6 @@ package org.aoju.bus.office.metric;
  * LibreOffice联机通信的请求配置.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RequestBuilder {

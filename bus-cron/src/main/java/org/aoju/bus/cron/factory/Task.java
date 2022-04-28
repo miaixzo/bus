@@ -34,7 +34,6 @@ package org.aoju.bus.cron.factory;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @FunctionalInterface

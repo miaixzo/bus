@@ -29,7 +29,6 @@ import org.aoju.bus.goalie.Handler;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17++
  */
 public class AbstractApiHandler implements Handler {

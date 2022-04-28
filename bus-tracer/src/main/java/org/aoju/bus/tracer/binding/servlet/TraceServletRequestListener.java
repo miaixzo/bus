@@ -43,7 +43,6 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @WebListener("TraceServletRequestListener to read incoming TPICs into Builder backend")

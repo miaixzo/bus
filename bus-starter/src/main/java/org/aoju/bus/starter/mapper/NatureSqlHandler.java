@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.logger.Logger;
 import org.apache.ibatis.cache.CacheKey;
@@ -53,7 +53,6 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Intercepts(value = {

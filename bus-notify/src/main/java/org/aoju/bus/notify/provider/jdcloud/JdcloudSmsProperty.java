@@ -34,7 +34,6 @@ import org.aoju.bus.notify.magic.Property;
  * 京东云短信
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Getter

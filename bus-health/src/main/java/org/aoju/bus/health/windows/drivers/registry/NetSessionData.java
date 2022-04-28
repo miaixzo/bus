@@ -41,7 +41,6 @@ import java.util.List;
  * backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

@@ -32,7 +32,6 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Provider extends AbstractSet<TraceBackendProvider> {

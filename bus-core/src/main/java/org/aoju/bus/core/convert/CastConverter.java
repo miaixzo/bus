@@ -25,14 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.lang.exception.ConvertException;
+import org.aoju.bus.core.exception.ConvertException;
 
 /**
  * 强转转换器
  *
  * @param <T> 强制转换到的类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CastConverter<T> extends AbstractConverter<T> {

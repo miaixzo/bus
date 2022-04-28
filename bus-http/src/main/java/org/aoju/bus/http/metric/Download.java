@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Process;
@@ -36,7 +36,6 @@ import java.io.*;
  * 文件下载
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Download {

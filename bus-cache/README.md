@@ -282,4 +282,5 @@ public @interface CachedGet {
 对于`@CacheKey`内的`value`属性(SpEL), CacheX在将方法的参数组装为key时, 会将整个方法的参数导入到SpEL的执行环境内, 所以在任一参数的`@CacheKey`的`value`
 属性内都可以自由的引用这些变量, 尽管在`arg0`我们可以引用整个方法的任意参数, 但为了可读性, 我们仍然建议对某个参数的引用放在该参数自己的`@CacheKey`
 
-> 注意: 在Java8环境中, 如果编译时没有指定`-parameters`参数, 则参数名默认为`arg0`、`arg1`、...、`argN`, 如果指定了该参数, 则在`spel`中使用实际的参数名即可, 如:`#source.name()`; 为了兼容这两种方式, CacheX提供了自己的命名方式`args0`、`args1`、...、`argsN`, 使用户可以不用区分是否开启编译参数.
+> 注意: 在Java8环境中, 如果编译时没有指定`-parameters`参数, 则参数名默认为`arg0`、`arg1`、...、`argN`, 如果指定了该参数, 则在`spel`中使用实际的参数名即可,
+> 如:`#source.name()`; 为了兼容这两种方式, CacheX提供了自己的命名方式`args0`、`args1`、...、`argsN`, 使用户可以不用区分是否开启编译参数.

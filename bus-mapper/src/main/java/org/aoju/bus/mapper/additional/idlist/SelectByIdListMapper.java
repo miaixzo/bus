@@ -36,7 +36,6 @@ import java.util.List;
  *
  * @param <T> 不能为空
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @RegisterMapper

@@ -27,7 +27,7 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.BCD;
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.lang.exception.CryptoException;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -45,7 +45,6 @@ import java.nio.charset.Charset;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Encryptor {

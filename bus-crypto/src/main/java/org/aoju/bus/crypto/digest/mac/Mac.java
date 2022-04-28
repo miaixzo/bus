@@ -26,8 +26,8 @@
 package org.aoju.bus.crypto.digest.mac;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -46,7 +46,6 @@ import java.security.MessageDigest;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Mac implements Serializable {

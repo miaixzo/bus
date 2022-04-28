@@ -38,7 +38,6 @@ import java.util.BitSet;
  * Hash算法的使用使用固定顺序，只需指定个数即可
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BitSetBloomFilter implements BloomFilter {

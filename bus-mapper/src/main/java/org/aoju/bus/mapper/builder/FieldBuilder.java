@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.mapper.entity.EntityField;
 
 import javax.persistence.Entity;
@@ -40,7 +40,6 @@ import java.util.*;
  * 类字段工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FieldBuilder {

@@ -33,7 +33,6 @@ import java.io.Serializable;
  * 获取到数据库的信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

@@ -34,7 +34,6 @@ import java.util.Date;
  * 日期解析接口,用于解析日期字符串为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface DateParser extends DateMotd {

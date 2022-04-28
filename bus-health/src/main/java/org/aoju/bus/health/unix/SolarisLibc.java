@@ -39,7 +39,6 @@ import java.nio.ByteBuffer;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface SolarisLibc extends CLibrary {
@@ -63,7 +62,7 @@ public interface SolarisLibc extends CLibrary {
      * Not thread safe
      *
      * @return a {@link SolarisUtmpx} on success, and NULL on failure (which
-     *         includes the "record not found" case)
+     * includes the "record not found" case)
      */
     SolarisUtmpx getutxent();
 

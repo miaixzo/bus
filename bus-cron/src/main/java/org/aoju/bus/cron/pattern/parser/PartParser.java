@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.parser;
 
+import org.aoju.bus.core.exception.CrontabException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.MathKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -52,7 +52,6 @@ import java.util.List;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PartParser {

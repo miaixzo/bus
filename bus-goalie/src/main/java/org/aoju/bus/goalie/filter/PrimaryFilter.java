@@ -26,8 +26,8 @@
 package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.core.exception.BusinessException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Config;
@@ -57,7 +57,6 @@ import java.util.Objects;
  * 参数过滤/校验
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)

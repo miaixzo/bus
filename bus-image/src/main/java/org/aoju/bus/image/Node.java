@@ -40,7 +40,6 @@ import java.util.Objects;
  * 服务器信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

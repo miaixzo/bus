@@ -40,7 +40,6 @@ import java.util.function.Supplier;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ThreadKit {
@@ -684,24 +683,6 @@ public class ThreadKit {
         return executor;
     }
 
-
-    public static final class FastBufferThread extends Thread {
-
-        private int pageIndex;
-
-        public FastBufferThread(Runnable target, String name) {
-            super(target, name);
-        }
-
-        public int getPageIndex() {
-            return pageIndex;
-        }
-
-        public void setPageIndex(int pageIndex) {
-            this.pageIndex = pageIndex;
-        }
-    }
-
     /**
      * 创建{@link StampedLock}锁
      *
@@ -728,6 +709,23 @@ public class ThreadKit {
      */
     public static AtomicNoLock getNoLock() {
         return NO_LOCK;
+    }
+
+    public static final class FastBufferThread extends Thread {
+
+        private int pageIndex;
+
+        public FastBufferThread(Runnable target, String name) {
+            super(target, name);
+        }
+
+        public int getPageIndex() {
+            return pageIndex;
+        }
+
+        public void setPageIndex(int pageIndex) {
+            this.pageIndex = pageIndex;
+        }
     }
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.support.lock.zookeeper;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.limiter.support.lock.Lock;
 import org.aoju.bus.logger.Logger;
 import org.apache.curator.framework.CuratorFramework;
@@ -35,7 +35,6 @@ import org.apache.zookeeper.KeeperException;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ZookeeperLock extends Lock {

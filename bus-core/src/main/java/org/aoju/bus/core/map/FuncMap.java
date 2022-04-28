@@ -35,7 +35,6 @@ import java.util.function.Supplier;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FuncMap<K, V> extends TransitionMap<K, V> {

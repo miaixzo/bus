@@ -34,7 +34,6 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 数字计算验证码生成器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MathStrategy implements CodeStrategy {

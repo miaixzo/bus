@@ -37,7 +37,6 @@ import java.time.format.DateTimeFormatter;
  * to an operating system.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

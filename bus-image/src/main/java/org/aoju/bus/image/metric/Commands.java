@@ -33,7 +33,6 @@ import org.aoju.bus.image.galaxy.data.VR;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Commands {

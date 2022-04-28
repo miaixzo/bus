@@ -38,7 +38,6 @@ import java.util.List;
  * 负责管理作业的启动、停止等
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Manager implements Serializable {

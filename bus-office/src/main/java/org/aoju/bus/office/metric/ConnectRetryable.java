@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
@@ -34,7 +34,6 @@ import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
  * 执行到office进程的连接.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ConnectRetryable extends AbstractRetryable {

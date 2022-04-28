@@ -35,7 +35,6 @@ import java.util.Map;
  * 请求参数构造器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 

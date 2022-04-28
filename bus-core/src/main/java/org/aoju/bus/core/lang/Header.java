@@ -29,7 +29,6 @@ package org.aoju.bus.core.lang;
  * Header 常量
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Header {

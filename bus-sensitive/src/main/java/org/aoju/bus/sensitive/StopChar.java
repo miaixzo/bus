@@ -33,7 +33,6 @@ import java.util.Set;
  * 过滤词及一些简单处理
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class StopChar {

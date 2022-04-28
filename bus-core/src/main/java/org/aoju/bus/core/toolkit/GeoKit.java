@@ -27,8 +27,8 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.builder.EqualsBuilder;
 import org.aoju.bus.core.builder.HashCodeBuilder;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.awt.geom.Point2D;
 import java.io.Serializable;
@@ -41,7 +41,6 @@ import java.util.List;
  * 地理区域坐标距离计算工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class GeoKit {

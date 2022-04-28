@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.reflect;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.function.Fn;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.SoftCache;
@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
  * 反射支持
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Reflector {

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.office.magic.family.DocumentFormat;
 import org.aoju.bus.office.provider.AbstractSourceProvider;
 import org.aoju.bus.office.provider.AbstractTargetProvider;
@@ -35,7 +35,6 @@ import org.aoju.bus.office.provider.AbstractTargetProvider;
  * 所有转换作业实现的基类.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractJob implements OptionalTarget {

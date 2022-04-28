@@ -41,7 +41,6 @@ import java.util.Queue;
  * 文件资源加载器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FileLoader extends ResourceLoader implements Loader {

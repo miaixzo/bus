@@ -34,7 +34,6 @@ import java.io.Serializable;
  * 文件类型
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 

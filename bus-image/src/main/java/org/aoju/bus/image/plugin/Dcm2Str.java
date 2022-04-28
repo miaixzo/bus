@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.image.Format;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
@@ -41,7 +41,6 @@ import java.nio.file.attribute.BasicFileAttributes;
  * DCM-JPG转换
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Dcm2Str extends SimpleFileVisitor<Path> {

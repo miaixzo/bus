@@ -32,7 +32,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.util.XChangesBatch;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.bridge.LocalOfficePoolManager;
 import org.aoju.bus.office.builtin.MadeInOffice;
@@ -49,7 +49,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * OfficeProcessManagerPoolEntry还负责在达到每个进程的最大任务数时重新启动office进程.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {

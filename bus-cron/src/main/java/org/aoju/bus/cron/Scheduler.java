@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
+import org.aoju.bus.core.exception.CrontabException;
 import org.aoju.bus.core.key.UUID;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.thread.ExecutorBuilder;
 import org.aoju.bus.core.thread.ThreadBuilder;
 import org.aoju.bus.core.toolkit.MapKit;
@@ -76,7 +76,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Scheduler implements Serializable {

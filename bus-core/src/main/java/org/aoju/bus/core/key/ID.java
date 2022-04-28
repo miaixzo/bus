@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.key;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.NetKit;
 import org.aoju.bus.core.toolkit.RuntimeKit;
 
@@ -39,7 +39,6 @@ import org.aoju.bus.core.toolkit.RuntimeKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ID {

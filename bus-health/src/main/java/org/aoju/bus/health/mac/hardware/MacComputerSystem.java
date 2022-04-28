@@ -44,7 +44,6 @@ import java.util.function.Supplier;
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

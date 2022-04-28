@@ -47,7 +47,6 @@ import java.util.jar.Manifest;
  * 加密的URL连接
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JarURLConnection extends java.net.JarURLConnection {

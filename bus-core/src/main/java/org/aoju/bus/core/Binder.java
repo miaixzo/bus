@@ -29,10 +29,10 @@ import lombok.RequiredArgsConstructor;
 import org.aoju.bus.core.annotation.Ignore;
 import org.aoju.bus.core.annotation.Values;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.resource.PropertySource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -43,7 +43,6 @@ import java.util.*;
  * 属性绑定器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @RequiredArgsConstructor

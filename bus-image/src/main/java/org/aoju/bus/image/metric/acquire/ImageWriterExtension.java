@@ -29,7 +29,6 @@ import org.aoju.bus.image.nimble.codec.ImageWriterFactory;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ImageWriterExtension extends DeviceExtension {

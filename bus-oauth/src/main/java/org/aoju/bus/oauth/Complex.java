@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.oauth;
 
-import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.exception.AuthorizedException;
 import org.aoju.bus.oauth.magic.Callback;
 
 /**
@@ -42,7 +42,6 @@ import org.aoju.bus.oauth.magic.Callback;
  * ③、如果扩展了对应枚举类时,在{@link Provider#login(Callback)}中可以通过{@code xx.toString()}获取对应的source
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Complex {

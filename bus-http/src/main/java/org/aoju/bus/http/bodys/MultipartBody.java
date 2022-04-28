@@ -43,7 +43,6 @@ import java.util.UUID;
  * 用于复合对象
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class MultipartBody extends RequestBody {

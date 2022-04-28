@@ -27,10 +27,10 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.compress.*;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.net.URI;
@@ -50,7 +50,6 @@ import java.util.zip.ZipOutputStream;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ZipKit {

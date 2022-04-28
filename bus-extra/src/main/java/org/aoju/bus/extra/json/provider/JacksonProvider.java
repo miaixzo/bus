@@ -29,7 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -42,7 +42,6 @@ import java.util.Map;
  * Jackson 解析器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JacksonProvider extends AbstractJsonProvider {

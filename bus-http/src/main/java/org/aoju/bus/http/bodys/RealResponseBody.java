@@ -32,7 +32,6 @@ import org.aoju.bus.core.lang.MediaType;
  * 响应体只能使用一次
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class RealResponseBody extends ResponseBody {

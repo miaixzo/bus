@@ -32,7 +32,6 @@ import java.util.Collection;
  * 获取限流规则
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface LimitedResourceSource {

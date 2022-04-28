@@ -33,7 +33,6 @@ import java.util.Comparator;
  *
  * @param <E> 比较对象类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NormalCompare<E extends Comparable<? super E>> implements Comparator<E>, Serializable {

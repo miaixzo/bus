@@ -29,7 +29,6 @@ package org.aoju.bus.mapper.additional.aggregation;
  * 聚合查询函数
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum AggregateType {

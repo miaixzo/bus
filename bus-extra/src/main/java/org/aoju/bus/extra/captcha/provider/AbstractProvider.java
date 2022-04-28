@@ -26,7 +26,7 @@
 package org.aoju.bus.extra.captcha.provider;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.ImageKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -47,7 +47,6 @@ import java.io.OutputStream;
  * 实现类通过实现{@link #createImage(String)} 方法生成图片对象
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractProvider implements CaptchaProvider {

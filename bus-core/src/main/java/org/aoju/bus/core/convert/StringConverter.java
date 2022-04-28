@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
+import org.aoju.bus.core.exception.ConvertException;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.ConvertException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.XmlKit;
 
@@ -42,7 +42,6 @@ import java.util.TimeZone;
  * 字符串转换器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class StringConverter extends AbstractConverter<String> {

@@ -35,7 +35,6 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Computer System data.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Compatible;
@@ -42,7 +42,6 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class HL7Application implements Serializable {

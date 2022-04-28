@@ -45,7 +45,6 @@ import java.util.List;
  * sheetData标签内容读取处理器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SheetSaxHandler extends DefaultHandler {

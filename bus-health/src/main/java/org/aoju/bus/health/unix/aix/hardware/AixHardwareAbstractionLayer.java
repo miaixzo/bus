@@ -42,7 +42,6 @@ import static org.aoju.bus.health.Memoize.memoize;
  * AIXHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

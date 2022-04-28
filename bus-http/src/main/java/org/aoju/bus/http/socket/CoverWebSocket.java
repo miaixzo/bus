@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.socket;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpv;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
@@ -307,7 +307,6 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.5.0
      * @since Java 17+
      */
     public static class Client extends CoverHttp<Client> {
@@ -457,7 +456,6 @@ public class CoverWebSocket implements Cancelable {
 
     /**
      * @author Kimi Liu
-     * @version 6.5.0
      * @since Java 17+
      */
     public static class Message extends AbstractBody {

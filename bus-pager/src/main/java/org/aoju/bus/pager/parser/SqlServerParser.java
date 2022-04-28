@@ -34,7 +34,7 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.aoju.bus.core.lang.exception.PageException;
+import org.aoju.bus.core.exception.PageException;
 
 import java.util.*;
 
@@ -52,7 +52,6 @@ import java.util.*;
  * 该类设计为一个独立的工具类，依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SqlServerParser {

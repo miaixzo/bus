@@ -29,9 +29,7 @@ import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.function.Consumer3;
 import org.aoju.bus.core.toolkit.MapKit;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 表格数据结构定义
@@ -41,7 +39,6 @@ import java.util.Set;
  * @param <C> 列键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
@@ -121,6 +118,24 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      */
     default Set<C> columnKeySet() {
         return Optional.ofNullable(columnMap()).map(Map::keySet).get();
+    }
+
+    /**
+     * 返回所有列的key，列的key如果实现Map是可重复key，则返回对应不去重的List。
+     *
+     * @return 列set
+     */
+    default List<C> columnKeys() {
+        final Map<C, Map<R, V>> columnMap = columnMap();
+        if (MapKit.isEmpty(columnMap)) {
+            return Collections.emptyList();
+        }
+
+        final List<C> result = new ArrayList<>(columnMap.size());
+        for (Map.Entry<C, Map<R, V>> cMapEntry : columnMap.entrySet()) {
+            result.add(cMapEntry.getKey());
+        }
+        return result;
     }
 
     /**

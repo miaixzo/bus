@@ -26,7 +26,7 @@
 package org.aoju.bus.office.provider;
 
 import com.sun.star.document.UpdateDocMode;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.office.builtin.AbstractJob;
 import org.aoju.bus.office.builtin.AbstractNorm;
 import org.aoju.bus.office.builtin.LocalMadeInOffice;
@@ -46,7 +46,6 @@ import java.util.Map;
  * 必须启动所提供的office管理器才能被此转换器使用.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class LocalOfficeProvider extends AbstractProvider {

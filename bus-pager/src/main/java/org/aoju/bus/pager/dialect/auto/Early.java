@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.pager.dialect.auto;
 
-import org.aoju.bus.core.lang.exception.PageException;
+import org.aoju.bus.core.exception.PageException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.AutoDialect;
 import org.aoju.bus.pager.dialect.AbstractPaging;
@@ -41,7 +41,6 @@ import java.util.Properties;
  * 早期版本默认实现，获取连接再获取 url，这种方式通用性强，但是性能低，处理不好关闭连接时容易出问题
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Early implements AutoDialect<String> {

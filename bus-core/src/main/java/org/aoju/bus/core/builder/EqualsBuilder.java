@@ -63,7 +63,6 @@ import java.util.Set;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class EqualsBuilder implements Builder<Boolean> {

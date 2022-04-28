@@ -25,14 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.office.support;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 
 /**
  * POI引入检查器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PoiChecker {

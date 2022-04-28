@@ -36,7 +36,6 @@ import java.awt.image.BufferedImage;
  * 图片绘制器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ImagePainter implements Painter {

@@ -41,7 +41,6 @@ import java.util.Map;
  * FreeBSD soundcard.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

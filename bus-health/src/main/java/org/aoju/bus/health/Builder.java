@@ -62,7 +62,6 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe
@@ -895,8 +894,8 @@ public final class Builder {
                     cimDateTime.substring(0, 22) + offsetAsLocalTime.format(DateTimeFormatter.ISO_LOCAL_TIME),
                     Builder.CIM_FORMAT);
         } catch (IndexOutOfBoundsException // if cimDate not 22+ chars
-                | NumberFormatException // if TZ minutes doesn't parse
-                | DateTimeParseException e) {
+                 | NumberFormatException // if TZ minutes doesn't parse
+                 | DateTimeParseException e) {
             Logger.trace("Unable to parse {} to CIM DateTime.", cimDateTime);
             return Builder.UNIX_EPOCH;
         }

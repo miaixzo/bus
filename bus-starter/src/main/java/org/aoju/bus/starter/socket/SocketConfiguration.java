@@ -33,7 +33,6 @@ import org.springframework.context.annotation.Bean;
  * Socket配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @EnableConfigurationProperties(SocketProperties.class)

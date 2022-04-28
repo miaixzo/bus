@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.factory;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.proxy.Factory;
@@ -45,7 +45,6 @@ import java.util.List;
  * 超类为{@link Factory}，它支持子类化而不仅仅是实现接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractFactory extends Factory {

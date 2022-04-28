@@ -35,7 +35,6 @@ import org.aoju.bus.validate.validators.Validator;
  * NULL校验
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NullStrategy implements Validator<Object>, Matcher<Object, Null> {

@@ -39,7 +39,6 @@ import java.security.Key;
  * {@link CBCBlockCipherMac}实现的MAC算法，使用CBC Block方式
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CBCBlockCipher extends BCMacEngine {

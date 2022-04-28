@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.lang.exception.ConvertException;
+import org.aoju.bus.core.exception.ConvertException;
 import org.aoju.bus.core.map.WeakMap;
 import org.aoju.bus.core.toolkit.*;
 
@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
  * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class EnumConverter extends AbstractConverter<Object> {

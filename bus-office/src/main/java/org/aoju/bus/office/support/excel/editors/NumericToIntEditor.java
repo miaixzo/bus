@@ -32,7 +32,6 @@ import org.apache.poi.ss.usermodel.Cell;
  * POI中NUMRIC类型的值默认返回的是Double类型,此编辑器用于转换其为int型
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NumericToIntEditor implements CellEditor {

@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
@@ -44,7 +44,6 @@ import java.util.concurrent.*;
  * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Tailer implements Serializable {
@@ -191,7 +190,7 @@ public class Tailer implements Serializable {
             Stack<String> stack = new Stack<>();
 
             long start = this.randomAccessFile.getFilePointer();
-            long nextEnd = len - 1;
+            long nextEnd = (len - 1) < 0 ? 0 : len - 1;
             this.randomAccessFile.seek(nextEnd);
             int c;
             int currentLine = 0;

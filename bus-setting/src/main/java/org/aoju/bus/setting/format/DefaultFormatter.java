@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.setting.format;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.setting.Format;
 import org.aoju.bus.setting.magic.IniComment;
 import org.aoju.bus.setting.magic.IniElement;
@@ -42,7 +42,6 @@ import java.util.Objects;
  * {@link IniProperty }
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultFormatter implements Format {

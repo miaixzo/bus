@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.metadata.Column;
 import org.aoju.bus.shade.screw.metadata.Database;
@@ -40,7 +40,6 @@ import java.util.List;
  * 其他数据库 暂未支持系列
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OtherDataBaseQuery extends AbstractDatabaseQuery {

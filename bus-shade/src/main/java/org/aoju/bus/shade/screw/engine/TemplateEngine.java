@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.engine;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.shade.screw.metadata.DataSchema;
 
 import java.io.Serializable;
@@ -34,7 +34,6 @@ import java.io.Serializable;
  * 文件产生接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface TemplateEngine extends Serializable {

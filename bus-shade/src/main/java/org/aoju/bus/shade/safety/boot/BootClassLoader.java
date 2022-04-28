@@ -43,7 +43,6 @@ import java.util.Enumeration;
  * 类加载器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BootClassLoader extends LaunchedURLClassLoader {

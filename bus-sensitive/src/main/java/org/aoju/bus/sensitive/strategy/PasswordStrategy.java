@@ -34,7 +34,6 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 直接返回 null
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PasswordStrategy extends AbstractProvider {

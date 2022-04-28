@@ -27,11 +27,11 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.convert.NumberFormatter;
 import org.aoju.bus.core.date.formatter.*;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.text.DateFormat;
@@ -57,7 +57,6 @@ import java.util.concurrent.TimeUnit;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Formatter {

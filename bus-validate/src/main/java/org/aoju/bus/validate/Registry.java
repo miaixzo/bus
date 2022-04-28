@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.strategy.*;
 
@@ -36,7 +36,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 校验器注册中心
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Registry {

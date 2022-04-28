@@ -41,7 +41,6 @@ import java.security.NoSuchAlgorithmException;
  * {@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class HashSink extends DelegateSink {

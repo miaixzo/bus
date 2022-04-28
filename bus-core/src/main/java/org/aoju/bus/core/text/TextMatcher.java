@@ -19,7 +19,6 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TextMatcher {
@@ -47,7 +46,7 @@ public class TextMatcher {
         char c = 0;
         char pre;
         boolean inVar = false;
-        TextBuilder part = new TextBuilder();
+        StringBuilder part = new StringBuilder();
         for (int i = 0; i < length; i++) {
             pre = c;
             c = pattern.charAt(i);
@@ -57,16 +56,17 @@ public class TextMatcher {
                     // 变量结束
                     inVar = false;
                     patterns.add(part.toString());
-                    part.clear();
+                    part.setLength(0);
                 }
             } else if (Symbol.C_BRACE_LEFT == c && Symbol.C_DOLLAR == pre) {
                 // 变量开始
                 inVar = true;
-                final String preText = part.subString(0, part.length() - 1);
+                final String preText = part.substring(0, part.length() - 1);
                 if (StringKit.isNotEmpty(preText)) {
                     patterns.add(preText);
                 }
-                part.reset().append(pre).append(c);
+                part.setLength(0);
+                part.append(pre).append(c);
             } else {
                 // 普通字符
                 part.append(c);

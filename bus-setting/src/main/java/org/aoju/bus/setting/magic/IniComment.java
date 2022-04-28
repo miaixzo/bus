@@ -29,7 +29,6 @@ package org.aoju.bus.setting.magic;
  * Ini file's comment.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface IniComment extends IniElement {

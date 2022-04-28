@@ -34,7 +34,6 @@ import org.aoju.bus.notify.magic.Property;
  * 阿里云语音通知模版
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 @Getter

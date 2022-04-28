@@ -26,7 +26,6 @@
 package org.aoju.bus.sensitive;
 
 import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.ThreadKit;
@@ -35,6 +34,7 @@ import org.aoju.bus.extra.json.JsonKit;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 脱敏策略工具类
@@ -42,7 +42,6 @@ import java.util.List;
  * 2.主要供单独的字符串处理使用
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class Builder {
@@ -205,7 +204,7 @@ public final class Builder {
      *
      * @param charFilter 过滤函数
      */
-    public static void setCharFilter(Filter<Character> charFilter) {
+    public static void setCharFilter(Predicate<Character> charFilter) {
         if (null != charFilter) {
             sensitiveTree.setCharFilter(charFilter);
         }

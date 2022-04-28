@@ -31,7 +31,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.util.CloseVetoException;
 import com.sun.star.util.XCloseable;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.bridge.LocalOfficeContextAware;
@@ -48,7 +48,6 @@ import java.util.Optional;
  * 所有本地office任务实现的基类.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractLocalOffice extends AbstractOffice {

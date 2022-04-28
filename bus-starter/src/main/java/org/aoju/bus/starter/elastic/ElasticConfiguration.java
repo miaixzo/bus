@@ -26,8 +26,8 @@
 package org.aoju.bus.starter.elastic;
 
 import org.aoju.bus.base.consts.Consts;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.apache.http.HttpHost;
@@ -46,7 +46,6 @@ import java.util.List;
  * <p>@description ElasticSearch 规则配置 </p>
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
- * @version 6.5.0
  * @since Java 17+
  */
 @EnableConfigurationProperties(ElasticProperties.class)

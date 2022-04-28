@@ -34,7 +34,6 @@ import org.bouncycastle.crypto.params.KeyParameter;
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BCMacEngine implements MacEngine {

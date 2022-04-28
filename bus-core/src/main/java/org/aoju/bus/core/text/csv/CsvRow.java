@@ -35,7 +35,6 @@ import java.util.*;
  * CSV中一行的表示
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class CsvRow implements List<String> {
@@ -137,7 +136,7 @@ public final class CsvRow implements List<String> {
      * @return Bean
      */
     public <T> T toBean(Class<T> clazz) {
-        return BeanKit.mapToBean(getFieldMap(), clazz, true);
+        return BeanKit.toBeanIgnoreError(getFieldMap(), clazz);
     }
 
     @Override

@@ -37,7 +37,6 @@ import java.util.Objects;
  * 从输入流中读取所有行.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class StreamPumper extends Thread {

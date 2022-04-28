@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.math.Arrange;
 import org.aoju.bus.core.math.Combine;
 import org.aoju.bus.core.math.Formula;
@@ -52,7 +52,6 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MathKit {

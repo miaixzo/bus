@@ -41,7 +41,6 @@ import java.util.List;
  * 编写HTTP/2传输帧.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 final class Http2Writer implements Closeable {

@@ -25,11 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Align;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.map.RowKeyTable;
+import org.aoju.bus.core.map.Table;
+import org.aoju.bus.core.map.TableMap;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.apache.poi.common.usermodel.Hyperlink;
@@ -44,7 +47,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,7 +60,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -850,24 +851,35 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             return passCurrentRow();
         }
 
-        final Map<?, ?> aliasMap = aliasMap(rowMap);
-
+        final Table<?, ?, ?> aliasTable = aliasTable(rowMap);
         if (isWriteKeyAsHead) {
-            writeHeadRow(aliasMap.keySet());
+            // 写出标题行，并记录标题别名和列号的关系
+            writeHeadRow(aliasTable.columnKeys());
+            // 记录原数据key对应列号
+            int i = 0;
+            for (Object key : aliasTable.rowKeySet()) {
+                this.headLocationCache.putIfAbsent(StringKit.toString(key), i);
+                i++;
+            }
         }
 
         // 如果已经写出标题行，根据标题行找对应的值写入
         if (MapKit.isNotEmpty(this.headLocationCache)) {
             final Row row = RowKit.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
             Integer location;
-            for (Entry<?, ?> entry : aliasMap.entrySet()) {
-                location = this.headLocationCache.get(StringKit.toString(entry.getKey()));
+            for (Table.Cell<?, ?, ?> cell : aliasTable) {
+                // 首先查找原名对应的列号
+                location = this.headLocationCache.get(StringKit.toString(cell.getRowKey()));
+                if (null == location) {
+                    // 未找到，则查找别名对应的列号
+                    location = this.headLocationCache.get(StringKit.toString(cell.getColumnKey()));
+                }
                 if (null != location) {
-                    CellKit.setCellValue(CellKit.getOrCreateCell(row, location), entry.getValue(), this.styleSet, false);
+                    CellKit.setCellValue(CellKit.getOrCreateCell(row, location), cell.getValue(), this.styleSet, false);
                 }
             }
         } else {
-            writeRow(aliasMap.values());
+            writeRow(aliasTable.values());
         }
         return this;
     }
@@ -1189,29 +1201,30 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 为指定的key列表添加标题别名，如果没有定义key的别名，在onlyAlias为false时使用原key
+     * 为指定的key列表添加标题别名，如果没有定义key的别名，在onlyAlias为false时使用原key<br>
      * key为别名，value为字段值
      *
-     * @param rowMap 键列表
+     * @param rowMap 一行数据
      * @return 别名列表
      */
-    private Map<?, ?> aliasMap(Map<?, ?> rowMap) {
+    private Table<?, ?, ?> aliasTable(Map<?, ?> rowMap) {
+        final Table<Object, Object, Object> filteredTable = new RowKeyTable<>(new LinkedHashMap<>(), TableMap::new);
         if (MapKit.isEmpty(this.headerAlias)) {
-            return rowMap;
+            rowMap.forEach((key, value) -> filteredTable.put(key, key, value));
+        } else {
+            rowMap.forEach((key, value) -> {
+                final String aliasName = this.headerAlias.get(StringKit.toString(key));
+                if (null != aliasName) {
+                    // 别名键值对加入
+                    filteredTable.put(key, aliasName, value);
+                } else if (false == this.onlyAlias) {
+                    // 保留无别名设置的键值对
+                    filteredTable.put(key, key, value);
+                }
+            });
         }
 
-        final Map<Object, Object> filteredMap = MapKit.newHashMap(rowMap.size(), true);
-        rowMap.forEach((key, value) -> {
-            final String aliasName = this.headerAlias.get(StringKit.toString(key));
-            if (null != aliasName) {
-                // 别名键值对加入
-                filteredMap.put(aliasName, value);
-            } else if (false == this.onlyAlias) {
-                // 保留无别名设置的键值对
-                filteredMap.put(key, value);
-            }
-        });
-        return filteredMap;
+        return filteredTable;
     }
 
     /**

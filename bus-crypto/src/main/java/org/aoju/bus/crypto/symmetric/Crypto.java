@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.symmetric;
 
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Optional;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Ciphers;
@@ -59,7 +59,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Crypto implements Encryptor, Decryptor, Serializable {

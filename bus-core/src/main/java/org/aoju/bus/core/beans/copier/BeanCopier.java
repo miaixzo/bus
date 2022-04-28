@@ -43,7 +43,6 @@ import java.util.Map;
  *
  * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {

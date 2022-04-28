@@ -27,8 +27,8 @@ package org.aoju.bus.validate;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.validate.annotation.*;
@@ -49,7 +49,6 @@ import java.util.List;
  * </P>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

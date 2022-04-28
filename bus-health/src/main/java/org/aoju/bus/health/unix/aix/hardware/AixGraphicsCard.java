@@ -40,7 +40,6 @@ import java.util.function.Supplier;
  * Graphics Card info obtained from lscfg
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

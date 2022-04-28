@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.annotation.AnnoProxy;
-import org.aoju.bus.core.annotation.Element;
+import org.aoju.bus.core.annotation.Annotated;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AccessibleObject;
@@ -35,13 +35,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * 注解工具类
  * 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AnnoKit {
@@ -52,22 +52,82 @@ public class AnnoKit {
      * @param annotationEle 注解元素
      * @return 组合注解元素
      */
-    public static Element toCombination(AnnotatedElement annotationEle) {
-        if (annotationEle instanceof Element) {
-            return (Element) annotationEle;
+    public static Annotated toCombination(AnnotatedElement annotationEle) {
+        if (annotationEle instanceof Annotated) {
+            return (Annotated) annotationEle;
         }
-        return new Element(annotationEle);
+        return new Annotated(annotationEle);
     }
 
     /**
      * 获取指定注解
      *
-     * @param annotationEle {@link AnnotatedElement},可以是Class、Method、Field、Constructor、ReflectPermission
-     * @param isCombination boolean
+     * @param annotationEle   {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param isToCombination 是否为转换为组合注解，组合注解可以递归获取注解的注解
      * @return 注解对象
      */
-    public static Annotation[] getAnnotations(AnnotatedElement annotationEle, boolean isCombination) {
-        return (null == annotationEle) ? null : (isCombination ? toCombination(annotationEle) : annotationEle).getAnnotations();
+    public static Annotation[] getAnnotations(AnnotatedElement annotationEle, boolean isToCombination) {
+        return getAnnotations(annotationEle, isToCombination, (Predicate<Annotation>) null);
+    }
+
+    /**
+     * 获取组合注解
+     *
+     * @param <T>            注解类型
+     * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationType 限定的
+     * @return 注解对象数组
+     */
+    public static <T> T[] getCombinationAnnotations(AnnotatedElement annotationEle, Class<T> annotationType) {
+        return getAnnotations(annotationEle, true, annotationType);
+    }
+
+    /**
+     * 获取指定注解
+     *
+     * @param <T>             注解类型
+     * @param annotationEle   {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param isToCombination 是否为转换为组合注解，组合注解可以递归获取注解的注解
+     * @param annotationType  限定的
+     * @return 注解对象数组
+     */
+    public static <T> T[] getAnnotations(AnnotatedElement annotationEle, boolean isToCombination, Class<T> annotationType) {
+        final Annotation[] annotations = getAnnotations(annotationEle, isToCombination,
+                (annotation -> null == annotationType || annotationType.isAssignableFrom(annotation.getClass())));
+
+        final T[] result = ArrayKit.newArray(annotationType, annotations.length);
+        for (int i = 0; i < annotations.length; i++) {
+            //noinspection unchecked
+            result[i] = (T) annotations[i];
+        }
+        return result;
+    }
+
+    /**
+     * 获取指定注解
+     *
+     * @param annotationEle   {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param isToCombination 是否为转换为组合注解，组合注解可以递归获取注解的注解
+     * @param predicate       过滤器，{@link Predicate#test(Object)}返回{@code true}保留，否则不保留
+     * @return 注解对象
+     */
+    public static Annotation[] getAnnotations(AnnotatedElement annotationEle, boolean isToCombination, Predicate<Annotation> predicate) {
+        if (null == annotationEle) {
+            return null;
+        }
+
+        if (isToCombination) {
+            if (null == predicate) {
+                return toCombination(annotationEle).getAnnotations();
+            }
+            return Annotated.of(annotationEle, predicate).getAnnotations();
+        }
+
+        final Annotation[] result = annotationEle.getAnnotations();
+        if (null == predicate) {
+            return result;
+        }
+        return ArrayKit.filter(result, predicate::test);
     }
 
     /**

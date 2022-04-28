@@ -29,7 +29,6 @@ package org.aoju.bus.shade.safety.algorithm;
  * 对称密钥
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class SymmetricSecureKey extends SecureKey implements SymmetricKey {

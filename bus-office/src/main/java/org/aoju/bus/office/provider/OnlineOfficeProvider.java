@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.provider;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.office.builtin.AbstractJob;
 import org.aoju.bus.office.builtin.AbstractNorm;
 import org.aoju.bus.office.builtin.OnlineMadeInOffice;
@@ -38,7 +38,6 @@ import org.aoju.bus.office.metric.OfficeManager;
  * 按预期工作,它必须与在线office管理器一起使用.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OnlineOfficeProvider extends AbstractProvider {

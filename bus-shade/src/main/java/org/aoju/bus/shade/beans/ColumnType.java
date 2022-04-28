@@ -29,7 +29,6 @@ package org.aoju.bus.shade.beans;
  * 获取实体类字段属性类信息接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface ColumnType {

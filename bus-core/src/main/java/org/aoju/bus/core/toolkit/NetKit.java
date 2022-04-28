@@ -27,8 +27,8 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -47,7 +47,6 @@ import java.util.regex.Matcher;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NetKit {

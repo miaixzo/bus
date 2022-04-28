@@ -26,17 +26,15 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.date.DateTime;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -44,7 +42,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RandomKit {
@@ -491,16 +488,6 @@ public class RandomKit {
      */
     public static char randomChar(String baseString) {
         return baseString.charAt(getRandom().nextInt(baseString.length()));
-    }
-
-    /**
-     * 生成随机颜色
-     *
-     * @return 随机颜色
-     */
-    public static Color randomColor() {
-        final Random random = getRandom();
-        return new Color(random.nextInt(Normal._256), random.nextInt(Normal._256), random.nextInt(Normal._256));
     }
 
     /**

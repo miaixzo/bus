@@ -29,7 +29,6 @@ import org.aoju.bus.image.metric.CancelRQHandler;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Query extends Runnable, CancelRQHandler {

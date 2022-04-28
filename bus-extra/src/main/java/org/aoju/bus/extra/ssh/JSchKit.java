@@ -26,9 +26,9 @@
 package org.aoju.bus.extra.ssh;
 
 import com.jcraft.jsch.*;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.NetKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -43,7 +43,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JSchKit {

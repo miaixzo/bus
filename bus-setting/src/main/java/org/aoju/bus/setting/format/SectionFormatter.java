@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.setting.format;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.setting.magic.IniComment;
 import org.aoju.bus.setting.magic.IniSection;
 import org.aoju.bus.setting.magic.IniSectionImpl;
@@ -35,7 +35,6 @@ import org.aoju.bus.setting.magic.IniSectionImpl;
  * 将字符串值格式设置为{@link IniSection}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SectionFormatter extends AbstractFormatter<IniSection> {

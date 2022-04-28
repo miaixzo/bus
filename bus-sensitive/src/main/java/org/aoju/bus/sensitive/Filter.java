@@ -26,7 +26,7 @@
 package org.aoju.bus.sensitive;
 
 import com.alibaba.fastjson.serializer.BeanContext;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.sensitive.annotation.Condition;
 import org.aoju.bus.sensitive.annotation.Entry;
@@ -49,7 +49,6 @@ import java.util.List;
  * 因为 FastJSON 本身的转换问题,如果对象中存储的是集合对象列表,会导致显示不是信息本身
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilter {

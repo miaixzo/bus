@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.validate;
 
-import org.aoju.bus.core.lang.exception.NoSuchException;
-import org.aoju.bus.core.lang.exception.ValidateException;
+import org.aoju.bus.core.exception.NoSuchException;
+import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.annotation.Complex;
 import org.aoju.bus.validate.validators.Property;
@@ -44,7 +44,6 @@ import java.util.stream.Collectors;
  * 服务提供者
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Provider {

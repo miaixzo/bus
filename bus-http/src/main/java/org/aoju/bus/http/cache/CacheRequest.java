@@ -33,7 +33,6 @@ import java.io.IOException;
  * 缓存请求信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface CacheRequest {

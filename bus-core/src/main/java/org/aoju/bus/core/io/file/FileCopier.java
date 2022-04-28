@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.copier.Duplicate;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -49,7 +49,6 @@ import java.util.List;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FileCopier extends Duplicate<File, FileCopier> {
@@ -236,7 +235,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      * @throws InstrumentException IO异常
      */
     private void internalCopyDirContent(File src, File dest) throws InstrumentException {
-        if (null != copyFilter && false == copyFilter.accept(src)) {
+        if (null != predicate && false == predicate.test(src)) {
             //被过滤的目录跳过
             return;
         }
@@ -278,7 +277,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      * @throws InstrumentException IO异常
      */
     private void internalCopyFile(File src, File dest) throws InstrumentException {
-        if (null != copyFilter && false == copyFilter.accept(src)) {
+        if (null != predicate && false == predicate.test(src)) {
             // 被过滤的文件跳过
             return;
         }

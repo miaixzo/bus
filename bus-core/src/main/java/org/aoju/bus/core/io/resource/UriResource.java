@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.UriKit;
@@ -40,7 +40,6 @@ import java.net.URL;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class UriResource implements Resource {

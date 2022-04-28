@@ -36,7 +36,6 @@ import java.util.Date;
  * 用户只需实现getStr方法即可,其他类型将会从String结果中转换 在不提供默认值的情况下, 如果值不存在或获取错误,返回null
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface OptNullString<K> extends OptNullType<K> {

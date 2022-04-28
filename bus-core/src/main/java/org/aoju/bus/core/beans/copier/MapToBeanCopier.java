@@ -41,7 +41,6 @@ import java.util.Map;
  *
  * @param <T> 目标Bean类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {

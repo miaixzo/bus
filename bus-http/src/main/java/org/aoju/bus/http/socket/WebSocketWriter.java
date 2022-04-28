@@ -35,7 +35,6 @@ import java.util.Random;
  * 这个类不是线程安全的
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 final class WebSocketWriter {

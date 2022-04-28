@@ -32,7 +32,6 @@ import org.aoju.bus.goalie.Assets;
  * 抽象路由注册
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultAssetsRegistry extends AbstractRegistry<Assets> implements AssetsRegistry {

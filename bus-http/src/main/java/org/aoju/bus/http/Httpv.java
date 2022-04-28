@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.*;
 import org.aoju.bus.http.metric.http.AsyncHttp;
@@ -48,7 +48,6 @@ import java.util.concurrent.Executor;
  * Httpv 客户端接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Httpv {

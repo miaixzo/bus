@@ -41,7 +41,6 @@ import java.lang.reflect.Method;
  * 数据源信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DataSourceHolder {

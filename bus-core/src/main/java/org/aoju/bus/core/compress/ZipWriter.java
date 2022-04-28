@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -42,7 +42,6 @@ import java.util.zip.ZipOutputStream;
  * Zip生成封装
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ZipWriter implements Closeable {

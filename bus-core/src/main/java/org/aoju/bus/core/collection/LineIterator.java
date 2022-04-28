@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.collection;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.*;
@@ -37,7 +37,6 @@ import java.nio.charset.Charset;
  * 此对象遍历结束后,应关闭之,推荐使用方式:
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class LineIterator extends ComputeIterator<String> implements IterableIterator<String>, Closeable, Serializable {

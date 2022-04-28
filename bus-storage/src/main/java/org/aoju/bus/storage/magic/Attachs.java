@@ -36,7 +36,6 @@ import java.util.Map;
  * 附件信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

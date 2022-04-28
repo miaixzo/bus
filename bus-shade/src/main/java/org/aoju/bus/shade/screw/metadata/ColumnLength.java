@@ -31,7 +31,6 @@ import java.io.Serializable;
  * 列长度
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface ColumnLength extends Serializable {

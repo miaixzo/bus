@@ -26,8 +26,8 @@
 package org.aoju.bus.http.secure;
 
 import org.aoju.bus.core.builder.Builder;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -51,7 +51,6 @@ import java.security.SecureRandom;
  * 构建后可获得{@link SSLContext}，通过调用{@link SSLContext#getSocketFactory()}获取{@link javax.net.ssl.SSLSocketFactory}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SSLContextBuilder implements Builder<SSLContext> {

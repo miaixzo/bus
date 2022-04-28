@@ -45,7 +45,6 @@ import java.util.function.Supplier;
  * Firmware data obtained by sysfs.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

@@ -30,7 +30,6 @@ package org.aoju.bus.core.lang.mutable;
  *
  * @param <T> 值得类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Mutable<T> {

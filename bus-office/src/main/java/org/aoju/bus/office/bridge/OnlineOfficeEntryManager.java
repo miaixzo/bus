@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.office.bridge;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.builtin.MadeInOffice;
@@ -47,7 +47,6 @@ import java.net.URL;
  * 它将向LibreOffice在线服务器发送转换请求，并等待任务完成或达到配置的任务执行超时.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {

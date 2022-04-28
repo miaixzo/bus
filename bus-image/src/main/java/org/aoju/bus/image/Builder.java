@@ -53,7 +53,6 @@ import java.util.concurrent.ExecutorService;
  * 方法参数等构建器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Builder {

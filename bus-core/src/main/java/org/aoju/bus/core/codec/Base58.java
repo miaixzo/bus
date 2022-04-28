@@ -26,9 +26,9 @@
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.codec.provider.Base58Provider;
+import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.lang.exception.ValidateException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -41,7 +41,6 @@ import java.util.Arrays;
  * 规范见：https://en.bitcoin.it/wiki/Base58Check_encoding
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Base58 {

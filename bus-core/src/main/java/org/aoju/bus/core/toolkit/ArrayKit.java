@@ -29,9 +29,9 @@ import org.aoju.bus.core.builder.HashCodeBuilder;
 import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.collection.UniqueKeySet;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
 import org.aoju.bus.core.text.TextJoiner;
 
@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ArrayKit {

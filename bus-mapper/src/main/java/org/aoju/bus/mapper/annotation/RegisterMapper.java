@@ -34,7 +34,6 @@ import java.lang.annotation.Target;
  * 自动注册 Mapper 接口标记
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Target({ElementType.TYPE})

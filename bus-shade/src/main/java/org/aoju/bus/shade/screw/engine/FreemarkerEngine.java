@@ -29,9 +29,9 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.shade.screw.Builder;
@@ -45,7 +45,6 @@ import java.util.Objects;
  * freemarker
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FreemarkerEngine extends AbstractEngine {

@@ -30,7 +30,6 @@ import java.io.InputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class InputStreamWriter implements DataWriter {

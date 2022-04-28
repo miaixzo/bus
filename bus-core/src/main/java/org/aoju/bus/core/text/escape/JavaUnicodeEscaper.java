@@ -31,7 +31,6 @@ import org.aoju.bus.core.lang.Symbol;
  * Translates codepoints to their Unicode escaped value suitable for Java source.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JavaUnicodeEscaper extends UnicodeEscaper {

@@ -44,7 +44,6 @@ import org.aoju.bus.logger.Logger;
  * allow applications to easily add, query, and remove counters.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

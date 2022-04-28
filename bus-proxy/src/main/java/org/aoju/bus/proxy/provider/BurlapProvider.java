@@ -26,7 +26,7 @@
 package org.aoju.bus.proxy.provider;
 
 import com.caucho.burlap.client.BurlapProxyFactory;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.proxy.Provider;
 
 import java.net.MalformedURLException;
@@ -35,7 +35,6 @@ import java.net.MalformedURLException;
  * burlap 服务提供
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BurlapProvider implements Provider {

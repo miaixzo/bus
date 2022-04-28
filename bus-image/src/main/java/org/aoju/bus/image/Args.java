@@ -42,7 +42,6 @@ import java.util.EnumSet;
  * 请求参数信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

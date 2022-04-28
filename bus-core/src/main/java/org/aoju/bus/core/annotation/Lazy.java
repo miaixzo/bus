@@ -35,7 +35,6 @@ import java.lang.annotation.Target;
  * 或者标记为不受立即加载影响的方法(例如,AppConfig中的方法)
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Target({ElementType.TYPE, ElementType.METHOD})

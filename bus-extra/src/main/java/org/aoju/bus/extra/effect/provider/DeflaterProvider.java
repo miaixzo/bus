@@ -36,7 +36,6 @@ import java.util.zip.Inflater;
  * 基于deflater算法的数据解压缩
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DeflaterProvider implements EffectProvider {

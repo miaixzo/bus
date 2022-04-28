@@ -30,7 +30,6 @@ import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Types;
-import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.map.*;
 
 import java.util.*;
@@ -43,7 +42,6 @@ import java.util.stream.Collectors;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MapKit {
@@ -223,6 +221,7 @@ public class MapKit {
         }
     }
 
+
     /**
      * 将单一键值对转换为Map
      *
@@ -255,14 +254,15 @@ public class MapKit {
     /**
      * 根据给定的Pair数组创建Map对象
      *
-     * @param <K>   键类型
-     * @param <V>   值类型
-     * @param pairs 键值对
+     * @param <K>     键类型
+     * @param <V>     值类型
+     * @param entries 键值对
      * @return Map
+     * @see #entry(Object, Object)
      */
-    public static <K, V> Map<K, V> of(Pair<K, V>... pairs) {
+    public static <K, V> Map<K, V> of(Map.Entry<K, V>... entries) {
         final Map<K, V> map = new HashMap<>();
-        for (Pair<K, V> pair : pairs) {
+        for (Map.Entry<K, V> pair : entries) {
             map.put(pair.getKey(), pair.getValue());
         }
         return map;

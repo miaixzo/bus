@@ -35,7 +35,6 @@ import org.aoju.bus.validate.validators.Validator;
  * BLANK 校验
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BlankStrategy implements Validator<String>, Matcher<String, Blank> {

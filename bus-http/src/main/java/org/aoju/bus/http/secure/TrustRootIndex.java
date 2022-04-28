@@ -31,7 +31,6 @@ import java.security.cert.X509Certificate;
  * 签名证书索引
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface TrustRootIndex {
