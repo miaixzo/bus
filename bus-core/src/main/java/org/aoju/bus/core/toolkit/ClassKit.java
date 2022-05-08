@@ -25,9 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.beans.BeanDesc;
 import org.aoju.bus.core.beans.NullWrapper;
-import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
@@ -35,7 +33,10 @@ import org.aoju.bus.core.compiler.JavaSourceCompiler;
 import org.aoju.bus.core.convert.BasicType;
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.lang.*;
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.loader.JarLoaders;
@@ -47,7 +48,6 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.System;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.net.JarURLConnection;
@@ -55,7 +55,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.temporal.TemporalAccessor;
-import java.util.Locale;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -965,104 +964,6 @@ public class ClassKit {
             values[i] = getDefaultValue(classes[i]);
         }
         return values;
-    }
-
-    /**
-     * 对象转Map,不进行驼峰转下划线,不忽略值为空的字段
-     *
-     * @param bean bean对象
-     * @return Map
-     */
-    public static Map<String, Object> beanToMap(Object bean) {
-        return beanToMap(bean, false, false);
-    }
-
-    /**
-     * 对象转Map
-     *
-     * @param bean              bean对象
-     * @param isToUnderlineCase 是否转换为下划线模式
-     * @param ignoreNullValue   是否忽略值为空的字段
-     * @return Map
-     */
-    public static Map<String, Object> beanToMap(Object bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
-        return beanToMap(bean, new HashMap<>(), isToUnderlineCase, ignoreNullValue);
-    }
-
-    /**
-     * 对象转Map
-     *
-     * @param bean              bean对象
-     * @param targetMap         目标的Map
-     * @param isToUnderlineCase 是否转换为下划线模式
-     * @param ignoreNullValue   是否忽略值为空的字段
-     * @return Map
-     */
-    public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, final boolean isToUnderlineCase, boolean ignoreNullValue) {
-        if (null == bean) {
-            return null;
-        }
-
-        return beanToMap(bean, targetMap, ignoreNullValue, key -> isToUnderlineCase ? StringKit.toUnderlineCase(key) : key);
-    }
-
-    /**
-     * 对象转Map
-     * 通过实现{@link Editor} 可以自定义字段值,如果这个Editor返回null则忽略这个字段,以便实现：
-     *
-     * <pre>
-     * 1. 字段筛选,可以去除不需要的字段
-     * 2. 字段变换,例如实现驼峰转下划线
-     * 3. 自定义字段前缀或后缀等等
-     * </pre>
-     *
-     * @param bean            bean对象
-     * @param targetMap       目标的Map
-     * @param ignoreNullValue 是否忽略值为空的字段
-     * @param keyEditor       属性字段(Map的key)编辑器,用于筛选、编辑key
-     * @return Map
-     */
-    public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
-        if (null == bean) {
-            return null;
-        }
-
-        final Collection<PropertyDesc> props = getBeanDesc(bean.getClass()).getProps();
-
-        String key;
-        Method getter;
-        Object value;
-        for (PropertyDesc prop : props) {
-            key = prop.getFieldName();
-            // 过滤class属性
-            // 得到property对应的getter方法
-            getter = prop.getGetter();
-            if (null != getter) {
-                // 只读取有getter方法的属性
-                try {
-                    value = getter.invoke(bean);
-                } catch (Exception ignore) {
-                    continue;
-                }
-                if (false == ignoreNullValue || (null != value && false == value.equals(bean))) {
-                    key = keyEditor.edit(key);
-                    if (null != key) {
-                        targetMap.put(key, value);
-                    }
-                }
-            }
-        }
-        return targetMap;
-    }
-
-    /**
-     * 获取{@link BeanDesc} Bean描述信息
-     *
-     * @param clazz Bean类
-     * @return the object
-     */
-    public static BeanDesc getBeanDesc(Class<?> clazz) {
-        return new BeanDesc(clazz);
     }
 
     /**

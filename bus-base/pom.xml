@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <spring.boot.version>2.6.6</spring.boot.version>
+        <spring.boot.version>2.6.7</spring.boot.version>
         <lombok.version>1.18.24</lombok.version>
         <persistence.version>2.2</persistence.version>
     </properties>

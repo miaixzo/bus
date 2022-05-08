@@ -670,6 +670,25 @@ public class BeanKit {
     }
 
     /**
+     * 将bean的部分属性转换成map
+     * 可选拷贝哪些属性值，默认是不忽略值为{@code null}的值的。
+     *
+     * @param bean       bean
+     * @param properties 需要拷贝的属性值，{@code null}或空表示拷贝所有值
+     * @return Map
+     */
+    public static Map<String, Object> beanToMap(Object bean, String... properties) {
+        Editor<String> keyEditor = null;
+        if (ArrayKit.isNotEmpty(properties)) {
+            final Set<String> propertiesSet = CollKit.newHashSet(false, properties);
+            keyEditor = property -> propertiesSet.contains(property) ? property : null;
+        }
+
+        // 指明了要复制的属性 所以不忽略null值
+        return beanToMap(bean, new LinkedHashMap<>(properties.length, 1), false, keyEditor);
+    }
+
+    /**
      * 对象转Map
      *
      * @param bean              bean对象
@@ -721,7 +740,7 @@ public class BeanKit {
             return null;
         }
 
-        final Collection<PropertyDesc> props = BeanKit.getBeanDesc(bean.getClass()).getProps();
+        final Collection<PropertyDesc> props = getBeanDesc(bean.getClass()).getProps();
 
         String key;
         Method getter;

@@ -34,7 +34,9 @@ import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * 实例化工具类
@@ -175,6 +177,30 @@ public final class Instances {
      */
     public static void put(String key, Object obj) {
         POOL.put(key, obj);
+    }
+
+    /**
+     * 判断某个类的对象是否存在
+     *
+     * @param clazz  类
+     * @param params 构造参数
+     * @return 是否存在
+     */
+    public static boolean exists(Class<?> clazz, Object... params) {
+        if (null != clazz) {
+            final String key = buildKey(clazz.getName(), params);
+            return POOL.containsKey(key);
+        }
+        return false;
+    }
+
+    /**
+     * 获取单例池中存在的所有类
+     *
+     * @return 非重复的类集合
+     */
+    public static Set<Class<?>> getExistClass() {
+        return POOL.values().stream().map(Object::getClass).collect(Collectors.toSet());
     }
 
     /**

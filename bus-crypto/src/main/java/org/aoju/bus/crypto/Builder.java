@@ -37,8 +37,7 @@ import org.aoju.bus.crypto.asymmetric.Sign;
 import org.aoju.bus.crypto.digest.*;
 import org.aoju.bus.crypto.digest.mac.BCHMacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
-import org.aoju.bus.crypto.symmetric.Crypto;
-import org.aoju.bus.crypto.symmetric.SM4;
+import org.aoju.bus.crypto.symmetric.*;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.gm.GMNamedCurves;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -741,64 +740,6 @@ public class Builder {
         return new RSA(privateKey, publicKey);
     }
 
-    /**
-     * 创建签名算法对象
-     * 生成新的私钥公钥对
-     *
-     * @param algorithm 签名算法
-     * @return {@link Sign}
-     */
-    public static Sign sign(Algorithm algorithm) {
-        return new Sign(algorithm);
-    }
-
-    /**
-     * 创建签名算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm  签名算法
-     * @param privateKey 私钥Base64
-     * @param publicKey  公钥Base64
-     * @return {@link Sign}
-     */
-    public static Sign sign(Algorithm algorithm, String privateKey, String publicKey) {
-        return new Sign(algorithm, privateKey, publicKey);
-    }
-
-    /**
-     * 创建Sign算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm  算法枚举
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     * @return {@link Sign}
-     */
-    public static Sign sign(Algorithm algorithm, byte[] privateKey, byte[] publicKey) {
-        return new Sign(algorithm, privateKey, publicKey);
-    }
-
-    /**
-     * 新建摘要器
-     *
-     * @param algorithm 签名算法
-     * @return Digester
-     */
-    public static Digester digester(Algorithm algorithm) {
-        return new Digester(algorithm);
-    }
-
-    /**
-     * 新建摘要器
-     *
-     * @param algorithm 签名算法
-     * @return Digester
-     */
-    public static Digester digester(String algorithm) {
-        return new Digester(algorithm);
-    }
 
 
     /**
@@ -944,6 +885,161 @@ public class Builder {
      */
     public static SM4 sm4(byte[] key) {
         return new SM4(key);
+    }
+
+    /**
+     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY
+     * 例：
+     *
+     * <pre>
+     * AES加密：aes().encrypt(data)
+     * AES解密：aes().decrypt(data)
+     * </pre>
+     *
+     * @return {@link AES}
+     */
+    public static AES aes() {
+        return new AES();
+    }
+
+    /**
+     * AES加密
+     * 例：
+     *
+     * <pre>
+     * AES加密：aes(key).encrypt(data)
+     * AES解密：aes(key).decrypt(data)
+     * </pre>
+     *
+     * @param key 密钥
+     * @return {@link Crypto}
+     */
+    public static AES aes(byte[] key) {
+        return new AES(key);
+    }
+
+    /**
+     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY
+     * 例：
+     *
+     * <pre>
+     * DES加密：des().encrypt(data)
+     * DES解密：des().decrypt(data)
+     * </pre>
+     *
+     * @return {@link DES}
+     */
+    public static DES des() {
+        return new DES();
+    }
+
+    /**
+     * DES加密
+     * 例：
+     *
+     * <pre>
+     * DES加密：des(key).encrypt(data)
+     * DES解密：des(key).decrypt(data)
+     * </pre>
+     *
+     * @param key 密钥
+     * @return {@link DES}
+     */
+    public static DES des(byte[] key) {
+        return new DES(key);
+    }
+
+    /**
+     * DESede加密（又名3DES、TripleDES），生成随机KEY。注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY
+     * Java中默认实现为：DESede/ECB/PKCS5Padding
+     * 例：
+     *
+     * <pre>
+     * DESede加密：desede().encrypt(data)
+     * DESede解密：desede().decrypt(data)
+     * </pre>
+     *
+     * @return {@link DESede}
+     */
+    public static DESede desede() {
+        return new DESede();
+    }
+
+    /**
+     * DESede加密（又名3DES、TripleDES）
+     * Java中默认实现为：DESede/ECB/PKCS5Padding
+     * 例：
+     *
+     * <pre>
+     * DESede加密：desede(key).encrypt(data)
+     * DESede解密：desede(key).decrypt(data)
+     * </pre>
+     *
+     * @param key 密钥
+     * @return {@link DESede}
+     */
+    public static DESede desede(byte[] key) {
+        return new DESede(key);
+    }
+
+
+    /**
+     * 创建签名算法对象
+     * 生成新的私钥公钥对
+     *
+     * @param algorithm 签名算法
+     * @return {@link Sign}
+     */
+    public static Sign sign(Algorithm algorithm) {
+        return new Sign(algorithm);
+    }
+
+    /**
+     * 创建签名算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  签名算法
+     * @param privateKey 私钥Base64
+     * @param publicKey  公钥Base64
+     * @return {@link Sign}
+     */
+    public static Sign sign(Algorithm algorithm, String privateKey, String publicKey) {
+        return new Sign(algorithm, privateKey, publicKey);
+    }
+
+    /**
+     * 创建Sign算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  算法枚举
+     * @param privateKey 私钥
+     * @param publicKey  公钥
+     * @return {@link Sign}
+     */
+    public static Sign sign(Algorithm algorithm, byte[] privateKey, byte[] publicKey) {
+        return new Sign(algorithm, privateKey, publicKey);
+    }
+
+    /**
+     * 新建摘要器
+     *
+     * @param algorithm 签名算法
+     * @return Digester
+     */
+    public static Digester digester(Algorithm algorithm) {
+        return new Digester(algorithm);
+    }
+
+    /**
+     * 新建摘要器
+     *
+     * @param algorithm 签名算法
+     * @return Digester
+     */
+    public static Digester digester(String algorithm) {
+        return new Digester(algorithm);
     }
 
     /**
