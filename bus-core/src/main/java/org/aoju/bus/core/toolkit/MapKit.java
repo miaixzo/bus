@@ -36,7 +36,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 /**
  * Map相关工具类
@@ -733,7 +732,7 @@ public class MapKit {
         if (null == map || null == biFunction) {
             return newHashMap();
         }
-        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, m -> biFunction.apply(m.getKey(), m.getValue())));
+        return map.entrySet().stream().collect(CollKit.toMap(Map.Entry::getKey, m -> biFunction.apply(m.getKey(), m.getValue()), (l, r) -> l));
     }
 
     /**
@@ -1320,8 +1319,8 @@ public class MapKit {
      */
     public static <K, V> Map.Entry<K, V> entry(K key, V value, boolean isImmutable) {
         return isImmutable ?
-                new AbstractMap.SimpleEntry<>(key, value) :
-                new AbstractMap.SimpleImmutableEntry<>(key, value);
+                new AbstractMap.SimpleImmutableEntry<>(key, value) :
+                new AbstractMap.SimpleEntry<>(key, value);
     }
 
 }

@@ -740,8 +740,6 @@ public class Builder {
         return new RSA(privateKey, publicKey);
     }
 
-
-
     /**
      * 创建SM2算法对象
      * 生成新的私钥公钥对
@@ -982,7 +980,6 @@ public class Builder {
         return new DESede(key);
     }
 
-
     /**
      * 创建签名算法对象
      * 生成新的私钥公钥对
@@ -1023,6 +1020,109 @@ public class Builder {
     }
 
     /**
+     * 计算SHA-512摘要值
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要
+     */
+    public static byte[] sha512(final byte[] data) {
+        return new Digester(Algorithm.SHA512).digest(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-512摘要
+     * @since 3.0.8
+     */
+    public static byte[] sha512(final String data, final String charset) {
+        return new Digester(Algorithm.SHA512).digest(data, charset);
+    }
+
+    /**
+     * 计算sha512摘要值，使用UTF-8编码
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要
+     */
+    public static byte[] sha512(final String data) {
+        return sha512(data, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算SHA-512摘要值
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要
+     */
+    public static byte[] sha512(final InputStream data) {
+        return new Digester(Algorithm.SHA512).digest(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值
+     *
+     * @param file 被摘要文件
+     * @return SHA-512摘要
+     */
+    public static byte[] sha512(final File file) {
+        return new Digester(Algorithm.SHA512).digest(file);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final byte[] data) {
+        return new Digester(Algorithm.SHA512).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final String data, final String charset) {
+        return new Digester(Algorithm.SHA512).digestHex(data, charset);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final String data) {
+        return sha512Hex(data, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final InputStream data) {
+        return new Digester(Algorithm.SHA512).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param file 被摘要文件
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final File file) {
+        return new Digester(Algorithm.SHA512).digestHex(file);
+    }
+
+    /**
      * 新建摘要器
      *
      * @param algorithm 签名算法
@@ -1041,6 +1141,7 @@ public class Builder {
     public static Digester digester(String algorithm) {
         return new Digester(algorithm);
     }
+
 
     /**
      * 数据加密

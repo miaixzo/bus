@@ -39,7 +39,9 @@ public interface ExtendCache {
      * @param key   缓存key
      * @param value 缓存内容
      */
-    void cache(String key, String value);
+    default void cache(String key, String value) {
+
+    }
 
     /**
      * 存入缓存
@@ -48,7 +50,9 @@ public interface ExtendCache {
      * @param value   缓存内容
      * @param timeout 指定缓存过期时间(毫秒)
      */
-    void cache(String key, String value, long timeout);
+    default void cache(String key, String value, long timeout) {
+
+    }
 
     /**
      * 获取缓存内容
@@ -56,6 +60,17 @@ public interface ExtendCache {
      * @param key 缓存key
      * @return 缓存内容
      */
-    Object get(String key);
+    default Object get(String key) {
+        return null;
+    }
+
+    /**
+     * 清理缓存内容
+     *
+     * @param key 缓存key
+     */
+    default void remove(String key) {
+
+    }
 
 }

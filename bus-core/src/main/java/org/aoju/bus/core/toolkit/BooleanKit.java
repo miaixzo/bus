@@ -81,15 +81,36 @@ public class BooleanKit {
     /**
      * 转换字符串为boolean值
      *
-     * @param valueStr 字符串
+     * @param text 字符串
      * @return boolean值
      */
-    public static boolean toBoolean(String valueStr) {
-        if (StringKit.isNotBlank(valueStr)) {
-            valueStr = valueStr.trim().toLowerCase();
-            return ArrayKit.contains(Normal.TRUE_ARRAY, valueStr);
+    public static boolean toBoolean(String text) {
+        if (StringKit.isNotBlank(text)) {
+            text = text.trim().toLowerCase();
+            return ArrayKit.contains(Normal.TRUE_ARRAY, text);
         }
         return false;
+    }
+
+    /**
+     * 转换字符串为boolean值
+     * 如果为["true", "yes", "y", "t", "ok", "1", "on", "是", "对", "真", "對", "√"]，返回{@code true}<br>
+     * 如果为["false", "no", "n", "f", "0", "off", "否", "错", "假", "錯", "×"]，返回{@code false}<br>
+     * 其他情况返回{@code null}
+     *
+     * @param text 字符串
+     * @return boolean值
+     */
+    public static Boolean toBooleanObject(String text) {
+        if (StringKit.isNotBlank(text)) {
+            text = text.trim().toLowerCase();
+            if (ArrayKit.contains(Normal.TRUE_ARRAY, text)) {
+                return true;
+            } else if (ArrayKit.contains(Normal.FALSE_ARRAY, text)) {
+                return false;
+            }
+        }
+        return null;
     }
 
     /**

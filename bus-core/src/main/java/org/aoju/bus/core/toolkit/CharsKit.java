@@ -3258,6 +3258,28 @@ public class CharsKit {
         return false;
     }
 
+
+    /**
+     * 给定字符串是否以任何一个字符串结尾（忽略大小写）
+     * 给定字符串和数组为空都返回false
+     *
+     * @param text     给定字符串
+     * @param suffixes 需要检测的结尾字符串
+     * @return 给定字符串是否以任何一个字符串结尾
+     */
+    public static boolean startWithAnyIgnoreCase(final CharSequence text, final CharSequence... suffixes) {
+        if (isEmpty(text) || ArrayKit.isEmpty(suffixes)) {
+            return false;
+        }
+
+        for (final CharSequence suffix : suffixes) {
+            if (startWith(text, suffix, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 是否以指定字符串开头,忽略大小写
      *

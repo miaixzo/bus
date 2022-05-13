@@ -678,14 +678,16 @@ public class BeanKit {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, String... properties) {
+        int mapSize = 16;
         Editor<String> keyEditor = null;
         if (ArrayKit.isNotEmpty(properties)) {
+            mapSize = properties.length;
             final Set<String> propertiesSet = CollKit.newHashSet(false, properties);
             keyEditor = property -> propertiesSet.contains(property) ? property : null;
         }
 
         // 指明了要复制的属性 所以不忽略null值
-        return beanToMap(bean, new LinkedHashMap<>(properties.length, 1), false, keyEditor);
+        return beanToMap(bean, new LinkedHashMap<>(mapSize, 1), false, keyEditor);
     }
 
     /**
