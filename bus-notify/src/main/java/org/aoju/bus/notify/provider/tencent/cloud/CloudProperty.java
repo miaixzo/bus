@@ -23,33 +23,25 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.notify.provider.tencent.cloud;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.magic.Property;
 
 /**
- * 阿里云邮件模版
+ * 腾讯云
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
+@Data
 @SuperBuilder
-public class AliyunEmailProperty extends Property {
+public class CloudProperty extends Property {
 
     /**
-     * 邮件内容
-     * Limit 28K
+     * 短信应用ID.
      */
-    private String content;
-
-    /**
-     * 主题
-     */
-    private String subject;
+    private String smsAppId;
 
 }

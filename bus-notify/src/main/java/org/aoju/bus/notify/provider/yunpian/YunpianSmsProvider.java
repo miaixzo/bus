@@ -23,23 +23,48 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.huawei;
+package org.aoju.bus.notify.provider.yunpian;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Property;
+import org.aoju.bus.extra.json.JsonKit;
+import org.aoju.bus.http.Httpx;
+import org.aoju.bus.notify.Builder;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.provider.AbstractProvider;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
- * 七牛云短信
+ * 云片短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class HuaweiSmsProperty extends Property {
+public class YunpianSmsProvider extends AbstractProvider<YunpianProperty, Context> {
 
+    public YunpianSmsProvider(Context context) {
+        super(context);
+    }
+
+    @Override
+    public Message send(YunpianProperty entity) {
+        Map<String, Object> bodys = new HashMap<>();
+        bodys.put("apikey", entity.getApikey());
+        bodys.put("mobile", entity.getReceive());
+        bodys.put("tpl_id", entity.getTemplate());
+        bodys.put("tpl_value", entity.getParams());
+
+        String response = Httpx.post(entity.getUrl(), bodys);
+        boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
+        String errcode = succeed ? Builder.ErrorCode.SUCCESS.getCode() : Builder.ErrorCode.FAILURE.getCode();
+        String errmsg = succeed ? Builder.ErrorCode.SUCCESS.getMsg() : Builder.ErrorCode.FAILURE.getMsg();
+
+        return Message.builder()
+                .errcode(errcode)
+                .errmsg(errmsg)
+                .build();
+    }
 
 }

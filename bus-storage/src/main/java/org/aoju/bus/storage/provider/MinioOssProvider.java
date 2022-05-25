@@ -36,8 +36,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -137,7 +137,7 @@ public class MinioOssProvider extends AbstractProvider {
                         .stream(iterable.spliterator(), true)
                         .map(itemResult -> {
                             try {
-                                Attachs storageItem = new Attachs();
+                                Property storageItem = new Property();
                                 Item item = itemResult.get();
                                 storageItem.setName(item.objectName());
                                 storageItem.setSize(StringKit.toString(item.size()));
@@ -203,7 +203,7 @@ public class MinioOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(Attachs.builder()
+                    .data(Property.builder()
                             .name(fileName)
                             .path(this.context.getPrefix() + fileName))
                     .build();

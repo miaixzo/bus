@@ -36,8 +36,8 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.File;
 import java.io.InputStream;
@@ -105,7 +105,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
                 .data(objectListing.getContents().stream().map(item -> {
-                    Attachs storageItem = new Attachs();
+                    Property storageItem = new Property();
                     storageItem.setName(item.getKey());
                     storageItem.setOwner(item.getOwner().getDisplayName());
                     storageItem.setSize(StringKit.toString(item.getSize()));

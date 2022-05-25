@@ -40,8 +40,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.File;
 import java.io.InputStream;
@@ -160,7 +160,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(Attachs.builder()
+                    .data(Property.builder()
                             .name(fileName)
                             .size(StringKit.toString(response.body().length))
                             .path(response.url()))
@@ -188,7 +188,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(Attachs.builder()
+                    .data(Property.builder()
                             .size(StringKit.toString(response.body().length))
                             .name(fileName)
                             .path(response.url()))

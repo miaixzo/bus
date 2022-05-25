@@ -49,16 +49,6 @@ public class Context {
     private String appSecret;
 
     /**
-     * 短信签名
-     */
-    private String signName;
-
-    /**
-     * 语音主叫号码
-     */
-    private String showNumber;
-
-    /**
      * 授权方的网页应用ID
      */
     private String agentId;

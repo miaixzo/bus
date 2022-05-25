@@ -43,42 +43,42 @@ public class Context {
     /**
      * RUL前缀
      */
-    protected String prefix;
+    private String prefix;
     /**
      * 容器名称
      */
-    protected String bucket;
+    private String bucket;
     /**
      * 服务端点
      */
-    protected String endpoint;
+    private String endpoint;
     /**
      * 访问key
      */
-    protected String accessKey;
+    private String accessKey;
     /**
      * 访问秘钥
      */
-    protected String secretKey;
+    private String secretKey;
     /**
      * 存储区域
      */
-    protected String region;
+    private String region;
     /**
      * 是否私有
      */
-    protected boolean secure;
+    private boolean secure;
     /**
      * 连接超时
      */
-    protected long connectTimeout;
+    private long connectTimeout;
     /**
      * 写入超时
      */
-    protected long writeTimeout;
+    private long writeTimeout;
     /**
      * 读取超时
      */
-    protected long readTimeout;
+    private long readTimeout;
 
 }

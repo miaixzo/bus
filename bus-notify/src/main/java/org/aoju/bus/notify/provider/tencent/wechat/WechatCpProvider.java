@@ -23,33 +23,27 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify.provider.tencent.wechat;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Property;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.provider.AbstractProvider;
 
 /**
- * 网易云短信模版
+ * 企业号/企业微信消息
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class NeteaseSmsProperty extends Property {
+public class WechatCpProvider extends AbstractProvider<WechatProperty, Context> {
 
-    /**
-     * 模版id
-     */
-    String templateId;
+    public WechatCpProvider(Context context) {
+        super(context);
+    }
 
-
-    /**
-     * 模版参数
-     */
-    String params;
+    @Override
+    public Message send(WechatProperty entity) {
+        return null;
+    }
 
 }

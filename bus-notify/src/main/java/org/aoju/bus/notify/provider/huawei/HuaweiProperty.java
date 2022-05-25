@@ -23,80 +23,21 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.storage.magic;
+package org.aoju.bus.notify.provider.huawei;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Map;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 附件信息
+ * 七牛云短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class Attachs {
+@SuperBuilder
+public class HuaweiProperty extends Property {
 
-    /**
-     * 标识
-     */
-    public String key;
-
-    /**
-     * 名称
-     */
-    public String name;
-
-    /**
-     * 路径
-     */
-    public String path;
-
-    /**
-     * 大小
-     */
-    public String size;
-
-    /**
-     * 类型
-     */
-    public String type;
-
-    /**
-     * 状态
-     */
-    public String status;
-
-    /**
-     * 所有者
-     */
-    public String owner;
-
-    /**
-     * hash值
-     */
-    public String hash;
-
-    /**
-     * 缩略图
-     */
-    public String url;
-
-    /**
-     * 存储平台
-     */
-    public String platform;
-
-    /**
-     * 文件扩展字段
-     */
-    public Map<String, Object> extend;
 
 }

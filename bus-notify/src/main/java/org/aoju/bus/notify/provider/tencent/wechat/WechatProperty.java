@@ -23,23 +23,20 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.jdcloud;
+package org.aoju.bus.notify.provider.tencent.wechat;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.magic.Property;
 
 /**
- * 京东云短信
+ * 微信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
+@Data
 @SuperBuilder
-public class JdcloudSmsProperty extends Property {
-
+public class WechatProperty extends Property {
 
 }

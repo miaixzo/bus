@@ -42,7 +42,7 @@ import java.util.List;
 @AllArgsConstructor
 public abstract class AbstractProvider<T extends Property, K extends Context> implements Provider<T> {
 
-    protected K properties;
+    protected K context;
 
     @Override
     public Message send(T entity) {

@@ -25,8 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.generic;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -40,10 +39,9 @@ import java.io.File;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
+@Data
 @SuperBuilder
-public class NativeEmailProperty extends Property {
+public class GenericProperty extends Property {
 
     private static final String SMTP_HOST = "mail.smtp.host";
     private static final String SMTP_PORT = "mail.smtp.port";
@@ -156,7 +154,7 @@ public class NativeEmailProperty extends Property {
      *
      * @return this
      */
-    public NativeEmailProperty defaultIfEmpty() {
+    public GenericProperty defaultIfEmpty() {
         if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
             this.host = StringKit.format("smtp.{}", StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));

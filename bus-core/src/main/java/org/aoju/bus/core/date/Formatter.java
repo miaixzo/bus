@@ -139,6 +139,26 @@ public class Formatter {
     }
 
     /**
+     * 根据特定格式格式化日期
+     *
+     * @param date     被格式化的日期
+     * @param format   日期格式,常用格式见： {@link Fields}
+     * @param timeZone 时区
+     * @return 格式化后的字符串
+     */
+    public static String format(Date date, String format, String timeZone) {
+        if (null == date || StringKit.isBlank(format)) {
+            return null;
+        }
+
+        final SimpleDateFormat sdf = new SimpleDateFormat(format);
+        if (null != timeZone) {
+            sdf.setTimeZone(new SimpleTimeZone(0, timeZone));
+        }
+        return format(date, sdf);
+    }
+
+    /**
      * 按照给定的通配模式,格式化成相应的时间字符串
      *
      * @param srcDate     原始时间字符串

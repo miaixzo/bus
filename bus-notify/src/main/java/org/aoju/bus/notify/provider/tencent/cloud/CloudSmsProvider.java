@@ -23,12 +23,19 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.tencent;
+package org.aoju.bus.notify.provider.tencent.cloud;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Property;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.extra.json.JsonKit;
+import org.aoju.bus.http.Httpx;
+import org.aoju.bus.notify.Builder;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.provider.AbstractProvider;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 腾讯云短信
@@ -36,10 +43,31 @@ import org.aoju.bus.notify.magic.Property;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class QCloudSmsProperty extends Property {
+public class CloudSmsProvider extends AbstractProvider<CloudProperty, Context> {
 
+    public CloudSmsProvider(Context properties) {
+        super(properties);
+    }
+
+    @Override
+    public Message send(CloudProperty entity) {
+        Map<String, Object> bodys = new HashMap<>();
+        bodys.put("SmsSdkAppid", entity.getSmsAppId());
+        bodys.put("Sign", entity.getSignature());
+        bodys.put("TemplateID", entity.getTemplate());
+        bodys.put("TemplateParamSet", StringKit.splitToArray(entity.getParams(), Symbol.COMMA));
+        bodys.put("PhoneNumberSet", StringKit.splitToArray(entity.getReceive(), Symbol.COMMA));
+
+        String response = Httpx.post(entity.getUrl(), bodys);
+        int status = JsonKit.getValue(response, "status");
+
+        String errcode = status == 200 ? Builder.ErrorCode.SUCCESS.getCode() : Builder.ErrorCode.FAILURE.getCode();
+        String errmsg = status == 200 ? Builder.ErrorCode.SUCCESS.getMsg() : Builder.ErrorCode.FAILURE.getMsg();
+
+        return Message.builder()
+                .errcode(errcode)
+                .errmsg(errmsg)
+                .build();
+    }
 
 }

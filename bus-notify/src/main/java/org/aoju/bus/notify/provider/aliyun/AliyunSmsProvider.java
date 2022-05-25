@@ -26,13 +26,16 @@
 package org.aoju.bus.notify.provider.aliyun;
 
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.ZoneId;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 阿里云短信
@@ -40,46 +43,38 @@ import java.util.*;
  * @author Justubborn
  * @since Java 17+
  */
-public class AliyunSmsProvider extends AliyunProvider<AliyunSmsProperty, Context> {
+public class AliyunSmsProvider extends AliyunProvider<AliyunProperty, Context> {
 
-    /**
-     * 阿里云短信产品域名
-     */
-    private static final String ALIYUN_SMS_API = "dysmsapi.aliyuncs.com";
-
-    public AliyunSmsProvider(Context properties) {
-        super(properties);
+    public AliyunSmsProvider(Context context) {
+        super(context);
     }
 
     @Override
-    public Message send(AliyunSmsProperty entity) {
-        SimpleDateFormat df = new SimpleDateFormat(Fields.UTC_PATTERN);
-        // 这里一定要设置GMT时区
-        df.setTimeZone(new SimpleTimeZone(0, "GMT"));
-        Map<String, String> params = new HashMap<>();
+    public Message send(AliyunProperty entity) {
+        Map<String, String> bodys = new HashMap<>();
         // 1. 系统参数
-        params.put("SignatureMethod", "HMAC-SHA1");
-        params.put("SignatureNonce", UUID.randomUUID().toString());
-        params.put("AccessKeyId", properties.getAppKey());
-        params.put("SignatureVersion", "1.0");
-        params.put("Timestamp", df.format(new Date()));
-        params.put("Format", "JSON");
+        bodys.put("SignatureMethod", "HMAC-SHA1");
+        bodys.put("SignatureNonce", UUID.randomUUID().toString());
+        bodys.put("AccessKeyId", context.getAppKey());
+        bodys.put("SignatureVersion", "1.0");
+        bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC_PATTERN, ZoneId.GMT.name()));
+        bodys.put("Format", "JSON");
         // 2. 业务API参数
-        params.put("Action", "SendSms");
-        params.put("Version", "2017-05-25");
-        params.put("RegionId", "cn-hangzhou");
-        params.put("PhoneNumbers", entity.getReceive());
-        params.put("SignName", properties.getSignName());
-        params.put("TemplateParam", entity.getTemplateParam());
-        params.put("TemplateCode", entity.getTempCode());
+        bodys.put("Action", "SendSms");
+        bodys.put("Version", "2017-05-25");
+        bodys.put("RegionId", "cn-hangzhou");
+        bodys.put("PhoneNumbers", entity.getReceive());
+        bodys.put("SignName", entity.getSignature());
+        bodys.put("TemplateParam", entity.getParams());
+        bodys.put("TemplateCode", entity.getTemplate());
 
-        params.put("Signature", getSign(params));
+        bodys.put("Signature", getSign(bodys));
 
         Map<String, Object> map = new HashMap<>();
-        for (String text : params.keySet()) {
-            map.put(specialUrlEncode(text), specialUrlEncode(params.get(text)));
+        for (String text : bodys.keySet()) {
+            map.put(specialUrlEncode(text), specialUrlEncode(bodys.get(text)));
         }
-        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_SMS_API, map));
+        return checkResponse(Httpx.get(entity.getUrl(), map));
     }
 
 }

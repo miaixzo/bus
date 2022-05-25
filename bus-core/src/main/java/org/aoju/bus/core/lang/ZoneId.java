@@ -38,6 +38,10 @@ public enum ZoneId {
      */
     UTC("Worldwide", "世界标准时间"),
     /**
+     * "Universal Time","世界时"
+     */
+    GMT("Universal Time", "世界时"),
+    /**
      * "Australia/Darwin","澳洲/达尔文"
      */
     ACT("Australia/Darwin", "澳洲/达尔文"),

@@ -25,8 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.dingtalk;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.magic.Property;
 
@@ -36,8 +35,7 @@ import org.aoju.bus.notify.magic.Property;
  * @author Justubborn
  * @since Java 17+
  */
-@Getter
-@Setter
+@Data
 @SuperBuilder
 public class DingTalkProperty extends Property {
 

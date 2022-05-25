@@ -42,7 +42,7 @@ public enum NotifyCache implements ExtendCache {
      */
     INSTANCE;
 
-    private CacheX cache;
+    private final CacheX cache;
 
     NotifyCache() {
         cache = new MemoryCache();
@@ -55,7 +55,7 @@ public enum NotifyCache implements ExtendCache {
      * @param value 缓存内容
      */
     @Override
-    public void cache(String key, String value) {
+    public void cache(String key, Object value) {
         cache.write(key, value, 3 * 60 * 1000);
     }
 
@@ -67,7 +67,7 @@ public enum NotifyCache implements ExtendCache {
      * @param timeout 指定缓存过期时间(毫秒)
      */
     @Override
-    public void cache(String key, String value, long timeout) {
+    public void cache(String key, Object value, long timeout) {
         cache.write(key, value, timeout);
     }
 

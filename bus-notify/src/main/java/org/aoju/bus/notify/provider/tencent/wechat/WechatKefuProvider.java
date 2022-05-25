@@ -23,37 +23,27 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.notify.provider.tencent.wechat;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Property;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.provider.AbstractProvider;
 
 /**
- * 阿里云语音通知模版
+ * 微信-客服消息
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-@SuperBuilder
-public class AliyunVmsProperty extends Property {
+public class WechatKefuProvider extends AbstractProvider<WechatProperty, Context> {
 
-    /**
-     * 语音模版参数
-     */
-    private String ttsParam;
+    public WechatKefuProvider(Context context) {
+        super(context);
+    }
 
-    /**
-     * 语音模版id
-     */
-    private String ttsCode;
-
-    /**
-     * 播放次数
-     */
-    private String playTimes;
+    @Override
+    public Message send(WechatProperty entity) {
+        return null;
+    }
 
 }

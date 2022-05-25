@@ -27,15 +27,18 @@ package org.aoju.bus.notify.provider.aliyun;
 
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.ZoneId;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.provider.generic.NativeEmailProperty;
+import org.aoju.bus.notify.provider.generic.GenericProperty;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * 阿里云邮件
@@ -43,15 +46,10 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AliyunEmailProvider extends AliyunProvider<AliyunEmailProperty, Context> {
+public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context> {
 
-    /**
-     * 阿里云邮件产品域名
-     */
-    private static final String ALIYUN_DM_API = "dm.aliyuncs.com";
-
-    public AliyunEmailProvider(Context properties) {
-        super(properties);
+    public AliyunEmailProvider(Context context) {
+        super(context);
     }
 
     /**
@@ -62,7 +60,7 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunEmailProperty, Con
      * @throws InstrumentException 异常信息
      */
     @Override
-    public Message send(AliyunEmailProperty entity) throws InstrumentException {
+    public Message send(AliyunProperty entity) throws InstrumentException {
         if (StringKit.isEmpty(entity.getContent())) {
             throw new InstrumentException("Email content cannot be empty");
         } else if (StringKit.isEmpty(entity.getReceive())) {
@@ -71,45 +69,41 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunEmailProperty, Con
             throw new InstrumentException("Email subject cannot be empty");
         }
 
-        SimpleDateFormat df = new SimpleDateFormat(Fields.UTC_PATTERN);
-        // 这里一定要设置GMT时区
-        df.setTimeZone(new SimpleTimeZone(0, "GMT"));
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> bodys = new HashMap<>();
         // 1. 系统参数
-        params.put("SignatureMethod", "HMAC-SHA1");
-        params.put("SignatureNonce", UUID.randomUUID().toString());
-        params.put("AccessKeyId", properties.getAppKey());
-        params.put("SignatureVersion", "1.0");
-        params.put("Timestamp", df.format(new Date()));
-        params.put("Format", "JSON");
+        bodys.put("SignatureMethod", "HMAC-SHA1");
+        bodys.put("SignatureNonce", UUID.randomUUID().toString());
+        bodys.put("AccessKeyId", context.getAppKey());
+        bodys.put("SignatureVersion", "1.0");
+        bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC_PATTERN, ZoneId.GMT.name()));
+        bodys.put("Format", "JSON");
         // 2. 业务API参数
-        params.put("Action", "SingleSendMail");
-        params.put("Version", "2015-11-23");
-        params.put("RegionId", "cn-hangzhou");
+        bodys.put("Action", "SingleSendMail");
+        bodys.put("Version", "2015-11-23");
+        bodys.put("RegionId", "cn-hangzhou");
 
-        params.put("Subject", entity.getSubject());
-        params.put("FromAlias", entity.getSender());
-        params.put("ToAddress", entity.getReceive());
+        bodys.put("Subject", entity.getSubject());
+        bodys.put("FromAlias", entity.getSender());
+        bodys.put("ToAddress", entity.getReceive());
 
-        if (NativeEmailProperty.Type.HTML.equals(entity.getType())) {
-            params.put("HtmlBody", entity.getContent());
-        } else if (NativeEmailProperty.Type.TEXT.equals(entity.getType())) {
-            params.put("TextBody", entity.getContent());
+        if (GenericProperty.Type.HTML.equals(entity.getType())) {
+            bodys.put("HtmlBody", entity.getContent());
+        } else if (GenericProperty.Type.TEXT.equals(entity.getType())) {
+            bodys.put("TextBody", entity.getContent());
         }
 
-        params.put("ReplyAddress", entity.getSender());
-        params.put("ReplyToAddress", entity.getSender());
-        params.put("ReplyAddressAlias", entity.getSender());
+        bodys.put("ReplyAddress", entity.getSender());
+        bodys.put("ReplyToAddress", entity.getSender());
+        bodys.put("ReplyAddressAlias", entity.getSender());
 
-        params.put("ClickTrace", getSign(params));
-
-        params.put("Signature", getSign(params));
+        bodys.put("ClickTrace", getSign(bodys));
+        bodys.put("Signature", getSign(bodys));
 
         Map<String, Object> map = new HashMap<>();
-        for (String val : params.keySet()) {
-            map.put(specialUrlEncode(val), specialUrlEncode(params.get(val)));
+        for (String val : bodys.keySet()) {
+            map.put(specialUrlEncode(val), specialUrlEncode(bodys.get(val)));
         }
-        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_DM_API, map));
+        return checkResponse(Httpx.get(entity.getUrl(), map));
     }
 
 }

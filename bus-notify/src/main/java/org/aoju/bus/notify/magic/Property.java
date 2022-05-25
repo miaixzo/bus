@@ -29,6 +29,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Map;
+
 /**
  * 消息模版
  *
@@ -41,6 +43,11 @@ import lombok.experimental.SuperBuilder;
 public class Property {
 
     /**
+     * 地址
+     */
+    protected String url;
+
+    /**
      * 发送者
      */
     protected String sender;
@@ -51,14 +58,44 @@ public class Property {
     protected String receive;
 
     /**
+     * 主题
+     */
+    protected String subject;
+
+    /**
+     * 内容  Limit 28K
+     */
+    protected String content;
+
+    /**
+     * 模版/模版ID
+     */
+    protected String template;
+
+    /**
+     * 签名/签名ID
+     */
+    protected String signature;
+
+    /**
+     * 模版参数
+     */
+    protected String params;
+
+    /**
+     * 扩展字段
+     */
+    protected Map<String, Object> extend;
+
+    /**
      * 内容类型
      */
-    private Type type;
+    protected Type type;
 
     /**
      * 发送模型
      */
-    private Mode mode;
+    protected Mode mode;
 
     public enum Type {
         /**

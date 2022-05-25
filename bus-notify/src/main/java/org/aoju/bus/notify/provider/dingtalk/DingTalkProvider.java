@@ -26,6 +26,7 @@
 package org.aoju.bus.notify.provider.dingtalk;
 
 import lombok.Setter;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.http.Httpx;
@@ -49,10 +50,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @Setter
 public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context> {
 
-    private static final String SUCCESS_RESULT = "200";
-    private static final String DINGTALK_TOKEN_API = "https://oapi.dingtalk.com/gettoken";
-    private static final String DingTalk_NOTIFY_API = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
-
     private AtomicReference<String> accessToken = new AtomicReference<>();
     private long refreshTokenTime;
     private long tokenTimeOut = Duration.ofSeconds(7000).toMillis();
@@ -63,28 +60,28 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
 
     @Override
     public Message send(DingTalkProperty entity) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("access_token", entity.getToken());
-        param.put("agent_id", entity.getAgentId());
-        param.put("msg", entity.getMsg());
+        Map<String, Object> bodys = new HashMap<>();
+        bodys.put("access_token", entity.getToken());
+        bodys.put("agent_id", entity.getAgentId());
+        bodys.put("msg", entity.getMsg());
         if (StringKit.isNotBlank(entity.getUserIdList())) {
-            param.put("userid_list", entity.getUserIdList());
+            bodys.put("userid_list", entity.getUserIdList());
         }
         if (StringKit.isNotBlank(entity.getDeptIdList())) {
-            param.put("dept_id_list", entity.getDeptIdList());
+            bodys.put("dept_id_list", entity.getDeptIdList());
         }
-        param.put("to_all_user", entity.isToAllUser());
-        String response = Httpx.post(DingTalk_NOTIFY_API, param);
+        bodys.put("to_all_user", entity.isToAllUser());
+        String response = Httpx.post(entity.getUrl(), bodys);
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
-                .errcode(SUCCESS_RESULT.equals(errcode) ? Builder.ErrorCode.SUCCESS.getCode() : errcode)
+                .errcode(String.valueOf(Http.HTTP_OK).equals(errcode) ? Builder.ErrorCode.SUCCESS.getCode() : errcode)
                 .errmsg(JsonKit.getValue(response, "errmsg"))
                 .build();
     }
 
-    private String getToken() {
+    private String getToken(String url) {
         if (System.currentTimeMillis() - refreshTokenTime > tokenTimeOut || null == accessToken.get()) {
-            return requestToken();
+            return requestToken(url);
         }
         return accessToken.get();
     }
@@ -94,13 +91,13 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
      *
      * @return 结果
      */
-    private String requestToken() {
+    private String requestToken(String url) {
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("corpid", properties.getAppKey());
-        paramMap.put("corpsecret", properties.getAppSecret());
-        String response = Httpx.get(DINGTALK_TOKEN_API, paramMap);
+        paramMap.put("corpid", context.getAppKey());
+        paramMap.put("corpsecret", context.getAppSecret());
+        String response = Httpx.get(url, paramMap);
         String errcode = JsonKit.getValue(response, "errcode");
-        if (SUCCESS_RESULT.equals(errcode)) {
+        if (String.valueOf(Http.HTTP_OK).equals(errcode)) {
             String access_token = JsonKit.getValue(response, "access_token");
             refreshTokenTime = System.currentTimeMillis();
             accessToken.set(access_token);

@@ -45,11 +45,11 @@ import java.nio.file.Path;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class UpaiYunOssProvider extends AbstractProvider {
+public class UpyunOssProvider extends AbstractProvider {
 
     private UpYun client;
 
-    public UpaiYunOssProvider(Context context) {
+    public UpyunOssProvider(Context context) {
         this.context = context;
         Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
@@ -137,7 +137,7 @@ public class UpaiYunOssProvider extends AbstractProvider {
     @Override
     public Message remove(String fileName) {
         try {
-            client.deleteFile(Symbol.C_SLASH + fileName);
+            client.deleteFile(Symbol.C_SLASH + fileName, null);
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())

@@ -34,8 +34,8 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.File;
 import java.io.InputStream;
@@ -97,7 +97,7 @@ public class HuaweiObsProvider extends AbstractProvider {
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
                 .data(objectListing.getObjects().stream().map(item -> {
-                    Attachs storageItem = new Attachs();
+                    Property storageItem = new Property();
                     storageItem.setName(item.getObjectKey());
                     storageItem.setOwner(item.getOwner().getId());
                     storageItem.setType(item.getMetadata().getContentType());

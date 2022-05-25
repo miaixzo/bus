@@ -54,14 +54,14 @@ import java.util.List;
  * @author Justubborn
  * @since Java 17+
  */
-public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, Context> {
+public class GenericEmailProvider extends AbstractProvider<GenericProperty, Context> {
 
-    public NativeEmailProvider(Context properties) {
+    public GenericEmailProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(NativeEmailProperty entity) {
+    public Message send(GenericProperty entity) {
         try {
             Transport.send(build(entity));
         } catch (MessagingException e) {
@@ -155,7 +155,7 @@ public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, C
      * @return {@link MimeMessage}消息
      * @throws MessagingException 消息异常
      */
-    private MimeMessage build(NativeEmailProperty entity) throws MessagingException {
+    private MimeMessage build(GenericProperty entity) throws MessagingException {
         entity.defaultIfEmpty();
         final Charset charset = entity.getCharset();
         final MimeMessage msg = new MimeMessage(getSession(entity));
@@ -218,7 +218,7 @@ public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, C
      * @param template 是否使用单例Session
      * @return 邮件会话 {@link Session}
      */
-    private Session getSession(NativeEmailProperty template) {
+    private Session getSession(GenericProperty template) {
         Authenticator authenticator = null;
         if (template.getAuth()) {
             authenticator = new UserPassAuthenticator(template.getUser(), template.getPass());

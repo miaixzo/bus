@@ -44,6 +44,7 @@
         <project.compiler.version>17</project.compiler.version>
         <lombok.version>1.18.24</lombok.version>
         <mail.version>1.6.2</mail.version>
+        <fastjson.version>1.2.78</fastjson.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,12 @@
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>${mail.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

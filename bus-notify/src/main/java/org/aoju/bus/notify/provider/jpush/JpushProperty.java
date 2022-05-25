@@ -23,22 +23,20 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.baidu;
+package org.aoju.bus.notify.provider.jpush;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.magic.Property;
 
 /**
- * 七牛云短信
+ * 极光短信
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
+@Data
 @SuperBuilder
-public class BaiduSmsProperty extends Property {
+public class JpushProperty extends Property {
 
 }

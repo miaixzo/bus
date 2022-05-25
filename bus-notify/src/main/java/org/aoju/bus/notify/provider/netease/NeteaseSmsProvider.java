@@ -13,24 +13,19 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NeteaseSmsProvider extends NeteaseProvider<NeteaseSmsProperty, Context> {
-
-    /**
-     * 请求路径URL
-     */
-    private static final String NETEASE_SMS_API = "https://api.netease.im/sms/sendtemplate.action";
+public class NeteaseSmsProvider extends NeteaseProvider<NeteaseProperty, Context> {
 
     public NeteaseSmsProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(NeteaseSmsProperty entity) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("templateid", entity.getTemplateId());
-        params.put("mobiles", entity.getReceive());
-        params.put("params", JsonKit.toJsonString(entity.getParams()));
-        return post(NETEASE_SMS_API, params);
+    public Message send(NeteaseProperty entity) {
+        Map<String, Object> bodys = new HashMap<>();
+        bodys.put("templateid", entity.getTemplate());
+        bodys.put("mobiles", entity.getReceive());
+        bodys.put("params", JsonKit.toJsonString(entity.getParams()));
+        return post(entity.getUrl(), bodys);
     }
 
 }

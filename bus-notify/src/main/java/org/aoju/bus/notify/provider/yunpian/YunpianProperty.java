@@ -23,33 +23,25 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.notify.provider.yunpian;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.magic.Property;
 
 /**
- * 阿里云短信模版
+ * 云片短信
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
+@Data
 @SuperBuilder
-public class AliyunSmsProperty extends Property {
+public class YunpianProperty extends Property {
 
     /**
-     * 模版参数
+     * apikey
      */
-    String templateParam;
-
-
-    /**
-     * 模版id
-     */
-    String tempCode;
+    private String apikey;
 
 }
