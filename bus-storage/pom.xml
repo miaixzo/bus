@@ -43,14 +43,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
         <lombok.version>1.18.24</lombok.version>
-        <aliyun.oss.version>3.13.0</aliyun.oss.version>
-        <baidu.bos.version>0.10.48</baidu.bos.version>
-        <huawei.oss.version>3.21.8</huawei.oss.version>
-        <jd.oss.version>1.11.136</jd.oss.version>
-        <minio.oss.version>3.0.12</minio.oss.version>
-        <qiniu.oss.version>7.2.28</qiniu.oss.version>
-        <tencent.oss.version>5.6.3</tencent.oss.version>
-        <upyun.oss.version>4.0.1</upyun.oss.version>
+        <aliyun.oss.version>3.15.0</aliyun.oss.version>
+        <baidu.bos.version>0.10.209</baidu.bos.version>
+        <huawei.oss.version>3.22.3</huawei.oss.version>
+        <aws.oss.version>1.12.226</aws.oss.version>
+        <minio.oss.version>8.4.1</minio.oss.version>
+        <qiniu.oss.version>7.10.2</qiniu.oss.version>
+        <qcloud.oss.version>5.6.80</qcloud.oss.version>
+        <upyun.oss.version>4.2.3</upyun.oss.version>
     </properties>
 
     <dependencies>
@@ -111,8 +111,8 @@
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>${jd.oss.version}</version>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws.oss.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
-            <version>${tencent.oss.version}</version>
+            <version>${qcloud.oss.version}</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>

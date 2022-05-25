@@ -29,19 +29,15 @@ import com.UpYun;
 import com.upyun.UpException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 存储服务-又拍云
@@ -56,7 +52,6 @@ public class UpaiYunOssProvider extends AbstractProvider {
     public UpaiYunOssProvider(Context context) {
         this.context = context;
         Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
@@ -96,30 +91,6 @@ public class UpaiYunOssProvider extends AbstractProvider {
 
     @Override
     public Message download(String bucket, String fileName, File file) {
-        return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
-                .build();
-    }
-
-    @Override
-    public Message list() {
-        try {
-            List<UpYun.FolderItem> list = client.readDir(this.context.getPrefix());
-            return Message.builder()
-                    .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                    .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(list.stream().map(item -> {
-                        Attachs storageItem = new Attachs();
-                        storageItem.setName(item.name);
-                        storageItem.setType(item.type);
-                        storageItem.setSize(StringKit.toString(item.size));
-                        return storageItem;
-                    }).collect(Collectors.toList()))
-                    .build();
-        } catch (IOException | UpException e) {
-            Logger.error("file list failed" + e.getMessage());
-        }
         return Message.builder()
                 .errcode(Builder.ErrorCode.FAILURE.getCode())
                 .errmsg(Builder.ErrorCode.FAILURE.getMsg())

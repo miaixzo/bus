@@ -440,11 +440,33 @@ public class ByteKit {
      * @param byteOrder 端序
      * @return the short
      */
-    public static short getShort(byte[] data, ByteOrder byteOrder) {
+    /**
+     * byte数组转short
+     * 自定义端序
+     *
+     * @param bytes     byte数组，长度必须为2
+     * @param byteOrder 端序
+     * @return short值
+     */
+    public static short getShort(final byte[] bytes, final ByteOrder byteOrder) {
+        return getShort(bytes, 0, byteOrder);
+    }
+
+    /**
+     * byte数组转short
+     * 自定义端序
+     *
+     * @param bytes     byte数组，长度必须大于2
+     * @param start     开始位置
+     * @param byteOrder 端序
+     * @return short值
+     */
+    public static short getShort(final byte[] bytes, final int start, final ByteOrder byteOrder) {
         if (ByteOrder.LITTLE_ENDIAN == byteOrder) {
-            return (short) (data[1] & 0xff | (data[0] & 0xff) << Byte.SIZE);
+            // 小端模式，数据的高字节保存在内存的高地址中，而数据的低字节保存在内存的低地址中
+            return (short) (bytes[start] & 0xff | (bytes[start + 1] & 0xff) << Byte.SIZE);
         } else {
-            return (short) (data[0] & 0xff | (data[1] & 0xff) << Byte.SIZE);
+            return (short) (bytes[start + 1] & 0xff | (bytes[start] & 0xff) << Byte.SIZE);
         }
     }
 

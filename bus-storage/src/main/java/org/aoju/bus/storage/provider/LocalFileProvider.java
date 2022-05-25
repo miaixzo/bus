@@ -76,12 +76,7 @@ public class LocalFileProvider extends AbstractProvider {
     public Message download(String fileName, File file) {
         return null;
     }
-
-    @Override
-    public Message list() {
-        return null;
-    }
-
+ 
     @Override
     public Message rename(String oldName, String newName) {
         return null;

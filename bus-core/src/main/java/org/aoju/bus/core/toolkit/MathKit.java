@@ -2329,8 +2329,18 @@ public class MathKit {
      * @throws NumberFormatException 包装了{@link ParseException}，当给定的数字字符串无法解析时抛出
      */
     public static Number parseNumber(String numberStr) throws NumberFormatException {
+        if (StringKit.startWithIgnoreCase(numberStr, "0x")) {
+            // 0x04表示16进制数
+            return Long.parseLong(numberStr.substring(2), 16);
+        }
+
         try {
-            return NumberFormat.getInstance().parse(numberStr);
+            final NumberFormat format = NumberFormat.getInstance();
+            if (format instanceof DecimalFormat) {
+                // 当字符串数字超出double的长度时，会导致截断，此处使用BigDecimal接收
+                ((DecimalFormat) format).setParseBigDecimal(true);
+            }
+            return format.parse(numberStr);
         } catch (ParseException e) {
             final NumberFormatException nfe = new NumberFormatException(e.getMessage());
             nfe.initCause(e);

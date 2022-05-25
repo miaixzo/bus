@@ -80,7 +80,12 @@ public interface Provider {
      *
      * @return 处理结果 {@link Message}
      */
-    Message list();
+    default Message list() {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
+    }
 
     /**
      * 重命名

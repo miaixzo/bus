@@ -39,7 +39,7 @@ public interface ExtendCache {
      * @param key   缓存key
      * @param value 缓存内容
      */
-    default void cache(String key, String value) {
+    default void cache(String key, Object value) {
 
     }
 
@@ -50,7 +50,7 @@ public interface ExtendCache {
      * @param value   缓存内容
      * @param timeout 指定缓存过期时间(毫秒)
      */
-    default void cache(String key, String value, long timeout) {
+    default void cache(String key, Object value, long timeout) {
 
     }
 

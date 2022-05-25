@@ -87,6 +87,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
         try {
             String encodedFileName = URLEncoder.encode(fileKey, Charset.DEFAULT_UTF_8);
             String format = String.format("%s/%s", path, encodedFileName);
+            // FileKit.newFile(format);
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
@@ -118,14 +119,6 @@ public class QiniuYunOssProvider extends AbstractProvider {
 
     @Override
     public Message download(String fileName, File file) {
-        return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
-                .build();
-    }
-
-    @Override
-    public Message list() {
         return Message.builder()
                 .errcode(Builder.ErrorCode.FAILURE.getCode())
                 .errmsg(Builder.ErrorCode.FAILURE.getMsg())

@@ -45,46 +45,58 @@ import java.util.Map;
 public class Attachs {
 
     /**
-     * 文件标示
+     * 标识
      */
     public String key;
 
     /**
-     * 文件名称
+     * 名称
      */
     public String name;
 
     /**
-     * 文件路径
+     * 路径
      */
     public String path;
 
     /**
-     * 文件大小
+     * 大小
      */
     public String size;
 
     /**
-     * 文件大小
+     * 类型
      */
     public String type;
 
     /**
-     * 文件状态
+     * 状态
      */
     public String status;
 
     /**
-     * 文件所有者
+     * 所有者
      */
     public String owner;
+
+    /**
+     * hash值
+     */
+    public String hash;
+
+    /**
+     * 缩略图
+     */
+    public String url;
+
+    /**
+     * 存储平台
+     */
+    public String platform;
+
     /**
      * 文件扩展字段
      */
     public Map<String, Object> extend;
-    /**
-     * 文件hash值
-     */
-    private String hash;
 
 }

@@ -101,15 +101,7 @@ public class TencentCosProvider extends AbstractProvider {
                 .errmsg(Builder.ErrorCode.FAILURE.getMsg())
                 .build();
     }
-
-    @Override
-    public Message list() {
-        return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
-                .build();
-    }
-
+ 
     @Override
     public Message rename(String oldName, String newName) {
         return Message.builder()
