@@ -380,7 +380,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
 
         final List<T> beanList = new ArrayList<>(mapList.size());
         for (Map<String, Object> map : mapList) {
-            beanList.add(BeanKit.mapToBean(map, beanType, false));
+            beanList.add(BeanKit.toBeanIgnoreCase(map, beanType, false));
         }
         return beanList;
     }

@@ -121,9 +121,7 @@ public class JdPayKit {
      * @return 转化后的 Map
      */
     public static Map<String, String> threeDesToMap(Map<String, String> map, String desKey) {
-
-        HashMap<String, String> tempMap = new HashMap<String, String>(map.size());
-
+        HashMap<String, String> tempMap = new HashMap<>(map.size());
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String name = entry.getKey();
             String value = entry.getValue();

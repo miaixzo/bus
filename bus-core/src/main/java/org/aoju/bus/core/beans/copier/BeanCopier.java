@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.copier.Copier;
 
 import java.io.Serializable;

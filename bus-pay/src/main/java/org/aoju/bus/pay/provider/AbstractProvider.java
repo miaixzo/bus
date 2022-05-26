@@ -67,7 +67,6 @@ public abstract class AbstractProvider implements Provider {
      * <p>每个 appId 只需添加一次，相同 appId 将被覆盖</p>
      *
      * @param context 支付宝支付配置
-     * @return {@link Context}
      */
     public void put(Context context) {
         extendCache.cache(context.getAppId(), context);
@@ -77,7 +76,6 @@ public abstract class AbstractProvider implements Provider {
      * 通过 appId 移除支付配置
      *
      * @param appId 支付宝应用编号
-     * @return {@link Context}
      */
     public void remove(String appId) {
         extendCache.remove(appId);
@@ -87,7 +85,6 @@ public abstract class AbstractProvider implements Provider {
      * 向当前线程中设置 {@link Context}
      *
      * @param context {@link Context} 支付宝配置对象
-     * @return {@link Context}
      */
     public void setThread(Context context) {
         if (StringKit.isNotEmpty(Context.getAppId())) {

@@ -42,6 +42,8 @@ import java.util.regex.Pattern;
  */
 public class Property implements Serializable {
 
+    public static String LINE_SEPARATOR = System.getProperty("line.separator");
+
     private final String name;
     private final Object value;
 
