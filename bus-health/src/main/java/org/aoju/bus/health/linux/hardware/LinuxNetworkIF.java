@@ -33,12 +33,14 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
+import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * LinuxNetworks class.
@@ -71,6 +73,9 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
 
     private static String queryIfModel(NetworkInterface netint) {
         String name = netint.getName();
+        if (!LinuxOperatingSystem.HAS_UDEV) {
+            return queryIfModelFromSysfs(name);
+        }
         UdevContext udev = Udev.INSTANCE.udev_new();
         if (udev != null) {
             try {
@@ -92,6 +97,19 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
             } finally {
                 udev.unref();
             }
+        }
+        return name;
+    }
+
+    private static String queryIfModelFromSysfs(String name) {
+        Map<String, String> uevent = Builder.getKeyValueMapFromFile("/sys/class/net/" + name + "/uevent", "=");
+        String devVendor = uevent.get("ID_VENDOR_FROM_DATABASE");
+        String devModel = uevent.get("ID_MODEL_FROM_DATABASE");
+        if (!StringKit.isBlank(devModel)) {
+            if (!StringKit.isBlank(devVendor)) {
+                return devVendor + " " + devModel;
+            }
+            return devModel;
         }
         return name;
     }

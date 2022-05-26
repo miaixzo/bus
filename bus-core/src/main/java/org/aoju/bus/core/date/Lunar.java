@@ -122,7 +122,7 @@ public class Lunar {
             "艮", "艮", "坤", "坤", "坎", "坎", "震", "震", "离", "离"
     };
     /**
-     * 地支相冲(子午相冲，丑未相冲，寅申相冲，辰戌相冲，卯酉相冲，巳亥相冲)
+     * 地支相冲（子午相冲，丑未相冲，寅申相冲，辰戌相冲，卯酉相冲，巳亥相冲），由于地支对应十二生肖，也就对应了生肖相冲
      */
     public static final String[] CHONG = {
             "午", "未", "申", "酉", "戌", "亥", "子", "丑", "寅", "卯", "辰", "巳"
@@ -138,6 +138,24 @@ public class Lunar {
      */
     public static final String[] CHONG_GAN_TIE = {
             "己", "戊", "辛", "庚", "癸", "壬", "乙", "甲", "丁", "丙"
+    };
+    /**
+     * 天干四冲（无情之克中克得最严重的4个）
+     */
+    public static final String[] CHONG_GAN_4 = {
+            "庚", "辛", "壬", "癸", "", "", "甲", "乙", "丙", "丁"
+    };
+    /**
+     * 天干五合（有情之克中最有情的5个，甲己合，乙庚合，丙辛合，丁壬合，戊癸合）
+     */
+    public static final String[] HE_GAN_5 = {
+            "己", "庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊"
+    };
+    /**
+     * 地支六合（子丑合，寅亥合，卯戌合，辰酉合，巳申合，午未合）
+     */
+    public static final String[] HE_ZHI_6 = {
+            "丑", "子", "亥", "戌", "酉", "申", "未", "午", "巳", "辰", "卯", "寅"
     };
     /**
      * 十二值星
@@ -217,7 +235,7 @@ public class Lunar {
     /**
      * 地支对应天神偏移下标
      */
-    public static final Map<String, Integer> ZHI_TIAN_SHEN_OFFSET = new HashMap<String, Integer>() {
+    public static final Map<String, Integer> ZHI_TIAN_SHEN_OFFSET = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -238,7 +256,7 @@ public class Lunar {
     /**
      * 天神类型：黄道，黑道
      */
-    public static final Map<String, String> TIAN_SHEN_TYPE = new HashMap<String, String>() {
+    public static final Map<String, String> TIAN_SHEN_TYPE = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -260,7 +278,7 @@ public class Lunar {
     /**
      * 天神类型吉凶
      */
-    public static final Map<String, String> TIAN_SHEN_TYPE_LUCK = new HashMap<String, String>() {
+    public static final Map<String, String> TIAN_SHEN_TYPE_LUCK = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -271,7 +289,7 @@ public class Lunar {
     /**
      * 兽
      */
-    public static final Map<String, String> SHOU = new HashMap<String, String>() {
+    public static final Map<String, String> SHOU = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -282,36 +300,9 @@ public class Lunar {
         }
     };
     /**
-     * 天干四冲（无情之克中克得最严重的4个）
-     */
-    public static final Map<String, String> CHONG_GAN_BAD = new HashMap<String, String>() {
-        private static final long serialVersionUID = 1L;
-
-        {
-            put("庚", "甲");
-            put("辛", "乙");
-            put("壬", "丙");
-            put("癸", "丁");
-        }
-    };
-    /**
-     * 天干五合（有情之克中最有情的5个）
-     */
-    public static final Map<String, String> CHONG_GAN_TIE_GOOD = new HashMap<String, String>() {
-        private static final long serialVersionUID = 1L;
-
-        {
-            put("甲", "己");
-            put("丙", "辛");
-            put("戊", "癸");
-            put("庚", "乙");
-            put("壬", "丁");
-        }
-    };
-    /**
      * 煞（逢巳日、酉日、丑日必煞东；亥日、卯日、未日必煞西；申日、子日、辰日必煞南；寅日、午日、戌日必煞北）
      */
-    public static final Map<String, String> SHA = new HashMap<String, String>() {
+    public static final Map<String, String> SHA = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -332,7 +323,7 @@ public class Lunar {
     /**
      * 方位
      */
-    public static final Map<String, String> POSITION_DESC = new HashMap<String, String>() {
+    public static final Map<String, String> POSITION_DESC = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -350,7 +341,7 @@ public class Lunar {
     /**
      * 宫
      */
-    public static final Map<String, String> GONG = new HashMap<String, String>() {
+    public static final Map<String, String> GONG = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -387,7 +378,7 @@ public class Lunar {
     /**
      * 政
      */
-    public static final Map<String, String> ZHENG = new HashMap<String, String>() {
+    public static final Map<String, String> ZHENG = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -424,7 +415,7 @@ public class Lunar {
     /**
      * 动物
      */
-    public static final Map<String, String> ANIMAL = new HashMap<String, String>() {
+    public static final Map<String, String> ANIMAL = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -461,7 +452,7 @@ public class Lunar {
     /**
      * 天干五行
      */
-    public static final Map<String, String> WU_XING_GAN = new HashMap<String, String>() {
+    public static final Map<String, String> WU_XING_GAN = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -480,7 +471,7 @@ public class Lunar {
     /**
      * 地支五行
      */
-    public static final Map<String, String> WU_XING_ZHI = new HashMap<String, String>() {
+    public static final Map<String, String> WU_XING_ZHI = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -501,7 +492,7 @@ public class Lunar {
     /**
      * 纳音
      */
-    public static final Map<String, String> NAYIN = new HashMap<String, String>() {
+    public static final Map<String, String> NAYIN = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -570,7 +561,7 @@ public class Lunar {
     /**
      * 天干十神，日主+天干为键
      */
-    public static final Map<String, String> SHI_SHEN_GAN = new HashMap<String, String>() {
+    public static final Map<String, String> SHI_SHEN_GAN = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -679,7 +670,7 @@ public class Lunar {
     /**
      * 地支十神，日主+地支藏干主气为键
      */
-    public static final Map<String, String> SHI_SHEN_ZHI = new HashMap<String, String>() {
+    public static final Map<String, String> SHI_SHEN_ZHI = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -968,7 +959,7 @@ public class Lunar {
     /**
      * 地支藏干表，分别为主气、余气、杂气
      */
-    public static final Map<String, List<String>> ZHI_HIDE_GAN = new HashMap<String, List<String>>() {
+    public static final Map<String, List<String>> ZHI_HIDE_GAN = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -989,7 +980,7 @@ public class Lunar {
     /**
      * 农历日期对应的节日
      */
-    public static final Map<String, String> FESTIVAL = new HashMap<String, String>() {
+    public static final Map<String, String> FESTIVAL = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -1007,7 +998,7 @@ public class Lunar {
     /**
      * 传统节日
      */
-    public static final Map<String, List<String>> OTHER_FESTIVAL = new HashMap<String, List<String>>() {
+    public static final Map<String, List<String>> OTHER_FESTIVAL = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -1043,7 +1034,7 @@ public class Lunar {
     /**
      * 28星宿对照表，地支+星期
      */
-    public static final Map<String, String> XIU = new HashMap<String, String>() {
+    public static final Map<String, String> XIU = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -1147,7 +1138,7 @@ public class Lunar {
     /**
      * 星宿对应吉凶
      */
-    public static final Map<String, String> XIU_LUCK = new HashMap<String, String>() {
+    public static final Map<String, String> XIU_LUCK = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -1184,7 +1175,7 @@ public class Lunar {
     /**
      * 星宿对应吉凶
      */
-    public static final Map<String, String> XIU_SONG = new HashMap<String, String>() {
+    public static final Map<String, String> XIU_SONG = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -1257,7 +1248,7 @@ public class Lunar {
     /**
      * 禄（甲禄在寅，乙禄在卯，丙戊禄在巳、丁己禄在午、庚禄在申、辛禄在酉、壬禄在亥、癸禄在子）
      */
-    public static final Map<String, String> LU = new HashMap<String, String>() {
+    public static final Map<String, String> LU = new HashMap<>() {
         private static final long serialVersionUID = -1L;
 
         {
@@ -6552,7 +6543,7 @@ public class Lunar {
          * @return 时冲，如申
          */
         public String getChong() {
-            return CHONG[zhiIndex + 1];
+            return CHONG[zhiIndex];
         }
 
         /**
@@ -6594,7 +6585,7 @@ public class Lunar {
          * @return 无情之克的时冲天干，如甲
          */
         public String getChongGan() {
-            return CHONG_GAN[ganIndex + 1];
+            return CHONG_GAN[ganIndex];
         }
 
         /**
@@ -6603,7 +6594,7 @@ public class Lunar {
          * @return 有情之克的时冲天干，如甲
          */
         public String getChongGanTie() {
-            return CHONG_GAN_TIE[ganIndex + 1];
+            return CHONG_GAN_TIE[ganIndex];
         }
 
         /**

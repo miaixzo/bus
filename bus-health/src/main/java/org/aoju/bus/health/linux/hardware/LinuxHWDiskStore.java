@@ -38,6 +38,8 @@ import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.linux.ProcPath;
+import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
+import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.*;
@@ -119,6 +121,10 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static List<HWDiskStore> getDisks(LinuxHWDiskStore storeToUpdate) {
+        if (!LinuxOperatingSystem.HAS_UDEV) {
+            Logger.warn("Disk Store information requires libudev, which is not present.");
+            return Collections.emptyList();
+        }
         LinuxHWDiskStore store = null;
         List<HWDiskStore> result = new ArrayList<>();
 

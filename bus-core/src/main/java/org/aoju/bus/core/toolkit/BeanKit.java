@@ -805,6 +805,9 @@ public class BeanKit {
      * @return 目标对象
      */
     public static <T> T copyProperties(Object source, Class<T> clazz, String... ignoreProperties) {
+        if (null == source) {
+            return null;
+        }
         T target = ReflectKit.newInstanceIfPossible(clazz);
         copyProperties(source, target, CopyOptions.create().setIgnoreProperties(ignoreProperties));
         return target;

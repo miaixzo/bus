@@ -60,6 +60,8 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param copyOptions 拷贝属性选项
      */
     public BeanCopier(Object source, T target, Type targetType, CopyOptions copyOptions) {
+        Assert.notNull(source, "Source bean must be not null!");
+        Assert.notNull(target, "Target bean must be not null!");
         Copier<T> copier;
         if (source instanceof Map) {
             if (target instanceof Map) {

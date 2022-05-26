@@ -3687,6 +3687,79 @@ public class ClassKit {
         return null;
     }
 
+    /**
+     * 获取class类路径URL, 不管是否在jar包中都会返回文件夹的路径
+     * class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录
+     * jdk中的类不能使用此方法
+     *
+     * @param clazz 类
+     * @return URL
+     */
+    public static URL getLocation(Class<?> clazz) {
+        if (null == clazz) {
+            return null;
+        }
+        return clazz.getProtectionDomain().getCodeSource().getLocation();
+    }
+
+    /**
+     * 获取class类路径, 不管是否在jar包中都会返回文件夹的路径
+     * class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录
+     * jdk中的类不能使用此方法
+     *
+     * @param clazz 类
+     * @return class路径
+     */
+    public static String getLocationPath(Class<?> clazz) {
+        final URL location = getLocation(clazz);
+        if (null == location) {
+            return null;
+        }
+        return location.getPath();
+    }
+
+    /**
+     * 是否为抽象类或接口
+     *
+     * @param clazz 类
+     * @return 是否为抽象类或接口
+     */
+    public static boolean isAbstractOrInterface(Class<?> clazz) {
+        return isAbstract(clazz) || isInterface(clazz);
+    }
+
+    /**
+     * 是否为JDK中定义的类或接口，判断依据：
+     *
+     * <pre>
+     * 1、以java.、javax.开头的包名
+     * 2、ClassLoader为null
+     * </pre>
+     *
+     * @param clazz 被检查的类
+     * @return 是否为JDK中定义的类或接口
+     */
+    public static boolean isJdkClass(Class<?> clazz) {
+        final Package objectPackage = clazz.getPackage();
+        if (null == objectPackage) {
+            return false;
+        }
+        final String objectPackageName = objectPackage.getName();
+        return objectPackageName.startsWith("java.")
+                || objectPackageName.startsWith("javax.")
+                || clazz.getClassLoader() == null;
+    }
+
+    /**
+     * 是否为接口
+     *
+     * @param clazz 类
+     * @return 是否为接口
+     */
+    public static boolean isInterface(Class<?> clazz) {
+        return clazz.isInterface();
+    }
+
     public enum Interfaces {
         INCLUDE, EXCLUDE
     }

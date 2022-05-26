@@ -106,6 +106,11 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
     }
 
     @Override
+    public Class<TemporalAccessor> getTargetType() {
+        return (Class<TemporalAccessor>) this.targetType;
+    }
+
+    @Override
     protected TemporalAccessor convertInternal(Object value) {
         if (value instanceof Long) {
             return parseFromLong((Long) value);

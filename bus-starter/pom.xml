@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>6.5.0</version>
+    <version>8.0.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,15 +42,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <spring.boot.version>2.6.7</spring.boot.version>
+        <spring.boot.version>2.7.0</spring.boot.version>
         <lombok.version>1.18.24</lombok.version>
         <aspectj.version>1.9.6</aspectj.version>
         <persistence.version>2.2</persistence.version>
         <guava.version>30.1.1-jre</guava.version>
         <vertx.version>4.2.3</vertx.version>
         <guice.version>5.0.1</guice.version>
-        <mybatis.version>3.5.7</mybatis.version>
-        <mybatis.spring.version>2.0.6</mybatis.spring.version>
+        <mybatis.version>3.5.10</mybatis.version>
+        <mybatis.spring.version>2.0.7</mybatis.spring.version>
         <validation.version>2.0.1.Final</validation.version>
         <jsqlparser.version>4.2</jsqlparser.version>
         <mysql.version>8.0.28</mysql.version>

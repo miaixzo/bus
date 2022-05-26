@@ -54,7 +54,7 @@ public class EightChar {
     /**
      * 长生十二神日干偏移值，五阳干顺推，五阴干逆推
      */
-    private static final Map<String, Integer> CHANG_SHENG_OFFSET = new HashMap<String, Integer>() {
+    private static final Map<String, Integer> CHANG_SHENG_OFFSET = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -498,6 +498,26 @@ public class EightChar {
     }
 
     /**
+     * 获取胎息
+     *
+     * @return 胎息
+     */
+    public String getTaiXi() {
+        int ganIndex = (2 == sect) ? lunar.getDayGanIndexExact2() : lunar.getDayGanIndexExact();
+        int zhiIndex = (2 == sect) ? lunar.getDayZhiIndexExact2() : lunar.getDayZhiIndexExact();
+        return Lunar.HE_GAN_5[ganIndex] + Lunar.HE_ZHI_6[zhiIndex];
+    }
+
+    /**
+     * 获取胎息纳音
+     *
+     * @return 纳音
+     */
+    public String getTaiXiNaYin() {
+        return Lunar.NAYIN.get(getTaiXi());
+    }
+
+    /**
      * 获取命宫
      *
      * @return 命宫
@@ -554,7 +574,10 @@ public class EightChar {
                 timeZhiIndex = i;
             }
         }
-        int zhiIndex = (2 + (monthZhiIndex + timeZhiIndex)) % 12;
+        int zhiIndex = 2 + monthZhiIndex + timeZhiIndex;
+        if (zhiIndex > 12) {
+            zhiIndex -= 12;
+        }
         int jiaZiIndex = Lunar.getJiaZiIndex(lunar.getMonthInGanZhiExact()) - (monthZhiIndex - zhiIndex);
         if (jiaZiIndex >= 60) {
             jiaZiIndex -= 60;

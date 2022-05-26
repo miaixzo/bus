@@ -467,9 +467,12 @@ public class Holiday {
         while (data.length() >= SIZE) {
             String segment = data.substring(0, SIZE);
             String day = segment.substring(0, 8);
+            boolean remove = Symbol.TILDE.equals(segment.substring(8, 9));
             Holiday holiday = getHoliday(day);
             if (null == holiday) {
-                append.append(segment);
+                if (!remove) {
+                    append.append(segment);
+                }
             } else {
                 int nameIndex = -1;
                 for (int i = 0, j = NAMES_IN_HOLIDAY.length; i < j; i++) {
@@ -482,7 +485,7 @@ public class Holiday {
                     String old = day + (char) (nameIndex + Symbol.C_ZERO)
                             + (holiday.isWork() ? Symbol.C_ZERO : '1')
                             + holiday.getTarget().replace(Symbol.MINUS, Normal.EMPTY);
-                    DATA_IN_HOLIDAY = DATA_IN_HOLIDAY.replace(old, segment);
+                    DATA_IN_HOLIDAY = DATA_IN_HOLIDAY.replace(old, remove ? Normal.EMPTY : segment);
                 }
             }
             data = data.substring(SIZE);

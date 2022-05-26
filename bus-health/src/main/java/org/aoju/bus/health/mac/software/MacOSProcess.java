@@ -132,6 +132,7 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     private Pair<List<String>, Map<String, String>> queryArgsAndEnvironment() {
+        int pid = getProcessID();
         // Set up return objects
         List<String> args = new ArrayList<>();
         // API does not specify any particular order of entries, but it is reasonable to
@@ -142,7 +143,7 @@ public class MacOSProcess extends AbstractOSProcess {
         int[] mib = new int[3];
         mib[0] = 1; // CTL_KERN
         mib[1] = 49; // KERN_PROCARGS2
-        mib[2] = getProcessID();
+        mib[2] = pid;
         // Allocate memory for arguments
         Memory procargs = new Memory(ARGMAX);
         procargs.clear();

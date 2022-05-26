@@ -40,21 +40,24 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 public interface OSFileStore {
 
     /**
-     * Name of the File System
+     * Name of the File System. A human-readable label that does not necessarily
+     * correspond to a file system path.
      *
      * @return The file system name
      */
     String getName();
 
     /**
-     * Volume name of the File System
+     * Volume name of the File System. Generally a path representing the device
+     * (e.g., {@code /dev/foo} which is being mounted.
      *
      * @return The volume name of the file system
      */
     String getVolume();
 
     /**
-     * Label of the File System
+     * Label of the File System. An optional replacement for the name on Windows and
+     * Linux.
      *
      * @return The volume label of the file system. Only relevant on Windows and on
      * Linux, if assigned; otherwise defaults to the FileSystem name. On
@@ -63,8 +66,8 @@ public interface OSFileStore {
     String getLabel();
 
     /**
-     * Logical volume of the File System
-     * <p>
+     * Logical volume of the File System.
+     *
      * Provides an optional alternative volume identifier for the file system. Only
      * supported on Linux, provides symlink value via '/dev/mapper/' (used with LVM
      * file systems).
@@ -74,35 +77,36 @@ public interface OSFileStore {
     String getLogicalVolume();
 
     /**
-     * Mountpoint of the File System
+     * Mount point of the File System. The directory users will normally use to
+     * interface with the file store.
      *
      * @return The mountpoint of the file system
      */
     String getMount();
 
     /**
-     * Description of the File System
+     * Description of the File System.
      *
      * @return The file system description
      */
     String getDescription();
 
     /**
-     * Type of the File System (FAT, NTFS, etx2, ext4, etc)
+     * Type of the File System (FAT, NTFS, etx2, ext4, etc.)
      *
      * @return The file system type
      */
     String getType();
 
     /**
-     * Filesystem options
+     * Filesystem options.
      *
      * @return A comma-deimited string of options
      */
     String getOptions();
 
     /**
-     * UUID/GUID of the File System
+     * UUID/GUID of the File System.
      *
      * @return The file system UUID/GUID
      */
@@ -142,7 +146,7 @@ public interface OSFileStore {
      * Windows.
      *
      * @return Total / maximum number of inodes of the filesystem (count), or -1 if
-     * unimplemented
+     *         unimplemented
      */
     long getTotalInodes();
 
@@ -152,7 +156,7 @@ public interface OSFileStore {
      * frequent periodic updates of file store statistics.
      *
      * @return True if the update was (probably) successful, false if the disk was
-     * not found
+     *         not found
      */
     boolean updateAttributes();
 

@@ -657,7 +657,7 @@ public class MathKit {
         if (v1 instanceof BigDecimal && v2 instanceof BigDecimal) {
             return div((BigDecimal) v1, (BigDecimal) v2, scale, roundingMode);
         }
-        return div(v1.toString(), v2.toString(), scale, roundingMode);
+        return div(StringKit.toStringOrNull(v1), StringKit.toStringOrNull(v2), scale, roundingMode);
     }
 
     /**
