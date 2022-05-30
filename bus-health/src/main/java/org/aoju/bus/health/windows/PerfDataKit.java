@@ -35,6 +35,7 @@ import com.sun.jna.platform.win32.WinDef.LONGLONGByReference;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.logger.Logger;
@@ -81,7 +82,7 @@ public final class PerfDataKit {
         int retries = 0;
         while (ret == PdhMsg.PDH_NO_DATA && retries++ < 3) {
             // Exponential fallback.
-            Builder.sleep(1 << retries);
+            ThreadKit.sleep(1 << retries);
             ret = IS_VISTA_OR_GREATER ? PDH.PdhCollectQueryDataWithTime(query.getValue(), pllTimeStamp)
                     : PDH.PdhCollectQueryData(query.getValue());
         }

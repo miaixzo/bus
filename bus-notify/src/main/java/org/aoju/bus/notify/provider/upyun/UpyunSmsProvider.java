@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 腾讯云短信
+ * 又拍云短信
  *
  * @author Kimi Liu
  * @since Java 17+

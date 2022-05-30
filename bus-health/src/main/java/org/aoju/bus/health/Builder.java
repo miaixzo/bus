@@ -1388,21 +1388,6 @@ public final class Builder {
     }
 
     /**
-     * Sleeps for the specified number of milliseconds.
-     *
-     * @param ms How long to sleep
-     */
-    public static void sleep(long ms) {
-        try {
-            Logger.trace("Sleeping for {} ms", ms);
-            Thread.sleep(ms);
-        } catch (InterruptedException e) { // NOSONAR squid:S2142
-            Logger.warn("Interrupted while sleeping for {} ms: {}", ms, e.getMessage());
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    /**
      * Tests if a String matches another String with a wildcard pattern.
      *
      * @param text    The String to test

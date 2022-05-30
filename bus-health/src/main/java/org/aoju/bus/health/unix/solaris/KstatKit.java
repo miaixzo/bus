@@ -38,7 +38,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 import org.aoju.bus.core.annotation.GuardeBy;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
 import org.aoju.bus.logger.Logger;
@@ -289,7 +289,7 @@ public final class KstatKit {
                     }
                     return false;
                 }
-                Builder.sleep(8 << retry);
+                ThreadKit.sleep(8 << retry);
             }
             return true;
         }

@@ -31,10 +31,24 @@ import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Provider;
 import org.aoju.bus.notify.Registry;
+import org.aoju.bus.notify.provider.aliyun.AliyunEmailProvider;
 import org.aoju.bus.notify.provider.aliyun.AliyunSmsProvider;
 import org.aoju.bus.notify.provider.aliyun.AliyunVmsProvider;
+import org.aoju.bus.notify.provider.baidu.BaiduSmsProvider;
 import org.aoju.bus.notify.provider.dingtalk.DingTalkProvider;
+import org.aoju.bus.notify.provider.generic.GenericEmailProvider;
+import org.aoju.bus.notify.provider.huawei.HuaweiSmsProvider;
+import org.aoju.bus.notify.provider.jdcloud.JdcloudSmsProvider;
+import org.aoju.bus.notify.provider.jpush.JpushSmsProvider;
 import org.aoju.bus.notify.provider.netease.NeteaseSmsProvider;
+import org.aoju.bus.notify.provider.qiniu.QiniuSmsProvider;
+import org.aoju.bus.notify.provider.tencent.TencentSmsProvider;
+import org.aoju.bus.notify.provider.upyun.UpyunSmsProvider;
+import org.aoju.bus.notify.provider.wechat.WechatCpProvider;
+import org.aoju.bus.notify.provider.wechat.WechatKfProvider;
+import org.aoju.bus.notify.provider.wechat.WechatMiniProvider;
+import org.aoju.bus.notify.provider.wechat.WechatMpProvider;
+import org.aoju.bus.notify.provider.yunpian.YunpianSmsProvider;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,16 +93,44 @@ public class NotifyProviderService {
     public Provider require(Registry registry) {
         Context context = CACHE.get(registry);
         if (ObjectKit.isEmpty(context)) {
-            context = properties.getType().get(registry);
+            context = this.properties.getType().get(registry);
         }
         if (Registry.ALIYUN_SMS.equals(registry)) {
             return new AliyunSmsProvider(context);
         } else if (Registry.ALIYUN_VMS.equals(registry)) {
             return new AliyunVmsProvider(context);
-        } else if (Registry.DINGTALK_MSG.equals(registry)) {
+        } else if (Registry.ALIYUN_EDM.equals(registry)) {
+            return new AliyunEmailProvider(context);
+        } else if (Registry.BAIDU_SMS.equals(registry)) {
+            return new BaiduSmsProvider(context);
+        } else if (Registry.DINGTALK.equals(registry)) {
             return new DingTalkProvider(context);
-        } else if (Registry.NETEASE_MSG.equals(registry)) {
+        } else if (Registry.GENERIC_EDM.equals(registry)) {
+            return new GenericEmailProvider(context);
+        } else if (Registry.HUAWEI_SMS.equals(registry)) {
+            return new HuaweiSmsProvider(context);
+        } else if (Registry.JDCLOUD_SMS.equals(registry)) {
+            return new JdcloudSmsProvider(context);
+        } else if (Registry.JPUSH_SMS.equals(registry)) {
+            return new JpushSmsProvider(context);
+        } else if (Registry.NETEASE_SMS.equals(registry)) {
             return new NeteaseSmsProvider(context);
+        } else if (Registry.QINIU_SMS.equals(registry)) {
+            return new QiniuSmsProvider(context);
+        } else if (Registry.TENCENT_SMS.equals(registry)) {
+            return new TencentSmsProvider(context);
+        } else if (Registry.UPYUN_SMS.equals(registry)) {
+            return new UpyunSmsProvider(context);
+        } else if (Registry.WECHAT_CP.equals(registry)) {
+            return new WechatCpProvider(context);
+        } else if (Registry.WECHAT_KF.equals(registry)) {
+            return new WechatKfProvider(context);
+        } else if (Registry.WECHAT_MINI.equals(registry)) {
+            return new WechatMiniProvider(context);
+        } else if (Registry.WECHAT_MP.equals(registry)) {
+            return new WechatMpProvider(context);
+        } else if (Registry.YUNPIAN_SMS.equals(registry)) {
+            return new YunpianSmsProvider(context);
         }
         throw new InstrumentException(Builder.ErrorCode.UNSUPPORTED.getMsg());
     }

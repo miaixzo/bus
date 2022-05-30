@@ -23,21 +23,21 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.tencent.wechat;
+package org.aoju.bus.notify.provider.wechat;
 
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
 /**
- * 公众号-订阅/模板消息
+ * 企业号/企业微信消息
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WechatMpProvider extends AbstractProvider<WechatProperty, Context> {
+public class WechatCpProvider extends AbstractProvider<WechatProperty, Context> {
 
-    public WechatMpProvider(Context context) {
+    public WechatCpProvider(Context context) {
         super(context);
     }
 

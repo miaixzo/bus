@@ -1,5 +1,5 @@
 /**
- * 网易云短信消息
+ * 网易云消息
  *
  * @author Kimi Liu
  * @since Java 17+

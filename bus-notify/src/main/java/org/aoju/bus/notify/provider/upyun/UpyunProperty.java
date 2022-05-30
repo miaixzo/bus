@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.notify.magic.Property;
 
 /**
- * 腾讯云短信
+ * 又拍云短信
  *
  * @author Kimi Liu
  * @since Java 17+

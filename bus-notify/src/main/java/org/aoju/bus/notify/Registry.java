@@ -37,19 +37,73 @@ public enum Registry {
      * 阿里云短信
      */
     ALIYUN_SMS,
-
     /**
      * 阿里云语音
      */
     ALIYUN_VMS,
-
+    /**
+     * 阿里云邮件
+     */
+    ALIYUN_EDM,
+    /**
+     * 阿里云语音
+     */
+    BAIDU_SMS,
     /**
      * 企业钉钉
      */
-    DINGTALK_MSG,
+    DINGTALK,
     /**
-     * 云信消息
+     * 系统邮件
      */
-    NETEASE_MSG
+    GENERIC_EDM,
+    /**
+     * 华为云短信
+     */
+    HUAWEI_SMS,
+    /**
+     * 京东云短信
+     */
+    JDCLOUD_SMS,
+    /**
+     * 极光短信
+     */
+    JPUSH_SMS,
+    /**
+     * 网易云短信
+     */
+    NETEASE_SMS,
+    /**
+     * 七牛云短信
+     */
+    QINIU_SMS,
+    /**
+     * 腾讯云短信
+     */
+    TENCENT_SMS,
+    /**
+     * 又拍云短信
+     */
+    UPYUN_SMS,
+    /**
+     * 微信企业号/企业微信消息
+     */
+    WECHAT_CP,
+    /**
+     * 微信客服消息
+     */
+    WECHAT_KF,
+    /**
+     * 微信小程序-订阅消息
+     */
+    WECHAT_MINI,
+    /**
+     * 微信公众号-订阅/模板消息
+     */
+    WECHAT_MP,
+    /**
+     * 云片短信
+     */
+    YUNPIAN_SMS
 
 }

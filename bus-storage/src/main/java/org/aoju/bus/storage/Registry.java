@@ -50,6 +50,10 @@ public enum Registry {
      */
     JD,
     /**
+     * 本地 file
+     */
+    LOCAL,
+    /**
      * MINIO OSS
      */
     MINIO,
@@ -64,10 +68,6 @@ public enum Registry {
     /**
      * 又拍云 OSS
      */
-    UPYUN,
+    UPYUN
 
-    /**
-     * 本地 file
-     */
-    LOCAL
 }

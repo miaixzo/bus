@@ -1156,6 +1156,9 @@ public class MathKit {
      * @return 是否为整数
      */
     public static boolean isInteger(String s) {
+        if (StringKit.isBlank(s)) {
+            return false;
+        }
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException e) {

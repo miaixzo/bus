@@ -30,6 +30,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
@@ -167,6 +168,46 @@ public interface CentralProcessor {
      * available.
      */
     double[] getSystemLoadAverage(int nelem);
+
+    /**
+     * This is a convenience method which collects an initial set of ticks using
+     * {@link #getSystemCpuLoadTicks()} and passes that result to
+     * {@link #getSystemCpuLoadBetweenTicks(long[])} after the specified delay.
+     *
+     * @param delay Milliseconds to wait.
+     * @return value between 0 and 1 (100%) that represents the cpu usage in the
+     * provided time period.
+     */
+    default double getSystemCpuLoad(long delay) {
+        long start = System.nanoTime();
+        long[] oldTicks = getSystemCpuLoadTicks();
+        long toWait = delay - (System.nanoTime() - start) / 1_000_000;
+        // protect against IllegalArgumentException
+        if (toWait > 0L) {
+            ThreadKit.sleep(delay);
+        }
+        return getSystemCpuLoadBetweenTicks(oldTicks);
+    }
+
+    /**
+     * This is a convenience method which collects an initial set of ticks using
+     * {@link #getProcessorCpuLoadTicks()} and passes that result to
+     * {@link #getProcessorCpuLoadBetweenTicks(long[][])} after the specified delay.
+     *
+     * @param delay Milliseconds to wait.
+     * @return array of CPU load between 0 and 1 (100%) for each logical processor,
+     * for the provided time period.
+     */
+    default double[] getProcessorCpuLoad(long delay) {
+        long start = System.nanoTime();
+        long[][] oldTicks = getProcessorCpuLoadTicks();
+        long toWait = delay - (System.nanoTime() - start) / 1_000_000;
+        // protect against IllegalArgumentException
+        if (toWait > 0L) {
+            ThreadKit.sleep(delay);
+        }
+        return getProcessorCpuLoadBetweenTicks(oldTicks);
+    }
 
     /**
      * Returns the "recent cpu usage" for all logical processors by counting ticks

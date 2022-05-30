@@ -1,5 +1,5 @@
 /**
- * 京东云短信
+ * 京东云消息
  *
  * @author Kimi Liu
  * @since Java 17+

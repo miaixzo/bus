@@ -1,5 +1,5 @@
 /**
- * 华为短息
+ * 华为云消息
  *
  * @author Kimi Liu
  * @since Java 17+

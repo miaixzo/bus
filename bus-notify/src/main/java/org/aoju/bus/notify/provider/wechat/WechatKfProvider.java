@@ -23,20 +23,27 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.tencent.wechat;
+package org.aoju.bus.notify.provider.wechat;
 
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Property;
+import org.aoju.bus.notify.Context;
+import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.provider.AbstractProvider;
 
 /**
- * 微信
+ * 微信-客服消息
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
-@SuperBuilder
-public class WechatProperty extends Property {
+public class WechatKfProvider extends AbstractProvider<WechatProperty, Context> {
+
+    public WechatKfProvider(Context context) {
+        super(context);
+    }
+
+    @Override
+    public Message send(WechatProperty entity) {
+        return null;
+    }
 
 }

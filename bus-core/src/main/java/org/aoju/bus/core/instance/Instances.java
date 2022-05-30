@@ -141,7 +141,12 @@ public final class Instances {
      * @return 单例对象
      */
     public static <T> T singletion(String key, Func0<T> supplier) {
-        return (T) POOL.computeIfAbsent(key, (k) -> supplier.callWithRuntimeException());
+        Object value = POOL.get(key);
+        if (null == value) {
+            POOL.putIfAbsent(key, supplier.callWithRuntimeException());
+            value = POOL.get(key);
+        }
+        return (T) value;
     }
 
     /**
