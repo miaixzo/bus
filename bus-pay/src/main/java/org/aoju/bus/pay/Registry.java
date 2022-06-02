@@ -1,21 +1,47 @@
 package org.aoju.bus.pay;
 
 /**
- * 内置的各api需要的url, 用枚举类分平台类型管理
+ * 支付平台类型
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum Registry {
 
+    /**
+     * 支付宝
+     */
     ALIPAY("ALIPAY"),
-    QQ("QQ"),
+    /**
+     * 京东
+     */
     JD("JD"),
+    /**
+     * Paypal
+     */
     PAYPAL("PAYPAL"),
+    /**
+     * QQ
+     */
+    QQ("QQ"),
+    /**
+     * 银联
+     */
     UNIONPAY("UNIONPAY"),
-    WEPAY("WEPAY");
+    /**
+     * 微信
+     */
+    WECHAT("WECHAT");
 
-    Registry(String alipay) {
+
+    private final String value;
+
+    Registry(String value) {
+        this.value = value;
+    }
+
+    public String getType() {
+        return value;
     }
 
 }

@@ -40,6 +40,33 @@ import java.util.Map;
 @ThreadSafe
 public final class SystemInformation {
 
+    /**
+     * Context switch property
+     */
+    public enum ContextSwitchProperty implements PerfCounterQuery.PdhCounterProperty {
+        CONTEXTSWITCHESPERSEC(null, "Context Switches/sec");
+
+        private final String instance;
+        private final String counter;
+
+        ContextSwitchProperty(String instance, String counter) {
+            this.instance = instance;
+            this.counter = counter;
+        }
+
+        @Override
+        public String getInstance() {
+            return instance;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
+        }
+    }
+
+    private SystemInformation() {
+    }
 
     /**
      * Returns system context switch counters.
@@ -54,15 +81,28 @@ public final class SystemInformation {
     }
 
     /**
-     * Context switch property
+     * Returns processor queue length.
+     *
+     * @return Processor Queue Length.
      */
-    public enum ContextSwitchProperty implements PerfCounterQuery.PdhCounterProperty {
-        CONTEXTSWITCHESPERSEC(null, "Context Switches/sec");
+    public static Map<ProcessorQueueLengthProperty, Long> queryProcessorQueueLength() {
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Collections.emptyMap();
+        }
+        return PerfCounterQuery.queryValues(ProcessorQueueLengthProperty.class, PerfmonConsts.SYSTEM,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
+    }
+
+    /**
+     * Processor Queue Length property
+     */
+    public enum ProcessorQueueLengthProperty implements PerfCounterQuery.PdhCounterProperty {
+        PROCESSORQUEUELENGTH(null, "Processor Queue Length");
 
         private final String instance;
         private final String counter;
 
-        ContextSwitchProperty(String instance, String counter) {
+        ProcessorQueueLengthProperty(String instance, String counter) {
             this.instance = instance;
             this.counter = counter;
         }

@@ -480,7 +480,7 @@ public class Builder {
      * 计算sha256摘要值，使用UTF-8编码
      *
      * @param data 被摘要数据
-     * @return MD5摘要
+     * @return SHA-256摘要
      */
     public static byte[] sha256(String data) {
         return sha256(data, Charset.DEFAULT_UTF_8);

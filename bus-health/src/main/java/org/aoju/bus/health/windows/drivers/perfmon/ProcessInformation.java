@@ -70,6 +70,19 @@ public final class ProcessInformation {
     }
 
     /**
+     * Returns cooked idle process performance counters.
+     *
+     * @return Cooked performance counters for idle process.
+     */
+    public static Pair<List<String>, Map<IdleProcessorTimeProperty, List<Long>>> queryIdleProcessCounters() {
+        if (PerfmonDisabled.PERF_OS_DISABLED) {
+            return Pair.of(Collections.emptyList(), Collections.emptyMap());
+        }
+        return PerfCounterWildcardQuery.queryInstancesAndValues(IdleProcessorTimeProperty.class, PerfmonConsts.PROCESS,
+                PerfmonConsts.WIN32_PERFPROC_PROCESS_WHERE_IDPROCESS_0);
+    }
+
+    /**
      * Process performance counters
      */
     public enum ProcessPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
@@ -109,6 +122,28 @@ public final class ProcessInformation {
         private final String counter;
 
         HandleCountProperty(String counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
+        }
+    }
+
+    /**
+     * Processor performance counters
+     */
+    public enum IdleProcessorTimeProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+        // First element defines WMI instance name field and PDH instance filter
+        NAME(PerfCounterQuery.TOTAL_OR_IDLE_INSTANCES),
+        // Remaining elements define counters
+        PERCENTPROCESSORTIME("% Processor Time"), //
+        ELAPSEDTIME("Elapsed Time");
+
+        private final String counter;
+
+        IdleProcessorTimeProperty(String counter) {
             this.counter = counter;
         }
 

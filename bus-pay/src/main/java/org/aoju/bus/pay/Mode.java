@@ -15,7 +15,7 @@ public enum Mode {
     SERVICE_MODE("SERVICE_MODE");
 
     /**
-     * 商户模式
+     * 模式
      */
     private final String value;
 

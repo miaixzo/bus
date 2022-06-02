@@ -69,7 +69,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids){
 <dependency>
     <groupId>org.aoju.bus</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>8.0.0</version>
+    <version>6.5.1</version>
 </dependency>
 ```
 

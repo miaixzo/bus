@@ -1,5 +1,7 @@
 package org.aoju.bus.pay;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * 公共接口,交易类型
  *
@@ -14,7 +16,7 @@ public interface Provider {
      * @return 交易类型
      */
     default String getChannel() {
-        return null;
+        return Normal.EMPTY;
     }
 
 }

@@ -4,6 +4,7 @@ package org.aoju.bus.pay;
  * 支付通道
  */
 public enum Channel {
+
     /**
      * 微信公众号支付或者小程序支付
      */

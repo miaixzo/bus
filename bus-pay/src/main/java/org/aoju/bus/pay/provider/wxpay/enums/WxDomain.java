@@ -38,19 +38,19 @@ public enum WxDomain {
     /**
      * 域名
      */
-    private final String domain;
+    private final String value;
 
-    WxDomain(String domain) {
-        this.domain = domain;
+    WxDomain(String value) {
+        this.value = value;
     }
 
     public String getType() {
-        return domain;
+        return value;
     }
 
     @Override
     public String toString() {
-        return domain;
+        return value;
     }
 
 }

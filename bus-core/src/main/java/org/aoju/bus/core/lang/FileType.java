@@ -972,6 +972,8 @@ public class FileType {
                 typeName = "xlsx";
             } else if ("docx".equalsIgnoreCase(extName)) {
                 typeName = "docx";
+            } else if ("pptx".equalsIgnoreCase(extName)) {
+                typeName = "pptx";
             }
         }
         return typeName;

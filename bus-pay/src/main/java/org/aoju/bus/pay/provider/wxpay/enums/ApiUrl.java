@@ -3,7 +3,7 @@ package org.aoju.bus.pay.provider.wxpay.enums;
 /**
  * 微信支付接口
  */
-public enum WxApiType {
+public enum ApiUrl {
 
     /**
      * 沙箱环境
@@ -1044,7 +1044,7 @@ public enum WxApiType {
      */
     private final String type;
 
-    WxApiType(String type) {
+    ApiUrl(String type) {
         this.type = type;
     }
 
