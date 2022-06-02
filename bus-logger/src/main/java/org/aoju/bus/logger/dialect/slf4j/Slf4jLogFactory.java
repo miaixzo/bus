@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.logger.dialect.slf4j;
 
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 import org.slf4j.LoggerFactory;
@@ -33,14 +32,13 @@ import org.slf4j.helpers.NOPLoggerFactory;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * SLF4J
  * 无缝支持LogBack
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Slf4jLogFactory extends LogFactory {
@@ -63,16 +61,12 @@ public class Slf4jLogFactory extends LogFactory {
 
         final StringBuilder buf = new StringBuilder();
         final PrintStream err = System.err;
-        try {
-            System.setErr(new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) {
-                    buf.append((char) b);
-                }
-            }, true, Charset.DEFAULT_US_ASCII));
-        } catch (UnsupportedEncodingException e) {
-            throw new Error(e);
-        }
+        System.setErr(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) {
+                buf.append((char) b);
+            }
+        }, true, StandardCharsets.US_ASCII));
 
         try {
             if (LoggerFactory.getILoggerFactory() instanceof NOPLoggerFactory) {

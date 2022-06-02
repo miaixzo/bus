@@ -33,7 +33,6 @@ import java.util.List;
  * 用于捕获方法签名的类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MethodSignature {

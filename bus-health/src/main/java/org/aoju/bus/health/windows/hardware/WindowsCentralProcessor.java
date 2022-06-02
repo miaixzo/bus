@@ -39,6 +39,7 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.LogicalProcessorInformation;
+import org.aoju.bus.health.windows.drivers.perfmon.LoadAverage;
 import org.aoju.bus.health.windows.drivers.perfmon.ProcessorInformation;
 import org.aoju.bus.health.windows.drivers.perfmon.SystemInformation;
 import org.aoju.bus.health.windows.drivers.wmi.Win32Processor;
@@ -56,7 +57,6 @@ import java.util.function.Supplier;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe
@@ -72,6 +72,15 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             : null;
     // populated by initProcessorCounts called by the parent constructor
     private Map<String, Integer> numaNodeProcToLogicalProcMap;
+    // Whether to start a daemon thread ot calculate load average
+    private static final boolean USE_LOAD_AVERAGE = Config.get(Config.OSHI_OS_WINDOWS_LOADAVERAGE, false);
+
+    static {
+        if (USE_LOAD_AVERAGE) {
+            LoadAverage.startDaemon();
+        }
+    }
+
     // Store the initial query and start the memoizer expiration
     private Map<ProcessorInformation.ProcessorUtilityTickCountProperty, List<Long>> initialUtilityCounters = USE_CPU_UTILITY
             ? processorUtilityCounters.get().getRight()
@@ -199,10 +208,9 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             if (!instances.isEmpty()) {
                 long maxFreq = this.getMaxFreq();
                 long[] freqs = new long[getLogicalProcessorCount()];
-                for (int p = 0; p < instances.size(); p++) {
-                    int cpu = instances.get(p).contains(",")
-                            ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
-                            : Builder.parseIntOrDefault(instances.get(p), 0);
+                for (String instance : instances) {
+                    int cpu = instance.contains(",") ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
+                            : Builder.parseIntOrDefault(instance, 0);
                     if (cpu >= getLogicalProcessorCount()) {
                         continue;
                     }
@@ -245,12 +253,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         if (nelem < 1 || nelem > 3) {
             throw new IllegalArgumentException("Must include from one to three elements.");
         }
-        double[] average = new double[nelem];
-        // Windows doesn't have load average
-        for (int i = 0; i < average.length; i++) {
-            average[i] = -1;
-        }
-        return average;
+        return LoadAverage.queryLoadAverage(nelem);
     }
 
     /**
@@ -353,9 +356,9 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                 || initProcessorUtilityBase == null))) {
             return ticks;
         }
-        for (int p = 0; p < instances.size(); p++) {
-            int cpu = instances.get(p).contains(",") ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
-                    : Builder.parseIntOrDefault(instances.get(p), 0);
+        for (String instance : instances) {
+            int cpu = instance.contains(",") ? numaNodeProcToLogicalProcMap.getOrDefault(instance, 0)
+                    : Builder.parseIntOrDefault(instance, 0);
             if (cpu >= ncpu) {
                 continue;
             }

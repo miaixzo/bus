@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Dimse;
@@ -46,7 +46,6 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ApplicationEntity implements Serializable {

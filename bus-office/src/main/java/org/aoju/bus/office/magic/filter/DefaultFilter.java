@@ -26,14 +26,13 @@
 package org.aoju.bus.office.magic.filter;
 
 import com.sun.star.lang.XComponent;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.office.Context;
 
 /**
  * FilterChain的默认实现.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultFilter extends AbstractFilter {

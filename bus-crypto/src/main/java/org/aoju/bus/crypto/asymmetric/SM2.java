@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.crypto.Builder;
 import org.bouncycastle.crypto.CipherParameters;
@@ -60,7 +60,6 @@ import java.security.PublicKey;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SM2 extends AbstractCrypto<SM2> {

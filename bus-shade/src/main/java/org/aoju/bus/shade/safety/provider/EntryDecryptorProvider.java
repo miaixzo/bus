@@ -31,7 +31,6 @@ import org.aoju.bus.shade.safety.Complex;
  * 记录可过滤的解密器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class EntryDecryptorProvider<E> extends WrappedDecryptorProvider implements DecryptorProvider, Complex<E> {

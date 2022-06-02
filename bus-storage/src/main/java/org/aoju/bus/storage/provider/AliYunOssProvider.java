@@ -36,8 +36,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -48,7 +48,6 @@ import java.util.stream.Collectors;
  * 存储服务-阿里云
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AliYunOssProvider extends AbstractProvider {
@@ -120,7 +119,7 @@ public class AliYunOssProvider extends AbstractProvider {
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
                 .data(objectListing.getObjectSummaries().stream().map(item -> {
-                    Attachs storageItem = new Attachs();
+                    Property storageItem = new Property();
                     storageItem.setName(item.getKey());
                     storageItem.setSize(StringKit.toString(item.getSize()));
                     Map<String, Object> extend = Maps.newHashMap();
@@ -186,7 +185,7 @@ public class AliYunOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(Attachs.builder().name(fileName).size(Normal.EMPTY + response.getContentLength()).path(response.getUri()))
+                    .data(Property.builder().name(fileName).size(Normal.EMPTY + response.getContentLength()).path(response.getUri()))
                     .build();
 
         } catch (Exception e) {

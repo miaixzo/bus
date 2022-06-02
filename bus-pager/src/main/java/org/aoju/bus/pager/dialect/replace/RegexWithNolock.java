@@ -31,7 +31,6 @@ import org.aoju.bus.pager.dialect.ReplaceSql;
  * 正则处理 with(nolock),转换为一个 table_PAGEWITHNOLOCK
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RegexWithNolock implements ReplaceSql {

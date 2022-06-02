@@ -33,6 +33,8 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
@@ -42,6 +44,7 @@ import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.Lshw;
 import org.aoju.bus.health.linux.drivers.proc.CpuStat;
 import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
+import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +60,6 @@ import java.util.stream.Stream;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe
@@ -234,10 +236,35 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected Pair<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>> initProcessorCounts() {
-        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
+        Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> topology = LinuxOperatingSystem.HAS_UDEV
+                ? readTopologyFromUdev()
+                : readTopologyFromSysfs();
+        List<LogicalProcessor> logProcs = topology.getLeft();
+        Map<Integer, Integer> coreEfficiencyMap = topology.getMiddle();
+        Map<Integer, String> modAliasMap = topology.getRight();
+        // Failsafe
+        if (logProcs.isEmpty()) {
+            logProcs.add(new LogicalProcessor(0, 0, 0));
+            coreEfficiencyMap.put(0, 0);
+        }
+        // Sort
+        logProcs.sort(Comparator.comparingInt(LogicalProcessor::getProcessorNumber));
+
+        List<PhysicalProcessor> physProcs = coreEfficiencyMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
+                .map(e -> {
+                    int pkgId = e.getKey() >> 16;
+                    int coreId = e.getKey() & 0xffff;
+                    return new PhysicalProcessor(pkgId, coreId, e.getValue(), modAliasMap.getOrDefault(e.getKey(), ""));
+                }).collect(Collectors.toList());
+
+        return Pair.of(logProcs, physProcs);
+    }
+
+    private Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
+        List<LogicalProcessor> logProcs = new ArrayList<>();
         Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
         Map<Integer, String> modAliasMap = new HashMap<>();
-        // Enumerate CPU topology from sysfs
+        // Enumerate CPU topology from sysfs via udev
         UdevContext udev = Udev.INSTANCE.udev_new();
         try {
             UdevEnumerate enumerate = udev.enumerateNew();
@@ -246,31 +273,16 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 enumerate.scanDevices();
                 for (UdevListEntry entry = enumerate.getListEntry(); entry != null; entry = entry.getNext()) {
                     String syspath = entry.getName(); // /sys/devices/system/cpu/cpuX
-                    int processor = Builder.getFirstIntValue(syspath);
-                    int coreId = Builder.getIntFromFile(syspath + "/topology/core_id");
-                    int pkgId = Builder.getIntFromFile(syspath + "/topology/physical_package_id");
-                    int pkgCoreKey = (pkgId << 16) + coreId;
-                    // The cpu_capacity value may not exist, this will just store 0
-                    coreEfficiencyMap.put(pkgCoreKey, Builder.getIntFromFile(syspath + "/cpu_capacity"));
                     UdevDevice device = udev.deviceNewFromSyspath(syspath);
+                    String modAlias = null;
                     if (device != null) {
                         try {
-                            modAliasMap.put(pkgCoreKey, device.getPropertyValue("MODALIAS"));
+                            modAlias = device.getPropertyValue("MODALIAS");
                         } finally {
                             device.unref();
                         }
                     }
-                    int nodeId = 0;
-                    String prefix = syspath + "/node";
-                    try (Stream<Path> path = Files.list(Paths.get(syspath))) {
-                        Optional<Path> first = path.filter(p -> p.toString().startsWith(prefix)).findFirst();
-                        if (first.isPresent()) {
-                            nodeId = Builder.getFirstIntValue(first.get().getFileName().toString());
-                        }
-                    } catch (IOException e) {
-                        // ignore
-                    }
-                    logProcs.add(new CentralProcessor.LogicalProcessor(processor, coreId, pkgId, nodeId));
+                    logProcs.add(getLogicalProcessorFromSyspath(syspath, modAlias, coreEfficiencyMap, modAliasMap));
                 }
             } finally {
                 enumerate.unref();
@@ -278,18 +290,53 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         } finally {
             udev.unref();
         }
-        // Failsafe
-        if (logProcs.isEmpty()) {
-            logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
-            coreEfficiencyMap.put(0, 0);
+        return Triple.of(logProcs, coreEfficiencyMap, modAliasMap);
+    }
+
+    private Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromSysfs() {
+        List<LogicalProcessor> logProcs = new ArrayList<>();
+        Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
+        Map<Integer, String> modAliasMap = new HashMap<>();
+        String cpuPath = "/sys/devices/system/cpu/";
+        try {
+            try (Stream<Path> cpuFiles = Files.find(Paths.get(cpuPath), Integer.MAX_VALUE,
+                    (path, basicFileAttributes) -> path.toFile().getName().matches("cpu\\d+"))) {
+                cpuFiles.forEach(cpu -> {
+                    String syspath = cpu.toString(); // /sys/devices/system/cpu/cpuX
+                    Map<String, String> uevent = Builder.getKeyValueMapFromFile(syspath + "/uevent", "=");
+                    String modAlias = uevent.get("MODALIAS");
+                    logProcs.add(getLogicalProcessorFromSyspath(syspath, modAlias, coreEfficiencyMap, modAliasMap));
+                });
+            }
+        } catch (IOException e) {
+            // No udev and no cpu info in sysfs? Bad.
+            Logger.warn("Unable to find CPU information in sysfs at path {}", cpuPath);
         }
-        List<CentralProcessor.PhysicalProcessor> physProcs = coreEfficiencyMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                .map(e -> {
-                    int pkgId = e.getKey() >> 16;
-                    int coreId = e.getKey() & 0xffff;
-                    return new CentralProcessor.PhysicalProcessor(pkgId, coreId, e.getValue(), modAliasMap.getOrDefault(e.getKey(), ""));
-                }).collect(Collectors.toList());
-        return Pair.of(logProcs, physProcs);
+        return Triple.of(logProcs, coreEfficiencyMap, modAliasMap);
+    }
+
+    private LogicalProcessor getLogicalProcessorFromSyspath(String syspath, String modAlias,
+                                                            Map<Integer, Integer> coreEfficiencyMap, Map<Integer, String> modAliasMap) {
+        int processor = Builder.getFirstIntValue(syspath);
+        int coreId = Builder.getIntFromFile(syspath + "/topology/core_id");
+        int pkgId = Builder.getIntFromFile(syspath + "/topology/physical_package_id");
+        int pkgCoreKey = (pkgId << 16) + coreId;
+        // The cpu_capacity value may not exist, this will just store 0
+        coreEfficiencyMap.put(pkgCoreKey, Builder.getIntFromFile(syspath + "/cpu_capacity"));
+        if (!StringKit.isBlank(modAlias)) {
+            modAliasMap.put(pkgCoreKey, modAlias);
+        }
+        int nodeId = 0;
+        String prefix = syspath + "/node";
+        try (Stream<Path> path = Files.list(Paths.get(syspath))) {
+            Optional<Path> first = path.filter(p -> p.toString().startsWith(prefix)).findFirst();
+            if (first.isPresent()) {
+                nodeId = Builder.getFirstIntValue(first.get().getFileName().toString());
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        return new LogicalProcessor(processor, coreId, pkgId, nodeId);
     }
 
     @Override

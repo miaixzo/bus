@@ -35,7 +35,6 @@ import java.util.Date;
  * 日期转换器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CalendarConverter extends AbstractConverter<Calendar> {

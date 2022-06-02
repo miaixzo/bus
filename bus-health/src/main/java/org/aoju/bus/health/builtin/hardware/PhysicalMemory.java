@@ -33,7 +33,6 @@ import org.aoju.bus.health.Formats;
  * computer system and available to the operating system.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

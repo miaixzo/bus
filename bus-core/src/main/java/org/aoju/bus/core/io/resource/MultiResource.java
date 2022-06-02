@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 
 import java.io.BufferedReader;
@@ -42,7 +42,6 @@ import java.util.List;
  * 此资源为一个利用游标自循环资源,只有调用{@link #next()} 方法才会获取下一个资源,使用完毕后调用{@link #reset()}方法重置游标
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource> {

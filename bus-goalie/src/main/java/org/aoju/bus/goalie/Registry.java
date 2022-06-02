@@ -29,7 +29,6 @@ package org.aoju.bus.goalie;
  * api registry
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Registry<T> {

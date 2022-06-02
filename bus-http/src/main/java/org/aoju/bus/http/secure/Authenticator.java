@@ -38,7 +38,6 @@ import java.io.IOException;
  * 应用程序可以为源服务器或代理服务器配置Httpd的身份验证器，或者两者都配置.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Authenticator {

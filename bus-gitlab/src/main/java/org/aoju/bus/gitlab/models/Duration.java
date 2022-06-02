@@ -36,9 +36,6 @@ import java.util.regex.Pattern;
  */
 public class Duration {
 
-    private int seconds;
-    private String durationString;
-
     private static final String[] TIME_UNITS = {"mo", "w", "d", "h", "m", "s"};
     private static final int[] TIME_UNIT_MULTIPLIERS = {
             60 * 60 * 8 * 5 * 4, // 4 weeks = 1 month
@@ -48,37 +45,9 @@ public class Duration {
             60,                  // 60 seconds = 1 minute
             1
     };
-
-    @JsonCreator
-    public static Duration forValue(String value) {
-        return new Duration(value);
-    }
-
-    /**
-     * Get the number of seconds this duration represents.
-     *
-     * @return the number of seconds this duration represents
-     */
-    public int getSeconds() {
-        return (seconds);
-    }
-
-    /**
-     * Set the number of seconds this duration represents.
-     *
-     * @param seconds the number of seconds this duration represents
-     */
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
-
-    @JsonValue
-    @Override
-    public String toString() {
-        return (durationString);
-    }
-
     private static Pattern durationPattern = Pattern.compile("(\\s*(\\d+)(mo|[wdhms]))");
+    private int seconds;
+    private String durationString;
 
     /**
      * Create a Duration instance from a human readable string. e.g: 3h30m
@@ -98,6 +67,11 @@ public class Duration {
     public Duration(int seconds) {
         this.seconds = seconds;
         durationString = (seconds == 0 ? "0m" : toString(seconds));
+    }
+
+    @JsonCreator
+    public static Duration forValue(String value) {
+        return new Duration(value);
     }
 
     /**
@@ -253,6 +227,30 @@ public class Duration {
         }
 
         return (-1);
+    }
+
+    /**
+     * Get the number of seconds this duration represents.
+     *
+     * @return the number of seconds this duration represents
+     */
+    public int getSeconds() {
+        return (seconds);
+    }
+
+    /**
+     * Set the number of seconds this duration represents.
+     *
+     * @param seconds the number of seconds this duration represents
+     */
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
+    }
+
+    @JsonValue
+    @Override
+    public String toString() {
+        return (durationString);
     }
 
 }

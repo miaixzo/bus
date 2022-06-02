@@ -38,7 +38,6 @@ import java.util.*;
  * Redis 集群缓存支持
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RedisClusterCache implements CacheX {

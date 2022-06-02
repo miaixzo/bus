@@ -31,7 +31,6 @@ package org.aoju.bus.core.codec;
  * @param <T> 被编码的数据类型
  * @param <R> 编码后的数据类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Encoder<T, R> {

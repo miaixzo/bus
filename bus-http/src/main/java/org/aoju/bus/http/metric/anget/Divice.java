@@ -35,7 +35,6 @@ import java.util.List;
  * 设备信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Divice extends UserAgent {

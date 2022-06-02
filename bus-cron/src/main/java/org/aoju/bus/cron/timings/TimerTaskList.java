@@ -34,7 +34,6 @@ import java.util.function.Consumer;
  * 任务队列，任务双向链表
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TimerTaskList implements Delayed {

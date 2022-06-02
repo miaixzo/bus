@@ -37,7 +37,6 @@ import java.io.Serializable;
  * From https://github.com/seruco/base62
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], byte[]>, Serializable {

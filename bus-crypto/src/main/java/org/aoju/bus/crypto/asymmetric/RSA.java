@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.asymmetric;
 
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Holder;
 
@@ -52,7 +52,6 @@ import java.security.spec.RSAPublicKeySpec;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RSA extends Crypto {

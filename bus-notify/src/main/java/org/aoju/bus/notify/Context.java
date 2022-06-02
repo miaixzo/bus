@@ -32,7 +32,6 @@ import lombok.Data;
  * 配置信息
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 @Data
@@ -48,16 +47,6 @@ public class Context {
      * 对应各平台的appSecret
      */
     private String appSecret;
-
-    /**
-     * 短信签名
-     */
-    private String signName;
-
-    /**
-     * 语音主叫号码
-     */
-    private String showNumber;
 
     /**
      * 授权方的网页应用ID

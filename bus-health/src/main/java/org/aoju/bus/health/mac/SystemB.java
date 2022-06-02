@@ -36,7 +36,6 @@ import org.aoju.bus.health.unix.CLibrary;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {

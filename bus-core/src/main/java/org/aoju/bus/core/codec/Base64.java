@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
 import org.aoju.bus.core.toolkit.*;
 
@@ -43,7 +43,6 @@ import java.io.OutputStream;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Base64 {

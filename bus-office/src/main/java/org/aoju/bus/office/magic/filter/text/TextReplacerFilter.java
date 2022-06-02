@@ -28,7 +28,7 @@ package org.aoju.bus.office.magic.filter.text;
 import com.sun.star.lang.XComponent;
 import com.sun.star.util.XReplaceDescriptor;
 import com.sun.star.util.XReplaceable;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Context;
@@ -41,7 +41,6 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  * 此筛选器用于替换文档中的文本.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TextReplacerFilter implements Filter {

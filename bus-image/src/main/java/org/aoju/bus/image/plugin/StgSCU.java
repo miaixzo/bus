@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -52,7 +52,6 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class StgSCU {

@@ -27,11 +27,11 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.convert.NumberFormatter;
 import org.aoju.bus.core.date.formatter.*;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.text.DateFormat;
@@ -57,7 +57,6 @@ import java.util.concurrent.TimeUnit;
  * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Formatter {
@@ -137,6 +136,26 @@ public class Formatter {
             return null;
         }
         return Formatter.format(date.toInstant(), format);
+    }
+
+    /**
+     * 根据特定格式格式化日期
+     *
+     * @param date     被格式化的日期
+     * @param format   日期格式,常用格式见： {@link Fields}
+     * @param timeZone 时区
+     * @return 格式化后的字符串
+     */
+    public static String format(Date date, String format, String timeZone) {
+        if (null == date || StringKit.isBlank(format)) {
+            return null;
+        }
+
+        final SimpleDateFormat sdf = new SimpleDateFormat(format);
+        if (null != timeZone) {
+            sdf.setTimeZone(new SimpleTimeZone(0, timeZone));
+        }
+        return format(date, sdf);
     }
 
     /**

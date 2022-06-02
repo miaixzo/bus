@@ -35,7 +35,6 @@ import java.util.Objects;
  * 重定向输出和错误流的进程的包装器类.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Expense {

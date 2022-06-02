@@ -29,7 +29,6 @@ package org.aoju.bus.pager.cache;
  * Simple cache interface
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Cache<K, V> {

@@ -48,7 +48,6 @@ import java.util.*;
  * @param <C> 列类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {

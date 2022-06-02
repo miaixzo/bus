@@ -29,7 +29,6 @@ package org.aoju.bus.base.mapper;
  * BaseMapper 接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface BaseMapper<T> extends Mapper<T> {

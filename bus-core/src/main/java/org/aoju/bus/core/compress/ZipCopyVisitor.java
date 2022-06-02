@@ -36,7 +36,6 @@ import java.nio.file.attribute.BasicFileAttributes;
  * 此类在遍历源目录并复制过程中会自动创建目标目录中不存在的上级目录
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ZipCopyVisitor extends SimpleFileVisitor<Path> {

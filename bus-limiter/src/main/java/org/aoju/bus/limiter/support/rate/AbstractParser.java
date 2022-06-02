@@ -36,7 +36,6 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractParser<T extends Limiter<?>, V extends Annotation> implements Parser<T> {

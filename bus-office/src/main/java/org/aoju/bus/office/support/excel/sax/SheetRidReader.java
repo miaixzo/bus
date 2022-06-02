@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -45,7 +45,6 @@ import java.util.Map;
  * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SheetRidReader extends DefaultHandler {

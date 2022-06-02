@@ -31,7 +31,6 @@ import java.nio.channels.Selector;
  * selector register callback
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface WorkerRegister {

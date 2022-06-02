@@ -33,7 +33,6 @@ import org.apache.poi.ss.usermodel.Hyperlink;
  * {@link Hyperlink} 值单元格设置器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class HyperlinkCellSetter implements CellSetter {

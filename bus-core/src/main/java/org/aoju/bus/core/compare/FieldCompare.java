@@ -37,7 +37,6 @@ import java.lang.reflect.Field;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FieldCompare<T> extends FuncCompare<T> {

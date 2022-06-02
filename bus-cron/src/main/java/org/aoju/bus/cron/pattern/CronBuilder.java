@@ -36,7 +36,6 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 定时任务表达式构建器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CronBuilder implements Builder<String> {

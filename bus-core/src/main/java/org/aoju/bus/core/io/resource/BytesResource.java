@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.ByteArrayInputStream;
@@ -38,7 +38,6 @@ import java.nio.charset.Charset;
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BytesResource implements Resource {

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect.sqlserver;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.dialect.AbstractDatabaseQuery;
@@ -49,7 +49,6 @@ import java.util.stream.Collectors;
  * 通过文档发现，查询列和查询表的 REMARKS  字段SQL Server 不会为此列返回值。所以对于SQL server 自己写SQL语句了,差缺补全
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {

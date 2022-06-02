@@ -34,7 +34,6 @@ import java.lang.annotation.*;
  * 启用链路追踪
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Inherited

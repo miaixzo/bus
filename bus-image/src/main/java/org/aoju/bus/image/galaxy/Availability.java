@@ -27,7 +27,6 @@ package org.aoju.bus.image.galaxy;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum Availability {

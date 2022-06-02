@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest;
 
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.Builder;
 
@@ -44,7 +44,6 @@ import java.security.Provider;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Digester implements Serializable {

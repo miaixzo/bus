@@ -31,7 +31,6 @@ import java.net.Socket;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultHL7Listener implements HL7MessageListener {

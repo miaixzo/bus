@@ -26,8 +26,8 @@
 package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -47,7 +47,6 @@ import java.util.Set;
  * 签名包装，{@link Signature} 包装类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Sign extends Asymmetric<Sign> {

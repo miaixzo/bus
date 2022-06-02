@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.core.lang.exception.RevisedException;
+import org.aoju.bus.core.exception.RevisedException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.metric.EventListener;
@@ -47,7 +47,6 @@ import java.util.List;
  * 仍然在进行中，那么取消可能会中断整个连接
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class StreamAllocation {

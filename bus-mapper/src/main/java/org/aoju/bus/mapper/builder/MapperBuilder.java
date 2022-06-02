@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.mapper.annotation.RegisterMapper;
@@ -50,7 +50,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 处理主要逻辑，最关键的一个类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MapperBuilder {

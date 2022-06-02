@@ -37,7 +37,6 @@ import java.util.*;
  * 阳历日期
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Solar {
@@ -45,7 +44,7 @@ public class Solar {
     /**
      * 日期对应的节日
      */
-    public static final Map<String, String> FESTIVAL = new HashMap<String, String>() {
+    public static final Map<String, String> FESTIVAL = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -62,6 +61,8 @@ public class Solar {
             put("8-1", "建军节");
             put("9-10", "教师节");
             put("10-1", "国庆节");
+            put("10-31", "万圣节前夜");
+            put("11-1", "万圣节");
             put("12-24", "平安夜");
             put("12-25", "圣诞节");
         }
@@ -69,10 +70,11 @@ public class Solar {
     /**
      * 几月第几个星期几对应的节日
      */
-    public static final Map<String, String> WEEK_FESTIVAL = new HashMap<String, String>() {
+    public static final Map<String, String> WEEK_FESTIVAL = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
+            put("3-0-1", "全国中小学生安全教育日");
             put("5-2-0", "母亲节");
             put("6-3-0", "父亲节");
             put("11-4-4", "感恩节");
@@ -81,7 +83,7 @@ public class Solar {
     /**
      * 日期对应的非正式节日
      */
-    public static final Map<String, List<String>> OTHER_FESTIVAL = new HashMap<String, List<String>>() {
+    public static final Map<String, List<String>> OTHER_FESTIVAL = new HashMap<>() {
         private static final long serialVersionUID = 1L;
 
         {
@@ -117,6 +119,7 @@ public class Solar {
             put("5-5", Collections.nCopies(1, "马克思诞辰纪念日"));
             put("5-8", Collections.nCopies(1, "世界红十字日"));
             put("5-11", Collections.nCopies(1, "世界肥胖日"));
+            put("5-25", Collections.nCopies(1, "525心理健康节"));
             put("5-27", Collections.nCopies(1, "上海解放日"));
             put("5-31", Collections.nCopies(1, "世界无烟日"));
             put("6-5", Collections.nCopies(1, "世界环境日"));
@@ -435,7 +438,8 @@ public class Solar {
                     day = 1;
                     Solar solar = new Solar(year, month, day, hour, 0, 0);
                     lunar = solar.getLunar();
-                    if (lunar.getYearInGanZhiExact().equals(yearGanZhi) && lunar.getMonthInGanZhiExact().equals(monthGanZhi)) {
+                    if (lunar.getYearInGanZhiExact().equals(yearGanZhi)
+                            && lunar.getMonthInGanZhiExact().equals(monthGanZhi)) {
                         found = true;
                         break;
                     }
@@ -459,7 +463,10 @@ public class Solar {
                 while (counter < 61) {
                     lunar = solar.getLunar();
                     String dgz = (2 == sect) ? lunar.getDayInGanZhiExact2() : lunar.getDayInGanZhiExact();
-                    if (lunar.getYearInGanZhiExact().equals(yearGanZhi) && lunar.getMonthInGanZhiExact().equals(monthGanZhi) && dgz.equals(dayGanZhi) && lunar.getTimeInGanZhi().equals(timeGanZhi)) {
+                    if (lunar.getYearInGanZhiExact().equals(yearGanZhi)
+                            && lunar.getMonthInGanZhiExact().equals(monthGanZhi)
+                            && dgz.equals(dayGanZhi)
+                            && lunar.getTimeInGanZhi().equals(timeGanZhi)) {
                         list.add(solar);
                         break;
                     }
@@ -589,7 +596,12 @@ public class Solar {
      * @return 天数
      */
     public static int getDays(Calendar calendar0, Calendar calendar1) {
-        return getDays(calendar0.get(Calendar.YEAR), calendar0.get(Calendar.MONTH) + 1, calendar0.get(Calendar.DATE), calendar1.get(Calendar.YEAR), calendar1.get(Calendar.MONTH) + 1, calendar1.get(Calendar.DATE));
+        return getDays(calendar0.get(Calendar.YEAR)
+                , calendar0.get(Calendar.MONTH) + 1
+                , calendar0.get(Calendar.DATE)
+                , calendar1.get(Calendar.YEAR)
+                , calendar1.get(Calendar.MONTH) + 1
+                , calendar1.get(Calendar.DATE));
     }
 
     /**
@@ -638,6 +650,12 @@ public class Solar {
         festival = Solar.WEEK_FESTIVAL.get(month + Symbol.MINUS + weeks + Symbol.MINUS + week);
         if (null != festival) {
             list.add(festival);
+        }
+        if (day + 7 > Solar.getDaysOfMonth(year, month)) {
+            festival = Solar.WEEK_FESTIVAL.get(month + "-0-" + week);
+            if (null != festival) {
+                list.add(festival);
+            }
         }
         return list;
     }
@@ -700,10 +718,7 @@ public class Solar {
         int m = this.month;
         double d = this.day + ((this.second * 1D / 60 + this.minute) / 60 + this.hour) / 24;
         int n = 0;
-        boolean g = false;
-        if (y * 372 + m * 31 + (int) d >= 588829) {
-            g = true;
-        }
+        boolean g = y * 372 + m * 31 + (int) d >= 588829;
         if (m <= 2) {
             m += 12;
             y--;
@@ -835,6 +850,10 @@ public class Solar {
      */
     public Calendar getCalendar() {
         return calendar;
+    }
+
+    public String toYmd() {
+        return String.format("%04d-%02d-%02d", year, month, day);
     }
 
     /**

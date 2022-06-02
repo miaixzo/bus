@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Httpv;
 import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.Results;
@@ -41,7 +41,6 @@ import java.util.concurrent.CountDownLatch;
  * 同步 Http 请求任务
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SyncHttp extends CoverHttp<SyncHttp> {

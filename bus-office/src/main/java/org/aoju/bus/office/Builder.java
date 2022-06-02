@@ -28,9 +28,9 @@ package org.aoju.bus.office;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XServiceInfo;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Platform;
@@ -50,7 +50,6 @@ import java.util.stream.Stream;
  * 为office提供辅助功能.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class Builder {

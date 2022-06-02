@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.provider;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.office.metric.TemporaryFileMaker;
@@ -40,7 +40,6 @@ import java.util.Optional;
  * 当转换过程不再需要源文件时，提供应用行为的接口.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SourceFromInputStreamProvider extends AbstractSourceProvider

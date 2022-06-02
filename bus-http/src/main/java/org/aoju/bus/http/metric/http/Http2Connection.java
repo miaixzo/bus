@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.exception.RevisedException;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.BufferSource;
@@ -32,7 +33,6 @@ import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.RevisedException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Headers;
@@ -53,7 +53,6 @@ import java.util.concurrent.*;
  * 到远程对等点的套接字连接。连接主机可以发送和接收数据流.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class Http2Connection implements Closeable {

@@ -46,7 +46,6 @@ import java.util.concurrent.TimeoutException;
  * behavior.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe
@@ -90,7 +89,7 @@ public class WmiQueryHandler {
         } catch (NoSuchMethodException | SecurityException e) {
             Logger.error("Failed to find or access a no-arg constructor for {}", customClass);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+                 | InvocationTargetException e) {
             Logger.error("Failed to create a new instance of {}", customClass);
         }
         return null;

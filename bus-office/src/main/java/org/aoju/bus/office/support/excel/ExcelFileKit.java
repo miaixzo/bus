@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.apache.poi.poifs.filesystem.FileMagic;
 
 import java.io.File;
@@ -36,7 +36,6 @@ import java.io.InputStream;
  * Excel文件工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ExcelFileKit {

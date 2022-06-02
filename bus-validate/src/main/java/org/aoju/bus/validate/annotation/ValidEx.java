@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.annotation;
 
-import org.aoju.bus.core.lang.exception.ValidateException;
+import org.aoju.bus.core.exception.ValidateException;
 
 import java.lang.annotation.*;
 
@@ -43,7 +43,6 @@ import java.lang.annotation.*;
  * </P>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Documented

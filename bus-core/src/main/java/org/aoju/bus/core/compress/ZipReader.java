@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -47,7 +47,6 @@ import java.util.zip.ZipInputStream;
  * Zip文件或流读取器，一般用于Zip文件解压
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ZipReader implements Closeable {

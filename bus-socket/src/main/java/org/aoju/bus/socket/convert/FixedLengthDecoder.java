@@ -33,7 +33,6 @@ import java.nio.ByteBuffer;
  * 指定长度的解码器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FixedLengthDecoder implements SocketDecoder {

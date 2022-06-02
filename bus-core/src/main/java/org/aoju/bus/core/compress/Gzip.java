@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.Closeable;
@@ -40,7 +40,6 @@ import java.util.zip.GZIPOutputStream;
  * gzip的基础是DEFLATE
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Gzip implements Closeable {

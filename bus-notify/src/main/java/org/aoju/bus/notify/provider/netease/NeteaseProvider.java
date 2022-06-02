@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.netease;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
@@ -43,15 +44,9 @@ import java.util.Map;
  * 网易云抽象类
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class NeteaseProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
-
-    /**
-     * 发送成功后返回code
-     */
-    private static final String SUCCESS_RESULT = "200";
 
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -87,8 +82,8 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
     protected HashMap<String, String> getPostHeader() {
         String curTime = String.valueOf((new Date()).getTime() / 1000L);
         HashMap<String, String> map = new HashMap<>();
-        map.put("AppKey", properties.getAppKey());
-        map.put("Nonce", properties.getAppNonce());
+        map.put("AppKey", context.getAppKey());
+        map.put("Nonce", context.getAppNonce());
         map.put("CurTime", curTime);
         map.put("CheckSum", getCheckSum(curTime));
         return map;
@@ -101,7 +96,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
         Logger.debug("netease result：{}", response);
         String code = JsonKit.getValue(response, "Code");
         return Message.builder()
-                .errcode(SUCCESS_RESULT.equals(code) ? Builder.ErrorCode.SUCCESS.getCode() : code)
+                .errcode(String.valueOf(Http.HTTP_OK).equals(code) ? Builder.ErrorCode.SUCCESS.getCode() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
     }
 
@@ -112,7 +107,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
      * @return 结果
      */
     private String getCheckSum(String curTime) {
-        return encode(properties.getAppSecret() + properties.getAppNonce() + curTime);
+        return encode(context.getAppSecret() + context.getAppNonce() + curTime);
     }
 
 }

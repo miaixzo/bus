@@ -26,7 +26,7 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.io.File;
@@ -36,6 +36,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -43,7 +44,6 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Scaner {
@@ -67,7 +67,7 @@ public class Scaner {
     /**
      * 过滤器
      */
-    private final Filter<Class<?>> classFilter;
+    private final Predicate<Class<?>> predicate;
     /**
      * 编码
      */
@@ -98,26 +98,26 @@ public class Scaner {
      * 构造,默认UTF-8编码
      *
      * @param packageName 包名,所有包传入""或者null
-     * @param classFilter 过滤器,无需传入null
+     * @param predicate   过滤器,无需传入null
      */
-    public Scaner(String packageName, Filter<Class<?>> classFilter) {
-        this(packageName, classFilter, Charset.UTF_8);
+    public Scaner(String packageName, Predicate<Class<?>> predicate) {
+        this(packageName, predicate, Charset.UTF_8);
     }
 
     /**
      * 构造
      *
      * @param packageName 包名,所有包传入""或者null
-     * @param classFilter 过滤器,无需传入null
+     * @param predicate   过滤器,无需传入null
      * @param charset     编码
      */
-    public Scaner(String packageName, Filter<Class<?>> classFilter, java.nio.charset.Charset charset) {
+    public Scaner(String packageName, Predicate<Class<?>> predicate, java.nio.charset.Charset charset) {
         packageName = StringKit.nullToEmpty(packageName);
         this.packageName = packageName;
         this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
         this.packageDirName = packageName.replace(Symbol.C_DOT, File.separatorChar);
         this.packagePath = packageName.replace(Symbol.C_DOT, Symbol.C_SLASH);
-        this.classFilter = classFilter;
+        this.predicate = predicate;
         this.charset = charset;
     }
 
@@ -140,7 +140,7 @@ public class Scaner {
      * @param classFilter class过滤器，过滤掉不需要的class
      * @return 类集合
      */
-    public static Set<Class<?>> scanAllPackage(String packageName, Filter<Class<?>> classFilter) {
+    public static Set<Class<?>> scanAllPackage(String packageName, Predicate<Class<?>> classFilter) {
         return new Scaner(packageName, classFilter).scan(true);
     }
 
@@ -169,11 +169,11 @@ public class Scaner {
      * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
      *
      * @param packageName 包路径 com | com. | com.abs | com.abs.
-     * @param classFilter class过滤器,过滤掉不需要的class
+     * @param predicate   class过滤器,过滤掉不需要的class
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackage(String packageName, Filter<Class<?>> classFilter) {
-        return new Scaner(packageName, classFilter).scan();
+    public static Set<Class<?>> scanPackage(String packageName, Predicate<Class<?>> predicate) {
+        return new Scaner(packageName, predicate).scan();
     }
 
     /**
@@ -385,8 +385,8 @@ public class Scaner {
      */
     private void addIfAccept(Class<?> clazz) {
         if (null != clazz) {
-            Filter<Class<?>> classFilter = this.classFilter;
-            if (null == classFilter || classFilter.accept(clazz)) {
+            Predicate<Class<?>> classFilter = this.predicate;
+            if (null == classFilter || classFilter.test(clazz)) {
                 this.classes.add(clazz);
             }
         }

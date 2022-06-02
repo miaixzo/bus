@@ -48,7 +48,6 @@ import java.util.function.BiPredicate;
  * 3、忽略的属性列表，设置一个属性列表，不拷贝这些属性值
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CopyOptions implements Serializable {
@@ -85,6 +84,11 @@ public class CopyOptions implements Serializable {
      */
     protected boolean override = true;
     /**
+     * 自定义类型转换器，默认使用全局万能转换器转换
+     */
+    protected TypeConverter converter = (type, value) ->
+            Convert.convertWithCheck(type, value, null, ignoreError);
+    /**
      * 属性过滤器，断言通过的属性才会被复制
      * 断言参数中Field为源对象的字段对象,如果源对象为Map，使用目标对象，Object为源对象的对应值
      */
@@ -94,11 +98,6 @@ public class CopyOptions implements Serializable {
      * 规则为，{@link Editor#edit(Object)}属性为源对象的字段名称或key，返回值为目标对象的字段名称或key
      */
     private Editor<String> fieldNameEditor;
-    /**
-     * 自定义类型转换器，默认使用全局万能转换器转换
-     */
-    protected TypeConverter converter = (type, value) ->
-            Convert.convertWithCheck(type, value, null, ignoreError);
 
     /**
      * 构造拷贝选项

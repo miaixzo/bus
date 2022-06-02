@@ -43,7 +43,6 @@ import org.aoju.bus.core.toolkit.StringKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NumberFormatter {
@@ -615,7 +614,7 @@ public class NumberFormatter {
         int index = -1;
         double res = value;
         while (res > 10 && (false == isTwo || index < 1)) {
-            if (res > 1000) {
+            if (res >= 1000) {
                 res = res / 1000;
                 index++;
             }

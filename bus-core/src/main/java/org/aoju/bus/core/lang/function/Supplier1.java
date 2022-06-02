@@ -33,7 +33,6 @@ import java.util.function.Supplier;
  * @param <T>  目标   类型
  * @param <P1> 参数一 类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @FunctionalInterface

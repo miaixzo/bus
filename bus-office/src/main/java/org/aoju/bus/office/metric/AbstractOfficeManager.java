@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -39,7 +39,6 @@ import java.util.concurrent.atomic.AtomicLong;
  * 所有{@link OfficeManager}的基类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractOfficeManager implements OfficeManager, TemporaryFileMaker {

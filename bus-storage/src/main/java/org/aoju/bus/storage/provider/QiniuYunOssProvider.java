@@ -40,8 +40,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.File;
 import java.io.InputStream;
@@ -53,7 +53,6 @@ import java.nio.file.Path;
  * 存储服务-七牛
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class QiniuYunOssProvider extends AbstractProvider {
@@ -88,6 +87,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
         try {
             String encodedFileName = URLEncoder.encode(fileKey, Charset.DEFAULT_UTF_8);
             String format = String.format("%s/%s", path, encodedFileName);
+            // FileKit.newFile(format);
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
@@ -119,14 +119,6 @@ public class QiniuYunOssProvider extends AbstractProvider {
 
     @Override
     public Message download(String fileName, File file) {
-        return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
-                .build();
-    }
-
-    @Override
-    public Message list() {
         return Message.builder()
                 .errcode(Builder.ErrorCode.FAILURE.getCode())
                 .errmsg(Builder.ErrorCode.FAILURE.getMsg())
@@ -168,7 +160,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(Attachs.builder()
+                    .data(Property.builder()
                             .name(fileName)
                             .size(StringKit.toString(response.body().length))
                             .path(response.url()))
@@ -196,7 +188,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(Attachs.builder()
+                    .data(Property.builder()
                             .size(StringKit.toString(response.body().length))
                             .name(fileName)
                             .path(response.url()))

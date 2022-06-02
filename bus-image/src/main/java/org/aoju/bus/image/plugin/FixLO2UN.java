@@ -39,7 +39,6 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FixLO2UN extends SimpleFileVisitor<Path> {

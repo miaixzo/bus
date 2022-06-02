@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.builtin.Multiframe;
@@ -39,7 +39,6 @@ import java.text.DecimalFormat;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Emf2sf {

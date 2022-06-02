@@ -26,8 +26,8 @@
 package org.aoju.bus.core.beans;
 
 import org.aoju.bus.core.clone.Cloning;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
@@ -40,7 +40,6 @@ import java.util.Map;
  * 支持Map和普通Bean
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DynamicBean extends Cloning<DynamicBean> implements Serializable {

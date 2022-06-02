@@ -36,7 +36,6 @@ import java.lang.reflect.Method;
  * 该类有助于将现有类调整为它没有实现的接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DuckInvoker implements Invoker {

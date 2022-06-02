@@ -37,7 +37,6 @@ import java.util.Comparator;
  * Translates codepoints to their XML numeric entity escaped value.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NumericEscaper extends CodePointTranslator {

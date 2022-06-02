@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.validate.Context;
@@ -39,7 +39,6 @@ import java.util.Objects;
  * int enum 校验
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class InEnumStrategy implements Matcher<Object, InEnum> {

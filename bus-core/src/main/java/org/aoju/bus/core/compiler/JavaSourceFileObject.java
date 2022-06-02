@@ -19,7 +19,6 @@ import java.nio.charset.Charset;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JavaSourceFileObject extends SimpleJavaFileObject {

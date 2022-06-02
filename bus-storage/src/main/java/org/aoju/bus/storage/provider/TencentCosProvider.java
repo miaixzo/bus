@@ -38,8 +38,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -51,7 +51,6 @@ import java.nio.file.Path;
  * 存储服务-腾讯云
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TencentCosProvider extends AbstractProvider {
@@ -102,15 +101,7 @@ public class TencentCosProvider extends AbstractProvider {
                 .errmsg(Builder.ErrorCode.FAILURE.getMsg())
                 .build();
     }
-
-    @Override
-    public Message list() {
-        return Message.builder()
-                .errcode(Builder.ErrorCode.FAILURE.getCode())
-                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
-                .build();
-    }
-
+ 
     @Override
     public Message rename(String oldName, String newName) {
         return Message.builder()
@@ -151,7 +142,7 @@ public class TencentCosProvider extends AbstractProvider {
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                    .data(Attachs.builder()
+                    .data(Property.builder()
                             .path(this.context.getPrefix() + fileName)
                             .name(fileName))
                     .build();
@@ -185,7 +176,7 @@ public class TencentCosProvider extends AbstractProvider {
         return Message.builder()
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                .data(Attachs.builder()
+                .data(Property.builder()
                         .name(fileName)
                         .path(this.context.getPrefix() + fileName))
                 .build();
@@ -205,7 +196,7 @@ public class TencentCosProvider extends AbstractProvider {
         return Message.builder()
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
-                .data(Attachs.builder()
+                .data(Property.builder()
                         .name(fileName)
                         .path(this.context.getPrefix() + fileName))
                 .build();

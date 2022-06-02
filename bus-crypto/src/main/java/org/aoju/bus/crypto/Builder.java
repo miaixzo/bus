@@ -26,10 +26,10 @@
 package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.io.streams.FastByteOutputStream;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.CryptoException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.asymmetric.RSA;
 import org.aoju.bus.crypto.asymmetric.SM2;
@@ -37,8 +37,7 @@ import org.aoju.bus.crypto.asymmetric.Sign;
 import org.aoju.bus.crypto.digest.*;
 import org.aoju.bus.crypto.digest.mac.BCHMacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
-import org.aoju.bus.crypto.symmetric.Crypto;
-import org.aoju.bus.crypto.symmetric.SM4;
+import org.aoju.bus.crypto.symmetric.*;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.gm.GMNamedCurves;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -97,7 +96,6 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Builder {
@@ -482,7 +480,7 @@ public class Builder {
      * 计算sha256摘要值，使用UTF-8编码
      *
      * @param data 被摘要数据
-     * @return MD5摘要
+     * @return SHA-256摘要
      */
     public static byte[] sha256(String data) {
         return sha256(data, Charset.DEFAULT_UTF_8);
@@ -743,66 +741,6 @@ public class Builder {
     }
 
     /**
-     * 创建签名算法对象
-     * 生成新的私钥公钥对
-     *
-     * @param algorithm 签名算法
-     * @return {@link Sign}
-     */
-    public static Sign sign(Algorithm algorithm) {
-        return new Sign(algorithm);
-    }
-
-    /**
-     * 创建签名算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm  签名算法
-     * @param privateKey 私钥Base64
-     * @param publicKey  公钥Base64
-     * @return {@link Sign}
-     */
-    public static Sign sign(Algorithm algorithm, String privateKey, String publicKey) {
-        return new Sign(algorithm, privateKey, publicKey);
-    }
-
-    /**
-     * 创建Sign算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm  算法枚举
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     * @return {@link Sign}
-     */
-    public static Sign sign(Algorithm algorithm, byte[] privateKey, byte[] publicKey) {
-        return new Sign(algorithm, privateKey, publicKey);
-    }
-
-    /**
-     * 新建摘要器
-     *
-     * @param algorithm 签名算法
-     * @return Digester
-     */
-    public static Digester digester(Algorithm algorithm) {
-        return new Digester(algorithm);
-    }
-
-    /**
-     * 新建摘要器
-     *
-     * @param algorithm 签名算法
-     * @return Digester
-     */
-    public static Digester digester(String algorithm) {
-        return new Digester(algorithm);
-    }
-
-
-    /**
      * 创建SM2算法对象
      * 生成新的私钥公钥对
      *
@@ -946,6 +884,264 @@ public class Builder {
     public static SM4 sm4(byte[] key) {
         return new SM4(key);
     }
+
+    /**
+     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY
+     * 例：
+     *
+     * <pre>
+     * AES加密：aes().encrypt(data)
+     * AES解密：aes().decrypt(data)
+     * </pre>
+     *
+     * @return {@link AES}
+     */
+    public static AES aes() {
+        return new AES();
+    }
+
+    /**
+     * AES加密
+     * 例：
+     *
+     * <pre>
+     * AES加密：aes(key).encrypt(data)
+     * AES解密：aes(key).decrypt(data)
+     * </pre>
+     *
+     * @param key 密钥
+     * @return {@link Crypto}
+     */
+    public static AES aes(byte[] key) {
+        return new AES(key);
+    }
+
+    /**
+     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY
+     * 例：
+     *
+     * <pre>
+     * DES加密：des().encrypt(data)
+     * DES解密：des().decrypt(data)
+     * </pre>
+     *
+     * @return {@link DES}
+     */
+    public static DES des() {
+        return new DES();
+    }
+
+    /**
+     * DES加密
+     * 例：
+     *
+     * <pre>
+     * DES加密：des(key).encrypt(data)
+     * DES解密：des(key).decrypt(data)
+     * </pre>
+     *
+     * @param key 密钥
+     * @return {@link DES}
+     */
+    public static DES des(byte[] key) {
+        return new DES(key);
+    }
+
+    /**
+     * DESede加密（又名3DES、TripleDES），生成随机KEY。注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY
+     * Java中默认实现为：DESede/ECB/PKCS5Padding
+     * 例：
+     *
+     * <pre>
+     * DESede加密：desede().encrypt(data)
+     * DESede解密：desede().decrypt(data)
+     * </pre>
+     *
+     * @return {@link DESede}
+     */
+    public static DESede desede() {
+        return new DESede();
+    }
+
+    /**
+     * DESede加密（又名3DES、TripleDES）
+     * Java中默认实现为：DESede/ECB/PKCS5Padding
+     * 例：
+     *
+     * <pre>
+     * DESede加密：desede(key).encrypt(data)
+     * DESede解密：desede(key).decrypt(data)
+     * </pre>
+     *
+     * @param key 密钥
+     * @return {@link DESede}
+     */
+    public static DESede desede(byte[] key) {
+        return new DESede(key);
+    }
+
+    /**
+     * 创建签名算法对象
+     * 生成新的私钥公钥对
+     *
+     * @param algorithm 签名算法
+     * @return {@link Sign}
+     */
+    public static Sign sign(Algorithm algorithm) {
+        return new Sign(algorithm);
+    }
+
+    /**
+     * 创建签名算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  签名算法
+     * @param privateKey 私钥Base64
+     * @param publicKey  公钥Base64
+     * @return {@link Sign}
+     */
+    public static Sign sign(Algorithm algorithm, String privateKey, String publicKey) {
+        return new Sign(algorithm, privateKey, publicKey);
+    }
+
+    /**
+     * 创建Sign算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  算法枚举
+     * @param privateKey 私钥
+     * @param publicKey  公钥
+     * @return {@link Sign}
+     */
+    public static Sign sign(Algorithm algorithm, byte[] privateKey, byte[] publicKey) {
+        return new Sign(algorithm, privateKey, publicKey);
+    }
+
+    /**
+     * 计算SHA-512摘要值
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要
+     */
+    public static byte[] sha512(final byte[] data) {
+        return new Digester(Algorithm.SHA512).digest(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-512摘要
+     * @since 3.0.8
+     */
+    public static byte[] sha512(final String data, final String charset) {
+        return new Digester(Algorithm.SHA512).digest(data, charset);
+    }
+
+    /**
+     * 计算sha512摘要值，使用UTF-8编码
+     *
+     * @param data 被摘要数据
+     * @return MD5摘要
+     */
+    public static byte[] sha512(final String data) {
+        return sha512(data, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算SHA-512摘要值
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要
+     */
+    public static byte[] sha512(final InputStream data) {
+        return new Digester(Algorithm.SHA512).digest(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值
+     *
+     * @param file 被摘要文件
+     * @return SHA-512摘要
+     */
+    public static byte[] sha512(final File file) {
+        return new Digester(Algorithm.SHA512).digest(file);
+    }
+
+    /**
+     * 计算SHA-1摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final byte[] data) {
+        return new Digester(Algorithm.SHA512).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param data    被摘要数据
+     * @param charset 编码
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final String data, final String charset) {
+        return new Digester(Algorithm.SHA512).digestHex(data, charset);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final String data) {
+        return sha512Hex(data, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param data 被摘要数据
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final InputStream data) {
+        return new Digester(Algorithm.SHA512).digestHex(data);
+    }
+
+    /**
+     * 计算SHA-512摘要值，并转为16进制字符串
+     *
+     * @param file 被摘要文件
+     * @return SHA-512摘要的16进制表示
+     */
+    public static String sha512Hex(final File file) {
+        return new Digester(Algorithm.SHA512).digestHex(file);
+    }
+
+    /**
+     * 新建摘要器
+     *
+     * @param algorithm 签名算法
+     * @return Digester
+     */
+    public static Digester digester(Algorithm algorithm) {
+        return new Digester(algorithm);
+    }
+
+    /**
+     * 新建摘要器
+     *
+     * @param algorithm 签名算法
+     * @return Digester
+     */
+    public static Digester digester(String algorithm) {
+        return new Digester(algorithm);
+    }
+
 
     /**
      * 数据加密

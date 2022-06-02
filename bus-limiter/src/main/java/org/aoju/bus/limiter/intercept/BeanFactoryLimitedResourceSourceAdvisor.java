@@ -33,7 +33,6 @@ import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
  * 实际的切面
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BeanFactoryLimitedResourceSourceAdvisor extends AbstractBeanFactoryPointcutAdvisor {

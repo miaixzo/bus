@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.date;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Almanac extends Converter {
@@ -5398,8 +5397,17 @@ public class Almanac extends Converter {
      *
      * @return 当前时间的标准形式字符串
      */
-    public static String today() {
+    public static String now() {
         return Formatter.format(date());
+    }
+
+    /**
+     * 当前日期，格式 yyyy-MM-dd
+     *
+     * @return 当前日期的标准形式字符串
+     */
+    public static String today() {
+        return formatDate(date());
     }
 
     /**

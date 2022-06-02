@@ -45,7 +45,6 @@ import java.util.Map;
  * 构造URL
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Setter

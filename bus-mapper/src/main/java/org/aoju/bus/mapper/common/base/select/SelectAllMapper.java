@@ -35,7 +35,6 @@ import java.util.List;
  * 查询所有记录
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @RegisterMapper

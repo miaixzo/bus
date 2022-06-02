@@ -27,8 +27,8 @@ package org.aoju.bus.image;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.image.metric.Connection;
@@ -50,7 +50,6 @@ import java.util.concurrent.ScheduledExecutorService;
  * 2. 设备服务进程
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @lombok.Builder

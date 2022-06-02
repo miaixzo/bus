@@ -49,7 +49,6 @@ import java.util.regex.Pattern;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CharsKit {
@@ -3253,6 +3252,28 @@ public class CharsKit {
 
         for (CharSequence suffix : prefixes) {
             if (startWith(text, suffix, false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 给定字符串是否以任何一个字符串结尾（忽略大小写）
+     * 给定字符串和数组为空都返回false
+     *
+     * @param text     给定字符串
+     * @param suffixes 需要检测的结尾字符串
+     * @return 给定字符串是否以任何一个字符串结尾
+     */
+    public static boolean startWithAnyIgnoreCase(final CharSequence text, final CharSequence... suffixes) {
+        if (isEmpty(text) || ArrayKit.isEmpty(suffixes)) {
+            return false;
+        }
+
+        for (final CharSequence suffix : suffixes) {
+            if (startWith(text, suffix, true)) {
                 return true;
             }
         }

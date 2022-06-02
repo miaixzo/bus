@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Weekend<T> extends Condition {

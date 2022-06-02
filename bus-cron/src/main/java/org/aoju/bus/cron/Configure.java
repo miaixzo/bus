@@ -31,7 +31,6 @@ import java.util.TimeZone;
  * 定时任务配置类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Configure {

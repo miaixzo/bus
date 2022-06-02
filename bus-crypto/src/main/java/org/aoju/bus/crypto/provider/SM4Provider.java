@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.provider;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Provider;
@@ -39,7 +39,6 @@ import org.aoju.bus.crypto.symmetric.SM4;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SM4Provider implements Provider {

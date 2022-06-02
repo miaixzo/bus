@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.extra.pinyin;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
@@ -39,7 +39,6 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 3. Pinyin4j
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PinyinKit {

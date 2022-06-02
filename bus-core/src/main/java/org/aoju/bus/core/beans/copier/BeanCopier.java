@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.copier.Copier;
 
 import java.io.Serializable;
@@ -43,7 +44,6 @@ import java.util.Map;
  *
  * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
@@ -61,6 +61,8 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param copyOptions 拷贝属性选项
      */
     public BeanCopier(Object source, T target, Type targetType, CopyOptions copyOptions) {
+        Assert.notNull(source, "Source bean must be not null!");
+        Assert.notNull(target, "Target bean must be not null!");
         Copier<T> copier;
         if (source instanceof Map) {
             if (target instanceof Map) {

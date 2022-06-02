@@ -14,7 +14,6 @@ import java.io.OutputStream;
  * Java 字节码文件对象，用于在内存中暂存class字节码，从而可以在ClassLoader中动态加载
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JavaClassFileObject extends SimpleJavaFileObject {

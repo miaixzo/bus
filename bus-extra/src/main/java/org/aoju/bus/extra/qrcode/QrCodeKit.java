@@ -29,10 +29,10 @@ import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.FileType;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ImageKit;
 
 import javax.imageio.ImageIO;
@@ -52,7 +52,6 @@ import java.util.Map;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class QrCodeKit {

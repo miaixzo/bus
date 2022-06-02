@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.extra.ftp;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.NetKit;
 import org.apache.ftpserver.ConnectionConfig;
 import org.apache.ftpserver.FtpServerFactory;
@@ -49,7 +49,6 @@ import java.util.List;
  * 基于 Apache FtpServer的服务端简单封装
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FtpServer {

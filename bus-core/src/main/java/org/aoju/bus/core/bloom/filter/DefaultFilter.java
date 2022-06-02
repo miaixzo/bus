@@ -31,7 +31,6 @@ import org.aoju.bus.core.toolkit.HashKit;
  * 默认Bloom过滤器，使用Java自带的Hash算法
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultFilter extends AbstractFilter {

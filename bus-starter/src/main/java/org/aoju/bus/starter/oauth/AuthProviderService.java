@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.oauth;
 
 import org.aoju.bus.cache.metric.ExtendCache;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -42,7 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 授权服务提供
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AuthProviderService {

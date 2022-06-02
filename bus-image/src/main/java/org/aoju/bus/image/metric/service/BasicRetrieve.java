@@ -45,7 +45,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BasicRetrieve<T extends Instance> implements Retrieve {

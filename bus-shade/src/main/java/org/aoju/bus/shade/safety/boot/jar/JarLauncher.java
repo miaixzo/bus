@@ -43,7 +43,6 @@ import java.util.jar.Manifest;
  * JAR包启动器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JarLauncher {

@@ -29,7 +29,6 @@ package org.aoju.bus.storage;
  * 平台类型
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum Registry {
@@ -51,6 +50,10 @@ public enum Registry {
      */
     JD,
     /**
+     * 本地 file
+     */
+    LOCAL,
+    /**
      * MINIO OSS
      */
     MINIO,
@@ -65,10 +68,6 @@ public enum Registry {
     /**
      * 又拍云 OSS
      */
-    UPYUN,
+    UPYUN
 
-    /**
-     * 本地 file
-     */
-    LOCAL
 }

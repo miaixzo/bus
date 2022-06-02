@@ -29,7 +29,6 @@ package org.aoju.bus.extra.ftp;
  * FTP连接模式
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum FtpMode {

@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
  * 服务器定时任务
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class QuickTimer implements Runnable {

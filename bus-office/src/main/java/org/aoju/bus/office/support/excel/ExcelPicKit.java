@@ -43,7 +43,6 @@ import java.util.Map;
  * Excel图片工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ExcelPicKit {

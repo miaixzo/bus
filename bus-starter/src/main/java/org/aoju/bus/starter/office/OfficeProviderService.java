@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.office;
 
 import lombok.RequiredArgsConstructor;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Provider;
 import org.aoju.bus.office.Registry;
@@ -38,7 +38,6 @@ import org.springframework.stereotype.Component;
  * 文档在线预览服务提供
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Component

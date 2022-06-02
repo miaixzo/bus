@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Types;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -51,7 +51,6 @@ import java.util.Map;
  * 设置相关系统参数信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Component

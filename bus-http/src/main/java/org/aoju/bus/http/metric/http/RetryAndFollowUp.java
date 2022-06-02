@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.exception.RelevantException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.exception.RelevantException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.RouteException;
@@ -56,7 +56,6 @@ import java.security.cert.CertificateException;
  * 如果调用被取消，它可能会抛出{@link IOException}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class RetryAndFollowUp implements Interceptor {

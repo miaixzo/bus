@@ -41,7 +41,6 @@ import java.time.Instant;
  * <p>参考：https://github.com/jchambers/java-otp</p>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TOTP extends HOTP {

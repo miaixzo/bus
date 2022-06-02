@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.LineIterator;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.io.copier.ChannelCopier;
 import org.aoju.bus.core.io.copier.ReaderWriterCopier;
@@ -38,7 +39,6 @@ import org.aoju.bus.core.io.streams.NullOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -61,7 +61,6 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class IoKit {

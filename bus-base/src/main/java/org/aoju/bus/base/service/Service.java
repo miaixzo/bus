@@ -28,7 +28,6 @@ package org.aoju.bus.base.service;
  * Service 接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Service {

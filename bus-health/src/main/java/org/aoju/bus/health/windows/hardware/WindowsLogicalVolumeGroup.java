@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.Closeable;
@@ -42,7 +42,6 @@ import java.util.zip.InflaterOutputStream;
  * Deflate是同时使用了LZ77算法与哈夫曼编码（Huffman Coding）的一个无损数据压缩算法
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Deflate implements Closeable {

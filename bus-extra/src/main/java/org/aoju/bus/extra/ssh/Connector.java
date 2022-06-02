@@ -29,7 +29,6 @@ package org.aoju.bus.extra.ssh;
  * 连接者对象,提供一些连接的基本信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Connector {

@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.math.Arrange;
 import org.aoju.bus.core.math.Combine;
 import org.aoju.bus.core.math.Formula;
@@ -52,7 +52,6 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MathKit {
@@ -658,7 +657,7 @@ public class MathKit {
         if (v1 instanceof BigDecimal && v2 instanceof BigDecimal) {
             return div((BigDecimal) v1, (BigDecimal) v2, scale, roundingMode);
         }
-        return div(v1.toString(), v2.toString(), scale, roundingMode);
+        return div(StringKit.toStringOrNull(v1), StringKit.toStringOrNull(v2), scale, roundingMode);
     }
 
     /**
@@ -1157,6 +1156,9 @@ public class MathKit {
      * @return 是否为整数
      */
     public static boolean isInteger(String s) {
+        if (StringKit.isBlank(s)) {
+            return false;
+        }
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -2330,8 +2332,18 @@ public class MathKit {
      * @throws NumberFormatException 包装了{@link ParseException}，当给定的数字字符串无法解析时抛出
      */
     public static Number parseNumber(String numberStr) throws NumberFormatException {
+        if (StringKit.startWithIgnoreCase(numberStr, "0x")) {
+            // 0x04表示16进制数
+            return Long.parseLong(numberStr.substring(2), 16);
+        }
+
         try {
-            return NumberFormat.getInstance().parse(numberStr);
+            final NumberFormat format = NumberFormat.getInstance();
+            if (format instanceof DecimalFormat) {
+                // 当字符串数字超出double的长度时，会导致截断，此处使用BigDecimal接收
+                ((DecimalFormat) format).setParseBigDecimal(true);
+            }
+            return format.parse(numberStr);
         } catch (ParseException e) {
             final NumberFormatException nfe = new NumberFormatException(e.getMessage());
             nfe.initCause(e);

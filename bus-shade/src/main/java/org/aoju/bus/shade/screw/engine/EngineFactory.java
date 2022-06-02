@@ -26,8 +26,8 @@
 package org.aoju.bus.shade.screw.engine;
 
 import lombok.Data;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
@@ -37,7 +37,6 @@ import java.lang.reflect.InvocationTargetException;
  * 生成构造工厂
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data
@@ -69,7 +68,7 @@ public class EngineFactory implements Serializable {
             //实例化
             return constructor.newInstance(engineConfig);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-                | InvocationTargetException e) {
+                 | InvocationTargetException e) {
             throw new InstrumentException(e);
         }
     }

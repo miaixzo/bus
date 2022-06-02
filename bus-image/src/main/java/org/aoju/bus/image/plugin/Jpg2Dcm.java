@@ -44,7 +44,6 @@ import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Jpg2Dcm {

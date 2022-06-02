@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Tag;
@@ -46,7 +46,6 @@ import java.util.HashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class IanSCU {

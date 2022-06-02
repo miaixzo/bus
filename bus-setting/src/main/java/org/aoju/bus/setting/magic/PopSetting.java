@@ -60,7 +60,6 @@ import java.util.function.Consumer;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PopSetting extends AbstractSetting implements Map<String, String> {

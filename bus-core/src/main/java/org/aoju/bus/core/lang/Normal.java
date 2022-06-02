@@ -34,7 +34,6 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Normal {
@@ -453,8 +452,14 @@ public class Normal {
      * 表示为真的字符串
      */
     public static final String[] TRUE_ARRAY = {
-            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确", "對",
-            "√"
+            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确", "對", "√"
+    };
+
+    /**
+     * 表示为假的字符串
+     */
+    public static final String[] FALSE_ARRAY = {
+            "false", "no", "n", "f", "0", "off", "否", "错", "假", "錯", "×"
     };
 
     /**

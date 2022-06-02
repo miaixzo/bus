@@ -35,7 +35,6 @@ import java.io.OutputStreamWriter;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Xml2HL7 {

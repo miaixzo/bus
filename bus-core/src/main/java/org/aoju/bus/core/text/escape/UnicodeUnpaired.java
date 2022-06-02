@@ -33,7 +33,6 @@ import java.io.Writer;
  * Helper subclass to CharSequenceTranslator to remove unpaired surrogates.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class UnicodeUnpaired extends CodePointTranslator {

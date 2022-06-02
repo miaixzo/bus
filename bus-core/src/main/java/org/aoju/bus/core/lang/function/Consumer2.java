@@ -31,7 +31,6 @@ package org.aoju.bus.core.lang.function;
  * @param <P1> 参数一类型
  * @param <P2> 参数二类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @FunctionalInterface

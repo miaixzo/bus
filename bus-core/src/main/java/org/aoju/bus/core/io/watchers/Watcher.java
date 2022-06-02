@@ -32,7 +32,6 @@ import java.nio.file.WatchEvent;
  * 观察者(监视器)
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Watcher {

@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
+import org.aoju.bus.core.exception.ConvertException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Types;
-import org.aoju.bus.core.lang.exception.ConvertException;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.HexKit;
@@ -48,7 +48,6 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Convert {

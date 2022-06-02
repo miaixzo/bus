@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.VersionException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.lang.exception.VersionException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.annotation.LogicDelete;
 import org.aoju.bus.mapper.annotation.Version;
@@ -40,7 +40,6 @@ import java.util.Set;
  * 拼常用SQL的工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SqlBuilder {

@@ -35,7 +35,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Core 跨域相关配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

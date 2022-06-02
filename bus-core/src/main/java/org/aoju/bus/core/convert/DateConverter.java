@@ -26,7 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -38,7 +38,6 @@ import java.util.Date;
  * 日期转换器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DateConverter extends AbstractConverter<Date> {

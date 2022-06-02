@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.copier;
 
-import org.aoju.bus.core.lang.Filter;
+import java.util.function.Predicate;
 
 /**
  * 复制器抽象类
@@ -34,7 +34,6 @@ import org.aoju.bus.core.lang.Filter;
  * @param <T> 拷贝的对象
  * @param <C> 本类的类型 用于set方法返回本对象,方便流式编程
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<T> {
@@ -50,7 +49,7 @@ public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<
     /**
      * 拷贝过滤器,可以过滤掉不需要拷贝的源
      */
-    protected Filter<T> copyFilter;
+    protected Predicate<T> predicate;
 
     /**
      * 获取源
@@ -97,18 +96,18 @@ public abstract class Duplicate<T, C extends Duplicate<T, C>> implements Copier<
      *
      * @return 过滤器
      */
-    public Filter<T> getCopyFilter() {
-        return copyFilter;
+    public Predicate<T> getPredicate() {
+        return predicate;
     }
 
     /**
      * 设置过滤器
      *
-     * @param copyFilter 过滤器
+     * @param predicate 过滤器
      * @return this
      */
-    public C setCopyFilter(Filter<T> copyFilter) {
-        this.copyFilter = copyFilter;
+    public C setPredicate(Predicate<T> predicate) {
+        this.predicate = predicate;
         return (C) this;
     }
 

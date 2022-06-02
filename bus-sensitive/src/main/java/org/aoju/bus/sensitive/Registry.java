@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.sensitive.annotation.Strategy;
@@ -41,7 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 注解和实现之间映射
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class Registry {

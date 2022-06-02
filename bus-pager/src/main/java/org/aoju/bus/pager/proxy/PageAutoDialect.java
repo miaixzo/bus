@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.pager.proxy;
 
+import org.aoju.bus.core.exception.PageException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.PageException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.AutoDialect;
 import org.aoju.bus.pager.Dialect;
@@ -46,7 +46,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * 基础方言信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PageAutoDialect {

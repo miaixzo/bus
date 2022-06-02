@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
@@ -36,7 +36,6 @@ import java.io.InputStream;
  *
  * @param <T> 子对象类型,用于标记返回值this
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface ExcelSaxReader<T> {

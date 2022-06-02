@@ -37,7 +37,6 @@ import java.util.function.Supplier;
  * Ini file's Section
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class IniSectionImpl extends AbstractElement implements IniSection {

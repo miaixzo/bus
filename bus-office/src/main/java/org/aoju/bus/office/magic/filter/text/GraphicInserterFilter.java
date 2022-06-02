@@ -36,7 +36,7 @@ import com.sun.star.text.XTextContent;
 import com.sun.star.text.XTextCursor;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.XComponentContext;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.bridge.LocalOfficeContextAware;
@@ -60,7 +60,6 @@ import java.util.UUID;
  * 此筛选器用于将图形插入到文档中.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class GraphicInserterFilter extends AbstractTextContentInserterFilter {

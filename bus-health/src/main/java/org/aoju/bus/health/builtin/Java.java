@@ -36,7 +36,6 @@ import java.io.Serializable;
  * 代表Java Implementation的信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Java implements Serializable {
@@ -49,7 +48,6 @@ public class Java implements Serializable {
     private final String JAVA_VENDOR = Platform.get(System.VENDOR, false);
     private final String JAVA_VENDOR_URL = Platform.get(System.VENDOR_URL, false);
 
-    // 1.1--1.3能否识别?
     private final boolean IS_JAVA_1_1 = getJavaVersionMatches("1.1");
     private final boolean IS_JAVA_1_2 = getJavaVersionMatches("1.2");
     private final boolean IS_JAVA_1_3 = getJavaVersionMatches("1.3");
@@ -58,6 +56,16 @@ public class Java implements Serializable {
     private final boolean IS_JAVA_1_6 = getJavaVersionMatches("1.6");
     private final boolean IS_JAVA_1_7 = getJavaVersionMatches("1.7");
     private final boolean IS_JAVA_1_8 = getJavaVersionMatches("1.8");
+    private final boolean IS_JAVA_9 = getJavaVersionMatches("9");
+    private final boolean IS_JAVA_10 = getJavaVersionMatches("10");
+    private final boolean IS_JAVA_11 = getJavaVersionMatches("11");
+    private final boolean IS_JAVA_12 = getJavaVersionMatches("12");
+    private final boolean IS_JAVA_13 = getJavaVersionMatches("13");
+    private final boolean IS_JAVA_14 = getJavaVersionMatches("14");
+    private final boolean IS_JAVA_15 = getJavaVersionMatches("15");
+    private final boolean IS_JAVA_16 = getJavaVersionMatches("16");
+    private final boolean IS_JAVA_17 = getJavaVersionMatches("17");
+    private final boolean IS_JAVA_18 = getJavaVersionMatches("18");
 
     /**
      * 取得当前Java impl.的版本(取自系统属性：<code>java.version</code>)
@@ -149,8 +157,6 @@ public class Java implements Serializable {
 
     /**
      * 取得当前Java impl.的厂商(取自系统属性：<code>java.vendor</code>)
-     *
-     * <p>
      * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
@@ -161,8 +167,6 @@ public class Java implements Serializable {
 
     /**
      * 取得当前Java impl.的厂商网站的URL(取自系统属性：<code>java.vendor.url</code>)
-     *
-     * <p>
      * 例如Sun JDK 1.4.2：<code>"http://java.sun.com/"</code>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
@@ -173,98 +177,182 @@ public class Java implements Serializable {
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为1.1, 则返回<code>true</code>
      */
-    public final boolean isJava11() {
+    public final boolean isJava1_1() {
         return IS_JAVA_1_1;
     }
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为1.2, 则返回<code>true</code>
      */
-    public final boolean isJava12() {
+    public final boolean isJava1_2() {
         return IS_JAVA_1_2;
     }
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为1.3, 则返回<code>true</code>
      */
-    public final boolean isJava13() {
+    public final boolean isJava1_3() {
         return IS_JAVA_1_3;
     }
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为1.4, 则返回<code>true</code>
      */
-    public final boolean isJava14() {
+    public final boolean isJava1_4() {
         return IS_JAVA_1_4;
     }
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为1.5, 则返回<code>true</code>
      */
-    public final boolean isJava15() {
+    public final boolean isJava1_5() {
         return IS_JAVA_1_5;
     }
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为1.6, 则返回<code>true</code>
      */
-    public final boolean isJava16() {
+    public final boolean isJava1_6() {
         return IS_JAVA_1_6;
     }
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为1.7, 则返回<code>true</code>
      */
-    public final boolean isJava17() {
+    public final boolean isJava1_7() {
         return IS_JAVA_1_7;
     }
 
     /**
      * 判断当前Java的版本
-     *
-     * <p>
      * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为8, 则返回<code>true</code>
      */
-    public final boolean isJava18() {
+    public final boolean isJava1_8() {
         return IS_JAVA_1_8;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为9，则返回<code>true</code>
+     */
+    public final boolean isJava9() {
+        return IS_JAVA_9;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为10，则返回<code>true</code>
+     */
+    public final boolean isJava10() {
+        return IS_JAVA_10;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为11，则返回<code>true</code>
+     */
+    public final boolean isJava11() {
+        return IS_JAVA_11;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为12，则返回<code>true</code>
+     */
+    public final boolean isJava12() {
+        return IS_JAVA_12;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为13，则返回<code>true</code>
+     */
+    public final boolean isJava13() {
+        return IS_JAVA_13;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为14，则返回<code>true</code>
+     */
+    public final boolean isJava14() {
+        return IS_JAVA_14;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为15，则返回<code>true</code>
+     */
+    public final boolean isJava15() {
+        return IS_JAVA_15;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为16，则返回<code>true</code>
+     */
+    public final boolean isJava16() {
+        return IS_JAVA_16;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为17，则返回<code>true</code>
+     */
+    public final boolean isJava17() {
+        return IS_JAVA_17;
+    }
+
+    /**
+     * 判断当前Java的版本
+     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     *
+     * @return 如果当前Java版本为18，则返回<code>true</code>
+     */
+    public final boolean isJava18() {
+        return IS_JAVA_18;
     }
 
     /**

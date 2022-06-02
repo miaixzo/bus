@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compare;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.function.Function;
@@ -35,7 +35,6 @@ import java.util.function.Function;
  *
  * @param <T> 被比较的对象
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FuncCompare<T> extends NullCompare<T> {

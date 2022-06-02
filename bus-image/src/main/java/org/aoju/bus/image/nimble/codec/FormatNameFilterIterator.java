@@ -31,7 +31,6 @@ import java.util.NoSuchElementException;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  * @since Jul 2015
  */

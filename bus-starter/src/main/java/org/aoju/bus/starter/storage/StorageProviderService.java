@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.storage;
 
 import org.aoju.bus.cache.metric.ExtendCache;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -42,7 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 存储服务提供
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class StorageProviderService {
@@ -96,7 +95,7 @@ public class StorageProviderService {
         } else if (Registry.TENCENT.equals(type)) {
             return new TencentCosProvider(context);
         } else if (Registry.UPYUN.equals(type)) {
-            return new UpaiYunOssProvider(context);
+            return new UpyunOssProvider(context);
         } else if (Registry.LOCAL.equals(type)) {
             return new LocalFileProvider(context);
         }

@@ -33,7 +33,6 @@ import java.io.IOException;
  * 将调用转发给另一个调用的{@link Sink}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class DelegateSink implements Sink {

@@ -1,6 +1,6 @@
 package org.aoju.bus.starter.mapper;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.mapper.builder.MapperBuilder;

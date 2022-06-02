@@ -44,7 +44,6 @@ import java.util.*;
  * 针对 PageContext 的实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractPaging extends AbstractDialect {

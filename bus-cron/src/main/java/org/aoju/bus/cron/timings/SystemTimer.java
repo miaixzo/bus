@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
  * 系统计时器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SystemTimer {

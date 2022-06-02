@@ -3,11 +3,11 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.exception.AuthorizedException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -93,7 +93,7 @@ public class SlackProvider extends AbstractProvider {
             if (object.containsKey("response_metadata")) {
                 JSONArray array = object.getJSONObject("response_metadata").getJSONArray("messages");
                 if (null != array && array.size() > 0) {
-                    errorMsg += "; " + String.join(Symbol.COMMA, array.toArray(new String[0]));
+                    errorMsg += "; " + String.join(",", (CharSequence[]) array.toArray(new String[0]));
                 }
             }
 

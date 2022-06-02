@@ -32,7 +32,6 @@ import java.util.concurrent.locks.ReadWriteLock;
  * 无锁的读写锁实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class NoReadWriteLock implements ReadWriteLock {

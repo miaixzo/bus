@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.internal.hl7.HL7Message;
@@ -39,7 +39,6 @@ import java.security.GeneralSecurityException;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class HL7Pix extends Device {

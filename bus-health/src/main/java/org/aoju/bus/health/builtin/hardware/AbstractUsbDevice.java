@@ -35,7 +35,6 @@ import java.util.List;
  * A USB device
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

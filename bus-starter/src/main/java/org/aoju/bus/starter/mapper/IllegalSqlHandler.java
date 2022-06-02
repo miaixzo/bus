@@ -42,8 +42,8 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.logger.Logger;
@@ -83,7 +83,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>7.where条件使用了 使用子查询</p>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})

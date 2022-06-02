@@ -35,7 +35,6 @@ import org.aoju.bus.shade.screw.Config;
  * 抽象执行
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractExecute implements Execute {

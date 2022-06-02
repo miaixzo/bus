@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.image;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.image.element.AbstractElement;
 import org.aoju.bus.core.image.element.ImageElement;
 import org.aoju.bus.core.image.element.RectangleElement;
@@ -35,7 +36,6 @@ import org.aoju.bus.core.image.painter.TextPainter;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Graphics;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
 import javax.imageio.ImageIO;
@@ -59,7 +59,6 @@ import java.util.List;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Images implements Serializable {

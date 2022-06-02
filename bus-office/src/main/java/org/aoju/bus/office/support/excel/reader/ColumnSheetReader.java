@@ -35,7 +35,6 @@ import java.util.List;
  * 读取单独一列
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {

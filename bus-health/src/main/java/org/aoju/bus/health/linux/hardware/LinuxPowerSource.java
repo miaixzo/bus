@@ -35,17 +35,19 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
+import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
+import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe
@@ -69,6 +71,10 @@ public final class LinuxPowerSource extends AbstractPowerSource {
      * @return An array of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
+        if (!LinuxOperatingSystem.HAS_UDEV) {
+            Logger.warn("Power Source information requires libudev, which is not present.");
+            return Collections.emptyList();
+        }
         String psName;
         String psDeviceName;
         double psRemainingCapacityPercent = -1d;

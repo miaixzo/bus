@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.metric.OfficeManager;
 
@@ -33,7 +33,6 @@ import org.aoju.bus.office.metric.OfficeManager;
  * 表示由{@link OfficeManager}执行的任务.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface MadeInOffice {

@@ -41,7 +41,6 @@ import java.util.*;
  * @param <C> 列类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
@@ -147,6 +146,18 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     public Set<C> columnKeySet() {
         Set<C> result = columnKeySet;
         return (result == null) ? columnKeySet = new ColumnKeySet() : result;
+    }
+
+    @Override
+    public List<C> columnKeys() {
+        final Collection<Map<C, V>> values = this.raw.values();
+        final List<C> result = new ArrayList<>(values.size() * 16);
+        for (Map<C, V> map : values) {
+            map.forEach((key, value) -> {
+                result.add(key);
+            });
+        }
+        return result;
     }
 
     @Override

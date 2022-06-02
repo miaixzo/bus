@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
@@ -39,8 +39,8 @@ import org.aoju.bus.notify.provider.AbstractProvider;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -52,7 +52,6 @@ import java.util.TreeMap;
  * 阿里云抽象类提供者
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 public class AliyunProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
@@ -62,8 +61,8 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
      */
     private static final String SUCCESS_RESULT = "OK";
 
-    public AliyunProvider(K properties) {
-        super(properties);
+    public AliyunProvider(K context) {
+        super(context);
     }
 
     /**
@@ -73,14 +72,10 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
      * @return 编码值
      */
     protected String specialUrlEncode(String value) {
-        try {
-            return URLEncoder.encode(value, Charset.DEFAULT_UTF_8)
-                    .replace(Symbol.PLUS, "%20")
-                    .replace(Symbol.STAR, "%2A")
-                    .replace("%7E", Symbol.TILDE);
-        } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException("Aliyun specialUrlEncode error");
-        }
+        return URLEncoder.encode(value, StandardCharsets.UTF_8)
+                .replace(Symbol.PLUS, "%20")
+                .replace(Symbol.STAR, "%2A")
+                .replace("%7E", Symbol.TILDE);
     }
 
     /**
@@ -120,7 +115,7 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
     protected String sign(String stringToSign) {
         try {
             Mac mac = Mac.getInstance(Algorithm.HMACSHA1.getValue());
-            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue()));
+            mac.init(new SecretKeySpec((context.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue()));
             byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {

@@ -26,11 +26,11 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.function.Func1;
 import org.aoju.bus.core.lang.mutable.Mutable;
 import org.aoju.bus.core.lang.mutable.MutableObject;
@@ -48,7 +48,6 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PatternKit {

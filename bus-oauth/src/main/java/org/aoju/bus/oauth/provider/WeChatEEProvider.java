@@ -27,8 +27,8 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.exception.AuthorizedException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
@@ -42,7 +42,6 @@ import org.aoju.bus.oauth.magic.Property;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class WeChatEEProvider extends AbstractProvider {

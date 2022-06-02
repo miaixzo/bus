@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -43,7 +43,6 @@ import java.util.stream.StreamSupport;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CsvReader implements Iterable<CsvRow>, Closeable {

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.streams;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +50,6 @@ import java.io.PushbackInputStream;
  * </code>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BOMInputStream extends InputStream {

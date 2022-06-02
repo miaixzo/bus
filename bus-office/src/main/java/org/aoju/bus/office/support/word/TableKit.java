@@ -43,7 +43,6 @@ import java.util.Map;
  * Word中表格相关工具
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TableKit {

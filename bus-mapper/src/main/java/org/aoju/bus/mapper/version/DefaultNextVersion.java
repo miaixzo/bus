@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.version;
 
-import org.aoju.bus.core.lang.exception.VersionException;
+import org.aoju.bus.core.exception.VersionException;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -36,7 +36,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * 默认版本实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DefaultNextVersion implements NextVersion {

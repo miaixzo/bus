@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.resolve.DefaultEntityResolve;
 import org.aoju.bus.mapper.builder.resolve.EntityResolve;
 import org.aoju.bus.mapper.entity.Config;
@@ -42,7 +42,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实体类工具类 - 处理实体和数据库表以及字段关键的一个类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class EntityBuilder {

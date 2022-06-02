@@ -39,7 +39,6 @@ import javax.servlet.http.HttpSessionListener;
  * It should at least work for the following containers:
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @WebListener("TraceSessionListener to create sessionIds on session creation and remove it instead from the Builder backend on session termination.")

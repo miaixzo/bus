@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -52,7 +52,6 @@ import java.util.List;
  * Excel2003格式的事件-用户模型方式读取器,统一将此归类为Sax读取
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03SaxReader> {

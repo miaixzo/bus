@@ -39,7 +39,6 @@ import java.nio.charset.Charset;
  * Base62工具类，提供Base62的编码和解码方案
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Base62 {

@@ -30,6 +30,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
@@ -49,7 +50,6 @@ import java.util.regex.Pattern;
  * the Operating System sees, which may include hyperthreaded cores.)
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe
@@ -153,14 +153,23 @@ public interface CentralProcessor {
      * 3, representing 1, 5, and 15 minutes. The system load average is the sum of
      * the number of runnable entities queued to the available processors and the
      * number of runnable entities running on the available processors averaged over
-     * a period of time. The way in which the load average is calculated is
-     * operating system specific but is typically a damped time-dependent average.
-     * If the load average is not available, a negative value is returned. This
-     * method is designed to provide a hint about the system load and may be queried
-     * frequently.
+     * a period of time.
      * <p>
-     * The load average may be unavailable on some platforms (e.g., Windows) where
-     * it is expensive to implement this method.
+     * This method is designed to provide a hint about the system load and may be
+     * queried frequently.
+     * <p>
+     * The way in which the load average is calculated is operating system specific
+     * but is typically a damped time-dependent average. Linux includes processes
+     * waiting for system resources such as disks, while macOS and Unix consider
+     * only processes waiting for CPU.
+     * <p>
+     * Windows does not provide a load average. Users may set the configuration
+     * property {@code oshi.os.windows.loadaverage} to {@code true} to start a
+     * daemon thread which will provide a similar metric.
+     * <p>
+     * The load average may be unavailable on some platforms (e.g., Windows without
+     * the above configuration). If the load average is not available, a negative
+     * value is returned.
      *
      * @param nelem Number of elements to return.
      * @return an array of the system load averages for 1, 5, and 15 minutes with
@@ -168,6 +177,46 @@ public interface CentralProcessor {
      * available.
      */
     double[] getSystemLoadAverage(int nelem);
+
+    /**
+     * This is a convenience method which collects an initial set of ticks using
+     * {@link #getSystemCpuLoadTicks()} and passes that result to
+     * {@link #getSystemCpuLoadBetweenTicks(long[])} after the specified delay.
+     *
+     * @param delay Milliseconds to wait.
+     * @return value between 0 and 1 (100%) that represents the cpu usage in the
+     * provided time period.
+     */
+    default double getSystemCpuLoad(long delay) {
+        long start = System.nanoTime();
+        long[] oldTicks = getSystemCpuLoadTicks();
+        long toWait = delay - (System.nanoTime() - start) / 1_000_000;
+        // protect against IllegalArgumentException
+        if (toWait > 0L) {
+            ThreadKit.sleep(delay);
+        }
+        return getSystemCpuLoadBetweenTicks(oldTicks);
+    }
+
+    /**
+     * This is a convenience method which collects an initial set of ticks using
+     * {@link #getProcessorCpuLoadTicks()} and passes that result to
+     * {@link #getProcessorCpuLoadBetweenTicks(long[][])} after the specified delay.
+     *
+     * @param delay Milliseconds to wait.
+     * @return array of CPU load between 0 and 1 (100%) for each logical processor,
+     * for the provided time period.
+     */
+    default double[] getProcessorCpuLoad(long delay) {
+        long start = System.nanoTime();
+        long[][] oldTicks = getProcessorCpuLoadTicks();
+        long toWait = delay - (System.nanoTime() - start) / 1_000_000;
+        // protect against IllegalArgumentException
+        if (toWait > 0L) {
+            ThreadKit.sleep(delay);
+        }
+        return getProcessorCpuLoadBetweenTicks(oldTicks);
+    }
 
     /**
      * Returns the "recent cpu usage" for all logical processors by counting ticks

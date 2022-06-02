@@ -44,7 +44,6 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
@@ -376,17 +375,6 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     }
 
     /**
-     * 填充Value Object对象
-     *
-     * @param <T>   Bean类型
-     * @param clazz Value Object(或者POJO)的类
-     * @return vo
-     */
-    public <T> T toBean(Class<T> clazz) {
-        return BeanKit.mapToBean(this, clazz, false);
-    }
-
-    /**
      * 转换为Bean对象
      *
      * @param <T>           Bean类型
@@ -431,7 +419,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @return vo
      */
     public <T> T toBeanIgnoreCase(Class<T> clazz) {
-        return BeanKit.mapToBeanIgnoreCase(this, clazz, false);
+        return BeanKit.toBeanIgnoreCase(this, clazz, false);
     }
 
     /**

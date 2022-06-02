@@ -32,7 +32,6 @@ import org.aoju.bus.pager.dialect.AbstractAutoDialect;
  * Hikari
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Hikari extends AbstractAutoDialect<HikariDataSource> {

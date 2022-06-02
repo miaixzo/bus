@@ -35,7 +35,6 @@ import java.nio.file.Path;
  * 文件存储提供者
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Provider {
@@ -81,7 +80,12 @@ public interface Provider {
      *
      * @return 处理结果 {@link Message}
      */
-    Message list();
+    default Message list() {
+        return Message.builder()
+                .errcode(Builder.ErrorCode.FAILURE.getCode())
+                .errmsg(Builder.ErrorCode.FAILURE.getMsg())
+                .build();
+    }
 
     /**
      * 重命名

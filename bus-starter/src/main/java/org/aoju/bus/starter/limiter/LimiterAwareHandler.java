@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.limiter;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Handler;
 import org.aoju.bus.limiter.Parser;
@@ -49,7 +49,6 @@ import java.util.List;
  * 限流配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)

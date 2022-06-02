@@ -33,7 +33,6 @@ import java.nio.channels.FileChannel;
  * 读取和写入目标文件
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class FileOperator {

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.lang.exception.ValidateException;
+import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.net.MalformedURLException;
@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Validator {

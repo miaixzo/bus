@@ -33,7 +33,6 @@ import java.io.OutputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class PDVInputStream extends InputStream {

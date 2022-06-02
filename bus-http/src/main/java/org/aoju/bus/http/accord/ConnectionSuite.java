@@ -41,7 +41,6 @@ import java.util.List;
  * 将所有特性选择延迟到底层SSL套接字
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class ConnectionSuite {

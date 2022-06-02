@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.reflect;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.ReflectorFactory;
@@ -38,7 +38,6 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
  * 反射带缓存,提高反射性能
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MetaObjectWithCache {

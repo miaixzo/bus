@@ -34,7 +34,6 @@ import java.util.List;
  * WindowsHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

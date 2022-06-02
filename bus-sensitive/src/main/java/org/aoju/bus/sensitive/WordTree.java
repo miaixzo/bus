@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive;
 
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.CollKit;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * DFA（Deterministic Finite Automaton 确定有穷自动机）
@@ -38,7 +38,6 @@ import java.util.*;
  * 单词树使用树状结构表示一组单词
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class WordTree extends HashMap<Character, WordTree> {
@@ -52,7 +51,7 @@ public class WordTree extends HashMap<Character, WordTree> {
     /**
      * 字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符，当accept为false时，此字符不参与匹配
      */
-    private Filter<Character> charFilter = StopChar::isNotStopChar;
+    private Predicate<Character> predicate = StopChar::isNotStopChar;
 
     /**
      * 默认构造
@@ -65,11 +64,11 @@ public class WordTree extends HashMap<Character, WordTree> {
      * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符
      * 当accept为false时，此字符不参与匹配
      *
-     * @param charFilter 过滤函数
+     * @param predicate 过滤函数
      * @return this
      */
-    public WordTree setCharFilter(Filter<Character> charFilter) {
-        this.charFilter = charFilter;
+    public WordTree setCharFilter(Predicate<Character> predicate) {
+        this.predicate = predicate;
         return this;
     }
 
@@ -109,7 +108,7 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @return this
      */
     public WordTree addWord(String word) {
-        final Filter<Character> charFilter = this.charFilter;
+        final Predicate<Character> charFilter = this.predicate;
         WordTree parent = null;
         WordTree current = this;
         WordTree child;
@@ -118,7 +117,7 @@ public class WordTree extends HashMap<Character, WordTree> {
         for (int i = 0; i < length; i++) {
             currentChar = word.charAt(i);
             // 只处理合法字符
-            if (charFilter.accept(currentChar)) {
+            if (charFilter.test(currentChar)) {
                 child = current.get(currentChar);
                 if (child == null) {
                     // 无子类，新建一个子节点后存放下一个字符
@@ -205,7 +204,7 @@ public class WordTree extends HashMap<Character, WordTree> {
         List<String> foundWords = new ArrayList<>();
         WordTree current = this;
         int length = text.length();
-        final Filter<Character> charFilter = this.charFilter;
+        final Predicate<Character> charFilter = this.predicate;
         // 存放查找到的字符缓存。完整出现一个词时加到findedWords中，否则清空
         final TextBuilder wordBuffer = new TextBuilder();
         char currentChar;
@@ -213,7 +212,7 @@ public class WordTree extends HashMap<Character, WordTree> {
             wordBuffer.reset();
             for (int j = i; j < length; j++) {
                 currentChar = text.charAt(j);
-                if (false == charFilter.accept(currentChar)) {
+                if (false == charFilter.test(currentChar)) {
                     if (wordBuffer.length() > 0) {
                         // 做为关键词中间的停顿词被当作关键词的一部分被返回
                         wordBuffer.append(currentChar);

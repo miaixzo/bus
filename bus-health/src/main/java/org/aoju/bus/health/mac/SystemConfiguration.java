@@ -38,7 +38,6 @@ import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
  * connectivity are active.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface SystemConfiguration extends Library {

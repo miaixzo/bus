@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.watchers;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.IoKit;
 
@@ -42,7 +42,6 @@ import java.util.Map;
  * 文件监听服务，此服务可以同时监听多个路径
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class WatchServer extends Thread implements Closeable, Serializable {

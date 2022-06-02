@@ -3,7 +3,6 @@
  * 根据加入ClassPath中的jar包动态检测日志实现的方式，使日志使用个更加便利灵活
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17++
  */
 package org.aoju.bus.logger;

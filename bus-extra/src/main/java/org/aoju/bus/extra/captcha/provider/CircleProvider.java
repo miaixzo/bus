@@ -38,7 +38,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * 圆圈干扰验证码
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class CircleProvider extends AbstractProvider {

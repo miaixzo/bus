@@ -40,7 +40,6 @@ import java.util.function.Predicate;
  * @param <F> 源元素类型
  * @param <T> 目标元素类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TransitionCollection<F, T> extends AbstractCollection<T> {

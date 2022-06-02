@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>6.5.0</version>
+    <version>6.5.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <mybatis.version>3.5.7</mybatis.version>
+        <mybatis.version>3.5.10</mybatis.version>
         <guava.version>30.1.1-jre</guava.version>
         <jsqlparser.version>4.2</jsqlparser.version>
         <druid.version>1.2.8</druid.version>

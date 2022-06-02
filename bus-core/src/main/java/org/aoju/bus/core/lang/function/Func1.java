@@ -36,7 +36,6 @@ import java.io.Serializable;
  * @param <P> 参数类型
  * @param <R> 返回值类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @FunctionalInterface

@@ -33,7 +33,6 @@ import org.aoju.bus.mapper.common.rowbounds.SelectRowBoundsMapper;
  * 通用Mapper接口,带RowBounds参数的查询
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @RegisterMapper

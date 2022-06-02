@@ -35,7 +35,6 @@ import java.util.List;
  * OSFileStore implementation
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

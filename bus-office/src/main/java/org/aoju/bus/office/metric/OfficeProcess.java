@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.health.Platform;
@@ -49,7 +49,6 @@ import java.util.List;
  * 表示正在执行的office程序的实例.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OfficeProcess {

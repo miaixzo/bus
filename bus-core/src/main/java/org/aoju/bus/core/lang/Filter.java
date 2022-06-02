@@ -29,7 +29,6 @@ package org.aoju.bus.core.lang;
  * 过滤器接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Filter<T> {

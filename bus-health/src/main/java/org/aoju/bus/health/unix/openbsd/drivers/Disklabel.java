@@ -41,7 +41,6 @@ import java.util.List;
  * Utility class parsing partition information from disklabel command
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

@@ -25,14 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.clone;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 
 /**
  * 克隆支持类,提供默认的克隆方法
  *
  * @param <T> 继承类的类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Cloning<T> implements Cloneable<T> {

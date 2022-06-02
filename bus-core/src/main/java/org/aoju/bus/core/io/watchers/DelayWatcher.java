@@ -42,7 +42,6 @@ import java.util.Set;
  * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发,从而避免以上问题
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DelayWatcher implements Watcher {

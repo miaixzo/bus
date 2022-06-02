@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.watchers.SimpleWatcher;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.IOException;
@@ -40,7 +40,6 @@ import java.nio.file.WatchEvent;
  * 行处理的Watcher实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class LineReadWatcher extends SimpleWatcher implements Runnable {

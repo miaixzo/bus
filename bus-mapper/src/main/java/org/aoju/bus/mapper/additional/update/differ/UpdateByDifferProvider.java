@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.additional.update.differ;
 
+import org.aoju.bus.core.exception.VersionException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.VersionException;
 import org.aoju.bus.mapper.annotation.Version;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -39,7 +39,6 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class UpdateByDifferProvider extends MapperTemplate {

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.extra.pinyin;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -36,7 +36,6 @@ import org.aoju.bus.logger.Logger;
  * 自动创建对应的拼音引擎对象
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PinyinFactory {

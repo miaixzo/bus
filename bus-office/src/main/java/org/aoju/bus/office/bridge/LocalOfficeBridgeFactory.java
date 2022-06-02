@@ -38,8 +38,8 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XEventListener;
 import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.XComponentContext;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.magic.Lo;
@@ -56,7 +56,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 负责使用给定的UnoUrl管理到office进程的连接.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEventListener {

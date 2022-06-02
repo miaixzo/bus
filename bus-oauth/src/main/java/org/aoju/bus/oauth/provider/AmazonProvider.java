@@ -3,11 +3,11 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.exception.AuthorizedException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.RandomKit;
 import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
@@ -31,7 +31,6 @@ public class AmazonProvider extends AbstractProvider {
 
     public AmazonProvider(Context context) {
         super(context, Registry.AMAZON);
-
     }
 
     public AmazonProvider(Context context, ExtendCache extendCache) {
@@ -52,8 +51,6 @@ public class AmazonProvider extends AbstractProvider {
      */
     public static String generateCodeChallenge(String codeChallengeMethod, String codeVerifier) {
         if ("S256".equalsIgnoreCase(codeChallengeMethod)) {
-            // https://tools.ietf.org/html/rfc7636#section-4.2
-            // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier))
             return new String(Base64.encode(digest(codeVerifier), true, true), StandardCharsets.US_ASCII);
         } else {
             return codeVerifier;
@@ -97,7 +94,6 @@ public class AmazonProvider extends AbstractProvider {
             // 缓存 codeVerifier 十分钟
             this.extendCache.cache(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
-
         return builder.build();
     }
 
@@ -134,7 +130,6 @@ public class AmazonProvider extends AbstractProvider {
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .data(getToken(form, this.source.refresh()))
                 .build();
-
     }
 
     /**
@@ -179,8 +174,6 @@ public class AmazonProvider extends AbstractProvider {
 
     private void checkToken(String accessToken) {
         String tokenInfo = Httpx.get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UriKit.encode(accessToken));
-
-
         JSONObject jsonObject = JSONObject.parseObject(tokenInfo);
         if (!context.getAppKey().equals(jsonObject.getString("aud"))) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_TOKEN.getMsg());

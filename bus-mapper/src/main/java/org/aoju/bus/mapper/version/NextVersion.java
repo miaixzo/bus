@@ -25,13 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.version;
 
-import org.aoju.bus.core.lang.exception.VersionException;
+import org.aoju.bus.core.exception.VersionException;
 
 /**
  * 版本信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface NextVersion<T> {

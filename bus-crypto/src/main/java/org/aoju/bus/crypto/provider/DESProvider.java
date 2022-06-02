@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.provider;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.symmetric.DES;
@@ -34,7 +34,6 @@ import org.aoju.bus.crypto.symmetric.DES;
  * 数据加密标准,速度较快,适用于加密大量数据的场合
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DESProvider implements Provider {

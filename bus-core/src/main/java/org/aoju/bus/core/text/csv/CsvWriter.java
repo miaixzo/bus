@@ -27,10 +27,10 @@ package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.io.*;
@@ -42,7 +42,6 @@ import java.util.Map;
  * CSV数据写出器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class CsvWriter implements Closeable, Flushable {

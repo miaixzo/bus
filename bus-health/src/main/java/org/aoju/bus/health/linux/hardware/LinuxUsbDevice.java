@@ -32,6 +32,8 @@ import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
+import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
+import org.aoju.bus.logger.Logger;
 
 import java.util.*;
 
@@ -39,7 +41,6 @@ import java.util.*;
  * Linux Usb Device
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable
@@ -90,6 +91,10 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
     }
 
     private static List<UsbDevice> getUsbDevices() {
+        if (!LinuxOperatingSystem.HAS_UDEV) {
+            Logger.warn("USB Device information requires libudev, which is not present.");
+            return Collections.emptyList();
+        }
         // Build a list of devices with no parent; these will be the roots
         List<String> usbControllers = new ArrayList<>();
 

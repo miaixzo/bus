@@ -35,7 +35,6 @@ import java.util.Properties;
  * The global configuration utility
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @NotThreadSafe
@@ -56,6 +55,7 @@ public final class Config {
     public static final String OS_WINDOWS_PROCSTATE_SUSPENDED = "bus.health.os.windows.procstate.suspended";
     public static final String OS_WINDOWS_COMMANDLINE_BATCH = "bus.health.os.windows.commandline.batch";
     public static final String OS_WINDOWS_HKEYPERFDATA = "bus.health.os.windows.hkeyperfdata";
+    public static final String OSHI_OS_WINDOWS_LOADAVERAGE = "bus.health.os.windows.loadaverage";
     public static final String OS_WINDOWS_CPU_UTILITY = "bus.health.os.windows.cpu.utility";
 
     public static final String OS_WINDOWS_PERFDISK_DIABLED = "bus.os.windows.perfdisk.disabled";

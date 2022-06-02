@@ -28,7 +28,7 @@ package org.aoju.bus.core.beans;
 import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.annotation.Ignore;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.beans.Transient;
@@ -40,7 +40,6 @@ import java.lang.reflect.Type;
  * 属性描述
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PropertyDesc {

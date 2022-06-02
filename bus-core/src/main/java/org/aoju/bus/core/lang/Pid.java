@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.management.ManagementFactory;
@@ -35,7 +35,6 @@ import java.lang.management.ManagementFactory;
  * 第一次访问时调用{@link ManagementFactory#getRuntimeMXBean()}获取PID信息，之后直接使用缓存值
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum Pid {

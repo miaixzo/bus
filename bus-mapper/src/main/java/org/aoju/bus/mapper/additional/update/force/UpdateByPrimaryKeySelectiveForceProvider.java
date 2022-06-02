@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.additional.update.force;
 
+import org.aoju.bus.core.exception.VersionException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.VersionException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.annotation.Version;
 import org.aoju.bus.mapper.builder.EntityBuilder;
@@ -42,7 +42,6 @@ import java.util.Set;
  * 通用Mapper接口, 更新, 强制，实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {

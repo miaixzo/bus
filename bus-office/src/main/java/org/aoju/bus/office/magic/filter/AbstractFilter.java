@@ -26,8 +26,8 @@
 package org.aoju.bus.office.magic.filter;
 
 import com.sun.star.lang.XComponent;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.office.Context;
 
 import java.util.Arrays;
@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
  * 过滤器链的基类.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractFilter implements FilterChain {

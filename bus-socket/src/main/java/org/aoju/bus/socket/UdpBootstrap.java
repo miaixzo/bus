@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.socket.process.MessageProcessor;
 
 import java.io.IOException;
@@ -50,7 +50,6 @@ import java.util.function.Consumer;
  *
  * @param <R> 请求信息
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class UdpBootstrap<R> {

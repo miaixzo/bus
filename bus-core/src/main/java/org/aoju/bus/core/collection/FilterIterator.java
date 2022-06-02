@@ -26,24 +26,22 @@
 package org.aoju.bus.core.collection;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
+import java.util.function.Predicate;
 
 /**
- * 包装 {@link Iterator}并根据{@link Filter}定义，过滤元素输出
+ * 包装 {@link Iterator}并根据{@link Predicate}定义，过滤元素输出
  * 类实现来自Apache Commons Collection
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FilterIterator<E> implements Iterator<E> {
 
     private final Iterator<? extends E> iterator;
-    private final Filter<? super E> filter;
+    private final Predicate<? super E> filter;
 
     /**
      * 下一个元素
@@ -60,7 +58,7 @@ public class FilterIterator<E> implements Iterator<E> {
      * @param iterator 被包装的{@link Iterator}
      * @param filter   过滤函数，{@code null}表示不过滤
      */
-    public FilterIterator(final Iterator<? extends E> iterator, final Filter<? super E> filter) {
+    public FilterIterator(final Iterator<? extends E> iterator, final Predicate<? super E> filter) {
         this.iterator = Assert.notNull(iterator);
         this.filter = filter;
     }
@@ -101,7 +99,7 @@ public class FilterIterator<E> implements Iterator<E> {
      *
      * @return 过滤函数，可能为{@code null}
      */
-    public Filter<? super E> getFilter() {
+    public Predicate<? super E> getFilter() {
         return filter;
     }
 
@@ -111,7 +109,7 @@ public class FilterIterator<E> implements Iterator<E> {
     private boolean setNextObject() {
         while (iterator.hasNext()) {
             final E object = iterator.next();
-            if (null != filter && filter.accept(object)) {
+            if (null != filter && filter.test(object)) {
                 nextObject = object;
                 nextObjectSet = true;
                 return true;

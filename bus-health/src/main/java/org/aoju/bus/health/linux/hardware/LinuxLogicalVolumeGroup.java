@@ -31,6 +31,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractLogicalVolumeGroup;
 import org.aoju.bus.health.builtin.hardware.LogicalVolumeGroup;
+import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
+import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.*;
@@ -38,7 +40,6 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
@@ -54,6 +55,10 @@ public final class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
     }
 
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
+        if (!LinuxOperatingSystem.HAS_UDEV) {
+            Logger.warn("Logical Volume Group information requires libudev, which is not present.");
+            return Collections.emptyList();
+        }
         Map<String, Map<String, Set<String>>> logicalVolumesMap = new HashMap<>();
         Map<String, Set<String>> physicalVolumesMap = new HashMap<>();
 

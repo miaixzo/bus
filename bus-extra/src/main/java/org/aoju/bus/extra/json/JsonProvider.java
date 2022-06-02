@@ -33,7 +33,6 @@ import java.util.Map;
  * JSON服务提供者
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface JsonProvider {

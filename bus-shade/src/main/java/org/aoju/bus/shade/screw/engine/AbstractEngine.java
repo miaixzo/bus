@@ -26,8 +26,8 @@
 package org.aoju.bus.shade.screw.engine;
 
 import lombok.Data;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.shade.screw.Builder;
 
@@ -38,7 +38,6 @@ import java.io.IOException;
  * 模板引擎抽象类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

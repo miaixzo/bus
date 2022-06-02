@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -41,7 +41,6 @@ import java.util.List;
  * 文件读取器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FileReader extends FileWrapper {

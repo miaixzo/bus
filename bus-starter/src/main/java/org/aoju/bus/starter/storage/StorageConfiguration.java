@@ -37,7 +37,6 @@ import org.springframework.context.annotation.Bean;
  * 授权配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @EnableConfigurationProperties(value = {StorageProperties.class})

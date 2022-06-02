@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.provider;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
@@ -40,7 +40,6 @@ import java.util.Set;
  * ids 如 "1,2,3"
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class IdsProvider extends MapperTemplate {

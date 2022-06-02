@@ -29,8 +29,8 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.CallableStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -46,7 +46,6 @@ import org.apache.ibatis.session.RowBounds;
  * 防止全表更新与删除
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})

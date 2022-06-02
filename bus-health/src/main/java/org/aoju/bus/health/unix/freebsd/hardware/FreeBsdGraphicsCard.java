@@ -42,7 +42,6 @@ import java.util.List;
  * Graphics Card info obtained from pciconf
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Immutable

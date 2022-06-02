@@ -36,7 +36,6 @@ import java.util.List;
  * FreeBsdHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

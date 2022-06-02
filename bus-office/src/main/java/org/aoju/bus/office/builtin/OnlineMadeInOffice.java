@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpz;
 import org.aoju.bus.http.bodys.MultipartBody;
@@ -47,7 +47,6 @@ import java.util.Map;
  * 表示在线转换任务的默认行为.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class OnlineMadeInOffice extends AbstractOnlineOffice {

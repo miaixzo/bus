@@ -29,7 +29,7 @@ import com.sun.star.frame.XStorable;
 import com.sun.star.io.IOException;
 import com.sun.star.lang.XComponent;
 import com.sun.star.task.ErrorCodeIOException;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
@@ -49,7 +49,6 @@ import java.util.Optional;
  * 表示本地转换任务的默认行为.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class LocalMadeInOffice extends AbstractLocalOffice {

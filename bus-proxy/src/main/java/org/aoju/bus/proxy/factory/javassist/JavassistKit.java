@@ -26,8 +26,8 @@
 package org.aoju.bus.proxy.factory.javassist;
 
 import javassist.*;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Builder;
 
 import java.util.HashSet;
@@ -37,7 +37,6 @@ import java.util.Set;
  * 处理Javassist的实用方法
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 class JavassistKit {

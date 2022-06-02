@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.lang.exception.NoSuchException;
+import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.NoSuchException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
@@ -41,7 +41,6 @@ import java.lang.reflect.Method;
  * 反射信息校验
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ReflectStrategy implements Matcher<Object, Reflect> {

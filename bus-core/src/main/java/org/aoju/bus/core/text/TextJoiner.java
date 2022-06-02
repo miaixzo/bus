@@ -1,8 +1,8 @@
 package org.aoju.bus.core.text;
 
 import org.aoju.bus.core.collection.ArrayIterator;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.IterKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -17,7 +17,6 @@ import java.util.function.Function;
  * 字符连接器（拼接器），通过给定的字符串和多个元素，拼接为一个字符串
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TextJoiner implements Appendable, Serializable {

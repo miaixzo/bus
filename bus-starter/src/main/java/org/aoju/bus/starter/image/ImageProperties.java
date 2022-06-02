@@ -35,7 +35,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * 影像解析配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
  * 网络流量控制插件
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class RateLimiterPlugin<T> extends AbstractPlugin<T> {

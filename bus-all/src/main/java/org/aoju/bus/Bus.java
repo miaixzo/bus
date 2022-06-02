@@ -43,7 +43,6 @@ import org.aoju.bus.core.Version;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Bus extends Version {

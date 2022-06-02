@@ -27,7 +27,7 @@ package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.OAuth2;
-import org.aoju.bus.core.lang.exception.BusinessException;
+import org.aoju.bus.core.exception.BusinessException;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -55,7 +55,6 @@ import java.util.Objects;
  * 访问鉴权
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)

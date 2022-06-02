@@ -37,7 +37,6 @@ import java.util.regex.Pattern;
  * Utility to query mount
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

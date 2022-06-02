@@ -35,7 +35,6 @@ import java.util.List;
  * 返回结果公用
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

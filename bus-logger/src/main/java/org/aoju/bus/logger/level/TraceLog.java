@@ -29,7 +29,6 @@ package org.aoju.bus.logger.level;
  * TRACE级别日志接口
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface TraceLog {

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.provider.base;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.*;
 import org.aoju.bus.mapper.entity.EntityColumn;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -37,7 +37,6 @@ import java.util.Set;
  * BaseInsertProvider实现类，基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BaseInsertProvider extends MapperTemplate {

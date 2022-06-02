@@ -38,10 +38,11 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Property implements Serializable {
+
+    public static String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private final String name;
     private final Object value;

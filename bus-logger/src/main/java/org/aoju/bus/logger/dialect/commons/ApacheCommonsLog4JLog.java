@@ -33,7 +33,6 @@ import org.apache.commons.logging.impl.Log4JLogger;
  * Apache Commons Logging for Log4j
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ApacheCommonsLog4JLog extends Log4jLog {

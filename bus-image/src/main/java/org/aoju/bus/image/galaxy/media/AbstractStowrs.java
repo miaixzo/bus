@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -50,7 +50,6 @@ import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AbstractStowrs implements AutoCloseable {

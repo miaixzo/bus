@@ -29,7 +29,6 @@ package org.aoju.bus.core;
  * 排序
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Order extends Comparable<Order> {

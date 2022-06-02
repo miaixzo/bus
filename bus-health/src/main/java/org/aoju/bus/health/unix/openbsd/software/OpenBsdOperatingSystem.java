@@ -43,7 +43,6 @@ import java.util.stream.Collectors;
  * the Berkeley Software Distribution (BSD), which was based on Research Unix.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

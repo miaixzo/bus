@@ -45,7 +45,6 @@ import java.util.Map;
  * 委托cookie 给{@link java.net.CookieHandler}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class NetCookieJar implements CookieJar {

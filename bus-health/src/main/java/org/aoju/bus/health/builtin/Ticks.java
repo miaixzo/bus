@@ -25,14 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.health.builtin;
 
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 
 /**
  * CPU负载时间信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Ticks {
@@ -56,7 +55,7 @@ public class Ticks {
         // CPU信息
         final long[] prevTicks = processor.getSystemCpuLoadTicks();
         // 这里必须要设置延迟
-        Builder.sleep(waitingTime);
+        ThreadKit.sleep(waitingTime);
         final long[] ticks = processor.getSystemCpuLoadTicks();
 
         this.idle = tick(prevTicks, ticks, CentralProcessor.TickType.IDLE);

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Httpx {

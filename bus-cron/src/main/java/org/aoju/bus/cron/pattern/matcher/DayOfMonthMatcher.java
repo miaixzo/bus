@@ -34,7 +34,6 @@ import java.util.List;
  * 考虑每月的天数不同，且存在闰年情况，日匹配单独使用
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DayOfMonthMatcher extends BoolArrayMatcher {

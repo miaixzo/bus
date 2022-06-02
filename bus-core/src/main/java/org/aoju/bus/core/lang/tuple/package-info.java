@@ -3,7 +3,6 @@
  * 提供封装多个对象的类，目的是作为方法的返回类型
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 package org.aoju.bus.core.lang.tuple;

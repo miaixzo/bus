@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.lang.exception.NoSuchException;
+import org.aoju.bus.core.exception.NoSuchException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.Provider;
@@ -42,7 +42,6 @@ import java.util.Map;
  * 容器元素内部校验
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class EachStrategy implements Matcher<Object, Each> {

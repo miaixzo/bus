@@ -31,7 +31,6 @@ import java.lang.annotation.*;
  * 多数据源支持
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.PARAMETER})

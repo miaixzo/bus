@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
  * 包含的所有流程管理器实现的基类.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public abstract class AbstractProcessManager implements ProcessManager {

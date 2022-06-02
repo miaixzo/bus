@@ -41,8 +41,8 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
-import org.aoju.bus.storage.magic.Attachs;
 import org.aoju.bus.storage.magic.Message;
+import org.aoju.bus.storage.magic.Property;
 
 import java.io.File;
 import java.io.InputStream;
@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
  * 存储服务-京东云
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JdYunOssProvider extends AbstractProvider {
@@ -121,7 +120,7 @@ public class JdYunOssProvider extends AbstractProvider {
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
                 .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
                 .data(objectListing.getObjectSummaries().stream().map(item -> {
-                    Attachs storageItem = new Attachs();
+                    Property storageItem = new Property();
                     storageItem.setName(item.getKey());
                     storageItem.setOwner(item.getOwner().getDisplayName());
                     storageItem.setSize(StringKit.toString(item.getSize()));

@@ -33,7 +33,6 @@ import java.lang.annotation.*;
  * cron处理程序的注解
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Target({ElementType.TYPE})

@@ -33,7 +33,6 @@ import org.aoju.bus.office.Provider;
  * 创建的{@link Provider}将使用该实例.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class InstalledOfficeHolder {

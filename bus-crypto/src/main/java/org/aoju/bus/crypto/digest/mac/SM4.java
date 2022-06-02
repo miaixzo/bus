@@ -32,7 +32,6 @@ import org.bouncycastle.crypto.engines.SM4Engine;
  * SM4算法的MAC引擎实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SM4 extends CBCBlockCipher {

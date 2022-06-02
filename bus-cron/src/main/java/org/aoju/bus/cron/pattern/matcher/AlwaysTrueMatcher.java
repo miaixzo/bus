@@ -31,7 +31,6 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 所有值匹配，始终返回{@code true}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AlwaysTrueMatcher implements PartMatcher {

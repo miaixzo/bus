@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.shade.screw.metadata.Column;
 import org.aoju.bus.shade.screw.metadata.Database;
 import org.aoju.bus.shade.screw.metadata.PrimaryKey;
@@ -38,7 +38,6 @@ import java.util.List;
  * 查询数据库信息
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface DatabaseQuery {

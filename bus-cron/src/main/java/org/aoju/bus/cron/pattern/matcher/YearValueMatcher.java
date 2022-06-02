@@ -33,7 +33,6 @@ import java.util.LinkedHashSet;
  * 考虑年数字太大，不适合boolean数组，单独使用{@link LinkedHashSet}匹配
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class YearValueMatcher implements PartMatcher {

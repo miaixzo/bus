@@ -32,7 +32,6 @@ import lombok.Data;
  * 返回消息
  *
  * @author Justubborn
- * @version 6.5.0
  * @since Java 17+
  */
 @Data
@@ -42,16 +41,16 @@ public class Message {
     /**
      * 请求返回码,错误为具体返回码,正确为 0
      */
-    String errcode;
+    public String errcode;
 
     /**
      * 请求返回消息
      */
-    String errmsg;
+    public String errmsg;
 
     /**
      * 请求返回数据 JSON
      */
-    Object data;
+    public Object data;
 
 }

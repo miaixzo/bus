@@ -49,7 +49,6 @@ import java.util.stream.Collectors;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class ReferenceMap<K, V> implements ConcurrentMap<K, V>, Iterable<Map.Entry<K, V>>, Serializable {

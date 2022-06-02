@@ -34,7 +34,6 @@ import java.lang.annotation.*;
  * 启用消息通知
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Inherited

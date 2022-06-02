@@ -31,8 +31,8 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.xfer.FileSystemFile;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -55,7 +55,6 @@ import java.util.List;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SshjSftp extends AbstractFtp {
@@ -125,7 +124,7 @@ public class SshjSftp extends AbstractFtp {
         this.ssh = new SSHClient();
         ssh.addHostKeyVerifier(new PromiscuousVerifier());
         try {
-            ssh.connect(ftpConfig.getHost());
+            ssh.connect(ftpConfig.getHost(), ftpConfig.getPort());
             ssh.authPassword(ftpConfig.getUser(), ftpConfig.getPassword());
             ssh.setRemoteCharset(ftpConfig.getCharset());
             this.sftp = ssh.newSFTPClient();

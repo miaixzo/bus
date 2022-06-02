@@ -52,7 +52,6 @@ import java.util.Objects;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
@@ -104,6 +103,11 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      */
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    @Override
+    public Class<TemporalAccessor> getTargetType() {
+        return (Class<TemporalAccessor>) this.targetType;
     }
 
     @Override

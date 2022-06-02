@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.builder.resolve.EntityResolve;
 import org.aoju.bus.mapper.criteria.Identity;
@@ -41,7 +41,6 @@ import java.util.Properties;
  * 通用Mapper属性配置
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Config {

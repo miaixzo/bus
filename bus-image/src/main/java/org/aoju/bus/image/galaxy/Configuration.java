@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.WebApplication;
@@ -36,7 +36,6 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Configuration extends Closeable {

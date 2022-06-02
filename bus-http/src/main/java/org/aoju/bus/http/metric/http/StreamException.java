@@ -25,13 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.lang.exception.RevisedException;
+import org.aoju.bus.core.exception.RevisedException;
 
 /**
  * 当取消HTTP/2流而不损坏承载它的套接字时抛出
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class StreamException extends RevisedException {

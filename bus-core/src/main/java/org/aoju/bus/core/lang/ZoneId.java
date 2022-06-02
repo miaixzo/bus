@@ -29,7 +29,6 @@ package org.aoju.bus.core.lang;
  * 时区计算
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public enum ZoneId {
@@ -38,6 +37,10 @@ public enum ZoneId {
      * "Worldwide","世界标准时间"
      */
     UTC("Worldwide", "世界标准时间"),
+    /**
+     * "Universal Time","世界时"
+     */
+    GMT("Universal Time", "世界时"),
     /**
      * "Australia/Darwin","澳洲/达尔文"
      */

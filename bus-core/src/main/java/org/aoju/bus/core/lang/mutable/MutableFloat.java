@@ -31,7 +31,6 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>float</code> 类型
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @see Float
  * @since Java 17+
  */

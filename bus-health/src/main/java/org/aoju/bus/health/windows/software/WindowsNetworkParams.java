@@ -48,7 +48,6 @@ import java.util.List;
  * WindowsNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

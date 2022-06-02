@@ -42,7 +42,6 @@ import java.util.Properties;
  * sqlserver 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SqlServerRowBounds extends AbstractRowBounds {

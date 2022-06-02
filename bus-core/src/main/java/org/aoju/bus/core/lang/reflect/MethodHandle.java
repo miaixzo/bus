@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.reflect;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -38,7 +38,6 @@ import java.lang.reflect.Method;
  * 方法句柄{@link java.lang.invoke.MethodHandle}封装工具类
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class MethodHandle {

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.lang.exception.ConvertException;
+import org.aoju.bus.core.exception.ConvertException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -46,7 +46,6 @@ import java.util.function.Function;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {

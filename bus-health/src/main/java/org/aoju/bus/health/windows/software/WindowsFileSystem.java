@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
  * represented by a drive letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe
@@ -298,8 +297,8 @@ public class WindowsFileSystem extends AbstractFileSystem {
         List<Long> valueList = valueListMap.get(ProcessInformation.HandleCountProperty.HANDLECOUNT);
         long descriptors = 0L;
         if (valueList != null) {
-            for (int i = 0; i < valueList.size(); i++) {
-                descriptors += valueList.get(i);
+            for (Long value : valueList) {
+                descriptors += value;
             }
         }
         return descriptors;

@@ -34,10 +34,10 @@ import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.exception.AuthorizedException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -51,7 +51,6 @@ import org.aoju.bus.oauth.magic.Property;
  * 支付宝登录
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AlipayProvider extends AbstractProvider {

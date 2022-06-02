@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.additional.delete;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
@@ -41,7 +41,6 @@ import org.apache.ibatis.mapping.SqlCommandType;
  * 删除属性
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class DeletePropertyProvider extends MapperTemplate {

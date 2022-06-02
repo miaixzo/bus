@@ -33,7 +33,6 @@ import org.aoju.bus.shade.screw.metadata.Column;
  * sqlserver table column
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

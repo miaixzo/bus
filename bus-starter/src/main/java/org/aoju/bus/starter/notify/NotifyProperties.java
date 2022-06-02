@@ -39,7 +39,6 @@ import java.util.Map;
  * 2. 通过set形式设置(动态/DB等)
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

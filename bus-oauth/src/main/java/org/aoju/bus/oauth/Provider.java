@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.oauth;
 
-import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.exception.AuthorizedException;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
@@ -38,7 +38,6 @@ import org.aoju.bus.oauth.magic.Message;
  * {@link Provider#refresh(AccToken)}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface Provider {

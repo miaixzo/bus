@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.5.0</version>
+    <version>6.5.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -144,6 +144,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-pager</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-pay</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>

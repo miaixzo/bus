@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.thread;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -35,7 +35,6 @@ import java.util.concurrent.Future;
  * 全局公共线程池
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class GlobalThread {

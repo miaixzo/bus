@@ -43,7 +43,6 @@ import java.security.cert.X509Certificate;
  * keytool -genkey -validity 36000 -alias www.aoju.org -keyalg RSA -keystore server.keystore
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class SslService {
@@ -142,24 +141,6 @@ public class SslService {
         }
 
     }
-
-    private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
-        @Override
-        public void completed(Integer result, HandshakeModel attachment) {
-            if (result == -1) {
-                attachment.setEof(true);
-            }
-            synchronized (attachment) {
-                doHandshake(attachment);
-            }
-        }
-
-        @Override
-        public void failed(Throwable exc, HandshakeModel attachment) {
-            attachment.setEof(true);
-            attachment.getHandshakeCallback().callback();
-        }
-    };
 
     /**
      * 纯异步实现的SSL握手,
@@ -279,6 +260,24 @@ public class SslService {
             handshakeModel.getHandshakeCallback().callback();
         }
     }
+
+    private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
+        @Override
+        public void completed(Integer result, HandshakeModel attachment) {
+            if (result == -1) {
+                attachment.setEof(true);
+            }
+            synchronized (attachment) {
+                doHandshake(attachment);
+            }
+        }
+
+        @Override
+        public void failed(Throwable exc, HandshakeModel attachment) {
+            attachment.setEof(true);
+            attachment.getHandshakeCallback().callback();
+        }
+    };
 
 
 }

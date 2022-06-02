@@ -33,7 +33,6 @@ import java.util.List;
  * 作业启动管理器
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Supervisor implements Serializable {

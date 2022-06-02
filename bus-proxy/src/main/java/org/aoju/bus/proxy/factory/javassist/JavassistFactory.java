@@ -29,7 +29,7 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
@@ -45,7 +45,6 @@ import java.lang.reflect.Method;
  * Javassist 3.0或更高版本
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JavassistFactory extends AbstractFactory {

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.date.formatter;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -40,7 +40,6 @@ import java.util.concurrent.ConcurrentMap;
  * {@link java.text.SimpleDateFormat} 的线程安全版本,用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class FastDatePrinter extends AbstractMotd implements DatePrinter {

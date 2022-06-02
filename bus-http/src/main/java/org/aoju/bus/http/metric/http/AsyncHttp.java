@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.Results.State;
 import org.aoju.bus.http.magic.RealResult;
@@ -39,7 +39,6 @@ import java.util.concurrent.CountDownLatch;
  * 异步 Http 请求任务
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class AsyncHttp extends CoverHttp<AsyncHttp> {

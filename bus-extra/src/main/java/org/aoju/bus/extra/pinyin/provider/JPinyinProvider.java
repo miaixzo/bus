@@ -28,14 +28,13 @@ package org.aoju.bus.extra.pinyin.provider;
 import com.github.stuxuhai.jpinyin.PinyinException;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 
 /**
  * Jpinyin 引擎
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class JPinyinProvider extends AbstractPinyinProvider {

@@ -25,14 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.provider;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.proxy.Provider;
 
 /**
  * 使用Class.newInstance()来实例化一个对象
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class BeanProvider implements Provider {

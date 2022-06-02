@@ -65,7 +65,6 @@ import java.util.stream.Collectors;
  * the /Volumes directory.
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @ThreadSafe

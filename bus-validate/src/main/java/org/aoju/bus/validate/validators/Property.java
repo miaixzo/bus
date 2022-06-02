@@ -26,7 +26,7 @@
 package org.aoju.bus.validate.validators;
 
 import lombok.Data;
-import org.aoju.bus.core.lang.exception.ValidateException;
+import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.text.replacer.PrivacyReplacer;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.MapKit;
@@ -41,7 +41,6 @@ import java.util.Map;
  * 校验注解所包含的通用属性
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Data

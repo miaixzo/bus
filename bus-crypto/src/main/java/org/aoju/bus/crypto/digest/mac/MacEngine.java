@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest.mac;
 
-import org.aoju.bus.core.lang.exception.CryptoException;
+import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -35,7 +35,6 @@ import java.io.InputStream;
  * MAC(Message Authentication Code)算法引擎
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public interface MacEngine {

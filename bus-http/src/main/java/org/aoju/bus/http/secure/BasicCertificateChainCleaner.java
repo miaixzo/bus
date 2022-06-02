@@ -37,7 +37,6 @@ import java.util.*;
  * 存在的其他机制，比如{@code AndroidCertificateChainCleaner}
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class BasicCertificateChainCleaner extends CertificateChainCleaner {

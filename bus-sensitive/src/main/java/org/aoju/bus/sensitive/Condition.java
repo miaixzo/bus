@@ -31,7 +31,6 @@ import org.aoju.bus.sensitive.provider.ConditionProvider;
  * 返回真条件
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public class Condition implements ConditionProvider {

@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.wrapper;
 
-import org.aoju.bus.core.lang.Ansi;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.ansi.AnsiBackground;
+import org.aoju.bus.core.lang.ansi.AnsiEncoder;
 import org.aoju.bus.extra.servlet.ServletKit;
 import org.aoju.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -46,7 +46,6 @@ import javax.servlet.http.HttpServletResponse;
  * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 @Component
@@ -62,31 +61,31 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     private static void isHandle(HttpServletRequest request, String method) {
         switch (method) {
             case Http.ALL:
-                method = Ansi.BgBlack.and(Ansi.White).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.WHITE, " %s ", method);
                 break;
             case Http.GET:
-                method = Ansi.BgGreen.and(Ansi.Black).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.GREEN, " %s ", method);
                 break;
             case Http.POST:
-                method = Ansi.BgBlue.and(Ansi.Black).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.MAGENTA, " %s ", method);
                 break;
             case Http.DELETE:
-                method = Ansi.BgRed.and(Ansi.Black).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.BLUE, " %s ", method);
                 break;
             case Http.PUT:
-                method = Ansi.BgYellow.and(Ansi.Black).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.RED, " %s ", method);
                 break;
             case Http.OPTIONS:
-                method = Ansi.BgCyan.and(Ansi.Black).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.YELLOW, " %s ", method);
                 break;
             case Http.BEFORE:
-                method = Ansi.BgMagenta.and(Ansi.Black).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.BLACK, " %s ", method);
                 break;
             case Http.AFTER:
-                method = Ansi.BgWhite.and(Ansi.Black).format(" %s ", method);
+                method = AnsiEncoder.encode(AnsiBackground.CYAN, " %s ", method);
                 break;
         }
-        Logger.info("{} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", ServletKit.getClientIP(request), method, request.getRequestURL().toString());
+        Logger.info("{} {} {}", "==>", ServletKit.getClientIP(request), method, request.getRequestURL().toString());
     }
 
     /**

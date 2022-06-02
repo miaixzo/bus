@@ -54,7 +54,6 @@ import java.util.concurrent.TimeUnit;
  * 实际调用准备执行的请求
  *
  * @author Kimi Liu
- * @version 6.5.0
  * @since Java 17+
  */
 public final class RealCall implements NewCall {
