@@ -124,19 +124,6 @@
             <artifactId>core</artifactId>
             <version>${zxing.version}</version>
         </dependency>
-
-        <!--
-               <dependency>
-                   <groupId>com.github.binarywang</groupId>
-                   <artifactId>weixin-java-mp</artifactId>
-                   <version>${binarywang.version}</version>
-               </dependency>-->
-        <!--    <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring.boot.version}</version>
-                <optional>true</optional>
-            </dependency>-->
     </dependencies>
 
     <build>
