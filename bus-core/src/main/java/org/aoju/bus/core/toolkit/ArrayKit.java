@@ -4709,10 +4709,11 @@ public class ArrayKit {
      * 去重数组中的元素，去重后生成新的数组，原数组不变
      * 此方法通过{@link LinkedHashSet} 去重
      *
-     * @param <T>      数组元素类型
-     * @param <K>      唯一键类型
-     * @param array    数组
-     * @param override 是否覆盖模式，如果为{@code true}，加入的新值会覆盖相同key的旧值，否则会忽略新加值
+     * @param <T>             数组元素类型
+     * @param <K>             唯一键类型
+     * @param array           数组
+     * @param uniqueGenerator 唯一键生成器
+     * @param override        是否覆盖模式，如果为{@code true}，加入的新值会覆盖相同key的旧值，否则会忽略新加值
      * @return 去重后的数组
      */
     public static <T, K> T[] remove(T[] array, Function<T, K> uniqueGenerator, boolean override) {
@@ -7074,6 +7075,12 @@ public class ArrayKit {
             Array.set(buffer, index, value);
             return buffer;
         } else {
+            if (isEmpty(buffer)) {
+                // 可变长类型在buffer为空的情况下，类型会被擦除，导致报错，此处修正
+                final T[] values = newArray(value.getClass(), 1);
+                values[0] = value;
+                return append(buffer, values);
+            }
             return append(buffer, value);
         }
     }

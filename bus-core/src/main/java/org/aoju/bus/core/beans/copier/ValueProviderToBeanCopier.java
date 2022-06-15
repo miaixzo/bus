@@ -76,6 +76,12 @@ public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<S
                 return;
             }
 
+            tFieldName = copyOptions.editFieldName(tFieldName);
+            // 对key做转换，转换后为null的跳过
+            if (null == tFieldName) {
+                return;
+            }
+
             // 无字段内容跳过
             if (false == source.containsKey(tFieldName)) {
                 return;

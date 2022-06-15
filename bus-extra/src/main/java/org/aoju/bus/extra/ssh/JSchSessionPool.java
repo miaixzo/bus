@@ -69,7 +69,7 @@ public enum JSchSessionPool {
      */
     public Session getSession(String sshHost, int sshPort, String sshUser, String sshPass) {
         final String key = StringKit.format("{}@{}:{}", sshUser, sshHost, sshPort);
-        return this.cache.get(key, Session::isConnected, () -> JSchKit.openSession(sshHost, sshPort, sshUser, sshPass));
+        return this.cache.get(key, (conn) -> null != conn && conn.isConnected(), () -> JSchKit.openSession(sshHost, sshPort, sshUser, sshPass));
     }
 
     /**
@@ -84,7 +84,7 @@ public enum JSchSessionPool {
      */
     public Session getSession(String sshHost, int sshPort, String sshUser, String prvkey, byte[] passphrase) {
         final String key = StringKit.format("{}@{}:{}", sshUser, sshHost, sshPort);
-        return this.cache.get(key, Session::isConnected, () -> JSchKit.openSession(sshHost, sshPort, sshUser, prvkey, passphrase));
+        return this.cache.get(key, (conn) -> null != conn && conn.isConnected(), () -> JSchKit.openSession(sshHost, sshPort, sshUser, prvkey, passphrase));
     }
 
     /**

@@ -93,8 +93,20 @@ public class Sftp extends AbstractFtp {
      * @param config FTP配置
      */
     public Sftp(FtpConfig config) {
+        this(config, true);
+    }
+
+    /**
+     * 构造
+     *
+     * @param config FTP配置
+     * @param init   是否立即初始化
+     */
+    public Sftp(FtpConfig config, boolean init) {
         super(config);
-        init(config);
+        if (init) {
+            init(config);
+        }
     }
 
     /**

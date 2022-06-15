@@ -1004,6 +1004,9 @@ public class IterKit {
      */
     public static <E> E get(final Iterator<E> iterator, int index) {
         Assert.isTrue(index >= 0, "[index] must be >= 0");
+        if (null == iterator) {
+            return null;
+        }
         while (iterator.hasNext()) {
             index--;
             if (-1 == index) {

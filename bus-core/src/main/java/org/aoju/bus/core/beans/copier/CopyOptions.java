@@ -249,6 +249,7 @@ public class CopyOptions implements Serializable {
 
     /**
      * 设置拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
+     * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即fieldMapping中key为目标Bean的名称，而value是提供者中的key
      *
      * @param fieldMapping 拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
      * @return this
@@ -261,6 +262,7 @@ public class CopyOptions implements Serializable {
      * 设置字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
      * 此转换器只针对源端的字段做转换，请确认转换后与目标端字段一致
      * 当转换后的字段名为null时忽略这个字段
+     * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即fieldMapping中key为目标Bean的名称，而value是提供者中的key
      *
      * @param fieldNameEditor 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
      * @return this

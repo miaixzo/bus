@@ -1182,6 +1182,37 @@ public class BeanKit {
     }
 
     /**
+     * 判断source与target的所有公共字段的值是否相同
+     *
+     * @param source           待检测对象1
+     * @param target           待检测对象2
+     * @param ignoreProperties 不需要检测的字段
+     * @return 判断结果，如果为true则证明所有字段的值都相同
+     */
+    public static boolean isCommonFieldsEqual(Object source, Object target, String... ignoreProperties) {
+        if (null == source && null == target) {
+            return true;
+        }
+        if (null == source || null == target) {
+            return false;
+        }
+
+        Map<String, Object> sourceFieldsMap = beanToMap(source);
+        Map<String, Object> targetFieldsMap = beanToMap(target);
+
+        Set<String> sourceFields = sourceFieldsMap.keySet();
+        sourceFields.removeAll(Arrays.asList(ignoreProperties));
+
+        for (String field : sourceFields) {
+            if (ObjectKit.notEqual(sourceFieldsMap.get(field), targetFieldsMap.get(field))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * 修饰符枚举
      */
     public enum ModifierType {

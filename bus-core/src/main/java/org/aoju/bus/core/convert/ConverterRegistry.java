@@ -82,6 +82,7 @@ public class ConverterRegistry {
 
     /**
      * 登记自定义转换器
+     * F
      *
      * @param type           转换的目标类型
      * @param converterClass 转换器类,必须有默认构造方法
