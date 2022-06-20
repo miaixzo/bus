@@ -1508,7 +1508,7 @@ public final class Builder {
      */
     public static List<String> readFile(String filename, boolean reportError) {
         if (new File(filename).canRead()) {
-            if (Logger.get().isDebug()) {
+            if (Logger.isDebug()) {
                 Logger.debug(READING_LOG, filename);
             }
             try {
@@ -1547,7 +1547,7 @@ public final class Builder {
      */
     public static byte[] readAllBytes(String filename, boolean reportError) {
         if (new File(filename).canRead()) {
-            if (Logger.get().isDebug()) {
+            if (Logger.isDebug()) {
                 Logger.debug(READING_LOG, filename);
             }
             try {
@@ -1704,12 +1704,12 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise zero
      */
     public static long getLongFromFile(String filename) {
-        if (Logger.get().isDebug()) {
+        if (Logger.isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> read = Builder.readFile(filename, false);
         if (!read.isEmpty()) {
-            if (Logger.get().isTrace()) {
+            if (Logger.isTrace()) {
                 Logger.trace(READ_LOG, read.get(0));
             }
             return Builder.parseLongOrDefault(read.get(0), 0L);
@@ -1725,12 +1725,12 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise zero
      */
     public static long getUnsignedLongFromFile(String filename) {
-        if (Logger.get().isDebug()) {
+        if (Logger.isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> read = Builder.readFile(filename, false);
         if (!read.isEmpty()) {
-            if (Logger.get().isTrace()) {
+            if (Logger.isTrace()) {
                 Logger.trace(READ_LOG, read.get(0));
             }
             return Builder.parseUnsignedLongOrDefault(read.get(0), 0L);
@@ -1746,13 +1746,13 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise zero
      */
     public static int getIntFromFile(String filename) {
-        if (Logger.get().isDebug()) {
+        if (Logger.isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
         try {
             List<String> read = Builder.readFile(filename, false);
             if (!read.isEmpty()) {
-                if (Logger.get().isTrace()) {
+                if (Logger.isTrace()) {
                     Logger.trace(READ_LOG, read.get(0));
                 }
                 return Integer.parseInt(read.get(0));
@@ -1771,12 +1771,12 @@ public final class Builder {
      * @return The value contained in the file, if any; otherwise empty string
      */
     public static String getStringFromFile(String filename) {
-        if (Logger.get().isDebug()) {
+        if (Logger.isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> read = Builder.readFile(filename, false);
         if (!read.isEmpty()) {
-            if (Logger.get().isTrace()) {
+            if (Logger.isTrace()) {
                 Logger.trace(READ_LOG, read.get(0));
             }
             return read.get(0);
@@ -1798,7 +1798,7 @@ public final class Builder {
      */
     public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
         Map<String, String> map = new HashMap<>();
-        if (Logger.get().isDebug()) {
+        if (Logger.isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
         List<String> lines = Builder.readFile(filename, false);

@@ -160,7 +160,7 @@ public class SslSocketChannel extends AsynchronousSocketChannelProxy {
                         if (netBuffer.limit() == netBuffer.capacity()) {
                             Logger.warn("BUFFER_UNDERFLOW error");
                         } else {
-                            if (Logger.get().isDebug()) {
+                            if (Logger.isDebug()) {
                                 Logger.debug("BUFFER_UNDERFLOW,continue read:" + netBuffer);
                             }
                             if (netBuffer.position() > 0) {

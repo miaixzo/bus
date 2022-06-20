@@ -143,7 +143,7 @@ public final class KstatKit {
         }
         Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
-            if (Logger.get().isDebug()) {
+            if (Logger.isDebug()) {
                 Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
                         Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
                         Native.toString(ksp.ks_name, StandardCharsets.US_ASCII), name);
@@ -282,7 +282,7 @@ public final class KstatKit {
             int retry = 0;
             while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
-                    if (Logger.get().isDebug()) {
+                    if (Logger.isDebug()) {
                         Logger.debug("Failed to read kstat {}:{}:{}",
                                 Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
                                 Native.toString(ksp.ks_name, StandardCharsets.US_ASCII));

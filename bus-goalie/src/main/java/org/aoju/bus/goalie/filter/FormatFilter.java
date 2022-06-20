@@ -73,7 +73,7 @@ public class FormatFilter implements WebFilter {
                     DataBufferUtils.release(dataBuffer);
                     Message message = JsonKit.toPojo(bodyString, Message.class);
                     String formatBody = context.getFormat().getProvider().serialize(message);
-                    if (Logger.get().isTrace()) {
+                    if (Logger.isTrace()) {
                         Logger.trace("traceId:{},resp <= {}", exchange.getLogPrefix(), formatBody);
                     }
                     return bufferFactory().wrap(formatBody.getBytes());

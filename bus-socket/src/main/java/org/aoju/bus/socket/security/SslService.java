@@ -167,7 +167,7 @@ public class SslService {
             }
             while (!handshakeModel.isFinished()) {
                 handshakeStatus = engine.getHandshakeStatus();
-                if (Logger.get().isDebug()) {
+                if (Logger.isDebug()) {
                     Logger.info("握手状态:" + handshakeStatus);
                 }
                 switch (handshakeStatus) {

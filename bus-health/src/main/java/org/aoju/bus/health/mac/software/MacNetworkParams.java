@@ -69,7 +69,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
         PointerByReference ptr = new PointerByReference();
         int res = SYS.getaddrinfo(hostname, null, hint, ptr);
         if (res > 0) {
-            if (Logger.get().isError()) {
+            if (Logger.isError()) {
                 Logger.error("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
             }
             return Normal.EMPTY;

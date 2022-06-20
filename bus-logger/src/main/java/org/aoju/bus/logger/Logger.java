@@ -257,7 +257,7 @@ public final class Logger {
      * @return 获得日志, 自动判定日志发出者
      */
     public static Log get() {
-        return LogFactory.get(CallerKit.getCallers());
+        return get(CallerKit.getCallers());
     }
 
     /**
@@ -265,8 +265,8 @@ public final class Logger {
      *
      * @return the true/false
      */
-    public boolean isTrace() {
-        return LogFactory.get(CallerKit.getCallers()).isTrace();
+    public static boolean isTrace() {
+        return get().isTrace();
     }
 
     /**
@@ -274,8 +274,8 @@ public final class Logger {
      *
      * @return the true/false
      */
-    public boolean isDebug() {
-        return LogFactory.get(CallerKit.getCallers()).isDebug();
+    public static boolean isDebug() {
+        return get().isDebug();
     }
 
     /**
@@ -283,8 +283,8 @@ public final class Logger {
      *
      * @return the true/false
      */
-    public boolean isInfo() {
-        return LogFactory.get(CallerKit.getCallers()).isInfo();
+    public static boolean isInfo() {
+        return get().isInfo();
     }
 
     /**
@@ -292,8 +292,8 @@ public final class Logger {
      *
      * @return the true/false
      */
-    public boolean isWarn() {
-        return LogFactory.get(CallerKit.getCallers()).isWarn();
+    public static boolean isWarn() {
+        return get().isWarn();
     }
 
     /**
@@ -301,8 +301,8 @@ public final class Logger {
      *
      * @return the true/false
      */
-    public boolean isError() {
-        return LogFactory.get(CallerKit.getCallers()).isError();
+    public static boolean isError() {
+        return get().isError();
     }
 
 }

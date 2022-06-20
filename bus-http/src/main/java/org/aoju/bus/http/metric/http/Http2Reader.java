@@ -30,7 +30,6 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.logger.level.Level;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -80,7 +79,7 @@ public final class Http2Reader implements Closeable {
             }
         } else {
             ByteString connectionPreface = source.readByteString(Http2.CONNECTION_PREFACE.size());
-            if (Logger.get().isEnabled(Level.DEBUG)) {
+            if (Logger.isDebug()) {
                 Logger.warn(StringKit.format("<< CONNECTION %s", connectionPreface.hex()));
             }
             if (!Http2.CONNECTION_PREFACE.equals(connectionPreface)) {
@@ -106,7 +105,7 @@ public final class Http2Reader implements Closeable {
         }
         byte flags = (byte) (source.readByte() & 0xff);
         int streamId = (source.readInt() & 0x7fffffff);
-        if (Logger.get().isEnabled(Level.DEBUG)) {
+        if (Logger.isDebug()) {
             Logger.warn(Http2.frameLog(true, streamId, length, type, flags));
         }
 
@@ -470,7 +469,7 @@ public final class Http2Reader implements Closeable {
             length = left = readMedium(source);
             byte type = (byte) (source.readByte() & 0xff);
             flags = (byte) (source.readByte() & 0xff);
-            if (Logger.get().isEnabled(Level.DEBUG)) {
+            if (Logger.isDebug()) {
                 Logger.warn(Http2.frameLog(true, streamId, length, type, flags));
             }
             streamId = (source.readInt() & 0x7fffffff);

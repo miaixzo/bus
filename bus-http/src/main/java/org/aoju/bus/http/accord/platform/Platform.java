@@ -33,7 +33,6 @@ import org.aoju.bus.http.secure.BasicTrustRootIndex;
 import org.aoju.bus.http.secure.CertificateChainCleaner;
 import org.aoju.bus.http.secure.TrustRootIndex;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.logger.level.Level;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -234,7 +233,7 @@ public class Platform {
      * @return 返回一个对象
      */
     public Object getStackTraceForCloseable(String closer) {
-        if (Logger.get().isEnabled(Level.DEBUG)) {
+        if (Logger.isDebug()) {
             return new Throwable(closer);
         }
         return null;
