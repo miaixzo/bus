@@ -74,6 +74,12 @@ public class BaseEntity extends Tracer {
     protected String modified;
 
     /**
+     * 搜索参数
+     */
+    @Transient
+    protected transient String params;
+
+    /**
      * 分页页码
      */
     @Transient

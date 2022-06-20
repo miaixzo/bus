@@ -79,13 +79,13 @@ public class OAuth2 extends Entity {
     protected String x_device_id;
 
     /**
-     * 应用id: 应用数据隔离
+     * 当前应用
      */
     @Transient
     protected String x_app_id;
 
     /**
-     * 租户id: 租户数据隔离
+     * 当前租户
      */
     @Transient
     protected String x_tenant_id;
