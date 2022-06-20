@@ -22,8 +22,8 @@ import java.util.Map;
  */
 public class Secure {
 
-    static final int KEY_LENGTH_BYTE = 32;
-    static final int TAG_LENGTH_BIT = 128;
+    private static final int KEY_LENGTH_BYTE = 32;
+    private static final int TAG_LENGTH_BIT = 128;
     /**
      * RSA最大加密明文大小
      */

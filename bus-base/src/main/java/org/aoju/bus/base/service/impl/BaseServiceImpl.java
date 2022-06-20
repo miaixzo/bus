@@ -176,8 +176,8 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     }
 
     @Override
-    public Long selectCount(T entity) {
-        return new Long(mapper.selectCount(entity));
+    public int selectCount(T entity) {
+        return mapper.selectCount(entity);
     }
 
     @Override

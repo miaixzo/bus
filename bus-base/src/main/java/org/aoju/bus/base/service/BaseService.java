@@ -187,7 +187,7 @@ public interface BaseService<T> extends Service {
      * @param entity 对象参数
      * @return 操作结果
      */
-    Long selectCount(T entity);
+    int selectCount(T entity);
 
     /**
      * 通用:查询统计数据

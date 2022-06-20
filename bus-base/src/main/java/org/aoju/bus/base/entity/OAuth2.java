@@ -58,30 +58,42 @@ public class OAuth2 extends Entity {
      * 当前用户角色
      */
     @Transient
-    private String x_role_id;
+    protected String x_role_id;
 
     /**
      * 当前用户职称
      */
     @Transient
-    private String x_duty_id;
+    protected String x_duty_id;
 
     /**
      * 当前用户组织
      */
     @Transient
-    private String x_org_id;
+    protected String x_org_id;
 
     /**
      * 当前用户设备
      */
     @Transient
-    private String x_device_id;
+    protected String x_device_id;
+
+    /**
+     * 应用id: 应用数据隔离
+     */
+    @Transient
+    protected String x_app_id;
+
+    /**
+     * 租户id: 租户数据隔离
+     */
+    @Transient
+    protected String x_tenant_id;
 
     /**
      * 扩展参数信息
      */
     @Transient
-    private String x_extension;
+    protected String x_extension;
 
 }
