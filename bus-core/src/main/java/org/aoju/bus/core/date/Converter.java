@@ -27,6 +27,7 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CharsKit;
+import org.aoju.bus.core.toolkit.ZoneKit;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -293,6 +294,28 @@ public class Converter extends Formatter {
      */
     public static LocalDate toLocalDate(YearMonth yearMonth, int dayOfMonth) {
         return yearMonth.atDay(dayOfMonth);
+    }
+
+    /**
+     * {@link Date} 转换时区
+     *
+     * @param date   {@link Date}
+     * @param zoneId {@link ZoneId}
+     * @return {@link DateTime}
+     */
+    public static DateTime toTimeZone(Date date, ZoneId zoneId) {
+        return new DateTime(date, ZoneKit.toTimeZone(zoneId));
+    }
+
+    /**
+     * {@link Date} 转换时区
+     *
+     * @param date     {@link Date}
+     * @param timeZone {@link TimeZone}
+     * @return {@link DateTime}
+     */
+    public static DateTime toTimeZone(Date date, TimeZone timeZone) {
+        return new DateTime(date, timeZone);
     }
 
     /**

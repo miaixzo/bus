@@ -118,7 +118,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         GenericBeanDefinition definition;
         for (BeanDefinitionHolder holder : beanDefinitions) {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
-            if (Logger.get().isDebug()) {
+            if (Logger.isDebug()) {
                 Logger.debug("Creating MapperFactoryBean with name '" + holder.getBeanName()
                         + "' and '" + definition.getBeanClassName() + "' mapperInterface");
             }
@@ -160,7 +160,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 explicitFactoryUsed = true;
             }
             if (!explicitFactoryUsed) {
-                if (Logger.get().isDebug()) {
+                if (Logger.isDebug()) {
                     Logger.debug("Enabling autowire by type for MapperFactoryBean with name '" + holder.getBeanName() + "'.");
                 }
                 definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);

@@ -43,20 +43,12 @@ public class ApacheCommonsLogFactory extends LogFactory {
 
     @Override
     public Log createLog(String name) {
-        try {
-            return new ApacheCommonsLog4JLog(name);
-        } catch (Exception e) {
-            return new ApacheCommonsLog(name);
-        }
+        return new ApacheCommonsLog(name);
     }
 
     @Override
     public Log createLog(Class<?> clazz) {
-        try {
-            return new ApacheCommonsLog4JLog(clazz);
-        } catch (Exception e) {
-            return new ApacheCommonsLog(clazz);
-        }
+        return new ApacheCommonsLog(clazz);
     }
 
     @Override

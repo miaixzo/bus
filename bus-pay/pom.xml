@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pay</artifactId>
-    <version>6.5.1</version>
+    <version>6.5.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -50,7 +50,8 @@
         <zxing.version>3.5.0</zxing.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <spring.boot.version>2.7.0</spring.boot.version>
-        <binarywang.version>4.1.0</binarywang.version>
+        <binarywang.version>4.3.5.B</binarywang.version>
+        <alipay.version>4.31.24.ALL</alipay.version>
     </properties>
 
     <dependencies>
@@ -92,22 +93,26 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${servlet.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bouncycastle.version}</version>
-            <optional>true</optional>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>4.22.22.ALL</version>
+            <version>${alipay.version}</version>
         </dependency>
         <dependency>
             <groupId>com.paypal.sdk</groupId>
@@ -118,11 +123,6 @@
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-pay</artifactId>
             <version>${binarywang.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>${zxing.version}</version>
         </dependency>
     </dependencies>
 

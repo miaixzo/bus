@@ -71,7 +71,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
         PointerByReference ptr = new PointerByReference();
         int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
         if (res > 0) {
-            if (Logger.get().isError()) {
+            if (Logger.isError()) {
                 Logger.error("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
             }
             return "";

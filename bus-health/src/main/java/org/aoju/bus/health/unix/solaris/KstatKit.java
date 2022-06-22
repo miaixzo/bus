@@ -70,6 +70,125 @@ public final class KstatKit {
     }
 
     /**
+     * A copy of the Kstat chain, encapsulating a {@code kstat_ctl_t} object. Only
+     * one thread may actively use this object at any time.
+     * <p>
+     * The chain is created once calling {@link LibKstat#kstat_open} and then this
+     * object is instantiated using the {@link KstatKit#openChain} method.
+     * Instantiating this object updates the chain using
+     * {@link LibKstat#kstat_chain_update}. The control object should be closed with
+     * {@link #close}, which releases the lock and allows another instance to be
+     * instantiated.
+     */
+    public static final class KstatChain implements AutoCloseable {
+
+        private final KstatCtl localCtlRef;
+
+        private KstatChain(KstatCtl ctl) {
+            this.localCtlRef = ctl;
+            update();
+        }
+
+        /**
+         * Convenience method for {@link LibKstat#kstat_read} which gets data from the
+         * kernel for the kstat pointed to by {@code ksp}. {@code ksp.ks_data} is
+         * automatically allocated (or reallocated) to be large enough to hold all of
+         * the data. {@code ksp.ks_ndata} is set to the number of data fields,
+         * {@code ksp.ks_data_size} is set to the total size of the data, and
+         * ksp.ks_snaptime is set to the high-resolution time at which the data snapshot
+         * was taken.
+         *
+         * @param ksp The kstat from which to retrieve data
+         * @return {@code true} if successful; {@code false} otherwise
+         */
+        @GuardeBy("CHAIN")
+        public boolean read(Kstat ksp) {
+            int retry = 0;
+            while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
+                if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
+                    if (Logger.isDebug()) {
+                        Logger.debug("Failed to read kstat {}:{}:{}",
+                                Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
+                                Native.toString(ksp.ks_name, StandardCharsets.US_ASCII));
+                    }
+                    return false;
+                }
+                ThreadKit.sleep(8 << retry);
+            }
+            return true;
+        }
+
+        /**
+         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
+         * chain, searching for a kstat with the same {@code module}, {@code instance},
+         * and {@code name} fields; this triplet uniquely identifies a kstat. If
+         * {@code module} is {@code null}, {@code instance} is -1, or {@code name} is
+         * {@code null}, then those fields will be ignored in the search.
+         *
+         * @param module   The module, or null to ignore
+         * @param instance The instance, or -1 to ignore
+         * @param name     The name, or null to ignore
+         * @return The first match of the requested Kstat structure if found, or
+         * {@code null}
+         */
+        @GuardeBy("CHAIN")
+        public Kstat lookup(String module, int instance, String name) {
+            return LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name);
+        }
+
+        /**
+         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
+         * chain, searching for all kstats with the same {@code module},
+         * {@code instance}, and {@code name} fields; this triplet uniquely identifies a
+         * kstat. If {@code module} is {@code null}, {@code instance} is -1, or
+         * {@code name} is {@code null}, then those fields will be ignored in the
+         * search.
+         *
+         * @param module   The module, or null to ignore
+         * @param instance The instance, or -1 to ignore
+         * @param name     The name, or null to ignore
+         * @return All matches of the requested Kstat structure if found, or an empty
+         * list otherwise
+         */
+        @GuardeBy("CHAIN")
+        public List<Kstat> lookupAll(String module, int instance, String name) {
+            List<Kstat> kstats = new ArrayList<>();
+            for (Kstat ksp = LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name); ksp != null; ksp = ksp
+                    .next()) {
+                if ((module == null || module.equals(Native.toString(ksp.ks_module, StandardCharsets.US_ASCII)))
+                        && (instance < 0 || instance == ksp.ks_instance)
+                        && (name == null || name.equals(Native.toString(ksp.ks_name, StandardCharsets.US_ASCII)))) {
+                    kstats.add(ksp);
+                }
+            }
+            return kstats;
+        }
+
+        /**
+         * Convenience method for {@link LibKstat#kstat_chain_update}. Brings this kstat
+         * header chain in sync with that of the kernel.
+         * <p>
+         * This function compares the kernel's current kstat chain ID(KCID), which is
+         * incremented every time the kstat chain changes, to this object's KCID.
+         *
+         * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or -1 on
+         * failure.
+         */
+        @GuardeBy("CHAIN")
+        public int update() {
+            return LibKstat.INSTANCE.kstat_chain_update(localCtlRef);
+        }
+
+        /**
+         * Release the lock on the chain.
+         */
+        @Override
+        public void close() {
+            CHAIN.unlock();
+        }
+    }
+
+    /**
      * Lock the Kstat chain for use by this object until it's closed.
      *
      * @return A locked copy of the chain. It should be unlocked/released when you
@@ -143,7 +262,7 @@ public final class KstatKit {
         }
         Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
-            if (Logger.get().isDebug()) {
+            if (Logger.isDebug()) {
                 Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
                         Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
                         Native.toString(ksp.ks_name, StandardCharsets.US_ASCII), name);
@@ -243,125 +362,6 @@ public final class KstatKit {
             matchers.free();
         }
         return results;
-    }
-
-    /**
-     * A copy of the Kstat chain, encapsulating a {@code kstat_ctl_t} object. Only
-     * one thread may actively use this object at any time.
-     * <p>
-     * The chain is created once calling {@link LibKstat#kstat_open} and then this
-     * object is instantiated using the {@link KstatKit#openChain} method.
-     * Instantiating this object updates the chain using
-     * {@link LibKstat#kstat_chain_update}. The control object should be closed with
-     * {@link #close}, which releases the lock and allows another instance to be
-     * instantiated.
-     */
-    public static final class KstatChain implements AutoCloseable {
-
-        private final KstatCtl localCtlRef;
-
-        private KstatChain(KstatCtl ctl) {
-            this.localCtlRef = ctl;
-            update();
-        }
-
-        /**
-         * Convenience method for {@link LibKstat#kstat_read} which gets data from the
-         * kernel for the kstat pointed to by {@code ksp}. {@code ksp.ks_data} is
-         * automatically allocated (or reallocated) to be large enough to hold all of
-         * the data. {@code ksp.ks_ndata} is set to the number of data fields,
-         * {@code ksp.ks_data_size} is set to the total size of the data, and
-         * ksp.ks_snaptime is set to the high-resolution time at which the data snapshot
-         * was taken.
-         *
-         * @param ksp The kstat from which to retrieve data
-         * @return {@code true} if successful; {@code false} otherwise
-         */
-        @GuardeBy("CHAIN")
-        public boolean read(Kstat ksp) {
-            int retry = 0;
-            while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
-                if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
-                    if (Logger.get().isDebug()) {
-                        Logger.debug("Failed to read kstat {}:{}:{}",
-                                Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
-                                Native.toString(ksp.ks_name, StandardCharsets.US_ASCII));
-                    }
-                    return false;
-                }
-                ThreadKit.sleep(8 << retry);
-            }
-            return true;
-        }
-
-        /**
-         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
-         * chain, searching for a kstat with the same {@code module}, {@code instance},
-         * and {@code name} fields; this triplet uniquely identifies a kstat. If
-         * {@code module} is {@code null}, {@code instance} is -1, or {@code name} is
-         * {@code null}, then those fields will be ignored in the search.
-         *
-         * @param module   The module, or null to ignore
-         * @param instance The instance, or -1 to ignore
-         * @param name     The name, or null to ignore
-         * @return The first match of the requested Kstat structure if found, or
-         * {@code null}
-         */
-        @GuardeBy("CHAIN")
-        public Kstat lookup(String module, int instance, String name) {
-            return LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name);
-        }
-
-        /**
-         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
-         * chain, searching for all kstats with the same {@code module},
-         * {@code instance}, and {@code name} fields; this triplet uniquely identifies a
-         * kstat. If {@code module} is {@code null}, {@code instance} is -1, or
-         * {@code name} is {@code null}, then those fields will be ignored in the
-         * search.
-         *
-         * @param module   The module, or null to ignore
-         * @param instance The instance, or -1 to ignore
-         * @param name     The name, or null to ignore
-         * @return All matches of the requested Kstat structure if found, or an empty
-         * list otherwise
-         */
-        @GuardeBy("CHAIN")
-        public List<Kstat> lookupAll(String module, int instance, String name) {
-            List<Kstat> kstats = new ArrayList<>();
-            for (Kstat ksp = LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name); ksp != null; ksp = ksp
-                    .next()) {
-                if ((module == null || module.equals(Native.toString(ksp.ks_module, StandardCharsets.US_ASCII)))
-                        && (instance < 0 || instance == ksp.ks_instance)
-                        && (name == null || name.equals(Native.toString(ksp.ks_name, StandardCharsets.US_ASCII)))) {
-                    kstats.add(ksp);
-                }
-            }
-            return kstats;
-        }
-
-        /**
-         * Convenience method for {@link LibKstat#kstat_chain_update}. Brings this kstat
-         * header chain in sync with that of the kernel.
-         * <p>
-         * This function compares the kernel's current kstat chain ID(KCID), which is
-         * incremented every time the kstat chain changes, to this object's KCID.
-         *
-         * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or -1 on
-         * failure.
-         */
-        @GuardeBy("CHAIN")
-        public int update() {
-            return LibKstat.INSTANCE.kstat_chain_update(localCtlRef);
-        }
-
-        /**
-         * Release the lock on the chain.
-         */
-        @Override
-        public void close() {
-            CHAIN.unlock();
-        }
     }
 
 }

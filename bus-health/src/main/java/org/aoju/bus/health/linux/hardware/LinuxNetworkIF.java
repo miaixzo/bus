@@ -29,6 +29,7 @@ import com.sun.jna.platform.linux.Udev;
 import com.sun.jna.platform.linux.Udev.UdevContext;
 import com.sun.jna.platform.linux.Udev.UdevDevice;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
@@ -63,8 +64,8 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     private long collisions;
     private long speed;
     private long timeStamp;
-    private String ifAlias;
-    private NetworkIF.IfOperStatus ifOperStatus;
+    private String ifAlias = Normal.EMPTY;
+    private NetworkIF.IfOperStatus ifOperStatus = NetworkIF.IfOperStatus.UNKNOWN;
 
     public LinuxNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint, queryIfModel(netint));

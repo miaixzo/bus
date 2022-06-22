@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>6.5.1</version>
+    <version>6.5.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <alipay.sdk.version>4.22.113.ALL</alipay.sdk.version>
+        <alipay.sdk.version>4.31.24.ALL</alipay.sdk.version>
         <lombok.version>1.18.24</lombok.version>
         <fastjson.version>1.2.83</fastjson.version>
     </properties>

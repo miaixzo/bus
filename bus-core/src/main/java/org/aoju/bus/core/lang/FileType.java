@@ -834,6 +834,7 @@ public class FileType {
             put("E3828596", "pwl");
             // Real Audio (ram)
             put("2E7261FD", "ram");
+            put("52494646", "webp");
         }
     };
 

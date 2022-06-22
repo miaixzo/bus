@@ -94,7 +94,7 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
             }
 
             // 检查目标字段可写性
-            PropertyDesc tDesc = findPropertyDesc(targetPropertyDescMap, sKeyStr);
+            final PropertyDesc tDesc = findPropertyDesc(targetPropertyDescMap, sKeyStr);
             if (null == tDesc || false == tDesc.isWritable(this.copyOptions.transientSupport)) {
                 // 字段不可写，跳过之
                 return;

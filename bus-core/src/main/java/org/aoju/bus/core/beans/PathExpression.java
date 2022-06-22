@@ -168,20 +168,13 @@ public class PathExpression implements Serializable {
     }
 
     /**
-     * 设置表达式指定位置(或filed对应)的值
-     * 若表达式指向一个List则设置其坐标对应位置的值,若指向Map则put对应key的值,Bean则设置字段的值
-     * 注意：
+     * 判断path列表中末尾的标记是否为数字
      *
-     * <pre>
-     * 1. 如果为List,如果下标不大于List长度,则替换原有值,否则追加值
-     * 2. 如果为数组,如果下标不大于数组长度,则替换原有值,否则追加值
-     * </pre>
-     *
-     * @param bean  Bean、Map或List
-     * @param value 值
+     * @param patternParts path列表
+     * @return 是否为数字
      */
-    public void set(final Object bean, final Object value) {
-        set(bean, this.patternParts, value);
+    private static boolean lastIsNumber(List<String> patternParts) {
+        return MathKit.isInteger(patternParts.get(patternParts.size() - 1));
     }
 
     @Override
@@ -190,27 +183,13 @@ public class PathExpression implements Serializable {
     }
 
     /**
-     * 设置表达式指定位置(或filed对应)的值
-     * 若表达式指向一个List则设置其坐标对应位置的值,若指向Map则put对应key的值,Bean则设置字段的值
-     * 注意：
+     * 获取父级路径列表
      *
-     * <pre>
-     * 1. 如果为List,如果下标不大于List长度,则替换原有值,否则追加值
-     * 2. 如果为数组,如果下标不大于数组长度,则替换原有值,否则追加值
-     * </pre>
-     *
-     * @param bean         Bean、Map或List
-     * @param patternParts 表达式块列表
-     * @param value        值
+     * @param patternParts 路径列表
+     * @return 父级路径列表
      */
-    private void set(final Object bean, final List<String> patternParts, final Object value) {
-        Object subBean = get(patternParts, bean, true);
-        if (null == subBean) {
-            set(bean, patternParts.subList(0, patternParts.size() - 1), new HashMap<>());
-            //set中有可能做过转换,因此此处重新获取bean
-            subBean = get(patternParts, bean, true);
-        }
-        BeanKit.setFieldValue(subBean, patternParts.get(patternParts.size() - 1), value);
+    private static List<String> getParentParts(List<String> patternParts) {
+        return patternParts.subList(0, patternParts.size() - 1);
     }
 
     /**
@@ -312,6 +291,48 @@ public class PathExpression implements Serializable {
 
         // 不可变List
         this.patternParts = CollKit.unmodifiable(localPatternParts);
+    }
+
+    /**
+     * 设置表达式指定位置(或filed对应)的值
+     * 若表达式指向一个List则设置其坐标对应位置的值,若指向Map则put对应key的值,Bean则设置字段的值
+     * 注意：
+     *
+     * <pre>
+     * 1. 如果为List,如果下标不大于List长度,则替换原有值,否则追加值
+     * 2. 如果为数组,如果下标不大于数组长度,则替换原有值,否则追加值
+     * </pre>
+     *
+     * @param bean  Bean、Map或List
+     * @param value 值
+     */
+    public void set(final Object bean, final Object value) {
+        set(bean, this.patternParts, lastIsNumber(this.patternParts), value);
+    }
+
+    /**
+     * 设置表达式指定位置(或filed对应)的值
+     * 若表达式指向一个List则设置其坐标对应位置的值,若指向Map则put对应key的值,Bean则设置字段的值
+     * 注意：
+     *
+     * <pre>
+     * 1. 如果为List,如果下标不大于List长度,则替换原有值,否则追加值
+     * 2. 如果为数组,如果下标不大于数组长度,则替换原有值,否则追加值
+     * </pre>
+     *
+     * @param bean         Bean、Map或List
+     * @param patternParts 表达式块列表
+     * @param value        值
+     */
+    private void set(Object bean, List<String> patternParts, boolean nextNumberPart, Object value) {
+        Object subBean = this.get(patternParts, bean, true);
+        if (null == subBean) {
+            final List<String> parentParts = getParentParts(patternParts);
+            this.set(bean, parentParts, lastIsNumber(parentParts), nextNumberPart ? new ArrayList<>() : new HashMap<>());
+            //set中有可能做过转换，因此此处重新获取bean
+            subBean = this.get(patternParts, bean, true);
+        }
+        BeanKit.setFieldValue(subBean, patternParts.get(patternParts.size() - 1), value);
     }
 
 }

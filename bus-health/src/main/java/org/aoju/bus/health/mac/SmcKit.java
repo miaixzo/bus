@@ -83,7 +83,7 @@ public final class SmcKit {
             smcService.release();
             if (result == 0) {
                 return new IOConnect(connPtr.getValue());
-            } else if (Logger.get().isError()) {
+            } else if (Logger.isError()) {
                 Logger.error(String.format("Unable to open connection to AppleSMC service. Error: 0x%08x", result));
             }
         } else {

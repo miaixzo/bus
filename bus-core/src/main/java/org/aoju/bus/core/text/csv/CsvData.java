@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
+import java.io.Serializable;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -34,7 +36,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CsvData {
+public final class CsvData implements Iterable<CsvRow>, Serializable {
 
     private final List<String> header;
     private final List<CsvRow> rows;
@@ -65,7 +67,10 @@ public final class CsvData {
      * @return 标题行-如果不存在标题，可能是{@code null}
      */
     public List<String> getHeader() {
-        return header;
+        if (null == this.header) {
+            return null;
+        }
+        return Collections.unmodifiableList(this.header);
     }
 
     /**
@@ -85,6 +90,11 @@ public final class CsvData {
      */
     public List<CsvRow> getRows() {
         return Collections.unmodifiableList(rows);
+    }
+
+    @Override
+    public Iterator<CsvRow> iterator() {
+        return this.rows.iterator();
     }
 
     @Override

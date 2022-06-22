@@ -302,7 +302,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
             for (int i = 0; i < freqs.length; i++) {
                 for (Kstat ksp : kc.lookupAll(CPU_INFO, i, null)) {
-                    if (kc.read(ksp)) {
+                    if (ksp != null && kc.read(ksp)) {
                         freqs[i] = KstatKit.dataLookupLong(ksp, "current_clock_Hz");
                     }
                 }

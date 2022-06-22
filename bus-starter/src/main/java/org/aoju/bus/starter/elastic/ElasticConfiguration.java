@@ -28,6 +28,7 @@ package org.aoju.bus.starter.elastic;
 import org.aoju.bus.base.consts.Consts;
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.apache.http.HttpHost;
@@ -38,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class ElasticConfiguration {
     @Bean
     @ConditionalOnClass
     public RestClientBuilder restClientBuilder() {
-        if (CollectionUtils.isEmpty(this.elasticProperties.getHostList())) {
+        if (CollKit.isEmpty(this.elasticProperties.getHostList())) {
             Logger.error("[ElasticConfiguration.restClientBuilder] 初始化 RestClient 失败: 未配置集群主机信息");
             throw new InstrumentException("初始化 RestClient 失败: 未配置 ElasticSearch 集群主机信息");
         }

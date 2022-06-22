@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-extra</artifactId>
-    <version>6.5.1</version>
+    <version>6.5.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -150,7 +150,7 @@
         <dependency>
             <groupId>org.apache.ftpserver</groupId>
             <artifactId>ftpserver-core</artifactId>
-            <version>1.1.1</version>
+            <version>1.2.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>slf4j-api</artifactId>

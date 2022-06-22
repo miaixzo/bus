@@ -124,7 +124,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         }
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
             Kstat ksp = kc.lookup("unix", 0, "system_misc");
-            if (ksp != null) {
+            if (ksp != null && kc.read(ksp)) {
                 // Snap Time is in nanoseconds; divide for seconds
                 return ksp.ks_snaptime / 1_000_000_000L;
             }
