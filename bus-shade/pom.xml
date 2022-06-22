@@ -47,7 +47,7 @@
         <freemarker.version>2.3.30</freemarker.version>
         <lombok.version>1.18.24</lombok.version>
         <druid.version>1.2.8</druid.version>
-        <mysql.version>8.0.28</mysql.version>
+        <mysql.version>8.0.29</mysql.version>
     </properties>
 
     <dependencies>

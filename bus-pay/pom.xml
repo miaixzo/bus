@@ -50,7 +50,8 @@
         <zxing.version>3.5.0</zxing.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <spring.boot.version>2.7.0</spring.boot.version>
-        <binarywang.version>4.1.0</binarywang.version>
+        <binarywang.version>4.3.5.B</binarywang.version>
+        <alipay.version>4.31.24.ALL</alipay.version>
     </properties>
 
     <dependencies>
@@ -108,11 +109,10 @@
             <artifactId>core</artifactId>
             <version>${zxing.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>4.22.22.ALL</version>
+            <version>${alipay.version}</version>
         </dependency>
         <dependency>
             <groupId>com.paypal.sdk</groupId>
