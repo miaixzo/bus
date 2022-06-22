@@ -302,7 +302,6 @@ public class Converter extends Formatter {
      * @param date   {@link Date}
      * @param zoneId {@link ZoneId}
      * @return {@link DateTime}
-     * @see DateTime(Date, ZoneId )
      */
     public static DateTime toTimeZone(Date date, ZoneId zoneId) {
         return new DateTime(date, ZoneKit.toTimeZone(zoneId));
@@ -314,7 +313,6 @@ public class Converter extends Formatter {
      * @param date     {@link Date}
      * @param timeZone {@link TimeZone}
      * @return {@link DateTime}
-     * @see DateTime(Date,ZoneId)
      */
     public static DateTime toTimeZone(Date date, TimeZone timeZone) {
         return new DateTime(date, timeZone);

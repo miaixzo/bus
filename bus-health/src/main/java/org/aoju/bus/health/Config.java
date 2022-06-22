@@ -45,7 +45,6 @@ public final class Config {
     public static final String MACOS_VERSIONS_PROPERTIES = "bus.health.macos.version.properties";
     public static final String VM_MAC_ADDR_PROPERTIES = "bus.health.vmmacaddr.properties";
     public static final String ARCHITECTURE_PROPERTIES = "bus.health.architecture.properties";
-
     public static final String MEMOIZER_EXPIRATION = "bus.health.memoizer.expiration";
     public static final String WMI_TIMEOUT = "bus.health.wmi.timeout";
     public static final String PROC_PATH = "bus.health.proc.path";
@@ -57,13 +56,10 @@ public final class Config {
     public static final String OS_WINDOWS_HKEYPERFDATA = "bus.health.os.windows.hkeyperfdata";
     public static final String OSHI_OS_WINDOWS_LOADAVERAGE = "bus.health.os.windows.loadaverage";
     public static final String OS_WINDOWS_CPU_UTILITY = "bus.health.os.windows.cpu.utility";
-
     public static final String OS_WINDOWS_PERFDISK_DIABLED = "bus.os.windows.perfdisk.disabled";
     public static final String OS_WINDOWS_PERFOS_DIABLED = "bus.os.windows.perfos.disabled";
     public static final String OS_WINDOWS_PERFPROC_DIABLED = "bus.os.windows.perfproc.disabled";
-
     public static final String OS_UNIX_WHOCOMMAND = "bus.health.os.unix.whoCommand";
-
     private static final Properties CONFIG = readProperties(PROPERTIES);
 
     /**

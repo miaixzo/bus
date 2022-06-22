@@ -3015,6 +3015,43 @@ public class CollKit {
     }
 
     /**
+     * 在指定位置设置元素。当index小于List的长度时，替换指定位置的值，否则追加{@code null}直到到达index后，设置值
+     *
+     * @param <T>     元素类型
+     * @param list    List列表
+     * @param index   位置
+     * @param element 新元素
+     * @return 原List
+     */
+    public static <T> List<T> setOrPadding(List<T> list, int index, T element) {
+        return setOrPadding(list, index, element, null);
+    }
+
+    /**
+     * 在指定位置设置元素。当index小于List的长度时，替换指定位置的值，否则追加{@code paddingElement}直到到达index后，设置值
+     *
+     * @param <T>            元素类型
+     * @param list           List列表
+     * @param index          位置
+     * @param element        新元素
+     * @param paddingElement 填充的值
+     * @return 原List
+     */
+    public static <T> List<T> setOrPadding(List<T> list, int index, T element, T paddingElement) {
+        Assert.notNull(list, "List must be not null !");
+        final int size = list.size();
+        if (index < size) {
+            list.set(index, element);
+        } else {
+            for (int i = size; i < index; i++) {
+                list.add(paddingElement);
+            }
+            list.add(element);
+        }
+        return list;
+    }
+
+    /**
      * 将页数和每页条目数转换为开始位置和结束位置
      * 此方法用于不包括结束位置的分页方法
      * 例如：
