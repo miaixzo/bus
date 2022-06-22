@@ -73,7 +73,7 @@ public class RedisRatelimiter extends RateLimiter {
         }
 
         public RedisRatelimiterObject getRedisRatelimiterObject(String name) {
-            return new RedisRatelimiterObject(connectionManager.getCommandExecutor(), name);
+            return new RedisRatelimiterObject(commandExecutor, name);
         }
     }
 
