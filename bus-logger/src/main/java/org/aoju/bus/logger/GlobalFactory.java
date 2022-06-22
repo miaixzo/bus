@@ -28,7 +28,6 @@ package org.aoju.bus.logger;
 import org.aoju.bus.logger.dialect.commons.ApacheCommonsLogFactory;
 import org.aoju.bus.logger.dialect.console.ConsoleLogFactory;
 import org.aoju.bus.logger.dialect.jdk.JdkLogFactory;
-import org.aoju.bus.logger.dialect.log4j.Log4jLogFactory;
 import org.aoju.bus.logger.dialect.log4j2.Log4j2LogFactory;
 import org.aoju.bus.logger.dialect.slf4j.Slf4jLogFactory;
 
@@ -66,7 +65,6 @@ public class GlobalFactory {
      * @param logFactoryClass 日志工厂类
      * @return 自定义的日志工厂类
      * @see Slf4jLogFactory
-     * @see Log4jLogFactory
      * @see Log4j2LogFactory
      * @see ApacheCommonsLogFactory
      * @see JdkLogFactory
@@ -86,7 +84,6 @@ public class GlobalFactory {
      * @param logFactory 日志工厂类对象
      * @return 自定义的日志工厂类
      * @see Slf4jLogFactory
-     * @see Log4jLogFactory
      * @see Log4j2LogFactory
      * @see ApacheCommonsLogFactory
      * @see JdkLogFactory
