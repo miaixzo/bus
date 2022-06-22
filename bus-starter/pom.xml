@@ -56,7 +56,7 @@
         <mysql.version>8.0.29</mysql.version>
         <dubbo.version>3.0.8</dubbo.version>
         <servlet.version>4.0.4</servlet.version>
-        <elasticsearch.version>8.2.3</elasticsearch.version>
+        <elasticsearch.version>7.17.4</elasticsearch.version>
     </properties>
 
     <dependencies>
