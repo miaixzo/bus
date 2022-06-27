@@ -62,7 +62,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String method = request.getMethod().toUpperCase();
-        isHandle(request, method);
+        this.requestInfo(request, method);
         if (Http.GET.equals(method)
                 || Http.POST.equals(method)
                 || Http.PATCH.equals(method)
@@ -73,42 +73,6 @@ public class GenieWrapperHandler implements HandlerInterceptor {
             }
         }
         return true;
-    }
-
-    /**
-     * 请求日志信息
-     *
-     * @param method  请求类型
-     * @param request 网络请求
-     */
-    public static void isHandle(HttpServletRequest request, String method) {
-        switch (method) {
-            case Http.ALL:
-                method = AnsiEncoder.encode(AnsiBackground.WHITE, " %s ", method);
-                break;
-            case Http.GET:
-                method = AnsiEncoder.encode(AnsiBackground.GREEN, " %s ", method);
-                break;
-            case Http.POST:
-                method = AnsiEncoder.encode(AnsiBackground.MAGENTA, " %s ", method);
-                break;
-            case Http.DELETE:
-                method = AnsiEncoder.encode(AnsiBackground.BLUE, " %s ", method);
-                break;
-            case Http.PUT:
-                method = AnsiEncoder.encode(AnsiBackground.RED, " %s ", method);
-                break;
-            case Http.OPTIONS:
-                method = AnsiEncoder.encode(AnsiBackground.YELLOW, " %s ", method);
-                break;
-            case Http.BEFORE:
-                method = AnsiEncoder.encode(AnsiBackground.BLACK, " %s ", method);
-                break;
-            case Http.AFTER:
-                method = AnsiEncoder.encode(AnsiBackground.CYAN, " %s ", method);
-                break;
-        }
-        Logger.info("{} {} {}", "==>", ServletKit.getClientIP(request), method, request.getRequestURL().toString());
     }
 
     /**
@@ -153,6 +117,40 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
 
+    }
+
+    /**
+     * 请求日志信息
+     *
+     * @param method  请求类型
+     * @param request 网络请求
+     */
+    private void requestInfo(HttpServletRequest request, String method) {
+        String requestMethod = AnsiEncoder.encode(AnsiBackground.GREEN, " %s ", method);
+        switch (method) {
+            case Http.ALL:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.WHITE, " %s ", method);
+                break;
+            case Http.POST:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.MAGENTA, " %s ", method);
+                break;
+            case Http.DELETE:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.BLUE, " %s ", method);
+                break;
+            case Http.PUT:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.RED, " %s ", method);
+                break;
+            case Http.OPTIONS:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.YELLOW, " %s ", method);
+                break;
+            case Http.BEFORE:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.BLACK, " %s ", method);
+                break;
+            case Http.AFTER:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.CYAN, " %s ", method);
+                break;
+        }
+        Logger.info("{} {} {}", "==>", ServletKit.getClientIP(request), requestMethod, request.getRequestURL().toString());
     }
 
 }
