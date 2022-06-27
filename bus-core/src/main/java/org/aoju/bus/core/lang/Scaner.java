@@ -136,7 +136,7 @@ public class Scaner {
      * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
      * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
+     * @param packageName 包路径 com |  com.xxx
      * @param classFilter class过滤器，过滤掉不需要的class
      * @return 类集合
      */
@@ -156,7 +156,7 @@ public class Scaner {
     /**
      * 扫描该包路径下所有class文件
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
+     * @param packageName 包路径 com | com.xxx
      * @return 类集合
      */
     public static Set<Class<?>> scanPackage(String packageName) {
@@ -165,10 +165,10 @@ public class Scaner {
 
     /**
      * 扫面包路径下满足class过滤器条件的所有class文件,
-     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
-     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
+     * 如果包路径为 com.xxx + A.class 但是输入 abs会产生classNotFoundException
+     * 因为className 应该为 com.xxx.A 现在却成为xxx.A,此工具类对该异常进行忽略处理
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
+     * @param packageName 包路径 com | com.xxx
      * @param predicate   class过滤器,过滤掉不需要的class
      * @return 类集合
      */

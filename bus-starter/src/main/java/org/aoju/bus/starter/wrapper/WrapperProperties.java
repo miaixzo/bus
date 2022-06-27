@@ -51,9 +51,28 @@ public class WrapperProperties {
      * 指示已启用注册
      */
     private Boolean enabled = true;
+
+    /**
+     * API自动补全路由前缀
+     */
+    private boolean autoPrefix = true;
+    /**
+     * 扫描controller接口的基本包
+     * Controller 所在包的 Ant 路径规则
+     * 主要目的是，给该 Controller 设置指定的前缀
+     */
+    private String[] basePackages;
+    /**
+     * 为此注册设置初始化参数。调用此方法将替换任何现有的初始化参数
+     */
     private Map<String, String> initParameters = new LinkedHashMap<>();
+    /**
+     * 筛选器要注册的servlet名称,这将替换以前指定的任何servlet名称
+     */
     private Set<String> servletNames = new LinkedHashSet<>();
+    /**
+     * 过滤器将注册到的ServletRegistrationBeans
+     */
     private Set<ServletRegistrationBean<?>> servletRegistrationBeans = new LinkedHashSet<>();
-    private Set<String> urlPatterns = new LinkedHashSet<>();
 
 }
