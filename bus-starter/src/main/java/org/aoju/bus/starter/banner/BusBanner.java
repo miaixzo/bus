@@ -48,7 +48,7 @@ public class BusBanner implements Banner {
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
         for (Object line : BusXBuilder.BUS_BANNER) {
-            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_YELLOW, line));
+            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line));
         }
 
         printStream.println();

@@ -26,21 +26,29 @@
 package org.aoju.bus.starter.wrapper;
 
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.toolkit.CollKit;
-import org.aoju.bus.core.toolkit.MapKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.lang.Scaner;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.*;
+import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Xss/重复读取等配置
@@ -49,7 +57,7 @@ import java.io.IOException;
  * @since Java 17+
  */
 @EnableConfigurationProperties({WrapperProperties.class})
-public class WrapperConfiguration {
+public class WrapperConfiguration extends RequestMappingHandlerMapping {
 
     @Autowired
     WrapperProperties properties;
@@ -73,6 +81,40 @@ public class WrapperConfiguration {
             registrationBean.setServletNames(this.properties.getServletNames());
         }
         return registrationBean;
+    }
+
+    @Bean("supportWebMvcConfigurer")
+    public WebMvcConfigurer supportWebMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(new GenieWrapperHandler());
+            }
+
+            /**
+             * 设置 API 前缀，仅仅匹配 basePackages 包下的
+             *
+             * @param configurer 配置
+             */
+            @Override
+            public void configurePathMatch(PathMatchConfigurer configurer) {
+                if (ArrayKit.isNotEmpty(properties.getBasePackages())) {
+                    return;
+                }
+                for (String basePackage : properties.getBasePackages()) {
+                    Scaner.scanPackage(basePackage, clazz -> {
+                        if (clazz.isAnnotationPresent(Controller.class) || clazz.isAnnotationPresent(RestController.class)) {
+                            String prefix = StringKit.splitToArray(clazz.getPackageName(), basePackage)[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
+                            configurer.addPathPrefix(prefix, d -> d.isAnnotationPresent(Controller.class) || d.isAnnotationPresent(RestController.class));
+                            Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(clazz.getAnnotation(RequestMapping.class).value())
+                                    + "' for " + clazz.getPackageName() + Symbol.C_DOT + clazz.getSimpleName());
+                        }
+                        return true;
+                    });
+                }
+            }
+
+        };
     }
 
     private static class BodyCacheFilter extends OncePerRequestFilter {

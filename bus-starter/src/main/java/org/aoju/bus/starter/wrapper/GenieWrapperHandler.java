@@ -31,12 +31,9 @@ import org.aoju.bus.core.lang.ansi.AnsiEncoder;
 import org.aoju.bus.extra.servlet.ServletKit;
 import org.aoju.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,42 +50,6 @@ import javax.servlet.http.HttpServletResponse;
 public class GenieWrapperHandler implements HandlerInterceptor {
 
     /**
-     * 请求日志信息
-     *
-     * @param method  请求类型
-     * @param request 网络请求
-     */
-    private static void isHandle(HttpServletRequest request, String method) {
-        switch (method) {
-            case Http.ALL:
-                method = AnsiEncoder.encode(AnsiBackground.WHITE, " %s ", method);
-                break;
-            case Http.GET:
-                method = AnsiEncoder.encode(AnsiBackground.GREEN, " %s ", method);
-                break;
-            case Http.POST:
-                method = AnsiEncoder.encode(AnsiBackground.MAGENTA, " %s ", method);
-                break;
-            case Http.DELETE:
-                method = AnsiEncoder.encode(AnsiBackground.BLUE, " %s ", method);
-                break;
-            case Http.PUT:
-                method = AnsiEncoder.encode(AnsiBackground.RED, " %s ", method);
-                break;
-            case Http.OPTIONS:
-                method = AnsiEncoder.encode(AnsiBackground.YELLOW, " %s ", method);
-                break;
-            case Http.BEFORE:
-                method = AnsiEncoder.encode(AnsiBackground.BLACK, " %s ", method);
-                break;
-            case Http.AFTER:
-                method = AnsiEncoder.encode(AnsiBackground.CYAN, " %s ", method);
-                break;
-        }
-        Logger.info("{} {} {}", "==>", ServletKit.getClientIP(request), method, request.getRequestURL().toString());
-    }
-
-    /**
      * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
      * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求；
      * 这里可以加上登录校验,权限拦截、请求限流等
@@ -101,7 +62,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String method = request.getMethod().toUpperCase();
-        isHandle(request, method);
+        this.requestInfo(request, method);
         if (Http.GET.equals(method)
                 || Http.POST.equals(method)
                 || Http.PATCH.equals(method)
@@ -112,24 +73,6 @@ public class GenieWrapperHandler implements HandlerInterceptor {
             }
         }
         return true;
-    }
-
-    /**
-     * 拦截处理程序的执行 实际上是在HandlerAdapter之后调用的
-     * 调用处理程序,但在DispatcherServlet呈现视图之前
-     * 可以通过给定的ModelAndView向视图公开额外的模型对象
-     * DispatcherServlet在一个执行链中处理一个处理程序,由
-     * 任意数量的拦截器,处理程序本身在最后
-     * 使用这种方法,每个拦截器可以对一个执行进行后处理,
-     * 按执行链的相反顺序应用
-     *
-     * @param request      当前的HTTP请求
-     * @param response     当前的HTTP响应
-     * @param handler      执行的处理程序
-     * @param modelAndView 处理程序返回的{code ModelAndView} 也可以是{@code null})
-     */
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
     }
 
     /**
@@ -158,16 +101,56 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 启用拦截器
+     * 拦截处理程序的执行 实际上是在HandlerAdapter之后调用的
+     * 调用处理程序,但在DispatcherServlet呈现视图之前
+     * 可以通过给定的ModelAndView向视图公开额外的模型对象
+     * DispatcherServlet在一个执行链中处理一个处理程序,由
+     * 任意数量的拦截器,处理程序本身在最后
+     * 使用这种方法,每个拦截器可以对一个执行进行后处理,
+     * 按执行链的相反顺序应用
+     *
+     * @param request      当前的HTTP请求
+     * @param response     当前的HTTP响应
+     * @param handler      执行的处理程序
+     * @param modelAndView 处理程序返回的{code ModelAndView} 也可以是{@code null})
      */
-    @Bean
-    WebMvcConfigurer enableGenieHandler() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addInterceptors(InterceptorRegistry registry) {
-                registry.addInterceptor(new GenieWrapperHandler());
-            }
-        };
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+
+    }
+
+    /**
+     * 请求日志信息
+     *
+     * @param method  请求类型
+     * @param request 网络请求
+     */
+    private void requestInfo(HttpServletRequest request, String method) {
+        String requestMethod = AnsiEncoder.encode(AnsiBackground.GREEN, " %s ", method);
+        switch (method) {
+            case Http.ALL:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.WHITE, " %s ", method);
+                break;
+            case Http.POST:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.MAGENTA, " %s ", method);
+                break;
+            case Http.DELETE:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.BLUE, " %s ", method);
+                break;
+            case Http.PUT:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.RED, " %s ", method);
+                break;
+            case Http.OPTIONS:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.YELLOW, " %s ", method);
+                break;
+            case Http.BEFORE:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.BLACK, " %s ", method);
+                break;
+            case Http.AFTER:
+                requestMethod = AnsiEncoder.encode(AnsiBackground.CYAN, " %s ", method);
+                break;
+        }
+        Logger.info("{} {} {}", "==>", ServletKit.getClientIP(request), requestMethod, request.getRequestURL().toString());
     }
 
 }

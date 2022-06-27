@@ -101,7 +101,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = InstrumentException.class)
     public Object instrumentException(InstrumentException e) {
         Logger.error(RuntimeKit.getStackTrace(e));
-        return write(ErrorCode.EM_100510);
+        if (StringKit.isBlank(e.getErrcode())) {
+            return write(ErrorCode.EM_100510, StringKit.isEmpty(e.getErrmsg()) ? e.getMessage() : e.getErrmsg());
+        }
+        return write(e.getErrcode(), e.getErrmsg());
     }
 
     /**
@@ -116,7 +119,7 @@ public class BaseAdvice extends Controller {
     public Object businessException(BusinessException e) {
         Logger.error(RuntimeKit.getStackTrace(e));
         if (StringKit.isBlank(e.getErrcode())) {
-            return write(ErrorCode.EM_100513, e.getMessage());
+            return write(ErrorCode.EM_100513, StringKit.isEmpty(e.getErrmsg()) ? e.getMessage() : e.getErrmsg());
         }
         return write(e.getErrcode());
     }
@@ -131,7 +134,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = CrontabException.class)
     public Object crontabException(CrontabException e) {
         Logger.error(RuntimeKit.getStackTrace(e));
-        return write(ErrorCode.EM_100514);
+        if (StringKit.isBlank(e.getErrcode())) {
+            return write(ErrorCode.EM_100514, StringKit.isEmpty(e.getErrmsg()) ? e.getMessage() : e.getErrmsg());
+        }
+        return write(e.getErrcode(), e.getErrmsg());
     }
 
     /**
@@ -145,7 +151,7 @@ public class BaseAdvice extends Controller {
     public Object validateException(ValidateException e) {
         Logger.error(RuntimeKit.getStackTrace(e));
         if (StringKit.isEmpty(e.getErrcode())) {
-            return write(ErrorCode.EM_FAILURE, StringKit.isEmpty(e.getErrmsg()) ? e.getMessage() : e.getErrmsg());
+            return write(ErrorCode.EM_100511, StringKit.isEmpty(e.getErrmsg()) ? e.getMessage() : e.getErrmsg());
         }
         return write(e.getErrcode(), e.getErrmsg());
     }
