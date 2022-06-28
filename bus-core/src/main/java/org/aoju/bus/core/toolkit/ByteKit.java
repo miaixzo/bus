@@ -1375,6 +1375,14 @@ public class ByteKit {
         return bytes;
     }
 
+    /**
+     * 字符交换
+     *
+     * @param data byte值
+     * @param off  偏移量
+     * @param len  长度
+     * @return the byte
+     */
     public static byte[] swapInts(byte[] data, int off, int len) {
         checkLength(len, 4);
         for (int i = off, n = off + len; i < n; i += 4) {
@@ -1384,6 +1392,14 @@ public class ByteKit {
         return data;
     }
 
+    /**
+     * 字符交换
+     *
+     * @param data byte值
+     * @param off  偏移量
+     * @param len  长度
+     * @return the byte
+     */
     public static byte[] swapLongs(byte[] data, int off, int len) {
         checkLength(len, 8);
         for (int i = off, n = off + len; i < n; i += 8) {
@@ -1395,6 +1411,12 @@ public class ByteKit {
         return data;
     }
 
+    /**
+     * 字符交换
+     *
+     * @param data byte值
+     * @return the byte
+     */
     public static byte[][] swapShorts(byte[][] data) {
         int carry = 0;
         for (int i = 0; i < data.length; i++) {
@@ -1408,6 +1430,14 @@ public class ByteKit {
         return data;
     }
 
+    /**
+     * 字符交换
+     *
+     * @param data byte值
+     * @param off  偏移量
+     * @param len  长度
+     * @return the byte
+     */
     public static byte[] swapShorts(byte[] data, int off, int len) {
         checkLength(len, 2);
         for (int i = off, n = off + len; i < n; i += 2)
@@ -1514,17 +1544,36 @@ public class ByteKit {
         return buffer;
     }
 
+    /**
+     * 字符交换
+     *
+     * @param len      长度
+     * @param numBytes 字符
+     */
     private static void checkLength(int len, int numBytes) {
         if (len < 0 || (len % numBytes) != 0)
             throw new IllegalArgumentException("length: " + len);
     }
 
+    /**
+     * 字符交换
+     *
+     * @param data byte值
+     * @param a    字符A
+     * @param b    字符B
+     */
     private static void swap(byte[] data, int a, int b) {
         byte t = data[a];
         data[a] = data[b];
         data[b] = t;
     }
 
+    /**
+     * 字符交换
+     *
+     * @param b1 byte值
+     * @param b2 byte值
+     */
     private static void swapLastFirst(byte[] b1, byte[] b2) {
         int last = b1.length - 1;
         byte t = b2[0];

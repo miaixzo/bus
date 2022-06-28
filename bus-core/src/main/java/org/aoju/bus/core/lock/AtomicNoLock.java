@@ -37,6 +37,9 @@ import java.util.concurrent.locks.Lock;
  */
 public class AtomicNoLock implements Lock {
 
+    /**
+     * 实例
+     */
     public static AtomicNoLock INSTANCE = new AtomicNoLock();
 
     @Override
