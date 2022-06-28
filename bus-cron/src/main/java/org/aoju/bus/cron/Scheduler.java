@@ -251,7 +251,7 @@ public class Scheduler implements Serializable {
                     final String pattern = entry.getValue();
                     Logger.debug("Load job: {} {}", pattern, jobClass);
                     try {
-                        schedule(pattern, new InvokeTask(jobClass));
+                        schedule("id_" + jobClass, pattern, new InvokeTask(jobClass));
                     } catch (Exception e) {
                         throw new CrontabException("Schedule [{}] [{}] error!", pattern, jobClass);
                     }

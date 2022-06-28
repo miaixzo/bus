@@ -1,0 +1,341 @@
+package org.aoju.bus.core.annotation;
+
+import org.aoju.bus.core.annotation.scanner.MetaScanner;
+import org.aoju.bus.core.lang.Optional;
+import org.aoju.bus.core.toolkit.*;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * 表示一个根注解与根注解上的多层元注解合成的注解
+ * 假设现有注解A，A上存在元注解B，B上存在元注解C，则对A解析得到的合成注解X，则CBA都是X的元注解，X为根注解
+ * 通过{@link #isAnnotationPresent(Class)}可确定指定类型是注解是否是该合成注解的元注解，即是否为当前实例的“父类”
+ * 若指定注解是当前实例的元注解，则通过{@link #getAnnotation(Class)}可获得动态代理生成的对应的注解实例
+ * 需要注意的是，由于认为合并注解X以最初的根注解A作为元注解，因此{@link #getAnnotations()}或{@link #getDeclaredAnnotations()}
+ * 都将只能获得A不同层级的元注解可能存在同名的属性，此时，若认为该合成注解X在第0层，则根注解A在第1层，B在第2层......以此类推层级越低的
+ * 注解中离根注解距离近，则属性优先级越高，即遵循“就近原则”
+ * 举个例子：若CBA同时存在属性y，则将X视为C，B或者A时，获得的y属性的值都与最底层元注解A的值保持一致
+ * 同理，不同层级可能会出现相同的元注解，比如A注解存在元注解B，C，但是C又存在元注解B，因此根据就近原则，A上的元注解B将优先于C上的元注解B生效
+ * 若两相同注解处于同一层级，则按照从其上一级“子注解”的{@link AnnotatedElement#getAnnotations()}的调用顺序排序
+ * {@link #getAnnotation(Class)}获得的代理类实例的属性值遵循该规则同名属性将根据类型彼此隔离，即当不同层级的元注解存在同名的属性，
+ * 但是属性类型不同时，此时低层级的属性并不会覆盖高层级注解的属性别名在合成注解中仍然有效，若注解X中任意属性上存在{@link Alias}注解，
+ * 则{@link Alias#value()}指定的属性值将会覆盖注解属性的本身的值{@link Alias}注解仅能指定注解X中存在的属性作为别名，
+ * 不允许指定元注解或子类注解的属性
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
+public class Synthetic<A extends Annotation> implements Annotation, AnnotatedElement {
+
+    /**
+     * 根注解，即当前查找的注解
+     */
+    private final A source;
+
+    /**
+     * 包含根注解以及其元注解在内的全部注解实例
+     */
+    private final Map<Class<? extends Annotation>, MetaAnnotation> metaAnnotationMap;
+
+    /**
+     * 属性值缓存
+     */
+    private final Map<String, Map<Class<?>, Object>> attributeCaches;
+
+    /**
+     * 构造
+     *
+     * @param annotation 当前查找的注解类
+     */
+    Synthetic(A annotation) {
+        this.source = annotation;
+        this.metaAnnotationMap = new LinkedHashMap<>();
+        this.attributeCaches = new HashMap<>();
+        loadMetaAnnotations(); // TODO 是否可以添加注解类对应的元注解信息缓存，避免每次都要解析？
+    }
+
+    /**
+     * 基于指定根注解，构建包括其元注解在内的合成注解
+     *
+     * @param <T>            注解类型
+     * @param rootAnnotation 根注解
+     * @return 合成注解
+     */
+    public static <T extends Annotation> Synthetic<T> of(T rootAnnotation) {
+        return new Synthetic<>(rootAnnotation);
+    }
+
+    /**
+     * 获取根注解
+     *
+     * @return 根注解
+     */
+    public A getSource() {
+        return source;
+    }
+
+    /**
+     * 获取已解析的元注解信息
+     *
+     * @return 已解析的元注解信息
+     */
+    Map<Class<? extends Annotation>, MetaAnnotation> getMetaAnnotationMap() {
+        return metaAnnotationMap;
+    }
+
+    /**
+     * 获取根注解类型
+     *
+     * @return java.lang.Class&lt;? extends java.lang.annotation.Annotation&gt;
+     */
+    @Override
+    public Class<? extends Annotation> annotationType() {
+        return getSource().annotationType();
+    }
+
+    /**
+     * 根据指定的属性名与属性类型获取对应的属性值，若存在{@link Alias}则获取{@link Alias#value()}指定的别名属性的值
+     * 当不同层级的注解之间存在同名同类型属性时，将优先获取更接近根注解的属性
+     *
+     * @param attributeName 属性名
+     * @param attributeType 属性类型
+     * @return 属性
+     */
+    public Object getAttribute(String attributeName, Class<?> attributeType) {
+        Map<Class<?>, Object> values = attributeCaches.computeIfAbsent(attributeName, t -> MapKit.newHashMap());
+        return values.computeIfAbsent(attributeType, a -> metaAnnotationMap.values()
+                .stream()
+                .filter(ma -> ma.hasAttribute(attributeName, attributeType)) // 集合默认是根据distance有序的，故此处无需再排序
+                .findFirst()
+                .map(ma -> ma.getAttribute(attributeName))
+                .orElse(null)
+        );
+    }
+
+    /**
+     * 若合成注解在存在指定元注解，则使用动态代理生成一个对应的注解实例
+     *
+     * @param annotationType 注解类型
+     * @param <T>            注解类型
+     * @return 注解
+     */
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
+        if (metaAnnotationMap.containsKey(annotationType)) {
+            return (T) Proxy.newProxyInstance(
+                    annotationType.getClassLoader(),
+                    new Class[]{annotationType, Synthesized.class},
+                    new SyntheticProxy<>(this, annotationType)
+            );
+        }
+        return null;
+    }
+
+    /**
+     * 获取全部注解
+     *
+     * @return java.lang.annotation.Annotation[]
+     */
+    @Override
+    public Annotation[] getAnnotations() {
+        return getMetaAnnotationMap().values().toArray(new MetaAnnotation[0]);
+    }
+
+    /**
+     * 获取根注解直接声明的注解，该方法正常情况下当只返回原注解
+     *
+     * @return 直接声明注解
+     */
+    @Override
+    public Annotation[] getDeclaredAnnotations() {
+        return new Annotation[]{getSource()};
+    }
+
+    /**
+     * 广度优先遍历并缓存该根注解上的全部元注解
+     */
+    private void loadMetaAnnotations() {
+        // 若该注解已经是合成注解，则直接使用已解析好的元注解信息
+        if (source instanceof Synthetic.Synthesized) {
+            this.metaAnnotationMap.putAll(((Synthesized) source).getMetaAnnotationMap());
+            return;
+        }
+        // 扫描元注解
+        metaAnnotationMap.put(source.annotationType(), new MetaAnnotation(source, 0));
+        new MetaScanner().scan(
+                (index, annotation) -> metaAnnotationMap.computeIfAbsent(
+                        // 当出现重复的注解时，由于后添加的注解必然层级更高，优先级更低，因此当直接忽略
+                        annotation.annotationType(), t -> new MetaAnnotation(annotation, index)
+                ),
+                source.annotationType(), null
+        );
+    }
+
+    /**
+     * 表示一个已经被合成的注解
+     */
+    interface Synthesized {
+
+        static boolean isMetaAnnotationMapMethod(Method method) {
+            return StringKit.equals("getMetaAnnotationMap", method.getName());
+        }
+
+        /**
+         * 获取合成注解中已解析的元注解信息
+         *
+         * @return 合成注解中已解析的元注解信息
+         */
+        Map<Class<? extends Annotation>, MetaAnnotation> getMetaAnnotationMap();
+
+    }
+
+    /**
+     * 元注解包装类
+     */
+    static class MetaAnnotation implements Annotation {
+
+        private final Annotation annotation;
+        private final Map<String, Method> attributeMethodCaches;
+        private final int distance;
+
+        public MetaAnnotation(Annotation annotation, int distance) {
+            this.annotation = annotation;
+            this.distance = distance;
+            this.attributeMethodCaches = AnnoKit.getAttributeMethods(annotation.annotationType());
+        }
+
+        /**
+         * 获取注解类型
+         *
+         * @return 注解类型
+         */
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return annotation.annotationType();
+        }
+
+        /**
+         * 获取元注解
+         *
+         * @return 元注解
+         */
+        public Annotation get() {
+            return annotation;
+        }
+
+        /**
+         * 获取根注解到元注解的距离
+         *
+         * @return 根注解到元注解的距离
+         */
+        public int getDistance() {
+            return distance;
+        }
+
+        /**
+         * 元注解是否存在该属性
+         *
+         * @param attributeName 属性名
+         * @return 是否存在该属性
+         */
+        public boolean hasAttribute(String attributeName) {
+            return attributeMethodCaches.containsKey(attributeName);
+        }
+
+        /**
+         * 元注解是否存在该属性，且该属性的值类型是指定类型或其子类
+         *
+         * @param attributeName 属性名
+         * @param returnType    返回值类型
+         * @return 是否存在该属性
+         */
+        public boolean hasAttribute(String attributeName, Class<?> returnType) {
+            return Optional.ofNullable(attributeMethodCaches.get(attributeName))
+                    .filter(method -> ClassKit.isAssignable(returnType, method.getReturnType()))
+                    .isPresent();
+        }
+
+        /**
+         * 获取元注解的属性值
+         *
+         * @param attributeName 属性名
+         * @return 元注解的属性值
+         */
+        public Object getAttribute(String attributeName) {
+            return Optional.ofNullable(attributeMethodCaches.get(attributeName))
+                    .map(method -> ReflectKit.invoke(annotation, method))
+                    .orElse(null);
+        }
+
+    }
+
+    /**
+     * 合成注解代理类
+     */
+    static class SyntheticProxy<A extends Annotation> implements Annotation, InvocationHandler {
+
+        private final Class<A> annotationType;
+        private final Synthetic<?> Synthetic;
+
+        public SyntheticProxy(Synthetic<?> Synthetic, Class<A> annotationType) {
+            this.Synthetic = Synthetic;
+            this.annotationType = annotationType;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return annotationType;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (Synthesized.isMetaAnnotationMapMethod(method)) {
+                return Synthetic.getMetaAnnotationMap();
+            }
+            if (ReflectKit.isHashCodeMethod(method)) {
+                return getHashCode();
+            }
+            if (ReflectKit.isToStringMethod(method)) {
+                return getToString();
+            }
+            return ObjectKit.defaultIfNull(
+                    Synthetic.getAttribute(method.getName(), method.getReturnType()),
+                    () -> ReflectKit.invoke(this, method, args)
+            );
+        }
+
+        /**
+         * 获取toString值
+         *
+         * @return toString值
+         */
+        private String getToString() {
+            final String attributes = Stream.of(annotationType().getDeclaredMethods())
+                    .filter(AnnoKit::isAttributeMethod)
+                    .map(method -> StringKit.format("{}={}", method.getName(), Synthetic.getAttribute(method.getName(), method.getReturnType())))
+                    .collect(Collectors.joining(", "));
+            return StringKit.format("@{}({})", annotationType().getName(), attributes);
+        }
+
+        /**
+         * 获取hashcode值
+         *
+         * @return hashcode值
+         */
+        private int getHashCode() {
+            return Objects.hash((Object) Synthetic.getAnnotations());
+        }
+
+    }
+
+}

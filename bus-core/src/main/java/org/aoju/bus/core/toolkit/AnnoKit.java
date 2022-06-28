@@ -25,17 +25,24 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.annotation.AnnoProxy;
 import org.aoju.bus.core.annotation.Annotated;
+import org.aoju.bus.core.annotation.Synthetic;
+import org.aoju.bus.core.annotation.scanner.*;
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Optional;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 注解工具类
@@ -45,6 +52,59 @@ import java.util.function.Predicate;
  * @since Java 17+
  */
 public class AnnoKit {
+
+    /**
+     * 元注解
+     */
+    static final Set<Class<? extends Annotation>> META_ANNOTATIONS = CollKit.newHashSet(
+            Target.class,
+            Retention.class,
+            Inherited.class,
+            Documented.class,
+            SuppressWarnings.class,
+            Override.class,
+            Deprecated.class
+    );
+
+    /**
+     * 是否为Jdk自带的元注解。<br>
+     * 包括：
+     * <ul>
+     *     <li>{@link Target}</li>
+     *     <li>{@link Retention}</li>
+     *     <li>{@link Inherited}</li>
+     *     <li>{@link Documented}</li>
+     *     <li>{@link SuppressWarnings}</li>
+     *     <li>{@link Override}</li>
+     *     <li>{@link Deprecated}</li>
+     * </ul>
+     *
+     * @param annotationType 注解类型
+     * @return 是否为Jdk自带的元注解
+     */
+    public static boolean isJdkMetaAnnotation(Class<? extends Annotation> annotationType) {
+        return META_ANNOTATIONS.contains(annotationType);
+    }
+
+    /**
+     * 是否不为Jdk自带的元注解。<br>
+     * 包括：
+     * <ul>
+     *     <li>{@link Target}</li>
+     *     <li>{@link Retention}</li>
+     *     <li>{@link Inherited}</li>
+     *     <li>{@link Documented}</li>
+     *     <li>{@link SuppressWarnings}</li>
+     *     <li>{@link Override}</li>
+     *     <li>{@link Deprecated}</li>
+     * </ul>
+     *
+     * @param annotationType 注解类型
+     * @return 是否为Jdk自带的元注解
+     */
+    public static boolean isNotJdkMateAnnotation(Class<? extends Annotation> annotationType) {
+        return false == isJdkMetaAnnotation(annotationType);
+    }
 
     /**
      * 将指定的被注解的元素转换为组合注解元素
@@ -97,7 +157,6 @@ public class AnnoKit {
 
         final T[] result = ArrayKit.newArray(annotationType, annotations.length);
         for (int i = 0; i < annotations.length; i++) {
-            //noinspection unchecked
             result[i] = (T) annotations[i];
         }
         return result;
@@ -205,7 +264,9 @@ public class AnnoKit {
 
         final Method[] methods = ReflectKit.getMethods(annotationType, t -> {
             if (ArrayKit.isEmpty(t.getParameterTypes())) {
+                // 只读取无参方法
                 final String name = t.getName();
+                // 跳过自有的几个方法
                 return (false == "hashCode".equals(name))
                         && (false == "toString".equals(name))
                         && (false == "annotationType".equals(name));
@@ -296,9 +357,87 @@ public class AnnoKit {
      * @param <T>            注解类型
      * @return 别名支持后的注解
      */
-    public static <T extends Annotation> T getAnnotationAlias(AnnotatedElement annotationEle, Class<T> annotationType) {
+    public static <T extends Annotation> T getAlias(AnnotatedElement annotationEle, Class<T> annotationType) {
         final T annotation = getAnnotation(annotationEle, annotationType);
         return (T) Proxy.newProxyInstance(annotationType.getClassLoader(), new Class[]{annotationType}, new AnnoProxy<>(annotation));
+    }
+
+    /**
+     * 将指定注解实例与其元注解转为合成注解
+     *
+     * @param annotation     注解
+     * @param annotationType 注解类型
+     * @param <T>            注解类型
+     * @return 合成注解
+     */
+    public static <T extends Annotation> T getSynthesis(Annotation annotation, Class<T> annotationType) {
+        return Synthetic.of(annotation).getAnnotation(annotationType);
+    }
+
+    /**
+     * 获取元素上所有指定注解
+     * <ul>
+     *     <li>若元素是类，则递归解析全部父类和全部父接口上的注解</li>
+     *     <li>若元素是方法、属性或注解，则只解析其直接声明的注解</li>
+     * </ul>
+     *
+     * @param annotatedElement 可注解元素
+     * @param annotationType   注解类型
+     * @param <T>              注解类型
+     * @return 注解
+     */
+    public static <T extends Annotation> List<T> getAllSynthesis(AnnotatedElement annotatedElement, Class<T> annotationType) {
+        AnnoScanner[] scanners = new AnnoScanner[]{
+                new MetaScanner(), new TypeScanner(), new MethodScanner(), new FieldScanner()
+        };
+        return AnnoScanner.scanByAnySupported(annotatedElement, scanners).stream()
+                .map(Synthetic::of)
+                .map(annotation -> annotation.getAnnotation(annotationType))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 方法是否为注解属性方法
+     * 方法无参数，且有返回值的方法认为是注解属性的方法
+     *
+     * @param method 方法
+     */
+    public static boolean isAttributeMethod(Method method) {
+        return method.getParameterCount() == 0 && method.getReturnType() != void.class;
+    }
+
+    /**
+     * 获取注解的全部属性值获取方法
+     *
+     * @param annotationType 注解
+     * @return 注解的全部属性值
+     * @throws IllegalArgumentException 当别名属性在注解中不存在，或别名属性的值与原属性的值类型不一致时抛出
+     */
+    public static Map<String, Method> getAttributeMethods(Class<? extends Annotation> annotationType) {
+        // 获取全部注解属性值
+        Map<String, Method> attributeMethods = Stream.of(annotationType.getDeclaredMethods())
+                .filter(AnnoKit::isAttributeMethod)
+                .collect(Collectors.toMap(Method::getName, Function.identity()));
+        // 处理别名
+        attributeMethods.forEach((methodName, method) -> {
+            String alias = Optional.ofNullable(method.getAnnotation(Alias.class))
+                    .map(Alias::value)
+                    .orElse(null);
+            if (ObjectKit.isNull(alias)) {
+                return;
+            }
+            // 存在别名，则将原本的值替换为别名对应的值
+            Assert.isTrue(attributeMethods.containsKey(alias), "No method for alias: [{}]", alias);
+            Method aliasAttributeMethod = attributeMethods.get(alias);
+            Assert.isTrue(
+                    ObjectKit.isNull(aliasAttributeMethod) || ClassKit.isAssignable(method.getReturnType(), aliasAttributeMethod.getReturnType()),
+                    "Return type of the alias method [{}] is inconsistent with the original [{}]",
+                    aliasAttributeMethod.getClass(), method.getParameterTypes()
+            );
+            attributeMethods.put(methodName, aliasAttributeMethod);
+        });
+        return attributeMethods;
     }
 
 }

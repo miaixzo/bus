@@ -483,7 +483,6 @@ public class GifEncoder {
         disp <<= 2;
 
         // packed fields
-        //noinspection PointlessBitwiseExpression
         out.write(0 | // 1:3 reserved
                 disp | // 4:6 disposal
                 0 | // 7   user input - 0 = none
@@ -511,7 +510,6 @@ public class GifEncoder {
             out.write(0);
         } else {
             // specify normal LCT
-            //noinspection PointlessBitwiseExpression
             out.write(0x80 | // 1 local color table  1=yes
                     0 | // 2 interlace - 0=no
                     0 | // 3 sorted - 0=no
@@ -530,7 +528,6 @@ public class GifEncoder {
         writeShort(width);
         writeShort(height);
         // packed fields
-        //noinspection PointlessBitwiseExpression
         out.write((0x80 | // 1   : global color table flag = 1 (gct used)
                 0x70 | // 2-4 : color resolution = 7
                 0x00 | // 5   : gct sort flag = 0

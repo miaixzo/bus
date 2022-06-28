@@ -3680,7 +3680,6 @@ public class CollKit {
             Function<A, A> downstreamFinisher = (Function<A, A>) downstream.finisher();
             Function<Map<K, A>, M> finisher = intermediate -> {
                 intermediate.replaceAll((k, v) -> downstreamFinisher.apply(v));
-                @SuppressWarnings("unchecked")
                 M castResult = (M) intermediate;
                 return castResult;
             };
