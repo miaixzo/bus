@@ -31,13 +31,14 @@ import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -50,7 +51,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * Xss/重复读取等WEB封装配置
@@ -105,7 +105,9 @@ public class WrapperConfiguration implements WebMvcRegistrations {
         @Override
         protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
             RequestMappingInfo requestMappingInfo = super.getMappingForMethod(method, handlerType);
-            if (null != requestMappingInfo) {
+            if (null != requestMappingInfo
+                    && (handlerType.isAnnotationPresent(Controller.class)
+                    || handlerType.isAnnotationPresent(RestController.class))) {
                 AntPathMatcher antPathMatcher = new AntPathMatcher(Symbol.DOT);
                 for (String basePackage : properties.getBasePackages()) {
                     String packName = handlerType.getPackageName();
@@ -113,8 +115,8 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                             || antPathMatcher.matchStart(basePackage, packName)) {
                         String[] arrays = StringKit.splitToArray(basePackage, Symbol.C_DOT);
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
-                        Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
-                                + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());
+                       /* Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
+                                + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());*/
                         requestMappingInfo = RequestMappingInfo.paths(prefix).options(getBuilderConfiguration()).build().combine(requestMappingInfo);
                     }
                 }

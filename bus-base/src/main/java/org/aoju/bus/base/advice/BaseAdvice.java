@@ -31,9 +31,8 @@ import org.aoju.bus.core.exception.BusinessException;
 import org.aoju.bus.core.exception.CrontabException;
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.exception.ValidateException;
-import org.aoju.bus.core.toolkit.RuntimeKit;
+import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -46,7 +45,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
- * 异常信息拦截处理
+ * 异常信息拦截
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -87,7 +86,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public Object defaultException(Exception e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_FAILURE);
     }
 
@@ -100,7 +99,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = InstrumentException.class)
     public Object instrumentException(InstrumentException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode.EM_100510);
         }
@@ -117,7 +116,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
     public Object businessException(BusinessException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode.EM_100513);
         }
@@ -133,7 +132,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
     public Object crontabException(CrontabException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode.EM_100514);
         }
@@ -149,7 +148,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
     public Object validateException(ValidateException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode.EM_100510);
         }
@@ -165,7 +164,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public Object httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_100507);
     }
 
@@ -178,7 +177,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_100508);
     }
 
@@ -192,7 +191,7 @@ public class BaseAdvice extends Controller {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public Object noHandlerFoundException(NoHandlerFoundException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_100509);
     }
 
@@ -206,8 +205,24 @@ public class BaseAdvice extends Controller {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public Object handleBodyValidException(MethodArgumentNotValidException e) {
-        Logger.error(RuntimeKit.getStackTrace(e));
+        this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_100511);
+    }
+
+    /**
+     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
+     * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求；
+     * 这里可以加上登录校验,权限拦截、请求限流等
+     *
+     * @param ex 对象参数
+     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     */
+    public void defaultExceptionHandler(Exception ex) {
+        try {
+            Instances.singletion(ErrorAdvice.class).handler(ex);
+        } catch (RuntimeException ignore) {
+            // ignore
+        }
     }
 
 }
