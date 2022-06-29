@@ -25,9 +25,17 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
+import org.aoju.bus.core.toolkit.ClassKit;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 扫描包配置项及其他属性等
@@ -38,5 +46,34 @@ import org.springframework.core.annotation.Order;
 @ComponentScan("org.aoju.**")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class BusXHolder {
+
+    /**
+     * 获取某个包下所有的class对象
+     *
+     * @param packageName 包路径
+     * @return
+     */
+    public static Set<Class<?>> scan(String packageName) {
+        Set<Class<?>> handlerSet = new HashSet();
+        try {
+            String pattern = "classpath*:" + ClassKit.convertClassNameToResourcePath(packageName) + "/**/*.class";
+            PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+            Resource[] resources = resourcePatternResolver.getResources(pattern);
+            CachingMetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
+            for (Resource resource : resources) {
+                try {
+                    MetadataReader reader = readerFactory.getMetadataReader(resource);
+                    String className = reader.getClassMetadata().getClassName();
+                    Class<?> clazz = Class.forName(className);
+                    handlerSet.add(clazz);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return handlerSet;
+    }
 
 }

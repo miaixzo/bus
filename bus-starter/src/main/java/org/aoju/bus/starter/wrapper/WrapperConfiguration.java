@@ -26,21 +26,22 @@
 package org.aoju.bus.starter.wrapper;
 
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Scaner;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.*;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.FilterChain;
@@ -48,19 +49,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * Xss/重复读取等配置
+ * Xss/重复读取等WEB封装配置
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @EnableConfigurationProperties({WrapperProperties.class})
-public class WrapperConfiguration extends RequestMappingHandlerMapping {
+public class WrapperConfiguration implements WebMvcRegistrations {
 
     @Autowired
     WrapperProperties properties;
+
+    @Override
+    public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
+        return new RequestMappingHandler();
+    }
 
     @Bean("registrationBodyCacheFilter")
     public FilterRegistrationBean registrationBodyCacheFilter() {
@@ -90,34 +97,33 @@ public class WrapperConfiguration extends RequestMappingHandlerMapping {
             public void addInterceptors(InterceptorRegistry registry) {
                 registry.addInterceptor(new GenieWrapperHandler());
             }
-
-            /**
-             * 设置 API 前缀，仅仅匹配 basePackages 包下的
-             *
-             * @param configurer 配置
-             */
-            @Override
-            public void configurePathMatch(PathMatchConfigurer configurer) {
-                if (ArrayKit.isNotEmpty(properties.getBasePackages())) {
-                    return;
-                }
-                for (String basePackage : properties.getBasePackages()) {
-                    Scaner.scanPackage(basePackage, clazz -> {
-                        if (clazz.isAnnotationPresent(Controller.class) || clazz.isAnnotationPresent(RestController.class)) {
-                            String prefix = StringKit.splitToArray(clazz.getPackageName(), basePackage)[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
-                            configurer.addPathPrefix(prefix, d -> d.isAnnotationPresent(Controller.class) || d.isAnnotationPresent(RestController.class));
-                            Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(clazz.getAnnotation(RequestMapping.class).value())
-                                    + "' for " + clazz.getPackageName() + Symbol.C_DOT + clazz.getSimpleName());
-                        }
-                        return true;
-                    });
-                }
-            }
-
         };
     }
 
-    private static class BodyCacheFilter extends OncePerRequestFilter {
+    class RequestMappingHandler extends RequestMappingHandlerMapping {
+
+        @Override
+        protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
+            RequestMappingInfo requestMappingInfo = super.getMappingForMethod(method, handlerType);
+            if (null != requestMappingInfo) {
+                AntPathMatcher antPathMatcher = new AntPathMatcher(Symbol.DOT);
+                for (String basePackage : properties.getBasePackages()) {
+                    String packName = handlerType.getPackageName();
+                    if (antPathMatcher.matchStart(packName, basePackage)
+                            || antPathMatcher.matchStart(basePackage, packName)) {
+                        String[] arrays = StringKit.splitToArray(basePackage, Symbol.C_DOT);
+                        String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
+                        Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
+                                + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());
+                        requestMappingInfo = RequestMappingInfo.paths(prefix).options(getBuilderConfiguration()).build().combine(requestMappingInfo);
+                    }
+                }
+            }
+            return requestMappingInfo;
+        }
+    }
+
+    class BodyCacheFilter extends OncePerRequestFilter {
 
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
