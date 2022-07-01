@@ -61,7 +61,7 @@ public class Synthetic<A extends Annotation> implements Annotation, AnnotatedEle
         this.source = annotation;
         this.metaAnnotationMap = new LinkedHashMap<>();
         this.attributeCaches = new HashMap<>();
-        loadMetaAnnotations(); // TODO 是否可以添加注解类对应的元注解信息缓存，避免每次都要解析？
+        loadMetaAnnotations();
     }
 
     /**

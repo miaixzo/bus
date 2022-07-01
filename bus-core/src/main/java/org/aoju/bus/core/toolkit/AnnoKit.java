@@ -67,7 +67,7 @@ public class AnnoKit {
     );
 
     /**
-     * 是否为Jdk自带的元注解。<br>
+     * 是否为Jdk自带的元注解
      * 包括：
      * <ul>
      *     <li>{@link Target}</li>
@@ -87,7 +87,7 @@ public class AnnoKit {
     }
 
     /**
-     * 是否不为Jdk自带的元注解。<br>
+     * 是否不为Jdk自带的元注解
      * 包括：
      * <ul>
      *     <li>{@link Target}</li>
@@ -381,16 +381,16 @@ public class AnnoKit {
      *     <li>若元素是方法、属性或注解，则只解析其直接声明的注解</li>
      * </ul>
      *
-     * @param annotatedElement 可注解元素
-     * @param annotationType   注解类型
-     * @param <T>              注解类型
-     * @return 注解
+     * @param annotatedEle   {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationType 注解类
+     * @param <T>            注解类型
+     * @return 合成注解
      */
-    public static <T extends Annotation> List<T> getAllSynthesis(AnnotatedElement annotatedElement, Class<T> annotationType) {
-        AnnoScanner[] scanners = new AnnoScanner[]{
+    public static <T extends Annotation> List<T> getAllSynthesis(AnnotatedElement annotatedEle, Class<T> annotationType) {
+        AnnotationScanner[] scanners = new AnnotationScanner[]{
                 new MetaScanner(), new TypeScanner(), new MethodScanner(), new FieldScanner()
         };
-        return AnnoScanner.scanByAnySupported(annotatedElement, scanners).stream()
+        return AnnotationScanner.scanByAnySupported(annotatedEle, scanners).stream()
                 .map(Synthetic::of)
                 .map(annotation -> annotation.getAnnotation(annotationType))
                 .filter(Objects::nonNull)
@@ -398,13 +398,60 @@ public class AnnoKit {
     }
 
     /**
+     * 扫描注解类，以及注解类的{@link Class}层级结构中的注解，将返回除了{@link #META_ANNOTATIONS}中指定的JDK默认注解外，
+     * 按元注解对象与{@code annotationType}的距离和{@link Class#getAnnotations()}顺序排序的注解对象集合
+     *
+     * @param annotationType 注解类
+     * @return 注解对象集合
+     */
+    public static List<Annotation> scanMetaAnnotation(Class<? extends Annotation> annotationType) {
+        return new MetaScanner().getIfSupport(annotationType);
+    }
+
+    /**
+     * <p>扫描类以及类的{@link Class}层级结构中的注解，将返回除了{@link #META_ANNOTATIONS}中指定的JDK默认元注解外,
+     * 全部类/接口的{@link Class#getAnnotations()}方法返回的注解对象
+     * 层级结构将按广度优先递归，遵循规则如下：
+     * <ul>
+     *     <li>同一层级中，优先处理父类，然后再处理父接口；</li>
+     *     <li>同一个接口在不同层级出现，优先选择层级距离{@code targetClass}更近的接口；</li>
+     *     <li>同一个接口在相同层级出现，优先选择其子类/子接口被先解析的那个；</li>
+     * </ul>
+     * 注解根据其声明类/接口被扫描的顺序排序，若注解都在同一个{@link Class}中被声明，则还会遵循{@link Class#getAnnotations()}的顺序
+     *
+     * @param targetClass 类
+     * @return 注解对象集合
+     */
+    public static List<Annotation> scanClass(Class<?> targetClass) {
+        return new TypeScanner().getIfSupport(targetClass);
+    }
+
+    /**
+     * <p>扫描方法，以及该方法所在类的{@link Class}层级结构中的具有相同方法签名的方法，
+     * 将返回除了{@link #META_ANNOTATIONS}中指定的JDK默认元注解外,
+     * 全部匹配方法上{@link Method#getAnnotations()}方法返回的注解对象
+     * 方法所在类的层级结构将按广度优先递归，遵循规则如下：
+     * <ul>
+     *     <li>同一层级中，优先处理父类，然后再处理父接口；</li>
+     *     <li>同一个接口在不同层级出现，优先选择层级距离{@code targetClass}更近的接口；</li>
+     *     <li>同一个接口在相同层级出现，优先选择其子类/子接口被先解析的那个；</li>
+     * </ul>
+     * 方法上的注解根据方法的声明类/接口被扫描的顺序排序，若注解都在同一个类的同一个方法中被声明，则还会遵循{@link Method#getAnnotations()}的顺序
+     *
+     * @param method 方法
+     * @return 注解对象集合
+     */
+    public static List<Annotation> scanMethod(Method method) {
+        return new MethodScanner(true).getIfSupport(method);
+    }
+
+    /**
      * 方法是否为注解属性方法
      * 方法无参数，且有返回值的方法认为是注解属性的方法
      *
      * @param method 方法
-     * @return the boolean
      */
-    public static boolean isAttributeMethod(Method method) {
+    static boolean isAttributeMethod(Method method) {
         return method.getParameterCount() == 0 && method.getReturnType() != void.class;
     }
 
