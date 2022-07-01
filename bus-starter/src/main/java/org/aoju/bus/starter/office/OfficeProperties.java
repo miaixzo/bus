@@ -29,7 +29,7 @@ import lombok.Data;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.magic.family.FormatProperties;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -41,7 +41,7 @@ import java.util.Map;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.OFFICE)
+@ConfigurationProperties(prefix = BusXConfig.OFFICE)
 public class OfficeProperties {
 
     /**

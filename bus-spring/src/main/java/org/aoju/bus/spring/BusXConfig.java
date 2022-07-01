@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
+package org.aoju.bus.spring;
 
 import org.aoju.bus.core.lang.Symbol;
 
@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.Symbol;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BusXExtend {
+public class BusXConfig {
 
     /**
      * Spring配置

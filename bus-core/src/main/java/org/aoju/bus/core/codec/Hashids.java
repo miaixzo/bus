@@ -498,7 +498,6 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         return uniqueAlphabet;
     }
 
-    @SuppressWarnings("SameParameterValue")
     private char[] filterSeparators(final char[] separators, final char[] alphabet) {
         final Set<Character> valid = IntStream.range(0, alphabet.length)
                 .mapToObj(idx -> alphabet[idx])

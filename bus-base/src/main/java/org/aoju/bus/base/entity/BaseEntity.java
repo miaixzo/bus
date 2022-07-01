@@ -167,7 +167,7 @@ public class BaseEntity extends Tracer {
      * @param entity 反射对象
      */
     public <T> void setCreateInfo(T entity) {
-        String id = ObjectID.id();
+        String id = ObjectKit.isEmpty(getValue(entity, "id")) ? ObjectID.id() : (String) getValue(entity, "id");
         String timestamp = StringKit.toString(DateKit.timestamp());
         String[] fields = {"id", "created"};
         Object[] value = new Object[]{id, timestamp};

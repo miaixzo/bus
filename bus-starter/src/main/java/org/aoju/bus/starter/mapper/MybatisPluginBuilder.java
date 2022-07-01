@@ -28,8 +28,8 @@ package org.aoju.bus.starter.mapper;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.pager.plugins.PageSqlHandler;
-import org.aoju.bus.starter.BusXExtend;
-import org.aoju.bus.starter.PlaceBinder;
+import org.aoju.bus.spring.BusXConfig;
+import org.aoju.bus.spring.PlaceBinder;
 import org.aoju.bus.starter.sensitive.SensitiveProperties;
 import org.aoju.bus.starter.sensitive.SensitiveResultSetHandler;
 import org.aoju.bus.starter.sensitive.SensitiveStatementHandler;
@@ -57,7 +57,7 @@ public class MybatisPluginBuilder {
         );
 
         if (ObjectKit.isNotEmpty(environment)) {
-            MybatisProperties mybatisProperties = PlaceBinder.bind(environment, MybatisProperties.class, BusXExtend.MYBATIS);
+            MybatisProperties mybatisProperties = PlaceBinder.bind(environment, MybatisProperties.class, BusXConfig.MYBATIS);
             if (ObjectKit.isNotEmpty(mybatisProperties)) {
                 Properties p = new Properties();
                 p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
@@ -70,7 +70,7 @@ public class MybatisPluginBuilder {
                 list.add(pageSqlHandler);
             }
 
-            SensitiveProperties sensitiveProperties = PlaceBinder.bind(environment, SensitiveProperties.class, BusXExtend.MYBATIS);
+            SensitiveProperties sensitiveProperties = PlaceBinder.bind(environment, SensitiveProperties.class, BusXConfig.MYBATIS);
             if (ObjectKit.isNotEmpty(sensitiveProperties)) {
                 Properties p = new Properties();
                 p.setProperty("debug", String.valueOf(sensitiveProperties.isDebug()));

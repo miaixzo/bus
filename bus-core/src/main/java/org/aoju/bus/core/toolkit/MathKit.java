@@ -1190,12 +1190,15 @@ public class MathKit {
      * @return 是否为{@link Double}类型
      */
     public static boolean isDouble(String s) {
+        if (StringKit.isBlank(s)) {
+            return false;
+        }
         try {
             Double.parseDouble(s);
-            return s.contains(Symbol.DOT);
         } catch (NumberFormatException e) {
             return false;
         }
+        return s.contains(Symbol.DOT);
     }
 
     /**
@@ -3159,6 +3162,9 @@ public class MathKit {
      * @return 检查结果，非数字类型和Null将返回true
      */
     public static boolean isValidNumber(Number number) {
+        if (null == number) {
+            return false;
+        }
         if (number instanceof Double) {
             return (false == ((Double) number).isInfinite()) && (false == ((Double) number).isNaN());
         } else if (number instanceof Float) {

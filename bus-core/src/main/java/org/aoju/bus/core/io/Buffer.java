@@ -53,7 +53,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     static final int REPLACEMENT_CHARACTER = '\ufffd';
 
+    /**
+     * 头部信息
+     */
     public Segment head;
+    /**
+     * 信息大小
+     */
     public long size;
 
     public Buffer() {
@@ -1924,6 +1930,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return unsafeCursor;
     }
 
+    /**
+     * 不安全的游标
+     */
     public static final class UnsafeCursor implements Closeable {
 
         public Buffer buffer;

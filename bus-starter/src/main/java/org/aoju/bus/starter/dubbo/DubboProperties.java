@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.dubbo;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.apache.dubbo.config.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ import org.springframework.context.annotation.Bean;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.DUBBO)
+@ConfigurationProperties(prefix = BusXConfig.DUBBO)
 public class DubboProperties {
 
     /**
@@ -55,37 +55,37 @@ public class DubboProperties {
     protected boolean multiple;
 
     @Bean
-    @ConfigurationProperties(prefix = BusXExtend.DUBBO + ".application")
+    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".application")
     public ApplicationConfig applicationConfig() {
         return new ApplicationConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXExtend.DUBBO + ".provider")
+    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".provider")
     public ProviderConfig ProviderConfig() {
         return new ProviderConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXExtend.DUBBO + ".monitor")
+    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".monitor")
     public MonitorConfig monitorConfig() {
         return new MonitorConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXExtend.DUBBO + ".consumer")
+    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".consumer")
     public ConsumerConfig consumerConfig() {
         return new ConsumerConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXExtend.DUBBO + ".registry")
+    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".registry")
     public RegistryConfig registryConfig() {
         return new RegistryConfig();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = BusXExtend.DUBBO + ".protocol")
+    @ConfigurationProperties(prefix = BusXConfig.DUBBO + ".protocol")
     public ProtocolConfig protocolConfig() {
         return new ProtocolConfig();
     }

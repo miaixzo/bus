@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
+package org.aoju.bus.spring;
 
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;

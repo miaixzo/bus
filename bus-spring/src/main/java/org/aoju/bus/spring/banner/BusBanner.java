@@ -23,31 +23,39 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
+package org.aoju.bus.spring.banner;
 
-import lombok.Data;
+import org.aoju.bus.core.Version;
+import org.aoju.bus.spring.BusXBuilder;
+import org.springframework.boot.Banner;
+import org.springframework.boot.SpringBootVersion;
+import org.springframework.boot.ansi.AnsiColor;
+import org.springframework.boot.ansi.AnsiOutput;
+import org.springframework.core.env.Environment;
+
+import java.io.PrintStream;
 
 /**
+ * 旗标生成器
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
-public class Description {
+public class BusBanner implements Banner {
 
-    private String name;
-    private String description;
-    private int leftCellPadding = 0;
-    private int rightCellPadding = 1;
+    private static final String SPRING_BOOT = "::Spring Boot::";
 
-    public Description() {
+    @Override
+    public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
+        for (Object line : BusXBuilder.BUS_BANNER) {
+            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line));
+        }
 
-    }
-
-    public Description(String name, String description, int leftCellPadding, int rightCellPadding) {
-        this.name = name;
-        this.description = description;
-        this.leftCellPadding = leftCellPadding;
-        this.rightCellPadding = rightCellPadding;
+        printStream.println();
+        printStream.println(AnsiOutput.toString(
+                AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
+                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.get())));
+        printStream.println();
     }
 
 }

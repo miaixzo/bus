@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.jdbc;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.DATASOURCE)
+@ConfigurationProperties(prefix = BusXConfig.DATASOURCE)
 public class JdbcProperties {
 
     /**

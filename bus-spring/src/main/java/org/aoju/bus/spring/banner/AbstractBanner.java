@@ -23,54 +23,81 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
+package org.aoju.bus.spring.banner;
 
-import org.aoju.bus.core.Version;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertiesPropertySource;
+import org.aoju.bus.core.toolkit.IoKit;
 
-import java.util.Properties;
+import java.io.InputStream;
 
 /**
- * 用于配置一些特殊的关键属性,比如bus-boot.version等,
- * 将作为一个名为PropertiesPropertySource的属性源添加
+ * 旗标生成器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.LOWEST_PRECEDENCE - 100)
-public class Configurable implements EnvironmentPostProcessor {
+public abstract class AbstractBanner {
 
-    @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment,
-                                       SpringApplication application) {
-        // 系统时区
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        // 环境信息
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(
-                BusXBuilder.BUS_BOOT_PROPERTIES, getProperties());
-        environment.getPropertySources().addLast(propertySource);
-        // 必要参数
-        environment.setRequiredProperties(BusXBuilder.BUS_NAME);
+    /**
+     * Resource类
+     */
+    protected Class<?> resourceClass;
+    /**
+     * Resource位置
+     */
+    protected String resourceLocation;
+    /**
+     * 默认旗标文本
+     */
+    protected String defaultBanner;
+    /**
+     * 最终旗标文本
+     */
+    protected String banner;
+
+    public AbstractBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
+        this.resourceClass = resourceClass;
+        this.resourceLocation = resourceLocation;
+        this.defaultBanner = defaultBanner;
+    }
+
+    protected void initialize() {
+        InputStream inputStream = null;
+        String bannerText = null;
+        try {
+            if (null != resourceLocation) {
+                inputStream = resourceClass.getResourceAsStream(resourceLocation);
+                bannerText = IoKit.toString(inputStream, Charset.DEFAULT_UTF_8);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            banner = generateBanner(bannerText);
+
+            if (null != inputStream) {
+                IoKit.close(inputStream);
+            }
+        }
+    }
+
+    public String getBanner() {
+        return banner;
     }
 
     /**
-     * 获取版本信息
+     * 显示成非ansi模式
      *
-     * @return properties
+     * @return the strings
      */
-    protected Properties getProperties() {
-        Properties properties = new Properties();
-        String version = Version.get();
-        properties.setProperty(BusXBuilder.BUS_BOOT_VERSION, version);
-        properties.setProperty(BusXBuilder.BUS_BOOT_FORMATTED_VERSION,
-                version.isEmpty() ? Normal.EMPTY : String.format(" (v%s)", version));
-        return properties;
+    public String getPlainBanner() {
+        if (null != banner) {
+            banner = banner.replaceAll("\u001b\\[[;\\d]*m", Normal.EMPTY);
+        }
+
+        return banner;
     }
+
+    protected abstract String generateBanner(String bannerText);
 
 }

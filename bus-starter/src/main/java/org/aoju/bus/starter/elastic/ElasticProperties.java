@@ -27,7 +27,7 @@ package org.aoju.bus.starter.elastic;
 
 import lombok.Data;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Arrays;
@@ -41,7 +41,7 @@ import java.util.List;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.ELASTIC)
+@ConfigurationProperties(prefix = BusXConfig.ELASTIC)
 public class ElasticProperties {
     /**
      * 集群主机地址, 多个用英文逗号,隔开

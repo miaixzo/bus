@@ -26,14 +26,13 @@
 package org.aoju.bus.core.annotation;
 
 import org.aoju.bus.core.map.TableMap;
-import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.AnnoKit;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -45,17 +44,6 @@ import java.util.function.Predicate;
  */
 public class Annotated implements AnnotatedElement {
 
-    /**
-     * 元注解
-     */
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = CollKit.newHashSet(Target.class,
-            Retention.class,
-            Inherited.class,
-            Documented.class,
-            SuppressWarnings.class,
-            Override.class,
-            Deprecated.class
-    );
     /**
      * 过滤器
      */
@@ -153,7 +141,7 @@ public class Annotated implements AnnotatedElement {
         // 直接注解
         for (Annotation annotation : annotations) {
             annotationType = annotation.annotationType();
-            if (false == META_ANNOTATIONS.contains(annotationType)) {
+            if (AnnoKit.isNotJdkMateAnnotation(annotationType)) {
                 if (test(annotation)) {
                     declaredAnnotationMap.put(annotationType, annotation);
                 }
@@ -172,7 +160,7 @@ public class Annotated implements AnnotatedElement {
         Class<? extends Annotation> annotationType;
         for (Annotation annotation : annotations) {
             annotationType = annotation.annotationType();
-            if (false == META_ANNOTATIONS.contains(annotationType)) {
+            if (AnnoKit.isNotJdkMateAnnotation(annotationType)) {
                 if (test(annotation)) {
                     annotationMap.put(annotationType, annotation);
                 }

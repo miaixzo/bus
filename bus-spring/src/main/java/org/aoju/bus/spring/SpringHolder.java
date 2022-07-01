@@ -23,39 +23,16 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
-
-import org.aoju.bus.core.Version;
-import org.aoju.bus.starter.BusXBuilder;
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringBootVersion;
-import org.springframework.boot.ansi.AnsiColor;
-import org.springframework.boot.ansi.AnsiOutput;
-import org.springframework.core.env.Environment;
-
-import java.io.PrintStream;
+package org.aoju.bus.spring;
 
 /**
- * 旗标生成器
+ * 上下文等信息持有者
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BusBanner implements Banner {
+public class SpringHolder {
 
-    private static final String SPRING_BOOT = "::Spring Boot::";
-
-    @Override
-    public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
-        for (Object line : BusXBuilder.BUS_BANNER) {
-            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_YELLOW, line));
-        }
-
-        printStream.println();
-        printStream.println(AnsiOutput.toString(
-                AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
-                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.get())));
-        printStream.println();
-    }
+    public static boolean alive = false;
 
 }

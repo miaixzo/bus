@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
+package org.aoju.bus.spring;
 
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Assert;

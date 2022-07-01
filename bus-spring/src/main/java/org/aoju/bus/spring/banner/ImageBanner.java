@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
+package org.aoju.bus.spring.banner;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;

@@ -66,10 +66,13 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
         if (StringKit.isNotEmpty(targetDir.toString())) {
             try {
                 Files.copy(dir, targetDir, copyOptions);
+            } catch (final DirectoryNotEmptyException ignore) {
+                // 目录已经存在，则跳过
             } catch (FileAlreadyExistsException e) {
                 if (false == Files.isDirectory(targetDir)) {
                     throw e;
                 }
+                // 目录非空情况下，跳过创建目录
             }
         }
 

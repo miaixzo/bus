@@ -1,7 +1,7 @@
 package org.aoju.bus.starter.mapper;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,7 +23,7 @@ import java.util.Properties;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.MYBATIS)
+@ConfigurationProperties(prefix = BusXConfig.MYBATIS)
 public class MybatisProperties {
 
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();

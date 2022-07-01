@@ -23,16 +23,33 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
+package org.aoju.bus.spring.banner;
 
 /**
- * 上下文等信息持有者
+ * 版本旗标生成
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SpringHolder {
+public class VersionBanner extends AbstractBanner {
 
-    public static boolean alive = false;
+    public VersionBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
+        super(resourceClass, resourceLocation, defaultBanner);
+        initialize();
+    }
+
+    @Override
+    protected String generateBanner(String bannerText) {
+        if (null == bannerText) {
+            String implementationVersion = resourceClass.getPackage().getImplementationVersion();
+            if (null != implementationVersion) {
+                return implementationVersion;
+            } else {
+                return defaultBanner;
+            }
+        } else {
+            return bannerText;
+        }
+    }
 
 }

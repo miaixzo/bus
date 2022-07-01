@@ -5,8 +5,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.entity.Config;
-import org.aoju.bus.starter.BusXExtend;
-import org.aoju.bus.starter.PlaceBinder;
+import org.aoju.bus.spring.BusXConfig;
+import org.aoju.bus.spring.PlaceBinder;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -228,7 +228,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
      */
     public void setMapperProperties(Environment environment) {
         try {
-            Config config = PlaceBinder.bind(environment, Config.class, BusXExtend.MYBATIS);
+            Config config = PlaceBinder.bind(environment, Config.class, BusXConfig.MYBATIS);
             if (mapperBuilder == null) {
                 mapperBuilder = new MapperBuilder();
             }

@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.storage;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.aoju.bus.starter.cache.CacheProperties;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.Registry;
@@ -44,7 +44,7 @@ import java.util.Map;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.STORAGE)
+@ConfigurationProperties(prefix = BusXConfig.STORAGE)
 public class StorageProperties {
 
     /**

@@ -23,20 +23,31 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
+package org.aoju.bus.core.annotation.scanner;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.aoju.bus.core.toolkit.CollKit;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
- * 扫描包配置项及其他属性等
+ * 扫描{@link Method}上的注解
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@ComponentScan("org.aoju.**")
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class BusXHolder {
+public class MethodScanner implements AnnoScanner {
+
+    @Override
+    public boolean support(AnnotatedElement annotatedElement) {
+        return annotatedElement instanceof Method;
+    }
+
+    @Override
+    public List<Annotation> getAnnotations(AnnotatedElement annotatedElement) {
+        return CollKit.newArrayList(annotatedElement.getAnnotations());
+    }
 
 }

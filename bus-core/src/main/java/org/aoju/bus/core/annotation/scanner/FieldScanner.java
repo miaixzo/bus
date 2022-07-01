@@ -23,69 +23,31 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
+package org.aoju.bus.core.annotation.scanner;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.CollKit;
 
-import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.util.List;
 
 /**
- * 旗标生成器
+ * 扫描{@link Field}上的注解
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractBanner {
+public class FieldScanner implements AnnoScanner {
 
-    // Resource类
-    protected Class<?> resourceClass;
-    // Resource位置
-    protected String resourceLocation;
-    // 默认旗标文本
-    protected String defaultBanner;
-    // 最终旗标文本
-    protected String banner;
-
-    public AbstractBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
-        this.resourceClass = resourceClass;
-        this.resourceLocation = resourceLocation;
-        this.defaultBanner = defaultBanner;
+    @Override
+    public boolean support(AnnotatedElement annotatedElement) {
+        return annotatedElement instanceof Field;
     }
 
-    protected void initialize() {
-        InputStream inputStream = null;
-        String bannerText = null;
-        try {
-            if (null != resourceLocation) {
-                inputStream = resourceClass.getResourceAsStream(resourceLocation);
-                bannerText = IoKit.toString(inputStream, Charset.DEFAULT_UTF_8);
-            }
-        } catch (Exception e) {
-
-        } finally {
-            banner = generateBanner(bannerText);
-
-            if (null != inputStream) {
-                IoKit.close(inputStream);
-            }
-        }
+    @Override
+    public List<Annotation> getAnnotations(AnnotatedElement annotatedElement) {
+        return CollKit.newArrayList(annotatedElement.getAnnotations());
     }
-
-    public String getBanner() {
-        return banner;
-    }
-
-    // 显示成非ansi模式
-    public String getPlainBanner() {
-        if (null != banner) {
-            banner = banner.replaceAll("\u001b\\[[;\\d]*m", Normal.EMPTY);
-        }
-
-        return banner;
-    }
-
-    protected abstract String generateBanner(String bannerText);
 
 }

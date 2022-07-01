@@ -138,13 +138,11 @@ public abstract class EventChanges {
         this.totalTimeSpent = totalTimeSpent;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> ChangeContainer<T> get(String property) {
 
         if (otherProperties.containsKey(property)) {
             try {
                 final ChangeContainer<Object> container = otherProperties.get(property);
-                // noinspection unchecked :  It's duty from caller to be sure to do that
                 return container != null ? (ChangeContainer<T>) container : null;
             } catch (ClassCastException e) {
                 return null;
