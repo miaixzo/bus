@@ -23,59 +23,57 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
+package org.aoju.bus.spring;
+
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * 全局常量配置
+ * 扫描包配置项及其他属性等
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BusXBuilder {
+@ComponentScan("org.aoju.**")
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class BusXHolder {
 
-    /***
-     * 应用图标
+    /**
+     * 获取某个包下所有的class对象
+     *
+     * @param packageName 包路径
+     * @return
      */
-    public static final String[] BUS_BANNER = {
-            "",
-            " $$$$$$\\   $$$$$$\\  $$\\ $$\\   $$\\     $$$$$$\\   $$$$$$\\   $$$$$$\\",
-            " \\____$$\\ $$  __$$\\ \\__|$$ |  $$ |   $$  __$$\\ $$  __$$\\ $$  __$$\\",
-            " $$$$$$$ |$$ /  $$ |$$\\ $$ |  $$ |   $$ /  $$ |$$ |  \\__|$$ /  $$ |",
-            "$$  __$$ |$$ |  $$ |$$ |$$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |",
-            "\\$$$$$$$ |\\$$$$$$  |$$ |\\$$$$$$  |$$\\\\$$$$$$  |$$ |      \\$$$$$$$ |",
-            " \\_______| \\______/ $$ | \\______/ \\__|\\______/ \\__|       \\____$$ |",
-            "              $$\\   $$ |                                 $$\\   $$ |",
-            "              \\$$$$$$  |                                 \\$$$$$$  |",
-            "               \\______/                                   \\______/"
-    };
-    /***
-     * 应用名称
-     */
-    public static final String BUS_NAME = "spring.application.name";
-    /***
-     * 应用版本
-     */
-    public static final String BUS_VERSION = "version";
-    /***
-     * BOOT
-     */
-    public static final String BUS_BOOT = "::Bus Boot::";
-    /***
-     * BOOT 版本
-     */
-    public static final String BUS_BOOT_VERSION = "bus-boot.version";
-    /***
-     * BOOT 版本信息
-     */
-    public static final String BUS_BOOT_FORMATTED_VERSION = "bus-boot.formatted-version";
-    /***
-     * BOOT 环境属性
-     */
-    public static final String BUS_BOOT_PROPERTIES = "GenieBuilder";
-
-    public static final String BUS_HIGH_PRIORITY_CONFIG = "BusHighPriorityConfig";
-
-    public static final String BUS_BOOTSTRAP = "BusBootstrap";
-
+    public static Set<Class<?>> scan(String packageName) {
+        Set<Class<?>> handlerSet = new HashSet();
+        try {
+            String pattern = "classpath*:" + ClassKit.convertClassNameToResourcePath(packageName) + "/**/*.class";
+            PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+            Resource[] resources = resourcePatternResolver.getResources(pattern);
+            CachingMetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
+            for (Resource resource : resources) {
+                try {
+                    MetadataReader reader = readerFactory.getMetadataReader(resource);
+                    String className = reader.getClassMetadata().getClassName();
+                    Class<?> clazz = Class.forName(className);
+                    handlerSet.add(clazz);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return handlerSet;
+    }
 
 }

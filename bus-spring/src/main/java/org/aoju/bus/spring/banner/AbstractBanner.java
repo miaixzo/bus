@@ -23,31 +23,81 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
+package org.aoju.bus.spring.banner;
 
-import lombok.Data;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.toolkit.IoKit;
+
+import java.io.InputStream;
 
 /**
+ * 旗标生成器
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Data
-public class Description {
+public abstract class AbstractBanner {
 
-    private String name;
-    private String description;
-    private int leftCellPadding = 0;
-    private int rightCellPadding = 1;
+    /**
+     * Resource类
+     */
+    protected Class<?> resourceClass;
+    /**
+     * Resource位置
+     */
+    protected String resourceLocation;
+    /**
+     * 默认旗标文本
+     */
+    protected String defaultBanner;
+    /**
+     * 最终旗标文本
+     */
+    protected String banner;
 
-    public Description() {
-
+    public AbstractBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
+        this.resourceClass = resourceClass;
+        this.resourceLocation = resourceLocation;
+        this.defaultBanner = defaultBanner;
     }
 
-    public Description(String name, String description, int leftCellPadding, int rightCellPadding) {
-        this.name = name;
-        this.description = description;
-        this.leftCellPadding = leftCellPadding;
-        this.rightCellPadding = rightCellPadding;
+    protected void initialize() {
+        InputStream inputStream = null;
+        String bannerText = null;
+        try {
+            if (null != resourceLocation) {
+                inputStream = resourceClass.getResourceAsStream(resourceLocation);
+                bannerText = IoKit.toString(inputStream, Charset.DEFAULT_UTF_8);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            banner = generateBanner(bannerText);
+
+            if (null != inputStream) {
+                IoKit.close(inputStream);
+            }
+        }
     }
+
+    public String getBanner() {
+        return banner;
+    }
+
+    /**
+     * 显示成非ansi模式
+     *
+     * @return the strings
+     */
+    public String getPlainBanner() {
+        if (null != banner) {
+            banner = banner.replaceAll("\u001b\\[[;\\d]*m", Normal.EMPTY);
+        }
+
+        return banner;
+    }
+
+    protected abstract String generateBanner(String bannerText);
 
 }

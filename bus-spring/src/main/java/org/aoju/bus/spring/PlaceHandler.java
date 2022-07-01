@@ -23,69 +23,65 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
+package org.aoju.bus.spring;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
 
-import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
- * 旗标生成器
+ * 拦截响应的代理
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractBanner {
+public class PlaceHandler implements InvocationHandler {
 
-    // Resource类
-    protected Class<?> resourceClass;
-    // Resource位置
-    protected String resourceLocation;
-    // 默认旗标文本
-    protected String defaultBanner;
-    // 最终旗标文本
-    protected String banner;
+    private final Annotation delegate;
 
-    public AbstractBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
-        this.resourceClass = resourceClass;
-        this.resourceLocation = resourceLocation;
-        this.defaultBanner = defaultBanner;
+    private final PlaceBinder binder;
+
+    private PlaceHandler(Annotation delegate, PlaceBinder binder) {
+        this.delegate = delegate;
+        this.binder = binder;
     }
 
-    protected void initialize() {
-        InputStream inputStream = null;
-        String bannerText = null;
-        try {
-            if (null != resourceLocation) {
-                inputStream = resourceClass.getResourceAsStream(resourceLocation);
-                bannerText = IoKit.toString(inputStream, Charset.DEFAULT_UTF_8);
-            }
-        } catch (Exception e) {
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        Object ret = method.invoke(delegate, args);
+        if (!ReflectKit.isEqualsMethod(method) && !ReflectKit.isHashCodeMethod(method)
+                && !ReflectKit.isToStringMethod(method) && isAttributeMethod(method)) {
+            return resolvePlaceHolder(ret);
+        }
+        return ret;
+    }
 
-        } finally {
-            banner = generateBanner(bannerText);
+    private boolean isAttributeMethod(Method method) {
+        return (null != method && method.getParameterTypes().length == 0 && method.getReturnType() != void.class);
+    }
 
-            if (null != inputStream) {
-                IoKit.close(inputStream);
+    public Object resolvePlaceHolder(Object origin) {
+        if (origin.getClass().isArray()) {
+            int length = Array.getLength(origin);
+            Object ret = Array.newInstance(origin.getClass().getComponentType(), length);
+            for (int i = 0; i < length; ++i) {
+                Array.set(ret, i, resolvePlaceHolder(Array.get(origin, i)));
             }
+            return ret;
+        } else {
+            return doResolvePlaceHolder(origin);
         }
     }
 
-    public String getBanner() {
-        return banner;
-    }
-
-    // 显示成非ansi模式
-    public String getPlainBanner() {
-        if (null != banner) {
-            banner = banner.replaceAll("\u001b\\[[;\\d]*m", Normal.EMPTY);
+    private Object doResolvePlaceHolder(Object origin) {
+        if (origin instanceof String) {
+            return binder.bind((String) origin);
+        } else {
+            return origin;
         }
-
-        return banner;
     }
-
-    protected abstract String generateBanner(String bannerText);
 
 }

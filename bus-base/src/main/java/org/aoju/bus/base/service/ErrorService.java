@@ -23,54 +23,32 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter;
-
-import org.aoju.bus.core.Version;
-import org.aoju.bus.core.lang.Normal;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertiesPropertySource;
-
-import java.util.Properties;
+package org.aoju.bus.base.service;
 
 /**
- * 用于配置一些特殊的关键属性,比如bus-boot.version等,
- * 将作为一个名为PropertiesPropertySource的属性源添加
+ * 异常信息处理
+ * 此类未找到实现的情况下，采用默认实现
+ * 可以根据不同业务需求，实现对应逻辑即可
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.LOWEST_PRECEDENCE - 100)
-public class Configurable implements EnvironmentPostProcessor {
-
-    @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment,
-                                       SpringApplication application) {
-        // 系统时区
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        // 环境信息
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(
-                BusXBuilder.BUS_BOOT_PROPERTIES, getProperties());
-        environment.getPropertySources().addLast(propertySource);
-        // 必要参数
-        environment.setRequiredProperties(BusXBuilder.BUS_NAME);
-    }
+public interface ErrorService {
 
     /**
-     * 获取版本信息
+     * 完成请求处理前调用
      *
-     * @return properties
+     * @param ex 对象参数
+     * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
-    protected Properties getProperties() {
-        Properties properties = new Properties();
-        String version = Version.get();
-        properties.setProperty(BusXBuilder.BUS_BOOT_VERSION, version);
-        properties.setProperty(BusXBuilder.BUS_BOOT_FORMATTED_VERSION,
-                version.isEmpty() ? Normal.EMPTY : String.format(" (v%s)", version));
-        return properties;
-    }
+    boolean before(Exception ex);
+
+    /**
+     * 完成请求处理后回调
+     *
+     * @param ex 对象参数
+     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     */
+    boolean after(Exception ex);
 
 }

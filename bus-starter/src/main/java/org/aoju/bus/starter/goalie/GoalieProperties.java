@@ -27,7 +27,7 @@ package org.aoju.bus.starter.goalie;
 
 import lombok.Data;
 import org.aoju.bus.goalie.Config;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -37,7 +37,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(BusXExtend.GOALIE)
+@ConfigurationProperties(BusXConfig.GOALIE)
 public class GoalieProperties {
 
     /**

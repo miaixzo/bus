@@ -23,39 +23,59 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
-
-import org.aoju.bus.core.Version;
-import org.aoju.bus.starter.BusXBuilder;
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringBootVersion;
-import org.springframework.boot.ansi.AnsiColor;
-import org.springframework.boot.ansi.AnsiOutput;
-import org.springframework.core.env.Environment;
-
-import java.io.PrintStream;
+package org.aoju.bus.spring;
 
 /**
- * 旗标生成器
+ * 全局常量配置
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BusBanner implements Banner {
+public class BusXBuilder {
 
-    private static final String SPRING_BOOT = "::Spring Boot::";
+    /***
+     * 应用图标
+     */
+    public static final String[] BUS_BANNER = {
+            "",
+            " $$$$$$\\   $$$$$$\\  $$\\ $$\\   $$\\     $$$$$$\\   $$$$$$\\   $$$$$$\\",
+            " \\____$$\\ $$  __$$\\ \\__|$$ |  $$ |   $$  __$$\\ $$  __$$\\ $$  __$$\\",
+            " $$$$$$$ |$$ /  $$ |$$\\ $$ |  $$ |   $$ /  $$ |$$ |  \\__|$$ /  $$ |",
+            "$$  __$$ |$$ |  $$ |$$ |$$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |",
+            "\\$$$$$$$ |\\$$$$$$  |$$ |\\$$$$$$  |$$\\\\$$$$$$  |$$ |      \\$$$$$$$ |",
+            " \\_______| \\______/ $$ | \\______/ \\__|\\______/ \\__|       \\____$$ |",
+            "              $$\\   $$ |                                 $$\\   $$ |",
+            "              \\$$$$$$  |                                 \\$$$$$$  |",
+            "               \\______/                                   \\______/"
+    };
+    /***
+     * 应用名称
+     */
+    public static final String BUS_NAME = "spring.application.name";
+    /***
+     * 应用版本
+     */
+    public static final String BUS_VERSION = "version";
+    /***
+     * BOOT
+     */
+    public static final String BUS_BOOT = "::Bus Boot::";
+    /***
+     * BOOT 版本
+     */
+    public static final String BUS_BOOT_VERSION = "bus-boot.version";
+    /***
+     * BOOT 版本信息
+     */
+    public static final String BUS_BOOT_FORMATTED_VERSION = "bus-boot.formatted-version";
+    /***
+     * BOOT 环境属性
+     */
+    public static final String BUS_BOOT_PROPERTIES = "GenieBuilder";
 
-    @Override
-    public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
-        for (Object line : BusXBuilder.BUS_BANNER) {
-            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line));
-        }
+    public static final String BUS_HIGH_PRIORITY_CONFIG = "BusHighPriorityConfig";
 
-        printStream.println();
-        printStream.println(AnsiOutput.toString(
-                AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
-                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.get())));
-        printStream.println();
-    }
+    public static final String BUS_BOOTSTRAP = "BusBootstrap";
+
 
 }

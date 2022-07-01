@@ -25,8 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.base.advice;
 
+import org.aoju.bus.base.service.ErrorService;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.RuntimeKit;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.spring.SpringBuilder;
 
 /**
  * 异常信息处理
@@ -38,7 +41,7 @@ public class ErrorAdvice {
 
     /**
      * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
-     * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求；
+     * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求
      * 这里可以加上登录校验,权限拦截、请求限流等
      *
      * @param ex 对象参数
@@ -46,32 +49,16 @@ public class ErrorAdvice {
      */
     public boolean handler(Exception ex) {
         try {
-            this.before(ex);
-            this.after(ex);
+            ErrorService errorService = SpringBuilder.getBean(ErrorService.class);
+            if (ObjectKit.isNotNull(errorService)) {
+                errorService.before(ex);
+                errorService.after(ex);
+            } else {
+                Logger.error(RuntimeKit.getStackTrace(ex));
+            }
         } catch (RuntimeException ignore) {
-            // ignore
+            return false;
         }
-        return true;
-    }
-
-    /**
-     * 完成请求处理前调用
-     *
-     * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
-     */
-    public boolean before(Exception ex) {
-        Logger.error(RuntimeKit.getStackTrace(ex));
-        return true;
-    }
-
-    /**
-     * 完成请求处理后回调
-     *
-     * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
-     */
-    public boolean after(Exception ex) {
         return true;
     }
 

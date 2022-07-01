@@ -1,6 +1,6 @@
 org.springframework.boot.env.EnvironmentPostProcessor=\
-org.aoju.bus.starter.Configurable
+org.aoju.bus.spring.Configurable
 org.springframework.context.ApplicationListener=\
-org.aoju.bus.starter.GenieBuilder
+org.aoju.bus.spring.GenieBuilder
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.aoju.bus.starter.BusXHolder
+org.aoju.bus.spring.BusXHolder

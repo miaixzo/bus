@@ -23,33 +23,39 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.banner;
+package org.aoju.bus.spring.banner;
+
+import org.aoju.bus.core.Version;
+import org.aoju.bus.spring.BusXBuilder;
+import org.springframework.boot.Banner;
+import org.springframework.boot.SpringBootVersion;
+import org.springframework.boot.ansi.AnsiColor;
+import org.springframework.boot.ansi.AnsiOutput;
+import org.springframework.core.env.Environment;
+
+import java.io.PrintStream;
 
 /**
- * 版本旗标生成
+ * 旗标生成器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class VersionBanner extends AbstractBanner {
+public class BusBanner implements Banner {
 
-    public VersionBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
-        super(resourceClass, resourceLocation, defaultBanner);
-        initialize();
-    }
+    private static final String SPRING_BOOT = "::Spring Boot::";
 
     @Override
-    protected String generateBanner(String bannerText) {
-        if (null == bannerText) {
-            String implementationVersion = resourceClass.getPackage().getImplementationVersion();
-            if (null != implementationVersion) {
-                return implementationVersion;
-            } else {
-                return defaultBanner;
-            }
-        } else {
-            return bannerText;
+    public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
+        for (Object line : BusXBuilder.BUS_BANNER) {
+            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line));
         }
+
+        printStream.println();
+        printStream.println(AnsiOutput.toString(
+                AnsiColor.BRIGHT_MAGENTA, SPRING_BOOT + String.format(" (v%s)", SpringBootVersion.getVersion()),
+                AnsiColor.BRIGHT_MAGENTA, "      " + BusXBuilder.BUS_BOOT + String.format(" (v%s)", Version.get())));
+        printStream.println();
     }
 
 }

@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.i18n;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -36,7 +36,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(BusXExtend.I18N)
+@ConfigurationProperties(BusXConfig.I18N)
 public class I18nProperties {
 
     /**

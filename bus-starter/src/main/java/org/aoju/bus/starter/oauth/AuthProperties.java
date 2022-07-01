@@ -28,7 +28,7 @@ package org.aoju.bus.starter.oauth;
 import lombok.Data;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.aoju.bus.starter.cache.CacheProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -44,7 +44,7 @@ import java.util.Map;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.OAUTH)
+@ConfigurationProperties(prefix = BusXConfig.OAUTH)
 public class AuthProperties {
 
     /**

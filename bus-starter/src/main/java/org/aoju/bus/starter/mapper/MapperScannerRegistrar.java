@@ -4,8 +4,8 @@ import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.starter.BusXExtend;
-import org.aoju.bus.starter.PlaceBinder;
+import org.aoju.bus.spring.BusXConfig;
+import org.aoju.bus.spring.PlaceBinder;
 import org.aoju.bus.starter.annotation.EnableMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.BeanUtils;
@@ -82,7 +82,7 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         }
 
         if (CollKit.isEmpty(basePackages)) {
-            MybatisProperties properties = PlaceBinder.bind(environment, MybatisProperties.class, BusXExtend.MYBATIS);
+            MybatisProperties properties = PlaceBinder.bind(environment, MybatisProperties.class, BusXConfig.MYBATIS);
             if (properties != null && properties.getBasePackages() != null && properties.getBasePackages().length > 0) {
                 basePackages.addAll(Arrays.asList(properties.getBasePackages()));
             } else {

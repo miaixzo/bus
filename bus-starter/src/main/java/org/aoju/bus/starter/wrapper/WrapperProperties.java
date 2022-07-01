@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.wrapper;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 
@@ -42,7 +42,7 @@ import java.util.Set;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.WRAPPER)
+@ConfigurationProperties(prefix = BusXConfig.WRAPPER)
 public class WrapperProperties {
 
     private int order;

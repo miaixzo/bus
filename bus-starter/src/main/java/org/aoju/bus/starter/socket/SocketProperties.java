@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.socket;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -38,7 +38,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.SOCKET)
+@ConfigurationProperties(prefix = BusXConfig.SOCKET)
 public class SocketProperties {
 
     private int port = 8080;

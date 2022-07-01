@@ -28,7 +28,7 @@ package org.aoju.bus.starter.cors;
 import lombok.Data;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -38,7 +38,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(BusXExtend.CORS)
+@ConfigurationProperties(BusXConfig.CORS)
 public class CorsProperties {
 
     /**

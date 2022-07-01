@@ -31,9 +31,6 @@ import org.aoju.bus.starter.annotation.EnableLimiter;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.AdviceModeImportSelector;
 import org.springframework.context.annotation.AutoProxyRegistrar;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,16 +55,6 @@ public class LimiterConfiguration extends AdviceModeImportSelector<EnableLimiter
             default:
                 return null;
         }
-    }
-
-    @Bean
-    public WebMvcConfigurer traceSpringMvcWebMvcConfigurerAdapter() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addInterceptors(InterceptorRegistry registry) {
-                // registry.addInterceptor(preventRepeatInterceptor()).addPathPatterns("/**");
-            }
-        };
     }
 
 }

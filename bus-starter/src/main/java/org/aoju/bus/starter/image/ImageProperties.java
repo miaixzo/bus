@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.image;
 
 import lombok.Data;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,7 +39,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @Data
 @EnableConfigurationProperties(value = {ImageProperties.Node.class})
-@ConfigurationProperties(prefix = BusXExtend.IMAGE)
+@ConfigurationProperties(prefix = BusXConfig.IMAGE)
 public class ImageProperties {
 
     @Autowired
@@ -66,7 +66,7 @@ public class ImageProperties {
      * 服务器信息
      */
     @Data
-    @ConfigurationProperties(prefix = BusXExtend.IMAGE + ".node")
+    @ConfigurationProperties(prefix = BusXConfig.IMAGE + ".node")
     public class Node {
 
         /**

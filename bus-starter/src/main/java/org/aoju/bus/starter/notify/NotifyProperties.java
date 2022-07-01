@@ -28,7 +28,7 @@ package org.aoju.bus.starter.notify;
 import lombok.Data;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Registry;
-import org.aoju.bus.starter.BusXExtend;
+import org.aoju.bus.spring.BusXConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;
@@ -42,7 +42,7 @@ import java.util.Map;
  * @since Java 17+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.NOTIFY)
+@ConfigurationProperties(prefix = BusXConfig.NOTIFY)
 public class NotifyProperties {
 
     /**
