@@ -45,10 +45,10 @@ public class PostgreSqlRowBounds extends AbstractRowBounds {
             sqlStr.append(" LIMIT ");
             sqlStr.append(rowBounds.getLimit());
         } else {
-            sqlStr.append(" OFFSET ");
-            sqlStr.append(rowBounds.getOffset());
             sqlStr.append(" LIMIT ");
             sqlStr.append(rowBounds.getLimit());
+            sqlStr.append(" OFFSET ");
+            sqlStr.append(rowBounds.getOffset());
             pageKey.update(rowBounds.getOffset());
         }
         pageKey.update(rowBounds.getLimit());

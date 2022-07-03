@@ -25,8 +25,17 @@
  ********************************************************************************/
 package org.aoju.bus.pager.dialect.base;
 
+import org.aoju.bus.mapper.reflect.MetaObject;
 import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.dialect.AbstractPaging;
 import org.apache.ibatis.cache.CacheKey;
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 数据库方言 postgresql
@@ -34,8 +43,11 @@ import org.apache.ibatis.cache.CacheKey;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PostgreSql extends MySql {
+public class PostgreSql extends AbstractPaging {
 
+    /**
+     * 构建 <a href="https://www.postgresql.org/docs/current/queries-limit.html">PostgreSQL</a>分页查询语句
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlStr = new StringBuilder(sql.length() + 17);
@@ -43,9 +55,31 @@ public class PostgreSql extends MySql {
         if (page.getStartRow() == 0) {
             sqlStr.append(" LIMIT ?");
         } else {
-            sqlStr.append(" OFFSET ? LIMIT ?");
+            sqlStr.append(" LIMIT ? OFFSET ?");
         }
         return sqlStr.toString();
+    }
+
+    @Override
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+        paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
+        paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
+        //处理pageKey
+        pageKey.update(page.getPageSize());
+        pageKey.update(page.getStartRow());
+        //处理参数配置
+        if (boundSql.getParameterMappings() != null) {
+            List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
+            if (page.getStartRow() == 0) {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
+            } else {
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
+                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, long.class).build());
+            }
+            org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
+            metaObject.setValue("parameterMappings", newParameterMappings);
+        }
+        return paramMap;
     }
 
 }
