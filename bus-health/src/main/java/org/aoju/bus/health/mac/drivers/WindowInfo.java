@@ -37,8 +37,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.aoju.bus.health.mac.CoreGraphics.*;
-
 /**
  * Utility to query desktop windows
  *
@@ -57,9 +55,9 @@ public final class WindowInfo {
      */
     public static List<OSDesktopWindow> queryDesktopWindows(boolean visibleOnly) {
         CFArrayRef windowInfo = CoreGraphics.INSTANCE.CGWindowListCopyWindowInfo(
-                visibleOnly ? kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements
-                        : kCGWindowListOptionAll,
-                kCGNullWindowID);
+                visibleOnly ? CoreGraphics.kCGWindowListOptionOnScreenOnly | CoreGraphics.kCGWindowListExcludeDesktopElements
+                        : CoreGraphics.kCGWindowListOptionAll,
+                CoreGraphics.kCGNullWindowID);
         int numWindows = windowInfo.getCount();
         // Prepare a list to return
         List<OSDesktopWindow> windowList = new ArrayList<>();
@@ -91,7 +89,7 @@ public final class WindowInfo {
                     int windowLayer = new CFNumberRef(result).intValue();
 
                     result = windowRef.getValue(kCGWindowBounds);
-                    CGRect rect = new CGRect();
+                    CoreGraphics.CGRect rect = new CoreGraphics.CGRect();
                     CoreGraphics.INSTANCE.CGRectMakeWithDictionaryRepresentation(new CFDictionaryRef(result), rect);
                     Rectangle windowBounds = new Rectangle(Formats.roundToInt(rect.origin.x),
                             Formats.roundToInt(rect.origin.y), Formats.roundToInt(rect.size.width),

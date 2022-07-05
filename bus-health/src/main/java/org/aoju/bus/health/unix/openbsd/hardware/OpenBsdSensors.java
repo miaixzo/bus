@@ -30,14 +30,12 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Sensors
@@ -48,8 +46,8 @@ import static org.aoju.bus.health.Memoize.memoize;
 @ThreadSafe
 final class OpenBsdSensors extends AbstractSensors {
 
-    private final Supplier<Triple<Double, int[], Double>> tempFanVolts = memoize(OpenBsdSensors::querySensors,
-            defaultExpiration());
+    private final Supplier<Triple<Double, int[], Double>> tempFanVolts = Memoize.memoize(OpenBsdSensors::querySensors,
+            Memoize.defaultExpiration());
 
     private static Triple<Double, int[], Double> querySensors() {
         double volts = 0d;

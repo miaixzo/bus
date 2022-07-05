@@ -41,9 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.sun.jna.platform.mac.SystemB.INT_SIZE;
-import static com.sun.jna.platform.mac.SystemB.PROC_ALL_PIDS;
-
 /**
  * Internet Protocol Stats implementation
  *
@@ -275,8 +272,8 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     public List<InternetProtocolStats.IPConnection> getConnections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         int[] pids = new int[1024];
-        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(PROC_ALL_PIDS, 0, pids, pids.length * INT_SIZE)
-                / INT_SIZE;
+        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE)
+                / SystemB.INT_SIZE;
         for (int i = 0; i < numberOfProcesses; i++) {
             // Handle off-by-one bug in proc_listpids where the size returned
             // is: SystemB.INT_SIZE * (pids + 1)

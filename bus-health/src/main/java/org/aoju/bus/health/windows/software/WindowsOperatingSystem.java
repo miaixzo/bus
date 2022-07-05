@@ -40,6 +40,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
 import org.aoju.bus.health.windows.WinNT.TOKEN_ELEVATION;
@@ -56,10 +57,6 @@ import org.aoju.bus.logger.Logger;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-import static org.aoju.bus.health.builtin.software.OSService.State.*;
 
 /**
  * Microsoft Windows, commonly referred to as Windows, is a group of several
@@ -86,7 +83,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /*
      * Windows event log name
      */
-    private static final Supplier<String> systemLog = memoize(WindowsOperatingSystem::querySystemLog,
+    private static final Supplier<String> systemLog = Memoize.memoize(WindowsOperatingSystem::querySystemLog,
             TimeUnit.HOURS.toNanos(1));
     private static final long BOOTTIME = querySystemBootTime();
 
@@ -98,18 +95,18 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * Cache full process stats queries. Second query will only populate if first
      * one returns null.
      */
-    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = memoize(
-            WindowsOperatingSystem::queryProcessMapFromRegistry, defaultExpiration());
-    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = memoize(
-            WindowsOperatingSystem::queryProcessMapFromPerfCounters, defaultExpiration());
+    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoize.memoize(
+            WindowsOperatingSystem::queryProcessMapFromRegistry, Memoize.defaultExpiration());
+    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoize.memoize(
+            WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoize.defaultExpiration());
     /*
      * Cache full thread stats queries. Second query will only populate if first one
      * returns null. Only used if USE_PROCSTATE_SUSPENDED is set true.
      */
-    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = memoize(
-            WindowsOperatingSystem::queryThreadMapFromRegistry, defaultExpiration());
-    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = memoize(
-            WindowsOperatingSystem::queryThreadMapFromPerfCounters, defaultExpiration());
+    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoize.memoize(
+            WindowsOperatingSystem::queryThreadMapFromRegistry, Memoize.defaultExpiration());
+    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoize.memoize(
+            WindowsOperatingSystem::queryThreadMapFromPerfCounters, Memoize.defaultExpiration());
 
     /**
      * Gets suites available on the system and return as a codename
@@ -526,13 +523,13 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 State state;
                 switch (service.ServiceStatusProcess.dwCurrentState) {
                     case 1:
-                        state = STOPPED;
+                        state = OSService.State.STOPPED;
                         break;
                     case 4:
-                        state = RUNNING;
+                        state = OSService.State.RUNNING;
                         break;
                     default:
-                        state = OTHER;
+                        state = OSService.State.OTHER;
                         break;
                 }
                 svcArray.add(new OSService(service.lpDisplayName, service.ServiceStatusProcess.dwProcessId, state));

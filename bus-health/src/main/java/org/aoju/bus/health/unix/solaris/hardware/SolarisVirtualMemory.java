@@ -29,15 +29,13 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.unix.solaris.drivers.kstat.SystemPages;
 
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Memory obtained by kstat and swap
@@ -53,16 +51,16 @@ final class SolarisVirtualMemory extends AbstractVirtualMemory {
     private final SolarisGlobalMemory global;
 
     // Physical
-    private final Supplier<Pair<Long, Long>> availTotal = memoize(SystemPages::queryAvailableTotal,
-            defaultExpiration());
+    private final Supplier<Pair<Long, Long>> availTotal = Memoize.memoize(SystemPages::queryAvailableTotal,
+            Memoize.defaultExpiration());
 
     // Swap
-    private final Supplier<Pair<Long, Long>> usedTotal = memoize(SolarisVirtualMemory::querySwapInfo,
-            defaultExpiration());
+    private final Supplier<Pair<Long, Long>> usedTotal = Memoize.memoize(SolarisVirtualMemory::querySwapInfo,
+            Memoize.defaultExpiration());
 
-    private final Supplier<Long> pagesIn = memoize(SolarisVirtualMemory::queryPagesIn, defaultExpiration());
+    private final Supplier<Long> pagesIn = Memoize.memoize(SolarisVirtualMemory::queryPagesIn, Memoize.defaultExpiration());
 
-    private final Supplier<Long> pagesOut = memoize(SolarisVirtualMemory::queryPagesOut, defaultExpiration());
+    private final Supplier<Long> pagesOut = Memoize.memoize(SolarisVirtualMemory::queryPagesOut, Memoize.defaultExpiration());
 
     /**
      * Constructor for SolarisVirtualMemory.

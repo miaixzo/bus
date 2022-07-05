@@ -451,7 +451,7 @@ public class AnnoKit {
      *
      * @param method 方法
      */
-    static boolean isAttributeMethod(Method method) {
+    public static boolean isAttributeMethod(Method method) {
         return method.getParameterCount() == 0 && method.getReturnType() != void.class;
     }
 

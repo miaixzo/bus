@@ -29,13 +29,11 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Memory obtained by swapinfo
@@ -48,13 +46,13 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
 
     private final FreeBsdGlobalMemory global;
 
-    private final Supplier<Long> used = memoize(FreeBsdVirtualMemory::querySwapUsed, defaultExpiration());
+    private final Supplier<Long> used = Memoize.memoize(FreeBsdVirtualMemory::querySwapUsed, Memoize.defaultExpiration());
 
-    private final Supplier<Long> total = memoize(FreeBsdVirtualMemory::querySwapTotal, defaultExpiration());
+    private final Supplier<Long> total = Memoize.memoize(FreeBsdVirtualMemory::querySwapTotal, Memoize.defaultExpiration());
 
-    private final Supplier<Long> pagesIn = memoize(FreeBsdVirtualMemory::queryPagesIn, defaultExpiration());
+    private final Supplier<Long> pagesIn = Memoize.memoize(FreeBsdVirtualMemory::queryPagesIn, Memoize.defaultExpiration());
 
-    private final Supplier<Long> pagesOut = memoize(FreeBsdVirtualMemory::queryPagesOut, defaultExpiration());
+    private final Supplier<Long> pagesOut = Memoize.memoize(FreeBsdVirtualMemory::queryPagesOut, Memoize.defaultExpiration());
 
     FreeBsdVirtualMemory(FreeBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;

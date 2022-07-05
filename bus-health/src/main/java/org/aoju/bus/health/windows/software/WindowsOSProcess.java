@@ -40,7 +40,9 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
+import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.windows.NtDll;
 import org.aoju.bus.health.windows.NtDll.UNICODE_STRING;
@@ -58,9 +60,6 @@ import java.io.File;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static org.aoju.bus.health.Memoize.memoize;
-import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
 
 /**
  * OSProcess implementation
@@ -82,12 +81,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     // track the OperatingSystem object that created this
     private final WindowsOperatingSystem os;
-    private final Supplier<Pair<String, String>> groupInfo = memoize(this::queryGroupInfo);
-    private final Supplier<Triple<String, String, Map<String, String>>> cwdCmdEnv = memoize(
+    private final Supplier<Pair<String, String>> groupInfo = Memoize.memoize(this::queryGroupInfo);
+    private final Supplier<Triple<String, String, Map<String, String>>> cwdCmdEnv = Memoize.memoize(
             this::queryCwdCommandlineEnvironment);
-    private final Supplier<String> currentWorkingDirectory = memoize(this::queryCwd);
+    private final Supplier<String> currentWorkingDirectory = Memoize.memoize(this::queryCwd);
     private String name;
-    private final Supplier<Pair<String, String>> userInfo = memoize(this::queryUserInfo);
+    private final Supplier<Pair<String, String>> userInfo = Memoize.memoize(this::queryUserInfo);
     private String path;
     private int parentProcessID;
     private int threadCount;
@@ -97,9 +96,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private long kernelTime;
     private long userTime;
     private long startTime;
-    private final Supplier<String> commandLine = memoize(this::queryCommandLine);
-    private final Supplier<List<String>> args = memoize(this::queryArguments);
-    private State state = INVALID;
+    private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private final Supplier<List<String>> args = Memoize.memoize(this::queryArguments);
+    private State state = OSProcess.State.INVALID;
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
@@ -339,7 +338,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // There are only 3 possible Process states on Windows: RUNNING, SUSPENDED, or
         // UNKNOWN. Processes are considered running unless all of their threads are
         // SUSPENDED.
-        this.state = RUNNING;
+        this.state = OSProcess.State.RUNNING;
         if (threadMap != null) {
             // If user hasn't enabled this in properties, we ignore
             int pid = this.getProcessID();
@@ -347,9 +346,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
             for (ThreadPerformanceData.PerfCounterBlock tcb : threadMap.values()) {
                 if (tcb.getOwningProcessID() == pid) {
                     if (tcb.getThreadWaitReason() == 5) {
-                        this.state = SUSPENDED;
+                        this.state = OSProcess.State.SUSPENDED;
                     } else {
-                        this.state = RUNNING;
+                        this.state = OSProcess.State.RUNNING;
                         break;
                     }
                 }
@@ -375,7 +374,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                         this.path = Kernel32Util.QueryFullProcessImageName(pHandle, 0);
                     }
                 } catch (Win32Exception e) {
-                    this.state = INVALID;
+                    this.state = OSProcess.State.INVALID;
                 } finally {
                     final HANDLE token = phToken.getValue();
                     if (token != null) {
@@ -387,7 +386,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
             }
         }
 
-        return !this.state.equals(INVALID);
+        return !this.state.equals(OSProcess.State.INVALID);
     }
 
     private String queryCommandLine() {

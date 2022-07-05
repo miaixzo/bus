@@ -30,14 +30,13 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Hardware data obtained from lsattr
@@ -48,7 +47,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class AixComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<LsattrStrings> lsattrStrings = memoize(AixComputerSystem::readLsattr);
+    private final Supplier<LsattrStrings> lsattrStrings = Memoize.memoize(AixComputerSystem::readLsattr);
     private final Supplier<List<String>> lscfg;
 
     AixComputerSystem(Supplier<List<String>> lscfg) {

@@ -26,10 +26,8 @@
 package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.Memory;
-import com.sun.jna.platform.win32.Cfgmgr32;
-import com.sun.jna.platform.win32.Cfgmgr32Util;
+import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Guid.GUID;
-import com.sun.jna.platform.win32.SetupApi;
 import com.sun.jna.platform.win32.SetupApi.SP_DEVINFO_DATA;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
@@ -38,12 +36,6 @@ import org.aoju.bus.core.lang.tuple.Quintet;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.sun.jna.platform.win32.Cfgmgr32.*;
-import static com.sun.jna.platform.win32.SetupApi.DIGCF_DEVICEINTERFACE;
-import static com.sun.jna.platform.win32.SetupApi.DIGCF_PRESENT;
-import static com.sun.jna.platform.win32.WinBase.INVALID_HANDLE_VALUE;
-import static com.sun.jna.platform.win32.WinError.ERROR_SUCCESS;
 
 /**
  * Utility to query device interfaces via Config Manager Device Tree functions
@@ -81,8 +73,8 @@ public final class DeviceTree {
         Map<Integer, String> deviceIdMap = new HashMap<>();
         Map<Integer, String> mfgMap = new HashMap<>();
         // Get device IDs for the top level devices
-        HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
-        if (!INVALID_HANDLE_VALUE.equals(hDevInfo)) {
+        HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null, SetupApi.DIGCF_DEVICEINTERFACE | SetupApi.DIGCF_PRESENT);
+        if (!WinBase.INVALID_HANDLE_VALUE.equals(hDevInfo)) {
             try {
                 // Create re-usable native allocations
                 Memory buf = new Memory(MAX_PATH);
@@ -107,25 +99,25 @@ public final class DeviceTree {
                         deviceIdMap.put(node, deviceId);
                         // Prefer friendly name over desc if it is present.
                         // If neither, use class (service)
-                        String name = getDevNodeProperty(node, CM_DRP_FRIENDLYNAME, buf, size);
+                        String name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_FRIENDLYNAME, buf, size);
                         if (name.isEmpty()) {
-                            name = getDevNodeProperty(node, CM_DRP_DEVICEDESC, buf, size);
+                            name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_DEVICEDESC, buf, size);
                         }
                         if (name.isEmpty()) {
-                            name = getDevNodeProperty(node, CM_DRP_CLASS, buf, size);
-                            String svc = getDevNodeProperty(node, CM_DRP_SERVICE, buf, size);
+                            name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_CLASS, buf, size);
+                            String svc = getDevNodeProperty(node, Cfgmgr32.CM_DRP_SERVICE, buf, size);
                             if (!svc.isEmpty()) {
                                 name = name + " (" + svc + ")";
                             }
                         }
                         nameMap.put(node, name);
-                        mfgMap.put(node, getDevNodeProperty(node, CM_DRP_MFG, buf, size));
+                        mfgMap.put(node, getDevNodeProperty(node, Cfgmgr32.CM_DRP_MFG, buf, size));
 
                         // Add any children to the queue, tracking the parent node
-                        if (ERROR_SUCCESS == C32.CM_Get_Child(child, node, 0)) {
+                        if (WinError.ERROR_SUCCESS == C32.CM_Get_Child(child, node, 0)) {
                             parentMap.put(child.getValue(), node);
                             deviceTree.add(child.getValue());
-                            while (ERROR_SUCCESS == C32.CM_Get_Sibling(sibling, child.getValue(), 0)) {
+                            while (WinError.ERROR_SUCCESS == C32.CM_Get_Sibling(sibling, child.getValue(), 0)) {
                                 parentMap.put(sibling.getValue(), node);
                                 deviceTree.add(sibling.getValue());
                                 child.setValue(sibling.getValue());

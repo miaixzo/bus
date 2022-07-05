@@ -27,6 +27,7 @@ package org.aoju.bus.health.windows.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
+import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSProcess.State;
 import org.aoju.bus.health.windows.drivers.registry.ThreadPerformanceData;
 import org.aoju.bus.health.windows.drivers.registry.ThreadPerformanceData.PerfCounterBlock;
@@ -34,8 +35,6 @@ import org.aoju.bus.health.windows.drivers.registry.ThreadPerformanceData.PerfCo
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
 
 /**
  * OSThread implementation
@@ -128,7 +127,7 @@ public class WindowsOSThread extends AbstractOSThread {
 
     private boolean updateAttributes(String procName, PerfCounterBlock pcb) {
         if (pcb == null) {
-            this.state = INVALID;
+            this.state = OSProcess.State.INVALID;
             return false;
         } else if (pcb.getName().contains("/") || procName.isEmpty()) {
             name = pcb.getName();
@@ -136,29 +135,29 @@ public class WindowsOSThread extends AbstractOSThread {
             this.name = procName + "/" + pcb.getName();
         }
         if (pcb.getThreadWaitReason() == 5) {
-            state = SUSPENDED;
+            state = OSProcess.State.SUSPENDED;
         } else {
             switch (pcb.getThreadState()) {
                 case 0:
-                    state = NEW;
+                    state = OSProcess.State.NEW;
                     break;
                 case 2:
                 case 3:
-                    state = RUNNING;
+                    state = OSProcess.State.RUNNING;
                     break;
                 case 4:
-                    state = STOPPED;
+                    state = OSProcess.State.STOPPED;
                     break;
                 case 5:
-                    state = SLEEPING;
+                    state = OSProcess.State.SLEEPING;
                     break;
                 case 1:
                 case 6:
-                    state = WAITING;
+                    state = OSProcess.State.WAITING;
                     break;
                 case 7:
                 default:
-                    state = OTHER;
+                    state = OSProcess.State.OTHER;
             }
         }
         startMemoryAddress = pcb.getStartAddress();

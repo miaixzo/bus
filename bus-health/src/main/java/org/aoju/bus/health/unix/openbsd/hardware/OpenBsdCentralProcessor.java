@@ -32,6 +32,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.unix.OpenBsdLibc;
 import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
@@ -40,10 +41,6 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-import static org.aoju.bus.health.unix.OpenBsdLibc.*;
 
 /**
  * OpenBSD Central Processor implementation
@@ -55,8 +52,8 @@ import static org.aoju.bus.health.unix.OpenBsdLibc.*;
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
 
     private static final Pattern DMESG_CPU = Pattern.compile("cpu(\\d+): smt (\\d+), core (\\d+), package (\\d+)");
-    private final Supplier<Pair<Long, Long>> vmStats = memoize(OpenBsdCentralProcessor::queryVmStats,
-            defaultExpiration());
+    private final Supplier<Pair<Long, Long>> vmStats = Memoize.memoize(OpenBsdCentralProcessor::queryVmStats,
+            Memoize.defaultExpiration());
 
     private static Triple<Integer, Integer, Integer> cpuidToFamilyModelStepping(int cpuid) {
         // family is bits 27:20 | 11:8
@@ -112,8 +109,8 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
     protected ProcessorIdentifier queryProcessorId() {
         String cpuVendor = OpenBsdSysctlKit.sysctl("machdep.cpuvendor", "");
         int[] mib = new int[2];
-        mib[0] = CTL_HW;
-        mib[1] = HW_MODEL;
+        mib[0] = OpenBsdLibc.CTL_HW;
+        mib[1] = OpenBsdLibc.HW_MODEL;
         String cpuName = OpenBsdSysctlKit.sysctl(mib, "");
         // CPUID: first 32 bits is cpufeature, last 32 bits is cpuid
         int cpuid = Builder.hexStringToInt(OpenBsdSysctlKit.sysctl("machdep.cpuid", ""), 0);
@@ -126,7 +123,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         if (cpuFreq < 0) {
             cpuFreq = queryMaxFreq();
         }
-        mib[1] = HW_MACHINE;
+        mib[1] = OpenBsdLibc.HW_MACHINE;
         String machine = OpenBsdSysctlKit.sysctl(mib, "");
         boolean cpu64bit = machine != null && machine.contains("64")
                 || Executor.getFirstAnswer("uname -m").trim().contains("64");
@@ -145,8 +142,8 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
     protected long[] queryCurrentFreq() {
         long[] freq = new long[1];
         int[] mib = new int[2];
-        mib[0] = CTL_HW;
-        mib[1] = HW_CPUSPEED;
+        mib[0] = OpenBsdLibc.CTL_HW;
+        mib[1] = OpenBsdLibc.HW_CPUSPEED;
         freq[0] = OpenBsdSysctlKit.sysctl(mib, 0L) * 1_000_000L;
         return freq;
     }
@@ -225,18 +222,18 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
     protected long[] querySystemCpuLoadTicks() {
         long[] ticks = new long[TickType.values().length];
         int[] mib = new int[2];
-        mib[0] = CTL_KERN;
-        mib[1] = KERN_CPTIME;
+        mib[0] = OpenBsdLibc.CTL_KERN;
+        mib[1] = OpenBsdLibc.KERN_CPTIME;
         Memory m = OpenBsdSysctlKit.sysctl(mib);
         // array of 5 or 6 native longs
         long[] cpuTicks = cpTimeToTicks(m, false);
         if (cpuTicks.length >= 5) {
-            ticks[TickType.USER.getIndex()] = cpuTicks[CP_USER];
-            ticks[TickType.NICE.getIndex()] = cpuTicks[CP_NICE];
-            ticks[TickType.SYSTEM.getIndex()] = cpuTicks[CP_SYS];
+            ticks[TickType.USER.getIndex()] = cpuTicks[OpenBsdLibc.CP_USER];
+            ticks[TickType.NICE.getIndex()] = cpuTicks[OpenBsdLibc.CP_NICE];
+            ticks[TickType.SYSTEM.getIndex()] = cpuTicks[OpenBsdLibc.CP_SYS];
             int offset = cpuTicks.length > 5 ? 1 : 0;
-            ticks[TickType.IRQ.getIndex()] = cpuTicks[CP_INTR + offset];
-            ticks[TickType.IDLE.getIndex()] = cpuTicks[CP_IDLE + offset];
+            ticks[TickType.IRQ.getIndex()] = cpuTicks[OpenBsdLibc.CP_INTR + offset];
+            ticks[TickType.IDLE.getIndex()] = cpuTicks[OpenBsdLibc.CP_IDLE + offset];
         }
         return ticks;
     }
@@ -250,20 +247,20 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
     protected long[][] queryProcessorCpuLoadTicks() {
         long[][] ticks = new long[getLogicalProcessorCount()][TickType.values().length];
         int[] mib = new int[3];
-        mib[0] = CTL_KERN;
-        mib[1] = KERN_CPTIME2;
+        mib[0] = OpenBsdLibc.CTL_KERN;
+        mib[1] = OpenBsdLibc.KERN_CPTIME2;
         for (int cpu = 0; cpu < getLogicalProcessorCount(); cpu++) {
             mib[2] = cpu;
             Memory m = OpenBsdSysctlKit.sysctl(mib);
             // array of 5 or 6 longs
             long[] cpuTicks = cpTimeToTicks(m, true);
             if (cpuTicks.length >= 5) {
-                ticks[cpu][TickType.USER.getIndex()] = cpuTicks[CP_USER];
-                ticks[cpu][TickType.NICE.getIndex()] = cpuTicks[CP_NICE];
-                ticks[cpu][TickType.SYSTEM.getIndex()] = cpuTicks[CP_SYS];
+                ticks[cpu][TickType.USER.getIndex()] = cpuTicks[OpenBsdLibc.CP_USER];
+                ticks[cpu][TickType.NICE.getIndex()] = cpuTicks[OpenBsdLibc.CP_NICE];
+                ticks[cpu][TickType.SYSTEM.getIndex()] = cpuTicks[OpenBsdLibc.CP_SYS];
                 int offset = cpuTicks.length > 5 ? 1 : 0;
-                ticks[cpu][TickType.IRQ.getIndex()] = cpuTicks[CP_INTR + offset];
-                ticks[cpu][TickType.IDLE.getIndex()] = cpuTicks[CP_IDLE + offset];
+                ticks[cpu][TickType.IRQ.getIndex()] = cpuTicks[OpenBsdLibc.CP_INTR + offset];
+                ticks[cpu][TickType.IDLE.getIndex()] = cpuTicks[OpenBsdLibc.CP_IDLE + offset];
             }
         }
         return ticks;
