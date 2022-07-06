@@ -27,30 +27,27 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.Sink;
 import org.aoju.bus.core.io.Source;
-import org.aoju.bus.http.accord.*;
+import org.aoju.bus.http.accord.ConnectionPool;
+import org.aoju.bus.http.accord.ConnectionSuite;
+import org.aoju.bus.http.accord.Exchange;
+import org.aoju.bus.http.accord.RealConnectionPool;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.cache.Cache;
 import org.aoju.bus.http.cache.InternalCache;
-import org.aoju.bus.http.metric.CookieJar;
-import org.aoju.bus.http.metric.Dispatcher;
-import org.aoju.bus.http.metric.EventListener;
-import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.*;
 import org.aoju.bus.http.metric.proxy.NullProxySelector;
-import org.aoju.bus.http.secure.Authenticator;
-import org.aoju.bus.http.secure.CertificateChainCleaner;
-import org.aoju.bus.http.secure.CertificatePinner;
-import org.aoju.bus.http.secure.HostnameVerifier;
+import org.aoju.bus.http.secure.*;
 import org.aoju.bus.http.socket.RealWebSocket;
 import org.aoju.bus.http.socket.WebSocket;
 import org.aoju.bus.http.socket.WebSocketListener;
 
 import javax.net.SocketFactory;
-import javax.net.ssl.*;
-import java.io.IOException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.Socket;
-import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 发送HTTP请求辅助类
- * 工厂的{@linkplain NewCall calls}，可以用来发送HTTP请求并读取它们的响应
+ * 工厂的{@linkplain NewCall call}，可以用来发送HTTP请求并读取它们的响应
  * 当您创建一个{@code Httpd}实例并将其用于所有HTTP调用时，体现Httpd的性能最佳
  * 这是因为每个客户机都拥有自己的连接池和线程池。重用连接和线程可以减少延迟并节省内存
  * 相反，为每个请求创建一个客户机会浪费空闲池上的资源
@@ -78,7 +75,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             ConnectionSuite.MODERN_TLS, ConnectionSuite.CLEARTEXT);
 
     static {
-        org.aoju.bus.http.Builder.instance = new org.aoju.bus.http.Builder() {
+        Internal.instance = new Internal() {
             @Override
             public void addLenient(Headers.Builder builder, String line) {
                 builder.addLenient(line);
@@ -90,41 +87,13 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             }
 
             @Override
-            public void setCache(Builder builder, InternalCache internalCache) {
-                builder.setInternalCache(internalCache);
-            }
-
-            @Override
-            public boolean connectionBecameIdle(
-                    ConnectionPool pool, RealConnection connection) {
-                return pool.connectionBecameIdle(connection);
-            }
-
-            @Override
-            public RealConnection get(ConnectionPool pool, Address address,
-                                      StreamAllocation streamAllocation, Route route) {
-                return pool.get(address, streamAllocation, route);
+            public RealConnectionPool realConnectionPool(ConnectionPool connectionPool) {
+                return connectionPool.delegate;
             }
 
             @Override
             public boolean equalsNonHost(Address a, Address b) {
                 return a.equalsNonHost(b);
-            }
-
-            @Override
-            public Socket deduplicate(
-                    ConnectionPool pool, Address address, StreamAllocation streamAllocation) {
-                return pool.deduplicate(address, streamAllocation);
-            }
-
-            @Override
-            public void put(ConnectionPool pool, RealConnection connection) {
-                pool.put(connection);
-            }
-
-            @Override
-            public RouteDatabase routeDatabase(ConnectionPool connectionPool) {
-                return connectionPool.routeDatabase;
             }
 
             @Override
@@ -138,23 +107,19 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             }
 
             @Override
-            public boolean isInvalidHttpUrlHost(IllegalArgumentException e) {
-                return e.getMessage().startsWith(UnoUrl.Builder.INVALID_HOST);
-            }
-
-            @Override
-            public StreamAllocation streamAllocation(NewCall call) {
-                return ((RealCall) call).streamAllocation();
-            }
-
-            @Override
-            public IOException timeoutExit(NewCall call, IOException e) {
-                return ((RealCall) call).timeoutExit(e);
-            }
-
-            @Override
             public NewCall newWebSocketCall(Httpd client, Request originalRequest) {
                 return RealCall.newRealCall(client, originalRequest, true);
+            }
+
+            @Override
+            public void initExchange(
+                    Response.Builder responseBuilder, Exchange exchange) {
+                responseBuilder.initExchange(exchange);
+            }
+
+            @Override
+            public Exchange exchange(Response response) {
+                return response.exchange;
             }
         };
     }
@@ -238,8 +203,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.sslSocketFactory = builder.sslSocketFactory;
             this.certificateChainCleaner = builder.certificateChainCleaner;
         } else {
-            X509TrustManager trustManager = org.aoju.bus.http.secure.X509TrustManager.platformTrustManager();
-            this.sslSocketFactory = newSslSocketFactory(trustManager);
+            X509TrustManager trustManager = SSLContextBuilder.newTrustManager();
+            this.sslSocketFactory = SSLContextBuilder.newSslSocketFactory(trustManager);
             this.certificateChainCleaner = CertificateChainCleaner.get(trustManager);
         }
 
@@ -271,21 +236,24 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
     }
 
-    private static SSLSocketFactory newSslSocketFactory(X509TrustManager trustManager) {
-        try {
-            SSLContext sslContext = Platform.get().getSSLContext();
-            sslContext.init(null, new TrustManager[]{trustManager}, null);
-            return sslContext.getSocketFactory();
-        } catch (GeneralSecurityException e) {
-            throw org.aoju.bus.http.Builder.assertionError("No System TLS", e);
-        }
-    }
-
+    /**
+     * 准备{@code request}在将来的某个时间点执行
+     *
+     * @param request 请求信息
+     * @return the object
+     */
     @Override
     public NewCall newCall(Request request) {
         return RealCall.newRealCall(this, request, false);
     }
 
+    /**
+     * 使用{@code request}连接一个新的web套接字
+     *
+     * @param request  请求信息
+     * @param listener 监听器
+     * @return the object
+     */
     @Override
     public WebSocket newWebSocket(Request request, WebSocketListener listener) {
         RealWebSocket webSocket = new RealWebSocket(request, listener, new Random(), pingInterval);
@@ -402,19 +370,17 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         return eventListenerFactory;
     }
 
-
     public Builder newBuilder() {
         return new Builder(this);
     }
 
-    public static final class Builder {
+    public static class Builder {
         final List<Interceptor> interceptors = new ArrayList<>();
         final List<Interceptor> networkInterceptors = new ArrayList<>();
         Dispatcher dispatcher;
         Proxy proxy;
         List<Protocol> protocols;
         List<ConnectionSuite> connectionSuites;
-
         EventListener.Factory eventListenerFactory;
         ProxySelector proxySelector;
         CookieJar cookieJar;
@@ -659,16 +625,6 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         /**
          * 设置用于读写缓存的响应的响应缓存.
          *
-         * @param internalCache 响应缓存
-         */
-        void setInternalCache(InternalCache internalCache) {
-            this.internalCache = internalCache;
-            this.cache = null;
-        }
-
-        /**
-         * 设置用于读写缓存的响应的响应缓存.
-         *
          * @param cache 缓存支持
          * @return 构造器
          */
@@ -700,7 +656,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder socketFactory(SocketFactory socketFactory) {
-            if (null == socketFactory) throw new NullPointerException("socketFactory == null");
+            if (socketFactory == null) throw new NullPointerException("socketFactory == null");
+            if (socketFactory instanceof SSLSocketFactory) {
+                throw new IllegalArgumentException("socketFactory instanceof SSLSocketFactory");
+            }
             this.socketFactory = socketFactory;
             return this;
         }
@@ -748,9 +707,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @param trustManager     X509证书身份验证
          * @return 构造器
          */
-        public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
-            if (null == sslSocketFactory) throw new NullPointerException("sslSocketFactory == null");
-            if (null == trustManager) throw new NullPointerException("trustManager == null");
+        public Builder sslSocketFactory(
+                SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
+            if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
+            if (trustManager == null) throw new NullPointerException("trustManager == null");
             this.sslSocketFactory = sslSocketFactory;
             this.certificateChainCleaner = CertificateChainCleaner.get(trustManager);
             return this;

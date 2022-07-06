@@ -60,7 +60,7 @@ public final class ThreadPerformanceData {
      */
     public static Map<Integer, PerfCounterBlock> buildThreadMapFromRegistry(Collection<Integer> pids) {
         // Grab the data from the registry.
-        Triple<List<Map<ThreadInformation.ThreadPerformanceProperty, Object>>, Long, Long> threadData = HkeyPerformanceDataUtil
+        Triple<List<Map<ThreadInformation.ThreadPerformanceProperty, Object>>, Long, Long> threadData = HkeyPerformanceData
                 .readPerfDataFromRegistry(THREAD, ThreadInformation.ThreadPerformanceProperty.class);
         if (threadData == null) {
             return null;

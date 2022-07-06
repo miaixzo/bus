@@ -34,7 +34,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 代理选择器,总是返回{@link Proxy#NO_PROXY}
+ * 代理选择器
+ * 返回{@link Proxy#NO_PROXY}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,13 +45,16 @@ public class NullProxySelector extends ProxySelector {
     @Override
     public List<Proxy> select(URI uri) {
         if (null == uri) {
-            throw new IllegalArgumentException("uri must not be null");
+            throw new IllegalArgumentException("URI must not be null");
         }
         return Collections.singletonList(Proxy.NO_PROXY);
+
+
     }
 
     @Override
-    public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+    public void connectFailed(URI uri, SocketAddress socketAddress, IOException ex) {
+
     }
 
 }

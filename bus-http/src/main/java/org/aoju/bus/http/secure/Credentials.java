@@ -30,12 +30,12 @@ import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 
 /**
- * HTTP授权工厂
+ * HTTP 授权工厂
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Credentials {
+public class Credentials {
 
     private Credentials() {
     }

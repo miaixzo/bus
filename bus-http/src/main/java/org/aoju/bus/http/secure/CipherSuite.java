@@ -36,7 +36,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CipherSuite {
+public class CipherSuite {
 
     /**
      * 比较“TLS_RSA_WITH_NULL_MD5”和“SSL_RSA_WITH_NULL_MD5”等密码套件名称，
@@ -393,7 +393,7 @@ public final class CipherSuite {
     public static final CipherSuite TLS_AES_256_GCM_SHA384 = init("TLS_AES_256_GCM_SHA384", 0x1302);
     public static final CipherSuite TLS_CHACHA20_POLY1305_SHA256 = init("TLS_CHACHA20_POLY1305_SHA256", 0x1303);
     public static final CipherSuite TLS_AES_128_CCM_SHA256 = init("TLS_AES_128_CCM_SHA256", 0x1304);
-    public static final CipherSuite TLS_AES_256_CCM_8_SHA256 = init("TLS_AES_256_CCM_8_SHA256", 0x1305);
+    public static final CipherSuite TLS_AES_128_CCM_8_SHA256 = init("TLS_AES_128_CCM_8_SHA256", 0x1305);
 
     /**
      * 返回此密码套件的Java名称。对于一些较旧的密码套件，Java名称具有前缀{@code SSL_}
@@ -459,6 +459,12 @@ public final class CipherSuite {
         return suite;
     }
 
+    /**
+     * Returns the Java name of this cipher suite. For some older cipher suites the Java name has the
+     * prefix {@code SSL_}, causing the Java name to be different from the instance name which is
+     * always prefixed {@code TLS_}. For example, {@code TLS_RSA_EXPORT_WITH_RC4_40_MD5.javaName()}
+     * is {@code "SSL_RSA_EXPORT_WITH_RC4_40_MD5"}.
+     */
     public String javaName() {
         return javaName;
     }

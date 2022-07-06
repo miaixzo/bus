@@ -33,6 +33,9 @@ import org.aoju.bus.core.toolkit.MathKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * 数字转中文类
  * 包括：
@@ -235,6 +238,84 @@ public class NumberFormatter {
         }
 
         return chineseStr.toString();
+    }
+
+    /**
+     * 中文大写数字金额转换为数字，返回结果以元为单位的BigDecimal类型数字
+     * 例如：
+     * “陆万柒仟伍佰伍拾陆元叁角贰分”返回“67556.32”
+     * “叁角贰分”返回“0.32”
+     *
+     * @param chineseMoneyAmount 中文大写数字金额
+     * @return 返回结果以元为单位的BigDecimal类型数字
+     */
+    public static BigDecimal chineseMoneyToNumber(String chineseMoneyAmount) {
+        if (StringKit.isBlank(chineseMoneyAmount)) {
+            return null;
+        }
+
+        int yi = chineseMoneyAmount.indexOf("元");
+        if (yi == -1) {
+            yi = chineseMoneyAmount.indexOf("圆");
+        }
+        final int ji = chineseMoneyAmount.indexOf("角");
+        final int fi = chineseMoneyAmount.indexOf("分");
+
+        // 先找到单位为元的数字
+        String yStr = null;
+        if (yi > 0) {
+            yStr = chineseMoneyAmount.substring(0, yi);
+        }
+
+        // 再找到单位为角的数字
+        String jStr = null;
+        if (ji > 0) {
+            if (yi >= 0) {
+                //前面有元,角肯定要在元后面
+                if (ji > yi) {
+                    jStr = chineseMoneyAmount.substring(yi + 1, ji);
+                }
+            } else {
+                //没有元，只有角
+                jStr = chineseMoneyAmount.substring(0, ji);
+            }
+        }
+
+        // 再找到单位为分的数字
+        String fStr = null;
+        if (fi > 0) {
+            if (ji >= 0) {
+                //有角，分肯定在角后面
+                if (fi > ji) {
+                    fStr = chineseMoneyAmount.substring(ji + 1, fi);
+                }
+            } else if (yi > 0) {
+                //没有角，有元，那就坐元后面找
+                if (fi > yi) {
+                    fStr = chineseMoneyAmount.substring(yi + 1, fi);
+                }
+            } else {
+                //没有元、角，只有分
+                fStr = chineseMoneyAmount.substring(0, fi);
+            }
+        }
+
+        //元、角、分
+        int y = 0, j = 0, f = 0;
+        if (StringKit.isNotBlank(yStr)) {
+            y = NumberFormatter.chineseToNumber(yStr);
+        }
+        if (StringKit.isNotBlank(jStr)) {
+            j = NumberFormatter.chineseToNumber(jStr);
+        }
+        if (StringKit.isNotBlank(fStr)) {
+            f = NumberFormatter.chineseToNumber(fStr);
+        }
+
+        BigDecimal amount = new BigDecimal(y);
+        amount = amount.add(BigDecimal.valueOf(j).divide(BigDecimal.TEN, RoundingMode.HALF_UP));
+        amount = amount.add(BigDecimal.valueOf(f).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP));
+        return amount;
     }
 
     /**

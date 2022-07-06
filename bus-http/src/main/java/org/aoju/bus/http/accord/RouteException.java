@@ -31,13 +31,13 @@ import org.aoju.bus.http.Builder;
 import java.io.IOException;
 
 /**
- * 抛出异常，以指示通过单一路由连接的问题。
+ * 抛出异常，以指示通过单一路由连接的问题
  * 可能已经用替代协议进行了多次尝试，但没有一次成功
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RouteException extends HttpUncheckException {
+public class RouteException extends HttpUncheckException {
 
     private IOException firstException;
     private IOException lastException;

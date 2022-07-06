@@ -30,11 +30,7 @@ import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.http.bodys.ResponseBody;
-import org.aoju.bus.http.metric.*;
-import org.aoju.bus.http.metric.http.AsyncHttp;
-import org.aoju.bus.http.metric.http.CoverHttp;
-import org.aoju.bus.http.metric.http.SyncHttp;
-import org.aoju.bus.http.socket.CoverWebSocket;
+import org.aoju.bus.http.plugin.httpv.*;
 import org.aoju.bus.http.socket.WebSocket;
 import org.aoju.bus.http.socket.WebSocketListener;
 
@@ -42,7 +38,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.Executor;
 
 /**
  * Httpv 客户端接口
@@ -68,7 +63,7 @@ public class Httpv {
     /**
      * 执行器
      */
-    TaskExecutor executor;
+    CoverTasks.Executor executor;
     /**
      * 预处理器
      */
@@ -98,7 +93,7 @@ public class Httpv {
         this.httpd = builder.httpd();
         this.baseUrl = builder.baseUrl();
         this.mediaTypes = builder.getMediaTypes();
-        this.executor = new TaskExecutor(httpd.dispatcher().executorService(),
+        this.executor = new CoverTasks.Executor(httpd.dispatcher().executorService(),
                 builder.mainExecutor(), builder.downloadListener(),
                 builder.responseListener(), builder.exceptionListener(),
                 builder.completeListener(), builder.msgConvertors());
@@ -118,16 +113,16 @@ public class Httpv {
         return new Builder();
     }
 
-    public AsyncHttp async(String url) {
-        return new AsyncHttp(this, urlPath(url, false));
+    public CoverHttp.Async async(String url) {
+        return new CoverHttp.Async(this, urlPath(url, false));
     }
 
-    public SyncHttp sync(String url) {
-        return new SyncHttp(this, urlPath(url, false));
+    public CoverHttp.Sync sync(String url) {
+        return new CoverHttp.Sync(this, urlPath(url, false));
     }
 
-    public CoverWebSocket.Client webSocket(String url) {
-        return new CoverWebSocket.Client(this, urlPath(url, true));
+    public CoverCall.Client webSocket(String url) {
+        return new CoverCall.Client(this, urlPath(url, true));
     }
 
     public int cancel(String tag) {
@@ -214,7 +209,7 @@ public class Httpv {
         return MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM);
     }
 
-    public TaskExecutor executor() {
+    public CoverTasks.Executor executor() {
         return executor;
     }
 
@@ -376,17 +371,17 @@ public class Httpv {
 
         private HttpvConfig config;
 
-        private Executor mainExecutor;
+        private java.util.concurrent.Executor mainExecutor;
 
         private List<Preprocessor> preprocessors;
 
-        private DownListener downloadListener;
+        private Downloads.Listener downloadListener;
 
-        private TaskListener<Results> responseListener;
+        private CoverTasks.Listener<CoverResult> responseListener;
 
-        private TaskListener<IOException> exceptionListener;
+        private CoverTasks.Listener<IOException> exceptionListener;
 
-        private TaskListener<Results.State> completeListener;
+        private CoverTasks.Listener<CoverResult.State> completeListener;
 
         private List<Convertor> convertors;
 
@@ -422,7 +417,7 @@ public class Httpv {
             this.mediaTypes = httpv.mediaTypes();
             this.preprocessors = new ArrayList<>();
             Collections.addAll(this.preprocessors, httpv.preprocessors());
-            TaskExecutor executor = httpv.executor();
+            CoverTasks.Executor executor = httpv.executor();
             this.downloadListener = executor.getDownloadListener();
             this.responseListener = executor.getResponseListener();
             this.exceptionListener = executor.getExceptionListener();
@@ -517,7 +512,7 @@ public class Httpv {
          * @param executor 回调执行器
          * @return Builder
          */
-        public Builder callbackExecutor(Executor executor) {
+        public Builder callbackExecutor(java.util.concurrent.Executor executor) {
             this.mainExecutor = executor;
             return this;
         }
@@ -567,7 +562,7 @@ public class Httpv {
          * @param listener 监听器
          * @return Builder
          */
-        public Builder responseListener(TaskListener<Results> listener) {
+        public Builder responseListener(CoverTasks.Listener<CoverResult> listener) {
             this.responseListener = listener;
             return this;
         }
@@ -578,7 +573,7 @@ public class Httpv {
          * @param listener 监听器
          * @return Builder
          */
-        public Builder exceptionListener(TaskListener<IOException> listener) {
+        public Builder exceptionListener(CoverTasks.Listener<IOException> listener) {
             this.exceptionListener = listener;
             return this;
         }
@@ -589,7 +584,7 @@ public class Httpv {
          * @param listener 监听器
          * @return Builder
          */
-        public Builder completeListener(TaskListener<Results.State> listener) {
+        public Builder completeListener(CoverTasks.Listener<CoverResult.State> listener) {
             this.completeListener = listener;
             return this;
         }
@@ -600,7 +595,7 @@ public class Httpv {
          * @param listener 监听器
          * @return Builder
          */
-        public Builder downloadListener(DownListener listener) {
+        public Builder downloadListener(Downloads.Listener listener) {
             this.downloadListener = listener;
             return this;
         }
@@ -672,7 +667,7 @@ public class Httpv {
             return mediaTypes;
         }
 
-        public Executor mainExecutor() {
+        public java.util.concurrent.Executor mainExecutor() {
             return mainExecutor;
         }
 
@@ -680,19 +675,19 @@ public class Httpv {
             return preprocessors.toArray(new Preprocessor[0]);
         }
 
-        public DownListener downloadListener() {
+        public Downloads.Listener downloadListener() {
             return downloadListener;
         }
 
-        public TaskListener<Results> responseListener() {
+        public CoverTasks.Listener<CoverResult> responseListener() {
             return responseListener;
         }
 
-        public TaskListener<IOException> exceptionListener() {
+        public CoverTasks.Listener<IOException> exceptionListener() {
             return exceptionListener;
         }
 
-        public TaskListener<Results.State> completeListener() {
+        public CoverTasks.Listener<CoverResult.State> completeListener() {
             return completeListener;
         }
 

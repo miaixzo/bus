@@ -309,7 +309,7 @@ public class CharsKit {
      * @see #isEmpty(CharSequence)
      */
     public static boolean isBlank(CharSequence text) {
-        int length;
+        final int length;
 
         if ((text == null) || ((length = text.length()) == 0)) {
             return true;

@@ -1067,4 +1067,18 @@ public class Convert {
         return ByteKit.getBytes(longValue, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * 中文大写数字金额转换为数字，返回结果以元为单位的BigDecimal类型数字
+     * <p>
+     * 如：
+     * “陆万柒仟伍佰伍拾陆元叁角贰分”返回“67556.32”
+     * “叁角贰分”返回“0.32”
+     *
+     * @param chineseMoneyAmount 中文大写数字金额
+     * @return 返回结果以元为单位的BigDecimal类型数字
+     */
+    public static BigDecimal chineseMoneyToNumber(String chineseMoneyAmount) {
+        return NumberFormatter.chineseMoneyToNumber(chineseMoneyAmount);
+    }
+
 }

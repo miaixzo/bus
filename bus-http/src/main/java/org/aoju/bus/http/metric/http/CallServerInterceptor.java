@@ -25,18 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
-import org.aoju.bus.core.io.DelegateSink;
-import org.aoju.bus.core.io.Sink;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
-import org.aoju.bus.http.accord.RealConnection;
-import org.aoju.bus.http.accord.StreamAllocation;
-import org.aoju.bus.http.bodys.ResponseBody;
+import org.aoju.bus.http.accord.Exchange;
 import org.aoju.bus.http.metric.Interceptor;
 
 import java.io.IOException;
@@ -49,7 +44,7 @@ import java.net.ProtocolException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CallServerInterceptor implements Interceptor {
+public class CallServerInterceptor implements Interceptor {
 
     private final boolean forWebSocket;
 
@@ -60,62 +55,76 @@ public final class CallServerInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
-        HttpCodec httpCodec = realChain.httpStream();
-        StreamAllocation streamAllocation = realChain.streamAllocation();
-        RealConnection connection = (RealConnection) realChain.connection();
+        Exchange exchange = realChain.exchange();
         Request request = realChain.request();
 
         long sentRequestMillis = System.currentTimeMillis();
 
-        realChain.eventListener().requestHeadersStart(realChain.call());
-        httpCodec.writeRequestHeaders(request);
-        realChain.eventListener().requestHeadersEnd(realChain.call(), request);
+        exchange.writeRequestHeaders(request);
 
+        boolean responseHeadersStarted = false;
         Response.Builder responseBuilder = null;
-        if (HttpMethod.permitsRequestBody(request.method()) && null != request.body()) {
+        if (Http.permitsRequestBody(request.method()) && request.body() != null) {
+            // If there's a "Expect: 100-continue" header on the request, wait for a "HTTP/1.1 100
+            // Continue" response before transmitting the request body. If we don't get that, return
+            // what we did get (such as a 4xx response) without ever transmitting the request body.
             if ("100-continue".equalsIgnoreCase(request.header("Expect"))) {
-                httpCodec.flushRequest();
-                realChain.eventListener().responseHeadersStart(realChain.call());
-                responseBuilder = httpCodec.readResponseHeaders(true);
+                exchange.flushRequest();
+                responseHeadersStarted = true;
+                exchange.responseHeadersStart();
+                responseBuilder = exchange.readResponseHeaders(true);
             }
 
-            if (null == responseBuilder) {
-                realChain.eventListener().requestBodyStart(realChain.call());
-                long contentLength = request.body().contentLength();
-                CountingSink requestBodyOut =
-                        new CountingSink(httpCodec.createRequestBody(request, contentLength));
-                BufferSink bufferedRequestBody = IoKit.buffer(requestBodyOut);
-
-                request.body().writeTo(bufferedRequestBody);
-                bufferedRequestBody.close();
-                realChain.eventListener()
-                        .requestBodyEnd(realChain.call(), requestBodyOut.successfulCount);
-            } else if (!connection.isMultiplexed()) {
-                streamAllocation.noNewStreams();
+            if (responseBuilder == null) {
+                if (request.body().isDuplex()) {
+                    // Prepare a duplex body so that the application can send a request body later.
+                    exchange.flushRequest();
+                    BufferSink bufferedRequestBody = IoKit.buffer(
+                            exchange.createRequestBody(request, true));
+                    request.body().writeTo(bufferedRequestBody);
+                } else {
+                    // Write the request body if the "Expect: 100-continue" expectation was met.
+                    BufferSink bufferedRequestBody = IoKit.buffer(
+                            exchange.createRequestBody(request, false));
+                    request.body().writeTo(bufferedRequestBody);
+                    bufferedRequestBody.close();
+                }
+            } else {
+                exchange.noRequestBody();
+                if (!exchange.connection().isMultiplexed()) {
+                    exchange.noNewExchangesOnConnection();
+                }
             }
+        } else {
+            exchange.noRequestBody();
         }
 
-        httpCodec.finishRequest();
+        if (request.body() == null || !request.body().isDuplex()) {
+            exchange.finishRequest();
+        }
 
-        if (null == responseBuilder) {
-            realChain.eventListener().responseHeadersStart(realChain.call());
-            responseBuilder = httpCodec.readResponseHeaders(false);
+        if (!responseHeadersStarted) {
+            exchange.responseHeadersStart();
+        }
+
+        if (responseBuilder == null) {
+            responseBuilder = exchange.readResponseHeaders(false);
         }
 
         Response response = responseBuilder
                 .request(request)
-                .handshake(streamAllocation.connection().handshake())
+                .handshake(exchange.connection().handshake())
                 .sentRequestAtMillis(sentRequestMillis)
                 .receivedResponseAtMillis(System.currentTimeMillis())
                 .build();
 
         int code = response.code();
-        if (code == Http.HTTP_CONTINUE) {
-            responseBuilder = httpCodec.readResponseHeaders(false);
-
-            response = responseBuilder
+        if (code == 100) {
+            // server sent a 100-continue even though we did not request one.
+            // try again to read the actual response
+            response = exchange.readResponseHeaders(false)
                     .request(request)
-                    .handshake(streamAllocation.connection().handshake())
+                    .handshake(exchange.connection().handshake())
                     .sentRequestAtMillis(sentRequestMillis)
                     .receivedResponseAtMillis(System.currentTimeMillis())
                     .build();
@@ -123,44 +132,30 @@ public final class CallServerInterceptor implements Interceptor {
             code = response.code();
         }
 
-        realChain.eventListener()
-                .responseHeadersEnd(realChain.call(), response);
+        exchange.responseHeadersEnd(response);
 
-        if (forWebSocket && code == Http.HTTP_SWITCHING_PROTOCOL) {
+        if (forWebSocket && code == 101) {
+            // Connection is upgrading, but we need to ensure interceptors see a non-null response body.
             response = response.newBuilder()
-                    .body(ResponseBody.create(null, Normal.EMPTY_BYTE_ARRAY))
+                    .body(Builder.EMPTY_RESPONSE)
                     .build();
         } else {
             response = response.newBuilder()
-                    .body(httpCodec.openResponseBody(response))
+                    .body(exchange.openResponseBody(response))
                     .build();
         }
 
         if ("close".equalsIgnoreCase(response.request().header(org.aoju.bus.core.lang.Header.CONNECTION))
                 || "close".equalsIgnoreCase(response.header(org.aoju.bus.core.lang.Header.CONNECTION))) {
-            streamAllocation.noNewStreams();
+            exchange.noNewExchangesOnConnection();
         }
 
-        if ((code == Http.HTTP_NO_CONTENT || code == Http.HTTP_RESET) && response.body().contentLength() > 0) {
+        if ((code == 204 || code == 205) && response.body().contentLength() > 0) {
             throw new ProtocolException(
                     "HTTP " + code + " had non-zero Content-Length: " + response.body().contentLength());
         }
 
         return response;
-    }
-
-    static final class CountingSink extends DelegateSink {
-        long successfulCount;
-
-        CountingSink(Sink delegate) {
-            super(delegate);
-        }
-
-        @Override
-        public void write(Buffer source, long byteCount) throws IOException {
-            super.write(source, byteCount);
-            successfulCount += byteCount;
-        }
     }
 
 }

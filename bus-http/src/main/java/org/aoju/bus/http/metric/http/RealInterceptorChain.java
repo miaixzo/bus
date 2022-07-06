@@ -30,9 +30,8 @@ import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
 import org.aoju.bus.http.accord.Connection;
-import org.aoju.bus.http.accord.RealConnection;
-import org.aoju.bus.http.accord.StreamAllocation;
-import org.aoju.bus.http.metric.EventListener;
+import org.aoju.bus.http.accord.Exchange;
+import org.aoju.bus.http.accord.Transmitter;
 import org.aoju.bus.http.metric.Interceptor;
 
 import java.io.IOException;
@@ -46,32 +45,28 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RealInterceptorChain implements Interceptor.Chain {
+public class RealInterceptorChain implements Interceptor.Chain {
 
     private final List<Interceptor> interceptors;
-    private final StreamAllocation streamAllocation;
-    private final HttpCodec httpCodec;
-    private final RealConnection connection;
+    private final Transmitter transmitter;
+    private final Exchange exchange;
     private final int index;
     private final Request request;
     private final NewCall call;
-    private final EventListener eventListener;
     private final int connectTimeout;
     private final int readTimeout;
     private final int writeTimeout;
     private int calls;
 
-    public RealInterceptorChain(List<Interceptor> interceptors, StreamAllocation streamAllocation,
-                                HttpCodec httpCodec, RealConnection connection, int index, Request request, NewCall call,
-                                EventListener eventListener, int connectTimeout, int readTimeout, int writeTimeout) {
+    public RealInterceptorChain(List<Interceptor> interceptors, Transmitter transmitter,
+                                Exchange exchange, int index, Request request, NewCall call,
+                                int connectTimeout, int readTimeout, int writeTimeout) {
         this.interceptors = interceptors;
-        this.connection = connection;
-        this.streamAllocation = streamAllocation;
-        this.httpCodec = httpCodec;
+        this.transmitter = transmitter;
+        this.exchange = exchange;
         this.index = index;
         this.request = request;
         this.call = call;
-        this.eventListener = eventListener;
         this.connectTimeout = connectTimeout;
         this.readTimeout = readTimeout;
         this.writeTimeout = writeTimeout;
@@ -79,7 +74,7 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
     @Override
     public Connection connection() {
-        return connection;
+        return exchange != null ? exchange.connection() : null;
     }
 
     @Override
@@ -90,8 +85,8 @@ public final class RealInterceptorChain implements Interceptor.Chain {
     @Override
     public Interceptor.Chain withConnectTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
-        return new RealInterceptorChain(interceptors, streamAllocation, httpCodec, connection, index,
-                request, call, eventListener, millis, readTimeout, writeTimeout);
+        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
+                millis, readTimeout, writeTimeout);
     }
 
     @Override
@@ -102,8 +97,8 @@ public final class RealInterceptorChain implements Interceptor.Chain {
     @Override
     public Interceptor.Chain withReadTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
-        return new RealInterceptorChain(interceptors, streamAllocation, httpCodec, connection, index,
-                request, call, eventListener, connectTimeout, millis, writeTimeout);
+        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
+                connectTimeout, millis, writeTimeout);
     }
 
     @Override
@@ -114,25 +109,22 @@ public final class RealInterceptorChain implements Interceptor.Chain {
     @Override
     public Interceptor.Chain withWriteTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
-        return new RealInterceptorChain(interceptors, streamAllocation, httpCodec, connection, index,
-                request, call, eventListener, connectTimeout, readTimeout, millis);
+        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
+                connectTimeout, readTimeout, millis);
     }
 
-    public StreamAllocation streamAllocation() {
-        return streamAllocation;
+    public Transmitter transmitter() {
+        return transmitter;
     }
 
-    public HttpCodec httpStream() {
-        return httpCodec;
+    public Exchange exchange() {
+        if (exchange == null) throw new IllegalStateException();
+        return exchange;
     }
 
     @Override
     public NewCall call() {
         return call;
-    }
-
-    public EventListener eventListener() {
-        return eventListener;
     }
 
     @Override
@@ -142,41 +134,45 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
     @Override
     public Response proceed(Request request) throws IOException {
-        return proceed(request, streamAllocation, httpCodec, connection);
+        return proceed(request, transmitter, exchange);
     }
 
-    public Response proceed(Request request, StreamAllocation streamAllocation, HttpCodec httpCodec,
-                            RealConnection connection) throws IOException {
+    public Response proceed(Request request, Transmitter transmitter, Exchange exchange)
+            throws IOException {
         if (index >= interceptors.size()) throw new AssertionError();
 
         calls++;
 
-        if (null != this.httpCodec && !this.connection.supportsUrl(request.url())) {
+        // If we already have a stream, confirm that the incoming request will use it.
+        if (this.exchange != null && !this.exchange.connection().supportsUrl(request.url())) {
             throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must retain the same host and port");
         }
 
-        if (null != this.httpCodec && calls > 1) {
+        // If we already have a stream, confirm that this is the only call to chain.proceed().
+        if (this.exchange != null && calls > 1) {
             throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must call proceed() exactly once");
         }
 
-        RealInterceptorChain next = new RealInterceptorChain(interceptors, streamAllocation, httpCodec,
-                connection, index + 1, request, call, eventListener, connectTimeout, readTimeout,
-                writeTimeout);
+        // Call the next interceptor in the chain.
+        RealInterceptorChain next = new RealInterceptorChain(interceptors, transmitter, exchange,
+                index + 1, request, call, connectTimeout, readTimeout, writeTimeout);
         Interceptor interceptor = interceptors.get(index);
         Response response = interceptor.intercept(next);
 
-        if (null != httpCodec && index + 1 < interceptors.size() && next.calls != 1) {
+        // Confirm that the next interceptor made its required call to chain.proceed().
+        if (exchange != null && index + 1 < interceptors.size() && next.calls != 1) {
             throw new IllegalStateException("network interceptor " + interceptor
                     + " must call proceed() exactly once");
         }
 
-        if (null == response) {
+        // Confirm that the intercepted response isn't null.
+        if (response == null) {
             throw new NullPointerException("interceptor " + interceptor + " returned null");
         }
 
-        if (null == response.body()) {
+        if (response.body() == null) {
             throw new IllegalStateException(
                     "interceptor " + interceptor + " returned a response with no body");
         }

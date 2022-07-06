@@ -39,7 +39,7 @@ import java.net.ProtocolException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class StatusLine {
+public class StatusLine {
 
     public final Protocol protocol;
     public final int code;

@@ -39,7 +39,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class BasicCertificateChainCleaner extends CertificateChainCleaner {
+public class BasicCertificateChainCleaner extends CertificateChainCleaner {
 
     /**
      * 链中最大的签名者数。我们使用9表示与OpenSSL的一致性.
@@ -52,6 +52,13 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
         this.trustRootIndex = trustRootIndex;
     }
 
+    /**
+     * Returns a cleaned chain for {@code chain}.
+     * <p>
+     * This method throws if the complete chain to a trusted CA certificate cannot be constructed.
+     * This is unexpected unless the trust root index in this class has a different trust manager than
+     * what was used to establish {@code chain}.
+     */
     @Override
     public List<Certificate> clean(List<Certificate> chain, String hostname)
             throws SSLPeerUnverifiedException {
@@ -67,7 +74,7 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
             // 如果此证书已由可信证书签署，请使用该证书。将受信任证书添加到链的末尾，除非它已经存在
             // (如果链中的第一个证书本身是自签名和受信任的CA证书，则会发生这种情况)
             X509Certificate trustedCert = trustRootIndex.findByIssuerAndSignature(toVerify);
-            if (null != trustedCert) {
+            if (trustedCert != null) {
                 if (result.size() > 1 || !toVerify.equals(trustedCert)) {
                     result.add(trustedCert);
                 }
@@ -102,6 +109,9 @@ public final class BasicCertificateChainCleaner extends CertificateChainCleaner 
         throw new SSLPeerUnverifiedException("Certificate chain too long: " + result);
     }
 
+    /**
+     * Returns true if {@code toVerify} was signed by {@code signingCert}'s public key.
+     */
     private boolean verifySignature(X509Certificate toVerify, X509Certificate signingCert) {
         if (!toVerify.getIssuerDN().equals(signingCert.getSubjectDN())) return false;
         try {

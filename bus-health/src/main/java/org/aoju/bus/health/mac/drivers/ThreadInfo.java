@@ -29,6 +29,7 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSProcess.State;
 
 import java.util.ArrayList;
@@ -36,8 +37,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
 
 /**
  * Utility to query threads for a process
@@ -95,22 +94,22 @@ public final class ThreadInfo {
             switch (state) {
                 case 'I':
                 case 'S':
-                    this.state = SLEEPING;
+                    this.state = OSProcess.State.SLEEPING;
                     break;
                 case 'U':
-                    this.state = WAITING;
+                    this.state = OSProcess.State.WAITING;
                     break;
                 case 'R':
-                    this.state = RUNNING;
+                    this.state = OSProcess.State.RUNNING;
                     break;
                 case 'Z':
-                    this.state = ZOMBIE;
+                    this.state = OSProcess.State.ZOMBIE;
                     break;
                 case 'T':
-                    this.state = STOPPED;
+                    this.state = OSProcess.State.STOPPED;
                     break;
                 default:
-                    this.state = OTHER;
+                    this.state = OSProcess.State.OTHER;
                     break;
             }
             this.priority = pri;

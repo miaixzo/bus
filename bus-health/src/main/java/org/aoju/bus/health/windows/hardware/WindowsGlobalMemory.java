@@ -28,11 +28,11 @@ package org.aoju.bus.health.windows.hardware;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Psapi;
-import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.PhysicalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
@@ -192,15 +192,16 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
     }
 
     private static Triple<Long, Long, Long> readPerfInfo() {
-        PERFORMANCE_INFORMATION performanceInfo = new PERFORMANCE_INFORMATION();
-        if (!Psapi.INSTANCE.GetPerformanceInfo(performanceInfo, performanceInfo.size())) {
-            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return Triple.of(0L, 0L, 4098L);
+        try (Struct.CloseablePerformanceInformation performanceInfo = new Struct.CloseablePerformanceInformation()) {
+            if (!Psapi.INSTANCE.GetPerformanceInfo(performanceInfo, performanceInfo.size())) {
+                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                return Triple.of(0L, 0L, 4098L);
+            }
+            long pageSize = performanceInfo.PageSize.longValue();
+            long memAvailable = pageSize * performanceInfo.PhysicalAvailable.longValue();
+            long memTotal = pageSize * performanceInfo.PhysicalTotal.longValue();
+            return Triple.of(memAvailable, memTotal, pageSize);
         }
-        long pageSize = performanceInfo.PageSize.longValue();
-        long memAvailable = pageSize * performanceInfo.PhysicalAvailable.longValue();
-        long memTotal = pageSize * performanceInfo.PhysicalTotal.longValue();
-        return Triple.of(memAvailable, memTotal, pageSize);
     }
 
     @Override

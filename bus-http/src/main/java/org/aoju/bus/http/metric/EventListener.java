@@ -28,6 +28,7 @@ package org.aoju.bus.http.metric;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.Connection;
 import org.aoju.bus.http.accord.ConnectionPool;
+import org.aoju.bus.http.socket.Handshake;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -49,7 +50,7 @@ public abstract class EventListener {
 
     };
 
-    public static EventListener.Factory factory(final EventListener listener) {
+    public static EventListener.Factory factory(EventListener listener) {
         return call -> listener;
     }
 
@@ -209,6 +210,13 @@ public abstract class EventListener {
     }
 
     /**
+     * 当写入请求失败时调用
+     * 这个方法在{@link #requestHeadersStart}或{@link #requestBodyStart}之后被调用
+     */
+    public void requestFailed(NewCall call, IOException ioe) {
+    }
+
+    /**
      * 仅在接收响应标头之前调用.
      * 连接是隐式的，通常与最后一个{@link #connectionAcquired(NewCall, Connection)}事件相关
      * 对于单个{@link NewCall}可以调用多次。例如，如果对{@link NewCall#request()}的响应是重定向到另一个地址
@@ -251,6 +259,13 @@ public abstract class EventListener {
      */
     public void responseBodyEnd(NewCall call, long byteCount) {
 
+    }
+
+    /**
+     * 当读取响应失败时调用
+     * 这个方法在{@link #responseHeadersStart}或{@link #responseBodyStart}之后被调用
+     */
+    public void responseFailed(NewCall call, IOException ioe) {
     }
 
     /**

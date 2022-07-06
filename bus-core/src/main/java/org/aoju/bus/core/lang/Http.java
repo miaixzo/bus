@@ -461,4 +461,63 @@ public class Http {
         return StringKit.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);
     }
 
+    /**
+     * WebDAV
+     *
+     * @param method 请求方式
+     * @return the boolean
+     */
+    public static boolean invalidatesCache(String method) {
+        return POST.equals(method)
+                || PUT.equals(method)
+                || PATCH.equals(method)
+                || DELETE.equals(method)
+                || MOVE.equals(method);
+    }
+
+    /**
+     * WebDAV
+     * CalDAV/CardDAV(在WebDAV版本中定义)
+     *
+     * @param method 请求方式
+     * @return the boolean
+     */
+    public static boolean requiresRequestBody(String method) {
+        return POST.equals(method)
+                || PUT.equals(method)
+                || PATCH.equals(method)
+                || PROPPATCH.equals(method)
+                || REPORT.equals(method);
+    }
+
+    /**
+     * 许可维护请求体
+     *
+     * @param method 请求方式
+     * @return the boolean
+     */
+    public static boolean permitsRequestBody(String method) {
+        return !GET.equals(method) || HEAD.equals(method);
+    }
+
+    /**
+     * (WebDAV)重定向也应该维护请求体
+     *
+     * @param method 请求方式
+     * @return the boolean
+     */
+    public static boolean redirectsWithBody(String method) {
+        return PROPFIND.equals(method);
+    }
+
+    /**
+     * 除了PROPFIND之外的所有请求都应该重定向到GET请求
+     *
+     * @param method 请求方式
+     * @return the boolean
+     */
+    public static boolean redirectsToGet(String method) {
+        return !PROPFIND.equals(method);
+    }
+
 }

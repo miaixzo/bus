@@ -47,7 +47,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class BridgeInterceptor implements Interceptor {
+public class BridgeInterceptor implements Interceptor {
 
     private final CookieJar cookieJar;
 
@@ -105,14 +105,14 @@ public final class BridgeInterceptor implements Interceptor {
 
         Response networkResponse = chain.proceed(requestBuilder.build());
 
-        HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());
+        Headers.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());
 
         Response.Builder responseBuilder = networkResponse.newBuilder()
                 .request(userRequest);
 
         if (transparentGzip
                 && "gzip".equalsIgnoreCase(networkResponse.header(Header.CONTENT_ENCODING))
-                && HttpHeaders.hasBody(networkResponse)) {
+                && Headers.hasBody(networkResponse)) {
             GzipSource responseBody = new GzipSource(networkResponse.body().source());
             Headers strippedHeaders = networkResponse.headers().newBuilder()
                     .removeAll(Header.CONTENT_ENCODING)

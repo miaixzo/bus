@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
+import org.aoju.bus.core.exception.PageException;
 import org.aoju.bus.pager.plugins.BoundSqlHandler;
+import org.aoju.bus.pager.plugins.SqlInjection;
 import org.aoju.bus.pager.proxy.PageAutoDialect;
 
 import java.io.Closeable;
@@ -250,7 +252,27 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return orderBy;
     }
 
+    /**
+     * 设置排序字段，增加 SQL 注入校验，如果需要在 order by 使用函数，可以使用 {@link #setUnsafeOrderBy(String)} 方法
+     *
+     * @param orderBy 排序字段
+     */
     public <E> Page<E> setOrderBy(String orderBy) {
+        if (SqlInjection.check(orderBy)) {
+            throw new PageException("order by [" + orderBy + "] 存在 SQL 注入风险, 如想避免 SQL 注入校验，可以调用 Page.setUnsafeOrderBy");
+        }
+        this.orderBy = orderBy;
+        return (Page<E>) this;
+    }
+
+    /**
+     * 不安全的设置排序方法，如果从前端接收参数，请自行做好注入校验。
+     * <p>
+     * 请不要故意使用该方法注入然后提交漏洞!!!
+     *
+     * @param orderBy 排序字段
+     */
+    public <E> Page<E> setUnsafeOrderBy(String orderBy) {
         this.orderBy = orderBy;
         return (Page<E>) this;
     }

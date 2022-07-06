@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
@@ -56,19 +57,6 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
 
     int AF_INET = 2; // The Internet Protocol version 4 (IPv4) address family.
     int AF_INET6 = 30; // The Internet Protocol version 6 (IPv6) address family.
-
-    /**
-     * Reads a line from the current file position in the utmp file. It returns a
-     * pointer to a structure containing the fields of the line.
-     * <p>
-     * Not thread safe
-     *
-     * @return a {@link MacUtmpx} on success, and NULL on failure (which includes
-     * the "record not found" case)
-     */
-    MacUtmpx getutxent();
-
-    int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
 
     /**
      * Mac connection info
@@ -172,13 +160,15 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     }
 
     /**
-     * Mac socket info
+     * Reads a line from the current file position in the utmp file. It returns a
+     * pointer to a structure containing the fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link MacUtmpx} on success, and NULL on failure (which includes
+     * the "record not found" case)
      */
-    @FieldOrder({"pfi", "psi"})
-    class SocketFdInfo extends Structure {
-        public ProcFileInfo pfi;
-        public SocketInfo psi;
-    }
+    MacUtmpx getutxent();
 
     /**
      * Union for TCP or internet socket info
@@ -188,6 +178,22 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public TcpSockInfo pri_tcp;
         // max element is 524 bytes
         public byte[] max_size = new byte[524];
+    }
+
+    int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
+
+    /**
+     * Mac socket info
+     */
+    @FieldOrder({"pfi", "psi"})
+    class SocketFdInfo extends Structure implements AutoCloseable {
+        public ProcFileInfo pfi;
+        public SocketInfo psi;
+
+        @Override
+        public void close() {
+            Builder.freeMemory(getPointer());
+        }
     }
 
 }

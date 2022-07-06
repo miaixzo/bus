@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
@@ -43,9 +44,6 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * OpenBSD hard disk implementation.
  *
@@ -55,7 +53,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @ThreadSafe
 public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
-    private final Supplier<List<String>> iostat = memoize(OpenBsdHWDiskStore::querySystatIostat, defaultExpiration());
+    private final Supplier<List<String>> iostat = Memoize.memoize(OpenBsdHWDiskStore::querySystatIostat, Memoize.defaultExpiration());
     private final long currentQueueLength = 0L;
     private long reads = 0L;
     private long readBytes = 0L;

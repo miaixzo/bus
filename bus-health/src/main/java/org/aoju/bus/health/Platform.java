@@ -52,8 +52,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * System information. This is the main entry point.
  * This object provides getters which instantiate the appropriate
@@ -71,9 +69,9 @@ public class Platform {
 
     private static final String NOT_SUPPORTED = "Operating system not supported: ";
 
-    private final Supplier<OperatingSystem> os = memoize(Platform::createOperatingSystem);
+    private final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
 
-    private final Supplier<HardwareAbstractionLayer> hardware = memoize(Platform::createHardware);
+    private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
 
     public static int getOSType() {
         return com.sun.jna.Platform.getOSType();

@@ -34,12 +34,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 一个简单的索引，包含已加载到内存中的受信任根证书
+ * 简单的索引，包含已加载到内存中的受信任根证书
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class BasicTrustRootIndex implements TrustRootIndex {
+public class BasicTrustRootIndex implements TrustRootIndex {
 
     private final Map<X500Principal, Set<X509Certificate>> subjectToCaCerts;
 

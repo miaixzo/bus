@@ -30,9 +30,6 @@ import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
-import com.sun.jna.platform.mac.SystemB.HostCpuLoadInfo;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -41,6 +38,8 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.ByRef;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.mac.SysctlKit;
@@ -215,19 +214,20 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[] querySystemCpuLoadTicks() {
-        long[] ticks = new long[CentralProcessor.TickType.values().length];
+        long[] ticks = new long[TickType.values().length];
         int machPort = SystemB.INSTANCE.mach_host_self();
-        HostCpuLoadInfo cpuLoadInfo = new HostCpuLoadInfo();
-        if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo,
-                new IntByReference(cpuLoadInfo.size()))) {
-            Logger.error("Failed to get System CPU ticks. Error code: {} ", Native.getLastError());
-            return ticks;
-        }
+        try (Struct.CloseableHostCpuLoadInfo cpuLoadInfo = new Struct.CloseableHostCpuLoadInfo();
+             ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(cpuLoadInfo.size())) {
+            if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo, size)) {
+                Logger.error("Failed to get System CPU ticks. Error code: {} ", Native.getLastError());
+                return ticks;
+            }
 
-        ticks[CentralProcessor.TickType.USER.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER];
-        ticks[CentralProcessor.TickType.NICE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE];
-        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM];
-        ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE];
+            ticks[TickType.USER.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER];
+            ticks[TickType.NICE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE];
+            ticks[TickType.SYSTEM.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM];
+            ticks[TickType.IDLE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE];
+        }
         // Leave IOWait and IRQ values as 0
         return ticks;
     }
@@ -259,27 +259,30 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
-        long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
+        long[][] ticks = new long[getLogicalProcessorCount()][TickType.values().length];
 
         int machPort = SystemB.INSTANCE.mach_host_self();
+        try (ByRef.CloseableIntByReference procCount = new ByRef.CloseableIntByReference();
+             ByRef.CloseablePointerByReference procCpuLoadInfo = new ByRef.CloseablePointerByReference();
+             ByRef.CloseableIntByReference procInfoCount = new ByRef.CloseableIntByReference()) {
+            if (0 != SystemB.INSTANCE.host_processor_info(machPort, SystemB.PROCESSOR_CPU_LOAD_INFO, procCount,
+                    procCpuLoadInfo, procInfoCount)) {
+                Logger.error("Failed to update CPU Load. Error code: {}", Native.getLastError());
+                return ticks;
+            }
 
-        IntByReference procCount = new IntByReference();
-        PointerByReference procCpuLoadInfo = new PointerByReference();
-        IntByReference procInfoCount = new IntByReference();
-        if (0 != SystemB.INSTANCE.host_processor_info(machPort, SystemB.PROCESSOR_CPU_LOAD_INFO, procCount,
-                procCpuLoadInfo, procInfoCount)) {
-            Logger.error("Failed to update CPU Load. Error code: {}", Native.getLastError());
-            return ticks;
-        }
-
-        int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
-        for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
-            int offset = cpu * SystemB.CPU_STATE_MAX;
-            ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
-            ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
-            ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = Formats
-                    .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_SYSTEM]);
-            ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
+            int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
+            for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
+                int offset = cpu * SystemB.CPU_STATE_MAX;
+                ticks[cpu][TickType.USER.getIndex()] = Formats
+                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
+                ticks[cpu][TickType.NICE.getIndex()] = Formats
+                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
+                ticks[cpu][TickType.SYSTEM.getIndex()] = Formats
+                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_SYSTEM]);
+                ticks[cpu][TickType.IDLE.getIndex()] = Formats
+                        .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
+            }
         }
         return ticks;
     }

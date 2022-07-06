@@ -36,7 +36,7 @@ import java.io.IOException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Http2 {
+public class Http2 {
 
     static final ByteString CONNECTION_PREFACE = ByteString.encodeUtf8("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
 
@@ -131,6 +131,24 @@ public final class Http2 {
         throw new IOException(StringKit.format(message, args));
     }
 
+    /**
+     * Returns human-readable representation of HTTP/2 frame headers.
+     * <p>
+     * The format is:
+     *
+     * <pre>
+     *   direction streamID length type flags
+     * </pre>
+     * <p>
+     * Where direction is {@code <<} for inbound and {@code >>} for outbound.
+     * <p>
+     * For example, the following would indicate a HEAD request sent from the client.
+     * <pre>
+     * {@code
+     *   << 0x0000000f    12 HEADERS       END_HEADERS|END_STREAM
+     * }
+     * </pre>
+     */
     static String frameLog(boolean inbound, int streamId, int length, byte type, byte flags) {
         String formattedType = type < FRAME_NAMES.length ? FRAME_NAMES[type] : StringKit.format("0x%02x", type);
         String formattedFlags = formatFlags(type, flags);
@@ -138,11 +156,16 @@ public final class Http2 {
                 formattedType, formattedFlags);
     }
 
+    /**
+     * Looks up valid string representing flags from the table. Invalid combinations are represented
+     * in binary.
+     */
+    // Visible for testing.
     static String formatFlags(byte type, byte flags) {
         if (flags == 0) {
             return Normal.EMPTY;
         }
-        switch (type) {
+        switch (type) { // Special case types that have 0 or 1 flag.
             case TYPE_SETTINGS:
             case TYPE_PING:
                 return flags == FLAG_ACK ? "ACK" : BINARY[flags];
@@ -153,6 +176,7 @@ public final class Http2 {
                 return BINARY[flags];
         }
         String result = flags < FLAGS.length ? FLAGS[flags] : BINARY[flags];
+        // Special case types that have overlap flag values.
         if (type == TYPE_PUSH_PROMISE && (flags & FLAG_END_PUSH_PROMISE) != 0) {
             return result.replace("HEADERS", "PUSH_PROMISE");
         } else if (type == TYPE_DATA && (flags & FLAG_COMPRESSED) != 0) {

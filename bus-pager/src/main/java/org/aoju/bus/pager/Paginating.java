@@ -116,7 +116,7 @@ public class Paginating<T> extends Serialize<T> {
      *
      * @param list 分页结果
      */
-    public Paginating(List<T> list) {
+    public Paginating(List<? extends T> list) {
         this(list, DEFAULT_NAVIGATE_PAGES);
     }
 
@@ -126,7 +126,7 @@ public class Paginating<T> extends Serialize<T> {
      * @param list          分页结果
      * @param navigatePages 页码数量
      */
-    public Paginating(List<T> list, int navigatePages) {
+    public Paginating(List<? extends T> list, int navigatePages) {
         super(list);
         if (list instanceof Page) {
             Page page = (Page) list;
@@ -158,12 +158,12 @@ public class Paginating<T> extends Serialize<T> {
         }
     }
 
-    public static <T> Paginating<T> of(List<T> list) {
+    public static <T> Paginating<T> of(List<? extends T> list) {
         return new Paginating<>(list);
     }
 
-    public static <T> Paginating<T> of(List<T> list, int navigatePages) {
-        return new Paginating<T>(list, navigatePages);
+    public static <T> Paginating<T> of(List<? extends T> list, int navigatePages) {
+        return new Paginating<>(list, navigatePages);
     }
 
     /**

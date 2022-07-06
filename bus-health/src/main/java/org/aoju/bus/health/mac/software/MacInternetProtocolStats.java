@@ -41,9 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.sun.jna.platform.mac.SystemB.INT_SIZE;
-import static com.sun.jna.platform.mac.SystemB.PROC_ALL_PIDS;
-
 /**
  * Internet Protocol Stats implementation
  *
@@ -85,44 +82,46 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     private static InternetProtocolStats.IPConnection queryIPConnection(int pid, int fd) {
-        SystemB.SocketFdInfo si = new SystemB.SocketFdInfo();
-        int ret = SystemB.INSTANCE.proc_pidfdinfo(pid, fd, SystemB.PROC_PIDFDSOCKETINFO, si, si.size());
-        if (si.size() == ret && si.psi.soi_family == SystemB.AF_INET || si.psi.soi_family == SystemB.AF_INET6) {
-            SystemB.InSockInfo ini;
-            String type;
-            InternetProtocolStats.TcpState state;
-            if (si.psi.soi_kind == SystemB.SOCKINFO_TCP) {
-                si.psi.soi_proto.setType("pri_tcp");
-                si.psi.soi_proto.read();
-                ini = si.psi.soi_proto.pri_tcp.tcpsi_ini;
-                state = stateLookup(si.psi.soi_proto.pri_tcp.tcpsi_state);
-                type = "tcp";
-            } else if (si.psi.soi_kind == SystemB.SOCKINFO_IN) {
-                si.psi.soi_proto.setType("pri_in");
-                si.psi.soi_proto.read();
-                ini = si.psi.soi_proto.pri_in;
-                state = InternetProtocolStats.TcpState.NONE;
-                type = "udp";
-            } else {
-                return null;
-            }
+        try (SystemB.SocketFdInfo si = new SystemB.SocketFdInfo()) {
+            int ret = SystemB.INSTANCE.proc_pidfdinfo(pid, fd, SystemB.PROC_PIDFDSOCKETINFO, si, si.size());
+            if (si.size() == ret && si.psi.soi_family == SystemB.AF_INET || si.psi.soi_family == SystemB.AF_INET6) {
+                SystemB.InSockInfo ini;
+                String type;
+                TcpState state;
+                if (si.psi.soi_kind == SystemB.SOCKINFO_TCP) {
+                    si.psi.soi_proto.setType("pri_tcp");
+                    si.psi.soi_proto.read();
+                    ini = si.psi.soi_proto.pri_tcp.tcpsi_ini;
+                    state = stateLookup(si.psi.soi_proto.pri_tcp.tcpsi_state);
+                    type = "tcp";
+                } else if (si.psi.soi_kind == SystemB.SOCKINFO_IN) {
+                    si.psi.soi_proto.setType("pri_in");
+                    si.psi.soi_proto.read();
+                    ini = si.psi.soi_proto.pri_in;
+                    state = TcpState.NONE;
+                    type = "udp";
+                } else {
+                    return null;
+                }
 
-            byte[] laddr;
-            byte[] faddr;
-            if (ini.insi_vflag == 1) {
-                laddr = Builder.parseIntToIP(ini.insi_laddr[3]);
-                faddr = Builder.parseIntToIP(ini.insi_faddr[3]);
-                type += "4";
-            } else if (ini.insi_vflag == 2) {
-                laddr = Builder.parseIntArrayToIP(ini.insi_laddr);
-                faddr = Builder.parseIntArrayToIP(ini.insi_faddr);
-                type += "6";
-            } else {
-                return null;
+                byte[] laddr;
+                byte[] faddr;
+                if (ini.insi_vflag == 1) {
+                    laddr = Builder.parseIntToIP(ini.insi_laddr[3]);
+                    faddr = Builder.parseIntToIP(ini.insi_faddr[3]);
+                    type += "4";
+                } else if (ini.insi_vflag == 2) {
+                    laddr = Builder.parseIntArrayToIP(ini.insi_laddr);
+                    faddr = Builder.parseIntArrayToIP(ini.insi_faddr);
+                    type += "6";
+                } else {
+                    return null;
+                }
+                int lport = Builder.bigEndian16ToLittleEndian(ini.insi_lport);
+                int fport = Builder.bigEndian16ToLittleEndian(ini.insi_fport);
+                return new IPConnection(type, laddr, lport, faddr, fport, state, si.psi.soi_qlen, si.psi.soi_incqlen,
+                        pid);
             }
-            int lport = Builder.bigEndian16ToLittleEndian(ini.insi_lport);
-            int fport = Builder.bigEndian16ToLittleEndian(ini.insi_fport);
-            return new InternetProtocolStats.IPConnection(type, laddr, lport, faddr, fport, state, si.psi.soi_qlen, si.psi.soi_incqlen, pid);
         }
         return null;
     }
@@ -158,60 +157,64 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat mt = new CLibrary.BsdTcpstat();
-        Memory m = SysctlKit.sysctl("net.inet.tcp.stats");
-        if (m != null && m.size() >= 128) {
-            mt.tcps_connattempt = m.getInt(0);
-            mt.tcps_accepts = m.getInt(4);
-            mt.tcps_drops = m.getInt(12);
-            mt.tcps_conndrops = m.getInt(16);
-            mt.tcps_sndpack = m.getInt(64);
-            mt.tcps_sndrexmitpack = m.getInt(72);
-            mt.tcps_rcvpack = m.getInt(104);
-            mt.tcps_rcvbadsum = m.getInt(112);
-            mt.tcps_rcvbadoff = m.getInt(116);
-            mt.tcps_rcvmemdrop = m.getInt(120);
-            mt.tcps_rcvshort = m.getInt(124);
+        try (Memory m = SysctlKit.sysctl("net.inet.tcp.stats")) {
+            if (m != null && m.size() >= 128) {
+                mt.tcps_connattempt = m.getInt(0);
+                mt.tcps_accepts = m.getInt(4);
+                mt.tcps_drops = m.getInt(12);
+                mt.tcps_conndrops = m.getInt(16);
+                mt.tcps_sndpack = m.getInt(64);
+                mt.tcps_sndrexmitpack = m.getInt(72);
+                mt.tcps_rcvpack = m.getInt(104);
+                mt.tcps_rcvbadsum = m.getInt(112);
+                mt.tcps_rcvbadoff = m.getInt(116);
+                mt.tcps_rcvmemdrop = m.getInt(120);
+                mt.tcps_rcvshort = m.getInt(124);
+            }
         }
         return mt;
     }
 
     private static CLibrary.BsdIpstat queryIpstat() {
         CLibrary.BsdIpstat mi = new CLibrary.BsdIpstat();
-        Memory m = SysctlKit.sysctl("net.inet.ip.stats");
-        if (m != null && m.size() >= 60) {
-            mi.ips_total = m.getInt(0);
-            mi.ips_badsum = m.getInt(4);
-            mi.ips_tooshort = m.getInt(8);
-            mi.ips_toosmall = m.getInt(12);
-            mi.ips_badhlen = m.getInt(16);
-            mi.ips_badlen = m.getInt(20);
-            mi.ips_delivered = m.getInt(56);
+        try (Memory m = SysctlKit.sysctl("net.inet.ip.stats")) {
+            if (m != null && m.size() >= 60) {
+                mi.ips_total = m.getInt(0);
+                mi.ips_badsum = m.getInt(4);
+                mi.ips_tooshort = m.getInt(8);
+                mi.ips_toosmall = m.getInt(12);
+                mi.ips_badhlen = m.getInt(16);
+                mi.ips_badlen = m.getInt(20);
+                mi.ips_delivered = m.getInt(56);
+            }
         }
         return mi;
     }
 
     private static CLibrary.BsdIp6stat queryIp6stat() {
         CLibrary.BsdIp6stat mi6 = new CLibrary.BsdIp6stat();
-        Memory m = SysctlKit.sysctl("net.inet6.ip6.stats");
-        if (m != null && m.size() >= 96) {
-            mi6.ip6s_total = m.getLong(0);
-            mi6.ip6s_localout = m.getLong(88);
+        try (Memory m = SysctlKit.sysctl("net.inet6.ip6.stats")) {
+            if (m != null && m.size() >= 96) {
+                mi6.ip6s_total = m.getLong(0);
+                mi6.ip6s_localout = m.getLong(88);
+            }
         }
         return mi6;
     }
 
     public static CLibrary.BsdUdpstat queryUdpstat() {
         CLibrary.BsdUdpstat ut = new CLibrary.BsdUdpstat();
-        Memory m = SysctlKit.sysctl("net.inet.udp.stats");
-        if (m != null && m.size() >= 1644) {
-            ut.udps_ipackets = m.getInt(0);
-            ut.udps_hdrops = m.getInt(4);
-            ut.udps_badsum = m.getInt(8);
-            ut.udps_badlen = m.getInt(12);
-            ut.udps_opackets = m.getInt(36);
-            ut.udps_noportmcast = m.getInt(48);
-            ut.udps_rcv6_swcsum = m.getInt(64);
-            ut.udps_snd6_swcsum = m.getInt(80);
+        try (Memory m = SysctlKit.sysctl("net.inet.udp.stats")) {
+            if (m != null && m.size() >= 1644) {
+                ut.udps_ipackets = m.getInt(0);
+                ut.udps_hdrops = m.getInt(4);
+                ut.udps_badsum = m.getInt(8);
+                ut.udps_badlen = m.getInt(12);
+                ut.udps_opackets = m.getInt(36);
+                ut.udps_noportmcast = m.getInt(48);
+                ut.udps_rcv6_swcsum = m.getInt(64);
+                ut.udps_snd6_swcsum = m.getInt(80);
+            }
         }
         return ut;
     }
@@ -275,8 +278,8 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     public List<InternetProtocolStats.IPConnection> getConnections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         int[] pids = new int[1024];
-        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(PROC_ALL_PIDS, 0, pids, pids.length * INT_SIZE)
-                / INT_SIZE;
+        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE)
+                / SystemB.INT_SIZE;
         for (int i = 0; i < numberOfProcesses; i++) {
             // Handle off-by-one bug in proc_listpids where the size returned
             // is: SystemB.INT_SIZE * (pids + 1)

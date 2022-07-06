@@ -2,10 +2,9 @@ package org.aoju.bus.pay.metric;
 
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.http.Httpv;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.http.Httpz;
-import org.aoju.bus.http.magic.HttpResponse;
+import org.aoju.bus.http.Response;
 import org.aoju.bus.pay.magic.Results;
 
 import javax.net.ssl.KeyManager;
@@ -51,12 +50,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results} 请求返回的结果
      */
     public static Results get(String url, Map<String, Object> paramMap, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = getToResponse(url, paramMap, headers);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = getToResponse(url, paramMap, headers);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -68,12 +67,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public static Results post(String url, Map<String, Object> paramMap, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = postToResponse(url, headers, paramMap);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = postToResponse(url, headers, paramMap);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -85,12 +84,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public static Results post(String url, String data, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = postToResponse(url, headers, data);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = postToResponse(url, headers, data);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -102,12 +101,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public static Results patch(String url, String data, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = patchToResponse(url, headers, data);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = patchToResponse(url, headers, data);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -119,12 +118,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public static Results delete(String url, String data, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = deleteToResponse(url, headers, data);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = deleteToResponse(url, headers, data);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -136,12 +135,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public static Results put(String url, String data, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = putToResponse(url, headers, data);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = putToResponse(url, headers, data);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -286,9 +285,9 @@ public abstract class AbstractHttpDelegate {
      * @param url      请求url
      * @param paramMap 请求参数
      * @param headers  请求头
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private static HttpResponse getToResponse(String url, Map<String, Object> paramMap, Map<String, String> headers) {
+    private static Response getToResponse(String url, Map<String, Object> paramMap, Map<String, String> headers) {
         try {
             return Httpz.get()
                     .url(url)
@@ -307,9 +306,9 @@ public abstract class AbstractHttpDelegate {
      * @param url     请求url
      * @param headers 请求头
      * @param data    请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private static HttpResponse postToResponse(String url, Map<String, String> headers, String data) {
+    private static Response postToResponse(String url, Map<String, String> headers, String data) {
         try {
             return Httpz.post()
                     .url(url)
@@ -328,9 +327,9 @@ public abstract class AbstractHttpDelegate {
      * @param url      请求url
      * @param headers  请求头
      * @param paramMap 请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private static HttpResponse postToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
+    private static Response postToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
         try {
             return Httpz.post()
                     .url(url)
@@ -349,10 +348,10 @@ public abstract class AbstractHttpDelegate {
      * @param url     请求url
      * @param headers 请求头
      * @param data    请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private static HttpResponse patchToResponse(String url, Map<String, String> headers, String data) {
-      /*  return HttpRequest.patch(url)
+    private static Response patchToResponse(String url, Map<String, String> headers, String data) {
+       /*return HttpRequest.patch(url)
                 .addHeaders(headers)
                 .body(data)
                 .execute();*/
@@ -365,13 +364,13 @@ public abstract class AbstractHttpDelegate {
      * @param url     请求url
      * @param headers 请求头
      * @param data    请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private static HttpResponse deleteToResponse(String url, Map<String, String> headers, String data) {
-     /*   return HttpRequest.delete(url)
+    private static Response deleteToResponse(String url, Map<String, String> headers, String data) {
+       /*  return HttpRequest.delete(url)
                 .addHeaders(headers)
                 .body(data)
-                .execute();*/
+                .execute(); */
 
         return null;
     }
@@ -382,9 +381,9 @@ public abstract class AbstractHttpDelegate {
      * @param url     请求url
      * @param headers 请求头
      * @param data    请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private static HttpResponse putToResponse(String url, Map<String, String> headers, String data) {
+    private static Response putToResponse(String url, Map<String, String> headers, String data) {
         try {
             return Httpz.put()
                     .url(url)
@@ -439,12 +438,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public Results patch(String url, Map<String, Object> paramMap, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = patchToResponse(url, headers, paramMap);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = patchToResponse(url, headers, paramMap);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -456,12 +455,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public Results delete(String url, Map<String, Object> paramMap, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = deleteToResponse(url, headers, paramMap);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = deleteToResponse(url, headers, paramMap);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -473,12 +472,12 @@ public abstract class AbstractHttpDelegate {
      * @return {@link Results}  请求返回的结果
      */
     public Results put(String url, Map<String, Object> paramMap, Map<String, String> headers) {
-        Results response = new Results();
-        HttpResponse httpResponse = putToResponse(url, headers, paramMap);
-        response.setBody(httpResponse.body().toString());
-        response.setStatus(httpResponse.code());
-        response.setHeaders(httpResponse.headers().toMultimap());
-        return response;
+        Results results = new Results();
+        Response response = putToResponse(url, headers, paramMap);
+        results.setBody(response.body().toString());
+        results.setStatus(response.code());
+        results.setHeaders(response.headers().toMultimap());
+        return results;
     }
 
     /**
@@ -487,10 +486,11 @@ public abstract class AbstractHttpDelegate {
      * @param url      请求url
      * @param headers  请求头
      * @param paramMap 请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private HttpResponse patchToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
-        return (HttpResponse) Httpv.builder().build().sync(url).addBodyPara(paramMap).addHeader(headers).patch();
+    private Response patchToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
+        // Httpv.builder().build().sync(url).addBodyPara(paramMap).addHeader(headers).patch();
+        return null;
     }
 
     /**
@@ -499,9 +499,9 @@ public abstract class AbstractHttpDelegate {
      * @param url      请求url
      * @param headers  请求头
      * @param paramMap 请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private HttpResponse deleteToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
+    private Response deleteToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
       /*  return HttpRequest.delete(url)
                 .addHeaders(headers)
                 .form(paramMap)
@@ -515,9 +515,9 @@ public abstract class AbstractHttpDelegate {
      * @param url      请求url
      * @param headers  请求头
      * @param paramMap 请求参数
-     * @return {@link HttpResponse} 请求返回的结果
+     * @return {@link Response} 请求返回的结果
      */
-    private HttpResponse putToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
+    private Response putToResponse(String url, Map<String, String> headers, Map<String, Object> paramMap) {
         try {
             return Httpz.put()
                     .url(url)

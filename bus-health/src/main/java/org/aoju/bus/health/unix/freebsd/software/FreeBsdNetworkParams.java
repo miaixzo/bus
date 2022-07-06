@@ -26,17 +26,15 @@
 package org.aoju.bus.health.unix.freebsd.software;
 
 import com.sun.jna.Native;
-import com.sun.jna.ptr.PointerByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.unix.CLibrary;
 import org.aoju.bus.health.unix.CLibrary.Addrinfo;
 import org.aoju.bus.health.unix.FreeBsdLibc;
 import org.aoju.bus.logger.Logger;
-
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * FreeBsdNetworkParams class.
@@ -51,27 +49,29 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getDomainName() {
-        Addrinfo hint = new Addrinfo();
-        hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname = getHostName();
+        try (Addrinfo hint = new Addrinfo()) {
+            hint.ai_flags = CLibrary.AI_CANONNAME;
+            String hostname = getHostName();
 
-        PointerByReference ptr = new PointerByReference();
-        int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
-        if (res > 0) {
-            if (Logger.isError()) {
-                Logger.warn("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
+            try (ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
+                int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
+                if (res > 0) {
+                    if (Logger.isError()) {
+                        Logger.warn("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
+                    }
+                    return "";
+                }
+                Addrinfo info = new Addrinfo(ptr.getValue());
+                String canonname = info.ai_canonname.trim();
+                LIBC.freeaddrinfo(ptr.getValue());
+                return canonname;
             }
-            return Normal.EMPTY;
         }
-        Addrinfo info = new Addrinfo(ptr.getValue());
-        String canonname = info.ai_canonname.trim();
-        LIBC.freeaddrinfo(ptr.getValue());
-        return canonname;
     }
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != LIBC.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }

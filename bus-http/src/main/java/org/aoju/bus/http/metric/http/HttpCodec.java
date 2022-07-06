@@ -26,9 +26,11 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.Sink;
+import org.aoju.bus.core.io.Source;
+import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
-import org.aoju.bus.http.bodys.ResponseBody;
+import org.aoju.bus.http.accord.RealConnection;
 
 import java.io.IOException;
 
@@ -47,13 +49,18 @@ public interface HttpCodec {
     int DISCARD_STREAM_TIMEOUT_MILLIS = 100;
 
     /**
+     * 返回携带此编解码器的连接
+     */
+    RealConnection connection();
+
+    /**
      * 返回一个可以对请求体进行流处理的输出流.
      *
      * @param request       网络请求
      * @param contentLength 内容长度
      * @return 缓冲信息
      */
-    Sink createRequestBody(Request request, long contentLength);
+    Sink createRequestBody(Request request, long contentLength) throws IOException;
 
     /**
      * 这应该更新HTTP引擎的sentRequestMillis字段.
@@ -64,7 +71,7 @@ public interface HttpCodec {
     void writeRequestHeaders(Request request) throws IOException;
 
     /**
-     * 将请求刷新到基础套接字.
+     * 将请求刷新到基础套接字
      *
      * @throws IOException 异常
      */
@@ -87,14 +94,17 @@ public interface HttpCodec {
      */
     Response.Builder readResponseHeaders(boolean expectContinue) throws IOException;
 
+    long reportedContentLength(Response response) throws IOException;
+
+    Source openResponseBodySource(Response response) throws IOException;
+
     /**
-     * 返回读取响应体的流.
+     * 在HTTP响应之后返回
      *
-     * @param response 响应
-     * @return 响应体
+     * @return the object
      * @throws IOException 异常
      */
-    ResponseBody openResponseBody(Response response) throws IOException;
+    Headers trailers() throws IOException;
 
     /**
      * 取消这个流。这个流所持有的资源将被清理，尽管不是同步的。这可能会在连接池线程之后发生

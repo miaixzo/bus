@@ -52,9 +52,9 @@ public interface NewCall extends Cloneable {
      * {@code response}可能仍然表示不满意的HTTP响应代码，如404或500
      *
      * @return 响应体
-     * @throws IOException           如果请求由于取消、连接问题或超时而无法执行。
+     * @throws IOException           如果请求由于取消、连接问题或超时而无法执行
      *                               因为网络可能在交换期间失败，
-     *                               所以远程服务器可能在失败之前接受了请求.
+     *                               所以远程服务器可能在失败之前接受了请求
      * @throws IllegalStateException 当调用已经执行
      */
     Response execute() throws IOException;
@@ -66,12 +66,12 @@ public interface NewCall extends Cloneable {
      * 该客户端稍后将使用HTTP响应或失败异常回调{@code responseCallback}
      *
      * @param callback 异步回调
-     * @throws IllegalStateException 当调用已经执行.
+     * @throws IllegalStateException 当调用已经执行
      */
     void enqueue(Callback callback);
 
     /**
-     * 如果可能，取消请求。已经完成的请求不能被取消.
+     * 如果可能，取消请求。已经完成的请求不能被取消
      */
     void cancel();
 
@@ -88,8 +88,8 @@ public interface NewCall extends Cloneable {
     boolean isCanceled();
 
     /**
-     * 返回跨越整个调用的超时:解析DNS、连接、写入请求体、服务器处理和读取响应体。
-     * 如果调用需要重定向或重试，所有操作都必须在一个超时周期内完成.
+     * 返回跨越整个调用的超时:解析DNS、连接、写入请求体、服务器处理和读取响应体
+     * 如果调用需要重定向或重试，所有操作都必须在一个超时周期内完成
      * 使用{@link Httpd.Builder#callTimeout}配置客户端的默认超时
      *
      * @return 超时时间

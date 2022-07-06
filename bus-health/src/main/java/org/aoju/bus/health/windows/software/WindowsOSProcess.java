@@ -29,7 +29,6 @@ import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
-import com.sun.jna.platform.win32.BaseTSD.ULONG_PTRByReference;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
@@ -40,7 +39,10 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
+import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
+import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.windows.NtDll;
 import org.aoju.bus.health.windows.NtDll.UNICODE_STRING;
@@ -58,9 +60,6 @@ import java.io.File;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static org.aoju.bus.health.Memoize.memoize;
-import static org.aoju.bus.health.builtin.software.OSProcess.State.*;
 
 /**
  * OSProcess implementation
@@ -82,12 +81,12 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     // track the OperatingSystem object that created this
     private final WindowsOperatingSystem os;
-    private final Supplier<Pair<String, String>> groupInfo = memoize(this::queryGroupInfo);
-    private final Supplier<Triple<String, String, Map<String, String>>> cwdCmdEnv = memoize(
+    private final Supplier<Pair<String, String>> groupInfo = Memoize.memoize(this::queryGroupInfo);
+    private final Supplier<Triple<String, String, Map<String, String>>> cwdCmdEnv = Memoize.memoize(
             this::queryCwdCommandlineEnvironment);
-    private final Supplier<String> currentWorkingDirectory = memoize(this::queryCwd);
+    private final Supplier<String> currentWorkingDirectory = Memoize.memoize(this::queryCwd);
     private String name;
-    private final Supplier<Pair<String, String>> userInfo = memoize(this::queryUserInfo);
+    private final Supplier<Pair<String, String>> userInfo = Memoize.memoize(this::queryUserInfo);
     private String path;
     private int parentProcessID;
     private int threadCount;
@@ -97,9 +96,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private long kernelTime;
     private long userTime;
     private long startTime;
-    private final Supplier<String> commandLine = memoize(this::queryCommandLine);
-    private final Supplier<List<String>> args = memoize(this::queryArguments);
-    private State state = INVALID;
+    private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
+    private final Supplier<List<String>> args = Memoize.memoize(this::queryArguments);
+    private State state = OSProcess.State.INVALID;
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
@@ -126,14 +125,15 @@ public class WindowsOSProcess extends AbstractOSProcess {
         IntByReference nRead = new IntByReference();
         if (s.Length > 0) {
             // Add space for null terminator
-            Memory m = new Memory(s.Length + 2L);
-            m.clear(); // really only need null in last 2 bytes but this is easier
-            Kernel32.INSTANCE.ReadProcessMemory(h, s.Buffer, m, s.Length, nRead);
-            if (nRead.getValue() > 0) {
-                return m.getWideString(0);
+            try (Memory m = new Memory(s.Length + 2L)) {
+                m.clear(); // really only need null in last 2 bytes but this is easier
+                Kernel32.INSTANCE.ReadProcessMemory(h, s.Buffer, m, s.Length, nRead);
+                if (nRead.getValue() > 0) {
+                    return m.getWideString(0);
+                }
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     @Override
@@ -260,16 +260,14 @@ public class WindowsOSProcess extends AbstractOSProcess {
     public long getAffinityMask() {
         final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
-            try {
-                ULONG_PTRByReference processAffinity = new ULONG_PTRByReference();
-                ULONG_PTRByReference systemAffinity = new ULONG_PTRByReference();
+            try (ByRef.CloseableULONGptrByReference processAffinity = new ByRef.CloseableULONGptrByReference();
+                 ByRef.CloseableULONGptrByReference systemAffinity = new ByRef.CloseableULONGptrByReference()) {
                 if (Kernel32.INSTANCE.GetProcessAffinityMask(pHandle, processAffinity, systemAffinity)) {
                     return Pointer.nativeValue(processAffinity.getValue().toPointer());
                 }
             } finally {
                 Kernel32.INSTANCE.CloseHandle(pHandle);
             }
-            Kernel32.INSTANCE.CloseHandle(pHandle);
         }
         return 0L;
     }
@@ -339,7 +337,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // There are only 3 possible Process states on Windows: RUNNING, SUSPENDED, or
         // UNKNOWN. Processes are considered running unless all of their threads are
         // SUSPENDED.
-        this.state = RUNNING;
+        this.state = OSProcess.State.RUNNING;
         if (threadMap != null) {
             // If user hasn't enabled this in properties, we ignore
             int pid = this.getProcessID();
@@ -347,9 +345,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
             for (ThreadPerformanceData.PerfCounterBlock tcb : threadMap.values()) {
                 if (tcb.getOwningProcessID() == pid) {
                     if (tcb.getThreadWaitReason() == 5) {
-                        this.state = SUSPENDED;
+                        this.state = OSProcess.State.SUSPENDED;
                     } else {
-                        this.state = RUNNING;
+                        this.state = OSProcess.State.RUNNING;
                         break;
                     }
                 }
@@ -363,9 +361,10 @@ public class WindowsOSProcess extends AbstractOSProcess {
             try {
                 // Test for 32-bit process on 64-bit windows
                 if (IS_VISTA_OR_GREATER && this.bitness == 64) {
-                    IntByReference wow64 = new IntByReference(0);
-                    if (Kernel32.INSTANCE.IsWow64Process(pHandle, wow64) && wow64.getValue() > 0) {
-                        this.bitness = 32;
+                    try (ByRef.CloseableIntByReference wow64 = new ByRef.CloseableIntByReference()) {
+                        if (Kernel32.INSTANCE.IsWow64Process(pHandle, wow64) && wow64.getValue() > 0) {
+                            this.bitness = 32;
+                        }
                     }
                 }
                 // Full path
@@ -375,7 +374,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                         this.path = Kernel32Util.QueryFullProcessImageName(pHandle, 0);
                     }
                 } catch (Win32Exception e) {
-                    this.state = INVALID;
+                    this.state = OSProcess.State.INVALID;
                 } finally {
                     final HANDLE token = phToken.getValue();
                     if (token != null) {
@@ -387,7 +386,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
             }
         }
 
-        return !this.state.equals(INVALID);
+        return !this.state.equals(OSProcess.State.INVALID);
     }
 
     private String queryCommandLine() {
@@ -436,28 +435,30 @@ public class WindowsOSProcess extends AbstractOSProcess {
         Pair<String, String> pair = null;
         final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
-            final HANDLEByReference phToken = new HANDLEByReference();
-            try {
-                if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
-                    Account account = Advapi32Util.getTokenAccount(phToken.getValue());
-                    pair = Pair.of(account.name, account.sidString);
-                } else {
-                    int error = Kernel32.INSTANCE.GetLastError();
-                    // Access denied errors are common. Fail silently.
-                    if (error != WinError.ERROR_ACCESS_DENIED) {
-                        Logger.error("Failed to get process token for process {}: {}", getProcessID(),
-                                Kernel32.INSTANCE.GetLastError());
+            try (ByRef.CloseableHANDLEByReference phToken = new ByRef.CloseableHANDLEByReference()) {
+                try {
+                    if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY,
+                            phToken)) {
+                        Account account = Advapi32Util.getTokenAccount(phToken.getValue());
+                        pair = Pair.of(account.name, account.sidString);
+                    } else {
+                        int error = Kernel32.INSTANCE.GetLastError();
+                        // Access denied errors are common. Fail silently.
+                        if (error != WinError.ERROR_ACCESS_DENIED) {
+                            Logger.error("Failed to get process token for process {}: {}", getProcessID(),
+                                    Kernel32.INSTANCE.GetLastError());
+                        }
                     }
+                } catch (Win32Exception e) {
+                    Logger.warn("Failed to query user info for process {} ({}): {}", getProcessID(), getName(),
+                            e.getMessage());
+                } finally {
+                    final HANDLE token = phToken.getValue();
+                    if (token != null) {
+                        Kernel32.INSTANCE.CloseHandle(token);
+                    }
+                    Kernel32.INSTANCE.CloseHandle(pHandle);
                 }
-            } catch (Win32Exception e) {
-                Logger.warn("Failed to query user info for process {} ({}): {}", getProcessID(), getName(),
-                        e.getMessage());
-            } finally {
-                final HANDLE token = phToken.getValue();
-                if (token != null) {
-                    Kernel32.INSTANCE.CloseHandle(token);
-                }
-                Kernel32.INSTANCE.CloseHandle(pHandle);
             }
         }
         if (pair == null) {
@@ -470,23 +471,24 @@ public class WindowsOSProcess extends AbstractOSProcess {
         Pair<String, String> pair = null;
         final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
-            final HANDLEByReference phToken = new HANDLEByReference();
-            if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
-                Account account = Advapi32Util.getTokenPrimaryGroup(phToken.getValue());
-                pair = Pair.of(account.name, account.sidString);
-            } else {
-                int error = Kernel32.INSTANCE.GetLastError();
-                // Access denied errors are common. Fail silently.
-                if (error != WinError.ERROR_ACCESS_DENIED) {
-                    Logger.error("Failed to get process token for process {}: {}", getProcessID(),
-                            Kernel32.INSTANCE.GetLastError());
+            try (ByRef.CloseableHANDLEByReference phToken = new ByRef.CloseableHANDLEByReference()) {
+                if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
+                    Account account = Advapi32Util.getTokenPrimaryGroup(phToken.getValue());
+                    pair = Pair.of(account.name, account.sidString);
+                } else {
+                    int error = Kernel32.INSTANCE.GetLastError();
+                    // Access denied errors are common. Fail silently.
+                    if (error != WinError.ERROR_ACCESS_DENIED) {
+                        Logger.error("Failed to get process token for process {}: {}", getProcessID(),
+                                Kernel32.INSTANCE.GetLastError());
+                    }
                 }
+                final HANDLE token = phToken.getValue();
+                if (token != null) {
+                    Kernel32.INSTANCE.CloseHandle(token);
+                }
+                Kernel32.INSTANCE.CloseHandle(pHandle);
             }
-            final HANDLE token = phToken.getValue();
-            if (token != null) {
-                Kernel32.INSTANCE.CloseHandle(token);
-            }
-            Kernel32.INSTANCE.CloseHandle(pHandle);
         }
         if (pair == null) {
             return Pair.of(Normal.UNKNOWN, Normal.UNKNOWN);
@@ -502,52 +504,53 @@ public class WindowsOSProcess extends AbstractOSProcess {
             try {
                 // Can't check 32-bit procs from a 64-bit one
                 if (WindowsOperatingSystem.isX86() == WindowsOperatingSystem.isWow(h)) {
-
-                    IntByReference nRead = new IntByReference();
-
-                    // Start by getting the address of the PEB
-                    NtDll.PROCESS_BASIC_INFORMATION pbi = new NtDll.PROCESS_BASIC_INFORMATION();
-                    int ret = NtDll.INSTANCE.NtQueryInformationProcess(h, NtDll.PROCESS_BASIC_INFORMATION,
-                            pbi.getPointer(), pbi.size(), nRead);
-                    if (ret != 0) {
-                        return defaultCwdCommandlineEnvironment();
-                    }
-                    pbi.read();
-
-                    // Now fetch the PEB
-                    NtDll.PEB peb = new NtDll.PEB();
-                    Kernel32.INSTANCE.ReadProcessMemory(h, pbi.PebBaseAddress, peb.getPointer(), peb.size(), nRead);
-                    if (nRead.getValue() == 0) {
-                        return defaultCwdCommandlineEnvironment();
-                    }
-                    peb.read();
-
-                    // Now fetch the Process Parameters structure containing our data
-                    NtDll.RTL_USER_PROCESS_PARAMETERS upp = new NtDll.RTL_USER_PROCESS_PARAMETERS();
-                    Kernel32.INSTANCE.ReadProcessMemory(h, peb.ProcessParameters, upp.getPointer(), upp.size(), nRead);
-                    if (nRead.getValue() == 0) {
-                        return defaultCwdCommandlineEnvironment();
-                    }
-                    upp.read();
-
-                    // Get CWD and Command Line strings here
-                    String cwd = readUnicodeString(h, upp.CurrentDirectory.DosPath);
-                    String cl = readUnicodeString(h, upp.CommandLine);
-
-                    // Fetch the Environment Strings
-                    int envSize = upp.EnvironmentSize.intValue();
-                    if (envSize > 0) {
-                        Memory buffer = new Memory(envSize);
-                        Kernel32.INSTANCE.ReadProcessMemory(h, upp.Environment, buffer, envSize, nRead);
-                        if (nRead.getValue() > 0) {
-                            char[] env = buffer.getCharArray(0, envSize / 2);
-                            Map<String, String> envMap = Builder.parseCharArrayToStringMap(env);
-                            // First entry in Environment is "=::=::\"
-                            envMap.remove("");
-                            return Triple.of(cwd, cl, Collections.unmodifiableMap(envMap));
+                    try (ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
+                        // Start by getting the address of the PEB
+                        NtDll.PROCESS_BASIC_INFORMATION pbi = new NtDll.PROCESS_BASIC_INFORMATION();
+                        int ret = NtDll.INSTANCE.NtQueryInformationProcess(h, NtDll.PROCESS_BASIC_INFORMATION,
+                                pbi.getPointer(), pbi.size(), nRead);
+                        if (ret != 0) {
+                            return defaultCwdCommandlineEnvironment();
                         }
+                        pbi.read();
+
+                        // Now fetch the PEB
+                        NtDll.PEB peb = new NtDll.PEB();
+                        Kernel32.INSTANCE.ReadProcessMemory(h, pbi.PebBaseAddress, peb.getPointer(), peb.size(), nRead);
+                        if (nRead.getValue() == 0) {
+                            return defaultCwdCommandlineEnvironment();
+                        }
+                        peb.read();
+
+                        // Now fetch the Process Parameters structure containing our data
+                        NtDll.RTL_USER_PROCESS_PARAMETERS upp = new NtDll.RTL_USER_PROCESS_PARAMETERS();
+                        Kernel32.INSTANCE.ReadProcessMemory(h, peb.ProcessParameters, upp.getPointer(), upp.size(),
+                                nRead);
+                        if (nRead.getValue() == 0) {
+                            return defaultCwdCommandlineEnvironment();
+                        }
+                        upp.read();
+
+                        // Get CWD and Command Line strings here
+                        String cwd = readUnicodeString(h, upp.CurrentDirectory.DosPath);
+                        String cl = readUnicodeString(h, upp.CommandLine);
+
+                        // Fetch the Environment Strings
+                        int envSize = upp.EnvironmentSize.intValue();
+                        if (envSize > 0) {
+                            try (Memory buffer = new Memory(envSize)) {
+                                Kernel32.INSTANCE.ReadProcessMemory(h, upp.Environment, buffer, envSize, nRead);
+                                if (nRead.getValue() > 0) {
+                                    char[] env = buffer.getCharArray(0, envSize / 2);
+                                    Map<String, String> envMap = Builder.parseCharArrayToStringMap(env);
+                                    // First entry in Environment is "=::=::\"
+                                    envMap.remove("");
+                                    return Triple.of(cwd, cl, Collections.unmodifiableMap(envMap));
+                                }
+                            }
+                        }
+                        return Triple.of(cwd, cl, Collections.emptyMap());
                     }
-                    return Triple.of(cwd, cl, Collections.emptyMap());
                 }
             } finally {
                 Kernel32.INSTANCE.CloseHandle(h);

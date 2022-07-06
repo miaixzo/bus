@@ -27,13 +27,12 @@ package org.aoju.bus.health.mac.hardware;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
-import com.sun.jna.platform.mac.SystemB.VMStatistics;
-import com.sun.jna.platform.mac.SystemB.XswUsage;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.ByRef;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
@@ -67,10 +66,11 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     private static Pair<Long, Long> querySwapUsage() {
         long swapUsed = 0L;
         long swapTotal = 0L;
-        XswUsage xswUsage = new XswUsage();
-        if (SysctlKit.sysctl("vm.swapusage", xswUsage)) {
-            swapUsed = xswUsage.xsu_used;
-            swapTotal = xswUsage.xsu_total;
+        try (Struct.CloseableXswUsage xswUsage = new Struct.CloseableXswUsage()) {
+            if (SysctlKit.sysctl("vm.swapusage", xswUsage)) {
+                swapUsed = xswUsage.xsu_used;
+                swapTotal = xswUsage.xsu_total;
+            }
         }
         return Pair.of(swapUsed, swapTotal);
     }
@@ -78,13 +78,15 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
     private static Pair<Long, Long> queryVmStat() {
         long swapPagesIn = 0L;
         long swapPagesOut = 0L;
-        VMStatistics vmStats = new VMStatistics();
-        if (0 == SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
-                new IntByReference(vmStats.size() / SystemB.INT_SIZE))) {
-            swapPagesIn = Builder.unsignedIntToLong(vmStats.pageins);
-            swapPagesOut = Builder.unsignedIntToLong(vmStats.pageouts);
-        } else {
-            Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
+        try (Struct.CloseableVMStatistics vmStats = new Struct.CloseableVMStatistics();
+             ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(vmStats.size() / SystemB.INT_SIZE)) {
+            if (0 == SystemB.INSTANCE.host_statistics(SystemB.INSTANCE.mach_host_self(), SystemB.HOST_VM_INFO, vmStats,
+                    size)) {
+                swapPagesIn = Builder.unsignedIntToLong(vmStats.pageins);
+                swapPagesOut = Builder.unsignedIntToLong(vmStats.pageouts);
+            } else {
+                Logger.error("Failed to get host VM info. Error code: {}", Native.getLastError());
+            }
         }
         return Pair.of(swapPagesIn, swapPagesOut);
     }

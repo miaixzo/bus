@@ -34,6 +34,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.unix.aix.drivers.Lssrad;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatConfig;
@@ -44,9 +45,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * A CPU
@@ -63,8 +61,8 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
      */
     private static final long USER_HZ = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"),
             100L);
-    private final Supplier<perfstat_cpu_total_t> cpuTotal = memoize(PerfstatCpu::queryCpuTotal, defaultExpiration());
-    private final Supplier<perfstat_cpu_t[]> cpuProc = memoize(PerfstatCpu::queryCpu, defaultExpiration());
+    private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoize.memoize(PerfstatCpu::queryCpuTotal, Memoize.defaultExpiration());
+    private final Supplier<perfstat_cpu_t[]> cpuProc = Memoize.memoize(PerfstatCpu::queryCpu, Memoize.defaultExpiration());
     private perfstat_partition_config_t config;
 
     private static int querySbits() {

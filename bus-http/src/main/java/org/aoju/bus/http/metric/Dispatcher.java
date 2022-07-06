@@ -29,7 +29,6 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.RealCall;
-import org.aoju.bus.http.RealCall.AsyncCall;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -45,16 +44,16 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Dispatcher {
+public class Dispatcher {
 
     /**
      * 准备异步调用的顺序，他们将被运行
      */
-    private final Deque<AsyncCall> readyAsyncCalls = new ArrayDeque<>();
+    private final Deque<RealCall.AsyncCall> readyAsyncCalls = new ArrayDeque<>();
     /**
      * 运行异步调用。包括尚未结束的已取消调用
      */
-    private final Deque<AsyncCall> runningAsyncCalls = new ArrayDeque<>();
+    private final Deque<RealCall.AsyncCall> runningAsyncCalls = new ArrayDeque<>();
     /**
      * 运行同步调用。包括尚未结束的已取消调用
      */
@@ -72,12 +71,13 @@ public final class Dispatcher {
     }
 
     public Dispatcher() {
+
     }
 
     public synchronized ExecutorService executorService() {
         if (null == executorService) {
             executorService = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
-                    new SynchronousQueue<>(), Builder.threadFactory("Httpd Dispatcher", false));
+                    new SynchronousQueue<>(), Builder.threadFactory("Http Dispatcher", false));
         }
         return executorService;
     }
@@ -133,11 +133,25 @@ public final class Dispatcher {
         this.idleCallback = idleCallback;
     }
 
-    public void enqueue(AsyncCall call) {
+    public void enqueue(RealCall.AsyncCall call) {
         synchronized (this) {
             readyAsyncCalls.add(call);
+            if (!call.get().forWebSocket) {
+                RealCall.AsyncCall existingCall = findExistingCallWithHost(call.host());
+                if (existingCall != null) call.reuseCallsPerHostFrom(existingCall);
+            }
         }
         promoteAndExecute();
+    }
+
+    public RealCall.AsyncCall findExistingCallWithHost(String host) {
+        for (RealCall.AsyncCall existingCall : runningAsyncCalls) {
+            if (existingCall.host().equals(host)) return existingCall;
+        }
+        for (RealCall.AsyncCall existingCall : readyAsyncCalls) {
+            if (existingCall.host().equals(host)) return existingCall;
+        }
+        return null;
     }
 
     /**
@@ -146,11 +160,11 @@ public final class Dispatcher {
      * 执行的{@linkplain NewCall#enqueue}。
      */
     public synchronized void cancelAll() {
-        for (AsyncCall call : readyAsyncCalls) {
+        for (RealCall.AsyncCall call : readyAsyncCalls) {
             call.get().cancel();
         }
 
-        for (AsyncCall call : runningAsyncCalls) {
+        for (RealCall.AsyncCall call : runningAsyncCalls) {
             call.get().cancel();
         }
 
@@ -165,19 +179,20 @@ public final class Dispatcher {
      *
      * @return 如果调度程序当前正在运行调用，则为true
      */
-    private boolean promoteAndExecute() {
+    public boolean promoteAndExecute() {
         assert (!Thread.holdsLock(this));
 
-        List<AsyncCall> executableCalls = new ArrayList<>();
+        List<RealCall.AsyncCall> executableCalls = new ArrayList<>();
         boolean isRunning;
         synchronized (this) {
-            for (Iterator<AsyncCall> i = readyAsyncCalls.iterator(); i.hasNext(); ) {
-                AsyncCall asyncCall = i.next();
+            for (Iterator<RealCall.AsyncCall> i = readyAsyncCalls.iterator(); i.hasNext(); ) {
+                RealCall.AsyncCall asyncCall = i.next();
 
                 if (runningAsyncCalls.size() >= maxRequests) break; // Max capacity.
-                if (runningCallsForHost(asyncCall) >= maxRequestsPerHost) continue; // Host max capacity.
+                if (asyncCall.callsPerHost().get() >= maxRequestsPerHost) continue; // Host max capacity.
 
                 i.remove();
+                asyncCall.callsPerHost().incrementAndGet();
                 executableCalls.add(asyncCall);
                 runningAsyncCalls.add(asyncCall);
             }
@@ -185,7 +200,7 @@ public final class Dispatcher {
         }
 
         for (int i = 0, size = executableCalls.size(); i < size; i++) {
-            AsyncCall asyncCall = executableCalls.get(i);
+            RealCall.AsyncCall asyncCall = executableCalls.get(i);
             asyncCall.executeOn(executorService());
         }
 
@@ -193,34 +208,33 @@ public final class Dispatcher {
     }
 
     /**
-     * @param call 回调信息
-     * @return 与{@code call}共享主机的运行调用的数量
+     * Used by {@code Call#execute} to signal it is in-flight.
      */
-    private int runningCallsForHost(AsyncCall call) {
-        int result = 0;
-        for (AsyncCall c : runningAsyncCalls) {
-            if (c.get().forWebSocket) continue;
-            if (c.host().equals(call.host())) result++;
-        }
-        return result;
-    }
-
     public synchronized void executed(RealCall call) {
         runningSyncCalls.add(call);
     }
 
-    public void finished(AsyncCall call) {
+    /**
+     * Used by {@code AsyncCall#run} to signal completion.
+     */
+    public void finished(RealCall.AsyncCall call) {
+        call.callsPerHost().decrementAndGet();
         finished(runningAsyncCalls, call);
     }
 
+    /**
+     * Used by {@code Call#execute} to signal completion.
+     */
     public void finished(RealCall call) {
         finished(runningSyncCalls, call);
     }
 
-    private <T> void finished(Deque<T> calls, T call) {
+    public <T> void finished(Deque<T> calls, T call) {
         Runnable idleCallback;
         synchronized (this) {
-            if (!calls.remove(call)) throw new AssertionError("Call wasn't in-flight!");
+            if (!calls.remove(call)) {
+                throw new AssertionError("Call wasn't in-flight!");
+            }
             idleCallback = this.idleCallback;
         }
 
@@ -231,18 +245,24 @@ public final class Dispatcher {
         }
     }
 
+    /**
+     * Returns a snapshot of the calls currently awaiting execution.
+     */
     public synchronized List<NewCall> queuedCalls() {
         List<NewCall> result = new ArrayList<>();
-        for (AsyncCall asyncCall : readyAsyncCalls) {
+        for (RealCall.AsyncCall asyncCall : readyAsyncCalls) {
             result.add(asyncCall.get());
         }
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * Returns a snapshot of the calls currently being executed.
+     */
     public synchronized List<NewCall> runningCalls() {
         List<NewCall> result = new ArrayList<>();
         result.addAll(runningSyncCalls);
-        for (AsyncCall asyncCall : runningAsyncCalls) {
+        for (RealCall.AsyncCall asyncCall : runningAsyncCalls) {
             result.add(asyncCall.get());
         }
         return Collections.unmodifiableList(result);

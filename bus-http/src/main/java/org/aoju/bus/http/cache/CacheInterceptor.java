@@ -28,17 +28,13 @@ package org.aoju.bus.http.cache;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.bodys.RealResponseBody;
-import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.Internal;
 import org.aoju.bus.http.metric.http.HttpCodec;
-import org.aoju.bus.http.metric.http.HttpHeaders;
-import org.aoju.bus.http.metric.http.HttpMethod;
-import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CacheInterceptor implements Interceptor {
+public class CacheInterceptor implements Interceptor {
 
     final InternalCache cache;
 
@@ -79,16 +75,17 @@ public final class CacheInterceptor implements Interceptor {
             if ("Warning".equalsIgnoreCase(fieldName) && value.startsWith(Symbol.ONE)) {
                 continue; // Drop 100-level freshness warnings.
             }
-            if (isContentSpecificHeader(fieldName) || !isEndToEnd(fieldName)
+            if (isContentSpecificHeader(fieldName)
+                    || !isEndToEnd(fieldName)
                     || null == networkHeaders.get(fieldName)) {
-                Builder.instance.addLenient(result, fieldName, value);
+                Internal.instance.addLenient(result, fieldName, value);
             }
         }
 
         for (int i = 0, size = networkHeaders.size(); i < size; i++) {
             String fieldName = networkHeaders.name(i);
             if (!isContentSpecificHeader(fieldName) && isEndToEnd(fieldName)) {
-                Builder.instance.addLenient(result, fieldName, networkHeaders.value(i));
+                Internal.instance.addLenient(result, fieldName, networkHeaders.value(i));
             }
         }
 
@@ -152,7 +149,7 @@ public final class CacheInterceptor implements Interceptor {
                     .protocol(Protocol.HTTP_1_1)
                     .code(504)
                     .message("Unsatisfiable Request (only-if-cached)")
-                    .body(ResponseBody.create(null, Normal.EMPTY_BYTE_ARRAY))
+                    .body(Builder.EMPTY_RESPONSE)
                     .sentRequestAtMillis(-1L)
                     .receivedResponseAtMillis(System.currentTimeMillis())
                     .build();
@@ -202,18 +199,17 @@ public final class CacheInterceptor implements Interceptor {
                 .build();
 
         if (null != cache) {
-            if (HttpHeaders.hasBody(response) && CacheStrategy.isCacheable(response, networkRequest)) {
+            if (Headers.hasBody(response) && CacheStrategy.isCacheable(response, networkRequest)) {
                 // 将此请求提供给缓存
                 CacheRequest cacheRequest = cache.put(response);
                 return cacheWritingResponse(cacheRequest, response);
             }
 
-            if (HttpMethod.invalidatesCache(networkRequest.method())) {
+            if (Http.invalidatesCache(networkRequest.method())) {
                 try {
                     cache.remove(networkRequest);
                 } catch (IOException ignored) {
                     // 无法写入缓存
-                    Logger.error(ignored);
                 }
             }
         }

@@ -32,11 +32,9 @@ import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Headers;
-import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.http.metric.NamedRunnable;
 import org.aoju.bus.logger.Logger;
@@ -46,6 +44,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -55,16 +54,33 @@ import java.util.concurrent.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Http2Connection implements Closeable {
+public class Http2Connection implements Closeable {
+
+    // Internal state of this connection is guarded by 'this'. No blocking
+    // operations may be performed while holding this lock!
+    //
+    // Socket writes are guarded by frameWriter.
+    //
+    // Socket reads are unguarded but are only made by the reader thread.
+    //
+    // Certain operations (like SYN_STREAM) need to synchronize on both the
+    // frameWriter (to do blocking I/O) and this (to create streams). Such
+    // operations must synchronize on 'this' last. This ensures that we never
+    // wait for a blocking operation while holding 'this'.
 
     static final int CLIENT_WINDOW_SIZE = Normal._16 * Normal._1024 * Normal._1024;
+
+    static final int INTERVAL_PING = 1;
+    static final int DEGRADED_PING = 2;
+    static final int AWAIT_PING = 3;
+    static final long DEGRADED_PONG_TIMEOUT_NS = 1_000_000_000L; // 1 second.
 
     /**
      * 共享执行程序来发送传入流的通知。这个执行器需要多个线程，因为侦听器不需要立即返回.
      */
     private static final ExecutorService listenerExecutor = new ThreadPoolExecutor(0,
             Integer.MAX_VALUE, 60, TimeUnit.SECONDS, new SynchronousQueue<>(),
-            org.aoju.bus.http.Builder.threadFactory("Httpd Http2Connection", true));
+            org.aoju.bus.http.Builder.threadFactory("Http Http2Connection", true));
 
     /**
      * 如果该对等点发起连接，则为True.
@@ -76,7 +92,7 @@ public final class Http2Connection implements Closeable {
      */
     final Listener listener;
     final Map<Integer, Http2Stream> streams = new LinkedHashMap<>();
-    final String hostname;
+    final String connectionName;
     /**
      * 为响应推送承诺事件而运行的用户代码
      */
@@ -100,7 +116,6 @@ public final class Http2Connection implements Closeable {
     private final ExecutorService pushExecutor;
     int lastGoodStreamId;
     int nextStreamId;
-    boolean shutdown;
     /**
      * 应用程序消耗的总字节数，但尚未通过在此连接上发送{@code WINDOW_UPDATE}帧来确认.
      */
@@ -110,39 +125,52 @@ public final class Http2Connection implements Closeable {
      */
     long bytesLeftInWriteWindow;
     /**
-     * 设置我们与对等点通信.
+     * 设置我们与对等点通信
      */
     Settings settings = new Settings();
+    private boolean shutdown;
+    // Total number of pings send and received of the corresponding types. All guarded by this.
+    private long intervalPingsSent = 0L;
+    private long intervalPongsReceived = 0L;
+    private long degradedPingsSent = 0L;
+    private long degradedPongsReceived = 0L;
+    private long awaitPingsSent = 0L;
+    private long awaitPongsReceived = 0L;
     /**
-     * 如果我们发送了一个仍在等待回复的ping，则为真.
+     * Consider this connection to be unhealthy if a degraded pong isn't received by this time.
      */
-    private boolean awaitingPong;
+    private long degradedPongDeadlineNs = 0L;
 
     Http2Connection(Builder builder) {
         pushObserver = builder.pushObserver;
         client = builder.client;
         listener = builder.listener;
+        // http://tools.ietf.org/html/draft-ietf-httpbis-http2-17#section-5.1.1
         nextStreamId = builder.client ? 1 : 2;
         if (builder.client) {
-            nextStreamId += 2;
+            nextStreamId += 2; // In HTTP/2, 1 on client is reserved for Upgrade.
         }
 
+        // Flow control was designed more for servers, or proxies than edge clients.
+        // If we are a client, set the flow control window to 16MiB.  This avoids
+        // thrashing window updates every 64KiB, yet small enough to avoid blowing
+        // up the heap.
         if (builder.client) {
             settings.set(Http.INITIAL_WINDOW_SIZE, CLIENT_WINDOW_SIZE);
         }
 
-        hostname = builder.hostname;
+        connectionName = builder.connectionName;
 
         writerExecutor = new ScheduledThreadPoolExecutor(1,
-                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Httpd %s Writer", hostname), false));
+                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Http %s Writer", connectionName), false));
         if (builder.pingIntervalMillis != 0) {
-            writerExecutor.scheduleAtFixedRate(new PingRunnable(false, 0, 0),
+            writerExecutor.scheduleAtFixedRate(new IntervalPingRunnable(),
                     builder.pingIntervalMillis, builder.pingIntervalMillis, TimeUnit.MILLISECONDS);
         }
 
-        pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Httpd %s Push Observer", hostname), true));
+        // Like newSingleThreadExecutor, except lazy creates the thread.
+        pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
+                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Http %s Push Observer", connectionName), true));
         peerSettings.set(Http.INITIAL_WINDOW_SIZE, Http.DEFAULT_INITIAL_WINDOW_SIZE);
         peerSettings.set(Http.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);
         bytesLeftInWriteWindow = peerSettings.getInitialWindowSize();
@@ -152,10 +180,9 @@ public final class Http2Connection implements Closeable {
         readerRunnable = new ReaderRunnable(new Http2Reader(builder.source, client));
     }
 
-    public Protocol getProtocol() {
-        return Protocol.HTTP_2;
-    }
-
+    /**
+     * Returns the number of {@link Http2Stream#isOpen() open streams} on this connection.
+     */
     public synchronized int openStreamCount() {
         return streams.size();
     }
@@ -191,18 +218,24 @@ public final class Http2Connection implements Closeable {
      * @return http请求流
      * @throws IOException 异常
      */
-    public Http2Stream pushStream(int associatedStreamId, List<HttpHeaders> requestHeaders, boolean out)
+    public Http2Stream pushStream(int associatedStreamId, List<Headers.Header> requestHeaders, boolean out)
             throws IOException {
         if (client) throw new IllegalStateException("Client cannot push requests.");
         return newStream(associatedStreamId, requestHeaders, out);
     }
 
-    public Http2Stream newStream(List<HttpHeaders> requestHeaders, boolean out) throws IOException {
+    /**
+     * Returns a new locally-initiated stream.
+     *
+     * @param out true to create an output stream that we can use to send data to the remote peer.
+     *            Corresponds to {@code FLAG_FIN}.
+     */
+    public Http2Stream newStream(List<Headers.Header> requestHeaders, boolean out) throws IOException {
         return newStream(0, requestHeaders, out);
     }
 
     private Http2Stream newStream(
-            int associatedStreamId, List<HttpHeaders> requestHeaders, boolean out) throws IOException {
+            int associatedStreamId, List<Headers.Header> requestHeaders, boolean out) throws IOException {
         boolean outFinished = !out;
         boolean inFinished = false;
         boolean flushHeaders;
@@ -226,7 +259,7 @@ public final class Http2Connection implements Closeable {
                 }
             }
             if (associatedStreamId == 0) {
-                writer.synStream(outFinished, streamId, associatedStreamId, requestHeaders);
+                writer.headers(outFinished, streamId, requestHeaders);
             } else if (client) {
                 throw new IllegalArgumentException("client streams shouldn't have associated stream IDs");
             } else {
@@ -241,9 +274,9 @@ public final class Http2Connection implements Closeable {
         return stream;
     }
 
-    void writeSynReply(int streamId, boolean outFinished, List<HttpHeaders> alternating)
+    void writeHeaders(int streamId, boolean outFinished, List<Headers.Header> alternating)
             throws IOException {
-        writer.synReply(outFinished, streamId, alternating);
+        writer.headers(outFinished, streamId, alternating);
     }
 
     /**
@@ -293,18 +326,18 @@ public final class Http2Connection implements Closeable {
 
     void writeSynResetLater(final int streamId, final ErrorCode errorCode) {
         try {
-            writerExecutor.execute(new NamedRunnable("Httpd %s stream %d", hostname, streamId) {
+            writerExecutor.execute(new NamedRunnable("Http %s stream %d", connectionName, streamId) {
                 @Override
                 public void execute() {
                     try {
                         writeSynReset(streamId, errorCode);
                     } catch (IOException e) {
-                        failConnection();
+                        failConnection(e);
                     }
                 }
             });
         } catch (RejectedExecutionException ignored) {
-            Logger.warn(Symbol.DELIM, ignored);
+            // This connection has been closed.
         }
     }
 
@@ -315,48 +348,52 @@ public final class Http2Connection implements Closeable {
     void writeWindowUpdateLater(final int streamId, final long unacknowledgedBytesRead) {
         try {
             writerExecutor.execute(
-                    new NamedRunnable("Httpd Window Update %s stream %d", hostname, streamId) {
+                    new NamedRunnable("Http Window Update %s stream %d", connectionName, streamId) {
                         @Override
                         public void execute() {
                             try {
                                 writer.windowUpdate(streamId, unacknowledgedBytesRead);
                             } catch (IOException e) {
-                                failConnection();
+                                failConnection(e);
                             }
                         }
                     });
         } catch (RejectedExecutionException ignored) {
-            Logger.warn(Symbol.DELIM, ignored);
+            // This connection has been closed.
         }
     }
 
     void writePing(boolean reply, int payload1, int payload2) {
-        if (!reply) {
-            boolean failedDueToMissingPong;
-            synchronized (this) {
-                failedDueToMissingPong = awaitingPong;
-                awaitingPong = true;
-            }
-            if (failedDueToMissingPong) {
-                failConnection();
-                return;
-            }
-        }
-
         try {
             writer.ping(reply, payload1, payload2);
         } catch (IOException e) {
-            failConnection();
+            failConnection(e);
         }
     }
 
+    /**
+     * For testing: sends a ping and waits for a pong.
+     */
     void writePingAndAwaitPong() throws InterruptedException {
-        writePing(false, 0x4f4b6f6b, 0xf09f8da9);
+        writePing();
         awaitPong();
     }
 
+    /**
+     * For testing: sends a ping to be awaited with {@link #awaitPong}.
+     */
+    void writePing() {
+        synchronized (this) {
+            awaitPingsSent++;
+        }
+        writePing(false, AWAIT_PING, 0x4f4b6f6b /* "OKok" */);
+    }
+
+    /**
+     * For testing: awaits a pong.
+     */
     synchronized void awaitPong() throws InterruptedException {
-        while (awaitingPong) {
+        while (awaitPongsReceived < awaitPingsSent) {
             wait();
         }
     }
@@ -365,6 +402,11 @@ public final class Http2Connection implements Closeable {
         writer.flush();
     }
 
+    /**
+     * Degrades this connection such that new streams can neither be created locally, nor accepted
+     * from the remote peer. Existing streams are not impacted. This is intended to permit an endpoint
+     * to gracefully stop accepting new requests without harming previously established streams.
+     */
     public void shutdown(ErrorCode statusCode) throws IOException {
         synchronized (writer) {
             int lastGoodStreamId;
@@ -375,22 +417,24 @@ public final class Http2Connection implements Closeable {
                 shutdown = true;
                 lastGoodStreamId = this.lastGoodStreamId;
             }
-            writer.goAway(lastGoodStreamId, statusCode, Normal.EMPTY_BYTE_ARRAY);
+            writer.goAway(lastGoodStreamId, statusCode, org.aoju.bus.http.Builder.EMPTY_BYTE_ARRAY);
         }
     }
 
+    /**
+     * Closes this connection. This cancels all open streams and unanswered pings. It closes the
+     * underlying input and output streams and shuts down internal executor services.
+     */
     @Override
-    public void close() throws IOException {
-        close(ErrorCode.NO_ERROR, ErrorCode.CANCEL);
+    public void close() {
+        close(ErrorCode.NO_ERROR, ErrorCode.CANCEL, null);
     }
 
-    void close(ErrorCode connectionCode, ErrorCode streamCode) throws IOException {
+    void close(ErrorCode connectionCode, ErrorCode streamCode, IOException cause) {
         assert (!Thread.holdsLock(this));
-        IOException thrown = null;
         try {
             shutdown(connectionCode);
-        } catch (IOException e) {
-            thrown = e;
+        } catch (IOException ignored) {
         }
 
         Http2Stream[] streamsToClose = null;
@@ -401,47 +445,47 @@ public final class Http2Connection implements Closeable {
             }
         }
 
-        if (null != streamsToClose) {
+        if (streamsToClose != null) {
             for (Http2Stream stream : streamsToClose) {
                 try {
-                    stream.close(streamCode);
-                } catch (IOException e) {
-                    if (null != thrown) thrown = e;
+                    stream.close(streamCode, cause);
+                } catch (IOException ignored) {
                 }
             }
         }
 
+        // Close the writer to release its resources (such as deflaters).
         try {
             writer.close();
-        } catch (IOException e) {
-            if (null == thrown) thrown = e;
-        }
-
-        try {
-            socket.close();
-        } catch (IOException e) {
-            thrown = e;
-        }
-
-        writerExecutor.shutdown();
-        pushExecutor.shutdown();
-
-        if (null != thrown) throw thrown;
-    }
-
-    private void failConnection() {
-        try {
-            close(ErrorCode.PROTOCOL_ERROR, ErrorCode.PROTOCOL_ERROR);
         } catch (IOException ignored) {
         }
+
+        // Close the socket to break out the reader thread, which will clean up after itself.
+        try {
+            socket.close();
+        } catch (IOException ignored) {
+        }
+
+        // Release the threads.
+        writerExecutor.shutdown();
+        pushExecutor.shutdown();
     }
 
+    private void failConnection(IOException e) {
+        close(ErrorCode.PROTOCOL_ERROR, ErrorCode.PROTOCOL_ERROR, e);
+    }
+
+    /**
+     * Sends any initial frames and starts reading frames from the remote peer. This should be called
+     * after {@link Builder#build} for all new connections.
+     */
     public void start() throws IOException {
         start(true);
     }
 
     /**
-     * @param sendConnectionPreface 真正发送连接序言帧。这应该总是正确的，除了在不检查连接序言的测试中.
+     * @param sendConnectionPreface true to send connection preface frames. This should always be true
+     *                              except for in tests that don't check for a connection preface.
      */
     void start(boolean sendConnectionPreface) throws IOException {
         if (sendConnectionPreface) {
@@ -452,9 +496,12 @@ public final class Http2Connection implements Closeable {
                 writer.windowUpdate(0, windowSize - Http.DEFAULT_INITIAL_WINDOW_SIZE);
             }
         }
-        new Thread(readerRunnable).start();
+        new Thread(readerRunnable).start(); // Not a daemon thread.
     }
 
+    /**
+     * Merges {@code settings} into this peer's settings and sends them to the remote peer.
+     */
     public void setSettings(Settings settings) throws IOException {
         synchronized (writer) {
             synchronized (this) {
@@ -467,15 +514,56 @@ public final class Http2Connection implements Closeable {
         }
     }
 
-    public synchronized boolean isShutdown() {
-        return shutdown;
+    public synchronized boolean isHealthy(long nowNs) {
+        if (shutdown) return false;
+
+        // A degraded pong is overdue.
+        if (degradedPongsReceived < degradedPingsSent && nowNs >= degradedPongDeadlineNs) return false;
+
+        return true;
     }
 
+    /**
+     * HTTP/2 can have both stream timeouts (due to a problem with a single stream) and connection
+     * timeouts (due to a problem with the transport). When a stream times out we don't know whether
+     * the problem impacts just one stream or the entire connection.
+     * <p>
+     * To differentiate the two cases we ping the server when a stream times out. If the overall
+     * connection is fine the ping will receive a pong; otherwise it won't.
+     * <p>
+     * The deadline to respond to this ping attempts to limit the cost of being wrong. If it is too
+     * long, streams created while we await the pong will reuse broken connections and inevitably
+     * fail. If it is too short, slow connections will be marked as failed and extra TCP and TLS
+     * handshakes will be required.
+     * <p>
+     * The deadline is currently hardcoded. We may make this configurable in the future!
+     */
+    void sendDegradedPingLater() {
+        synchronized (this) {
+            if (degradedPongsReceived < degradedPingsSent) return; // Already awaiting a degraded pong.
+            degradedPingsSent++;
+            degradedPongDeadlineNs = System.nanoTime() + DEGRADED_PONG_TIMEOUT_NS;
+        }
+        try {
+            writerExecutor.execute(new NamedRunnable("Http %s ping", connectionName) {
+                @Override
+                public void execute() {
+                    writePing(false, DEGRADED_PING, 0);
+                }
+            });
+        } catch (RejectedExecutionException ignored) {
+            // This connection has been closed.
+        }
+    }
+
+    /**
+     * Even, positive numbered streams are pushed streams in HTTP/2.
+     */
     boolean pushedStream(int streamId) {
         return streamId != 0 && (streamId & 1) == 0;
     }
 
-    void pushRequestLater(final int streamId, final List<HttpHeaders> requestHeaders) {
+    void pushRequestLater(final int streamId, final List<Headers.Header> requestHeaders) {
         synchronized (this) {
             if (currentPushRequests.contains(streamId)) {
                 writeSynResetLater(streamId, ErrorCode.PROTOCOL_ERROR);
@@ -484,7 +572,8 @@ public final class Http2Connection implements Closeable {
             currentPushRequests.add(streamId);
         }
         try {
-            pushExecutorExecute(new NamedRunnable("Httpd %s Push Request[%s]", hostname, streamId) {
+            pushExecutorExecute(new NamedRunnable(
+                    "Http %s Push Request[%s]", connectionName, streamId) {
                 @Override
                 public void execute() {
                     boolean cancel = pushObserver.onRequest(streamId, requestHeaders);
@@ -500,14 +589,15 @@ public final class Http2Connection implements Closeable {
                 }
             });
         } catch (RejectedExecutionException ignored) {
-            Logger.warn(Symbol.DELIM, ignored);
+            // This connection has been closed.
         }
     }
 
-    void pushHeadersLater(final int streamId, final List<HttpHeaders> requestHeaders,
+    void pushHeadersLater(final int streamId, final List<Headers.Header> requestHeaders,
                           final boolean inFinished) {
         try {
-            pushExecutorExecute(new NamedRunnable("Httpd %s Push Headers[%s]", hostname, streamId) {
+            pushExecutorExecute(new NamedRunnable(
+                    "Http %s Push Headers[%s]", connectionName, streamId) {
                 @Override
                 public void execute() {
                     boolean cancel = pushObserver.onHeaders(streamId, requestHeaders, inFinished);
@@ -523,17 +613,21 @@ public final class Http2Connection implements Closeable {
                 }
             });
         } catch (RejectedExecutionException ignored) {
-            Logger.warn(Symbol.DELIM, ignored);
+            // This connection has been closed.
         }
     }
 
+    /**
+     * Eagerly reads {@code byteCount} bytes from the source before launching a background task to
+     * process the data.  This avoids corrupting the stream.
+     */
     void pushDataLater(final int streamId, final BufferSource source, final int byteCount,
                        final boolean inFinished) throws IOException {
         final Buffer buffer = new Buffer();
-        source.require(byteCount);
+        source.require(byteCount); // Eagerly read the frame before firing client thread.
         source.read(buffer, byteCount);
         if (buffer.size() != byteCount) throw new IOException(buffer.size() + " != " + byteCount);
-        pushExecutorExecute(new NamedRunnable("Httpd %s Push Data[%s]", hostname, streamId) {
+        pushExecutorExecute(new NamedRunnable("Http %s Push Data[%s]", connectionName, streamId) {
             @Override
             public void execute() {
                 try {
@@ -551,7 +645,7 @@ public final class Http2Connection implements Closeable {
     }
 
     void pushResetLater(final int streamId, final ErrorCode errorCode) {
-        pushExecutorExecute(new NamedRunnable("Httpd %s Push Reset[%s]", hostname, streamId) {
+        pushExecutorExecute(new NamedRunnable("Http %s Push Reset[%s]", connectionName, streamId) {
             @Override
             public void execute() {
                 pushObserver.onReset(streamId, errorCode);
@@ -563,14 +657,14 @@ public final class Http2Connection implements Closeable {
     }
 
     private synchronized void pushExecutorExecute(NamedRunnable namedRunnable) {
-        if (!isShutdown()) {
+        if (!shutdown) {
             pushExecutor.execute(namedRunnable);
         }
     }
 
     public static class Builder {
         Socket socket;
-        String hostname;
+        String connectionName;
         BufferSource source;
         BufferSink sink;
         Listener listener = Listener.REFUSE_INCOMING_STREAMS;
@@ -579,21 +673,26 @@ public final class Http2Connection implements Closeable {
         int pingIntervalMillis;
 
         /**
-         * @param client 如果该对等方发起连接，则为;如果该对等点接受了连接，则为false.
+         * @param client true if this peer initiated the connection; false if this peer accepted the
+         *               connection.
          */
         public Builder(boolean client) {
             this.client = client;
         }
 
         public Builder socket(Socket socket) throws IOException {
-            return socket(socket, ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostName(),
+            SocketAddress remoteSocketAddress = socket.getRemoteSocketAddress();
+            String connectionName = remoteSocketAddress instanceof InetSocketAddress
+                    ? ((InetSocketAddress) remoteSocketAddress).getHostName()
+                    : remoteSocketAddress.toString();
+            return socket(socket, connectionName,
                     IoKit.buffer(IoKit.source(socket)), IoKit.buffer(IoKit.sink(socket)));
         }
 
         public Builder socket(
-                Socket socket, String hostname, BufferSource source, BufferSink sink) {
+                Socket socket, String connectionName, BufferSource source, BufferSink sink) {
             this.socket = socket;
-            this.hostname = hostname;
+            this.connectionName = connectionName;
             this.source = source;
             this.sink = sink;
             return this;
@@ -620,43 +719,43 @@ public final class Http2Connection implements Closeable {
     }
 
     /**
-     * 侦听由对等方发起的流和设置.
+     * Listener of streams and settings initiated by the peer.
      */
     public abstract static class Listener {
+
         public static final Listener REFUSE_INCOMING_STREAMS = new Listener() {
             @Override
             public void onStream(Http2Stream stream) throws IOException {
-                stream.close(ErrorCode.REFUSED_STREAM);
+                stream.close(ErrorCode.REFUSED_STREAM, null);
             }
         };
 
         /**
-         * 处理来自此连接的对等点的新流。实现应该通过{@linkplain Http2Stream#writeHeaders 响应流}或
-         * {@linkplain Http2Stream#close closing it}。这个响应不需要是同步的
-         *
-         * @param stream 响应流
-         * @throws IOException 异常
+         * Handle a new stream from this connection's peer. Implementations should respond by either
+         * {@linkplain Http2Stream#writeHeaders replying to the stream} or {@linkplain
+         * Http2Stream#close closing it}. This response does not need to be synchronous.
          */
         public abstract void onStream(Http2Stream stream) throws IOException;
 
         /**
-         * 通知连接的对等点的设置可能已更改。实现应该采取适当的操作来处理更新的设置
-         * 处理对该方法的并发调用是实现的职责。发送多个设置帧的远程对等点将触发对该
-         * 方法的多个调用，而这些调用不一定是序列化的
-         *
-         * @param connection 连接信息
+         * Notification that the connection's peer's settings may have changed. Implementations should
+         * take appropriate action to handle the updated settings.
+         * <p>
+         * It is the implementation's responsibility to handle concurrent calls to this method. A
+         * remote peer that sends multiple settings frames will trigger multiple calls to this method,
+         * and those calls are not necessarily serialized.
          */
         public void onSettings(Http2Connection connection) {
         }
     }
 
-    final class PingRunnable extends NamedRunnable {
+    class PingRunnable extends NamedRunnable {
         final boolean reply;
         final int payload1;
         final int payload2;
 
         PingRunnable(boolean reply, int payload1, int payload2) {
-            super("Httpd %s ping %08x%08x", hostname, payload1, payload2);
+            super("Http %s ping %08x%08x", connectionName, payload1, payload2);
             this.reply = reply;
             this.payload1 = payload1;
             this.payload2 = payload2;
@@ -668,14 +767,39 @@ public final class Http2Connection implements Closeable {
         }
     }
 
+    class IntervalPingRunnable extends NamedRunnable {
+        IntervalPingRunnable() {
+            super("Http %s ping", connectionName);
+        }
+
+        @Override
+        public void execute() {
+            boolean failDueToMissingPong;
+            synchronized (Http2Connection.this) {
+                if (intervalPongsReceived < intervalPingsSent) {
+                    failDueToMissingPong = true;
+                } else {
+                    intervalPingsSent++;
+                    failDueToMissingPong = false;
+                }
+            }
+            if (failDueToMissingPong) {
+                failConnection(null);
+            } else {
+                writePing(false, INTERVAL_PING, 0);
+            }
+        }
+    }
+
     /**
-     * 该类中的方法不能锁定FrameWriter。如果一个方法需要写一个框架，创建一个异步任务来完成
+     * Methods in this class must not lock FrameWriter.  If a method needs to write a frame, create an
+     * async task to do so.
      */
     class ReaderRunnable extends NamedRunnable implements Http2Reader.Handler {
         final Http2Reader reader;
 
         ReaderRunnable(Http2Reader reader) {
-            super("Httpd %s", hostname);
+            super("Http %s", connectionName);
             this.reader = reader;
         }
 
@@ -683,6 +807,7 @@ public final class Http2Connection implements Closeable {
         protected void execute() {
             ErrorCode connectionErrorCode = ErrorCode.INTERNAL_ERROR;
             ErrorCode streamErrorCode = ErrorCode.INTERNAL_ERROR;
+            IOException errorException = null;
             try {
                 reader.readConnectionPreface(this);
                 while (reader.nextFrame(false, this)) {
@@ -690,13 +815,11 @@ public final class Http2Connection implements Closeable {
                 connectionErrorCode = ErrorCode.NO_ERROR;
                 streamErrorCode = ErrorCode.CANCEL;
             } catch (IOException e) {
+                errorException = e;
                 connectionErrorCode = ErrorCode.PROTOCOL_ERROR;
                 streamErrorCode = ErrorCode.PROTOCOL_ERROR;
             } finally {
-                try {
-                    close(connectionErrorCode, streamErrorCode);
-                } catch (IOException ignored) {
-                }
+                close(connectionErrorCode, streamErrorCode, errorException);
                 IoKit.close(reader);
             }
         }
@@ -709,7 +832,7 @@ public final class Http2Connection implements Closeable {
                 return;
             }
             Http2Stream dataStream = getStream(streamId);
-            if (null == dataStream) {
+            if (dataStream == null) {
                 writeSynResetLater(streamId, ErrorCode.PROTOCOL_ERROR);
                 updateConnectionFlowControl(length);
                 source.skip(length);
@@ -717,42 +840,47 @@ public final class Http2Connection implements Closeable {
             }
             dataStream.receiveData(source, length);
             if (inFinished) {
-                dataStream.receiveFin();
+                dataStream.receiveHeaders(org.aoju.bus.http.Builder.EMPTY_HEADERS, true);
             }
         }
 
         @Override
         public void headers(boolean inFinished, int streamId, int associatedStreamId,
-                            List<HttpHeaders> headersBlock) {
+                            List<Headers.Header> headerBlock) {
             if (pushedStream(streamId)) {
-                pushHeadersLater(streamId, headersBlock, inFinished);
+                pushHeadersLater(streamId, headerBlock, inFinished);
                 return;
             }
             Http2Stream stream;
             synchronized (Http2Connection.this) {
                 stream = getStream(streamId);
 
-                if (null == stream) {
+                if (stream == null) {
+                    // If we're shutdown, don't bother with this stream.
                     if (shutdown) return;
 
+                    // If the stream ID is less than the last created ID, assume it's already closed.
                     if (streamId <= lastGoodStreamId) return;
 
+                    // If the stream ID is in the client's namespace, assume it's already closed.
                     if (streamId % 2 == nextStreamId % 2) return;
 
-                    Headers headers = org.aoju.bus.http.Builder.toHeaders(headersBlock);
+                    // Create a stream.
+                    Headers headers = org.aoju.bus.http.Builder.toHeaders(headerBlock);
                     final Http2Stream newStream = new Http2Stream(streamId, Http2Connection.this,
                             false, inFinished, headers);
                     lastGoodStreamId = streamId;
                     streams.put(streamId, newStream);
-                    listenerExecutor.execute(new NamedRunnable("Httpd %s stream %d", hostname, streamId) {
+                    listenerExecutor.execute(new NamedRunnable(
+                            "Http %s stream %d", connectionName, streamId) {
                         @Override
                         public void execute() {
                             try {
                                 listener.onStream(newStream);
                             } catch (IOException e) {
-                                Logger.info("Http2Connection.Listener failure for " + hostname, e);
+                                Logger.info("Http2Connection.Listener failure for " + connectionName, e);
                                 try {
-                                    newStream.close(ErrorCode.PROTOCOL_ERROR);
+                                    newStream.close(ErrorCode.PROTOCOL_ERROR, e);
                                 } catch (IOException ignored) {
                                 }
                             }
@@ -762,8 +890,8 @@ public final class Http2Connection implements Closeable {
                 }
             }
 
-            stream.receiveHeaders(headersBlock);
-            if (inFinished) stream.receiveFin();
+            // Update an existing stream.
+            stream.receiveHeaders(org.aoju.bus.http.Builder.toHeaders(headerBlock), inFinished);
         }
 
         @Override
@@ -773,23 +901,22 @@ public final class Http2Connection implements Closeable {
                 return;
             }
             Http2Stream rstStream = removeStream(streamId);
-            if (null != rstStream) {
+            if (rstStream != null) {
                 rstStream.receiveRstStream(errorCode);
             }
         }
 
         @Override
-        public void settings(final boolean clearPrevious, final Settings settings) {
+        public void settings(boolean clearPrevious, Settings settings) {
             try {
-                writerExecutor.execute(new NamedRunnable("Httpd %s ACK Settings", hostname) {
+                writerExecutor.execute(new NamedRunnable("Http %s ACK Settings", connectionName) {
                     @Override
                     public void execute() {
                         applyAndAckSettings(clearPrevious, settings);
                     }
                 });
             } catch (RejectedExecutionException ignored) {
-                // 此连接已关闭
-                Logger.warn(Symbol.DELIM, ignored);
+                // This connection has been closed.
             }
         }
 
@@ -812,17 +939,17 @@ public final class Http2Connection implements Closeable {
                 try {
                     writer.applyAndAckSettings(peerSettings);
                 } catch (IOException e) {
-                    failConnection();
+                    failConnection(e);
                 }
             }
-            if (null != streamsToNotify) {
+            if (streamsToNotify != null) {
                 for (Http2Stream stream : streamsToNotify) {
                     synchronized (stream) {
                         stream.addBytesToWriteWindow(delta);
                     }
                 }
             }
-            listenerExecutor.execute(new NamedRunnable("Httpd %s settings", hostname) {
+            listenerExecutor.execute(new NamedRunnable("Http %s settings", connectionName) {
                 @Override
                 public void execute() {
                     listener.onSettings(Http2Connection.this);
@@ -839,22 +966,31 @@ public final class Http2Connection implements Closeable {
         public void ping(boolean reply, int payload1, int payload2) {
             if (reply) {
                 synchronized (Http2Connection.this) {
-                    awaitingPong = false;
-                    Http2Connection.this.notifyAll();
+                    if (payload1 == INTERVAL_PING) {
+                        intervalPongsReceived++;
+                    } else if (payload1 == DEGRADED_PING) {
+                        degradedPongsReceived++;
+                    } else if (payload1 == AWAIT_PING) {
+                        awaitPongsReceived++;
+                        Http2Connection.this.notifyAll();
+                    }
                 }
             } else {
                 try {
-                    // 如果这是服务器，则向客户机ping发送应答
+                    // Send a reply to a client ping if this is a server and vice versa.
                     writerExecutor.execute(new PingRunnable(true, payload1, payload2));
                 } catch (RejectedExecutionException ignored) {
-                    // 此连接已关闭
-                    Logger.warn(Symbol.DELIM, ignored);
+                    // This connection has been closed.
                 }
             }
         }
 
         @Override
         public void goAway(int lastGoodStreamId, ErrorCode errorCode, ByteString debugData) {
+            if (debugData.size() > 0) { // TODO: log the debugData
+            }
+
+            // Copy the streams first. We don't want to hold a lock when we call receiveRstStream().
             Http2Stream[] streamsCopy;
             synchronized (Http2Connection.this) {
                 streamsCopy = streams.values().toArray(new Http2Stream[streams.size()]);
@@ -892,7 +1028,7 @@ public final class Http2Connection implements Closeable {
         }
 
         @Override
-        public void pushPromise(int streamId, int promisedStreamId, List<HttpHeaders> requestHeaders) {
+        public void pushPromise(int streamId, int promisedStreamId, List<Headers.Header> requestHeaders) {
             pushRequestLater(promisedStreamId, requestHeaders);
         }
 

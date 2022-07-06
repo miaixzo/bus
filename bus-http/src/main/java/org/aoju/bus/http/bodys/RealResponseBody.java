@@ -34,10 +34,11 @@ import org.aoju.bus.core.lang.MediaType;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RealResponseBody extends ResponseBody {
+public class RealResponseBody extends ResponseBody {
 
     /**
-     * 使用字符串避免在需要时才解析内容类型。这也避免了由格式不正确的内容类型引起的问题.
+     * 使用字符串避免在需要时才解析内容类型
+     * 这也避免了由格式不正确的内容类型引起的问题
      */
     private final String contentTypeString;
     private final long contentLength;

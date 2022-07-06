@@ -27,7 +27,7 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.http.socket.CoverWebSocket;
+import org.aoju.bus.http.plugin.httpv.CoverCall;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
@@ -46,16 +46,16 @@ public class Stomp {
     private static final String TOPIC = "/topic";
     private static final String QUEUE = "/queue";
     private final boolean autoAck;
-    private final CoverWebSocket.Client cover;
+    private final CoverCall.Client cover;
     private final Map<String, Subscriber> subscribers;
     private boolean connected;
-    private CoverWebSocket websocket;
+    private CoverCall websocket;
     private boolean legacyWhitespace = false;
-    private OnBack<Stomp> onConnected;
-    private OnBack<CoverWebSocket.Close> onDisconnected;
-    private OnBack<Message> onError;
+    private Callback<Stomp> onConnected;
+    private Callback<CoverCall.Close> onDisconnected;
+    private Callback<Message> onError;
 
-    private Stomp(CoverWebSocket.Client cover, boolean autoAck) {
+    private Stomp(CoverCall.Client cover, boolean autoAck) {
         this.cover = cover;
         this.autoAck = autoAck;
         this.subscribers = new HashMap<>();
@@ -67,7 +67,7 @@ public class Stomp {
      * @param task 底层的 WebSocket 连接
      * @return Stomp
      */
-    public static Stomp over(CoverWebSocket.Client task) {
+    public static Stomp over(CoverCall.Client task) {
         return over(task, true);
     }
 
@@ -78,7 +78,7 @@ public class Stomp {
      * @param autoAck 是否自动确定消息
      * @return Stomp
      */
-    public static Stomp over(CoverWebSocket.Client task, boolean autoAck) {
+    public static Stomp over(CoverCall.Client task, boolean autoAck) {
         return new Stomp(task, autoAck);
     }
 
@@ -138,7 +138,7 @@ public class Stomp {
      * @param onConnected 连接成功回调
      * @return Stomp
      */
-    public Stomp setOnConnected(OnBack<Stomp> onConnected) {
+    public Stomp setOnConnected(Callback<Stomp> onConnected) {
         this.onConnected = onConnected;
         return this;
     }
@@ -149,7 +149,7 @@ public class Stomp {
      * @param onDisconnected 断开连接回调
      * @return Stomp
      */
-    public Stomp setOnDisconnected(OnBack<CoverWebSocket.Close> onDisconnected) {
+    public Stomp setOnDisconnected(Callback<CoverCall.Close> onDisconnected) {
         this.onDisconnected = onDisconnected;
         return this;
     }
@@ -160,7 +160,7 @@ public class Stomp {
      * @param onError 错误回调
      * @return Stomp
      */
-    public Stomp setOnError(OnBack<Message> onError) {
+    public Stomp setOnError(Callback<Message> onError) {
         this.onError = onError;
         return this;
     }
@@ -196,7 +196,7 @@ public class Stomp {
      * @param callback    消息回调
      * @return Stomp
      */
-    public Stomp topic(String destination, OnBack<Message> callback) {
+    public Stomp topic(String destination, Callback<Message> callback) {
         return topic(destination, null, callback);
     }
 
@@ -208,7 +208,7 @@ public class Stomp {
      * @param callback    消息回调
      * @return Stomp
      */
-    public Stomp topic(String destination, List<Header> headers, OnBack<Message> callback) {
+    public Stomp topic(String destination, List<Header> headers, Callback<Message> callback) {
         return subscribe(TOPIC + destination, headers, callback);
     }
 
@@ -219,7 +219,7 @@ public class Stomp {
      * @param callback    消息回调
      * @return Stomp
      */
-    public Stomp queue(String destination, OnBack<Message> callback) {
+    public Stomp queue(String destination, Callback<Message> callback) {
         return queue(destination, null, callback);
     }
 
@@ -231,7 +231,7 @@ public class Stomp {
      * @param callback    消息回调
      * @return Stomp
      */
-    public Stomp queue(String destination, List<Header> headers, OnBack<Message> callback) {
+    public Stomp queue(String destination, List<Header> headers, Callback<Message> callback) {
         return subscribe(QUEUE + destination, headers, callback);
     }
 
@@ -243,7 +243,7 @@ public class Stomp {
      * @param callback    消息回调
      * @return Stomp
      */
-    public synchronized Stomp subscribe(String destination, List<Header> headers, OnBack<Message> callback) {
+    public synchronized Stomp subscribe(String destination, List<Header> headers, Callback<Message> callback) {
         if (subscribers.containsKey(destination)) {
             Logger.error("Attempted to subscribe to already-subscribed path!");
             return this;
@@ -478,11 +478,11 @@ public class Stomp {
 
         private final String id;
         private final String destination;
-        private final OnBack<Message> callback;
+        private final Callback<Message> callback;
         private final List<Header> headers;
         private boolean subscribed;
 
-        Subscriber(String id, String destination, OnBack<Message> callback, List<Header> headers) {
+        Subscriber(String id, String destination, Callback<Message> callback, List<Header> headers) {
             this.id = id;
             this.destination = destination;
             this.callback = callback;

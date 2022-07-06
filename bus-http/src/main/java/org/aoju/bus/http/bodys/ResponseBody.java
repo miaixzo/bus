@@ -148,6 +148,10 @@ public abstract class ResponseBody implements Closeable {
 
     public abstract MediaType contentType();
 
+    /**
+     * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream}, or
+     * -1 if unknown.
+     */
     public abstract long contentLength();
 
     public final InputStream byteStream() {
@@ -156,37 +160,68 @@ public abstract class ResponseBody implements Closeable {
 
     public abstract BufferSource source();
 
+    /**
+     * Returns the response as a byte array.
+     * <p>
+     * This method loads entire response body into memory. If the response body is very large this
+     * may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
+     * possibility for your response.
+     */
     public final byte[] bytes() throws IOException {
         long contentLength = contentLength();
         if (contentLength > Integer.MAX_VALUE) {
             throw new IOException("Cannot buffer entire body for content length: " + contentLength);
         }
 
-        BufferSource source = source();
         byte[] bytes;
-        try {
+        try (BufferSource source = source()) {
             bytes = source.readByteArray();
-        } finally {
-            IoKit.close(source);
         }
         if (contentLength != -1 && contentLength != bytes.length) {
-            throw new IOException("Content-Length (" + contentLength + ") and stream length (" + bytes.length + ") disagree");
+            throw new IOException("Content-Length ("
+                    + contentLength
+                    + ") and stream length ("
+                    + bytes.length
+                    + ") disagree");
         }
         return bytes;
     }
 
+    /**
+     * Returns the response as a character stream.
+     * <p>
+     * If the response starts with a <a href="https://en.wikipedia.org/wiki/Byte_order_mark">Byte
+     * Order Mark (BOM)</a>, it is consumed and used to determine the charset of the response bytes.
+     * <p>
+     * Otherwise if the response has a Content-Type header that specifies a charset, that is used
+     * to determine the charset of the response bytes.
+     * <p>
+     * Otherwise the response bytes are decoded as UTF-8.
+     */
     public final Reader charStream() {
         Reader r = reader;
         return null != r ? r : (reader = new BomAwareReader(source(), charset()));
     }
 
+    /**
+     * Returns the response as a string.
+     * <p>
+     * If the response starts with a <a href="https://en.wikipedia.org/wiki/Byte_order_mark">Byte
+     * Order Mark (BOM)</a>, it is consumed and used to determine the charset of the response bytes.
+     * <p>
+     * Otherwise if the response has a Content-Type header that specifies a charset, that is used
+     * to determine the charset of the response bytes.
+     * <p>
+     * Otherwise the response bytes are decoded as UTF-8.
+     * <p>
+     * This method loads entire response body into memory. If the response body is very large this
+     * may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
+     * possibility for your response.
+     */
     public final String string() throws IOException {
-        BufferSource source = source();
-        try {
+        try (BufferSource source = source()) {
             java.nio.charset.Charset charset = Builder.bomAwareCharset(source, charset());
             return source.readString(charset);
-        } finally {
-            IoKit.close(source);
         }
     }
 
@@ -200,7 +235,7 @@ public abstract class ResponseBody implements Closeable {
         IoKit.close(source());
     }
 
-    static final class BomAwareReader extends Reader {
+    static class BomAwareReader extends Reader {
         private final BufferSource source;
         private final java.nio.charset.Charset charset;
 

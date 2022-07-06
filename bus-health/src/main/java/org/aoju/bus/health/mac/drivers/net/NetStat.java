@@ -33,6 +33,7 @@ import com.sun.jna.platform.mac.SystemB.IFmsgHdr2;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.logger.Logger;
 
 import java.util.HashMap;
@@ -66,42 +67,45 @@ public final class NetStat {
         Map<Integer, IFdata> data = new HashMap<>();
         // Get buffer of all interface information
         int[] mib = {CTL_NET, PF_ROUTE, 0, 0, NET_RT_IFLIST2, 0};
-        size_t.ByReference len = new size_t.ByReference();
-        if (0 != SystemB.INSTANCE.sysctl(mib, 6, null, len, null, size_t.ZERO)) {
-            Logger.error("Didn't get buffer length for IFLIST2");
-            return data;
-        }
-        Memory buf = new Memory(len.longValue());
-        if (0 != SystemB.INSTANCE.sysctl(mib, 6, buf, len, null, size_t.ZERO)) {
-            Logger.error("Didn't get buffer for IFLIST2");
-            return data;
-        }
-        final long now = System.currentTimeMillis();
+        try (ByRef.CloseableSizeTByReference len = new ByRef.CloseableSizeTByReference()) {
+            if (0 != SystemB.INSTANCE.sysctl(mib, 6, null, len, null, size_t.ZERO)) {
+                Logger.error("Didn't get buffer length for IFLIST2");
+                return data;
+            }
+            try (Memory buf = new Memory(len.longValue())) {
+                if (0 != SystemB.INSTANCE.sysctl(mib, 6, buf, len, null, size_t.ZERO)) {
+                    Logger.error("Didn't get buffer for IFLIST2");
+                    return data;
+                }
+                final long now = System.currentTimeMillis();
 
-        // Iterate offset from buf's pointer up to limit of buf
-        int lim = (int) (buf.size() - new IFmsgHdr().size());
-        int offset = 0;
-        while (offset < lim) {
-            // Get pointer to current native part of buf
-            Pointer p = buf.share(offset);
-            // Cast pointer to if_msghdr
-            IFmsgHdr ifm = new IFmsgHdr(p);
-            ifm.read();
-            // Advance next
-            offset += ifm.ifm_msglen;
-            // Skip messages which are not the right format
-            if (ifm.ifm_type == RTM_IFINFO2) {
-                // Cast pointer to if_msghdr2
-                IFmsgHdr2 if2m = new IFmsgHdr2(p);
-                if2m.read();
-                if (index < 0 || index == if2m.ifm_index) {
-                    data.put((int) if2m.ifm_index,
-                            new IFdata(0xff & if2m.ifm_data.ifi_type, if2m.ifm_data.ifi_opackets,
-                                    if2m.ifm_data.ifi_ipackets, if2m.ifm_data.ifi_obytes, if2m.ifm_data.ifi_ibytes,
-                                    if2m.ifm_data.ifi_oerrors, if2m.ifm_data.ifi_ierrors, if2m.ifm_data.ifi_collisions,
-                                    if2m.ifm_data.ifi_iqdrops, if2m.ifm_data.ifi_baudrate, now));
-                    if (index >= 0) {
-                        return data;
+                // Iterate offset from buf's pointer up to limit of buf
+                int lim = (int) (buf.size() - new IFmsgHdr().size());
+                int offset = 0;
+                while (offset < lim) {
+                    // Get pointer to current native part of buf
+                    Pointer p = buf.share(offset);
+                    // Cast pointer to if_msghdr
+                    IFmsgHdr ifm = new IFmsgHdr(p);
+                    ifm.read();
+                    // Advance next
+                    offset += ifm.ifm_msglen;
+                    // Skip messages which are not the right format
+                    if (ifm.ifm_type == RTM_IFINFO2) {
+                        // Cast pointer to if_msghdr2
+                        IFmsgHdr2 if2m = new IFmsgHdr2(p);
+                        if2m.read();
+                        if (index < 0 || index == if2m.ifm_index) {
+                            data.put((int) if2m.ifm_index,
+                                    new IFdata(0xff & if2m.ifm_data.ifi_type, if2m.ifm_data.ifi_opackets,
+                                            if2m.ifm_data.ifi_ipackets, if2m.ifm_data.ifi_obytes,
+                                            if2m.ifm_data.ifi_ibytes, if2m.ifm_data.ifi_oerrors,
+                                            if2m.ifm_data.ifi_ierrors, if2m.ifm_data.ifi_collisions,
+                                            if2m.ifm_data.ifi_iqdrops, if2m.ifm_data.ifi_baudrate, now));
+                            if (index >= 0) {
+                                return data;
+                            }
+                        }
                     }
                 }
             }
@@ -126,7 +130,7 @@ public final class NetStat {
         private final long speed;
         private final long timeStamp;
 
-        IFdata(int ifType, // NOSONAR squid:S00107
+        IFdata(int ifType,
                long oPackets, long iPackets, long oBytes, long iBytes, long oErrors, long iErrors, long collisions,
                long iDrops, long speed, long timeStamp) {
             this.ifType = ifType;

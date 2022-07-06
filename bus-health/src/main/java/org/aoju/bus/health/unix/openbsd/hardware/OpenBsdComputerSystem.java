@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.openbsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
@@ -34,8 +35,6 @@ import org.aoju.bus.health.unix.UnixBaseboard;
 import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * OpenBSD ComputerSystem implementation
@@ -46,13 +45,13 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 public class OpenBsdComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<String> manufacturer = memoize(OpenBsdComputerSystem::queryManufacturer);
+    private final Supplier<String> manufacturer = Memoize.memoize(OpenBsdComputerSystem::queryManufacturer);
 
-    private final Supplier<String> model = memoize(OpenBsdComputerSystem::queryModel);
+    private final Supplier<String> model = Memoize.memoize(OpenBsdComputerSystem::queryModel);
 
-    private final Supplier<String> serialNumber = memoize(OpenBsdComputerSystem::querySerialNumber);
+    private final Supplier<String> serialNumber = Memoize.memoize(OpenBsdComputerSystem::querySerialNumber);
 
-    private final Supplier<String> uuid = memoize(OpenBsdComputerSystem::queryUUID);
+    private final Supplier<String> uuid = Memoize.memoize(OpenBsdComputerSystem::queryUUID);
 
     private static String queryManufacturer() {
         return OpenBsdSysctlKit.sysctl("hw.vendor", Normal.UNKNOWN);

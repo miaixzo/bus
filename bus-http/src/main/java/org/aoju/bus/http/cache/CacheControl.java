@@ -27,9 +27,7 @@ package org.aoju.bus.http.cache;
 
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Headers;
-import org.aoju.bus.http.metric.http.HttpHeaders;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CacheControl {
+public class CacheControl {
 
     /**
      * 需要对响应进行网络验证的缓存控制请求指令。请注意，缓存可以通过有条件的GET请求来辅助这些请求.
@@ -168,26 +166,29 @@ public final class CacheControl {
             int pos = 0;
             while (pos < value.length()) {
                 int tokenStart = pos;
-                pos = HttpHeaders.skipUntil(value, pos, "=,;");
+                pos = Headers.skipUntil(value, pos, "=,;");
                 String directive = value.substring(tokenStart, pos).trim();
                 String parameter;
 
-                if (pos == value.length() || value.charAt(pos) == Symbol.C_COMMA || value.charAt(pos) == Symbol.C_SEMICOLON) {
-                    pos++;
+                if (pos == value.length() || value.charAt(pos) == ',' || value.charAt(pos) == ';') {
+                    pos++; // consume ',' or ';' (if necessary)
                     parameter = null;
                 } else {
-                    pos++;
-                    pos = HttpHeaders.skipWhitespace(value, pos);
+                    pos++; // consume '='
+                    pos = Headers.skipWhitespace(value, pos);
 
+                    // quoted string
                     if (pos < value.length() && value.charAt(pos) == '\"') {
-                        pos++;
+                        pos++; // consume '"' open quote
                         int parameterStart = pos;
-                        pos = HttpHeaders.skipUntil(value, pos, Symbol.DOUBLE_QUOTES);
+                        pos = Headers.skipUntil(value, pos, "\"");
                         parameter = value.substring(parameterStart, pos);
-                        pos++;
+                        pos++; // consume '"' close quote (if necessary)
+
+                        // unquoted string
                     } else {
                         int parameterStart = pos;
-                        pos = HttpHeaders.skipUntil(value, pos, ",;");
+                        pos = Headers.skipUntil(value, pos, ",;");
                         parameter = value.substring(parameterStart, pos).trim();
                     }
                 }
@@ -197,9 +198,9 @@ public final class CacheControl {
                 } else if ("no-store".equalsIgnoreCase(directive)) {
                     noStore = true;
                 } else if ("max-age".equalsIgnoreCase(directive)) {
-                    maxAgeSeconds = HttpHeaders.parseSeconds(parameter, -1);
+                    maxAgeSeconds = Headers.parseSeconds(parameter, -1);
                 } else if ("s-maxage".equalsIgnoreCase(directive)) {
-                    sMaxAgeSeconds = HttpHeaders.parseSeconds(parameter, -1);
+                    sMaxAgeSeconds = Headers.parseSeconds(parameter, -1);
                 } else if ("private".equalsIgnoreCase(directive)) {
                     isPrivate = true;
                 } else if ("public".equalsIgnoreCase(directive)) {
@@ -207,9 +208,9 @@ public final class CacheControl {
                 } else if ("must-revalidate".equalsIgnoreCase(directive)) {
                     mustRevalidate = true;
                 } else if ("max-stale".equalsIgnoreCase(directive)) {
-                    maxStaleSeconds = HttpHeaders.parseSeconds(parameter, Integer.MAX_VALUE);
+                    maxStaleSeconds = Headers.parseSeconds(parameter, Integer.MAX_VALUE);
                 } else if ("min-fresh".equalsIgnoreCase(directive)) {
-                    minFreshSeconds = HttpHeaders.parseSeconds(parameter, -1);
+                    minFreshSeconds = Headers.parseSeconds(parameter, -1);
                 } else if ("only-if-cached".equalsIgnoreCase(directive)) {
                     onlyIfCached = true;
                 } else if ("no-transform".equalsIgnoreCase(directive)) {
@@ -306,7 +307,7 @@ public final class CacheControl {
     /**
      * 构建一个{@code Cache-Control}请求头
      */
-    public static final class Builder {
+    public static class Builder {
         boolean noCache;
         boolean noStore;
         int maxAgeSeconds = -1;

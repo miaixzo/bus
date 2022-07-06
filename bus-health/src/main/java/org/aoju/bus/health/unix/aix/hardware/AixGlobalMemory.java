@@ -29,6 +29,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.PhysicalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
@@ -37,9 +38,6 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatMemory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Memory obtained by perfstat_memory_total_t
@@ -53,10 +51,10 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
     // AIX has multiple page size units, but for purposes of "pages" in perfstat,
     // the docs specify 4KB pages so we hardcode this
     private static final long PAGESIZE = 4096L;
-    private final Supplier<perfstat_memory_total_t> perfstatMem = memoize(AixGlobalMemory::queryPerfstat,
-            defaultExpiration());
+    private final Supplier<perfstat_memory_total_t> perfstatMem = Memoize.memoize(AixGlobalMemory::queryPerfstat,
+            Memoize.defaultExpiration());
     private final Supplier<List<String>> lscfg;
-    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
 
     AixGlobalMemory(Supplier<List<String>> lscfg) {
         this.lscfg = lscfg;

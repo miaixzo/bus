@@ -46,7 +46,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class UnoUrl {
+public class UnoUrl {
 
     public static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
     public static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
@@ -61,23 +61,23 @@ public final class UnoUrl {
     public static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
 
     /**
-     * 要么 "http" or "https".
+     * "http" or "https"
      */
     final String scheme;
     /**
-     * 规范的主机名.
+     * 规范的主机名
      */
     final String host;
     /**
-     * 要么 80, 443 或用户指定的端口。范围内(1 . . 65535).
+     * 要么 80, 443 或用户指定的端口。范围内(1 . . 65535)
      */
     final int port;
     /**
-     * 解码的用户名.
+     * 解码的用户名
      */
     private final String username;
     /**
-     * 解码的密码.
+     * 解码的密码
      */
     private final String password;
     /**
@@ -87,18 +87,18 @@ public final class UnoUrl {
     private final List<String> pathSegments;
 
     /**
-     * 交替，解码的查询名称和值，或空无查询。名称可以为空或非空，但绝不为空。
+     * 交替，解码的查询名称和值，或空无查询。名称可以为空或非空，但绝不为空
      * 如果名称没有对应的'='分隔符，或为空，或为非空，则值为空.
      */
     private final List<String> queryNamesAndValues;
 
     /**
-     * 解码片段.
+     * 解码片段
      */
     private final String fragment;
 
     /**
-     * 规范的URL.
+     * 规范的URL
      */
     private final String url;
 
@@ -118,6 +118,10 @@ public final class UnoUrl {
         this.url = builder.toString();
     }
 
+    /**
+     * Returns 80 if {@code scheme.equals("http")}, 443 if {@code scheme.equals("https")} and -1
+     * otherwise.
+     */
     public static int defaultPort(String scheme) {
         if (Http.HTTP.equals(scheme)) {
             return 80;
@@ -148,6 +152,12 @@ public final class UnoUrl {
         }
     }
 
+    /**
+     * Cuts {@code encodedQuery} up into alternating parameter names and values. This divides a query
+     * string like {@code subject=math&easy&problem=5-2=3} into the list {@code ["subject", "math",
+     * "easy", null, "problem", "5-2=3"]}. Note that values may be null and may contain '='
+     * characters.
+     */
     static List<String> queryStringToNamesAndValues(String encodedQuery) {
         List<String> result = new ArrayList<>();
         for (int pos = 0; pos <= encodedQuery.length(); ) {
@@ -167,6 +177,10 @@ public final class UnoUrl {
         return result;
     }
 
+    /**
+     * Returns a new {@code HttpUrl} representing {@code url} if it is a well-formed HTTP or HTTPS
+     * URL, or null if it isn't.
+     */
     public static UnoUrl parse(String url) {
         try {
             return get(url);
@@ -175,10 +189,19 @@ public final class UnoUrl {
         }
     }
 
+    /**
+     * Returns a new {@code HttpUrl} representing {@code url}.
+     *
+     * @throws IllegalArgumentException If {@code url} is not a well-formed HTTP or HTTPS URL.
+     */
     public static UnoUrl get(String url) {
         return new Builder().parse(null, url).build();
     }
 
+    /**
+     * Returns an {@link UnoUrl} for {@code url} if its protocol is {@code http} or {@code https}, or
+     * null if it has any other protocol.
+     */
     public static UnoUrl get(URL url) {
         return parse(url.toString());
     }
@@ -232,6 +255,23 @@ public final class UnoUrl {
                 && org.aoju.bus.http.Builder.decodeHexDigit(encoded.charAt(pos + 2)) != -1;
     }
 
+    /**
+     * Returns a substring of {@code input} on the range {@code [pos..limit)} with the following
+     * transformations:
+     * <ul>
+     *   <li>Tabs, newlines, form feeds and carriage returns are skipped.
+     *   <li>In queries, ' ' is encoded to '+' and '+' is encoded to "%2B".
+     *   <li>Characters in {@code encodeSet} are percent-encoded.
+     *   <li>Control characters and non-ASCII characters are percent-encoded.
+     *   <li>All other characters are copied without transformation.
+     * </ul>
+     *
+     * @param alreadyEncoded true to leave '%' as-is; false to convert it to '%25'.
+     * @param strict         true to encode '%' if it is not the prefix of a valid percent encoding.
+     * @param plusIsSpace    true to encode '+' as "%2B" if it is not already encoded.
+     * @param asciiOnly      true to encode all non-ASCII codepoints.
+     * @param charset        which charset to use, null equals UTF-8.
+     */
     static String canonicalize(String input, int pos, int limit, String encodeSet,
                                boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
                                java.nio.charset.Charset charset) {
@@ -307,6 +347,9 @@ public final class UnoUrl {
                 input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly, null);
     }
 
+    /**
+     * Returns this URL as a {@link URL java.net.URL}.
+     */
     public URL url() {
         try {
             return new URL(url);
@@ -315,6 +358,19 @@ public final class UnoUrl {
         }
     }
 
+    /**
+     * Returns this URL as a {@link URI java.net.URI}. Because {@code URI} is more strict than this
+     * class, the returned URI may be semantically different from this URL:
+     *
+     * <ul>
+     *     <li>Characters forbidden by URI like {@code [} and {@code |} will be escaped.
+     *     <li>Invalid percent-encoded sequences like {@code %xx} will be encoded like {@code %25xx}.
+     *     <li>Whitespace and control characters in the fragment will be stripped.
+     * </ul>
+     * <p>
+     * These differences may have a significant consequence when the URI is interpreted by a
+     * webserver. For this reason the {@linkplain URI URI class} and this method should be avoided.
+     */
     public URI uri() {
         String uri = newBuilder().reencodeForUri().toString();
         try {
@@ -329,14 +385,20 @@ public final class UnoUrl {
         }
     }
 
+    /**
+     * Returns either "http" or "https".
+     */
     public String scheme() {
         return scheme;
     }
 
     public boolean isHttps() {
-        return Http.HTTPS.equals(scheme);
+        return scheme.equals("https");
     }
 
+    /**
+     * Returns the username, or an empty string if none is set.
+     */
     public String encodedUsername() {
         if (username.isEmpty()) return Normal.EMPTY;
         int usernameStart = scheme.length() + 3;
@@ -751,6 +813,10 @@ public final class UnoUrl {
         return result;
     }
 
+    /**
+     * Returns a builder for the URL that would be retrieved by following {@code link} from this URL,
+     * or null if the resulting URL is not well-formed.
+     */
     public Builder newBuilder(String link) {
         try {
             return new Builder().parse(this, link);
@@ -802,7 +868,7 @@ public final class UnoUrl {
         return Collections.unmodifiableList(result);
     }
 
-    public static final class Builder {
+    public static class Builder {
         static final String INVALID_HOST = "Invalid URL host";
         final List<String> encodedPathSegments = new ArrayList<>();
         String scheme;
@@ -817,6 +883,10 @@ public final class UnoUrl {
             encodedPathSegments.add(Normal.EMPTY);
         }
 
+        /**
+         * Returns the index of the ':' in {@code input} that is after scheme characters. Returns -1 if
+         * {@code input} does not have a scheme that starts at {@code pos}.
+         */
         private static int schemeDelimiterOffset(String input, int pos, int limit) {
             if (limit - pos < 2) return -1;
 
@@ -843,6 +913,9 @@ public final class UnoUrl {
             return -1;
         }
 
+        /**
+         * Returns the number of '/' and '\' slashes in {@code input}, starting at {@code pos}.
+         */
         private static int slashCount(String input, int pos, int limit) {
             int slashCount = 0;
             while (pos < limit) {
@@ -857,6 +930,9 @@ public final class UnoUrl {
             return slashCount;
         }
 
+        /**
+         * 在{@code input}中查找第一个“:”，跳过方括号“[…]”之间的字符
+         */
         private static int portColonOffset(String input, int pos, int limit) {
             for (int i = pos; i < limit; i++) {
                 switch (input.charAt(i)) {
@@ -926,6 +1002,10 @@ public final class UnoUrl {
             return this;
         }
 
+        /**
+         * @param host either a regular hostname, International Domain Name, IPv4 address, or IPv6
+         *             address.
+         */
         public Builder host(String host) {
             if (null == host) throw new NullPointerException("host == null");
             String encoded = canonicalizeHost(host, 0, host.length());
@@ -950,6 +1030,10 @@ public final class UnoUrl {
             return this;
         }
 
+        /**
+         * Adds a set of path segments separated by a slash (either {@code \} or {@code /}). If
+         * {@code pathSegments} starts with a slash, the resulting URL will have empty path segment.
+         */
         public Builder addPathSegments(String pathSegments) {
             if (null == pathSegments) throw new NullPointerException("pathSegments == null");
             return addPathSegments(pathSegments, false);
@@ -963,6 +1047,11 @@ public final class UnoUrl {
             return this;
         }
 
+        /**
+         * Adds a set of encoded path segments separated by a slash (either {@code \} or {@code /}). If
+         * {@code encodedPathSegments} starts with a slash, the resulting URL will have empty path
+         * segment.
+         */
         public Builder addEncodedPathSegments(String encodedPathSegments) {
             if (null == encodedPathSegments) {
                 throw new NullPointerException("encodedPathSegments == null");
@@ -1040,6 +1129,9 @@ public final class UnoUrl {
             return this;
         }
 
+        /**
+         * Encodes the query parameter using UTF-8 and adds it to this URL's query string.
+         */
         public Builder addQueryParameter(String name, String value) {
             if (null == name) throw new NullPointerException("name == null");
             if (null == encodedQueryNamesAndValues) encodedQueryNamesAndValues = new ArrayList<>();
@@ -1051,6 +1143,9 @@ public final class UnoUrl {
             return this;
         }
 
+        /**
+         * Adds the pre-encoded query parameter to this URL's query string.
+         */
         public Builder addEncodedQueryParameter(String encodedName, String encodedValue) {
             if (null == encodedName) throw new NullPointerException("encodedName == null");
             if (null == encodedQueryNamesAndValues) encodedQueryNamesAndValues = new ArrayList<>();
@@ -1075,8 +1170,8 @@ public final class UnoUrl {
         }
 
         public Builder removeAllQueryParameters(String name) {
-            if (null == name) throw new NullPointerException("name == null");
-            if (null == encodedQueryNamesAndValues) return this;
+            if (name == null) throw new NullPointerException("name == null");
+            if (encodedQueryNamesAndValues == null) return this;
             String nameToRemove = canonicalize(
                     name, QUERY_COMPONENT_ENCODE_SET, false, false, true, true);
             removeAllCanonicalQueryParameters(nameToRemove);
@@ -1118,6 +1213,10 @@ public final class UnoUrl {
             return this;
         }
 
+        /**
+         * Re-encodes the components of this URL so that it satisfies (obsolete) RFC 2396, which is
+         * particularly strict for certain components.
+         */
         Builder reencodeForUri() {
             for (int i = 0, size = encodedPathSegments.size(); i < size; i++) {
                 String pathSegment = encodedPathSegments.get(i);
@@ -1336,6 +1435,9 @@ public final class UnoUrl {
             }
         }
 
+        /**
+         * Adds a path segment. If the input is ".." or equivalent, this pops a path segment.
+         */
         private void push(String input, int pos, int limit, boolean addTrailingSlash,
                           boolean alreadyEncoded) {
             String segment = canonicalize(
@@ -1383,6 +1485,7 @@ public final class UnoUrl {
                 encodedPathSegments.add(Normal.EMPTY);
             }
         }
+
     }
 
 }

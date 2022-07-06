@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.aix.hardware;
 
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.unix.UnixDisplay;
 import org.aoju.bus.health.unix.aix.drivers.Lscfg;
@@ -34,9 +35,6 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatDisk;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * AIXHardwareAbstractionLayer class.
@@ -48,9 +46,9 @@ import static org.aoju.bus.health.Memoize.memoize;
 public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
     // Memoized hardware listing
-    private final Supplier<List<String>> lscfg = memoize(Lscfg::queryAllDevices, defaultExpiration());
+    private final Supplier<List<String>> lscfg = Memoize.memoize(Lscfg::queryAllDevices, Memoize.defaultExpiration());
     // Memoized disk stats to pass to disk object(s)
-    private final Supplier<perfstat_disk_t[]> diskStats = memoize(PerfstatDisk::queryDiskStats, defaultExpiration());
+    private final Supplier<perfstat_disk_t[]> diskStats = Memoize.memoize(PerfstatDisk::queryDiskStats, Memoize.defaultExpiration());
 
     @Override
     public ComputerSystem createComputerSystem() {

@@ -35,7 +35,7 @@ import java.net.Proxy;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RequestLine {
+public class RequestLine {
 
     private RequestLine() {
     }
@@ -55,10 +55,18 @@ public final class RequestLine {
         return result.toString();
     }
 
+    /**
+     * Returns true if the request line should contain the full URL with host and port (like "GET
+     * http://android.com/foo HTTP/1.1") or only the path (like "GET /foo HTTP/1.1").
+     */
     private static boolean includeAuthorityInRequestLine(Request request, Proxy.Type proxyType) {
         return !request.isHttps() && proxyType == Proxy.Type.HTTP;
     }
 
+    /**
+     * Returns the path to request, like the '/' in 'GET / HTTP/1.1'. Never empty, even if the request
+     * URL is. Includes the query component if it exists.
+     */
     public static String requestPath(UnoUrl url) {
         String path = url.encodedPath();
         String query = url.encodedQuery();

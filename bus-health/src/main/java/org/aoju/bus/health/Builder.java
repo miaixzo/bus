@@ -25,9 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.health;
 
+import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
+import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.convert.Convert;
@@ -1181,7 +1183,7 @@ public final class Builder {
                 .putInt(utAddrV6[3]).array();
         try {
             return InetAddress.getByAddress(ipv6).getHostAddress()
-                    .replaceAll("((?:(?:^|:)0+\\b){2,}):?(?!\\S*\\b\\1:0+\\b)(\\S*)", "::$2");
+                    .replaceAll("((?:(?:^|:)0+\\b){2,8}):?(?!\\S*\\b\\1:0+\\b)(\\S*)", "::$2");
         } catch (UnknownHostException e) {
             // Shouldn't happen with length 4 or 16
             return Normal.UNKNOWN;
@@ -1834,6 +1836,48 @@ public final class Builder {
      */
     public static void append(StringBuilder builder, String caption, Object value) {
         builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
+    }
+
+    /**
+     * If the given Pointer is of class Memory, executes the close method on it to
+     * free its native allocation
+     *
+     * @param p A pointer
+     */
+    public static void freeMemory(Pointer p) {
+        if (p instanceof Memory) {
+            ((Memory) p).close();
+        }
+    }
+
+    /**
+     * /** Convert a pointer to a CFString into a String.
+     *
+     * @param result Pointer to the CFString
+     * @return a CFString or "unknown" if it has no value
+     */
+    public static String cfPointerToString(Pointer result) {
+        return cfPointerToString(result, true);
+    }
+
+    /**
+     * Convert a pointer to a CFString into a String.
+     *
+     * @param result        Pointer to the CFString
+     * @param returnUnknown Whether to return the "unknown" string
+     * @return a CFString including a possible empty one if {@code returnUnknown} is
+     * false, or "unknown" if it is true
+     */
+    public static String cfPointerToString(Pointer result, boolean returnUnknown) {
+        String s = "";
+        if (result != null) {
+            CoreFoundation.CFStringRef cfs = new CoreFoundation.CFStringRef(result);
+            s = cfs.stringValue();
+        }
+        if (returnUnknown && s.isEmpty()) {
+            return Normal.UNKNOWN;
+        }
+        return s;
     }
 
 }

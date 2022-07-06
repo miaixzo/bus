@@ -51,16 +51,16 @@ public class Serialize<T> implements Serializable {
 
     }
 
-    public Serialize(List<T> list) {
-        this.list = list;
+    public Serialize(List<? extends T> list) {
+        this.list = (List<T>) list;
         if (list instanceof Page) {
-            this.total = ((Page) list).getTotal();
+            this.total = ((Page<?>) list).getTotal();
         } else {
             this.total = list.size();
         }
     }
 
-    public static <T> Serialize<T> of(List<T> list) {
+    public static <T> Serialize<T> of(List<? extends T> list) {
         return new Serialize<>(list);
     }
 

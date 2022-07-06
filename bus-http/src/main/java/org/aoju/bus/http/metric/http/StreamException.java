@@ -33,7 +33,7 @@ import org.aoju.bus.core.exception.RevisedException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class StreamException extends RevisedException {
+public class StreamException extends RevisedException {
 
     public final ErrorCode errorCode;
 

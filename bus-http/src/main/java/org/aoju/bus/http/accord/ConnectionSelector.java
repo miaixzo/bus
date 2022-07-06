@@ -25,9 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.http.Builder;
+import org.aoju.bus.http.metric.Internal;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ProtocolException;
@@ -43,7 +46,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class ConnectionSelector {
+public class ConnectionSelector {
 
     private final List<ConnectionSuite> connectionSuites;
     private int nextModeIndex;
@@ -85,7 +88,7 @@ public final class ConnectionSelector {
 
         isFallbackPossible = isFallbackPossible(sslSocket);
 
-        Builder.instance.apply(tlsConfiguration, sslSocket, isFallback);
+        Internal.instance.apply(tlsConfiguration, sslSocket, isFallback);
 
         return tlsConfiguration;
     }
@@ -128,11 +131,8 @@ public final class ConnectionSelector {
             return false;
         }
 
-        // 在Android上，SSLProtocolExceptions可能由TLS_FALLBACK_SCSV失败引起，
-        // 这意味着我们在可能不应该重试的时候重试
-        return (ex instanceof SSLHandshakeException
-                || ex instanceof SSLProtocolException
-                || ex instanceof SSLException);
+        // 重试所有其他SSL失败
+        return ex instanceof SSLException;
     }
 
     /**

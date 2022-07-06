@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 观察、修改和潜在的短路请求，并返回相应的响应。
+ * 观察、修改和潜在的短路请求，并返回相应的响应
  * 通常，拦截器在请求或响应上添加、删除或转换标头
  *
  * @author Kimi Liu

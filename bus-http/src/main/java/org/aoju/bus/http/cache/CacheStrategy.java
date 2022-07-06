@@ -31,7 +31,7 @@ import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
-import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.metric.Internal;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CacheStrategy {
+public class CacheStrategy {
 
     /**
      * 请求在网络上发送，如果调用不使用网络则为空
@@ -108,7 +108,7 @@ public final class CacheStrategy {
         final Response cacheResponse;
 
         /**
-         * 服务器提供缓存的响应的时间。
+         * 服务器提供缓存的响应的时间
          */
         private Date servedDate;
         private String servedDateString;
@@ -157,17 +157,17 @@ public final class CacheStrategy {
                     String fieldName = headers.name(i);
                     String value = headers.value(i);
                     if ("Date".equalsIgnoreCase(fieldName)) {
-                        servedDate = org.aoju.bus.http.Builder.parse(value);
+                        servedDate = Builder.parse(value);
                         servedDateString = value;
                     } else if ("Expires".equalsIgnoreCase(fieldName)) {
-                        expires = org.aoju.bus.http.Builder.parse(value);
+                        expires = Builder.parse(value);
                     } else if ("Last-Modified".equalsIgnoreCase(fieldName)) {
-                        lastModified = org.aoju.bus.http.Builder.parse(value);
+                        lastModified = Builder.parse(value);
                         lastModifiedString = value;
                     } else if ("ETag".equalsIgnoreCase(fieldName)) {
                         etag = value;
                     } else if ("Age".equalsIgnoreCase(fieldName)) {
-                        ageSeconds = HttpHeaders.parseSeconds(value, -1);
+                        ageSeconds = Headers.parseSeconds(value, -1);
                     }
                 }
             }
@@ -185,7 +185,7 @@ public final class CacheStrategy {
         }
 
         /**
-         * @return 使用缓存的响应{@code response}返回满足{@code request}的策略。
+         * @return 使用缓存的响应{@code response}返回满足{@code request}的策略
          */
         public CacheStrategy get() {
             CacheStrategy candidate = getCandidate();
@@ -270,7 +270,7 @@ public final class CacheStrategy {
             }
 
             Headers.Builder conditionalRequestHeaders = request.headers().newBuilder();
-            Builder.instance.addLenient(conditionalRequestHeaders, conditionName, conditionValue);
+            Internal.instance.addLenient(conditionalRequestHeaders, conditionName, conditionValue);
 
             Request conditionalRequest = request.newBuilder()
                     .headers(conditionalRequestHeaders.build())

@@ -26,11 +26,12 @@
 package org.aoju.bus.health.mac.software;
 
 import com.sun.jna.Native;
-import com.sun.jna.ptr.PointerByReference;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.mac.SystemB;
 import org.aoju.bus.health.unix.CLibrary;
@@ -39,8 +40,6 @@ import org.aoju.bus.logger.Logger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * MacNetworkParams class.
@@ -57,32 +56,32 @@ final class MacNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getDomainName() {
-        CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
-        hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname;
+        String hostname = "";
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
-            return Normal.EMPTY;
+            return "";
         }
-        PointerByReference ptr = new PointerByReference();
-        int res = SYS.getaddrinfo(hostname, null, hint, ptr);
-        if (res > 0) {
-            if (Logger.isError()) {
-                Logger.error("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
+        try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo(); ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
+            hint.ai_flags = CLibrary.AI_CANONNAME;
+            int res = SYS.getaddrinfo(hostname, null, hint, ptr);
+            if (res > 0) {
+                if (Logger.isError()) {
+                    Logger.error("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
+                }
+                return "";
             }
-            return Normal.EMPTY;
+            CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
+            String canonname = info.ai_canonname.trim();
+            SYS.freeaddrinfo(ptr.getValue());
+            return canonname;
         }
-        CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
-        String canonname = info.ai_canonname.trim();
-        SYS.freeaddrinfo(ptr.getValue());
-        return canonname;
     }
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != SYS.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }

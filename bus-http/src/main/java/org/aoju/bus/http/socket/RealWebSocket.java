@@ -34,8 +34,9 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.accord.Exchange;
 import org.aoju.bus.http.metric.EventListener;
+import org.aoju.bus.http.metric.Internal;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -54,7 +55,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
+public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
     private static final List<Protocol> ONLY_HTTP1 = Collections.singletonList(Protocol.HTTP_1_1);
 
@@ -209,30 +210,27 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 .header(Header.SEC_WEBSOCKET_KEY, key)
                 .header(Header.SEC_WEBSOCKET_VERSION, "13")
                 .build();
-        call = Builder.instance.newWebSocketCall(client, request);
-        call.timeout().clearTimeout();
+        call = Internal.instance.newWebSocketCall(client, request);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(NewCall call, Response response) {
+                Exchange exchange = Internal.instance.exchange(response);
+                Streams streams;
                 try {
-                    checkResponse(response);
-                } catch (ProtocolException e) {
+                    checkUpgradeSuccess(response, exchange);
+                    streams = exchange.newWebSocketStreams();
+                } catch (IOException e) {
+                    if (exchange != null) exchange.webSocketUpgradeFailed();
                     failWebSocket(e, response);
                     IoKit.close(response);
                     return;
                 }
 
-                // 将HTTP流提升为web套接字流.
-                StreamAllocation streamAllocation = Builder.instance.streamAllocation(call);
-                streamAllocation.noNewStreams(); // Prevent connection pooling!
-                Streams streams = streamAllocation.connection().newWebSocketStreams(streamAllocation);
-
-                // 处理所有web套接字消息.
+                // Process all web socket messages.
                 try {
-                    listener.onOpen(RealWebSocket.this, response);
                     String name = "Httpd WebSocket " + request.url().redact();
                     initReaderAndWriter(name, streams);
-                    streamAllocation.connection().socket().setSoTimeout(0);
+                    listener.onOpen(RealWebSocket.this, response);
                     loopReader();
                 } catch (Exception e) {
                     failWebSocket(e, null);
@@ -246,7 +244,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         });
     }
 
-    void checkResponse(Response response) throws ProtocolException {
+    void checkUpgradeSuccess(Response response, Exchange exchange) throws IOException {
         if (response.code() != 101) {
             throw new ProtocolException("Expected HTTP 101 response but was '"
                     + response.code() + Symbol.SPACE + response.message() + Symbol.SINGLE_QUOTE);
@@ -269,7 +267,11 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 .sha1().base64();
         if (!acceptExpected.equals(headerAccept)) {
             throw new ProtocolException("Expected 'Sec-WebSocket-Accept' header value '"
-                    + acceptExpected + "' but was '" + headerAccept + Symbol.SINGLE_QUOTE);
+                    + acceptExpected + "' but was '" + headerAccept + "'");
+        }
+
+        if (exchange == null) {
+            throw new ProtocolException("Web Socket exchange missing: bad interceptor?");
         }
     }
 
@@ -283,21 +285,28 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                         new PingRunnable(), pingIntervalMillis, pingIntervalMillis, TimeUnit.MILLISECONDS);
             }
             if (!messageAndCloseQueue.isEmpty()) {
-                //发送在我们连接之前排队的消息
-                runWriter();
+                runWriter(); // Send messages that were enqueued before we were connected.
             }
         }
 
         reader = new WebSocketReader(streams.client, streams.source, this);
     }
 
+    /**
+     * Receive frames until there are no more. Invoked only by the reader thread.
+     */
     public void loopReader() throws IOException {
         while (receivedCloseCode == -1) {
+            // This method call results in one or more onRead* methods being called on this thread.
             reader.processNextFrame();
         }
     }
 
-    boolean processNextFrame() {
+    /**
+     * For testing: receive a single frame and return true if there are more frames to read. Invoked
+     * only by the reader thread.
+     */
+    boolean processNextFrame() throws IOException {
         try {
             reader.processNextFrame();
             return receivedCloseCode == -1;
@@ -307,12 +316,18 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
+    /**
+     * For testing: wait until the web socket's executor has terminated.
+     */
     void awaitTermination(int timeout, TimeUnit timeUnit) throws InterruptedException {
         executor.awaitTermination(timeout, timeUnit);
     }
 
+    /**
+     * For testing: force this web socket to release its threads.
+     */
     void tearDown() throws InterruptedException {
-        if (null != cancelFuture) {
+        if (cancelFuture != null) {
             cancelFuture.cancel(false);
         }
         executor.shutdown();
@@ -343,6 +358,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
     @Override
     public synchronized void onReadPing(ByteString payload) {
+        // Don't respond to pings after we've failed or sent the close frame.
         if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty())) return;
 
         pongQueue.add(payload);
@@ -352,6 +368,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
     @Override
     public synchronized void onReadPong(ByteString buffer) {
+        // This API doesn't expose pings.
         receivedPongCount++;
         awaitingPong = false;
     }
@@ -384,29 +401,31 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
+    // Writer methods to enqueue frames. They'll be sent asynchronously by the writer thread.
+
     @Override
     public boolean send(String text) {
-        if (null == text) throw new NullPointerException("text == null");
+        if (text == null) throw new NullPointerException("text == null");
         return send(ByteString.encodeUtf8(text), WebSocketProtocol.OPCODE_TEXT);
     }
 
     @Override
     public boolean send(ByteString bytes) {
-        if (null == bytes) throw new NullPointerException("bytes == null");
+        if (bytes == null) throw new NullPointerException("bytes == null");
         return send(bytes, WebSocketProtocol.OPCODE_BINARY);
     }
 
     private synchronized boolean send(ByteString data, int formatOpcode) {
-        // 不要发送新的帧后，我们已经失败或排队关闭的帧.
+        // Don't send new frames after we've failed or enqueued a close frame.
         if (failed || enqueuedClose) return false;
 
-        // 如果此帧溢出缓冲区，则拒绝它并关闭web套接字.
+        // If this frame overflows the buffer, reject it and close the web socket.
         if (queueSize + data.size() > MAX_QUEUE_SIZE) {
             close(WebSocketProtocol.CLOSE_CLIENT_GOING_AWAY, null);
             return false;
         }
 
-        // 对消息帧进行排队.
+        // Enqueue the message frame.
         queueSize += data.size();
         messageAndCloseQueue.add(new Message(formatOpcode, data));
         runWriter();
@@ -414,6 +433,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
     }
 
     synchronized boolean pong(ByteString payload) {
+        // Don't send pongs after we've failed or sent the close frame.
         if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty())) return false;
 
         pongQueue.add(payload);
@@ -439,8 +459,10 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
         if (failed || enqueuedClose) return false;
 
+        // Immediately prevent further frames from being enqueued.
         enqueuedClose = true;
 
+        // Enqueue the close frame.
         messageAndCloseQueue.add(new Close(code, reasonBytes, cancelAfterCloseMillis));
         runWriter();
         return true;
@@ -574,7 +596,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    static final class Message {
+    static class Message {
         final int formatOpcode;
         final ByteString data;
 
@@ -584,7 +606,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    static final class Close {
+    static class Close {
         final int code;
         final ByteString reason;
         final long cancelAfterCloseMillis;
@@ -597,6 +619,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
     }
 
     public abstract static class Streams implements Closeable {
+
         public final boolean client;
         public final BufferSource source;
         public final BufferSink sink;
@@ -608,7 +631,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    private final class PingRunnable implements Runnable {
+    private class PingRunnable implements Runnable {
         PingRunnable() {
         }
 
@@ -618,7 +641,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         }
     }
 
-    final class CancelRunnable implements Runnable {
+    class CancelRunnable implements Runnable {
         @Override
         public void run() {
             cancel();

@@ -31,10 +31,9 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.Wtsapi32;
 import com.sun.jna.platform.win32.Wtsapi32.WTS_PROCESS_INFO_EX;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.wmi.Win32Process;
 import org.aoju.bus.logger.Logger;
@@ -75,29 +74,31 @@ public final class ProcessWtsData {
 
     private static Map<Integer, WtsInfo> queryProcessWtsMapFromWTS(Collection<Integer> pids) {
         Map<Integer, WtsInfo> wtsMap = new HashMap<>();
-        IntByReference pCount = new IntByReference(0);
-        final PointerByReference ppProcessInfo = new PointerByReference();
-        if (!Wtsapi32.INSTANCE.WTSEnumerateProcessesEx(Wtsapi32.WTS_CURRENT_SERVER_HANDLE,
-                new IntByReference(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1), Wtsapi32.WTS_ANY_SESSION, ppProcessInfo,
-                pCount)) {
-            Logger.error("Failed to enumerate Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return wtsMap;
-        }
-        // extract the pointed-to pointer and create array
-        Pointer pProcessInfo = ppProcessInfo.getValue();
-        final WTS_PROCESS_INFO_EX processInfoRef = new WTS_PROCESS_INFO_EX(pProcessInfo);
-        WTS_PROCESS_INFO_EX[] processInfo = (WTS_PROCESS_INFO_EX[]) processInfoRef.toArray(pCount.getValue());
-        for (WTS_PROCESS_INFO_EX info : processInfo) {
-            if (pids == null || pids.contains(info.ProcessId)) {
-                wtsMap.put(info.ProcessId,
-                        new WtsInfo(info.pProcessName, "", info.NumberOfThreads, info.PagefileUsage & 0xffff_ffffL,
-                                info.KernelTime.getValue() / 10_000L, info.UserTime.getValue() / 10_000,
-                                info.HandleCount));
+        try (ByRef.CloseableIntByReference pCount = new ByRef.CloseableIntByReference(0);
+             ByRef.CloseablePointerByReference ppProcessInfo = new ByRef.CloseablePointerByReference();
+             ByRef.CloseableIntByReference infoLevel1 = new ByRef.CloseableIntByReference(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1)) {
+            if (!Wtsapi32.INSTANCE.WTSEnumerateProcessesEx(Wtsapi32.WTS_CURRENT_SERVER_HANDLE, infoLevel1,
+                    Wtsapi32.WTS_ANY_SESSION, ppProcessInfo, pCount)) {
+                Logger.error("Failed to enumerate Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                return wtsMap;
             }
-        }
-        // Clean up memory
-        if (!Wtsapi32.INSTANCE.WTSFreeMemoryEx(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1, pProcessInfo, pCount.getValue())) {
-            Logger.warn("Failed to Free Memory for Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
+            // extract the pointed-to pointer and create array
+            Pointer pProcessInfo = ppProcessInfo.getValue();
+            final WTS_PROCESS_INFO_EX processInfoRef = new WTS_PROCESS_INFO_EX(pProcessInfo);
+            WTS_PROCESS_INFO_EX[] processInfo = (WTS_PROCESS_INFO_EX[]) processInfoRef.toArray(pCount.getValue());
+            for (WTS_PROCESS_INFO_EX info : processInfo) {
+                if (pids == null || pids.contains(info.ProcessId)) {
+                    wtsMap.put(info.ProcessId,
+                            new WtsInfo(info.pProcessName, "", info.NumberOfThreads, info.PagefileUsage & 0xffff_ffffL,
+                                    info.KernelTime.getValue() / 10_000L, info.UserTime.getValue() / 10_000,
+                                    info.HandleCount));
+                }
+            }
+            // Clean up memory
+            if (!Wtsapi32.INSTANCE.WTSFreeMemoryEx(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1, pProcessInfo,
+                    pCount.getValue())) {
+                Logger.warn("Failed to Free Memory for Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
+            }
         }
         return wtsMap;
     }

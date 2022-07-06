@@ -1701,6 +1701,21 @@ public class MathKit {
     }
 
     /**
+     * 检查值是否在指定范围内
+     *
+     * @param value      值
+     * @param minInclude 最小值（包含）
+     * @param maxInclude 最大值（包含）
+     * @return 经过检查后的值
+     */
+    public static boolean isIn(final BigDecimal value, final BigDecimal minInclude, final BigDecimal maxInclude) {
+        Assert.notNull(value);
+        Assert.notNull(minInclude);
+        Assert.notNull(maxInclude);
+        return isGreaterOrEqual(value, minInclude) && isLessOrEqual(value, maxInclude);
+    }
+
+    /**
      * 比较大小,值相等 返回true
      * 此方法通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等
      * 此方法判断值相等时忽略精度的,既0.00 == 0

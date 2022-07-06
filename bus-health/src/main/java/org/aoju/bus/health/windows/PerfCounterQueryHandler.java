@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows;
 
-import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.aoju.bus.core.annotation.NotThreadSafe;
 import org.aoju.bus.health.Formats;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.windows.PerfDataKit.PerfCounter;
 import org.aoju.bus.logger.Logger;
 
@@ -46,9 +46,10 @@ import java.util.Map;
 public final class PerfCounterQueryHandler implements AutoCloseable {
 
     // Map of counter handles
-    private final Map<PerfCounter, HANDLEByReference> counterHandleMap = new HashMap<>();
+    private Map<PerfCounter, ByRef.CloseableHANDLEByReference> counterHandleMap = new HashMap<>();
     // The query handle
-    private HANDLEByReference queryHandle = null;
+    private ByRef.CloseableHANDLEByReference queryHandle = null;
+
 
     /**
      * Begin monitoring a Performance Data counter.
@@ -59,17 +60,19 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     public boolean addCounterToQuery(PerfCounter counter) {
         // Open a new query or get the handle to an existing one
         if (this.queryHandle == null) {
-            this.queryHandle = new HANDLEByReference();
+            this.queryHandle = new ByRef.CloseableHANDLEByReference();
             if (!PerfDataKit.openQuery(this.queryHandle)) {
                 Logger.warn("Failed to open a query for PDH counter: {}", counter.getCounterPath());
+                this.queryHandle.close();
                 this.queryHandle = null;
                 return false;
             }
         }
         // Get a new handle for the counter
-        HANDLEByReference p = new HANDLEByReference();
+        ByRef.CloseableHANDLEByReference p = new ByRef.CloseableHANDLEByReference();
         if (!PerfDataKit.addCounter(this.queryHandle, counter.getCounterPath(), p)) {
             Logger.warn("Failed to add counter for PDH counter: {}", counter.getCounterPath());
+            p.close();
             return false;
         }
         counterHandleMap.put(counter, p);
@@ -84,14 +87,16 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public boolean removeCounterFromQuery(PerfCounter counter) {
         boolean success = false;
-        HANDLEByReference href = counterHandleMap.remove(counter);
-        // null if handle wasn't present
-        if (href != null) {
-            success = PerfDataKit.removeCounter(href);
+        try (ByRef.CloseableHANDLEByReference href = counterHandleMap.remove(counter)) {
+            // null if handle wasn't present
+            if (href != null) {
+                success = PerfDataKit.removeCounter(href);
+            }
         }
         if (counterHandleMap.isEmpty()) {
-            PerfDataKit.closeQuery(queryHandle);
-            queryHandle = null;
+            PerfDataKit.closeQuery(this.queryHandle);
+            this.queryHandle.close();
+            this.queryHandle = null;
         }
         return success;
     }
@@ -101,15 +106,17 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public void removeAllCounters() {
         // Remove all counters from counterHandle map
-        for (HANDLEByReference href : counterHandleMap.values()) {
+        for (ByRef.CloseableHANDLEByReference href : counterHandleMap.values()) {
             PerfDataKit.removeCounter(href);
+            href.close();
         }
         counterHandleMap.clear();
         // Remove query
         if (this.queryHandle != null) {
             PerfDataKit.closeQuery(this.queryHandle);
+            this.queryHandle.close();
+            this.queryHandle = null;
         }
-        this.queryHandle = null;
     }
 
     /**
@@ -119,7 +126,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      * since the epoch, or 0 if the update failed
      */
     public long updateQuery() {
-        if (queryHandle == null) {
+        if (this.queryHandle == null) {
             Logger.warn("Query does not exist to update.");
             return 0L;
         }

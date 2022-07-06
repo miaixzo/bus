@@ -45,7 +45,7 @@ import java.util.UUID;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class MultipartBody extends RequestBody {
+public class MultipartBody extends RequestBody {
 
     private static final byte[] COLONSPACE = {Symbol.C_COLON, Symbol.C_SPACE};
     private static final byte[] CRLF = {Symbol.C_CR, Symbol.C_LF};
@@ -64,7 +64,16 @@ public final class MultipartBody extends RequestBody {
         this.parts = org.aoju.bus.http.Builder.immutableList(parts);
     }
 
-    static StringBuilder appendQuotedString(StringBuilder target, String key) {
+    /**
+     * Appends a quoted-string to a StringBuilder
+     * RFC 2388 is rather vague about how one should escape special characters in form-data
+     * parameters, and as it turns out Firefox and Chrome actually do rather different things, and
+     * both say in their comments that they're not really sure what the right approach is. We go with
+     * Chrome's behavior (which also experimentally seems to match what IE does), but if you actually
+     * want to have a good chance of things working, please avoid double-quotes, newlines, percent
+     * signs, and the like in your field names.
+     */
+    static void appendQuotedString(StringBuilder target, String key) {
         target.append(Symbol.C_DOUBLE_QUOTES);
         for (int i = 0, len = key.length(); i < len; i++) {
             char ch = key.charAt(i);
@@ -84,7 +93,6 @@ public final class MultipartBody extends RequestBody {
             }
         }
         target.append(Symbol.C_DOUBLE_QUOTES);
-        return target;
     }
 
     public MediaType type() {
@@ -95,6 +103,9 @@ public final class MultipartBody extends RequestBody {
         return boundary.utf8();
     }
 
+    /**
+     * The number of parts in this multipart body.
+     */
     public int size() {
         return parts.size();
     }
@@ -107,6 +118,9 @@ public final class MultipartBody extends RequestBody {
         return parts.get(index);
     }
 
+    /**
+     * A combination of {@link #type()} and {@link #boundary()}.
+     */
     @Override
     public MediaType contentType() {
         return contentType;
@@ -201,7 +215,7 @@ public final class MultipartBody extends RequestBody {
         return byteCount;
     }
 
-    public static final class Part {
+    public static class Part {
 
         final Headers headers;
         final RequestBody body;
@@ -260,7 +274,7 @@ public final class MultipartBody extends RequestBody {
         }
     }
 
-    public static final class Builder {
+    public static class Builder {
 
         private final ByteString boundary;
         private final List<Part> parts = new ArrayList<>();
@@ -274,6 +288,10 @@ public final class MultipartBody extends RequestBody {
             this.boundary = ByteString.encodeUtf8(boundary);
         }
 
+        /**
+         * Set the MIME type. Expected values for {@code type} are {@link MediaType#MULTIPART_MIXED} (the default), {@link
+         * MediaType#MULTIPART_ALTERNATIVE}, {@link MediaType#MULTIPART_DIGEST}, {@link MediaType#MULTIPART_parallel} and {@link MediaType#APPLICATION_FORM_URLENCODED}.
+         */
         public Builder setType(MediaType type) {
             if (null == type) {
                 throw new NullPointerException("type == null");
@@ -285,30 +303,45 @@ public final class MultipartBody extends RequestBody {
             return this;
         }
 
+        /**
+         * 增加part至请求体
+         */
         public Builder addPart(RequestBody body) {
             return addPart(Part.create(body));
         }
 
+        /**
+         * 增加part至请求体
+         */
         public Builder addPart(Headers headers, RequestBody body) {
             return addPart(Part.create(headers, body));
         }
 
+        /**
+         * 将表单数据部分添加到主体中
+         */
         public Builder addFormDataPart(String name, String value) {
             return addPart(Part.createFormData(name, value));
         }
 
+        /**
+         * 将表单数据部分添加到主体中
+         */
         public Builder addFormDataPart(String name, String filename, RequestBody body) {
             return addPart(Part.createFormData(name, filename, body));
         }
 
+        /**
+         * 增加part至请求体
+         */
         public Builder addPart(Part part) {
-            if (null == part) throw new NullPointerException("part == null");
+            if (part == null) throw new NullPointerException("part == null");
             parts.add(part);
             return this;
         }
 
         /**
-         * @return 将指定的部件组装到请求体中
+         * 将指定的部分组装成请求体
          */
         public MultipartBody build() {
             if (parts.isEmpty()) {

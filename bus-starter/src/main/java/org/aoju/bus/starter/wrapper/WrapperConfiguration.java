@@ -31,6 +31,7 @@ import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -51,6 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Xss/重复读取等WEB封装配置
@@ -72,7 +74,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     @Bean("registrationBodyCacheFilter")
     public FilterRegistrationBean registrationBodyCacheFilter() {
         FilterRegistrationBean<BodyCacheFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setEnabled(this.properties.getEnabled());
+        registrationBean.setEnabled(this.properties.isEnabled());
         registrationBean.setOrder(this.properties.getOrder());
         registrationBean.setFilter(new BodyCacheFilter());
         if (!StringKit.isEmpty(this.properties.getName())) {
@@ -107,7 +109,8 @@ public class WrapperConfiguration implements WebMvcRegistrations {
             RequestMappingInfo requestMappingInfo = super.getMappingForMethod(method, handlerType);
             if (null != requestMappingInfo
                     && (handlerType.isAnnotationPresent(Controller.class)
-                    || handlerType.isAnnotationPresent(RestController.class))) {
+                    || handlerType.isAnnotationPresent(RestController.class))
+                    && ObjectKit.isNotEmpty(properties.getBasePackages())) {
                 AntPathMatcher antPathMatcher = new AntPathMatcher(Symbol.DOT);
                 for (String basePackage : properties.getBasePackages()) {
                     String packName = handlerType.getPackageName();
@@ -115,14 +118,16 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                             || antPathMatcher.matchStart(basePackage, packName)) {
                         String[] arrays = StringKit.splitToArray(basePackage, Symbol.C_DOT);
                         String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
-                       /* Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
-                                + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());*/
+                        Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
+                                + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());
+
                         requestMappingInfo = RequestMappingInfo.paths(prefix).options(getBuilderConfiguration()).build().combine(requestMappingInfo);
                     }
                 }
             }
             return requestMappingInfo;
         }
+
     }
 
     class BodyCacheFilter extends OncePerRequestFilter {

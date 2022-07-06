@@ -26,8 +26,8 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.*;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
 
@@ -43,13 +43,16 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Http2Reader implements Closeable {
+public class Http2Reader implements Closeable {
 
     public final Hpack.Reader hpackReader;
     public final BufferSource source;
     public final ContinuationSource continuation;
     public final boolean client;
 
+    /**
+     * Creates a frame reader with max header table size of 4096.
+     */
     Http2Reader(BufferSource source, boolean client) {
         this.source = source;
         this.client = client;
@@ -57,15 +60,15 @@ public final class Http2Reader implements Closeable {
         this.hpackReader = new Hpack.Reader(4096, continuation);
     }
 
-    private static int readMedium(BufferSource source) throws IOException {
-        return (source.readByte() & 0xff) << Normal._16
+    static int readMedium(BufferSource source) throws IOException {
+        return (source.readByte() & 0xff) << 16
                 | (source.readByte() & 0xff) << 8
                 | (source.readByte() & 0xff);
     }
 
-    private static int lengthWithoutPadding(int length, byte flags, short padding)
+    static int lengthWithoutPadding(int length, byte flags, short padding)
             throws IOException {
-        if ((flags & Http2.FLAG_PADDED) != 0) length--;
+        if ((flags & Http2.FLAG_PADDED) != 0) length--; // Account for reading the padding length.
         if (padding > length) {
             throw Http2.ioException("PROTOCOL_ERROR padding %s > remaining length %s", padding, length);
         }
@@ -74,6 +77,7 @@ public final class Http2Reader implements Closeable {
 
     public void readConnectionPreface(Handler handler) throws IOException {
         if (client) {
+            // The client reads the initial SETTINGS frame.
             if (!nextFrame(true, handler)) {
                 throw Http2.ioException("Required SETTINGS preface not received");
             }
@@ -95,6 +99,17 @@ public final class Http2Reader implements Closeable {
             return false;
         }
 
+        //  0                   1                   2                   3
+        //  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+        // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        // |                 Length (24)                   |
+        // +---------------+---------------+---------------+
+        // |   Type (8)    |   Flags (8)   |
+        // +-+-+-----------+---------------+-------------------------------+
+        // |R|                 Stream Identifier (31)                      |
+        // +=+=============================================================+
+        // |                   Frame Payload (0...)                      ...
+        // +---------------------------------------------------------------+
         int length = readMedium(source);
         if (length < 0 || length > Http2.INITIAL_MAX_FRAME_SIZE) {
             throw Http2.ioException("FRAME_SIZE_ERROR: %s", length);
@@ -167,12 +182,12 @@ public final class Http2Reader implements Closeable {
 
         length = lengthWithoutPadding(length, flags, padding);
 
-        List<HttpHeaders> headersBlock = readHeaderBlock(length, padding, flags, streamId);
+        List<Headers.Header> headerBlock = readHeaderBlock(length, padding, flags, streamId);
 
-        handler.headers(endStream, streamId, -1, headersBlock);
+        handler.headers(endStream, streamId, -1, headerBlock);
     }
 
-    private List<HttpHeaders> readHeaderBlock(int length, short padding, byte flags, int streamId)
+    private List<Headers.Header> readHeaderBlock(int length, short padding, byte flags, int streamId)
             throws IOException {
         continuation.length = continuation.left = length;
         continuation.padding = padding;
@@ -283,8 +298,8 @@ public final class Http2Reader implements Closeable {
         int promisedStreamId = source.readInt() & 0x7fffffff;
         length -= 4;
         length = lengthWithoutPadding(length, flags, padding);
-        List<HttpHeaders> headersBlock = readHeaderBlock(length, padding, flags, streamId);
-        handler.pushPromise(streamId, promisedStreamId, headersBlock);
+        List<Headers.Header> headerBlock = readHeaderBlock(length, padding, flags, streamId);
+        handler.pushPromise(streamId, promisedStreamId, headerBlock);
     }
 
     private void readPing(Handler handler, int length, byte flags, int streamId)
@@ -338,10 +353,10 @@ public final class Http2Reader implements Closeable {
          * @param inFinished         如果发送方不发送更多的帧，则为真
          * @param streamId           拥有这请求头的流.
          * @param associatedStreamId 触发发送方创建此流的流.
-         * @param headersBlock       header信息
+         * @param headerBlock        header信息
          */
         void headers(boolean inFinished, int streamId, int associatedStreamId,
-                     List<HttpHeaders> headersBlock);
+                     List<Headers.Header> headerBlock);
 
         void rstStream(int streamId, ErrorCode errorCode);
 
@@ -402,7 +417,7 @@ public final class Http2Reader implements Closeable {
          * @param requestHeaders   最低限度包括{@code:method}、{@code:scheme}、{@code:authority}和(@code:path}.
          * @throws IOException 异常信息
          */
-        void pushPromise(int streamId, int promisedStreamId, List<HttpHeaders> requestHeaders)
+        void pushPromise(int streamId, int promisedStreamId, List<Headers.Header> requestHeaders)
                 throws IOException;
 
         /**
@@ -424,7 +439,7 @@ public final class Http2Reader implements Closeable {
     /**
      * 头信息块的解压发生在帧层之上。当{@link Hpack.Reader#readHeaders()}需要延续帧时，该类延迟读取它们
      */
-    static final class ContinuationSource implements Source {
+    static class ContinuationSource implements Source {
         private final BufferSource source;
 
         int length;

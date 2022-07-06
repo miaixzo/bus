@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.magic.GetBuilder;
-import org.aoju.bus.http.magic.HttpBuilder;
-import org.aoju.bus.http.magic.PostBuilder;
-import org.aoju.bus.http.magic.PutBuilder;
-import org.aoju.bus.http.secure.SSLSocketFactory;
-import org.aoju.bus.http.secure.X509TrustManager;
+import org.aoju.bus.http.plugin.httpz.GetBuilder;
+import org.aoju.bus.http.plugin.httpz.HttpBuilder;
+import org.aoju.bus.http.plugin.httpz.PostBuilder;
+import org.aoju.bus.http.plugin.httpz.PutBuilder;
+import org.aoju.bus.http.secure.SSLContextBuilder;
+
+import javax.net.ssl.X509TrustManager;
 
 /**
  * 发送HTTP请求辅助类
@@ -75,9 +76,9 @@ public class Httpz {
         private Httpd httpd;
 
         public Client() {
-            final X509TrustManager trustManager = new X509TrustManager();
+            final X509TrustManager trustManager = SSLContextBuilder.newTrustManager();
             this.httpd = new Httpd().newBuilder()
-                    .sslSocketFactory(SSLSocketFactory.createTrustAllSSLFactory(trustManager), trustManager)
+                    .sslSocketFactory(SSLContextBuilder.newSslSocketFactory(trustManager), trustManager)
                     .hostnameVerifier((hostname, session) -> true).build();
         }
 

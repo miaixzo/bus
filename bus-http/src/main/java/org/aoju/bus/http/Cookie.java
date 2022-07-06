@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Cookie {
+public class Cookie {
 
     private static final Pattern YEAR_PATTERN
             = Pattern.compile("(\\d{2,4})[^\\d]*");
@@ -255,6 +255,9 @@ public final class Cookie {
                 hostOnly, persistent);
     }
 
+    /**
+     * Parse a date as specified in RFC 6265, section 5.1.1.
+     */
     private static long parseExpires(String s, int pos, int limit) {
         pos = dateCharacterOffset(s, pos, limit, false);
 
@@ -310,6 +313,10 @@ public final class Cookie {
         return calendar.getTimeInMillis();
     }
 
+    /**
+     * Returns the index of the next date character in {@code input}, or if {@code invert} the index
+     * of the next non-date character in {@code input}.
+     */
     private static int dateCharacterOffset(String input, int pos, int limit, boolean invert) {
         for (int i = pos; i < limit; i++) {
             int c = input.charAt(i);
@@ -317,12 +324,19 @@ public final class Cookie {
                     || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
                     || (c >= 'a' && c <= 'z')
                     || (c >= 'A' && c <= 'Z')
-                    || (c == Symbol.C_COLON);
+                    || (c == ':');
             if (dateCharacter == !invert) return i;
         }
         return limit;
     }
 
+    /**
+     * Returns the positive value if {@code attributeValue} is positive, or {@link Long#MIN_VALUE} if
+     * it is either 0 or negative. If the value is positive but out of range, this returns {@link
+     * Long#MAX_VALUE}.
+     *
+     * @throws NumberFormatException if {@code s} is not an integer of any precision.
+     */
     private static long parseMaxAge(String s) {
         try {
             long parsed = Long.parseLong(s);
@@ -336,6 +350,10 @@ public final class Cookie {
         }
     }
 
+    /**
+     * Returns a domain string like {@code example.com} for an input domain like {@code EXAMPLE.COM}
+     * or {@code .example.com}.
+     */
     private static String parseDomain(String s) {
         if (s.endsWith(Symbol.DOT)) {
             throw new IllegalArgumentException();
@@ -350,6 +368,9 @@ public final class Cookie {
         return canonicalDomain;
     }
 
+    /**
+     * Returns all of the cookies from a set of HTTP response headers.
+     */
     public static List<Cookie> parseAll(UnoUrl url, Headers headers) {
         List<String> cookieStrings = headers.values("Set-Cookie");
         List<Cookie> cookies = null;
@@ -402,6 +423,10 @@ public final class Cookie {
         return secure;
     }
 
+    /**
+     * Returns true if this cookie should be included on a request to {@code url}. In addition to this
+     * check callers should also confirm that this cookie has not expired.
+     */
     public boolean matches(UnoUrl url) {
         boolean domainMatch = hostOnly
                 ? url.host().equals(domain)
@@ -420,7 +445,12 @@ public final class Cookie {
         return toString(false);
     }
 
-    public String toString(boolean forObsoleteRfc2965) {
+    /**
+     * @param forObsoleteRfc2965 true to include a leading {@code .} on the domain pattern. This is
+     *                           necessary for {@code example.com} to match {@code www.example.com} under RFC 2965. This
+     *                           extra dot is ignored by more recent specifications.
+     */
+    String toString(boolean forObsoleteRfc2965) {
         StringBuilder result = new StringBuilder();
         result.append(name);
         result.append(Symbol.C_EQUAL);
@@ -490,7 +520,7 @@ public final class Cookie {
      * {@linkplain #name() name}、{@linkplain #value() value}
      * 和{@linkplain #domain() domain}.
      */
-    public static final class Builder {
+    public static class Builder {
         String name;
         String value;
         long expiresAt = org.aoju.bus.http.Builder.MAX_DATE;
@@ -526,10 +556,18 @@ public final class Cookie {
             return this;
         }
 
+        /**
+         * Set the domain pattern for this cookie. The cookie will match {@code domain} and all of its
+         * subdomains.
+         */
         public Builder domain(String domain) {
             return domain(domain, false);
         }
 
+        /**
+         * Set the host-only domain for this cookie. The cookie will match {@code domain} but none of
+         * its subdomains.
+         */
         public Builder hostOnlyDomain(String domain) {
             return domain(domain, true);
         }

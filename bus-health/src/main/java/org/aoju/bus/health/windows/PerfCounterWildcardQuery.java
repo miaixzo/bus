@@ -30,7 +30,6 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.PdhUtil;
 import com.sun.jna.platform.win32.PdhUtil.PdhEnumObjectItems;
-import com.sun.jna.platform.win32.PdhUtil.PdhException;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -107,20 +106,19 @@ public final class PerfCounterWildcardQuery {
         }
         String instanceFilter = ((PdhCounterWildcardProperty) propertyEnum.getEnumConstants()[0]).getCounter()
                 .toLowerCase();
-        // If pre-Vista, localize the perfObject
-        String perfObjectLocalized = PerfCounterQuery.localizeIfNeeded(perfObject);
+        // Localize the perfObject using different variable for the EnumObjectItems
+        // Will still use unlocalized perfObject for the query
+        String perfObjectLocalized = PerfCounterQuery.localizeIfNeeded(perfObject, true);
 
         // Get list of instances
         // Temporary workaround for JNA buffer size race condition
         PdhEnumObjectItems objectItems = null;
-        int retries = 99;
-        while (retries > 0) {
-            try {
-                objectItems = PdhUtil.PdhEnumObjectItems(null, null, perfObjectLocalized, 100);
-                retries = 0;
-            } catch (PdhException e) {
-                retries--;
-            }
+        try {
+            objectItems = PdhUtil.PdhEnumObjectItems(null, null, perfObjectLocalized, 100);
+        } catch (PdhUtil.PdhException e) {
+            Logger.warn(
+                    "Failed to locate performance object for {} in the registry. Performance counters may be corrupt. {}",
+                    perfObjectLocalized, e.getMessage());
         }
         if (objectItems == null) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());

@@ -28,6 +28,7 @@ package org.aoju.bus.health.unix.aix.hardware;
 import com.sun.jna.Native;
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatNetInterface;
@@ -37,9 +38,6 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * AIXNetworks class.
@@ -76,8 +74,8 @@ public final class AixNetworkIF extends AbstractNetworkIF {
      * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        Supplier<perfstat_netinterface_t[]> netstats = memoize(PerfstatNetInterface::queryNetInterfaces,
-                defaultExpiration());
+        Supplier<perfstat_netinterface_t[]> netstats = Memoize.memoize(PerfstatNetInterface::queryNetInterfaces,
+                Memoize.defaultExpiration());
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             try {

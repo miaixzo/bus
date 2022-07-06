@@ -30,9 +30,9 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
 import org.aoju.bus.health.windows.WmiKit;
@@ -143,7 +143,6 @@ public class WindowsFileSystem extends AbstractFileSystem {
         char[] fstype;
         char[] name;
         char[] mount;
-        IntByReference pFlags;
 
         fs = new ArrayList<>();
         aVolume = new char[BUFSIZE];
@@ -152,12 +151,11 @@ public class WindowsFileSystem extends AbstractFileSystem {
         if (WinBase.INVALID_HANDLE_VALUE.equals(hVol)) {
             return fs;
         }
-        try {
+        try (ByRef.CloseableIntByReference pFlags = new ByRef.CloseableIntByReference()) {
             do {
                 fstype = new char[16];
                 name = new char[BUFSIZE];
                 mount = new char[BUFSIZE];
-                pFlags = new IntByReference();
 
                 userFreeBytes = new WinNT.LARGE_INTEGER(0L);
                 totalBytes = new WinNT.LARGE_INTEGER(0L);
