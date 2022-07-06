@@ -28,7 +28,6 @@ package org.aoju.bus.http.secure;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.http.UnoUrl;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -48,7 +47,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class CertificatePinner {
+public class CertificatePinner {
 
     public static final CertificatePinner DEFAULT = new Builder().build();
 
@@ -60,6 +59,12 @@ public final class CertificatePinner {
         this.certificateChainCleaner = certificateChainCleaner;
     }
 
+    /**
+     * Returns the SHA-256 of {@code certificate}'s public key.
+     * <p>
+     * In Http 3.1.2 and earlier, this returned a SHA-1 hash of the public key. Both types are
+     * supported, but SHA-256 is preferred.
+     */
     public static String pin(Certificate certificate) {
         if (!(certificate instanceof X509Certificate)) {
             throw new IllegalArgumentException("Certificate pinning requires X509 certificates");
@@ -79,13 +84,14 @@ public final class CertificatePinner {
     public boolean equals(Object other) {
         if (other == this) return true;
         return other instanceof CertificatePinner
-                && (ObjectKit.equal(certificateChainCleaner, ((CertificatePinner) other).certificateChainCleaner)
+                && (Objects.equals(certificateChainCleaner,
+                ((CertificatePinner) other).certificateChainCleaner)
                 && pins.equals(((CertificatePinner) other).pins));
     }
 
     @Override
     public int hashCode() {
-        int result = null != certificateChainCleaner ? certificateChainCleaner.hashCode() : 0;
+        int result = Objects.hashCode(certificateChainCleaner);
         result = 31 * result + pins.hashCode();
         return result;
     }
@@ -111,38 +117,53 @@ public final class CertificatePinner {
         for (int c = 0, certsSize = peerCertificates.size(); c < certsSize; c++) {
             X509Certificate x509Certificate = (X509Certificate) peerCertificates.get(c);
 
+            // Lazily compute the hashes for each certificate.
             ByteString sha1 = null;
             ByteString sha256 = null;
 
             for (int p = 0, pinsSize = pins.size(); p < pinsSize; p++) {
                 Pin pin = pins.get(p);
                 if (pin.hashAlgorithm.equals("sha256/")) {
-                    if (null == sha256) sha256 = sha256(x509Certificate);
+                    if (sha256 == null) sha256 = sha256(x509Certificate);
                     if (pin.hash.equals(sha256)) return; // Success!
                 } else if (pin.hashAlgorithm.equals("sha1/")) {
-                    if (null == sha1) sha1 = sha1(x509Certificate);
+                    if (sha1 == null) sha1 = sha1(x509Certificate);
                     if (pin.hash.equals(sha1)) return; // Success!
                 } else {
                     throw new AssertionError("unsupported hashAlgorithm: " + pin.hashAlgorithm);
                 }
             }
         }
+
+        // If we couldn't find a matching pin, format a nice exception.
         StringBuilder message = new StringBuilder()
                 .append("Certificate pinning failure!")
-                .append(Symbol.LF + "  Peer certificate chain:");
+                .append("\n  Peer certificate chain:");
         for (int c = 0, certsSize = peerCertificates.size(); c < certsSize; c++) {
             X509Certificate x509Certificate = (X509Certificate) peerCertificates.get(c);
-            message.append(Symbol.LF + "    ").append(pin(x509Certificate))
+            message.append("\n    ").append(pin(x509Certificate))
                     .append(": ").append(x509Certificate.getSubjectDN().getName());
         }
-        message.append(Symbol.LF + "  Pinned certificates for ").append(hostname).append(Symbol.COLON);
+        message.append("\n  Pinned certificates for ").append(hostname).append(":");
         for (int p = 0, pinsSize = pins.size(); p < pinsSize; p++) {
             Pin pin = pins.get(p);
-            message.append(Symbol.LF + "    ").append(pin);
+            message.append("\n    ").append(pin);
         }
         throw new SSLPeerUnverifiedException(message.toString());
     }
 
+    /**
+     * @deprecated replaced with {@link #check(String, List)}.
+     */
+    public void check(String hostname, Certificate... peerCertificates)
+            throws SSLPeerUnverifiedException {
+        check(hostname, Arrays.asList(peerCertificates));
+    }
+
+    /**
+     * Returns list of matching certificates' pins for the hostname. Returns an empty list if the
+     * hostname does not have pinned certificates.
+     */
     List<Pin> findMatchingPins(String hostname) {
         List<Pin> result = Collections.emptyList();
         for (Pin pin : pins) {
@@ -154,14 +175,17 @@ public final class CertificatePinner {
         return result;
     }
 
+    /**
+     * Returns a certificate pinner that uses {@code certificateChainCleaner}.
+     */
     public CertificatePinner withCertificateChainCleaner(
             CertificateChainCleaner certificateChainCleaner) {
-        return ObjectKit.equal(this.certificateChainCleaner, certificateChainCleaner)
+        return Objects.equals(this.certificateChainCleaner, certificateChainCleaner)
                 ? this
                 : new CertificatePinner(pins, certificateChainCleaner);
     }
 
-    static final class Pin {
+    static class Pin {
         private static final String WILDCARD = "*.";
         /**
          * 像{@code example.com}这样的主机名或{@code *.example.com}这样的模式.
@@ -237,7 +261,7 @@ public final class CertificatePinner {
     /**
      * 构建已配置的证书
      */
-    public static final class Builder {
+    public static class Builder {
 
         private final List<Pin> pins = new ArrayList<>();
 

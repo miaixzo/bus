@@ -26,23 +26,22 @@
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.core.Version;
+import org.aoju.bus.core.exception.RevisedException;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.BufferSource;
-import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
-import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.EventListener;
-import org.aoju.bus.http.metric.Handshake;
 import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.Internal;
 import org.aoju.bus.http.metric.http.*;
 import org.aoju.bus.http.secure.CertificatePinner;
 import org.aoju.bus.http.secure.HostnameVerifier;
+import org.aoju.bus.http.socket.Handshake;
 import org.aoju.bus.http.socket.RealWebSocket;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -64,15 +63,16 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RealConnection extends Http2Connection.Listener implements Connection {
+public class RealConnection extends Http2Connection.Listener implements Connection {
 
     private static final String NPE_THROW_WITH_NULL = "throw with null exception";
     private static final int MAX_TUNNEL_ATTEMPTS = 21;
+
+    public final RealConnectionPool connectionPool;
     /**
-     * 由该连接传送的当前流.
+     * 由该连接传送的当前流
      */
-    public final List<Reference<StreamAllocation>> allocations = new ArrayList<>();
-    private final ConnectionPool connectionPool;
+    final List<Reference<Transmitter>> transmitters = new ArrayList<>();
 
     /**
      * 下面的字段由connect()初始化，并且从不重新分配
@@ -81,18 +81,17 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     /**
      * 如果为真，则不能在此连接上创建新的流
      */
-    public boolean noNewStreams;
-    public int successCount;
+    boolean noNewExchanges;
     /**
-     * 此连接可承载的并发流的最大数目如果
-     * {@code allocations.size() < allocationLimit}
-     * 则可以在此连接上创建新的流
+     * The number of times there was a problem establishing a stream that could be due to route
+     * chosen. Guarded by {@link #connectionPool}.
      */
-    public int allocationLimit = 1;
+    int routeFailureCount;
+    int successCount;
     /**
      * 当{@code allocations.size()}达到0时的Nanotime时间戳
      */
-    public long idleAtNanos = Long.MAX_VALUE;
+    long idleAtNanos = Long.MAX_VALUE;
     /**
      * 低级TCP套接字
      */
@@ -110,30 +109,47 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     private Http2Connection http2Connection;
     private BufferSource source;
     private BufferSink sink;
+    private int refusedStreamCount;
+    /**
+     * 此连接可承载的并发流的最大数目如果
+     * {@code allocations.size() < allocationLimit}
+     * 则可以在此连接上创建新的流
+     */
+    private int allocationLimit = 1;
 
-    public RealConnection(ConnectionPool connectionPool, Route route) {
+    public RealConnection(RealConnectionPool connectionPool, Route route) {
         this.connectionPool = connectionPool;
         this.route = route;
     }
 
-    public static RealConnection testConnection(
-            ConnectionPool connectionPool, Route route, Socket socket, long idleAtNanos) {
+    static RealConnection testConnection(
+            RealConnectionPool connectionPool, Route route, Socket socket, long idleAtNanos) {
         RealConnection result = new RealConnection(connectionPool, route);
         result.socket = socket;
         result.idleAtNanos = idleAtNanos;
         return result;
     }
 
+    /**
+     * Prevent further exchanges from being created on this connection.
+     */
+    public void noNewExchanges() {
+        assert (!Thread.holdsLock(connectionPool));
+        synchronized (connectionPool) {
+            noNewExchanges = true;
+        }
+    }
+
     public void connect(int connectTimeout, int readTimeout, int writeTimeout,
                         int pingIntervalMillis, boolean connectionRetryEnabled, NewCall call,
                         EventListener eventListener) {
-        if (null != protocol) throw new IllegalStateException("Already connected");
+        if (protocol != null) throw new IllegalStateException("already connected");
 
         RouteException routeException = null;
         List<ConnectionSuite> connectionSuites = route.address().connectionSpecs();
         ConnectionSelector connectionSelector = new ConnectionSelector(connectionSuites);
 
-        if (null == route.address().sslSocketFactory()) {
+        if (route.address().sslSocketFactory() == null) {
             if (!connectionSuites.contains(ConnectionSuite.CLEARTEXT)) {
                 throw new RouteException(new UnknownServiceException(
                         "CLEARTEXT communication not enabled for client"));
@@ -400,18 +416,11 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             Response response = tunnelConnection.readResponseHeaders(false)
                     .request(tunnelRequest)
                     .build();
-            // 来自连接的响应体应该是空的，但是如果不是空的，那么我们应该在继续之前使用它
-            long contentLength = HttpHeaders.contentLength(response);
-            if (contentLength == -1L) {
-                contentLength = 0L;
-            }
-            Source body = tunnelConnection.newFixedLengthSource(contentLength);
-            Builder.skipAll(body, Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
-            body.close();
+            tunnelConnection.skipConnectBody(response);
 
             switch (response.code()) {
                 case Http.HTTP_OK:
-                    if (!source.buffer().exhausted() || !sink.buffer().exhausted()) {
+                    if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
                         throw new IOException("TLS tunnel buffered too many bytes!");
                     }
                     return null;
@@ -455,7 +464,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 .protocol(Protocol.HTTP_1_1)
                 .code(Http.HTTP_PROXY_AUTH)
                 .message("Preemptive Authenticate")
-                .body(ResponseBody.create(null, Normal.EMPTY_BYTE_ARRAY))
+                .body(Builder.EMPTY_RESPONSE)
                 .sentRequestAtMillis(-1L)
                 .receivedResponseAtMillis(-1L)
                 .header(Header.PROXY_AUTHENTICATE, Header.HTTPD_PREEMPTIVE)
@@ -473,15 +482,15 @@ public final class RealConnection extends Http2Connection.Listener implements Co
      * 如果此连接可以将流分配到{@code address}，则返回true。如果非空{@code route}是连接的解析路由
      *
      * @param address 地址信息
-     * @param route   路由
+     * @param routes  路由
      * @return the true/false
      */
-    public boolean isEligible(Address address, Route route) {
+    boolean isEligible(Address address, List<Route> routes) {
         // 如果这个连接不接受新的流，我们就完成了
-        if (allocations.size() >= allocationLimit || noNewStreams) return false;
+        if (transmitters.size() >= allocationLimit || noNewExchanges) return false;
 
         // 如果地址的非主机字段没有重叠，我们就完成了
-        if (!Builder.instance.equalsNonHost(this.route.address(), address)) return false;
+        if (!Internal.instance.equalsNonHost(this.route.address(), address)) return false;
 
         // 如果主机完全匹配，就完成了:这个连接可以携带地址
         if (address.url().host().equals(this.route().address().url().host())) {
@@ -493,15 +502,11 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             return false;
         }
 
-        // 2. 路由必须共享一个IP地址。这要求我们为两个主机都有一个DNS地址，这只在路由规划之后
-        // 才会发生。我们无法合并使用代理的连接，因为代理不会告诉我们原始服务器的IP地址
-        if (null == route) return false;
-        if (route.proxy().type() != Proxy.Type.DIRECT) return false;
-        if (this.route.proxy().type() != Proxy.Type.DIRECT) return false;
-        if (!this.route.socketAddress().equals(route.socketAddress())) return false;
+        // 2. 这些路由必须共享一个IP地址
+        if (routes == null || !routeMatchesAny(routes)) return false;
 
         // 3. 此连接的服务器证书必须覆盖新主机
-        if (route.address().hostnameVerifier() != HostnameVerifier.INSTANCE) return false;
+        if (address.hostnameVerifier() != HostnameVerifier.INSTANCE) return false;
         if (!supportsUrl(address.url())) return false;
 
         // 4. 证书固定必须与主机匹配
@@ -511,7 +516,25 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             return false;
         }
 
-        return true; // The caller's address can be carried by this connection.
+        return true;
+    }
+
+    /**
+     * Returns true if this connection's route has the same address as any of {@code routes}. This
+     * requires us to have a DNS address for both hosts, which only happens after route planning. We
+     * can't coalesce connections that use a proxy, since proxies don't tell us the origin server's IP
+     * address.
+     */
+    private boolean routeMatchesAny(List<Route> candidates) {
+        for (int i = 0, size = candidates.size(); i < size; i++) {
+            Route candidate = candidates.get(i);
+            if (candidate.proxy().type() == Proxy.Type.DIRECT
+                    && route.proxy().type() == Proxy.Type.DIRECT
+                    && route.socketAddress().equals(candidate.socketAddress())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean supportsUrl(UnoUrl url) {
@@ -530,23 +553,24 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return true;
     }
 
-    public HttpCodec newCodec(Httpd client, Interceptor.Chain chain,
-                              StreamAllocation streamAllocation) throws SocketException {
-        if (null != http2Connection) {
-            return new Http2Codec(client, chain, streamAllocation, http2Connection);
+    HttpCodec newCodec(Httpd client, Interceptor.Chain chain) throws SocketException {
+        if (http2Connection != null) {
+            return new Http2Codec(client, this, chain, http2Connection);
         } else {
             socket.setSoTimeout(chain.readTimeoutMillis());
             source.timeout().timeout(chain.readTimeoutMillis(), TimeUnit.MILLISECONDS);
             sink.timeout().timeout(chain.writeTimeoutMillis(), TimeUnit.MILLISECONDS);
-            return new Http1Codec(client, streamAllocation, source, sink);
+            return new Http1Codec(client, this, source, sink);
         }
     }
 
-    public RealWebSocket.Streams newWebSocketStreams(final StreamAllocation streamAllocation) {
+    RealWebSocket.Streams newWebSocketStreams(Exchange exchange) throws SocketException {
+        socket.setSoTimeout(0);
+        noNewExchanges();
         return new RealWebSocket.Streams(true, source, sink) {
             @Override
             public void close() {
-                streamAllocation.streamFinished(true, streamAllocation.codec(), -1L, null);
+                exchange.bodyComplete(-1L, true, true, null);
             }
         };
     }
@@ -577,7 +601,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
 
         if (null != http2Connection) {
-            return !http2Connection.isShutdown();
+            return http2Connection.isHealthy(System.nanoTime());
         }
 
         if (doExtensiveChecks) {
@@ -593,7 +617,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 } finally {
                     socket.setSoTimeout(readTimeout);
                 }
-            } catch (SocketException | SocketTimeoutException ignored) {
+            } catch (SocketTimeoutException ignored) {
                 // 读取超时;套接字是好的
             } catch (IOException e) {
                 // 不能读取;套接字关闭
@@ -603,11 +627,17 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return true;
     }
 
+    /**
+     * Refuse incoming streams.
+     */
     @Override
     public void onStream(Http2Stream stream) throws IOException {
-        stream.close(ErrorCode.REFUSED_STREAM);
+        stream.close(ErrorCode.REFUSED_STREAM, null);
     }
 
+    /**
+     * When settings are received, adjust the allocation limit.
+     */
     @Override
     public void onSettings(Http2Connection connection) {
         synchronized (connectionPool) {
@@ -620,8 +650,47 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         return handshake;
     }
 
+    /**
+     * Returns true if this is an HTTP/2 connection. Such connections can be used in multiple HTTP
+     * requests simultaneously.
+     */
     public boolean isMultiplexed() {
-        return null != http2Connection;
+        return http2Connection != null;
+    }
+
+    /**
+     * Track a failure using this connection. This may prevent both the connection and its route from
+     * being used for future exchanges.
+     */
+    void trackFailure(IOException e) {
+        assert (!Thread.holdsLock(connectionPool));
+        synchronized (connectionPool) {
+            if (e instanceof StreamException) {
+                ErrorCode errorCode = ((StreamException) e).errorCode;
+                if (errorCode == ErrorCode.REFUSED_STREAM) {
+                    // Retry REFUSED_STREAM errors once on the same connection.
+                    refusedStreamCount++;
+                    if (refusedStreamCount > 1) {
+                        noNewExchanges = true;
+                        routeFailureCount++;
+                    }
+                } else if (errorCode != ErrorCode.CANCEL) {
+                    // Keep the connection for CANCEL errors. Everything else wants a fresh connection.
+                    noNewExchanges = true;
+                    routeFailureCount++;
+                }
+            } else if (!isMultiplexed() || e instanceof RevisedException) {
+                noNewExchanges = true;
+
+                // If this route hasn't completed a call, avoid it for new connections.
+                if (successCount == 0) {
+                    if (e != null) {
+                        connectionPool.connectFailed(route, e);
+                    }
+                    routeFailureCount++;
+                }
+            }
+        }
     }
 
     @Override

@@ -45,31 +45,37 @@ public class DefaultTrustManager extends X509ExtendedTrustManager {
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-        return null;
+        return new X509Certificate[0];
     }
 
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType) {
+
     }
 
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType) {
+
     }
 
     @Override
     public void checkClientTrusted(X509Certificate[] x509Certificates, String s, Socket socket) {
+
     }
 
     @Override
     public void checkServerTrusted(X509Certificate[] x509Certificates, String s, Socket socket) {
+
     }
 
     @Override
     public void checkClientTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine) {
+
     }
 
     @Override
     public void checkServerTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine) {
+
     }
 
 }

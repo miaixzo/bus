@@ -47,18 +47,30 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class SuffixDatabase {
+public class SuffixDatabase {
 
-    public static final String PUBLIC_SUFFIX_RESOURCE = Normal.META_DATA_INF + "/suffixes/suffixes.gz";
+    public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
 
     private static final byte[] WILDCARD_LABEL = new byte[]{Symbol.C_STAR};
     private static final String[] EMPTY_RULE = Normal.EMPTY_STRING_ARRAY;
     private static final String[] PREVAILING_RULE = new String[]{Symbol.STAR};
     private static final byte EXCEPTION_MARKER = Symbol.C_NOT;
     private static final SuffixDatabase instance = new SuffixDatabase();
+
+    /**
+     * True after we've attempted to read the list for the first time.
+     */
     private final AtomicBoolean listRead = new AtomicBoolean(false);
+
+    /**
+     * Used for concurrent threads reading the list for the first time.
+     */
     private final CountDownLatch readCompleteLatch = new CountDownLatch(1);
 
+    // The lists are held as a large array of UTF-8 bytes. This is to avoid allocating lots of strings
+    // that will likely never be used. Each rule is separated by '\n'. Please see the
+    // PublicSuffixListGenerator class for how these lists are generated.
+    // Guarded by this.
     private byte[] publicSuffixListBytes;
     private byte[] publicSuffixExceptionListBytes;
 
@@ -150,27 +162,46 @@ public final class SuffixDatabase {
         return match;
     }
 
+    /**
+     * Returns the effective top-level domain plus one (eTLD+1) by referencing the public suffix list.
+     * Returns null if the domain is a public suffix or a private address.
+     * <p>
+     * Here are some examples: <pre>{@code
+     * assertEquals("google.com", getEffectiveTldPlusOne("google.com"));
+     * assertEquals("google.com", getEffectiveTldPlusOne("www.google.com"));
+     * assertNull(getEffectiveTldPlusOne("com"));
+     * assertNull(getEffectiveTldPlusOne("localhost"));
+     * assertNull(getEffectiveTldPlusOne("mymacbook"));
+     * }</pre>
+     *
+     * @param domain A canonicalized domain. An International Domain Name (IDN) should be punycode
+     *               encoded.
+     */
     public String getEffectiveTldPlusOne(String domain) {
         if (null == domain) throw new NullPointerException("domain == null");
 
+        // We use UTF-8 in the list so we need to convert to Unicode.
         String unicodeDomain = IDN.toUnicode(domain);
         String[] domainLabels = unicodeDomain.split("\\.");
         String[] rule = findMatchingRule(domainLabels);
         if (domainLabels.length == rule.length && rule[0].charAt(0) != EXCEPTION_MARKER) {
+            // The domain is a public suffix.
             return null;
         }
 
         int firstLabelOffset;
         if (rule[0].charAt(0) == EXCEPTION_MARKER) {
+            // Exception rules hold the effective TLD plus one.
             firstLabelOffset = domainLabels.length - rule.length;
         } else {
+            // Otherwise the rule is for a public suffix, so we must take one more label.
             firstLabelOffset = domainLabels.length - (rule.length + 1);
         }
 
         StringBuilder effectiveTldPlusOne = new StringBuilder();
         String[] punycodeLabels = domain.split("\\.");
         for (int i = firstLabelOffset; i < punycodeLabels.length; i++) {
-            effectiveTldPlusOne.append(punycodeLabels[i]).append(Symbol.C_DOT);
+            effectiveTldPlusOne.append(punycodeLabels[i]).append('.');
         }
         effectiveTldPlusOne.deleteCharAt(effectiveTldPlusOne.length() - 1);
 
@@ -195,11 +226,14 @@ public final class SuffixDatabase {
             }
         }
 
+        // Break apart the domain into UTF-8 labels, i.e. foo.bar.com turns into [foo, bar, com].
         byte[][] domainLabelsUtf8Bytes = new byte[domainLabels.length][];
         for (int i = 0; i < domainLabels.length; i++) {
             domainLabelsUtf8Bytes[i] = domainLabels[i].getBytes(Charset.UTF_8);
         }
 
+        // Start by looking for exact matches. We start at the leftmost label. For example, foo.bar.com
+        // will look like: [foo, bar, com], [bar, com], [com]. The longest matching rule wins.
         String exactMatch = null;
         for (int i = 0; i < domainLabelsUtf8Bytes.length; i++) {
             String rule = binarySearchBytes(publicSuffixListBytes, domainLabelsUtf8Bytes, i);
@@ -209,6 +243,11 @@ public final class SuffixDatabase {
             }
         }
 
+        // In theory, wildcard rules are not restricted to having the wildcard in the leftmost position.
+        // In practice, wildcards are always in the leftmost position. For now, this implementation
+        // cheats and does not attempt every possible permutation. Instead, it only considers wildcards
+        // in the leftmost position. We assert this fact when we generate the public suffix file. If
+        // this assertion ever fails we'll need to refactor this implementation.
         String wildcardMatch = null;
         if (domainLabelsUtf8Bytes.length > 1) {
             byte[][] labelsWithWildcard = domainLabelsUtf8Bytes.clone();
@@ -222,6 +261,7 @@ public final class SuffixDatabase {
             }
         }
 
+        // Exception rules only apply to wildcard rules, so only try it if we matched a wildcard.
         String exception = null;
         if (null != wildcardMatch) {
             for (int labelIndex = 0; labelIndex < domainLabelsUtf8Bytes.length - 1; labelIndex++) {
@@ -254,6 +294,11 @@ public final class SuffixDatabase {
                 : wildcardRuleLabels;
     }
 
+    /**
+     * Reads the public suffix list treating the operation as uninterruptible. We always want to read
+     * the list otherwise we'll be left in a bad state. If the thread was interrupted prior to this
+     * operation, it will be re-interrupted after the list is read.
+     */
     private void readTheListUninterruptibly() {
         boolean interrupted = false;
         try {
@@ -283,17 +328,14 @@ public final class SuffixDatabase {
         InputStream resource = SuffixDatabase.class.getResourceAsStream(PUBLIC_SUFFIX_RESOURCE);
         if (null == resource) return;
 
-        BufferSource bufferedSource = IoKit.buffer(new GzipSource(IoKit.source(resource)));
-        try {
-            int totalBytes = bufferedSource.readInt();
+        try (BufferSource BufferSource = IoKit.buffer(new GzipSource(IoKit.source(resource)))) {
+            int totalBytes = BufferSource.readInt();
             publicSuffixListBytes = new byte[totalBytes];
-            bufferedSource.readFully(publicSuffixListBytes);
+            BufferSource.readFully(publicSuffixListBytes);
 
-            int totalExceptionBytes = bufferedSource.readInt();
+            int totalExceptionBytes = BufferSource.readInt();
             publicSuffixExceptionListBytes = new byte[totalExceptionBytes];
-            bufferedSource.readFully(publicSuffixExceptionListBytes);
-        } finally {
-            IoKit.close(bufferedSource);
+            BufferSource.readFully(publicSuffixExceptionListBytes);
         }
 
         synchronized (this) {
@@ -304,6 +346,9 @@ public final class SuffixDatabase {
         readCompleteLatch.countDown();
     }
 
+    /**
+     * Visible for testing.
+     */
     void setListBytes(byte[] publicSuffixListBytes, byte[] publicSuffixExceptionListBytes) {
         this.publicSuffixListBytes = publicSuffixListBytes;
         this.publicSuffixExceptionListBytes = publicSuffixExceptionListBytes;

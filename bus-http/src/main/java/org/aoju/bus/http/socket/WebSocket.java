@@ -44,8 +44,8 @@ public interface WebSocket {
     Request request();
 
     /**
-     * @return 所有排队等待发送到服务器的消息的大小(以字节为单位)。这还不包括帧开销。
-     * 它也不包括任何由操作系统或网络中介体缓冲的字节。如果队列中没有消息等待，则此方法返回0。
+     * @return 所有排队等待发送到服务器的消息的大小(以字节为单位)。这还不包括帧开销
+     * 它也不包括任何由操作系统或网络中介体缓冲的字节。如果队列中没有消息等待，则此方法返回0
      * 如果在web套接字被取消后可能返回一个非零值;这表示未传输排队消息
      */
     long queueSize();
@@ -74,25 +74,25 @@ public interface WebSocket {
 
     /**
      * 尝试启动此web套接字的正常关闭。任何已加入队列的消息将在发送关闭消息之前发送，
-     * 但是随后对{@link #send}的调用将返回false，它们的消息将不被加入队列.
+     * 但是随后对{@link #send}的调用将返回false，它们的消息将不被加入队列
      *
      * @param code   RFC 6455第7.4节定义的状态码
      * @param reason 关闭或{@code null}的原因
      * @return the true/false
-     * @throws IllegalArgumentException 如果状态码无效.
+     * @throws IllegalArgumentException 如果状态码无效
      */
     boolean close(int code, String reason);
 
     /**
-     * 立即并强烈地释放这个web套接字持有的资源，丢弃任何排队的消息。
-     * 如果web套接字已经关闭或取消，则此操作不执行任何操作.
+     * 立即并强烈地释放这个web套接字持有的资源，丢弃任何排队的消息
+     * 如果web套接字已经关闭或取消，则此操作不执行任何操作
      */
     void cancel();
 
     interface Factory {
 
         /**
-         * 创建一个新的web套接字并立即返回它。创建web套接字将启动一个异步进程来连接套接字。
+         * 创建一个新的web套接字并立即返回它。创建web套接字将启动一个异步进程来连接套接字
          * 成功或失败，{@code listener}将被通知。当返回的web套接字不再使用时，调用者必须关闭或取消它
          *
          * @param request  当前网络请求

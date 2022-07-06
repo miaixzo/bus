@@ -42,7 +42,7 @@ import java.util.List;
 public interface CookieJar {
 
     /**
-     * 从不接受任何cookie的设置。
+     * 从不接受任何cookie的设置
      */
     CookieJar NO_COOKIES = new CookieJar() {
         @Override
@@ -57,7 +57,7 @@ public interface CookieJar {
 
     /**
      * 据这个jar's的策略将HTTP响应中的{@code cookies}保存到这个存储中
-     * 请注意，对于单个HTTP响应，如果响应包含一个拖车，则可以第二次调用此方法。
+     * 请注意，对于单个HTTP响应，如果响应包含一个拖车，则可以第二次调用此方法
      * 对于这个模糊的HTTP特性，{@code cookie}只包含预告片的cookie
      *
      * @param url     url信息
@@ -66,7 +66,7 @@ public interface CookieJar {
     void saveFromResponse(UnoUrl url, List<Cookie> cookies);
 
     /**
-     * 将HTTP请求的cookie从jar加载到{@code url}。
+     * 将HTTP请求的cookie从jar加载到{@code url}
      * 此方法为网络请求返回一个可能为空的cookie列表
      * 简单的实现将返回尚未过期的已接受的Cookie，
      * 并返回{@linkplain Cookie#matches} {@code url}

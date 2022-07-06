@@ -43,7 +43,7 @@ import java.util.NoSuchElementException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RouteSelector {
+public class RouteSelector {
 
     private final Address address;
     private final RouteDatabase routeDatabase;
@@ -137,35 +137,19 @@ public final class RouteSelector {
     }
 
     /**
-     * 当客户端在此路由选择器返回的连接上遇到连接失败时，应调用此方法
-     *
-     * @param failedRoute 路由信息
-     * @param failure     异常
-     */
-    public void connectFailed(Route failedRoute, IOException failure) {
-        if (failedRoute.proxy().type() != Proxy.Type.DIRECT && null != address.proxySelector()) {
-            // 当我们无法连接到新的连接时，告诉代理选择器
-            address.proxySelector().connectFailed(
-                    address.url().uri(), failedRoute.proxy().address(), failure);
-        }
-
-        routeDatabase.failed(failedRoute);
-    }
-
-    /**
      * 准备代理服务器进行尝试
      *
-     * @param url   连接地址
-     * @param proxy 代理信息
+     * @param url   url信息
+     * @param proxy 代理
      */
     private void resetNextProxy(UnoUrl url, Proxy proxy) {
-        if (null != proxy) {
-            // 如果用户指定了代理，那么只能尝试该操作
+        if (proxy != null) {
+            // 如果用户指定了代理，则尝试该操作，且仅尝试该操作
             proxies = Collections.singletonList(proxy);
         } else {
-            // 尝试每一个ProxySelector选项，直到一个连接成功
+            // 尝试每一个ProxySelector选项，直到有一个连接成功
             List<Proxy> proxiesOrNull = address.proxySelector().select(url.uri());
-            proxies = null != proxiesOrNull && !proxiesOrNull.isEmpty()
+            proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty()
                     ? Builder.immutableList(proxiesOrNull)
                     : Builder.immutableList(Proxy.NO_PROXY);
         }
@@ -250,7 +234,7 @@ public final class RouteSelector {
     /**
      * 选定的路由
      */
-    public static final class Selection {
+    public static class Selection {
         private final List<Route> routes;
         private int nextRouteIndex = 0;
 

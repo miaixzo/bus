@@ -37,7 +37,7 @@ import javax.security.auth.x500.X500Principal;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class DistinguishedNameParser {
+public class DistinguishedNameParser {
 
     private final String dn;
     private final int length;
@@ -163,6 +163,7 @@ public final class DistinguishedNameParser {
             throw new IllegalStateException("Unexpected end of DN: " + dn);
         }
 
+        // get byte encoding from string representation
         byte[] encoded = new byte[hexLen / 2];
         for (int i = 0, p = beg + 1; i < encoded.length; p += 2, i++) {
             encoded[i] = (byte) getByte(p);
@@ -171,11 +172,13 @@ public final class DistinguishedNameParser {
         return new String(chars, beg, hexLen);
     }
 
+    // gets string attribute value: *( stringchar / pair )
     private String escapedAV() {
         beg = pos;
         end = pos;
         while (true) {
             if (pos >= length) {
+                // the end of DN has been found
                 return new String(chars, beg, end - beg);
             }
 
@@ -209,6 +212,7 @@ public final class DistinguishedNameParser {
         }
     }
 
+    // returns escaped char
     private char getEscaped() {
         pos++;
         if (pos == length) {
@@ -277,6 +281,12 @@ public final class DistinguishedNameParser {
         }
     }
 
+    // Returns byte representation of a char pair
+    // The char pair is composed of DN char in
+    // specified 'position' and the next char
+    // According to BNF syntax:
+    // hexchar    = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+    //                    / "a" / "b" / "c" / "d" / "e" / "f"
     private int getByte(int position) {
         if (position + 1 >= length) {
             throw new IllegalStateException("Malformed DN: " + dn);
@@ -309,7 +319,14 @@ public final class DistinguishedNameParser {
         return (b1 << 4) + b2;
     }
 
+    /**
+     * Parses the DN and returns the most significant attribute value for an attribute type, or null
+     * if none found.
+     *
+     * @param attributeType attribute type to look for (e.g. "ca")
+     */
     public String findMostSpecific(String attributeType) {
+        // Initialize internal state.
         pos = 0;
         beg = 0;
         end = 0;
@@ -342,6 +359,9 @@ public final class DistinguishedNameParser {
                     attValue = escapedAV();
             }
 
+            // Values are ordered from most specific to least specific
+            // due to the RFC2253 formatting. So take the first match
+            // we see.
             if (attributeType.equalsIgnoreCase(attType)) {
                 return attValue;
             }

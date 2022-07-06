@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Challenge {
+public class Challenge {
 
     /**
      * 身份验证方案，如{@code Basic}
@@ -93,18 +93,31 @@ public final class Challenge {
         return new Challenge(scheme, authParams);
     }
 
+    /**
+     * Returns the authentication scheme, like {@code Basic}.
+     */
     public String scheme() {
         return scheme;
     }
 
+    /**
+     * Returns the auth params, including {@code realm} and {@code charset} if present, but as
+     * strings. The map's keys are lowercase and should be treated case-insensitively.
+     */
     public Map<String, String> authParams() {
         return authParams;
     }
 
+    /**
+     * Returns the protection space.
+     */
     public String realm() {
         return authParams.get("realm");
     }
 
+    /**
+     * Returns the charset that should be used to encode the credentials.
+     */
     public java.nio.charset.Charset charset() {
         String charset = authParams.get("charset");
         if (null != charset) {

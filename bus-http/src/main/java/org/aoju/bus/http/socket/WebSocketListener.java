@@ -47,7 +47,7 @@ public abstract class WebSocketListener {
     }
 
     /**
-     * 当收到文本(类型为{@code 0x1})消息时调用.
+     * 当收到文本(类型为{@code 0x1})消息时调用
      *
      * @param webSocket 当前web socket
      * @param text      文本内容
@@ -67,7 +67,7 @@ public abstract class WebSocketListener {
     }
 
     /**
-     * 当远程对等点指示不再传输传入消息时调用.
+     * 当远程对等点指示不再传输传入消息时调用
      *
      * @param webSocket 当前web socket
      * @param code      状态码
@@ -78,7 +78,7 @@ public abstract class WebSocketListener {
     }
 
     /**
-     * 当两个对等点都指示不再传输任何消息且连接已成功释放时调用。不再调用此侦听器.
+     * 当两个对等点都指示不再传输任何消息且连接已成功释放时调用。不再调用此侦听器
      *
      * @param webSocket 当前web socket
      * @param code      状态码
@@ -89,7 +89,7 @@ public abstract class WebSocketListener {
     }
 
     /**
-     * 当web套接字由于从网络读取或写入错误而关闭时调用。发出和传入的消息可能都丢失了。不再调用此侦听器.
+     * 当web套接字由于从网络读取或写入错误而关闭时调用。发出和传入的消息可能都丢失了。不再调用此侦听器
      *
      * @param webSocket 当前web socket
      * @param throwable 线程信息

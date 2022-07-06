@@ -31,19 +31,21 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * RFC 6455兼容的WebSocket帧写入器.
+ * RFC 6455兼容的WebSocket帧写入器
  * 这个类不是线程安全的
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-final class WebSocketWriter {
+class WebSocketWriter {
 
     final boolean isClient;
     final Random random;
 
     final BufferSink sink;
-
+    /**
+     * The {@link Buffer} of {@link #sink}. Write to this and then flush/emit {@link #sink}.
+     */
     final Buffer sinkBuffer;
     final Buffer buffer = new Buffer();
     final FrameSink frameSink = new FrameSink();
@@ -53,41 +55,48 @@ final class WebSocketWriter {
     boolean activeWriter;
 
     WebSocketWriter(boolean isClient, BufferSink sink, Random random) {
-        if (null == sink) throw new NullPointerException("sink == null");
-        if (null == random) throw new NullPointerException("random == null");
+        if (sink == null) throw new NullPointerException("sink == null");
+        if (random == null) throw new NullPointerException("random == null");
         this.isClient = isClient;
         this.sink = sink;
         this.sinkBuffer = sink.buffer();
         this.random = random;
 
+        // Masks are only a concern for client writers.
         maskKey = isClient ? new byte[4] : null;
         maskCursor = isClient ? new Buffer.UnsafeCursor() : null;
     }
 
+    /**
+     * Send a ping with the supplied {@code payload}.
+     */
     void writePing(ByteString payload) throws IOException {
         writeControlFrame(WebSocketProtocol.OPCODE_CONTROL_PING, payload);
     }
 
+    /**
+     * Send a pong with the supplied {@code payload}.
+     */
     void writePong(ByteString payload) throws IOException {
         writeControlFrame(WebSocketProtocol.OPCODE_CONTROL_PONG, payload);
     }
 
     /**
-     * 发送带有可选代码和原因的关闭帧.
+     * Send a close frame with optional code and reason.
      *
-     * @param code   RFC 6455或{@code 0}第7.4节定义的状态码。
-     * @param reason 关闭或{@code null}的原因.
-     * @throws IOException 异常
+     * @param code   Status code as defined by <a
+     *               href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4 of RFC 6455</a> or {@code 0}.
+     * @param reason Reason for shutting down or {@code null}.
      */
     void writeClose(int code, ByteString reason) throws IOException {
         ByteString payload = ByteString.EMPTY;
-        if (code != 0 || null != reason) {
+        if (code != 0 || reason != null) {
             if (code != 0) {
                 WebSocketProtocol.validateCloseCode(code);
             }
             Buffer buffer = new Buffer();
             buffer.writeShort(code);
-            if (null != reason) {
+            if (reason != null) {
                 buffer.write(reason);
             }
             payload = buffer.readByteString();
@@ -137,12 +146,17 @@ final class WebSocketWriter {
         sink.flush();
     }
 
+    /**
+     * Stream a message payload as a series of frames. This allows control frames to be interleaved
+     * between parts of the message.
+     */
     Sink newMessageSink(int formatOpcode, long contentLength) {
         if (activeWriter) {
             throw new IllegalStateException("Another message writer is active. Did you call close()?");
         }
         activeWriter = true;
 
+        // Reset FrameSink state for a new writer.
         frameSink.formatOpcode = formatOpcode;
         frameSink.contentLength = contentLength;
         frameSink.isFirstFrame = true;
@@ -198,7 +212,7 @@ final class WebSocketWriter {
         sink.emit();
     }
 
-    final class FrameSink implements Sink {
+    class FrameSink implements Sink {
         int formatOpcode;
         long contentLength;
         boolean isFirstFrame;
@@ -210,13 +224,14 @@ final class WebSocketWriter {
 
             buffer.write(source, byteCount);
 
+            // Determine if this is a buffered write which we can defer until close() flushes.
             boolean deferWrite = isFirstFrame
                     && contentLength != -1
-                    && buffer.size() > contentLength - 8192;
+                    && buffer.size() > contentLength - 8192 /* segment size */;
 
             long emitCount = buffer.completeSegmentByteCount();
             if (emitCount > 0 && !deferWrite) {
-                writeMessageFrame(formatOpcode, emitCount, isFirstFrame, false);
+                writeMessageFrame(formatOpcode, emitCount, isFirstFrame, false /* final */);
                 isFirstFrame = false;
             }
         }
@@ -225,7 +240,7 @@ final class WebSocketWriter {
         public void flush() throws IOException {
             if (closed) throw new IOException("closed");
 
-            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, false);
+            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, false /* final */);
             isFirstFrame = false;
         }
 
@@ -238,7 +253,7 @@ final class WebSocketWriter {
         public void close() throws IOException {
             if (closed) throw new IOException("closed");
 
-            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, true);
+            writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, true /* final */);
             closed = true;
             activeWriter = false;
         }

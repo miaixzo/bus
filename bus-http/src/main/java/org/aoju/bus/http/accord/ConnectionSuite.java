@@ -30,8 +30,8 @@ import org.aoju.bus.http.secure.TlsVersion;
 
 import javax.net.ssl.SSLSocket;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 指定HTTP传输通过的套接字连接的配置。对于{@code https:} url，这包括在协商安全连接时要使用
@@ -43,40 +43,13 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class ConnectionSuite {
+public class ConnectionSuite {
 
-    public static final Comparator<String> NATURAL_ORDER = String::compareTo;
     /**
      * 用于{@code http:} url的未加密、未经身份验证的连接
      */
     public static final ConnectionSuite CLEARTEXT = new Builder(false).build();
-    /**
-     * 最安全但通常受支持的列表
-     */
-    private static final CipherSuite[] RESTRICTED_CIPHER_SUITES = new CipherSuite[]{
-            // TLSv1.3
-            CipherSuite.TLS_AES_128_GCM_SHA256,
-            CipherSuite.TLS_AES_256_GCM_SHA384,
-            CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
-            CipherSuite.TLS_AES_128_CCM_SHA256,
-            CipherSuite.TLS_AES_256_CCM_8_SHA256,
 
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
-            CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
-    };
-
-    /**
-     * 一个安全的TLS连接，假设有一个现代的客户端平台和服务器
-     */
-    public static final ConnectionSuite RESTRICTED_TLS = new Builder(true)
-            .cipherSuites(RESTRICTED_CIPHER_SUITES)
-            .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2)
-            .supportsTlsExtensions(true)
-            .build();
     /**
      * 等于Chrome 51支持的密码套件
      * 所有这些套件都可以在Android 7.0上使用
@@ -86,9 +59,8 @@ public final class ConnectionSuite {
             CipherSuite.TLS_AES_128_GCM_SHA256,
             CipherSuite.TLS_AES_256_GCM_SHA384,
             CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
-            CipherSuite.TLS_AES_128_CCM_SHA256,
-            CipherSuite.TLS_AES_256_CCM_8_SHA256,
 
+            // TLSv1.0, TLSv1.1, TLSv1.2
             CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
             CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
             CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
@@ -111,17 +83,10 @@ public final class ConnectionSuite {
      */
     public static final ConnectionSuite MODERN_TLS = new Builder(true)
             .cipherSuites(APPROVED_CIPHER_SUITES)
-            .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2, TlsVersion.TLS_1_1, TlsVersion.TLS_1_0)
+            .tlsVersions(TlsVersion.TLS_1_3, TlsVersion.TLS_1_2)
             .supportsTlsExtensions(true)
             .build();
-    /**
-     * 向后兼容的回退连接，用于与过时的服务器进行互操作.
-     */
-    public static final ConnectionSuite COMPATIBLE_TLS = new Builder(true)
-            .cipherSuites(APPROVED_CIPHER_SUITES)
-            .tlsVersions(TlsVersion.TLS_1_0)
-            .supportsTlsExtensions(true)
-            .build();
+
     final boolean tls;
     final boolean supportsTlsExtensions;
     final String[] cipherSuites;
@@ -185,7 +150,7 @@ public final class ConnectionSuite {
                 ? org.aoju.bus.http.Builder.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
                 : sslSocket.getEnabledCipherSuites();
         String[] tlsVersionsIntersection = null != tlsVersions
-                ? org.aoju.bus.http.Builder.intersect(NATURAL_ORDER, sslSocket.getEnabledProtocols(), tlsVersions)
+                ? org.aoju.bus.http.Builder.intersect(org.aoju.bus.http.Builder.NATURAL_ORDER, sslSocket.getEnabledProtocols(), tlsVersions)
                 : sslSocket.getEnabledProtocols();
 
         String[] supportedCipherSuites = sslSocket.getSupportedCipherSuites();
@@ -217,7 +182,7 @@ public final class ConnectionSuite {
         }
 
         if (null != tlsVersions && !org.aoju.bus.http.Builder.nonEmptyIntersection(
-                NATURAL_ORDER, tlsVersions, socket.getEnabledProtocols())) {
+                org.aoju.bus.http.Builder.NATURAL_ORDER, tlsVersions, socket.getEnabledProtocols())) {
             return false;
         }
 
@@ -260,19 +225,17 @@ public final class ConnectionSuite {
     @Override
     public String toString() {
         if (!tls) {
-            return "ConnectionSpec()";
+            return "ConnectionSuite()";
         }
 
-        String cipherSuitesString = null != cipherSuites ? cipherSuites().toString() : "[all enabled]";
-        String tlsVersionsString = null != tlsVersions ? tlsVersions().toString() : "[all enabled]";
-        return "ConnectionSpec("
-                + "cipherSuites=" + cipherSuitesString
-                + ", tlsVersions=" + tlsVersionsString
+        return "ConnectionSuite("
+                + "cipherSuites=" + Objects.toString(cipherSuites(), "[all enabled]")
+                + ", tlsVersions=" + Objects.toString(tlsVersions(), "[all enabled]")
                 + ", supportsTlsExtensions=" + supportsTlsExtensions
                 + ")";
     }
 
-    public static final class Builder {
+    public static class Builder {
 
         boolean tls;
         String[] cipherSuites;

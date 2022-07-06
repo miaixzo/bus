@@ -34,8 +34,8 @@ import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.http.Headers;
 
 import java.io.IOException;
 import java.util.*;
@@ -49,70 +49,70 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-final class Hpack {
+class Hpack {
 
-    static final HttpHeaders[] STATIC_HEADERS_TABLE = new HttpHeaders[]{
-            new HttpHeaders(HttpHeaders.TARGET_AUTHORITY, Normal.EMPTY),
-            new HttpHeaders(HttpHeaders.TARGET_METHOD, Http.GET),
-            new HttpHeaders(HttpHeaders.TARGET_METHOD, Http.POST),
-            new HttpHeaders(HttpHeaders.TARGET_PATH, Symbol.SLASH),
-            new HttpHeaders(HttpHeaders.TARGET_PATH, "/index.html"),
-            new HttpHeaders(HttpHeaders.TARGET_SCHEME, Http.HTTP),
-            new HttpHeaders(HttpHeaders.TARGET_SCHEME, Http.HTTPS),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_OK)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NO_CONTENT)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_PARTIAL)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_MODIFIED)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_BAD_REQUEST)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_FOUND)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_INTERNAL_ERROR)),
-            new HttpHeaders(Header.ACCEPT_CHARSET, Normal.EMPTY),
-            new HttpHeaders(Header.ACCEPT_ENCODING, "gzip, deflate"),
-            new HttpHeaders(Header.ACCEPT_LANGUAGE, Normal.EMPTY),
-            new HttpHeaders(Header.ACCEPT_RANGES, Normal.EMPTY),
-            new HttpHeaders(Header.ACCEPT, Normal.EMPTY),
-            new HttpHeaders(Header.ACCESS_CONTROL_ALLOW_ORIGIN, Normal.EMPTY),
-            new HttpHeaders(Header.AGE, Normal.EMPTY),
-            new HttpHeaders(Header.ALLOW, Normal.EMPTY),
-            new HttpHeaders(Header.AUTHORIZATION, Normal.EMPTY),
-            new HttpHeaders(Header.CACHE_CONTROL, Normal.EMPTY),
-            new HttpHeaders(Header.CONTENT_DISPOSITION, Normal.EMPTY),
-            new HttpHeaders(Header.CONTENT_ENCODING, Normal.EMPTY),
-            new HttpHeaders(Header.CONTENT_LANGUAGE, Normal.EMPTY),
-            new HttpHeaders(Header.CONTENT_LENGTH, Normal.EMPTY),
-            new HttpHeaders(Header.CONTENT_LOCATION, Normal.EMPTY),
-            new HttpHeaders(Header.CONTENT_RANGE, Normal.EMPTY),
-            new HttpHeaders(Header.CONTENT_TYPE, Normal.EMPTY),
-            new HttpHeaders(Header.COOKIE, Normal.EMPTY),
-            new HttpHeaders(Header.DATE, Normal.EMPTY),
-            new HttpHeaders(Header.ETAG, Normal.EMPTY),
-            new HttpHeaders(Header.EXPECT, Normal.EMPTY),
-            new HttpHeaders(Header.EXPIRES, Normal.EMPTY),
-            new HttpHeaders(Header.FROM, Normal.EMPTY),
-            new HttpHeaders(Header.HOST, Normal.EMPTY),
-            new HttpHeaders(Header.IF_MATCH, Normal.EMPTY),
-            new HttpHeaders(Header.IF_MODIFIED_SINCE, Normal.EMPTY),
-            new HttpHeaders(Header.IF_NONE_MATCH, Normal.EMPTY),
-            new HttpHeaders(Header.IF_RANGE, Normal.EMPTY),
-            new HttpHeaders(Header.IF_UNMODIFIED_SINCE, Normal.EMPTY),
-            new HttpHeaders(Header.LAST_MODIFIED, Normal.EMPTY),
-            new HttpHeaders(Header.LINK, Normal.EMPTY),
-            new HttpHeaders(Header.LOCATION, Normal.EMPTY),
-            new HttpHeaders(Header.MAX_FORWARDS, Normal.EMPTY),
-            new HttpHeaders(Header.PROXY_AUTHENTICATE, Normal.EMPTY),
-            new HttpHeaders(Header.PROXY_AUTHORIZATION, Normal.EMPTY),
-            new HttpHeaders(Header.RANGE, Normal.EMPTY),
-            new HttpHeaders(Header.REFERER, Normal.EMPTY),
-            new HttpHeaders(Header.REFRESH, Normal.EMPTY),
-            new HttpHeaders(Header.RETRY_AFTER, Normal.EMPTY),
-            new HttpHeaders(Header.SERVER, Normal.EMPTY),
-            new HttpHeaders(Header.SET_COOKIE, Normal.EMPTY),
-            new HttpHeaders(Header.STRICT_TRANSPORT_SECURITY, Normal.EMPTY),
-            new HttpHeaders(Header.TRANSFER_ENCODING, Normal.EMPTY),
-            new HttpHeaders(Header.USER_AGENT, Normal.EMPTY),
-            new HttpHeaders(Header.VARY, Normal.EMPTY),
-            new HttpHeaders(Header.VIA, Normal.EMPTY),
-            new HttpHeaders(Header.WWW_AUTHENTICATE, Normal.EMPTY)
+    static final Headers.Header[] STATIC_HEADER_TABLE = new Headers.Header[]{
+            new Headers.Header(Headers.Header.TARGET_AUTHORITY, Normal.EMPTY),
+            new Headers.Header(Headers.Header.TARGET_METHOD, Http.GET),
+            new Headers.Header(Headers.Header.TARGET_METHOD, Http.POST),
+            new Headers.Header(Headers.Header.TARGET_PATH, Symbol.SLASH),
+            new Headers.Header(Headers.Header.TARGET_PATH, "/index.html"),
+            new Headers.Header(Headers.Header.TARGET_SCHEME, Http.HTTP),
+            new Headers.Header(Headers.Header.TARGET_SCHEME, Http.HTTPS),
+            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_OK)),
+            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NO_CONTENT)),
+            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_PARTIAL)),
+            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_MODIFIED)),
+            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_BAD_REQUEST)),
+            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_FOUND)),
+            new Headers.Header(Headers.Header.RESPONSE_STATUS, StringKit.toString(Http.HTTP_INTERNAL_ERROR)),
+            new Headers.Header(Header.ACCEPT_CHARSET, Normal.EMPTY),
+            new Headers.Header(Header.ACCEPT_ENCODING, "gzip, deflate"),
+            new Headers.Header(Header.ACCEPT_LANGUAGE, Normal.EMPTY),
+            new Headers.Header(Header.ACCEPT_RANGES, Normal.EMPTY),
+            new Headers.Header(Header.ACCEPT, Normal.EMPTY),
+            new Headers.Header(Header.ACCESS_CONTROL_ALLOW_ORIGIN, Normal.EMPTY),
+            new Headers.Header(Header.AGE, Normal.EMPTY),
+            new Headers.Header(Header.ALLOW, Normal.EMPTY),
+            new Headers.Header(Header.AUTHORIZATION, Normal.EMPTY),
+            new Headers.Header(Header.CACHE_CONTROL, Normal.EMPTY),
+            new Headers.Header(Header.CONTENT_DISPOSITION, Normal.EMPTY),
+            new Headers.Header(Header.CONTENT_ENCODING, Normal.EMPTY),
+            new Headers.Header(Header.CONTENT_LANGUAGE, Normal.EMPTY),
+            new Headers.Header(Header.CONTENT_LENGTH, Normal.EMPTY),
+            new Headers.Header(Header.CONTENT_LOCATION, Normal.EMPTY),
+            new Headers.Header(Header.CONTENT_RANGE, Normal.EMPTY),
+            new Headers.Header(Header.CONTENT_TYPE, Normal.EMPTY),
+            new Headers.Header(Header.COOKIE, Normal.EMPTY),
+            new Headers.Header(Header.DATE, Normal.EMPTY),
+            new Headers.Header(Header.ETAG, Normal.EMPTY),
+            new Headers.Header(Header.EXPECT, Normal.EMPTY),
+            new Headers.Header(Header.EXPIRES, Normal.EMPTY),
+            new Headers.Header(Header.FROM, Normal.EMPTY),
+            new Headers.Header(Header.HOST, Normal.EMPTY),
+            new Headers.Header(Header.IF_MATCH, Normal.EMPTY),
+            new Headers.Header(Header.IF_MODIFIED_SINCE, Normal.EMPTY),
+            new Headers.Header(Header.IF_NONE_MATCH, Normal.EMPTY),
+            new Headers.Header(Header.IF_RANGE, Normal.EMPTY),
+            new Headers.Header(Header.IF_UNMODIFIED_SINCE, Normal.EMPTY),
+            new Headers.Header(Header.LAST_MODIFIED, Normal.EMPTY),
+            new Headers.Header(Header.LINK, Normal.EMPTY),
+            new Headers.Header(Header.LOCATION, Normal.EMPTY),
+            new Headers.Header(Header.MAX_FORWARDS, Normal.EMPTY),
+            new Headers.Header(Header.PROXY_AUTHENTICATE, Normal.EMPTY),
+            new Headers.Header(Header.PROXY_AUTHORIZATION, Normal.EMPTY),
+            new Headers.Header(Header.RANGE, Normal.EMPTY),
+            new Headers.Header(Header.REFERER, Normal.EMPTY),
+            new Headers.Header(Header.REFRESH, Normal.EMPTY),
+            new Headers.Header(Header.RETRY_AFTER, Normal.EMPTY),
+            new Headers.Header(Header.SERVER, Normal.EMPTY),
+            new Headers.Header(Header.SET_COOKIE, Normal.EMPTY),
+            new Headers.Header(Header.STRICT_TRANSPORT_SECURITY, Normal.EMPTY),
+            new Headers.Header(Header.TRANSFER_ENCODING, Normal.EMPTY),
+            new Headers.Header(Header.USER_AGENT, Normal.EMPTY),
+            new Headers.Header(Header.VARY, Normal.EMPTY),
+            new Headers.Header(Header.VIA, Normal.EMPTY),
+            new Headers.Header(Header.WWW_AUTHENTICATE, Normal.EMPTY)
     };
     static final Map<ByteString, Integer> NAME_TO_FIRST_INDEX = nameToFirstIndex();
     private static final int PREFIX_4_BITS = 0x0f;
@@ -124,15 +124,19 @@ final class Hpack {
     }
 
     private static Map<ByteString, Integer> nameToFirstIndex() {
-        Map<ByteString, Integer> result = new LinkedHashMap<>(STATIC_HEADERS_TABLE.length);
-        for (int i = 0; i < STATIC_HEADERS_TABLE.length; i++) {
-            if (!result.containsKey(STATIC_HEADERS_TABLE[i].name)) {
-                result.put(STATIC_HEADERS_TABLE[i].name, i);
+        Map<ByteString, Integer> result = new LinkedHashMap<>(STATIC_HEADER_TABLE.length);
+        for (int i = 0; i < STATIC_HEADER_TABLE.length; i++) {
+            if (!result.containsKey(STATIC_HEADER_TABLE[i].name)) {
+                result.put(STATIC_HEADER_TABLE[i].name, i);
             }
         }
         return Collections.unmodifiableMap(result);
     }
 
+    /**
+     * An HTTP/2 response cannot contain uppercase header characters and must be treated as
+     * malformed.
+     */
     static ByteString checkLowercase(ByteString name) throws IOException {
         for (int i = 0, length = name.size(); i < length; i++) {
             byte c = name.getByte(i);
@@ -143,13 +147,13 @@ final class Hpack {
         return name;
     }
 
-    static final class Reader {
+    static class Reader {
 
-        private final List<HttpHeaders> headersList = new ArrayList<>();
+        private final List<Headers.Header> headerList = new ArrayList<>();
         private final BufferSource source;
 
         private final int headerTableSizeSetting;
-        HttpHeaders[] dynamicTable = new HttpHeaders[8];
+        Headers.Header[] dynamicTable = new Headers.Header[8];
         int nextHeaderIndex = dynamicTable.length - 1;
         int headerCount = 0;
         int dynamicTableByteCount = 0;
@@ -202,6 +206,10 @@ final class Hpack {
             return entriesToEvict;
         }
 
+        /**
+         * Read {@code byteCount} bytes of headers from the source stream. This implementation does not
+         * propagate the never indexed flag of a header.
+         */
         void readHeaders() throws IOException {
             while (!source.exhausted()) {
                 int b = source.readByte() & 0xff;
@@ -231,22 +239,22 @@ final class Hpack {
             }
         }
 
-        public List<HttpHeaders> getAndResetHeaderList() {
-            List<HttpHeaders> result = new ArrayList<>(headersList);
-            headersList.clear();
+        public List<Headers.Header> getAndResetHeaderList() {
+            List<Headers.Header> result = new ArrayList<>(headerList);
+            headerList.clear();
             return result;
         }
 
         private void readIndexedHeader(int index) throws IOException {
             if (isStaticHeader(index)) {
-                HttpHeaders staticEntry = STATIC_HEADERS_TABLE[index];
-                headersList.add(staticEntry);
+                Headers.Header staticEntry = STATIC_HEADER_TABLE[index];
+                headerList.add(staticEntry);
             } else {
-                int dynamicTableIndex = dynamicTableIndex(index - STATIC_HEADERS_TABLE.length);
+                int dynamicTableIndex = dynamicTableIndex(index - STATIC_HEADER_TABLE.length);
                 if (dynamicTableIndex < 0 || dynamicTableIndex >= dynamicTable.length) {
                     throw new IOException("Header index too large " + (index + 1));
                 }
-                headersList.add(dynamicTable[dynamicTableIndex]);
+                headerList.add(dynamicTable[dynamicTableIndex]);
             }
         }
 
@@ -257,33 +265,33 @@ final class Hpack {
         private void readLiteralHeaderWithoutIndexingIndexedName(int index) throws IOException {
             ByteString name = getName(index);
             ByteString value = readByteString();
-            headersList.add(new HttpHeaders(name, value));
+            headerList.add(new Headers.Header(name, value));
         }
 
         private void readLiteralHeaderWithoutIndexingNewName() throws IOException {
             ByteString name = checkLowercase(readByteString());
             ByteString value = readByteString();
-            headersList.add(new HttpHeaders(name, value));
+            headerList.add(new Headers.Header(name, value));
         }
 
         private void readLiteralHeaderWithIncrementalIndexingIndexedName(int nameIndex)
                 throws IOException {
             ByteString name = getName(nameIndex);
             ByteString value = readByteString();
-            insertIntoDynamicTable(-1, new HttpHeaders(name, value));
+            insertIntoDynamicTable(-1, new Headers.Header(name, value));
         }
 
         private void readLiteralHeaderWithIncrementalIndexingNewName() throws IOException {
             ByteString name = checkLowercase(readByteString());
             ByteString value = readByteString();
-            insertIntoDynamicTable(-1, new HttpHeaders(name, value));
+            insertIntoDynamicTable(-1, new Headers.Header(name, value));
         }
 
         private ByteString getName(int index) throws IOException {
             if (isStaticHeader(index)) {
-                return STATIC_HEADERS_TABLE[index].name;
+                return STATIC_HEADER_TABLE[index].name;
             } else {
-                int dynamicTableIndex = dynamicTableIndex(index - STATIC_HEADERS_TABLE.length);
+                int dynamicTableIndex = dynamicTableIndex(index - STATIC_HEADER_TABLE.length);
                 if (dynamicTableIndex < 0 || dynamicTableIndex >= dynamicTable.length) {
                     throw new IOException("Header index too large " + (index + 1));
                 }
@@ -293,28 +301,33 @@ final class Hpack {
         }
 
         private boolean isStaticHeader(int index) {
-            return index >= 0 && index <= STATIC_HEADERS_TABLE.length - 1;
+            return index >= 0 && index <= STATIC_HEADER_TABLE.length - 1;
         }
 
-        private void insertIntoDynamicTable(int index, HttpHeaders entry) {
-            headersList.add(entry);
+        /**
+         * index == -1 when new.
+         */
+        private void insertIntoDynamicTable(int index, Headers.Header entry) {
+            headerList.add(entry);
 
             int delta = entry.hpackSize;
-            if (index != -1) {
+            if (index != -1) { // Index -1 == new header.
                 delta -= dynamicTable[dynamicTableIndex(index)].hpackSize;
             }
 
+            // if the new or replacement header is too big, drop all entries.
             if (delta > maxDynamicTableByteCount) {
                 clearDynamicTable();
                 return;
             }
 
+            // Evict headers to the required length.
             int bytesToRecover = (dynamicTableByteCount + delta) - maxDynamicTableByteCount;
             int entriesEvicted = evictToRecoverBytes(bytesToRecover);
 
-            if (index == -1) {
-                if (headerCount + 1 > dynamicTable.length) {
-                    HttpHeaders[] doubled = new HttpHeaders[dynamicTable.length * 2];
+            if (index == -1) { // Adding a value to the dynamic table.
+                if (headerCount + 1 > dynamicTable.length) { // Need to grow the dynamic table.
+                    Headers.Header[] doubled = new Headers.Header[dynamicTable.length * 2];
                     System.arraycopy(dynamicTable, 0, doubled, dynamicTable.length, dynamicTable.length);
                     nextHeaderIndex = dynamicTable.length - 1;
                     dynamicTable = doubled;
@@ -322,7 +335,7 @@ final class Hpack {
                 index = nextHeaderIndex--;
                 dynamicTable[index] = entry;
                 headerCount++;
-            } else {
+            } else { // Replace value at same position.
                 index += dynamicTableIndex(index) + entriesEvicted;
                 dynamicTable[index] = entry;
             }
@@ -336,27 +349,31 @@ final class Hpack {
         int readInt(int firstByte, int prefixMask) throws IOException {
             int prefix = firstByte & prefixMask;
             if (prefix < prefixMask) {
-                return prefix;
+                return prefix; // This was a single byte value.
             }
 
+            // This is a multibyte value. Read 7 bits at a time.
             int result = prefixMask;
             int shift = 0;
             while (true) {
                 int b = readByte();
-                if ((b & 0x80) != 0) {
+                if ((b & 0x80) != 0) { // Equivalent to (b >= 128) since b is in [0..255].
                     result += (b & 0x7f) << shift;
                     shift += 7;
                 } else {
-                    result += b << shift;
+                    result += b << shift; // Last byte.
                     break;
                 }
             }
             return result;
         }
 
+        /**
+         * Reads a potentially Huffman encoded byte string.
+         */
         ByteString readByteString() throws IOException {
             int firstByte = readByte();
-            boolean huffmanDecode = (firstByte & 0x80) == 0x80;
+            boolean huffmanDecode = (firstByte & 0x80) == 0x80; // 1NNNNNNN
             int length = readInt(firstByte, PREFIX_7_BITS);
 
             if (huffmanDecode) {
@@ -367,20 +384,30 @@ final class Hpack {
         }
     }
 
-    static final class Writer {
+    static class Writer {
         private static final int SETTINGS_HEADER_TABLE_SIZE = 4096;
 
+        /**
+         * The decoder has ultimate control of the maximum size of the dynamic table but we can choose
+         * to use less. We'll put a cap at 16K. This is arbitrary but should be enough for most
+         * purposes.
+         */
         private static final int SETTINGS_HEADER_TABLE_SIZE_LIMIT = 16384;
 
         private final Buffer out;
         private final boolean useCompression;
         int headerTableSizeSetting;
         int maxDynamicTableByteCount;
-        HttpHeaders[] dynamicTable = new HttpHeaders[8];
+        // Visible for testing.
+        Headers.Header[] dynamicTable = new Headers.Header[8];
+        // Array is populated back to front, so new entries always have lowest index.
         int nextHeaderIndex = dynamicTable.length - 1;
         int headerCount = 0;
         int dynamicTableByteCount = 0;
-
+        /**
+         * In the scenario where the dynamic table size changes multiple times between transmission of
+         * header blocks, we need to keep track of the smallest value in that interval.
+         */
         private int smallestHeaderTableSizeSetting = Integer.MAX_VALUE;
         private boolean emitDynamicTableSizeUpdate;
 
@@ -402,9 +429,13 @@ final class Hpack {
             dynamicTableByteCount = 0;
         }
 
+        /**
+         * Returns the count of entries evicted.
+         */
         private int evictToRecoverBytes(int bytesToRecover) {
             int entriesToEvict = 0;
             if (bytesToRecover > 0) {
+                // determine how many headers need to be evicted.
                 for (int j = dynamicTable.length - 1; j >= nextHeaderIndex && bytesToRecover > 0; j--) {
                     bytesToRecover -= dynamicTable[j].hpackSize;
                     dynamicTableByteCount -= dynamicTable[j].hpackSize;
@@ -419,19 +450,21 @@ final class Hpack {
             return entriesToEvict;
         }
 
-        private void insertIntoDynamicTable(HttpHeaders entry) {
+        private void insertIntoDynamicTable(Headers.Header entry) {
             int delta = entry.hpackSize;
 
+            // if the new or replacement header is too big, drop all entries.
             if (delta > maxDynamicTableByteCount) {
                 clearDynamicTable();
                 return;
             }
 
+            // Evict headers to the required length.
             int bytesToRecover = (dynamicTableByteCount + delta) - maxDynamicTableByteCount;
             evictToRecoverBytes(bytesToRecover);
 
-            if (headerCount + 1 > dynamicTable.length) {
-                HttpHeaders[] doubled = new HttpHeaders[dynamicTable.length * 2];
+            if (headerCount + 1 > dynamicTable.length) { // Need to grow the dynamic table.
+                Headers.Header[] doubled = new Headers.Header[dynamicTable.length * 2];
                 System.arraycopy(dynamicTable, 0, doubled, dynamicTable.length, dynamicTable.length);
                 nextHeaderIndex = dynamicTable.length - 1;
                 dynamicTable = doubled;
@@ -442,9 +475,13 @@ final class Hpack {
             dynamicTableByteCount += delta;
         }
 
-        void writeHeaders(List<HttpHeaders> headersBlock) throws IOException {
+        /**
+         * This does not use "never indexed" semantics for sensitive headers.
+         */
+        void writeHeaders(List<Headers.Header> headerBlock) throws IOException {
             if (emitDynamicTableSizeUpdate) {
                 if (smallestHeaderTableSizeSetting < maxDynamicTableByteCount) {
+                    // Multiple dynamic table size updates!
                     writeInt(smallestHeaderTableSizeSetting, PREFIX_5_BITS, 0x20);
                 }
                 emitDynamicTableSizeUpdate = false;
@@ -452,20 +489,24 @@ final class Hpack {
                 writeInt(maxDynamicTableByteCount, PREFIX_5_BITS, 0x20);
             }
 
-            for (int i = 0, size = headersBlock.size(); i < size; i++) {
-                HttpHeaders headers = headersBlock.get(i);
-                ByteString name = headers.name.toAsciiLowercase();
-                ByteString value = headers.value;
+            for (int i = 0, size = headerBlock.size(); i < size; i++) {
+                Headers.Header header = headerBlock.get(i);
+                ByteString name = header.name.toAsciiLowercase();
+                ByteString value = header.value;
                 int headerIndex = -1;
                 int headerNameIndex = -1;
 
                 Integer staticIndex = NAME_TO_FIRST_INDEX.get(name);
-                if (null != staticIndex) {
+                if (staticIndex != null) {
                     headerNameIndex = staticIndex + 1;
                     if (headerNameIndex > 1 && headerNameIndex < 8) {
-                        if (ObjectKit.equal(STATIC_HEADERS_TABLE[headerNameIndex - 1].value, value)) {
+                        // Only search a subset of the static header table. Most entries have an empty value, so
+                        // it's unnecessary to waste cycles looking at them. This check is built on the
+                        // observation that the header entries we care about are in adjacent pairs, and we
+                        // always know the first index of the pair.
+                        if (Objects.equals(STATIC_HEADER_TABLE[headerNameIndex - 1].value, value)) {
                             headerIndex = headerNameIndex;
-                        } else if (ObjectKit.equal(STATIC_HEADERS_TABLE[headerNameIndex].value, value)) {
+                        } else if (Objects.equals(STATIC_HEADER_TABLE[headerNameIndex].value, value)) {
                             headerIndex = headerNameIndex + 1;
                         }
                     }
@@ -473,44 +514,52 @@ final class Hpack {
 
                 if (headerIndex == -1) {
                     for (int j = nextHeaderIndex + 1, length = dynamicTable.length; j < length; j++) {
-                        if (ObjectKit.equal(dynamicTable[j].name, name)) {
-                            if (ObjectKit.equal(dynamicTable[j].value, value)) {
-                                headerIndex = j - nextHeaderIndex + STATIC_HEADERS_TABLE.length;
+                        if (Objects.equals(dynamicTable[j].name, name)) {
+                            if (Objects.equals(dynamicTable[j].value, value)) {
+                                headerIndex = j - nextHeaderIndex + STATIC_HEADER_TABLE.length;
                                 break;
                             } else if (headerNameIndex == -1) {
-                                headerNameIndex = j - nextHeaderIndex + STATIC_HEADERS_TABLE.length;
+                                headerNameIndex = j - nextHeaderIndex + STATIC_HEADER_TABLE.length;
                             }
                         }
                     }
                 }
 
                 if (headerIndex != -1) {
+                    // Indexed Header Field.
                     writeInt(headerIndex, PREFIX_7_BITS, 0x80);
                 } else if (headerNameIndex == -1) {
+                    // Literal Header Field with Incremental Indexing - New Name.
                     out.writeByte(0x40);
                     writeByteString(name);
                     writeByteString(value);
-                    insertIntoDynamicTable(headers);
-                } else if (name.startsWith(HttpHeaders.PSEUDO_PREFIX) && !HttpHeaders.TARGET_AUTHORITY.equals(name)) {
+                    insertIntoDynamicTable(header);
+                } else if (name.startsWith(Headers.Header.PSEUDO_PREFIX) && !Headers.Header.TARGET_AUTHORITY.equals(name)) {
+                    // Follow Chromes lead - only include the :authority pseudo header, but exclude all other
+                    // pseudo headers. Literal Header Field without Indexing - Indexed Name.
                     writeInt(headerNameIndex, PREFIX_4_BITS, 0);
                     writeByteString(value);
                 } else {
+                    // Literal Header Field with Incremental Indexing - Indexed Name.
                     writeInt(headerNameIndex, PREFIX_6_BITS, 0x40);
                     writeByteString(value);
-                    insertIntoDynamicTable(headers);
+                    insertIntoDynamicTable(header);
                 }
             }
         }
 
         void writeInt(int value, int prefixMask, int bits) {
+            // Write the raw value for a single byte value.
             if (value < prefixMask) {
                 out.writeByte(bits | value);
                 return;
             }
 
+            // Write the mask to start a multibyte value.
             out.writeByte(bits | prefixMask);
             value -= prefixMask;
 
+            // Write 7 bits at a time 'til we're done.
             while (value >= 0x80) {
                 int b = value & 0x7f;
                 out.writeByte(b | 0x80);
@@ -537,7 +586,7 @@ final class Hpack {
             int effectiveHeaderTableSize = Math.min(headerTableSizeSetting,
                     SETTINGS_HEADER_TABLE_SIZE_LIMIT);
 
-            if (maxDynamicTableByteCount == effectiveHeaderTableSize) return;
+            if (maxDynamicTableByteCount == effectiveHeaderTableSize) return; // No change.
 
             if (effectiveHeaderTableSize < maxDynamicTableByteCount) {
                 smallestHeaderTableSizeSetting = Math.min(smallestHeaderTableSizeSetting,

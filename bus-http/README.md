@@ -633,11 +633,11 @@ public static void httpv(){
         long totalSize=httpv.sync(url).get().getBody()
         .close()                   // 因为这次请求只是为了获得文件大小，不消费报文体，所以直接关闭
         .getLength();              // 获得待下载文件的大小（由于未消费报文体，所以该请求不会消耗下载报文体的时间和网络流量）
-        download(totalSize,0);      // 从第 0 块开始下载
+        downloads(totalSize,0);      // 从第 0 块开始下载
         sleep(50000);                // 等待下载完成（不然本例的主线程就结束啦）
         }
 
-static void download(long totalSize,int index){
+static void downloads(long totalSize,int index){
         long size=3*1024*1024;                 // 每块下载 3M
         long start=index*size;
         long end=Math.min(start+size,totalSize);
@@ -648,7 +648,7 @@ static void download(long totalSize,int index){
         .setAppended()                       // 开启文件追加模式
         .setOnSuccess((File file)->{
         if(end<totalSize){           // 若未下载完，则继续下载下一块
-        download(totalSize,index+1);
+        downloads(totalSize,index+1);
         }else{
         System.out.println("下载完成");
         }
@@ -830,9 +830,9 @@ HttpCall call=http.async("/upload")
 7.上传文件(通过文件流)
 
 ```java
-    InputStream is = new FileInputStream("/tmp/logo.jpg");
-    HttpResponse delegate = Httpz.newBuilder()
-            .connectTimeout(10, TimeUnit.SECONDS)
+    InputStream is=new FileInputStream("/tmp/logo.jpg");
+        Response delegate=Httpz.newBuilder()
+        .connectTimeout(10,TimeUnit.SECONDS)
             .build()
             .post()
             .url("上传地址")
@@ -853,9 +853,9 @@ HttpCall call=http.async("/upload")
         protected PasswordAuthentication getPasswordAuthentication(){
             return authentication;
         }
-    });
-    HttpResponse delegate = Httpz.
-            newBuilder().
+        });
+        Response delegate=Httpz.
+        newBuilder().
             proxy(proxy).
             build().
             get().
@@ -869,7 +869,7 @@ HttpCall call=http.async("/upload")
 
 ```java
     String url="https://www.baidu.com";
-        HttpResponse delegate=Httpz.
+        Response delegate=Httpz.
         get().
         addHeader("Referer","http://news.baidu.com/").
         addHeader("cookie","uin=test;skey=111111;").
@@ -933,7 +933,7 @@ HttpCall call=http.async("/upload")
 
 ```java
     String url="https://wx.qq.com";
-        HttpResponse delegate=Httpz.post().
+        Response delegate=Httpz.post().
         addHeader("Content-Type","application/json").
         body("{\"username\":\"test\",\"password\":\"111111\"}").
         url(url).
@@ -946,9 +946,9 @@ HttpCall call=http.async("/upload")
 ```java
     RequestCall call = Httpz.get().
             url("https://www.baidu.com").
-            build();
-    HttpResponse delegate = call.execute();
-    call.cancel();
+        build();
+        Response delegate=call.execute();
+        call.cancel();
     System.out.println(delegate.string());
 ```
 

@@ -26,6 +26,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.BufferSource;
+import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Protocol;
 
 import java.io.IOException;
@@ -45,12 +46,12 @@ public interface PushObserver {
     PushObserver CANCEL = new PushObserver() {
 
         @Override
-        public boolean onRequest(int streamId, List<HttpHeaders> requestHeaders) {
+        public boolean onRequest(int streamId, List<Headers.Header> requestHeaders) {
             return true;
         }
 
         @Override
-        public boolean onHeaders(int streamId, List<HttpHeaders> responseHeaders, boolean last) {
+        public boolean onHeaders(int streamId, List<Headers.Header> responseHeaders, boolean last) {
             return true;
         }
 
@@ -73,7 +74,7 @@ public interface PushObserver {
      * @param requestHeaders 最低限度包括 method、scheme、authority和path
      * @return the true/false
      */
-    boolean onRequest(int streamId, List<HttpHeaders> requestHeaders);
+    boolean onRequest(int streamId, List<Headers.Header> requestHeaders);
 
     /**
      * 推送请求对应的响应标头。当{@code last}为真时，则没有后续的数据帧
@@ -83,7 +84,7 @@ public interface PushObserver {
      * @param last            如果为真，则没有响应数据
      * @return the true/false
      */
-    boolean onHeaders(int streamId, List<HttpHeaders> responseHeaders, boolean last);
+    boolean onHeaders(int streamId, List<Headers.Header> responseHeaders, boolean last);
 
     /**
      * 与推送请求对应的响应数据块。必须读取或跳过这些数据.

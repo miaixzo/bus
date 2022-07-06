@@ -29,6 +29,7 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
 
@@ -42,7 +43,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-final class Http2Writer implements Closeable {
+class Http2Writer implements Closeable {
 
     final Hpack.Writer hpackWriter;
     private final BufferSink sink;
@@ -78,6 +79,9 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
+    /**
+     * Applies {@code peerSettings} and then sends a settings ACK.
+     */
     public synchronized void applyAndAckSettings(Settings peerSettings) throws IOException {
         if (closed) throw new IOException("closed");
         this.maxFrameSize = peerSettings.getMaxFrameSize(maxFrameSize);
@@ -104,9 +108,8 @@ final class Http2Writer implements Closeable {
      *                         and {@code :path}.
      * @throws IOException 异常
      */
-    public synchronized void pushPromise(int streamId,
-                                         int promisedStreamId,
-                                         List<HttpHeaders> requestHeaders) throws IOException {
+    public synchronized void pushPromise(int streamId, int promisedStreamId,
+                                         List<Headers.Header> requestHeaders) throws IOException {
         if (closed) throw new IOException("closed");
         hpackWriter.writeHeaders(requestHeaders);
 
@@ -126,24 +129,6 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
-    public synchronized void synStream(boolean outFinished, int streamId,
-                                       int associatedStreamId, List<HttpHeaders> headersBlock) throws IOException {
-        if (closed) throw new IOException("closed");
-        headers(outFinished, streamId, headersBlock);
-    }
-
-    public synchronized void synReply(boolean outFinished, int streamId,
-                                      List<HttpHeaders> headersBlock) throws IOException {
-        if (closed) throw new IOException("closed");
-        headers(outFinished, streamId, headersBlock);
-    }
-
-    public synchronized void headers(int streamId, List<HttpHeaders> headersBlock)
-            throws IOException {
-        if (closed) throw new IOException("closed");
-        headers(false, streamId, headersBlock);
-    }
-
     public synchronized void rstStream(int streamId, ErrorCode errorCode)
             throws IOException {
         if (closed) throw new IOException("closed");
@@ -157,10 +142,21 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
+    /**
+     * The maximum size of bytes that may be sent in a single call to {@link #data}.
+     */
     public int maxDataLength() {
         return maxFrameSize;
     }
 
+    /**
+     * {@code source.length} may be longer than the max length of the variant's data frame.
+     * Implementations must send multiple frames as necessary.
+     *
+     * @param source    the buffer to draw bytes from. May be null if byteCount is 0.
+     * @param byteCount must be between 0 and the minimum of {@code source.length} and {@link
+     *                  #maxDataLength}.
+     */
     public synchronized void data(boolean outFinished, int streamId, Buffer source, int byteCount)
             throws IOException {
         if (closed) throw new IOException("closed");
@@ -177,6 +173,9 @@ final class Http2Writer implements Closeable {
         }
     }
 
+    /**
+     * Write httpd's settings to the peer.
+     */
     public synchronized void settings(Settings settings) throws IOException {
         if (closed) throw new IOException("closed");
         int length = settings.size() * 6;
@@ -198,6 +197,10 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
+    /**
+     * Send a connection-level ping to the peer. {@code ack} indicates this is a reply. The data in
+     * {@code payload1} and {@code payload2} opaque binary, and there are no rules on the content.
+     */
     public synchronized void ping(boolean ack, int payload1, int payload2) throws IOException {
         if (closed) throw new IOException("closed");
         int length = 8;
@@ -234,6 +237,10 @@ final class Http2Writer implements Closeable {
         sink.flush();
     }
 
+    /**
+     * Inform peer that an additional {@code windowSizeIncrement} bytes can be sent on {@code
+     * streamId}, or the connection if {@code streamId} is zero.
+     */
     public synchronized void windowUpdate(int streamId, long windowSizeIncrement) throws IOException {
         if (closed) throw new IOException("closed");
         if (windowSizeIncrement == 0 || windowSizeIncrement > 0x7fffffffL) {
@@ -277,9 +284,10 @@ final class Http2Writer implements Closeable {
         }
     }
 
-    void headers(boolean outFinished, int streamId, List<HttpHeaders> headersBlock) throws IOException {
+    public synchronized void headers(
+            boolean outFinished, int streamId, List<Headers.Header> headerBlock) throws IOException {
         if (closed) throw new IOException("closed");
-        hpackWriter.writeHeaders(headersBlock);
+        hpackWriter.writeHeaders(headerBlock);
 
         long byteCount = hpackBuffer.size();
         int length = (int) Math.min(maxFrameSize, byteCount);

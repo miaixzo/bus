@@ -41,7 +41,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class FormBody extends RequestBody {
+public class FormBody extends RequestBody {
 
     private final List<String> encodedNames;
     private final List<String> encodedValues;
@@ -88,8 +88,8 @@ public final class FormBody extends RequestBody {
 
     /**
      * 将此请求写入{@code sink}或测量其内容长度。我们有一种方法可以
-     * 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时，
-     * 比如测量报头字符串的编码长度，或者编码整数的位数长度
+     * 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时，比如
+     * 测量报头字符串的编码长度，或者编码整数的位数长度
      *
      * @param sink       保存缓冲区
      * @param countBytes 是否统计数量
@@ -120,7 +120,7 @@ public final class FormBody extends RequestBody {
         return byteCount;
     }
 
-    public static final class Builder {
+    public static class Builder {
         private final List<String> names = new ArrayList<>();
         private final List<String> values = new ArrayList<>();
         private final Charset charset;

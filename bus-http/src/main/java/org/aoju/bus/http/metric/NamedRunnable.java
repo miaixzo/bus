@@ -28,7 +28,7 @@ package org.aoju.bus.http.metric;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
- * 可运行的实现，它总是设置它的线程名.
+ * 可运行的实现，它总是设置它的线程名
  *
  * @author Kimi Liu
  * @since Java 17+

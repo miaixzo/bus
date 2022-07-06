@@ -35,7 +35,7 @@ import java.io.IOException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Callback {
+public interface Callback<T> {
 
     /**
      * 当请求由于取消、连接问题或超时而无法执行时调用
@@ -47,8 +47,8 @@ public interface Callback {
     void onFailure(NewCall call, IOException ex);
 
     /**
-     * 当远程服务器成功返回HTTP响应时调用。回调可以继续使用{@link Response#body}读取响应体响应仍然是活动的
-     * 直到它的响应体是{@linkplain ResponseBody closed} 回调的接收者可以使用另一个线程上的响应体
+     * 当远程服务器成功返回HTTP响应时调用。回调可以继续使用{@link Response#body}读取响应体响应仍然是
+     * 活动的直到它的响应体是{@linkplain ResponseBody closed} 回调的接收者可以使用另一个线程上的响应体
      * 注意，传输层的成功(接收HTTP响应代码、报头和正文)不一定表示应用程序层的
      * 成功:{@code response}可能仍然表示不满意的HTTP响应代码，如404或500
      *
@@ -57,5 +57,31 @@ public interface Callback {
      * @throws IOException 异常信息
      */
     void onResponse(NewCall call, Response response) throws IOException;
+
+    /**
+     * 失败回调信息
+     *
+     * @param newCall   回调信息
+     * @param exception 异常
+     * @param id        当前请求标识
+     */
+    default void onFailure(NewCall newCall, Exception exception, String id) {
+
+    }
+
+    /**
+     * 响应回调信息
+     *
+     * @param newCall  回调信息
+     * @param response 响应信息
+     * @param id       当前请求标识
+     */
+    default void onResponse(NewCall newCall, Response response, String id) {
+
+    }
+
+    default void on(T data) {
+
+    }
 
 }

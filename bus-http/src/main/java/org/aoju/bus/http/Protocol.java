@@ -72,7 +72,7 @@ public enum Protocol {
      * QUIC(快速UDP互联网连接)是一个新的多路复用和UDP之上的安全传输，
      * 从底层设计和优化的HTTP/2语义。HTTP/1.1语义是在HTTP/2上分层的
      */
-    QUIC(Http.SPDY_3_1),
+    QUIC(Http.QUIC),
 
     /**
      * SOAP 1.1协议

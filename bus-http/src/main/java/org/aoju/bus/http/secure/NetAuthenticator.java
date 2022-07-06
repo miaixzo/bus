@@ -42,7 +42,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class NetAuthenticator implements Authenticator {
+public class NetAuthenticator implements Authenticator {
 
     @Override
     public Request authenticate(Route route, Response response) throws IOException {

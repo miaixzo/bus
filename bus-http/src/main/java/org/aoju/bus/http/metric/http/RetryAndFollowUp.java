@@ -25,27 +25,23 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.exception.RelevantException;
+import org.aoju.bus.core.exception.RevisedException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
+import org.aoju.bus.http.accord.Exchange;
 import org.aoju.bus.http.accord.RouteException;
-import org.aoju.bus.http.accord.StreamAllocation;
+import org.aoju.bus.http.accord.Transmitter;
 import org.aoju.bus.http.bodys.RequestBody;
-import org.aoju.bus.http.bodys.UnrepeatableBody;
-import org.aoju.bus.http.metric.EventListener;
 import org.aoju.bus.http.metric.Interceptor;
-import org.aoju.bus.http.secure.CertificatePinner;
+import org.aoju.bus.http.metric.Internal;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.net.HttpRetryException;
 import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.SocketTimeoutException;
@@ -58,7 +54,7 @@ import java.security.cert.CertificateException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RetryAndFollowUp implements Interceptor {
+public class RetryAndFollowUp implements Interceptor {
 
     /**
      * 我们应该尝试多少次重定向和验证挑战?Chrome遵循21重定向;
@@ -66,88 +62,52 @@ public final class RetryAndFollowUp implements Interceptor {
      */
     private static final int MAX_FOLLOW_UPS = 20;
 
-    private final Httpd client;
-    private final boolean forWebSocket;
-    private volatile StreamAllocation streamAllocation;
-    private Object callStackTrace;
-    private volatile boolean canceled;
+    private final Httpd httpd;
 
-    public RetryAndFollowUp(Httpd client, boolean forWebSocket) {
-        this.client = client;
-        this.forWebSocket = forWebSocket;
-    }
-
-    /**
-     * 如果当前持有套接字连接，则立即关闭它。使用它来中断来自任何线程的正在运行的请求
-     * 关闭请求体和响应体流是调用方的职责;否则，资源可能会泄露
-     * 此方法可以安全地并发调用，但提供了有限的保证。如果已建立传输层连接(如HTTP/2流)，
-     * 则终止该连接。否则，如果正在建立套接字连接，则终止该连接.
-     */
-    public void cancel() {
-        canceled = true;
-        StreamAllocation streamAllocation = this.streamAllocation;
-        if (null != streamAllocation) streamAllocation.cancel();
-    }
-
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    public void setCallStackTrace(Object callStackTrace) {
-        this.callStackTrace = callStackTrace;
-    }
-
-    public StreamAllocation streamAllocation() {
-        return streamAllocation;
+    public RetryAndFollowUp(Httpd httpd) {
+        this.httpd = httpd;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
-        NewCall call = realChain.call();
-        EventListener eventListener = realChain.eventListener();
-
-        StreamAllocation streamAllocation = new StreamAllocation(client.connectionPool(),
-                createAddress(request.url()), call, eventListener, callStackTrace);
-        this.streamAllocation = streamAllocation;
+        Transmitter transmitter = realChain.transmitter();
 
         int followUpCount = 0;
         Response priorResponse = null;
         while (true) {
-            if (canceled) {
-                streamAllocation.release();
+            transmitter.prepareToConnect(request);
+
+            if (transmitter.isCanceled()) {
                 throw new IOException("Canceled");
             }
 
             Response response;
-            boolean releaseConnection = true;
+            boolean success = false;
             try {
-                response = realChain.proceed(request, streamAllocation, null, null);
-                releaseConnection = false;
+                response = realChain.proceed(request, transmitter, null);
+                success = true;
             } catch (RouteException e) {
-                // 图通过路由连接失败。请求将不会被发送.
-                if (!recover(e.getLastConnectException(), streamAllocation, false, request)) {
+                // The attempt to connect via a route failed. The request will not have been sent.
+                if (!recover(e.getLastConnectException(), transmitter, false, request)) {
                     throw e.getFirstConnectException();
                 }
-                releaseConnection = false;
                 continue;
             } catch (IOException e) {
-                // 试图与服务器通信失败。请求可能已经发送.
-                boolean requestSendStarted = !(e instanceof RelevantException);
-                if (!recover(e, streamAllocation, requestSendStarted, request)) throw e;
-                releaseConnection = false;
+                // An attempt to communicate with a server failed. The request may have been sent.
+                boolean requestSendStarted = !(e instanceof RevisedException);
+                if (!recover(e, transmitter, requestSendStarted, request)) throw e;
                 continue;
             } finally {
-                // 我们抛出了一个未检查的异常。释放任何资源.
-                if (releaseConnection) {
-                    streamAllocation.streamFailed(null);
-                    streamAllocation.release();
+                // The network call threw an exception. Release any resources.
+                if (!success) {
+                    transmitter.exchangeDoneDueToException();
                 }
             }
 
-            // 如果先前的响应存在，则附加它。这样的反应永远不会有body.
-            if (null != priorResponse) {
+            // Attach the prior response if it exists. Such responses never have a body.
+            if (priorResponse != null) {
                 response = response.newBuilder()
                         .priorResponse(priorResponse.newBuilder()
                                 .body(null)
@@ -155,39 +115,29 @@ public final class RetryAndFollowUp implements Interceptor {
                         .build();
             }
 
-            Request followUp;
-            try {
-                followUp = followUpRequest(response, streamAllocation.route());
-            } catch (IOException e) {
-                streamAllocation.release();
-                throw e;
+            Exchange exchange = Internal.instance.exchange(response);
+            Route route = exchange != null ? exchange.connection().route() : null;
+            Request followUp = followUpRequest(response, route);
+
+            if (followUp == null) {
+                if (exchange != null && exchange.isDuplex()) {
+                    transmitter.timeoutEarlyExit();
+                }
+                return response;
             }
 
-            if (null == followUp) {
-                streamAllocation.release();
+            RequestBody followUpBody = followUp.body();
+            if (followUpBody != null && followUpBody.isOneShot()) {
                 return response;
             }
 
             IoKit.close(response.body());
+            if (transmitter.hasExchange()) {
+                exchange.detachWithViolence();
+            }
 
             if (++followUpCount > MAX_FOLLOW_UPS) {
-                streamAllocation.release();
                 throw new ProtocolException("Too many follow-up requests: " + followUpCount);
-            }
-
-            if (followUp.body() instanceof UnrepeatableBody) {
-                streamAllocation.release();
-                throw new HttpRetryException("Cannot retry streamed HTTP body", response.code());
-            }
-
-            if (!sameConnection(response, followUp.url())) {
-                streamAllocation.release();
-                streamAllocation = new StreamAllocation(client.connectionPool(),
-                        createAddress(followUp.url()), call, eventListener, callStackTrace);
-                this.streamAllocation = streamAllocation;
-            } else if (null != streamAllocation.codec()) {
-                throw new IllegalStateException("Closing the body of " + response
-                        + " didn't close its backing stream. Bad interceptor?");
             }
 
             request = followUp;
@@ -195,43 +145,33 @@ public final class RetryAndFollowUp implements Interceptor {
         }
     }
 
-    private Address createAddress(UnoUrl url) {
-        SSLSocketFactory sslSocketFactory = null;
-        HostnameVerifier hostnameVerifier = null;
-        CertificatePinner certificatePinner = null;
-        if (url.isHttps()) {
-            sslSocketFactory = client.sslSocketFactory();
-            hostnameVerifier = client.hostnameVerifier();
-            certificatePinner = client.certificatePinner();
-        }
-
-        return new Address(url.host(), url.port(), client.dns(), client.socketFactory(),
-                sslSocketFactory, hostnameVerifier, certificatePinner, client.proxyAuthenticator(),
-                client.proxy(), client.protocols(), client.connectionSpecs(), client.proxySelector());
-    }
-
-    private boolean recover(IOException e, StreamAllocation streamAllocation,
+    /**
+     * Report and attempt to recover from a failure to communicate with a server. Returns true if
+     * {@code e} is recoverable, or false if the failure is permanent. Requests with a body can only
+     * be recovered if the body is buffered or if the failure occurred before the request has been
+     * sent.
+     */
+    private boolean recover(IOException e, Transmitter transmitter,
                             boolean requestSendStarted, Request userRequest) {
-        streamAllocation.streamFailed(e);
-
-        // 应用层禁止重试.
-        if (!client.retryOnConnectionFailure()) return false;
+        // 应用层禁止重试
+        if (!httpd.retryOnConnectionFailure()) return false;
 
         // 我们不能再发送请求体了
-        if (requestSendStarted && requestIsUnrepeatable(e, userRequest)) return false;
+        if (requestSendStarted && requestIsOneShot(e, userRequest)) return false;
 
         // 这个异常是致命的
         if (!isRecoverable(e, requestSendStarted)) return false;
 
-        // 没有更多的路线可以尝试
-        if (!streamAllocation.hasMoreRoutes()) return false;
+        /// 没有更多的路线可以尝试
+        if (!transmitter.canRetry()) return false;
 
         // 对于故障恢复，使用与新连接相同的路由选择器
         return true;
     }
 
-    private boolean requestIsUnrepeatable(IOException e, Request userRequest) {
-        return userRequest.body() instanceof UnrepeatableBody
+    private boolean requestIsOneShot(IOException e, Request userRequest) {
+        RequestBody requestBody = userRequest.body();
+        return (requestBody != null && requestBody.isOneShot())
                 || e instanceof FileNotFoundException;
     }
 
@@ -261,75 +201,98 @@ public final class RetryAndFollowUp implements Interceptor {
         return true;
     }
 
+    /**
+     * Figures out the HTTP request to make in response to receiving {@code userResponse}. This will
+     * either add authentication headers, follow redirects or handle a client request timeout. If a
+     * follow-up is either unnecessary or not applicable, this returns null.
+     */
     private Request followUpRequest(Response userResponse, Route route) throws IOException {
-        if (null == userResponse) throw new IllegalStateException();
+        if (userResponse == null) throw new IllegalStateException();
         int responseCode = userResponse.code();
 
         final String method = userResponse.request().method();
         switch (responseCode) {
             case Http.HTTP_PROXY_AUTH:
-                Proxy selectedProxy = route.proxy();
+                Proxy selectedProxy = route != null
+                        ? route.proxy()
+                        : httpd.proxy();
                 if (selectedProxy.type() != Proxy.Type.HTTP) {
                     throw new ProtocolException("Received HTTP_PROXY_AUTH (407) code while not using proxy");
                 }
-                return client.proxyAuthenticator().authenticate(route, userResponse);
+                return httpd.proxyAuthenticator().authenticate(route, userResponse);
 
             case Http.HTTP_UNAUTHORIZED:
-                return client.authenticator().authenticate(route, userResponse);
+                return httpd.authenticator().authenticate(route, userResponse);
 
             case Http.HTTP_PERM_REDIRECT:
             case Http.HTTP_TEMP_REDIRECT:
+                // "If the 307 or 308 status code is received in response to a request other than GET
+                // or HEAD, the user agent MUST NOT automatically redirect the request"
                 if (!method.equals("GET") && !method.equals("HEAD")) {
                     return null;
                 }
+                // fall-through
             case Http.HTTP_MULT_CHOICE:
             case Http.HTTP_MOVED_PERM:
             case Http.HTTP_MOVED_TEMP:
             case Http.HTTP_SEE_OTHER:
-                if (!client.followRedirects()) return null;
+                // Does the client allow redirects?
+                if (!httpd.followRedirects()) return null;
 
                 String location = userResponse.header(Header.LOCATION);
                 if (null == location) return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
-                if (null == url) return null;
+                // Don't follow redirects to unsupported protocols.
+                if (url == null) return null;
 
+                // If configured, don't follow redirects between SSL and non-SSL.
                 boolean sameScheme = url.scheme().equals(userResponse.request().url().scheme());
-                if (!sameScheme && !client.followSslRedirects()) return null;
+                if (!sameScheme && !httpd.followSslRedirects()) return null;
 
+                // Most redirects don't include a request body.
                 Request.Builder requestBuilder = userResponse.request().newBuilder();
-                if (HttpMethod.permitsRequestBody(method)) {
-                    final boolean maintainBody = HttpMethod.redirectsWithBody(method);
-                    if (HttpMethod.redirectsToGet(method)) {
+                if (Http.permitsRequestBody(method)) {
+                    final boolean maintainBody = Http.redirectsWithBody(method);
+                    if (Http.redirectsToGet(method)) {
                         requestBuilder.method("GET", null);
                     } else {
                         RequestBody requestBody = maintainBody ? userResponse.request().body() : null;
                         requestBuilder.method(method, requestBody);
                     }
                     if (!maintainBody) {
-                        requestBuilder.removeHeader("Transfer-Encoding");
-                        requestBuilder.removeHeader("Content-Length");
+                        requestBuilder.removeHeader(Header.TRANSFER_ENCODING);
+                        requestBuilder.removeHeader(Header.CONTENT_LENGTH);
                         requestBuilder.removeHeader(Header.CONTENT_TYPE);
                     }
                 }
 
-                if (!sameConnection(userResponse, url)) {
-                    requestBuilder.removeHeader(Header.AUTHORIZATION);
+                // When redirecting across hosts, drop all authentication headers. This
+                // is potentially annoying to the application layer since they have no
+                // way to retain them.
+                if (!Builder.sameConnection(userResponse.request().url(), url)) {
+                    requestBuilder.removeHeader("Authorization");
                 }
 
                 return requestBuilder.url(url).build();
 
             case Http.HTTP_CLIENT_TIMEOUT:
-                if (!client.retryOnConnectionFailure()) {
+                // 408's are rare in practice, but some servers like HAProxy use this response code. The
+                // spec says that we may repeat the request without modifications. Modern browsers also
+                // repeat the request (even non-idempotent ones.)
+                if (!httpd.retryOnConnectionFailure()) {
+                    // The application layer has directed us not to retry the request.
                     return null;
                 }
 
-                if (userResponse.request().body() instanceof UnrepeatableBody) {
+                RequestBody requestBody = userResponse.request().body();
+                if (requestBody != null && requestBody.isOneShot()) {
                     return null;
                 }
 
-                if (null != userResponse.priorResponse()
+                if (userResponse.priorResponse() != null
                         && userResponse.priorResponse().code() == Http.HTTP_CLIENT_TIMEOUT) {
+                    // We attempted to retry and got another timeout. Give up.
                     return null;
                 }
 
@@ -340,12 +303,14 @@ public final class RetryAndFollowUp implements Interceptor {
                 return userResponse.request();
 
             case Http.HTTP_UNAVAILABLE:
-                if (null != userResponse.priorResponse()
+                if (userResponse.priorResponse() != null
                         && userResponse.priorResponse().code() == Http.HTTP_UNAVAILABLE) {
+                    // We attempted to retry and got another timeout. Give up.
                     return null;
                 }
 
                 if (retryAfter(userResponse, Integer.MAX_VALUE) == 0) {
+                    // specifically received an instruction to retry without delay
                     return userResponse.request();
                 }
 
@@ -368,13 +333,6 @@ public final class RetryAndFollowUp implements Interceptor {
         }
 
         return Integer.MAX_VALUE;
-    }
-
-    private boolean sameConnection(Response response, UnoUrl followUp) {
-        UnoUrl url = response.request().url();
-        return url.host().equals(followUp.host())
-                && url.port() == followUp.port()
-                && url.scheme().equals(followUp.scheme());
     }
 
 }

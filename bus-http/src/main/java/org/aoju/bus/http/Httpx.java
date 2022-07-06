@@ -35,13 +35,14 @@ import org.aoju.bus.http.accord.ConnectionPool;
 import org.aoju.bus.http.bodys.FormBody;
 import org.aoju.bus.http.bodys.MultipartBody;
 import org.aoju.bus.http.bodys.RequestBody;
-import org.aoju.bus.http.magic.HttpProxy;
 import org.aoju.bus.http.metric.Dispatcher;
-import org.aoju.bus.http.secure.X509TrustManager;
+import org.aoju.bus.http.plugin.httpx.HttpProxy;
+import org.aoju.bus.http.secure.SSLContextBuilder;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -67,7 +68,7 @@ public class Httpx {
     private static Httpd httpd;
 
     static {
-        new Httpx(new X509TrustManager());
+        new Httpx(SSLContextBuilder.newTrustManager());
     }
 
     /**
@@ -83,7 +84,7 @@ public class Httpx {
      * @param x509TrustManager 信任管理器
      */
     public Httpx(X509TrustManager x509TrustManager) {
-        this(null, null, 30, 30, 30, 64, 5, 5, 5, org.aoju.bus.http.secure.SSLSocketFactory.createTrustAllSSLFactory(x509TrustManager), x509TrustManager, (hostname, session) -> true);
+        this(null, null, 30, 30, 30, 64, 5, 5, 5, SSLContextBuilder.newSslSocketFactory(x509TrustManager), x509TrustManager, (hostname, session) -> true);
     }
 
     /**

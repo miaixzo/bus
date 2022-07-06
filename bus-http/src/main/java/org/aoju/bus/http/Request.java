@@ -31,7 +31,6 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.http.cache.CacheControl;
-import org.aoju.bus.http.metric.http.HttpMethod;
 
 import java.net.URL;
 import java.util.Collections;
@@ -45,7 +44,7 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Request {
+public class Request {
 
     final UnoUrl url;
     final String method;
@@ -132,10 +131,13 @@ public final class Request {
         Headers.Builder headers;
         RequestBody body;
 
+        /**
+         * A mutable map of tags, or an immutable empty map if we don't have any.
+         */
         Map<Class<?>, Object> tags = Collections.emptyMap();
 
         public Builder() {
-            this.method = Http.GET;
+            this.method = "GET";
             this.headers = new Headers.Builder();
         }
 
@@ -150,21 +152,21 @@ public final class Request {
         }
 
         public Builder url(UnoUrl url) {
-            if (null == url) throw new NullPointerException("url == null");
+            if (url == null) throw new NullPointerException("url == null");
             this.url = url;
             return this;
         }
 
         /**
-         * 设置此请求的URL目标
+         * Sets the URL target of this request.
          *
-         * @param url 请求地址
-         * @return 构造器
+         * @throws IllegalArgumentException if {@code url} is not a valid HTTP or HTTPS URL. Avoid this
+         *                                  exception by calling {@link UnoUrl#parse}; it returns null for invalid URLs.
          */
         public Builder url(String url) {
-            if (null == url) throw new NullPointerException("url == null");
+            if (url == null) throw new NullPointerException("url == null");
 
-            // 用HTTP url替换web套接字url.
+            // Silently replace web socket URLs with HTTP URLs.
             if (url.regionMatches(true, 0, "ws:", 0, 3)) {
                 url = "http:" + url.substring(3);
             } else if (url.regionMatches(true, 0, "wss:", 0, 4)) {
@@ -175,23 +177,19 @@ public final class Request {
         }
 
         /**
-         * 设置此请求的URL目标
+         * Sets the URL target of this request.
          *
-         * @param url 请求地址
-         * @return 构造器
+         * @throws IllegalArgumentException if the scheme of {@code url} is not {@code http} or {@code
+         *                                  https}.
          */
         public Builder url(URL url) {
-            if (null == url) throw new NullPointerException("url == null");
+            if (url == null) throw new NullPointerException("url == null");
             return url(UnoUrl.get(url.toString()));
         }
 
         /**
-         * 将header属性{@code name}值设置为{@code value}，
-         * 如果此请求已经有任何具有该名称的header，则全部替换
-         *
-         * @param name  属性名称
-         * @param value 属性值
-         * @return 构造器
+         * Sets the header named {@code name} to {@code value}. If this request already has any headers
+         * with that name, they are all replaced.
          */
         public Builder header(String name, String value) {
             headers.set(name, value);
@@ -199,12 +197,11 @@ public final class Request {
         }
 
         /**
-         * 添加带有{@code name}和{@code value}的header，
-         * 对于像“Cookie”这样的多值标头，最好使用此方法
-         *
-         * @param name  属性名称
-         * @param value 属性值
-         * @return 构造器
+         * Adds a header with {@code name} and {@code value}. Prefer this method for multiply-valued
+         * headers like "Cookie".
+         * <p>
+         * Note that for some headers including {@code Content-Length} and {@code Content-Encoding},
+         * Http may replace {@code value} with a header derived from the request body.
          */
         public Builder addHeader(String name, String value) {
             headers.add(name, value);
@@ -212,10 +209,7 @@ public final class Request {
         }
 
         /**
-         * 删除header所有名为{@code name}的属性
-         *
-         * @param name 属性名称
-         * @return 构造器
+         * Removes all headers named {@code name} on this builder.
          */
         public Builder removeHeader(String name) {
             headers.removeAll(name);
@@ -223,16 +217,18 @@ public final class Request {
         }
 
         /**
-         * 删除此生成器上的所有headers并添加{@code headers}
-         *
-         * @param headers 请求头信息
-         * @return 构造器
+         * Removes all headers on this builder and adds {@code headers}.
          */
         public Builder headers(Headers headers) {
             this.headers = headers.newBuilder();
             return this;
         }
 
+        /**
+         * Sets this request's {@code Cache-Control} header, replacing any cache control headers already
+         * present. If {@code cacheControl} doesn't define any directives, this clears this request's
+         * cache-control headers.
+         */
         public Builder cacheControl(CacheControl cacheControl) {
             String value = cacheControl.toString();
             if (value.isEmpty()) return removeHeader(Header.CACHE_CONTROL);
@@ -270,10 +266,10 @@ public final class Request {
         public Builder method(String method, RequestBody body) {
             if (null == method) throw new NullPointerException("method == null");
             if (method.length() == 0) throw new IllegalArgumentException("method.length() == 0");
-            if (null != body && !HttpMethod.permitsRequestBody(method)) {
+            if (body != null && !Http.permitsRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must not have a request body.");
             }
-            if (null == body && HttpMethod.requiresRequestBody(method)) {
+            if (body == null && Http.requiresRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must have a request body.");
             }
             this.method = method;
@@ -281,10 +277,21 @@ public final class Request {
             return this;
         }
 
+        /**
+         * Attaches {@code tag} to the request using {@code Object.class} as a key.
+         */
         public Builder tag(Object tag) {
             return tag(Object.class, tag);
         }
 
+        /**
+         * Attaches {@code tag} to the request using {@code type} as a key. Tags can be read from a
+         * request using {@link Request#tag}. Use null to remove any existing tag assigned for {@code
+         * type}.
+         * <p>
+         * Use this API to attach timing, debugging, or other application data to a request so that
+         * you may read it in interceptors, event listeners, or callbacks.
+         */
         public <T> Builder tag(Class<? super T> type, T tag) {
             if (null == type) throw new NullPointerException("type == null");
 

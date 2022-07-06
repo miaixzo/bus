@@ -26,7 +26,6 @@
 package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 
 import javax.net.ssl.SSLParameters;
@@ -38,12 +37,12 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * OpenJDK 9+.
+ * OpenJDK 9+
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Jdk9Platform extends Platform {
+public class Jdk9Platform extends Platform {
 
     final Method setProtocolMethod;
     final Method getProtocolMethod;
@@ -81,7 +80,7 @@ public final class Jdk9Platform extends Platform {
 
             sslSocket.setSSLParameters(sslParameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw Builder.assertionError("unable to set ssl parameters", e);
+            throw new AssertionError("failed to set SSL parameters", e);
         }
     }
 
@@ -97,13 +96,25 @@ public final class Jdk9Platform extends Platform {
             }
 
             return protocol;
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw Builder.assertionError("unable to get selected protocols", e);
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof UnsupportedOperationException) {
+                // Handle UnsupportedOperationException as it is defined in the getApplicationProtocol API.
+                // https://docs.oracle.com/javase/9/docs/api/javax/net/ssl/SSLSocket.html
+                return null;
+            }
+
+            throw new AssertionError("failed to get ALPN selected protocol", e);
+        } catch (IllegalAccessException e) {
+            throw new AssertionError("failed to get ALPN selected protocol", e);
         }
     }
 
     @Override
     public X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
+        // Not supported due to access checks on JDK 9+:
+        // java.lang.reflect.InaccessibleObjectException: Unable to make member of class
+        // sun.security.ssl.SSLSocketFactoryImpl accessible:  module java.base does not export
+        // sun.security.ssl to unnamed module @xxx
         throw new UnsupportedOperationException(
                 "clientBuilder.sslSocketFactory(SSLSocketFactory) not supported on JDK 9+");
     }

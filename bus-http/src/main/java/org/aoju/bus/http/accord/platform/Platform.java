@@ -91,26 +91,50 @@ public class Platform {
      * @return 平台信息
      */
     private static Platform findPlatform() {
-        Platform android = AndroidPlatform.buildIfSupported();
-
-        if (null != android) {
-            return android;
+        if (isAndroid()) {
+            return findAndroidPlatform();
+        } else {
+            return findJvmPlatform();
         }
+    }
 
+    public static boolean isAndroid() {
+        // This explicit check avoids activating in Android Studio with Android specific classes
+        // available when running plugins inside the IDE.
+        return "Dalvik".equals(System.getProperty("java.vm.name"));
+    }
+
+    private static Platform findJvmPlatform() {
         Platform jdk9 = Jdk9Platform.buildIfSupported();
 
-        if (null != jdk9) {
+        if (jdk9 != null) {
             return jdk9;
         }
 
-        Platform jdkWithJettyBoot = JdkWithJettyBootPlatform.buildIfSupported();
+        Platform jdkWithJettyBoot = Jdk8WithJettyBootPlatform.buildIfSupported();
 
-        if (null != jdkWithJettyBoot) {
+        if (jdkWithJettyBoot != null) {
             return jdkWithJettyBoot;
         }
 
         // 可能是像OpenJDK和Oracle JDK
         return new Platform();
+    }
+
+    private static Platform findAndroidPlatform() {
+        Platform android10 = Android10Platform.buildIfSupported();
+
+        if (android10 != null) {
+            return android10;
+        }
+
+        Platform android = AndroidPlatform.buildIfSupported();
+
+        if (android == null) {
+            throw new NullPointerException("No platform found on Android");
+        }
+
+        return android;
     }
 
     /**
@@ -264,12 +288,7 @@ public class Platform {
     }
 
     public SSLContext getSSLContext() {
-        String jvmVersion = System.getProperty("java.specification.version");
         try {
-            if ("1.7".equals(jvmVersion)) {
-                // JDK 1.7(公共版本)只支持带命名协议的> TLSv1
-                return SSLContext.getInstance(Http.TLS_V_12);
-            }
             return SSLContext.getInstance(Http.TLS);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("No TLS provider", e);

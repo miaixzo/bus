@@ -31,7 +31,7 @@ import org.aoju.bus.http.Response;
 import java.io.IOException;
 
 /**
- * Httpd's 的内部缓存接口
+ * Http's 的内部缓存接口
  * 应用程序不应该实现这个:而是使用{@link Cache}
  *
  * @author Kimi Liu
@@ -66,7 +66,7 @@ public interface InternalCache {
     void trackConditionalCacheHit();
 
     /**
-     * 跟踪一个满足{@code cacheStrategy}的HTTP响应。
+     * 跟踪一个满足{@code cacheStrategy}的HTTP响应
      *
      * @param cacheStrategy 请求和缓存的响应
      */

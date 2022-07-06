@@ -25,15 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.AsyncTimeout;
 import org.aoju.bus.core.io.Timeout;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.accord.ConnectInterceptor;
-import org.aoju.bus.http.accord.StreamAllocation;
-import org.aoju.bus.http.accord.platform.Platform;
+import org.aoju.bus.http.accord.Transmitter;
 import org.aoju.bus.http.cache.CacheInterceptor;
-import org.aoju.bus.http.metric.EventListener;
 import org.aoju.bus.http.metric.Interceptor;
 import org.aoju.bus.http.metric.NamedRunnable;
 import org.aoju.bus.http.metric.http.BridgeInterceptor;
@@ -48,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 实际调用准备执行的请求
@@ -56,40 +53,37 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class RealCall implements NewCall {
+public class RealCall implements NewCall {
 
+    /**
+     * 调用客户端
+     */
+    public final Httpd client;
     /**
      * 应用程序的原始请求未掺杂重定向或验证标头.
      */
     public final Request originalRequest;
     public final boolean forWebSocket;
-    final Httpd client;
-    final RetryAndFollowUp retryAndFollowUp;
-    final AsyncTimeout timeout;
     /**
-     * 在{@link NewCall}和{@link EventListener}之间存在一个循环，这使得
-     * 这种情况很尴尬。这将在我们创建call实例之后设置，然后创建事件监听器实例
+     * 在{@link NewCall}和{@link Transmitter}之间有一个循环
+     * 这是在创建调用实例之后立即设置的
      */
-    private EventListener eventListener;
+    private Transmitter transmitter;
+    /**
+     * 进程守护
+     */
     private boolean executed;
 
     private RealCall(Httpd client, Request originalRequest, boolean forWebSocket) {
         this.client = client;
         this.originalRequest = originalRequest;
         this.forWebSocket = forWebSocket;
-        this.retryAndFollowUp = new RetryAndFollowUp(client, forWebSocket);
-        this.timeout = new AsyncTimeout() {
-            @Override
-            protected void timedOut() {
-                cancel();
-            }
-        };
-        this.timeout.timeout(client.callTimeoutMillis(), TimeUnit.MILLISECONDS);
     }
 
     static RealCall newRealCall(Httpd client, Request originalRequest, boolean forWebSocket) {
+        // 安全地将Call实例发布到EventListener
         RealCall call = new RealCall(client, originalRequest, forWebSocket);
-        call.eventListener = client.eventListenerFactory().create(call);
+        call.transmitter = new Transmitter(client, call);
         return call;
     }
 
@@ -104,36 +98,14 @@ public final class RealCall implements NewCall {
             if (executed) throw new IllegalStateException("Already Executed");
             executed = true;
         }
-        captureCallStackTrace();
-        timeout.enter();
-        eventListener.callStart(this);
+        transmitter.timeoutEnter();
+        transmitter.callStart();
         try {
             client.dispatcher().executed(this);
-            Response result = getResponseWithInterceptorChain();
-            if (null == result) throw new IOException("Canceled");
-            return result;
-        } catch (IOException e) {
-            e = timeoutExit(e);
-            eventListener.callFailed(this, e);
-            throw e;
+            return getResponseWithInterceptorChain();
         } finally {
             client.dispatcher().finished(this);
         }
-    }
-
-    IOException timeoutExit(IOException cause) {
-        if (!timeout.exit()) return cause;
-
-        InterruptedIOException e = new InterruptedIOException("timeout");
-        if (null != cause) {
-            e.initCause(cause);
-        }
-        return e;
-    }
-
-    private void captureCallStackTrace() {
-        Object callStackTrace = Platform.get().getStackTraceForCloseable("response.body().close()");
-        retryAndFollowUp.setCallStackTrace(callStackTrace);
     }
 
     @Override
@@ -142,19 +114,18 @@ public final class RealCall implements NewCall {
             if (executed) throw new IllegalStateException("Already Executed");
             executed = true;
         }
-        captureCallStackTrace();
-        eventListener.callStart(this);
+        transmitter.callStart();
         client.dispatcher().enqueue(new AsyncCall(responseCallback));
     }
 
     @Override
     public void cancel() {
-        retryAndFollowUp.cancel();
+        transmitter.cancel();
     }
 
     @Override
     public Timeout timeout() {
-        return timeout;
+        return transmitter.timeout();
     }
 
     @Override
@@ -164,7 +135,7 @@ public final class RealCall implements NewCall {
 
     @Override
     public boolean isCanceled() {
-        return retryAndFollowUp.isCanceled();
+        return transmitter.isCanceled();
     }
 
     @Override
@@ -172,24 +143,25 @@ public final class RealCall implements NewCall {
         return RealCall.newRealCall(client, originalRequest, forWebSocket);
     }
 
-    StreamAllocation streamAllocation() {
-        return retryAndFollowUp.streamAllocation();
-    }
-
-    String toLoggableString() {
+    /**
+     * 返回描述此调用的字符串
+     * 不包含完整的URL，因为它可能包含敏感信息
+     */
+    public String toLoggableString() {
         return (isCanceled() ? "canceled " : Normal.EMPTY)
                 + (forWebSocket ? "web socket" : "call")
                 + " to " + redactedUrl();
     }
 
-    String redactedUrl() {
+    public String redactedUrl() {
         return originalRequest.url().redact();
     }
 
-    Response getResponseWithInterceptorChain() throws IOException {
+    public Response getResponseWithInterceptorChain() throws IOException {
+        // Build a full stack of interceptors.
         List<Interceptor> interceptors = new ArrayList<>();
         interceptors.addAll(client.interceptors());
-        interceptors.add(retryAndFollowUp);
+        interceptors.add(new RetryAndFollowUp(client));
         interceptors.add(new BridgeInterceptor(client.cookieJar()));
         interceptors.add(new CacheInterceptor(client.internalCache()));
         interceptors.add(new ConnectInterceptor(client));
@@ -198,24 +170,44 @@ public final class RealCall implements NewCall {
         }
         interceptors.add(new CallServerInterceptor(forWebSocket));
 
-        Interceptor.Chain chain = new RealInterceptorChain(interceptors, null, null, null, 0,
-                originalRequest, this, eventListener, client.connectTimeoutMillis(),
+        Interceptor.Chain chain = new RealInterceptorChain(interceptors, transmitter, null, 0,
+                originalRequest, this, client.connectTimeoutMillis(),
                 client.readTimeoutMillis(), client.writeTimeoutMillis());
 
-        Response response = chain.proceed(originalRequest);
-        if (retryAndFollowUp.isCanceled()) {
-            IoKit.close(response);
-            throw new IOException("Canceled");
+        boolean calledNoMoreExchanges = false;
+        try {
+            Response response = chain.proceed(originalRequest);
+            if (transmitter.isCanceled()) {
+                IoKit.close(response);
+                throw new IOException("Canceled");
+            }
+            return response;
+        } catch (IOException e) {
+            calledNoMoreExchanges = true;
+            throw transmitter.noMoreExchanges(e);
+        } finally {
+            if (!calledNoMoreExchanges) {
+                transmitter.noMoreExchanges(null);
+            }
         }
-        return response;
     }
 
-    public final class AsyncCall extends NamedRunnable {
+    public class AsyncCall extends NamedRunnable {
+
         private final Callback responseCallback;
+        private volatile AtomicInteger callsPerHost = new AtomicInteger(0);
 
         AsyncCall(Callback responseCallback) {
-            super("Httpd %s", redactedUrl());
+            super("Http %s", redactedUrl());
             this.responseCallback = responseCallback;
+        }
+
+        public AtomicInteger callsPerHost() {
+            return callsPerHost;
+        }
+
+        public void reuseCallsPerHostFrom(AsyncCall other) {
+            this.callsPerHost = other.callsPerHost;
         }
 
         public String host() {
@@ -230,6 +222,10 @@ public final class RealCall implements NewCall {
             return RealCall.this;
         }
 
+        /**
+         * 尝试在{@code executorService}上排队这个异步调用
+         * 如果执行程序已经关闭，则将尝试通过调用失败来进行清理
+         */
         public void executeOn(ExecutorService executorService) {
             assert (!Thread.holdsLock(client.dispatcher()));
             boolean success = false;
@@ -239,11 +235,12 @@ public final class RealCall implements NewCall {
             } catch (RejectedExecutionException e) {
                 InterruptedIOException ioException = new InterruptedIOException("executor rejected");
                 ioException.initCause(e);
-                eventListener.callFailed(RealCall.this, ioException);
+                transmitter.noMoreExchanges(ioException);
                 responseCallback.onFailure(RealCall.this, ioException);
             } finally {
                 if (!success) {
-                    client.dispatcher().finished(this);
+                    // 这个回调不再运行
+                    client.dispatcher().finished(this.get());
                 }
             }
         }
@@ -251,23 +248,23 @@ public final class RealCall implements NewCall {
         @Override
         protected void execute() {
             boolean signalledCallback = false;
-            timeout.enter();
+            transmitter.timeoutEnter();
             try {
                 Response response = getResponseWithInterceptorChain();
                 signalledCallback = true;
                 responseCallback.onResponse(RealCall.this, response);
             } catch (IOException e) {
-                e = timeoutExit(e);
                 if (signalledCallback) {
+                    // 不要第二次发送回调信号
                     Logger.info("Callback failure for " + toLoggableString(), e);
                 } else {
-                    eventListener.callFailed(RealCall.this, e);
                     responseCallback.onFailure(RealCall.this, e);
                 }
             } catch (Throwable t) {
                 cancel();
                 if (!signalledCallback) {
                     IOException canceledException = new IOException("canceled due to " + t);
+                    canceledException.addSuppressed(t);
                     responseCallback.onFailure(RealCall.this, canceledException);
                 }
                 throw t;

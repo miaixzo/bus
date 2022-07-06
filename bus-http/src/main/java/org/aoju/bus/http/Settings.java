@@ -37,7 +37,7 @@ import java.util.Arrays;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Settings {
+public class Settings {
 
     /**
      * 设置总数

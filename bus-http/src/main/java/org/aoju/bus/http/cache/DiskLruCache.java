@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class DiskLruCache implements Closeable, Flushable {
+public class DiskLruCache implements Closeable, Flushable {
 
     static final String JOURNAL_FILE = "journal";
     static final String JOURNAL_FILE_TEMP = "journal.tmp";
@@ -166,7 +166,8 @@ public final class DiskLruCache implements Closeable, Flushable {
                         + journalIsCorrupt.getMessage() + ", removing", journalIsCorrupt);
             }
 
-            // 缓存已损坏，请尝试删除目录中的内容
+            // The cache is corrupted, attempt to delete the contents of the directory. This can throw and
+            // we'll let that propagate out as it likely means there is a severe filesystem problem.
             try {
                 delete();
             } finally {
@@ -180,8 +181,7 @@ public final class DiskLruCache implements Closeable, Flushable {
     }
 
     private void readJournal() throws IOException {
-        BufferSource source = IoKit.buffer(fileSystem.source(journalFile));
-        try {
+        try (BufferSource source = IoKit.buffer(fileSystem.source(journalFile))) {
             String magic = source.readUtf8LineStrict();
             String version = source.readUtf8LineStrict();
             String appVersionString = source.readUtf8LineStrict();
@@ -213,21 +213,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             } else {
                 journalWriter = newJournalWriter();
             }
-        } finally {
-            IoKit.close(source);
         }
-    }
-
-    private BufferSink newJournalWriter() throws FileNotFoundException {
-        Sink fileSink = fileSystem.appendingSink(journalFile);
-        Sink faultHidingSink = new FaultHideSink(fileSink) {
-            @Override
-            protected void onException(IOException e) {
-                assert (Thread.holdsLock(DiskLruCache.this));
-                hasJournalErrors = true;
-            }
-        };
-        return IoKit.buffer(faultHidingSink);
     }
 
     private void readJournalLine(String line) throws IOException {
@@ -269,31 +255,17 @@ public final class DiskLruCache implements Closeable, Flushable {
         }
     }
 
-    private final Runnable cleanupRunnable = new Runnable() {
-        public void run() {
-            synchronized (DiskLruCache.this) {
-                if (!initialized | closed) {
-                    return;
-                }
-
-                try {
-                    trimToSize();
-                } catch (IOException ignored) {
-                    mostRecentTrimFailed = true;
-                }
-
-                try {
-                    if (journalRebuildRequired()) {
-                        rebuildJournal();
-                        redundantOpCount = 0;
-                    }
-                } catch (IOException e) {
-                    mostRecentRebuildFailed = true;
-                    journalWriter = IoKit.buffer(IoKit.blackhole());
-                }
+    private BufferSink newJournalWriter() throws FileNotFoundException {
+        Sink fileSink = fileSystem.appendingSink(journalFile);
+        Sink faultHidingSink = new FaultHideSink(fileSink) {
+            @Override
+            protected void onException(IOException e) {
+                assert (Thread.holdsLock(DiskLruCache.this));
+                hasJournalErrors = true;
             }
-        }
-    };
+        };
+        return IoKit.buffer(faultHidingSink);
+    }
 
     /**
      * 计算初始大小并收集垃圾作为打开缓存的一部分。脏条目被认为是不一致的，将被删除
@@ -329,8 +301,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             journalWriter.close();
         }
 
-        BufferSink writer = IoKit.buffer(fileSystem.sink(journalFileTmp));
-        try {
+        try (BufferSink writer = IoKit.buffer(fileSystem.sink(journalFileTmp))) {
             writer.writeUtf8(MAGIC).writeByte(Symbol.C_LF);
             writer.writeUtf8(VERSION_1).writeByte(Symbol.C_LF);
             writer.writeDecimalLong(appVersion).writeByte(Symbol.C_LF);
@@ -349,8 +320,6 @@ public final class DiskLruCache implements Closeable, Flushable {
                     writer.writeByte(Symbol.C_LF);
                 }
             }
-        } finally {
-            writer.close();
         }
 
         if (fileSystem.exists(journalFile)) {
@@ -363,6 +332,340 @@ public final class DiskLruCache implements Closeable, Flushable {
         hasJournalErrors = false;
         mostRecentRebuildFailed = false;
     }
+
+    /**
+     * 返回缓存当前项的迭代器。这个迭代器不会抛出{@code ConcurrentModificationException}，
+     * 调用者必须{@link Snapshot#close}每个由{@link Iterator#next}返回的快照
+     * 如果做不到这一点，就会泄漏打开的文件,返回的迭代器支持 {@link Iterator#remove}.
+     *
+     * @return 返回迭代器
+     * @throws IOException 异常
+     */
+    public synchronized Iterator<Snapshot> snapshots() throws IOException {
+        initialize();
+        return new Iterator<>() {
+            /**
+             * 迭代条目的副本以防止并发修改错误
+             */
+            final Iterator<Entry> delegate = new ArrayList<>(lruEntries.values()).iterator();
+
+            /**
+             * 要从{@link #next}返回的快照。如果还没有计算出来，就是Null
+             */
+            Snapshot nextSnapshot;
+
+            /**
+             * 要使用{@link #remove}删除的快照。如果删除是非法的，则为Null
+             */
+            Snapshot removeSnapshot;
+
+            @Override
+            public boolean hasNext() {
+                if (null != nextSnapshot) {
+                    return true;
+                }
+
+                synchronized (DiskLruCache.this) {
+                    // 如果缓存关闭，则截断迭代器。
+                    if (closed) return false;
+                    while (delegate.hasNext()) {
+                        Entry entry = delegate.next();
+                        if (!entry.readable) continue;
+                        Snapshot snapshot = entry.snapshot();
+                        if (null == snapshot) {
+                            continue;
+                        }
+                        nextSnapshot = snapshot;
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public Snapshot next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                removeSnapshot = nextSnapshot;
+                nextSnapshot = null;
+                return removeSnapshot;
+            }
+
+            @Override
+            public void remove() {
+                if (null == removeSnapshot) {
+                    throw new IllegalStateException("remove() before next()");
+                }
+                try {
+                    DiskLruCache.this.remove(removeSnapshot.key);
+                } catch (IOException ignored) {
+                    // 这里没什么用。未能从缓存中删除。这很可能是因为无法更新日志，但是缓存的条目仍然没有了
+                    Logger.error(ignored);
+                } finally {
+                    removeSnapshot = null;
+                }
+            }
+        };
+    }
+
+    /**
+     * 快照信息
+     */
+    public class Snapshot implements Closeable {
+        private final String key;
+        private final long sequenceNumber;
+        private final Source[] sources;
+        private final long[] lengths;
+
+        Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
+            this.key = key;
+            this.sequenceNumber = sequenceNumber;
+            this.sources = sources;
+            this.lengths = lengths;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        public Editor edit() throws IOException {
+            return DiskLruCache.this.edit(key, sequenceNumber);
+        }
+
+        public Source getSource(int index) {
+            return sources[index];
+        }
+
+        public long getLength(int index) {
+            return lengths[index];
+        }
+
+        public void close() {
+            for (Source in : sources) {
+                IoKit.close(in);
+            }
+        }
+    }
+
+    public class Editor {
+        final Entry entry;
+        final boolean[] written;
+        private boolean done;
+
+        Editor(Entry entry) {
+            this.entry = entry;
+            this.written = (entry.readable) ? null : new boolean[valueCount];
+        }
+
+        void detach() {
+            if (entry.currentEditor == this) {
+                for (int i = 0; i < valueCount; i++) {
+                    try {
+                        fileSystem.delete(entry.dirtyFiles[i]);
+                    } catch (IOException e) {
+
+                    }
+                }
+                entry.currentEditor = null;
+            }
+        }
+
+        public Source newSource(int index) {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (!entry.readable || entry.currentEditor != this) {
+                    return null;
+                }
+                try {
+                    return fileSystem.source(entry.cleanFiles[index]);
+                } catch (FileNotFoundException e) {
+                    return null;
+                }
+            }
+        }
+
+        public Sink newSink(int index) {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (entry.currentEditor != this) {
+                    return IoKit.blackhole();
+                }
+                if (!entry.readable) {
+                    written[index] = true;
+                }
+                File dirtyFile = entry.dirtyFiles[index];
+                Sink sink;
+                try {
+                    sink = fileSystem.sink(dirtyFile);
+                } catch (FileNotFoundException e) {
+                    return IoKit.blackhole();
+                }
+                return new FaultHideSink(sink) {
+                    @Override
+                    protected void onException(IOException e) {
+                        synchronized (DiskLruCache.this) {
+                            detach();
+                        }
+                    }
+                };
+            }
+        }
+
+        public void commit() throws IOException {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (entry.currentEditor == this) {
+                    completeEdit(this, true);
+                }
+                done = true;
+            }
+        }
+
+        /**
+         * 中止这个编辑。这释放了编辑锁，因此可以在同一个键上启动另一个编辑
+         *
+         * @throws IOException 异常
+         */
+        public void abort() throws IOException {
+            synchronized (DiskLruCache.this) {
+                if (done) {
+                    throw new IllegalStateException();
+                }
+                if (entry.currentEditor == this) {
+                    completeEdit(this, false);
+                }
+                done = true;
+            }
+        }
+
+        public void abortUnlessCommitted() {
+            synchronized (DiskLruCache.this) {
+                if (!done && entry.currentEditor == this) {
+                    try {
+                        completeEdit(this, false);
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+        }
+    }
+
+    private class Entry {
+        final String key;
+
+        /**
+         * Lengths of this entry's files.
+         */
+        final long[] lengths;
+        final File[] cleanFiles;
+        final File[] dirtyFiles;
+
+        boolean readable;
+
+        Editor currentEditor;
+
+        long sequenceNumber;
+
+        Entry(String key) {
+            this.key = key;
+
+            lengths = new long[valueCount];
+            cleanFiles = new File[valueCount];
+            dirtyFiles = new File[valueCount];
+
+            StringBuilder fileBuilder = new StringBuilder(key).append(Symbol.C_DOT);
+            int truncateTo = fileBuilder.length();
+            for (int i = 0; i < valueCount; i++) {
+                fileBuilder.append(i);
+                cleanFiles[i] = new File(directory, fileBuilder.toString());
+                fileBuilder.append(".tmp");
+                dirtyFiles[i] = new File(directory, fileBuilder.toString());
+                fileBuilder.setLength(truncateTo);
+            }
+        }
+
+        void setLengths(String[] strings) throws IOException {
+            if (strings.length != valueCount) {
+                throw invalidLengths(strings);
+            }
+
+            try {
+                for (int i = 0; i < strings.length; i++) {
+                    lengths[i] = Long.parseLong(strings[i]);
+                }
+            } catch (NumberFormatException e) {
+                throw invalidLengths(strings);
+            }
+        }
+
+        void writeLengths(BufferSink writer) throws IOException {
+            for (long length : lengths) {
+                writer.writeByte(Symbol.C_SPACE).writeDecimalLong(length);
+            }
+        }
+
+        private IOException invalidLengths(String[] strings) throws IOException {
+            throw new IOException("unexpected journal line: " + Arrays.toString(strings));
+        }
+
+        Snapshot snapshot() {
+            if (!Thread.holdsLock(DiskLruCache.this)) throw new AssertionError();
+
+            Source[] sources = new Source[valueCount];
+            long[] lengths = this.lengths.clone();
+            try {
+                for (int i = 0; i < valueCount; i++) {
+                    sources[i] = fileSystem.source(cleanFiles[i]);
+                }
+                return new Snapshot(key, sequenceNumber, sources, lengths);
+            } catch (FileNotFoundException e) {
+                for (int i = 0; i < valueCount; i++) {
+                    if (null != sources[i]) {
+                        IoKit.close(sources[i]);
+                    } else {
+                        break;
+                    }
+                }
+                try {
+                    removeEntry(this);
+                } catch (IOException ignored) {
+                }
+                return null;
+            }
+        }
+    }
+
+    private final Runnable cleanupRunnable = new Runnable() {
+        public void run() {
+            synchronized (DiskLruCache.this) {
+                if (!initialized | closed) {
+                    return;
+                }
+
+                try {
+                    trimToSize();
+                } catch (IOException ignored) {
+                    mostRecentTrimFailed = true;
+                }
+
+                try {
+                    if (journalRebuildRequired()) {
+                        rebuildJournal();
+                        redundantOpCount = 0;
+                    }
+                } catch (IOException e) {
+                    mostRecentRebuildFailed = true;
+                    journalWriter = IoKit.buffer(IoKit.blackhole());
+                }
+            }
+        }
+    };
 
     /**
      * 返回名为{@code key}的条目的快照，如果条目不存在，则返回null，
@@ -658,313 +961,7 @@ public final class DiskLruCache implements Closeable, Flushable {
         }
     }
 
-    /**
-     * 返回缓存当前项的迭代器。这个迭代器不会抛出{@code ConcurrentModificationException}，
-     * 调用者必须{@link Snapshot#close}每个由{@link Iterator#next}返回的快照
-     * 如果做不到这一点，就会泄漏打开的文件,返回的迭代器支持 {@link Iterator#remove}.
-     *
-     * @return 返回迭代器
-     * @throws IOException 异常
-     */
-    public synchronized Iterator<Snapshot> snapshots() throws IOException {
-        initialize();
-        return new Iterator<Snapshot>() {
-            /**
-             * 迭代条目的副本以防止并发修改错误
-             */
-            final Iterator<Entry> delegate = new ArrayList<>(lruEntries.values()).iterator();
 
-            /**
-             * 要从{@link #next}返回的快照。如果还没有计算出来，就是Null
-             */
-            Snapshot nextSnapshot;
-
-            /**
-             * 要使用{@link #remove}删除的快照。如果删除是非法的，则为Null
-             */
-            Snapshot removeSnapshot;
-
-            @Override
-            public boolean hasNext() {
-                if (null != nextSnapshot) {
-                    return true;
-                }
-
-                synchronized (DiskLruCache.this) {
-                    // 如果缓存关闭，则截断迭代器。
-                    if (closed) return false;
-                    while (delegate.hasNext()) {
-                        Entry entry = delegate.next();
-                        if (!entry.readable) continue;
-                        Snapshot snapshot = entry.snapshot();
-                        if (null == snapshot) {
-                            continue;
-                        }
-                        nextSnapshot = snapshot;
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            @Override
-            public Snapshot next() {
-                if (!hasNext()) throw new NoSuchElementException();
-                removeSnapshot = nextSnapshot;
-                nextSnapshot = null;
-                return removeSnapshot;
-            }
-
-            @Override
-            public void remove() {
-                if (null == removeSnapshot) {
-                    throw new IllegalStateException("remove() before next()");
-                }
-                try {
-                    DiskLruCache.this.remove(removeSnapshot.key);
-                } catch (IOException ignored) {
-                    // 这里没什么用。未能从缓存中删除。这很可能是因为无法更新日志，但是缓存的条目仍然没有了
-                    Logger.error(ignored);
-                } finally {
-                    removeSnapshot = null;
-                }
-            }
-        };
-    }
-
-    /**
-     * 快照信息
-     */
-    public final class Snapshot implements Closeable {
-        private final String key;
-        private final long sequenceNumber;
-        private final Source[] sources;
-        private final long[] lengths;
-
-        Snapshot(String key, long sequenceNumber, Source[] sources, long[] lengths) {
-            this.key = key;
-            this.sequenceNumber = sequenceNumber;
-            this.sources = sources;
-            this.lengths = lengths;
-        }
-
-        public String key() {
-            return key;
-        }
-
-        public Editor edit() throws IOException {
-            return DiskLruCache.this.edit(key, sequenceNumber);
-        }
-
-        public Source getSource(int index) {
-            return sources[index];
-        }
-
-        public long getLength(int index) {
-            return lengths[index];
-        }
-
-        public void close() {
-            for (Source in : sources) {
-                IoKit.close(in);
-            }
-        }
-    }
-
-    public final class Editor {
-        final Entry entry;
-        final boolean[] written;
-        private boolean done;
-
-        Editor(Entry entry) {
-            this.entry = entry;
-            this.written = (entry.readable) ? null : new boolean[valueCount];
-        }
-
-        void detach() {
-            if (entry.currentEditor == this) {
-                for (int i = 0; i < valueCount; i++) {
-                    try {
-                        fileSystem.delete(entry.dirtyFiles[i]);
-                    } catch (IOException e) {
-
-                    }
-                }
-                entry.currentEditor = null;
-            }
-        }
-
-        public Source newSource(int index) {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (!entry.readable || entry.currentEditor != this) {
-                    return null;
-                }
-                try {
-                    return fileSystem.source(entry.cleanFiles[index]);
-                } catch (FileNotFoundException e) {
-                    return null;
-                }
-            }
-        }
-
-        public Sink newSink(int index) {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (entry.currentEditor != this) {
-                    return IoKit.blackhole();
-                }
-                if (!entry.readable) {
-                    written[index] = true;
-                }
-                File dirtyFile = entry.dirtyFiles[index];
-                Sink sink;
-                try {
-                    sink = fileSystem.sink(dirtyFile);
-                } catch (FileNotFoundException e) {
-                    return IoKit.blackhole();
-                }
-                return new FaultHideSink(sink) {
-                    @Override
-                    protected void onException(IOException e) {
-                        synchronized (DiskLruCache.this) {
-                            detach();
-                        }
-                    }
-                };
-            }
-        }
-
-        public void commit() throws IOException {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (entry.currentEditor == this) {
-                    completeEdit(this, true);
-                }
-                done = true;
-            }
-        }
-
-        /**
-         * 中止这个编辑。这释放了编辑锁，因此可以在同一个键上启动另一个编辑
-         *
-         * @throws IOException 异常
-         */
-        public void abort() throws IOException {
-            synchronized (DiskLruCache.this) {
-                if (done) {
-                    throw new IllegalStateException();
-                }
-                if (entry.currentEditor == this) {
-                    completeEdit(this, false);
-                }
-                done = true;
-            }
-        }
-
-        public void abortUnlessCommitted() {
-            synchronized (DiskLruCache.this) {
-                if (!done && entry.currentEditor == this) {
-                    try {
-                        completeEdit(this, false);
-                    } catch (IOException ignored) {
-                    }
-                }
-            }
-        }
-    }
-
-    private final class Entry {
-        final String key;
-
-        /**
-         * Lengths of this entry's files.
-         */
-        final long[] lengths;
-        final File[] cleanFiles;
-        final File[] dirtyFiles;
-
-        boolean readable;
-
-        Editor currentEditor;
-
-        long sequenceNumber;
-
-        Entry(String key) {
-            this.key = key;
-
-            lengths = new long[valueCount];
-            cleanFiles = new File[valueCount];
-            dirtyFiles = new File[valueCount];
-
-            StringBuilder fileBuilder = new StringBuilder(key).append(Symbol.C_DOT);
-            int truncateTo = fileBuilder.length();
-            for (int i = 0; i < valueCount; i++) {
-                fileBuilder.append(i);
-                cleanFiles[i] = new File(directory, fileBuilder.toString());
-                fileBuilder.append(".tmp");
-                dirtyFiles[i] = new File(directory, fileBuilder.toString());
-                fileBuilder.setLength(truncateTo);
-            }
-        }
-
-        void setLengths(String[] strings) throws IOException {
-            if (strings.length != valueCount) {
-                throw invalidLengths(strings);
-            }
-
-            try {
-                for (int i = 0; i < strings.length; i++) {
-                    lengths[i] = Long.parseLong(strings[i]);
-                }
-            } catch (NumberFormatException e) {
-                throw invalidLengths(strings);
-            }
-        }
-
-        void writeLengths(BufferSink writer) throws IOException {
-            for (long length : lengths) {
-                writer.writeByte(Symbol.C_SPACE).writeDecimalLong(length);
-            }
-        }
-
-        private IOException invalidLengths(String[] strings) throws IOException {
-            throw new IOException("unexpected journal line: " + Arrays.toString(strings));
-        }
-
-        Snapshot snapshot() {
-            if (!Thread.holdsLock(DiskLruCache.this)) throw new AssertionError();
-
-            Source[] sources = new Source[valueCount];
-            long[] lengths = this.lengths.clone();
-            try {
-                for (int i = 0; i < valueCount; i++) {
-                    sources[i] = fileSystem.source(cleanFiles[i]);
-                }
-                return new Snapshot(key, sequenceNumber, sources, lengths);
-            } catch (FileNotFoundException e) {
-                for (int i = 0; i < valueCount; i++) {
-                    if (null != sources[i]) {
-                        IoKit.close(sources[i]);
-                    } else {
-                        break;
-                    }
-                }
-                try {
-                    removeEntry(this);
-                } catch (IOException ignored) {
-                }
-                return null;
-            }
-        }
-    }
 
 
 }

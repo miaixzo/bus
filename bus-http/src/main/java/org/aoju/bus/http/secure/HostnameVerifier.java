@@ -41,7 +41,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
+public class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
 
     public static final HostnameVerifier INSTANCE = new HostnameVerifier();
 
@@ -105,6 +105,9 @@ public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
                 : verifyHostname(host, certificate);
     }
 
+    /**
+     * Returns true if {@code certificate} matches {@code ipAddress}.
+     */
     private boolean verifyIpAddress(String ipAddress, X509Certificate certificate) {
         List<String> altNames = getSubjectAltNames(certificate, ALT_IPA_NAME);
         for (int i = 0, size = altNames.size(); i < size; i++) {
@@ -115,6 +118,9 @@ public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
         return false;
     }
 
+    /**
+     * Returns true if {@code certificate} matches {@code hostname}.
+     */
     private boolean verifyHostname(String hostname, X509Certificate certificate) {
         hostname = hostname.toLowerCase(Locale.US);
         List<String> altNames = getSubjectAltNames(certificate, ALT_DNS_NAME);
@@ -163,19 +169,27 @@ public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
             return false;
         }
 
+        // Optimization: check whether hostname is too short to match the pattern. hostName must be at
+        // least as long as the pattern because asterisk must match the whole left-most label and
+        // hostname starts with a non-empty label. Thus, asterisk has to match one or more characters.
         if (hostname.length() < pattern.length()) {
+            // hostname too short to match the pattern.
             return false;
         }
 
         if ("*.".equals(pattern)) {
+            // Wildcard pattern for single-label domain name -- not permitted.
             return false;
         }
 
+        // hostname must end with the region of pattern following the asterisk.
         String suffix = pattern.substring(1);
         if (!hostname.endsWith(suffix)) {
+            // hostname does not end with the suffix
             return false;
         }
 
+        // Check that asterisk did not match across domain name labels.
         int suffixStartIndexInHostname = hostname.length() - suffix.length();
         if ((suffixStartIndexInHostname > 0)
                 && (hostname.lastIndexOf(Symbol.C_DOT, suffixStartIndexInHostname - 1) != -1)) {

@@ -28,6 +28,7 @@ package org.aoju.bus.http;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
+
 /**
  * 连接用于到达抽象源服务器的具体路由
  * 在创建连接时，客户机有许多选项
@@ -36,7 +37,7 @@ import java.net.Proxy;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Route {
+public class Route {
 
     final Address address;
     final Proxy proxy;
@@ -61,6 +62,12 @@ public final class Route {
         return address;
     }
 
+    /**
+     * Returns the {@link Proxy} of this route.
+     *
+     * <strong>Warning:</strong> This may disagree with {@link Address#proxy} when it is null. When
+     * the address's proxy is null, the proxy selector is used.
+     */
     public Proxy proxy() {
         return proxy;
     }
@@ -69,8 +76,12 @@ public final class Route {
         return inetSocketAddress;
     }
 
+    /**
+     * Returns true if this route tunnels HTTPS through an HTTP proxy. See <a
+     * href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817, Section 5.2</a>.
+     */
     public boolean requiresTunnel() {
-        return null != address.sslSocketFactory && proxy.type() == Proxy.Type.HTTP;
+        return address.sslSocketFactory != null && proxy.type() == Proxy.Type.HTTP;
     }
 
     @Override
@@ -88,6 +99,11 @@ public final class Route {
         result = 31 * result + proxy.hashCode();
         result = 31 * result + inetSocketAddress.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Route{" + inetSocketAddress + "}";
     }
 
 }

@@ -59,7 +59,7 @@ public interface DnsX {
 
     /**
      * 返回{@code hostname}的IP地址，按Httpd尝试的顺序排列。如果到地址的连接
-     * 失败，Httpd将重试下一个地址的连接，直到建立连接、耗尽IP地址集或超出限制.
+     * 失败，Httpd将重试下一个地址的连接，直到建立连接、耗尽IP地址集或超出限制
      *
      * @param hostname 主机名信息
      * @return ip地址信息

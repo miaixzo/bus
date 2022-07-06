@@ -44,7 +44,7 @@ public interface CacheRequest {
     Sink body() throws IOException;
 
     /**
-     * 中止这个缓存
+     * 终止这个缓存
      */
     void abort();
 

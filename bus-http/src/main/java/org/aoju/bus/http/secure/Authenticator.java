@@ -43,12 +43,12 @@ import java.io.IOException;
 public interface Authenticator {
 
     /**
-     * 不知道任何凭据且不尝试进行身份验证的验证程序.
+     * 不知道任何凭据且不尝试进行身份验证的验证程序
      */
     Authenticator NONE = (route, response) -> null;
 
     /**
-     * 该请求包含满足{@code response}中的身份验证挑战的凭据。如果无法满足挑战，则返回null.
+     * 该请求包含满足{@code response}中的身份验证挑战的凭据。如果无法满足挑战，则返回null
      * 该路线是最好的努力，它目前可能不总是提供，即使在逻辑上可用
      * 在应用程序拦截器中手动重用身份验证器时，例如在实现特定于客户机的重试时，也可能不提供此功能
      *

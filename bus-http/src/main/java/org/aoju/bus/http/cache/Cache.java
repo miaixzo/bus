@@ -34,13 +34,10 @@ import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.ResponseBody;
-import org.aoju.bus.http.metric.Handshake;
-import org.aoju.bus.http.metric.http.HttpHeaders;
-import org.aoju.bus.http.metric.http.HttpMethod;
 import org.aoju.bus.http.metric.http.StatusLine;
 import org.aoju.bus.http.secure.CipherSuite;
 import org.aoju.bus.http.secure.TlsVersion;
-import org.aoju.bus.logger.Logger;
+import org.aoju.bus.http.socket.Handshake;
 
 import java.io.Closeable;
 import java.io.File;
@@ -58,7 +55,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Cache implements Closeable, Flushable {
+public class Cache implements Closeable, Flushable {
 
     private static final int VERSION = 201105;
     private static final int ENTRY_METADATA = 0;
@@ -70,6 +67,7 @@ public final class Cache implements Closeable, Flushable {
     private int networkCount;
     private int hitCount;
     private int requestCount;
+
     public final InternalCache internalCache = new InternalCache() {
 
         @Override
@@ -168,12 +166,11 @@ public final class Cache implements Closeable, Flushable {
     CacheRequest put(Response response) {
         String requestMethod = response.request().method();
 
-        if (HttpMethod.invalidatesCache(response.request().method())) {
+        if (Http.invalidatesCache(response.request().method())) {
             try {
                 remove(response.request());
             } catch (IOException ignored) {
                 // 无法写入缓存
-                Logger.error(ignored);
             }
             return null;
         }
@@ -182,7 +179,7 @@ public final class Cache implements Closeable, Flushable {
             return null;
         }
 
-        if (HttpHeaders.hasVaryAll(response)) {
+        if (Headers.hasVaryAll(response)) {
             return null;
         }
 
@@ -211,8 +208,8 @@ public final class Cache implements Closeable, Flushable {
         DiskLruCache.Editor editor = null;
         try {
             // 如果快照不是当前的，则返回null
-            editor = snapshot.edit();
-            if (null != editor) {
+            editor = snapshot.edit(); // Returns null if snapshot is not current.
+            if (editor != null) {
                 entry.writeTo(editor);
                 editor.commit();
             }
@@ -268,7 +265,7 @@ public final class Cache implements Closeable, Flushable {
      * @throws IOException 异常
      */
     public Iterator<String> urls() throws IOException {
-        return new Iterator<String>() {
+        return new Iterator<>() {
             final Iterator<DiskLruCache.Snapshot> delegate = cache.snapshots();
 
             String nextUrl;
@@ -279,18 +276,16 @@ public final class Cache implements Closeable, Flushable {
                 if (null != nextUrl) {
                     return true;
                 }
+
                 canRemove = false;
                 // 删除()在错误的内容
                 while (delegate.hasNext()) {
-                    DiskLruCache.Snapshot snapshot = delegate.next();
-                    try {
+                    try (DiskLruCache.Snapshot snapshot = delegate.next()) {
                         BufferSource metadata = IoKit.buffer(snapshot.getSource(ENTRY_METADATA));
                         nextUrl = metadata.readUtf8LineStrict();
                         return true;
                     } catch (IOException ignored) {
                         // 无法读取此快照的元数据;可能是因为主机文件系统已经消失了!跳过它
-                    } finally {
-                        snapshot.close();
                     }
                 }
 
@@ -376,7 +371,7 @@ public final class Cache implements Closeable, Flushable {
         return requestCount;
     }
 
-    private static final class Entry {
+    private static class Entry {
         /**
          * 合成响应标头:请求发送时的本地时间
          */
@@ -493,7 +488,7 @@ public final class Cache implements Closeable, Flushable {
 
         Entry(Response response) {
             this.url = response.request().url().toString();
-            this.varyHeaders = HttpHeaders.varyHeaders(response);
+            this.varyHeaders = Headers.varyHeaders(response);
             this.requestMethod = response.request().method();
             this.protocol = response.protocol();
             this.code = response.code();
@@ -592,7 +587,7 @@ public final class Cache implements Closeable, Flushable {
         public boolean matches(Request request, Response response) {
             return url.equals(request.url().toString())
                     && requestMethod.equals(request.method())
-                    && HttpHeaders.varyMatches(response, varyHeaders, request);
+                    && Headers.varyMatches(response, varyHeaders, request);
         }
 
         public Response response(DiskLruCache.Snapshot snapshot) {
@@ -659,7 +654,7 @@ public final class Cache implements Closeable, Flushable {
         }
     }
 
-    private final class CacheRequestImpl implements CacheRequest {
+    private class CacheRequestImpl implements CacheRequest {
         private final DiskLruCache.Editor editor;
         boolean done;
         private Sink cacheOut;

@@ -25,15 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.Sink;
+import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
-import org.aoju.bus.http.accord.StreamAllocation;
-import org.aoju.bus.http.bodys.RealResponseBody;
-import org.aoju.bus.http.bodys.ResponseBody;
+import org.aoju.bus.http.accord.RealConnection;
 import org.aoju.bus.http.metric.Interceptor;
+import org.aoju.bus.http.metric.Internal;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -48,8 +47,11 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Http2Codec implements HttpCodec {
+public class Http2Codec implements HttpCodec {
 
+    /**
+     * See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
+     */
     private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(
             Header.CONNECTION,
             Header.HOST,
@@ -72,43 +74,49 @@ public final class Http2Codec implements HttpCodec {
             Header.TRANSFER_ENCODING,
             Header.ENCODING,
             Header.UPGRADE);
-    final StreamAllocation streamAllocation;
+
     private final Interceptor.Chain chain;
+    private final RealConnection realConnection;
     private final Http2Connection connection;
     private final Protocol protocol;
-    private Http2Stream stream;
+    private volatile Http2Stream stream;
+    private volatile boolean canceled;
 
-    public Http2Codec(Httpd client, Interceptor.Chain chain, StreamAllocation streamAllocation,
-                      Http2Connection connection) {
+    public Http2Codec(Httpd client, RealConnection realConnection,
+                      Interceptor.Chain chain, Http2Connection connection) {
+        this.realConnection = realConnection;
         this.chain = chain;
-        this.streamAllocation = streamAllocation;
         this.connection = connection;
         this.protocol = client.protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)
                 ? Protocol.H2_PRIOR_KNOWLEDGE
                 : Protocol.HTTP_2;
     }
 
-    public static List<HttpHeaders> http2HeadersList(Request request) {
+    public static List<Headers.Header> http2HeadersList(Request request) {
         Headers headers = request.headers();
-        List<HttpHeaders> result = new ArrayList<>(headers.size() + 4);
-        result.add(new HttpHeaders(HttpHeaders.TARGET_METHOD, request.method()));
-        result.add(new HttpHeaders(HttpHeaders.TARGET_PATH, RequestLine.requestPath(request.url())));
+        List<Headers.Header> result = new ArrayList<>(headers.size() + 4);
+        result.add(new Headers.Header(Headers.Header.TARGET_METHOD, request.method()));
+        result.add(new Headers.Header(Headers.Header.TARGET_PATH, RequestLine.requestPath(request.url())));
         String host = request.header("Host");
-        if (null != host) {
-            result.add(new HttpHeaders(HttpHeaders.TARGET_AUTHORITY, host));
+        if (host != null) {
+            result.add(new Headers.Header(Headers.Header.TARGET_AUTHORITY, host)); // Optional.
         }
-        result.add(new HttpHeaders(HttpHeaders.TARGET_SCHEME, request.url().scheme()));
+        result.add(new Headers.Header(Headers.Header.TARGET_SCHEME, request.url().scheme()));
 
         for (int i = 0, size = headers.size(); i < size; i++) {
-            // 标题名称必须小写
-            ByteString name = ByteString.encodeUtf8(headers.name(i).toLowerCase(Locale.US));
-            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name.utf8())) {
-                result.add(new HttpHeaders(name, headers.value(i)));
+            // header names must be lowercase.
+            String name = headers.name(i).toLowerCase(Locale.US);
+            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name)
+                    || name.equals(Header.TE) && headers.value(i).equals("trailers")) {
+                result.add(new Headers.Header(name, headers.value(i)));
             }
         }
         return result;
     }
 
+    /**
+     * Returns headers for a name value block containing an HTTP/2 response.
+     */
     public static Response.Builder readHttp2HeadersList(Headers headerBlock,
                                                         Protocol protocol) throws IOException {
         StatusLine statusLine = null;
@@ -119,10 +127,10 @@ public final class Http2Codec implements HttpCodec {
             if (name.equals(Http.RESPONSE_STATUS_UTF8)) {
                 statusLine = StatusLine.parse("HTTP/1.1 " + value);
             } else if (!HTTP_2_SKIPPED_RESPONSE_HEADERS.contains(name)) {
-                Builder.instance.addLenient(headersBuilder, name, value);
+                Internal.instance.addLenient(headersBuilder, name, value);
             }
         }
-        if (null == statusLine) throw new ProtocolException("Expected ':status' header not present");
+        if (statusLine == null) throw new ProtocolException("Expected ':status' header not present");
 
         return new Response.Builder()
                 .protocol(protocol)
@@ -132,17 +140,28 @@ public final class Http2Codec implements HttpCodec {
     }
 
     @Override
+    public RealConnection connection() {
+        return realConnection;
+    }
+
+    @Override
     public Sink createRequestBody(Request request, long contentLength) {
         return stream.getSink();
     }
 
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
-        if (null != stream) return;
+        if (stream != null) return;
 
-        boolean hasRequestBody = null != request.body();
-        List<HttpHeaders> requestHeaders = http2HeadersList(request);
+        boolean hasRequestBody = request.body() != null;
+        List<Headers.Header> requestHeaders = http2HeadersList(request);
         stream = connection.newStream(requestHeaders, hasRequestBody);
+        // We may have been asked to cancel while creating the new stream and sending the request
+        // headers, but there was still no stream to close.
+        if (canceled) {
+            stream.closeLater(ErrorCode.CANCEL);
+            throw new IOException("Canceled");
+        }
         stream.readTimeout().timeout(chain.readTimeoutMillis(), TimeUnit.MILLISECONDS);
         stream.writeTimeout().timeout(chain.writeTimeoutMillis(), TimeUnit.MILLISECONDS);
     }
@@ -161,59 +180,31 @@ public final class Http2Codec implements HttpCodec {
     public Response.Builder readResponseHeaders(boolean expectContinue) throws IOException {
         Headers headers = stream.takeHeaders();
         Response.Builder responseBuilder = readHttp2HeadersList(headers, protocol);
-        if (expectContinue && Builder.instance.code(responseBuilder) == Http.HTTP_CONTINUE) {
+        if (expectContinue && Internal.instance.code(responseBuilder) == Http.HTTP_CONTINUE) {
             return null;
         }
         return responseBuilder;
     }
 
     @Override
-    public ResponseBody openResponseBody(Response response) {
-        streamAllocation.eventListener.responseBodyStart(streamAllocation.call);
-        String contentType = response.header(Header.CONTENT_TYPE);
-        long contentLength = HttpHeaders.contentLength(response);
-        Source source = new StreamFinishingSource(stream.getSource());
-        return new RealResponseBody(contentType, contentLength, IoKit.buffer(source));
+    public long reportedContentLength(Response response) {
+        return Headers.contentLength(response);
+    }
+
+    @Override
+    public Source openResponseBodySource(Response response) {
+        return stream.getSource();
+    }
+
+    @Override
+    public Headers trailers() throws IOException {
+        return stream.trailers();
     }
 
     @Override
     public void cancel() {
-        if (null != stream) stream.closeLater(ErrorCode.CANCEL);
-    }
-
-    class StreamFinishingSource extends DelegateSource {
-        boolean completed = false;
-        long bytesRead = 0;
-
-        StreamFinishingSource(Source delegate) {
-            super(delegate);
-        }
-
-        @Override
-        public long read(Buffer sink, long byteCount) throws IOException {
-            try {
-                long read = delegate().read(sink, byteCount);
-                if (read > 0) {
-                    bytesRead += read;
-                }
-                return read;
-            } catch (IOException e) {
-                endOfInput(e);
-                throw e;
-            }
-        }
-
-        @Override
-        public void close() throws IOException {
-            super.close();
-            endOfInput(null);
-        }
-
-        private void endOfInput(IOException e) {
-            if (completed) return;
-            completed = true;
-            streamAllocation.streamFinished(false, Http2Codec.this, bytesRead, e);
-        }
+        canceled = true;
+        if (stream != null) stream.closeLater(ErrorCode.CANCEL);
     }
 
 }

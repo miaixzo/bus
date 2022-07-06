@@ -25,29 +25,20 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferSource;
-import org.aoju.bus.core.io.ByteString;
-import org.aoju.bus.core.io.Source;
-import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.PatternKit;
-import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.http.accord.*;
-import org.aoju.bus.http.cache.InternalCache;
-import org.aoju.bus.http.metric.anget.*;
-import org.aoju.bus.http.metric.http.HttpHeaders;
+import org.aoju.bus.http.bodys.ResponseBody;
+import org.aoju.bus.http.metric.Internal;
 
-import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.IDN;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -62,30 +53,37 @@ import java.util.regex.Pattern;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class Builder {
+public class Builder {
 
     /**
-     * 最后一个四位数的年份:"Fri, 31 Dec 9999 23:59:59 GMT".
+     * 最后一个四位数的年份:"Fri, 31 Dec 9999 23:59:59 GMT"
      */
     public static final long MAX_DATE = 253402300799999L;
     public static final String X_509 = "X.509";
-    public static final TimeZone UTC = TimeZone.getTimeZone("GMT");
-    public static final ByteString UTF_8_BOM = ByteString.decodeHex("efbbbf");
-    public static final ByteString UTF_16_BE_BOM = ByteString.decodeHex("feff");
-    public static final ByteString UTF_16_LE_BOM = ByteString.decodeHex("fffe");
-    public static final ByteString UTF_32_BE_BOM = ByteString.decodeHex("0000ffff");
-    public static final ByteString UTF_32_LE_BOM = ByteString.decodeHex("ffff0000");
-    public static final Method addSuppressedExceptionMethod;
+    public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+    public static final Headers EMPTY_HEADERS = Headers.of();
+    public static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, EMPTY_BYTE_ARRAY);
     /**
-     * 大多数网站都提供祝福格式的cookies。创建解析器，以确保此类cookie处于快速路径上
+     * GMT and UTC are equivalent for our purposes
      */
-    public static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT =
-            ThreadLocal.withInitial(() -> {
-                DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-                rfc1123.setLenient(false);
-                rfc1123.setTimeZone(Builder.UTC);
-                return rfc1123;
-            });
+    public static final TimeZone UTC = TimeZone.getTimeZone("GMT");
+    public static final Comparator<String> NATURAL_ORDER = String::compareTo;
+    public static final ByteString QUOTED_STRING_DELIMITERS = ByteString.encodeUtf8("\"\\");
+    public static final ByteString TOKEN_DELIMITERS = ByteString.encodeUtf8("\t ,=");
+    /**
+     * Byte order marks.
+     */
+    private static final AbstractBlending UNICODE_BOMS = AbstractBlending.of(
+            ByteString.decodeHex("efbbbf"),   // UTF-8
+            ByteString.decodeHex("feff"),     // UTF-16BE
+            ByteString.decodeHex("fffe"),     // UTF-16LE
+            ByteString.decodeHex("0000ffff"), // UTF-32BE
+            ByteString.decodeHex("ffff0000")  // UTF-32LE
+    );
+    private static final Charset UTF_32BE = Charset.forName("UTF-32BE");
+    private static final Charset UTF_32LE = Charset.forName("UTF-32LE");
+    private static final Method addSuppressedExceptionMethod;
 
     /**
      * 如果我们未能以非标准格式解析日期，请依次尝试这些格式.
@@ -110,11 +108,33 @@ public abstract class Builder {
 
     public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS =
             new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
-
     /**
-     * 快速和正则模式区分IP地址从主机名，这是Android私有的InetAddress#isNumeric API的近似值
+     * Quick and dirty pattern to differentiate IP addresses from hostnames. This is an approximation
+     * of Android's private InetAddress#isNumeric API.
+     * <p>
+     * This matches IPv6 addresses as a hex string containing at least one colon, and possibly
+     * including dots after the first colon. It matches IPv4 addresses as strings containing only
+     * decimal digits and dots. This pattern matches strings like "a:.23" and "54" that are neither IP
+     * addresses nor hostnames; they will be verified as IP addresses (which is a more strict
+     * verification).
      */
-    public static final Pattern VERIFY_AS_IP_ADDRESS = Pattern.compile("([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)");
+    private static final Pattern VERIFY_AS_IP_ADDRESS = Pattern.compile(
+            "([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)");
+    /**
+     * Most websites serve cookies in the blessed format. Eagerly create the parser to ensure such
+     * cookies are on the fast path.
+     */
+    private static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT =
+            new ThreadLocal<DateFormat>() {
+                @Override
+                protected DateFormat initialValue() {
+                    // Date format specified by RFC 7231 section 7.1.1.1.
+                    DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+                    rfc1123.setLenient(false);
+                    rfc1123.setTimeZone(UTC);
+                    return rfc1123;
+                }
+            };
 
     public static final String CONNECT = "CONNECT";
     public static final String CONNECTED = "CONNECTED";
@@ -125,8 +145,6 @@ public abstract class Builder {
     public static final String ACK = "ACK";
     public static final String UNKNOWN = "UNKNOWN";
     public static final String ERROR = "ERROR";
-
-    public static Builder instance;
 
     static {
         Method m;
@@ -142,40 +160,8 @@ public abstract class Builder {
 
     }
 
-    public static Date parse(String value) {
-        if (value.length() == 0) {
-            return null;
-        }
-
-        ParsePosition position = new ParsePosition(0);
-        Date result = STANDARD_DATE_FORMAT.get().parse(value, position);
-        if (position.getIndex() == value.length()) {
-            return result;
-        }
-        synchronized (BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS) {
-            for (int i = 0, count = BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length; i < count; i++) {
-                DateFormat format = BROWSER_COMPATIBLE_DATE_FORMATS[i];
-                if (null == format) {
-                    format = new SimpleDateFormat(BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS[i], Locale.US);
-                    format.setTimeZone(Builder.UTC);
-                    BROWSER_COMPATIBLE_DATE_FORMATS[i] = format;
-                }
-                position.setIndex(0);
-                result = format.parse(value, position);
-                if (position.getIndex() != 0) {
-                    return result;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static String format(Date value) {
-        return STANDARD_DATE_FORMAT.get().format(value);
-    }
-
     public static void addSuppressedIfPossible(Throwable e, Throwable suppressed) {
-        if (null != addSuppressedExceptionMethod) {
+        if (addSuppressedExceptionMethod != null) {
             try {
                 addSuppressedExceptionMethod.invoke(e, suppressed);
             } catch (InvocationTargetException | IllegalAccessException ignored) {
@@ -189,6 +175,11 @@ public abstract class Builder {
         }
     }
 
+    /**
+     * Attempts to exhaust {@code source}, returning true if successful. This is useful when reading a
+     * complete source is helpful, such as when doing so completes a cache body or frees a socket
+     * connection for reuse.
+     */
     public static boolean discard(Source source, int timeout, TimeUnit timeUnit) {
         try {
             return skipAll(source, timeout, timeUnit);
@@ -197,6 +188,10 @@ public abstract class Builder {
         }
     }
 
+    /**
+     * Reads until {@code in} is exhausted or the deadline has been reached. This is careful to not
+     * extend the deadline if one exists already.
+     */
     public static boolean skipAll(Source source, int duration, TimeUnit timeUnit) throws IOException {
         long now = System.nanoTime();
         long originalDuration = source.timeout().hasDeadline()
@@ -220,21 +215,30 @@ public abstract class Builder {
         }
     }
 
+    /**
+     * Returns an immutable copy of {@code list}.
+     */
     public static <T> List<T> immutableList(List<T> list) {
         return Collections.unmodifiableList(new ArrayList<>(list));
     }
 
+    /**
+     * Returns an immutable copy of {@code map}.
+     */
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
         return map.isEmpty()
                 ? Collections.emptyMap()
                 : Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
+    /**
+     * Returns an immutable list containing {@code elements}.
+     */
     public static <T> List<T> immutableList(T... elements) {
         return Collections.unmodifiableList(Arrays.asList(elements.clone()));
     }
 
-    public static ThreadFactory threadFactory(final String name, final boolean daemon) {
+    public static ThreadFactory threadFactory(String name, boolean daemon) {
         return runnable -> {
             Thread result = new Thread(runnable, name);
             result.setDaemon(daemon);
@@ -242,6 +246,10 @@ public abstract class Builder {
         };
     }
 
+    /**
+     * Returns an array containing only elements found in {@code first} and also in {@code
+     * second}. The returned elements are in the same order as in {@code first}.
+     */
     public static String[] intersect(
             Comparator<? super String> comparator, String[] first, String[] second) {
         List<String> result = new ArrayList<>();
@@ -256,9 +264,15 @@ public abstract class Builder {
         return result.toArray(new String[result.size()]);
     }
 
+    /**
+     * Returns true if there is an element in {@code first} that is also in {@code second}. This
+     * method terminates if any intersection is found. The sizes of both arguments are assumed to be
+     * so small, and the likelihood of an intersection so great, that it is not worth the CPU cost of
+     * sorting or the memory cost of hashing.
+     */
     public static boolean nonEmptyIntersection(
             Comparator<String> comparator, String[] first, String[] second) {
-        if (null == first || null == second || first.length == 0 || second.length == 0) {
+        if (first == null || second == null || first.length == 0 || second.length == 0) {
             return false;
         }
         for (String a : first) {
@@ -272,16 +286,20 @@ public abstract class Builder {
     }
 
     public static String hostHeader(UnoUrl url, boolean includeDefaultPort) {
-        String host = url.host().contains(Symbol.COLON)
-                ? Symbol.BRACKET_LEFT + url.host() + Symbol.BRACKET_RIGHT
+        String host = url.host().contains(":")
+                ? "[" + url.host() + "]"
                 : url.host();
         return includeDefaultPort || url.port() != UnoUrl.defaultPort(url.scheme())
-                ? host + Symbol.COLON + url.port()
+                ? host + ":" + url.port()
                 : host;
     }
 
+    /**
+     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
+     * https://code.google.com/p/android/issues/detail?id=54072
+     */
     public static boolean isAndroidGetsocknameError(AssertionError e) {
-        return null != e.getCause() && null != e.getMessage()
+        return e.getCause() != null && e.getMessage() != null
                 && e.getMessage().contains("getsockname failed");
     }
 
@@ -299,6 +317,10 @@ public abstract class Builder {
         return result;
     }
 
+    /**
+     * Increments {@code pos} until {@code input[pos]} is not ASCII whitespace. Stops at {@code
+     * limit}.
+     */
     public static int skipLeadingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = pos; i < limit; i++) {
             switch (input.charAt(i)) {
@@ -315,6 +337,10 @@ public abstract class Builder {
         return limit;
     }
 
+    /**
+     * Decrements {@code limit} until {@code input[limit - 1]} is not ASCII whitespace. Stops at
+     * {@code pos}.
+     */
     public static int skipTrailingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = limit - 1; i >= pos; i--) {
             switch (input.charAt(i)) {
@@ -331,12 +357,19 @@ public abstract class Builder {
         return pos;
     }
 
+    /**
+     * Equivalent to {@code string.substring(pos, limit).trim()}.
+     */
     public static String trimSubstring(String string, int pos, int limit) {
         int start = skipLeadingAsciiWhitespace(string, pos, limit);
         int end = skipTrailingAsciiWhitespace(string, start, limit);
         return string.substring(start, end);
     }
 
+    /**
+     * Returns the index of the first character in {@code input} that contains a character in {@code
+     * delimiters}. Returns limit if there is no such character.
+     */
     public static int delimiterOffset(String input, int pos, int limit, String delimiters) {
         for (int i = pos; i < limit; i++) {
             if (delimiters.indexOf(input.charAt(i)) != -1) return i;
@@ -344,6 +377,10 @@ public abstract class Builder {
         return limit;
     }
 
+    /**
+     * Returns the index of the first character in {@code input} that is {@code delimiter}. Returns
+     * limit if there is no such character.
+     */
     public static int delimiterOffset(String input, int pos, int limit, char delimiter) {
         for (int i = pos; i < limit; i++) {
             if (input.charAt(i) == delimiter) return i;
@@ -351,15 +388,26 @@ public abstract class Builder {
         return limit;
     }
 
+    /**
+     * If {@code host} is an IP address, this returns the IP address in canonical form.
+     * <p>
+     * Otherwise this performs IDN ToASCII encoding and canonicalize the result to lowercase. For
+     * example this converts {@code ☃.net} to {@code xn--n3h.net}, and {@code WwW.GoOgLe.cOm} to
+     * {@code www.google.com}. {@code null} will be returned if the host cannot be ToASCII encoded or
+     * if the result contains unsupported ASCII characters.
+     */
     public static String canonicalizeHost(String host) {
-        if (host.contains(Symbol.COLON)) {
-            InetAddress inetAddress = host.startsWith(Symbol.BRACKET_LEFT) && host.endsWith(Symbol.BRACKET_RIGHT)
+        // If the input contains a :, it’s an IPv6 address.
+        if (host.contains(":")) {
+            // If the input is encased in square braces "[...]", drop 'em.
+            InetAddress inetAddress = host.startsWith("[") && host.endsWith("]")
                     ? decodeIpv6(host, 1, host.length() - 1)
                     : decodeIpv6(host, 0, host.length());
-            if (null == inetAddress) return null;
+            if (inetAddress == null) return null;
             byte[] address = inetAddress.getAddress();
-            if (address.length == Normal._16) return inet6AddressToAscii(address);
-            throw new AssertionError("Invalid IPv6 address: '" + host + Symbol.SINGLE_QUOTE);
+            if (address.length == 16) return inet6AddressToAscii(address);
+            if (address.length == 4) return inetAddress.getHostAddress(); // An IPv4-mapped IPv6 address.
+            throw new AssertionError("Invalid IPv6 address: '" + host + "'");
         }
 
         try {
@@ -389,6 +437,11 @@ public abstract class Builder {
         return false;
     }
 
+    /**
+     * Returns the index of the first character in {@code input} that is either a control character
+     * (like {@code \u0000 or \n}) or a non-ASCII character. Returns -1 if {@code input} has no such
+     * characters.
+     */
     public static int indexOfControlOrNonAscii(String input) {
         for (int i = 0, length = input.length(); i < length; i++) {
             char c = input.charAt(i);
@@ -399,32 +452,30 @@ public abstract class Builder {
         return -1;
     }
 
+    /**
+     * Returns true if {@code host} is not a host name and might be an IP address.
+     */
     public static boolean verifyAsIpAddress(String host) {
         return VERIFY_AS_IP_ADDRESS.matcher(host).matches();
     }
 
-    public static java.nio.charset.Charset bomAwareCharset(BufferSource source, java.nio.charset.Charset charset) throws IOException {
-        if (source.rangeEquals(0, UTF_8_BOM)) {
-            source.skip(UTF_8_BOM.size());
-            return Charset.UTF_8;
+    public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {
+        switch (source.select(UNICODE_BOMS)) {
+            case 0:
+                return org.aoju.bus.core.lang.Charset.UTF_8;
+            case 1:
+                return org.aoju.bus.core.lang.Charset.UTF_16_BE;
+            case 2:
+                return org.aoju.bus.core.lang.Charset.UTF_16_LE;
+            case 3:
+                return org.aoju.bus.core.lang.Charset.UTF_32_BE;
+            case 4:
+                return org.aoju.bus.core.lang.Charset.UTF_32_LE;
+            case -1:
+                return charset;
+            default:
+                throw new AssertionError();
         }
-        if (source.rangeEquals(0, UTF_16_BE_BOM)) {
-            source.skip(UTF_16_BE_BOM.size());
-            return Charset.UTF_16_BE;
-        }
-        if (source.rangeEquals(0, UTF_16_LE_BOM)) {
-            source.skip(UTF_16_LE_BOM.size());
-            return Charset.UTF_16_LE;
-        }
-        if (source.rangeEquals(0, UTF_32_BE_BOM)) {
-            source.skip(UTF_32_BE_BOM.size());
-            return Charset.UTF_32_BE;
-        }
-        if (source.rangeEquals(0, UTF_32_LE_BOM)) {
-            source.skip(UTF_32_LE_BOM.size());
-            return Charset.UTF_32_LE;
-        }
-        return charset;
     }
 
     public static int checkDuration(String name, long duration, TimeUnit unit) {
@@ -436,15 +487,6 @@ public abstract class Builder {
         return (int) millis;
     }
 
-    public static AssertionError assertionError(String message, Exception e) {
-        AssertionError assertionError = new AssertionError(message);
-        try {
-            assertionError.initCause(e);
-        } catch (IllegalStateException ise) {
-        }
-        return assertionError;
-    }
-
     public static int decodeHexDigit(char c) {
         if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) return c - Symbol.C_ZERO;
         if (c >= 'a' && c <= 'f') return c - 'a' + 10;
@@ -452,6 +494,9 @@ public abstract class Builder {
         return -1;
     }
 
+    /**
+     * Decodes an IPv6 address like 1111:2222:3333:4444:5555:6666:7777:8888 or ::1.
+     */
     private static InetAddress decodeIpv6(String input, int pos, int limit) {
         byte[] address = new byte[Normal._16];
         int b = 0;
@@ -508,6 +553,9 @@ public abstract class Builder {
         }
     }
 
+    /**
+     * Decodes an IPv4 address suffix of an IPv6 address, like 1111::5555:6666:192.168.0.1.
+     */
     private static boolean decodeIpv4Suffix(
             String input, int pos, int limit, byte[] address, int addressOffset) {
         int b = addressOffset;
@@ -575,148 +623,85 @@ public abstract class Builder {
         return result.readUtf8();
     }
 
-    public static Headers toHeaders(List<HttpHeaders> headersBlock) {
+    public static Headers toHeaders(List<Headers.Header> headerBlock) {
         Headers.Builder builder = new Headers.Builder();
-        for (HttpHeaders headers : headersBlock) {
-            Builder.instance.addLenient(builder, headers.name.utf8(), headers.value.utf8());
+        for (Headers.Header header : headerBlock) {
+            Internal.instance.addLenient(builder, header.name.utf8(), header.value.utf8());
         }
         return builder.build();
     }
 
+    public static List<Headers.Header> toHeaderBlock(Headers headers) {
+        List<Headers.Header> result = new ArrayList<>();
+        for (int i = 0; i < headers.size(); i++) {
+            result.add(new Headers.Header(headers.name(i), headers.value(i)));
+        }
+        return result;
+    }
+
     /**
-     * 解析User-Agent
-     *
-     * @param agentStr User-Agent字符串
-     * @return {@link UserAgent}
+     * Returns the system property, or defaultValue if the system property is null or
+     * cannot be read (e.g. because of security policy restrictions).
      */
-    public static UserAgent of(String agentStr) {
-        if (StringKit.isBlank(agentStr)) {
+    public static String getSystemProperty(String key, String defaultValue) {
+        String value = System.getProperty(key);
+        return value != null ? value : defaultValue;
+    }
+
+    /**
+     * Returns true if an HTTP request for {@code a} and {@code b} can reuse a connection.
+     */
+    public static boolean sameConnection(UnoUrl a, UnoUrl b) {
+        return a.host().equals(b.host())
+                && a.port() == b.port()
+                && a.scheme().equals(b.scheme());
+    }
+
+    /**
+     * Returns the date for {@code value}. Returns null if the value couldn't be parsed.
+     */
+    public static Date parse(String value) {
+        if (value.length() == 0) {
             return null;
         }
-        final UserAgent userAgent = new UserAgent();
 
-        final Browser browser = parseBrowser(agentStr);
-        userAgent.setBrowser(parseBrowser(agentStr));
-        userAgent.setVersion(browser.getVersion(agentStr));
-
-        final Engine engine = parseEngine(agentStr);
-        userAgent.setEngine(engine);
-        userAgent.setNOS(parseNOS(agentStr));
-        final Divice divice = parseDevice(agentStr);
-        userAgent.setDivice(divice);
-        userAgent.setMobile(divice.isMobile() || browser.isMobile());
-
-        return userAgent;
+        ParsePosition position = new ParsePosition(0);
+        Date result = STANDARD_DATE_FORMAT.get().parse(value, position);
+        if (position.getIndex() == value.length()) {
+            // STANDARD_DATE_FORMAT must match exactly; all text must be consumed, e.g. no ignored
+            // non-standard trailing "+01:00". Those cases are covered below.
+            return result;
+        }
+        synchronized (BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS) {
+            for (int i = 0, count = BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length; i < count; i++) {
+                DateFormat format = BROWSER_COMPATIBLE_DATE_FORMATS[i];
+                if (format == null) {
+                    format = new SimpleDateFormat(BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS[i], Locale.US);
+                    // Set the timezone to use when interpreting formats that don't have a timezone. GMT is
+                    // specified by RFC 7231.
+                    format.setTimeZone(UTC);
+                    BROWSER_COMPATIBLE_DATE_FORMATS[i] = format;
+                }
+                position.setIndex(0);
+                result = format.parse(value, position);
+                if (position.getIndex() != 0) {
+                    // Something was parsed. It's possible the entire string was not consumed but we ignore
+                    // that. If any of the BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS ended in "'GMT'" we'd have
+                    // to also check that position.getIndex() == value.length() otherwise parsing might have
+                    // terminated early, ignoring things like "+01:00". Leaving this as != 0 means that any
+                    // trailing junk is ignored.
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 
     /**
-     * 解析浏览器类型
-     *
-     * @param agentStr User-Agent字符串
-     * @return 浏览器类型
+     * Returns the string for {@code value}.
      */
-    private static Browser parseBrowser(String agentStr) {
-        for (Browser browser : Browser.BROWERS) {
-            if (browser.isMatch(agentStr)) {
-                return browser;
-            }
-        }
-        return Browser.UNKNOWN;
+    public static String format(Date value) {
+        return STANDARD_DATE_FORMAT.get().format(value);
     }
-
-    /**
-     * 解析引擎类型
-     *
-     * @param agentStr User-Agent字符串
-     * @return 引擎类型
-     */
-    private static Engine parseEngine(String agentStr) {
-        for (Engine engine : Engine.ENGINES) {
-            if (engine.isMatch(agentStr)) {
-                final String regexp = engine.getName() + "[/\\- ]([\\d\\w.\\-]+)";
-                final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE);
-                engine.setEngineVersion(PatternKit.getGroup1(pattern, agentStr));
-                return engine;
-            }
-        }
-        return Engine.UNKNOWN;
-    }
-
-    /**
-     * 解析系统类型
-     *
-     * @param agentStr User-Agent字符串
-     * @return 系统类型
-     */
-    private static NOS parseNOS(String agentStr) {
-        for (NOS NOS : NOS.OSES) {
-            if (NOS.isMatch(agentStr)) {
-                return NOS;
-            }
-        }
-        return NOS.UNKNOWN;
-    }
-
-    /**
-     * 解析设备类型
-     *
-     * @param agentStr User-Agent字符串
-     * @return 平台类型
-     */
-    private static Divice parseDevice(String agentStr) {
-        for (Divice divice : Divice.DIVICES) {
-            if (divice.isMatch(agentStr)) {
-                return divice;
-            }
-        }
-        return Divice.UNKNOWN;
-    }
-
-    public abstract void addLenient(Headers.Builder builder,
-                                    String line);
-
-    public abstract void addLenient(Headers.Builder builder,
-                                    String name,
-                                    String value);
-
-    public abstract void setCache(Httpd.Builder builder,
-                                  InternalCache internalCache);
-
-    public abstract RealConnection get(ConnectionPool pool,
-                                       Address address,
-                                       StreamAllocation streamAllocation,
-                                       Route route);
-
-    public abstract boolean equalsNonHost(Address a,
-                                          Address b);
-
-    public abstract Socket deduplicate(
-            ConnectionPool pool,
-            Address address,
-            StreamAllocation streamAllocation);
-
-    public abstract void put(ConnectionPool pool,
-                             RealConnection connection);
-
-    public abstract boolean connectionBecameIdle(ConnectionPool pool,
-                                                 RealConnection connection);
-
-    public abstract RouteDatabase routeDatabase(ConnectionPool connectionPool);
-
-    public abstract int code(Response.Builder responseBuilder);
-
-    public abstract void apply(ConnectionSuite tlsConfiguration,
-                               SSLSocket sslSocket,
-                               boolean isFallback);
-
-    public abstract boolean isInvalidHttpUrlHost(IllegalArgumentException e);
-
-    public abstract StreamAllocation streamAllocation(NewCall call);
-
-    public abstract IOException timeoutExit(NewCall call,
-                                            IOException e);
-
-    public abstract NewCall newWebSocketCall(Httpd client,
-                                             Request request);
 
 }
