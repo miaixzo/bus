@@ -35,7 +35,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpz;
-import org.aoju.bus.http.magic.HttpResponse;
+import org.aoju.bus.http.Response;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -96,7 +96,7 @@ public class JdProvider extends AbstractProvider {
     public AccToken getAccessToken(Callback callback) {
         JSONObject object = null;
         try {
-            HttpResponse response = Httpz.post().url(source.accessToken())
+            Response response = Httpz.post().url(source.accessToken())
                     .addParams("app_key", context.getAppKey())
                     .addParams("app_secret", context.getAppSecret())
                     .addParams("grant_type", "authorization_code")
@@ -130,7 +130,7 @@ public class JdProvider extends AbstractProvider {
                     .queryParam("timestamp", DateKit.format(new Date()))
                     .queryParam("v", "2.0");
             urlBuilder.queryParam("sign", sign(urlBuilder.getReadParams()));
-            HttpResponse response = Httpz.post().url(urlBuilder.build(true)).build().execute();
+            Response response = Httpz.post().url(urlBuilder.build(true)).build().execute();
             jsonObject = JSONObject.parseObject(response.body().string());
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,7 +156,7 @@ public class JdProvider extends AbstractProvider {
     public Message refresh(AccToken accToken) {
         JSONObject object = null;
         try {
-            HttpResponse response = Httpz.post()
+            Response response = Httpz.post()
                     .url(source.refresh())
                     .addParams("app_key", context.getAppKey())
                     .addParams("app_secret", context.getAppSecret())

@@ -8,7 +8,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.http.Httpz;
-import org.aoju.bus.http.magic.HttpResponse;
+import org.aoju.bus.http.Response;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -35,7 +35,7 @@ public class LineProvider extends AbstractProvider {
     protected AccToken getAccessToken(Callback callback) {
         JSONObject object = null;
         try {
-            HttpResponse response = Httpz.post().url(source.accessToken())
+            Response response = Httpz.post().url(source.accessToken())
                     .addParams("grant_type", "authorization_code")
                     .addParams("code", callback.getCode())
                     .addParams("redirect_uri", context.getRedirectUri())

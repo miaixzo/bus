@@ -52,6 +52,9 @@ import java.util.List;
 
 /**
  * Android 5+
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 class AndroidPlatform extends Platform {
 
