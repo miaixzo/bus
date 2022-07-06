@@ -87,9 +87,9 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
         try {
             String time = DateKit.format(new Date(), Fields.UTC_PATTERN, ZoneId.GMT.name());
             String nonce = UUID.randomUUID().toString().replace("-", "");
-            String str = nonce + time + context.getAppSecret();
+            String text = nonce + time + context.getAppSecret();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.update(str.getBytes(StandardCharsets.UTF_8));
+            digest.update(text.getBytes(StandardCharsets.UTF_8));
             String hexDigest = byte2Hex(digest.digest());
             String passwordDigestBase64Str = Base64.getEncoder().encodeToString(hexDigest.getBytes());
             return String.format(WSSE_HEADER_FORMAT, context.getAppKey(), passwordDigestBase64Str, nonce, time);

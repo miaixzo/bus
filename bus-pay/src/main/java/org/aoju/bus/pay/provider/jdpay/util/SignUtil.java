@@ -1,6 +1,7 @@
 package org.aoju.bus.pay.provider.jdpay.util;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Normal;
 
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -49,8 +50,8 @@ public class SignUtil {
 
         StringBuilder sb = new StringBuilder();
 
-        for (String str : unSignKeyList) {
-            map.remove(str);
+        for (String text : unSignKeyList) {
+            map.remove(text);
         }
 
         Iterator<Map.Entry<String, Object>> iterator = map.entrySet().iterator();
@@ -79,17 +80,17 @@ public class SignUtil {
             return null;
         }
 
-        TreeMap<String, Object> signMap = new TreeMap<String, Object>();
+        TreeMap<String, Object> signMap = new TreeMap<>();
 
         StringBuilder sb = new StringBuilder();
 
-        for (String str : signedKeyList) {
-            Object o = map.get(str);
+        for (String text : signedKeyList) {
+            Object o = map.get(text);
             if (o != null) {
-                signMap.put(str, o);
+                signMap.put(text, o);
                 continue;
             }
-            signMap.put(str, "");
+            signMap.put(text, Normal.EMPTY);
         }
 
 
@@ -109,11 +110,11 @@ public class SignUtil {
 
 
     public static TreeMap<String, Object> objectToMap(Object object) throws IllegalArgumentException, IllegalAccessException {
-        TreeMap<String, Object> map = new TreeMap<String, Object>();
+        TreeMap<String, Object> map = new TreeMap<>();
         if (object instanceof Map) {
             Map<String, Object> objectMap = (Map) object;
-            for (String str : objectMap.keySet()) {
-                map.put(str, objectMap.get(str));
+            for (String text : objectMap.keySet()) {
+                map.put(text, objectMap.get(text));
             }
             return map;
         }
@@ -132,13 +133,10 @@ public class SignUtil {
 
     public static String sign4PCString(Object object, List<String> unSignKeyList) throws IllegalArgumentException, IllegalAccessException {
         TreeMap<String, Object> map = objectToMap(object);
-
         StringBuilder sb = new StringBuilder();
-
-        for (String str : unSignKeyList) {
-            map.remove(str);
+        for (String text : unSignKeyList) {
+            map.remove(text);
         }
-
 
         Iterator iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {

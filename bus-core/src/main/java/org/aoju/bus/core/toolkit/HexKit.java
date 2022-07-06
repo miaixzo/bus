@@ -93,8 +93,8 @@ public class HexKit {
      * @param data byte[]
      * @return 十六进制String
      */
-    public static String encodeHexStr(byte[] data) {
-        return encodeHexStr(data, true);
+    public static String encodeHexString(byte[] data) {
+        return encodeHexString(data, true);
     }
 
     /**
@@ -104,8 +104,8 @@ public class HexKit {
      * @param charset 编码
      * @return 十六进制String
      */
-    public static String encodeHexStr(String data, java.nio.charset.Charset charset) {
-        return encodeHexStr(StringKit.bytes(data, charset), true);
+    public static String encodeHexString(String data, java.nio.charset.Charset charset) {
+        return encodeHexString(StringKit.bytes(data, charset), true);
     }
 
     /**
@@ -114,8 +114,8 @@ public class HexKit {
      * @param data 被编码的字符串
      * @return 十六进制String
      */
-    public static String encodeHexStr(String data) {
-        return encodeHexStr(data, Charset.UTF_8);
+    public static String encodeHexString(String data) {
+        return encodeHexString(data, Charset.UTF_8);
     }
 
     /**
@@ -125,54 +125,54 @@ public class HexKit {
      * @param toLowerCase true 传换成小写格式 , false 传换成大写格式
      * @return 十六进制String
      */
-    public static String encodeHexStr(byte[] data, boolean toLowerCase) {
-        return encodeHexStr(data, toLowerCase ? Normal.DIGITS_16_LOWER : Normal.DIGITS_16_UPPER);
+    public static String encodeHexString(byte[] data, boolean toLowerCase) {
+        return encodeHexString(data, toLowerCase ? Normal.DIGITS_16_LOWER : Normal.DIGITS_16_UPPER);
     }
 
     /**
      * 将十六进制字符数组转换为字符串,默认编码UTF-8
      *
-     * @param hexStr 十六进制String
+     * @param text 十六进制String
      * @return 字符串
      */
-    public static String decodeHexStr(String hexStr) {
-        return decodeHexStr(hexStr, Charset.UTF_8);
+    public static String decodeHexString(String text) {
+        return decodeHexString(text, Charset.UTF_8);
     }
 
     /**
      * 将十六进制字符数组转换为字符串
      *
-     * @param hexStr  十六进制String
+     * @param text    十六进制String
      * @param charset 编码
      * @return 字符串
      */
-    public static String decodeHexStr(String hexStr, java.nio.charset.Charset charset) {
-        if (StringKit.isEmpty(hexStr)) {
-            return hexStr;
+    public static String decodeHexString(String text, java.nio.charset.Charset charset) {
+        if (StringKit.isEmpty(text)) {
+            return text;
         }
-        return StringKit.toString(decodeHex(hexStr), charset);
+        return StringKit.toString(decodeHex(text), charset);
     }
 
     /**
      * 将十六进制字符数组转换为字符串
      *
-     * @param hexData 十六进制char[]
+     * @param text    十六进制char[]
      * @param charset 编码
      * @return 字符串
      */
-    public static String decodeHexStr(char[] hexData, java.nio.charset.Charset charset) {
-        return StringKit.toString(decodeHex(hexData), charset);
+    public static String decodeHexString(char[] text, java.nio.charset.Charset charset) {
+        return StringKit.toString(decodeHex(text), charset);
     }
 
     /**
      * 将十六进制字符数组转换为字节数组
      *
-     * @param hexData 十六进制char[]
+     * @param text 十六进制char[]
      * @return byte[]
      * @throws RuntimeException 如果源十六进制字符数组是一个奇怪的长度,将抛出运行时异常
      */
-    public static byte[] decodeHex(char[] hexData) {
-        return decodeHex(String.valueOf(hexData));
+    public static byte[] decodeHex(char[] text) {
+        return decodeHex(String.valueOf(text));
     }
 
     /**
@@ -309,7 +309,7 @@ public class HexKit {
      * @param toDigits 用于控制输出的char[]
      * @return 十六进制String
      */
-    private static String encodeHexStr(byte[] data, char[] toDigits) {
+    private static String encodeHexString(byte[] data, char[] toDigits) {
         return new String(encodeHex(data, toDigits));
     }
 

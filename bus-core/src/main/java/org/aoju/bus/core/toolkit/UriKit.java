@@ -2136,7 +2136,7 @@ public class UriKit {
          * @param value 值
          * @return 字符串
          */
-        private static String toStr(Object value) {
+        private static String toString(Object value) {
             String result;
             if (value instanceof Iterable) {
                 result = CollKit.join((Iterable<?>) value, Symbol.COMMA);
@@ -2156,7 +2156,7 @@ public class UriKit {
          * @return this
          */
         public Query add(CharSequence key, Object value) {
-            this.query.put(key, toStr(value));
+            this.query.put(key, toString(value));
             return this;
         }
 

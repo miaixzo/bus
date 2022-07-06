@@ -129,11 +129,11 @@ public class ThreeDesUtil {
 
 
     private static String toHexString(byte[] ba) {
-        StringBuilder str = new StringBuilder();
+        StringBuilder text = new StringBuilder();
         for (int i = 0; i < ba.length; i++) {
-            str.append(String.format("%x", Byte.valueOf(ba[i])));
+            text.append(String.format("%x", Byte.valueOf(ba[i])));
         }
-        return str.toString();
+        return text.toString();
     }
 
 

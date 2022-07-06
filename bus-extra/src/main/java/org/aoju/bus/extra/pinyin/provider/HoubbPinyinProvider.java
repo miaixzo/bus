@@ -71,16 +71,12 @@ public class HoubbPinyinProvider extends AbstractPinyinProvider {
 
     @Override
     public String getPinyin(char c) {
-        String result;
-        result = PinyinHelper.toPinyin(String.valueOf(c), format);
-        return result;
+        return PinyinHelper.toPinyin(String.valueOf(c), format);
     }
 
     @Override
-    public String getPinyin(String str, String separator) {
-        String result;
-        result = PinyinHelper.toPinyin(str, format, separator);
-        return result;
+    public String getPinyin(String text, String separator) {
+        return PinyinHelper.toPinyin(text, format, separator);
     }
 
 }
