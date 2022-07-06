@@ -1168,7 +1168,7 @@ public class Builder {
      * @return 加密结果
      */
     public static String encrypt(String algorithm, String key, String content, java.nio.charset.Charset charset) {
-        return HexKit.encodeHexStr(encrypt(algorithm, key, content.getBytes(charset)));
+        return HexKit.encodeHexString(encrypt(algorithm, key, content.getBytes(charset)));
     }
 
     /**
