@@ -45,23 +45,29 @@ import java.util.Set;
 @ConfigurationProperties(prefix = BusXConfig.WRAPPER)
 public class WrapperProperties {
 
+    /**
+     * 设置此注册的名称
+     * 如果没有指定，将使用bean名
+     */
+    private String name;
+    /**
+     * 设置注册bean的顺序
+     */
     private int order;
-    private String name = "extend-wrapper";
     /**
-     * 指示已启用注册
+     * 标志，表示已启用注册
      */
-    private Boolean enabled = true;
-
-    /**
-     * API自动补全路由前缀
-     */
-    private boolean autoPrefix = true;
+    private boolean enabled = true;
     /**
      * 扫描controller接口的基本包
      * Controller 所在包的 Ant 路径规则
      * 主要目的是，给该 Controller 设置指定的前缀
      */
     private String[] basePackages;
+    /**
+     * 扫描包后的API地址是否入库，结合basePackages使用
+     */
+    private boolean inStorage;
     /**
      * 为此注册设置初始化参数。调用此方法将替换任何现有的初始化参数
      */
