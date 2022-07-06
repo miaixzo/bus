@@ -1,14 +1,10 @@
 package org.aoju.bus.starter.mapper;
 
-import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.ClassKit;
-import org.aoju.bus.core.toolkit.CollKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.spring.BusXConfig;
 import org.aoju.bus.spring.PlaceBinder;
 import org.aoju.bus.starter.annotation.EnableMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.EnvironmentAware;
@@ -55,12 +51,12 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
         Class<? extends BeanNameGenerator> generatorClass = annoAttrs.getClass("nameGenerator");
         if (!BeanNameGenerator.class.equals(generatorClass)) {
-            scanner.setBeanNameGenerator(BeanUtils.instantiateClass(generatorClass));
+            scanner.setBeanNameGenerator(ReflectKit.newInstanceIfPossible(generatorClass));
         }
 
         Class<? extends MapperFactoryBean> mapperFactoryBeanClass = annoAttrs.getClass("factoryBean");
         if (!MapperFactoryBean.class.equals(mapperFactoryBeanClass)) {
-            scanner.setMapperFactoryBean(BeanUtils.instantiateClass(mapperFactoryBeanClass));
+            scanner.setMapperFactoryBean(ReflectKit.newInstanceIfPossible(mapperFactoryBeanClass));
         }
 
         scanner.setSqlSessionTemplateBeanName(annoAttrs.getString("sqlSessionTemplateRef"));

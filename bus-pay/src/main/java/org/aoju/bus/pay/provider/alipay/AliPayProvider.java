@@ -3,10 +3,10 @@ package org.aoju.bus.pay.provider.alipay;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.*;
 import com.alipay.api.domain.*;
-import com.alipay.api.internal.util.StringUtils;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import org.aoju.bus.core.toolkit.DateKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -805,7 +805,7 @@ public class AliPayProvider {
     public static AlipayFundTransUniTransferResponse uniTransferToResponse(AlipayFundTransUniTransferModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundTransUniTransferRequest request = new AlipayFundTransUniTransferRequest();
         request.setBizModel(model);
-        if (!StringUtils.isEmpty(appAuthToken)) {
+        if (!StringKit.isEmpty(appAuthToken)) {
             request.putOtherTextParam("app_auth_token", appAuthToken);
         }
         return doExecute(request);
@@ -824,7 +824,7 @@ public class AliPayProvider {
     public static AlipayFundTransUniTransferResponse uniTransferToResponse(AlipayClient alipayClient, Boolean certModel, AlipayFundTransUniTransferModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundTransUniTransferRequest request = new AlipayFundTransUniTransferRequest();
         request.setBizModel(model);
-        if (!StringUtils.isEmpty(appAuthToken)) {
+        if (!StringKit.isEmpty(appAuthToken)) {
             request.putOtherTextParam("app_auth_token", appAuthToken);
         }
         return doExecute(alipayClient, certModel, request);
@@ -841,7 +841,7 @@ public class AliPayProvider {
     public static AlipayFundTransCommonQueryResponse transCommonQueryToResponse(AlipayFundTransCommonQueryModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundTransCommonQueryRequest request = new AlipayFundTransCommonQueryRequest();
         request.setBizModel(model);
-        if (!StringUtils.isEmpty(appAuthToken)) {
+        if (!StringKit.isEmpty(appAuthToken)) {
             request.putOtherTextParam("app_auth_token", appAuthToken);
         }
         return doExecute(request);
@@ -860,7 +860,7 @@ public class AliPayProvider {
     public static AlipayFundTransCommonQueryResponse transCommonQueryToResponse(AlipayClient alipayClient, Boolean certModel, AlipayFundTransCommonQueryModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundTransCommonQueryRequest request = new AlipayFundTransCommonQueryRequest();
         request.setBizModel(model);
-        if (!StringUtils.isEmpty(appAuthToken)) {
+        if (!StringKit.isEmpty(appAuthToken)) {
             request.putOtherTextParam("app_auth_token", appAuthToken);
         }
         return doExecute(alipayClient, certModel, request);
@@ -877,7 +877,7 @@ public class AliPayProvider {
     public static AlipayFundAccountQueryResponse accountQueryToResponse(AlipayFundAccountQueryModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundAccountQueryRequest request = new AlipayFundAccountQueryRequest();
         request.setBizModel(model);
-        if (!StringUtils.isEmpty(appAuthToken)) {
+        if (!StringKit.isEmpty(appAuthToken)) {
             request.putOtherTextParam("app_auth_token", appAuthToken);
         }
         return doExecute(request);
@@ -896,7 +896,7 @@ public class AliPayProvider {
     public static AlipayFundAccountQueryResponse accountQueryToResponse(AlipayClient alipayClient, Boolean certModel, AlipayFundAccountQueryModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundAccountQueryRequest request = new AlipayFundAccountQueryRequest();
         request.setBizModel(model);
-        if (!StringUtils.isEmpty(appAuthToken)) {
+        if (!StringKit.isEmpty(appAuthToken)) {
             request.putOtherTextParam("app_auth_token", appAuthToken);
         }
         return doExecute(alipayClient, certModel, request);

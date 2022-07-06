@@ -108,7 +108,7 @@ public class PageAutoDialect {
      */
     private final Map<Object, AbstractPaging> urlDialectMap = new ConcurrentHashMap<>();
     /**
-     * 自动获取dialect,如果没有setProperties或setSqlUtilConfig，也可以正常进行
+     * 自动获取dialect,如果没有setProperties也可以正常进行
      */
     private boolean autoDialect = true;
     private AutoDialect autoDialectDelegate;
