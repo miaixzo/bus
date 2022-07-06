@@ -105,10 +105,6 @@ public class RealConnectionPool {
     /**
      * Attempts to acquire a recycled connection to {@code address} for {@code transmitter}. Returns
      * true if a connection was acquired.
-     * <p>
-     * If {@code routes} is non-null these are the resolved routes (ie. IP addresses) for the
-     * connection. This is used to coalesce related domains to the same HTTP/2 connection, such as
-     * {@code square.com} and {@code square.ca}.
      */
     boolean transmitterAcquirePooledConnection(Address address, Transmitter transmitter,
                                                List<Route> routes, boolean requireMultiplexed) {

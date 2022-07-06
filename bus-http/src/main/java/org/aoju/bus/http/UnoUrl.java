@@ -931,7 +931,7 @@ public class UnoUrl {
         }
 
         /**
-         * Finds the first ':' in {@code input}, skipping characters between square braces "[...]".
+         * 在{@code input}中查找第一个“:”，跳过方括号“[…]”之间的字符
          */
         private static int portColonOffset(String input, int pos, int limit) {
             for (int i = pos; i < limit; i++) {

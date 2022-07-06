@@ -81,8 +81,7 @@ public class Builder {
             ByteString.decodeHex("0000ffff"), // UTF-32BE
             ByteString.decodeHex("ffff0000")  // UTF-32LE
     );
-    private static final Charset UTF_32BE = Charset.forName("UTF-32BE");
-    private static final Charset UTF_32LE = Charset.forName("UTF-32LE");
+
     private static final Method addSuppressedExceptionMethod;
 
     /**
@@ -125,16 +124,13 @@ public class Builder {
      * cookies are on the fast path.
      */
     private static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT =
-            new ThreadLocal<DateFormat>() {
-                @Override
-                protected DateFormat initialValue() {
-                    // Date format specified by RFC 7231 section 7.1.1.1.
-                    DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-                    rfc1123.setLenient(false);
-                    rfc1123.setTimeZone(UTC);
-                    return rfc1123;
-                }
-            };
+            ThreadLocal.withInitial(() -> {
+                // Date format specified by RFC 7231 section 7.1.1.1.
+                DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+                rfc1123.setLenient(false);
+                rfc1123.setTimeZone(UTC);
+                return rfc1123;
+            });
 
     public static final String CONNECT = "CONNECT";
     public static final String CONNECTED = "CONNECTED";
@@ -399,7 +395,6 @@ public class Builder {
     public static String canonicalizeHost(String host) {
         // If the input contains a :, it’s an IPv6 address.
         if (host.contains(":")) {
-            // If the input is encased in square braces "[...]", drop 'em.
             InetAddress inetAddress = host.startsWith("[") && host.endsWith("]")
                     ? decodeIpv6(host, 1, host.length() - 1)
                     : decodeIpv6(host, 0, host.length());
@@ -637,15 +632,6 @@ public class Builder {
             result.add(new Headers.Header(headers.name(i), headers.value(i)));
         }
         return result;
-    }
-
-    /**
-     * Returns the system property, or defaultValue if the system property is null or
-     * cannot be read (e.g. because of security policy restrictions).
-     */
-    public static String getSystemProperty(String key, String defaultValue) {
-        String value = System.getProperty(key);
-        return value != null ? value : defaultValue;
     }
 
     /**
