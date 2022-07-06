@@ -26,11 +26,10 @@
 package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.SetupApi.SP_DEVICE_INTERFACE_DATA;
-import com.sun.jna.platform.win32.SetupApi.SP_DEVINFO_DATA;
 import com.sun.jna.platform.win32.WinReg.HKEY;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.health.builtin.ByRef;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.hardware.AbstractDisplay;
 import org.aoju.bus.health.builtin.hardware.Display;
 import org.aoju.bus.logger.Logger;
@@ -73,29 +72,28 @@ final class WindowsDisplay extends AbstractDisplay {
         WinNT.HANDLE hDevInfo = SU.SetupDiGetClassDevs(GUID_DEVINTERFACE_MONITOR, null, null,
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (!hDevInfo.equals(WinBase.INVALID_HANDLE_VALUE)) {
-            SP_DEVICE_INTERFACE_DATA deviceInterfaceData = new SetupApi.SP_DEVICE_INTERFACE_DATA();
-            deviceInterfaceData.cbSize = deviceInterfaceData.size();
+            try (Struct.CloseableSpDeviceInterfaceData deviceInterfaceData = new Struct.CloseableSpDeviceInterfaceData();
+                 Struct.CloseableSpDevinfoData info = new Struct.CloseableSpDevinfoData()) {
+                deviceInterfaceData.cbSize = deviceInterfaceData.size();
 
-            // build a DevInfo Data structure
-            SP_DEVINFO_DATA info = new SetupApi.SP_DEVINFO_DATA();
+                for (int memberIndex = 0; SU.SetupDiEnumDeviceInfo(hDevInfo, memberIndex, info); memberIndex++) {
+                    HKEY key = SU.SetupDiOpenDevRegKey(hDevInfo, info, SetupApi.DICS_FLAG_GLOBAL, 0, SetupApi.DIREG_DEV,
+                            WinNT.KEY_QUERY_VALUE);
 
-            for (int memberIndex = 0; SU.SetupDiEnumDeviceInfo(hDevInfo, memberIndex, info); memberIndex++) {
-                HKEY key = SU.SetupDiOpenDevRegKey(hDevInfo, info, SetupApi.DICS_FLAG_GLOBAL, 0, SetupApi.DIREG_DEV,
-                        WinNT.KEY_QUERY_VALUE);
+                    byte[] edid = new byte[1];
 
-                byte[] edid = new byte[1];
-
-                IntByReference pType = new IntByReference();
-                IntByReference lpcbData = new IntByReference();
-
-                if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_MORE_DATA) {
-                    edid = new byte[lpcbData.getValue()];
-                    if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_SUCCESS) {
-                        Display display = new WindowsDisplay(edid);
-                        displays.add(display);
+                    try (ByRef.CloseableIntByReference pType = new ByRef.CloseableIntByReference();
+                         ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference()) {
+                        if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_MORE_DATA) {
+                            edid = new byte[lpcbData.getValue()];
+                            if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_SUCCESS) {
+                                Display display = new WindowsDisplay(edid);
+                                displays.add(display);
+                            }
+                        }
                     }
+                    Advapi32.INSTANCE.RegCloseKey(key);
                 }
-                Advapi32.INSTANCE.RegCloseKey(key);
             }
             SU.SetupDiDestroyDeviceInfoList(hDevInfo);
         }

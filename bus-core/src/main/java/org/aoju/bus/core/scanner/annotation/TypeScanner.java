@@ -23,8 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.annotation.scanner;
+package org.aoju.bus.core.scanner.annotation;
 
+import org.aoju.bus.core.scanner.AnnotationScanner;
 import org.aoju.bus.core.toolkit.CollKit;
 
 import java.lang.annotation.Annotation;
@@ -36,7 +37,6 @@ import java.util.function.UnaryOperator;
 
 /**
  * 扫描{@link Class}上的注解
- *
  * @author Kimi Liu
  * @since Java 17+
  */

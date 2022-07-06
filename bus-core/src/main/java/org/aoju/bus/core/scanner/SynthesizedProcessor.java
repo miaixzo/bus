@@ -23,51 +23,28 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.annotation.scanner;
+package org.aoju.bus.core.scanner;
 
-import org.aoju.bus.core.toolkit.AnnoKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
+import java.util.Collection;
 
 /**
- * 扫描{@link Field}上的注解
+ * 合成注解属性选择器。用于在{@link Synthetic}中从指定类型的合成注解里获取到对应的属性值
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FieldScanner implements AnnotationScanner {
+@FunctionalInterface
+public interface SynthesizedProcessor {
 
 	/**
-	 * 判断是否支持扫描该注解元素，仅当注解元素是{@link Field}时返回{@code true}
+	 * 从一批被合成注解中，获取指定名称与类型的属性值
 	 *
-	 * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
-	 * @return 是否支持扫描该注解元素
+	 * @param attributeName          属性名称
+	 * @param attributeType          属性类型
+	 * @param synthesizedAnnotations 被合成的注解
+	 * @param <R>                    属性类型
+	 * @return 属性值
 	 */
-	@Override
-	public boolean support(AnnotatedElement annotatedEle) {
-		return annotatedEle instanceof Field;
-	}
-
-	/**
-	 * 扫描{@link Field}上直接声明的注解，调用前需要确保调用{@link #support(AnnotatedElement)}返回为true
-	 *
-	 * @param consumer     对获取到的注解和注解对应的层级索引的处理
-	 * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
-	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理该参数允许为空
-	 */
-	@Override
-	public void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
-		filter = ObjectKit.defaultIfNull(filter, annotation -> true);
-		for (final Annotation annotation : annotatedEle.getAnnotations()) {
-			if (AnnoKit.isNotJdkMateAnnotation(annotation.annotationType()) && filter.test(annotation)) {
-				consumer.accept(0, annotation);
-			}
-		}
-	}
+	<R> R getAttributeValue(String attributeName, Class<R> attributeType, Collection<? extends Synthesized> synthesizedAnnotations);
 
 }

@@ -253,6 +253,9 @@ public class CollKit {
      * @return 并集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> union(final Collection<T> coll1, final Collection<T> coll2) {
+        if (isEmpty(coll1) && isEmpty(coll2)) {
+            return new ArrayList<>();
+        }
         final ArrayList<T> list = new ArrayList<>();
         if (isEmpty(coll1)) {
             list.addAll(coll2);
@@ -3646,45 +3649,16 @@ public class CollKit {
         );
     }
 
-
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现，可指定map类型
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现
      *
      * @param classifier 分组依据
-     * @param mapFactory 提供的map
-     * @param downstream 下游操作
      * @param <T>        实体类型
      * @param <K>        实体中的分组依据对应类型，也是Map中key的类型
-     * @param <D>        下游操作对应返回类型，也是Map中value的类型
-     * @param <A>        下游操作在进行中间操作时对应类型
-     * @param <M>        最后返回结果Map类型
      * @return {@link Collector}
      */
-    public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
-                                                                                  Supplier<M> mapFactory,
-                                                                                  Collector<? super T, A, D> downstream) {
-        Supplier<A> downstreamSupplier = downstream.supplier();
-        BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
-        BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
-            K key = Optional.ofNullable(t).map(classifier).orElse(null);
-            A container = m.computeIfAbsent(key, k -> downstreamSupplier.get());
-            downstreamAccumulator.accept(container, t);
-        };
-        BinaryOperator<Map<K, A>> merger = mapMerger(downstream.combiner());
-        Supplier<Map<K, A>> mangledFactory = (Supplier<Map<K, A>>) mapFactory;
-
-        if (downstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
-            return new SimpleCollector<>(mangledFactory, accumulator, merger,
-                    Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH)));
-        } else {
-            Function<A, A> downstreamFinisher = (Function<A, A>) downstream.finisher();
-            Function<Map<K, A>, M> finisher = intermediate -> {
-                intermediate.replaceAll((k, v) -> downstreamFinisher.apply(v));
-                M castResult = (M) intermediate;
-                return castResult;
-            };
-            return new SimpleCollector<>(mangledFactory, accumulator, merger, finisher, Collections.emptySet());
-        }
+    public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends K> classifier) {
+        return groupingBy(classifier, Collectors.toList());
     }
 
     /**
@@ -3704,15 +3678,43 @@ public class CollKit {
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现，可指定map类型
      *
      * @param classifier 分组依据
+     * @param mapFactory 提供的map
+     * @param downstream 下游操作
      * @param <T>        实体类型
      * @param <K>        实体中的分组依据对应类型，也是Map中key的类型
+     * @param <D>        下游操作对应返回类型，也是Map中value的类型
+     * @param <A>        下游操作在进行中间操作时对应类型
+     * @param <M>        最后返回结果Map类型
      * @return {@link Collector}
      */
-    public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends K> classifier) {
-        return groupingBy(classifier, Collectors.toList());
+    public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
+                                                                                  Supplier<M> mapFactory,
+                                                                                  Collector<? super T, A, D> downstream) {
+        final Supplier<A> downstreamSupplier = downstream.supplier();
+        final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
+        final BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
+            final K key = org.aoju.bus.core.lang.Optional.ofNullable(t).map(classifier).orElse(null);
+            final A container = m.computeIfAbsent(key, k -> downstreamSupplier.get());
+            downstreamAccumulator.accept(container, t);
+        };
+        final BinaryOperator<Map<K, A>> merger = mapMerger(downstream.combiner());
+        @SuppressWarnings("unchecked") final Supplier<Map<K, A>> mangledFactory = (Supplier<Map<K, A>>) mapFactory;
+
+        if (downstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
+            return new SimpleCollector<>(mangledFactory, accumulator, merger,
+                    Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH)));
+        } else {
+            @SuppressWarnings("unchecked") final Function<A, A> downstreamFinisher = (Function<A, A>) downstream.finisher();
+            final Function<Map<K, A>, M> finisher = intermediate -> {
+                intermediate.replaceAll((k, v) -> downstreamFinisher.apply(v));
+                @SuppressWarnings("unchecked") final M castResult = (M) intermediate;
+                return castResult;
+            };
+            return new SimpleCollector<>(mangledFactory, accumulator, merger, finisher, Collections.emptySet());
+        }
     }
 
     /**

@@ -25,18 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.hardware;
 
-import com.sun.jna.Memory;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
-import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
+import org.aoju.bus.health.windows.PowrProf;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.LogicalProcessorInformation;
 import org.aoju.bus.health.windows.drivers.perfmon.LoadAverage;
@@ -150,13 +150,14 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             cpuModel = parseIdentifier(cpuIdentifier, "Model");
             cpuStepping = parseIdentifier(cpuIdentifier, "Stepping");
         }
-        SYSTEM_INFO sysinfo = new SYSTEM_INFO();
-        Kernel32.INSTANCE.GetNativeSystemInfo(sysinfo);
-        int processorArchitecture = sysinfo.processorArchitecture.pi.wProcessorArchitecture.intValue();
-        if (processorArchitecture == 9 // PROCESSOR_ARCHITECTURE_AMD64
-                || processorArchitecture == 12 // PROCESSOR_ARCHITECTURE_ARM64
-                || processorArchitecture == 6) { // PROCESSOR_ARCHITECTURE_IA64
-            cpu64bit = true;
+        try (Struct.CloseableSystemInfo sysinfo = new Struct.CloseableSystemInfo()) {
+            Kernel32.INSTANCE.GetNativeSystemInfo(sysinfo);
+            int processorArchitecture = sysinfo.processorArchitecture.pi.wProcessorArchitecture.intValue();
+            if (processorArchitecture == 9 // PROCESSOR_ARCHITECTURE_AMD64
+                    || processorArchitecture == 12 // PROCESSOR_ARCHITECTURE_ARM64
+                    || processorArchitecture == 6) { // PROCESSOR_ARCHITECTURE_IA64
+                cpu64bit = true;
+            }
         }
         WmiResult<Win32Processor.ProcessorIdProperty> processorId = Win32Processor.queryProcessorId();
         if (processorId.getResultCount() > 0) {
@@ -264,22 +265,20 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      * @return The array of values.
      */
     private long[] queryNTPower(int fieldIndex) {
-        org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation ppi = new org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation();
+        PowrProf.ProcessorPowerInformation ppi = new PowrProf.ProcessorPowerInformation();
+        PowrProf.ProcessorPowerInformation[] ppiArray = (PowrProf.ProcessorPowerInformation[]) ppi.toArray(getLogicalProcessorCount());
         long[] freqs = new long[getLogicalProcessorCount()];
-        int bufferSize = ppi.size() * freqs.length;
-        Memory mem = new Memory(bufferSize);
-        if (0 != PowrProf.INSTANCE.CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, null, 0, mem,
-                bufferSize)) {
+        if (0 != PowrProf.INSTANCE.CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, null, 0,
+                ppiArray[0].getPointer(), ppi.size() * ppiArray.length)) {
             Logger.error("Unable to get Processor Information");
             Arrays.fill(freqs, -1L);
             return freqs;
         }
         for (int i = 0; i < freqs.length; i++) {
-            ppi = new org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation(mem.share(i * (long) ppi.size()));
             if (fieldIndex == 1) { // Max
-                freqs[i] = ppi.maxMhz * 1_000_000L;
+                freqs[i] = ppiArray[i].maxMhz * 1_000_000L;
             } else if (fieldIndex == 2) { // Current
-                freqs[i] = ppi.currentMhz * 1_000_000L;
+                freqs[i] = ppiArray[i].currentMhz * 1_000_000L;
             } else {
                 freqs[i] = -1L;
             }

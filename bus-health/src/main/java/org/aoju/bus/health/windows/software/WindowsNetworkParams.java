@@ -33,10 +33,11 @@ import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Kernel32Util;
 import com.sun.jna.platform.win32.WinError;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.logger.Logger;
 
@@ -80,45 +81,48 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     @Override
     public String getDomainName() {
         char[] buffer = new char[256];
-        IntByReference bufferSize = new IntByReference(buffer.length);
-        if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
-            Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return "";
+        try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference(buffer.length)) {
+            if (!Kernel32.INSTANCE.GetComputerNameEx(COMPUTER_NAME_DNS_DOMAIN_FULLY_QUALIFIED, buffer, bufferSize)) {
+                Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                return Normal.EMPTY;
+            }
         }
         return Native.toString(buffer);
     }
 
     @Override
     public String[] getDnsServers() {
-        IntByReference bufferSize = new IntByReference();
-        int ret = IPHlpAPI.INSTANCE.GetNetworkParams(null, bufferSize);
-        if (ret != WinError.ERROR_BUFFER_OVERFLOW) {
-            Logger.error("Failed to get network parameters buffer size. Error code: {}", ret);
-            return new String[0];
-        }
-
-        Memory buffer = new Memory(bufferSize.getValue());
-        ret = IPHlpAPI.INSTANCE.GetNetworkParams(buffer, bufferSize);
-        if (ret != 0) {
-            Logger.error("Failed to get network parameters. Error code: {}", ret);
-            return new String[0];
-        }
-        FIXED_INFO fixedInfo = new FIXED_INFO(buffer);
-
-        List<String> list = new ArrayList<>();
-        IP_ADDR_STRING dns = fixedInfo.DnsServerList;
-        while (dns != null) {
-            // a char array of size 16.
-            // This array holds an IPv4 address in dotted decimal notation.
-            String addr = Native.toString(dns.IpAddress.String, StandardCharsets.US_ASCII);
-            int nullPos = addr.indexOf(0);
-            if (nullPos != -1) {
-                addr = addr.substring(0, nullPos);
+        try (ByRef.CloseableIntByReference bufferSize = new ByRef.CloseableIntByReference()) {
+            int ret = IPHlpAPI.INSTANCE.GetNetworkParams(null, bufferSize);
+            if (ret != WinError.ERROR_BUFFER_OVERFLOW) {
+                Logger.error("Failed to get network parameters buffer size. Error code: {}", ret);
+                return new String[0];
             }
-            list.add(addr);
-            dns = dns.Next;
+
+            try (Memory buffer = new Memory(bufferSize.getValue())) {
+                ret = IPHlpAPI.INSTANCE.GetNetworkParams(buffer, bufferSize);
+                if (ret != 0) {
+                    Logger.error("Failed to get network parameters. Error code: {}", ret);
+                    return new String[0];
+                }
+                FIXED_INFO fixedInfo = new FIXED_INFO(buffer);
+
+                List<String> list = new ArrayList<>();
+                IP_ADDR_STRING dns = fixedInfo.DnsServerList;
+                while (dns != null) {
+                    // a char array of size 16.
+                    // This array holds an IPv4 address in dotted decimal notation.
+                    String addr = Native.toString(dns.IpAddress.String, StandardCharsets.US_ASCII);
+                    int nullPos = addr.indexOf(0);
+                    if (nullPos != -1) {
+                        addr = addr.substring(0, nullPos);
+                    }
+                    list.add(addr);
+                    dns = dns.Next;
+                }
+                return list.toArray(new String[0]);
+            }
         }
-        return list.toArray(new String[0]);
     }
 
     @Override

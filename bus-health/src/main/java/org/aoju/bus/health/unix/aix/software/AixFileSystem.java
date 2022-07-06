@@ -101,7 +101,7 @@ public class AixFileSystem extends AbstractFileSystem {
         }
 
         // Get mount table
-        for (String fs : Executor.runNative("mount")) { // NOSONAR squid:S135
+        for (String fs : Executor.runNative("mount")) {
             /*- Sample Output:
              *   node       mounted        mounted over    vfs       date        options
              * -------- ---------------  ---------------  ------ ------------ ---------------

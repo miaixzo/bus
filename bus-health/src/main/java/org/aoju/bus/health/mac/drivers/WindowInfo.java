@@ -28,9 +28,9 @@ package org.aoju.bus.health.mac.drivers;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation.*;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.builtin.software.OSDesktopWindow;
-import org.aoju.bus.health.mac.CFKit;
 import org.aoju.bus.health.mac.CoreGraphics;
 
 import java.awt.*;
@@ -89,27 +89,27 @@ public final class WindowInfo {
                     int windowLayer = new CFNumberRef(result).intValue();
 
                     result = windowRef.getValue(kCGWindowBounds);
-                    CoreGraphics.CGRect rect = new CoreGraphics.CGRect();
-                    CoreGraphics.INSTANCE.CGRectMakeWithDictionaryRepresentation(new CFDictionaryRef(result), rect);
-                    Rectangle windowBounds = new Rectangle(Formats.roundToInt(rect.origin.x),
-                            Formats.roundToInt(rect.origin.y), Formats.roundToInt(rect.size.width),
-                            Formats.roundToInt(rect.size.height));
+                    try (CoreGraphics.CGRect rect = new CoreGraphics.CGRect()) {
+                        CoreGraphics.INSTANCE.CGRectMakeWithDictionaryRepresentation(new CFDictionaryRef(result), rect);
+                        Rectangle windowBounds = new Rectangle(Formats.roundToInt(rect.origin.x),
+                                Formats.roundToInt(rect.origin.y), Formats.roundToInt(rect.size.width),
+                                Formats.roundToInt(rect.size.height));
+                        // Note: the Quartz name returned by this field is rarely used
+                        result = windowRef.getValue(kCGWindowName); // Optional key, check for null
+                        String windowName = Builder.cfPointerToString(result, false);
+                        // This is the program running the window, use as name if name blank or add in
+                        // parenthesis
+                        result = windowRef.getValue(kCGWindowOwnerName); // Optional key, check for null
+                        String windowOwnerName = Builder.cfPointerToString(result, false);
+                        if (windowName.isEmpty()) {
+                            windowName = windowOwnerName;
+                        } else {
+                            windowName = windowName + "(" + windowOwnerName + ")";
+                        }
 
-                    // Note: the Quartz name returned by this field is rarely used
-                    result = windowRef.getValue(kCGWindowName); // Optional key, check for null
-                    String windowName = CFKit.cfPointerToString(result, false);
-                    // This is the program running the window, use as name if name blank or add in
-                    // parenthesis
-                    result = windowRef.getValue(kCGWindowOwnerName); // Optional key, check for null
-                    String windowOwnerName = CFKit.cfPointerToString(result, false);
-                    if (windowName.isEmpty()) {
-                        windowName = windowOwnerName;
-                    } else {
-                        windowName = windowName + "(" + windowOwnerName + ")";
+                        windowList.add(new OSDesktopWindow(windowNumber, windowName, windowOwnerName, windowBounds,
+                                windowOwnerPID, windowLayer, visible));
                     }
-
-                    windowList.add(new OSDesktopWindow(windowNumber, windowName, windowOwnerName, windowBounds,
-                            windowOwnerPID, windowLayer, visible));
                 }
             }
         } finally {

@@ -25,7 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix;
 
+import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 
@@ -44,26 +46,37 @@ public interface FreeBsdLibc extends CLibrary {
     int UTX_LINESIZE = 16;
     int UTX_IDSIZE = 8;
     int UTX_HOSTSIZE = 128;
+
     /**
-     * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
+     * Reads a line from the current file position in the utmp file. It returns a
+     * pointer to a structure containing the fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link FreeBsdUtmpx} on success, and NULL on failure (which
+     * includes the "record not found" case)
      */
-    int UINT64_SIZE = Native.getNativeSize(long.class);
+    FreeBsdUtmpx getutxent();
 
     /*
      * Data size
      */
     /**
+     * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
+     */
+    int UINT64_SIZE = Native.getNativeSize(long.class);
+    /**
      * Constant <code>INT_SIZE=Native.getNativeSize(int.class)</code>
      */
     int INT_SIZE = Native.getNativeSize(int.class);
-    /**
-     * Constant <code>CPUSTATES=5</code>
-     */
-    int CPUSTATES = 5;
 
     /*
      * CPU state indices
      */
+    /**
+     * Constant <code>CPUSTATES=5</code>
+     */
+    int CPUSTATES = 5;
     /**
      * Constant <code>CP_USER=0</code>
      */
@@ -86,15 +99,13 @@ public interface FreeBsdLibc extends CLibrary {
     int CP_IDLE = 4;
 
     /**
-     * Reads a line from the current file position in the utmp file. It returns a
-     * pointer to a structure containing the fields of the line.
-     * <p>
-     * Not thread safe
-     *
-     * @return a {@link FreeBsdUtmpx} on success, and NULL on failure (which
-     * includes the "record not found" case)
+     * Return type for BSD sysctl kern.boottime
      */
-    FreeBsdUtmpx getutxent();
+    @FieldOrder({"tv_sec", "tv_usec"})
+    class Timeval extends Structure {
+        public long tv_sec; // seconds
+        public long tv_usec; // microseconds
+    }
 
     /**
      * Connection info
@@ -112,20 +123,19 @@ public interface FreeBsdLibc extends CLibrary {
     }
 
     /**
-     * Return type for BSD sysctl kern.boottime
-     */
-    @FieldOrder({"tv_sec", "tv_usec"})
-    class Timeval extends Structure {
-        public long tv_sec; // seconds
-        public long tv_usec; // microseconds
-    }
-
-    /**
      * CPU Ticks
      */
     @FieldOrder({"cpu_ticks"})
-    class CpTime extends Structure {
+    class CpTime extends Structure implements AutoCloseable {
         public long[] cpu_ticks = new long[CPUSTATES];
+
+        @Override
+        public void close() {
+            Pointer p = this.getPointer();
+            if (p instanceof Memory) {
+                ((Memory) p).close();
+            }
+        }
     }
 
 }

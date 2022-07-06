@@ -23,8 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.annotation.scanner;
+package org.aoju.bus.core.scanner.annotation;
 
+import org.aoju.bus.core.scanner.AnnotationScanner;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.CollKit;

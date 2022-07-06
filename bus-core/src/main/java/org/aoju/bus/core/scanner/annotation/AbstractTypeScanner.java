@@ -23,9 +23,10 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.annotation.scanner;
+package org.aoju.bus.core.scanner.annotation;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.scanner.AnnotationScanner;
 import org.aoju.bus.core.toolkit.AnnoKit;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.CollKit;
@@ -41,48 +42,51 @@ import java.util.function.UnaryOperator;
 
 /**
  * 为需要从类的层级结构中获取注解的{@link AnnotationScanner}提供基本实现
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public abstract class AbstractTypeScanner<T extends AbstractTypeScanner<T>>
-		implements AnnotationScanner {
+public abstract class AbstractTypeScanner<T extends AbstractTypeScanner<T>> implements AnnotationScanner {
 
-	/**
-	 * 排除的类型，以上类型及其树结构将直接不被查找
-	 */
-	private final Set<Class<?>> excludeTypes;
-	/**
-	 * 转换器
-	 */
-	private final List<UnaryOperator<Class<?>>> converters;
-	/**
+    /**
+     * 排除的类型，以上类型及其树结构将直接不被查找
+     */
+    private final Set<Class<?>> excludeTypes;
+    /**
+     * 转换器
+     */
+    private final List<UnaryOperator<Class<?>>> converters;
+    /**
 	 * 当前实例
 	 */
 	private final T typedThis;
 	/**
-	 * 是否允许扫描父类
-	 */
-	private boolean includeSupperClass;
-	/**
-	 * 是否允许扫描父接口
-	 */
-	private boolean includeInterfaces;
-	/**
-	 * 过滤器，若类型无法通过该过滤器，则该类型及其树结构将直接不被查找
-	 */
-	private Predicate<Class<?>> filter;
-	/**
-	 * 是否有转换器
-	 */
-	private boolean hasConverters;
+     * 是否允许扫描父接口
+     */
+    private boolean includeInterfaces;
+    /**
+     * 过滤器，若类型无法通过该过滤器，则该类型及其树结构将直接不被查找
+     */
+    private Predicate<Class<?>> filter;
+    /**
+     * 是否有转换器
+     */
+    private boolean hasConverters;
+    /**
+     * 是否允许扫描父类
+     */
+    // FIXME rename includeSuperClass
+    private boolean includeSupperClass;
 
-	/**
-	 * 构造一个类注解扫描器
-	 *
-	 * @param includeSupperClass 是否允许扫描父类
-	 * @param includeInterfaces  是否允许扫描父接口
-	 * @param filter             过滤器
-	 * @param excludeTypes       不包含的类型
-	 */
-	protected AbstractTypeScanner(boolean includeSupperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
+    /**
+     * 构造一个类注解扫描器
+     *
+     * @param includeSupperClass 是否允许扫描父类
+     * @param includeInterfaces  是否允许扫描父接口
+     * @param filter             过滤器
+     * @param excludeTypes       不包含的类型
+     */
+    protected AbstractTypeScanner(boolean includeSupperClass, boolean includeInterfaces, Predicate<Class<?>> filter, Set<Class<?>> excludeTypes) {
 		Assert.notNull(filter, "filter must not null");
 		Assert.notNull(excludeTypes, "excludeTypes must not null");
 		this.includeSupperClass = includeSupperClass;
@@ -103,34 +107,12 @@ public abstract class AbstractTypeScanner<T extends AbstractTypeScanner<T>>
 	}
 
 	/**
-	 * 是否允许扫描父类
-	 *
-	 * @param includeSupperClass 是否
-	 * @return 当前实例
-	 */
-	protected T setIncludeSupperClass(boolean includeSupperClass) {
-		this.includeSupperClass = includeSupperClass;
-		return typedThis;
-	}
-
-	/**
 	 * 是否允许扫描父接口
 	 *
 	 * @return 是否允许扫描父接口
 	 */
 	public boolean isIncludeInterfaces() {
 		return includeInterfaces;
-	}
-
-	/**
-	 * 是否允许扫描父接口
-	 *
-	 * @param includeInterfaces 是否
-	 * @return 当前实例
-	 */
-	protected T setIncludeInterfaces(boolean includeInterfaces) {
-		this.includeInterfaces = includeInterfaces;
-		return typedThis;
 	}
 
 	/**
@@ -160,27 +142,49 @@ public abstract class AbstractTypeScanner<T extends AbstractTypeScanner<T>>
 	 * 添加转换器
 	 *
 	 * @param converter 转换器
-	 * @return 当前实例
-	 * @see JdkProxyClassConverter
-	 */
-	public T addConverters(UnaryOperator<Class<?>> converter) {
-		Assert.notNull(converter, "converter must not null");
-		this.converters.add(converter);
-		if (!this.hasConverters) {
-			this.hasConverters = CollKit.isNotEmpty(this.converters);
-		}
-		return typedThis;
-	}
+     * @return 当前实例
+     * @see JdkProxyClassConverter
+     */
+    public T addConverters(UnaryOperator<Class<?>> converter) {
+        Assert.notNull(converter, "converter must not null");
+        this.converters.add(converter);
+        if (!this.hasConverters) {
+            this.hasConverters = CollKit.isNotEmpty(this.converters);
+        }
+        return typedThis;
+    }
 
-	/**
-	 * 则根据广度优先递归扫描类的层级结构，并对层级结构中类/接口声明的层级索引和它们声明的注解对象进行处理
-	 *
-	 * @param consumer     对获取到的注解和注解对应的层级索引的处理
-	 * @param annotatedEle 注解元素
-	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理该参数允许为空
-	 */
-	@Override
-	public void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
+    /**
+     * 是否允许扫描父类
+     *
+     * @param includeSupperClass 是否
+     * @return 当前实例
+     */
+    protected T setIncludeSupperClass(boolean includeSupperClass) {
+        this.includeSupperClass = includeSupperClass;
+        return typedThis;
+    }
+
+    /**
+     * 是否允许扫描父接口
+     *
+     * @param includeInterfaces 是否
+     * @return 当前实例
+     */
+    protected T setIncludeInterfaces(boolean includeInterfaces) {
+        this.includeInterfaces = includeInterfaces;
+        return typedThis;
+    }
+
+    /**
+     * 则根据广度优先递归扫描类的层级结构，并对层级结构中类/接口声明的层级索引和它们声明的注解对象进行处理
+     *
+     * @param consumer     对获取到的注解和注解对应的层级索引的处理
+     * @param annotatedEle 注解元素
+     * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
+     */
+    @Override
+    public void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
 		filter = ObjectKit.defaultIfNull(filter, annotation -> true);
 		final Class<?> sourceClass = getClassFormAnnotatedElement(annotatedEle);
 		final Deque<List<Class<?>>> classDeque = CollKit.newLinkedList(CollKit.newArrayList(sourceClass));
@@ -235,40 +239,52 @@ public abstract class AbstractTypeScanner<T extends AbstractTypeScanner<T>>
 
 	/**
 	 * 当前类是否不需要处理
+	 *
+	 * @param accessedTypes 访问类型
+	 * @param targetClass   目标类型
 	 */
-	protected boolean isNotNeedProcess(Set<Class<?>> accessedTypes, Class<?> targetClass) {
-		return ObjectKit.isNull(targetClass)
-				|| accessedTypes.contains(targetClass)
-				|| excludeTypes.contains(targetClass)
-				|| filter.negate().test(targetClass);
-	}
+    protected boolean isNotNeedProcess(Set<Class<?>> accessedTypes, Class<?> targetClass) {
+        return ObjectKit.isNull(targetClass)
+                || accessedTypes.contains(targetClass)
+                || excludeTypes.contains(targetClass)
+                || filter.negate().test(targetClass);
+    }
 
-	/**
-	 * 若{@link #includeInterfaces}为{@code true}，则将目标类的父接口也添加到nextClasses
-	 */
-	protected void scanInterfaceIfNecessary(List<Class<?>> nextClasses, Class<?> targetClass) {
-		if (includeInterfaces) {
-			final Class<?>[] interfaces = targetClass.getInterfaces();
-			if (ArrayKit.isNotEmpty(interfaces)) {
-				CollKit.addAll(nextClasses, interfaces);
-			}
-		}
-	}
+    /**
+     * 若{@link #includeInterfaces}为{@code true}，则将目标类的父接口也添加到nextClasses
+     *
+     * @param nextClasses 下一个类集合
+     * @param targetClass 目标类型
+     */
+    protected void scanInterfaceIfNecessary(List<Class<?>> nextClasses, Class<?> targetClass) {
+        if (includeInterfaces) {
+            final Class<?>[] interfaces = targetClass.getInterfaces();
+            if (ArrayKit.isNotEmpty(interfaces)) {
+                CollKit.addAll(nextClasses, interfaces);
+            }
+        }
+    }
 
-	/**
-	 * 若{@link #includeSupperClass}为{@code true}，则将目标类的父类也添加到nextClasses
-	 */
-	protected void scanSuperClassIfNecessary(List<Class<?>> nextClassQueue, Class<?> targetClass) {
-		if (includeSupperClass) {
-			final Class<?> superClass = targetClass.getSuperclass();
-			if (!ObjectKit.equals(superClass, Object.class) && ObjectKit.isNotNull(superClass)) {
-				nextClassQueue.add(superClass);
-			}
-		}
-	}
+    /**
+     * 若{@link #includeSupperClass}为{@code true}，则将目标类的父类也添加到nextClasses
+     *
+     * @param nextClassQueue 下一个类队列
+     * @param targetClass    目标类型
+     */
+    protected void scanSuperClassIfNecessary(List<Class<?>> nextClassQueue, Class<?> targetClass) {
+        if (includeSupperClass) {
+            final Class<?> superClass = targetClass.getSuperclass();
+            if (!ObjectKit.equals(superClass, Object.class) && ObjectKit.isNotNull(superClass)) {
+                nextClassQueue.add(superClass);
+            }
+        }
+    }
 
 	/**
 	 * 若存在转换器，则使用转换器对目标类进行转换
+	 *
+	 * @param target 目标类
+	 * @return 转换后的类
 	 */
 	protected Class<?> convert(Class<?> target) {
 		if (hasConverters) {

@@ -27,7 +27,6 @@ package org.aoju.bus.health.linux.software;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
-import com.sun.jna.platform.linux.LibC.Sysinfo;
 import com.sun.jna.platform.linux.Udev;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -37,6 +36,7 @@ import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.ProcPath;
@@ -565,8 +565,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public int getThreadCount() {
-        try {
-            Sysinfo info = new Sysinfo();
+        try (Struct.CloseableSysinfo info = new Struct.CloseableSysinfo()) {
             if (0 != LibC.INSTANCE.sysinfo(info)) {
                 Logger.error("Failed to get process thread count. Error code: {}", Native.getLastError());
                 return 0;

@@ -26,16 +26,23 @@
 package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.Memory;
-import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Cfgmgr32;
+import com.sun.jna.platform.win32.Cfgmgr32Util;
 import com.sun.jna.platform.win32.Guid.GUID;
-import com.sun.jna.platform.win32.SetupApi.SP_DEVINFO_DATA;
+import com.sun.jna.platform.win32.SetupApi;
+import com.sun.jna.platform.win32.WinBase;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Quintet;
+import org.aoju.bus.health.builtin.ByRef;
+import org.aoju.bus.health.builtin.Struct;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.sun.jna.platform.win32.Cfgmgr32.*;
+import static com.sun.jna.platform.win32.WinError.ERROR_SUCCESS;
 
 /**
  * Utility to query device interfaces via Config Manager Device Tree functions
@@ -75,21 +82,18 @@ public final class DeviceTree {
         // Get device IDs for the top level devices
         HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null, SetupApi.DIGCF_DEVICEINTERFACE | SetupApi.DIGCF_PRESENT);
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hDevInfo)) {
-            try {
-                // Create re-usable native allocations
-                Memory buf = new Memory(MAX_PATH);
-                IntByReference size = new IntByReference(MAX_PATH);
+            try (Memory buf = new Memory(MAX_PATH);
+                 ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(MAX_PATH);
+                 ByRef.CloseableIntByReference child = new ByRef.CloseableIntByReference();
+                 ByRef.CloseableIntByReference sibling = new ByRef.CloseableIntByReference();
+                 Struct.CloseableSpDevinfoData devInfoData = new Struct.CloseableSpDevinfoData()) {
+                devInfoData.cbSize = devInfoData.size();
                 // Enumerate Device Info using BFS queue
                 Queue<Integer> deviceTree = new ArrayDeque<>();
-                // Get the enumeration object
-                SP_DEVINFO_DATA devInfoData = new SP_DEVINFO_DATA();
-                devInfoData.cbSize = devInfoData.size();
                 for (int i = 0; SA.SetupDiEnumDeviceInfo(hDevInfo, i, devInfoData); i++) {
                     deviceTree.add(devInfoData.DevInst);
                     // Initialize parent and child objects
                     int node = 0;
-                    IntByReference child = new IntByReference();
-                    IntByReference sibling = new IntByReference();
                     while (!deviceTree.isEmpty()) {
                         // Process the next device in the queue
                         node = deviceTree.poll();
@@ -99,25 +103,25 @@ public final class DeviceTree {
                         deviceIdMap.put(node, deviceId);
                         // Prefer friendly name over desc if it is present.
                         // If neither, use class (service)
-                        String name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_FRIENDLYNAME, buf, size);
+                        String name = getDevNodeProperty(node, CM_DRP_FRIENDLYNAME, buf, size);
                         if (name.isEmpty()) {
-                            name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_DEVICEDESC, buf, size);
+                            name = getDevNodeProperty(node, CM_DRP_DEVICEDESC, buf, size);
                         }
                         if (name.isEmpty()) {
-                            name = getDevNodeProperty(node, Cfgmgr32.CM_DRP_CLASS, buf, size);
-                            String svc = getDevNodeProperty(node, Cfgmgr32.CM_DRP_SERVICE, buf, size);
+                            name = getDevNodeProperty(node, CM_DRP_CLASS, buf, size);
+                            String svc = getDevNodeProperty(node, CM_DRP_SERVICE, buf, size);
                             if (!svc.isEmpty()) {
                                 name = name + " (" + svc + ")";
                             }
                         }
                         nameMap.put(node, name);
-                        mfgMap.put(node, getDevNodeProperty(node, Cfgmgr32.CM_DRP_MFG, buf, size));
+                        mfgMap.put(node, getDevNodeProperty(node, CM_DRP_MFG, buf, size));
 
                         // Add any children to the queue, tracking the parent node
-                        if (WinError.ERROR_SUCCESS == C32.CM_Get_Child(child, node, 0)) {
+                        if (ERROR_SUCCESS == C32.CM_Get_Child(child, node, 0)) {
                             parentMap.put(child.getValue(), node);
                             deviceTree.add(child.getValue());
-                            while (WinError.ERROR_SUCCESS == C32.CM_Get_Sibling(sibling, child.getValue(), 0)) {
+                            while (ERROR_SUCCESS == C32.CM_Get_Sibling(sibling, child.getValue(), 0)) {
                                 parentMap.put(sibling.getValue(), node);
                                 deviceTree.add(sibling.getValue());
                                 child.setValue(sibling.getValue());

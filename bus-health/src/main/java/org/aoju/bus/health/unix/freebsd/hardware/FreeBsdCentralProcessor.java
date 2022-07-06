@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -35,6 +34,7 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.unix.FreeBsdLibc;
@@ -59,8 +59,16 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     private static final Pattern CPUMASK = Pattern.compile(".*<cpu\\s.*mask=\"(?:0x)?(\\p{XDigit}+)\".*>.*</cpu>.*");
 
+    private static final long CPTIME_SIZE;
+
+    static {
+        try (FreeBsdLibc.CpTime cpTime = new FreeBsdLibc.CpTime()) {
+            CPTIME_SIZE = cpTime.size();
+        }
+    }
+
     private static List<CentralProcessor.LogicalProcessor> parseTopology() {
-        String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", Normal.EMPTY).split("\\n|\\r");
+        String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", "").split("[\\n\\r]");
         /*-
          * Sample output:
          *
@@ -250,14 +258,15 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[] querySystemCpuLoadTicks() {
-        long[] ticks = new long[CentralProcessor.TickType.values().length];
-        FreeBsdLibc.CpTime cpTime = new FreeBsdLibc.CpTime();
-        BsdSysctlKit.sysctl("kern.cp_time", cpTime);
-        ticks[CentralProcessor.TickType.USER.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_USER];
-        ticks[CentralProcessor.TickType.NICE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_NICE];
-        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_SYS];
-        ticks[CentralProcessor.TickType.IRQ.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_INTR];
-        ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_IDLE];
+        long[] ticks = new long[TickType.values().length];
+        try (FreeBsdLibc.CpTime cpTime = new FreeBsdLibc.CpTime()) {
+            BsdSysctlKit.sysctl("kern.cp_time", cpTime);
+            ticks[TickType.USER.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_USER];
+            ticks[TickType.NICE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_NICE];
+            ticks[TickType.SYSTEM.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_SYS];
+            ticks[TickType.IRQ.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_INTR];
+            ticks[TickType.IDLE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_IDLE];
+        }
         return ticks;
     }
 
@@ -311,30 +320,31 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
-        long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
+        long[][] ticks = new long[getLogicalProcessorCount()][TickType.values().length];
 
         // Allocate memory for array of CPTime
-        long size = new FreeBsdLibc.CpTime().size();
-        long arraySize = size * getLogicalProcessorCount();
-        Pointer p = new Memory(arraySize);
-        String name = "kern.cp_times";
-        // Fetch
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, new size_t.ByReference(new size_t(arraySize)), null,
-                size_t.ZERO)) {
-            Logger.error("Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
-            return ticks;
-        }
-        // p now points to the data; need to copy each element
-        for (int cpu = 0; cpu < getLogicalProcessorCount(); cpu++) {
-            ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = p
-                    .getLong(size * cpu + FreeBsdLibc.CP_USER * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = p
-                    .getLong(size * cpu + FreeBsdLibc.CP_NICE * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = p
-                    .getLong(size * cpu + FreeBsdLibc.CP_SYS * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][CentralProcessor.TickType.IRQ.getIndex()] = p.getLong(size * cpu + FreeBsdLibc.CP_INTR * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = p
-                    .getLong(size * cpu + FreeBsdLibc.CP_IDLE * FreeBsdLibc.UINT64_SIZE); // lgtm
+        long arraySize = CPTIME_SIZE * getLogicalProcessorCount();
+        try (Memory p = new Memory(arraySize);
+             ByRef.CloseableSizeTByReference oldlenp = new ByRef.CloseableSizeTByReference(arraySize)) {
+            String name = "kern.cp_times";
+            // Fetch
+            if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, oldlenp, null, size_t.ZERO)) {
+                Logger.error("Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
+                return ticks;
+            }
+            // p now points to the data; need to copy each element
+            for (int cpu = 0; cpu < getLogicalProcessorCount(); cpu++) {
+                ticks[cpu][TickType.USER.getIndex()] = p
+                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_USER * FreeBsdLibc.UINT64_SIZE); // lgtm
+                ticks[cpu][TickType.NICE.getIndex()] = p
+                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_NICE * FreeBsdLibc.UINT64_SIZE); // lgtm
+                ticks[cpu][TickType.SYSTEM.getIndex()] = p
+                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_SYS * FreeBsdLibc.UINT64_SIZE); // lgtm
+                ticks[cpu][TickType.IRQ.getIndex()] = p
+                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_INTR * FreeBsdLibc.UINT64_SIZE); // lgtm
+                ticks[cpu][TickType.IDLE.getIndex()] = p
+                        .getLong(CPTIME_SIZE * cpu + FreeBsdLibc.CP_IDLE * FreeBsdLibc.UINT64_SIZE); // lgtm
+            }
         }
         return ticks;
     }
@@ -343,22 +353,24 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     public long queryContextSwitches() {
         String name = "vm.stats.sys.v_swtch";
         size_t.ByReference size = new size_t.ByReference(new size_t(FreeBsdLibc.INT_SIZE));
-        Pointer p = new Memory(size.longValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-            return 0L;
+        try (Memory p = new Memory(size.longValue())) {
+            if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
+                return 0L;
+            }
+            return Builder.unsignedIntToLong(p.getInt(0));
         }
-        return Builder.unsignedIntToLong(p.getInt(0));
     }
 
     @Override
     public long queryInterrupts() {
         String name = "vm.stats.sys.v_intr";
         size_t.ByReference size = new size_t.ByReference(new size_t(FreeBsdLibc.INT_SIZE));
-        Pointer p = new Memory(size.longValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-            return 0L;
+        try (Memory p = new Memory(size.longValue())) {
+            if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
+                return 0L;
+            }
+            return Builder.unsignedIntToLong(p.getInt(0));
         }
-        return Builder.unsignedIntToLong(p.getInt(0));
     }
 
 }

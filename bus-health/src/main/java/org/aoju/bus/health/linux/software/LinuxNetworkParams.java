@@ -28,11 +28,12 @@ package org.aoju.bus.health.linux.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.unix.LibCAPI;
-import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.unix.CLibrary;
@@ -53,32 +54,34 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
 
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
 
-    private static final String IPV4_DEFAULT_DEST = "0.0.0.0"; // NOSONAR
+    private static final String IPV4_DEFAULT_DEST = "0.0.0.0";
     private static final String IPV6_DEFAULT_DEST = "::/0";
 
     @Override
     public String getDomainName() {
-        CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
-        hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname = "";
-        try {
-            hostname = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
-            return "";
-        }
-        PointerByReference ptr = new PointerByReference();
-        int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
-        if (res > 0) {
-            if (Logger.isError()) {
-                Logger.error("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
+        try (CLibrary.Addrinfo hint = new CLibrary.Addrinfo()) {
+            hint.ai_flags = CLibrary.AI_CANONNAME;
+            String hostname;
+            try {
+                hostname = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
+                return Normal.EMPTY;
             }
-            return "";
+            try (ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
+                int res = LIBC.getaddrinfo(hostname, null, hint, ptr);
+                if (res > 0) {
+                    if (Logger.isError()) {
+                        Logger.error("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
+                    }
+                    return Normal.EMPTY;
+                }
+                CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
+                String canonname = info.ai_canonname.trim();
+                LIBC.freeaddrinfo(ptr.getValue());
+                return canonname;
+            }
         }
-        CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
-        String canonname = info.ai_canonname.trim();
-        LIBC.freeaddrinfo(ptr.getValue());
-        return canonname;
     }
 
     @Override

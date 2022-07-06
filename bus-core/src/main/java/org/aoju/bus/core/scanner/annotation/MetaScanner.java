@@ -23,8 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.annotation.scanner;
+package org.aoju.bus.core.scanner.annotation;
 
+import org.aoju.bus.core.scanner.AnnotationScanner;
 import org.aoju.bus.core.toolkit.AnnoKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.CollKit;
@@ -43,7 +44,6 @@ import java.util.stream.Stream;
 /**
  * 扫描注解类上存在的注解，支持处理枚举实例或枚举类型
  * 需要注意，当待解析是枚举类时，有可能与{@link TypeScanner}冲突
- *
  * @author Kimi Liu
  * @since Java 17+
  */

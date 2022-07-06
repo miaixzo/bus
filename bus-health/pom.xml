@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <jna.version>5.11.0</jna.version>
+        <jna.version>5.12.0</jna.version>
     </properties>
 
     <dependencies>

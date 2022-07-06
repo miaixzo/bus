@@ -260,7 +260,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return Pair.of(logProcs, physProcs);
     }
 
-    private Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
+    private static Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
         List<LogicalProcessor> logProcs = new ArrayList<>();
         Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
         Map<Integer, String> modAliasMap = new HashMap<>();
@@ -315,8 +315,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         return Triple.of(logProcs, coreEfficiencyMap, modAliasMap);
     }
 
-    private LogicalProcessor getLogicalProcessorFromSyspath(String syspath, String modAlias,
-                                                            Map<Integer, Integer> coreEfficiencyMap, Map<Integer, String> modAliasMap) {
+    private static LogicalProcessor getLogicalProcessorFromSyspath(String syspath, String modAlias,
+                                                                   Map<Integer, Integer> coreEfficiencyMap, Map<Integer, String> modAliasMap) {
         int processor = Builder.getFirstIntValue(syspath);
         int coreId = Builder.getIntFromFile(syspath + "/topology/core_id");
         int pkgId = Builder.getIntFromFile(syspath + "/topology/physical_package_id");

@@ -64,7 +64,7 @@ public final class ProcessPerformanceData {
         // Grab the data from the registry.
         Triple<List<Map<ProcessInformation.ProcessPerformanceProperty, Object>>, Long, Long> processData = null;
         if (PERFDATA) {
-            processData = HkeyPerformanceDataUtil.readPerfDataFromRegistry(PROCESS, ProcessInformation.ProcessPerformanceProperty.class);
+            processData = HkeyPerformanceData.readPerfDataFromRegistry(PROCESS, ProcessInformation.ProcessPerformanceProperty.class);
         }
         if (processData == null) {
             return null;

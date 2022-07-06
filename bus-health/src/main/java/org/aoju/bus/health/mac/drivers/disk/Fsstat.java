@@ -29,7 +29,6 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -55,22 +54,18 @@ public final class Fsstat {
         // Use statfs to get size of mounted file systems
         int numfs = queryFsstat(null, 0, 0);
         // Get data on file system
-        Statfs[] fs = getFileSystems(numfs);
+        Statfs s = new Statfs();
+        // Create array to hold results
+        Statfs[] fs = (Statfs[]) s.toArray(numfs);
+        // Write file system data to array
+        queryFsstat(fs, numfs * fs[0].size(), SystemB.MNT_NOWAIT);
 
         // Iterate all mounted file systems
         for (Statfs f : fs) {
             String mntFrom = Native.toString(f.f_mntfromname, StandardCharsets.UTF_8);
-            mountPointMap.put(mntFrom.replace("/dev/", Normal.EMPTY), Native.toString(f.f_mntonname, StandardCharsets.UTF_8));
+            mountPointMap.put(mntFrom.replace("/dev/", ""), Native.toString(f.f_mntonname, StandardCharsets.UTF_8));
         }
         return mountPointMap;
-    }
-
-    private static Statfs[] getFileSystems(int numfs) {
-        // Create array to hold results
-        Statfs[] fs = new Statfs[numfs];
-        // Write file system data to array
-        queryFsstat(fs, numfs * new Statfs().size(), SystemB.MNT_NOWAIT);
-        return fs;
     }
 
     private static int queryFsstat(Statfs[] buf, int bufsize, int flags) {

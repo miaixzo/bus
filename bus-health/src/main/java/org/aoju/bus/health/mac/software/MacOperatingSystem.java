@@ -26,8 +26,6 @@
 package org.aoju.bus.health.mac.software;
 
 import com.sun.jna.platform.mac.SystemB;
-import com.sun.jna.platform.mac.SystemB.ProcTaskInfo;
-import com.sun.jna.platform.mac.SystemB.Timeval;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -35,6 +33,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.mac.drivers.Who;
@@ -61,18 +60,19 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     private static final long BOOTTIME;
 
     static {
-        Timeval tv = new Timeval();
-        if (!SysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec.longValue() == 0L) {
-            // Usually this works. If it doesn't, fall back to text parsing.
-            // Boot time will be the first consecutive string of digits.
-            BOOTTIME = Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
-                    System.currentTimeMillis() / 1000);
-        } else {
-            // tv now points to a 64-bit timeval structure for boot time.
-            // First 4 bytes are seconds, second 4 bytes are microseconds
-            // (we ignore)
-            BOOTTIME = tv.tv_sec.longValue();
+        try (Struct.CloseableTimeval tv = new Struct.CloseableTimeval()) {
+            if (!SysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec.longValue() == 0L) {
+                // Usually this works. If it doesn't, fall back to text parsing.
+                // Boot time will be the first consecutive string of digits.
+                BOOTTIME = Builder.parseLongOrDefault(
+                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
+                        System.currentTimeMillis() / 1000);
+            } else {
+                // tv now points to a 64-bit timeval structure for boot time.
+                // First 4 bytes are seconds, second 4 bytes are microseconds
+                // (we ignore)
+                BOOTTIME = tv.tv_sec.longValue();
+            }
         }
     }
 
@@ -172,7 +172,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public OSProcess getProcess(int pid) {
-        OSProcess proc = new MacOSProcess(pid, this.minor);
+        OSProcess proc = new MacOSProcess(pid, this.major, this.minor);
         return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
     }
 
@@ -208,11 +208,13 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length)
                 / SystemB.INT_SIZE;
         int numberOfThreads = 0;
-        ProcTaskInfo taskInfo = new ProcTaskInfo();
-        for (int i = 0; i < numberOfProcesses; i++) {
-            int exit = SystemB.INSTANCE.proc_pidinfo(pids[i], SystemB.PROC_PIDTASKINFO, 0, taskInfo, taskInfo.size());
-            if (exit != -1) {
-                numberOfThreads += taskInfo.pti_threadnum;
+        try (Struct.CloseableProcTaskInfo taskInfo = new Struct.CloseableProcTaskInfo()) {
+            for (int i = 0; i < numberOfProcesses; i++) {
+                int exit = SystemB.INSTANCE.proc_pidinfo(pids[i], SystemB.PROC_PIDTASKINFO, 0, taskInfo,
+                        taskInfo.size());
+                if (exit != -1) {
+                    numberOfThreads += taskInfo.pti_threadnum;
+                }
             }
         }
         return numberOfThreads;

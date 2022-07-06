@@ -29,10 +29,10 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.platform.mac.IOKit.IOConnect;
 import com.sun.jna.platform.mac.IOKit.IOService;
 import com.sun.jna.platform.mac.IOKitUtil;
-import com.sun.jna.ptr.NativeLongByReference;
-import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.builtin.ByRef;
+import org.aoju.bus.health.builtin.NonIO;
 import org.aoju.bus.logger.Logger;
 
 import java.nio.ByteBuffer;
@@ -78,13 +78,15 @@ public final class SmcKit {
     public static IOConnect smcOpen() {
         IOService smcService = IOKitUtil.getMatchingService("AppleSMC");
         if (smcService != null) {
-            PointerByReference connPtr = new PointerByReference();
-            int result = IO.IOServiceOpen(smcService, SystemB.INSTANCE.mach_task_self(), 0, connPtr);
-            smcService.release();
-            if (result == 0) {
-                return new IOConnect(connPtr.getValue());
-            } else if (Logger.isError()) {
-                Logger.error(String.format("Unable to open connection to AppleSMC service. Error: 0x%08x", result));
+            try (ByRef.CloseablePointerByReference connPtr = new ByRef.CloseablePointerByReference()) {
+                int result = IO.IOServiceOpen(smcService, SystemB.INSTANCE.mach_task_self(), 0, connPtr);
+                if (result == 0) {
+                    return new IOConnect(connPtr.getValue());
+                } else if (Logger.isError()) {
+                    Logger.error(String.format("Unable to open connection to AppleSMC service. Error: 0x%08x", result));
+                }
+            } finally {
+                smcService.release();
             }
         } else {
             Logger.error("Unable to locate AppleSMC service");
@@ -110,19 +112,20 @@ public final class SmcKit {
      * @return Double representing the value
      */
     public static double smcGetFloat(IOConnect conn, String key) {
-        NonIOKit.SMCVal val = new NonIOKit.SMCVal();
-        int result = smcReadKey(conn, key, val);
-        if (result == 0 && val.dataSize > 0) {
-            if (Arrays.equals(val.dataType, DATATYPE_SP78) && val.dataSize == 2) {
-                // First bit is sign, next 7 bits are integer portion, last 8 bits are
-                // fractional portion
-                return val.bytes[0] + val.bytes[1] / 256d;
-            } else if (Arrays.equals(val.dataType, DATATYPE_FPE2) && val.dataSize == 2) {
-                // First E (14) bits are integer portion last 2 bits are fractional portion
-                return Builder.byteArrayToFloat(val.bytes, val.dataSize, 2);
-            } else if (Arrays.equals(val.dataType, DATATYPE_FLT) && val.dataSize == 4) {
-                // Standard 32-bit floating point
-                return ByteBuffer.wrap(val.bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+        try (NonIO.SMCVal val = new NonIO.SMCVal()) {
+            int result = smcReadKey(conn, key, val);
+            if (result == 0 && val.dataSize > 0) {
+                if (Arrays.equals(val.dataType, DATATYPE_SP78) && val.dataSize == 2) {
+                    // First bit is sign, next 7 bits are integer portion, last 8 bits are
+                    // fractional portion
+                    return val.bytes[0] + val.bytes[1] / 256d;
+                } else if (Arrays.equals(val.dataType, DATATYPE_FPE2) && val.dataSize == 2) {
+                    // First E (14) bits are integer portion last 2 bits are fractional portion
+                    return Builder.byteArrayToFloat(val.bytes, val.dataSize, 2);
+                } else if (Arrays.equals(val.dataType, DATATYPE_FLT) && val.dataSize == 4) {
+                    // Standard 32-bit floating point
+                    return ByteBuffer.wrap(val.bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
+                }
             }
         }
         // Read failed
@@ -137,10 +140,11 @@ public final class SmcKit {
      * @return Long representing the value
      */
     public static long smcGetLong(IOConnect conn, String key) {
-        NonIOKit.SMCVal val = new NonIOKit.SMCVal();
-        int result = smcReadKey(conn, key, val);
-        if (result == 0) {
-            return Builder.byteArrayToLong(val.bytes, val.dataSize);
+        try (NonIO.SMCVal val = new NonIO.SMCVal()) {
+            int result = smcReadKey(conn, key, val);
+            if (result == 0) {
+                return Builder.byteArrayToLong(val.bytes, val.dataSize);
+            }
         }
         // Read failed
         return 0;
@@ -154,7 +158,7 @@ public final class SmcKit {
      * @param outputStructure Key data output
      * @return 0 if successful, nonzero if failure
      */
-    public static int smcGetKeyInfo(IOConnect conn, NonIOKit.SMCKeyData inputStructure, NonIOKit.SMCKeyData outputStructure) {
+    public static int smcGetKeyInfo(IOConnect conn, NonIO.SMCKeyData inputStructure, NonIO.SMCKeyData outputStructure) {
         if (keyInfoCache.containsKey(inputStructure.key)) {
             NonIOKit.SMCKeyDataKeyInfo keyInfo = keyInfoCache.get(inputStructure.key);
             outputStructure.keyInfo.dataSize = keyInfo.dataSize;
@@ -183,26 +187,25 @@ public final class SmcKit {
      * @param val  Structure to receive the result
      * @return 0 if successful, nonzero if failure
      */
-    public static int smcReadKey(IOConnect conn, String key, NonIOKit.SMCVal val) {
-        NonIOKit.SMCKeyData inputStructure = new NonIOKit.SMCKeyData();
-        NonIOKit.SMCKeyData outputStructure = new NonIOKit.SMCKeyData();
-
-        inputStructure.key = (int) Builder.strToLong(key, 4);
-        int result = smcGetKeyInfo(conn, inputStructure, outputStructure);
-        if (result == 0) {
-            val.dataSize = outputStructure.keyInfo.dataSize;
-            val.dataType = Builder.longToByteArray(outputStructure.keyInfo.dataType, 4, 5);
-
-            inputStructure.keyInfo.dataSize = val.dataSize;
-            inputStructure.data8 = SMC_CMD_READ_BYTES;
-
-            result = smcCall(conn, KERNEL_INDEX_SMC, inputStructure, outputStructure);
+    public static int smcReadKey(IOConnect conn, String key, NonIO.SMCVal val) {
+        try (NonIO.SMCKeyData inputStructure = new NonIO.SMCKeyData(); NonIO.SMCKeyData outputStructure = new NonIO.SMCKeyData()) {
+            inputStructure.key = (int) Builder.strToLong(key, 4);
+            int result = smcGetKeyInfo(conn, inputStructure, outputStructure);
             if (result == 0) {
-                System.arraycopy(outputStructure.bytes, 0, val.bytes, 0, val.bytes.length);
-                return 0;
+                val.dataSize = outputStructure.keyInfo.dataSize;
+                val.dataType = Builder.longToByteArray(outputStructure.keyInfo.dataType, 4, 5);
+
+                inputStructure.keyInfo.dataSize = val.dataSize;
+                inputStructure.data8 = SMC_CMD_READ_BYTES;
+
+                result = smcCall(conn, KERNEL_INDEX_SMC, inputStructure, outputStructure);
+                if (result == 0) {
+                    System.arraycopy(outputStructure.bytes, 0, val.bytes, 0, val.bytes.length);
+                    return 0;
+                }
             }
+            return result;
         }
-        return result;
     }
 
     /**
@@ -214,9 +217,12 @@ public final class SmcKit {
      * @param outputStructure Key data output
      * @return 0 if successful, nonzero if failure
      */
-    public static int smcCall(IOConnect conn, int index, NonIOKit.SMCKeyData inputStructure, NonIOKit.SMCKeyData outputStructure) {
-        return IO.IOConnectCallStructMethod(conn, index, inputStructure, new NativeLong(inputStructure.size()),
-                outputStructure, new NativeLongByReference(new NativeLong(outputStructure.size())));
+    public static int smcCall(IOConnect conn, int index, NonIO.SMCKeyData inputStructure, NonIO.SMCKeyData outputStructure) {
+        try (ByRef.CloseableNativeLongByReference size = new ByRef.CloseableNativeLongByReference(
+                new NativeLong(outputStructure.size()))) {
+            return IO.IOConnectCallStructMethod(conn, index, inputStructure, new NativeLong(inputStructure.size()),
+                    outputStructure, size);
+        }
     }
 
 }

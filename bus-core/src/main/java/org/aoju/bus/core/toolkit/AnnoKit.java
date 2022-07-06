@@ -28,10 +28,14 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.annotation.AnnoProxy;
 import org.aoju.bus.core.annotation.Annotated;
-import org.aoju.bus.core.annotation.Synthetic;
-import org.aoju.bus.core.annotation.scanner.*;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Optional;
+import org.aoju.bus.core.scanner.AnnotationScanner;
+import org.aoju.bus.core.scanner.Synthetic;
+import org.aoju.bus.core.scanner.annotation.FieldScanner;
+import org.aoju.bus.core.scanner.annotation.MetaScanner;
+import org.aoju.bus.core.scanner.annotation.MethodScanner;
+import org.aoju.bus.core.scanner.annotation.TypeScanner;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AccessibleObject;
@@ -391,8 +395,7 @@ public class AnnoKit {
                 new MetaScanner(), new TypeScanner(), new MethodScanner(), new FieldScanner()
         };
         return AnnotationScanner.scanByAnySupported(annotatedEle, scanners).stream()
-                .map(Synthetic::of)
-                .map(annotation -> annotation.getAnnotation(annotationType))
+                .map(annotation -> getSynthesis(annotation, annotationType))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

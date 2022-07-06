@@ -31,6 +31,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
+import org.aoju.bus.health.Builder;
 
 /**
  * The Core Graphics framework is based on the Quartz advanced drawing engine.
@@ -59,10 +60,6 @@ public interface CoreGraphics extends Library {
     int kCGWindowListOptionIncludingWindow = 1 << 3;
     int kCGWindowListExcludeDesktopElements = 1 << 4;
 
-    CFArrayRef CGWindowListCopyWindowInfo(int option, int relativeToWindow);
-
-    boolean CGRectMakeWithDictionaryRepresentation(CFDictionaryRef dict, CGRect rect);
-
     /**
      * A point with X and Y coordinates
      */
@@ -81,13 +78,23 @@ public interface CoreGraphics extends Library {
         public double height;
     }
 
+    CFArrayRef CGWindowListCopyWindowInfo(int option, int relativeToWindow);
+
+    boolean CGRectMakeWithDictionaryRepresentation(CFDictionaryRef dict, CGRect rect);
+
     /**
      * A rectangle with origin and size
      */
     @FieldOrder({"origin", "size"})
-    class CGRect extends Structure {
+    class CGRect extends Structure implements AutoCloseable {
         public CGPoint origin;
         public CGSize size;
+
+        @Override
+        public void close() {
+            Builder.freeMemory(getPointer());
+        }
     }
 
 }
+

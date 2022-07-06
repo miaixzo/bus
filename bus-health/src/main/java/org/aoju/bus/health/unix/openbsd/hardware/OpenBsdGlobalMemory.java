@@ -68,9 +68,10 @@ final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
         mib[0] = OpenBsdLibc.CTL_VFS;
         mib[1] = OpenBsdLibc.VFS_GENERIC;
         mib[2] = OpenBsdLibc.VFS_BCACHESTAT;
-        Memory m = OpenBsdSysctlKit.sysctl(mib);
-        OpenBsdLibc.Bcachestats cache = new OpenBsdLibc.Bcachestats(m);
-        return (cache.numbufpages + free + inactive);
+        try (Memory m = OpenBsdSysctlKit.sysctl(mib)) {
+            OpenBsdLibc.Bcachestats cache = new OpenBsdLibc.Bcachestats(m);
+            return (cache.numbufpages + free + inactive);
+        }
     }
 
     private static long queryPhysMem() {

@@ -27,15 +27,17 @@ package org.aoju.bus.health.mac.software;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.SystemB;
-import com.sun.jna.platform.mac.SystemB.*;
+import com.sun.jna.platform.mac.SystemB.Group;
+import com.sun.jna.platform.mac.SystemB.Passwd;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
+import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.mac.drivers.ThreadInfo;
@@ -68,7 +70,8 @@ public class MacOSProcess extends AbstractOSProcess {
     private static final int SZOMB = 5; // intermediate state in process termination
     private static final int SSTOP = 6; // process being traced
 
-    private final int minorVersion;
+    private int majorVersion;
+    private int minorVersion;
     private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoize.memoize(this::queryArgsAndEnvironment);
     private final Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private String name = Normal.EMPTY;
@@ -78,7 +81,7 @@ public class MacOSProcess extends AbstractOSProcess {
     private String userID;
     private String group;
     private String groupID;
-    private State state = State.INVALID;
+    private State state = OSProcess.State.INVALID;
     private int parentProcessID;
     private int threadCount;
     private int priority;
@@ -96,8 +99,9 @@ public class MacOSProcess extends AbstractOSProcess {
     private long majorFaults;
     private long contextSwitches;
 
-    public MacOSProcess(int pid, int minor) {
+    public MacOSProcess(int pid, int major, int minor) {
         super(pid);
+        this.majorVersion = major;
         this.minorVersion = minor;
         updateAttributes();
     }
@@ -145,53 +149,57 @@ public class MacOSProcess extends AbstractOSProcess {
         mib[1] = 49; // KERN_PROCARGS2
         mib[2] = pid;
         // Allocate memory for arguments
-        Memory procargs = new Memory(ARGMAX);
-        procargs.clear();
-        size_t.ByReference size = new size_t.ByReference(ARGMAX);
-        // Fetch arguments
-        if (0 == SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, size_t.ZERO)) {
-            // Procargs contains an int representing total # of args, followed by a
-            // null-terminated execpath string and then the arguments, each
-            // null-terminated (possible multiple consecutive nulls),
-            // The execpath string is also the first arg.
-            // Following this is an int representing total # of env, followed by
-            // null-terminated envs in similar format
-            int nargs = procargs.getInt(0);
-            // Sanity check
-            if (nargs > 0 && nargs <= 1024) {
-                // Skip first int (containing value of nargs)
-                long offset = SystemB.INT_SIZE;
-                // Skip exec_command, as
-                offset += procargs.getString(offset).length();
-                // Iterate character by character using offset
-                // Build each arg and add to list
-                while (offset < size.longValue()) {
-                    // Advance through additional nulls
-                    while (procargs.getByte(offset) == 0) {
-                        if (++offset >= size.longValue()) {
-                            break;
+        try (Memory procargs = new Memory(ARGMAX)) {
+            procargs.clear();
+            size_t.ByReference size = new size_t.ByReference(ARGMAX);
+            // Fetch arguments
+            if (0 == SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, size_t.ZERO)) {
+                // Procargs contains an int representing total # of args, followed by a
+                // null-terminated execpath string and then the arguments, each
+                // null-terminated (possible multiple consecutive nulls),
+                // The execpath string is also the first arg.
+                // Following this is an int representing total # of env, followed by
+                // null-terminated envs in similar format
+                int nargs = procargs.getInt(0);
+                // Sanity check
+                if (nargs > 0 && nargs <= 1024) {
+                    // Skip first int (containing value of nargs)
+                    long offset = SystemB.INT_SIZE;
+                    // Skip exec_command, as
+                    offset += procargs.getString(offset).length();
+                    // Iterate character by character using offset
+                    // Build each arg and add to list
+                    while (offset < size.longValue()) {
+                        // Advance through additional nulls
+                        while (procargs.getByte(offset) == 0) {
+                            if (++offset >= size.longValue()) {
+                                break;
+                            }
                         }
-                    }
-                    // Grab a string. This should go until the null terminator
-                    String arg = procargs.getString(offset);
-                    if (nargs-- > 0) {
-                        // If we havent found nargs yet, it's an arg
-                        args.add(arg);
-                    } else {
-                        // otherwise it's an env
-                        int idx = arg.indexOf('=');
-                        if (idx > 0) {
-                            env.put(arg.substring(0, idx), arg.substring(idx + 1));
+                        // Grab a string. This should go until the null terminator
+                        String arg = procargs.getString(offset);
+                        if (nargs-- > 0) {
+                            // If we havent found nargs yet, it's an arg
+                            args.add(arg);
+                        } else {
+                            // otherwise it's an env
+                            int idx = arg.indexOf('=');
+                            if (idx > 0) {
+                                env.put(arg.substring(0, idx), arg.substring(idx + 1));
+                            }
                         }
+                        // Advance offset to next null
+                        offset += arg.length();
                     }
-                    // Advance offset to next null
-                    offset += arg.length();
+                }
+            } else {
+                // Don't warn for pid 0
+                if (pid > 0) {
+                    Logger.warn(
+                            "Failed sysctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
+                            pid, Native.getLastError());
                 }
             }
-        } else {
-            Logger.warn(
-                    "Failed sysctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
-                    getProcessID(), Native.getLastError());
         }
         return Pair.of(Collections.unmodifiableList(args), Collections.unmodifiableMap(env));
     }
@@ -333,84 +341,88 @@ public class MacOSProcess extends AbstractOSProcess {
     @Override
     public boolean updateAttributes() {
         long now = System.currentTimeMillis();
-        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
-        if (0 > SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo,
-                taskAllInfo.size()) || taskAllInfo.ptinfo.pti_threadnum < 1) {
-            this.state = State.INVALID;
-            return false;
-        }
-        Pointer buf = new Memory(SystemB.PROC_PIDPATHINFO_MAXSIZE);
-        if (0 < SystemB.INSTANCE.proc_pidpath(getProcessID(), buf, SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
-            this.path = buf.getString(0).trim();
-            // Overwrite name with last part of path
-            String[] pathSplit = this.path.split("/");
-            if (pathSplit.length > 0) {
-                this.name = pathSplit[pathSplit.length - 1];
+        try (Struct.CloseableProcTaskAllInfo taskAllInfo = new Struct.CloseableProcTaskAllInfo()) {
+            if (0 > SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo,
+                    taskAllInfo.size()) || taskAllInfo.ptinfo.pti_threadnum < 1) {
+                this.state = OSProcess.State.INVALID;
+                return false;
             }
-        }
-        if (this.name.isEmpty()) {
-            // pbi_comm contains first 16 characters of name
-            this.name = Native.toString(taskAllInfo.pbsd.pbi_comm, StandardCharsets.UTF_8);
-        }
+            try (Memory buf = new Memory(SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
+                if (0 < SystemB.INSTANCE.proc_pidpath(getProcessID(), buf, SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
+                    this.path = buf.getString(0).trim();
+                    // Overwrite name with last part of path
+                    String[] pathSplit = this.path.split("/");
+                    if (pathSplit.length > 0) {
+                        this.name = pathSplit[pathSplit.length - 1];
+                    }
+                }
+            }
+            if (this.name.isEmpty()) {
+                // pbi_comm contains first 16 characters of name
+                this.name = Native.toString(taskAllInfo.pbsd.pbi_comm, StandardCharsets.UTF_8);
+            }
 
-        switch (taskAllInfo.pbsd.pbi_status) {
-            case SSLEEP:
-                this.state = State.SLEEPING;
-                break;
-            case SWAIT:
-                this.state = State.WAITING;
-                break;
-            case SRUN:
-                this.state = State.RUNNING;
-                break;
-            case SIDL:
-                this.state = State.NEW;
-                break;
-            case SZOMB:
-                this.state = State.ZOMBIE;
-                break;
-            case SSTOP:
-                this.state = State.STOPPED;
-                break;
-            default:
-                this.state = State.OTHER;
-                break;
+            switch (taskAllInfo.pbsd.pbi_status) {
+                case SSLEEP:
+                    this.state = OSProcess.State.SLEEPING;
+                    break;
+                case SWAIT:
+                    this.state = OSProcess.State.WAITING;
+                    break;
+                case SRUN:
+                    this.state = OSProcess.State.RUNNING;
+                    break;
+                case SIDL:
+                    this.state = OSProcess.State.NEW;
+                    break;
+                case SZOMB:
+                    this.state = OSProcess.State.ZOMBIE;
+                    break;
+                case SSTOP:
+                    this.state = OSProcess.State.STOPPED;
+                    break;
+                default:
+                    this.state = OSProcess.State.OTHER;
+                    break;
+            }
+            this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
+            this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);
+            Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
+            if (pwuid != null) {
+                this.user = pwuid.pw_name;
+            }
+            this.groupID = Integer.toString(taskAllInfo.pbsd.pbi_gid);
+            Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
+            if (grgid != null) {
+                this.group = grgid.gr_name;
+            }
+            this.threadCount = taskAllInfo.ptinfo.pti_threadnum;
+            this.priority = taskAllInfo.ptinfo.pti_priority;
+            this.virtualSize = taskAllInfo.ptinfo.pti_virtual_size;
+            this.residentSetSize = taskAllInfo.ptinfo.pti_resident_size;
+            this.kernelTime = taskAllInfo.ptinfo.pti_total_system / 1_000_000L;
+            this.userTime = taskAllInfo.ptinfo.pti_total_user / 1_000_000L;
+            this.startTime = taskAllInfo.pbsd.pbi_start_tvsec * 1000L + taskAllInfo.pbsd.pbi_start_tvusec / 1000L;
+            this.upTime = now - this.startTime;
+            this.openFiles = taskAllInfo.pbsd.pbi_nfiles;
+            this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? 32 : 64;
+            this.majorFaults = taskAllInfo.ptinfo.pti_pageins;
+            // testing using getrusage confirms pti_faults includes both major and minor
+            this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins;
+            this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
         }
-        this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
-        this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);
-        Passwd pwuid = SystemB.INSTANCE.getpwuid(taskAllInfo.pbsd.pbi_uid);
-        if (pwuid != null) {
-            this.user = pwuid.pw_name;
-        }
-        this.groupID = Integer.toString(taskAllInfo.pbsd.pbi_gid);
-        Group grgid = SystemB.INSTANCE.getgrgid(taskAllInfo.pbsd.pbi_gid);
-        if (grgid != null) {
-            this.group = grgid.gr_name;
-        }
-        this.threadCount = taskAllInfo.ptinfo.pti_threadnum;
-        this.priority = taskAllInfo.ptinfo.pti_priority;
-        this.virtualSize = taskAllInfo.ptinfo.pti_virtual_size;
-        this.residentSetSize = taskAllInfo.ptinfo.pti_resident_size;
-        this.kernelTime = taskAllInfo.ptinfo.pti_total_system / 1_000_000L;
-        this.userTime = taskAllInfo.ptinfo.pti_total_user / 1_000_000L;
-        this.startTime = taskAllInfo.pbsd.pbi_start_tvsec * 1000L + taskAllInfo.pbsd.pbi_start_tvusec / 1000L;
-        this.upTime = now - this.startTime;
-        this.openFiles = taskAllInfo.pbsd.pbi_nfiles;
-        this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? 32 : 64;
-        this.majorFaults = taskAllInfo.ptinfo.pti_pageins;
-        // testing using getrusage confirms pti_faults includes both major and minor
-        this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins; // NOSONAR squid:S2184
-        this.contextSwitches = taskAllInfo.ptinfo.pti_csw;
-        if (this.minorVersion >= 9) {
-            RUsageInfoV2 rUsageInfoV2 = new RUsageInfoV2();
-            if (0 == SystemB.INSTANCE.proc_pid_rusage(getProcessID(), SystemB.RUSAGE_INFO_V2, rUsageInfoV2)) {
-                this.bytesRead = rUsageInfoV2.ri_diskio_bytesread;
-                this.bytesWritten = rUsageInfoV2.ri_diskio_byteswritten;
+        if (this.majorVersion > 10 || this.minorVersion >= 9) {
+            try (Struct.CloseableRUsageInfoV2 rUsageInfoV2 = new Struct.CloseableRUsageInfoV2()) {
+                if (0 == SystemB.INSTANCE.proc_pid_rusage(getProcessID(), SystemB.RUSAGE_INFO_V2, rUsageInfoV2)) {
+                    this.bytesRead = rUsageInfoV2.ri_diskio_bytesread;
+                    this.bytesWritten = rUsageInfoV2.ri_diskio_byteswritten;
+                }
             }
         }
-        VnodePathInfo vpi = new VnodePathInfo();
-        if (0 < SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDVNODEPATHINFO, 0, vpi, vpi.size())) {
-            this.currentWorkingDirectory = Native.toString(vpi.pvi_cdir.vip_path, StandardCharsets.US_ASCII);
+        try (Struct.CloseableVnodePathInfo vpi = new Struct.CloseableVnodePathInfo()) {
+            if (0 < SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDVNODEPATHINFO, 0, vpi, vpi.size())) {
+                this.currentWorkingDirectory = Native.toString(vpi.pvi_cdir.vip_path, StandardCharsets.US_ASCII);
+            }
         }
         return true;
     }

@@ -23,10 +23,14 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.lang;
+package org.aoju.bus.core.scanner;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
 
 import java.io.File;
@@ -46,7 +50,7 @@ import java.util.jar.JarFile;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Scaner {
+public class ClassScaner {
 
     /**
      * 包名
@@ -81,7 +85,7 @@ public class Scaner {
     /**
      * 构造,默认UTF-8编码
      */
-    public Scaner() {
+    public ClassScaner() {
         this(null);
     }
 
@@ -90,7 +94,7 @@ public class Scaner {
      *
      * @param packageName 包名,所有包传入""或者null
      */
-    public Scaner(String packageName) {
+    public ClassScaner(String packageName) {
         this(packageName, null);
     }
 
@@ -100,7 +104,7 @@ public class Scaner {
      * @param packageName 包名,所有包传入""或者null
      * @param predicate   过滤器,无需传入null
      */
-    public Scaner(String packageName, Predicate<Class<?>> predicate) {
+    public ClassScaner(String packageName, Predicate<Class<?>> predicate) {
         this(packageName, predicate, Charset.UTF_8);
     }
 
@@ -111,7 +115,7 @@ public class Scaner {
      * @param predicate   过滤器,无需传入null
      * @param charset     编码
      */
-    public Scaner(String packageName, Predicate<Class<?>> predicate, java.nio.charset.Charset charset) {
+    public ClassScaner(String packageName, Predicate<Class<?>> predicate, java.nio.charset.Charset charset) {
         packageName = StringKit.nullToEmpty(packageName);
         this.packageName = packageName;
         this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
@@ -141,7 +145,7 @@ public class Scaner {
      * @return 类集合
      */
     public static Set<Class<?>> scanAllPackage(String packageName, Predicate<Class<?>> classFilter) {
-        return new Scaner(packageName, classFilter).scan(true);
+        return new ClassScaner(packageName, classFilter).scan(true);
     }
 
     /**
@@ -173,7 +177,7 @@ public class Scaner {
      * @return 类集合
      */
     public static Set<Class<?>> scanPackage(String packageName, Predicate<Class<?>> predicate) {
-        return new Scaner(packageName, predicate).scan();
+        return new ClassScaner(packageName, predicate).scan();
     }
 
     /**

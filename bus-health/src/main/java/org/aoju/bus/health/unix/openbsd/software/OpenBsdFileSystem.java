@@ -95,7 +95,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
         }
 
         // Get mount table
-        for (String fs : Executor.runNative("mount -v")) { // NOSONAR squid:S135
+        for (String fs : Executor.runNative("mount -v")) {
             /*-
              Sample Output:
              /dev/wd0a (d1c342b6965d372c.a) on / type ffs (rw, local, ctime=Sun Jan  3 18:03:00 2021)

@@ -109,7 +109,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
         }
 
         // Get mount table
-        for (String fs : Executor.runNative("cat /etc/mnttab")) { // NOSONAR squid:S135
+        for (String fs : Executor.runNative("cat /etc/mnttab")) {
             String[] split = RegEx.SPACES.split(fs);
             if (split.length < 5) {
                 continue;

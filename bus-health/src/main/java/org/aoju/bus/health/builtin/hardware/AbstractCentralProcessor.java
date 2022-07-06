@@ -125,7 +125,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
             processorIdBytes |= hwcap << 32;
         } else {
             for (String flag : flags) {
-                switch (flag) { // NOSONAR squid:S1479
+                switch (flag) {
                     case "fpu":
                         processorIdBytes |= 1L << 32;
                         break;

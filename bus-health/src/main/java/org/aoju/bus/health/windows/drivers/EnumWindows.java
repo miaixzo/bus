@@ -31,8 +31,8 @@ import com.sun.jna.platform.WindowUtils;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.HWND;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.software.OSDesktopWindow;
 
 import java.util.ArrayList;
@@ -73,11 +73,12 @@ public final class EnumWindows {
                     if (!zOrderMap.containsKey(hWnd)) {
                         updateWindowZOrderMap(hWnd, zOrderMap);
                     }
-                    IntByReference pProcessId = new IntByReference();
-                    User32.INSTANCE.GetWindowThreadProcessId(hWnd, pProcessId);
-                    windowList.add(new OSDesktopWindow(Pointer.nativeValue(hWnd.getPointer()), window.getTitle(),
-                            window.getFilePath(), window.getLocAndSize(), pProcessId.getValue(), zOrderMap.get(hWnd),
-                            visible));
+                    try (ByRef.CloseableIntByReference pProcessId = new ByRef.CloseableIntByReference()) {
+                        User32.INSTANCE.GetWindowThreadProcessId(hWnd, pProcessId);
+                        windowList.add(new OSDesktopWindow(Pointer.nativeValue(hWnd.getPointer()), window.getTitle(),
+                                window.getFilePath(), window.getLocAndSize(), pProcessId.getValue(),
+                                zOrderMap.get(hWnd), visible));
+                    }
                 }
             }
         }

@@ -27,11 +27,11 @@ package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Psapi;
-import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.windows.drivers.perfmon.MemoryInformation;
 import org.aoju.bus.health.windows.drivers.perfmon.PagingFile;
@@ -73,13 +73,14 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
     }
 
     private static Triple<Long, Long, Long> querySwapTotalVirtMaxVirtUsed() {
-        PERFORMANCE_INFORMATION perfInfo = new PERFORMANCE_INFORMATION();
-        if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return Triple.of(0L, 0L, 0L);
+        try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
+            if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
+                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                return Triple.of(0L, 0L, 0L);
+            }
+            return Triple.of(perfInfo.CommitLimit.longValue() - perfInfo.PhysicalTotal.longValue(),
+                    perfInfo.CommitLimit.longValue(), perfInfo.CommitTotal.longValue());
         }
-        return Triple.of(perfInfo.CommitLimit.longValue() - perfInfo.PhysicalTotal.longValue(),
-                perfInfo.CommitLimit.longValue(), perfInfo.CommitTotal.longValue());
     }
 
     private static Pair<Long, Long> queryPageSwaps() {

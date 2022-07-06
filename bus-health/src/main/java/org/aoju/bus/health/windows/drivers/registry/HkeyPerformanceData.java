@@ -29,10 +29,10 @@ import com.sun.jna.Memory;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.WinBase.FILETIME;
 import com.sun.jna.platform.win32.WinPerf.*;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.windows.PerfCounterWildcardQuery;
 import org.aoju.bus.logger.Logger;
 
@@ -45,7 +45,7 @@ import java.util.*;
  * @since Java 17+
  */
 @ThreadSafe
-public final class HkeyPerformanceDataUtil {
+public final class HkeyPerformanceData {
 
     /*
      * Do a one-time lookup of the HKEY_PERFORMANCE_TEXT counter indices and store
@@ -55,7 +55,7 @@ public final class HkeyPerformanceDataUtil {
     private static final String COUNTER = "Counter";
     private static final Map<String, Integer> COUNTER_INDEX_MAP = mapCounterIndicesFromRegistry();
 
-    private static int maxPerfBufferSize = 4096;
+    private static int maxPerfBufferSize = 16384;
 
     /**
      * Reads and parses a block of performance data from the registry.
@@ -84,109 +84,109 @@ public final class HkeyPerformanceDataUtil {
         }
         // The above test checks validity of objectName as an index but it could still
         // fail to read
-        Memory pPerfData = readPerfDataBuffer(objectName);
-        if (pPerfData == null) {
-            return null;
-        }
-        // Buffer is now successfully populated.
-        // See format at
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa373105(v=vs.85).aspx
+        try (Memory pPerfData = readPerfDataBuffer(objectName)) {
+            if (pPerfData == null) {
+                return null;
+            }
+            // Buffer is now successfully populated.
+            // See format at
+            // https://msdn.microsoft.com/en-us/library/windows/desktop/aa373105(v=vs.85).aspx
 
-        // Start with a data header (PERF_DATA_BLOCK)
-        // Then iterate one or more objects
-        // Each object contains
-        // [ ] Object Type header (PERF_OBJECT_TYPE)
-        // [ ][ ][ ] Multiple counter definitions (PERF_COUNTER_DEFINITION)
-        // Then after object(s), multiple:
-        // [ ] Instance Definition
-        // [ ] Instance name
-        // [ ] Counter Block
-        // [ ][ ][ ] Counter data for each definition above
+            // Start with a data header (PERF_DATA_BLOCK)
+            // Then iterate one or more objects
+            // Each object contains
+            // [ ] Object Type header (PERF_OBJECT_TYPE)
+            // [ ][ ][ ] Multiple counter definitions (PERF_COUNTER_DEFINITION)
+            // Then after object(s), multiple:
+            // [ ] Instance Definition
+            // [ ] Instance name
+            // [ ] Counter Block
+            // [ ][ ][ ] Counter data for each definition above
 
-        // Store timestamp
-        PERF_DATA_BLOCK perfData = new PERF_DATA_BLOCK(pPerfData.share(0));
-        long perfTime100nSec = perfData.PerfTime100nSec.getValue(); // 1601
-        long now = FILETIME.filetimeToDate((int) (perfTime100nSec >> 32), (int) (perfTime100nSec & 0xffffffffL))
-                .getTime(); // 1970
+            // Store timestamp
+            PERF_DATA_BLOCK perfData = new PERF_DATA_BLOCK(pPerfData.share(0));
+            long perfTime100nSec = perfData.PerfTime100nSec.getValue(); // 1601
+            long now = FILETIME.filetimeToDate((int) (perfTime100nSec >> 32), (int) (perfTime100nSec & 0xffffffffL))
+                    .getTime(); // 1970
 
-        // Iterate object types.
-        long perfObjectOffset = perfData.HeaderLength;
-        for (int obj = 0; obj < perfData.NumObjectTypes; obj++) {
-            PERF_OBJECT_TYPE perfObject = new PERF_OBJECT_TYPE(pPerfData.share(perfObjectOffset));
-            // Some counters will require multiple objects so we iterate until we find the
-            // right one. e.g. Process (230) is by iteself but Thread (232) has Process
-            // object first
-            if (perfObject.ObjectNameTitleIndex == COUNTER_INDEX_MAP.get(objectName).intValue()) {
-                // We found a matching object.
+            // Iterate object types.
+            long perfObjectOffset = perfData.HeaderLength;
+            for (int obj = 0; obj < perfData.NumObjectTypes; obj++) {
+                PERF_OBJECT_TYPE perfObject = new PERF_OBJECT_TYPE(pPerfData.share(perfObjectOffset));
+                // Some counters will require multiple objects so we iterate until we find the
+                // right one. e.g. Process (230) is by itself but Thread (232) has Process
+                // object first
+                if (perfObject.ObjectNameTitleIndex == COUNTER_INDEX_MAP.get(objectName).intValue()) {
+                    // We found a matching object.
 
-                // Counter definitions start after the object header
-                long perfCounterOffset = perfObjectOffset + perfObject.HeaderLength;
-                // Iterate counter definitions and fill maps with counter offsets and sizes
-                Map<Integer, Integer> counterOffsetMap = new HashMap<>();
-                Map<Integer, Integer> counterSizeMap = new HashMap<>();
-                for (int counter = 0; counter < perfObject.NumCounters; counter++) {
-                    PERF_COUNTER_DEFINITION perfCounter = new PERF_COUNTER_DEFINITION(
-                            pPerfData.share(perfCounterOffset));
-                    counterOffsetMap.put(perfCounter.CounterNameTitleIndex, perfCounter.CounterOffset);
-                    counterSizeMap.put(perfCounter.CounterNameTitleIndex, perfCounter.CounterSize);
-                    // Increment for next Counter
-                    perfCounterOffset += perfCounter.ByteLength;
-                }
+                    // Counter definitions start after the object header
+                    long perfCounterOffset = perfObjectOffset + perfObject.HeaderLength;
+                    // Iterate counter definitions and fill maps with counter offsets and sizes
+                    Map<Integer, Integer> counterOffsetMap = new HashMap<>();
+                    Map<Integer, Integer> counterSizeMap = new HashMap<>();
+                    for (int counter = 0; counter < perfObject.NumCounters; counter++) {
+                        PERF_COUNTER_DEFINITION perfCounter = new PERF_COUNTER_DEFINITION(
+                                pPerfData.share(perfCounterOffset));
+                        counterOffsetMap.put(perfCounter.CounterNameTitleIndex, perfCounter.CounterOffset);
+                        counterSizeMap.put(perfCounter.CounterNameTitleIndex, perfCounter.CounterSize);
+                        // Increment for next Counter
+                        perfCounterOffset += perfCounter.ByteLength;
+                    }
 
-                // Instances start after all the object definitions. The DefinitionLength
-                // includes both the header and all the definitions.
-                long perfInstanceOffset = perfObjectOffset + perfObject.DefinitionLength;
+                    // Instances start after all the object definitions. The DefinitionLength
+                    // includes both the header and all the definitions.
+                    long perfInstanceOffset = perfObjectOffset + perfObject.DefinitionLength;
 
-                // Iterate instances and fill map
-                List<Map<T, Object>> counterMaps = new ArrayList<>(perfObject.NumInstances);
-                for (int inst = 0; inst < perfObject.NumInstances; inst++) {
-                    PERF_INSTANCE_DEFINITION perfInstance = new PERF_INSTANCE_DEFINITION(
-                            pPerfData.share(perfInstanceOffset));
-                    long perfCounterBlockOffset = perfInstanceOffset + perfInstance.ByteLength;
-                    // Populate the enumMap
-                    Map<T, Object> counterMap = new EnumMap<>(counterEnum);
-                    T[] counterKeys = counterEnum.getEnumConstants();
-                    // First enum index is the name, ignore the counter text which is used for other
-                    // purposes
-                    counterMap.put(counterKeys[0],
-                            pPerfData.getWideString(perfInstanceOffset + perfInstance.NameOffset));
-                    for (int i = 1; i < counterKeys.length; i++) {
-                        T key = counterKeys[i];
-                        int keyIndex = COUNTER_INDEX_MAP.get(key.getCounter());
-                        // All entries in size map have corresponding entry in offset map
-                        int size = counterSizeMap.getOrDefault(keyIndex, 0);
+                    // Iterate instances and fill map
+                    List<Map<T, Object>> counterMaps = new ArrayList<>(perfObject.NumInstances);
+                    for (int inst = 0; inst < perfObject.NumInstances; inst++) {
+                        PERF_INSTANCE_DEFINITION perfInstance = new PERF_INSTANCE_DEFINITION(
+                                pPerfData.share(perfInstanceOffset));
+                        long perfCounterBlockOffset = perfInstanceOffset + perfInstance.ByteLength;
+                        // Populate the enumMap
+                        Map<T, Object> counterMap = new EnumMap<>(counterEnum);
+                        T[] counterKeys = counterEnum.getEnumConstants();
+                        // First enum index is the name, ignore the counter text which is used for other
+                        // purposes
+                        counterMap.put(counterKeys[0],
+                                pPerfData.getWideString(perfInstanceOffset + perfInstance.NameOffset));
+                        for (int i = 1; i < counterKeys.length; i++) {
+                            T key = counterKeys[i];
+                            int keyIndex = COUNTER_INDEX_MAP.get(key.getCounter());
+                            // All entries in size map have corresponding entry in offset map
+                            int size = counterSizeMap.getOrDefault(keyIndex, 0);
+                            // Currently, only DWORDs (4 bytes) and ULONGLONGs (8 bytes) are used to provide
+                            // counter values.
+                            if (size == 4) {
+                                counterMap.put(key,
+                                        pPerfData.getInt(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
+                            } else if (size == 8) {
+                                counterMap.put(key,
+                                        pPerfData.getLong(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
+                            } else {
+                                // If counter defined in enum isn't in registry, fail
+                                return null;
+                            }
+                        }
+                        counterMaps.add(counterMap);
+
+                        // counters at perfCounterBlockOffset + appropriate offset per enum
+                        // use pPerfData.getInt or getLong as determined by counter size
                         // Currently, only DWORDs (4 bytes) and ULONGLONGs (8 bytes) are used to provide
                         // counter values.
-                        if (size == 4) {
-                            counterMap.put(key,
-                                    pPerfData.getInt(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
-                        } else if (size == 8) {
-                            counterMap.put(key,
-                                    pPerfData.getLong(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
-                        } else {
-                            // If counter defined in enum isn't in registry, fail
-                            return null;
-                        }
+
+                        // Increment to next instance
+                        perfInstanceOffset = perfCounterBlockOffset
+                                + new PERF_COUNTER_BLOCK(pPerfData.share(perfCounterBlockOffset)).ByteLength;
                     }
-                    counterMaps.add(counterMap);
-
-                    // counters at perfCounterBlockOffset + appropriate offset per enum
-                    // use pPerfData.getInt or getLong as determined by counter size
-                    // Currently, only DWORDs (4 bytes) and ULONGLONGs (8 bytes) are used to provide
-                    // counter values.
-
-                    // Increment to next instance
-                    perfInstanceOffset = perfCounterBlockOffset
-                            + new PERF_COUNTER_BLOCK(pPerfData.share(perfCounterBlockOffset)).ByteLength;
+                    // We've found the necessary object and are done, no need to look at any other
+                    // objects (shouldn't be any). Return results
+                    return Triple.of(counterMaps, perfTime100nSec, now);
                 }
-                // We've found the necessary object and are done, no need to look at any other
-                // objects (shouldn't be any). Return results
-                return Triple.of(counterMaps, perfTime100nSec, now);
+                // Increment for next object
+                perfObjectOffset += perfObject.TotalByteLength;
             }
-            // Increment for next object
-            perfObjectOffset += perfObject.TotalByteLength;
         }
-        // Failed, return null
         return null;
     }
 
@@ -242,23 +242,26 @@ public final class HkeyPerformanceDataUtil {
 
         // Now load the data from the regsitry.
 
-        IntByReference lpcbData = new IntByReference(maxPerfBufferSize);
-        Memory pPerfData = new Memory(maxPerfBufferSize);
-        int ret = Advapi32.INSTANCE.RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null, pPerfData,
-                lpcbData);
-        if (ret != WinError.ERROR_SUCCESS && ret != WinError.ERROR_MORE_DATA) {
-            Logger.error("Error reading performance data from registry for {}.", objectName);
-            return null;
+        try (ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference(maxPerfBufferSize)) {
+            Memory pPerfData = new Memory(maxPerfBufferSize);
+            int ret = Advapi32.INSTANCE.RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null,
+                    pPerfData, lpcbData);
+            if (ret != WinError.ERROR_SUCCESS && ret != WinError.ERROR_MORE_DATA) {
+                Logger.error("Error reading performance data from registry for {}.", objectName);
+                pPerfData.close();
+                return null;
+            }
+            // Grow buffer as needed to fit the data
+            while (ret == WinError.ERROR_MORE_DATA) {
+                maxPerfBufferSize += 8192;
+                lpcbData.setValue(maxPerfBufferSize);
+                pPerfData.close();
+                pPerfData = new Memory(maxPerfBufferSize);
+                ret = Advapi32.INSTANCE.RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null,
+                        pPerfData, lpcbData);
+            }
+            return pPerfData;
         }
-        // Grow buffer as needed to fit the data
-        while (ret == WinError.ERROR_MORE_DATA) {
-            maxPerfBufferSize += 4096;
-            lpcbData.setValue(maxPerfBufferSize);
-            pPerfData = new Memory(maxPerfBufferSize);
-            ret = Advapi32.INSTANCE.RegQueryValueEx(WinReg.HKEY_PERFORMANCE_DATA, objectIndexStr, 0, null, pPerfData,
-                    lpcbData);
-        }
-        return pPerfData;
     }
 
     /**

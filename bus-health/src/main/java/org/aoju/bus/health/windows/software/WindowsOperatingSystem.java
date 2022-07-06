@@ -30,17 +30,15 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
-import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.ByRef;
+import org.aoju.bus.health.builtin.Struct;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
 import org.aoju.bus.health.windows.WinNT.TOKEN_ELEVATION;
@@ -149,14 +147,17 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     private static Map<Integer, Integer> getParentPidsFromSnapshot() {
         Map<Integer, Integer> parentPidMap = new HashMap<>();
         // Get processes from ToolHelp API for parent PID
-        Tlhelp32.PROCESSENTRY32.ByReference processEntry = new Tlhelp32.PROCESSENTRY32.ByReference();
-        WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
-        try {
-            while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
-                parentPidMap.put(processEntry.th32ProcessID.intValue(), processEntry.th32ParentProcessID.intValue());
+        try (ByRef.CloseablePROCESSENTRY32ByReference processEntry = new ByRef.CloseablePROCESSENTRY32ByReference()) {
+            WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS,
+                    new DWORD(0));
+            try {
+                while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
+                    parentPidMap.put(processEntry.th32ProcessID.intValue(),
+                            processEntry.th32ParentProcessID.intValue());
+                }
+            } finally {
+                Kernel32.INSTANCE.CloseHandle(snapshot);
             }
-        } finally {
-            Kernel32.INSTANCE.CloseHandle(snapshot);
         }
         return parentPidMap;
     }
@@ -198,19 +199,19 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 // 6005 (Event log startup) as a reasonably close backup.
                 long event6005Time = 0L;
                 while (iter.hasNext()) {
-                    EventLogRecord record = iter.next();
-                    if (record.getStatusCode() == 12) {
+                    EventLogRecord logRecord = iter.next();
+                    if (logRecord.getStatusCode() == 12) {
                         // Event 12 is system boot. We want this value unless we find two 6005 events
                         // first (may occur with Fast Boot)
-                        return record.getRecord().TimeGenerated.longValue();
-                    } else if (record.getStatusCode() == 6005) {
+                        return logRecord.getRecord().TimeGenerated.longValue();
+                    } else if (logRecord.getStatusCode() == 6005) {
                         // If we already found one, this means we've found a second one without finding
                         // an event 12. Return the latest one.
                         if (event6005Time > 0) {
                             return event6005Time;
                         }
                         // First 6005; tentatively assign
-                        event6005Time = record.getRecord().TimeGenerated.longValue();
+                        event6005Time = logRecord.getRecord().TimeGenerated.longValue();
                     }
                 }
                 // Only one 6005 found, return
@@ -234,33 +235,34 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * @return {@code true} if debug privileges were successfully enabled.
      */
     private static boolean enableDebugPrivilege() {
-        HANDLEByReference hToken = new HANDLEByReference();
-        boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
-                WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES, hToken);
-        if (!success) {
-            Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
-            return false;
-        }
-        try {
-            WinNT.LUID luid = new WinNT.LUID();
-            success = Advapi32.INSTANCE.LookupPrivilegeValue(null, WinNT.SE_DEBUG_NAME, luid);
+        try (ByRef.CloseableHANDLEByReference hToken = new ByRef.CloseableHANDLEByReference()) {
+            boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
+                    WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES, hToken);
             if (!success) {
-                Logger.error("LookupPrivilegeValue failed. Error: {}", Native.getLastError());
+                Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
                 return false;
             }
-            WinNT.TOKEN_PRIVILEGES tkp = new WinNT.TOKEN_PRIVILEGES(1);
-            tkp.Privileges[0] = new WinNT.LUID_AND_ATTRIBUTES(luid, new DWORD(WinNT.SE_PRIVILEGE_ENABLED));
-            success = Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
-            int err = Native.getLastError();
-            if (!success) {
-                Logger.error("AdjustTokenPrivileges failed. Error: {}", err);
-                return false;
-            } else if (err == WinError.ERROR_NOT_ALL_ASSIGNED) {
-                Logger.debug("Debug privileges not enabled.");
-                return false;
+            try {
+                WinNT.LUID luid = new WinNT.LUID();
+                success = Advapi32.INSTANCE.LookupPrivilegeValue(null, WinNT.SE_DEBUG_NAME, luid);
+                if (!success) {
+                    Logger.error("LookupPrivilegeValue failed. Error: {}", Native.getLastError());
+                    return false;
+                }
+                WinNT.TOKEN_PRIVILEGES tkp = new WinNT.TOKEN_PRIVILEGES(1);
+                tkp.Privileges[0] = new WinNT.LUID_AND_ATTRIBUTES(luid, new DWORD(WinNT.SE_PRIVILEGE_ENABLED));
+                success = Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
+                int err = Native.getLastError();
+                if (!success) {
+                    Logger.error("AdjustTokenPrivileges failed. Error: {}", err);
+                    return false;
+                } else if (err == WinError.ERROR_NOT_ALL_ASSIGNED) {
+                    Logger.debug("Debug privileges not enabled.");
+                    return false;
+                }
+            } finally {
+                Kernel32.INSTANCE.CloseHandle(hToken.getValue());
             }
-        } finally {
-            Kernel32.INSTANCE.CloseHandle(hToken.getValue());
         }
         return true;
     }
@@ -291,9 +293,10 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     private static boolean isCurrentX86() {
-        SYSTEM_INFO sysinfo = new SYSTEM_INFO();
-        Kernel32.INSTANCE.GetNativeSystemInfo(sysinfo);
-        return (0 == sysinfo.processorArchitecture.pi.wProcessorArchitecture.intValue());
+        try (Struct.CloseableSystemInfo sysinfo = new Struct.CloseableSystemInfo()) {
+            Kernel32.INSTANCE.GetNativeSystemInfo(sysinfo);
+            return (0 == sysinfo.processorArchitecture.pi.wProcessorArchitecture.intValue());
+        }
     }
 
     /**
@@ -315,9 +318,10 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         if (X86) {
             return true;
         }
-        IntByReference isWow = new IntByReference();
-        Kernel32.INSTANCE.IsWow64Process(h, isWow);
-        return isWow.getValue() != 0;
+        try (ByRef.CloseableIntByReference isWow = new ByRef.CloseableIntByReference()) {
+            Kernel32.INSTANCE.IsWow64Process(h, isWow);
+            return isWow.getValue() != 0;
+        }
     }
 
     private static boolean isCurrentWow() {
@@ -376,21 +380,22 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public boolean isElevated() {
-        HANDLEByReference hToken = new HANDLEByReference();
-        boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(), WinNT.TOKEN_QUERY,
-                hToken);
-        if (!success) {
-            Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
-            return false;
-        }
-        try {
-            TOKEN_ELEVATION elevation = new TOKEN_ELEVATION();
-            if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation, elevation.size(),
-                    new IntByReference())) {
-                return elevation.TokenIsElevated > 0;
+        try (ByRef.CloseableHANDLEByReference hToken = new ByRef.CloseableHANDLEByReference();
+             ByRef.CloseableIntByReference returnLength = new ByRef.CloseableIntByReference()) {
+            boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
+                    WinNT.TOKEN_QUERY, hToken);
+            if (!success) {
+                Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
+                return false;
             }
-        } finally {
-            Kernel32.INSTANCE.CloseHandle(hToken.getValue());
+            try (TOKEN_ELEVATION elevation = new TOKEN_ELEVATION()) {
+                if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation,
+                        elevation.size(), returnLength)) {
+                    return elevation.TokenIsElevated > 0;
+                }
+            } finally {
+                Kernel32.INSTANCE.CloseHandle(hToken.getValue());
+            }
         }
         return false;
     }
@@ -479,22 +484,24 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public int getProcessCount() {
-        PERFORMANCE_INFORMATION perfInfo = new PERFORMANCE_INFORMATION();
-        if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return 0;
+        try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
+            if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
+                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                return 0;
+            }
+            return perfInfo.ProcessCount.intValue();
         }
-        return perfInfo.ProcessCount.intValue();
     }
 
     @Override
     public int getThreadCount() {
-        PERFORMANCE_INFORMATION perfInfo = new PERFORMANCE_INFORMATION();
-        if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return 0;
+        try (Struct.CloseablePerformanceInformation perfInfo = new Struct.CloseablePerformanceInformation()) {
+            if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
+                Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+                return 0;
+            }
+            return perfInfo.ThreadCount.intValue();
         }
-        return perfInfo.ThreadCount.intValue();
     }
 
     @Override
