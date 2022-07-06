@@ -3701,16 +3701,16 @@ public class CollKit {
             downstreamAccumulator.accept(container, t);
         };
         final BinaryOperator<Map<K, A>> merger = mapMerger(downstream.combiner());
-        @SuppressWarnings("unchecked") final Supplier<Map<K, A>> mangledFactory = (Supplier<Map<K, A>>) mapFactory;
+        final Supplier<Map<K, A>> mangledFactory = (Supplier<Map<K, A>>) mapFactory;
 
         if (downstream.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
             return new SimpleCollector<>(mangledFactory, accumulator, merger,
                     Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH)));
         } else {
-            @SuppressWarnings("unchecked") final Function<A, A> downstreamFinisher = (Function<A, A>) downstream.finisher();
+            final Function<A, A> downstreamFinisher = (Function<A, A>) downstream.finisher();
             final Function<Map<K, A>, M> finisher = intermediate -> {
                 intermediate.replaceAll((k, v) -> downstreamFinisher.apply(v));
-                @SuppressWarnings("unchecked") final M castResult = (M) intermediate;
+                final M castResult = (M) intermediate;
                 return castResult;
             };
             return new SimpleCollector<>(mangledFactory, accumulator, merger, finisher, Collections.emptySet());
