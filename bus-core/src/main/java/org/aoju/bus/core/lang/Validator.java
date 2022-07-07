@@ -1150,4 +1150,33 @@ public class Validator {
         return value;
     }
 
+    /**
+     * 验证是否符合密码要求
+     *
+     * @param value 值
+     * @param weak  是否弱密码
+     * @return 否符合密码要求
+     */
+    public static boolean isPassword(String value, boolean... weak) {
+        boolean result = false;
+        for (final boolean element : weak) {
+            result ^= element;
+        }
+        return result ? isMatchRegex(RegEx.PASSWORD_WEAK, value) : isMatchRegex(RegEx.PASSWORD_STRONG, value);
+    }
+
+    /**
+     * 验证是是否符合密码要求
+     *
+     * @param value    值
+     * @param errorMsg 验证错误的信息
+     * @param weak     是否弱密码
+     * @throws ValidateException 验证异常
+     */
+    public static void validatePassword(String value, String errorMsg, boolean... weak) throws ValidateException {
+        if (false == isPassword(value, weak)) {
+            throw new ValidateException(errorMsg);
+        }
+    }
+
 }
