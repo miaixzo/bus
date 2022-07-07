@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.metadata;
 
+import org.aoju.bus.core.toolkit.AnnoKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Handler;
 import org.aoju.bus.limiter.Injector;
@@ -33,7 +34,6 @@ import org.aoju.bus.limiter.Resolver;
 import org.aoju.bus.limiter.annotation.LimiterParameter;
 import org.aoju.bus.limiter.resource.LimitedResource;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -117,7 +117,7 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
             field.setAccessible(true);
-            if (AnnotatedElementUtils.hasAnnotation(field, LimiterParameter.class)) {
+            if (AnnoKit.hasAnnotation(field, LimiterParameter.class)) {
                 if (null == retVal) {
                     retVal = new HashMap<>();
                 }

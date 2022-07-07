@@ -332,7 +332,7 @@ public class Formatter {
             return (withTime ? Fields.NORM_CN_DATE_TIME_FORMAT : Fields.NORM_DATE_CN_FORMAT).format(date);
         }
 
-        return parse(Converter.toCalendar(date), withTime);
+        return format(Converter.toCalendar(date), withTime);
     }
 
     /**
@@ -354,32 +354,38 @@ public class Formatter {
         final String year = String.valueOf(calendar.get(Calendar.YEAR));
         final int length = year.length();
         for (int i = 0; i < length; i++) {
-            result.append(NumberFormatter.toChinese(year.charAt(i), false));
+            result.append(NumberFormatter.Chinese.numberCharToChinese(year.charAt(i), false));
         }
         result.append('年');
 
         // 月
         int month = calendar.get(Calendar.MONTH) + 1;
-        result.append(NumberFormatter.format(month, false));
+        result.append(NumberFormatter.Chinese.formatThousand(month, false));
         result.append('月');
 
         // 日
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        result.append(NumberFormatter.format(day, false));
+        result.append(NumberFormatter.Chinese.formatThousand(day, false));
         result.append('日');
+
+        // 只替换年月日，时分秒中零不需要替换
+        String temp = result.toString().replace('零', '〇');
+        result.delete(0, result.length());
+        result.append(temp);
+
 
         if (withTime) {
             // 时
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            result.append(NumberFormatter.format(hour, false));
+            result.append(NumberFormatter.Chinese.formatThousand(hour, false));
             result.append('时');
             // 分
             int minute = calendar.get(Calendar.MINUTE);
-            result.append(NumberFormatter.format(minute, false));
+            result.append(NumberFormatter.Chinese.formatThousand(minute, false));
             result.append('分');
             // 秒
             int second = calendar.get(Calendar.SECOND);
-            result.append(NumberFormatter.format(second, false));
+            result.append(NumberFormatter.Chinese.formatThousand(second, false));
             result.append('秒');
         }
 
@@ -472,62 +478,6 @@ public class Formatter {
      */
     public static String formatBetween(long betweenMs) {
         return new DatePeriod(betweenMs, Fields.Units.MILLISECOND).format();
-    }
-
-    /**
-     * 将指定Calendar时间格式化为纯中文形式
-     *
-     * <pre>
-     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日（withTime为false）
-     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日一十二时一十三分一十四秒（withTime为true）
-     * </pre>
-     *
-     * @param calendar {@link Calendar}
-     * @param withTime 是否包含时间部分
-     * @return 格式化后的字符串
-     */
-    public static String parse(Calendar calendar, boolean withTime) {
-        final StringBuilder result = StringKit.builder();
-
-        // 年
-        String year = String.valueOf(calendar.get(Calendar.YEAR));
-        final int length = year.length();
-        for (int i = 0; i < length; i++) {
-            result.append(NumberFormatter.toChinese(year.charAt(i), false));
-        }
-        result.append('年');
-
-        // 月
-        int month = calendar.get(Calendar.MONTH) + 1;
-        result.append(NumberFormatter.format(month, false));
-        result.append('月');
-
-        // 日
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        result.append(NumberFormatter.format(day, false));
-        result.append('日');
-
-        // 只替换年月日，时分秒中零不需要替换
-        String temp = result.toString().replace('零', '〇');
-        result.delete(0, result.length());
-        result.append(temp);
-
-        if (withTime) {
-            // 时
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            result.append(NumberFormatter.format(hour, false));
-            result.append('时');
-            // 分
-            int minute = calendar.get(Calendar.MINUTE);
-            result.append(NumberFormatter.format(minute, false));
-            result.append('分');
-            // 秒
-            int second = calendar.get(Calendar.SECOND);
-            result.append(NumberFormatter.format(second, false));
-            result.append('秒');
-        }
-
-        return result.toString();
     }
 
     /**

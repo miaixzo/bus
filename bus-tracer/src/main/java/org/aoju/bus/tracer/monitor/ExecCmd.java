@@ -258,7 +258,7 @@ public class ExecCmd {
      * @return the list
      * @throws IOException 异常
      */
-    public static List<Map<String, String>> jstatUtil() throws IOException {
+    public static List<Map<String, String>> jstatGcu() throws IOException {
         return jstat(new String[]{"jstat", "-gcutil", getPid()});
     }
 

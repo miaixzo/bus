@@ -723,7 +723,7 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static String readHex(InputStream in, int length, boolean toLowerCase) throws InstrumentException {
-        return HexKit.encodeHexStr(readBytes(in, length), toLowerCase);
+        return HexKit.encodeHexString(readBytes(in, length), toLowerCase);
     }
 
     /**

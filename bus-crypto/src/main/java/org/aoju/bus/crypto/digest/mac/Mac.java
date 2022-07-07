@@ -125,7 +125,7 @@ public class Mac implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data, java.nio.charset.Charset charset) {
-        return HexKit.encodeHexStr(digest(data, charset));
+        return HexKit.encodeHexString(digest(data, charset));
     }
 
     /**
@@ -164,7 +164,7 @@ public class Mac implements Serializable {
      * @return 摘要
      */
     public String digestHex(File file) {
-        return HexKit.encodeHexStr(digest(file));
+        return HexKit.encodeHexString(digest(file));
     }
 
     /**
@@ -184,7 +184,7 @@ public class Mac implements Serializable {
      * @return 摘要
      */
     public String digestHex(byte[] data) {
-        return HexKit.encodeHexStr(digest(data));
+        return HexKit.encodeHexString(digest(data));
     }
 
     /**
@@ -205,7 +205,7 @@ public class Mac implements Serializable {
      * @return 摘要
      */
     public String digestHex(InputStream data) {
-        return HexKit.encodeHexStr(digest(data));
+        return HexKit.encodeHexString(digest(data));
     }
 
     /**
@@ -228,7 +228,7 @@ public class Mac implements Serializable {
      * @return 摘要
      */
     public String digestHex(InputStream data, int bufferLength) {
-        return HexKit.encodeHexStr(digest(data, bufferLength));
+        return HexKit.encodeHexString(digest(data, bufferLength));
     }
 
     /**

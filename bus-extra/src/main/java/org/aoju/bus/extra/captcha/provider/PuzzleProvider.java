@@ -25,9 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.extra.captcha.provider;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.extra.captcha.strategy.CodeStrategy;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 滑动验证码
@@ -58,7 +61,24 @@ public class PuzzleProvider extends AbstractProvider {
 
     @Override
     public boolean verify(String inputCode) {
-        return false;
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < inputCode.length(); i++) {
+            char c = inputCode.charAt(i);
+            if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
+                list.add(Integer.valueOf(String.valueOf(c)));
+            }
+        }
+        int sum = 0;
+        for (Integer data : list) {
+            sum += data;
+        }
+        double avg = sum * 1.0 / list.size();
+        double sum2 = 0.0;
+        for (Integer data : list) {
+            sum2 += Math.pow(data - avg, 2);
+        }
+        double stddev = sum2 / list.size();
+        return stddev != 0;
     }
 
 }

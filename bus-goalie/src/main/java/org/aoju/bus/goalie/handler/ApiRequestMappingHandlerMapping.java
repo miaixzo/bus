@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.handler;
 
+import org.aoju.bus.core.toolkit.AnnoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.annotation.ApiVersion;
 import org.aoju.bus.goalie.annotation.ClientVersion;
-import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -60,7 +60,7 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
 
     @Override
     protected RequestCondition<?> getCustomTypeCondition(Class<?> handlerType) {
-        ClientVersion clientVersion = AnnotatedElementUtils.findMergedAnnotation(handlerType, ClientVersion.class);
+        ClientVersion clientVersion = AnnoKit.getAnnotation(handlerType, ClientVersion.class);
         return createRequestCondtion(clientVersion);
     }
 
@@ -72,7 +72,7 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
      */
     @Override
     protected RequestCondition<?> getCustomMethodCondition(Method method) {
-        ClientVersion clientVersion = AnnotatedElementUtils.findMergedAnnotation(method, ClientVersion.class);
+        ClientVersion clientVersion = AnnoKit.getAnnotation(method, ClientVersion.class);
         return createRequestCondtion(clientVersion);
     }
 
@@ -96,9 +96,9 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
      */
     private RequestMappingInfo getApiVersionMappingInfo(Method method, Class<?> handlerType) {
         // 优先查找method
-        ApiVersion apiVersion = AnnotatedElementUtils.findMergedAnnotation(method, ApiVersion.class);
+        ApiVersion apiVersion = AnnoKit.getAnnotation(method, ApiVersion.class);
         if (null == apiVersion || StringKit.isBlank(apiVersion.value())) {
-            apiVersion = AnnotatedElementUtils.findMergedAnnotation(handlerType, ApiVersion.class);
+            apiVersion = AnnoKit.getAnnotation(handlerType, ApiVersion.class);
         }
         return null == apiVersion || StringKit.isBlank(apiVersion.value()) ? null : RequestMappingInfo
                 .paths(apiVersion.value())

@@ -17,7 +17,6 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
@@ -121,19 +120,6 @@ public class MapperConfiguration implements InitializingBean {
         } else {
             return new SqlSessionTemplate(sqlSessionFactory);
         }
-    }
-
-    /**
-     * 支持Devtools重启
-     */
-    @ConditionalOnProperty(prefix = "spring.devtools.restart", name = "enabled", matchIfMissing = true)
-    static class RestartConfiguration {
-
-        @Bean
-        public MapperCacheDisabler mapperCacheDisabler() {
-            return new MapperCacheDisabler();
-        }
-
     }
 
     class SpringBootVFS extends VFS {

@@ -274,7 +274,7 @@ public class System {
         } catch (SecurityException e) {
             if (false == quiet) {
                 Console.error("Caught a SecurityException reading the system property '{}'; " +
-                        "the SystemUtil property value will default to null.", name);
+                        "the System property value will default to null.", name);
             }
         }
 
@@ -284,7 +284,7 @@ public class System {
             } catch (SecurityException e) {
                 if (false == quiet) {
                     Console.error("Caught a SecurityException reading the system env '{}'; " +
-                            "the SystemUtil env value will default to null.", name);
+                            "the System env value will default to null.", name);
                 }
             }
         }

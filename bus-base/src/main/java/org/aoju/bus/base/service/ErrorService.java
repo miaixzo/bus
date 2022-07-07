@@ -25,6 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.base.service;
 
+import org.aoju.bus.core.toolkit.RuntimeKit;
+import org.aoju.bus.logger.Logger;
+
 /**
  * 异常信息处理
  * 此类未找到实现的情况下，采用默认实现
@@ -41,7 +44,10 @@ public interface ErrorService {
      * @param ex 对象参数
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
-    boolean before(Exception ex);
+    default boolean before(Exception ex) {
+        Logger.error(RuntimeKit.getStackTrace(ex));
+        return true;
+    }
 
     /**
      * 完成请求处理后回调
@@ -49,6 +55,8 @@ public interface ErrorService {
      * @param ex 对象参数
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
-    boolean after(Exception ex);
+    default boolean after(Exception ex) {
+        return true;
+    }
 
 }

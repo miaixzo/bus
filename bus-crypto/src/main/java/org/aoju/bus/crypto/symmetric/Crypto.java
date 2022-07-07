@@ -315,7 +315,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @return update之后的hex数据
      */
     public String updateHex(byte[] data) {
-        return HexKit.encodeHexStr(update(data));
+        return HexKit.encodeHexString(update(data));
     }
 
     @Override

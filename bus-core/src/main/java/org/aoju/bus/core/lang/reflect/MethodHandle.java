@@ -143,7 +143,7 @@ public class MethodHandle {
      *     }
      *
      *     Duck duck = (Duck) Proxy.newProxyInstance(
-     *         ClassLoaderUtil.getClassLoader(),
+     *         ClassKit.getClassLoader(),
      *         new Class[] { Duck.class },
      *         MethodHandle::invokeDefault);
      * </pre>
@@ -189,7 +189,7 @@ public class MethodHandle {
      *     }
      *
      *     Duck duck = (Duck) Proxy.newProxyInstance(
-     *         ClassLoaderUtil.getClassLoader(),
+     *         ClassKit.getClassLoader(),
      *         new Class[] { Duck.class },
      *         MethodHandle::invoke);
      * </pre>

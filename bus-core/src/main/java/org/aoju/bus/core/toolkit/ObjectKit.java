@@ -490,7 +490,7 @@ public class ObjectKit {
      * 策略为：
      * <pre>
      *  1、null转为"null"
-     *  2、调用Convert.toStr(Object)转换
+     *  2、调用Convert.toString(Object)转换
      * </pre>
      *
      * @param obj Bean对象

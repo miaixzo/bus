@@ -62,7 +62,7 @@ public class ImageElement extends AbstractElement<ImageElement> {
     /**
      * 缩放模式
      */
-    private Scale.Mode mode;
+    private Scale.Zoom zoom;
     /**
      * 旋转角度
      */
@@ -81,7 +81,7 @@ public class ImageElement extends AbstractElement<ImageElement> {
         this.imgUrl = imgUrl;
         this.width = getImage().getWidth();     //事先获得宽高，后面计算要用
         this.height = getImage().getHeight();
-        this.mode = Scale.Mode.ORIGIN;
+        this.zoom = Scale.Zoom.ORIGIN;
         super.setX(x);
         super.setY(y);
     }
@@ -93,9 +93,9 @@ public class ImageElement extends AbstractElement<ImageElement> {
      */
     public ImageElement(BufferedImage image, int x, int y) {
         this.image = image;
-        this.width = this.image.getWidth();
-        this.height = this.image.getHeight();
-        this.mode = Scale.Mode.ORIGIN;
+        this.width = image.getWidth();
+        this.height = image.getHeight();
+        this.zoom = Scale.Zoom.ORIGIN;
         super.setX(x);
         super.setY(y);
     }
@@ -106,13 +106,13 @@ public class ImageElement extends AbstractElement<ImageElement> {
      * @param y      y坐标
      * @param width  宽度
      * @param height 高度
-     * @param mode   缩放模式
+     * @param zoom   缩放模式
      */
-    public ImageElement(String imgUrl, int x, int y, int width, int height, Scale.Mode mode) {
+    public ImageElement(String imgUrl, int x, int y, int width, int height, Scale.Zoom zoom) {
         this.imgUrl = imgUrl;
         this.width = width;
         this.height = height;
-        this.mode = mode;
+        this.zoom = zoom;
         super.setX(x);
         super.setY(y);
     }
@@ -123,13 +123,13 @@ public class ImageElement extends AbstractElement<ImageElement> {
      * @param y      y坐标
      * @param width  宽度
      * @param height 高度
-     * @param mode   缩放模式
+     * @param zoom   缩放模式
      */
-    public ImageElement(BufferedImage image, int x, int y, int width, int height, Scale.Mode mode) {
+    public ImageElement(BufferedImage image, int x, int y, int width, int height, Scale.Zoom zoom) {
         this.image = image;
         this.width = width;
         this.height = height;
-        this.mode = mode;
+        this.zoom = zoom;
         super.setX(x);
         super.setY(y);
     }
@@ -187,12 +187,12 @@ public class ImageElement extends AbstractElement<ImageElement> {
         return this;
     }
 
-    public Scale.Mode getZoomMode() {
-        return mode;
+    public Scale.Zoom getZoom() {
+        return zoom;
     }
 
-    public ImageElement setZoomMode(Scale.Mode mode) {
-        this.mode = mode;
+    public ImageElement setZoom(Scale.Zoom zoom) {
+        this.zoom = zoom;
         return this;
     }
 

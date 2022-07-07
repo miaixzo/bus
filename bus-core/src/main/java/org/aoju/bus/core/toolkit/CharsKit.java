@@ -610,11 +610,11 @@ public class CharsKit {
     /**
      * 是否不为“null”、“undefined”，不做空指针检查
      *
-     * @param str 字符串
+     * @param text 字符串
      * @return 是否不为“null”、“undefined”，不为“null”、“undefined”返回true，否则false
      */
-    private static boolean isNotNullAndNotUndefinedStr(CharSequence str) {
-        String strString = str.toString().trim();
+    private static boolean isNotNullAndNotUndefinedStr(CharSequence text) {
+        String strString = text.toString().trim();
         return !Normal.NULL.equals(strString) && !Normal.UNDEFINED.equals(strString);
     }
 
@@ -951,41 +951,41 @@ public class CharsKit {
     /**
      * 检查给定字符串的所有字符是否都一样
      *
-     * @param str 字符出啊
+     * @param text 字符出啊
      * @return 给定字符串的所有字符是否都一样
      */
-    public static boolean isCharEquals(CharSequence str) {
-        Assert.notEmpty(str, "Str to check must be not empty!");
-        return count(str, str.charAt(0)) == str.length();
+    public static boolean isCharEquals(CharSequence text) {
+        Assert.notEmpty(text, "text to check must be not empty!");
+        return count(text, text.charAt(0)) == text.length();
     }
 
     /**
      * 对字符串归一化处理，如 "Á" 可以使用 "u00C1"或 "u0041u0301"表示，实际测试中两个字符串并不equals
      * 因此使用此方法归一为一种表示形式，默认按照W3C通常建议的，在NFC中交换文本。
      *
-     * @param str 归一化的字符串
+     * @param text 归一化的字符串
      * @return 归一化后的字符串
      * @see Normalizer#normalize(CharSequence, Normalizer.Form)
      */
-    public static String normalize(CharSequence str) {
-        return Normalizer.normalize(str, Normalizer.Form.NFC);
+    public static String normalize(CharSequence text) {
+        return Normalizer.normalize(text, Normalizer.Form.NFC);
     }
 
     /**
      * 在给定字符串末尾填充指定字符，以达到给定长度
      * 如果字符串本身的长度大于等于length，返回原字符串
      *
-     * @param str       字符串
+     * @param text      字符串
      * @param fixedChar 补充的字符
      * @param length    补充到的长度
      * @return 补充后的字符串
      */
-    public static String fixLength(CharSequence str, char fixedChar, int length) {
-        final int fixedLength = length - str.length();
+    public static String fixLength(CharSequence text, char fixedChar, int length) {
+        final int fixedLength = length - text.length();
         if (fixedLength <= 0) {
-            return str.toString();
+            return text.toString();
         }
-        return str + repeat(fixedChar, fixedLength);
+        return text + repeat(fixedChar, fixedLength);
     }
 
     /**
@@ -1185,28 +1185,28 @@ public class CharsKit {
     /**
      * 去掉指定后缀，并小写首字母
      *
-     * @param str    字符串
+     * @param text    字符串
      * @param suffix 后缀
      * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
      */
-    public static String removeSufAndLowerFirst(CharSequence str, CharSequence suffix) {
-        return lowerFirst(removeSuffix(str, suffix));
+    public static String removeSufAndLowerFirst(CharSequence text, CharSequence suffix) {
+        return lowerFirst(removeSuffix(text, suffix));
     }
 
     /**
      * 忽略大小写去掉指定后缀
      *
-     * @param str    字符串
+     * @param text    字符串
      * @param suffix 后缀
      * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
      */
-    public static String removeSuffixIgnoreCase(CharSequence str, CharSequence suffix) {
-        if (isEmpty(str) || isEmpty(suffix)) {
-            return toString(str);
+    public static String removeSuffixIgnoreCase(CharSequence text, CharSequence suffix) {
+        if (isEmpty(text) || isEmpty(suffix)) {
+            return toString(text);
         }
 
-        final String str2 = str.toString();
-        if (endWithIgnoreCase(str, suffix)) {
+        final String str2 = text.toString();
+        if (endWithIgnoreCase(text, suffix)) {
             return subPre(str2, str2.length() - suffix.length());
         }
         return str2;

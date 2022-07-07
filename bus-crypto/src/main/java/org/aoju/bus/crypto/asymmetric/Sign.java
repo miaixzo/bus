@@ -232,7 +232,7 @@ public class Sign extends Asymmetric<Sign> {
      * @return 签名
      */
     public String signHex(String data, Charset charset) {
-        return HexKit.encodeHexStr(sign(data, charset));
+        return HexKit.encodeHexString(sign(data, charset));
     }
 
     /**
@@ -262,7 +262,7 @@ public class Sign extends Asymmetric<Sign> {
      * @return 签名
      */
     public String signHex(byte[] data) {
-        return HexKit.encodeHexStr(sign(data));
+        return HexKit.encodeHexString(sign(data));
     }
 
     /**
@@ -273,7 +273,7 @@ public class Sign extends Asymmetric<Sign> {
      * @return 签名
      */
     public String signHex(InputStream data) {
-        return HexKit.encodeHexStr(sign(data));
+        return HexKit.encodeHexString(sign(data));
     }
 
     /**
@@ -295,7 +295,7 @@ public class Sign extends Asymmetric<Sign> {
      * @return 签名
      */
     public String digestHex(InputStream data, int bufferLength) {
-        return HexKit.encodeHexStr(sign(data, bufferLength));
+        return HexKit.encodeHexString(sign(data, bufferLength));
     }
 
     /**

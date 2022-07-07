@@ -27,6 +27,7 @@ package org.aoju.bus.core.image.painter;
 
 import org.aoju.bus.core.image.element.AbstractElement;
 import org.aoju.bus.core.image.element.RectangleElement;
+import org.aoju.bus.core.lang.Scale;
 
 import java.awt.*;
 
@@ -42,14 +43,16 @@ public class RectanglePainter implements Painter {
     public void draw(Graphics2D g, AbstractElement element, int canvasWidth) {
         // 强制转成子类
         RectangleElement rectangleElement = (RectangleElement) element;
-
         // 设置颜色
         g.setColor(rectangleElement.getColor());
-
-        // 设置居中
+        // 设置居中（优先）和绘制方向
         if (rectangleElement.isCenter()) {
             int centerX = (canvasWidth - rectangleElement.getWidth()) / 2;
             rectangleElement.setX(centerX);
+        } else if (rectangleElement.getDirection() == Scale.Direction.RIGHT_LEFT) {
+            rectangleElement.setX(rectangleElement.getX() - rectangleElement.getWidth());
+        } else if (rectangleElement.getDirection() == Scale.Direction.CENTER_LEFT_RIGHT) {
+            rectangleElement.setX(rectangleElement.getX() - rectangleElement.getWidth() / 2);
         }
 
         // 设置渐变
@@ -91,6 +94,35 @@ public class RectanglePainter implements Painter {
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.fillRoundRect(rectangleElement.getX(), rectangleElement.getY(), rectangleElement.getWidth(), rectangleElement.getHeight(), rectangleElement.getRoundCorner(), rectangleElement.getRoundCorner());
+    }
+
+    @Override
+    public void drawRepeat(Graphics2D g, AbstractElement element, int canvasWidth, int canvasHeight) {
+        // 强制转成子类
+        RectangleElement rectangleElement = (RectangleElement) element;
+        int currentX = element.getX();
+        int currentY = element.getY();
+        // 起始坐标归位
+        while (currentX > 0) {
+            currentX = currentX - rectangleElement.getHorizontal() - rectangleElement.getWidth();
+        }
+        while (currentY > 0) {
+            currentY = currentY - rectangleElement.getVertical() - rectangleElement.getHeight();
+        }
+        int startY = currentY;
+        // 从左往右绘制
+        while (currentX < canvasWidth) {
+            rectangleElement.setX(currentX);
+            currentX = currentX + rectangleElement.getHorizontal() + rectangleElement.getWidth();
+            // 从上往下绘制
+            while (currentY < canvasHeight) {
+                rectangleElement.setY(currentY);
+                currentY = currentY + rectangleElement.getVertical() + rectangleElement.getHeight();
+                draw(g, rectangleElement, canvasWidth);
+            }
+            // 重置y坐标
+            currentY = startY;
+        }
     }
 
 }

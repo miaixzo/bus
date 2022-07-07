@@ -32,7 +32,6 @@ import org.aoju.bus.core.image.element.RectangleElement;
 import org.aoju.bus.core.image.element.TextElement;
 import org.aoju.bus.core.image.painter.Painter;
 import org.aoju.bus.core.image.painter.PainterFactory;
-import org.aoju.bus.core.image.painter.TextPainter;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Graphics;
 import org.aoju.bus.core.lang.*;
@@ -206,12 +205,11 @@ public class Images implements Serializable {
      * @param bgImageUrl 背景图片地址
      * @param width      背景图宽度
      * @param height     背景图高度
-     * @param zoomMode   缩放模式
+     * @param zoom       缩放模式
      * @param fileType   输出图片格式
-     * @throws Exception 异常信息
      */
-    public Images(String bgImageUrl, int width, int height, Scale.Mode zoomMode, String fileType) throws Exception {
-        ImageElement bgImageElement = new ImageElement(bgImageUrl, 0, 0, width, height, zoomMode);
+    public Images(String bgImageUrl, int width, int height, Scale.Zoom zoom, String fileType) {
+        ImageElement bgImageElement = new ImageElement(bgImageUrl, 0, 0, width, height, zoom);
         this.list.add(bgImageElement);
         this.canvasWidth = width;
         this.canvasHeight = height;
@@ -224,9 +222,8 @@ public class Images implements Serializable {
      * @param height   背景图高度
      * @param zoomMode 缩放模式
      * @param fileType 输出图片格式
-     * @throws Exception 异常信息
      */
-    public Images(BufferedImage bgImage, int width, int height, Scale.Mode zoomMode, String fileType) throws Exception {
+    public Images(BufferedImage bgImage, int width, int height, Scale.Zoom zoomMode, String fileType) {
         ImageElement bgImageElement = new ImageElement(bgImage, 0, 0, width, height, zoomMode);
         // 计算画布新宽高
         int canvasWidth = 0;
@@ -367,26 +364,6 @@ public class Images implements Serializable {
         int des_height = height + len_dalta_height * 2;
 
         return new Rectangle(des_width, des_height);
-    }
-
-    /**
-     * 圆角
-     *
-     * @param srcImage 图片流
-     * @param width    宽度
-     * @param height   高度
-     * @param radius   半径
-     * @return 图片流
-     */
-    public static BufferedImage makeRoundCorner(BufferedImage srcImage, int width, int height, int radius) {
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.fillRoundRect(0, 0, width, height, radius, radius);
-        g.setComposite(AlphaComposite.SrcIn);
-        g.drawImage(srcImage, 0, 0, width, height, null);
-        g.dispose();
-        return image;
     }
 
     /**
@@ -1174,59 +1151,75 @@ public class Images implements Serializable {
     }
 
     /**
-     * 合成图片，返回图片对象
+     * 圆角
      *
-     * @return {@link BufferedImage}
-     * @throws Exception 异常
+     * @param srcImage 图片流
+     * @param width    宽度
+     * @param height   高度
+     * @param radius   半径
+     * @return 图片流
      */
-    public BufferedImage merge() throws Exception {
-        this.srcImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = this.srcImage.createGraphics();
-
-        // PNG要做透明度处理，否则背景图透明部分会变黑
-        if (this.fileType == FileType.TYPE_PNG) {
-            this.srcImage = g.getDeviceConfiguration().createCompatibleImage(canvasWidth, canvasHeight, Transparency.TRANSLUCENT);
-            g = this.srcImage.createGraphics();
-        }
-
-        // 抗锯齿
+    public static BufferedImage makeRoundCorner(BufferedImage srcImage, int width, int height, int radius) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // 循环绘制
-        for (AbstractElement element : this.list) {
-            Painter painter = PainterFactory.newInstance(element);
-            painter.draw(g, element, canvasWidth);
-        }
+        g.fillRoundRect(0, 0, width, height, radius, radius);
+        g.setComposite(AlphaComposite.SrcIn);
+        g.drawImage(srcImage, 0, 0, width, height, null);
         g.dispose();
-
-        // 处理整图圆角
-        if (roundCorner != null) {
-            this.srcImage = makeRoundCorner(this.srcImage, canvasWidth, canvasHeight, roundCorner);
-        }
-        return this.srcImage;
+        return image;
     }
 
     /**
-     * 保存合成后的图片
+     * 获取int类型的图片类型
      *
-     * @param filePath 完整保存路径，如 “E://123.jpg”
-     * @throws IOException 异常
+     * @return 图片类型
+     * @see BufferedImage#TYPE_INT_ARGB
+     * @see BufferedImage#TYPE_INT_RGB
      */
-    public void out(String filePath) throws Exception {
-        if (null != this.srcImage) {
-            ImageIO.write(this.srcImage, fileType, new File(filePath));
-        } else {
-            throw new Exception("尚未执行图片合成，无法保存文件");
+    private int getTypeInt() {
+        switch (this.fileType) {
+            case FileType.TYPE_PNG:
+                return BufferedImage.TYPE_INT_ARGB;
+            default:
+                return BufferedImage.TYPE_INT_RGB;
         }
     }
 
     /**
-     * 获取合成后的图片对象
+     * 获取有效的源图片,首先检查上一次处理的结果图片,如无则使用用户传入的源图片
      *
-     * @return {@link BufferedImage}
+     * @return 有效的源图片
      */
-    public BufferedImage getBufferedImage() {
-        return this.srcImage;
+    private java.awt.Image getValidSrcImg() {
+        return ObjectKit.defaultIfNull(this.targetImage, this.srcImage);
+    }
+
+    /**
+     * 获取有效的源{@link BufferedImage}图片，首先检查上一次处理的结果图片，如无则使用用户传入的源图片
+     *
+     * @return 有效的源图片
+     */
+    private BufferedImage getValidSrcBufferedImg() {
+        return ImageKit.toBufferedImage(getValidSrcImg(), this.fileType);
+    }
+
+    /**
+     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}，
+     * 则坐标修正为基于图形中心，否则基于左上角
+     *
+     * @param rectangle  矩形
+     * @param baseWidth  参考宽
+     * @param baseHeight 参考高
+     * @return 修正后的{@link Rectangle}
+     */
+    private Rectangle fixRectangle(Rectangle rectangle, int baseWidth, int baseHeight) {
+        if (this.positionBaseCentre) {
+            final Point pointBaseCentre = ImageKit.getPointCentre(rectangle, baseWidth, baseHeight);
+            // 修正图片位置从背景的中心计算
+            rectangle.setLocation(pointBaseCentre.x, pointBaseCentre.y);
+        }
+        return rectangle;
     }
 
     /**
@@ -1249,26 +1242,43 @@ public class Images implements Serializable {
     }
 
     /**
-     * 计算多行文本高度
+     * 合成图片，返回图片对象
      *
-     * @param textElement 文本元素
-     * @return 高度数值
+     * @return {@link BufferedImage}
+     * @throws Exception 异常
      */
-    public int getLineHeight(TextElement textElement) {
-        TextPainter textPainter = new TextPainter();
-        List<TextElement> textElements = textPainter.getBreakLineElements(textElement);
-        return textElement.getLineHeight() * textElements.size();
-    }
+    public BufferedImage merge() throws Exception {
+        this.srcImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = this.srcImage.createGraphics();
 
-    /**
-     * 计算文本宽度
-     *
-     * @param textElement 文本元素
-     * @return 高度数值
-     */
-    public int getFrontWidth(TextElement textElement) {
-        TextPainter textPainter = new TextPainter();
-        return textPainter.getFrontWidth(textElement.getText(), textElement.getFont());
+        // PNG要做透明度处理，否则背景图透明部分会变黑
+        if (fileType == FileType.TYPE_PNG) {
+            this.srcImage = g.getDeviceConfiguration().createCompatibleImage(canvasWidth, canvasHeight, Transparency.TRANSLUCENT);
+            g = this.srcImage.createGraphics();
+        }
+        // 抗锯齿
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(Color.white);
+
+        // 循环绘制各元素
+        for (AbstractElement element : this.list) {
+            Painter painter = PainterFactory.newInstance(element);
+            if (element.isRepeat()) {
+                // 平铺绘制
+                painter.drawRepeat(g, element, canvasWidth, canvasHeight);
+            } else {
+                // 正常绘制
+                painter.draw(g, element, canvasWidth);
+            }
+        }
+        g.dispose();
+
+        // 处理整图圆角
+        if (roundCorner != null) {
+            this.srcImage = this.makeRoundCorner(this.srcImage, canvasWidth, canvasHeight, roundCorner);
+        }
+
+        return this.srcImage;
     }
 
     /**
@@ -1281,17 +1291,17 @@ public class Images implements Serializable {
     }
 
     /**
-     * 添加图片元素
+     * 保存合成后的图片
      *
-     * @param imgUrl 图片url
-     * @param x      x坐标
-     * @param y      y坐标
-     * @return {@link ImageElement}
+     * @param filePath 完整保存路径，如 “d://123.jpg”
+     * @throws IOException
      */
-    public ImageElement addImageElement(String imgUrl, int x, int y) {
-        ImageElement imageElement = new ImageElement(imgUrl, x, y);
-        this.list.add(imageElement);
-        return imageElement;
+    public void out(String filePath) throws Exception {
+        if (srcImage != null) {
+            ImageIO.write(this.srcImage, fileType, new File(filePath));
+        } else {
+            throw new Exception("尚未执行图片合成，无法保存文件");
+        }
     }
 
     /**
@@ -1311,16 +1321,13 @@ public class Images implements Serializable {
     /**
      * 添加图片元素
      *
-     * @param imgUrl 图片rul
+     * @param imgUrl 图片地址
      * @param x      x坐标
      * @param y      y坐标
-     * @param width  宽度
-     * @param height 高度
-     * @param mode   缩放模式
      * @return {@link ImageElement}
      */
-    public ImageElement addImageElement(String imgUrl, int x, int y, int width, int height, Scale.Mode mode) {
-        ImageElement imageElement = new ImageElement(imgUrl, x, y, width, height, mode);
+    public ImageElement addImageElement(String imgUrl, int x, int y) {
+        ImageElement imageElement = new ImageElement(imgUrl, x, y);
         this.list.add(imageElement);
         return imageElement;
     }
@@ -1328,16 +1335,16 @@ public class Images implements Serializable {
     /**
      * 添加图片元素
      *
-     * @param image  图片对象
+     * @param imgUrl 图片地址
      * @param x      x坐标
      * @param y      y坐标
      * @param width  宽度
      * @param height 高度
-     * @param mode   缩放模式
+     * @param zoom   缩放模式
      * @return {@link ImageElement}
      */
-    public ImageElement addImageElement(BufferedImage image, int x, int y, int width, int height, Scale.Mode mode) {
-        ImageElement imageElement = new ImageElement(image, x, y, width, height, mode);
+    public ImageElement addImageElement(String imgUrl, int x, int y, int width, int height, Scale.Zoom zoom) {
+        ImageElement imageElement = new ImageElement(imgUrl, x, y, width, height, zoom);
         this.list.add(imageElement);
         return imageElement;
     }
@@ -1404,12 +1411,29 @@ public class Images implements Serializable {
     }
 
     /**
+     * 添加图片元素
+     *
+     * @param image  图片对象
+     * @param x      x坐标
+     * @param y      y坐标
+     * @param width  宽度
+     * @param height 高度
+     * @param zoom   缩放模式
+     * @return {@link ImageElement}
+     */
+    public ImageElement addImageElement(BufferedImage image, int x, int y, int width, int height, Scale.Zoom zoom) {
+        ImageElement imageElement = new ImageElement(image, x, y, width, height, zoom);
+        this.list.add(imageElement);
+        return imageElement;
+    }
+
+    /**
      * 设置背景高斯模糊
      *
      * @param blur 模糊值
      */
     public void setBackgroundBlur(int blur) {
-        ImageElement bgElement = (ImageElement) list.get(0);
+        ImageElement bgElement = (ImageElement) this.list.get(0);
         bgElement.setBlur(blur);
     }
 
@@ -1418,60 +1442,38 @@ public class Images implements Serializable {
      *
      * @param roundCorner 模糊值
      */
-    public void setCanvasRoundCorner(Integer roundCorner) {
+    public void setCanvasRoundCorner(Integer roundCorner) throws Exception {
+        if (fileType != FileType.TYPE_PNG) {
+            throw new Exception("整图圆角，输出格式必须设置为PNG");
+        }
         this.roundCorner = roundCorner;
     }
 
     /**
-     * 获取int类型的图片类型
+     * 获取画布宽度
      *
-     * @return 图片类型
-     * @see BufferedImage#TYPE_INT_ARGB
-     * @see BufferedImage#TYPE_INT_RGB
+     * @return the int
      */
-    private int getTypeInt() {
-        switch (this.fileType) {
-            case FileType.TYPE_PNG:
-                return BufferedImage.TYPE_INT_ARGB;
-            default:
-                return BufferedImage.TYPE_INT_RGB;
-        }
+    public int getCanvasWidth() {
+        return canvasWidth;
     }
 
     /**
-     * 获取有效的源图片,首先检查上一次处理的结果图片,如无则使用用户传入的源图片
+     * 获取画布高度
      *
-     * @return 有效的源图片
+     * @return the int
      */
-    private java.awt.Image getValidSrcImg() {
-        return ObjectKit.defaultIfNull(this.targetImage, this.srcImage);
+    public int getCanvasHeight() {
+        return canvasHeight;
     }
 
     /**
-     * 获取有效的源{@link BufferedImage}图片，首先检查上一次处理的结果图片，如无则使用用户传入的源图片
+     * 获取合成后的图片对象
      *
-     * @return 有效的源图片
+     * @return {@link BufferedImage}
      */
-    private BufferedImage getValidSrcBufferedImg() {
-        return ImageKit.toBufferedImage(getValidSrcImg(), this.fileType);
-    }
-
-    /**
-     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}，
-     * 则坐标修正为基于图形中心，否则基于左上角
-     *
-     * @param rectangle  矩形
-     * @param baseWidth  参考宽
-     * @param baseHeight 参考高
-     * @return 修正后的{@link Rectangle}
-     */
-    private Rectangle fixRectangle(Rectangle rectangle, int baseWidth, int baseHeight) {
-        if (this.positionBaseCentre) {
-            final Point pointBaseCentre = ImageKit.getPointCentre(rectangle, baseWidth, baseHeight);
-            // 修正图片位置从背景的中心计算
-            rectangle.setLocation(pointBaseCentre.x, pointBaseCentre.y);
-        }
-        return rectangle;
+    public BufferedImage getSrcImage() {
+        return srcImage;
     }
 
 }

@@ -32,7 +32,7 @@ import org.aoju.bus.validate.annotation.Phone;
 import org.aoju.bus.validate.validators.Matcher;
 
 /**
- * 移动电话校验
+ * 固定电话校验
  *
  * @author Kimi Liu
  * @since Java 17+

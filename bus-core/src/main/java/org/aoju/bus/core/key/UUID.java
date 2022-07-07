@@ -589,8 +589,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     private static class UUIDMaker {
 
-        private final static String STR = Normal.LOWER_NUMBER;
-        private final static int PIX_LEN = STR.length();
+        private final static String PIX_TEXT = Normal.LOWER_NUMBER;
+        private final static int PIX_LEN = PIX_TEXT.length();
         private static volatile int pixOne = 0;
         private static volatile int pixTwo = 0;
         private static volatile int pixThree = 0;
@@ -622,8 +622,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
                     }
                 }
             }
-            return hexString + STR.charAt(pixOne) + STR.charAt(pixTwo) +
-                    STR.charAt(pixThree) + STR.charAt(pixFour);
+            return hexString + PIX_TEXT.charAt(pixOne) + PIX_TEXT.charAt(pixTwo) +
+                    PIX_TEXT.charAt(pixThree) + PIX_TEXT.charAt(pixFour);
         }
     }
 
