@@ -44,7 +44,7 @@ public class EnglishStrategy implements Matcher<Object, English> {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return Validator.isEnglish(object.toString());
+        return Validator.isLetter(object.toString());
     }
 
 }

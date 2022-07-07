@@ -102,7 +102,7 @@ public class RC4 implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(byte[] data) {
-        return HexKit.encodeHexStr(crypt(data));
+        return HexKit.encodeHexString(crypt(data));
     }
 
     /**
@@ -123,7 +123,7 @@ public class RC4 implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(String data, Charset charset) {
-        return HexKit.encodeHexStr(encrypt(data, charset));
+        return HexKit.encodeHexString(encrypt(data, charset));
     }
 
     /**
@@ -133,7 +133,7 @@ public class RC4 implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(String data) {
-        return HexKit.encodeHexStr(encrypt(data));
+        return HexKit.encodeHexString(encrypt(data));
     }
 
     /**

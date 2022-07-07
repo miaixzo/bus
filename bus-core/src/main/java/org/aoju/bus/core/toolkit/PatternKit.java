@@ -204,7 +204,7 @@ public class PatternKit {
      * @param content 被匹配的内容
      * @return 匹配后得到的字符串, 未匹配返回null
      */
-    public static String getGroup0(Pattern pattern, String content) {
+    public static String getGroup0(Pattern pattern, CharSequence content) {
         return get(pattern, content, 0);
     }
 
@@ -215,7 +215,7 @@ public class PatternKit {
      * @param content 被匹配的内容
      * @return 匹配后得到的字符串, 未匹配返回null
      */
-    public static String getGroup1(Pattern pattern, String content) {
+    public static String getGroup1(Pattern pattern, CharSequence content) {
         return get(pattern, content, 1);
     }
 

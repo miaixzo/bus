@@ -215,7 +215,6 @@ public class BaseAdvice extends Controller {
      * 这里可以加上登录校验,权限拦截、请求限流等
      *
      * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     public void defaultExceptionHandler(Exception ex) {
         try {

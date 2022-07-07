@@ -88,7 +88,7 @@ public class PBKDF2 {
      * @return 加密后的密码
      */
     public String encryptHex(char[] password, byte[] salt) {
-        return HexKit.encodeHexStr(encrypt(password, salt));
+        return HexKit.encodeHexString(encrypt(password, salt));
     }
 
 }

@@ -335,7 +335,7 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @return 签名
      */
     public String signHex(String dataHex, String idHex) {
-        return HexKit.encodeHexStr(sign(HexKit.decodeHex(dataHex), HexKit.decodeHex(idHex)));
+        return HexKit.encodeHexString(sign(HexKit.decodeHex(dataHex), HexKit.decodeHex(idHex)));
     }
 
     /**

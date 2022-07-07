@@ -621,6 +621,33 @@ public class Validator {
     }
 
     /**
+     * 验证是否为座机号码（中国）
+     *
+     * @param value 值
+     * @return 是否为座机号码（中国）
+     */
+    public static boolean isPhone(CharSequence value) {
+        return PhoneKit.isPhone(value);
+    }
+
+    /**
+     * 验证是否为座机号码（中国）
+     *
+     * @param <T>      字符串类型
+     * @param value    值
+     * @param errorMsg 验证错误的信息
+     * @return 验证后的值
+     * @throws ValidateException 验证异常
+     */
+    public static <T extends CharSequence> T validatePhone(T value, String errorMsg) throws ValidateException {
+        if (false == isPhone(value)) {
+            throw new ValidateException(errorMsg);
+        }
+        return value;
+    }
+
+
+    /**
      * 验证是否为手机号码（中国）
      *
      * @param value 值

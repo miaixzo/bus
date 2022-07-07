@@ -66,7 +66,7 @@ public interface Encryptor {
      * @return Hex字符串
      */
     default String encryptHex(byte[] data, KeyType keyType) {
-        return HexKit.encodeHexStr(encrypt(data, keyType));
+        return HexKit.encodeHexString(encrypt(data, keyType));
     }
 
     /**
@@ -123,7 +123,7 @@ public interface Encryptor {
      * @return Hex字符串
      */
     default String encryptHex(String data, KeyType keyType) {
-        return HexKit.encodeHexStr(encrypt(data, keyType));
+        return HexKit.encodeHexString(encrypt(data, keyType));
     }
 
     /**
@@ -135,7 +135,7 @@ public interface Encryptor {
      * @return Hex字符串
      */
     default String encryptHex(String data, Charset charset, KeyType keyType) {
-        return HexKit.encodeHexStr(encrypt(data, charset, keyType));
+        return HexKit.encodeHexString(encrypt(data, charset, keyType));
     }
 
     /**
@@ -181,7 +181,7 @@ public interface Encryptor {
      * @return Hex字符串
      */
     default String encryptHex(InputStream data, KeyType keyType) {
-        return HexKit.encodeHexStr(encrypt(data, keyType));
+        return HexKit.encodeHexString(encrypt(data, keyType));
     }
 
     /**
