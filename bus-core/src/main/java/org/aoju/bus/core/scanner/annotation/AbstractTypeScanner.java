@@ -238,11 +238,12 @@ public abstract class AbstractTypeScanner<T extends AbstractTypeScanner<T>> impl
 	protected abstract Annotation[] getAnnotationsFromTargetClass(AnnotatedElement source, int index, Class<?> targetClass);
 
 	/**
-	 * 当前类是否不需要处理
-	 *
-	 * @param accessedTypes 访问类型
-	 * @param targetClass   目标类型
-	 */
+     * 当前类是否不需要处理
+     *
+     * @param accessedTypes 访问类型
+     * @param targetClass   目标类型
+     * @return the boolean
+     */
     protected boolean isNotNeedProcess(Set<Class<?>> accessedTypes, Class<?> targetClass) {
         return ObjectKit.isNull(targetClass)
                 || accessedTypes.contains(targetClass)

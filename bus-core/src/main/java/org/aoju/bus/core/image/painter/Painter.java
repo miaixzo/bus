@@ -37,4 +37,6 @@ public interface Painter {
 
     void draw(Graphics2D g, AbstractElement element, int canvasWidth) throws Exception;
 
+    void drawRepeat(Graphics2D g, AbstractElement element, int canvasWidth, int canvasHeight) throws Exception;
+
 }

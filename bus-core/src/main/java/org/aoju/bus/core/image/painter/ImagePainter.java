@@ -28,6 +28,7 @@ package org.aoju.bus.core.image.painter;
 import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.image.element.AbstractElement;
 import org.aoju.bus.core.image.element.ImageElement;
+import org.aoju.bus.core.lang.Scale;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -44,15 +45,12 @@ public class ImagePainter implements Painter {
     public void draw(Graphics2D g, AbstractElement element, int canvasWidth) {
         // 强制转成子类
         ImageElement imageElement = (ImageElement) element;
-
         // 读取元素图
         BufferedImage image = imageElement.getImage();
-
         // 计算宽高
         int width = 0;
         int height = 0;
-
-        switch (imageElement.getZoomMode()) {
+        switch (imageElement.getZoom()) {
             case ORIGIN:
                 width = image.getWidth();
                 height = image.getHeight();
@@ -70,37 +68,87 @@ public class ImagePainter implements Painter {
                 width = imageElement.getWidth();
                 break;
         }
-
         // 设置圆角
         if (null != imageElement.getRoundCorner()) {
             image = Images.makeRoundCorner(image, width, height, imageElement.getRoundCorner());
         }
-
-        //高斯模糊
+        // 高斯模糊
         if (null != imageElement.getBlur()) {
             image = Images.makeBlur(image, imageElement.getBlur());
         }
-
-        // 判断是否设置居中
+        // 是否居中（优先）和绘制方向
         if (imageElement.isCenter()) {
             int centerX = (canvasWidth - width) / 2;
             imageElement.setX(centerX);
+        } else if (imageElement.getDirection() == Scale.Direction.RIGHT_LEFT) {
+            imageElement.setX(imageElement.getX() - width);
+        } else if (imageElement.getDirection() == Scale.Direction.CENTER_LEFT_RIGHT) {
+            imageElement.setX(imageElement.getX() - width / 2);
         }
-
-        //旋转
+        // 旋转
         if (null != imageElement.getRotate()) {
             g.rotate(Math.toRadians(imageElement.getRotate()), imageElement.getX() + imageElement.getWidth() / 2, imageElement.getY() + imageElement.getHeight() / 2);
         }
-
-        //设置透明度
+        // 设置透明度
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, imageElement.getAlpha()));
-
         // 将元素图绘制到画布
         g.drawImage(image, imageElement.getX(), imageElement.getY(), width, height, null);
-
-        //绘制完后反向旋转，以免影响后续元素
+        // 绘制完后反向旋转，以免影响后续元素
         if (null != imageElement.getRotate()) {
             g.rotate(-Math.toRadians(imageElement.getRotate()), imageElement.getX() + imageElement.getWidth() / 2, imageElement.getY() + imageElement.getHeight() / 2);
+        }
+    }
+
+    @Override
+    public void drawRepeat(Graphics2D g, AbstractElement element, int canvasWidth, int canvasHeight) throws Exception {
+        // 强制转成子类
+        ImageElement imageElement = (ImageElement) element;
+        // 读取元素图
+        BufferedImage image = imageElement.getImage();
+        // 计算缩放后的宽高
+        int width = 0;
+        int height = 0;
+
+        switch (imageElement.getZoom()) {
+            case ORIGIN:
+                width = image.getWidth();
+                height = image.getHeight();
+                break;
+            case WIDTH:
+                width = imageElement.getWidth();
+                height = image.getHeight() * width / image.getWidth();
+                break;
+            case HEIGHT:
+                height = imageElement.getHeight();
+                width = image.getWidth() * height / image.getHeight();
+                break;
+            case OPTIONAL:
+                height = imageElement.getHeight();
+                width = imageElement.getWidth();
+                break;
+        }
+        int currentX = element.getX();
+        int currentY = element.getY();
+        // 起始坐标归位
+        while (currentX > 0) {
+            currentX = currentX - imageElement.getHorizontal() - width;
+        }
+        while (currentY > 0) {
+            currentY = currentY - imageElement.getVertical() - height;
+        }
+        int startY = currentY;
+        // 从左往右绘制
+        while (currentX < canvasWidth) {
+            imageElement.setX(currentX);
+            currentX = currentX + imageElement.hashCode() + width;
+            // 从上往下绘制
+            while (currentY < canvasHeight) {
+                imageElement.setY(currentY);
+                currentY = currentY + imageElement.getVertical() + height;
+                draw(g, imageElement, canvasWidth);
+            }
+            // 重置y坐标
+            currentY = startY;
         }
     }
 

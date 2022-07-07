@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.image.element;
 
+import org.aoju.bus.core.lang.Scale;
+
 /**
  * 合并元素抽象类
  *
@@ -49,83 +51,97 @@ public abstract class AbstractElement<T extends AbstractElement> {
      * 透明度
      */
     private float alpha = 1.0f;
-
     /**
-     * 获取坐标x
-     *
-     * @return the int
+     * 绘制方向
      */
+    private Scale.Direction direction = Scale.Direction.LEFT_RIGHT;
+    /**
+     * 平铺
+     */
+    private boolean repeat;
+    /**
+     * 平铺水平间距
+     */
+    private int horizontal;
+    /**
+     * 平铺垂直间距
+     */
+    private int vertical;
+
     public int getX() {
         return x;
     }
 
-    /**
-     * 设置坐标x
-     *
-     * @param x 坐标
-     * @return this
-     */
     public T setX(int x) {
         this.x = x;
         return (T) this;
     }
 
-    /**
-     * 获取坐标y
-     *
-     * @return the int
-     */
     public int getY() {
         return y;
     }
 
-    /**
-     * 设置坐标y
-     *
-     * @param y 坐标
-     * @return this
-     */
     public T setY(int y) {
         this.y = y;
         return (T) this;
     }
 
-    /**
-     * @return the boolean
-     */
     public boolean isCenter() {
         return center;
     }
 
-    /**
-     * 设置位置
-     *
-     * @param center 中心位置
-     * @return this
-     */
     public T setCenter(boolean center) {
         this.center = center;
         return (T) this;
     }
 
-    /**
-     * 获取透明度
-     *
-     * @return the float
-     */
+    public Scale.Direction getDirection() {
+        return direction;
+    }
+
+    public T setDirection(Scale.Direction direction) {
+        this.direction = direction;
+        return (T) this;
+    }
+
     public float getAlpha() {
         return alpha;
     }
 
-    /**
-     * 设置透明度
-     *
-     * @param alpha 透明度
-     * @return this
-     */
     public T setAlpha(float alpha) {
         this.alpha = alpha;
         return (T) this;
+    }
+
+    public boolean isRepeat() {
+        return repeat;
+    }
+
+    public T setRepeat(boolean repeat) {
+        this.repeat = repeat;
+        return (T) this;
+    }
+
+    public T setRepeat(boolean repeat, int padding) {
+        this.repeat = repeat;
+        this.horizontal = padding;
+        this.vertical = padding;
+        return (T) this;
+    }
+
+    public T setRepeat(boolean repeat, int horizontal, int vertical) {
+        this.repeat = repeat;
+        this.horizontal = horizontal;
+        this.vertical = vertical;
+        return (T) this;
+    }
+
+    public int getHorizontal() {
+        return horizontal;
+    }
+
+    public int getVertical() {
+        return vertical;
     }
 
 }

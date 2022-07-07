@@ -1053,11 +1053,11 @@ public class MathKit {
      * @param text 字符串值
      * @return 是否为数字
      */
-    public static boolean isNumber(String text) {
+    public static boolean isNumber(CharSequence text) {
         if (StringKit.isBlank(text)) {
             return false;
         }
-        char[] chars = text.toCharArray();
+        char[] chars = text.toString().toCharArray();
         int sz = chars.length;
         boolean hasExp = false;
         boolean hasDecPoint = false;

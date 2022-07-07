@@ -69,9 +69,9 @@ public class RegEx {
     public static final Pattern COMMENT_XML = Pattern.compile(COMMENT_XML_PATTERN);
 
     /**
-     * 中文字、英文字母、数字和下划线
+     * 英文字母、数字和下划线
      */
-    public static final String GENERAL_PATTERN = "^[\u4E00-\u9FFF\\w]+$";
+    public static final String GENERAL_PATTERN = "^\\w+$";
     public static final Pattern GENERAL = Pattern.compile(GENERAL_PATTERN);
 
     /**
@@ -205,10 +205,17 @@ public class RegEx {
     public static final Pattern BIRTHDAY = Pattern.compile(BIRTHDAY_PATTERN);
 
     /**
+     * URI
+     * 定义见：https://www.ietf.org/rfc/rfc3986.html#appendix-B
+     */
+    public static final String URI_PATTERN = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
+    public static final Pattern URI = Pattern.compile(URI_PATTERN);
+
+    /**
      * URL
      * 定义见：https://www.ietf.org/rfc/rfc3986.html#appendix-B
      */
-    public static final String URL_PATTERN = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
+    public static final String URL_PATTERN = "[a-zA-Z]+://[\\w-+&@#/%?=~_|!:,.;]*[\\w-+&@#/%=~_|]";
     public static final Pattern URL = Pattern.compile(URL_PATTERN);
 
     /**
@@ -232,25 +239,27 @@ public class RegEx {
     /**
      * 不带横线的UUID
      */
-    public static final String UUID_SIMPLE_PATTERN = "^[0-9a-f]{32}$";
+    public static final String UUID_SIMPLE_PATTERN = "^[0-9a-fA-F]{32}$";
     public static final Pattern UUID_SIMPLE = Pattern.compile(UUID_SIMPLE_PATTERN, Pattern.CASE_INSENSITIVE);
 
     /**
      * 中国车牌号码
      */
-    public static final String PLATE_NUMBER_PATTERN = "^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[ABCDEFGHJK])|([ABCDEFGHJK]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]\\d{3}\\d{1,3}[领])|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$";
+    public static final String PLATE_NUMBER_PATTERN = "^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[ABCDEFGHJK])"
+            + "|([ABCDEFGHJK]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]\\d{3}\\d{1,3}[领])|([京津沪渝"
+            + "冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$";
     public static final Pattern PLATE_NUMBER = Pattern.compile(PLATE_NUMBER_PATTERN);
 
     /**
      * MAC地址正则
      */
-    public static final String MAC_ADDRESS_PATTERN = "((?:[A-F0-9]{1,2}[:-]){5}[A-F0-9]{1,2})|(?:0x)(\\d{12})(?:.+ETHER)";
+    public static final String MAC_ADDRESS_PATTERN = "((?:[a-fA-F0-9]{1,2}[:-]){5}[a-fA-F0-9]{1,2})|0x(\\d{12}).+ETHER";
     public static final Pattern MAC_ADDRESS = Pattern.compile(MAC_ADDRESS_PATTERN, Pattern.CASE_INSENSITIVE);
 
     /**
      * 16进制字符串
      */
-    public static final String HEX_PATTERN = "^[a-f0-9]+$";
+    public static final String HEX_PATTERN = "^[a-fA-F0-9]+$";
     public static final Pattern HEX = Pattern.compile(HEX_PATTERN, Pattern.CASE_INSENSITIVE);
 
     /**
@@ -270,6 +279,48 @@ public class RegEx {
      */
     public static final String PASSWORD_STRONG_PATTERN = "^(?![0-9]+$)(?![^0-9]+$)(?![a-zA-Z]+$)(?![^a-zA-Z]+$)(?![a-zA-Z0-9]+$)[a-zA-Z0-9\\S]{8,}$";
     public static final Pattern PASSWORD_STRONG = Pattern.compile(PASSWORD_STRONG_PATTERN);
+
+    /**
+     * 中文姓名
+     * 总结中文姓名：2-60位，只能是中文和维吾尔族的点·
+     * 放宽汉字范围：如生僻姓名 刘欣䶮yǎn
+     */
+    public static final String CHINESE_NAME_PATTERN = "^[\u2E80-\u9FFF·]{2,60}$";
+    public static final Pattern CHINESE_NAME = Pattern.compile(CHINESE_NAME_PATTERN);
+
+    /**
+     * 驾驶证  别名：驾驶证档案编号、行驶证编号
+     * eg:430101758218
+     * 12位数字字符串
+     * 仅限：中国驾驶证档案编号
+     */
+    public static final String CAR_DRIVING_LICENCE_PATTERN = "^[0-9]{12}$";
+    public static final Pattern CAR_DRIVING_LICENCE = Pattern.compile(CAR_DRIVING_LICENCE_PATTERN);
+
+    /**
+     * 车架号
+     * 别名：车辆识别代号 车辆识别码
+     * eg:LDC613P23A1305189
+     * eg:LSJA24U62JG269225
+     * 十七位码、车架号
+     * 车辆的唯一标示
+     */
+    public static final String CAR_VIN_PATTERN = "^[A-HJ-NPR-Z0-9]{8}[0-9X][A-HJ-NPR-Z0-9]{2}\\d{6}$";
+    public static final Pattern CAR_VIN = Pattern.compile(CAR_VIN_PATTERN);
+
+    /**
+     * 社会统一信用代码
+     * <pre>
+     * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
+     * 第二部分：机构类别代码1位 (数字或大写英文字母)
+     * 第三部分：登记管理机关行政区划码6位 (数字)
+     * 第四部分：主体标识码（组织机构代码）9位 (数字或大写英文字母)
+     * 第五部分：校验码1位 (数字或大写英文字母)
+     * </pre>
+     */
+    public static final String CREDIT_CODE_PATTERN = "^[0-9A-HJ-NPQRTUWXY]{2}\\d{6}[0-9A-HJ-NPQRTUWXY]{10}$";
+    public static final Pattern CREDIT_CODE = Pattern.compile(CREDIT_CODE_PATTERN);
+
 
     /**
      * 正则中需要被转义的关键字

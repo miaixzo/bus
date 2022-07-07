@@ -38,7 +38,7 @@ public class Scale {
     /**
      * 图片缩略模式
      */
-    public enum Mode {
+    public enum Zoom {
         /**
          * 原始比例，不缩放
          */
@@ -128,5 +128,42 @@ public class Scale {
          */
         RIGHT_TOP_TO_LEFT_BOTTOM
     }
+
+    /**
+     * 绘制方向
+     */
+    public enum Direction {
+        /**
+         * 左到右
+         */
+        LEFT_RIGHT,
+        /**
+         * 右到左
+         */
+        RIGHT_LEFT,
+        /**
+         * 中间到两边
+         */
+        CENTER_LEFT_RIGHT
+    }
+
+    /**
+     * 自动换行时，多行文本的对齐方式
+     */
+    public enum Align {
+        /**
+         * 左对齐
+         */
+        LEFT,
+        /**
+         * 居中对齐
+         */
+        CENTER,
+        /**
+         * 右对齐
+         */
+        RIGHT
+    }
+
 
 }

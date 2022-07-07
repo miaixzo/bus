@@ -453,6 +453,7 @@ public class AnnoKit {
      * 方法无参数，且有返回值的方法认为是注解属性的方法
      *
      * @param method 方法
+     * @return the boolean
      */
     public static boolean isAttributeMethod(Method method) {
         return method.getParameterCount() == 0 && method.getReturnType() != void.class;
