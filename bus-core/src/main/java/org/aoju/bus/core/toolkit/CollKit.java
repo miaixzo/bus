@@ -481,7 +481,7 @@ public class CollKit {
      */
     public static <T> List<T> subtractToList(Collection<T> coll1, Collection<T> coll2) {
         if (isEmpty(coll1)) {
-            return Collections.emptyList();
+            return newArrayList();
         }
         if (isEmpty(coll2)) {
             if (null == coll1) {
@@ -1540,7 +1540,7 @@ public class CollKit {
      */
     public static <T> List<List<T>> split(List<T> list, int size) {
         if (isEmpty(list)) {
-            return Collections.emptyList();
+            return newArrayList();
         }
 
         List<List<T>> result = new ArrayList<>(list.size() / size + 1);
@@ -3338,7 +3338,7 @@ public class CollKit {
      */
     public static <T> List<T> of(T... ts) {
         if (ArrayKit.isEmpty(ts)) {
-            return Collections.emptyList();
+            return newArrayList();
         }
         List<T> unmodifiableList = new ArrayList<>(ts.length);
         Collections.addAll(unmodifiableList, ts);
@@ -3415,7 +3415,7 @@ public class CollKit {
      */
     public static <V, K> Map<K, V> toIdentityMap(Collection<V> collection, Function<V, K> key, boolean isParallel) {
         if (isEmpty(collection)) {
-            return Collections.emptyMap();
+            return MapKit.newHashMap(0);
         }
         return toMap(collection, (v) -> org.aoju.bus.core.lang.Optional.ofNullable(v).map(key).get(), Function.identity(), isParallel);
     }
@@ -3448,7 +3448,7 @@ public class CollKit {
      */
     public static <E, K, V> Map<K, V> toMap(Collection<E> collection, Function<E, K> key, Function<E, V> value, boolean isParallel) {
         if (isEmpty(collection)) {
-            return Collections.emptyMap();
+            return MapKit.newHashMap(0);
         }
         return StreamKit.of(collection, isParallel)
                 .collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)), HashMap::putAll);
@@ -3481,7 +3481,7 @@ public class CollKit {
      */
     public static <E, K> Map<K, List<E>> groupByKey(Collection<E> collection, Function<E, K> key, boolean isParallel) {
         if (isEmpty(collection)) {
-            return Collections.emptyMap();
+            return MapKit.newHashMap(0);
         }
         return StreamKit.of(collection, isParallel).collect(Collectors.groupingBy(key, Collectors.toList()));
     }
@@ -3519,7 +3519,7 @@ public class CollKit {
     public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(Collection<E> collection, Function<E, K> key1,
                                                                 Function<E, U> key2, boolean isParallel) {
         if (isEmpty(collection)) {
-            return Collections.emptyMap();
+            return MapKit.newHashMap(0);
         }
         return StreamKit.of(collection, isParallel)
                 .collect(Collectors.groupingBy(key1, Collectors.groupingBy(key2, Collectors.toList())));
@@ -3557,7 +3557,7 @@ public class CollKit {
     public static <E, T, U> Map<T, Map<U, E>> group2Map(Collection<E> collection,
                                                         Function<E, T> key1, Function<E, U> key2, boolean isParallel) {
         if (isEmpty(collection) || key1 == null || key2 == null) {
-            return Collections.emptyMap();
+            return MapKit.newHashMap(0);
         }
         return StreamKit.of(collection, isParallel)
                 .collect(Collectors.groupingBy(key1, Collectors.toMap(key2, Function.identity(), (l, r) -> l)));
@@ -3596,7 +3596,7 @@ public class CollKit {
     public static <E, K, V> Map<K, List<V>> groupKeyValue(Collection<E> collection, Function<E, K> key,
                                                           Function<E, V> value, boolean isParallel) {
         if (isEmpty(collection)) {
-            return Collections.emptyMap();
+            return MapKit.newHashMap(0);
         }
         return StreamKit.of(collection, isParallel)
                 .collect(Collectors.groupingBy(key, Collectors.mapping(value, Collectors.toList())));
@@ -3802,7 +3802,7 @@ public class CollKit {
      */
     public static <E, T> List<T> toList(Collection<E> collection, Function<E, T> function, boolean isParallel) {
         if (isEmpty(collection)) {
-            return Collections.emptyList();
+            return newArrayList();
         }
         return StreamKit.of(collection, isParallel)
                 .map(function)
@@ -3837,7 +3837,7 @@ public class CollKit {
      */
     public static <E, T> Set<T> toSet(Collection<E> collection, Function<E, T> function, boolean isParallel) {
         if (isEmpty(collection)) {
-            return Collections.emptySet();
+            return CollKit.newHashSet();
         }
         return StreamKit.of(collection, isParallel)
                 .map(function)
@@ -3859,11 +3859,11 @@ public class CollKit {
      */
     public static <K, X, Y, V> Map<K, V> merge(Map<K, X> map1, Map<K, Y> map2, BiFunction<X, Y, V> merge) {
         if (MapKit.isEmpty(map1) && MapKit.isEmpty(map2)) {
-            return Collections.emptyMap();
+            return MapKit.newHashMap(0);
         } else if (MapKit.isEmpty(map1)) {
-            map1 = Collections.emptyMap();
+            map1 = MapKit.newHashMap(0);
         } else if (MapKit.isEmpty(map2)) {
-            map2 = Collections.emptyMap();
+            map2 = MapKit.newHashMap(0);
         }
         Set<K> key = new HashSet<>();
         key.addAll(map1.keySet());
