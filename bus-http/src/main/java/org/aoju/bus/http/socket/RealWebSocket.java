@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.BufferSink;
-import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.sink.BufferSink;
+import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;

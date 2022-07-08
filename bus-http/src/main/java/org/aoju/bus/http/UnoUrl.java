@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;

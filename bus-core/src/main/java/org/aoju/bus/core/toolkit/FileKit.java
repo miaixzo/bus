@@ -36,7 +36,7 @@ import org.aoju.bus.core.io.file.visitor.MoveVisitor;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.io.streams.BOMInputStream;
+import org.aoju.bus.core.io.stream.BOMInputStream;
 import org.aoju.bus.core.lang.*;
 
 import java.io.*;

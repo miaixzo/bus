@@ -28,14 +28,26 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.collection.LineIterator;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.LifeCycle;
+import org.aoju.bus.core.io.LineHandler;
+import org.aoju.bus.core.io.Progress;
+import org.aoju.bus.core.io.Segment;
+import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.io.copier.ChannelCopier;
 import org.aoju.bus.core.io.copier.ReaderWriterCopier;
 import org.aoju.bus.core.io.copier.StreamCopier;
-import org.aoju.bus.core.io.streams.BOMInputStream;
-import org.aoju.bus.core.io.streams.BOMReader;
-import org.aoju.bus.core.io.streams.FastByteOutputStream;
-import org.aoju.bus.core.io.streams.NullOutputStream;
+import org.aoju.bus.core.io.sink.BufferSink;
+import org.aoju.bus.core.io.sink.RealSink;
+import org.aoju.bus.core.io.sink.Sink;
+import org.aoju.bus.core.io.source.BufferSource;
+import org.aoju.bus.core.io.source.RealSource;
+import org.aoju.bus.core.io.source.Source;
+import org.aoju.bus.core.io.stream.BOMInputStream;
+import org.aoju.bus.core.io.stream.BOMReader;
+import org.aoju.bus.core.io.stream.FastByteOutputStream;
+import org.aoju.bus.core.io.stream.NullOutputStream;
+import org.aoju.bus.core.io.timout.AsyncTimeout;
+import org.aoju.bus.core.io.timout.Timeout;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -166,15 +178,15 @@ public class IoKit {
     /**
      * 将Reader中的内容复制到Writer中,拷贝后不关闭Reader
      *
-     * @param reader         Reader
-     * @param writer         Writer
-     * @param bufferSize     缓存大小
-     * @param streamProgress 进度处理器
+     * @param reader     Reader
+     * @param writer     Writer
+     * @param bufferSize 缓存大小
+     * @param progress   进度处理器
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
-        return copy(reader, writer, bufferSize, -1, streamProgress);
+    public static long copy(Reader reader, Writer writer, int bufferSize, Progress progress) throws InstrumentException {
+        return copy(reader, writer, bufferSize, -1, progress);
     }
 
     /**
@@ -184,12 +196,12 @@ public class IoKit {
      * @param writer         Writer
      * @param bufferSize     缓存大小
      * @param count          最大长度
-     * @param streamProgress 进度处理器
+     * @param progress 进度处理器
      * @return 传输的byte数
      * @throws InstrumentException IO异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, long count, StreamProgress streamProgress) throws InstrumentException {
-        return new ReaderWriterCopier(bufferSize, count, streamProgress).copy(reader, writer);
+    public static long copy(Reader reader, Writer writer, int bufferSize, long count, Progress progress) throws InstrumentException {
+        return new ReaderWriterCopier(bufferSize, count, progress).copy(reader, writer);
     }
 
     /**
@@ -223,12 +235,12 @@ public class IoKit {
      * @param in             输入流
      * @param out            输出流
      * @param bufferSize     缓存大小
-     * @param streamProgress 进度条
+     * @param progress 进度条
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
-        return copy(in, out, bufferSize, -1, streamProgress);
+    public static long copy(InputStream in, OutputStream out, int bufferSize, Progress progress) throws InstrumentException {
+        return copy(in, out, bufferSize, -1, progress);
     }
 
     /**
@@ -238,12 +250,12 @@ public class IoKit {
      * @param out            输出流
      * @param bufferSize     缓存大小
      * @param count          总拷贝长度
-     * @param streamProgress 进度条
+     * @param progress 进度条
      * @return 传输的byte数
      * @throws InstrumentException IO异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, int count, StreamProgress streamProgress) throws InstrumentException {
-        return new StreamCopier(bufferSize, count, streamProgress).copy(in, out);
+    public static long copy(InputStream in, OutputStream out, int bufferSize, int count, Progress progress) throws InstrumentException {
+        return new StreamCopier(bufferSize, count, progress).copy(in, out);
     }
 
     /**
@@ -306,12 +318,12 @@ public class IoKit {
      * @param out            输出流
      * @param bufferSize     缓存大小
      * @param count          最大长度
-     * @param streamProgress 进度条
+     * @param progress 进度条
      * @return 传输的byte数
      * @throws InstrumentException IO异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, long count, StreamProgress streamProgress) throws InstrumentException {
-        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, streamProgress);
+    public static long copy(InputStream in, OutputStream out, int bufferSize, long count, Progress progress) throws InstrumentException {
+        return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, progress);
     }
 
     /**
@@ -345,12 +357,12 @@ public class IoKit {
      * @param in             {@link ReadableByteChannel}
      * @param out            {@link WritableByteChannel}
      * @param bufferSize     缓冲大小，如果小于等于0，使用默认
-     * @param streamProgress {@link StreamProgress}进度处理器
+     * @param progress {@link Progress}进度处理器
      * @return 拷贝的字节数
      * @throws InstrumentException IO异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, StreamProgress streamProgress) throws InstrumentException {
-        return copy(in, out, bufferSize, -1, streamProgress);
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, Progress progress) throws InstrumentException {
+        return copy(in, out, bufferSize, -1, progress);
     }
 
     /**
@@ -360,12 +372,12 @@ public class IoKit {
      * @param out            {@link WritableByteChannel}
      * @param bufferSize     缓冲大小，如果小于等于0，使用默认
      * @param count          读取总长度
-     * @param streamProgress {@link StreamProgress}进度处理器
+     * @param progress {@link Progress}进度处理器
      * @return 拷贝的字节数
      * @throws InstrumentException IO异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, long count, StreamProgress streamProgress) throws InstrumentException {
-        return new ChannelCopier(bufferSize, count, streamProgress).copy(in, out);
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, long count, Progress progress) throws InstrumentException {
+        return new ChannelCopier(bufferSize, count, progress).copy(in, out);
     }
 
     /**

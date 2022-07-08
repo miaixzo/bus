@@ -26,6 +26,7 @@
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -43,7 +44,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 /**
- * 不可变的字节序列.
+ * 不可变的字节序列
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,12 +57,14 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     private byte[] data;
     private transient String utf8;
 
+    public ByteString() {
+
+    }
+
     public ByteString(byte[] data) {
         this.data = data;
     }
 
-    public ByteString() {
-    }
 
     public static ByteString of(byte... data) {
         if (null == data) {
@@ -156,21 +159,6 @@ public class ByteString implements Serializable, Comparable<ByteString> {
             if (read == -1) throw new EOFException();
         }
         return new ByteString(result);
-    }
-
-    static int codePointIndexToCharIndex(String s, int codePointCount) {
-        for (int i = 0, j = 0, length = s.length(), c; i < length; i += Character.charCount(c)) {
-            if (j == codePointCount) {
-                return i;
-            }
-            c = s.codePointAt(i);
-            if ((Character.isISOControl(c) && c != Symbol.C_LF && c != Symbol.C_CR)
-                    || c == Buffer.REPLACEMENT_CHARACTER) {
-                return -1;
-            }
-            j++;
-        }
-        return s.length();
     }
 
     public String utf8() {

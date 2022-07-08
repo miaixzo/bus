@@ -26,7 +26,7 @@
 package org.aoju.bus.core.io.copier;
 
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.io.StreamProgress;
+import org.aoju.bus.core.io.Progress;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.IoKit;
 
@@ -73,7 +73,7 @@ public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
      * @param count      拷贝总数
      * @param progress   进度条
      */
-    public ReaderWriterCopier(int bufferSize, long count, StreamProgress progress) {
+    public ReaderWriterCopier(int bufferSize, long count, Progress progress) {
         super(bufferSize, count, progress);
     }
 
@@ -82,7 +82,7 @@ public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
         Assert.notNull(source, "InputStream is null !");
         Assert.notNull(target, "OutputStream is null !");
 
-        final StreamProgress progress = this.progress;
+        final Progress progress = this.progress;
         if (null != progress) {
             progress.start();
         }
@@ -110,7 +110,7 @@ public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
      * @return 拷贝总长度
      * @throws IOException IO异常
      */
-    private long doCopy(Reader source, Writer target, char[] buffer, StreamProgress progress) throws IOException {
+    private long doCopy(Reader source, Writer target, char[] buffer, Progress progress) throws IOException {
         long numToRead = this.count > 0 ? this.count : Long.MAX_VALUE;
         long total = 0;
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.copier;
 
-import org.aoju.bus.core.io.StreamProgress;
+import org.aoju.bus.core.io.Progress;
 import org.aoju.bus.core.toolkit.IoKit;
 
 /**
@@ -48,7 +48,7 @@ public abstract class IoCopier<S, T> {
     /**
      * 进度条
      */
-    protected StreamProgress progress;
+    protected Progress progress;
 
     /**
      * 是否每次写出一个buffer内容就执行flush
@@ -62,7 +62,7 @@ public abstract class IoCopier<S, T> {
      * @param count      拷贝总数，-1表示无限制
      * @param progress   进度条
      */
-    public IoCopier(int bufferSize, long count, StreamProgress progress) {
+    public IoCopier(int bufferSize, long count, Progress progress) {
         this.bufferSize = bufferSize > 0 ? bufferSize : IoKit.DEFAULT_BUFFER_SIZE;
         this.count = count <= 0 ? Long.MAX_VALUE : count;
         this.progress = progress;

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.WriteBuffer;
+import org.aoju.bus.core.io.buffer.WriteBuffer;
 
 import java.io.IOException;
 import java.io.InputStream;

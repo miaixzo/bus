@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.suffix;
 
-import org.aoju.bus.core.io.BufferSource;
-import org.aoju.bus.core.io.GzipSource;
+import org.aoju.bus.core.io.source.BufferSource;
+import org.aoju.bus.core.io.source.GzipSource;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;

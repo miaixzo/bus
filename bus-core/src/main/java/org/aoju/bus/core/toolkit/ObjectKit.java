@@ -29,7 +29,7 @@ import org.aoju.bus.core.compare.NormalCompare;
 import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.io.streams.FastByteOutputStream;
+import org.aoju.bus.core.io.stream.FastByteOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;

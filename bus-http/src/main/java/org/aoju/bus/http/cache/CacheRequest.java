@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.Sink;
+import org.aoju.bus.core.io.sink.Sink;
 
 import java.io.IOException;
 

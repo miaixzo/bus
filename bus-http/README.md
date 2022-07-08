@@ -818,9 +818,9 @@ HttpCall call=http.async("/upload")
 
 ```java
     String url = "https://www.xxx.com";
-    byte[] imageContent = FileKit.readBytes("/tmp/test.png");
-    Response delegate = FastHttpClient.post()
-            .url(url)
+        byte[]imageContent=FileKit.readBytes("/tmp/test.png");
+        Response delegate=Httpz.post()
+        .url(url)
             .addFile("file", "b.jpg", imageContent)
             .build()
             .execute();
