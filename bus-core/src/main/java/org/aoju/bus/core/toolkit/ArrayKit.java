@@ -8043,6 +8043,17 @@ public class ArrayKit {
     }
 
     /**
+     * 以 conjunction 为分隔符将多个对象转换为字符串
+     *
+     * @param conjunction 分隔符 {@link Symbol#COMMA}
+     * @param args        数组
+     * @return 连接后的字符串
+     */
+    public static String join(CharSequence conjunction, Object... args) {
+        return join(args, conjunction);
+    }
+
+    /**
      * 以 conjunction 为分隔符将数组转换为字符串
      *
      * @param <T>         被处理的集合
@@ -8088,25 +8099,6 @@ public class ArrayKit {
     public static <T> String join(T[] array, CharSequence conjunction, Editor<T> editor) {
         return TextJoiner.of(conjunction).append(array, (t) -> String.valueOf(editor.edit(t))).toString();
     }
-
-    /**
-     * 以 conjunction 为分隔符将数组转换为字符串
-     *
-     * @param args        数组
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
-     */
-    public static String join(CharSequence conjunction, Object... args) {
-        if (null == args) {
-            return null;
-        }
-        if (false == isArray(args)) {
-            throw new IllegalArgumentException(StringKit.format("[{}] is not a Array!", args.getClass()));
-        }
-
-        return TextJoiner.of(conjunction).append(args).toString();
-    }
-
 
     /**
      * 取最小值

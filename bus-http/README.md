@@ -357,7 +357,7 @@ interceptor的使用以及它们各自的优缺点
 ```java
 Httpv http=Httpv.builder()
         .baseUrl("http://api.example.com")
-        .addMsgConvertor(new GsonMsgConvertor());
+        .addMsgConvertor(new GsonMsgConvertor())
         .build();
 ```
 
@@ -445,7 +445,7 @@ Websocket 方法：
 * `webSocket(Request request, WebSocketListener listener)` Httpv 原生 WebSocket 连接
 
 ```java
-Httpv.async("https://api.aoju.org/auth/login")
+http.async("https://api.aoju.org/auth/login")
         .addBodyPara("username","jack")
         .addBodyPara("password","xxxx")
         .setOnResponse((HttpResult result)->{

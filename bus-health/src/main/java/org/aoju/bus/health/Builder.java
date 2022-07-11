@@ -33,6 +33,7 @@ import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
@@ -48,7 +49,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -302,7 +302,7 @@ public final class Builder {
      * string length, will be filled with zeroes.
      */
     public static byte[] asciiStringToByteArray(String text, int length) {
-        return Arrays.copyOf(text.getBytes(StandardCharsets.US_ASCII), length);
+        return Arrays.copyOf(text.getBytes(Charset.US_ASCII), length);
     }
 
     /**
@@ -337,7 +337,7 @@ public final class Builder {
      * a byte
      */
     public static long strToLong(String text, int size) {
-        return byteArrayToLong(text.getBytes(StandardCharsets.US_ASCII), size);
+        return byteArrayToLong(text.getBytes(Charset.US_ASCII), size);
     }
 
     /**
@@ -1271,7 +1271,7 @@ public final class Builder {
                 }
                 // Otherwise add string and reset start
                 // Intentionally using platform default charset
-                strList.add(new String(bytes, start, end - start, StandardCharsets.UTF_8));
+                strList.add(new String(bytes, start, end - start, Charset.UTF_8));
                 start = end + 1;
             }
         } while (end++ < bytes.length);
@@ -1304,11 +1304,11 @@ public final class Builder {
                 }
                 // Otherwise add string (possibly empty) and reset start
                 // Intentionally using platform default charset
-                strMap.put(key, new String(bytes, start, end - start, StandardCharsets.UTF_8));
+                strMap.put(key, new String(bytes, start, end - start, Charset.UTF_8));
                 key = null;
                 start = end + 1;
             } else if (bytes[end] == '=' && key == null) {
-                key = new String(bytes, start, end - start, StandardCharsets.UTF_8);
+                key = new String(bytes, start, end - start, Charset.UTF_8);
                 start = end + 1;
             }
         } while (end++ < bytes.length);
@@ -1514,7 +1514,7 @@ public final class Builder {
                 Logger.debug(READING_LOG, filename);
             }
             try {
-                return Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+                return Files.readAllLines(Paths.get(filename), Charset.UTF_8);
             } catch (IOException e) {
                 if (reportError) {
                     Logger.error("Error reading file {}. {}", filename, e.getMessage());

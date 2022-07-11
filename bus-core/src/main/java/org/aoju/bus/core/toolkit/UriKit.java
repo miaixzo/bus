@@ -32,7 +32,6 @@ import org.aoju.bus.core.map.TableMap;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarFile;
 
@@ -913,7 +912,7 @@ public class UriKit {
             String key = entry.getKey();
             Object value = entry.getValue();
             String stringValue = (null != value ? value.toString() : Normal.EMPTY);
-            result.put(key, encode(stringValue, StandardCharsets.UTF_8));
+            result.put(key, encode(stringValue, Charset.UTF_8));
         }
         return result;
     }

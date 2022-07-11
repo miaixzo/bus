@@ -1,6 +1,7 @@
 package org.aoju.bus.pay;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import javax.crypto.Cipher;
@@ -9,7 +10,6 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -150,7 +150,7 @@ public class Secure {
      * @throws Exception 异常信息
      */
     public static String encryptByPublicKey(String data, String publicKey, String fillMode) throws Exception {
-        byte[] dataByte = data.getBytes(StandardCharsets.UTF_8);
+        byte[] dataByte = data.getBytes(Charset.UTF_8);
         byte[] keyBytes = Base64.decode(publicKey);
         X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
@@ -194,7 +194,7 @@ public class Secure {
         java.security.Signature signature = java.security.Signature.getInstance("SHA256WithRSA");
 
         signature.initSign(priKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
+        signature.update(data.getBytes(Charset.UTF_8));
         byte[] signed = signature.sign();
         return StringKit.toString(Base64.encode(signed));
     }
@@ -210,7 +210,7 @@ public class Secure {
     public static String encryptByPrivateKey(String data, PrivateKey privateKey) throws Exception {
         java.security.Signature signature = java.security.Signature.getInstance("SHA256WithRSA");
         signature.initSign(privateKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
+        signature.update(data.getBytes(Charset.UTF_8));
         byte[] signed = signature.sign();
         return StringKit.toString(Base64.encode(signed));
     }
@@ -230,8 +230,8 @@ public class Secure {
         PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
         java.security.Signature signature = java.security.Signature.getInstance("SHA256WithRSA");
         signature.initVerify(pubKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
-        return signature.verify(Base64.decode(sign.getBytes(StandardCharsets.UTF_8)));
+        signature.update(data.getBytes(Charset.UTF_8));
+        return signature.verify(Base64.decode(sign.getBytes(Charset.UTF_8)));
     }
 
     /**
@@ -246,8 +246,8 @@ public class Secure {
     public static boolean checkByPublicKey(String data, String sign, PublicKey publicKey) throws Exception {
         java.security.Signature signature = java.security.Signature.getInstance("SHA256WithRSA");
         signature.initVerify(publicKey);
-        signature.update(data.getBytes(StandardCharsets.UTF_8));
-        return signature.verify(Base64.decode(sign.getBytes(StandardCharsets.UTF_8)));
+        signature.update(data.getBytes(Charset.UTF_8));
+        return signature.verify(Base64.decode(sign.getBytes(Charset.UTF_8)));
     }
 
     /**
@@ -407,7 +407,7 @@ public class Secure {
             cipher.init(Cipher.DECRYPT_MODE, key, spec);
             cipher.updateAAD(associatedData);
 
-            return new String(cipher.doFinal(Base64.decode(cipherText)), StandardCharsets.UTF_8);
+            return new String(cipher.doFinal(Base64.decode(cipherText)), Charset.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new IllegalStateException(e);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {

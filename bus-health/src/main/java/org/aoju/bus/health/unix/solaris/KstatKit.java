@@ -38,12 +38,12 @@ import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 import org.aoju.bus.core.annotation.GuardeBy;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
 import org.aoju.bus.logger.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,6 +67,103 @@ public final class KstatKit {
 
     private KstatKit() {
 
+    }
+
+    /**
+     * Convenience method for {@link LibKstat#kstat_data_lookup} with String return
+     * values. Searches the kstat's data section for the record with the specified
+     * name. This operation is valid only for kstat types which have named data
+     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
+     * have named data records.
+     *
+     * @param ksp  The kstat to search
+     * @param name The key for the name-value pair, or name of the timer as
+     *             applicable
+     * @return The value as a String.
+     */
+    public static String dataLookupString(Kstat ksp, String name) {
+        if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
+            throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
+        }
+        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
+        if (p == null) {
+            Logger.debug("Failed to lookup kstat value for key {}", name);
+            return "";
+        }
+        KstatNamed data = new KstatNamed(p);
+        switch (data.data_type) {
+            case LibKstat.KSTAT_DATA_CHAR:
+                return Native.toString(data.value.charc, Charset.UTF_8);
+            case LibKstat.KSTAT_DATA_INT32:
+                return Integer.toString(data.value.i32);
+            case LibKstat.KSTAT_DATA_UINT32:
+                return Formats.toUnsignedString(data.value.ui32);
+            case LibKstat.KSTAT_DATA_INT64:
+                return Long.toString(data.value.i64);
+            case LibKstat.KSTAT_DATA_UINT64:
+                return Formats.toUnsignedString(data.value.ui64);
+            case LibKstat.KSTAT_DATA_STRING:
+                return data.value.str.addr.getString(0);
+            default:
+                Logger.error("Unimplemented kstat data type {}", data.data_type);
+                return "";
+        }
+    }
+
+    /**
+     * Lock the Kstat chain for use by this object until it's closed.
+     *
+     * @return A locked copy of the chain. It should be unlocked/released when you
+     * are done with it with {@link KstatChain#close()}.
+     */
+    public static synchronized KstatChain openChain() {
+        CHAIN.lock();
+        if (kstatCtl == null) {
+            kstatCtl = LibKstat.INSTANCE.kstat_open();
+        }
+        return new KstatChain(kstatCtl);
+    }
+
+    /**
+     * Convenience method for {@link LibKstat#kstat_data_lookup} with numeric return
+     * values. Searches the kstat's data section for the record with the specified
+     * name. This operation is valid only for kstat types which have named data
+     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
+     * have named data records.
+     *
+     * @param ksp  The kstat to search
+     * @param name The key for the name-value pair, or name of the timer as
+     *             applicable
+     * @return The value as a long. If the data type is a character or string type,
+     * returns 0 and logs an error.
+     */
+    public static long dataLookupLong(Kstat ksp, String name) {
+        if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
+            throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
+        }
+        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
+        if (p == null) {
+            if (Logger.isDebug()) {
+                Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
+                        Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
+                        Native.toString(ksp.ks_name, Charset.US_ASCII), name);
+            }
+            return 0L;
+        }
+        KstatNamed data = new KstatNamed(p);
+        switch (data.data_type) {
+            case LibKstat.KSTAT_DATA_INT32:
+                return data.value.i32;
+            case LibKstat.KSTAT_DATA_UINT32:
+                return Formats.getUnsignedInt(data.value.ui32);
+            case LibKstat.KSTAT_DATA_INT64:
+                return data.value.i64;
+            case LibKstat.KSTAT_DATA_UINT64:
+                return data.value.ui64;
+            default:
+                Logger.error("Unimplemented or non-numeric kstat data type {}", data.data_type);
+                return 0L;
+        }
     }
 
     /**
@@ -108,8 +205,8 @@ public final class KstatKit {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.isDebug()) {
                         Logger.debug("Failed to read kstat {}:{}:{}",
-                                Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
-                                Native.toString(ksp.ks_name, StandardCharsets.US_ASCII));
+                                Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
+                                Native.toString(ksp.ks_name, Charset.US_ASCII));
                     }
                     return false;
                 }
@@ -155,9 +252,9 @@ public final class KstatKit {
             List<Kstat> kstats = new ArrayList<>();
             for (Kstat ksp = LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name); ksp != null; ksp = ksp
                     .next()) {
-                if ((module == null || module.equals(Native.toString(ksp.ks_module, StandardCharsets.US_ASCII)))
+                if ((module == null || module.equals(Native.toString(ksp.ks_module, Charset.US_ASCII)))
                         && (instance < 0 || instance == ksp.ks_instance)
-                        && (name == null || name.equals(Native.toString(ksp.ks_name, StandardCharsets.US_ASCII)))) {
+                        && (name == null || name.equals(Native.toString(ksp.ks_name, Charset.US_ASCII)))) {
                     kstats.add(ksp);
                 }
             }
@@ -185,103 +282,6 @@ public final class KstatKit {
         @Override
         public void close() {
             CHAIN.unlock();
-        }
-    }
-
-    /**
-     * Lock the Kstat chain for use by this object until it's closed.
-     *
-     * @return A locked copy of the chain. It should be unlocked/released when you
-     * are done with it with {@link KstatChain#close()}.
-     */
-    public static synchronized KstatChain openChain() {
-        CHAIN.lock();
-        if (kstatCtl == null) {
-            kstatCtl = LibKstat.INSTANCE.kstat_open();
-        }
-        return new KstatChain(kstatCtl);
-    }
-
-    /**
-     * Convenience method for {@link LibKstat#kstat_data_lookup} with String return
-     * values. Searches the kstat's data section for the record with the specified
-     * name. This operation is valid only for kstat types which have named data
-     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
-     * have named data records.
-     *
-     * @param ksp  The kstat to search
-     * @param name The key for the name-value pair, or name of the timer as
-     *             applicable
-     * @return The value as a String.
-     */
-    public static String dataLookupString(Kstat ksp, String name) {
-        if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
-            throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
-        }
-        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
-        if (p == null) {
-            Logger.debug("Failed to lookup kstat value for key {}", name);
-            return "";
-        }
-        KstatNamed data = new KstatNamed(p);
-        switch (data.data_type) {
-            case LibKstat.KSTAT_DATA_CHAR:
-                return Native.toString(data.value.charc, StandardCharsets.UTF_8);
-            case LibKstat.KSTAT_DATA_INT32:
-                return Integer.toString(data.value.i32);
-            case LibKstat.KSTAT_DATA_UINT32:
-                return Formats.toUnsignedString(data.value.ui32);
-            case LibKstat.KSTAT_DATA_INT64:
-                return Long.toString(data.value.i64);
-            case LibKstat.KSTAT_DATA_UINT64:
-                return Formats.toUnsignedString(data.value.ui64);
-            case LibKstat.KSTAT_DATA_STRING:
-                return data.value.str.addr.getString(0);
-            default:
-                Logger.error("Unimplemented kstat data type {}", data.data_type);
-                return "";
-        }
-    }
-
-    /**
-     * Convenience method for {@link LibKstat#kstat_data_lookup} with numeric return
-     * values. Searches the kstat's data section for the record with the specified
-     * name. This operation is valid only for kstat types which have named data
-     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
-     * have named data records.
-     *
-     * @param ksp  The kstat to search
-     * @param name The key for the name-value pair, or name of the timer as
-     *             applicable
-     * @return The value as a long. If the data type is a character or string type,
-     * returns 0 and logs an error.
-     */
-    public static long dataLookupLong(Kstat ksp, String name) {
-        if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
-            throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
-        }
-        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
-        if (p == null) {
-            if (Logger.isDebug()) {
-                Logger.debug("Failed lo lookup kstat value on {}:{}:{} for key {}",
-                        Native.toString(ksp.ks_module, StandardCharsets.US_ASCII), ksp.ks_instance,
-                        Native.toString(ksp.ks_name, StandardCharsets.US_ASCII), name);
-            }
-            return 0L;
-        }
-        KstatNamed data = new KstatNamed(p);
-        switch (data.data_type) {
-            case LibKstat.KSTAT_DATA_INT32:
-                return data.value.i32;
-            case LibKstat.KSTAT_DATA_UINT32:
-                return Formats.getUnsignedInt(data.value.ui32);
-            case LibKstat.KSTAT_DATA_INT64:
-                return data.value.i64;
-            case LibKstat.KSTAT_DATA_UINT64:
-                return data.value.ui64;
-            default:
-                Logger.error("Unimplemented or non-numeric kstat data type {}", data.data_type);
-                return 0L;
         }
     }
 

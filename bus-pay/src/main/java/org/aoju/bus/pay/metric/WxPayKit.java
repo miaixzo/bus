@@ -3,6 +3,7 @@ package org.aoju.bus.pay.metric;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -13,7 +14,6 @@ import org.aoju.bus.pay.magic.Results;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -633,11 +633,11 @@ public class WxPayKit {
                 String nonceStr = resource.getString("nonce");
                 String associatedData = resource.getString("associated_data");
 
-                Secure secure = new Secure(key.getBytes(StandardCharsets.UTF_8));
+                Secure secure = new Secure(key.getBytes(Charset.UTF_8));
                 // 密文解密
                 return secure.decryptToString(
-                        associatedData.getBytes(StandardCharsets.UTF_8),
-                        nonceStr.getBytes(StandardCharsets.UTF_8),
+                        associatedData.getBytes(Charset.UTF_8),
+                        nonceStr.getBytes(Charset.UTF_8),
                         cipherText
                 );
             } else {

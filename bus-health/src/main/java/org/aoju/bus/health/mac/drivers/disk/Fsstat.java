@@ -29,8 +29,8 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,8 +62,8 @@ public final class Fsstat {
 
         // Iterate all mounted file systems
         for (Statfs f : fs) {
-            String mntFrom = Native.toString(f.f_mntfromname, StandardCharsets.UTF_8);
-            mountPointMap.put(mntFrom.replace("/dev/", ""), Native.toString(f.f_mntonname, StandardCharsets.UTF_8));
+            String mntFrom = Native.toString(f.f_mntfromname, Charset.UTF_8);
+            mountPointMap.put(mntFrom.replace("/dev/", ""), Native.toString(f.f_mntonname, Charset.UTF_8));
         }
         return mountPointMap;
     }

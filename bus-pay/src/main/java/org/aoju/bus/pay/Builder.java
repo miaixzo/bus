@@ -8,6 +8,7 @@ import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.key.ID;
 import org.aoju.bus.core.key.Snowflake;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -22,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -189,7 +189,7 @@ public class Builder {
      * @return 编码后的字符串
      */
     public static String urlEncode(String src) {
-        return URLEncoder.encode(src, StandardCharsets.UTF_8).replace("+", "%20");
+        return URLEncoder.encode(src, Charset.UTF_8).replace("+", "%20");
     }
 
     /**
@@ -447,7 +447,7 @@ public class Builder {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, certificate.getPublicKey());
 
-            byte[] dataByte = data.getBytes(StandardCharsets.UTF_8);
+            byte[] dataByte = data.getBytes(Charset.UTF_8);
             byte[] cipherData = cipher.doFinal(dataByte);
             return Base64.encode(cipherData);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
@@ -472,7 +472,7 @@ public class Builder {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] data = Base64.decode(cipherText);
-            return new String(cipher.doFinal(data), StandardCharsets.UTF_8);
+            return new String(cipher.doFinal(data), Charset.UTF_8);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
             throw new RuntimeException("当前Java环境不支持RSA v1.5/OAEP", e);
         } catch (InvalidKeyException e) {

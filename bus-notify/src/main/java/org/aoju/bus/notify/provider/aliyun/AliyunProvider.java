@@ -40,7 +40,6 @@ import org.aoju.bus.notify.provider.AbstractProvider;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -72,7 +71,7 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
      * @return 编码值
      */
     protected String specialUrlEncode(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8)
+        return URLEncoder.encode(value, Charset.UTF_8)
                 .replace(Symbol.PLUS, "%20")
                 .replace(Symbol.STAR, "%2A")
                 .replace("%7E", Symbol.TILDE);
