@@ -145,6 +145,8 @@ public class Base62 {
         return encodeInverted(FileKit.readBytes(file));
     }
 
+    // -------------------------------------------------------------------- decode
+
     /**
      * Base62解码
      *
@@ -152,7 +154,7 @@ public class Base62 {
      * @return 被加密后的字符串
      */
     public static String decodeStrGbk(CharSequence source) {
-        return decodeString(source, org.aoju.bus.core.lang.Charset.GBK);
+        return decodeStr(source, org.aoju.bus.core.lang.Charset.GBK);
     }
 
     /**
@@ -161,8 +163,8 @@ public class Base62 {
      * @param source 被解码的Base62字符串
      * @return 被加密后的字符串
      */
-    public static String decodeString(CharSequence source) {
-        return decodeString(source, org.aoju.bus.core.lang.Charset.UTF_8);
+    public static String decodeStr(CharSequence source) {
+        return decodeStr(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -172,7 +174,7 @@ public class Base62 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeString(CharSequence source, Charset charset) {
+    public static String decodeStr(CharSequence source, Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 

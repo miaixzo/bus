@@ -140,7 +140,7 @@ public class Binder {
      *
      * @param clazz 类型
      * @param <T>   泛型
-     * @return the object
+     * @return obj
      */
     public <T> T bind(Class<T> clazz) {
         return bind(clazz, Symbol.DOT);
@@ -152,12 +152,12 @@ public class Binder {
      * @param clazz  类型
      * @param prefix 前缀
      * @param <T>    泛型
-     * @return the object
+     * @return obj
      */
     public <T> T bind(Class<T> clazz, String prefix) {
-        T object;
+        T obj;
         try {
-            object = clazz.getConstructor().newInstance();
+            obj = clazz.getConstructor().newInstance();
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -167,28 +167,28 @@ public class Binder {
         if (b) {
             prefix = actualClass.getAnnotation(Values.class).value();
         }
-        return clazz.cast(bind(object, prefix));
+        return clazz.cast(bind(obj, prefix));
     }
 
     /**
      * 绑定属性到对象实例
      *
-     * @param object 对象实例
+     * @param obj    对象实例
      * @param prefix 属性前缀
      * @param <T>    泛型
-     * @return the object
+     * @return obj
      */
-    public <T> T bind(T object, String prefix) {
+    public <T> T bind(T obj, String prefix) {
         if (!StringKit.hasText(prefix) || Symbol.DOT.equals(prefix)) {
             prefix = null;
         }
-        for (Field field : ClassKit.getDeclaredFields(object.getClass())) {
-            bindField(object, field, prefix);
+        for (Field field : ClassKit.getDeclaredFields(obj.getClass())) {
+            bindField(obj, field, prefix);
         }
-        return object;
+        return obj;
     }
 
-    private void bindField(Object object, Field field, String prefix) {
+    private void bindField(Object obj, Field field, String prefix) {
         try {
             if (field.isAnnotationPresent(Ignore.class)) {
                 return;
@@ -203,15 +203,15 @@ public class Binder {
             }
             Object value = getProperty(key, field.getType(), wrap);
             if (null != value) {
-                ClassKit.writeField(field, object, value);
+                ClassKit.writeField(field, obj, value);
                 return;
             }
             if (!(null == field.getType().getClassLoader()) && source
                     .containPrefix(key + Symbol.DOT)) {
-                value = ClassKit.readField(field, object);
+                value = ClassKit.readField(field, obj);
                 if (null == value) {
                     value = bind(field.getType(), key);
-                    ClassKit.writeField(field, object, value);
+                    ClassKit.writeField(field, obj, value);
                 } else {
                     bind(value, key);
                 }

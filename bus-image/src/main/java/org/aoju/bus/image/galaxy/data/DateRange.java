@@ -56,14 +56,14 @@ public class DateRange implements Serializable {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == this)
+    public boolean equals(Object obj) {
+        if (obj == this)
             return true;
 
-        if (!(object instanceof DateRange))
+        if (!(obj instanceof DateRange))
             return false;
 
-        DateRange other = (DateRange) object;
+        DateRange other = (DateRange) obj;
         return (null == start
                 ? null == other.start
                 : start.equals(other.start))

@@ -227,21 +227,21 @@ public class GitLabApiException extends Exception {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(Object obj) {
 
-        if (this == object) {
+        if (this == obj) {
             return true;
         }
 
-        if (object == null) {
+        if (obj == null) {
             return false;
         }
 
-        if (getClass() != object.getClass()) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
 
-        GitLabApiException other = (GitLabApiException) object;
+        GitLabApiException other = (GitLabApiException) obj;
         if (httpStatus != other.httpStatus) {
             return false;
         }

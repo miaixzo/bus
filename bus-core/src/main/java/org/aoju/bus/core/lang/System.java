@@ -322,7 +322,7 @@ public class System {
             return true;
         }
 
-        return Convert.toBoolean(value, defaultValue);
+        return Convert.toBool(value, defaultValue);
     }
 
     /**

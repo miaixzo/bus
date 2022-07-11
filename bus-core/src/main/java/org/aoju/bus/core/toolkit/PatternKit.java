@@ -239,34 +239,17 @@ public class PatternKit {
      * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
      */
     public static List<String> getAllGroups(Pattern pattern, CharSequence content, boolean withGroup0) {
-        return getAllGroups(pattern, content, withGroup0, false);
-    }
-
-    /**
-     * 获得匹配的字符串匹配到的所有分组
-     *
-     * @param pattern    编译后的正则模式
-     * @param content    被匹配的内容
-     * @param withGroup0 是否包括分组0，此分组表示全匹配的信息
-     * @param findAll    是否查找所有匹配到的内容，{@code false}表示只读取第一个匹配到的内容
-     * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
-     */
-    public static List<String> getAllGroups(Pattern pattern, CharSequence content, boolean withGroup0, boolean findAll) {
         if (null == content || null == pattern) {
             return null;
         }
 
         List<String> result = new ArrayList<>();
         final Matcher matcher = pattern.matcher(content);
-        while (matcher.find()) {
+        if (matcher.find()) {
             final int startGroup = withGroup0 ? 0 : 1;
             final int groupCount = matcher.groupCount();
             for (int i = startGroup; i <= groupCount; i++) {
                 result.add(matcher.group(i));
-            }
-
-            if (false == findAll) {
-                break;
             }
         }
         return result;
@@ -1061,17 +1044,17 @@ public class PatternKit {
         }
 
         @Override
-        public boolean equals(Object object) {
-            if (this == object) {
+        public boolean equals(Object obj) {
+            if (this == obj) {
                 return true;
             }
-            if (null == object) {
+            if (null == obj) {
                 return false;
             }
-            if (getClass() != object.getClass()) {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            RegexWithFlag other = (RegexWithFlag) object;
+            RegexWithFlag other = (RegexWithFlag) obj;
             if (flag != other.flag) {
                 return false;
             }

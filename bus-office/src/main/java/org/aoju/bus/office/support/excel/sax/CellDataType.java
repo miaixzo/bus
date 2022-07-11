@@ -50,7 +50,7 @@ public enum CellDataType {
     /**
      * 富文本类型
      */
-    INLINESTRING("inlineString"),
+    INLINESTR("inlineStr"),
     /**
      * 共享字符串索引类型
      */
@@ -98,8 +98,8 @@ public enum CellDataType {
             return BOOL;
         } else if (ERROR.name.equals(name)) {
             return ERROR;
-        } else if (INLINESTRING.name.equals(name)) {
-            return INLINESTRING;
+        } else if (INLINESTR.name.equals(name)) {
+            return INLINESTR;
         } else if (SSTINDEX.name.equals(name)) {
             return SSTINDEX;
         } else if (FORMULA.name.equals(name)) {

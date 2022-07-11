@@ -102,7 +102,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             if (value instanceof Number) {
                 return ((Number) value).byteValue();
             } else if (value instanceof Boolean) {
-                return BooleanKit.toByteObject((Boolean) value);
+                return BooleanKit.toByteObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply(value);
             try {
@@ -114,7 +114,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             if (value instanceof Number) {
                 return ((Number) value).shortValue();
             } else if (value instanceof Boolean) {
-                return BooleanKit.toShortObject((Boolean) value);
+                return BooleanKit.toShortObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply((value));
             try {
@@ -145,7 +145,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             if (value instanceof Number) {
                 return ((Number) value).longValue();
             } else if (value instanceof Boolean) {
-                return BooleanKit.toLongObject((Boolean) value);
+                return BooleanKit.toLongObj((Boolean) value);
             } else if (value instanceof Date) {
                 return ((Date) value).getTime();
             } else if (value instanceof Calendar) {
@@ -171,7 +171,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             if (value instanceof Number) {
                 return ((Number) value).floatValue();
             } else if (value instanceof Boolean) {
-                return BooleanKit.toFloatObject((Boolean) value);
+                return BooleanKit.toFloatObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply((value));
             return StringKit.isBlank(valueStr) ? null : MathKit.parseFloat(valueStr);
@@ -179,7 +179,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             if (value instanceof Number) {
                 return MathKit.toDouble((Number) value);
             } else if (value instanceof Boolean) {
-                return BooleanKit.toDoubleObject((Boolean) value);
+                return BooleanKit.toDoubleObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply((value));
             return StringKit.isBlank(valueStr) ? null : MathKit.parseDouble(valueStr);

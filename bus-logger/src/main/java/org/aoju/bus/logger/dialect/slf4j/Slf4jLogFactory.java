@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.logger.dialect.slf4j;
 
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 import org.slf4j.LoggerFactory;
@@ -33,6 +32,7 @@ import org.slf4j.helpers.NOPLoggerFactory;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * SLF4J
@@ -66,7 +66,7 @@ public class Slf4jLogFactory extends LogFactory {
             public void write(int b) {
                 buf.append((char) b);
             }
-        }, true, Charset.US_ASCII));
+        }, true, StandardCharsets.US_ASCII));
 
         try {
             if (LoggerFactory.getILoggerFactory() instanceof NOPLoggerFactory) {

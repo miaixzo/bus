@@ -31,7 +31,7 @@ package org.aoju.bus.cache.serialize;
  */
 public interface BaseSerializer {
 
-    <T> byte[] serialize(T object);
+    <T> byte[] serialize(T obj);
 
     <T> T deserialize(byte[] bytes);
 }

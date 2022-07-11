@@ -30,7 +30,6 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Variant;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 
 import java.time.OffsetDateTime;
@@ -85,7 +84,7 @@ public final class WmiKit {
      */
     public static <T extends Enum<T>> String getString(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_STRING) {
-            return getObject(result, property, index);
+            return getStr(result, property, index);
         }
         throw new ClassCastException(String.format(CLASS_CAST_MSG, property.name(), "String",
                 result.getCIMType(property), result.getVtType(property)));
@@ -105,7 +104,7 @@ public final class WmiKit {
         OffsetDateTime dateTime = getDateTime(result, property, index);
         // Null result returns the Epoch
         if (dateTime.equals(Builder.UNIX_EPOCH)) {
-            return Normal.EMPTY;
+            return "";
         }
         return dateTime.toLocalDate().toString();
     }
@@ -123,7 +122,7 @@ public final class WmiKit {
      */
     public static <T extends Enum<T>> OffsetDateTime getDateTime(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_DATETIME) {
-            return Builder.parseCimDateTimeToOffset(getObject(result, property, index));
+            return Builder.parseCimDateTimeToOffset(getStr(result, property, index));
         }
         throw new ClassCastException(String.format(CLASS_CAST_MSG, property.name(), "DateTime",
                 result.getCIMType(property), result.getVtType(property)));
@@ -141,16 +140,16 @@ public final class WmiKit {
      */
     public static <T extends Enum<T>> String getRefString(WmiResult<T> result, T property, int index) {
         if (result.getCIMType(property) == Wbemcli.CIM_REFERENCE) {
-            return getObject(result, property, index);
+            return getStr(result, property, index);
         }
         throw new ClassCastException(String.format(CLASS_CAST_MSG, property.name(), "Reference",
                 result.getCIMType(property), result.getVtType(property)));
     }
 
-    public static <T extends Enum<T>> String getObject(WmiResult<T> result, T property, int index) {
+    private static <T extends Enum<T>> String getStr(WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
         if (o == null) {
-            return Normal.EMPTY;
+            return "";
         } else if (result.getVtType(property) == Variant.VT_BSTR) {
             return (String) o;
         }

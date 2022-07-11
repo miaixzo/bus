@@ -87,12 +87,12 @@ public class NatureSqlHandler extends AbstractSqlParserHandler implements Interc
                 for (ParameterMapping parameterMapping : parameterMappings) {
                     String propertyName = parameterMapping.getProperty();
                     if (metaObject.hasGetter(propertyName)) {
-                        Object object = metaObject.getValue(propertyName);
-                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(object)));
+                        Object obj = metaObject.getValue(propertyName);
+                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
                     } else if (boundSql.hasAdditionalParameter(propertyName)) {
-                        Object object = boundSql.getAdditionalParameter(propertyName);
+                        Object obj = boundSql.getAdditionalParameter(propertyName);
                         // 该分支是动态sql
-                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(object)));
+                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
                     } else {
                         // 打印Missing,提醒该参数缺失并防止错位
                         sql = sql.replaceFirst(id, "Missing");
@@ -103,16 +103,16 @@ public class NatureSqlHandler extends AbstractSqlParserHandler implements Interc
         Logger.debug(sql);
     }
 
-    private static String getParameterValue(Object object) {
+    private static String getParameterValue(Object obj) {
         String value;
-        if (object instanceof String) {
-            value = Symbol.SINGLE_QUOTE + object + Symbol.SINGLE_QUOTE;
-        } else if (object instanceof Date) {
+        if (obj instanceof String) {
+            value = Symbol.SINGLE_QUOTE + obj + Symbol.SINGLE_QUOTE;
+        } else if (obj instanceof Date) {
             DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
             value = Symbol.SINGLE_QUOTE + formatter.format(new Date()) + Symbol.SINGLE_QUOTE;
         } else {
-            if (null != object) {
-                value = object.toString();
+            if (null != obj) {
+                value = obj.toString();
             } else {
                 value = Normal.EMPTY;
             }

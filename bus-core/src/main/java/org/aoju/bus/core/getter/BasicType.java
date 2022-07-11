@@ -44,7 +44,7 @@ public interface BasicType<K> {
      * @param key 属性名
      * @return 属性值
      */
-    Object getObject(K key);
+    Object getObj(K key);
 
     /**
      * 获取字符串型属性值
@@ -52,7 +52,7 @@ public interface BasicType<K> {
      * @param key 属性名
      * @return 属性值
      */
-    String getString(K key);
+    String getStr(K key);
 
     /**
      * 获取int型属性值
@@ -76,7 +76,7 @@ public interface BasicType<K> {
      * @param key 属性名
      * @return 属性值
      */
-    Boolean getBoolean(K key);
+    Boolean getBool(K key);
 
     /**
      * 获取long型属性值

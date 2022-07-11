@@ -67,7 +67,7 @@ public class Weighing<T> implements Serializable {
      *
      * @param weightObj 带有权重的对象
      */
-    public Weighing(WeightObject<T> weightObj) {
+    public Weighing(WeightObj<T> weightObj) {
         this();
         if (null != weightObj) {
             add(weightObj);
@@ -79,10 +79,10 @@ public class Weighing<T> implements Serializable {
      *
      * @param weightObjs 带有权重的对象
      */
-    public Weighing(Iterable<WeightObject<T>> weightObjs) {
+    public Weighing(Iterable<WeightObj<T>> weightObjs) {
         this();
         if (CollKit.isNotEmpty(weightObjs)) {
-            for (WeightObject<T> weightObj : weightObjs) {
+            for (WeightObj<T> weightObj : weightObjs) {
                 add(weightObj);
             }
         }
@@ -93,9 +93,9 @@ public class Weighing<T> implements Serializable {
      *
      * @param weightObjs 带有权重的对象
      */
-    public Weighing(WeightObject<T>[] weightObjs) {
+    public Weighing(WeightObj<T>[] weightObjs) {
         this();
-        for (WeightObject<T> weightObj : weightObjs) {
+        for (WeightObj<T> weightObj : weightObjs) {
             add(weightObj);
         }
     }
@@ -113,12 +113,12 @@ public class Weighing<T> implements Serializable {
     /**
      * 增加对象
      *
-     * @param object 对象
+     * @param obj    对象
      * @param weight 权重
      * @return this
      */
-    public Weighing<T> add(T object, double weight) {
-        return add(new WeightObject<>(object, weight));
+    public Weighing<T> add(T obj, double weight) {
+        return add(new WeightObj<>(obj, weight));
     }
 
     /**
@@ -127,9 +127,9 @@ public class Weighing<T> implements Serializable {
      * @param weightObj 权重对象
      * @return this
      */
-    public Weighing<T> add(WeightObject<T> weightObj) {
+    public Weighing<T> add(WeightObj<T> weightObj) {
         double lastWeight = (this.weightMap.size() == 0) ? 0 : this.weightMap.lastKey();
-        this.weightMap.put(weightObj.getWeight() + lastWeight, weightObj.getObject());// 权重累加
+        this.weightMap.put(weightObj.getWeight() + lastWeight, weightObj.getObj());// 权重累加
         return this;
     }
 
@@ -165,7 +165,7 @@ public class Weighing<T> implements Serializable {
      *
      * @param <T> 对象类型
      */
-    public static class WeightObject<T> {
+    public static class WeightObj<T> {
         /**
          * 权重
          */
@@ -173,16 +173,16 @@ public class Weighing<T> implements Serializable {
         /**
          * 对象
          */
-        private T object;
+        private T obj;
 
         /**
          * 构造
          *
-         * @param object 对象
+         * @param obj    对象
          * @param weight 权重
          */
-        public WeightObject(T object, double weight) {
-            this.object = object;
+        public WeightObj(T obj, double weight) {
+            this.obj = obj;
             this.weight = weight;
         }
 
@@ -191,17 +191,17 @@ public class Weighing<T> implements Serializable {
          *
          * @return 对象
          */
-        public T getObject() {
-            return object;
+        public T getObj() {
+            return obj;
         }
 
         /**
          * 设置对象
          *
-         * @param object 对象
+         * @param obj 对象
          */
-        public void setObject(T object) {
-            this.object = object;
+        public void setObj(T obj) {
+            this.obj = obj;
         }
 
         /**
@@ -217,7 +217,7 @@ public class Weighing<T> implements Serializable {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((null == object) ? 0 : object.hashCode());
+            result = prime * result + ((null == obj) ? 0 : obj.hashCode());
             long temp;
             temp = Double.doubleToLongBits(weight);
             result = prime * result + (int) (temp ^ (temp >>> Normal._32));
@@ -225,22 +225,22 @@ public class Weighing<T> implements Serializable {
         }
 
         @Override
-        public boolean equals(Object object) {
-            if (this == object) {
+        public boolean equals(Object obj) {
+            if (this == obj) {
                 return true;
             }
-            if (null == object) {
+            if (null == obj) {
                 return false;
             }
-            if (getClass() != object.getClass()) {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            WeightObject<?> other = (WeightObject<?>) object;
-            if (null == this.object) {
-                if (null != other.object) {
+            WeightObj<?> other = (WeightObj<?>) obj;
+            if (null == this.obj) {
+                if (null != other.obj) {
                     return false;
                 }
-            } else if (!this.object.equals(other.object)) {
+            } else if (!this.obj.equals(other.obj)) {
                 return false;
             }
             return Double.doubleToLongBits(weight) == Double.doubleToLongBits(other.weight);

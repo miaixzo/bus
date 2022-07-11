@@ -37,7 +37,7 @@ import java.io.*;
  */
 public class JdkSerializer extends AbstractSerializer {
 
-    private static void serialize(Serializable object, OutputStream outputStream) {
+    private static void serialize(Serializable obj, OutputStream outputStream) {
         if (null == outputStream) {
             throw new IllegalArgumentException("The OutputStream must not be null");
         } else {
@@ -45,7 +45,7 @@ public class JdkSerializer extends AbstractSerializer {
 
             try {
                 out = new ObjectOutputStream(outputStream);
-                out.writeObject(object);
+                out.writeObject(obj);
             } catch (IOException e) {
                 throw new InstrumentException(e);
             } finally {
@@ -86,9 +86,9 @@ public class JdkSerializer extends AbstractSerializer {
     }
 
     @Override
-    protected byte[] doSerialize(Object object) {
+    protected byte[] doSerialize(Object obj) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(Normal._512);
-        serialize((Serializable) object, baos);
+        serialize((Serializable) obj, baos);
         return baos.toByteArray();
     }
 

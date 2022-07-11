@@ -41,8 +41,8 @@ public class FastJsonSerializer extends AbstractSerializer {
     }
 
     @Override
-    protected byte[] doSerialize(Object object) throws Throwable {
-        String json = JsonKit.toJsonString(object);
+    protected byte[] doSerialize(Object obj) throws Throwable {
+        String json = JsonKit.toJsonString(obj);
         return json.getBytes(Charset.DEFAULT_UTF_8);
     }
 

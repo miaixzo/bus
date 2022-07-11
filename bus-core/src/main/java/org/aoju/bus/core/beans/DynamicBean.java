@@ -202,17 +202,17 @@ public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
     }
 
     @Override
-    public boolean equals(Object value) {
-        if (this == value) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (null == value) {
+        if (null == obj) {
             return false;
         }
-        if (getClass() != value.getClass()) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        final DynamicBean other = (DynamicBean) value;
+        final DynamicBean other = (DynamicBean) obj;
         if (null == bean) {
             return null == other.bean;
         } else {

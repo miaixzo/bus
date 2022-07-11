@@ -55,11 +55,11 @@ public class BooleanKit {
      *   BooleanKit.isTrue(null)          = false
      * </pre>
      *
-     * @param value 被检查的Boolean值
+     * @param bool 被检查的Boolean值
      * @return 当值为true且非null时返回{@code true}
      */
-    public static boolean isTrue(Boolean value) {
-        return Boolean.TRUE.equals(value);
+    public static boolean isTrue(Boolean bool) {
+        return Boolean.TRUE.equals(bool);
     }
 
     /**
@@ -71,11 +71,11 @@ public class BooleanKit {
      *   BooleanKit.isFalse(null)          = false
      * </pre>
      *
-     * @param value 被检查的Boolean值
+     * @param bool 被检查的Boolean值
      * @return 当值为true且非null时返回{@code true}
      */
-    public static boolean isFalse(Boolean value) {
-        return Boolean.FALSE.equals(value);
+    public static boolean isFalse(Boolean bool) {
+        return Boolean.FALSE.equals(bool);
     }
 
     /**
@@ -169,7 +169,7 @@ public class BooleanKit {
      * @param value Boolean值
      * @return Byte值
      */
-    public static Byte toByteObject(boolean value) {
+    public static Byte toByteObj(boolean value) {
         return toByte(value);
     }
 
@@ -189,7 +189,7 @@ public class BooleanKit {
      * @param value Boolean值
      * @return Long值
      */
-    public static Long toLongObject(boolean value) {
+    public static Long toLongObj(boolean value) {
         return toLong(value);
     }
 
@@ -209,7 +209,7 @@ public class BooleanKit {
      * @param value Boolean值
      * @return Short值
      */
-    public static Short toShortObject(boolean value) {
+    public static Short toShortObj(boolean value) {
         return toShort(value);
     }
 
@@ -229,7 +229,7 @@ public class BooleanKit {
      * @param value Boolean值
      * @return float值
      */
-    public static Float toFloatObject(boolean value) {
+    public static Float toFloatObj(boolean value) {
         return toFloat(value);
     }
 
@@ -249,7 +249,7 @@ public class BooleanKit {
      * @param value Boolean值
      * @return double值
      */
-    public static Double toDoubleObject(boolean value) {
+    public static Double toDoubleObj(boolean value) {
         return toDouble(value);
     }
 
@@ -261,11 +261,11 @@ public class BooleanKit {
      *   BooleanKit.toStringTrueFalse(false)  = "false"
      * </pre>
      *
-     * @param value Boolean值
+     * @param bool Boolean值
      * @return {@code 'true'}, {@code 'false'}
      */
-    public static String toStringTrueFalse(boolean value) {
-        return toString(value, "true", "false");
+    public static String toStringTrueFalse(boolean bool) {
+        return toString(bool, "true", "false");
     }
 
     /**
@@ -276,11 +276,11 @@ public class BooleanKit {
      *   BooleanKit.toStringOnOff(false)  = "off"
      * </pre>
      *
-     * @param value Boolean值
+     * @param bool Boolean值
      * @return {@code 'on'}, {@code 'off'}
      */
-    public static String toStringOnOff(boolean value) {
-        return toString(value, "on", "off");
+    public static String toStringOnOff(boolean bool) {
+        return toString(bool, "on", "off");
     }
 
     /**
@@ -291,11 +291,11 @@ public class BooleanKit {
      *   BooleanKit.toStringYesNo(false)  = "no"
      * </pre>
      *
-     * @param value Boolean值
+     * @param bool Boolean值
      * @return {@code 'yes'}, {@code 'no'}
      */
-    public static String toStringYesNo(boolean value) {
-        return toString(value, "yes", "no");
+    public static String toStringYesNo(boolean bool) {
+        return toString(bool, "yes", "no");
     }
 
     /**
@@ -306,13 +306,13 @@ public class BooleanKit {
      *   BooleanKit.toString(false, "true", "false")  = "false"
      * </pre>
      *
-     * @param value       Boolean值
+     * @param bool        Boolean值
      * @param trueString  当值为 {@code true}时返回此字符串, 可能为 {@code null}
      * @param falseString 当值为 {@code false}时返回此字符串, 可能为 {@code null}
      * @return 结果值
      */
-    public static String toString(boolean value, String trueString, String falseString) {
-        return value ? trueString : falseString;
+    public static String toString(boolean bool, String trueString, String falseString) {
+        return bool ? trueString : falseString;
     }
 
     /**
@@ -466,24 +466,24 @@ public class BooleanKit {
     /**
      * 取相反值
      *
-     * @param value Boolean值
+     * @param bool Boolean值
      * @return 相反的Boolean值
      */
-    public static Boolean negate(Boolean value) {
-        if (null == value) {
+    public static Boolean negate(Boolean bool) {
+        if (null == bool) {
             return null;
         }
-        return value ? Boolean.FALSE : Boolean.TRUE;
+        return bool ? Boolean.FALSE : Boolean.TRUE;
     }
 
     /**
      * 取相反值
      *
-     * @param value Boolean值
+     * @param bool Boolean值
      * @return 相反的Boolean值
      */
-    public static boolean negate(boolean value) {
-        return !value;
+    public static boolean negate(boolean bool) {
+        return !bool;
     }
 
     /**

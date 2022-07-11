@@ -32,6 +32,7 @@ import org.aoju.bus.core.map.TableMap;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarFile;
 
@@ -912,7 +913,7 @@ public class UriKit {
             String key = entry.getKey();
             Object value = entry.getValue();
             String stringValue = (null != value ? value.toString() : Normal.EMPTY);
-            result.put(key, encode(stringValue, Charset.UTF_8));
+            result.put(key, encode(stringValue, StandardCharsets.UTF_8));
         }
         return result;
     }
@@ -1255,7 +1256,7 @@ public class UriKit {
      * @return 参数Map
      */
     public static Map<String, String> decodeVal(String params, String charset) {
-        final Map<String, List<String>> paramsMap = decodeObject(params, charset);
+        final Map<String, List<String>> paramsMap = decodeObj(params, charset);
         final Map<String, String> result = MapKit.newHashMap(paramsMap.size());
         List<String> list;
         for (Map.Entry<String, List<String>> entry : paramsMap.entrySet()) {
@@ -1272,7 +1273,7 @@ public class UriKit {
      * @param charset 字符集
      * @return 参数Map
      */
-    public static Map<String, List<String>> decodeObject(String params, String charset) {
+    public static Map<String, List<String>> decodeObj(String params, String charset) {
         if (StringKit.isBlank(params)) {
             return Collections.emptyMap();
         }
@@ -1565,7 +1566,7 @@ public class UriKit {
      *
      * @return 路径，例如/aa/bb/cc
      */
-    public String getPathString() {
+    public String getPathStr() {
         return null == this.path ? Symbol.SLASH : this.path.build(charset);
     }
 
@@ -1629,7 +1630,7 @@ public class UriKit {
      *
      * @return 查询语句，例如a=1&amp;b=2
      */
-    public String getQueryString() {
+    public String getQueryStr() {
         return null == this.query ? null : this.query.build(this.charset);
     }
 
@@ -1732,10 +1733,10 @@ public class UriKit {
         final StringBuilder fileBuilder = new StringBuilder();
 
         // path
-        fileBuilder.append(StringKit.blankToDefault(getPathString(), Symbol.SLASH));
+        fileBuilder.append(StringKit.blankToDefault(getPathStr(), Symbol.SLASH));
 
         // query
-        final String query = getQueryString();
+        final String query = getQueryStr();
         if (StringKit.isNotBlank(query)) {
             fileBuilder.append(Symbol.C_QUESTION_MARK).append(query);
         }
@@ -1762,8 +1763,8 @@ public class UriKit {
             return new URI(
                     getSchemeWithDefault(),
                     getAuthority(),
-                    getPathString(),
-                    getQueryString(),
+                    getPathStr(),
+                    getQueryStr(),
                     getFragmentEncoded());
         } catch (URISyntaxException e) {
             return null;

@@ -50,6 +50,7 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 数据加密
@@ -105,7 +106,7 @@ public class EncryptFilter implements WebFilter {
                 if (isSign) {
                     Flux<? extends DataBuffer> flux = Flux.from(body);
                     return super.writeWith(DataBufferUtils.join(flux).map(dataBuffer -> {
-                        CharBuffer charBuffer = Charset.UTF_8.decode(dataBuffer.asByteBuffer());
+                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(dataBuffer.asByteBuffer());
                         DataBufferUtils.release(dataBuffer);
                         Message message = JsonKit.toPojo(charBuffer.toString(), Message.class);
                         doEncrypt(message);

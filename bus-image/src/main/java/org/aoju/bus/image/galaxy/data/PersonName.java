@@ -201,14 +201,14 @@ public class PersonName {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == this)
+    public boolean equals(Object obj) {
+        if (obj == this)
             return true;
 
-        if (!(object instanceof PersonName))
+        if (!(obj instanceof PersonName))
             return false;
 
-        PersonName other = (PersonName) object;
+        PersonName other = (PersonName) obj;
         return Arrays.equals(fields, other.fields);
     }
 

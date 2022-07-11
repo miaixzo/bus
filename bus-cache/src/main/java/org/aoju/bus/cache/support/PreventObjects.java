@@ -34,18 +34,18 @@ import java.io.Serializable;
 public class PreventObjects {
 
     public static Object getPreventObject() {
-        return PreventObject.INSTANCE;
+        return PreventObj.INSTANCE;
     }
 
     public static boolean isPrevent(Object object) {
-        return object == PreventObject.INSTANCE || object instanceof PreventObject;
+        return object == PreventObj.INSTANCE || object instanceof PreventObj;
     }
 
-    private static final class PreventObject implements Serializable {
+    private static final class PreventObj implements Serializable {
 
         private static final long serialVersionUID = 1L;
 
-        private static final PreventObject INSTANCE = new PreventObject();
+        private static final PreventObj INSTANCE = new PreventObj();
     }
 
 }

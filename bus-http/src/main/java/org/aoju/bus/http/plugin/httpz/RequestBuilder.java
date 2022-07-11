@@ -105,9 +105,9 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
         return (T) this;
     }
 
-    public T addParams(Object object) {
-        if (null != object) {
-            Map<String, Object> map = BeanKit.beanToMap(object);
+    public T addParams(Object obj) {
+        if (null != obj) {
+            Map<String, Object> map = BeanKit.beanToMap(obj);
             map.forEach((key, val) -> addParams(key, (String) val));
         }
         return (T) this;

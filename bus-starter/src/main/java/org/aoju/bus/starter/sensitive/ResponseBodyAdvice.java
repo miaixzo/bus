@@ -135,16 +135,16 @@ public class ResponseBodyAdvice extends BaseAdvice
                 Object object = ((Message) body).getData();
                 if (object instanceof Result) {
                     List list = new ArrayList<>();
-                    for (Object value : ((Result) object).getRows()) {
-                        this.beforeBodyWrite(sensitive, value);
-                        list.add(value);
+                    for (Object obj : ((Result) object).getRows()) {
+                        this.beforeBodyWrite(sensitive, obj);
+                        list.add(obj);
                     }
                     ((Result) ((Message) body).getData()).setRows(list);
                 } else if (object instanceof List) {
                     List list = new ArrayList<>();
-                    for (Object value : (List) object) {
-                        this.beforeBodyWrite(sensitive, value);
-                        list.add(value);
+                    for (Object obj : (List) object) {
+                        this.beforeBodyWrite(sensitive, obj);
+                        list.add(obj);
                     }
                     ((Message) body).setData(list);
                 } else {

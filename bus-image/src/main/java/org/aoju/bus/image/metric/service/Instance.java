@@ -40,7 +40,7 @@ public class Instance implements Serializable {
     public final String iuid;
     public final String tsuid;
     public final String uri;
-    private Object object;
+    private Object obj;
 
     public Instance(String cuid, String iuid, String tsuid, String uri) {
         this.cuid = cuid;
@@ -50,11 +50,11 @@ public class Instance implements Serializable {
     }
 
     public final Object getObject() {
-        return object;
+        return obj;
     }
 
-    public final Instance setObject(Object object) {
-        this.object = object;
+    public final Instance setObject(Object obj) {
+        this.obj = obj;
         return this;
     }
 

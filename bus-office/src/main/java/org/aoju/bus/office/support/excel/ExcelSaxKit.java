@@ -107,7 +107,7 @@ public class ExcelSaxKit {
             case FORMULA:
                 result = StringKit.format("\"{}\"", value);
                 break;
-            case INLINESTRING:
+            case INLINESTR:
                 result = new XSSFRichTextString(value).toString();
                 break;
             case SSTINDEX:

@@ -48,9 +48,9 @@ public interface Differentable<T> {
     /**
      * 检索此对象与提供的对象之间的差异列表
      *
-     * @param object diff的对象可以是{@code null}
+     * @param obj diff的对象可以是{@code null}
      * @return 差异列表
      */
-    DifferentResult diff(T object);
+    DifferentResult diff(T obj);
 
 }

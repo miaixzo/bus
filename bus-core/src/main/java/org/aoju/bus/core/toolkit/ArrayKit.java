@@ -53,11 +53,11 @@ public class ArrayKit {
     /**
      * 对象是否为数组对象
      *
-     * @param object 对象
+     * @param obj 对象
      * @return 是否为数组对象, 如果为{@code null} 返回false
      */
-    public static boolean isArray(Object object) {
-        return null != object && object.getClass().isArray();
+    public static boolean isArray(Object obj) {
+        return null != obj && obj.getClass().isArray();
     }
 
     /**
@@ -271,8 +271,8 @@ public class ArrayKit {
      * @return 是否都为空
      */
     public static boolean isAllEmpty(Object... args) {
-        for (Object object : args) {
-            if (false == ObjectKit.isEmpty(object)) {
+        for (Object obj : args) {
+            if (false == ObjectKit.isEmpty(obj)) {
                 return false;
             }
         }
@@ -721,35 +721,35 @@ public class ArrayKit {
     /**
      * 数组或集合转String
      *
-     * @param object 集合或数组对象
+     * @param obj 集合或数组对象
      * @return 数组字符串, 与集合转字符串格式相同
      */
-    public static String toString(final Object object) {
-        if (null == object) {
+    public static String toString(final Object obj) {
+        if (null == obj) {
             return null;
         }
 
-        if (object instanceof long[]) {
-            return Arrays.toString((long[]) object);
-        } else if (object instanceof int[]) {
-            return Arrays.toString((int[]) object);
-        } else if (object instanceof short[]) {
-            return Arrays.toString((short[]) object);
-        } else if (object instanceof char[]) {
-            return Arrays.toString((char[]) object);
-        } else if (object instanceof byte[]) {
-            return Arrays.toString((byte[]) object);
-        } else if (object instanceof boolean[]) {
-            return Arrays.toString((boolean[]) object);
-        } else if (object instanceof float[]) {
-            return Arrays.toString((float[]) object);
-        } else if (object instanceof double[]) {
-            return Arrays.toString((double[]) object);
-        } else if (ArrayKit.isArray(object)) {
-            return Arrays.deepToString((Object[]) object);
+        if (obj instanceof long[]) {
+            return Arrays.toString((long[]) obj);
+        } else if (obj instanceof int[]) {
+            return Arrays.toString((int[]) obj);
+        } else if (obj instanceof short[]) {
+            return Arrays.toString((short[]) obj);
+        } else if (obj instanceof char[]) {
+            return Arrays.toString((char[]) obj);
+        } else if (obj instanceof byte[]) {
+            return Arrays.toString((byte[]) obj);
+        } else if (obj instanceof boolean[]) {
+            return Arrays.toString((boolean[]) obj);
+        } else if (obj instanceof float[]) {
+            return Arrays.toString((float[]) obj);
+        } else if (obj instanceof double[]) {
+            return Arrays.toString((double[]) obj);
+        } else if (ArrayKit.isArray(obj)) {
+            return Arrays.deepToString((Object[]) obj);
         }
 
-        return object.toString();
+        return obj.toString();
     }
 
     /**
@@ -879,25 +879,25 @@ public class ArrayKit {
     /**
      * 克隆数组,如果非数组返回null
      *
-     * @param <T>    数组元素类型
-     * @param object 数组对象
+     * @param <T> 数组元素类型
+     * @param obj 数组对象
      * @return 克隆后的数组对象
      */
-    public static <T> T clone(T object) {
-        if (null == object) {
+    public static <T> T clone(T obj) {
+        if (null == obj) {
             return null;
         }
-        if (isArray(object)) {
+        if (isArray(obj)) {
             final Object result;
-            final Class<?> componentType = object.getClass().getComponentType();
+            final Class<?> componentType = obj.getClass().getComponentType();
             if (componentType.isPrimitive()) {// 原始类型
-                int length = Array.getLength(object);
+                int length = Array.getLength(obj);
                 result = Array.newInstance(componentType, length);
                 while (length-- > 0) {
-                    Array.set(result, length, Array.get(object, length));
+                    Array.set(result, length, Array.get(obj, length));
                 }
             } else {
-                result = ((Object[]) object).clone();
+                result = ((Object[]) obj).clone();
             }
             return (T) result;
         }
@@ -7610,36 +7610,36 @@ public class ArrayKit {
     /**
      * 包装数组对象
      *
-     * @param object 对象,可以是对象数组或者基本类型数组
+     * @param obj 对象,可以是对象数组或者基本类型数组
      * @return 包装类型数组或对象数组
      * @throws InstrumentException 对象为非数组
      */
-    public static Object[] wrap(Object object) {
-        if (null == object) {
+    public static Object[] wrap(Object obj) {
+        if (null == obj) {
             return null;
         }
-        if (isArray(object)) {
+        if (isArray(obj)) {
             try {
-                return (Object[]) object;
+                return (Object[]) obj;
             } catch (Exception e) {
-                String className = object.getClass().getComponentType().getName();
+                String className = obj.getClass().getComponentType().getName();
                 switch (className) {
                     case "long":
-                        return wrap((long[]) object);
+                        return wrap((long[]) obj);
                     case "int":
-                        return wrap(object);
+                        return wrap(obj);
                     case "short":
-                        return wrap((short[]) object);
+                        return wrap((short[]) obj);
                     case "char":
-                        return wrap((char[]) object);
+                        return wrap((char[]) obj);
                     case "byte":
-                        return wrap((byte[]) object);
+                        return wrap((byte[]) obj);
                     case "boolean":
-                        return wrap((boolean[]) object);
+                        return wrap((boolean[]) obj);
                     case "float":
-                        return wrap((float[]) object);
+                        return wrap((float[]) obj);
                     case "double":
-                        return wrap((double[]) object);
+                        return wrap((double[]) obj);
                     default:
                         throw new InstrumentException(e);
                 }
@@ -7672,16 +7672,9 @@ public class ArrayKit {
      * @return 结果
      */
     public static <T> T[] get(Object array, int... indexes) {
-        if (null == array) {
-            return null;
-        }
-        if (null == indexes) {
-            return newArray(array.getClass().getComponentType(), 0);
-        }
-
-        final T[] result = newArray(array.getClass().getComponentType(), indexes.length);
-        for (int i = 0; i < indexes.length; i++) {
-            result[i] = get(array, indexes[i]);
+        T[] result = newArray(indexes.length);
+        for (int i : indexes) {
+            result[i] = get(array, i);
         }
         return result;
     }
@@ -8050,17 +8043,6 @@ public class ArrayKit {
     }
 
     /**
-     * 以 conjunction 为分隔符将多个对象转换为字符串
-     *
-     * @param conjunction 分隔符 {@link Symbol#COMMA}
-     * @param args        数组
-     * @return 连接后的字符串
-     */
-    public static String join(CharSequence conjunction, Object... args) {
-        return join(args, conjunction);
-    }
-
-    /**
      * 以 conjunction 为分隔符将数组转换为字符串
      *
      * @param <T>         被处理的集合
@@ -8106,6 +8088,25 @@ public class ArrayKit {
     public static <T> String join(T[] array, CharSequence conjunction, Editor<T> editor) {
         return TextJoiner.of(conjunction).append(array, (t) -> String.valueOf(editor.edit(t))).toString();
     }
+
+    /**
+     * 以 conjunction 为分隔符将数组转换为字符串
+     *
+     * @param array       数组
+     * @param conjunction 分隔符
+     * @return 连接后的字符串
+     */
+    public static String join(Object array, CharSequence conjunction) {
+        if (null == array) {
+            return null;
+        }
+        if (false == isArray(array)) {
+            throw new IllegalArgumentException(StringKit.format("[{}] is not a Array!", array.getClass()));
+        }
+
+        return TextJoiner.of(conjunction).append(array).toString();
+    }
+
 
     /**
      * 取最小值

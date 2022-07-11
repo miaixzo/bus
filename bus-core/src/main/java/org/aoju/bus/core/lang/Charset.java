@@ -30,6 +30,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
 
 /**
@@ -126,7 +127,7 @@ public class Charset {
      * @see Charset#defaultCharsetName()
      */
     public static java.nio.charset.Charset systemCharset() {
-        return FileKit.isWindows() ? GBK : defaultCharset();
+        return FileKit.isWindows() ? Charset.GBK : defaultCharset();
     }
 
     /**
@@ -188,11 +189,11 @@ public class Charset {
      */
     public static String convert(final String source, java.nio.charset.Charset srcCharset, java.nio.charset.Charset destCharset) {
         if (null == srcCharset) {
-            srcCharset = ISO_8859_1;
+            srcCharset = StandardCharsets.ISO_8859_1;
         }
 
         if (null == destCharset) {
-            destCharset = UTF_8;
+            destCharset = StandardCharsets.UTF_8;
         }
 
         if (StringKit.isBlank(source) || srcCharset.equals(destCharset)) {

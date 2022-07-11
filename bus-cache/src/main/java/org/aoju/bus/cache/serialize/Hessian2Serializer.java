@@ -38,10 +38,10 @@ import java.io.ByteArrayOutputStream;
 public class Hessian2Serializer extends AbstractSerializer {
 
     @Override
-    protected byte[] doSerialize(Object object) throws Throwable {
+    protected byte[] doSerialize(Object obj) throws Throwable {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             Hessian2Output out = new Hessian2Output(os);
-            out.writeObject(object);
+            out.writeObject(obj);
             os.close();
             return os.toByteArray();
         }

@@ -217,14 +217,14 @@ public class BulkData implements Value {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object)
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if (null == object)
+        if (null == obj)
             return false;
-        if (getClass() != object.getClass())
+        if (getClass() != obj.getClass())
             return false;
-        BulkData other = (BulkData) object;
+        BulkData other = (BulkData) obj;
         if (bigEndian != other.bigEndian)
             return false;
         if (null == uri) {

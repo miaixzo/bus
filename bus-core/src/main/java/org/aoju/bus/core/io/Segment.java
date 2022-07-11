@@ -41,7 +41,7 @@ import org.aoju.bus.core.lang.Normal;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Segment {
+public final class Segment {
 
     /**
      * 所有段的大小(以字节为单位)
@@ -85,13 +85,13 @@ public class Segment {
      */
     public Segment prev;
 
-    public Segment() {
+    Segment() {
         this.data = new byte[SIZE];
         this.owner = true;
         this.shared = false;
     }
 
-    public Segment(byte[] data, int pos, int limit, boolean shared, boolean owner) {
+    Segment(byte[] data, int pos, int limit, boolean shared, boolean owner) {
         this.data = data;
         this.pos = pos;
         this.limit = limit;
@@ -117,7 +117,7 @@ public class Segment {
         return result;
     }
 
-    public Segment push(Segment segment) {
+    public final Segment push(Segment segment) {
         segment.prev = this;
         segment.next = next;
         next.prev = segment;
@@ -125,7 +125,7 @@ public class Segment {
         return segment;
     }
 
-    public Segment split(int byteCount) {
+    public final Segment split(int byteCount) {
         if (byteCount <= 0 || byteCount > limit - pos) throw new IllegalArgumentException();
         Segment prefix;
 
@@ -142,7 +142,7 @@ public class Segment {
         return prefix;
     }
 
-    public void compact() {
+    public final void compact() {
         if (prev == this) {
             throw new IllegalStateException();
         }
@@ -159,7 +159,7 @@ public class Segment {
         LifeCycle.recycle(this);
     }
 
-    public void writeTo(Segment sink, int byteCount) {
+    public final void writeTo(Segment sink, int byteCount) {
         if (!sink.owner) throw new IllegalArgumentException();
         if (sink.limit + byteCount > SIZE) {
             if (sink.shared) throw new IllegalArgumentException();

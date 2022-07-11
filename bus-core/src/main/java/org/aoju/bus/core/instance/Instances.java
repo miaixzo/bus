@@ -167,21 +167,21 @@ public final class Instances {
     /**
      * 将已有对象放入单例中，其Class做为键
      *
-     * @param object 对象
+     * @param obj 对象
      */
-    public static void put(Object object) {
-        Assert.notNull(object, "Bean object must be not null !");
-        put(object.getClass().getName(), object);
+    public static void put(Object obj) {
+        Assert.notNull(obj, "Bean object must be not null !");
+        put(obj.getClass().getName(), obj);
     }
 
     /**
      * 将已有对象放入单例中，key做为键
      *
-     * @param key    键
-     * @param object 对象
+     * @param key 键
+     * @param obj 对象
      */
-    public static void put(String key, Object object) {
-        POOL.put(key, object);
+    public static void put(String key, Object obj) {
+        POOL.put(key, obj);
     }
 
     /**

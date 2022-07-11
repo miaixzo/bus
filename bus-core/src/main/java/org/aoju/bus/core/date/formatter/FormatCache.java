@@ -206,17 +206,17 @@ public abstract class FormatCache<F extends Format> {
         }
 
         @Override
-        public boolean equals(final Object object) {
-            if (this == object) {
+        public boolean equals(final Object obj) {
+            if (this == obj) {
                 return true;
             }
-            if (null == object) {
+            if (null == obj) {
                 return false;
             }
-            if (getClass() != object.getClass()) {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
-            final MultipartKey other = (MultipartKey) object;
+            final MultipartKey other = (MultipartKey) obj;
             return false != Arrays.equals(keys, other.keys);
         }
 

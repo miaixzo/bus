@@ -606,12 +606,12 @@ public class ThreadKit {
     /**
      * 阻塞当前线程,保证在main方法中执行不被退出
      *
-     * @param object 对象所在线程
+     * @param obj 对象所在线程
      */
-    public static void sync(Object object) {
-        synchronized (object) {
+    public static void sync(Object obj) {
+        synchronized (obj) {
             try {
-                object.wait();
+                obj.wait();
             } catch (InterruptedException e) {
                 Console.error(e.getMessage());
             }

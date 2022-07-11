@@ -42,23 +42,23 @@ import java.util.Set;
  *
  * <p>使用方法如下：</p>
  * <pre>
- * public boolean equals(Object object) {
- *   if (null == object) { return false; }
- *   if (object == this) { return true; }
- *   if (object.getClass() != getClass()) {
+ * public boolean equals(Object obj) {
+ *   if (null == obj) { return false; }
+ *   if (obj == this) { return true; }
+ *   if (obj.getClass() != getClass()) {
  *     return false;
  *   }
- *   MyClass rhs = (MyClass) object;
+ *   MyClass rhs = (MyClass) obj;
  *   return new EqualsBuilder()
- *                 .appendSuper(super.equals(object))
+ *                 .appendSuper(super.equals(obj))
  *                 .append(field1, rhs.field1)
  *                 .append(field2, rhs.field2)
  *                 .append(field3, rhs.field3)
  *                 .isEquals();
  *  }
  *
- * public boolean equals(Object object) {
- *   return EqualsBuilder.reflectionEquals(this, object);
+ * public boolean equals(Object obj) {
+ *   return EqualsBuilder.reflectionEquals(this, obj);
  * }
  * </pre>
  *

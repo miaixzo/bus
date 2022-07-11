@@ -53,14 +53,14 @@ public class StringKit extends CharsKit {
      * 2、为不可见字符(如空格)
      * 3、""
      *
-     * @param object 对象
+     * @param obj 对象
      * @return 如果为字符串是否为空串
      */
-    public static boolean isBlank(Object object) {
-        if (null == object) {
+    public static boolean isBlank(Object obj) {
+        if (null == obj) {
             return true;
-        } else if (object instanceof CharSequence) {
-            return CharsKit.isBlank((CharSequence) object);
+        } else if (obj instanceof CharSequence) {
+            return CharsKit.isBlank((CharSequence) obj);
         }
         return false;
     }
@@ -107,14 +107,14 @@ public class StringKit extends CharsKit {
      * 1、为null
      * 2、为""
      *
-     * @param object 对象
+     * @param obj 对象
      * @return 如果为字符串是否为空串
      */
-    public static boolean emptyIfString(Object object) {
-        if (null == object) {
+    public static boolean emptyIfString(Object obj) {
+        if (null == obj) {
             return true;
-        } else if (object instanceof CharSequence) {
-            return 0 == ((CharSequence) object).length();
+        } else if (obj instanceof CharSequence) {
+            return 0 == ((CharSequence) obj).length();
         }
         return false;
     }
@@ -141,11 +141,11 @@ public class StringKit extends CharsKit {
      * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
      * 2、对象数组会调用Arrays.toString方法
      *
-     * @param object 对象
+     * @param obj 对象
      * @return 字符串
      */
-    public static String toString(Object object) {
-        return toString(object, Charset.UTF_8);
+    public static String toString(Object obj) {
+        return toString(obj, Charset.UTF_8);
     }
 
     /**
@@ -153,12 +153,12 @@ public class StringKit extends CharsKit {
      * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
      * 2、对象数组会调用Arrays.toString方法
      *
-     * @param object  对象
+     * @param obj     对象
      * @param charset 字符集
      * @return 字符串
      */
-    public static String toString(Object object, String charset) {
-        return toString(object, java.nio.charset.Charset.forName(charset));
+    public static String toString(Object obj, String charset) {
+        return toString(obj, java.nio.charset.Charset.forName(charset));
     }
 
     /**
@@ -182,28 +182,28 @@ public class StringKit extends CharsKit {
      * 将对象转为字符串
      * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组 2、对象数组会调用Arrays.toString方法
      *
-     * @param object     对象
+     * @param obj     对象
      * @param charset 字符集
      * @return 字符串
      */
-    public static String toString(Object object, java.nio.charset.Charset charset) {
-        if (ObjectKit.isEmpty(object)) {
+    public static String toString(Object obj, java.nio.charset.Charset charset) {
+        if (ObjectKit.isEmpty(obj)) {
             return null;
         }
 
-        if (object instanceof String) {
-            return (String) object;
-        } else if (object instanceof byte[]) {
-            return toString((byte[]) object, charset);
-        } else if (object instanceof Byte[]) {
-            return toString((Byte[]) object, charset);
-        } else if (object instanceof ByteBuffer) {
-            return toString((ByteBuffer) object, charset);
-        } else if (ArrayKit.isArray(object)) {
-            return ArrayKit.toString(object);
+        if (obj instanceof String) {
+            return (String) obj;
+        } else if (obj instanceof byte[]) {
+            return toString((byte[]) obj, charset);
+        } else if (obj instanceof Byte[]) {
+            return toString((Byte[]) obj, charset);
+        } else if (obj instanceof ByteBuffer) {
+            return toString((ByteBuffer) obj, charset);
+        } else if (ArrayKit.isArray(obj)) {
+            return ArrayKit.toString(obj);
         }
 
-        return object.toString();
+        return obj.toString();
     }
 
     /**
@@ -348,11 +348,11 @@ public class StringKit extends CharsKit {
     /**
      * 调用对象的toString方法，null会返回{@code null}
      *
-     * @param object 对象
+     * @param obj 对象
      * @return 字符串 or {@code null}
      */
-    public static String toStringOrNull(Object object) {
-        return null == object ? null : object.toString();
+    public static String toStringOrNull(Object obj) {
+        return null == obj ? null : obj.toString();
     }
 
     /**

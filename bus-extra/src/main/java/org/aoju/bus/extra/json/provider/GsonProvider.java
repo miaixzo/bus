@@ -54,11 +54,11 @@ public class GsonProvider extends AbstractJsonProvider {
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
                             Set<Map.Entry<String, JsonElement>> entrySet = jsonObject.entrySet();
                             for (Map.Entry<String, JsonElement> entry : entrySet) {
-                                Object object = entry.getValue();
-                                if (object instanceof JsonPrimitive) {
-                                    map.put(entry.getKey(), ((JsonPrimitive) object).getAsString());
+                                Object obj = entry.getValue();
+                                if (obj instanceof JsonPrimitive) {
+                                    map.put(entry.getKey(), ((JsonPrimitive) obj).getAsString());
                                 } else {
-                                    map.put(entry.getKey(), object);
+                                    map.put(entry.getKey(), obj);
                                 }
                             }
                             return map;
