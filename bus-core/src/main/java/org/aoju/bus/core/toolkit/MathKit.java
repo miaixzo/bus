@@ -134,18 +134,18 @@ public class MathKit {
      * 提供精确的加法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被加值
+     * @param args 多个被加值
      * @return 和
      */
-    public static BigDecimal add(Number... values) {
-        if (ArrayKit.isEmpty(values)) {
+    public static BigDecimal add(Number... args) {
+        if (ArrayKit.isEmpty(args)) {
             return BigDecimal.ZERO;
         }
 
-        Number value = values[0];
+        Number value = args[0];
         BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
-        for (int i = 1; i < values.length; i++) {
-            value = values[i];
+        for (int i = 1; i < args.length; i++) {
+            value = args[i];
             if (null != value) {
                 result = result.add(new BigDecimal(value.toString()));
             }
@@ -157,18 +157,18 @@ public class MathKit {
      * 提供精确的加法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被加值
+     * @param args 多个被加值
      * @return 和
      */
-    public static BigDecimal add(String... values) {
-        if (ArrayKit.isEmpty(values)) {
+    public static BigDecimal add(String... args) {
+        if (ArrayKit.isEmpty(args)) {
             return BigDecimal.ZERO;
         }
 
-        String value = values[0];
+        String value = args[0];
         BigDecimal result = null == value ? BigDecimal.ZERO : new BigDecimal(value);
-        for (int i = 1; i < values.length; i++) {
-            value = values[i];
+        for (int i = 1; i < args.length; i++) {
+            value = args[i];
             if (null != value) {
                 result = result.add(new BigDecimal(value));
             }
@@ -180,18 +180,18 @@ public class MathKit {
      * 提供精确的加法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被加值
+     * @param args 多个被加值
      * @return 和
      */
-    public static BigDecimal add(BigDecimal... values) {
-        if (ArrayKit.isEmpty(values)) {
+    public static BigDecimal add(BigDecimal... args) {
+        if (ArrayKit.isEmpty(args)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal value = values[0];
+        BigDecimal value = args[0];
         BigDecimal result = null == value ? BigDecimal.ZERO : value;
-        for (int i = 1; i < values.length; i++) {
-            value = values[i];
+        for (int i = 1; i < args.length; i++) {
+            value = args[i];
             if (null != value) {
                 result = result.add(value);
             }
@@ -259,18 +259,18 @@ public class MathKit {
      * 提供精确的减法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被减值
+     * @param args 多个被减值
      * @return 差
      */
-    public static BigDecimal sub(Number... values) {
-        if (ArrayKit.isEmpty(values)) {
+    public static BigDecimal sub(Number... args) {
+        if (ArrayKit.isEmpty(args)) {
             return BigDecimal.ZERO;
         }
 
-        Number value = values[0];
+        Number value = args[0];
         BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
-        for (int i = 1; i < values.length; i++) {
-            value = values[i];
+        for (int i = 1; i < args.length; i++) {
+            value = args[i];
             if (null != value) {
                 result = result.subtract(new BigDecimal(value.toString()));
             }
@@ -282,18 +282,18 @@ public class MathKit {
      * 提供精确的减法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被减值
+     * @param args 多个被减值
      * @return 差
      */
-    public static BigDecimal sub(String... values) {
-        if (ArrayKit.isEmpty(values)) {
+    public static BigDecimal sub(String... args) {
+        if (ArrayKit.isEmpty(args)) {
             return BigDecimal.ZERO;
         }
 
-        String value = values[0];
+        String value = args[0];
         BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
-        for (int i = 1; i < values.length; i++) {
-            value = values[i];
+        for (int i = 1; i < args.length; i++) {
+            value = args[i];
             if (null != value) {
                 result = result.subtract(new BigDecimal(value));
             }
@@ -305,18 +305,18 @@ public class MathKit {
      * 提供精确的减法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被减值
+     * @param args 多个被减值
      * @return 差
      */
-    public static BigDecimal sub(BigDecimal... values) {
-        if (ArrayKit.isEmpty(values)) {
+    public static BigDecimal sub(BigDecimal... args) {
+        if (ArrayKit.isEmpty(args)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal value = values[0];
+        BigDecimal value = args[0];
         BigDecimal result = null == value ? BigDecimal.ZERO : value;
-        for (int i = 1; i < values.length; i++) {
-            value = values[i];
+        for (int i = 1; i < args.length; i++) {
+            value = args[i];
             if (null != value) {
                 result = result.subtract(value);
             }
@@ -384,18 +384,18 @@ public class MathKit {
      * 提供精确的乘法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被乘值
+     * @param args 多个被乘值
      * @return 积
      */
-    public static BigDecimal mul(Number... values) {
-        if (ArrayKit.isEmpty(values)) {
+    public static BigDecimal mul(Number... args) {
+        if (ArrayKit.isEmpty(args)) {
             return BigDecimal.ZERO;
         }
 
-        Number value = values[0];
+        Number value = args[0];
         BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value.toString());
-        for (int i = 1; i < values.length; i++) {
-            value = values[i];
+        for (int i = 1; i < args.length; i++) {
+            value = args[i];
             if (null != value) {
                 result = result.multiply(new BigDecimal(value.toString()));
             }
@@ -418,17 +418,17 @@ public class MathKit {
      * 提供精确的乘法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被乘值
+     * @param args 多个被乘值
      * @return 积
      */
-    public static BigDecimal mul(String... values) {
-        if (ArrayKit.isEmpty(values) || ArrayKit.hasNull(values)) {
+    public static BigDecimal mul(String... args) {
+        if (ArrayKit.isEmpty(args) || ArrayKit.hasNull(args)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal result = new BigDecimal(values[0]);
-        for (int i = 1; i < values.length; i++) {
-            result = result.multiply(new BigDecimal(values[i]));
+        BigDecimal result = new BigDecimal(args[0]);
+        for (int i = 1; i < args.length; i++) {
+            result = result.multiply(new BigDecimal(args[i]));
         }
 
         return result;
@@ -438,17 +438,17 @@ public class MathKit {
      * 提供精确的乘法运算
      * 如果传入多个值为null或者空,则返回0
      *
-     * @param values 多个被乘值
+     * @param args 多个被乘值
      * @return 积
      */
-    public static BigDecimal mul(BigDecimal... values) {
-        if (ArrayKit.isEmpty(values) || ArrayKit.hasNull(values)) {
+    public static BigDecimal mul(BigDecimal... args) {
+        if (ArrayKit.isEmpty(args) || ArrayKit.hasNull(args)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal result = values[0];
-        for (int i = 1; i < values.length; i++) {
-            result = result.multiply(values[i]);
+        BigDecimal result = args[0];
+        for (int i = 1; i < args.length; i++) {
+            result = result.multiply(args[i]);
         }
         return result;
     }
@@ -1800,123 +1800,123 @@ public class MathKit {
     /**
      * 取最小值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最小值
      * @see ArrayKit#min(long...)
      */
-    public static long min(long... numberArray) {
-        return ArrayKit.min(numberArray);
+    public static long min(long... args) {
+        return ArrayKit.min(args);
     }
 
     /**
      * 取最小值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最小值
      * @see ArrayKit#min(int...)
      */
-    public static int min(int... numberArray) {
-        return ArrayKit.min(numberArray);
+    public static int min(int... args) {
+        return ArrayKit.min(args);
     }
 
     /**
      * 取最小值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最小值
      * @see ArrayKit#min(short...)
      */
-    public static short min(short... numberArray) {
-        return ArrayKit.min(numberArray);
+    public static short min(short... args) {
+        return ArrayKit.min(args);
     }
 
     /**
      * 取最小值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最小值
      * @see ArrayKit#min(double...)
      */
-    public static double min(double... numberArray) {
-        return ArrayKit.min(numberArray);
+    public static double min(double... args) {
+        return ArrayKit.min(args);
     }
 
     /**
      * 取最小值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最小值
      * @see ArrayKit#min(float...)
      */
-    public static float min(float... numberArray) {
-        return ArrayKit.min(numberArray);
+    public static float min(float... args) {
+        return ArrayKit.min(args);
     }
 
     /**
      * 取最大值
      *
-     * @param <T>         元素类型
-     * @param numberArray 数字数组
+     * @param <T>  元素类型
+     * @param args 数字数组
      * @return 最大值
      * @see ArrayKit#max(Comparable[])
      */
-    public static <T extends Comparable<? super T>> T max(T[] numberArray) {
-        return ArrayKit.max(numberArray);
+    public static <T extends Comparable<? super T>> T max(T[] args) {
+        return ArrayKit.max(args);
     }
 
     /**
      * 取最大值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最大值
      * @see ArrayKit#max(long...)
      */
-    public static long max(long... numberArray) {
-        return ArrayKit.max(numberArray);
+    public static long max(long... args) {
+        return ArrayKit.max(args);
     }
 
     /**
      * 取最大值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最大值
      * @see ArrayKit#max(int...)
      */
-    public static int max(int... numberArray) {
-        return ArrayKit.max(numberArray);
+    public static int max(int... args) {
+        return ArrayKit.max(args);
     }
 
     /**
      * 取最大值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最大值
      * @see ArrayKit#max(short...)
      */
-    public static short max(short... numberArray) {
-        return ArrayKit.max(numberArray);
+    public static short max(short... args) {
+        return ArrayKit.max(args);
     }
 
     /**
      * 取最大值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最大值
      * @see ArrayKit#max(double...)
      */
-    public static double max(double... numberArray) {
-        return ArrayKit.max(numberArray);
+    public static double max(double... args) {
+        return ArrayKit.max(args);
     }
 
     /**
      * 取最大值
      *
-     * @param numberArray 数字数组
+     * @param args 数字数组
      * @return 最大值
      * @see ArrayKit#max(float...)
      */
-    public static float max(float... numberArray) {
-        return ArrayKit.max(numberArray);
+    public static float max(float... args) {
+        return ArrayKit.max(args);
     }
 
     /**

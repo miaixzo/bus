@@ -8092,19 +8092,19 @@ public class ArrayKit {
     /**
      * 以 conjunction 为分隔符将数组转换为字符串
      *
-     * @param array       数组
+     * @param args        数组
      * @param conjunction 分隔符
      * @return 连接后的字符串
      */
-    public static String join(Object array, CharSequence conjunction) {
-        if (null == array) {
+    public static String join(CharSequence conjunction, Object... args) {
+        if (null == args) {
             return null;
         }
-        if (false == isArray(array)) {
-            throw new IllegalArgumentException(StringKit.format("[{}] is not a Array!", array.getClass()));
+        if (false == isArray(args)) {
+            throw new IllegalArgumentException(StringKit.format("[{}] is not a Array!", args.getClass()));
         }
 
-        return TextJoiner.of(conjunction).append(array).toString();
+        return TextJoiner.of(conjunction).append(args).toString();
     }
 
 
