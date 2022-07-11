@@ -36,9 +36,9 @@ public interface Provider {
     /**
      * 序列化
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 返回序列化后的结果
      */
-    String serialize(Object obj);
+    String serialize(Object object);
 
 }

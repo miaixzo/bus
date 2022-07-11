@@ -35,11 +35,11 @@ public class JdPayEntity extends Property {
     /**
      * 获取属性名数组
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 返回对象属性名数组
      */
-    public String[] getFiledNames(Object obj) {
-        Field[] fields = obj.getClass().getDeclaredFields();
+    public String[] getFiledNames(Object object) {
+        Field[] fields = object.getClass().getDeclaredFields();
         String[] fieldNames = new String[fields.length];
         for (int i = 0; i < fields.length; i++) {
             fieldNames[i] = fields[i].getName();
@@ -51,18 +51,18 @@ public class JdPayEntity extends Property {
      * 根据属性名获取属性值
      *
      * @param fieldName 属性名称
-     * @param obj       对象
+     * @param object    对象
      * @return 返回对应属性的值
      */
-    public Object getFieldValueByName(String fieldName, Object obj) {
+    public Object getFieldValueByName(String fieldName, Object object) {
         try {
             String firstLetter = fieldName.substring(0, 1).toUpperCase();
             String getter = new StringBuffer().append("get")
                     .append(firstLetter)
                     .append(fieldName.substring(1))
                     .toString();
-            Method method = obj.getClass().getMethod(getter);
-            return method.invoke(obj);
+            Method method = object.getClass().getMethod(getter);
+            return method.invoke(object);
         } catch (Exception e) {
             return null;
         }

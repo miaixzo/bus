@@ -29,7 +29,7 @@ import org.aoju.bus.core.compare.NormalCompare;
 import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.io.streams.FastByteOutputStream;
+import org.aoju.bus.core.io.stream.FastByteOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -53,11 +53,11 @@ public class ObjectKit {
     /**
      * 检查对象是否为null
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 是否为null
      */
-    public static boolean isNull(Object obj) {
-        return null == obj || obj.equals(null);
+    public static boolean isNull(Object object) {
+        return null == object || object.equals(null);
     }
 
     /**
@@ -67,11 +67,11 @@ public class ObjectKit {
      * 2. not equals(null)
      * </pre>
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 是否为非null
      */
-    public static boolean isNotNull(Object obj) {
-        return null != obj && false == obj.equals(null);
+    public static boolean isNotNull(Object object) {
+        return null != object && false == object.equals(null);
     }
 
     /**
@@ -365,26 +365,26 @@ public class ObjectKit {
      * 集合类调用其size函数, 数组调用其length属性,
      * 其他可遍历对象遍历计算长度
      *
-     * @param obj 被计算长度的对象
+     * @param object 被计算长度的对象
      * @return 长度
      */
-    public static int length(Object obj) {
-        if (null == obj) {
+    public static int length(Object object) {
+        if (null == object) {
             return 0;
         }
-        if (obj instanceof CharSequence) {
-            return ((CharSequence) obj).length();
+        if (object instanceof CharSequence) {
+            return ((CharSequence) object).length();
         }
-        if (obj instanceof Collection) {
-            return ((Collection<?>) obj).size();
+        if (object instanceof Collection) {
+            return ((Collection<?>) object).size();
         }
-        if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).size();
+        if (object instanceof Map) {
+            return ((Map<?, ?>) object).size();
         }
 
         int count;
-        if (obj instanceof Iterator) {
-            Iterator<?> iter = (Iterator<?>) obj;
+        if (object instanceof Iterator) {
+            Iterator<?> iter = (Iterator<?>) object;
             count = 0;
             while (iter.hasNext()) {
                 count++;
@@ -392,8 +392,8 @@ public class ObjectKit {
             }
             return count;
         }
-        if (obj instanceof Enumeration) {
-            Enumeration<?> enumeration = (Enumeration<?>) obj;
+        if (object instanceof Enumeration) {
+            Enumeration<?> enumeration = (Enumeration<?>) object;
             count = 0;
             while (enumeration.hasMoreElements()) {
                 count++;
@@ -401,8 +401,8 @@ public class ObjectKit {
             }
             return count;
         }
-        if (obj.getClass().isArray() == true) {
-            return Array.getLength(obj);
+        if (object.getClass().isArray() == true) {
+            return Array.getLength(object);
         }
         return -1;
     }
@@ -410,29 +410,29 @@ public class ObjectKit {
     /**
      * 对象中是否包含元素
      *
-     * @param obj     对象
+     * @param object  对象
      * @param element 元素
      * @return 是否包含
      */
-    public static boolean contains(Object obj, Object element) {
-        if (null == obj) {
+    public static boolean contains(Object object, Object element) {
+        if (null == object) {
             return false;
         }
-        if (obj instanceof String) {
+        if (object instanceof String) {
             if (null == element) {
                 return false;
             }
-            return ((String) obj).contains(element.toString());
+            return ((String) object).contains(element.toString());
         }
-        if (obj instanceof Collection) {
-            return ((Collection<?>) obj).contains(element);
+        if (object instanceof Collection) {
+            return ((Collection<?>) object).contains(element);
         }
-        if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).containsValue(element);
+        if (object instanceof Map) {
+            return ((Map<?, ?>) object).containsValue(element);
         }
 
-        if (obj instanceof Iterator) {
-            Iterator<?> iter = (Iterator<?>) obj;
+        if (object instanceof Iterator) {
+            Iterator<?> iter = (Iterator<?>) object;
             while (iter.hasNext()) {
                 Object o = iter.next();
                 if (equal(o, element)) {
@@ -441,8 +441,8 @@ public class ObjectKit {
             }
             return false;
         }
-        if (obj instanceof Enumeration) {
-            Enumeration<?> enumeration = (Enumeration<?>) obj;
+        if (object instanceof Enumeration) {
+            Enumeration<?> enumeration = (Enumeration<?>) object;
             while (enumeration.hasMoreElements()) {
                 Object o = enumeration.nextElement();
                 if (equal(o, element)) {
@@ -451,10 +451,10 @@ public class ObjectKit {
             }
             return false;
         }
-        if (obj.getClass().isArray() == true) {
-            int len = Array.getLength(obj);
+        if (object.getClass().isArray() == true) {
+            int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
-                Object o = Array.get(obj, i);
+                Object o = Array.get(object, i);
                 if (equal(o, element)) {
                     return true;
                 }
@@ -470,16 +470,16 @@ public class ObjectKit {
      * 否则返回null
      *
      * @param <T> 对象类型
-     * @param obj 被克隆对象
+     * @param object 被克隆对象
      * @return 克隆后的对象
      */
-    public static <T> T clone(T obj) {
-        T result = ArrayKit.clone(obj);
+    public static <T> T clone(T object) {
+        T result = ArrayKit.clone(object);
         if (null == result) {
-            if (obj instanceof Cloneable) {
-                result = ReflectKit.invoke(obj, "clone", new Object[]{});
+            if (object instanceof Cloneable) {
+                result = ReflectKit.invoke(object, "clone", new Object[]{});
             } else {
-                result = cloneByStream(obj);
+                result = cloneByStream(object);
             }
         }
         return result;
@@ -493,18 +493,18 @@ public class ObjectKit {
      *  2、调用Convert.toString(Object)转换
      * </pre>
      *
-     * @param obj Bean对象
+     * @param object Bean对象
      * @return Bean所有字段转为Map后的字符串
      */
-    public static String toString(Object obj) {
-        if (null == obj) {
+    public static String toString(Object object) {
+        if (null == object) {
             return Normal.NULL;
         }
-        if (obj instanceof Map) {
-            return obj.toString();
+        if (object instanceof Map) {
+            return object.toString();
         }
 
-        return Convert.toString(obj);
+        return Convert.toString(object);
     }
 
     /**
@@ -512,19 +512,19 @@ public class ObjectKit {
      * 对象必须实现Serializable接口
      *
      * @param <T> 对象类型
-     * @param obj 被克隆对象
+     * @param object 被克隆对象
      * @return 克隆后的对象
      * @throws InstrumentException IO异常和ClassNotFoundException封装
      */
-    public static <T> T cloneByStream(T obj) {
-        if (null == obj || false == (obj instanceof Serializable)) {
+    public static <T> T cloneByStream(T object) {
+        if (null == object || false == (object instanceof Serializable)) {
             return null;
         }
         final FastByteOutputStream byteOut = new FastByteOutputStream();
-        ObjectOutputStream out = null;
+        ObjectOutputStream out;
         try {
             out = new ObjectOutputStream(byteOut);
-            out.writeObject(obj);
+            out.writeObject(object);
             out.flush();
             final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()));
             return (T) in.readObject();
@@ -732,14 +732,14 @@ public class ObjectKit {
     /**
      * 将对象进行序列化
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 对象序列化后的数据
      */
-    public static byte[] toByte(Object obj) {
+    public static byte[] toByte(Object object) {
         try {
             java.io.ByteArrayOutputStream byteOut = new java.io.ByteArrayOutputStream();
             ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
-            objOut.writeObject(obj);
+            objOut.writeObject(object);
             return byteOut.toByteArray();
         } catch (Exception e) {
             throw new InstrumentException(e);
@@ -797,7 +797,7 @@ public class ObjectKit {
      */
     public static <T> T initObject(Class<T> clazz, Map<String, Object> attrMap) {
         try {
-            T obj = clazz.newInstance();
+            T object = clazz.newInstance();
             if (null != attrMap) {
                 // 移除所有的常量赋值
                 for (Class tempClass = clazz; !tempClass.equals(Object.class); tempClass = tempClass.getSuperclass()) {
@@ -812,10 +812,10 @@ public class ObjectKit {
                 }
                 // 开始赋值
                 for (String attrName : attrMap.keySet()) {
-                    setAttribute(obj, attrName, attrMap.get(attrName));
+                    setAttribute(object, attrName, attrMap.get(attrName));
                 }
             }
-            return obj;
+            return object;
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -824,18 +824,18 @@ public class ObjectKit {
     /**
      * 给对象的属性赋值
      *
-     * @param obj      对象
+     * @param object      对象
      * @param attrName 对象的属性名
      * @param value    对象的属性值
      */
-    public static void setAttribute(Object obj, String attrName, Object value) {
+    public static void setAttribute(Object object, String attrName, Object value) {
         try {
-            Class clazz = obj.getClass();
+            Class clazz = object.getClass();
             while (!clazz.equals(Object.class)) {
                 try {
                     Field f = clazz.getDeclaredField(attrName);
                     f.setAccessible(true);
-                    f.set(obj, value);
+                    f.set(object, value);
                     f.setAccessible(false);
                     return;
                 } catch (NoSuchFieldException e) {
@@ -850,18 +850,18 @@ public class ObjectKit {
     /**
      * 从对象中取值
      *
-     * @param obj      对象
+     * @param object      对象
      * @param attrName 要取值的属性名
      * @return 值
      */
-    public static Object getAttributeValue(Object obj, String attrName) {
+    public static Object getAttributeValue(Object object, String attrName) {
         try {
-            Class clazz = obj.getClass();
+            Class clazz = object.getClass();
             while (!clazz.equals(Object.class)) {
                 try {
                     Field f = clazz.getDeclaredField(attrName);
                     f.setAccessible(true);
-                    Object value = f.get(obj);
+                    Object value = f.get(object);
                     f.setAccessible(false);
                     return value;
                 } catch (NoSuchFieldException e) {
@@ -1086,7 +1086,7 @@ public class ObjectKit {
      * @param bts 字节数据
      * @return 对象
      */
-    public static <T extends Object> T parseByteForObj(byte[] bts) {
+    public static <T extends Object> T parseByteForObject(byte[] bts) {
         ByteArrayInputStream input = new ByteArrayInputStream(bts);
         ObjectInputStream objectInput = null;
         try {
@@ -1111,15 +1111,15 @@ public class ObjectKit {
     /**
      * 将对象转换为byte数据
      *
-     * @param obj 对象
+     * @param object 对象
      * @return byte数据
      */
-    public static byte[] parseObjForByte(Object obj) {
+    public static byte[] parseObjForByte(Object object) {
         java.io.ByteArrayOutputStream byteOut = new java.io.ByteArrayOutputStream();
         ObjectOutputStream objOut = null;
         try {
             objOut = new ObjectOutputStream(byteOut);
-            objOut.writeObject(obj);
+            objOut.writeObject(object);
             return byteOut.toByteArray();
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -1255,7 +1255,7 @@ public class ObjectKit {
      * @param baseData 基本数据
      * @param newData  新数据
      */
-    public static void insertObj(Object baseData, Object newData) {
+    public static void insertObject(Object baseData, Object newData) {
         try {
             if (null == baseData || null == newData) {
                 return;
@@ -1287,7 +1287,7 @@ public class ObjectKit {
         }
         try {
             Class<?> clazz = bean.getClass();
-            Object obj = clazz.newInstance();
+            Object object = clazz.newInstance();
             for (; !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {
@@ -1295,7 +1295,7 @@ public class ObjectKit {
                         continue;
                     }
                     f.setAccessible(true);
-                    Object initValue = f.get(obj);
+                    Object initValue = f.get(object);
                     Object oldValue = f.get(bean);
                     if (null != initValue && initValue.equals(oldValue)) {
                         f.set(bean, null);
@@ -1527,15 +1527,15 @@ public class ObjectKit {
      * 对象必须实现Serializable接口
      *
      * @param <T> 对象类型
-     * @param obj 要被序列化的对象
+     * @param object 要被序列化的对象
      * @return 序列化后的字节码
      */
-    public static <T> byte[] serialize(T obj) {
-        if (false == (obj instanceof Serializable)) {
+    public static <T> byte[] serialize(T object) {
+        if (false == (object instanceof Serializable)) {
             return null;
         }
         final FastByteOutputStream byteOut = new FastByteOutputStream();
-        IoKit.writeObjects(byteOut, false, (Serializable) obj);
+        IoKit.writeObjects(byteOut, false, (Serializable) object);
         return byteOut.toByteArray();
     }
 
@@ -1548,7 +1548,7 @@ public class ObjectKit {
      * @return 反序列化后的对象
      */
     public static <T> T deserialize(byte[] bytes) {
-        return IoKit.readObj(new ByteArrayInputStream(bytes));
+        return IoKit.readObject(new ByteArrayInputStream(bytes));
     }
 
 }

@@ -89,7 +89,7 @@ public interface Decryptor {
      * @param charset 加密前编码
      * @return 解密后的密文
      */
-    default String decryptStr(String data, KeyType keyType, Charset charset) {
+    default String decryptString(String data, KeyType keyType, Charset charset) {
         return StringKit.toString(decrypt(data, keyType), charset);
     }
 
@@ -100,8 +100,8 @@ public interface Decryptor {
      * @param keyType 密钥类型
      * @return 解密后的密文
      */
-    default String decryptStr(String data, KeyType keyType) {
-        return decryptStr(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
+    default String decryptString(String data, KeyType keyType) {
+        return decryptString(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**

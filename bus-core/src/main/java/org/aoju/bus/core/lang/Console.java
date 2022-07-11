@@ -69,14 +69,14 @@ public class Console {
      * 打印控制台日志,同System.out.println()方法
      * 如果传入打印对象为{@link Throwable}对象,那么同时打印堆栈
      *
-     * @param obj 要打印的对象
+     * @param object 要打印的对象
      */
-    public static void log(Object obj) {
-        if (obj instanceof Throwable) {
-            final Throwable e = (Throwable) obj;
+    public static void log(Object object) {
+        if (object instanceof Throwable) {
+            final Throwable e = (Throwable) object;
             log(e, e.getMessage());
         } else {
-            log(Symbol.DELIM, obj);
+            log(Symbol.DELIM, object);
         }
     }
 
@@ -128,10 +128,10 @@ public class Console {
     /**
      * 打印控制台日志,同System.out.print()方法
      *
-     * @param obj 要打印的对象
+     * @param object 要打印的对象
      */
-    public static void print(Object obj) {
-        print(Symbol.DELIM, obj);
+    public static void print(Object object) {
+        print(Symbol.DELIM, object);
     }
 
     /**
@@ -195,14 +195,14 @@ public class Console {
     /**
      * 打印控制台日志,同System.err.println()方法同
      *
-     * @param obj 要打印的对象
+     * @param object 要打印的对象
      */
-    public static void error(Object obj) {
-        if (obj instanceof Throwable) {
-            Throwable e = (Throwable) obj;
+    public static void error(Object object) {
+        if (object instanceof Throwable) {
+            Throwable e = (Throwable) object;
             error(e, e.getMessage());
         } else {
-            error(Symbol.DELIM, obj);
+            error(Symbol.DELIM, object);
         }
     }
 

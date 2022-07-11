@@ -28,8 +28,10 @@ package org.aoju.bus.core.date;
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.text.DateFormat;
@@ -4414,42 +4416,101 @@ public class Almanac extends Converter {
     /**
      * 判断是否过期，（输入年月小于当前年月）
      *
-     * @param yearMonthStr 年月字符串，格式： yyyy-MM
+     * @param value 年月字符串，格式： yyyy-MM
      * @return boolean
      */
-    public static boolean isExpiry(String yearMonthStr) {
-        YearMonth yearMonth = YearMonth.parse(yearMonthStr);
+    public static boolean isExpiry(String value) {
+        YearMonth yearMonth = YearMonth.parse(value);
         return isExpiry(yearMonth);
     }
 
     /**
-     * 是否为生日
+     * 验证是否为生日
+     * 只支持以下几种格式：
+     * <ul>
+     * <li>yyyyMMdd</li>
+     * <li>yyyy-MM-dd</li>
+     * <li>yyyy/MM/dd</li>
+     * <li>yyyy.MM.dd</li>
+     * <li>yyyy年MM月dd日</li>
+     * </ul>
      *
-     * @param birthDay 生日
-     * @return boolean
+     * @param value 值
+     * @return 是否为生日
      */
-    public static boolean isBirthDay(LocalDate birthDay) {
-        return isSameMonthDay(birthDay, LocalDate.now());
+    public static boolean isBirthday(CharSequence value) {
+        final Matcher matcher = RegEx.BIRTHDAY.matcher(value);
+        if (matcher.find()) {
+            return DateKit.isBirthday(Integer.parseInt(matcher.group(1)),
+                    Integer.parseInt(matcher.group(3)),
+                    Integer.parseInt(matcher.group(5)));
+        }
+        return false;
     }
 
     /**
      * 是否为生日
      *
-     * @param birthDay 生日
+     * @param date 生日
      * @return boolean
      */
-    public static boolean isBirthDay(Date birthDay) {
-        return isBirthDay(Converter.toLocalDate(birthDay));
+    public static boolean isBirthDay(Date date) {
+        return isBirthDay(Converter.toLocalDate(date));
     }
 
     /**
      * 是否为生日
      *
-     * @param birthDay 生日
+     * @param localDate 生日
      * @return boolean
      */
-    public static boolean isBirthDay(LocalDateTime birthDay) {
-        return isBirthDay(Converter.toLocalDate(birthDay));
+    public static boolean isBirthDay(LocalDate localDate) {
+        return isSameMonthDay(localDate, LocalDate.now());
+    }
+
+    /**
+     * 是否为生日
+     *
+     * @param localDateTime 生日
+     * @return boolean
+     */
+    public static boolean isBirthDay(LocalDateTime localDateTime) {
+        return isBirthDay(Converter.toLocalDate(localDateTime));
+    }
+
+    /**
+     * 验证是否为生日
+     *
+     * @param year  年，从1900年开始计算
+     * @param month 月，从1开始计数
+     * @param day   日，从1开始计数
+     * @return 是否为生日
+     */
+    public static boolean isBirthday(int year, int month, int day) {
+        // 验证年
+        int thisYear = DateKit.thisYear();
+        if (year < 1900 || year > thisYear) {
+            return false;
+        }
+
+        // 验证月
+        if (month < 1 || month > 12) {
+            return false;
+        }
+
+        // 验证日
+        if (day < 1 || day > 31) {
+            return false;
+        }
+        // 检查几个特殊月的最大天数
+        if (day == 31 && (month == 4 || month == 6 || month == 9 || month == 11)) {
+            return false;
+        }
+        if (month == 2) {
+            // 在2月，非闰年最大28，闰年最大29
+            return day < 29 || (day == 29 && DateKit.isLeapYear(year));
+        }
+        return true;
     }
 
     /**

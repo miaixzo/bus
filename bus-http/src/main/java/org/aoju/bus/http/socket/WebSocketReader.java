@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.source.BufferSource;
 import org.aoju.bus.core.lang.Normal;
 
 import java.io.IOException;

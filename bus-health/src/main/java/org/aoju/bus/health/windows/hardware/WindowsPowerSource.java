@@ -34,6 +34,7 @@ import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.win32.W32APITypeMapper;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.ByRef;
 import org.aoju.bus.health.builtin.Struct;
@@ -41,7 +42,6 @@ import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
 import org.aoju.bus.health.windows.PowrProf;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -202,7 +202,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                                 psCapacityUnits = CapacityUnits.MWH;
                                                             }
                                                             psChemistry = Native.toString(bi.Chemistry,
-                                                                    StandardCharsets.US_ASCII);
+                                                                    Charset.US_ASCII);
                                                             psDesignCapacity = bi.DesignedCapacity;
                                                             psMaxCapacity = bi.FullChargedCapacity;
                                                             psCycleCount = bi.CycleCount;

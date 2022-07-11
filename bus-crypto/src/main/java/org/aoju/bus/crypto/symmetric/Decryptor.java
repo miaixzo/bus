@@ -71,7 +71,7 @@ public interface Decryptor {
      * @param charset 解密后的charset
      * @return 解密后的String
      */
-    default String decryptStr(byte[] bytes, Charset charset) {
+    default String decryptString(byte[] bytes, Charset charset) {
         return StringKit.toString(decrypt(bytes), charset);
     }
 
@@ -81,8 +81,8 @@ public interface Decryptor {
      * @param bytes 被解密的bytes
      * @return 解密后的String
      */
-    default String decryptStr(byte[] bytes) {
-        return decryptStr(bytes, org.aoju.bus.core.lang.Charset.UTF_8);
+    default String decryptString(byte[] bytes) {
+        return decryptString(bytes, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -102,7 +102,7 @@ public interface Decryptor {
      * @param charset 解密后的charset
      * @return 解密后的String
      */
-    default String decryptStr(String data, Charset charset) {
+    default String decryptString(String data, Charset charset) {
         return StringKit.toString(decrypt(data), charset);
     }
 
@@ -112,8 +112,8 @@ public interface Decryptor {
      * @param data 被解密的String
      * @return 解密后的String
      */
-    default String decryptStr(String data) {
-        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
+    default String decryptString(String data) {
+        return decryptString(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -134,7 +134,7 @@ public interface Decryptor {
      * @param charset 解密后的charset
      * @return 解密后的String
      */
-    default String decryptStr(InputStream data, Charset charset) {
+    default String decryptString(InputStream data, Charset charset) {
         return StringKit.toString(decrypt(data), charset);
     }
 
@@ -144,8 +144,8 @@ public interface Decryptor {
      * @param data 被解密的InputStream
      * @return 解密后的String
      */
-    default String decryptStr(InputStream data) {
-        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
+    default String decryptString(InputStream data) {
+        return decryptString(data, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
 }

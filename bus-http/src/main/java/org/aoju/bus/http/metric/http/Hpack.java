@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
-import org.aoju.bus.core.io.Source;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.source.BufferSource;
+import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;

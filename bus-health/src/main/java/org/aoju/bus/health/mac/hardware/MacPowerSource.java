@@ -160,13 +160,13 @@ public final class MacPowerSource extends AbstractPowerSource {
             }
             psPowerUsageRate = psVoltage * psAmperage;
 
-            Boolean bool = smartBattery.getBooleanProperty("ExternalConnected");
-            if (bool != null) {
-                psPowerOnLine = bool;
+            Boolean value = smartBattery.getBooleanProperty("ExternalConnected");
+            if (value != null) {
+                psPowerOnLine = value;
             }
-            bool = smartBattery.getBooleanProperty("IsCharging");
-            if (bool != null) {
-                psCharging = bool;
+            value = smartBattery.getBooleanProperty("IsCharging");
+            if (value != null) {
+                psCharging = value;
             }
             psDischarging = !psCharging;
 

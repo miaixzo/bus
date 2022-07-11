@@ -26,7 +26,7 @@
 package org.aoju.bus.setting;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Dict;
+import org.aoju.bus.core.lang.Dictionary;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -127,8 +127,8 @@ public class Builder {
      * @param path YAML路径，相对路径相对classpath
      * @return 加载的内容，默认Map
      */
-    public static Dict load(String path) {
-        return load(path, Dict.class);
+    public static Dictionary load(String path) {
+        return load(path, Dictionary.class);
     }
 
     /**
@@ -161,8 +161,8 @@ public class Builder {
      * @param reader {@link Reader}
      * @return 加载的Map
      */
-    public static Dict load(Reader reader) {
-        return load(reader, Dict.class);
+    public static Dictionary load(Reader reader) {
+        return load(reader, Dictionary.class);
     }
 
     /**

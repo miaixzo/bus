@@ -115,7 +115,7 @@ public class BCD {
      * @param bytes BCD byte数组
      * @return ASCII字符串
      */
-    public static String bcdToStr(byte[] bytes) {
+    public static String bcdToString(byte[] bytes) {
         Assert.notNull(bytes, "Bcd bytes must be not null!");
         char[] temp = new char[bytes.length * 2];
         char val;

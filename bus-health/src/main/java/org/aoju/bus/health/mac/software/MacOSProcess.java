@@ -32,6 +32,7 @@ import com.sun.jna.platform.mac.SystemB.Group;
 import com.sun.jna.platform.mac.SystemB.Passwd;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Memoize;
@@ -43,7 +44,6 @@ import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.mac.drivers.ThreadInfo;
 import org.aoju.bus.logger.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -359,7 +359,7 @@ public class MacOSProcess extends AbstractOSProcess {
             }
             if (this.name.isEmpty()) {
                 // pbi_comm contains first 16 characters of name
-                this.name = Native.toString(taskAllInfo.pbsd.pbi_comm, StandardCharsets.UTF_8);
+                this.name = Native.toString(taskAllInfo.pbsd.pbi_comm, Charset.UTF_8);
             }
 
             switch (taskAllInfo.pbsd.pbi_status) {
@@ -421,7 +421,7 @@ public class MacOSProcess extends AbstractOSProcess {
         }
         try (Struct.CloseableVnodePathInfo vpi = new Struct.CloseableVnodePathInfo()) {
             if (0 < SystemB.INSTANCE.proc_pidinfo(getProcessID(), SystemB.PROC_PIDVNODEPATHINFO, 0, vpi, vpi.size())) {
-                this.currentWorkingDirectory = Native.toString(vpi.pvi_cdir.vip_path, StandardCharsets.US_ASCII);
+                this.currentWorkingDirectory = Native.toString(vpi.pvi_cdir.vip_path, Charset.US_ASCII);
             }
         }
         return true;

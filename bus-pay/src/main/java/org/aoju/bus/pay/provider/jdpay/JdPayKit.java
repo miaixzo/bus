@@ -1,6 +1,7 @@
 package org.aoju.bus.pay.provider.jdpay;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.XmlKit;
@@ -14,7 +15,6 @@ import javax.xml.xpath.XPathConstants;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -59,7 +59,7 @@ public class JdPayKit {
     private static final String RESULT = "result";
     private static final List<String> unSignKeyList = Arrays.asList("merchantSign", "token", "version");
 
-    public static String fomatXmlStr(String xml) {
+    public static String fomatXmlString(String xml) {
         StringBuilder formatStr = new StringBuilder();
         Scanner scanner = new Scanner(xml);
         scanner.useDelimiter(PATTERN);
@@ -136,7 +136,7 @@ public class JdPayKit {
             try {
                 genSignStr = addXmlHeadAndElJdPay(genSignStr);
 
-                genSignStr = fomatXmlStr(genSignStr);
+                genSignStr = fomatXmlString(genSignStr);
 
                 genSignStr = delXmlElm(genSignStr, SIGN);
 
@@ -144,7 +144,7 @@ public class JdPayKit {
                 System.out.println("sign>" + sign);
                 String data = genSignStr.substring(0, genSignStr.length() - XML_JDPAY_END.length()) + XML_SIGN_START + sign + XML_SIGN_END + XML_JDPAY_END;
 
-                encrypt = Base64.encode(encrypt2HexStr(decryptBASE64(strDesKey), data).getBytes(StandardCharsets.UTF_8));
+                encrypt = Base64.encode(encrypt2HexString(decryptBASE64(strDesKey), data).getBytes(Charset.UTF_8));
             } catch (Exception e) {
                 throw new RuntimeException("signature failed");
             }
@@ -163,10 +163,10 @@ public class JdPayKit {
     public static String decrypt(String rsaPubKey, String strDesKey, String encrypt) {
         String reqBody;
         try {
-            reqBody = decrypt4HexStr(decryptBASE64(strDesKey), new String(Base64.decode(encrypt), StandardCharsets.UTF_8));
+            reqBody = decrypt4HexString(decryptBASE64(strDesKey), new String(Base64.decode(encrypt), Charset.UTF_8));
             String inputSign = getXmlElm(reqBody, SIGN);
             reqBody = addXmlHead(reqBody);
-            reqBody = fomatXmlStr(reqBody);
+            reqBody = fomatXmlString(reqBody);
             String genSignStr = delXmlElm(reqBody, SIGN);
             boolean verifyResult = decryptMerchant(genSignStr, inputSign, rsaPubKey);
             if (!verifyResult) {
@@ -190,7 +190,7 @@ public class JdPayKit {
         try {
             String inputSign = getXmlElm(reqBody, SIGN);
             req = addXmlHead(reqBody);
-            req = fomatXmlStr(req);
+            req = fomatXmlString(req);
             String genSignStr = delXmlElm(req, SIGN);
             boolean verifyResult = decryptMerchant(genSignStr, inputSign, rsaPubKey);
             if (!verifyResult) {
@@ -251,8 +251,8 @@ public class JdPayKit {
         return hs.toUpperCase();
     }
 
-    public static String encrypt2HexStr(byte[] keys, String sourceData) {
-        byte[] source = sourceData.getBytes(StandardCharsets.UTF_8);
+    public static String encrypt2HexString(byte[] keys, String sourceData) {
+        byte[] source = sourceData.getBytes(Charset.UTF_8);
         int merchantData = source.length;
         int x = (merchantData + 4) % 8;
         int y = (x == 0) ? 0 : (8 - x);
@@ -272,10 +272,10 @@ public class JdPayKit {
         return bytes2Hex(desdata);
     }
 
-    public static String decrypt4HexStr(byte[] keys, String data) {
-        byte[] hexSourceData = new byte[0];
+    public static String decrypt4HexString(byte[] keys, String data) {
+        byte[] hexSourceData;
         try {
-            hexSourceData = hex2byte(data.getBytes(StandardCharsets.UTF_8));
+            hexSourceData = hex2byte(data.getBytes(Charset.UTF_8));
             byte[] unDesResult = decrypt(keys, hexSourceData);
             byte[] dataSizeByte = new byte[4];
             dataSizeByte[0] = unDesResult[0];
@@ -308,7 +308,7 @@ public class JdPayKit {
             bytes[i] = (byte) (temp & 0xFF);
         }
 
-        return new String(bytes, StandardCharsets.UTF_8);
+        return new String(bytes, Charset.UTF_8);
     }
 
     private static String toHexString(byte[] ba) {
@@ -368,7 +368,7 @@ public class JdPayKit {
         String result;
         try {
             String sha256SourceSignString = encrypt(sourceSignString, null);
-            byte[] newsks = encryptByPrivateKey(sha256SourceSignString.getBytes(StandardCharsets.UTF_8), rsaPriKey);
+            byte[] newsks = encryptByPrivateKey(sha256SourceSignString.getBytes(Charset.UTF_8), rsaPriKey);
             result = Base64.encode(newsks);
         } catch (Exception e) {
             throw new RuntimeException("verify signature failed.", e);
@@ -407,7 +407,7 @@ public class JdPayKit {
         MessageDigest md;
         String strDes;
         byte[] bt;
-        bt = strSrc.getBytes(StandardCharsets.UTF_8);
+        bt = strSrc.getBytes(Charset.UTF_8);
         try {
             if (encName == null || encName.equals("")) {
                 encName = "SHA-256";
@@ -428,7 +428,7 @@ public class JdPayKit {
             String sourceSignString = signString4SelectedKeys(object, signKeyList);
             String sha256SourceSignString = encrypt(sourceSignString, null);
 
-            byte[] newsks = encryptByPrivateKey(sha256SourceSignString.getBytes(StandardCharsets.UTF_8), rsaPriKey);
+            byte[] newsks = encryptByPrivateKey(sha256SourceSignString.getBytes(Charset.UTF_8), rsaPriKey);
             result = Base64.encode(newsks);
         } catch (Exception e) {
             throw new RuntimeException("sign4SelectedKeys>error", e);
@@ -443,7 +443,7 @@ public class JdPayKit {
         try {
             String sourceSignString = signString(object, signKeyList);
             String sha256SourceSignString = encrypt(sourceSignString, null);
-            byte[] newK = encryptByPrivateKey(sha256SourceSignString.getBytes(StandardCharsets.UTF_8), rsaPriKey);
+            byte[] newK = encryptByPrivateKey(sha256SourceSignString.getBytes(Charset.UTF_8), rsaPriKey);
             result = Base64.encode(newK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -783,7 +783,7 @@ public class JdPayKit {
      */
     public static String threeDesEncrypt(String desKey, String sourceData) {
         byte[] key = Base64.decode(desKey);
-        return encrypt2HexStr(key, sourceData);
+        return encrypt2HexString(key, sourceData);
     }
 
     /**
@@ -795,7 +795,7 @@ public class JdPayKit {
      */
     public static String threeDecDecrypt(String desKey, String sourceData) {
         byte[] key = Base64.decode(desKey);
-        return decrypt4HexStr(key, sourceData);
+        return decrypt4HexString(key, sourceData);
     }
 
 

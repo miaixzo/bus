@@ -28,7 +28,7 @@ package org.aoju.bus.crypto;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.exception.CryptoException;
 import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.io.streams.FastByteOutputStream;
+import org.aoju.bus.core.io.stream.FastByteOutputStream;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.asymmetric.RSA;
@@ -1299,7 +1299,7 @@ public class Builder {
      * @return {@link ASN1Object}的字符串表示形式
      * @see ASN1Dump#dumpAsString(Object)
      */
-    public static String getDumpStr(InputStream in) {
+    public static String getDumpString(InputStream in) {
         return ASN1Dump.dumpAsString(decode(in));
     }
 

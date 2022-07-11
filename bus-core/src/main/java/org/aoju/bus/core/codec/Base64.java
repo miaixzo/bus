@@ -205,7 +205,7 @@ public class Base64 {
      * @param isUrlSafe   是否使用URL安全字符，一般为{@code false}
      * @return 编码后的bytes
      */
-    public static String encodeStr(byte[] arr, boolean isMultiLine, boolean isUrlSafe) {
+    public static String encodeString(byte[] arr, boolean isMultiLine, boolean isUrlSafe) {
         return StringKit.toString(encode(arr, isMultiLine, isUrlSafe), org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
@@ -333,8 +333,8 @@ public class Base64 {
      * @param source 被解码的base64字符串
      * @return 解码后的字符串
      */
-    public static String decodeStr(CharSequence source) {
-        return decodeStr(source, Charset.UTF_8);
+    public static String decodeString(CharSequence source) {
+        return decodeString(source, Charset.UTF_8);
     }
 
     /**
@@ -344,8 +344,8 @@ public class Base64 {
      * @param charset 字符集
      * @return 解码后的字符串
      */
-    public static String decodeStr(CharSequence source, String charset) {
-        return decodeStr(source, Charset.charset(charset));
+    public static String decodeString(CharSequence source, String charset) {
+        return decodeString(source, Charset.charset(charset));
     }
 
     /**
@@ -355,7 +355,7 @@ public class Base64 {
      * @param charset 字符集
      * @return 解码后的字符串
      */
-    public static String decodeStr(CharSequence source, java.nio.charset.Charset charset) {
+    public static String decodeString(CharSequence source, java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 

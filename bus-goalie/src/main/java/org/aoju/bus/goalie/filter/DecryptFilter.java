@@ -88,7 +88,7 @@ public class DecryptFilter implements WebFilter {
         }
         map.forEach((k, v) -> {
             if (StringKit.isNotBlank(v)) {
-                map.put(k, crypto.decryptStr(v.replaceAll(Symbol.SPACE, Symbol.PLUS), Charset.UTF_8));
+                map.put(k, crypto.decryptString(v.replaceAll(Symbol.SPACE, Symbol.PLUS), Charset.UTF_8));
             }
         });
     }

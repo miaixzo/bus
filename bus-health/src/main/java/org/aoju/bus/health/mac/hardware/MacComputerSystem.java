@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -37,7 +38,6 @@ import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 /**
@@ -61,11 +61,11 @@ final class MacComputerSystem extends AbstractComputerSystem {
         if (platformExpert != null) {
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
             if (data != null) {
-                manufacturer = Native.toString(data, StandardCharsets.UTF_8);
+                manufacturer = Native.toString(data, Charset.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("model");
             if (data != null) {
-                model = Native.toString(data, StandardCharsets.UTF_8);
+                model = Native.toString(data, Charset.UTF_8);
             }
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
             uuid = platformExpert.getStringProperty("IOPlatformUUID");

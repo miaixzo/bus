@@ -385,8 +385,8 @@ public class Convert {
      * @param value 被转换的值
      * @return 结果
      */
-    public static Boolean toBool(Object value) {
-        return toBool(value, null);
+    public static Boolean toBoolean(Object value) {
+        return toBoolean(value, null);
     }
 
     /**
@@ -398,7 +398,7 @@ public class Convert {
      * @param defaultValue 转换错误时的默认值
      * @return 结果
      */
-    public static Boolean toBool(Object value, Boolean defaultValue) {
+    public static Boolean toBoolean(Object value, Boolean defaultValue) {
         return convertQuietly(Boolean.class, value, defaultValue);
     }
 

@@ -38,7 +38,6 @@ import org.aoju.bus.spring.SpringBuilder;
  * @since Java 17+
  */
 public class ErrorAdvice {
-
     /**
      * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
      * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求
@@ -48,18 +47,18 @@ public class ErrorAdvice {
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
     public boolean handler(Exception ex) {
+        ErrorService errorService = null;
         try {
-            ErrorService errorService = SpringBuilder.getBean(ErrorService.class);
-            if (ObjectKit.isNotNull(errorService)) {
-                errorService.before(ex);
-                errorService.after(ex);
-            } else {
-                Logger.error(RuntimeKit.getStackTrace(ex));
-            }
+            errorService = SpringBuilder.getBean(ErrorService.class);
         } catch (RuntimeException ignore) {
-            return false;
+
+        }
+        if (null != errorService) {
+            errorService.before(ex);
+            errorService.after(ex);
+        } else {
+            Logger.error(RuntimeKit.getStackTrace(ex));
         }
         return true;
     }
-
 }

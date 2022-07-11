@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.ByteBuffer;
+import org.aoju.bus.core.io.buffer.ByteBuffer;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.handler.CompletionReadHandler;

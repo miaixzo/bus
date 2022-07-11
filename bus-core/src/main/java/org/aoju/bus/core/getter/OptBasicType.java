@@ -46,7 +46,7 @@ public interface OptBasicType<K> {
      * @param defaultValue 默认值
      * @return 属性值, 无对应值返回defaultValue
      */
-    Object getObj(K key, Object defaultValue);
+    Object getObject(K key, Object defaultValue);
 
     /**
      * 获取字符串型属性值
@@ -56,7 +56,7 @@ public interface OptBasicType<K> {
      * @param defaultValue 默认值
      * @return 属性值, 无对应值返回defaultValue
      */
-    String getStr(K key, String defaultValue);
+    String getString(K key, String defaultValue);
 
     /**
      * 获取int型属性值
@@ -86,7 +86,7 @@ public interface OptBasicType<K> {
      * @param defaultValue 默认值
      * @return 属性值, 无对应值返回defaultValue
      */
-    Boolean getBool(K key, Boolean defaultValue);
+    Boolean getBoolean(K key, Boolean defaultValue);
 
     /**
      * 获取Long型属性值

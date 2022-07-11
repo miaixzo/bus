@@ -215,7 +215,7 @@ public interface Encryptor {
      * @return 加密后的密文
      */
     default String encryptBcd(String data, KeyType keyType, Charset charset) {
-        return BCD.bcdToStr(encrypt(data, charset, keyType));
+        return BCD.bcdToString(encrypt(data, charset, keyType));
     }
 
 }

@@ -1,5 +1,6 @@
 package org.aoju.bus.notify.provider.jpush;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.extra.json.JsonKit;
@@ -9,7 +10,6 @@ import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class JpushSmsProvider extends AbstractProvider<JpushProperty, Context> {
 
     private String getSign() {
         String origin = context.getAppKey() + ":" + context.getAppSecret();
-        return Base64.getEncoder().encodeToString(origin.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(origin.getBytes(Charset.UTF_8));
     }
 
 }

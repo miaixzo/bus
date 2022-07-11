@@ -27,7 +27,7 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.exception.CryptoException;
-import org.aoju.bus.core.io.streams.FastByteOutputStream;
+import org.aoju.bus.core.io.stream.FastByteOutputStream;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Ciphers;

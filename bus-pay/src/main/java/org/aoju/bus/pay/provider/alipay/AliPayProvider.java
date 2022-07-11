@@ -5,6 +5,7 @@ import com.alipay.api.*;
 import com.alipay.api.domain.*;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -15,7 +16,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -293,7 +293,7 @@ public class AliPayProvider {
      * @throws IOException        IO 异常
      */
     public static void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl);
+        String form = wapPayString(model, returnUrl, notifyUrl);
         response.setContentType("text/html;charset=" + AliPayKit.getAliPayApiConfig().getCharset());
         PrintWriter out = response.getWriter();
         out.write(form);
@@ -314,7 +314,7 @@ public class AliPayProvider {
      * @throws IOException        IO 异常
      */
     public static void wapPay(AlipayClient alipayClient, HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException, IOException {
-        String form = wapPayStr(alipayClient, model, returnUrl, notifyUrl);
+        String form = wapPayString(alipayClient, model, returnUrl, notifyUrl);
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.write(form);
@@ -335,7 +335,7 @@ public class AliPayProvider {
      * @throws IOException        IO 异常
      */
     public static void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
+        String form = wapPayString(model, returnUrl, notifyUrl, appAuthToken);
         response.setContentType("text/html;charset=" + AliPayKit.getAliPayApiConfig().getCharset());
         PrintWriter out = response.getWriter();
         out.write(form);
@@ -356,7 +356,7 @@ public class AliPayProvider {
      * @throws IOException        IO 异常
      */
     public static void wapPay(AlipayClient alipayClient, HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException, IOException {
-        String form = wapPayStr(alipayClient, model, returnUrl, notifyUrl, appAuthToken);
+        String form = wapPayString(alipayClient, model, returnUrl, notifyUrl, appAuthToken);
         String charset = "UTF-8";
         response.setContentType("text/html;charset=" + charset);
         PrintWriter out = response.getWriter();
@@ -379,7 +379,7 @@ public class AliPayProvider {
      */
     public static void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken)
             throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
+        String form = wapPayString(model, returnUrl, notifyUrl, appAuthToken);
         response.setContentType("text/html;charset=" + AliPayKit.getAliPayApiConfig().getCharset());
         OutputStream out = response.getOutputStream();
         out.write(form.getBytes(AliPayKit.getAliPayApiConfig().getCharset()));
@@ -401,7 +401,7 @@ public class AliPayProvider {
      */
     public static void wapPayByOutputStream(AlipayClient alipayClient, HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken)
             throws AlipayApiException, IOException {
-        String form = wapPayStr(alipayClient, model, returnUrl, notifyUrl, appAuthToken);
+        String form = wapPayString(alipayClient, model, returnUrl, notifyUrl, appAuthToken);
         String charset = "UTF-8";
         response.setContentType("text/html;charset=" + charset);
         OutputStream out = response.getOutputStream();
@@ -421,7 +421,7 @@ public class AliPayProvider {
      * @throws IOException        IO 异常
      */
     public static void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl);
+        String form = wapPayString(model, returnUrl, notifyUrl);
         response.setContentType("text/html;charset=" + AliPayKit.getAliPayApiConfig().getCharset());
         OutputStream out = response.getOutputStream();
         out.write(form.getBytes(AliPayKit.getAliPayApiConfig().getCharset()));
@@ -442,7 +442,7 @@ public class AliPayProvider {
      * @throws IOException        IO 异常
      */
     public static void wapPayByOutputStream(AlipayClient alipayClient, HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException, IOException {
-        String form = wapPayStr(alipayClient, model, returnUrl, notifyUrl);
+        String form = wapPayString(alipayClient, model, returnUrl, notifyUrl);
         String charset = "UTF-8";
         response.setContentType("text/html;charset=" + charset);
         OutputStream out = response.getOutputStream();
@@ -459,7 +459,7 @@ public class AliPayProvider {
      * @return {String}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public static String wapPayStr(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException {
+    public static String wapPayString(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException {
         AlipayTradeWapPayRequest aliPayRequest = new AlipayTradeWapPayRequest();
         aliPayRequest.setReturnUrl(returnUrl);
         aliPayRequest.setNotifyUrl(notifyUrl);
@@ -477,7 +477,7 @@ public class AliPayProvider {
      * @return {String}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public static String wapPayStr(AlipayClient alipayClient, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException {
+    public static String wapPayString(AlipayClient alipayClient, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException {
         AlipayTradeWapPayRequest aliPayRequest = new AlipayTradeWapPayRequest();
         aliPayRequest.setReturnUrl(returnUrl);
         aliPayRequest.setNotifyUrl(notifyUrl);
@@ -495,7 +495,7 @@ public class AliPayProvider {
      * @return {String}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public static String wapPayStr(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public static String wapPayString(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException {
         AlipayTradeWapPayRequest aliPayRequest = new AlipayTradeWapPayRequest();
         aliPayRequest.setReturnUrl(returnUrl);
         aliPayRequest.setNotifyUrl(notifyUrl);
@@ -515,7 +515,7 @@ public class AliPayProvider {
      * @return {String}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public static String wapPayStr(AlipayClient alipayClient, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public static String wapPayString(AlipayClient alipayClient, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException {
         AlipayTradeWapPayRequest aliPayRequest = new AlipayTradeWapPayRequest();
         aliPayRequest.setReturnUrl(returnUrl);
         aliPayRequest.setNotifyUrl(notifyUrl);
@@ -1970,7 +1970,7 @@ public class AliPayProvider {
      * @throws UnsupportedEncodingException 编码异常
      */
     public static String getOauth2Url(String appId, String redirectUri) throws UnsupportedEncodingException {
-        return new StringBuffer().append("https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=").append(appId).append("&redirect_uri=").append(URLEncoder.encode(redirectUri, StandardCharsets.UTF_8))
+        return new StringBuffer().append("https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=").append(appId).append("&redirect_uri=").append(URLEncoder.encode(redirectUri, Charset.UTF_8))
                 .toString();
     }
 

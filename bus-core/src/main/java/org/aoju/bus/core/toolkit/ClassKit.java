@@ -118,26 +118,26 @@ public class ClassKit {
     /**
      * {@code null}安全的获取对象类型
      *
-     * @param <T> 对象类型
-     * @param obj 对象,如果为{@code null} 返回{@code null}
+     * @param <T>    对象类型
+     * @param object 对象,如果为{@code null} 返回{@code null}
      * @return 对象类型, 提供对象如果为{@code null} 返回{@code null}
      */
-    public static <T> Class<T> getClass(T obj) {
-        return ((null == obj) ? null : (Class<T>) obj.getClass());
+    public static <T> Class<T> getClass(T object) {
+        return ((null == object) ? null : (Class<T>) object.getClass());
     }
 
     /**
      * 获取类名
      *
-     * @param obj      获取类名对象
+     * @param object   获取类名对象
      * @param isSimple 是否简单类名,如果为true,返回不带包名的类名
      * @return 类名
      */
-    public static String getClassName(Object obj, boolean isSimple) {
-        if (null == obj) {
+    public static String getClassName(Object object, boolean isSimple) {
+        if (null == object) {
             return null;
         }
-        final Class<?> clazz = obj.getClass();
+        final Class<?> clazz = object.getClass();
         return getClassName(clazz, isSimple);
     }
 
@@ -170,15 +170,15 @@ public class ClassKit {
      */
     public static Class<?>[] getClasses(Object... objects) {
         Class<?>[] classes = new Class<?>[objects.length];
-        Object obj;
+        Object object;
         for (int i = 0; i < objects.length; i++) {
-            obj = objects[i];
-            if (obj instanceof NullWrapper) {
-                classes[i] = ((NullWrapper) obj).getWrappedClass();
-            } else if (null == obj) {
+            object = objects[i];
+            if (object instanceof NullWrapper) {
+                classes[i] = ((NullWrapper) object).getWrappedClass();
+            } else if (null == object) {
                 classes[i] = Object.class;
             } else {
-                classes[i] = obj.getClass();
+                classes[i] = object.getClass();
             }
         }
         return classes;
@@ -322,14 +322,14 @@ public class ClassKit {
     /**
      * 查找指定对象中的所有方法(包括非public方法),也包括父对象和Object类的方法
      *
-     * @param obj        被查找的对象
+     * @param object     被查找的对象
      * @param methodName 方法名
      * @param args       参数
      * @return 方法
      * @throws SecurityException 无访问权限抛出异常
      */
-    public static Method getDeclaredMethodOfObj(Object obj, String methodName, Object... args) throws SecurityException {
-        return getDeclaredMethod(obj.getClass(), methodName, getClasses(args));
+    public static Method getDeclaredMethodOfObject(Object object, String methodName, Object... args) throws SecurityException {
+        return getDeclaredMethod(object.getClass(), methodName, getClasses(args));
     }
 
     /**

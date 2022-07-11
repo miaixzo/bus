@@ -154,7 +154,7 @@ public class Addables {
                 return this;
             }
 
-            list.stream().map(obj -> (Map.Entry) obj).forEach(entry -> instance.put(entry.getKey(), entry.getValue()));
+            list.stream().map(object -> (Map.Entry) object).forEach(entry -> instance.put(entry.getKey(), entry.getValue()));
 
             return this;
         }

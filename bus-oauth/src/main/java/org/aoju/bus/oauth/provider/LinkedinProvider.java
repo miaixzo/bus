@@ -196,8 +196,8 @@ public class LinkedinProvider extends AbstractProvider {
 
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
-        Object obj = JSONPath.eval(object, "$['elements'][0]['handle~']['emailAddress']");
-        return null == obj ? null : (String) obj;
+        Object value = JSONPath.eval(object, "$['elements'][0]['handle~']['emailAddress']");
+        return null == value ? null : (String) value;
     }
 
     private String getUserName(JSONObject userInfoObject, String nameKey) {

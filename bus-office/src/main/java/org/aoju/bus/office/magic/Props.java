@@ -44,13 +44,13 @@ public final class Props {
     /**
      * 从指定对象的属性中获取属性值.
      *
-     * @param obj      获取属性的对象.
+     * @param object   获取属性的对象.
      * @param propName 要获取的属性名.
      * @return 包含属性值的可选属性。如果无法检索属性，可选属性将为空.
      * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
      */
-    public static Optional<Object> getProperty(final Object obj, final String propName) {
-        return getProperty(Lo.qi(XPropertySet.class, obj), propName);
+    public static Optional<Object> getProperty(final Object object, final String propName) {
+        return getProperty(Lo.qi(XPropertySet.class, object), propName);
     }
 
     /**

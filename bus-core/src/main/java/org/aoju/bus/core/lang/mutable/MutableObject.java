@@ -73,15 +73,15 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (null == obj) {
+    public boolean equals(final Object object) {
+        if (null == object) {
             return false;
         }
-        if (this == obj) {
+        if (this == object) {
             return true;
         }
-        if (this.getClass() == obj.getClass()) {
-            final MutableObject<?> that = (MutableObject<?>) obj;
+        if (this.getClass() == object.getClass()) {
+            final MutableObject<?> that = (MutableObject<?>) object;
             return this.value.equals(that.value);
         }
         return false;

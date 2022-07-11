@@ -30,13 +30,13 @@ import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 /**
@@ -69,27 +69,27 @@ final class MacFirmware extends AbstractFirmware {
                         case "rom":
                             data = entry.getByteArrayProperty("vendor");
                             if (data != null) {
-                                manufacturer = Native.toString(data, StandardCharsets.UTF_8);
+                                manufacturer = Native.toString(data, Charset.UTF_8);
                             }
                             data = entry.getByteArrayProperty("version");
                             if (data != null) {
-                                version = Native.toString(data, StandardCharsets.UTF_8);
+                                version = Native.toString(data, Charset.UTF_8);
                             }
                             data = entry.getByteArrayProperty("release-date");
                             if (data != null) {
-                                releaseDate = Native.toString(data, StandardCharsets.UTF_8);
+                                releaseDate = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         case "chosen":
                             data = entry.getByteArrayProperty("booter-name");
                             if (data != null) {
-                                name = Native.toString(data, StandardCharsets.UTF_8);
+                                name = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         case "efi":
                             data = entry.getByteArrayProperty("firmware-abi");
                             if (data != null) {
-                                description = Native.toString(data, StandardCharsets.UTF_8);
+                                description = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         default:
@@ -106,19 +106,19 @@ final class MacFirmware extends AbstractFirmware {
             if (StringKit.isBlank(manufacturer)) {
                 data = platformExpert.getByteArrayProperty("manufacturer");
                 if (data != null) {
-                    manufacturer = Native.toString(data, StandardCharsets.UTF_8);
+                    manufacturer = Native.toString(data, Charset.UTF_8);
                 }
             }
             if (StringKit.isBlank(version)) {
                 data = platformExpert.getByteArrayProperty("target-type");
                 if (data != null) {
-                    version = Native.toString(data, StandardCharsets.UTF_8);
+                    version = Native.toString(data, Charset.UTF_8);
                 }
             }
             if (StringKit.isBlank(name)) {
                 data = platformExpert.getByteArrayProperty("device_type");
                 if (data != null) {
-                    name = Native.toString(data, StandardCharsets.UTF_8);
+                    name = Native.toString(data, Charset.UTF_8);
                 }
             }
             platformExpert.release();

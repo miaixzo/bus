@@ -46,22 +46,22 @@ public class IndexedCompare<T> implements Comparator<T> {
     /**
      * 构造
      *
-     * @param obj 参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param object 参与排序的数组，数组的元素位置决定了对象的排序先后
      */
-    public IndexedCompare(T... obj) {
-        this(false, obj);
+    public IndexedCompare(T... object) {
+        this(false, object);
     }
 
     /**
      * 构造
      *
      * @param atEndIfMiss 如果不在列表中是否排在后边
-     * @param obj         参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param object      参与排序的数组，数组的元素位置决定了对象的排序先后
      */
-    public IndexedCompare(boolean atEndIfMiss, T... obj) {
-        Assert.notNull(obj, "'objs' array must not be null");
+    public IndexedCompare(boolean atEndIfMiss, T... object) {
+        Assert.notNull(object, "'objs' array must not be null");
         this.atEndIfMiss = atEndIfMiss;
-        this.array = obj;
+        this.array = object;
     }
 
     @Override

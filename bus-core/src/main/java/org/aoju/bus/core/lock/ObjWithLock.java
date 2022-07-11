@@ -51,26 +51,26 @@ public class ObjWithLock<T> implements Serializable {
     /**
      * 对象信息
      */
-    private T obj;
+    private T object;
 
     /**
      * 构造对象
      *
-     * @param obj 对象信息
+     * @param object 对象信息
      */
-    public ObjWithLock(T obj) {
-        this(obj, new ReentrantReadWriteLock());
+    public ObjWithLock(T object) {
+        this(object, new ReentrantReadWriteLock());
     }
 
     /**
      * 构造对象
      *
-     * @param obj  对象信息
-     * @param lock 读写锁
+     * @param object 对象信息
+     * @param lock   读写锁
      */
-    public ObjWithLock(T obj, ReentrantReadWriteLock lock) {
+    public ObjWithLock(T object, ReentrantReadWriteLock lock) {
         super();
-        this.obj = obj;
+        this.object = object;
         this.lock = lock;
     }
 
@@ -106,17 +106,17 @@ public class ObjWithLock<T> implements Serializable {
      *
      * @return 对象
      */
-    public T getObj() {
-        return obj;
+    public T getObject() {
+        return object;
     }
 
     /**
      * 设置对象
      *
-     * @param obj 对象信息
+     * @param object 对象信息
      */
-    public void setObj(T obj) {
-        this.obj = obj;
+    public void setObject(T object) {
+        this.object = object;
     }
 
     /**
@@ -128,7 +128,7 @@ public class ObjWithLock<T> implements Serializable {
         ReadLock readLock = lock.readLock();
         readLock.lock();
         try {
-            readLockHandler.read(obj);
+            readLockHandler.read(object);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
         } finally {
@@ -145,7 +145,7 @@ public class ObjWithLock<T> implements Serializable {
         WriteLock writeLock = lock.writeLock();
         writeLock.lock();
         try {
-            writeLockHandler.write(obj);
+            writeLockHandler.write(object);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
         } finally {

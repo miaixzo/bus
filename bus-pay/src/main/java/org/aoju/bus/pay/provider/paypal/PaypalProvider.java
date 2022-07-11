@@ -1,6 +1,7 @@
 package org.aoju.bus.pay.provider.paypal;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pay.Builder;
@@ -8,7 +9,6 @@ import org.aoju.bus.pay.Context;
 import org.aoju.bus.pay.magic.Results;
 import org.aoju.bus.pay.metric.HttpKit;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public class PaypalProvider {
         Map<String, String> headers = new HashMap<>(3);
         headers.put("Accept", MediaType.APPLICATION_JSON);
         headers.put("Content-Type", MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization", "Basic ".concat(Base64.encode((context.getClientId().concat(":").concat(context.getSecret())).getBytes(StandardCharsets.UTF_8))));
+        headers.put("Authorization", "Basic ".concat(Base64.encode((context.getClientId().concat(":").concat(context.getSecret())).getBytes(Charset.UTF_8))));
         Map<String, Object> params = new HashMap<>(1);
         params.put("grant_type", "client_credentials");
         return post(getReqUrl(PayPalApiUrl.GET_TOKEN, context.isSandBox()), params, headers);
@@ -187,7 +187,7 @@ public class PaypalProvider {
     }
 
     public static Map<String, String> getBaseHeaders(AccessToken accessToken) {
-        return getBaseHeaders(accessToken, Builder.generateStr(), null, null);
+        return getBaseHeaders(accessToken, Builder.generateString(), null, null);
     }
 
     public static Map<String, String> getBaseHeaders(AccessToken accessToken,

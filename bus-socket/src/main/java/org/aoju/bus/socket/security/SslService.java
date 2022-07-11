@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.security;
 
-import org.aoju.bus.core.io.PageBuffer;
+import org.aoju.bus.core.io.buffer.PageBuffer;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.*;

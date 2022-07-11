@@ -664,12 +664,12 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         boolean isFirstRow = true;
         Map<?, ?> map;
-        for (Object obj : data) {
-            if (obj instanceof Map) {
+        for (Object object : data) {
+            if (object instanceof Map) {
                 map = new TreeMap<>(comparator);
-                map.putAll((Map) obj);
+                map.putAll((Map) object);
             } else {
-                map = BeanKit.beanToMap(obj, new TreeMap<>(comparator), false, false);
+                map = BeanKit.beanToMap(object, new TreeMap<>(comparator), false, false);
             }
             writeRow(map, isFirstRow);
             if (isFirstRow) {

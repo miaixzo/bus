@@ -433,15 +433,15 @@ public class Property implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object object) {
+        if (this == object)
             return true;
-        if (null == obj)
+        if (null == object)
             return false;
-        if (getClass() != obj.getClass())
+        if (getClass() != object.getClass())
             return false;
 
-        Property other = (Property) obj;
+        Property other = (Property) object;
         return name.equals(other.name)
                 && value.equals(other.value);
     }

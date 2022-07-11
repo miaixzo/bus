@@ -41,11 +41,11 @@ import java.util.Map;
 public class XmlProvider implements Provider {
 
     @Override
-    public String serialize(Object obj) {
+    public String serialize(Object object) {
         try {
             StringBuffer buffer = new StringBuffer();
             buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            Map<String, Object> map = JsonKit.getProvider().toMap(obj);
+            Map<String, Object> map = JsonKit.getProvider().toMap(object);
             XmlKit.toXml(map, buffer);
             return buffer.toString();
         } catch (Exception e) {

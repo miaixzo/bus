@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.ByteBuffer;
-import org.aoju.bus.core.io.PageBuffer;
-import org.aoju.bus.core.io.VirtualBuffer;
+import org.aoju.bus.core.io.buffer.ByteBuffer;
+import org.aoju.bus.core.io.buffer.PageBuffer;
+import org.aoju.bus.core.io.buffer.VirtualBuffer;
 
 /**
  * 内存池工厂

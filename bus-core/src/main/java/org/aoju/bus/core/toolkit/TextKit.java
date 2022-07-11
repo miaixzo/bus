@@ -216,11 +216,11 @@ public class TextKit implements CharSequence, Appendable, Serializable {
     /**
      * 追加对象,对象会被转换为字符串
      *
-     * @param obj 对象
+     * @param object 对象
      * @return this
      */
-    public TextKit append(Object obj) {
-        return insert(this.position, obj);
+    public TextKit append(Object object) {
+        return insert(this.position, object);
     }
 
     /**
@@ -272,15 +272,15 @@ public class TextKit implements CharSequence, Appendable, Serializable {
     /**
      * 追加对象,对象会被转换为字符串
      *
-     * @param index 位置
-     * @param obj   对象
+     * @param index  位置
+     * @param object 对象
      * @return this
      */
-    public TextKit insert(int index, Object obj) {
-        if (obj instanceof CharSequence) {
-            return insert(index, (CharSequence) obj);
+    public TextKit insert(int index, Object object) {
+        if (object instanceof CharSequence) {
+            return insert(index, (CharSequence) object);
         }
-        return insert(index, Convert.toString(obj));
+        return insert(index, Convert.toString(object));
     }
 
     /**
