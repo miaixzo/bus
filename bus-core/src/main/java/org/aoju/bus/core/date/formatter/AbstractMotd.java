@@ -79,11 +79,11 @@ public abstract class AbstractMotd implements DateMotd, Serializable {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof FastDatePrinter == false) {
+    public boolean equals(final Object object) {
+        if (object instanceof FastDatePrinter == false) {
             return false;
         }
-        final AbstractMotd other = (AbstractMotd) obj;
+        final AbstractMotd other = (AbstractMotd) object;
         return pattern.equals(other.pattern) && timeZone.equals(other.timeZone) && locale.equals(other.locale);
     }
 

@@ -26,8 +26,8 @@
 package org.aoju.bus.socket;
 
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.io.PageBuffer;
-import org.aoju.bus.core.io.VirtualBuffer;
+import org.aoju.bus.core.io.buffer.PageBuffer;
+import org.aoju.bus.core.io.buffer.VirtualBuffer;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.socket.process.MessageProcessor;
@@ -62,7 +62,7 @@ public class UdpBootstrap<R> {
     /**
      * 缓存页
      */
-    private final PageBuffer bufferPage = new org.aoju.bus.core.io.ByteBuffer(Normal._1024 * Normal._1024, 1, true).allocatePageBuffer();
+    private final PageBuffer bufferPage = new org.aoju.bus.core.io.buffer.ByteBuffer(Normal._1024 * Normal._1024, 1, true).allocatePageBuffer();
 
     /**
      * 服务配置

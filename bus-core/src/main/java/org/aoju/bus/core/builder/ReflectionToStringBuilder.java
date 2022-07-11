@@ -197,9 +197,9 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         return new ReflectionToStringBuilder(object).setExcludeFieldNames(excludeFieldNames).toString();
     }
 
-    private static Object checkNotNull(final Object obj) {
-        Assert.isTrue(null != obj, "The Object passed in should not be null.");
-        return obj;
+    private static Object checkNotNull(final Object object) {
+        Assert.isTrue(null != object, "The Object passed in should not be null.");
+        return object;
     }
 
     /**

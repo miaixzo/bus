@@ -1044,17 +1044,17 @@ public class PatternKit {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
+        public boolean equals(Object object) {
+            if (this == object) {
                 return true;
             }
-            if (null == obj) {
+            if (null == object) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
+            if (getClass() != object.getClass()) {
                 return false;
             }
-            RegexWithFlag other = (RegexWithFlag) obj;
+            RegexWithFlag other = (RegexWithFlag) object;
             if (flag != other.flag) {
                 return false;
             }

@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpz;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferSource;
-import org.aoju.bus.core.io.DelegateSource;
-import org.aoju.bus.core.io.Source;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.source.AssignSource;
+import org.aoju.bus.core.io.source.BufferSource;
+import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Response;
@@ -85,7 +85,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
         }
 
         private Source source(Source source) {
-            return new DelegateSource(source) {
+            return new AssignSource(source) {
                 long downloadLenth = 0L;
 
                 @Override

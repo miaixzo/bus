@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.Sink;
-import org.aoju.bus.core.io.Source;
+import org.aoju.bus.core.io.sink.Sink;
+import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.*;

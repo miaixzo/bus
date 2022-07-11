@@ -3,6 +3,7 @@ package org.aoju.bus.pay.metric;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -13,7 +14,6 @@ import org.aoju.bus.pay.magic.Results;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
@@ -59,8 +59,8 @@ public class WxPayKit {
         return Builder.encryptData(data, key);
     }
 
-    public static String generateStr() {
-        return Builder.generateStr();
+    public static String generateString() {
+        return Builder.generateString();
     }
 
     /**
@@ -217,7 +217,7 @@ public class WxPayKit {
         map.put("appid", appId);
         map.put("mch_id", mchId);
         map.put("time_stamp", StringKit.isEmpty(timeStamp) ? Long.toString(System.currentTimeMillis() / 1000) : timeStamp);
-        map.put("nonce_str", StringKit.isEmpty(nonceStr) ? WxPayKit.generateStr() : nonceStr);
+        map.put("nonce_str", StringKit.isEmpty(nonceStr) ? WxPayKit.generateString() : nonceStr);
         map.put("product_id", productId);
         return bizPayUrl(createSign(map, partnerKey, algorithm), appId, mchId, productId, timeStamp, nonceStr);
     }
@@ -234,7 +234,7 @@ public class WxPayKit {
      */
     public static String bizPayUrl(String partnerKey, String appId, String mchId, String productId) {
         String timeStamp = Long.toString(System.currentTimeMillis() / 1000);
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         HashMap<String, String> map = new HashMap<>(5);
         map.put("appid", appId);
         map.put("mch_id", mchId);
@@ -478,7 +478,7 @@ public class WxPayKit {
                                             String serialNo, String keyPath, String body) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = Builder.generateStr();
+        String nonceStr = Builder.generateString();
         return buildAuthorization(method, urlSuffix, mchId, serialNo, keyPath, body, nonceStr, timestamp, authType);
     }
 
@@ -498,7 +498,7 @@ public class WxPayKit {
                                             String serialNo, PrivateKey privateKey, String body) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = Builder.generateStr();
+        String nonceStr = Builder.generateString();
 
         return buildAuthorization(method, urlSuffix, mchId, serialNo, privateKey, body, nonceStr, timestamp, authType);
     }
@@ -633,11 +633,11 @@ public class WxPayKit {
                 String nonceStr = resource.getString("nonce");
                 String associatedData = resource.getString("associated_data");
 
-                Secure secure = new Secure(key.getBytes(StandardCharsets.UTF_8));
+                Secure secure = new Secure(key.getBytes(Charset.UTF_8));
                 // 密文解密
                 return secure.decryptToString(
-                        associatedData.getBytes(StandardCharsets.UTF_8),
-                        nonceStr.getBytes(StandardCharsets.UTF_8),
+                        associatedData.getBytes(Charset.UTF_8),
+                        nonceStr.getBytes(Charset.UTF_8),
                         cipherText
                 );
             } else {

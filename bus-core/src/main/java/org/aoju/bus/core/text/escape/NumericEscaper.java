@@ -273,14 +273,14 @@ public class NumericEscaper extends CodePointTranslator {
             return between(min, max, getComparator());
         }
 
-        public boolean equals(Object obj) {
-            if (obj == this) {
+        public boolean equals(Object object) {
+            if (object == this) {
                 return true;
             }
-            if ((null == obj) || (obj.getClass() != getClass())) {
+            if ((null == object) || (object.getClass() != getClass())) {
                 return false;
             }
-            Range<T> range = (Range) obj;
+            Range<T> range = (Range) object;
             return (this.minimum.equals(range.minimum)) &&
                     (this.maximum.equals(range.maximum));
         }

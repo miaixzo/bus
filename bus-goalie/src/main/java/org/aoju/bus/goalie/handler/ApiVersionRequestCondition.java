@@ -172,7 +172,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
         public String toString() {
             StringBuilder builder = new StringBuilder();
             if (null != terminals && terminals.length != 0) {
-                builder.append(ArrayKit.join(terminals, Symbol.COMMA));
+                builder.append(ArrayKit.join(Symbol.COMMA, terminals));
             } else {
                 builder.append("*");
             }
@@ -184,13 +184,13 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
+        public boolean equals(Object object) {
+            if (this == object) {
                 return true;
             }
-            if (null != obj && obj instanceof TerminalVersionExpression) {
+            if (null != object && object instanceof TerminalVersionExpression) {
                 // 暂定最终的表达式结果一致确定唯一性，后期有需要调整
-                return this.toString().equalsIgnoreCase(obj.toString());
+                return this.toString().equalsIgnoreCase(object.toString());
             }
             return false;
         }

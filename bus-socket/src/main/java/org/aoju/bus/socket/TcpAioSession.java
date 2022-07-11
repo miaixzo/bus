@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.PageBuffer;
-import org.aoju.bus.core.io.VirtualBuffer;
-import org.aoju.bus.core.io.WriteBuffer;
+import org.aoju.bus.core.io.buffer.PageBuffer;
+import org.aoju.bus.core.io.buffer.VirtualBuffer;
+import org.aoju.bus.core.io.buffer.WriteBuffer;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.socket.handler.CompletionReadHandler;
 import org.aoju.bus.socket.handler.CompletionWriteHandler;

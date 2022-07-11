@@ -27,7 +27,7 @@ package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.io.watchers.SimpleWatcher;
+import org.aoju.bus.core.io.watcher.SimpleWatcher;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.IOException;

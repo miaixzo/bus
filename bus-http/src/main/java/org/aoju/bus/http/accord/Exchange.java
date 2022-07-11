@@ -25,7 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.sink.AssignSink;
+import org.aoju.bus.core.io.sink.Sink;
+import org.aoju.bus.core.io.source.AssignSource;
+import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.NewCall;
@@ -221,7 +225,7 @@ public class Exchange {
     /**
      * 完成时触发事件的请求正文
      */
-    private class RequestBodySink extends DelegateSink {
+    private class RequestBodySink extends AssignSink {
         private boolean completed;
         /**
          * 要写入的确切字节数，如果未知，则为 -1L
@@ -284,7 +288,7 @@ public class Exchange {
     /**
      * 完成时触发事件的响应主体
      */
-    class ResponseBodySource extends DelegateSource {
+    class ResponseBodySource extends AssignSource {
         private final long contentLength;
         private long bytesReceived;
         private boolean completed;

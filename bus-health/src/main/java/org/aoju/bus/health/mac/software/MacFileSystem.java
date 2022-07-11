@@ -40,6 +40,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
@@ -49,7 +50,6 @@ import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,9 +169,9 @@ public class MacFileSystem extends AbstractFileSystem {
                     // Byte arrays are null-terminated strings
 
                     // Get volume and path name, and type
-                    String volume = Native.toString(fs[f].f_mntfromname, StandardCharsets.UTF_8);
-                    String path = Native.toString(fs[f].f_mntonname, StandardCharsets.UTF_8);
-                    String type = Native.toString(fs[f].f_fstypename, StandardCharsets.UTF_8);
+                    String volume = Native.toString(fs[f].f_mntfromname, Charset.UTF_8);
+                    String path = Native.toString(fs[f].f_mntonname, Charset.UTF_8);
+                    String type = Native.toString(fs[f].f_fstypename, Charset.UTF_8);
                     // Skip non-local drives if requested, skip system types
                     final int flags = fs[f].f_flags;
 

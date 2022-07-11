@@ -30,7 +30,7 @@ import org.aoju.bus.core.exception.InstrumentException;
 import java.util.Map;
 
 /**
- * 查找字符串值的字符串键.
+ * 查找字符串值的字符串键
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,7 +38,7 @@ import java.util.Map;
 public abstract class Lookups<V> {
 
     /**
-     * 基于系统属性的查找.
+     * 基于系统属性的查找
      */
     private static final Lookups<String> SYSTEM_PROPERTIES_LOOKUP = new SystemPropertiesLookups();
 
@@ -110,11 +110,11 @@ public abstract class Lookups<V> {
             if (null == map) {
                 return null;
             }
-            final Object obj = map.get(key);
-            if (null == obj) {
+            final Object object = map.get(key);
+            if (null == object) {
                 return null;
             }
-            return obj.toString();
+            return object.toString();
         }
     }
 

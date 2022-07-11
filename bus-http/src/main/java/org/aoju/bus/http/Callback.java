@@ -44,7 +44,20 @@ public interface Callback<T> {
      * @param call 调用者信息
      * @param ex   异常信息
      */
-    void onFailure(NewCall call, IOException ex);
+    default void onFailure(NewCall call, IOException ex) {
+
+    }
+
+    /**
+     * 失败回调信息
+     *
+     * @param newCall   回调信息
+     * @param exception 异常
+     * @param id        当前请求标识
+     */
+    default void onFailure(NewCall newCall, Exception exception, String id) {
+
+    }
 
     /**
      * 当远程服务器成功返回HTTP响应时调用。回调可以继续使用{@link Response#body}读取响应体响应仍然是
@@ -56,16 +69,7 @@ public interface Callback<T> {
      * @param response 响应体
      * @throws IOException 异常信息
      */
-    void onResponse(NewCall call, Response response) throws IOException;
-
-    /**
-     * 失败回调信息
-     *
-     * @param newCall   回调信息
-     * @param exception 异常
-     * @param id        当前请求标识
-     */
-    default void onFailure(NewCall newCall, Exception exception, String id) {
+    default void onResponse(NewCall call, Response response) throws IOException {
 
     }
 

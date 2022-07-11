@@ -149,33 +149,33 @@ public class MethodHandle {
      * </pre>
      *
      * @param <T>        返回结果类型
-     * @param obj        接口的子对象或代理对象
+     * @param object        接口的子对象或代理对象
      * @param methodName 方法名称
      * @param args       参数
      * @return 结果
      */
-    public static <T> T invokeSpecial(Object obj, String methodName, Object... args) {
-        Assert.notNull(obj, "Object to get method must be not null!");
+    public static <T> T invokeSpecial(Object object, String methodName, Object... args) {
+        Assert.notNull(object, "Object to get method must be not null!");
         Assert.notBlank(methodName, "Method name must be not blank!");
 
-        final Method method = ReflectKit.getMethodOfObj(obj, methodName, args);
+        final Method method = ReflectKit.getMethodOfObject(object, methodName, args);
         if (null == method) {
-            throw new InstrumentException("No such method: [{}] from [{}]", methodName, obj.getClass());
+            throw new InstrumentException("No such method: [{}] from [{}]", methodName, object.getClass());
         }
-        return invokeSpecial(obj, method, args);
+        return invokeSpecial(object, method, args);
     }
 
     /**
      * 执行接口或对象中的方法
      *
      * @param <T>    返回结果类型
-     * @param obj    接口的子对象或代理对象
+     * @param object 接口的子对象或代理对象
      * @param method 方法
      * @param args   参数
      * @return 结果
      */
-    public static <T> T invoke(Object obj, Method method, Object... args) {
-        return invoke(false, obj, method, args);
+    public static <T> T invoke(Object object, Method method, Object... args) {
+        return invoke(false, object, method, args);
     }
 
     /**
@@ -195,13 +195,13 @@ public class MethodHandle {
      * </pre>
      *
      * @param <T>    返回结果类型
-     * @param obj    接口的子对象或代理对象
+     * @param object    接口的子对象或代理对象
      * @param method 方法
      * @param args   参数
      * @return 结果
      */
-    public static <T> T invokeSpecial(Object obj, Method method, Object... args) {
-        return invoke(true, obj, method, args);
+    public static <T> T invokeSpecial(Object object, Method method, Object... args) {
+        return invoke(true, object, method, args);
     }
 
     /**
@@ -222,20 +222,20 @@ public class MethodHandle {
      *
      * @param <T>       返回结果类型
      * @param isSpecial 是否为特殊方法（private、static等）
-     * @param obj       接口的子对象或代理对象
+     * @param object       接口的子对象或代理对象
      * @param method    方法
      * @param args      参数
      * @return 结果
      */
-    public static <T> T invoke(boolean isSpecial, Object obj, Method method, Object... args) {
+    public static <T> T invoke(boolean isSpecial, Object object, Method method, Object... args) {
         Assert.notNull(method, "Method must be not null!");
         final Class<?> declaringClass = method.getDeclaringClass();
         final MethodHandles.Lookup lookup = lookup(declaringClass);
         try {
             java.lang.invoke.MethodHandle handle = isSpecial ? lookup.unreflectSpecial(method, declaringClass)
                     : lookup.unreflect(method);
-            if (null != obj) {
-                handle = handle.bindTo(obj);
+            if (null != object) {
+                handle = handle.bindTo(object);
             }
             return (T) handle.invokeWithArguments(args);
         } catch (Throwable e) {

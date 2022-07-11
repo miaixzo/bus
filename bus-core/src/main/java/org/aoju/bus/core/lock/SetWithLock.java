@@ -68,7 +68,7 @@ public class SetWithLock<T> extends ObjWithLock<Set<T>> {
         ReentrantReadWriteLock.WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            Set<T> set = this.getObj();
+            Set<T> set = this.getObject();
             return set.add(t);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -85,7 +85,7 @@ public class SetWithLock<T> extends ObjWithLock<Set<T>> {
         ReentrantReadWriteLock.WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            Set<T> set = this.getObj();
+            Set<T> set = this.getObject();
             set.clear();
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -104,7 +104,7 @@ public class SetWithLock<T> extends ObjWithLock<Set<T>> {
         ReentrantReadWriteLock.WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            Set<T> set = this.getObj();
+            Set<T> set = this.getObject();
             return set.remove(t);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -123,7 +123,7 @@ public class SetWithLock<T> extends ObjWithLock<Set<T>> {
         ReentrantReadWriteLock.ReadLock readLock = this.readLock();
         readLock.lock();
         try {
-            Set<T> set = this.getObj();
+            Set<T> set = this.getObject();
             return set.size();
         } finally {
             readLock.unlock();

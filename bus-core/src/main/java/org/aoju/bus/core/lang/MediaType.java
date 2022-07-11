@@ -418,11 +418,11 @@ public class MediaType {
         return map;
     }
 
-    public boolean equals(Object obj) {
-        if (!(obj instanceof MediaType)) {
+    public boolean equals(Object object) {
+        if (!(object instanceof MediaType)) {
             return false;
         } else {
-            MediaType other = (MediaType) obj;
+            MediaType other = (MediaType) object;
             return this.type.equalsIgnoreCase(other.type)
                     && this.subtype.equalsIgnoreCase(other.subtype)
                     && this.parameters.equals(other.parameters);

@@ -309,8 +309,8 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
     }
 
     @Override
-    public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
-        return toAppendTo.append(printer.format(obj));
+    public StringBuffer format(final Object object, final StringBuffer toAppendTo, final FieldPosition pos) {
+        return toAppendTo.append(printer.format(object));
     }
 
     @Override
@@ -389,11 +389,11 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof FormatBuilder == false) {
+    public boolean equals(final Object object) {
+        if (object instanceof FormatBuilder == false) {
             return false;
         }
-        final FormatBuilder other = (FormatBuilder) obj;
+        final FormatBuilder other = (FormatBuilder) object;
         return printer.equals(other.printer);
     }
 

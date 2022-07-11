@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.Timeout;
+import org.aoju.bus.core.io.timout.Timeout;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.accord.ConnectInterceptor;

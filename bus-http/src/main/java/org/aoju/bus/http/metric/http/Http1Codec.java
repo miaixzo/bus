@@ -25,7 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.sink.BufferSink;
+import org.aoju.bus.core.io.sink.Sink;
+import org.aoju.bus.core.io.source.BufferSource;
+import org.aoju.bus.core.io.source.Source;
+import org.aoju.bus.core.io.timout.AssignTimeout;
+import org.aoju.bus.core.io.timout.Timeout;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -295,7 +301,7 @@ public class Http1Codec implements HttpCodec {
      * to the default configuration. Use this to avoid unexpected sharing of timeouts between pooled
      * connections.
      */
-    private void detachTimeout(Delegate timeout) {
+    private void detachTimeout(AssignTimeout timeout) {
         Timeout oldDelegate = timeout.delegate();
         timeout.setDelegate(Timeout.NONE);
         oldDelegate.clearDeadline();
@@ -318,7 +324,7 @@ public class Http1Codec implements HttpCodec {
      * An HTTP request body.
      */
     private class KnownLengthSink implements Sink {
-        private final Delegate timeout = new Delegate(sink.timeout());
+        private final AssignTimeout timeout = new AssignTimeout(sink.timeout());
         private boolean closed;
 
         @Override
@@ -353,7 +359,7 @@ public class Http1Codec implements HttpCodec {
      * to buffer chunks; typically by using a buffered sink with this sink.
      */
     private class ChunkedSink implements Sink {
-        private final Delegate timeout = new Delegate(sink.timeout());
+        private final AssignTimeout timeout = new AssignTimeout(sink.timeout());
         private boolean closed;
 
         ChunkedSink() {
@@ -392,7 +398,7 @@ public class Http1Codec implements HttpCodec {
     }
 
     private abstract class AbstractSource implements Source {
-        protected final Delegate timeout = new Delegate(source.timeout());
+        protected final AssignTimeout timeout = new AssignTimeout(source.timeout());
         protected boolean closed;
 
         @Override

@@ -501,7 +501,7 @@ public class NetKit {
      *
      * @return 本机网卡IP地址, 获取失败返回<code>null</code>
      */
-    public static String getLocalhostStr() {
+    public static String getLocalhostString() {
         InetAddress localhost = getLocalhost();
         if (null != localhost) {
             return localhost.getHostAddress();

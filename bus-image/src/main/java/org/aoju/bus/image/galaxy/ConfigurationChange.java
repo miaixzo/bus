@@ -44,8 +44,8 @@ public class ConfigurationChange {
         this.verbose = verbose;
     }
 
-    public static <T> T nullifyIfNotVerbose(ConfigurationChange diffs, T obj) {
-        return null != diffs && diffs.isVerbose() ? obj : null;
+    public static <T> T nullifyIfNotVerbose(ConfigurationChange diffs, T object) {
+        return null != diffs && diffs.isVerbose() ? object : null;
     }
 
     public static ModifiedObject addModifiedObjectIfVerbose(ConfigurationChange diffs, String dn, ChangeType changeType) {
@@ -66,8 +66,8 @@ public class ConfigurationChange {
         return object;
     }
 
-    public static void removeLastIfEmpty(ConfigurationChange diffs, ModifiedObject obj) {
-        if (null != obj && obj.isEmpty())
+    public static void removeLastIfEmpty(ConfigurationChange diffs, ModifiedObject object) {
+        if (null != object && object.isEmpty())
             diffs.removeLast();
     }
 
@@ -96,10 +96,10 @@ public class ConfigurationChange {
         if (isEmpty()) return "[]";
 
         StringBuilder sb = new StringBuilder(objects.size() * Normal._64);
-        for (ModifiedObject obj : objects) {
-            sb.append(obj.changeType).append(Symbol.C_SPACE).append(obj.dn).append(Symbol.C_LF);
-            if (null != obj.attributes) {
-                for (ModifiedAttribute attr : obj.attributes) {
+        for (ModifiedObject object : objects) {
+            sb.append(object.changeType).append(Symbol.C_SPACE).append(object.dn).append(Symbol.C_LF);
+            if (null != object.attributes) {
+                for (ModifiedAttribute attr : object.attributes) {
                     sb.append(Symbol.SPACE).append(attr.name).append(": ")
                             .append(attr.removedValues).append("=>")
                             .append(attr.addedValues).append(Symbol.C_LF);

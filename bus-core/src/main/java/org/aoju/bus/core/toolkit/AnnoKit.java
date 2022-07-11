@@ -245,7 +245,7 @@ public class AnnoKit {
             return null;
         }
 
-        final Method method = ReflectKit.getMethodOfObj(annotation, propertyName);
+        final Method method = ReflectKit.getMethodOfObject(annotation, propertyName);
         if (null == method) {
             return null;
         }

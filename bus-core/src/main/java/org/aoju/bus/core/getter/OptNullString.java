@@ -41,68 +41,68 @@ import java.util.Date;
 public interface OptNullString<K> extends OptNullType<K> {
 
     @Override
-    default Object getObj(K key, Object defaultValue) {
-        return getStr(key, null == defaultValue ? null : defaultValue.toString());
+    default Object getObject(K key, Object defaultValue) {
+        return getString(key, null == defaultValue ? null : defaultValue.toString());
     }
 
     @Override
     default Integer getInt(K key, Integer defaultValue) {
-        return Convert.toInt(getStr(key), defaultValue);
+        return Convert.toInt(getString(key), defaultValue);
     }
 
     @Override
     default Short getShort(K key, Short defaultValue) {
-        return Convert.toShort(getStr(key), defaultValue);
+        return Convert.toShort(getString(key), defaultValue);
     }
 
     @Override
-    default Boolean getBool(K key, Boolean defaultValue) {
-        return Convert.toBool(getStr(key), defaultValue);
+    default Boolean getBoolean(K key, Boolean defaultValue) {
+        return Convert.toBoolean(getString(key), defaultValue);
     }
 
     @Override
     default Long getLong(K key, Long defaultValue) {
-        return Convert.toLong(getStr(key), defaultValue);
+        return Convert.toLong(getString(key), defaultValue);
     }
 
     @Override
     default Character getChar(K key, Character defaultValue) {
-        return Convert.toChar(getStr(key), defaultValue);
+        return Convert.toChar(getString(key), defaultValue);
     }
 
     @Override
     default Float getFloat(K key, Float defaultValue) {
-        return Convert.toFloat(getStr(key), defaultValue);
+        return Convert.toFloat(getString(key), defaultValue);
     }
 
     @Override
     default Double getDouble(K key, Double defaultValue) {
-        return Convert.toDouble(getStr(key), defaultValue);
+        return Convert.toDouble(getString(key), defaultValue);
     }
 
     @Override
     default Byte getByte(K key, Byte defaultValue) {
-        return Convert.toByte(getStr(key), defaultValue);
+        return Convert.toByte(getString(key), defaultValue);
     }
 
     @Override
     default BigDecimal getBigDecimal(K key, BigDecimal defaultValue) {
-        return Convert.toBigDecimal(getStr(key), defaultValue);
+        return Convert.toBigDecimal(getString(key), defaultValue);
     }
 
     @Override
     default BigInteger getBigInteger(K key, BigInteger defaultValue) {
-        return Convert.toBigInteger(getStr(key), defaultValue);
+        return Convert.toBigInteger(getString(key), defaultValue);
     }
 
     @Override
     default <E extends Enum<E>> E getEnum(Class<E> clazz, K key, E defaultValue) {
-        return Convert.toEnum(clazz, getStr(key), defaultValue);
+        return Convert.toEnum(clazz, getString(key), defaultValue);
     }
 
     @Override
     default Date getDate(K key, Date defaultValue) {
-        return Convert.toDate(getStr(key), defaultValue);
+        return Convert.toDate(getString(key), defaultValue);
     }
 
 }

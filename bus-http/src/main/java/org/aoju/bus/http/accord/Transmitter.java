@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.core.io.AsyncTimeout;
-import org.aoju.bus.core.io.Timeout;
+import org.aoju.bus.core.io.timout.AsyncTimeout;
+import org.aoju.bus.core.io.timout.Timeout;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;

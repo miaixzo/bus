@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.socket;
 
-import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.buffer.Buffer;
 
 /**
  * web socket协议信息

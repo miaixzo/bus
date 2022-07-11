@@ -35,7 +35,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 public class ApiPermissionHandler extends AbstractApiHandler {
 
     @Override
-    public boolean preHandle(ServerHttpRequest request, ServerHttpResponse response, Object obj, Object args) {
+    public boolean preHandle(ServerHttpRequest request, ServerHttpResponse response, Object object, Object args) {
         return true;
     }
 

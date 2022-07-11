@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.Sink;
-import org.aoju.bus.core.io.Source;
+import org.aoju.bus.core.io.sink.Sink;
+import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.http.accord.ConnectionPool;
 import org.aoju.bus.http.accord.ConnectionSuite;
 import org.aoju.bus.http.accord.Exchange;

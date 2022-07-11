@@ -26,8 +26,8 @@
 package org.aoju.bus.http.plugin.httpv;
 
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.http.Callback;
 import org.aoju.bus.http.Response;

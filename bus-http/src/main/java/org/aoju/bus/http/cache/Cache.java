@@ -25,7 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.http.cache;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.sink.AssignSink;
+import org.aoju.bus.core.io.sink.BufferSink;
+import org.aoju.bus.core.io.sink.Sink;
+import org.aoju.bus.core.io.source.AssignSource;
+import org.aoju.bus.core.io.source.BufferSource;
+import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
@@ -108,11 +115,7 @@ public class Cache implements Closeable, Flushable {
      * @param maxSize   缓存的最大大小(以字节为单位)
      */
     public Cache(File directory, long maxSize) {
-        this(directory, maxSize, FileSystem.SYSTEM);
-    }
-
-    Cache(File directory, long maxSize, FileSystem fileSystem) {
-        this.cache = DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
+        this.cache = DiskLruCache.create(directory, VERSION, ENTRY_COUNT, maxSize);
     }
 
     public static String key(UnoUrl url) {
@@ -625,7 +628,7 @@ public class Cache implements Closeable, Flushable {
             this.contentLength = contentLength;
 
             Source source = snapshot.getSource(ENTRY_BODY);
-            bodySource = IoKit.buffer(new DelegateSource(source) {
+            bodySource = IoKit.buffer(new AssignSource(source) {
                 @Override
                 public void close() throws IOException {
                     snapshot.close();
@@ -663,7 +666,7 @@ public class Cache implements Closeable, Flushable {
         CacheRequestImpl(final DiskLruCache.Editor editor) {
             this.editor = editor;
             this.cacheOut = editor.newSink(ENTRY_BODY);
-            this.body = new DelegateSink(cacheOut) {
+            this.body = new AssignSink(cacheOut) {
                 @Override
                 public void close() throws IOException {
                     synchronized (Cache.this) {

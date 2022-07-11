@@ -39,12 +39,11 @@ import java.util.zip.GZIPOutputStream;
 public class JdkGzipSerializer extends AbstractSerializer {
 
     @Override
-    protected byte[] doSerialize(Object obj) throws Throwable {
+    protected byte[] doSerialize(Object object) throws Throwable {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
              GZIPOutputStream gzout = new GZIPOutputStream(bos);
              ObjectOutputStream out = new ObjectOutputStream(gzout)) {
-
-            out.writeObject(obj);
+            out.writeObject(object);
             return bos.toByteArray();
         }
     }

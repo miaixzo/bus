@@ -55,12 +55,12 @@ public class EnumKit {
     /**
      * 指定类是否为Enum类
      *
-     * @param obj 类
+     * @param object 类
      * @return 是否为Enum类
      */
-    public static boolean isEnum(Object obj) {
-        Assert.notNull(obj);
-        return obj.getClass().isEnum();
+    public static boolean isEnum(Object object) {
+        Assert.notNull(object);
+        return object.getClass().isEnum();
     }
 
     /**

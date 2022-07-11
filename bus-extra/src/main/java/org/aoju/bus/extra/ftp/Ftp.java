@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -645,7 +644,7 @@ public class Ftp extends AbstractFtp {
         }
 
         if (null != charset) {
-            fileName = new String(fileName.getBytes(charset), StandardCharsets.ISO_8859_1);
+            fileName = new String(fileName.getBytes(charset), org.aoju.bus.core.lang.Charset.ISO_8859_1);
         }
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);

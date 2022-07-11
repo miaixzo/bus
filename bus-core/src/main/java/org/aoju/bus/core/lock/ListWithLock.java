@@ -72,7 +72,7 @@ public class ListWithLock<T> extends ObjWithLock<List<T>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            List<T> list = this.getObj();
+            List<T> list = this.getObject();
             return list.add(t);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -89,7 +89,7 @@ public class ListWithLock<T> extends ObjWithLock<List<T>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            this.getObj().clear();
+            this.getObject().clear();
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
         } finally {
@@ -107,7 +107,7 @@ public class ListWithLock<T> extends ObjWithLock<List<T>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            List<T> list = this.getObj();
+            List<T> list = this.getObject();
             return list.remove(t);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -126,7 +126,7 @@ public class ListWithLock<T> extends ObjWithLock<List<T>> {
         ReadLock readLock = this.readLock();
         readLock.lock();
         try {
-            List<T> list = this.getObj();
+            List<T> list = this.getObject();
             return list.size();
         } finally {
             readLock.unlock();

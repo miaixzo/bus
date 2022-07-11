@@ -399,17 +399,17 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      * 将对象附加到此字符串生成器
      * 附加null将调用{@link #appendNull()}.
      *
-     * @param obj 要追加的对象
+     * @param object 要追加的对象
      * @return this
      */
-    public TextBuilder append(final Object obj) {
-        if (null == obj) {
+    public TextBuilder append(final Object object) {
+        if (null == object) {
             return appendNull();
         }
-        if (obj instanceof CharSequence) {
-            return append((CharSequence) obj);
+        if (object instanceof CharSequence) {
+            return append((CharSequence) object);
         }
-        return append(obj.toString());
+        return append(object.toString());
     }
 
     /**
@@ -849,11 +849,11 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      * 将对象后接新行追加到此字符串生成器
      * 附加null将调用{@link #appendNull()}
      *
-     * @param obj 要附加的值
+     * @param object 要附加的值
      * @return this
      */
-    public TextBuilder appendln(final Object obj) {
-        return append(obj).appendNewLine();
+    public TextBuilder appendln(final Object object) {
+        return append(object).appendNewLine();
     }
 
     /**
@@ -1172,15 +1172,15 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      * 如果对象的长度大于长度，则左手边就会丢失
      * 如果对象为空，则使用空文本值
      *
-     * @param obj     要追加的对象null使用空文本
+     * @param object  要追加的对象null使用空文本
      * @param width   固定的字段宽度，零或负没有影响
      * @param padChar 要使用的填充字符
      * @return this
      */
-    public TextBuilder appendFixedWidthPadLeft(final Object obj, final int width, final char padChar) {
+    public TextBuilder appendFixedWidthPadLeft(final Object object, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(this.indexes + width);
-            String text = null == obj ? getNullText() : obj.toString();
+            String text = null == object ? getNullText() : object.toString();
             if (null == text) {
                 text = Normal.EMPTY;
             }
@@ -1214,20 +1214,20 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
     }
 
     /**
-     * 将对象附加到右侧的生成器内边距，使其具有固定的长度。
+     * 将对象附加到右侧的生成器内边距，使其具有固定的长度
      * 使用对象的<code>toString</code>
      * 如果物体比长度大，右边的部分就会丢失
      * 如果对象为空，则使用空文本值
      *
-     * @param obj     要追加的对象null使用空文本
+     * @param object     要追加的对象null使用空文本
      * @param width   固定的字段宽度，零或负没有影响
      * @param padChar 要使用的填充字符
      * @return this
      */
-    public TextBuilder appendFixedWidthPadRight(final Object obj, final int width, final char padChar) {
+    public TextBuilder appendFixedWidthPadRight(final Object object, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(this.indexes + width);
-            String text = null == obj ? getNullText() : obj.toString();
+            String text = null == object ? getNullText() : object.toString();
             if (null == text) {
                 text = Normal.EMPTY;
             }
@@ -1265,15 +1265,15 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      * 插入null将使用存储的空文本值
      *
      * @param index 要添加的索引必须有效
-     * @param obj   要插入的对象
+     * @param object   要插入的对象
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public TextBuilder insert(final int index, final Object obj) {
-        if (null == obj) {
+    public TextBuilder insert(final int index, final Object object) {
+        if (null == object) {
             return insert(index, nullText);
         }
-        return insert(index, obj.toString());
+        return insert(index, object.toString());
     }
 
     /**
@@ -2262,12 +2262,12 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
     /**
      * 检查此生成器的内容与另一个生成器的内容是否包含相同的字符内容.
      *
-     * @param obj 要检查的对象null返回false
+     * @param object 要检查的对象null返回false
      * @return 如果生成器以相同的顺序包含相同的字符，则为真
      */
     @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof TextBuilder && equals((TextBuilder) obj);
+    public boolean equals(final Object object) {
+        return object instanceof TextBuilder && equals((TextBuilder) object);
     }
 
     @Override

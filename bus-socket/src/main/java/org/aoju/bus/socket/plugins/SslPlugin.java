@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.plugins;
 
-import org.aoju.bus.core.io.ByteBuffer;
+import org.aoju.bus.core.io.buffer.ByteBuffer;
 import org.aoju.bus.socket.BufferFactory;
 import org.aoju.bus.socket.security.ClientAuth;
 import org.aoju.bus.socket.security.SslService;

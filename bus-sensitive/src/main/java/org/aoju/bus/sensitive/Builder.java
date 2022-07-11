@@ -223,11 +223,11 @@ public final class Builder {
     /**
      * 是否包含敏感词
      *
-     * @param obj bean，会被转为JSON字符串
+     * @param object bean，会被转为JSON字符串
      * @return 是否包含
      */
-    public static boolean containsSensitive(Object obj) {
-        return sensitiveTree.isMatch(JsonKit.toJsonString(obj));
+    public static boolean containsSensitive(Object object) {
+        return sensitiveTree.isMatch(JsonKit.toJsonString(object));
     }
 
     /**
@@ -243,11 +243,11 @@ public final class Builder {
     /**
      * 查找敏感词，返回找到的第一个敏感词
      *
-     * @param obj bean，会被转为JSON字符串
+     * @param object bean，会被转为JSON字符串
      * @return 敏感词
      */
-    public static String getFindedFirstSensitive(Object obj) {
-        return sensitiveTree.match(JsonKit.toJsonString(obj));
+    public static String getFindedFirstSensitive(Object object) {
+        return sensitiveTree.match(JsonKit.toJsonString(object));
     }
 
     /**

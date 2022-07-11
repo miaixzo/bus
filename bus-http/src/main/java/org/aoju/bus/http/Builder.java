@@ -25,7 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.Blending;
+import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.source.BufferSource;
+import org.aoju.bus.core.io.source.Source;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.bodys.ResponseBody;
@@ -74,7 +78,7 @@ public class Builder {
     /**
      * Byte order marks.
      */
-    private static final AbstractBlending UNICODE_BOMS = AbstractBlending.of(
+    private static final Blending UNICODE_BOMS = Blending.of(
             ByteString.decodeHex("efbbbf"),   // UTF-8
             ByteString.decodeHex("feff"),     // UTF-16BE
             ByteString.decodeHex("fffe"),     // UTF-16LE

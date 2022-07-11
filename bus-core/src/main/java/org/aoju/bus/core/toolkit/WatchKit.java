@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.io.watchers.WatchMonitor;
-import org.aoju.bus.core.io.watchers.Watcher;
+import org.aoju.bus.core.io.watcher.WatchMonitor;
+import org.aoju.bus.core.io.watcher.Watcher;
 
 import java.io.File;
 import java.net.URI;

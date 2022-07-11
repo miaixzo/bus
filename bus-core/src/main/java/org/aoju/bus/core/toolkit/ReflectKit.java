@@ -64,12 +64,11 @@ public class ReflectKit {
      * 调用Getter方法.
      * 支持多级,如：对象名.对象名.方法
      *
-     * @param obj  对象
-     * @param name 属性名
+     * @param object 对象
+     * @param name   属性名
      * @return the object
      */
-    public static Object invokeGetter(Object obj, String name) {
-        Object object = obj;
+    public static Object invokeGetter(Object object, String name) {
         for (String method : StringKit.splitToArray(name, Symbol.DOT)) {
             String getterMethodName = Normal.GET + StringKit.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
@@ -81,12 +80,11 @@ public class ReflectKit {
      * 调用Setter方法, 仅匹配方法名
      * 支持多级,如：对象名.对象名.方法
      *
-     * @param obj   对象
-     * @param name  属性名
-     * @param value 值
+     * @param object 对象
+     * @param name   属性名
+     * @param value  值
      */
-    public static void invokeSetter(Object obj, String name, Object value) {
-        Object object = obj;
+    public static void invokeSetter(Object object, String name, Object value) {
         String[] names = StringKit.splitToArray(name, Symbol.DOT);
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
@@ -99,9 +97,9 @@ public class ReflectKit {
         }
     }
 
-    public static Object convert(Object obj, Class<?> type) {
-        if (obj instanceof Number) {
-            Number number = (Number) obj;
+    public static Object convert(Object object, Class<?> type) {
+        if (object instanceof Number) {
+            Number number = (Number) object;
             if (type.equals(byte.class) || type.equals(Byte.class)) {
                 return number.byteValue();
             }
@@ -122,9 +120,9 @@ public class ReflectKit {
             }
         }
         if (type.equals(String.class)) {
-            return null == obj ? Normal.EMPTY : obj.toString();
+            return null == object ? Normal.EMPTY : object.toString();
         }
-        return obj;
+        return object;
     }
 
     public static Object invokeMethod(Method method, Object target) {
@@ -144,21 +142,21 @@ public class ReflectKit {
      * 用于一次性调用的情况,否则应使用getAccessibleMethod()函数获得Method后反复调用.
      * 同时匹配方法名+参数类型,
      *
-     * @param obj   对象
-     * @param name  方法名
-     * @param types 参数类型
-     * @param args  参数
+     * @param object 对象
+     * @param name   方法名
+     * @param types  参数类型
+     * @param args   参数
      * @return the object
      */
-    public static Object invokeMethod(final Object obj, final String name, final Class<?>[] types,
+    public static Object invokeMethod(final Object object, final String name, final Class<?>[] types,
                                       final Object[] args) {
-        Method method = getAccessibleMethod(obj, name, types);
+        Method method = getAccessibleMethod(object, name, types);
         if (null == method) {
-            throw new IllegalArgumentException("Could not find method [" + method + "] on target [" + obj + "]");
+            throw new IllegalArgumentException("Could not find method [" + method + "] on target [" + object + "]");
         }
 
         try {
-            return method.invoke(obj, args);
+            return method.invoke(object, args);
         } catch (Exception e) {
             throw convertReflectionExceptionToUnchecked(e);
         }
@@ -169,19 +167,19 @@ public class ReflectKit {
      * 用于一次性调用的情况,否则应使用getAccessibleMethodByName()函数获得Method后反复调用.
      * 只匹配函数名,如果有多个同名函数调用第一个
      *
-     * @param obj  对象
-     * @param name 方法
-     * @param args 参数
+     * @param object 对象
+     * @param name   方法
+     * @param args   参数
      * @return the object
      */
-    public static Object invokeMethodByName(final Object obj, final String name, final Object[] args) {
-        Method method = getAccessibleMethodByName(obj, name);
+    public static Object invokeMethodByName(final Object object, final String name, final Object[] args) {
+        Method method = getAccessibleMethodByName(object, name);
         if (null == method) {
-            throw new IllegalArgumentException("Could not find method [" + name + "] on target [" + obj + "]");
+            throw new IllegalArgumentException("Could not find method [" + name + "] on target [" + object + "]");
         }
 
         try {
-            return method.invoke(obj, args);
+            return method.invoke(object, args);
         } catch (Exception e) {
             throw convertReflectionExceptionToUnchecked(e);
         }
@@ -192,12 +190,12 @@ public class ReflectKit {
      * <p>
      * 如向上转型到Object仍无法找到, 返回null.
      *
-     * @param obj  对象
-     * @param name 列名
+     * @param object 对象
+     * @param name   列名
      * @return the object
      */
-    public static Field getAccessibleField(final Object obj, final String name) {
-        for (Class<?> superClass = obj.getClass(); superClass != Object.class; superClass = superClass.getSuperclass()) {
+    public static Field getAccessibleField(final Object object, final String name) {
+        for (Class<?> superClass = object.getClass(); superClass != Object.class; superClass = superClass.getSuperclass()) {
             try {
                 Field field = superClass.getDeclaredField(name);
                 makeAccessible(field);
@@ -215,16 +213,17 @@ public class ReflectKit {
      * 如向上转型到Object仍无法找到, 返回null.
      * 匹配函数名+参数类型
      * <p>
-     * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
+     * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object object, Object... args)
      *
-     * @param obj   对象
-     * @param name  方法名
-     * @param types 参数类型
+     * @param object 对象
+     * @param name   方法名
+     * @param types  参数类型
      * @return the object
      */
-    public static Method getAccessibleMethod(final Object obj, final String name,
+    public static Method getAccessibleMethod(final Object object,
+                                             final String name,
                                              final Class<?>... types) {
-        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
+        for (Class<?> searchType = object.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
             try {
                 Method method = searchType.getDeclaredMethod(name, types);
                 makeAccessible(method);
@@ -242,14 +241,15 @@ public class ReflectKit {
      * 如向上转型到Object仍无法找到, 返回null.
      * 只匹配函数名
      * <p>
-     * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
+     * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object object, Object... args)
      *
-     * @param obj  对象
-     * @param name 方法名
+     * @param object 对象
+     * @param name   方法名
      * @return the object
      */
-    public static Method getAccessibleMethodByName(final Object obj, final String name) {
-        for (Class<?> searchType = obj.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
+    public static Method getAccessibleMethodByName(final Object object,
+                                                   final String name) {
+        for (Class<?> searchType = object.getClass(); searchType != Object.class; searchType = searchType.getSuperclass()) {
             Method[] methods = searchType.getDeclaredMethods();
             for (Method method : methods) {
                 if (method.getName().equals(name)) {
@@ -357,13 +357,13 @@ public class ReflectKit {
     /**
      * 判断某个对象是否拥有某个属性
      *
-     * @param obj       对象
+     * @param object    对象
      * @param fieldName 属性名
      * @return 有属性返回true
      * 无属性返回false
      */
-    public static boolean hasField(final Object obj, final String fieldName) {
-        Field field = getAccessibleField(obj, fieldName);
+    public static boolean hasField(final Object object, final String fieldName) {
+        Field field = getAccessibleField(object, fieldName);
         return null != field;
 
     }
@@ -514,39 +514,39 @@ public class ReflectKit {
     /**
      * 获取字段值
      *
-     * @param obj       对象
+     * @param object    对象
      * @param fieldName 字段名
      * @return 字段值
      * @throws InstrumentException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(Object obj, String fieldName) throws InstrumentException {
-        if (null == obj || StringKit.isBlank(fieldName)) {
+    public static Object getFieldValue(Object object, String fieldName) throws InstrumentException {
+        if (null == object || StringKit.isBlank(fieldName)) {
             return null;
         }
-        return getFieldValue(obj, getField(obj instanceof Class ? (Class<?>) obj : obj.getClass(), fieldName));
+        return getFieldValue(object, getField(object instanceof Class ? (Class<?>) object : object.getClass(), fieldName));
     }
 
     /**
      * 获取字段值
      *
-     * @param obj   对象
-     * @param field 字段
+     * @param object 对象
+     * @param field  字段
      * @return 字段值
      * @throws InstrumentException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(Object obj, Field field) throws InstrumentException {
+    public static Object getFieldValue(Object object, Field field) throws InstrumentException {
         if (null == field) {
             return null;
         }
-        if (obj instanceof Class) {
+        if (object instanceof Class) {
             // 静态字段获取时对象为null
-            obj = null;
+            object = null;
         }
 
         setAccessible(field);
         Object result;
         try {
-            result = field.get(obj);
+            result = field.get(object);
         } catch (IllegalAccessException e) {
             throw new InstrumentException("IllegalAccess for {}.{}", field.getDeclaringClass(), field.getName());
         }
@@ -556,16 +556,16 @@ public class ReflectKit {
     /**
      * 获取所有字段的值
      *
-     * @param obj bean对象，如果是static字段，此处为类class
+     * @param object bean对象，如果是static字段，此处为类class
      * @return 字段值数组
      */
-    public static Object[] getFieldsValue(Object obj) {
-        if (null != obj) {
-            final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass());
+    public static Object[] getFieldsValue(Object object) {
+        if (null != object) {
+            final Field[] fields = getFields(object instanceof Class ? (Class<?>) object : object.getClass());
             if (null != fields) {
                 final Object[] values = new Object[fields.length];
                 for (int i = 0; i < fields.length; i++) {
-                    values[i] = getFieldValue(obj, fields[i]);
+                    values[i] = getFieldValue(object, fields[i]);
                 }
                 return values;
             }
@@ -576,30 +576,30 @@ public class ReflectKit {
     /**
      * 设置字段值
      *
-     * @param obj       对象,static字段则此处传Class
+     * @param object    对象,static字段则此处传Class
      * @param fieldName 字段名
      * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
      * @throws InstrumentException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(Object obj, String fieldName, Object value) throws InstrumentException {
-        Assert.notNull(obj);
+    public static void setFieldValue(Object object, String fieldName, Object value) throws InstrumentException {
+        Assert.notNull(object);
         Assert.notBlank(fieldName);
 
-        final Field field = getField((obj instanceof Class) ? (Class<?>) obj : obj.getClass(), fieldName);
-        Assert.notNull(field, "Field [{}] is not exist in [{}]", fieldName, obj.getClass().getName());
-        setFieldValue(obj, field, value);
+        final Field field = getField((object instanceof Class) ? (Class<?>) object : object.getClass(), fieldName);
+        Assert.notNull(field, "Field [{}] is not exist in [{}]", fieldName, object.getClass().getName());
+        setFieldValue(object, field, value);
     }
 
     /**
      * 设置字段值
      *
-     * @param obj   对象，如果是static字段，此参数为null
-     * @param field 字段
-     * @param value 值，值类型必须与字段类型匹配，不会自动转换对象类型
+     * @param object 对象，如果是static字段，此参数为null
+     * @param field  字段
+     * @param value  值，值类型必须与字段类型匹配，不会自动转换对象类型
      * @throws InstrumentException UtilException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(Object obj, Field field, Object value) throws InstrumentException {
-        Assert.notNull(field, "Field in [{}] not exist !", obj);
+    public static void setFieldValue(Object object, Field field, Object value) throws InstrumentException {
+        Assert.notNull(field, "Field in [{}] not exist !", object);
 
         final Class<?> fieldType = field.getType();
         if (null != value) {
@@ -617,26 +617,26 @@ public class ReflectKit {
 
         setAccessible(field);
         try {
-            field.set(obj instanceof Class ? null : obj, value);
+            field.set(object instanceof Class ? null : object, value);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for {}.{}", obj, field.getName());
+            throw new InstrumentException("IllegalAccess for {}.{}", object, field.getName());
         }
     }
 
     /**
      * 查找指定对象中的所有方法(包括非public方法),也包括父对象和Object类的方法
      *
-     * @param obj        被查找的对象,如果为{@code null}返回{@code null}
+     * @param object     被查找的对象,如果为{@code null}返回{@code null}
      * @param methodName 方法名,如果为空字符串返回{@code null}
      * @param args       参数
      * @return 方法
      * @throws SecurityException 无访问权限抛出异常
      */
-    public static Method getMethodOfObj(Object obj, String methodName, Object... args) throws SecurityException {
-        if (null == obj || StringKit.isBlank(methodName)) {
+    public static Method getMethodOfObject(Object object, String methodName, Object... args) throws SecurityException {
+        if (null == object || StringKit.isBlank(methodName)) {
             return null;
         }
-        return getMethod(obj.getClass(), methodName, ClassKit.getClasses(args));
+        return getMethod(object.getClass(), methodName, ClassKit.getClasses(args));
     }
 
     /**
@@ -1017,13 +1017,13 @@ public class ReflectKit {
      * </pre>
      *
      * @param <T>    返回对象类型
-     * @param obj    对象,如果执行静态方法,此值为null
+     * @param object    对象,如果执行静态方法,此值为null
      * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
      * @throws InstrumentException 一些列异常的包装
      */
-    public static <T> T invokeWithCheck(Object obj, Method method, Object... args) throws InstrumentException {
+    public static <T> T invokeWithCheck(Object object, Method method, Object... args) throws InstrumentException {
         final Class<?>[] types = method.getParameterTypes();
         if (null != types && null != args) {
             Assert.isTrue(args.length == types.length, "Params length [{}] is not fit for param length [{}] of method !", args.length, types.length);
@@ -1036,19 +1036,19 @@ public class ReflectKit {
                 }
             }
         }
-        return invoke(obj, method, args);
+        return invoke(object, method, args);
     }
 
     /**
      * 执行方法
      *
      * @param <T>    返回对象类型
-     * @param obj    对象,如果执行静态方法,此值为null
+     * @param object    对象,如果执行静态方法,此值为null
      * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
      */
-    public static <T> T invoke(Object obj, Method method, Object... args) {
+    public static <T> T invoke(Object object, Method method, Object... args) {
         setAccessible(method);
 
         // 检查用户传入参数：
@@ -1076,7 +1076,7 @@ public class ReflectKit {
         }
 
         try {
-            return (T) method.invoke(ClassKit.isStatic(method) ? null : obj, actualArgs);
+            return (T) method.invoke(ClassKit.isStatic(method) ? null : object, actualArgs);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -1086,17 +1086,17 @@ public class ReflectKit {
      * 执行对象中指定方法
      *
      * @param <T>        返回对象类型
-     * @param obj        方法所在对象
+     * @param object     方法所在对象
      * @param methodName 方法名
      * @param args       参数列表
      * @return 执行结果
      */
-    public static <T> T invoke(Object obj, String methodName, Object... args) {
-        final Method method = getMethodOfObj(obj, methodName, args);
+    public static <T> T invoke(Object object, String methodName, Object... args) {
+        final Method method = getMethodOfObject(object, methodName, args);
         if (null == method) {
             throw new InstrumentException(StringKit.format("No such method: [{}]", methodName));
         }
-        return invoke(obj, method, args);
+        return invoke(object, method, args);
     }
 
     /**

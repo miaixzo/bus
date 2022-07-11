@@ -309,7 +309,7 @@ public class RegEx {
     public static final Pattern CAR_VIN = Pattern.compile(CAR_VIN_PATTERN);
 
     /**
-     * 社会统一信用代码
+     * 统一社会信用代码
      * <pre>
      * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
      * 第二部分：机构类别代码1位 (数字或大写英文字母)
@@ -320,7 +320,6 @@ public class RegEx {
      */
     public static final String CREDIT_CODE_PATTERN = "^[0-9A-HJ-NPQRTUWXY]{2}\\d{6}[0-9A-HJ-NPQRTUWXY]{10}$";
     public static final Pattern CREDIT_CODE = Pattern.compile(CREDIT_CODE_PATTERN);
-
 
     /**
      * 正则中需要被转义的关键字

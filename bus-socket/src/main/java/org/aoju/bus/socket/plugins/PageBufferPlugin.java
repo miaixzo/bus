@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.socket.plugins;
 
-import org.aoju.bus.core.io.ByteBuffer;
-import org.aoju.bus.core.io.PageBuffer;
+import org.aoju.bus.core.io.buffer.ByteBuffer;
+import org.aoju.bus.core.io.buffer.PageBuffer;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.AioQuickServer;

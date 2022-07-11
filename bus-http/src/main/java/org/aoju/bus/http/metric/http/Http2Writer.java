@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferSink;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.sink.BufferSink;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Headers;

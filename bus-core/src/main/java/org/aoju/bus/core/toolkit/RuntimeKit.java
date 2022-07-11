@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.io.streams.FastByteOutputStream;
+import org.aoju.bus.core.io.stream.FastByteOutputStream;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -59,8 +59,8 @@ public class RuntimeKit {
      * @return 执行结果
      * @throws InstrumentException IO异常
      */
-    public static String execForStr(String... cmds) throws InstrumentException {
-        return execForStr(Charset.systemCharset(), cmds);
+    public static String execForString(String... cmds) throws InstrumentException {
+        return execForString(Charset.systemCharset(), cmds);
     }
 
     /**
@@ -71,7 +71,7 @@ public class RuntimeKit {
      * @return 执行结果
      * @throws InstrumentException 内部处理异常
      */
-    public static String execForStr(java.nio.charset.Charset charset, String... cmds) throws InstrumentException {
+    public static String execForString(java.nio.charset.Charset charset, String... cmds) throws InstrumentException {
         return getResult(exec(cmds), charset);
     }
 

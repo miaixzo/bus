@@ -401,14 +401,14 @@ class AndroidPlatform extends Platform {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (obj == this) {
+        public boolean equals(Object object) {
+            if (object == this) {
                 return true;
             }
-            if (!(obj instanceof CustomTrustRootIndex)) {
+            if (!(object instanceof CustomTrustRootIndex)) {
                 return false;
             }
-            CustomTrustRootIndex that = (CustomTrustRootIndex) obj;
+            CustomTrustRootIndex that = (CustomTrustRootIndex) object;
             return trustManager.equals(that.trustManager)
                     && findByIssuerAndSignatureMethod.equals(that.findByIssuerAndSignatureMethod);
         }

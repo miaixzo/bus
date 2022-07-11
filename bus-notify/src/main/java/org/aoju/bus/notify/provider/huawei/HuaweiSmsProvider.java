@@ -1,10 +1,7 @@
 package org.aoju.bus.notify.provider.huawei;
 
 import org.aoju.bus.core.exception.InstrumentException;
-import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Header;
-import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.ZoneId;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.http.Httpx;
@@ -13,7 +10,6 @@ import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
 
@@ -89,7 +85,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
             String nonce = UUID.randomUUID().toString().replace("-", "");
             String text = nonce + time + context.getAppSecret();
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.update(text.getBytes(StandardCharsets.UTF_8));
+            digest.update(text.getBytes(Charset.UTF_8));
             String hexDigest = byte2Hex(digest.digest());
             String passwordDigestBase64Str = Base64.getEncoder().encodeToString(hexDigest.getBytes());
             return String.format(WSSE_HEADER_FORMAT, context.getAppKey(), passwordDigestBase64Str, nonce, time);

@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.exception.AuthorizedException;
-import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.lang.Header;
-import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.toolkit.RandomKit;
 import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
@@ -20,7 +17,6 @@ import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.OauthScope;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -51,7 +47,7 @@ public class AmazonProvider extends AbstractProvider {
      */
     public static String generateCodeChallenge(String codeChallengeMethod, String codeVerifier) {
         if ("S256".equalsIgnoreCase(codeChallengeMethod)) {
-            return new String(Base64.encode(digest(codeVerifier), true, true), StandardCharsets.US_ASCII);
+            return new String(Base64.encode(digest(codeVerifier), true, true), Charset.US_ASCII);
         } else {
             return codeVerifier;
         }
@@ -61,7 +57,7 @@ public class AmazonProvider extends AbstractProvider {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
-            messageDigest.update(text.getBytes(StandardCharsets.UTF_8));
+            messageDigest.update(text.getBytes(Charset.UTF_8));
             return messageDigest.digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

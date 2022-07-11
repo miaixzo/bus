@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord.platform;
 
-import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicCertificateChainCleaner;

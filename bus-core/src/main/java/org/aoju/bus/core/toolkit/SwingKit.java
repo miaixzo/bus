@@ -157,7 +157,7 @@ public class SwingKit {
      * @param text 字符串
      */
     public static void keyPressString(String text) {
-        setStr(text);
+        setString(text);
         keyPressWithCtrl(KeyEvent.VK_V);// 粘贴
         delay();
     }
@@ -401,7 +401,7 @@ public class SwingKit {
      *
      * @return 文本
      */
-    public static String getStr() {
+    public static String getString() {
         return (String) get(DataFlavor.stringFlavor);
     }
 
@@ -410,7 +410,7 @@ public class SwingKit {
      *
      * @param text 字符串文本
      */
-    public static void setStr(String text) {
+    public static void setString(String text) {
         set(new StringSelection(text));
     }
 
@@ -420,7 +420,7 @@ public class SwingKit {
      * @param content 内容
      * @return 文本
      */
-    public static String getStr(Transferable content) {
+    public static String getString(Transferable content) {
         return (String) get(content, DataFlavor.stringFlavor);
     }
 

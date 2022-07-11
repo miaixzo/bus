@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpv;
 
-import org.aoju.bus.core.io.Buffer;
-import org.aoju.bus.core.io.BufferSink;
-import org.aoju.bus.core.io.DelegateSink;
+import org.aoju.bus.core.io.buffer.Buffer;
+import org.aoju.bus.core.io.sink.AssignSink;
+import org.aoju.bus.core.io.sink.BufferSink;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Callback;
@@ -73,7 +73,7 @@ public class ProgressBody extends RequestBody {
     @Override
     public void writeTo(BufferSink sink) throws IOException {
         if (null == bufferedSink) {
-            bufferedSink = IoKit.buffer(new DelegateSink(sink) {
+            bufferedSink = IoKit.buffer(new AssignSink(sink) {
 
                 @Override
                 public void write(Buffer source, long byteCount) throws IOException {

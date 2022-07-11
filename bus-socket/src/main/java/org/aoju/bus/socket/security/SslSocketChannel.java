@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.socket.security;
 
-import org.aoju.bus.core.io.PageBuffer;
-import org.aoju.bus.core.io.VirtualBuffer;
+import org.aoju.bus.core.io.buffer.PageBuffer;
+import org.aoju.bus.core.io.buffer.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.channel.AsynchronousSocketChannelProxy;
 

@@ -44,12 +44,12 @@ import java.util.List;
  *
  *   ...
  *
- *   public DiffResult diff(Person obj) {
- *     // No need for null check, as NullPointerException correct if obj is null
- *     return new DiffBuilder(this, obj, ToStringStyle.SHORT_PREFIX_STYLE)
- *       .append("name", this.name, obj.name)
- *       .append("age", this.age, obj.age)
- *       .append("smoker", this.smoker, obj.smoker)
+ *   public DiffResult diff(Person object) {
+ *     // No need for null check, as NullPointerException correct if object is null
+ *     return new DiffBuilder(this, object, ToStringStyle.SHORT_PREFIX_STYLE)
+ *       .append("name", this.name, object.name)
+ *       .append("age", this.age, object.age)
+ *       .append("smoker", this.smoker, object.smoker)
  *       .build();
  *   }
  * }
@@ -770,10 +770,10 @@ public class DifferentBuilder implements Builder<DifferentResult> {
      *
      *   ...
      *
-     *   public DiffResult diff(Person obj) {
-     *     return new DiffBuilder(this, obj, ToStringStyle.SHORT_PREFIX_STYLE)
-     *       .append("name", this.name, obj.name)
-     *       .append("address", this.address.diff(obj.address))
+     *   public DiffResult diff(Person object) {
+     *     return new DiffBuilder(this, object, ToStringStyle.SHORT_PREFIX_STYLE)
+     *       .append("name", this.name, object.name)
+     *       .append("address", this.address.diff(object.address))
      *       .build();
      *   }
      * }

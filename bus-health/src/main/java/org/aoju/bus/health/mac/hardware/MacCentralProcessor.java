@@ -31,6 +31,7 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Quartet;
@@ -45,7 +46,6 @@ import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -72,7 +72,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             // Get manufacturer from IOPlatformExpertDevice
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
             if (data != null) {
-                manufacturer = Native.toString(data, StandardCharsets.UTF_8);
+                manufacturer = Native.toString(data, Charset.UTF_8);
             }
             platformExpert.release();
         }
@@ -104,7 +104,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                     // Compatible key is null-delimited C string array in byte array
                     data = cpu.getByteArrayProperty("compatible");
                     if (data != null) {
-                        for (String s : new String(data, StandardCharsets.UTF_8).split("\0")) {
+                        for (String s : new String(data, Charset.UTF_8).split("\0")) {
                             if (!s.isEmpty()) {
                                 compatibleStrSet.add(s);
                                 if (compatibleStrMap.containsKey(procId)) {
