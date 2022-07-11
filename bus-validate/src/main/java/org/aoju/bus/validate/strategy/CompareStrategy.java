@@ -49,11 +49,11 @@ public class CompareStrategy implements Matcher<Object, Compare> {
             return false;
         }
         boolean _matched = true;
-        Object obj = ReflectKit.getFieldValue(object, annotation.with());
+        Object value = ReflectKit.getFieldValue(object, annotation.with());
 
-        if (obj instanceof String) {
-            if (MathKit.isNumber(obj.toString())) {
-                int _compValue = new BigDecimal(obj.toString()).compareTo(new BigDecimal(object.toString()));
+        if (value instanceof String) {
+            if (MathKit.isNumber(value.toString())) {
+                int _compValue = new BigDecimal(value.toString()).compareTo(new BigDecimal(object.toString()));
                 switch (annotation.cond()) {
                     case EQ:
                         _matched = _compValue == 0;
@@ -79,10 +79,10 @@ public class CompareStrategy implements Matcher<Object, Compare> {
             } else {
                 switch (annotation.cond()) {
                     case EQ:
-                        _matched = StringKit.equals(obj.toString(), object.toString());
+                        _matched = StringKit.equals(value.toString(), object.toString());
                         break;
                     case NOT_EQ:
-                        _matched = !StringKit.equals(obj.toString(), object.toString());
+                        _matched = !StringKit.equals(value.toString(), object.toString());
                         break;
                     default:
                 }

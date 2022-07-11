@@ -43,7 +43,7 @@ import java.lang.reflect.Method;
  */
 public class InvokeTask implements Task {
 
-    private final Object obj;
+    private final Object object;
     private final Method method;
 
     /**
@@ -69,7 +69,7 @@ public class InvokeTask implements Task {
         if (null == clazz) {
             throw new IllegalArgumentException("Load class with name of [" + className + "] fail !");
         }
-        this.obj = ReflectKit.newInstanceIfPossible(clazz);
+        this.object = ReflectKit.newInstanceIfPossible(clazz);
 
         // 方法
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
@@ -85,7 +85,7 @@ public class InvokeTask implements Task {
     @Override
     public void execute() {
         try {
-            ReflectKit.invoke(this.obj, this.method);
+            ReflectKit.invoke(this.object, this.method);
         } catch (CrontabException e) {
             throw new CrontabException(e.getCause());
         }

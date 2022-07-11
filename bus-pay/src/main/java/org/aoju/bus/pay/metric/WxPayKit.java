@@ -59,8 +59,8 @@ public class WxPayKit {
         return Builder.encryptData(data, key);
     }
 
-    public static String generateStr() {
-        return Builder.generateStr();
+    public static String generateString() {
+        return Builder.generateString();
     }
 
     /**
@@ -217,7 +217,7 @@ public class WxPayKit {
         map.put("appid", appId);
         map.put("mch_id", mchId);
         map.put("time_stamp", StringKit.isEmpty(timeStamp) ? Long.toString(System.currentTimeMillis() / 1000) : timeStamp);
-        map.put("nonce_str", StringKit.isEmpty(nonceStr) ? WxPayKit.generateStr() : nonceStr);
+        map.put("nonce_str", StringKit.isEmpty(nonceStr) ? WxPayKit.generateString() : nonceStr);
         map.put("product_id", productId);
         return bizPayUrl(createSign(map, partnerKey, algorithm), appId, mchId, productId, timeStamp, nonceStr);
     }
@@ -234,7 +234,7 @@ public class WxPayKit {
      */
     public static String bizPayUrl(String partnerKey, String appId, String mchId, String productId) {
         String timeStamp = Long.toString(System.currentTimeMillis() / 1000);
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         HashMap<String, String> map = new HashMap<>(5);
         map.put("appid", appId);
         map.put("mch_id", mchId);
@@ -478,7 +478,7 @@ public class WxPayKit {
                                             String serialNo, String keyPath, String body) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = Builder.generateStr();
+        String nonceStr = Builder.generateString();
         return buildAuthorization(method, urlSuffix, mchId, serialNo, keyPath, body, nonceStr, timestamp, authType);
     }
 
@@ -498,7 +498,7 @@ public class WxPayKit {
                                             String serialNo, PrivateKey privateKey, String body) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = Builder.generateStr();
+        String nonceStr = Builder.generateString();
 
         return buildAuthorization(method, urlSuffix, mchId, serialNo, privateKey, body, nonceStr, timestamp, authType);
     }

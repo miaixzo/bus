@@ -5578,12 +5578,12 @@ public class Lunar {
          * @return 农历年
          */
         public static Year from(int lunarYear) {
-            Year obj = CACHE.get(lunarYear);
-            if (null == obj) {
-                obj = new Year(lunarYear);
-                CACHE.put(lunarYear, obj);
+            Year year = CACHE.get(lunarYear);
+            if (null == year) {
+                year = new Year(lunarYear);
+                CACHE.put(lunarYear, year);
             }
-            return obj;
+            return year;
         }
 
         private void compute() {

@@ -46,7 +46,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
+public class Dictionary extends LinkedHashMap<String, Object> implements BasicType<String> {
 
     private static final long serialVersionUID = 1L;
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
@@ -60,7 +60,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     /**
      * 构造
      */
-    public Dict() {
+    public Dictionary() {
         this(false);
     }
 
@@ -69,7 +69,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      *
      * @param caseInsensitive 是否大小写不敏感
      */
-    public Dict(boolean caseInsensitive) {
+    public Dictionary(boolean caseInsensitive) {
         this(DEFAULT_INITIAL_CAPACITY, caseInsensitive);
     }
 
@@ -78,7 +78,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      *
      * @param initialCapacity 初始容量
      */
-    public Dict(int initialCapacity) {
+    public Dictionary(int initialCapacity) {
         this(initialCapacity, false);
     }
 
@@ -87,7 +87,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      *
      * @param map Map
      */
-    public Dict(Map<String, Object> map) {
+    public Dictionary(Map<String, Object> map) {
         super((null == map) ? new HashMap<>() : map);
     }
 
@@ -97,7 +97,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param initialCapacity 初始容量
      * @param caseInsensitive 是否大小写不敏感
      */
-    public Dict(int initialCapacity, boolean caseInsensitive) {
+    public Dictionary(int initialCapacity, boolean caseInsensitive) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR, caseInsensitive);
     }
 
@@ -107,7 +107,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param initialCapacity 初始容量
      * @param loadFactor      容量增长因子，0~1，即达到容量的百分之多少时扩容
      */
-    public Dict(int initialCapacity, float loadFactor) {
+    public Dictionary(int initialCapacity, float loadFactor) {
         this(initialCapacity, loadFactor, false);
     }
 
@@ -118,7 +118,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param loadFactor      容量增长因子，0~1，即达到容量的百分之多少时扩容
      * @param caseInsensitive 是否大小写不敏感
      */
-    public Dict(int initialCapacity, float loadFactor, boolean caseInsensitive) {
+    public Dictionary(int initialCapacity, float loadFactor, boolean caseInsensitive) {
         super(initialCapacity, loadFactor);
         this.caseInsensitive = caseInsensitive;
     }
@@ -128,8 +128,8 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      *
      * @return Dict
      */
-    public static Dict create() {
-        return new Dict();
+    public static Dictionary create() {
+        return new Dictionary();
     }
 
     /**
@@ -139,7 +139,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param bean Bean对象
      * @return Vo
      */
-    public static <T> Dict parse(T bean) {
+    public static <T> Dictionary parse(T bean) {
         return create().parseBean(bean);
     }
 
@@ -149,12 +149,12 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param pairs 键值对
      * @return Dict
      */
-    public static Dict of(Pair<String, Object>... pairs) {
-        final Dict dict = create();
+    public static Dictionary of(Pair<String, Object>... pairs) {
+        final Dictionary dictionary = create();
         for (Pair<String, Object> pair : pairs) {
-            dict.put(pair.getKey(), pair.getValue());
+            dictionary.put(pair.getKey(), pair.getValue());
         }
-        return dict;
+        return dictionary;
     }
 
     /**
@@ -173,19 +173,19 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param keysAndValues 键值对列表，必须奇数参数为key，偶数参数为value
      * @return Dict
      */
-    public static Dict of(Object... keysAndValues) {
-        final Dict dict = create();
+    public static Dictionary of(Object... keysAndValues) {
+        final Dictionary dictionary = create();
 
         String key = null;
         for (int i = 0; i < keysAndValues.length; i++) {
             if (i % 2 == 0) {
                 key = Convert.toString(keysAndValues[i]);
             } else {
-                dict.put(key, keysAndValues[i]);
+                dictionary.put(key, keysAndValues[i]);
             }
         }
 
-        return dict;
+        return dictionary;
     }
 
     @Override
@@ -199,17 +199,17 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     }
 
     @Override
-    public Dict clone() {
-        return (Dict) super.clone();
+    public Dictionary clone() {
+        return (Dictionary) super.clone();
     }
 
     @Override
-    public Object getObj(String key) {
+    public Object getObject(String key) {
         return super.get(key);
     }
 
     @Override
-    public String getStr(String attr) {
+    public String getString(String attr) {
         return Convert.toString(get(attr), null);
     }
 
@@ -249,8 +249,8 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     }
 
     @Override
-    public Boolean getBool(String attr) {
-        return Convert.toBool(get(attr), null);
+    public Boolean getBoolean(String attr) {
+        return Convert.toBoolean(get(attr), null);
     }
 
     @Override
@@ -430,7 +430,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param bean 值对象
      * @return 自己
      */
-    public <T> Dict parseBean(T bean) {
+    public <T> Dictionary parseBean(T bean) {
         Assert.notNull(bean, "Bean class must be not null");
         this.putAll(BeanKit.beanToMap(bean));
         return this;
@@ -446,7 +446,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param ignoreNullValue   是否忽略值为空的字段
      * @return 自己
      */
-    public <T> Dict parseBean(T bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
+    public <T> Dictionary parseBean(T bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
         Assert.notNull(bean, "Bean class must be not null");
         this.putAll(BeanKit.beanToMap(bean, isToUnderlineCase, ignoreNullValue));
         return this;
@@ -460,7 +460,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param dict         字典对象
      * @param withoutNames 不需要去除的字段名
      */
-    public <T extends Dict> void removeEqual(T dict, String... withoutNames) {
+    public <T extends Dictionary> void removeEqual(T dict, String... withoutNames) {
         HashSet<String> withoutSet = CollKit.newHashSet(withoutNames);
         for (Map.Entry<String, Object> entry : dict.entrySet()) {
             if (withoutSet.contains(entry.getKey())) {
@@ -480,8 +480,8 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param keys 键列表
      * @return Dict 结果
      */
-    public Dict filter(String... keys) {
-        final Dict result = new Dict(keys.length, 1);
+    public Dictionary filter(String... keys) {
+        final Dictionary result = new Dictionary(keys.length, 1);
 
         for (String key : keys) {
             if (this.containsKey(key)) {
@@ -509,7 +509,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param value 值
      * @return 本身
      */
-    public Dict setIgnoreNull(String attr, Object value) {
+    public Dictionary setIgnoreNull(String attr, Object value) {
         if (null != attr && null != value) {
             set(attr, value);
         }
@@ -523,7 +523,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param value 值
      * @return 本身
      */
-    public Dict set(String attr, Object value) {
+    public Dictionary set(String attr, Object value) {
         this.put(attr, value);
         return this;
     }
@@ -565,7 +565,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param fields lambda,不能为空
      * @return this
      */
-    public Dict setFields(Func0<?>... fields) {
+    public Dictionary setFields(Func0<?>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.callWithRuntimeException()));
         return this;
     }

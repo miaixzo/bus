@@ -274,17 +274,17 @@ public class UserAgent {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (null == obj) {
+        if (null == object) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != object.getClass()) {
             return false;
         }
-        final UserAgent other = (UserAgent) obj;
+        final UserAgent other = (UserAgent) object;
         if (null == name) {
             return null == other.name;
         } else return name.equals(other.name);

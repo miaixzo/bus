@@ -37,8 +37,8 @@ import org.aoju.bus.goalie.Provider;
 public class JsonProvider implements Provider {
 
     @Override
-    public String serialize(Object obj) {
-        return JsonKit.toJsonString(obj);
+    public String serialize(Object object) {
+        return JsonKit.toJsonString(object);
     }
 
 }

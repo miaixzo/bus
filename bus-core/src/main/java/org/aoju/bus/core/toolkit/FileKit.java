@@ -3928,7 +3928,7 @@ public class FileKit {
      * @return 资源内容
      */
     public static String readers(String resource) {
-        return getResourceObj(resource).readString(Charset.UTF_8);
+        return getResourceObject(resource).readString(Charset.UTF_8);
     }
 
     /**
@@ -4070,7 +4070,7 @@ public class FileKit {
      * @param path 路径,可以是绝对路径,也可以是相对路径
      * @return {@link Resource} 资源对象
      */
-    public static Resource getResourceObj(String path) {
+    public static Resource getResourceObject(String path) {
         return FileKit.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);
     }
 

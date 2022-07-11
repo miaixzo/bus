@@ -111,7 +111,7 @@ public final class HkeyPerformanceData {
 
             // Iterate object types.
             long perfObjectOffset = perfData.HeaderLength;
-            for (int obj = 0; obj < perfData.NumObjectTypes; obj++) {
+            for (int i = 0; i < perfData.NumObjectTypes; i++) {
                 PERF_OBJECT_TYPE perfObject = new PERF_OBJECT_TYPE(pPerfData.share(perfObjectOffset));
                 // Some counters will require multiple objects so we iterate until we find the
                 // right one. e.g. Process (230) is by itself but Thread (232) has Process
@@ -150,8 +150,8 @@ public final class HkeyPerformanceData {
                         // purposes
                         counterMap.put(counterKeys[0],
                                 pPerfData.getWideString(perfInstanceOffset + perfInstance.NameOffset));
-                        for (int i = 1; i < counterKeys.length; i++) {
-                            T key = counterKeys[i];
+                        for (int j = 1; j < counterKeys.length; j++) {
+                            T key = counterKeys[j];
                             int keyIndex = COUNTER_INDEX_MAP.get(key.getCounter());
                             // All entries in size map have corresponding entry in offset map
                             int size = counterSizeMap.getOrDefault(keyIndex, 0);

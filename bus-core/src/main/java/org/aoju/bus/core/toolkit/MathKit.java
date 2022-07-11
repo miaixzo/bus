@@ -726,7 +726,7 @@ public class MathKit {
      * @param scale 保留小数位数
      * @return 新值
      */
-    public static String roundStr(double v, int scale) {
+    public static String roundString(double v, int scale) {
         return round(v, scale).toString();
     }
 
@@ -765,7 +765,7 @@ public class MathKit {
      * @param scale     保留小数位数
      * @return 新值
      */
-    public static String roundStr(String numberStr, int scale) {
+    public static String roundString(String numberStr, int scale) {
         return round(numberStr, scale).toString();
     }
 
@@ -791,7 +791,7 @@ public class MathKit {
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
      */
-    public static String roundStr(double v, int scale, RoundingMode roundingMode) {
+    public static String roundString(double v, int scale, RoundingMode roundingMode) {
         return round(v, scale, roundingMode).toString();
     }
 
@@ -844,7 +844,7 @@ public class MathKit {
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
      */
-    public static String roundStr(String numberStr, int scale, RoundingMode roundingMode) {
+    public static String roundString(String numberStr, int scale, RoundingMode roundingMode) {
         return round(numberStr, scale, roundingMode).toString();
     }
 
@@ -1525,7 +1525,7 @@ public class MathKit {
      * @param number 数字
      * @return 二进制字符串
      */
-    public static String getBinaryStr(Number number) {
+    public static String getBinaryString(Number number) {
         if (number instanceof Long) {
             return Long.toBinaryString((Long) number);
         } else if (number instanceof Integer) {
@@ -2525,7 +2525,7 @@ public class MathKit {
     /**
      * 给数字对象按照指定长度在左侧补0.
      * <p>
-     * 使用案例: addZero2Str(11,4) 返回 "0011", addZero2Str(-18,6)返回 "-000018"
+     * 使用案例: addZero2String(11,4) 返回 "0011", addZero2String(-18,6)返回 "-000018"
      *
      * @param numObj 数字对象
      * @param length 指定的长度

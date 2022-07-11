@@ -92,11 +92,11 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
             }
 
             final Map<String, Privacy> privacyMap = getSensitiveByResultMap(resultMap);
-            for (Object obj : results) {
+            for (Object object : results) {
                 // 数据解密
                 if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-                    final MetaObject objMetaObject = mappedStatement.getConfiguration().newMetaObject(obj);
+                    final MetaObject objMetaObject = mappedStatement.getConfiguration().newMetaObject(object);
                     for (Map.Entry<String, Privacy> entry : privacyMap.entrySet()) {
                         Privacy privacy = entry.getValue();
                         if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
@@ -116,7 +116,7 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
                 if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
                     Logger.debug("Query data sensitive enabled ...");
-                    Builder.on(obj);
+                    Builder.on(object);
                 }
             }
         }

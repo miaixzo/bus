@@ -73,7 +73,7 @@ public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, Inv
         return (map instanceof MapProxy) ? (MapProxy) map : new MapProxy(map);
     }
 
-    public Object getObj(Object key, Object defaultValue) {
+    public Object getObject(Object key, Object defaultValue) {
         final Object value = map.get(key);
         return null != value ? value : defaultValue;
     }

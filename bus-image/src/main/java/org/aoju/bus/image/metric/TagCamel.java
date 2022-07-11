@@ -403,17 +403,17 @@ public class TagCamel implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (null == obj) {
+        if (null == object) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != object.getClass()) {
             return false;
         }
-        TagCamel other = (TagCamel) obj;
+        TagCamel other = (TagCamel) object;
         if (id != other.id) {
             return false;
         }

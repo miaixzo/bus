@@ -83,14 +83,14 @@ public final class Ansi8BitColor implements AnsiElement {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        Ansi8BitColor other = (Ansi8BitColor) obj;
+        Ansi8BitColor other = (Ansi8BitColor) object;
         return this.prefix.equals(other.prefix) && this.code == other.code;
     }
 

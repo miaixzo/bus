@@ -3075,23 +3075,23 @@ public class CollKit {
     /**
      * 获取指定对象的指定属性值(去除private,protected的限制)
      *
-     * @param obj       属性名称所在的对象
+     * @param object    属性名称所在的对象
      * @param fieldName 属性名称
      * @return the object
      * @throws Exception 异常
      */
-    public static Object forceGetFieldValue(Object obj, String fieldName) throws Exception {
-        Field field = ClassKit.getField(obj.getClass(), fieldName);
+    public static Object forceGetFieldValue(Object object, String fieldName) throws Exception {
+        Field field = ClassKit.getField(object.getClass(), fieldName);
         boolean accessible = field.isAccessible();
         if (!accessible) {
             // 如果是private,protected修饰的属性,需要修改为可以访问的
             field.setAccessible(true);
-            obj = field.get(obj);
+            object = field.get(object);
             // 还原private,protected属性的访问性质
             field.setAccessible(accessible);
-            return obj;
+            return object;
         }
-        return field.get(obj);
+        return field.get(object);
     }
 
     /**
@@ -3962,7 +3962,7 @@ public class CollKit {
      * @param atomicInteger 原子操作类
      * @return 索引位置
      */
-    public static int ringNextIntByObj(Object object, AtomicInteger atomicInteger) {
+    public static int ringNextIntByObject(Object object, AtomicInteger atomicInteger) {
         Assert.notNull(object);
         int modulo = size(object);
         return ringNextInt(modulo, atomicInteger);

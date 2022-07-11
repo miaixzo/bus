@@ -142,8 +142,8 @@ public class DeletePropertyProvider extends MapperTemplate {
         String sqlSegment =
                 "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\"" + entityClassName + "\"),"
                         + "@org.aoju.bus.mapper.reflect.Reflector@fnToFieldName(fn))} in"
-                        + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"obj\">\n"
-                        + "#{obj}\n"
+                        + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"object\">\n"
+                        + "#{object}\n"
                         + "</foreach>\n";
         sql.append(sqlSegment);
         // 逻辑删除的未删除查询条件

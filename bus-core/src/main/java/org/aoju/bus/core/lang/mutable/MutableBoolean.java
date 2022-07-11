@@ -32,14 +32,14 @@ package org.aoju.bus.core.lang.mutable;
  * @see Boolean
  * @since Java 17+
  */
-public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
+public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boolean> {
 
     private boolean value;
 
     /**
      * 构造,默认值0
      */
-    public MutableBool() {
+    public MutableBoolean() {
 
     }
 
@@ -48,7 +48,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      *
      * @param value 值
      */
-    public MutableBool(final boolean value) {
+    public MutableBoolean(final boolean value) {
         this.value = value;
     }
 
@@ -58,7 +58,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      * @param value String值
      * @throws NumberFormatException 转为Boolean错误
      */
-    public MutableBool(final String value) throws NumberFormatException {
+    public MutableBoolean(final String value) throws NumberFormatException {
         this.value = Boolean.parseBoolean(value);
     }
 
@@ -85,17 +85,17 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      * 相等需同时满足如下条件：
      * <ol>
      * <li>非空</li>
-     * <li>类型为 {@link MutableBool}</li>
+     * <li>类型为 {@link MutableBoolean}</li>
      * <li>值相等</li>
      * </ol>
      *
-     * @param obj 比对的对象
+     * @param object 比对的对象
      * @return 相同返回<code>true</code>,否则 <code>false</code>
      */
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof MutableBool) {
-            return value == ((MutableBool) obj).value;
+    public boolean equals(final Object object) {
+        if (object instanceof MutableBoolean) {
+            return value == ((MutableBoolean) object).value;
         }
         return false;
     }
@@ -108,11 +108,11 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
     /**
      * 比较
      *
-     * @param other 其它 {@link MutableBool} 对象
+     * @param other 其它 {@link MutableBoolean} 对象
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      */
     @Override
-    public int compareTo(final MutableBool other) {
+    public int compareTo(final MutableBoolean other) {
         return Boolean.compare(this.value, other.value);
     }
 

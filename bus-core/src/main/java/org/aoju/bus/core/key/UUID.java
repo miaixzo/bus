@@ -550,14 +550,14 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * <p>
      * 当且仅当参数不为 {@code null}、而是一个 UUID 对象、具有与此 UUID 相同的 varriant、包含相同的值(每一位均相同)时,结果才为 {@code true}
      *
-     * @param obj 要与之比较的对象
+     * @param object 要与之比较的对象
      * @return 如果对象相同, 则返回 {@code true}；否则返回 {@code false}
      */
-    public boolean equals(Object obj) {
-        if ((null == obj) || (obj.getClass() != UUID.class)) {
+    public boolean equals(Object object) {
+        if ((null == object) || (object.getClass() != UUID.class)) {
             return false;
         }
-        UUID id = (UUID) obj;
+        UUID id = (UUID) object;
         return (mostSigBits == id.mostSigBits && leastSigBits == id.leastSigBits);
     }
 

@@ -90,10 +90,10 @@ public class Rect2d {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Rect2d)) return false;
-        Rect2d it = (Rect2d) obj;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Rect2d)) return false;
+        Rect2d it = (Rect2d) object;
         return x == it.x && y == it.y && width == it.width && height == it.height;
     }
 

@@ -33,17 +33,17 @@ import org.aoju.bus.logger.Logger;
  */
 public abstract class AbstractSerializer implements BaseSerializer {
 
-    protected abstract byte[] doSerialize(Object obj) throws Throwable;
+    protected abstract byte[] doSerialize(Object object) throws Throwable;
 
     protected abstract Object doDeserialize(byte[] bytes) throws Throwable;
 
     @Override
-    public <T> byte[] serialize(T obj) {
-        if (null == obj) {
+    public <T> byte[] serialize(T object) {
+        if (null == object) {
             return null;
         }
         try {
-            return doSerialize(obj);
+            return doSerialize(object);
         } catch (Throwable t) {
             Logger.error("{} serialize error.", this.getClass().getName(), t);
             return null;

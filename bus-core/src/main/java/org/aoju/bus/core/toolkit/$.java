@@ -39,39 +39,39 @@ public class $ {
     /**
      * 断言,必须不能为 null
      *
-     * @param obj 检查无效的对象引用
-     * @param <T> 引用的类型
-     * @return {@code obj} 是否为 {@code null}
-     * @throws NullPointerException 如果 {@code obj} 为 {@code null}
+     * @param object 检查无效的对象引用
+     * @param <T>    引用的类型
+     * @return {@code object} 是否为 {@code null}
+     * @throws NullPointerException 如果 {@code object} 为 {@code null}
      */
-    public static <T> T requireNotNull(T obj) {
-        return Objects.requireNonNull(obj);
+    public static <T> T requireNotNull(T object) {
+        return Objects.requireNonNull(object);
     }
 
     /**
      * 断言,必须不能为 null
      *
-     * @param obj     检查是否为空的对象引用
+     * @param object  检查是否为空的对象引用
      * @param message 在抛出{@code NullPointerException}时使用的详细信息
      * @param <T>     引用的类型
-     * @return {@code obj} 如果不为 {@code null}
-     * @throws NullPointerException 如果 {@code obj} 为 {@code null}
+     * @return {@code object} 如果不为 {@code null}
+     * @throws NullPointerException 如果 {@code object} 为 {@code null}
      */
-    public static <T> T requireNotNull(T obj, String message) {
-        return Objects.requireNonNull(obj, message);
+    public static <T> T requireNotNull(T object, String message) {
+        return Objects.requireNonNull(object, message);
     }
 
     /**
      * 断言,必须不能为 null
      *
-     * @param obj             检查是否为空的对象引用
+     * @param object          检查是否为空的对象引用
      * @param messageSupplier 在抛出{@code NullPointerException}时使用的详细信息的提供者
      * @param <T>             引用的类型
-     * @return {@code obj} 如果不为 {@code null}
-     * @throws NullPointerException 如果 {@code obj} 为 {@code null}
+     * @return {@code object} 如果不为 {@code null}
+     * @throws NullPointerException 如果 {@code object} 为 {@code null}
      */
-    public static <T> T requireNotNull(T obj, Supplier<String> messageSupplier) {
-        return Objects.requireNonNull(obj, messageSupplier);
+    public static <T> T requireNotNull(T object, Supplier<String> messageSupplier) {
+        return Objects.requireNonNull(object, messageSupplier);
     }
 
     /**
@@ -97,23 +97,23 @@ public class $ {
     /**
      * 判断对象是否为null
      *
-     * @param obj 要根据{@code null}检查的引用
+     * @param object 要根据{@code null}检查的引用
      * @return 如果提供的引用是{@code null}，则为{@code true};否则为{@code false}
      * @see java.util.function.Predicate
      */
-    public static boolean isNull(Object obj) {
-        return Objects.isNull(obj);
+    public static boolean isNull(Object object) {
+        return Objects.isNull(object);
     }
 
     /**
      * 判断对象是否 not null
      *
-     * @param obj 要根据{@code null}检查的引用
+     * @param object 要根据{@code null}检查的引用
      * @return 如果提供的引用是{@code null}，则为{@code true};否则为{@code false}
      * @see java.util.function.Predicate
      */
-    public static boolean isNotNull(Object obj) {
-        return Objects.nonNull(obj);
+    public static boolean isNotNull(Object object) {
+        return Objects.nonNull(object);
     }
 
     /**
@@ -165,31 +165,31 @@ public class $ {
     /**
      * 判断对象是数组
      *
-     * @param obj 要检查的对象可能为空
+     * @param object 要检查的对象可能为空
      * @return 是否数组
      */
-    public static boolean isArray(Object obj) {
-        return ObjectKit.isArray(obj);
+    public static boolean isArray(Object object) {
+        return ObjectKit.isArray(object);
     }
 
     /**
      * 判断空对象 object、map、list、set、字符串、数组
      *
-     * @param obj 要检查的对象可能为空
+     * @param object 要检查的对象可能为空
      * @return 数组是否为空
      */
-    public static boolean isEmpty(Object obj) {
-        return ObjectKit.isEmpty(obj);
+    public static boolean isEmpty(Object object) {
+        return ObjectKit.isEmpty(object);
     }
 
     /**
      * 对象不为空 object、map、list、set、字符串、数组
      *
-     * @param obj 要检查的对象可能为空
+     * @param object 要检查的对象可能为空
      * @return 是否不为空
      */
-    public static boolean isNotEmpty(Object obj) {
-        return !ObjectKit.isEmpty(obj);
+    public static boolean isNotEmpty(Object object) {
+        return !ObjectKit.isEmpty(object);
     }
 
     /**
@@ -286,11 +286,11 @@ public class $ {
     /**
      * 返回对象的 hashCode
      *
-     * @param obj Object
-     * @return hashCode
+     * @param object Object
+     * @return the int
      */
-    public static int hashCode(Object obj) {
-        return Objects.hashCode(obj);
+    public static int hashCode(Object object) {
+        return Objects.hashCode(object);
     }
 
     /**

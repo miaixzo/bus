@@ -329,7 +329,7 @@ public class WxpayProvider {
                              String serialNo, String platSerialNo, String keyPath, String body) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         return v3(method, urlPrefix, urlSuffix, mchId, serialNo, platSerialNo, keyPath, body, nonceStr, timestamp, authType, null);
     }
 
@@ -351,7 +351,7 @@ public class WxpayProvider {
                              String serialNo, String platSerialNo, PrivateKey privateKey, String body) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         return v3(method, urlPrefix, urlSuffix, mchId, serialNo, platSerialNo, privateKey, body, nonceStr, timestamp, authType, null);
     }
 
@@ -374,7 +374,7 @@ public class WxpayProvider {
                              Map<String, String> params) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         if (null != params && !params.keySet().isEmpty()) {
             urlSuffix = urlSuffix.concat("?").concat(Builder.createLinkString(params, true));
         }
@@ -400,7 +400,7 @@ public class WxpayProvider {
                              Map<String, String> params) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         if (null != params && !params.keySet().isEmpty()) {
             urlSuffix = urlSuffix.concat("?").concat(Builder.createLinkString(params, true));
         }
@@ -424,7 +424,7 @@ public class WxpayProvider {
     public static Results v3(String urlPrefix, String urlSuffix, String mchId, String serialNo, String platSerialNo, String keyPath, String body, File file) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         return v3(Http.POST, urlPrefix, urlSuffix, mchId, serialNo, platSerialNo, keyPath, body, nonceStr, timestamp, authType, file);
     }
 
@@ -446,7 +446,7 @@ public class WxpayProvider {
                              String platSerialNo, PrivateKey privateKey, String body, File file) throws Exception {
         long timestamp = System.currentTimeMillis() / 1000;
         String authType = "WECHATPAY2-SHA256-RSA2048";
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         return v3(Http.POST, urlPrefix, urlSuffix, mchId, serialNo, platSerialNo, privateKey, body, nonceStr, timestamp, authType, file);
     }
 
@@ -608,7 +608,7 @@ public class WxpayProvider {
      */
     public static String getSignKey(String mchId, String partnerKey, Algorithm algorithm) {
         Map<String, String> map = new HashMap<>(3);
-        String nonceStr = WxPayKit.generateStr();
+        String nonceStr = WxPayKit.generateString();
         map.put("mch_id", mchId);
         map.put("nonce_str", nonceStr);
         map.put("sign", WxPayKit.createSign(map, partnerKey, algorithm));

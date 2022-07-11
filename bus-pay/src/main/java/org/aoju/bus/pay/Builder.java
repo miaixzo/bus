@@ -93,7 +93,7 @@ public class Builder {
      * @return 解密后的数据
      */
     public static String decryptData(String base64Data, String key) {
-        return org.aoju.bus.crypto.Builder.aes(md5(key).toLowerCase().getBytes()).decryptStr(base64Data);
+        return org.aoju.bus.crypto.Builder.aes(md5(key).toLowerCase().getBytes()).decryptString(base64Data);
     }
 
     /**
@@ -112,7 +112,7 @@ public class Builder {
      *
      * @return 简化的 UUID，去掉了横线
      */
-    public static String generateStr() {
+    public static String generateString() {
         return ID.fastSimpleUUID();
     }
 
@@ -382,8 +382,8 @@ public class Builder {
      * @return {@link String} 商户私钥
      * @throws Exception 异常信息
      */
-    public static String getPrivateKeyStr(String keyPath) throws Exception {
-        return Secure.getPrivateKeyStr(getPrivateKey(keyPath));
+    public static String getPrivateKeyString(String keyPath) throws Exception {
+        return Secure.getPrivateKeyString(getPrivateKey(keyPath));
     }
 
     /**

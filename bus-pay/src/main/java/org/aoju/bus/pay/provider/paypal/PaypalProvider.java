@@ -187,7 +187,7 @@ public class PaypalProvider {
     }
 
     public static Map<String, String> getBaseHeaders(AccessToken accessToken) {
-        return getBaseHeaders(accessToken, Builder.generateStr(), null, null);
+        return getBaseHeaders(accessToken, Builder.generateString(), null, null);
     }
 
     public static Map<String, String> getBaseHeaders(AccessToken accessToken,

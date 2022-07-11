@@ -74,10 +74,10 @@ public class Scalar {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Scalar)) return false;
-        Scalar it = (Scalar) obj;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Scalar)) return false;
+        Scalar it = (Scalar) object;
         if (!java.util.Arrays.equals(val, it.val)) return false;
         return true;
     }

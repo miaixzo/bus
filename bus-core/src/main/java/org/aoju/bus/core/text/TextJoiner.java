@@ -212,20 +212,20 @@ public class TextJoiner implements Appendable, Serializable {
     /**
      * 追加对象到拼接器中
      *
-     * @param obj 对象，支持数组、集合等
+     * @param object 对象，支持数组、集合等
      * @return this
      */
-    public TextJoiner append(Object obj) {
-        if (null == obj) {
+    public TextJoiner append(Object object) {
+        if (null == object) {
             append((CharSequence) null);
-        } else if (ArrayKit.isArray(obj)) {
-            append(new ArrayIterator<>(obj));
-        } else if (obj instanceof Iterator) {
-            append((Iterator<?>) obj);
-        } else if (obj instanceof Iterable) {
-            append(((Iterable<?>) obj).iterator());
+        } else if (ArrayKit.isArray(object)) {
+            append(new ArrayIterator<>(object));
+        } else if (object instanceof Iterator) {
+            append((Iterator<?>) object);
+        } else if (object instanceof Iterable) {
+            append(((Iterable<?>) object).iterator());
         } else {
-            append(ObjectKit.toString(obj));
+            append(ObjectKit.toString(object));
         }
         return this;
     }

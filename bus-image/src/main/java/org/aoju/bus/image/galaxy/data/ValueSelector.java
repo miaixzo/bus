@@ -98,11 +98,11 @@ public class ValueSelector implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof ValueSelector))
+    public boolean equals(Object object) {
+        if (!(object instanceof ValueSelector))
             return false;
 
-        return toString().equals(obj.toString());
+        return toString().equals(object.toString());
     }
 
 }

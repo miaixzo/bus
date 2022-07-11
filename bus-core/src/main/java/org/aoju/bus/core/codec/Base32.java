@@ -118,8 +118,8 @@ public class Base32 {
      * @param source 被解码的base32字符串
      * @return 被加密后的字符串
      */
-    public static String decodeStr(String source) {
-        return decodeStr(source, org.aoju.bus.core.lang.Charset.UTF_8);
+    public static String decodeString(String source) {
+        return decodeString(source, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -129,7 +129,7 @@ public class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeStr(String source, java.nio.charset.Charset charset) {
+    public static String decodeString(String source, java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 

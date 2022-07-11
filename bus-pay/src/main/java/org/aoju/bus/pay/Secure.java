@@ -60,10 +60,10 @@ public class Secure {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-        String publicKeyStr = getPublicKeyStr(publicKey);
-        String privateKeyStr = getPrivateKeyStr(privateKey);
+        String publicKeyStr = getPublicKeyString(publicKey);
+        String privateKeyStr = getPrivateKeyString(privateKey);
 
-        Map<String, String> map = new HashMap<String, String>(2);
+        Map<String, String> map = new HashMap<>(2);
         map.put("publicKey", publicKeyStr);
         map.put("privateKey", privateKeyStr);
 
@@ -356,11 +356,11 @@ public class Secure {
         }
     }
 
-    public static String getPrivateKeyStr(PrivateKey privateKey) {
+    public static String getPrivateKeyString(PrivateKey privateKey) {
         return Base64.encode(privateKey.getEncoded());
     }
 
-    public static String getPublicKeyStr(PublicKey publicKey) {
+    public static String getPublicKeyString(PublicKey publicKey) {
         return Base64.encode(publicKey.getEncoded());
     }
 

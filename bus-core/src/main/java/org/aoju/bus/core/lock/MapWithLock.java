@@ -89,7 +89,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            Map<K, V> map = this.getObj();
+            Map<K, V> map = this.getObject();
             return map.put(key, value);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -111,7 +111,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            Map<K, V> map = this.getObj();
+            Map<K, V> map = this.getObject();
             V oldValue = map.putIfAbsent(key, value);
             if (null == oldValue) {
                 return value;
@@ -139,7 +139,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            this.getObj().putAll(map);
+            this.getObject().putAll(map);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
         } finally {
@@ -154,7 +154,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            Map<K, V> map = this.getObj();
+            Map<K, V> map = this.getObject();
             map.clear();
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -173,7 +173,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         WriteLock writeLock = this.writeLock();
         writeLock.lock();
         try {
-            Map<K, V> map = this.getObj();
+            Map<K, V> map = this.getObject();
             return map.remove(key);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -193,7 +193,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         ReadLock readLock = this.readLock();
         readLock.lock();
         try {
-            Map<K, V> map = this.getObj();
+            Map<K, V> map = this.getObject();
             return map.get(key);
         } catch (Throwable e) {
             Console.error(e.getMessage(), e);
@@ -212,7 +212,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         ReadLock readLock = this.readLock();
         readLock.lock();
         try {
-            Map<K, V> map = this.getObj();
+            Map<K, V> map = this.getObject();
             return map.size();
         } finally {
             readLock.unlock();
@@ -228,8 +228,8 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         ReadLock readLock = readLock();
         readLock.lock();
         try {
-            if (this.getObj().size() > 0) {
-                return new HashMap<>(getObj());
+            if (this.getObject().size() > 0) {
+                return new HashMap<>(getObject());
             }
             return null;
         } finally {

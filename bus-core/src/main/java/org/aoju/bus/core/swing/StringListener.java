@@ -45,7 +45,7 @@ public abstract class StringListener implements ClipboardListener, Serializable 
     @Override
     public Transferable onChange(Clipboard clipboard, Transferable contents) {
         if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return onChange(clipboard, SwingKit.getStr(contents));
+            return onChange(clipboard, SwingKit.getString(contents));
         }
         return null;
     }

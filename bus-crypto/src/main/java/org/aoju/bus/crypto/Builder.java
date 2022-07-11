@@ -1299,7 +1299,7 @@ public class Builder {
      * @return {@link ASN1Object}的字符串表示形式
      * @see ASN1Dump#dumpAsString(Object)
      */
-    public static String getDumpStr(InputStream in) {
+    public static String getDumpString(InputStream in) {
         return ASN1Dump.dumpAsString(decode(in));
     }
 

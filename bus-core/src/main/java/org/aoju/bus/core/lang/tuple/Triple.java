@@ -78,12 +78,12 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj == this) {
+    public boolean equals(final Object object) {
+        if (object == this) {
             return true;
         }
-        if (obj instanceof Triple<?, ?, ?>) {
-            final Triple<?, ?, ?> other = (Triple<?, ?, ?>) obj;
+        if (object instanceof Triple<?, ?, ?>) {
+            final Triple<?, ?, ?> other = (Triple<?, ?, ?>) object;
             return Objects.equals(getLeft(), other.getLeft())
                     && Objects.equals(getMiddle(), other.getMiddle())
                     && Objects.equals(getRight(), other.getRight());

@@ -42,7 +42,7 @@ public class MethodExecuteCostHandler {
     public Object costLogger(ProceedingJoinPoint pjp) throws Throwable {
         Signature sig = pjp.getSignature();
         MethodSignature msig;
-        Object obj = null;
+        Object object = null;
 
         if (!(sig instanceof MethodSignature)) {
             throw new IllegalArgumentException("this annotation only used on the method");
@@ -62,7 +62,7 @@ public class MethodExecuteCostHandler {
                 long startTime = System.currentTimeMillis();
                 try {
                     //执行方法
-                    obj = pjp.proceed();
+                    object = pjp.proceed();
                 } catch (Throwable throwable) {
                     throw throwable;
                 }
@@ -71,7 +71,7 @@ public class MethodExecuteCostHandler {
 
                 //当设置了超时时间,但耗时小于超时时间,不进行日志打印,直接返回 (只有耗时大于超时时间才进行日志打印)
                 if (tacerCostLogger.timeout() != -1 && cost < tacerCostLogger.timeout()) {
-                    return obj;
+                    return object;
                 }
 
                 //方法名
@@ -126,7 +126,7 @@ public class MethodExecuteCostHandler {
 
             } else {
                 try {
-                    obj = pjp.proceed();
+                    object = pjp.proceed();
                 } catch (Throwable throwable) {
                     throw throwable;
                 }
@@ -135,7 +135,7 @@ public class MethodExecuteCostHandler {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return obj;
+        return object;
     }
 */
 }

@@ -40,8 +40,8 @@ import java.util.Date;
 public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
 
     @Override
-    default Object getObj(K key) {
-        return getObj(key, null);
+    default Object getObject(K key) {
+        return getObject(key, null);
     }
 
     /**
@@ -52,8 +52,8 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default String getStr(K key) {
-        return this.getStr(key, null);
+    default String getString(K key) {
+        return this.getString(key, null);
     }
 
     /**
@@ -88,8 +88,8 @@ public interface OptNullType<K> extends BasicType<K>, OptBasicType<K> {
      * @return 属性值
      */
     @Override
-    default Boolean getBool(K key) {
-        return this.getBool(key, null);
+    default Boolean getBoolean(K key) {
+        return this.getBoolean(key, null);
     }
 
     /**

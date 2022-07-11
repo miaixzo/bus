@@ -45,8 +45,8 @@ import java.lang.reflect.Modifier;
  *   boolean smoker;
  *   ...
  *
- *   public DiffResult diff(Person obj) {
- *     return new ReflectionDiffBuilder(this, obj, ToStringStyle.SHORT_PREFIX_STYLE)
+ *   public DiffResult diff(Person object) {
+ *     return new ReflectionDiffBuilder(this, object, ToStringStyle.SHORT_PREFIX_STYLE)
  *       .build();
  *   }
  * }

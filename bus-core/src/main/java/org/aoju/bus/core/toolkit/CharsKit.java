@@ -567,7 +567,7 @@ public class CharsKit {
         if (null == text) {
             return true;
         }
-        return isNullOrUndefinedStr(text);
+        return isNullOrUndefinedString(text);
     }
 
     /**
@@ -580,7 +580,7 @@ public class CharsKit {
         if (isEmpty(text)) {
             return true;
         }
-        return isNullOrUndefinedStr(text);
+        return isNullOrUndefinedString(text);
     }
 
     /**
@@ -593,7 +593,7 @@ public class CharsKit {
         if (isBlank(text)) {
             return true;
         }
-        return isNullOrUndefinedStr(text);
+        return isNullOrUndefinedString(text);
     }
 
     /**
@@ -602,7 +602,7 @@ public class CharsKit {
      * @param text 字符串
      * @return 是否为“null”、“undefined”
      */
-    private static boolean isNullOrUndefinedStr(CharSequence text) {
+    private static boolean isNullOrUndefinedString(CharSequence text) {
         String strString = text.toString().trim();
         return Normal.NULL.equals(strString) || Normal.UNDEFINED.equals(strString);
     }
@@ -613,7 +613,7 @@ public class CharsKit {
      * @param text 字符串
      * @return 是否不为“null”、“undefined”，不为“null”、“undefined”返回true，否则false
      */
-    private static boolean isNotNullAndNotUndefinedStr(CharSequence text) {
+    private static boolean isNotNullAndNotUndefinedString(CharSequence text) {
         String strString = text.toString().trim();
         return !Normal.NULL.equals(strString) && !Normal.UNDEFINED.equals(strString);
     }

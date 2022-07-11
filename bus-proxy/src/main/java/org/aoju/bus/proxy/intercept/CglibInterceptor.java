@@ -59,13 +59,13 @@ public class CglibInterceptor implements MethodInterceptor {
     }
 
     @Override
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+    public Object intercept(Object object, Method method, Object[] args, MethodProxy proxy) throws Throwable {
         Object result = null;
 
         // 开始前回调
         if (aspectj.before(target, method, args)) {
             try {
-                result = proxy.invokeSuper(obj, args);
+                result = proxy.invokeSuper(object, args);
             } catch (InvocationTargetException e) {
                 // 异常回调(只捕获业务代码导致的异常,而非反射导致的异常)
                 if (aspectj.afterException(target, method, args, e.getTargetException())) {

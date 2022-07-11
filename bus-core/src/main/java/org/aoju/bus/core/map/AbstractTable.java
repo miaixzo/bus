@@ -56,11 +56,11 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     private Set<Cell<R, C, V>> cellSet;
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
+    public boolean equals(Object object) {
+        if (object == this) {
             return true;
-        } else if (obj instanceof Table) {
-            final Table<?, ?, ?> that = (Table<?, ?, ?>) obj;
+        } else if (object instanceof Table) {
+            final Table<?, ?, ?> that = (Table<?, ?, ?>) object;
             return this.cellSet().equals(that.cellSet());
         } else {
             return false;
@@ -131,12 +131,12 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (obj == this) {
+        public boolean equals(Object object) {
+            if (object == this) {
                 return true;
             }
-            if (obj instanceof Cell) {
-                Cell<?, ?, ?> other = (Cell<?, ?, ?>) obj;
+            if (object instanceof Cell) {
+                Cell<?, ?, ?> other = (Cell<?, ?, ?>) object;
                 return ObjectKit.equal(rowKey, other.getRowKey())
                         && ObjectKit.equal(columnKey, other.getColumnKey())
                         && ObjectKit.equal(value, other.getValue());

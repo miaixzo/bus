@@ -84,7 +84,7 @@ public class PartParser {
      * @param value 被检查的值
      * @return 是否为全匹配符
      */
-    private static boolean isMatchAllStr(String value) {
+    private static boolean isMatchAllString(String value) {
         return (1 == value.length()) && ("*".equals(value) || "?".equals(value));
     }
 
@@ -101,7 +101,7 @@ public class PartParser {
      * @return {@link PartMatcher}
      */
     public PartMatcher parse(String value) {
-        if (isMatchAllStr(value)) {
+        if (isMatchAllString(value)) {
             //兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
             return new AlwaysTrueMatcher();
         }
@@ -194,7 +194,7 @@ public class PartParser {
         if (value.length() <= 2) {
             //根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
             int minValue = part.getMin();
-            if (false == isMatchAllStr(value)) {
+            if (false == isMatchAllString(value)) {
                 minValue = Math.max(minValue, parseNumber(value));
             } else {
                 //在全匹配模式下，如果步进不存在，表示步进为1

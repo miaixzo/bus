@@ -43,12 +43,12 @@ import java.nio.file.attribute.BasicFileAttributes;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Dcm2Str extends SimpleFileVisitor<Path> {
+public class Dcm2String extends SimpleFileVisitor<Path> {
 
     private final Format format;
     private final Attributes cliAttrs;
 
-    public Dcm2Str(Format format, Attributes cliAttrs) {
+    public Dcm2String(Format format, Attributes cliAttrs) {
         this.format = format;
         this.cliAttrs = cliAttrs;
     }

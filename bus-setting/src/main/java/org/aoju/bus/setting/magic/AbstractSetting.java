@@ -47,8 +47,8 @@ import java.lang.reflect.Type;
 public abstract class AbstractSetting implements OptNullString<String>, Serializable {
 
     @Override
-    public String getStr(String key, String defaultValue) {
-        return getStr(key, Normal.EMPTY, defaultValue);
+    public String getString(String key, String defaultValue) {
+        return getString(key, Normal.EMPTY, defaultValue);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * @param defaultValue 默认值
      * @return 值，如果字符串为{@code null}返回默认值
      */
-    public String getStr(String key, String group, String defaultValue) {
+    public String getString(String key, String group, String defaultValue) {
         return ObjectKit.defaultIfNull(getByGroup(key, group), defaultValue);
     }
 
@@ -91,7 +91,7 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * @return 值
      */
     public String getWithLog(String key) {
-        return getStr(key);
+        return getString(key);
     }
 
     /**
@@ -188,8 +188,8 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * @param group 分组名
      * @return 属性值
      */
-    public Boolean getBool(String key, String group) {
-        return getBool(key, group, null);
+    public Boolean getBoolean(String key, String group) {
+        return getBoolean(key, group, null);
     }
 
     /**
@@ -200,8 +200,8 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * @param defaultValue 默认值
      * @return 属性值
      */
-    public Boolean getBool(String key, String group, Boolean defaultValue) {
-        return Convert.toBool(getByGroup(key, group), defaultValue);
+    public Boolean getBoolean(String key, String group, Boolean defaultValue) {
+        return Convert.toBoolean(getByGroup(key, group), defaultValue);
     }
 
     /**

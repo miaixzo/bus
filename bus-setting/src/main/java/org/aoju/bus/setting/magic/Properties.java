@@ -110,7 +110,7 @@ public final class Properties extends java.util.Properties implements BasicType<
         if (null != charset) {
             this.charset = charset;
         }
-        this.load(FileKit.getResourceObj(path));
+        this.load(FileKit.getResourceObject(path));
     }
 
     /**
@@ -325,28 +325,28 @@ public final class Properties extends java.util.Properties implements BasicType<
     }
 
     @Override
-    public Object getObj(String key, Object defaultValue) {
-        return getStr(key, null == defaultValue ? null : defaultValue.toString());
+    public Object getObject(String key, Object defaultValue) {
+        return getString(key, null == defaultValue ? null : defaultValue.toString());
     }
 
     @Override
-    public Object getObj(String key) {
-        return getObj(key, null);
+    public Object getObject(String key) {
+        return getObject(key, null);
     }
 
     @Override
-    public String getStr(String key, String defaultValue) {
+    public String getString(String key, String defaultValue) {
         return super.getProperty(key, defaultValue);
     }
 
     @Override
-    public String getStr(String key) {
+    public String getString(String key) {
         return super.getProperty(key);
     }
 
     @Override
     public Integer getInt(String key, Integer defaultValue) {
-        return Convert.toInt(getStr(key), defaultValue);
+        return Convert.toInt(getString(key), defaultValue);
     }
 
     @Override
@@ -355,18 +355,18 @@ public final class Properties extends java.util.Properties implements BasicType<
     }
 
     @Override
-    public Boolean getBool(String key, Boolean defaultValue) {
-        return Convert.toBool(getStr(key), defaultValue);
+    public Boolean getBoolean(String key, Boolean defaultValue) {
+        return Convert.toBoolean(getString(key), defaultValue);
     }
 
     @Override
-    public Boolean getBool(String key) {
-        return getBool(key, null);
+    public Boolean getBoolean(String key) {
+        return getBoolean(key, null);
     }
 
     @Override
     public Long getLong(String key, Long defaultValue) {
-        return Convert.toLong(getStr(key), defaultValue);
+        return Convert.toLong(getString(key), defaultValue);
     }
 
     @Override
@@ -376,7 +376,7 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public Character getChar(String key, Character defaultValue) {
-        final String value = getStr(key);
+        final String value = getString(key);
         if (StringKit.isBlank(value)) {
             return defaultValue;
         }
@@ -395,12 +395,12 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public Float getFloat(String key, Float defaultValue) {
-        return Convert.toFloat(getStr(key), defaultValue);
+        return Convert.toFloat(getString(key), defaultValue);
     }
 
     @Override
     public Double getDouble(String key, Double defaultValue) throws NumberFormatException {
-        return Convert.toDouble(getStr(key), defaultValue);
+        return Convert.toDouble(getString(key), defaultValue);
     }
 
     @Override
@@ -410,7 +410,7 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public Short getShort(String key, Short defaultValue) {
-        return Convert.toShort(getStr(key), defaultValue);
+        return Convert.toShort(getString(key), defaultValue);
     }
 
     @Override
@@ -420,7 +420,7 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public Byte getByte(String key, Byte defaultValue) {
-        return Convert.toByte(getStr(key), defaultValue);
+        return Convert.toByte(getString(key), defaultValue);
     }
 
     @Override
@@ -430,7 +430,7 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public BigDecimal getBigDecimal(String key, BigDecimal defaultValue) {
-        final String valueStr = getStr(key);
+        final String valueStr = getString(key);
         if (StringKit.isBlank(valueStr)) {
             return defaultValue;
         }
@@ -449,7 +449,7 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public BigInteger getBigInteger(String key, BigInteger defaultValue) {
-        final String valueStr = getStr(key);
+        final String valueStr = getString(key);
         if (StringKit.isBlank(valueStr)) {
             return defaultValue;
         }
@@ -468,7 +468,7 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public <E extends Enum<E>> E getEnum(Class<E> clazz, String key, E defaultValue) {
-        return Convert.toEnum(clazz, getStr(key), defaultValue);
+        return Convert.toEnum(clazz, getString(key), defaultValue);
     }
 
     @Override
@@ -478,7 +478,7 @@ public final class Properties extends java.util.Properties implements BasicType<
 
     @Override
     public Date getDate(String key, Date defaultValue) {
-        return Convert.toDate(getStr(key), defaultValue);
+        return Convert.toDate(getString(key), defaultValue);
     }
 
     @Override
@@ -492,7 +492,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param keys 键列表，常用于别名
      * @return 字符串值
      */
-    public String getAndRemoveStr(String... keys) {
+    public String getAndRemoveString(String... keys) {
         Object value = null;
         for (String key : keys) {
             value = remove(key);

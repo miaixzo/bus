@@ -27,7 +27,7 @@ package org.aoju.bus.logger.dialect.console;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Console;
-import org.aoju.bus.core.lang.Dict;
+import org.aoju.bus.core.lang.Dictionary;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -135,13 +135,13 @@ public class ConsoleLog extends AbstractAware {
             return;
         }
 
-        final Dict dict = Dict.create()
+        final Dictionary dictionary = Dictionary.create()
                 .set("date", DateKit.now())
                 .set("level", level.toString())
                 .set("name", this.name)
                 .set("msg", StringKit.format(format, arguments));
 
-        final String logMsg = StringKit.format(logFormat, dict);
+        final String logMsg = StringKit.format(logFormat, dictionary);
 
         if (level.ordinal() >= Level.WARN.ordinal()) {
             Console.error(t, logMsg);

@@ -119,7 +119,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      */
     public PopSetting(String path, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
-        this.init(FileKit.getResourceObj(path), charset, isUseVariable);
+        this.init(FileKit.getResourceObject(path), charset, isUseVariable);
     }
 
     /**
@@ -282,7 +282,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param keys 键列表,常用于别名
      * @return 字符串值
      */
-    public String getAndRemoveStr(String... keys) {
+    public String getAndRemoveString(String... keys) {
         Object value = null;
         for (String key : keys) {
             value = remove(key);
@@ -672,17 +672,17 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (null == obj) {
+        if (null == object) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != object.getClass()) {
             return false;
         }
-        PopSetting other = (PopSetting) obj;
+        PopSetting other = (PopSetting) object;
         if (null == charset) {
             if (null != other.charset) {
                 return false;

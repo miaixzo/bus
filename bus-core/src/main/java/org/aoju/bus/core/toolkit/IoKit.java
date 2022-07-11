@@ -768,15 +768,15 @@ public class IoKit {
      * @return 输出流
      * @throws InstrumentException 异常
      */
-    public static <T> T readObj(InputStream in) throws InstrumentException {
+    public static <T> T readObject(InputStream in) throws InstrumentException {
         if (null == in) {
             throw new IllegalArgumentException("The InputStream must not be null");
         }
         ObjectInputStream ois;
         try {
             ois = new ObjectInputStream(in);
-            final T obj = (T) ois.readObject();
-            return obj;
+            final T object = (T) ois.readObject();
+            return object;
         } catch (IOException e) {
             throw new InstrumentException(e);
         } catch (ClassNotFoundException e) {
@@ -1107,10 +1107,10 @@ public class IoKit {
      *
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
-     * @param obj        写入的对象内容
+     * @param object     写入的对象内容
      */
-    public static void write(OutputStream out, boolean isCloseOut, Serializable obj) throws InstrumentException {
-        writeObjects(out, isCloseOut, obj);
+    public static void write(OutputStream out, boolean isCloseOut, Serializable object) throws InstrumentException {
+        writeObjects(out, isCloseOut, object);
     }
 
     /**

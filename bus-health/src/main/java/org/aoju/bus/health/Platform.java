@@ -63,15 +63,13 @@ import java.util.function.Supplier;
  */
 public class Platform {
 
-    // The platform isn't going to change, and making this static enables easy
-    // access from outside this class
-    private static final OS CURRENT_PLATFORM = OS.getValue(com.sun.jna.Platform.getOSType());
+    public static final OS CURRENT_PLATFORM = OS.getValue(com.sun.jna.Platform.getOSType());
 
-    private static final String NOT_SUPPORTED = "Operating system not supported: ";
+    public static final String NOT_SUPPORTED = "Operating system not supported: ";
 
-    private final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
+    public static final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
 
-    private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
+    public static final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
 
     public static int getOSType() {
         return com.sun.jna.Platform.getOSType();
@@ -431,7 +429,7 @@ public class Platform {
         return CURRENT_PLATFORM;
     }
 
-    private static OperatingSystem createOperatingSystem() {
+    public static OperatingSystem createOperatingSystem() {
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
                 return new WindowsOperatingSystem();
@@ -452,7 +450,7 @@ public class Platform {
         }
     }
 
-    private static HardwareAbstractionLayer createHardware() {
+    public static HardwareAbstractionLayer createHardware() {
         switch (CURRENT_PLATFORM) {
             case WINDOWS:
                 return new WindowsHardwareAbstractionLayer();
@@ -479,7 +477,7 @@ public class Platform {
      *
      * @return A new instance of {@link OperatingSystem}.
      */
-    public OperatingSystem getOperatingSystem() {
+    public static OperatingSystem getOperatingSystem() {
         return os.get();
     }
 
@@ -489,7 +487,7 @@ public class Platform {
      *
      * @return A new instance of {@link HardwareAbstractionLayer}.
      */
-    public HardwareAbstractionLayer getHardware() {
+    public static HardwareAbstractionLayer getHardware() {
         return hardware.get();
     }
 
@@ -552,7 +550,7 @@ public class Platform {
          */
         UNKNOWN("Unknown");
 
-        private final String name;
+        public final String name;
 
         OS(String name) {
             this.name = name;
