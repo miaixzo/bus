@@ -3949,6 +3949,28 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 比较两个日期是否为同一天
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为同一天
+     */
+    public static boolean isSameDay(final LocalDate date1, final LocalDate date2) {
+        return date1 != null && date2 != null && date1.isEqual(date2);
+    }
+
+    /**
+     * 比较两个日期是否为同一天
+     *
+     * @param date1 日期1
+     * @param date2 日期2
+     * @return 是否为同一天
+     */
+    public static boolean isSameDay(final LocalDateTime date1, final LocalDateTime date2) {
+        return date1 != null && date2 != null && date1.toLocalDate().isEqual(date2.toLocalDate());
+    }
+
+    /**
      * 比较两个日期是否为同一周
      *
      * @param cal1  日期1
@@ -4923,6 +4945,23 @@ public class Almanac extends Converter {
         } else {
             return new DateTime(date).isIn(beginDate, endDate);
         }
+    }
+
+    /**
+     * 当前日期是否在日期指定范围内
+     * 起始日期和结束日期可以互换
+     *
+     * @param date      被检查的日期
+     * @param beginDate 起始日期（包含）
+     * @param endDate   结束日期（包含）
+     * @return 是否在范围内
+     */
+    public static boolean isIn(TemporalAccessor date, TemporalAccessor beginDate, TemporalAccessor endDate) {
+        final long thisMills = toEpochMilli(date);
+        final long beginMills = toEpochMilli(beginDate);
+        final long endMills = toEpochMilli(endDate);
+
+        return thisMills >= Math.min(beginMills, endMills) && thisMills <= Math.max(beginMills, endMills);
     }
 
     /**

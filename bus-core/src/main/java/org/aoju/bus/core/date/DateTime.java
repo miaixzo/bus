@@ -339,6 +339,10 @@ public class DateTime extends Date {
 
         if (temporalAccessor instanceof LocalDate) {
             return ((LocalDate) temporalAccessor).atStartOfDay();
+        } else if (temporalAccessor instanceof Instant) {
+            return LocalDateTime.ofInstant((Instant) temporalAccessor, ZoneId.systemDefault());
+        } else if (temporalAccessor instanceof ZonedDateTime) {
+            return ((ZonedDateTime) temporalAccessor).toLocalDateTime();
         }
 
         return LocalDateTime.of(

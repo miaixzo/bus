@@ -94,7 +94,7 @@ public abstract class TransitionMap<K, V> extends MapWrapper<K, V> {
 
     @Override
     public boolean replace(K key, V oldValue, V newValue) {
-        return super.replace(customKey(key), customValue(oldValue), customValue(values()));
+        return super.replace(customKey(key), customValue(oldValue), customValue(newValue));
     }
 
     @Override
