@@ -7672,9 +7672,16 @@ public class ArrayKit {
      * @return 结果
      */
     public static <T> T[] get(Object array, int... indexes) {
-        T[] result = newArray(indexes.length);
-        for (int i : indexes) {
-            result[i] = get(array, i);
+        if (null == array) {
+            return null;
+        }
+        if (null == indexes) {
+            return newArray(array.getClass().getComponentType(), 0);
+        }
+
+        final T[] result = newArray(array.getClass().getComponentType(), indexes.length);
+        for (int i = 0; i < indexes.length; i++) {
+            result[i] = get(array, indexes[i]);
         }
         return result;
     }

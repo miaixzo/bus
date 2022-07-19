@@ -88,11 +88,11 @@ public class SM2 extends AbstractCrypto<SM2> {
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param privateKeyStr 私钥Hex或Base64表示，必须使用PKCS#8规范
-     * @param publicKeyStr  公钥Hex或Base64表示，必须使用X509规范
+     * @param privateKey 私钥Hex或Base64表示，必须使用PKCS#8规范
+     * @param publicKey  公钥Hex或Base64表示，必须使用X509规范
      */
-    public SM2(String privateKeyStr, String publicKeyStr) {
-        this(Builder.decode(privateKeyStr), Builder.decode(publicKeyStr));
+    public SM2(String privateKey, String publicKey) {
+        this(Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
@@ -133,12 +133,12 @@ public class SM2 extends AbstractCrypto<SM2> {
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param privateKeyHex      私钥16进制
-     * @param publicKeyPointXHex 公钥X16进制
-     * @param publicKeyPointYHex 公钥Y16进制
+     * @param privateKey      私钥16进制
+     * @param publicKeyPointX 公钥X16进制
+     * @param publicKeyPointY 公钥Y16进制
      */
-    public SM2(String privateKeyHex, String publicKeyPointXHex, String publicKeyPointYHex) {
-        this(Builder.toSm2Params(privateKeyHex), Builder.toSm2Params(publicKeyPointXHex, publicKeyPointYHex));
+    public SM2(String privateKey, String publicKeyPointX, String publicKeyPointY) {
+        this(Builder.toSm2Params(privateKey), Builder.toSm2Params(publicKeyPointX, publicKeyPointY));
     }
 
     /**

@@ -39,6 +39,7 @@ import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.BiFunction;
 
 /**
  * 字典对象,扩充了HashMap中的方法
@@ -276,6 +277,51 @@ public class Dictionary extends LinkedHashMap<String, Object> implements BasicTy
     @Override
     public void putAll(Map<? extends String, ?> m) {
         m.forEach(this::put);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return super.containsKey(customKey((String) key));
+    }
+
+    @Override
+    public Object remove(Object key) {
+        return super.remove(customKey((String) key));
+    }
+
+    @Override
+    public boolean remove(Object key, Object value) {
+        return super.remove(customKey((String) key), value);
+    }
+
+    @Override
+    public boolean replace(String key, Object oldValue, Object newValue) {
+        return super.replace(customKey(key), oldValue, newValue);
+    }
+
+    @Override
+    public Object replace(String key, Object value) {
+        return super.replace(customKey(key), value);
+    }
+
+    @Override
+    public Object getOrDefault(Object key, Object defaultValue) {
+        return super.getOrDefault(customKey((String) key), defaultValue);
+    }
+
+    @Override
+    public Object computeIfPresent(final String key, final BiFunction<? super String, ? super Object, ?> remappingFunction) {
+        return super.computeIfPresent(customKey(key), remappingFunction);
+    }
+
+    @Override
+    public Object compute(final String key, final BiFunction<? super String, ? super Object, ?> remappingFunction) {
+        return super.compute(customKey(key), remappingFunction);
+    }
+
+    @Override
+    public Object merge(final String key, final Object value, final BiFunction<? super Object, ? super Object, ?> remappingFunction) {
+        return super.merge(customKey(key), value, remappingFunction);
     }
 
     /**
@@ -542,19 +588,6 @@ public class Dictionary extends LinkedHashMap<String, Object> implements BasicTy
     }
 
     /**
-     * 将Key转为小写
-     *
-     * @param key KEY
-     * @return 小写KEY
-     */
-    private String customKey(String key) {
-        if (this.caseInsensitive && null != key) {
-            key = key.toLowerCase();
-        }
-        return key;
-    }
-
-    /**
      * 通过lambda批量设置值
      * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
      * <pre>
@@ -568,6 +601,19 @@ public class Dictionary extends LinkedHashMap<String, Object> implements BasicTy
     public Dictionary setFields(Func0<?>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.callWithRuntimeException()));
         return this;
+    }
+
+    /**
+     * 将Key转为小写
+     *
+     * @param key KEY
+     * @return 小写KEY
+     */
+    private String customKey(String key) {
+        if (this.caseInsensitive && null != key) {
+            key = key.toLowerCase();
+        }
+        return key;
     }
 
 }
