@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 
 /**
@@ -43,6 +44,7 @@ public class Caesar {
      * @return 加密后的内容
      */
     public static String encode(String message, int offset) {
+        Assert.notNull(message, "message must be not null!");
         final int len = message.length();
         final char[] plain = message.toCharArray();
         char c;
@@ -64,6 +66,7 @@ public class Caesar {
      * @return 解密后的内容
      */
     public static String decode(String cipher, int offset) {
+        Assert.notNull(cipher, "cipherText must be not null!");
         final int len = cipher.length();
         final char[] plain = cipher.toCharArray();
         char c;

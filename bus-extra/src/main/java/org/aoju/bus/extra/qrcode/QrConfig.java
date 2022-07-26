@@ -27,6 +27,7 @@ package org.aoju.bus.extra.qrcode;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -88,6 +89,11 @@ public class QrConfig {
      * 设置二维码中的信息量，可设置1-40的整数
      */
     protected Integer qrVersion;
+
+    /**
+     * DATA_MATRIX的符号形状
+     */
+    protected SymbolShapeHint shapeHint = SymbolShapeHint.FORCE_NONE;
 
     /**
      * 构造,默认长宽为300
@@ -323,6 +329,17 @@ public class QrConfig {
     }
 
     /**
+     * 设置DATA_MATRIX的符号形状
+     *
+     * @param shapeHint DATA_MATRIX的符号形状
+     * @return this;
+     */
+    public QrConfig setShapeHint(SymbolShapeHint shapeHint) {
+        this.shapeHint = shapeHint;
+        return this;
+    }
+
+    /**
      * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
      *
      * @return 二维码中的信息量
@@ -373,6 +390,7 @@ public class QrConfig {
             }
 
             hints.put(EncodeHintType.ERROR_CORRECTION, value);
+            hints.put(EncodeHintType.DATA_MATRIX_SHAPE, shapeHint);
         }
         if (null != this.margin) {
             hints.put(EncodeHintType.MARGIN, this.margin);

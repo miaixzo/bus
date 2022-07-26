@@ -47,6 +47,8 @@ import java.util.function.Supplier;
  */
 public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Serializable, Cloneable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 默认增长因子
      */

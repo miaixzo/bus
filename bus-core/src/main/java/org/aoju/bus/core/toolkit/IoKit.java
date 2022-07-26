@@ -192,11 +192,11 @@ public class IoKit {
     /**
      * 将Reader中的内容复制到Writer中,拷贝后不关闭Reader
      *
-     * @param reader         Reader
-     * @param writer         Writer
-     * @param bufferSize     缓存大小
-     * @param count          最大长度
-     * @param progress 进度处理器
+     * @param reader     Reader
+     * @param writer     Writer
+     * @param bufferSize 缓存大小
+     * @param count      最大长度
+     * @param progress   进度处理器
      * @return 传输的byte数
      * @throws InstrumentException IO异常
      */
@@ -232,10 +232,10 @@ public class IoKit {
     /**
      * 拷贝流
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param progress 进度条
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @param progress   进度条
      * @return 传输的byte数
      * @throws InstrumentException 异常
      */
@@ -246,11 +246,11 @@ public class IoKit {
     /**
      * 拷贝流，拷贝后不关闭流
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param count          总拷贝长度
-     * @param progress 进度条
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @param count      总拷贝长度
+     * @param progress   进度条
      * @return 传输的byte数
      * @throws InstrumentException IO异常
      */
@@ -314,11 +314,11 @@ public class IoKit {
     /**
      * 拷贝流,本方法不会关闭流
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param count          最大长度
-     * @param progress 进度条
+     * @param in         输入流
+     * @param out        输出流
+     * @param bufferSize 缓存大小
+     * @param count      最大长度
+     * @param progress   进度条
      * @return 传输的byte数
      * @throws InstrumentException IO异常
      */
@@ -354,10 +354,10 @@ public class IoKit {
     /**
      * 拷贝流，使用NIO，不会关闭channel
      *
-     * @param in             {@link ReadableByteChannel}
-     * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
-     * @param progress {@link Progress}进度处理器
+     * @param in         {@link ReadableByteChannel}
+     * @param out        {@link WritableByteChannel}
+     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
+     * @param progress   {@link Progress}进度处理器
      * @return 拷贝的字节数
      * @throws InstrumentException IO异常
      */
@@ -368,11 +368,11 @@ public class IoKit {
     /**
      * 拷贝流，使用NIO，不会关闭channel
      *
-     * @param in             {@link ReadableByteChannel}
-     * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
-     * @param count          读取总长度
-     * @param progress {@link Progress}进度处理器
+     * @param in         {@link ReadableByteChannel}
+     * @param out        {@link WritableByteChannel}
+     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
+     * @param count      读取总长度
+     * @param progress   {@link Progress}进度处理器
      * @return 拷贝的字节数
      * @throws InstrumentException IO异常
      */

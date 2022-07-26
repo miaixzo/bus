@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.HexKit;
@@ -96,6 +97,7 @@ public class Percent implements Serializable {
      * @return this
      */
     public static Percent of(CharSequence chars) {
+        Assert.notNull(chars, "chars must not be null");
         final Percent codec = new Percent();
         final int length = chars.length();
         for (int i = 0; i < length; i++) {
