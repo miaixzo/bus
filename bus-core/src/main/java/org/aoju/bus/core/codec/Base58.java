@@ -34,7 +34,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-
 /**
  * Base58工具类，提供Base58的编码和解码方案
  * 参考： https://github.com/Anujraval24/Base58Encoding

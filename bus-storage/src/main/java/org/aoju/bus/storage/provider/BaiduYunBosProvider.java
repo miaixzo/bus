@@ -31,7 +31,6 @@ import com.baidubce.services.bos.BosClientConfiguration;
 import com.baidubce.services.bos.model.GetObjectRequest;
 import com.baidubce.services.bos.model.ListObjectsRequest;
 import com.baidubce.services.bos.model.ListObjectsResponse;
-import com.google.common.collect.Maps;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.storage.Builder;
@@ -42,6 +41,7 @@ import org.aoju.bus.storage.magic.Property;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -109,7 +109,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
                     storageItem.setName(item.getKey());
                     storageItem.setOwner(item.getOwner().getDisplayName());
                     storageItem.setSize(StringKit.toString(item.getSize()));
-                    Map<String, Object> extend = Maps.newHashMap();
+                    Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());
                     extend.put("lastModified", item.getLastModified());

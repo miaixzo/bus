@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.cache;
 
-import com.google.common.base.Preconditions;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -34,6 +33,7 @@ import com.google.inject.name.Names;
 import org.aoju.bus.cache.magic.AbstractReader;
 import org.aoju.bus.cache.magic.MultiCacheReader;
 import org.aoju.bus.cache.magic.SingleCacheReader;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.CollKit;
 
 import java.util.Optional;
@@ -67,8 +67,8 @@ public class Module extends AbstractModule {
      */
     @Override
     protected void configure() {
-        Preconditions.checkArgument(null != config, "config param can not be null.");
-        Preconditions.checkArgument(CollKit.isNotEmpty(config.getCaches()), "caches param can not be empty.");
+        Assert.isTrue(null != config, "config param can not be null.");
+        Assert.isTrue(CollKit.isNotEmpty(config.getCaches()), "caches param can not be empty.");
 
         bind(Context.class).toInstance(config);
 

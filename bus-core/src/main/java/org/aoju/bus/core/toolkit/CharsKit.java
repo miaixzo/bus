@@ -463,7 +463,7 @@ public class CharsKit {
      * @see #isBlank(CharSequence)
      */
     public static boolean isEmpty(CharSequence text) {
-        return text == null || text.length() == 0;
+        return text == null || text.length() == 0 || text.isEmpty();
     }
 
     /**

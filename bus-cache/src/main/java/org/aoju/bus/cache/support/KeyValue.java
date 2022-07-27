@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.cache.support;
 
-import com.google.common.base.Strings;
 import org.aoju.bus.cache.Context;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class KeyValue {
         Map<String, Object> keyValueMap = new HashMap<>(proceedEntryValueMap.size());
         proceedEntryValueMap.forEach((multiArgEntry, value) -> {
             String key = multiEntry2Key.get(multiArgEntry);
-            if (Strings.isNullOrEmpty(key)) {
+            if (StringKit.isEmpty(key)) {
                 return;
             }
 
@@ -69,7 +69,7 @@ public class KeyValue {
             Object id = SpelCalculator.calcSpelWithNoContext(idSpel, value);
             String key = id2Key.get(id);
 
-            if (!Strings.isNullOrEmpty(key)) {
+            if (StringKit.isEmpty(key)) {
                 missKeys.remove(key);
                 keyValueMap.put(key, value);
             }
