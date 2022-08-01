@@ -38,6 +38,7 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -486,15 +487,38 @@ public class ZipKit {
      * @throws InstrumentException IO异常
      */
     public static File unzip(ZipFile zipFile, File outFile) {
+        return unzip(zipFile, outFile, -1);
+    }
+
+    /**
+     * 限制解压后文件大小
+     *
+     * @param zipFile zip文件，附带编码信息，使用完毕自动关闭
+     * @param outFile 解压到的目录
+     * @param limit   限制解压文件大小(单位B)
+     * @return 解压的目录
+     */
+    public static File unzip(ZipFile zipFile, File outFile, long limit) {
         if (outFile.exists() && outFile.isFile()) {
             throw new IllegalArgumentException(
                     StringKit.format("Target path [{}] exist!", outFile.getAbsolutePath()));
         }
 
+        if (limit > 0) {
+            final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
+            long zipFileSize = 0L;
+            while (zipEntries.hasMoreElements()) {
+                ZipEntry zipEntry = zipEntries.nextElement();
+                zipFileSize += zipEntry.getSize();
+                if (zipFileSize > limit) {
+                    throw new IllegalArgumentException("The file size exceeds the limit");
+                }
+            }
+        }
+
         try (final ZipReader reader = new ZipReader(zipFile)) {
             reader.readTo(outFile);
         }
-
         return outFile;
     }
 

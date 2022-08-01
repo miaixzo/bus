@@ -918,22 +918,26 @@ public class ReflectKit {
      */
     public static <T> T newInstance(Class<T> clazz, Object... params) throws InstrumentException {
         if (ArrayKit.isEmpty(params)) {
+            final Constructor<T> constructor = getConstructor(clazz);
+            if (null == constructor) {
+                throw new InstrumentException("No constructor for [{}]", clazz);
+            }
             try {
-                return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new InstrumentException(StringKit.format("Instance class [{}] error!", clazz), e);
+                return constructor.newInstance();
+            } catch (Exception e) {
+                throw new InstrumentException(e, "Instance class [{}] error!", clazz);
             }
         }
 
         final Class<?>[] paramTypes = ClassKit.getClasses(params);
-        final Constructor<?> constructor = getConstructor(clazz, paramTypes);
+        final Constructor<T> constructor = getConstructor(clazz, paramTypes);
         if (null == constructor) {
-            throw new InstrumentException("No Constructor matched for parameter types: [" + new Object[]{paramTypes} + "]");
+            throw new InstrumentException("No Constructor matched for parameter types: [{}]", new Object[]{paramTypes});
         }
         try {
-            return getConstructor(clazz, paramTypes).newInstance(params);
+            return constructor.newInstance(params);
         } catch (Exception e) {
-            throw new InstrumentException(StringKit.format("Instance class [{}] error!", clazz), e);
+            throw new InstrumentException(e, "Instance class [{}] error!", clazz);
         }
     }
 
@@ -1017,7 +1021,7 @@ public class ReflectKit {
      * </pre>
      *
      * @param <T>    返回对象类型
-     * @param object    对象,如果执行静态方法,此值为null
+     * @param object 对象,如果执行静态方法,此值为null
      * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
@@ -1043,7 +1047,7 @@ public class ReflectKit {
      * 执行方法
      *
      * @param <T>    返回对象类型
-     * @param object    对象,如果执行静态方法,此值为null
+     * @param object 对象,如果执行静态方法,此值为null
      * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
