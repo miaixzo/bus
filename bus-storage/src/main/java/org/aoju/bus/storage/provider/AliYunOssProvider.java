@@ -29,7 +29,6 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.comm.ResponseMessage;
 import com.aliyun.oss.model.*;
-import com.google.common.collect.Maps;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -41,6 +40,7 @@ import org.aoju.bus.storage.magic.Property;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -122,7 +122,7 @@ public class AliYunOssProvider extends AbstractProvider {
                     Property storageItem = new Property();
                     storageItem.setName(item.getKey());
                     storageItem.setSize(StringKit.toString(item.getSize()));
-                    Map<String, Object> extend = Maps.newHashMap();
+                    Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());
                     extend.put("lastModified", item.getLastModified());

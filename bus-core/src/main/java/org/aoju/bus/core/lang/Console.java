@@ -120,7 +120,7 @@ public class Console {
     public static void log(Throwable t, String template, Object... values) {
         System.out.println(StringKit.format(template, values));
         if (null != t) {
-            t.printStackTrace();
+            t.printStackTrace(System.out);
             System.out.flush();
         }
     }

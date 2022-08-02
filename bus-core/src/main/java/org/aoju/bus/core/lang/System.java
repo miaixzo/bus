@@ -26,6 +26,7 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Properties;
@@ -317,12 +318,7 @@ public class System {
             return defaultValue;
         }
 
-        value = value.trim().toLowerCase();
-        if (value.isEmpty()) {
-            return true;
-        }
-
-        return Convert.toBoolean(value, defaultValue);
+        return BooleanKit.toBoolean(value);
     }
 
     /**

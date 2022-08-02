@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.cache.support;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -43,14 +43,14 @@ public class SpelCalculator {
     private static final ExpressionParser parser = new SpelExpressionParser();
 
     public static Object calcSpelValueWithContext(String spel, String[] argNames, Object[] argValues, Object defaultValue) {
-        if (Strings.isNullOrEmpty(spel)) {
+        if (StringKit.isEmpty(spel)) {
             return defaultValue;
         }
 
         // 将[参数名->参数值]导入spel环境
         EvaluationContext context = new StandardEvaluationContext();
 
-        Preconditions.checkState(argNames.length == argValues.length);
+        Assert.isTrue(argNames.length == argValues.length);
         for (int i = 0; i < argValues.length; ++i) {
             context.setVariable(argNames[i], argValues[i]);
         }
@@ -65,7 +65,7 @@ public class SpelCalculator {
     }
 
     public static Object calcSpelWithNoContext(String spel, Object defaultValue) {
-        if (Strings.isNullOrEmpty(spel)) {
+        if (StringKit.isEmpty(spel)) {
             return defaultValue;
         }
 

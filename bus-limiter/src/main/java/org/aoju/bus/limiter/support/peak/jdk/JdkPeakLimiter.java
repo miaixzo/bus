@@ -49,7 +49,7 @@ public class JdkPeakLimiter extends PeakLimiter {
         this.cache = CacheBuilder.newBuilder()
                 .concurrencyLevel(Normal._16)
                 .initialCapacity(2048)
-                .build(new CacheLoader<CacheKey, Semaphore>() {
+                .build(new CacheLoader<>() {
                     @Override
                     public Semaphore load(CacheKey key) {
                         return new Semaphore(key.max);

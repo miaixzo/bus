@@ -300,7 +300,7 @@ public class Removal {
             }
         }
 
-        Map<String, Integer> map = new HashMap<>(list.size());
+        final Map<String, Integer> map = new HashMap<>(list.size(), 1);
         for (String string : list) {
             Integer integer = map.get(string);
             if (integer == null) {

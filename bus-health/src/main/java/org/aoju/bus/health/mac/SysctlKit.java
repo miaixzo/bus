@@ -74,7 +74,7 @@ public final class SysctlKit {
         try (Memory p = new Memory(uint64Size);
              ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(uint64Size)) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
             return p.getLong(0);
@@ -92,13 +92,13 @@ public final class SysctlKit {
         // Call first time with null pointer to get value of size
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
             }
             // Add 1 to size for null terminated string
             try (Memory p = new Memory(size.longValue() + 1L)) {
                 if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
-                    Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                    Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                     return def;
                 }
                 return p.getString(0);
@@ -116,7 +116,7 @@ public final class SysctlKit {
     public static boolean sysctl(String name, Structure struct) {
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(struct.size())) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return false;
             }
         }
@@ -134,12 +134,12 @@ public final class SysctlKit {
     public static Memory sysctl(String name) {
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return null;
             }
             Memory m = new Memory(size.longValue());
             if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, size_t.ZERO)) {
-                Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+                Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 m.close();
                 return null;
             }

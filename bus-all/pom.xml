@@ -6,11 +6,11 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.5.3</version>
+    <version>6.5.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus All</description>
+    <description>Bus All In One</description>
     <url>https://github.com/aoju/bus</url>
 
     <licenses>

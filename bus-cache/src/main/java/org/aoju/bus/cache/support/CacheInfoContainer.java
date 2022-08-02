@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.cache.support;
 
-import com.google.common.base.Strings;
 import org.aoju.bus.cache.annotation.CacheKey;
 import org.aoju.bus.cache.annotation.Cached;
 import org.aoju.bus.cache.annotation.CachedGet;
@@ -35,6 +34,7 @@ import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.cache.magic.MethodHolder;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 
 import java.lang.annotation.Annotation;
@@ -176,7 +176,7 @@ public class CacheInfoContainer {
         }
 
         String value = cacheKey.value();
-        if (Strings.isNullOrEmpty(value)) {
+        if (StringKit.isEmpty(value)) {
             return false;
         }
 
@@ -190,7 +190,7 @@ public class CacheInfoContainer {
         return (null == pTypes
                 || pTypes.length == 0
                 || cacheKeyMap.isEmpty())
-                && Strings.isNullOrEmpty(prefix);
+                && StringKit.isEmpty(prefix);
     }
 
     private static boolean isInvalidMultiCount(Map<Integer, CacheKey> keyMap) {
@@ -210,16 +210,16 @@ public class CacheInfoContainer {
     private static boolean isInvalidIdentifier(boolean isMapReturn,
                                                boolean isCollectionReturn,
                                                String field) {
-        if (isMapReturn && !Strings.isNullOrEmpty(field)) {
+        if (isMapReturn && !StringKit.isEmpty(field)) {
             Logger.warn("@CacheKey's 'field = \"{}\"' is useless.", field);
             return false;
         }
 
-        return !Strings.isNullOrEmpty(field) && !isCollectionReturn;
+        return !StringKit.isEmpty(field) && !isCollectionReturn;
     }
 
     private static boolean isInvalidResult(boolean isCollectionReturn, String id) {
-        return isCollectionReturn && Strings.isNullOrEmpty(id);
+        return isCollectionReturn && StringKit.isEmpty(id);
     }
 
     private static boolean isInvalidMulti(Class<?> paramType) {

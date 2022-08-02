@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.jdbc;
 
-import com.google.common.collect.Maps;
 import com.zaxxer.hikari.HikariDataSource;
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Algorithm;
@@ -145,7 +144,7 @@ public class JdbcConfiguration {
      * @return the object
      */
     private <T> Map<String, Object> beanToMap(T bean) {
-        Map<String, Object> map = Maps.newHashMap();
+        Map<String, Object> map = new HashMap<>();
         if (null != bean) {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {

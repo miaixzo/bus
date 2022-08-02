@@ -70,6 +70,7 @@ public class PunyCode {
      * @throws InstrumentException 计算异常
      */
     public static String encode(CharSequence input, boolean withPrefix) throws InstrumentException {
+        Assert.notNull(input, "input must not be null!");
         int n = INITIAL_N;
         int delta = 0;
         int bias = INITIAL_BIAS;
@@ -152,6 +153,7 @@ public class PunyCode {
      * @throws InstrumentException 计算异常
      */
     public static String decode(String input) throws InstrumentException {
+        Assert.notNull(input, "input must not be null!");
         input = StringKit.removePrefixIgnoreCase(input, PUNY_CODE_PREFIX);
 
         int n = INITIAL_N;

@@ -50,7 +50,7 @@ import java.util.List;
  * @since Java 17+
  */
 @ThreadSafe
-final class LinuxNetworkParams extends AbstractNetworkParams {
+public class LinuxNetworkParams extends AbstractNetworkParams {
 
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
 
@@ -65,7 +65,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
             try {
                 hostname = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException e) {
-                Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
+                Logger.warn("Unknown host exception when getting address of local host: {}", e.getMessage());
                 return Normal.EMPTY;
             }
             try (ByRef.CloseablePointerByReference ptr = new ByRef.CloseablePointerByReference()) {
@@ -76,10 +76,9 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
                     }
                     return Normal.EMPTY;
                 }
-                CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
-                String canonname = info.ai_canonname.trim();
-                LIBC.freeaddrinfo(ptr.getValue());
-                return canonname;
+                try (CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue())) {
+                    return info.ai_canonname == null ? hostname : info.ai_canonname.trim();
+                }
             }
         }
     }

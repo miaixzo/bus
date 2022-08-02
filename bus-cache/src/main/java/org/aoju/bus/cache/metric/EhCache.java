@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.cache.metric;
 
-import com.google.common.collect.Sets;
 import org.aoju.bus.cache.CacheX;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.CacheConfiguration;
 import org.ehcache.config.ResourcePools;
@@ -110,7 +110,7 @@ public class EhCache implements CacheX {
 
     @Override
     public void remove(String... keys) {
-        ehcache.removeAll(Sets.newHashSet(keys));
+        ehcache.removeAll(CollKit.newHashSet(keys));
     }
 
     @Override

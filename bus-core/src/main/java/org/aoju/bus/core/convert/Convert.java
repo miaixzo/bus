@@ -608,7 +608,26 @@ public class Convert {
      * @return {@link Map}
      */
     public static <K, V> Map<K, V> toMap(Class<K> keyType, Class<V> valueType, Object value) {
-        return (Map<K, V>) new MapConverter(HashMap.class, keyType, valueType).convert(value, null);
+        if (value instanceof Map) {
+            return toMap((Class<? extends Map<?, ?>>) value.getClass(), keyType, valueType, value);
+        } else {
+            return toMap(HashMap.class, keyType, valueType, value);
+        }
+    }
+
+    /**
+     * 转换为Map
+     *
+     * @param mapType   转后的具体Map类型
+     * @param <K>       键类型
+     * @param <V>       值类型
+     * @param keyType   键类型
+     * @param valueType 值类型
+     * @param value     被转换的值
+     * @return {@link Map}
+     */
+    public static <K, V> Map<K, V> toMap(Class<? extends Map> mapType, Class<K> keyType, Class<V> valueType, Object value) {
+        return (Map<K, V>) new MapConverter(mapType, keyType, valueType).convert(value, null);
     }
 
     /**

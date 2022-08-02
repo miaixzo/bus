@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-crypto</artifactId>
-    <version>6.5.3</version>
+    <version>6.5.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -54,6 +54,12 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
             <version>${bouncycastle.version}</version>
             <optional>true</optional>
         </dependency>

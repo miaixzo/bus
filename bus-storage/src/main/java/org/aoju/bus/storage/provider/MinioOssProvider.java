@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.storage.provider;
 
-import com.google.common.collect.Maps;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;
@@ -44,6 +43,7 @@ import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -141,7 +141,7 @@ public class MinioOssProvider extends AbstractProvider {
                                 Item item = itemResult.get();
                                 storageItem.setName(item.objectName());
                                 storageItem.setSize(StringKit.toString(item.size()));
-                                Map<String, Object> extend = Maps.newHashMap();
+                                Map<String, Object> extend = new HashMap<>();
                                 extend.put("tag", item.etag());
                                 extend.put("storageClass", item.storageClass());
                                 extend.put("lastModified", item.lastModified());

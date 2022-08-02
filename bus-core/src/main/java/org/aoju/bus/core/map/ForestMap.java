@@ -308,6 +308,18 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
+     * 获取指定节点的值
+     *
+     * @param key 节点的key
+     * @return 节点值，若节点不存在，或节点值为null都将返回null
+     */
+    default V getNodeValue(K key) {
+        return Optional.ofNullable(get(key))
+                .map(TreeEntry::getValue)
+                .get();
+    }
+
+    /**
      * 获取指定父节点直接关联的子节点 <br>
      * 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b
      *
