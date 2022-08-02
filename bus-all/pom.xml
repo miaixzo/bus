@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus All</description>
+    <description>Bus All In One</description>
     <url>https://github.com/aoju/bus</url>
 
     <licenses>
