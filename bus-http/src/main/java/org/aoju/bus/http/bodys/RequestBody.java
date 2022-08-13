@@ -46,43 +46,40 @@ public abstract class RequestBody {
 
     /**
      * 返回传输{@code content}的新请求体。
-     * 如果{@code contentType}是非空且缺少字符集，则使用UTF-8
+     * 如果{@code mediaType}是非空且缺少字符集，则使用UTF-8
      *
-     * @param contentType 请求类型
-     * @param content     内容
+     * @param mediaType 请求类型
+     * @param content   内容
      * @return 传输请求体
      */
-    public static RequestBody create(MediaType contentType, String content) {
+    public static RequestBody create(MediaType mediaType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
-        if (null != contentType) {
-            charset = contentType.charset();
-            if (null == charset) {
-                charset = Charset.UTF_8;
-                contentType = MediaType.valueOf(contentType + "; charset=utf-8");
-            }
+        if (null != mediaType) {
+            charset = null != mediaType.charset() ? mediaType.charset() : Charset.UTF_8;
         }
+
         byte[] bytes = content.getBytes(charset);
-        return create(contentType, bytes);
+        return create(mediaType, bytes);
     }
 
     /**
      * 返回发送{@code content}的新请求体
      *
-     * @param contentType 请求类型
-     * @param content     内容
+     * @param mediaType 请求类型
+     * @param content   内容
      * @return 传输请求体
      */
     public static RequestBody create(
-            final MediaType contentType,
+            final MediaType mediaType,
             final ByteString content) {
         return new RequestBody() {
             @Override
-            public MediaType contentType() {
-                return contentType;
+            public MediaType mediaType() {
+                return mediaType;
             }
 
             @Override
-            public long contentLength() {
+            public long length() {
                 return content.size();
             }
 
@@ -96,24 +93,24 @@ public abstract class RequestBody {
     /**
      * 发送{@code content}的新请求体
      *
-     * @param contentType 请求类型
-     * @param content     内容
+     * @param mediaType 媒体类型
+     * @param content   内容
      * @return 传输请求体
      */
-    public static RequestBody create(final MediaType contentType, final byte[] content) {
-        return create(contentType, content, 0, content.length);
+    public static RequestBody create(final MediaType mediaType, final byte[] content) {
+        return create(mediaType, content, 0, content.length);
     }
 
     /**
      * 发送{@code content}的新请求体
      *
-     * @param contentType 请求类型
-     * @param content     内容
-     * @param offset      偏移量
-     * @param byteCount   当前大小
+     * @param mediaType 媒体类型
+     * @param content   内容
+     * @param offset    偏移量
+     * @param byteCount 当前大小
      * @return 传输请求体
      */
-    public static RequestBody create(final MediaType contentType, final byte[] content,
+    public static RequestBody create(final MediaType mediaType, final byte[] content,
                                      final int offset, final int byteCount) {
         if (null == content) {
             throw new NullPointerException("content == null");
@@ -121,12 +118,12 @@ public abstract class RequestBody {
         Builder.checkOffsetAndCount(content.length, offset, byteCount);
         return new RequestBody() {
             @Override
-            public MediaType contentType() {
-                return contentType;
+            public MediaType mediaType() {
+                return mediaType;
             }
 
             @Override
-            public long contentLength() {
+            public long length() {
                 return byteCount;
             }
 
@@ -140,23 +137,23 @@ public abstract class RequestBody {
     /**
      * 新的请求体，该请求体传输{@code file}的内容
      *
-     * @param contentType 请求类型
-     * @param file        文件
+     * @param mediaType 请求类型
+     * @param file      文件
      * @return 传输请求体
      */
-    public static RequestBody create(final MediaType contentType, final File file) {
+    public static RequestBody create(final MediaType mediaType, final File file) {
         if (null == file) {
             throw new NullPointerException("file == null");
         }
 
         return new RequestBody() {
             @Override
-            public MediaType contentType() {
-                return contentType;
+            public MediaType mediaType() {
+                return mediaType;
             }
 
             @Override
-            public long contentLength() {
+            public long length() {
                 return file.length();
             }
 
@@ -172,7 +169,7 @@ public abstract class RequestBody {
     /**
      * @return 返回此主体的媒体类型
      */
-    public abstract MediaType contentType();
+    public abstract MediaType mediaType();
 
     /**
      * 返回调用{@link #writeTo}时写入{@code sink}的字节数，如果该计数未知，则返回-1
@@ -180,7 +177,7 @@ public abstract class RequestBody {
      * @return 计数信息
      * @throws IOException 异常
      */
-    public long contentLength() throws IOException {
+    public long length() throws IOException {
         return -1;
     }
 
@@ -242,4 +239,5 @@ public abstract class RequestBody {
     public boolean isOneShot() {
         return false;
     }
+
 }

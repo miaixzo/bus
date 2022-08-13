@@ -53,14 +53,14 @@ public class MultipartBody extends RequestBody {
 
     private final ByteString boundary;
     private final MediaType originalType;
-    private final MediaType contentType;
+    private final MediaType mediaType;
     private final List<Part> parts;
     private long contentLength = -1L;
 
-    MultipartBody(ByteString boundary, MediaType type, List<Part> parts) {
+    MultipartBody(ByteString boundary, MediaType mediaType, List<Part> parts) {
         this.boundary = boundary;
-        this.originalType = type;
-        this.contentType = MediaType.valueOf(type + "; boundary=" + boundary.utf8());
+        this.originalType = mediaType;
+        this.mediaType = MediaType.valueOf(mediaType.toString() + "; boundary=" + boundary.utf8());
         this.parts = org.aoju.bus.http.Builder.immutableList(parts);
     }
 
@@ -122,12 +122,12 @@ public class MultipartBody extends RequestBody {
      * A combination of {@link #type()} and {@link #boundary()}.
      */
     @Override
-    public MediaType contentType() {
-        return contentType;
+    public MediaType mediaType() {
+        return mediaType;
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long length() throws IOException {
         long result = contentLength;
         if (result != -1L) return result;
         return contentLength = writeOrCountBytes(null, true);
@@ -174,14 +174,14 @@ public class MultipartBody extends RequestBody {
                 }
             }
 
-            MediaType contentType = body.contentType();
-            if (null != contentType) {
+            MediaType mediaType = body.mediaType();
+            if (null != mediaType) {
                 sink.writeUtf8(Header.CONTENT_TYPE + ": ")
-                        .writeUtf8(contentType.toString())
+                        .writeUtf8(mediaType.toString())
                         .write(CRLF);
             }
 
-            long contentLength = body.contentLength();
+            long contentLength = body.length();
             if (contentLength != -1) {
                 sink.writeUtf8("Content-Length: ")
                         .writeDecimalLong(contentLength)

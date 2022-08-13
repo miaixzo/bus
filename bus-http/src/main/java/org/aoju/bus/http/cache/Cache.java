@@ -594,20 +594,20 @@ public class Cache implements Closeable, Flushable {
         }
 
         public Response response(DiskLruCache.Snapshot snapshot) {
-            String contentType = responseHeaders.get(Header.CONTENT_TYPE);
-            String contentLength = responseHeaders.get(Header.CONTENT_LENGTH);
-            Request cacheRequest = new Request.Builder()
+            String mediaType = responseHeaders.get(Header.CONTENT_TYPE);
+            String length = responseHeaders.get(Header.CONTENT_LENGTH);
+            Request request = new Request.Builder()
                     .url(url)
                     .method(requestMethod, null)
                     .headers(varyHeaders)
                     .build();
             return new Response.Builder()
-                    .request(cacheRequest)
+                    .request(request)
                     .protocol(protocol)
                     .code(code)
                     .message(message)
                     .headers(responseHeaders)
-                    .body(new CacheResponseBody(snapshot, contentType, contentLength))
+                    .body(new CacheResponseBody(snapshot, mediaType, length))
                     .handshake(handshake)
                     .sentRequestAtMillis(sentRequestMillis)
                     .receivedResponseAtMillis(receivedResponseMillis)
@@ -618,14 +618,14 @@ public class Cache implements Closeable, Flushable {
     private static class CacheResponseBody extends ResponseBody {
         final DiskLruCache.Snapshot snapshot;
         private final BufferSource bodySource;
-        private final String contentType;
-        private final String contentLength;
+        private final String mediaType;
+        private final String length;
 
         CacheResponseBody(final DiskLruCache.Snapshot snapshot,
-                          String contentType, String contentLength) {
+                          String mediaType, String length) {
             this.snapshot = snapshot;
-            this.contentType = contentType;
-            this.contentLength = contentLength;
+            this.mediaType = mediaType;
+            this.length = length;
 
             Source source = snapshot.getSource(ENTRY_BODY);
             bodySource = IoKit.buffer(new AssignSource(source) {
@@ -638,14 +638,14 @@ public class Cache implements Closeable, Flushable {
         }
 
         @Override
-        public MediaType contentType() {
-            return null != contentType ? MediaType.valueOf(contentType) : null;
+        public MediaType mediaType() {
+            return null != mediaType ? MediaType.valueOf(mediaType) : null;
         }
 
         @Override
-        public long contentLength() {
+        public long length() {
             try {
-                return null != contentLength ? Long.parseLong(contentLength) : -1;
+                return null != length ? Long.parseLong(length) : -1;
             } catch (NumberFormatException e) {
                 return -1;
             }

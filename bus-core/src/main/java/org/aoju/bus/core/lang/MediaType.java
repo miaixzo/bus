@@ -304,6 +304,24 @@ public class MediaType {
     public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE =
             new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
 
+    /**
+     * "text/event-stream;type=\"application/event-stream\""
+     */
+    public static final String SERVER_SENT_EVENTS = "text/event-stream";
+    public static final MediaType SERVER_SENT_EVENTS_TYPE = new MediaType("text", "event-stream");
+
+    /**
+     * "application/json-patch+json;type=\"application/json-patch+json\""
+     */
+    public static final String APPLICATION_JSON_PATCH_JSON = "application/json-patch+json";
+    public static final MediaType APPLICATION_JSON_PATCH_JSON_TYPE = new MediaType("application", "json-patch+json");
+
+    /**
+     * "application/soap+xml;type=\"application/soap+xml\""
+     */
+    public static final String APPLICATION_SOAP_XML = "application/soap+xml";
+    public static final MediaType APPLICATION_SOAP_XML_TYPE = new MediaType("application", "soap+xml");
+
 
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
     public static final String QUOTED = "\"([^\"]*)\"";
@@ -316,7 +334,6 @@ public class MediaType {
     public final String mediaType;
     public Map<String, String> parameters;
 
-
     public MediaType() {
         this(null, MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD, null, null);
     }
@@ -324,7 +341,6 @@ public class MediaType {
     public MediaType(String mediaType) {
         this(mediaType, MEDIA_TYPE_WILDCARD, MEDIA_TYPE_WILDCARD, null, null);
     }
-
 
     public MediaType(String type, String subtype) {
         this(null, type, subtype, null, null);
@@ -347,10 +363,10 @@ public class MediaType {
     }
 
     public MediaType(String mediaType, String type, String subtype, String charset, Map<String, String> params) {
-        this.mediaType = null == mediaType ? APPLICATION_FORM_URLENCODED : mediaType;
         this.type = null == type ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
         this.charset = null == charset ? Charset.DEFAULT_UTF_8 : charset;
+        this.mediaType = null == mediaType ? this.type + Symbol.C_SLASH + this.subtype + ";charset=" + this.charset : mediaType;
         if (MapKit.isNotEmpty(params)) {
             params = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
         }

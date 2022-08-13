@@ -95,10 +95,10 @@ public class Exchange {
 
     public Sink createRequestBody(Request request, boolean duplex) throws IOException {
         this.duplex = duplex;
-        long contentLength = request.body().contentLength();
+        long length = request.body().length();
         eventListener.requestBodyStart(call);
-        Sink rawRequestBody = httpCodec.createRequestBody(request, contentLength);
-        return new RequestBodySink(rawRequestBody, contentLength);
+        Sink rawRequestBody = httpCodec.createRequestBody(request, length);
+        return new RequestBodySink(rawRequestBody, length);
     }
 
     public void flushRequest() throws IOException {
@@ -146,11 +146,11 @@ public class Exchange {
     public ResponseBody openResponseBody(Response response) throws IOException {
         try {
             eventListener.responseBodyStart(call);
-            String contentType = response.header("Content-Type");
-            long contentLength = httpCodec.reportedContentLength(response);
+            String mediaType = response.header("Content-Type");
+            long length = httpCodec.reportedContentLength(response);
             Source rawSource = httpCodec.openResponseBodySource(response);
-            ResponseBodySource source = new ResponseBodySource(rawSource, contentLength);
-            return new RealResponseBody(contentType, contentLength, IoKit.buffer(source));
+            ResponseBodySource source = new ResponseBodySource(rawSource, length);
+            return new RealResponseBody(mediaType, length, IoKit.buffer(source));
         } catch (IOException e) {
             eventListener.responseFailed(call, e);
             trackFailure(e);

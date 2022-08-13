@@ -570,7 +570,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private long contentLength(RequestBody reqBody) {
         try {
-            return reqBody.contentLength();
+            return reqBody.length();
         } catch (IOException e) {
             throw new InstrumentException("Cannot get the length of the request body", e);
         }
@@ -741,8 +741,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     public Charset charset(Response response) {
         ResponseBody b = response.body();
-        MediaType type = null != b ? b.contentType() : null;
-        return null != type ? type.charset(charset) : charset;
+        MediaType mediaType = null != b ? b.mediaType() : null;
+        return null != mediaType ? mediaType.charset(charset) : charset;
     }
 
     static class FilePara {

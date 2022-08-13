@@ -115,7 +115,7 @@ body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，R
     RequestBody requestBody = new RequestBody() {
     
         @Override
-        public MediaType contentType() {
+        public MediaType mediaType() {
             return MediaType.valueOf("text/x-markdown; charsets=utf-8");
         }
     

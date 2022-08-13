@@ -150,9 +150,9 @@ public class CallServerInterceptor implements Interceptor {
             exchange.noNewExchangesOnConnection();
         }
 
-        if ((code == 204 || code == 205) && response.body().contentLength() > 0) {
+        if ((code == 204 || code == 205) && response.body().length() > 0) {
             throw new ProtocolException(
-                    "HTTP " + code + " had non-zero Content-Length: " + response.body().contentLength());
+                    "HTTP " + code + " had non-zero Content-Length: " + response.body().length());
         }
 
         return response;
