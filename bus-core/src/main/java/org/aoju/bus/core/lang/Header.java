@@ -269,5 +269,9 @@ public class Header {
      * The header Sec-WebSocket-Version
      */
     public static final String STRICT_TRANSPORT_SECURITY = "Strict-Transport-Security";
+    /**
+     * The header SOAPAction
+     */
+    public static final String SOAPACTION = "SOAPAction";
 
 }
