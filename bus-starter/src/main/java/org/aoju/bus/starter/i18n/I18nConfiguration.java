@@ -31,9 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import javax.validation.Validator;
 
 /**
  * 国际化配置
@@ -47,23 +44,12 @@ public class I18nConfiguration {
     @Autowired
     I18nProperties properties;
 
+    @Bean
     private ResourceBundleMessageSource getMessageSource() {
         ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
         bundleMessageSource.setDefaultEncoding(StringKit.toString(this.properties.getDefaultEncoding(), Charset.DEFAULT_UTF_8));
         bundleMessageSource.setBasenames(this.properties.getBaseNames());
         return bundleMessageSource;
-    }
-
-    /**
-     * 注入 Validator 验证 Bean
-     *
-     * @return 校验信息
-     */
-    @Bean
-    public Validator getValidator() {
-        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-        validator.setValidationMessageSource(getMessageSource());
-        return validator;
     }
 
 }

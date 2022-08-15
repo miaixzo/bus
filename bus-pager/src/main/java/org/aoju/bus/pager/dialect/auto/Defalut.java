@@ -54,21 +54,6 @@ public class Defalut implements AutoDialect<String> {
         } catch (Exception ignore) {
             // ignore
         }
-        try {
-            AUTO_DIALECTS.add(new Druid());
-        } catch (Exception ignore) {
-            // ignore
-        }
-        try {
-            AUTO_DIALECTS.add(new C3P0());
-        } catch (Exception ignore) {
-            // ignore
-        }
-        try {
-            AUTO_DIALECTS.add(new Dbcp());
-        } catch (Exception ignore) {
-            // ignore
-        }
     }
 
     private final Map<String, AbstractAutoDialect> urlMap = new ConcurrentHashMap<>();

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-crypto</artifactId>
-    <version>6.5.5</version>
+    <version>6.5.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

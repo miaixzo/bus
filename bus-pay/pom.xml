@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pay</artifactId>
-    <version>6.5.5</version>
+    <version>6.5.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -46,20 +46,16 @@
         <lombok.version>1.18.24</lombok.version>
         <fastjson.version>1.2.83</fastjson.version>
         <servlet.version>4.0.4</servlet.version>
-        <httpmime.version>4.5.4</httpmime.version>
+        <httpmime.version>4.5.13</httpmime.version>
         <zxing.version>3.5.0</zxing.version>
         <bouncycastle.version>1.70</bouncycastle.version>
-        <spring.boot.version>2.7.0</spring.boot.version>
-        <binarywang.version>4.3.5.B</binarywang.version>
-        <alipay.version>4.31.24.ALL</alipay.version>
+        <spring.boot.version>2.7.2</spring.boot.version>
+        <binarywang.version>4.3.9.B</binarywang.version>
+        <alipay.version>4.33.1.ALL</alipay.version>
+        <paypal.version>2.0.0</paypal.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.aoju</groupId>
-            <artifactId>bus-base</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-cache</artifactId>
@@ -73,11 +69,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-http</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bus-validate</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -95,6 +86,12 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bouncycastle.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
             <version>${bouncycastle.version}</version>
             <optional>true</optional>
         </dependency>
@@ -117,12 +114,18 @@
         <dependency>
             <groupId>com.paypal.sdk</groupId>
             <artifactId>checkout-sdk</artifactId>
-            <version>1.0.5</version>
+            <version>${paypal.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-pay</artifactId>
             <version>${binarywang.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.github.x-stream</groupId>
+                    <artifactId>mxparser</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -140,7 +143,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

@@ -31,7 +31,10 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.pager.AutoDialect;
 import org.aoju.bus.pager.Dialect;
 import org.aoju.bus.pager.dialect.AbstractPaging;
-import org.aoju.bus.pager.dialect.auto.*;
+import org.aoju.bus.pager.dialect.auto.Defalut;
+import org.aoju.bus.pager.dialect.auto.Druid;
+import org.aoju.bus.pager.dialect.auto.Early;
+import org.aoju.bus.pager.dialect.auto.Hikari;
 import org.aoju.bus.pager.dialect.base.*;
 import org.apache.ibatis.mapping.MappedStatement;
 
@@ -97,8 +100,6 @@ public class PageAutoDialect {
         registerAutoDialectAlias("early", Early.class);
         registerAutoDialectAlias("hikari", Hikari.class);
         registerAutoDialectAlias("druid", Druid.class);
-        registerAutoDialectAlias("dbcp", Dbcp.class);
-        registerAutoDialectAlias("c3p0", C3P0.class);
         // 不配置时，默认使用 Defalut
         registerAutoDialectAlias("default", Defalut.class);
     }

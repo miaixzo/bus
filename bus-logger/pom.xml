@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-logger</artifactId>
-    <version>6.5.5</version>
+    <version>6.5.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -44,10 +44,10 @@
         <project.compiler.version>17</project.compiler.version>
         <slf4j.version>1.7.36</slf4j.version>
         <logback.version>1.2.11</logback.version>
-        <log4j2.version>2.17.2</log4j2.version>
+        <log4j2.version>2.18.0</log4j2.version>
         <commons.logging.version>1.2</commons.logging.version>
         <tinylog.version>2.4.1</tinylog.version>
-        <jboss.logging.version>3.4.3.Final</jboss.logging.version>
+        <jboss.version>3.5.0.Final</jboss.version>
     </properties>
 
     <dependencies>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
-            <version>${jboss.logging.version}</version>
+            <version>${jboss.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -114,7 +114,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

@@ -391,6 +391,30 @@ public class RandomKit {
     }
 
     /**
+     * 获得一个随机的字符串
+     *
+     * @param text   随机字符选取的样本
+     * @param length 字符串的长度
+     * @return 随机字符串
+     */
+    public static String randomString(String text, int length) {
+        if (StringKit.isEmpty(text)) {
+            return Normal.EMPTY;
+        }
+        if (length < 1) {
+            length = 1;
+        }
+
+        final StringBuilder sb = new StringBuilder(length);
+        int baseLength = text.length();
+        for (int i = 0; i < length; i++) {
+            int number = randomInt(baseLength);
+            sb.append(text.charAt(number));
+        }
+        return sb.toString();
+    }
+
+    /**
      * 获得一个随机的字符串(只包含数字和大写字符)
      *
      * @param length 字符串的长度
@@ -436,30 +460,6 @@ public class RandomKit {
      */
     public static String randomNumbers(int length) {
         return randomString(Normal.NUMBER, length);
-    }
-
-    /**
-     * 获得一个随机的字符串
-     *
-     * @param text   随机字符选取的样本
-     * @param length 字符串的长度
-     * @return 随机字符串
-     */
-    public static String randomString(String text, int length) {
-        if (StringKit.isEmpty(text)) {
-            return Normal.EMPTY;
-        }
-        final StringBuilder sb = new StringBuilder(length);
-
-        if (length < 1) {
-            length = 1;
-        }
-        int baseLength = text.length();
-        for (int i = 0; i < length; i++) {
-            int number = randomInt(baseLength);
-            sb.append(text.charAt(number));
-        }
-        return sb.toString();
     }
 
     /**
