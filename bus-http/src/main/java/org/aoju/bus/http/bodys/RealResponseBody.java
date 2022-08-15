@@ -40,25 +40,25 @@ public class RealResponseBody extends ResponseBody {
      * 使用字符串避免在需要时才解析内容类型
      * 这也避免了由格式不正确的内容类型引起的问题
      */
-    private final String contentTypeString;
-    private final long contentLength;
+    private final String mediaType;
+    private final long length;
     private final BufferSource source;
 
     public RealResponseBody(
-            String contentTypeString, long contentLength, BufferSource source) {
-        this.contentTypeString = contentTypeString;
-        this.contentLength = contentLength;
+            String mediaType, long length, BufferSource source) {
+        this.mediaType = mediaType;
+        this.length = length;
         this.source = source;
     }
 
     @Override
-    public MediaType contentType() {
-        return null != contentTypeString ? MediaType.valueOf(contentTypeString) : null;
+    public MediaType mediaType() {
+        return null != mediaType ? MediaType.valueOf(mediaType) : null;
     }
 
     @Override
-    public long contentLength() {
-        return contentLength;
+    public long length() {
+        return length;
     }
 
     @Override

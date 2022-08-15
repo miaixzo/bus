@@ -57,19 +57,19 @@ public class BridgeInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request userRequest = chain.request();
-        Request.Builder requestBuilder = userRequest.newBuilder();
+        Request request = chain.request();
+        Request.Builder requestBuilder = request.newBuilder();
 
-        RequestBody body = userRequest.body();
+        RequestBody body = request.body();
         if (null != body) {
-            MediaType contentType = body.contentType();
-            if (null != contentType) {
-                requestBuilder.header(Header.CONTENT_TYPE, contentType.toString());
+            MediaType mediaType = body.mediaType();
+            if (null != mediaType) {
+                requestBuilder.header(Header.CONTENT_TYPE, mediaType.toString());
             }
 
-            long contentLength = body.contentLength();
-            if (contentLength != -1) {
-                requestBuilder.header(Header.CONTENT_LENGTH, Long.toString(contentLength));
+            long length = body.length();
+            if (length != -1) {
+                requestBuilder.header(Header.CONTENT_LENGTH, Long.toString(length));
                 requestBuilder.removeHeader(Header.TRANSFER_ENCODING);
             } else {
                 requestBuilder.header(Header.TRANSFER_ENCODING, "chunked");
@@ -77,38 +77,38 @@ public class BridgeInterceptor implements Interceptor {
             }
         }
 
-        if (null == userRequest.header(Header.HOST)) {
-            requestBuilder.header(Header.HOST, Builder.hostHeader(userRequest.url(), false));
+        if (null == request.header(Header.HOST)) {
+            requestBuilder.header(Header.HOST, Builder.hostHeader(request.url(), false));
         }
 
-        if (null == userRequest.header(Header.CONNECTION)) {
+        if (null == request.header(Header.CONNECTION)) {
             requestBuilder.header(Header.CONNECTION, Header.KEEP_ALIVE);
         }
 
         // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
         // the transfer stream.
         boolean transparentGzip = false;
-        if (null == userRequest.header(Header.ACCEPT_ENCODING)
-                && null == userRequest.header("Range")) {
+        if (null == request.header(Header.ACCEPT_ENCODING)
+                && null == request.header("Range")) {
             transparentGzip = true;
             requestBuilder.header(Header.ACCEPT_ENCODING, "gzip");
         }
 
-        List<Cookie> cookies = cookieJar.loadForRequest(userRequest.url());
+        List<Cookie> cookies = cookieJar.loadForRequest(request.url());
         if (!cookies.isEmpty()) {
             requestBuilder.header(Header.COOKIE, cookieHeader(cookies));
         }
 
-        if (null == userRequest.header(Header.USER_AGENT)) {
+        if (null == request.header(Header.USER_AGENT)) {
             requestBuilder.header(Header.USER_AGENT, "Httpd/" + Version.all());
         }
 
         Response networkResponse = chain.proceed(requestBuilder.build());
 
-        Headers.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());
+        Headers.receiveHeaders(cookieJar, request.url(), networkResponse.headers());
 
         Response.Builder responseBuilder = networkResponse.newBuilder()
-                .request(userRequest);
+                .request(request);
 
         if (transparentGzip
                 && "gzip".equalsIgnoreCase(networkResponse.header(Header.CONTENT_ENCODING))
@@ -119,8 +119,8 @@ public class BridgeInterceptor implements Interceptor {
                     .removeAll(Header.CONTENT_LENGTH)
                     .build();
             responseBuilder.headers(strippedHeaders);
-            String contentType = networkResponse.header(Header.CONTENT_TYPE);
-            responseBuilder.body(new RealResponseBody(contentType, -1L, IoKit.buffer(responseBody)));
+            String mediaType = networkResponse.header(Header.CONTENT_TYPE);
+            responseBuilder.body(new RealResponseBody(mediaType, -1L, IoKit.buffer(responseBody)));
         }
 
         return responseBuilder.build();

@@ -1759,12 +1759,7 @@ public class UriKit {
      */
     public URI toURI() {
         try {
-            return new URI(
-                    getSchemeWithDefault(),
-                    getAuthority(),
-                    getPathString(),
-                    getQueryString(),
-                    getFragmentEncoded());
+            return toURL().toURI();
         } catch (URISyntaxException e) {
             return null;
         }

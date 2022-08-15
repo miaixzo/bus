@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>6.5.5</version>
+    <version>6.5.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,17 +42,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <spring.boot.version>2.7.0</spring.boot.version>
+        <spring.boot.version>2.7.2</spring.boot.version>
         <lombok.version>1.18.24</lombok.version>
-        <guice.version>5.0.1</guice.version>
-        <jedis.version>4.2.2</jedis.version>
+        <guice.version>5.1.0</guice.version>
+        <jedis.version>4.2.3</jedis.version>
         <xmemcached.version>2.4.7</xmemcached.version>
-        <ehcache.version>3.9.4</ehcache.version>
-        <curator.version>5.2.1</curator.version>
+        <ehcache.version>3.9.9</ehcache.version>
+        <curator.version>5.3.0</curator.version>
         <guava.version>31.1-jre</guava.version>
-        <hession.version>4.0.65</hession.version>
-        <druid.version>1.2.8</druid.version>
-        <mysql.version>8.0.29</mysql.version>
+        <hession.version>4.0.66</hession.version>
+        <mysql.version>8.0.30</mysql.version>
     </properties>
 
     <dependencies>
@@ -185,7 +184,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

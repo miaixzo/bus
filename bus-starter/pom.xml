@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>6.5.5</version>
+    <version>6.5.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,19 +42,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>17</project.compiler.version>
-        <spring.boot.version>2.7.0</spring.boot.version>
+        <spring.boot.version>2.7.2</spring.boot.version>
         <lombok.version>1.18.24</lombok.version>
-        <aspectj.version>1.9.6</aspectj.version>
+        <aspectj.version>1.9.9.1</aspectj.version>
         <persistence.version>2.2</persistence.version>
         <guava.version>31.1-jre</guava.version>
         <vertx.version>4.3.1</vertx.version>
-        <guice.version>5.0.1</guice.version>
+        <guice.version>5.1.0</guice.version>
         <mybatis.version>3.5.10</mybatis.version>
         <mybatis.spring.version>2.0.7</mybatis.spring.version>
         <validation.version>2.0.1.Final</validation.version>
         <jsqlparser.version>4.2</jsqlparser.version>
-        <mysql.version>8.0.29</mysql.version>
-        <dubbo.version>3.0.8</dubbo.version>
+        <mysql.version>8.0.30</mysql.version>
+        <dubbo.version>3.0.10</dubbo.version>
         <servlet.version>4.0.4</servlet.version>
         <elasticsearch.version>7.17.4</elasticsearch.version>
     </properties>
@@ -210,12 +210,12 @@
             <version>${mybatis.spring.version}</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>${validation.version}</version>
-            <optional>true</optional>
-        </dependency>
+        <!--        <dependency>
+                    <groupId>javax.validation</groupId>
+                    <artifactId>validation-api</artifactId>
+                    <version>${validation.version}</version>
+                    <optional>true</optional>
+                </dependency>-->
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
@@ -322,7 +322,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

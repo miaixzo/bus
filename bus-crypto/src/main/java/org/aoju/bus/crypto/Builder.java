@@ -575,7 +575,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmac(Algorithm algorithm, String key) {
-        return new HMac(algorithm, StringKit.bytes(key));
+        return new HMac(algorithm, StringKit.isNotEmpty(key) ? StringKit.bytes(key) : null);
     }
 
     /**
@@ -586,6 +586,9 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmac(Algorithm algorithm, byte[] key) {
+        if (ArrayKit.isEmpty(key)) {
+            key = generateKey(algorithm.getValue()).getEncoded();
+        }
         return new HMac(algorithm, key);
     }
 
@@ -597,6 +600,9 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmac(Algorithm algorithm, SecretKey key) {
+        if (ObjectKit.isNull(key)) {
+            key = generateKey(algorithm.getValue());
+        }
         return new HMac(algorithm, key);
     }
 
@@ -610,7 +616,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacMd5(String key) {
-        return hmacMd5(StringKit.bytes(key));
+        return hmacMd5(StringKit.isNotEmpty(key) ? StringKit.bytes(key) : null);
     }
 
     /**
@@ -623,6 +629,9 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacMd5(byte[] key) {
+        if (ArrayKit.isEmpty(key)) {
+            key = generateKey(Algorithm.HMACMD5.getValue()).getEncoded();
+        }
         return new HMac(Algorithm.HMACMD5, key);
     }
 
@@ -648,7 +657,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha1(String key) {
-        return hmacSha1(StringKit.bytes(key));
+        return hmacSha1(StringKit.isNotEmpty(key) ? StringKit.bytes(key) : null);
     }
 
     /**
@@ -661,6 +670,9 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha1(byte[] key) {
+        if (ArrayKit.isEmpty(key)) {
+            key = generateKey(Algorithm.HMACMD5.getValue()).getEncoded();
+        }
         return new HMac(Algorithm.HMACSHA1, key);
     }
 
@@ -686,7 +698,7 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha256(String key) {
-        return hmacSha256(StringKit.bytes(key));
+        return hmacSha256(StringKit.isNotEmpty(key) ? StringKit.bytes(key) : null);
     }
 
     /**
@@ -699,6 +711,9 @@ public class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha256(byte[] key) {
+        if (ArrayKit.isEmpty(key)) {
+            key = generateKey(Algorithm.HMACMD5.getValue()).getEncoded();
+        }
         return new HMac(Algorithm.HMACSHA256, key);
     }
 

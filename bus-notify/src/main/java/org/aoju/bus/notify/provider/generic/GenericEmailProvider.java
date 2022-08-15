@@ -25,6 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.generic;
 
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -36,11 +41,6 @@ import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.magic.Property;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.*;
-import javax.mail.internet.*;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;

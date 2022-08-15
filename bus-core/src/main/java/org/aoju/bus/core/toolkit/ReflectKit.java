@@ -575,10 +575,12 @@ public class ReflectKit {
 
     /**
      * 设置字段值
+     * 若值类型与字段类型不一致，则会尝试通过 {@link Convert} 进行转换
+     * 若字段类型是原始类型而传入的值是 null，则会将字段设置为对应原始类型的默认值（见 {@link ClassKit#getDefaultValue(Class)}）
      *
      * @param object    对象,static字段则此处传Class
      * @param fieldName 字段名
-     * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
+     * @param value     值，当值类型与字段类型不匹配时，会尝试转换
      * @throws InstrumentException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object object, String fieldName, Object value) throws InstrumentException {
@@ -592,10 +594,12 @@ public class ReflectKit {
 
     /**
      * 设置字段值
+     * 若值类型与字段类型不一致，则会尝试通过 {@link Convert} 进行转换
+     * 若字段类型是原始类型而传入的值是 null，则会将字段设置为对应原始类型的默认值（见 {@link ClassKit#getDefaultValue(Class)}）
      *
      * @param object 对象，如果是static字段，此参数为null
      * @param field  字段
-     * @param value  值，值类型必须与字段类型匹配，不会自动转换对象类型
+     * @param value  值，当值类型与字段类型不匹配时，会尝试转换
      * @throws InstrumentException UtilException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object object, Field field, Object value) throws InstrumentException {

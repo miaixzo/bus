@@ -70,59 +70,55 @@ public abstract class ResponseBody implements Closeable {
     private Reader reader;
 
     /**
-     * 返回一个传输{@code content}的新响应体。如果{@code contentType}是非空且缺少字符集，则使用UTF-8
+     * 返回一个传输{@code content}的新响应体。如果{@code mediaType}是非空且缺少字符集，则使用UTF-8
      *
-     * @param contentType 媒体类型
-     * @param content     内容
+     * @param mediaType 媒体类型
+     * @param content   内容
      * @return 新响应体
      */
-    public static ResponseBody create(MediaType contentType, String content) {
+    public static ResponseBody create(MediaType mediaType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
-        if (null != contentType) {
-            charset = contentType.charset();
-            if (null == charset) {
-                charset = Charset.UTF_8;
-                contentType = MediaType.valueOf(contentType + "; charset=utf-8");
-            }
+        if (null != mediaType) {
+            charset = null != mediaType.charset() ? mediaType.charset() : Charset.UTF_8;
         }
         Buffer buffer = new Buffer().writeString(content, charset);
-        return create(contentType, buffer.size(), buffer);
+        return create(mediaType, buffer.size(), buffer);
     }
 
     /**
      * 新的响应体，它传输{@code content}
      *
-     * @param contentType 媒体类型
-     * @param content     内容
+     * @param mediaType 媒体类型
+     * @param content   内容
      * @return 新响应体
      */
-    public static ResponseBody create(final MediaType contentType, byte[] content) {
+    public static ResponseBody create(final MediaType mediaType, byte[] content) {
         Buffer buffer = new Buffer().write(content);
-        return create(contentType, content.length, buffer);
+        return create(mediaType, content.length, buffer);
     }
 
     /**
      * 新的响应体，它传输{@code content}
      *
-     * @param contentType 媒体类型
-     * @param content     内容
+     * @param mediaType 媒体类型
+     * @param content   内容
      * @return 新响应体
      */
-    public static ResponseBody create(MediaType contentType, ByteString content) {
+    public static ResponseBody create(MediaType mediaType, ByteString content) {
         Buffer buffer = new Buffer().write(content);
-        return create(contentType, content.size(), buffer);
+        return create(mediaType, content.size(), buffer);
     }
 
     /**
      * 新的响应体，它传输{@code content}
      *
-     * @param contentType   媒体类型
-     * @param contentLength 内容大小
-     * @param content       内容
+     * @param mediaType 媒体类型
+     * @param length    内容大小
+     * @param content   内容
      * @return 新响应体
      */
-    public static ResponseBody create(final MediaType contentType,
-                                      final long contentLength,
+    public static ResponseBody create(final MediaType mediaType,
+                                      final long length,
                                       final BufferSource content) {
         if (null == content) {
             throw new NullPointerException("source == null");
@@ -130,13 +126,13 @@ public abstract class ResponseBody implements Closeable {
 
         return new ResponseBody() {
             @Override
-            public MediaType contentType() {
-                return contentType;
+            public MediaType mediaType() {
+                return mediaType;
             }
 
             @Override
-            public long contentLength() {
-                return contentLength;
+            public long length() {
+                return length;
             }
 
             @Override
@@ -146,13 +142,13 @@ public abstract class ResponseBody implements Closeable {
         };
     }
 
-    public abstract MediaType contentType();
+    public abstract MediaType mediaType();
 
     /**
      * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream}, or
      * -1 if unknown.
      */
-    public abstract long contentLength();
+    public abstract long length();
 
     public final InputStream byteStream() {
         return source().inputStream();
@@ -168,7 +164,7 @@ public abstract class ResponseBody implements Closeable {
      * possibility for your response.
      */
     public final byte[] bytes() throws IOException {
-        long contentLength = contentLength();
+        long contentLength = length();
         if (contentLength > Integer.MAX_VALUE) {
             throw new IOException("Cannot buffer entire body for content length: " + contentLength);
         }
@@ -226,8 +222,8 @@ public abstract class ResponseBody implements Closeable {
     }
 
     private java.nio.charset.Charset charset() {
-        MediaType contentType = contentType();
-        return null != contentType ? contentType.charset(Charset.UTF_8) : Charset.UTF_8;
+        MediaType mediaType = mediaType();
+        return null != mediaType ? mediaType.charset(Charset.UTF_8) : Charset.UTF_8;
     }
 
     @Override

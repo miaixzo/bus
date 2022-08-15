@@ -72,12 +72,12 @@ public class FormBody extends RequestBody {
     }
 
     @Override
-    public MediaType contentType() {
+    public MediaType mediaType() {
         return MediaType.APPLICATION_FORM_URLENCODED_TYPE;
     }
 
     @Override
-    public long contentLength() {
+    public long length() {
         return writeOrCountBytes(null, true);
     }
 

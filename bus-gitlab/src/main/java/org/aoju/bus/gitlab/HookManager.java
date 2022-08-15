@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface provides a base class handler for processing GitLab Web Hook and System Hook callouts.

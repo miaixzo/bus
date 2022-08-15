@@ -810,7 +810,7 @@ public class Formatter {
         if (null == text) {
             return null;
         }
-        int length = text.length();
+        final int length = text.length();
         if (StringKit.contains(text, 'Z')) {
             if (length == Fields.UTC_PATTERN.length() - 4) {
                 // 格式类似：2020-09-11T06:34:32Z，-4表示减去4个单引号的长度

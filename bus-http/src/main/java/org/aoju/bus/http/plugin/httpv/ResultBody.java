@@ -99,7 +99,7 @@ public class ResultBody implements CoverResult.Body {
     public MediaType getType() {
         ResponseBody body = response.body();
         if (null != body) {
-            return body.contentType();
+            return body.mediaType();
         }
         return null;
     }
@@ -108,7 +108,7 @@ public class ResultBody implements CoverResult.Body {
     public long getLength() {
         ResponseBody body = response.body();
         if (null != body) {
-            return body.contentLength();
+            return body.length();
         }
         return 0;
     }

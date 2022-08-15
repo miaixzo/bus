@@ -442,7 +442,7 @@ public class Httpv {
                     // 若是下载文件，则必须指定在 IO 线程操作
                     return response;
                 }
-                ResponseBody newBody = ResponseBody.create(body.contentType(), body.bytes());
+                ResponseBody newBody = ResponseBody.create(body.mediaType(), body.bytes());
                 return response.newBuilder().body(newBody).build();
             });
         }

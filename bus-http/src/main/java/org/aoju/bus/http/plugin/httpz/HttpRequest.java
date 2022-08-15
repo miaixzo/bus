@@ -90,18 +90,18 @@ public abstract class HttpRequest {
         appendHeaders();
     }
 
-    public static RequestBody createRequestBody(final MediaType contentType, final InputStream is) {
+    public static RequestBody createRequestBody(final MediaType mediaType, final InputStream is) {
         if (null == is)
             throw new NullPointerException("is == null");
 
         return new RequestBody() {
             @Override
-            public MediaType contentType() {
-                return contentType;
+            public MediaType mediaType() {
+                return mediaType;
             }
 
             @Override
-            public long contentLength() {
+            public long length() {
                 try {
                     return is.available();
                 } catch (IOException e) {

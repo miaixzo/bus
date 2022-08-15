@@ -61,13 +61,13 @@ public class ProgressBody extends RequestBody {
     }
 
     @Override
-    public long contentLength() {
+    public long length() {
         return progress.getTotalBytes();
     }
 
     @Override
-    public MediaType contentType() {
-        return requestBody.contentType();
+    public MediaType mediaType() {
+        return requestBody.mediaType();
     }
 
     @Override

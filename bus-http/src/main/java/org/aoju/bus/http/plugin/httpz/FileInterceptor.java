@@ -67,13 +67,13 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
         }
 
         @Override
-        public MediaType contentType() {
-            return body.contentType();
+        public MediaType mediaType() {
+            return body.mediaType();
         }
 
         @Override
-        public long contentLength() {
-            return body.contentLength();
+        public long length() {
+            return body.length();
         }
 
         @Override
@@ -95,7 +95,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
                     if (!isFinish) {
                         downloadLenth += bytesRead;
                     }
-                    progressListener.updateProgress(downloadLenth, body.contentLength(), isFinish);
+                    progressListener.updateProgress(downloadLenth, body.length(), isFinish);
                     return bytesRead;
                 }
             };
