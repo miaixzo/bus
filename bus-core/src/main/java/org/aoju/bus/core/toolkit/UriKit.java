@@ -1941,7 +1941,7 @@ public class UriKit {
          * @return 节点列表
          */
         public List<String> getSegments() {
-            return this.segments;
+            return ObjectKit.defaultIfNull(this.segments, CollKit.empty());
         }
 
         /**

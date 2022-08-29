@@ -125,8 +125,7 @@ public class TreeKit {
      * @return {@link Tree}
      */
     public static <T, E> Tree<E> buildSingle(List<T> list, E rootId, NodeConfig nodeConfig, NodeParser<T, E> nodeParser) {
-        return TreeBuilder.of(rootId, nodeConfig)
-                .append(list, nodeParser).build();
+        return TreeBuilder.of(rootId, nodeConfig).append(list, rootId, nodeParser).build();
     }
 
     /**

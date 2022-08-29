@@ -646,8 +646,9 @@ public class IterKit {
      * @return 第一个元素
      */
     public static <T> T getFirst(Iterable<T> iterable) {
-        if (null == iterable) {
-            return null;
+        if (iterable instanceof List) {
+            final List<T> list = (List<T>) iterable;
+            return CollKit.isEmpty(list) ? null : list.get(0);
         }
         return getFirst(iterable.iterator());
     }

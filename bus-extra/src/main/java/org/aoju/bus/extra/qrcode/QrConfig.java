@@ -46,6 +46,7 @@ import java.util.Map;
  */
 public class QrConfig {
 
+
     private static final int BLACK = 0xFF000000;
     private static final int WHITE = 0xFFFFFFFF;
 
@@ -60,9 +61,9 @@ public class QrConfig {
     /**
      * 前景色(二维码颜色)
      */
-    public int foreColor = BLACK;
+    public Integer foreColor = BLACK;
     /**
-     * 背景色
+     * 背景色，默认白色，null表示透明
      */
     public Integer backColor = WHITE;
     /**
@@ -178,7 +179,9 @@ public class QrConfig {
      * @return this
      */
     public QrConfig setForeColor(Color foreColor) {
-        if (null != foreColor) {
+        if (null == foreColor) {
+            this.foreColor = null;
+        } else {
             this.foreColor = foreColor.getRGB();
         }
         return this;
@@ -383,7 +386,6 @@ public class QrConfig {
         if (null != this.errorCorrection) {
             Object value;
             if (BarcodeFormat.AZTEC == format || BarcodeFormat.PDF_417 == format) {
-                // issue#I4FE3U@Gitee
                 value = this.errorCorrection.getBits();
             } else {
                 value = this.errorCorrection;

@@ -181,6 +181,18 @@ public class TreeBuilder<E> implements Builder<Tree<E>> {
      * @return this
      */
     public <T> TreeBuilder<E> append(List<T> list, NodeParser<T, E> nodeParser) {
+        return append(list, null, nodeParser);
+    }
+
+    /**
+     * 增加节点列表，增加的节点是不带子节点的
+     *
+     * @param list       Bean列表
+     * @param <T>        Bean类型
+     * @param nodeParser 节点转换器，用于定义一个Bean如何转换为Tree节点
+     * @return this
+     */
+    public <T> TreeBuilder<E> append(List<T> list, E rootId, NodeParser<T, E> nodeParser) {
         checkBuilt();
 
         final NodeConfig config = this.root.getConfig();
@@ -189,6 +201,9 @@ public class TreeBuilder<E> implements Builder<Tree<E>> {
         for (T t : list) {
             node = new Tree<>(config);
             nodeParser.parse(t, node);
+            if (null != rootId && false == rootId.getClass().equals(node.getId().getClass())) {
+                throw new IllegalArgumentException("rootId type is node.getId().getClass()!");
+            }
             map.put(node.getId(), node);
         }
         return append(map);

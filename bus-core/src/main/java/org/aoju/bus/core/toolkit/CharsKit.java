@@ -1423,6 +1423,28 @@ public class CharsKit {
     }
 
     /**
+     * 指定字符串数组中，是否包含空字符串
+     * 如果传入参数对象不是为空,则返回false
+     * 如果传入的参数不是String则返回false 如果字符串包含字母,不区分大小写,则返回true
+     *
+     * @param obj 对象
+     * @return 如果为字符串, 是否有字母
+     */
+    public static boolean hasLetter(Object obj) {
+        if (null == obj) {
+            return false;
+        } else if (obj instanceof String) {
+            char[] chars = ((String) obj).toCharArray();
+            for (char c : chars) {
+                if (isLetter(c)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 改进JDK subString
      * index从0开始计算,最后一个字符为-1
      * 如果from和to位置一样,返回 ""
@@ -2886,6 +2908,70 @@ public class CharsKit {
             }
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * 替换字符串中最后一个指定字符串
+     *
+     * @param text         字符串
+     * @param searchStr    被查找的字符串
+     * @param replacedChar 被替换的字符串
+     * @return 替换后的字符串
+     */
+    public static String replaceLast(CharSequence text, CharSequence searchStr, CharSequence replacedChar) {
+        return replaceLast(text, searchStr, replacedChar, false);
+    }
+
+    /**
+     * 替换字符串中最后一个指定字符串
+     *
+     * @param text         字符串
+     * @param searchStr    被查找的字符串
+     * @param replacedChar 被替换的字符串
+     * @param ignoreCase   是否忽略大小写
+     * @return 替换后的字符串
+     */
+    public static String replaceLast(CharSequence text, CharSequence searchStr, CharSequence replacedChar, boolean ignoreCase) {
+        if (isEmpty(text)) {
+            return toString(text);
+        }
+        int lastIndex = lastIndexOf(text, searchStr, text.length(), ignoreCase);
+        if (-1 == lastIndex) {
+            return toString(text);
+        }
+        return replace(text, lastIndex, searchStr, replacedChar, ignoreCase);
+    }
+
+    /**
+     * 替换字符串中第一个指定字符串
+     *
+     * @param str         字符串
+     * @param searchStr   被查找的字符串
+     * @param replacedStr 被替换的字符串
+     * @return 替换后的字符串
+     */
+    public static String replaceFirst(CharSequence str, CharSequence searchStr, CharSequence replacedStr) {
+        return replaceFirst(str, searchStr, replacedStr, false);
+    }
+
+    /**
+     * 替换字符串中第一个指定字符串
+     *
+     * @param str         字符串
+     * @param searchStr   被查找的字符串
+     * @param replacedStr 被替换的字符串
+     * @param ignoreCase  是否忽略大小写
+     * @return 替换后的字符串
+     */
+    public static String replaceFirst(CharSequence str, CharSequence searchStr, CharSequence replacedStr, boolean ignoreCase) {
+        if (isEmpty(str)) {
+            return toString(str);
+        }
+        int startInclude = indexOf(str, searchStr, 0, ignoreCase);
+        if (-1 == startInclude) {
+            return toString(str);
+        }
+        return replace(str, startInclude, startInclude + searchStr.length(), replacedStr);
     }
 
     /**

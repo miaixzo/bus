@@ -29,18 +29,22 @@ import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
+import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.exception.InstrumentException;
 import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.FileType;
-import org.aoju.bus.core.toolkit.ImageKit;
+import org.aoju.bus.core.lang.ansi.Ansi8BitColor;
+import org.aoju.bus.core.lang.ansi.AnsiElement;
+import org.aoju.bus.core.lang.ansi.AnsiEncoder;
+import org.aoju.bus.core.toolkit.*;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.text.MessageFormat;
-import java.util.Base64;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,87 +61,6 @@ import java.util.Map;
 public class QrCodeKit {
 
     /**
-     * 生成代 logo 图片的 Base64 编码格式的二维码，以 String 形式表示
-     *
-     * @param content    内容
-     * @param qrConfig   二维码配置，包括长、宽、边距、颜色等
-     * @param imageType  图片类型(图片扩展名)
-     * @param logoBase64 logo 图片的 base64 编码
-     * @return 图片 Base64 编码字符串
-     */
-    public static String generate(String content, QrConfig qrConfig, String imageType, String logoBase64) {
-        byte[] decode;
-        try {
-            decode = Base64.getDecoder().decode(logoBase64);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-        return generate(content, qrConfig, imageType, decode);
-    }
-
-    /**
-     * 生成代 logo 图片的 Base64 编码格式的二维码，以 String 形式表示
-     *
-     * @param content   内容
-     * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
-     * @param imageType 图片类型(图片扩展名)
-     * @param logo      logo 图片的byte[]
-     * @return 图片 Base64 编码字符串
-     */
-    public static String generate(String content, QrConfig qrConfig, String imageType, byte[] logo) {
-        BufferedImage img;
-        try {
-            img = ImageIO.read(new ByteArrayInputStream(logo));
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-        qrConfig.setImg(img);
-        return generate(content, qrConfig, imageType);
-    }
-
-    /**
-     * 生成 Base64 编码格式的二维码，以 String 形式表示
-     *
-     * @param content   内容
-     * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
-     * @param imageType 图片类型(图片扩展名)
-     * @return 图片 Base64 编码字符串
-     */
-    public static String generate(String content, QrConfig qrConfig, String imageType) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        generate(content, qrConfig, imageType, bos);
-        byte[] encode = Base64.getEncoder().encode(bos.toByteArray());
-        return MessageFormat.format("data:image/{0};base64,{1}", imageType, new String(encode));
-    }
-
-    /**
-     * 生成PNG格式的二维码图片,以byte[]形式表示
-     *
-     * @param content 内容
-     * @param width   宽度
-     * @param height  高度
-     * @return 图片的byte[]
-     */
-    public static byte[] generatePng(String content, int width, int height) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        generate(content, width, height, FileType.TYPE_PNG, out);
-        return out.toByteArray();
-    }
-
-    /**
-     * 生成PNG格式的二维码图片,以byte[]形式表示
-     *
-     * @param content 内容
-     * @param config  二维码配置,包括长、宽、边距、颜色等
-     * @return 图片的byte[]
-     */
-    public static byte[] generatePng(String content, QrConfig config) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        generate(content, config, FileType.TYPE_PNG, out);
-        return out.toByteArray();
-    }
-
-    /**
      * 生成二维码到文件,二维码图片格式取决于文件的扩展名
      *
      * @param content    文本内容
@@ -147,8 +70,22 @@ public class QrCodeKit {
      * @return 目标文件
      */
     public static File generate(String content, int width, int height, File targetFile) {
-        final BufferedImage image = generate(content, width, height);
-        ImageKit.write(image, targetFile);
+        String extName = FileKit.getSuffix(targetFile);
+        switch (extName) {
+            case FileType.TYPE_SVG:
+                String svg = generateAsSvg(content, new QrConfig(width, height));
+                FileKit.writeString(svg, targetFile, Charset.UTF_8);
+                break;
+            case FileType.TYPE_TXT:
+                String txt = generateAsAsciiArt(content, new QrConfig(width, height));
+                FileKit.writeString(txt, targetFile, Charset.UTF_8);
+                break;
+            default:
+                final BufferedImage image = generate(content, width, height);
+                ImageKit.write(image, targetFile);
+                break;
+        }
+
         return targetFile;
     }
 
@@ -161,8 +98,21 @@ public class QrCodeKit {
      * @return 目标文件
      */
     public static File generate(String content, QrConfig config, File targetFile) {
-        final BufferedImage image = generate(content, config);
-        ImageKit.write(image, targetFile);
+        String extName = FileKit.getSuffix(targetFile);
+        switch (extName) {
+            case FileType.TYPE_SVG:
+                final String svg = generateAsSvg(content, config);
+                FileKit.writeString(svg, targetFile, Charset.UTF_8);
+                break;
+            case FileType.TYPE_TXT:
+                final String txt = generateAsAsciiArt(content, config);
+                FileKit.writeString(txt, targetFile, Charset.UTF_8);
+                break;
+            default:
+                final BufferedImage image = generate(content, config);
+                ImageKit.write(image, targetFile);
+                break;
+        }
         return targetFile;
     }
 
@@ -176,21 +126,45 @@ public class QrCodeKit {
      * @param out       目标流
      */
     public static void generate(String content, int width, int height, String imageType, OutputStream out) {
-        final BufferedImage image = generate(content, width, height);
-        ImageKit.write(image, imageType, out);
+        switch (imageType) {
+            case FileType.TYPE_SVG:
+                final String svg = generateAsSvg(content, new QrConfig(width, height));
+                IoKit.writeUtf8(out, false, svg);
+                break;
+            case FileType.TYPE_TXT:
+                final String txt = generateAsAsciiArt(content, new QrConfig(width, height));
+                IoKit.writeUtf8(out, false, txt);
+                break;
+            default:
+                final BufferedImage image = generate(content, width, height);
+                ImageKit.write(image, imageType, out);
+                break;
+        }
     }
 
     /**
      * 生成二维码到输出流
      *
      * @param content   文本内容
-     * @param config    二维码配置,包括长、宽、边距、颜色等
-     * @param imageType 图片类型(图片扩展名),见{@link ImageKit}
+     * @param config    二维码配置，包括长、宽、边距、颜色等
+     * @param imageType 类型（图片扩展名）
      * @param out       目标流
      */
     public static void generate(String content, QrConfig config, String imageType, OutputStream out) {
-        final BufferedImage image = generate(content, config);
-        ImageKit.write(image, imageType, out);
+        switch (imageType) {
+            case FileType.TYPE_SVG:
+                final String svg = generateAsSvg(content, config);
+                IoKit.writeUtf8(out, false, svg);
+                break;
+            case FileType.TYPE_TXT:
+                final String txt = generateAsAsciiArt(content, config);
+                IoKit.writeUtf8(out, false, txt);
+                break;
+            default:
+                final BufferedImage image = generate(content, config);
+                ImageKit.write(image, imageType, out);
+                break;
+        }
     }
 
     /**
@@ -266,6 +240,148 @@ public class QrCodeKit {
         return image;
     }
 
+
+    /**
+     * 生成代 logo 图片的 Base64 编码格式的二维码，以 String 形式表示
+     *
+     * @param content    内容
+     * @param qrConfig   二维码配置，包括长、宽、边距、颜色等
+     * @param imageType  图片类型(图片扩展名)
+     * @param logoBase64 logo 图片的 base64 编码
+     * @return 图片 Base64 编码字符串
+     */
+    public static String generateAsBase64(String content, QrConfig qrConfig, String imageType, String logoBase64) {
+        return generateAsBase64(content, qrConfig, imageType, Base64.decode(logoBase64));
+    }
+
+    /**
+     * 生成代 logo 图片的 Base64 编码格式的二维码，以 String 形式表示
+     *
+     * @param content   内容
+     * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
+     * @param imageType 类型（图片扩展名）
+     * @param logo      logo 图片的byte[]
+     * @return 图片 Base64 编码字符串
+     */
+    public static String generateAsBase64(String content, QrConfig qrConfig, String imageType, byte[] logo) {
+        return generateAsBase64(content, qrConfig, imageType, ImageKit.toImage(logo));
+    }
+
+    /**
+     * 生成代 logo 图片的 Base64 编码格式的二维码，以 String 形式表示
+     *
+     * @param content   内容
+     * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
+     * @param imageType 类型（图片扩展名）
+     * @param logo      logo 图片的byte[]
+     * @return 图片 Base64 编码字符串
+     */
+    public static String generateAsBase64(String content, QrConfig qrConfig, String imageType, Image logo) {
+        qrConfig.setImg(logo);
+        return generateAsBase64(content, qrConfig, imageType);
+    }
+
+    /**
+     * 生成 Base64 编码格式的二维码，以 String 形式表示
+     *
+     * <p>
+     * 输出格式为: data:image/[type];base64,[data]
+     * </p>
+     *
+     * @param content   内容
+     * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
+     * @param imageType 类型（图片扩展名）
+     * @return 图片 Base64 编码字符串
+     */
+    public static String generateAsBase64(String content, QrConfig qrConfig, String imageType) {
+        String result;
+        switch (imageType) {
+            case FileType.TYPE_SVG:
+                String svg = generateAsSvg(content, qrConfig);
+                result = UriKit.toURL("image/svg+xml", "base64", Base64.encode(svg));
+                break;
+            case FileType.TYPE_TXT:
+                String txt = generateAsAsciiArt(content, qrConfig);
+                result = UriKit.toURL("text/plain", "base64", Base64.encode(txt));
+                break;
+            default:
+                final BufferedImage img = generate(content, qrConfig);
+                result = ImageKit.toBase64Uri(img, imageType);
+                break;
+        }
+
+
+        return result;
+    }
+
+    /**
+     * 生成PNG格式的二维码图片，以byte[]形式表示
+     *
+     * @param content 内容
+     * @param width   宽度
+     * @param height  高度
+     * @return 图片的byte[]
+     */
+    public static byte[] generatePng(String content, int width, int height) {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        generate(content, width, height, FileType.TYPE_PNG, out);
+        return out.toByteArray();
+    }
+
+    /**
+     * 生成PNG格式的二维码图片,以byte[]形式表示
+     *
+     * @param content 内容
+     * @param config  二维码配置,包括长、宽、边距、颜色等
+     * @return 图片的byte[]
+     */
+    public static byte[] generatePng(String content, QrConfig config) {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        generate(content, config, FileType.TYPE_PNG, out);
+        return out.toByteArray();
+    }
+
+    /**
+     * @param content  内容
+     * @param qrConfig 二维码配置，包括长、宽、边距、颜色等
+     * @return SVG矢量图（字符串）
+     */
+    public static String generateAsSvg(String content, QrConfig qrConfig) {
+        return toSVG(encode(content, qrConfig), qrConfig.foreColor, qrConfig.backColor, qrConfig.img, qrConfig.getRatio());
+    }
+
+    /**
+     * 生成ASCII Art字符画形式的二维码
+     *
+     * @param content 内容
+     * @return ASCII Art字符画形式的二维码字符串
+     */
+    public static String generateAsAsciiArt(String content) {
+        return generateAsAsciiArt(content, 0, 0, 1);
+    }
+
+    /**
+     * 生成ASCII Art字符画形式的二维码
+     *
+     * @param content  内容
+     * @param qrConfig 二维码配置，仅长、宽、边距配置有效
+     * @return ASCII Art字符画形式的二维码
+     */
+    public static String generateAsAsciiArt(String content, QrConfig qrConfig) {
+        return toAsciiArt(encode(content, qrConfig), qrConfig);
+    }
+
+    /**
+     * @param content 内容
+     * @param width   宽
+     * @param height  长
+     * @return ASCII Art字符画形式的二维码
+     */
+    public static String generateAsAsciiArt(String content, int width, int height, int margin) {
+        QrConfig qrConfig = new QrConfig(width, height).setMargin(margin);
+        return generateAsAsciiArt(content, qrConfig);
+    }
+
     /**
      * 将文本内容编码为二维码
      *
@@ -337,7 +453,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 将二维码或条形码图片解码为文本
+     * 解码二维码或条形码图片为文本
      *
      * @param qrCodeFile 二维码文件
      * @return 解码文本
@@ -415,6 +531,123 @@ public class QrCodeKit {
             }
         }
         return image;
+    }
+
+    /**
+     * BitMatrix转SVG(字符串)
+     *
+     * @param matrix    二维的位矩阵
+     * @param foreColor 前景色
+     * @param backColor 背景色(null表示透明背景)
+     * @param ratio     二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * @return SVG矢量图（字符串）
+     */
+    public static String toSVG(BitMatrix matrix, int foreColor, Integer backColor, Image logoImg, int ratio) {
+        StringBuilder sb = new StringBuilder();
+        int qrWidth = matrix.getWidth();
+        int qrHeight = matrix.getHeight();
+        int moduleHeight = (qrHeight == 1) ? qrWidth / 2 : 1;
+        for (int y = 0; y < qrHeight; y++) {
+            for (int x = 0; x < qrWidth; x++) {
+                if (matrix.get(x, y)) {
+                    sb.append(" M" + x + "," + y + "h1v" + moduleHeight + "h-1z");
+                }
+            }
+        }
+        qrHeight *= moduleHeight;
+        String logoBase64 = "";
+        int logoWidth = 0;
+        int logoHeight = 0;
+        int logoX = 0;
+        int logoY = 0;
+        if (logoImg != null) {
+            logoBase64 = ImageKit.toBase64Uri(logoImg, "png");
+            // 按照最短的边做比例缩放
+            if (qrWidth < qrHeight) {
+                logoWidth = qrWidth / ratio;
+                logoHeight = logoImg.getHeight(null) * logoWidth / logoImg.getWidth(null);
+            } else {
+                logoHeight = qrHeight / ratio;
+                logoWidth = logoImg.getWidth(null) * logoHeight / logoImg.getHeight(null);
+            }
+            logoX = (qrWidth - logoWidth) / 2;
+            logoY = (qrHeight - logoHeight) / 2;
+
+        }
+
+        Color fore = new Color(foreColor, true);
+
+        StringBuilder result = StringKit.builder();
+        result.append("<svg width=\"" + qrWidth + "\" height=\"" + qrHeight + "\" \n");
+        if (backColor != null) {
+            Color back = new Color(backColor, true);
+            result.append("style=\"background-color:rgba(" + back.getRed() + "," + back.getGreen() + "," + back.getBlue() + "," + back.getAlpha() + ")\"\n");
+        }
+        result.append("viewBox=\"0 0 " + qrWidth + " " + qrHeight + "\" \n");
+        result.append("xmlns=\"http://www.w3.org/2000/svg\" \n");
+        result.append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" >\n");
+        result.append("<path d=\"" + sb + "\" stroke=\"rgba(" + fore.getRed() + "," + fore.getGreen() + "," + fore.getBlue() + "," + fore.getAlpha() + ")\" /> \n");
+        if (StringKit.isNotBlank(logoBase64)) {
+            result.append("<image xlink:href=\"" + logoBase64 + "\" height=\"" + logoHeight + "\" width=\"" + logoWidth + "\" y=\"" + logoY + "\" x=\"" + logoX + "\" />\n");
+        }
+        result.append("</svg>");
+        return result.toString();
+    }
+
+    /**
+     * BitMatrix转ASCII Art字符画形式的二维码
+     *
+     * @param bitMatrix
+     * @return ASCII Art字符画形式的二维码
+     */
+    public static String toAsciiArt(BitMatrix bitMatrix, QrConfig qrConfig) {
+        final int width = bitMatrix.getWidth();
+        final int height = bitMatrix.getHeight();
+
+
+        final AnsiElement foreground = qrConfig.foreColor == null ? null : Ansi8BitColor.foreground(rgbToAnsi8BitValue(qrConfig.foreColor));
+        final AnsiElement background = qrConfig.backColor == null ? null : Ansi8BitColor.background(rgbToAnsi8BitValue(qrConfig.backColor));
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i <= height; i += 2) {
+            StringBuilder rowBuilder = new StringBuilder();
+            for (int j = 0; j < width; j++) {
+                boolean tp = bitMatrix.get(i, j);
+                boolean bt = i + 1 >= height || bitMatrix.get(i + 1, j);
+                if (tp && bt) {
+                    rowBuilder.append(' ');//'\u0020'
+                } else if (tp) {
+                    rowBuilder.append('▄');//'\u2584'
+                } else if (bt) {
+                    rowBuilder.append('▀');//'\u2580'
+                } else {
+                    rowBuilder.append('█');//'\u2588'
+                }
+            }
+            builder.append(AnsiEncoder.encode(foreground, background, rowBuilder)).append('\n');
+        }
+        return builder.toString();
+    }
+
+    /**
+     * rgb转Ansi8Bit值
+     *
+     * @param rgb rgb颜色值
+     * @return Ansi8bit颜色值
+     */
+    private static int rgbToAnsi8BitValue(int rgb) {
+        final int r = (rgb >> 16) & 0xff;
+        final int g = (rgb >> 8) & 0xff;
+        final int b = (rgb) & 0xff;
+
+        final int l;
+        if (r == g && g == b) {
+            final int i = (int) (MathKit.div(MathKit.mul(r - 10.625, 23), (255 - 10.625), 0));
+            l = i >= 0 ? 232 + i : 0;
+        } else {
+            l = 16 + (int) (36 * MathKit.div(MathKit.mul(r, 5), 255, 0)) + (int) (6.0 * (g / 256.0 * 6.0)) + (int) (b / 256.0 * 6.0);
+        }
+        return l;
     }
 
 
