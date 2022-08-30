@@ -41,7 +41,6 @@ import org.w3c.dom.NodeList;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * {@link Iterable} 和 {@link Iterator} 相关工具类
@@ -796,7 +795,7 @@ public class IterKit {
      * @param filter 过滤器，保留{@link Filter#accept(Object)}为{@code true}的元素
      * @return the list
      */
-    public static <E> List<E> filterToList(Iterator<E> iter, Predicate<E> filter) {
+    public static <E> List<E> filterToList(Iterator<E> iter, Filter<E> filter) {
         return toList(filtered(iter, filter));
     }
 
@@ -808,7 +807,7 @@ public class IterKit {
      * @param <E>      元素类型
      * @return {@link FilterIterator}
      */
-    public static <E> FilterIterator<E> filtered(final Iterator<? extends E> iterator, final Predicate<? super E> filter) {
+    public static <E> FilterIterator<E> filtered(final Iterator<? extends E> iterator, final Filter<? super E> filter) {
         return new FilterIterator<>(iterator, filter);
     }
 

@@ -49,7 +49,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -4024,7 +4023,7 @@ public class FileKit {
      * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
      * @return 资源列表
      */
-    public static List<URL> getResources(String resource, Predicate<URL> filter) {
+    public static List<URL> getResources(String resource, Filter<URL> filter) {
         return IterKit.filterToList(getResourceIter(resource), filter);
     }
 
