@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -136,7 +136,7 @@ public class StreamKit {
             }
             return sb.toString();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(reader);
         }
@@ -280,7 +280,7 @@ public class StreamKit {
         try {
             return read(reader).toString();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(reader);
         }
@@ -297,7 +297,7 @@ public class StreamKit {
         try {
             bytes = read(ins);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             StreamKit.safeClose(ins);
         }
@@ -317,7 +317,7 @@ public class StreamKit {
         try {
             return read(reader, sb);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(reader);
         }
@@ -335,7 +335,7 @@ public class StreamKit {
         try {
             write(writer, cs);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(writer);
         }
@@ -354,7 +354,7 @@ public class StreamKit {
         try {
             return write(ops, ins);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(ops);
             safeClose(ins);
@@ -374,7 +374,7 @@ public class StreamKit {
         try {
             return write(writer, reader);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(writer);
             safeClose(reader);
@@ -393,7 +393,7 @@ public class StreamKit {
         try {
             write(ops, bytes);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(ops);
         }
@@ -403,7 +403,7 @@ public class StreamKit {
         try {
             return write(ops, ins, buf);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(ops);
             safeClose(ins);
@@ -540,7 +540,7 @@ public class StreamKit {
             }
             return pis;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -554,7 +554,7 @@ public class StreamKit {
         try {
             return buff(new FileOutputStream(file));
         } catch (FileNotFoundException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -568,7 +568,7 @@ public class StreamKit {
             fw = new FileWriter(f, true);
             fw.write(text);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             safeClose(fw);
         }
@@ -801,7 +801,7 @@ public class StreamKit {
         try {
             return Files.lines(path, charset);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

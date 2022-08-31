@@ -30,7 +30,7 @@ import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.convert.ConverterRegistry;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 
 import java.lang.System;
@@ -1381,7 +1381,7 @@ public class CollKit {
             try {
                 list = (Collection<T>) ReflectKit.newInstance(collectionType);
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         return list;
@@ -2809,7 +2809,7 @@ public class CollKit {
                     }
                 }
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
             return ret;
         });
@@ -2837,7 +2837,7 @@ public class CollKit {
                     }
                 }
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
             return ret;
         });

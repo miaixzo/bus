@@ -25,18 +25,25 @@
  ********************************************************************************/
 package org.aoju.bus.base.service;
 
+import lombok.NoArgsConstructor;
 import org.aoju.bus.core.toolkit.RuntimeKit;
 import org.aoju.bus.logger.Logger;
 
 /**
  * 异常信息处理
  * 此类未找到实现的情况下，采用默认实现
- * 可以根据不同业务需求，实现对应逻辑即可
+ * 可以根据不同业务需求，继承此类实现对应业务逻辑即可
+ * 项目中可通过SPI自定义接入
+ * 例：META-INF/services/org.aoju.bus.base.service.ErrorService
+ * <code>
+ * org.aoju.bus.xxx.ErrorService
+ * </code>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ErrorService {
+@NoArgsConstructor
+public class ErrorService {
 
     /**
      * 完成请求处理前调用
@@ -44,7 +51,7 @@ public interface ErrorService {
      * @param ex 对象参数
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
-    default boolean before(Exception ex) {
+    public boolean before(Exception ex) {
         Logger.error(RuntimeKit.getStackTrace(ex));
         return true;
     }
@@ -55,7 +62,7 @@ public interface ErrorService {
      * @param ex 对象参数
      * @return 如果执行链应该继续执行, 则为:true 否则:false
      */
-    default boolean after(Exception ex) {
+    public boolean after(Exception ex) {
         return true;
     }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.provider.base;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.builder.*;
 import org.aoju.bus.mapper.entity.EntityColumn;
@@ -151,7 +151,7 @@ public class BaseInsertProvider extends MapperTemplate {
                     if (column.getGenerator() != null && "JDBC".equals(column.getGenerator())) {
                         continue;
                     }
-                    throw new InstrumentException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
+                    throw new InternalException(ms.getId() + "对应的实体类" + entityClass.getCanonicalName() + "中包含多个MySql的自动增长列,最多只能有一个!");
                 }
                 // 插入selectKey
                 SelectKeyBuilder.newSelectKeyMappedStatement(ms, column, entityClass, isBEFORE(), getIDENTITY(column));

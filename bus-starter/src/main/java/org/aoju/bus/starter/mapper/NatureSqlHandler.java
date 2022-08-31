@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -134,7 +134,7 @@ public class NatureSqlHandler extends AbstractSqlParserHandler implements Interc
             }
             getSql(ms.getConfiguration(), ms.getBoundSql(parameter), ms.getId(), end - start);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return returnValue;
     }

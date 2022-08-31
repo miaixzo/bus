@@ -26,7 +26,7 @@
 package org.aoju.bus.http.secure;
 
 import org.aoju.bus.core.builder.Builder;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -76,9 +76,9 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      *
      * @param protocol SSL协议，例如TLS等
      * @return {@link SSLContext}
-     * @throws InstrumentException 包装 GeneralSecurityException异常
+     * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(String protocol) throws InstrumentException {
+    public static SSLContext createSSLContext(String protocol) throws InternalException {
         return create().setProtocol(protocol).build();
     }
 
@@ -89,10 +89,10 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @param keyManager   密钥管理器,{@code null}表示无
      * @param trustManager 信任管理器, {@code null}表示无
      * @return {@link SSLContext}
-     * @throws InstrumentException 包装 GeneralSecurityException异常
+     * @throws InternalException 包装 GeneralSecurityException异常
      */
     public static SSLContext createSSLContext(String protocol, KeyManager keyManager, TrustManager trustManager)
-            throws InstrumentException {
+            throws InternalException {
         return createSSLContext(protocol,
                 keyManager == null ? null : new KeyManager[]{keyManager},
                 trustManager == null ? null : new TrustManager[]{trustManager});
@@ -105,9 +105,9 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @param keyManagers   密钥管理器,{@code null}表示无
      * @param trustManagers 信任管理器, {@code null}表示无
      * @return {@link SSLContext}
-     * @throws InstrumentException 包装 GeneralSecurityException异常
+     * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(String protocol, KeyManager[] keyManagers, TrustManager[] trustManagers) throws InstrumentException {
+    public static SSLContext createSSLContext(String protocol, KeyManager[] keyManagers, TrustManager[] trustManagers) throws InternalException {
         return SSLContextBuilder.create()
                 .setProtocol(protocol)
                 .setKeyManagers(keyManagers)
@@ -193,13 +193,13 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * 构建{@link SSLContext}
      *
      * @return {@link SSLContext}
-     * @throws InstrumentException 包装 GeneralSecurityException异常
+     * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public SSLContext buildQuietly() throws InstrumentException {
+    public SSLContext buildQuietly() throws InternalException {
         try {
             return buildChecked();
         } catch (GeneralSecurityException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

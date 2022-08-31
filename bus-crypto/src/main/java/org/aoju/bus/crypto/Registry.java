@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.crypto.provider.*;
@@ -64,11 +64,11 @@ public final class Registry {
      */
     public static void register(String name, Provider object) {
         if (ALGORITHM_CACHE.containsKey(name)) {
-            throw new InstrumentException("Repeat registration of components with the same name：" + name);
+            throw new InternalException("Repeat registration of components with the same name：" + name);
         }
         Class<?> clazz = object.getClass();
         if (ALGORITHM_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new InstrumentException("Repeat registration of components with the same name：" + clazz);
+            throw new InternalException("Repeat registration of components with the same name：" + clazz);
         }
         ALGORITHM_CACHE.putIfAbsent(name, object);
     }

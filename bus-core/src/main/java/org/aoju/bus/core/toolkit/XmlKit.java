@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,10 +77,10 @@ public class XmlKit {
     public static Document readXML(File file) {
         Assert.notNull(file, "Xml file is null !");
         if (false == file.exists()) {
-            throw new InstrumentException("File [{}] not a exist!", file.getAbsolutePath());
+            throw new InternalException("File [{}] not a exist!", file.getAbsolutePath());
         }
         if (false == file.isFile()) {
-            throw new InstrumentException("[{}] not a file!", file.getAbsolutePath());
+            throw new InternalException("[{}] not a file!", file.getAbsolutePath());
         }
 
         try {
@@ -146,7 +146,7 @@ public class XmlKit {
         try {
             return builder.parse(source);
         } catch (Exception e) {
-            throw new InstrumentException("Parse XML from stream error!");
+            throw new InternalException("Parse XML from stream error!");
         }
     }
 
@@ -226,7 +226,7 @@ public class XmlKit {
             reader.setContentHandler(contentHandler);
             reader.parse(source);
         } catch (IOException | ParserConfigurationException | SAXException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -374,7 +374,7 @@ public class XmlKit {
         try {
             write(doc, writer, charset, isPretty ? 2 : 0, omitXmlDeclaration);
         } catch (Exception e) {
-            throw new InstrumentException("Trans xml document to string error!");
+            throw new InternalException("Trans xml document to string error!");
         }
         return writer.toString();
     }
@@ -522,7 +522,7 @@ public class XmlKit {
             }
             xformer.transform(source, result);
         } catch (Exception e) {
-            throw new InstrumentException("Trans xml document to string error!");
+            throw new InternalException("Trans xml document to string error!");
         }
     }
 
@@ -682,7 +682,7 @@ public class XmlKit {
                 return xPath.evaluate(expression, source, returnType);
             }
         } catch (XPathExpressionException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -918,7 +918,7 @@ public class XmlKit {
         try {
             builder = dbf.newDocumentBuilder();
         } catch (Exception e) {
-            throw new InstrumentException("Create xml document error!");
+            throw new InternalException("Create xml document error!");
         }
         return builder;
     }

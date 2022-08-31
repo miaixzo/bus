@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.reflect;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -96,7 +96,7 @@ public class MethodHandle {
             } catch (NoSuchMethodException ignore) {
                 //ignore
             } catch (IllegalAccessException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
 
@@ -128,7 +128,7 @@ public class MethodHandle {
         } catch (NoSuchMethodException e) {
             return null;
         } catch (IllegalAccessException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -160,7 +160,7 @@ public class MethodHandle {
 
         final Method method = ReflectKit.getMethodOfObject(object, methodName, args);
         if (null == method) {
-            throw new InstrumentException("No such method: [{}] from [{}]", methodName, object.getClass());
+            throw new InternalException("No such method: [{}] from [{}]", methodName, object.getClass());
         }
         return invokeSpecial(object, method, args);
     }
@@ -239,7 +239,7 @@ public class MethodHandle {
             }
             return (T) handle.invokeWithArguments(args);
         } catch (Throwable e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

@@ -26,7 +26,7 @@
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -255,7 +255,7 @@ public class Platform {
         try {
             return System.getProperty(name);
         } catch (SecurityException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

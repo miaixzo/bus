@@ -26,7 +26,7 @@
 package org.aoju.bus.extra.ssh;
 
 import com.jcraft.jsch.*;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -125,7 +125,7 @@ public class JSchKit {
         try {
             session.connect(timeout);
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return session;
     }
@@ -160,7 +160,7 @@ public class JSchKit {
         try {
             session.connect(timeOut);
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return session;
     }
@@ -202,7 +202,7 @@ public class JSchKit {
         try {
             jsch.addIdentity(privateKeyPath, passphrase);
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         return createSession(jsch, sshHost, sshPort, sshUser);
@@ -234,7 +234,7 @@ public class JSchKit {
         try {
             session = jsch.getSession(sshUser, sshHost, sshPort);
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         // 设置第一次登录的时候提示，可选值：(ask | yes | no)
@@ -251,9 +251,9 @@ public class JSchKit {
      * @param remotePort 远程端口
      * @param localPort  本地端口
      * @return 成功与否
-     * @throws InstrumentException 端口绑定失败异常
+     * @throws InternalException 端口绑定失败异常
      */
-    public static boolean bindPort(Session session, String remoteHost, int remotePort, int localPort) throws InstrumentException {
+    public static boolean bindPort(Session session, String remoteHost, int remotePort, int localPort) throws InternalException {
         return bindPort(session, remoteHost, remotePort, "127.0.0.1", localPort);
     }
 
@@ -266,14 +266,14 @@ public class JSchKit {
      * @param localHost  本地主机
      * @param localPort  本地端口
      * @return 成功与否
-     * @throws InstrumentException 端口绑定失败异常
+     * @throws InternalException 端口绑定失败异常
      */
-    public static boolean bindPort(Session session, String remoteHost, int remotePort, String localHost, int localPort) throws InstrumentException {
+    public static boolean bindPort(Session session, String remoteHost, int remotePort, String localHost, int localPort) throws InternalException {
         if (session != null && session.isConnected()) {
             try {
                 session.setPortForwardingL(localHost, localPort, remoteHost, remotePort);
             } catch (JSchException e) {
-                throw new InstrumentException("From [{}:{}] mapping to [{}:{}] error ！", remoteHost, remotePort, localHost, localPort);
+                throw new InternalException("From [{}:{}] mapping to [{}:{}] error ！", remoteHost, remotePort, localHost, localPort);
             }
             return true;
         }
@@ -288,14 +288,14 @@ public class JSchKit {
      * @param host     转发到的host
      * @param port     host上的端口
      * @return 成功与否
-     * @throws InstrumentException 端口绑定失败异常
+     * @throws InternalException 端口绑定失败异常
      */
-    public static boolean bindPort(Session session, int bindPort, String host, int port) throws InstrumentException {
+    public static boolean bindPort(Session session, int bindPort, String host, int port) throws InternalException {
         if (null != session && session.isConnected()) {
             try {
                 session.setPortForwardingR(bindPort, host, port);
             } catch (JSchException e) {
-                throw new InstrumentException("From [{}] mapping to [{}] error！", bindPort, port);
+                throw new InternalException("From [{}] mapping to [{}] error！", bindPort, port);
             }
             return true;
         }
@@ -314,7 +314,7 @@ public class JSchKit {
             session.delPortForwardingL(localPort);
             return true;
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -325,12 +325,12 @@ public class JSchKit {
      * @param remoteHost 远程主机
      * @param remotePort 远程端口
      * @return 映射后的本地端口
-     * @throws InstrumentException 连接异常
+     * @throws InternalException 连接异常
      */
-    public static int openAndBindPortToLocal(Connector sshConn, String remoteHost, int remotePort) throws InstrumentException {
+    public static int openAndBindPortToLocal(Connector sshConn, String remoteHost, int remotePort) throws InternalException {
         final Session session = openSession(sshConn.getHost(), sshConn.getPort(), sshConn.getUser(), sshConn.getPassword());
         if (null == session) {
-            throw new InstrumentException("Error to create SSH Session！");
+            throw new InternalException("Error to create SSH Session！");
         }
         final int localPort = generateLocalPort();
         bindPort(session, remoteHost, remotePort, localPort);
@@ -380,7 +380,7 @@ public class JSchKit {
         try {
             channel.connect();
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return channel;
     }
@@ -398,7 +398,7 @@ public class JSchKit {
         try {
             channel.connect(Math.max(timeout, 0));
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return channel;
     }
@@ -441,7 +441,7 @@ public class JSchKit {
             }
             channel = session.openChannel(channelType.getValue());
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return channel;
     }
@@ -482,9 +482,9 @@ public class JSchKit {
             in = channel.getInputStream();
             return IoKit.read(in, charset);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } catch (JSchException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(in);
             close(channel);
@@ -514,7 +514,7 @@ public class JSchKit {
 
             return IoKit.read(in, charset);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(out);
             IoKit.close(in);

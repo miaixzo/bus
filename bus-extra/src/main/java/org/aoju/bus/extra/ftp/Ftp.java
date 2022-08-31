@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.ftp;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
@@ -232,7 +232,7 @@ public class Ftp extends AbstractFtp {
             // 登录ftp服务器
             client.login(config.getUser(), config.getPassword());
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         final int replyCode = client.getReplyCode(); // 是否成功登录服务器
         if (false == FTPReply.isPositiveCompletion(replyCode)) {
@@ -241,7 +241,7 @@ public class Ftp extends AbstractFtp {
             } catch (IOException e) {
                 // ignore
             }
-            throw new InstrumentException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
+            throw new InternalException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
         }
         this.client = client;
         if (null != mode) {
@@ -299,7 +299,7 @@ public class Ftp extends AbstractFtp {
         String pwd = null;
         try {
             pwd = pwd();
-        } catch (InstrumentException fex) {
+        } catch (InternalException fex) {
             // ignore
         }
 
@@ -324,7 +324,7 @@ public class Ftp extends AbstractFtp {
         try {
             return client.changeWorkingDirectory(directory);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -338,7 +338,7 @@ public class Ftp extends AbstractFtp {
         try {
             return client.printWorkingDirectory();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -380,15 +380,15 @@ public class Ftp extends AbstractFtp {
      *
      * @param path 目录，如果目录不存在，抛出异常
      * @return 文件或目录列表
-     * @throws InstrumentException 路径不存在
-     * @throws InstrumentException IO异常
+     * @throws InternalException 路径不存在
+     * @throws InternalException IO异常
      */
-    public FTPFile[] lsFiles(String path) throws InstrumentException {
+    public FTPFile[] lsFiles(String path) throws InternalException {
         String pwd = null;
         if (StringKit.isNotBlank(path)) {
             pwd = pwd();
             if (false == isDir(path)) {
-                throw new InstrumentException("Change dir to [{}] error, maybe path not exist!", path);
+                throw new InternalException("Change dir to [{}] error, maybe path not exist!", path);
             }
         }
 
@@ -396,7 +396,7 @@ public class Ftp extends AbstractFtp {
         try {
             ftpFiles = this.client.listFiles();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             cd(pwd);
         }
@@ -409,7 +409,7 @@ public class Ftp extends AbstractFtp {
         try {
             return this.client.makeDirectory(dir);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -424,7 +424,7 @@ public class Ftp extends AbstractFtp {
         try {
             ftpFileArr = client.listFiles(path);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return ArrayKit.isNotEmpty(ftpFileArr);
     }
@@ -439,7 +439,7 @@ public class Ftp extends AbstractFtp {
         try {
             return this.client.stat(path);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -449,14 +449,14 @@ public class Ftp extends AbstractFtp {
         final String fileName = FileKit.getName(path);
         final String dir = StringKit.removeSuffix(path, fileName);
         if (false == cd(dir)) {
-            throw new InstrumentException("Change dir to [{}] error, maybe dir not exist!");
+            throw new InternalException("Change dir to [{}] error, maybe dir not exist!");
         }
 
         boolean isSuccess;
         try {
             isSuccess = client.deleteFile(fileName);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             cd(pwd);
         }
@@ -469,7 +469,7 @@ public class Ftp extends AbstractFtp {
         try {
             dirs = client.listFiles(dirPath);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         String name;
         String childPath;
@@ -491,7 +491,7 @@ public class Ftp extends AbstractFtp {
         try {
             return this.client.removeDirectory(dirPath);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -532,7 +532,7 @@ public class Ftp extends AbstractFtp {
         try (InputStream in = FileKit.getInputStream(file)) {
             return upload(dest, fileName, in);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -554,7 +554,7 @@ public class Ftp extends AbstractFtp {
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         String pwd = null;
@@ -565,14 +565,14 @@ public class Ftp extends AbstractFtp {
         if (StringKit.isNotBlank(dest)) {
             mkDirs(dest);
             if (false == cd(dest)) {
-                throw new InstrumentException("Change dir to [{}] error, maybe dir not exist!");
+                throw new InternalException("Change dir to [{}] error, maybe dir not exist!");
             }
         }
 
         try {
             return client.storeFile(fileName, fileStream);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (this.backToPwd) {
                 cd(pwd);
@@ -610,7 +610,7 @@ public class Ftp extends AbstractFtp {
         try (OutputStream out = FileKit.getOutputStream(outFile)) {
             download(path, fileName, out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -640,7 +640,7 @@ public class Ftp extends AbstractFtp {
         }
 
         if (false == cd(path)) {
-            throw new InstrumentException("Change dir to [{}] error, maybe dir not exist!");
+            throw new InternalException("Change dir to [{}] error, maybe dir not exist!");
         }
 
         if (null != charset) {
@@ -650,7 +650,7 @@ public class Ftp extends AbstractFtp {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
             client.retrieveFile(fileName, out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (backToPwd) {
                 cd(pwd);

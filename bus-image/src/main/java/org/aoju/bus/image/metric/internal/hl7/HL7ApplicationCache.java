@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.galaxy.ConfigurationCache;
 
 /**
@@ -41,15 +41,15 @@ public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL
 
     @Override
     protected HL7Application find(HL7Configuration conf, String name)
-            throws InstrumentException {
+            throws InternalException {
         return conf.findHL7Application(name);
     }
 
     public HL7Application findHL7Application(String name)
-            throws InstrumentException {
+            throws InternalException {
         HL7Application ae = get(name);
         if (null == ae)
-            throw new InstrumentException("Unknown HL7 Application: " + name);
+            throw new InternalException("Unknown HL7 Application: " + name);
         return ae;
     }
 

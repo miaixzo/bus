@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.thread;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.util.LinkedHashSet;
@@ -151,7 +151,7 @@ public class SyncFinisher {
             try {
                 this.endLatch.await();
             } catch (InterruptedException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -202,7 +202,7 @@ public class SyncFinisher {
                 try {
                     beginLatch.await();
                 } catch (InterruptedException e) {
-                    throw new InstrumentException(e);
+                    throw new InternalException(e);
                 }
             }
             try {

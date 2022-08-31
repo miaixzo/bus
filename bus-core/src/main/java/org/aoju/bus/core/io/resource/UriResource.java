@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -100,7 +100,7 @@ public class UriResource implements Resource {
     @Override
     public InputStream getStream() {
         if (null == this.url) {
-            throw new InstrumentException("Resource URL is null!");
+            throw new InternalException("Resource URL is null!");
         }
         return UriKit.getStream(url);
     }

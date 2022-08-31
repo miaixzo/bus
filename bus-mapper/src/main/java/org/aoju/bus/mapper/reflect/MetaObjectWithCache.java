@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.reflect;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.ReflectorFactory;
@@ -50,7 +50,7 @@ public class MetaObjectWithCache {
         try {
             return MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

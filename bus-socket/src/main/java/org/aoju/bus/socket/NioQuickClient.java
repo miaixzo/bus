@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.socket.handler.ChannelSocketHandler;
@@ -91,7 +91,7 @@ public class NioQuickClient implements Closeable {
             while (false == channel.finishConnect()) {
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -148,7 +148,7 @@ public class NioQuickClient implements Closeable {
             try {
                 handler.handle(socketChannel);
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -164,7 +164,7 @@ public class NioQuickClient implements Closeable {
         try {
             this.channel.write(datas);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }

@@ -31,7 +31,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.ArrayKit;
 
@@ -114,7 +114,7 @@ public class Pinyin4JProvider extends AbstractPinyinProvider {
                 }
             }
         } catch (BadHanyuPinyinOutputFormatCombination e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return result.toString();
     }

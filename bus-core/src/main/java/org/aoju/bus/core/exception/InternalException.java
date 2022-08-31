@@ -31,35 +31,35 @@ package org.aoju.bus.core.exception;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class InstrumentException extends UncheckedException {
+public class InternalException extends UncheckedException {
 
     private static final long serialVersionUID = 1L;
 
-    public InstrumentException() {
+    public InternalException() {
         super();
     }
 
-    public InstrumentException(Throwable cause) {
+    public InternalException(Throwable cause) {
         super(cause);
     }
 
-    public InstrumentException(String format, Object... args) {
+    public InternalException(String format, Object... args) {
         super(format, args);
     }
 
-    public InstrumentException(String message) {
+    public InternalException(String message) {
         super(message);
     }
 
-    public InstrumentException(String message, Throwable cause) {
+    public InternalException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InstrumentException(String errcode, String errmsg) {
+    public InternalException(String errcode, String errmsg) {
         super(errcode, errmsg);
     }
 
-    public InstrumentException(Throwable cause, String format, Object... args) {
+    public InternalException(Throwable cause, String format, Object... args) {
         super(String.format(format, args), cause);
     }
 

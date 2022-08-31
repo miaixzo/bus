@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.LineIterator;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.LifeCycle;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.Progress;
@@ -156,9 +156,9 @@ public class IoKit {
      * @param reader Reader
      * @param writer Writer
      * @return 拷贝的字节数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long copy(Reader reader, Writer writer) throws InstrumentException {
+    public static long copy(Reader reader, Writer writer) throws InternalException {
         return copy(reader, writer, DEFAULT_BUFFER_SIZE);
     }
 
@@ -169,9 +169,9 @@ public class IoKit {
      * @param writer     Writer
      * @param bufferSize 缓存大小
      * @return 传输的byte数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize) throws InstrumentException {
+    public static long copy(Reader reader, Writer writer, int bufferSize) throws InternalException {
         return copy(reader, writer, bufferSize, null);
     }
 
@@ -183,9 +183,9 @@ public class IoKit {
      * @param bufferSize 缓存大小
      * @param progress   进度处理器
      * @return 传输的byte数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, Progress progress) throws InstrumentException {
+    public static long copy(Reader reader, Writer writer, int bufferSize, Progress progress) throws InternalException {
         return copy(reader, writer, bufferSize, -1, progress);
     }
 
@@ -198,9 +198,9 @@ public class IoKit {
      * @param count      最大长度
      * @param progress   进度处理器
      * @return 传输的byte数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(Reader reader, Writer writer, int bufferSize, long count, Progress progress) throws InstrumentException {
+    public static long copy(Reader reader, Writer writer, int bufferSize, long count, Progress progress) throws InternalException {
         return new ReaderWriterCopier(bufferSize, count, progress).copy(reader, writer);
     }
 
@@ -210,9 +210,9 @@ public class IoKit {
      * @param in  输入流
      * @param out 输出流
      * @return 传输的byte数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long copy(InputStream in, OutputStream out) throws InstrumentException {
+    public static long copy(InputStream in, OutputStream out) throws InternalException {
         return copy(in, out, DEFAULT_BUFFER_SIZE);
     }
 
@@ -223,9 +223,9 @@ public class IoKit {
      * @param out        输出流
      * @param bufferSize 缓存大小
      * @return 传输的byte数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize) throws InstrumentException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize) throws InternalException {
         return copy(in, out, bufferSize, null);
     }
 
@@ -237,9 +237,9 @@ public class IoKit {
      * @param bufferSize 缓存大小
      * @param progress   进度条
      * @return 传输的byte数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, Progress progress) throws InstrumentException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize, Progress progress) throws InternalException {
         return copy(in, out, bufferSize, -1, progress);
     }
 
@@ -252,9 +252,9 @@ public class IoKit {
      * @param count      总拷贝长度
      * @param progress   进度条
      * @return 传输的byte数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, int count, Progress progress) throws InstrumentException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize, int count, Progress progress) throws InternalException {
         return new StreamCopier(bufferSize, count, progress).copy(in, out);
     }
 
@@ -264,16 +264,16 @@ public class IoKit {
      * @param inChannel  {@link FileChannel}
      * @param outChannel {@link FileChannel}
      * @return 拷贝的字节数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(FileChannel inChannel, FileChannel outChannel) throws InstrumentException {
+    public static long copy(FileChannel inChannel, FileChannel outChannel) throws InternalException {
         Assert.notNull(inChannel, "In channel is null!");
         Assert.notNull(outChannel, "Out channel is null!");
 
         try {
             return copySafely(inChannel, outChannel);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -320,9 +320,9 @@ public class IoKit {
      * @param count      最大长度
      * @param progress   进度条
      * @return 传输的byte数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(InputStream in, OutputStream out, int bufferSize, long count, Progress progress) throws InstrumentException {
+    public static long copy(InputStream in, OutputStream out, int bufferSize, long count, Progress progress) throws InternalException {
         return copy(Channels.newChannel(in), Channels.newChannel(out), bufferSize, count, progress);
     }
 
@@ -332,9 +332,9 @@ public class IoKit {
      * @param in  {@link ReadableByteChannel}
      * @param out {@link WritableByteChannel}
      * @return 拷贝的字节数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out) throws InstrumentException {
+    public static long copy(ReadableByteChannel in, WritableByteChannel out) throws InternalException {
         return copy(in, out, DEFAULT_BUFFER_SIZE);
     }
 
@@ -345,9 +345,9 @@ public class IoKit {
      * @param out        {@link WritableByteChannel}
      * @param bufferSize 缓冲大小，如果小于等于0，使用默认
      * @return 拷贝的字节数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize) throws InstrumentException {
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize) throws InternalException {
         return copy(in, out, bufferSize, null);
     }
 
@@ -359,9 +359,9 @@ public class IoKit {
      * @param bufferSize 缓冲大小，如果小于等于0，使用默认
      * @param progress   {@link Progress}进度处理器
      * @return 拷贝的字节数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, Progress progress) throws InstrumentException {
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, Progress progress) throws InternalException {
         return copy(in, out, bufferSize, -1, progress);
     }
 
@@ -374,9 +374,9 @@ public class IoKit {
      * @param count      读取总长度
      * @param progress   {@link Progress}进度处理器
      * @return 拷贝的字节数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, long count, Progress progress) throws InstrumentException {
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize, long count, Progress progress) throws InternalException {
         return new ChannelCopier(bufferSize, count, progress).copy(in, out);
     }
 
@@ -496,9 +496,9 @@ public class IoKit {
      * @param in          输入流
      * @param charsetName 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String read(InputStream in, String charsetName) throws InstrumentException {
+    public static String read(InputStream in, String charsetName) throws InternalException {
         FastByteOutputStream out = read(in);
         return StringKit.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
     }
@@ -509,9 +509,9 @@ public class IoKit {
      * @param in      输入流,读取完毕后并不关闭流
      * @param charset 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String read(InputStream in, java.nio.charset.Charset charset) throws InstrumentException {
+    public static String read(InputStream in, java.nio.charset.Charset charset) throws InternalException {
         FastByteOutputStream out = read(in);
         return null == charset ? out.toString() : out.toString(charset);
     }
@@ -521,9 +521,9 @@ public class IoKit {
      *
      * @param in 输入流
      * @return 输出流
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static FastByteOutputStream read(InputStream in) throws InstrumentException {
+    public static FastByteOutputStream read(InputStream in) throws InternalException {
         return read(in, true);
     }
 
@@ -533,16 +533,16 @@ public class IoKit {
      * @param in      输入流
      * @param isClose 读取完毕后是否关闭流
      * @return 输出流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static FastByteOutputStream read(InputStream in, boolean isClose) throws InstrumentException {
+    public static FastByteOutputStream read(InputStream in, boolean isClose) throws InternalException {
         final FastByteOutputStream out;
         if (in instanceof FileInputStream) {
             // 文件流的长度是可预见的，此时直接读取效率更高
             try {
                 out = new FastByteOutputStream(in.available());
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         } else {
             out = new FastByteOutputStream();
@@ -562,9 +562,9 @@ public class IoKit {
      *
      * @param reader Reader
      * @return String
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String read(Reader reader) throws InstrumentException {
+    public static String read(Reader reader) throws InternalException {
         return read(reader, true);
     }
 
@@ -574,9 +574,9 @@ public class IoKit {
      * @param reader  {@link Reader}
      * @param isClose 是否关闭{@link Reader}
      * @return String
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static String read(Reader reader, boolean isClose) throws InstrumentException {
+    public static String read(Reader reader, boolean isClose) throws InternalException {
         final StringBuilder builder = StringKit.builder();
         final CharBuffer buffer = CharBuffer.allocate(DEFAULT_BUFFER_SIZE);
         try {
@@ -584,7 +584,7 @@ public class IoKit {
                 builder.append(buffer.flip());
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (isClose) {
                 IoKit.close(reader);
@@ -598,9 +598,9 @@ public class IoKit {
      *
      * @param fileChannel 文件管道
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String read(FileChannel fileChannel) throws InstrumentException {
+    public static String read(FileChannel fileChannel) throws InternalException {
         return read(fileChannel, Charset.UTF_8);
     }
 
@@ -610,9 +610,9 @@ public class IoKit {
      * @param fileChannel 文件管道
      * @param charsetName 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String read(FileChannel fileChannel, String charsetName) throws InstrumentException {
+    public static String read(FileChannel fileChannel, String charsetName) throws InternalException {
         return read(fileChannel, Charset.charset(charsetName));
     }
 
@@ -622,14 +622,14 @@ public class IoKit {
      * @param fileChannel 文件管道
      * @param charset     字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String read(FileChannel fileChannel, java.nio.charset.Charset charset) throws InstrumentException {
+    public static String read(FileChannel fileChannel, java.nio.charset.Charset charset) throws InternalException {
         MappedByteBuffer buffer;
         try {
             buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size()).load();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return StringKit.toString(buffer, charset);
     }
@@ -640,9 +640,9 @@ public class IoKit {
      * @param channel 可读通道，读取完毕后并不关闭通道
      * @param charset 字符集
      * @return 内容
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static String read(ReadableByteChannel channel, java.nio.charset.Charset charset) throws InstrumentException {
+    public static String read(ReadableByteChannel channel, java.nio.charset.Charset charset) throws InternalException {
         FastByteOutputStream out = read(channel);
         return null == charset ? out.toString() : out.toString(charset);
     }
@@ -652,9 +652,9 @@ public class IoKit {
      *
      * @param channel 可读通道，读取完毕后并不关闭通道
      * @return 输出流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static FastByteOutputStream read(ReadableByteChannel channel) throws InstrumentException {
+    public static FastByteOutputStream read(ReadableByteChannel channel) throws InternalException {
         final FastByteOutputStream out = new FastByteOutputStream();
         copy(channel, Channels.newChannel(out));
         return out;
@@ -665,9 +665,9 @@ public class IoKit {
      *
      * @param in {@link InputStream}
      * @return bytes
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static byte[] readBytes(InputStream in) throws InstrumentException {
+    public static byte[] readBytes(InputStream in) throws InternalException {
         return readBytes(in, true);
     }
 
@@ -677,9 +677,9 @@ public class IoKit {
      * @param in      {@link InputStream}
      * @param isClose 是否关闭输入流
      * @return bytes
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] readBytes(InputStream in, boolean isClose) throws InstrumentException {
+    public static byte[] readBytes(InputStream in, boolean isClose) throws InternalException {
         if (in instanceof FileInputStream) {
             // 文件流的长度是可预见的，此时直接读取效率更高
             final byte[] result;
@@ -691,7 +691,7 @@ public class IoKit {
                     throw new IOException(StringKit.format("File length is [{}] but read [{}]!", available, readLength));
                 }
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             } finally {
                 if (isClose) {
                     close(in);
@@ -710,9 +710,9 @@ public class IoKit {
      * @param in     {@link InputStream},为null返回null
      * @param length 长度,小于等于0返回空byte数组
      * @return bytes
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static byte[] readBytes(InputStream in, int length) throws InstrumentException {
+    public static byte[] readBytes(InputStream in, int length) throws InternalException {
         if (null == in) {
             return null;
         }
@@ -732,9 +732,9 @@ public class IoKit {
      * @param length      长度
      * @param toLowerCase true 传换成小写格式 , false 传换成大写格式
      * @return 16进制字符串
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readHex(InputStream in, int length, boolean toLowerCase) throws InstrumentException {
+    public static String readHex(InputStream in, int length, boolean toLowerCase) throws InternalException {
         return HexKit.encodeHexString(readBytes(in, length), toLowerCase);
     }
 
@@ -743,9 +743,9 @@ public class IoKit {
      *
      * @param in {@link InputStream}
      * @return 16进制字符串
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readHex28Upper(InputStream in) throws InstrumentException {
+    public static String readHex28Upper(InputStream in) throws InternalException {
         return readHex(in, 28, false);
     }
 
@@ -754,9 +754,9 @@ public class IoKit {
      *
      * @param in {@link InputStream}
      * @return 16进制字符串
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readHex28Lower(InputStream in) throws InstrumentException {
+    public static String readHex28Lower(InputStream in) throws InternalException {
         return readHex(in, 28, true);
     }
 
@@ -766,9 +766,9 @@ public class IoKit {
      * @param <T> 读取对象的类型
      * @param in  输入流
      * @return 输出流
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> T readObject(InputStream in) throws InstrumentException {
+    public static <T> T readObject(InputStream in) throws InternalException {
         if (null == in) {
             throw new IllegalArgumentException("The InputStream must not be null");
         }
@@ -778,9 +778,9 @@ public class IoKit {
             final T object = (T) ois.readObject();
             return object;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -791,9 +791,9 @@ public class IoKit {
      * @param in         输入流
      * @param collection 返回集合
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(InputStream in, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readUtf8Lines(InputStream in, T collection) throws InternalException {
         return readLines(in, Charset.UTF_8, collection);
     }
 
@@ -805,9 +805,9 @@ public class IoKit {
      * @param charsetName 字符集
      * @param collection  返回集合
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(InputStream in, String charsetName, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(InputStream in, String charsetName, T collection) throws InternalException {
         return readLines(in, Charset.charset(charsetName), collection);
     }
 
@@ -819,9 +819,9 @@ public class IoKit {
      * @param charset    字符集
      * @param collection 返回集合
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(InputStream in, java.nio.charset.Charset charset, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(InputStream in, java.nio.charset.Charset charset, T collection) throws InternalException {
         return readLines(getReader(in, charset), collection);
     }
 
@@ -832,9 +832,9 @@ public class IoKit {
      * @param reader     {@link Reader}
      * @param collection 返回集合
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(Reader reader, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(Reader reader, T collection) throws InternalException {
         readLines(reader, (LineHandler) line -> collection.add(line));
         return collection;
     }
@@ -844,9 +844,9 @@ public class IoKit {
      *
      * @param in          {@link InputStream}
      * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void readUtf8Lines(InputStream in, LineHandler lineHandler) throws InstrumentException {
+    public static void readUtf8Lines(InputStream in, LineHandler lineHandler) throws InternalException {
         readLines(in, Charset.UTF_8, lineHandler);
     }
 
@@ -856,9 +856,9 @@ public class IoKit {
      * @param in          {@link InputStream}
      * @param charset     {@link java.nio.charset.Charset}编码
      * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void readLines(InputStream in, java.nio.charset.Charset charset, LineHandler lineHandler) throws InstrumentException {
+    public static void readLines(InputStream in, java.nio.charset.Charset charset, LineHandler lineHandler) throws InternalException {
         readLines(getReader(in, charset), lineHandler);
     }
 
@@ -868,9 +868,9 @@ public class IoKit {
      *
      * @param reader      {@link Reader}
      * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void readLines(Reader reader, LineHandler lineHandler) throws InstrumentException {
+    public static void readLines(Reader reader, LineHandler lineHandler) throws InternalException {
         Assert.notNull(reader);
         Assert.notNull(lineHandler);
 
@@ -924,7 +924,7 @@ public class IoKit {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1035,13 +1035,13 @@ public class IoKit {
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param content    写入的内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void write(OutputStream out, boolean isCloseOut, byte[] content) throws InstrumentException {
+    public static void write(OutputStream out, boolean isCloseOut, byte[] content) throws InternalException {
         try {
             out.write(content);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (isCloseOut) {
                 close(out);
@@ -1055,9 +1055,9 @@ public class IoKit {
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws InstrumentException {
+    public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws InternalException {
         write(out, Charset.UTF_8, isCloseOut, contents);
     }
 
@@ -1068,9 +1068,9 @@ public class IoKit {
      * @param charsetName 写出的内容的字符集
      * @param isCloseOut  写入完毕是否关闭输出流
      * @param contents    写入的内容,调用toString()方法,不包括不会自动换行
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void write(OutputStream out, String charsetName, boolean isCloseOut, Object... contents) throws InstrumentException {
+    public static void write(OutputStream out, String charsetName, boolean isCloseOut, Object... contents) throws InternalException {
         write(out, Charset.charset(charsetName), isCloseOut, contents);
     }
 
@@ -1081,9 +1081,9 @@ public class IoKit {
      * @param charset    写出的内容的字符集
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void write(OutputStream out, java.nio.charset.Charset charset, boolean isCloseOut, Object... contents) throws InstrumentException {
+    public static void write(OutputStream out, java.nio.charset.Charset charset, boolean isCloseOut, Object... contents) throws InternalException {
         OutputStreamWriter osw = null;
         try {
             osw = getWriter(out, charset);
@@ -1094,7 +1094,7 @@ public class IoKit {
             }
             osw.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (isCloseOut) {
                 close(osw);
@@ -1109,7 +1109,7 @@ public class IoKit {
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param object     写入的对象内容
      */
-    public static void write(OutputStream out, boolean isCloseOut, Serializable object) throws InstrumentException {
+    public static void write(OutputStream out, boolean isCloseOut, Serializable object) throws InternalException {
         writeObjects(out, isCloseOut, object);
     }
 
@@ -1119,9 +1119,9 @@ public class IoKit {
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void writeObjects(OutputStream out, boolean isCloseOut, Serializable... contents) throws InstrumentException {
+    public static void writeObjects(OutputStream out, boolean isCloseOut, Serializable... contents) throws InternalException {
         ObjectOutputStream osw = null;
         try {
             osw = out instanceof ObjectOutputStream ? (ObjectOutputStream) out : new ObjectOutputStream(out);
@@ -1132,7 +1132,7 @@ public class IoKit {
             }
             osw.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (isCloseOut) {
                 close(osw);
@@ -1253,9 +1253,9 @@ public class IoKit {
      * @param input1 第一个流
      * @param input2 第二个流
      * @return 两个流的内容一致返回true, 否则false
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static boolean contentEquals(InputStream input1, InputStream input2) throws InstrumentException {
+    public static boolean contentEquals(InputStream input1, InputStream input2) throws InternalException {
         if (false == (input1 instanceof BufferedInputStream)) {
             input1 = new BufferedInputStream(input1);
         }
@@ -1276,7 +1276,7 @@ public class IoKit {
             int ch2 = input2.read();
             return ch2 == EOF;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1287,9 +1287,9 @@ public class IoKit {
      * @param input1 第一个reader
      * @param input2 第二个reader
      * @return 两个流的内容一致返回true, 否则false
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static boolean contentEquals(Reader input1, Reader input2) throws InstrumentException {
+    public static boolean contentEquals(Reader input1, Reader input2) throws InternalException {
         input1 = getReader(input1);
         input2 = getReader(input2);
 
@@ -1306,7 +1306,7 @@ public class IoKit {
             int ch2 = input2.read();
             return ch2 == EOF;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1317,9 +1317,9 @@ public class IoKit {
      * @param input1 第一个流
      * @param input2 第二个流
      * @return 两个流的内容一致返回true, 否则false
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static boolean contentEqualsIgnoreEOL(Reader input1, Reader input2) throws InstrumentException {
+    public static boolean contentEqualsIgnoreEOL(Reader input1, Reader input2) throws InternalException {
         final BufferedReader br1 = getReader(input1);
         final BufferedReader br2 = getReader(input2);
 
@@ -1332,7 +1332,7 @@ public class IoKit {
             }
             return null == line1 ? null == line2 : line1.equals(line2);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1341,9 +1341,9 @@ public class IoKit {
      *
      * @param in 文件,不能为目录
      * @return CRC32值
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long checksumCRC32(InputStream in) throws InstrumentException {
+    public static long checksumCRC32(InputStream in) throws InternalException {
         return checksum(in, new CRC32()).getValue();
     }
 
@@ -1353,9 +1353,9 @@ public class IoKit {
      * @param in       流
      * @param checksum {@link Checksum}
      * @return Checksum
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static Checksum checksum(InputStream in, Checksum checksum) throws InstrumentException {
+    public static Checksum checksum(InputStream in, Checksum checksum) throws InternalException {
         Assert.notNull(in, "InputStream is null !");
         if (null == checksum) {
             checksum = new CRC32();
@@ -1679,10 +1679,10 @@ public class IoKit {
                 try {
                     socket.close();
                 } catch (Exception e) {
-                    throw new InstrumentException(e);
+                    throw new InternalException(e);
                 } catch (AssertionError e) {
                     if (isAndroidGetsocknameError(e)) {
-                        throw new InstrumentException(e);
+                        throw new InternalException(e);
                     } else {
                         throw e;
                     }

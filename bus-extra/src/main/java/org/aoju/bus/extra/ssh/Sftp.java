@@ -28,7 +28,7 @@ package org.aoju.bus.extra.ssh;
 import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -191,7 +191,7 @@ public class Sftp extends AbstractFtp {
         try {
             channel.setFilenameEncoding(charset.toString());
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         this.channel = channel;
     }
@@ -199,11 +199,11 @@ public class Sftp extends AbstractFtp {
     @Override
     public Sftp reconnectIfTimeout() {
         if (StringKit.isBlank(this.ftpConfig.getHost())) {
-            throw new InstrumentException("Host is blank!");
+            throw new InternalException("Host is blank!");
         }
         try {
             this.cd(Symbol.SLASH);
-        } catch (InstrumentException e) {
+        } catch (InternalException e) {
             close();
             init();
         }
@@ -229,7 +229,7 @@ public class Sftp extends AbstractFtp {
         try {
             return channel.pwd();
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -242,7 +242,7 @@ public class Sftp extends AbstractFtp {
         try {
             return channel.getHome();
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -299,7 +299,7 @@ public class Sftp extends AbstractFtp {
             });
         } catch (SftpException e) {
             if (false == StringKit.startWithIgnoreCase(e.getMessage(), "No such file")) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         return fileNames;
@@ -315,7 +315,7 @@ public class Sftp extends AbstractFtp {
             this.channel.mkdir(dir);
             return true;
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -329,7 +329,7 @@ public class Sftp extends AbstractFtp {
             if (StringKit.containsAnyIgnoreCase(msg, "No such file", "does not exist")) {
                 return false;
             }
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return sftpATTRS.isDir();
     }
@@ -350,7 +350,7 @@ public class Sftp extends AbstractFtp {
             channel.cd(directory.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH));
             return true;
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -364,7 +364,7 @@ public class Sftp extends AbstractFtp {
         try {
             channel.rm(filePath);
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return true;
     }
@@ -385,7 +385,7 @@ public class Sftp extends AbstractFtp {
         try {
             list = channel.ls(channel.pwd());
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         String fileName;
@@ -410,7 +410,7 @@ public class Sftp extends AbstractFtp {
             channel.rmdir(dirPath);
             return true;
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -485,7 +485,7 @@ public class Sftp extends AbstractFtp {
         try {
             channel.put(srcFilePath, destPath, monitor, mode.ordinal());
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -503,7 +503,7 @@ public class Sftp extends AbstractFtp {
         try {
             channel.put(srcStream, destPath, monitor, mode.ordinal());
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -583,7 +583,7 @@ public class Sftp extends AbstractFtp {
         try {
             channel.get(src, dest);
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -599,7 +599,7 @@ public class Sftp extends AbstractFtp {
         try {
             channel.get(src, out);
         } catch (SftpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }

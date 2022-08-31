@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.proxy.Builder;
 import org.aoju.bus.proxy.Provider;
 
@@ -52,7 +52,7 @@ public class CloningProvider implements Provider {
             try {
                 cloneMethod = cloneable.getClass().getMethod("clone", Builder.EMPTY_ARGUMENT_TYPES);
             } catch (NoSuchMethodException e) {
-                throw new InstrumentException(
+                throw new InternalException(
                         "Class " + cloneable.getClass().getName() + " does not have a public clone() method.");
             }
         }
@@ -63,10 +63,10 @@ public class CloningProvider implements Provider {
         try {
             return getCloneMethod().invoke(cloneable, Builder.EMPTY_ARGUMENTS);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException(
+            throw new InternalException(
                     "Class " + cloneable.getClass().getName() + " does not have a public clone() method.", e);
         } catch (InvocationTargetException e) {
-            throw new InstrumentException(
+            throw new InternalException(
                     "Attempt to clone object of type " + cloneable.getClass().getName() + " threw an exception.", e);
         }
     }

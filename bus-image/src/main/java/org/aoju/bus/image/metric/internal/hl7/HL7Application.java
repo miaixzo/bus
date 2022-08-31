@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Device;
@@ -259,18 +259,18 @@ public class HL7Application implements Serializable {
     }
 
     public MLLPConnection connect(Connection remote)
-            throws IOException, InstrumentException, GeneralSecurityException {
+            throws IOException, InternalException, GeneralSecurityException {
         return connect(findCompatibleConnection(remote), remote);
     }
 
     public MLLPConnection connect(HL7Application remote)
-            throws IOException, InstrumentException, GeneralSecurityException {
+            throws IOException, InternalException, GeneralSecurityException {
         Compatible cc = findCompatibleConnection(remote);
         return connect(cc.getLocalConnection(), cc.getRemoteConnection());
     }
 
     public MLLPConnection connect(Connection local, Connection remote)
-            throws IOException, InstrumentException, GeneralSecurityException {
+            throws IOException, InternalException, GeneralSecurityException {
         checkDevice();
         checkInstalled();
         Socket sock = local.connect(remote);
@@ -279,37 +279,37 @@ public class HL7Application implements Serializable {
     }
 
     public HL7Connection open(Connection remote)
-            throws IOException, InstrumentException, GeneralSecurityException {
+            throws IOException, InternalException, GeneralSecurityException {
         return new HL7Connection(this, connect(remote));
     }
 
     public HL7Connection open(HL7Application remote)
-            throws IOException, InstrumentException, GeneralSecurityException {
+            throws IOException, InternalException, GeneralSecurityException {
         return new HL7Connection(this, connect(remote));
     }
 
     public HL7Connection open(Connection local, Connection remote)
-            throws IOException, InstrumentException, GeneralSecurityException {
+            throws IOException, InternalException, GeneralSecurityException {
         return new HL7Connection(this, connect(local, remote));
     }
 
     public Compatible findCompatibleConnection(HL7Application remote)
-            throws InstrumentException {
+            throws InternalException {
         for (Connection remoteConn : remote.conns)
             if (remoteConn.isInstalled() && remoteConn.isServer())
                 for (Connection conn : conns)
                     if (conn.isInstalled() && conn.isCompatible(remoteConn))
                         return new Compatible(conn, remoteConn);
-        throw new InstrumentException(
+        throw new InternalException(
                 "No compatible connection to " + remote.getApplicationName() + " available on " + name);
     }
 
     public Connection findCompatibleConnection(Connection remoteConn)
-            throws InstrumentException {
+            throws InternalException {
         for (Connection conn : conns)
             if (conn.isInstalled() && conn.isCompatible(remoteConn))
                 return conn;
-        throw new InstrumentException(
+        throw new InternalException(
                 "No compatible connection to " + remoteConn + " available on " + name);
     }
 

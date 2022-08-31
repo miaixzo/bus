@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.storage.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -86,10 +86,10 @@ public abstract class AbstractProvider implements Provider {
 
                 return saveFilePath;
             } else {
-                throw new InstrumentException("file download failed");
+                throw new InternalException("file download failed");
             }
         } catch (IOException e) {
-            throw new InstrumentException("file download failed", e);
+            throw new InternalException("file download failed", e);
         } finally {
             try {
                 if (null != outputStream) outputStream.close();

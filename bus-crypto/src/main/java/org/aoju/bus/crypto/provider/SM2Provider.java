@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Provider;
@@ -51,7 +51,7 @@ public class SM2Provider implements Provider {
     @Override
     public byte[] encrypt(String key, byte[] content) {
         if (StringKit.isEmpty(key)) {
-            throw new InstrumentException("key is null!");
+            throw new InternalException("key is null!");
         }
         String[] array = StringKit.splitToArray(key, Symbol.COMMA);
         SM2 sm2 = new SM2(array[0], array[1]);
@@ -69,7 +69,7 @@ public class SM2Provider implements Provider {
     @Override
     public byte[] decrypt(String key, byte[] content) {
         if (StringKit.isEmpty(key)) {
-            throw new InstrumentException("key is null!");
+            throw new InternalException("key is null!");
         }
         String[] array = StringKit.splitToArray(key, Symbol.COMMA);
         SM2 sm2 = new SM2(array[0], array[1]);

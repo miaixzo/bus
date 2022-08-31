@@ -26,7 +26,7 @@
 package org.aoju.bus.core.scanner;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.Normal;
@@ -294,7 +294,7 @@ public class ClassScaner {
                 try {
                     scanJar(new JarFile(file));
                 } catch (IOException e) {
-                    throw new InstrumentException(e);
+                    throw new InternalException(e);
                 }
             }
         } else if (file.isDirectory()) {

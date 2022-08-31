@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.PoiChecker;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
@@ -149,7 +149,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFilePath, sheetIndex);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -164,7 +164,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFile, sheetIndex);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -179,7 +179,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFile, sheetName);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -206,7 +206,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookStream, sheetIndex);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -222,7 +222,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookStream, sheetName);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -237,7 +237,7 @@ public class ExcelKit {
         try {
             return new ExcelReader(bookFilePath, sheetName);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(ObjectKit.defaultIfNull(e.getCause(), e), PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(ObjectKit.defaultIfNull(e.getCause(), e), PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -252,7 +252,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter();
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -268,7 +268,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(isXlsx);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -282,7 +282,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFilePath);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -296,7 +296,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFile);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -311,7 +311,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFilePath, sheetName);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -326,7 +326,7 @@ public class ExcelKit {
         try {
             return new ExcelWriter(destFile, sheetName);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -341,7 +341,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter();
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -357,7 +357,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(rowAccessWindowSize);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -371,7 +371,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFilePath);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -385,7 +385,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFile);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -400,7 +400,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFilePath, sheetName);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 
@@ -415,7 +415,7 @@ public class ExcelKit {
         try {
             return new BigExcelWriter(destFile, sheetName);
         } catch (NoClassDefFoundError e) {
-            throw new InstrumentException(PoiChecker.NO_POI_ERROR_MSG);
+            throw new InternalException(PoiChecker.NO_POI_ERROR_MSG);
         }
     }
 

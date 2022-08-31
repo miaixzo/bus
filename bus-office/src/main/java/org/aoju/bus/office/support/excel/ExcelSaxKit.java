@@ -26,7 +26,7 @@
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -188,16 +188,16 @@ public class ExcelSaxKit {
      *
      * @param xmlDocStream Excel的XML文档流
      * @param handler      文档内容处理接口，实现此接口用于回调处理数据
-     * @throws InstrumentException POI异常，包装了SAXException
+     * @throws InternalException POI异常，包装了SAXException
      */
-    public static void readFrom(InputStream xmlDocStream, ContentHandler handler) throws InstrumentException {
+    public static void readFrom(InputStream xmlDocStream, ContentHandler handler) throws InternalException {
         XMLReader xmlReader;
         try {
             xmlReader = XMLHelper.newXMLReader();
             xmlReader.setContentHandler(handler);
             xmlReader.parse(new InputSource(xmlDocStream));
         } catch (SAXException | ParserConfigurationException | IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

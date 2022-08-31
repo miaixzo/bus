@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpv;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.Httpv;
@@ -293,7 +293,7 @@ public class CoverCall implements Cancelable {
             } else if (null != client.onException) {
                 client.execute(() -> client.onException.on(this.webSocket, t), client.exceptionOnIO);
             } else if (!client.nothrow) {
-                throw new InstrumentException("WebSocket exception", t);
+                throw new InternalException("WebSocket exception", t);
             }
         }
 

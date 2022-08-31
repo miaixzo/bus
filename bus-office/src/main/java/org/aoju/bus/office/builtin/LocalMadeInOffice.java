@@ -29,7 +29,7 @@ import com.sun.star.frame.XStorable;
 import com.sun.star.io.IOException;
 import com.sun.star.lang.XComponent;
 import com.sun.star.task.ErrorCodeIOException;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
@@ -83,7 +83,7 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
     }
 
     @Override
-    public void execute(final Context context) throws InstrumentException {
+    public void execute(final Context context) throws InternalException {
         Logger.info("Executing local conversion task...");
         final LocalOfficeContextAware localOfficeContextAware = (LocalOfficeContextAware) context;
 
@@ -101,13 +101,13 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
 
                 // onComplete on target将把临时文件复制到OutputStream中，如果输出是OutputStream，则删除临时文件
                 target.onComplete(targetFile);
-            } catch (InstrumentException officeEx) {
+            } catch (InternalException officeEx) {
                 Logger.error("Local conversion failed.", officeEx);
                 target.onFailure(targetFile, officeEx);
                 throw officeEx;
             } catch (Exception ex) {
                 Logger.error("Local conversion failed.", ex);
-                final InstrumentException officeEx = new InstrumentException("Local conversion failed", ex);
+                final InternalException officeEx = new InternalException("Local conversion failed", ex);
                 target.onFailure(targetFile, officeEx);
                 throw officeEx;
             } finally {
@@ -124,9 +124,9 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
      *
      * @param document 文档
      * @return the map
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    private Map<String, Object> getStoreProperties(final XComponent document) throws InstrumentException {
+    private Map<String, Object> getStoreProperties(final XComponent document) throws InternalException {
 
         final Map<String, Object> storeProps = new HashMap<>();
         appendProperties(
@@ -144,7 +144,7 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
      * @param document 文档
      */
     protected void modifyDocument(final Context context, final XComponent document)
-            throws InstrumentException {
+            throws InternalException {
         filterChain.doFilter(context, document);
     }
 
@@ -155,16 +155,16 @@ public class LocalMadeInOffice extends AbstractLocalOffice {
      * @param targetFile 目标文件
      */
     protected void storeDocument(final XComponent document, final File targetFile)
-            throws InstrumentException {
+            throws InternalException {
         final Map<String, Object> storeProps = getStoreProperties(document);
         try {
             Lo.qi(XStorable.class, document).storeToURL(Builder.toUrl(targetFile), Builder.toUnoProperties(storeProps));
         } catch (ErrorCodeIOException errorCodeIoEx) {
-            throw new InstrumentException(
+            throw new InternalException(
                     Builder.ERROR_MESSAGE_STORE + targetFile.getName() + "; errorCode: " + errorCodeIoEx.ErrCode,
                     errorCodeIoEx);
         } catch (IOException ioEx) {
-            throw new InstrumentException(Builder.ERROR_MESSAGE_STORE + targetFile.getName(), ioEx);
+            throw new InternalException(Builder.ERROR_MESSAGE_STORE + targetFile.getName(), ioEx);
         }
     }
 

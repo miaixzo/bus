@@ -27,7 +27,7 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.convert.NumberFormatter;
 import org.aoju.bus.core.date.formatter.*;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -186,7 +186,7 @@ public class Formatter {
         try {
             return Fields.NORM_DATETIME_FORMAT.parse(date).getTime();
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
     }
@@ -223,7 +223,7 @@ public class Formatter {
         try {
             return new SimpleDateFormat(format).parse(date).getTime();
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -571,7 +571,7 @@ public class Formatter {
         }
 
         // 没有更多匹配的时间格式
-        throw new InstrumentException("No format fit for date String [{}] !", dateStr);
+        throw new InternalException("No format fit for date String [{}] !", dateStr);
     }
 
     /**
@@ -696,7 +696,7 @@ public class Formatter {
             }
             pos.setIndex(0);
         }
-        throw new InstrumentException("Unable to parse the date: {}", text);
+        throw new InternalException("Unable to parse the date: {}", text);
     }
 
     /**
@@ -828,7 +828,7 @@ public class Formatter {
             text = text.replace(Symbol.SPACE + Symbol.PLUS, Symbol.PLUS);
             final String zoneOffset = StringKit.subAfter(text, Symbol.C_PLUS, true);
             if (StringKit.isBlank(zoneOffset)) {
-                throw new InstrumentException("Invalid format: [{}]", text);
+                throw new InternalException("Invalid format: [{}]", text);
             }
             if (false == StringKit.contains(zoneOffset, Symbol.C_COLON)) {
                 // +0800转换为+08:00
@@ -854,7 +854,7 @@ public class Formatter {
         }
 
         // 没有更多匹配的时间格式
-        throw new InstrumentException("No format fit for date String [{}] !", text);
+        throw new InternalException("No format fit for date String [{}] !", text);
     }
 
     /**
@@ -916,7 +916,7 @@ public class Formatter {
             }
             pos.setIndex(0);
         }
-        throw new InstrumentException("Unable to parse the date: {}", text);
+        throw new InternalException("Unable to parse the date: {}", text);
     }
 
     /**

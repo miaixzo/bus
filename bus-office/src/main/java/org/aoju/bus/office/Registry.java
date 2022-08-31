@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.Map;
@@ -82,11 +82,11 @@ public class Registry {
      */
     public static void register(String name, Object object) {
         if (COMPLEX_CACHE.containsKey(name)) {
-            throw new InstrumentException("重复注册同名称的校验器：" + name);
+            throw new InternalException("重复注册同名称的校验器：" + name);
         }
         Class<?> clazz = object.getClass();
         if (COMPLEX_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new InstrumentException("重复注册同类型的校验器：" + clazz);
+            throw new InternalException("重复注册同类型的校验器：" + clazz);
         }
         COMPLEX_CACHE.putIfAbsent(name, object);
         COMPLEX_CACHE.putIfAbsent(clazz.getSimpleName(), object);

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.word;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -52,7 +52,7 @@ public class WordKit {
         try {
             return FileKit.exists(file) ? new XWPFDocument(OPCPackage.open(file)) : new XWPFDocument();
         } catch (InvalidFormatException | IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

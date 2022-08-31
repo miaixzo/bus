@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.ftp;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.NetKit;
 import org.apache.ftpserver.ConnectionConfig;
@@ -144,7 +144,7 @@ public class FtpServer {
         try {
             getUserManager().save(user);
         } catch (org.apache.ftpserver.ftplet.FtpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -176,7 +176,7 @@ public class FtpServer {
         try {
             getUserManager().delete(userName);
         } catch (org.apache.ftpserver.ftplet.FtpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -242,7 +242,7 @@ public class FtpServer {
         try {
             serverFactory.createServer().start();
         } catch (org.apache.ftpserver.ftplet.FtpException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

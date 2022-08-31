@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.Device;
 
 /**
@@ -40,17 +40,17 @@ public class DeviceCache extends ConfigurationCache<Configuration, Device>
     }
 
     @Override
-    protected Device find(Configuration conf, String key) throws InstrumentException {
+    protected Device find(Configuration conf, String key) throws InternalException {
         return conf.findDevice(key);
     }
 
     @Override
-    public Device findDevice(String deviceName) throws InstrumentException {
+    public Device findDevice(String deviceName) throws InternalException {
         Device device = get(deviceName);
         if (null == device)
-            throw new InstrumentException("Unknown Device: " + deviceName);
+            throw new InternalException("Unknown Device: " + deviceName);
         if (!device.isInstalled())
-            throw new InstrumentException("Device: " + deviceName + " not installed");
+            throw new InternalException("Device: " + deviceName + " not installed");
         return device;
     }
 

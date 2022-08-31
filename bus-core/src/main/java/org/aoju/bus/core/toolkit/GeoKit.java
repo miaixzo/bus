@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.builder.EqualsBuilder;
 import org.aoju.bus.core.builder.HashCodeBuilder;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 
 import java.awt.geom.Point2D;
@@ -434,7 +434,7 @@ public class GeoKit {
          */
         public Bounds(Bounds first, Bounds other) {
             if (null == first || first.isEmpty() || null == other || other.isEmpty()) {
-                throw new InstrumentException("bounds");
+                throw new InternalException("bounds");
             }
             this.southWest = new Point(Math.min(first.southWest.getLongitude(), other.southWest.getLongitude()), Math.min(first.southWest.getLatitude(), other.southWest.getLatitude()));
             //

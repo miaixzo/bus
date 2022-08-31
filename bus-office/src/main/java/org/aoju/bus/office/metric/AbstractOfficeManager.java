@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -99,7 +99,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
             Logger.debug("Deleting temporary directory '{}'", tempDir);
             try {
                 FileKit.delete(tempDir);
-            } catch (InstrumentException ioEx) {
+            } catch (InternalException ioEx) {
                 Logger.error("Could not temporary profileDir: {}", ioEx.getMessage());
             }
         }

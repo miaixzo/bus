@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
@@ -137,7 +137,7 @@ public class ClassPathResource extends UriResource {
             super.url = ClassLoader.getSystemResource(this.path);
         }
         if (null == super.url) {
-            throw new InstrumentException("Resource of path [{}] not exist!", this.path);
+            throw new InternalException("Resource of path [{}] not exist!", this.path);
         }
     }
 

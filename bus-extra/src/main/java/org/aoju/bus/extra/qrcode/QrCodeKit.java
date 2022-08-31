@@ -30,7 +30,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.FileType;
@@ -436,7 +436,7 @@ public class QrCodeKit {
         try {
             bitMatrix = multiFormatWriter.encode(content, format, config.width, config.height, config.toHints(format));
         } catch (WriterException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         return bitMatrix;

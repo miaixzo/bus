@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.loader;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.io.File;
@@ -104,9 +104,9 @@ public class JarLoaders extends URLClassLoader {
      *
      * @param loader  {@link URLClassLoader}
      * @param jarFile 被加载的jar
-     * @throws InstrumentException IO异常包装和执行异常
+     * @throws InternalException IO异常包装和执行异常
      */
-    public static void loadJar(URLClassLoader loader, File jarFile) throws InstrumentException {
+    public static void loadJar(URLClassLoader loader, File jarFile) throws InternalException {
         try {
             final Method method = ClassKit.getDeclaredMethod(URLClassLoader.class, "addURL", URL.class);
             if (null != method) {
@@ -117,7 +117,7 @@ public class JarLoaders extends URLClassLoader {
                 }
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -172,7 +172,7 @@ public class JarLoaders extends URLClassLoader {
                 super.addURL(jar.toURI().toURL());
             }
         } catch (MalformedURLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }

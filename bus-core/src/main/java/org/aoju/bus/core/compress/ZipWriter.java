@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -160,9 +160,9 @@ public class ZipWriter implements Closeable {
      *
      * @param resources 需要压缩的资源，资源的路径为{@link Resource#getName()}
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ZipWriter add(Resource... resources) throws InstrumentException {
+    public ZipWriter add(Resource... resources) throws InternalException {
         for (Resource resource : resources) {
             if (null != resource) {
                 add(resource.getName(), resource.getStream());
@@ -178,9 +178,9 @@ public class ZipWriter implements Closeable {
      * @param path 压缩的路径, {@code null}和""表示根目录下
      * @param in   需要压缩的输入流，使用完后自动关闭，{@code null}表示加入空目录
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ZipWriter add(String path, InputStream in) throws InstrumentException {
+    public ZipWriter add(String path, InputStream in) throws InternalException {
         path = StringKit.nullToEmpty(path);
         if (null == in) {
             // 空目录需要检查路径规范性，目录以"/"结尾
@@ -200,9 +200,9 @@ public class ZipWriter implements Closeable {
      * @param paths 流数据在压缩文件中的路径或文件名
      * @param ins   要压缩的源，添加完成后自动关闭流
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ZipWriter add(String[] paths, InputStream[] ins) throws InstrumentException {
+    public ZipWriter add(String[] paths, InputStream[] ins) throws InternalException {
         if (ArrayKit.isEmpty(paths) || ArrayKit.isEmpty(ins)) {
             throw new IllegalArgumentException("Paths or ins is empty !");
         }
@@ -224,9 +224,9 @@ public class ZipWriter implements Closeable {
      * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩），{@code null}表示不过滤
      * @param files      要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ZipWriter add(boolean withSrcDir, FileFilter filter, File... files) throws InstrumentException {
+    public ZipWriter add(boolean withSrcDir, FileFilter filter, File... files) throws InternalException {
         for (File file : files) {
             // 如果只是压缩一个文件，则需要截取该文件的父目录
             String srcRootDir;
@@ -237,7 +237,7 @@ public class ZipWriter implements Closeable {
                     srcRootDir = file.getCanonicalFile().getParentFile().getCanonicalPath();
                 }
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
 
             _add(file, srcRootDir, filter);
@@ -246,11 +246,11 @@ public class ZipWriter implements Closeable {
     }
 
     @Override
-    public void close() throws InstrumentException {
+    public void close() throws InternalException {
         try {
             out.finish();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(this.out);
         }
@@ -264,9 +264,9 @@ public class ZipWriter implements Closeable {
      * @param srcRootDir 被压缩的文件夹根目录
      * @param file       当前递归压缩的文件或目录对象
      * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩），{@code null}表示不过滤
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private ZipWriter _add(File file, String srcRootDir, FileFilter filter) throws InstrumentException {
+    private ZipWriter _add(File file, String srcRootDir, FileFilter filter) throws InternalException {
         if (null == file || (null != filter && false == filter.accept(file))) {
             return this;
         }
@@ -298,9 +298,9 @@ public class ZipWriter implements Closeable {
      *
      * @param path 压缩的路径, {@code null}和""表示根目录下
      * @param in   需要压缩的输入流，使用完后自动关闭，{@code null}表示加入空目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private ZipWriter putEntry(String path, InputStream in) throws InstrumentException {
+    private ZipWriter putEntry(String path, InputStream in) throws InternalException {
         try {
             out.putNextEntry(new ZipEntry(path));
             if (null != in) {
@@ -308,7 +308,7 @@ public class ZipWriter implements Closeable {
             }
             out.closeEntry();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(in);
         }

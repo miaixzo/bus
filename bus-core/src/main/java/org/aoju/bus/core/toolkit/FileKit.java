@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
@@ -113,13 +113,13 @@ public class FileKit {
      *
      * @param dirPath 目录
      * @return 是否为空
-     * @throws InstrumentException IOException
+     * @throws InternalException IOException
      */
     public static boolean isDirEmpty(Path dirPath) {
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(dirPath)) {
             return false == dirStream.iterator().hasNext();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -151,7 +151,7 @@ public class FileKit {
         if (file.isDirectory()) {
             return file.listFiles();
         }
-        throw new InstrumentException(StringKit.format("Path [{}] is not directory!", path));
+        throw new InternalException(StringKit.format("Path [{}] is not directory!", path));
     }
 
     /**
@@ -508,7 +508,7 @@ public class FileKit {
         try {
             Files.walkFileTree(start, EnumSet.noneOf(FileVisitOption.class), maxDepth, visitor);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -605,9 +605,9 @@ public class FileKit {
      *
      * @param path 文件的全路径,使用POSIX风格
      * @return 文件, 若路径为null, 返回null
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File touch(String path) throws InstrumentException {
+    public static File touch(String path) throws InternalException {
         if (null == path) {
             return null;
         }
@@ -620,9 +620,9 @@ public class FileKit {
      *
      * @param file 文件对象
      * @return 文件, 若路径为null, 返回null
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File touch(File file) throws InstrumentException {
+    public static File touch(File file) throws InternalException {
         if (null == file) {
             return null;
         }
@@ -631,7 +631,7 @@ public class FileKit {
             try {
                 file.createNewFile();
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         return file;
@@ -644,9 +644,9 @@ public class FileKit {
      * @param parent 父文件对象
      * @param path   文件路径
      * @return File
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File touch(File parent, String path) throws InstrumentException {
+    public static File touch(File parent, String path) throws InternalException {
         return touch(file(parent, path));
     }
 
@@ -657,9 +657,9 @@ public class FileKit {
      * @param parent 父文件对象
      * @param path   文件路径
      * @return File
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File touch(String parent, String path) throws InstrumentException {
+    public static File touch(String parent, String path) throws InternalException {
         return touch(file(parent, path));
     }
 
@@ -670,9 +670,9 @@ public class FileKit {
      *
      * @param fullFileOrDirPath 文件或者目录的路径
      * @return 成功与否
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static boolean delete(String fullFileOrDirPath) throws InstrumentException {
+    public static boolean delete(String fullFileOrDirPath) throws InternalException {
         return delete(file(fullFileOrDirPath));
     }
 
@@ -683,9 +683,9 @@ public class FileKit {
      *
      * @param file 文件对象
      * @return 成功与否
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static boolean delete(File file) throws InstrumentException {
+    public static boolean delete(File file) throws InternalException {
         if (null == file || false == file.exists()) {
             // 如果文件不存在或已被删除，此处返回true表示删除成功
             return true;
@@ -706,7 +706,7 @@ public class FileKit {
             // 可能遇到只读文件，无法删除.使用 file 方法删除
             return file.delete();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         return true;
@@ -719,9 +719,9 @@ public class FileKit {
      *
      * @param path 文件对象
      * @return 成功与否
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static boolean delete(Path path) throws InstrumentException {
+    public static boolean delete(Path path) throws InternalException {
         if (Files.notExists(path)) {
             return true;
         }
@@ -738,7 +738,7 @@ public class FileKit {
                 }
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return true;
     }
@@ -750,9 +750,9 @@ public class FileKit {
      *
      * @param dirPath 文件夹路径
      * @return 成功与否
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static boolean clean(String dirPath) throws InstrumentException {
+    public static boolean clean(String dirPath) throws InternalException {
         return clean(file(dirPath));
     }
 
@@ -763,9 +763,9 @@ public class FileKit {
      *
      * @param directory 文件夹
      * @return 成功与否
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static boolean clean(File directory) throws InstrumentException {
+    public static boolean clean(File directory) throws InternalException {
         if (null == directory
                 || directory.exists() == false
                 || false == directory.isDirectory()) {
@@ -826,7 +826,7 @@ public class FileKit {
             try {
                 Files.createDirectories(dir);
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         return dir;
@@ -899,9 +899,9 @@ public class FileKit {
      *
      * @param dir 临时文件创建的所在目录
      * @return 临时文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File createTempFile(File dir) throws InstrumentException {
+    public static File createTempFile(File dir) throws InternalException {
         return createTempFile("create", null, dir, true);
     }
 
@@ -913,9 +913,9 @@ public class FileKit {
      * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响
      *
      * @return 临时文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File createTempFile() throws InstrumentException {
+    public static File createTempFile() throws InternalException {
         return createTempFile("bus", null, null, true);
     }
 
@@ -929,9 +929,9 @@ public class FileKit {
      * @param suffix    后缀，如果null则使用默认.tmp
      * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
      * @return 临时文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File createTempFile(String suffix, boolean isReCreat) throws InstrumentException {
+    public static File createTempFile(String suffix, boolean isReCreat) throws InternalException {
         return createTempFile("bus", suffix, null, isReCreat);
     }
 
@@ -946,9 +946,9 @@ public class FileKit {
      * @param suffix    后缀，如果null则使用默认.tmp
      * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
      * @return 临时文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File createTempFile(String prefix, String suffix, boolean isReCreat) throws InstrumentException {
+    public static File createTempFile(String prefix, String suffix, boolean isReCreat) throws InternalException {
         return createTempFile(prefix, suffix, null, isReCreat);
     }
 
@@ -959,9 +959,9 @@ public class FileKit {
      * @param dir       临时文件创建的所在目录
      * @param isReCreat 是否重新创建文件(删掉原来的,创建新的)
      * @return 临时文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File createTempFile(File dir, boolean isReCreat) throws InstrumentException {
+    public static File createTempFile(File dir, boolean isReCreat) throws InternalException {
         return createTempFile("create", null, dir, isReCreat);
     }
 
@@ -974,9 +974,9 @@ public class FileKit {
      * @param dir       临时文件创建的所在目录
      * @param isReCreat 是否重新创建文件(删掉原来的,创建新的)
      * @return 临时文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File createTempFile(String prefix, String suffix, File dir, boolean isReCreat) throws InstrumentException {
+    public static File createTempFile(String prefix, String suffix, File dir, boolean isReCreat) throws InternalException {
         int exceptionsCount = 0;
         while (true) {
             try {
@@ -988,7 +988,7 @@ public class FileKit {
                 return file;
             } catch (IOException ex) {
                 if (++exceptionsCount >= 50) {
-                    throw new InstrumentException(ex);
+                    throw new InternalException(ex);
                 }
             }
         }
@@ -1001,9 +1001,9 @@ public class FileKit {
      * @param dest    目标文件或目录路径,如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return File
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File copyFile(String src, String dest, StandardCopyOption... options) throws InstrumentException {
+    public static File copyFile(String src, String dest, StandardCopyOption... options) throws InternalException {
         Assert.notBlank(src, "Source File path is blank !");
         Assert.notBlank(dest, "Destination File path is blank !");
         return copyFile(Paths.get(src), Paths.get(dest), options).toFile();
@@ -1016,16 +1016,16 @@ public class FileKit {
      * @param dest    目标文件或目录,如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File copyFile(File src, File dest, StandardCopyOption... options) throws InstrumentException {
+    public static File copyFile(File src, File dest, StandardCopyOption... options) throws InternalException {
         Assert.notNull(src, "Source File is null !");
         if (false == src.exists()) {
-            throw new InstrumentException("File not exist: " + src);
+            throw new InternalException("File not exist: " + src);
         }
         Assert.notNull(dest, "Destination File or directory is null !");
         if (equals(src, dest)) {
-            throw new InstrumentException("Files '{}' and '{}' are equal", src, dest);
+            throw new InternalException("Files '{}' and '{}' are equal", src, dest);
         }
         return copyFile(src.toPath(), dest.toPath(), options).toFile();
     }
@@ -1037,9 +1037,9 @@ public class FileKit {
      * @param dest    目标文件或目录,如果为目录使用与源文件相同的文件名
      * @param options {@link StandardCopyOption}
      * @return Path
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static Path copyFile(Path src, Path dest, StandardCopyOption... options) throws InstrumentException {
+    public static Path copyFile(Path src, Path dest, StandardCopyOption... options) throws InternalException {
         Assert.notNull(src, "Source File is null !");
         Assert.notNull(dest, "Dest File or directory is null !");
 
@@ -1047,7 +1047,7 @@ public class FileKit {
         try {
             return Files.copy(src, destPath, options);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1081,9 +1081,9 @@ public class FileKit {
      * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File copyFile(File src, File dest, boolean isOverride) throws InstrumentException {
+    public static File copyFile(File src, File dest, boolean isOverride) throws InternalException {
         return FileCopier.create(src, dest).setCopyContentIfDir(true).setOnlyCopyFile(true).setOverride(isOverride).copy();
     }
 
@@ -1095,9 +1095,9 @@ public class FileKit {
      * @param destPath   目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File copy(String srcPath, String destPath, boolean isOverride) throws InstrumentException {
+    public static File copy(String srcPath, String destPath, boolean isOverride) throws InternalException {
         return copy(file(srcPath), file(destPath), isOverride);
     }
 
@@ -1115,9 +1115,9 @@ public class FileKit {
      * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File copy(File src, File dest, boolean isOverride) throws InstrumentException {
+    public static File copy(File src, File dest, boolean isOverride) throws InternalException {
         return FileCopier.create(src, dest).setOverride(isOverride).copy();
     }
 
@@ -1135,9 +1135,9 @@ public class FileKit {
      * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File copyContent(File src, File dest, boolean isOverride) throws InstrumentException {
+    public static File copyContent(File src, File dest, boolean isOverride) throws InternalException {
         return FileCopier.create(src, dest).setCopyContentIfDir(true).setOverride(isOverride).copy();
     }
 
@@ -1211,9 +1211,9 @@ public class FileKit {
      * @param src        源文件或者目录
      * @param target     目标文件或者目录
      * @param isOverride 是否覆盖目标，只有目标为文件才覆盖
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void move(File src, File target, boolean isOverride) throws InstrumentException {
+    public static void move(File src, File target, boolean isOverride) throws InternalException {
         move(src.toPath(), target.toPath(), isOverride);
     }
 
@@ -1238,7 +1238,7 @@ public class FileKit {
         } catch (IOException e) {
             if (e instanceof FileAlreadyExistsException) {
                 // 目标文件已存在，直接抛出异常
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
             // 移动失败，可能是跨分区移动导致的，采用递归移动方式
             try {
@@ -1246,7 +1246,7 @@ public class FileKit {
                 // 移动后空目录没有删除，
                 delete(src);
             } catch (IOException e2) {
-                throw new InstrumentException(e2);
+                throw new InternalException(e2);
             }
             return target;
         }
@@ -1265,7 +1265,7 @@ public class FileKit {
         try {
             return file.getCanonicalPath();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1358,10 +1358,10 @@ public class FileKit {
      * @param file1 文件1
      * @param file2 文件2
      * @return 是否相同
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      * @see Files#isSameFile(Path, Path)
      */
-    public static boolean equals(File file1, File file2) throws InstrumentException {
+    public static boolean equals(File file1, File file2) throws InternalException {
         Assert.notNull(file1);
         Assert.notNull(file2);
         if (false == file1.exists() || false == file2.exists()) {
@@ -1372,7 +1372,7 @@ public class FileKit {
         try {
             return Files.isSameFile(file1.toPath(), file2.toPath());
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1396,7 +1396,7 @@ public class FileKit {
             reader.close();
             return all;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (null != reader) {
                 try {
@@ -1414,9 +1414,9 @@ public class FileKit {
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
      * @return 文件路径列表(如果是jar中的文件, 则给定类似.jar ! / xxx / xxx的路径)
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> listFileNames(String path) throws InstrumentException {
+    public static List<String> listFileNames(String path) throws InternalException {
         if (null == path) {
             return new ArrayList<>(0);
         }
@@ -1443,7 +1443,7 @@ public class FileKit {
             // 防止出现jar!/org/aoju/这类路径导致文件找不到
             return ZipKit.listFileNames(jarFile, StringKit.removePrefix(path.substring(index + 1), Symbol.SLASH));
         } catch (IOException e) {
-            throw new InstrumentException(StringKit.format("Can not read file path of [{}]", path), e);
+            throw new InternalException(StringKit.format("Can not read file path of [{}]", path), e);
         } finally {
             IoKit.close(jarFile);
         }
@@ -1613,9 +1613,9 @@ public class FileKit {
      * @param file1 文件1
      * @param file2 文件2
      * @return 两个文件内容一致返回true, 否则false
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static boolean contentEquals(File file1, File file2) throws InstrumentException {
+    public static boolean contentEquals(File file1, File file2) throws InternalException {
         boolean file1Exists = file1.exists();
         if (file1Exists != file2.exists()) {
             return false;
@@ -1628,7 +1628,7 @@ public class FileKit {
 
         if (file1.isDirectory() || file2.isDirectory()) {
             // 不比较目录
-            throw new InstrumentException("Can't compare directories, only file");
+            throw new InternalException("Can't compare directories, only file");
         }
 
         if (file1.length() != file2.length()) {
@@ -1663,9 +1663,9 @@ public class FileKit {
      * @param file2   文件2
      * @param charset 编码,null表示使用平台默认编码 两个文件内容一致返回true,否则false
      * @return the boolean
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static boolean contentEqualsIgnoreEOL(File file1, File file2, java.nio.charset.Charset charset) throws InstrumentException {
+    public static boolean contentEqualsIgnoreEOL(File file1, File file2, java.nio.charset.Charset charset) throws InternalException {
         boolean file1Exists = file1.exists();
         if (file1Exists != file2.exists()) {
             return false;
@@ -1678,7 +1678,7 @@ public class FileKit {
 
         if (file1.isDirectory() || file2.isDirectory()) {
             // 不比较目录
-            throw new InstrumentException("Can't compare directories, only file");
+            throw new InternalException("Can't compare directories, only file");
         }
 
         if (equals(file1, file2)) {
@@ -1894,7 +1894,7 @@ public class FileKit {
         try {
             return subPath(rootDir, file.getCanonicalPath());
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -2156,10 +2156,10 @@ public class FileKit {
      *
      * @param file 文件 {@link File}
      * @return 类型, 文件的扩展名, 未找到为<code>null</code>
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      * @see FileType#getType(File)
      */
-    public static String getType(File file) throws InstrumentException {
+    public static String getType(File file) throws InternalException {
         return FileType.getType(file);
     }
 
@@ -2169,9 +2169,9 @@ public class FileKit {
      * @param path          文件路径{@link Path}
      * @param isFollowLinks 是否跟踪到软链对应的真实路径
      * @return {@link BasicFileAttributes}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BasicFileAttributes getAttributes(Path path, boolean isFollowLinks) throws InstrumentException {
+    public static BasicFileAttributes getAttributes(Path path, boolean isFollowLinks) throws InternalException {
         if (null == path) {
             return null;
         }
@@ -2180,7 +2180,7 @@ public class FileKit {
         try {
             return Files.readAttributes(path, BasicFileAttributes.class, options);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -2189,13 +2189,13 @@ public class FileKit {
      *
      * @param path Path
      * @return 输入流
-     * @throws InstrumentException 文件未找到
+     * @throws InternalException 文件未找到
      */
-    public static BufferedInputStream getInputStream(Path path) throws InstrumentException {
+    public static BufferedInputStream getInputStream(Path path) throws InternalException {
         try {
             return new BufferedInputStream(Files.newInputStream(path));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -2204,9 +2204,9 @@ public class FileKit {
      *
      * @param file 文件
      * @return 输入流
-     * @throws InstrumentException 文件未找到
+     * @throws InternalException 文件未找到
      */
-    public static BufferedInputStream getInputStream(File file) throws InstrumentException {
+    public static BufferedInputStream getInputStream(File file) throws InternalException {
         return new BufferedInputStream(IoKit.toStream(file));
     }
 
@@ -2215,9 +2215,9 @@ public class FileKit {
      *
      * @param path 文件路径
      * @return 输入流
-     * @throws InstrumentException 文件未找到
+     * @throws InternalException 文件未找到
      */
-    public static BufferedInputStream getInputStream(String path) throws InstrumentException {
+    public static BufferedInputStream getInputStream(String path) throws InternalException {
         return getInputStream(file(path));
     }
 
@@ -2226,13 +2226,13 @@ public class FileKit {
      *
      * @param file 文件
      * @return 输入流
-     * @throws InstrumentException 文件未找到
+     * @throws InternalException 文件未找到
      */
-    public static BOMInputStream getBOMInputStream(File file) throws InstrumentException {
+    public static BOMInputStream getBOMInputStream(File file) throws InternalException {
         try {
             return new BOMInputStream(new FileInputStream(file));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -2251,9 +2251,9 @@ public class FileKit {
      *
      * @param path 文件Path
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(Path path) throws InstrumentException {
+    public static BufferedReader getReader(Path path) throws InternalException {
         return getReader(path, Charset.UTF_8);
     }
 
@@ -2262,9 +2262,9 @@ public class FileKit {
      *
      * @param file 文件
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(File file) throws InstrumentException {
+    public static BufferedReader getReader(File file) throws InternalException {
         return getReader(file, Charset.UTF_8);
     }
 
@@ -2273,9 +2273,9 @@ public class FileKit {
      *
      * @param path 文件路径
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(String path) throws InstrumentException {
+    public static BufferedReader getReader(String path) throws InternalException {
         return getReader(path, Charset.UTF_8);
     }
 
@@ -2285,9 +2285,9 @@ public class FileKit {
      * @param path    文件Path
      * @param charset 字符集
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(Path path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static BufferedReader getReader(Path path, java.nio.charset.Charset charset) throws InternalException {
         return IoKit.getReader(getInputStream(path), charset);
     }
 
@@ -2297,9 +2297,9 @@ public class FileKit {
      * @param file        文件
      * @param charsetName 字符集
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(File file, String charsetName) throws InstrumentException {
+    public static BufferedReader getReader(File file, String charsetName) throws InternalException {
         return IoKit.getReader(getInputStream(file), charsetName);
     }
 
@@ -2309,9 +2309,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public static BufferedReader getReader(File file, java.nio.charset.Charset charset) throws InternalException {
         return IoKit.getReader(getInputStream(file), charset);
     }
 
@@ -2321,9 +2321,9 @@ public class FileKit {
      * @param path        绝对路径
      * @param charsetName 字符集
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(String path, String charsetName) throws InstrumentException {
+    public static BufferedReader getReader(String path, String charsetName) throws InternalException {
         return getReader(file(path), charsetName);
     }
 
@@ -2333,9 +2333,9 @@ public class FileKit {
      * @param path    绝对路径
      * @param charset 字符集
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedReader getReader(String path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static BufferedReader getReader(String path, java.nio.charset.Charset charset) throws InternalException {
         return getReader(file(path), charset);
     }
 
@@ -2345,9 +2345,9 @@ public class FileKit {
      *
      * @param file 文件
      * @return 字节码
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static byte[] readBytes(File file) throws InstrumentException {
+    public static byte[] readBytes(File file) throws InternalException {
         return FileReader.create(file).readBytes();
     }
 
@@ -2357,9 +2357,9 @@ public class FileKit {
      *
      * @param filePath 文件路径
      * @return 字节码
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static byte[] readBytes(String filePath) throws InstrumentException {
+    public static byte[] readBytes(String filePath) throws InternalException {
         return readBytes(file(filePath));
     }
 
@@ -2368,9 +2368,9 @@ public class FileKit {
      *
      * @param file 文件
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readString(File file) throws InstrumentException {
+    public static String readString(File file) throws InternalException {
         return readString(file, Charset.UTF_8);
     }
 
@@ -2379,9 +2379,9 @@ public class FileKit {
      *
      * @param path 文件路径
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readString(String path) throws InstrumentException {
+    public static String readString(String path) throws InternalException {
         return readString(path, Charset.UTF_8);
     }
 
@@ -2391,9 +2391,9 @@ public class FileKit {
      * @param file        文件
      * @param charsetName 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readString(File file, String charsetName) throws InstrumentException {
+    public static String readString(File file, String charsetName) throws InternalException {
         return readString(file, Charset.charset(charsetName));
     }
 
@@ -2403,9 +2403,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readString(File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public static String readString(File file, java.nio.charset.Charset charset) throws InternalException {
         return FileReader.create(file, charset).readString();
     }
 
@@ -2415,9 +2415,9 @@ public class FileKit {
      * @param path        文件路径
      * @param charsetName 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readString(String path, String charsetName) throws InstrumentException {
+    public static String readString(String path, String charsetName) throws InternalException {
         return readString(file(path), charsetName);
     }
 
@@ -2427,9 +2427,9 @@ public class FileKit {
      * @param path    文件路径
      * @param charset 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readString(String path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static String readString(String path, java.nio.charset.Charset charset) throws InternalException {
         return readString(file(path), charset);
     }
 
@@ -2439,9 +2439,9 @@ public class FileKit {
      * @param url     文件URL
      * @param charset 字符集
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static String readString(URL url, String charset) throws InstrumentException {
+    public static String readString(URL url, String charset) throws InternalException {
         if (null == url) {
             throw new NullPointerException("Empty url provided!");
         }
@@ -2451,7 +2451,7 @@ public class FileKit {
             in = url.openStream();
             return IoKit.read(in, charset);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(in);
         }
@@ -2464,9 +2464,9 @@ public class FileKit {
      * @param path       文件路径
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(String path, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(String path, T collection) throws InternalException {
         return readLines(path, Charset.UTF_8, collection);
     }
 
@@ -2478,9 +2478,9 @@ public class FileKit {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(String path, String charset, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(String path, String charset, T collection) throws InternalException {
         return readLines(file(path), charset, collection);
     }
 
@@ -2492,9 +2492,9 @@ public class FileKit {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(String path, java.nio.charset.Charset charset, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(String path, java.nio.charset.Charset charset, T collection) throws InternalException {
         return readLines(file(path), charset, collection);
     }
 
@@ -2505,9 +2505,9 @@ public class FileKit {
      * @param file       文件路径
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(File file, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(File file, T collection) throws InternalException {
         return readLines(file, Charset.UTF_8, collection);
     }
 
@@ -2519,9 +2519,9 @@ public class FileKit {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(File file, String charset, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(File file, String charset, T collection) throws InternalException {
         return FileReader.create(file, Charset.charset(charset)).readLines(collection);
     }
 
@@ -2533,9 +2533,9 @@ public class FileKit {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(File file, java.nio.charset.Charset charset, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(File file, java.nio.charset.Charset charset, T collection) throws InternalException {
         return FileReader.create(file, charset).readLines(collection);
     }
 
@@ -2546,9 +2546,9 @@ public class FileKit {
      * @param url        文件的URL
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(URL url, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(URL url, T collection) throws InternalException {
         return readLines(url, Charset.UTF_8, collection);
     }
 
@@ -2560,9 +2560,9 @@ public class FileKit {
      * @param charsetName 字符集
      * @param collection  集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(URL url, String charsetName, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(URL url, String charsetName, T collection) throws InternalException {
         return readLines(url, Charset.charset(charsetName), collection);
     }
 
@@ -2574,15 +2574,15 @@ public class FileKit {
      * @param charset    字符集
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T extends Collection<String>> T readLines(URL url, java.nio.charset.Charset charset, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(URL url, java.nio.charset.Charset charset, T collection) throws InternalException {
         InputStream in = null;
         try {
             in = url.openStream();
             return IoKit.readLines(in, charset, collection);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(in);
         }
@@ -2593,9 +2593,9 @@ public class FileKit {
      *
      * @param url 文件的URL
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(URL url) throws InstrumentException {
+    public static List<String> readLines(URL url) throws InternalException {
         return readLines(url, Charset.UTF_8);
     }
 
@@ -2605,9 +2605,9 @@ public class FileKit {
      * @param url     文件的URL
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(URL url, String charset) throws InstrumentException {
+    public static List<String> readLines(URL url, String charset) throws InternalException {
         return readLines(url, charset, new ArrayList<>());
     }
 
@@ -2617,9 +2617,9 @@ public class FileKit {
      * @param url     文件的URL
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(URL url, java.nio.charset.Charset charset) throws InstrumentException {
+    public static List<String> readLines(URL url, java.nio.charset.Charset charset) throws InternalException {
         return readLines(url, charset, new ArrayList<>());
     }
 
@@ -2628,9 +2628,9 @@ public class FileKit {
      *
      * @param path 文件路径
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(String path) throws InstrumentException {
+    public static List<String> readLines(String path) throws InternalException {
         return readLines(path, Charset.UTF_8);
     }
 
@@ -2640,9 +2640,9 @@ public class FileKit {
      * @param path    文件路径
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(String path, String charset) throws InstrumentException {
+    public static List<String> readLines(String path, String charset) throws InternalException {
         return readLines(path, charset, new ArrayList<>());
     }
 
@@ -2652,9 +2652,9 @@ public class FileKit {
      * @param path    文件路径
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(String path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static List<String> readLines(String path, java.nio.charset.Charset charset) throws InternalException {
         return readLines(path, charset, new ArrayList<>());
     }
 
@@ -2663,9 +2663,9 @@ public class FileKit {
      *
      * @param file 文件
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(File file) throws InstrumentException {
+    public static List<String> readLines(File file) throws InternalException {
         return readLines(file, Charset.UTF_8);
     }
 
@@ -2675,9 +2675,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(File file, String charset) throws InstrumentException {
+    public static List<String> readLines(File file, String charset) throws InternalException {
         return readLines(file, charset, new ArrayList<>());
     }
 
@@ -2687,9 +2687,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static List<String> readLines(File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public static List<String> readLines(File file, java.nio.charset.Charset charset) throws InternalException {
         return readLines(file, charset, new ArrayList<>());
     }
 
@@ -2698,9 +2698,9 @@ public class FileKit {
      *
      * @param file        文件
      * @param lineHandler {@link LineHandler}行处理器
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void readLines(File file, LineHandler lineHandler) throws InstrumentException {
+    public static void readLines(File file, LineHandler lineHandler) throws InternalException {
         readLines(file, Charset.UTF_8, lineHandler);
     }
 
@@ -2710,9 +2710,9 @@ public class FileKit {
      * @param file        文件
      * @param charset     编码
      * @param lineHandler {@link LineHandler}行处理器
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void readLines(File file, java.nio.charset.Charset charset, LineHandler lineHandler) throws InstrumentException {
+    public static void readLines(File file, java.nio.charset.Charset charset, LineHandler lineHandler) throws InternalException {
         FileReader.create(file, charset).readLines(lineHandler);
     }
 
@@ -2722,7 +2722,7 @@ public class FileKit {
      * @param file        {@link RandomAccessFile}文件
      * @param charset     编码
      * @param lineHandler {@link LineHandler}行处理器
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, LineHandler lineHandler) {
         String line;
@@ -2731,7 +2731,7 @@ public class FileKit {
                 lineHandler.handle(Charset.convert(line, Charset.ISO_8859_1, charset));
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -2761,7 +2761,7 @@ public class FileKit {
         try {
             line = file.readLine();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         if (null != line) {
             return Charset.convert(line, Charset.ISO_8859_1, charset);
@@ -2777,9 +2777,9 @@ public class FileKit {
      * @param readerHandler Reader处理类
      * @param path          文件的绝对路径
      * @return 从文件中load出的数据
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> T load(String path, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
+    public static <T> T load(String path, FileReader.ReaderHandler<T> readerHandler) throws InternalException {
         return load(path, Charset.UTF_8, readerHandler);
     }
 
@@ -2791,9 +2791,9 @@ public class FileKit {
      * @param path          文件的绝对路径
      * @param charset       字符集
      * @return 从文件中load出的数据
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> T load(String path, String charset, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
+    public static <T> T load(String path, String charset, FileReader.ReaderHandler<T> readerHandler) throws InternalException {
         return FileReader.create(file(path), Charset.charset(charset)).read(readerHandler);
     }
 
@@ -2805,9 +2805,9 @@ public class FileKit {
      * @param path          文件的绝对路径
      * @param charset       字符集
      * @return 从文件中load出的数据
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> T load(String path, java.nio.charset.Charset charset, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
+    public static <T> T load(String path, java.nio.charset.Charset charset, FileReader.ReaderHandler<T> readerHandler) throws InternalException {
         return FileReader.create(file(path), charset).read(readerHandler);
     }
 
@@ -2818,9 +2818,9 @@ public class FileKit {
      * @param readerHandler Reader处理类
      * @param file          文件
      * @return 从文件中load出的数据
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> T load(File file, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
+    public static <T> T load(File file, FileReader.ReaderHandler<T> readerHandler) throws InternalException {
         return load(file, Charset.UTF_8, readerHandler);
     }
 
@@ -2832,9 +2832,9 @@ public class FileKit {
      * @param file          文件
      * @param charset       字符集
      * @return 从文件中load出的数据
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> T load(File file, java.nio.charset.Charset charset, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
+    public static <T> T load(File file, java.nio.charset.Charset charset, FileReader.ReaderHandler<T> readerHandler) throws InternalException {
         return FileReader.create(file, charset).read(readerHandler);
     }
 
@@ -2843,13 +2843,13 @@ public class FileKit {
      *
      * @param file 文件
      * @return 输出流对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedOutputStream getOutputStream(File file) throws InstrumentException {
+    public static BufferedOutputStream getOutputStream(File file) throws InternalException {
         try {
             return new BufferedOutputStream(new FileOutputStream(touch(file)));
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -2858,9 +2858,9 @@ public class FileKit {
      *
      * @param path 输出到的文件路径,绝对路径
      * @return 输出流对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedOutputStream getOutputStream(String path) throws InstrumentException {
+    public static BufferedOutputStream getOutputStream(String path) throws InternalException {
         return getOutputStream(touch(path));
     }
 
@@ -2871,9 +2871,9 @@ public class FileKit {
      * @param charsetName 字符集
      * @param isAppend    是否追加
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedWriter getWriter(String path, String charsetName, boolean isAppend) throws InstrumentException {
+    public static BufferedWriter getWriter(String path, String charsetName, boolean isAppend) throws InternalException {
         return getWriter(touch(path), java.nio.charset.Charset.forName(charsetName), isAppend);
     }
 
@@ -2884,9 +2884,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedWriter getWriter(String path, java.nio.charset.Charset charset, boolean isAppend) throws InstrumentException {
+    public static BufferedWriter getWriter(String path, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
         return getWriter(touch(path), charset, isAppend);
     }
 
@@ -2897,9 +2897,9 @@ public class FileKit {
      * @param charsetName 字符集
      * @param isAppend    是否追加
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedWriter getWriter(File file, String charsetName, boolean isAppend) throws InstrumentException {
+    public static BufferedWriter getWriter(File file, String charsetName, boolean isAppend) throws InternalException {
         return getWriter(file, java.nio.charset.Charset.forName(charsetName), isAppend);
     }
 
@@ -2910,9 +2910,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static BufferedWriter getWriter(File file, java.nio.charset.Charset charset, boolean isAppend) throws InstrumentException {
+    public static BufferedWriter getWriter(File file, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
         return FileWriter.create(file, charset).getWriter(isAppend);
     }
 
@@ -2923,9 +2923,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static PrintWriter getPrintWriter(String path, String charset, boolean isAppend) throws InstrumentException {
+    public static PrintWriter getPrintWriter(String path, String charset, boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(path, charset, isAppend));
     }
 
@@ -2936,9 +2936,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static PrintWriter getPrintWriter(String path, java.nio.charset.Charset charset, boolean isAppend) throws InstrumentException {
+    public static PrintWriter getPrintWriter(String path, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(path, charset, isAppend));
     }
 
@@ -2949,9 +2949,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static PrintWriter getPrintWriter(File file, String charset, boolean isAppend) throws InstrumentException {
+    public static PrintWriter getPrintWriter(File file, String charset, boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(file, charset, isAppend));
     }
 
@@ -2962,9 +2962,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static PrintWriter getPrintWriter(File file, java.nio.charset.Charset charset, boolean isAppend) throws InstrumentException {
+    public static PrintWriter getPrintWriter(File file, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(file, charset, isAppend));
     }
 
@@ -2989,9 +2989,9 @@ public class FileKit {
      * @param content 写入的内容
      * @param path    文件路径
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeString(String content, String path) throws InstrumentException {
+    public static File writeString(String content, String path) throws InternalException {
         return writeString(content, path, Charset.UTF_8);
     }
 
@@ -3001,9 +3001,9 @@ public class FileKit {
      * @param content 写入的内容
      * @param file    文件
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeString(String content, File file) throws InstrumentException {
+    public static File writeString(String content, File file) throws InternalException {
         return writeString(content, file, Charset.UTF_8);
     }
 
@@ -3014,9 +3014,9 @@ public class FileKit {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeString(String content, String path, String charset) throws InstrumentException {
+    public static File writeString(String content, String path, String charset) throws InternalException {
         return writeString(content, touch(path), charset);
     }
 
@@ -3027,9 +3027,9 @@ public class FileKit {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeString(String content, String path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File writeString(String content, String path, java.nio.charset.Charset charset) throws InternalException {
         return writeString(content, touch(path), charset);
     }
 
@@ -3040,9 +3040,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 被写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeString(String content, File file, String charset) throws InstrumentException {
+    public static File writeString(String content, File file, String charset) throws InternalException {
         return FileWriter.create(file, Charset.charset(charset)).write(content);
     }
 
@@ -3053,9 +3053,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 被写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeString(String content, File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File writeString(String content, File file, java.nio.charset.Charset charset) throws InternalException {
         return FileWriter.create(file, charset).write(content);
     }
 
@@ -3065,9 +3065,9 @@ public class FileKit {
      * @param content 写入的内容
      * @param path    文件路径
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File appendString(String content, String path) throws InstrumentException {
+    public static File appendString(String content, String path) throws InternalException {
         return appendString(content, path, Charset.UTF_8);
     }
 
@@ -3078,9 +3078,9 @@ public class FileKit {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File appendString(String content, String path, String charset) throws InstrumentException {
+    public static File appendString(String content, String path, String charset) throws InternalException {
         return appendString(content, touch(path), charset);
     }
 
@@ -3091,9 +3091,9 @@ public class FileKit {
      * @param path    文件路径
      * @param charset 字符集
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File appendString(String content, String path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File appendString(String content, String path, java.nio.charset.Charset charset) throws InternalException {
         return appendString(content, touch(path), charset);
     }
 
@@ -3103,9 +3103,9 @@ public class FileKit {
      * @param content 写入的内容
      * @param file    文件
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File appendString(String content, File file) throws InstrumentException {
+    public static File appendString(String content, File file) throws InternalException {
         return appendString(content, file, Charset.UTF_8);
     }
 
@@ -3116,9 +3116,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File appendString(String content, File file, String charset) throws InstrumentException {
+    public static File appendString(String content, File file, String charset) throws InternalException {
         return FileWriter.create(file, Charset.charset(charset)).append(content);
     }
 
@@ -3129,9 +3129,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 写入的文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File appendString(String content, File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File appendString(String content, File file, java.nio.charset.Charset charset) throws InternalException {
         return FileWriter.create(file, charset).append(content);
     }
 
@@ -3142,9 +3142,9 @@ public class FileKit {
      * @param list 列表
      * @param path 绝对路径
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, String path) throws InternalException {
         return writeLines(list, path, Charset.UTF_8);
     }
 
@@ -3155,9 +3155,9 @@ public class FileKit {
      * @param list 列表
      * @param file 绝对路径
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, File file) throws InternalException {
         return writeLines(list, file, Charset.UTF_8);
     }
 
@@ -3169,9 +3169,9 @@ public class FileKit {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, String charset) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, String path, String charset) throws InternalException {
         return writeLines(list, path, charset, false);
     }
 
@@ -3183,9 +3183,9 @@ public class FileKit {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, String path, java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, path, charset, false);
     }
 
@@ -3197,9 +3197,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, String charset) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, File file, String charset) throws InternalException {
         return writeLines(list, file, charset, false);
     }
 
@@ -3211,9 +3211,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, File file, java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, file, charset, false);
     }
 
@@ -3224,9 +3224,9 @@ public class FileKit {
      * @param list 列表
      * @param file 文件
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, File file) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, File file) throws InternalException {
         return appendLines(list, file, Charset.UTF_8);
     }
 
@@ -3237,9 +3237,9 @@ public class FileKit {
      * @param list 列表
      * @param path 文件路径
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, String path) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, String path) throws InternalException {
         return appendLines(list, path, Charset.UTF_8);
     }
 
@@ -3251,9 +3251,9 @@ public class FileKit {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, String path, String charset) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, String path, String charset) throws InternalException {
         return writeLines(list, path, charset, true);
     }
 
@@ -3270,9 +3270,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, File file, String charset) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, File file, String charset) throws InternalException {
         return writeLines(list, file, charset, true);
     }
 
@@ -3284,9 +3284,9 @@ public class FileKit {
      * @param path    绝对路径
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, String path, java.nio.charset.Charset charset) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, String path, java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, path, charset, true);
     }
 
@@ -3298,9 +3298,9 @@ public class FileKit {
      * @param file    文件
      * @param charset 字符集
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, File file, java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, file, charset, true);
     }
 
@@ -3313,9 +3313,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, String charset, boolean isAppend) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, String path, String charset, boolean isAppend) throws InternalException {
         return writeLines(list, file(path), charset, isAppend);
     }
 
@@ -3328,9 +3328,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, java.nio.charset.Charset charset, boolean isAppend) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, String path, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
         return writeLines(list, file(path), charset, isAppend);
     }
 
@@ -3343,9 +3343,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, String charset, boolean isAppend) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, File file, String charset, boolean isAppend) throws InternalException {
         return FileWriter.create(file, Charset.charset(charset)).writeLines(list, isAppend);
     }
 
@@ -3358,9 +3358,9 @@ public class FileKit {
      * @param charset  字符集
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, java.nio.charset.Charset charset, boolean isAppend) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, File file, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
         return FileWriter.create(file, charset).writeLines(list, isAppend);
     }
 
@@ -3372,9 +3372,9 @@ public class FileKit {
      * @param kvSeparator 键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeMap(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws InstrumentException {
+    public static File writeMap(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws InternalException {
         return FileWriter.create(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 
@@ -3387,9 +3387,9 @@ public class FileKit {
      * @param kvSeparator 键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeMap(Map<?, ?> map, File file, java.nio.charset.Charset charset, String kvSeparator, boolean isAppend) throws InstrumentException {
+    public static File writeMap(Map<?, ?> map, File file, java.nio.charset.Charset charset, String kvSeparator, boolean isAppend) throws InternalException {
         return FileWriter.create(file, charset).writeMap(map, kvSeparator, isAppend);
     }
 
@@ -3399,9 +3399,9 @@ public class FileKit {
      * @param data 数据
      * @param path 目标文件
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeBytes(byte[] data, String path) throws InstrumentException {
+    public static File writeBytes(byte[] data, String path) throws InternalException {
         return writeBytes(data, touch(path));
     }
 
@@ -3411,9 +3411,9 @@ public class FileKit {
      * @param dest 目标文件
      * @param data 数据
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeBytes(byte[] data, File dest) throws InstrumentException {
+    public static File writeBytes(byte[] data, File dest) throws InternalException {
         return writeBytes(data, dest, 0, data.length, false);
     }
 
@@ -3426,9 +3426,9 @@ public class FileKit {
      * @param len      数据长度
      * @param isAppend 是否追加模式
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeBytes(byte[] data, File dest, int off, int len, boolean isAppend) throws InstrumentException {
+    public static File writeBytes(byte[] data, File dest, int off, int len, boolean isAppend) throws InternalException {
         return FileWriter.create(dest).write(data, off, len, isAppend);
     }
 
@@ -3438,9 +3438,9 @@ public class FileKit {
      * @param dest 目标文件
      * @param in   输入流
      * @return dest
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeFromStream(InputStream in, File dest) throws InstrumentException {
+    public static File writeFromStream(InputStream in, File dest) throws InternalException {
         return writeFromStream(in, dest, true);
     }
 
@@ -3451,9 +3451,9 @@ public class FileKit {
      * @param in        输入流
      * @param isCloseIn 关闭输入流
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeFromStream(InputStream in, File dest, boolean isCloseIn) throws InstrumentException {
+    public static File writeFromStream(InputStream in, File dest, boolean isCloseIn) throws InternalException {
         return FileWriter.create(dest).writeFromStream(in, isCloseIn);
     }
 
@@ -3463,9 +3463,9 @@ public class FileKit {
      * @param in   输入流
      * @param path 文件绝对路径
      * @return 目标文件
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static File writeFromStream(InputStream in, String path) throws InstrumentException {
+    public static File writeFromStream(InputStream in, String path) throws InternalException {
         return writeFromStream(in, touch(path));
     }
 
@@ -3475,9 +3475,9 @@ public class FileKit {
      * @param file 文件
      * @param out  流
      * @return 写出的流byte数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long writeToStream(File file, OutputStream out) throws InstrumentException {
+    public static long writeToStream(File file, OutputStream out) throws InternalException {
         return FileReader.create(file).writeToStream(out);
     }
 
@@ -3487,9 +3487,9 @@ public class FileKit {
      * @param path 文件绝对路径
      * @param out  输出流
      * @return 写出的流byte数
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long writeToStream(String path, OutputStream out) throws InstrumentException {
+    public static long writeToStream(String path, OutputStream out) throws InternalException {
         return writeToStream(touch(path), out);
     }
 
@@ -3571,9 +3571,9 @@ public class FileKit {
      *
      * @param file 文件,不能为目录
      * @return CRC32值
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static long checksumCRC32(File file) throws InstrumentException {
+    public static long checksumCRC32(File file) throws InternalException {
         return checksum(file, new CRC32()).getValue();
     }
 
@@ -3583,9 +3583,9 @@ public class FileKit {
      * @param file     文件,不能为目录
      * @param checksum {@link Checksum}
      * @return Checksum
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static Checksum checksum(File file, Checksum checksum) throws InstrumentException {
+    public static Checksum checksum(File file, Checksum checksum) throws InternalException {
         Assert.notNull(file, "File is null !");
         if (file.isDirectory()) {
             throw new IllegalArgumentException("Checksums can't be computed on directories");
@@ -3593,7 +3593,7 @@ public class FileKit {
         try {
             return IoKit.checksum(new FileInputStream(file), checksum);
         } catch (FileNotFoundException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -3630,7 +3630,7 @@ public class FileKit {
         try {
             return null == parent ? null : parent.getCanonicalPath();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -3657,7 +3657,7 @@ public class FileKit {
         try {
             parentFile = file.getCanonicalFile().getParentFile();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         if (1 == level) {
             return parentFile;
@@ -3733,7 +3733,7 @@ public class FileKit {
         try {
             return Files.probeContentType(file);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -3916,7 +3916,7 @@ public class FileKit {
         try {
             return new RandomAccessFile(file, mode.name());
         } catch (FileNotFoundException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -3957,7 +3957,7 @@ public class FileKit {
      *
      * @param resurce ClassPath资源
      * @return {@link InputStream}
-     * @throws InstrumentException 资源不存在异常
+     * @throws InternalException 资源不存在异常
      */
     public static InputStream getStream(String resurce) {
         return new ClassPathResource(resurce).getStream();
@@ -3972,7 +3972,7 @@ public class FileKit {
     public static InputStream getStreamSafe(String resurce) {
         try {
             return new ClassPathResource(resurce).getStream();
-        } catch (InstrumentException e) {
+        } catch (InternalException e) {
             // ignore
         }
         return null;
@@ -4044,7 +4044,7 @@ public class FileKit {
         try {
             resources = ClassKit.getClassLoader().getResources(resource);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return new EnumerationIterator<>(resources);
     }
@@ -4161,9 +4161,9 @@ public class FileKit {
                     fileWriter.write(text);
                     fileWriter.close();
                 } catch (FileNotFoundException e) {
-                    throw new InstrumentException("File NotFound !");
+                    throw new InternalException("File NotFound !");
                 } catch (IOException ex) {
-                    throw new InstrumentException("I/O exception of some sort has occurred");
+                    throw new InternalException("I/O exception of some sort has occurred");
                 }
             } else {
                 addContent(file, content);

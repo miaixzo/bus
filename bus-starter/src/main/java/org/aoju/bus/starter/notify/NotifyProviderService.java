@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.notify;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
@@ -79,7 +79,7 @@ public class NotifyProviderService {
      */
     public static void register(Registry registry, Context context) {
         if (CACHE.containsKey(registry)) {
-            throw new InstrumentException("重复注册同名称的组件：" + registry.name());
+            throw new InternalException("重复注册同名称的组件：" + registry.name());
         }
         CACHE.putIfAbsent(registry, context);
     }
@@ -132,7 +132,7 @@ public class NotifyProviderService {
         } else if (Registry.YUNPIAN_SMS.equals(registry)) {
             return new YunpianSmsProvider(context);
         }
-        throw new InstrumentException(Builder.ErrorCode.UNSUPPORTED.getMsg());
+        throw new InternalException(Builder.ErrorCode.UNSUPPORTED.getMsg());
     }
 
 }

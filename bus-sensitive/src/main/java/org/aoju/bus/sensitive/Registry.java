@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.sensitive.annotation.Strategy;
@@ -73,11 +73,11 @@ public final class Registry {
      */
     public static void register(Builder.Type name, StrategyProvider object) {
         if (STRATEGY_CACHE.containsKey(name)) {
-            throw new InstrumentException("重复注册同名称的组件：" + name);
+            throw new InternalException("重复注册同名称的组件：" + name);
         }
         Class<?> clazz = object.getClass();
         if (STRATEGY_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new InstrumentException("重复注册同类型的组件：" + clazz);
+            throw new InternalException("重复注册同类型的组件：" + clazz);
         }
         STRATEGY_CACHE.putIfAbsent(name, object);
     }
@@ -105,7 +105,7 @@ public final class Registry {
     public static StrategyProvider require(final Class<? extends Annotation> annotationClass) {
         StrategyProvider strategy = STRATEGY_CACHE.get(annotationClass);
         if (ObjectKit.isEmpty(strategy)) {
-            throw new InstrumentException("不支持的系统内置方法,用户请勿在自定义注解中使用[BuiltInStrategy]!");
+            throw new InternalException("不支持的系统内置方法,用户请勿在自定义注解中使用[BuiltInStrategy]!");
         }
         return strategy;
     }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.validators;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.exception.NoSuchException;
 import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.lang.Normal;
@@ -122,7 +122,7 @@ public class Checker {
                 Logger.debug("当前被校验的对象为null, 忽略校验对象内部字段: {}", validated);
             }
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("无法校验指定字段", e);
+            throw new InternalException("无法校验指定字段", e);
         }
         return collector;
     }

@@ -28,7 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.compare.NormalCompare;
 import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.stream.FastByteOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
@@ -511,10 +511,10 @@ public class ObjectKit {
      * 序列化后拷贝流的方式克隆
      * 对象必须实现Serializable接口
      *
-     * @param <T> 对象类型
+     * @param <T>    对象类型
      * @param object 被克隆对象
      * @return 克隆后的对象
-     * @throws InstrumentException IO异常和ClassNotFoundException封装
+     * @throws InternalException IO异常和ClassNotFoundException封装
      */
     public static <T> T cloneByStream(T object) {
         if (null == object || false == (object instanceof Serializable)) {
@@ -529,7 +529,7 @@ public class ObjectKit {
             final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray()));
             return (T) in.readObject();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -742,7 +742,7 @@ public class ObjectKit {
             objOut.writeObject(object);
             return byteOut.toByteArray();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -770,7 +770,7 @@ public class ObjectKit {
             ObjectInputStream objIn = new ObjectInputStream(byteIn);
             return (T) objIn.readObject();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -783,7 +783,7 @@ public class ObjectKit {
         try {
             return Class.forName(classAllName);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -817,7 +817,7 @@ public class ObjectKit {
             }
             return object;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -843,7 +843,7 @@ public class ObjectKit {
                 }
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -872,7 +872,7 @@ public class ObjectKit {
             return null;
 
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -901,7 +901,7 @@ public class ObjectKit {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -923,7 +923,7 @@ public class ObjectKit {
             attrMap.remove("serialVersionUID");
             return attrMap;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -958,7 +958,7 @@ public class ObjectKit {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1020,7 +1020,7 @@ public class ObjectKit {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1056,7 +1056,7 @@ public class ObjectKit {
             map.remove("serialVersionUID");
             return map;
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1075,7 +1075,7 @@ public class ObjectKit {
             Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
             return (Class<T>) params[0];
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1093,7 +1093,7 @@ public class ObjectKit {
             objectInput = new ObjectInputStream(input);
             return (T) objectInput.readObject();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             try {
                 if (null != objectInput) {
@@ -1103,7 +1103,7 @@ public class ObjectKit {
                     input.close();
                 }
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -1122,7 +1122,7 @@ public class ObjectKit {
             objOut.writeObject(object);
             return byteOut.toByteArray();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             try {
                 if (null != objOut) {
@@ -1132,7 +1132,7 @@ public class ObjectKit {
                     byteOut.close();
                 }
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -1230,7 +1230,7 @@ public class ObjectKit {
             Map<String, Object> attrMap = getFields(bean);
             return initObject(clazz, attrMap);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1245,7 +1245,7 @@ public class ObjectKit {
             Map<String, Object> attrMap = getFields(bean);
             return (T) initObject(bean.getClass(), attrMap);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1271,7 +1271,7 @@ public class ObjectKit {
                 }
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1304,7 +1304,7 @@ public class ObjectKit {
                 }
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

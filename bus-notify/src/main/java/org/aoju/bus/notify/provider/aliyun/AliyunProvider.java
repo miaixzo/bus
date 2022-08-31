@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
@@ -118,7 +118,7 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
             byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new InstrumentException("Aliyun specialUrlEncode error");
+            throw new InternalException("Aliyun specialUrlEncode error");
         }
     }
 

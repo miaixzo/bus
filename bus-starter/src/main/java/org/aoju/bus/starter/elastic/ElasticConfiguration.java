@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.elastic;
 
 import org.aoju.bus.base.consts.Consts;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -59,7 +59,7 @@ public class ElasticConfiguration {
     public RestClientBuilder restClientBuilder() {
         if (CollKit.isEmpty(this.elasticProperties.getHostList())) {
             Logger.error("[ElasticConfiguration.restClientBuilder] 初始化 RestClient 失败: 未配置集群主机信息");
-            throw new InstrumentException("初始化 RestClient 失败: 未配置 ElasticSearch 集群主机信息");
+            throw new InternalException("初始化 RestClient 失败: 未配置 ElasticSearch 集群主机信息");
         }
 
         HttpHost[] hosts = this.elasticProperties.getHostList().stream()
@@ -71,7 +71,7 @@ public class ElasticConfiguration {
 
     private HttpHost buildHttpHost(String host) {
         if (StringKit.isBlank(host) || !host.contains(Symbol.COLON)) {
-            throw new InstrumentException("ElasticSearch集群节点信息配置错误, 正确格式[ ip1:port,ip2:port... ]");
+            throw new InternalException("ElasticSearch集群节点信息配置错误, 正确格式[ ip1:port,ip2:port... ]");
         }
         List<String> hostPort = StringKit.split(host, Symbol.COLON);
         return new HttpHost(hostPort.get(Consts.INTEGER_ZERO), Integer.parseInt(hostPort.get(Consts.INTEGER_ONE)),

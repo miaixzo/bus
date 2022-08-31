@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -303,7 +303,7 @@ public class MppsSCU {
     }
 
     public void open() throws IOException, InterruptedException,
-            InstrumentException, GeneralSecurityException {
+            InternalException, GeneralSecurityException {
         as = ae.connect(remote, rq);
     }
 

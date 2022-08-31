@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.metric.internal.hl7.HL7Charset;
 import org.aoju.bus.image.metric.internal.hl7.HL7Parser;
@@ -55,12 +55,12 @@ public class HL72Xml {
     private String charset;
 
 
-    private static String fname(List<String> argList) throws InstrumentException {
+    private static String fname(List<String> argList) throws InternalException {
         int numArgs = argList.size();
         if (numArgs == 0)
-            throw new InstrumentException("missing");
+            throw new InternalException("missing");
         if (numArgs > 1)
-            throw new InstrumentException("too-many");
+            throw new InternalException("too-many");
         return argList.get(0);
     }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.io;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ByteKit;
@@ -818,14 +818,14 @@ public class ImageInputStream extends FilterInputStream
         if (rlen < 8
                 || !guessTransferSyntax(b132, rlen, false)
                 && !guessTransferSyntax(b132, rlen, true))
-            throw new InstrumentException(NOT_A_DICOM_STREAM);
+            throw new InternalException(NOT_A_DICOM_STREAM);
         reset();
         hasfmi = Tag.isFileMetaInformation(
                 ByteKit.bytesToTag(b132, 0, bigEndian));
     }
 
     private boolean guessTransferSyntax(byte[] b128, int rlen, boolean bigEndian)
-            throws InstrumentException {
+            throws InternalException {
         int tag1 = ByteKit.bytesToTag(b128, 0, bigEndian);
         VR vr = ElementDictionary.vrOf(tag1, null);
         if (vr == VR.UN)
@@ -842,7 +842,7 @@ public class ImageInputStream extends FilterInputStream
             return false;
 
         if (bigEndian)
-            throw new InstrumentException(IMPLICIT_VR_BIG_ENDIAN);
+            throw new InternalException(IMPLICIT_VR_BIG_ENDIAN);
 
         this.tsuid = UID.ImplicitVRLittleEndian;
         this.bigEndian = false;

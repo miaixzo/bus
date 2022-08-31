@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpv;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.buffer.Buffer;
 import org.aoju.bus.core.lang.*;
@@ -211,7 +211,7 @@ public class ResultBody implements CoverResult.Body {
                 return new String(body.bytes(), charset);
             }
         } catch (IOException e) {
-            throw new InstrumentException("Error in converting the body of the message!", e);
+            throw new InternalException("Error in converting the body of the message!", e);
         }
         return null;
     }
@@ -240,7 +240,7 @@ public class ResultBody implements CoverResult.Body {
                 file.createNewFile();
             } catch (IOException e) {
                 response.close();
-                throw new InstrumentException("Cannot create file [" + file.getAbsolutePath() + "]", e);
+                throw new InternalException("Cannot create file [" + file.getAbsolutePath() + "]", e);
             }
         }
         return executor.download(coverHttp, file, toByteStream(),
@@ -265,7 +265,7 @@ public class ResultBody implements CoverResult.Body {
     public Downloads toFolder(File dir) {
         if (dir.exists() && !dir.isDirectory()) {
             response.close();
-            throw new InstrumentException("File download failed：[" + dir.getAbsolutePath() + "] Already exists and is not a directory !");
+            throw new InternalException("File download failed：[" + dir.getAbsolutePath() + "] Already exists and is not a directory !");
         }
         if (!dir.exists()) {
             dir.mkdirs();
@@ -303,7 +303,7 @@ public class ResultBody implements CoverResult.Body {
             try (Buffer buffer = new Buffer()) {
                 return buffer.readFrom(toByteStream()).readByteArray();
             } catch (IOException e) {
-                throw new InstrumentException("Error in converting byte array of message body!", e);
+                throw new InternalException("Error in converting byte array of message body!", e);
             } finally {
                 response.close();
             }
@@ -313,7 +313,7 @@ public class ResultBody implements CoverResult.Body {
             try {
                 return body.bytes();
             } catch (IOException e) {
-                throw new InstrumentException("Error in converting byte array of message body!", e);
+                throw new InternalException("Error in converting byte array of message body!", e);
             }
         }
         return new byte[0];
@@ -369,7 +369,7 @@ public class ResultBody implements CoverResult.Body {
                 fileName = URLDecoder.decode(fileName.substring(
                         fileName.indexOf("filename=") + 9), Charset.DEFAULT_UTF_8);
             } catch (UnsupportedEncodingException e) {
-                throw new InstrumentException("Failed to decode file name", e);
+                throw new InternalException("Failed to decode file name", e);
             }
             // 去掉文件名会被包含""，不然无法读取文件后缀
             fileName = fileName.replaceAll("\"", Normal.EMPTY);

@@ -93,7 +93,7 @@ final HttpHeaders headers=new HttpHeaders();
         +targetFormat.getExtension());
 
         return ResponseEntity.ok().headers(headers).body(out.toByteArray());
-        }catch(InstrumentException|IOException ex){
+        }catch(InternalException|IOException ex){
         return write(ErrorCode.EM_100506);
         }
         }

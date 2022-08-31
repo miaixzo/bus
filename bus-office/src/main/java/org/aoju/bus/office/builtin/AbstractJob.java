@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.office.magic.family.DocumentFormat;
 import org.aoju.bus.office.provider.AbstractSourceProvider;
@@ -58,7 +58,7 @@ public abstract class AbstractJob implements OptionalTarget {
     }
 
     @Override
-    public final void execute() throws InstrumentException {
+    public final void execute() throws InternalException {
         Assert.notNull(target.getFormat(), "The target format is missing or not supported");
         doExecute();
     }
@@ -67,8 +67,8 @@ public abstract class AbstractJob implements OptionalTarget {
      * 执行转换并阻塞，直到转换终止.
      * 此时，源文档格式和目标文档格式都是已知且有效的.
      *
-     * @throws InstrumentException 如果转换失败.
+     * @throws InternalException 如果转换失败.
      */
-    protected abstract void doExecute() throws InstrumentException;
+    protected abstract void doExecute() throws InternalException;
 
 }

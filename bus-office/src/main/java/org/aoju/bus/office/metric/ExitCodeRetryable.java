@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Expense;
 
 /**
@@ -50,10 +50,10 @@ public class ExitCodeRetryable extends AbstractRetryable {
     }
 
     @Override
-    protected void attempt() throws InstrumentException {
+    protected void attempt() throws InternalException {
         final Integer code = process.getExitCode();
         if (null == code) {
-            throw new InstrumentException();
+            throw new InternalException();
         }
         exitCode = code.intValue();
     }

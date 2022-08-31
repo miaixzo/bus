@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Protocol;
 import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 import org.aoju.bus.office.builtin.MadeInOffice;
@@ -88,7 +88,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
         return builder().install().build();
     }
 
-    private void connect() throws InstrumentException {
+    private void connect() throws InternalException {
 
         try {
             final ExternalOfficeBuilder mconfig = (ExternalOfficeBuilder) config;
@@ -96,12 +96,12 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
                     .execute(mconfig.getRetryInterval(), mconfig.getConnectTimeout());
 
         } catch (Exception ex) {
-            throw new InstrumentException("Could not establish connection to external office process", ex);
+            throw new InternalException("Could not establish connection to external office process", ex);
         }
     }
 
     @Override
-    public void execute(final MadeInOffice task) throws InstrumentException {
+    public void execute(final MadeInOffice task) throws InternalException {
         synchronized (localOffice) {
             if (!isRunning()) {
                 connect();
@@ -116,7 +116,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
     }
 
     @Override
-    public void start() throws InstrumentException {
+    public void start() throws InternalException {
         if (((ExternalOfficeBuilder) config).isConnectOnStart()) {
             synchronized (localOffice) {
                 connect();

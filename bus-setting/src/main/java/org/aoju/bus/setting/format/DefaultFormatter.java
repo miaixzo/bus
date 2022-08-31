@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.setting.format;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.setting.Format;
 import org.aoju.bus.setting.magic.IniComment;
 import org.aoju.bus.setting.magic.IniElement;
@@ -113,7 +113,7 @@ public class DefaultFormatter implements Format {
                     // set section if exists
                     // In general it should be there, unless it's incorrectly formatted. If not, an exception is thrown.
                     if (null == lastSection) {
-                        throw new InstrumentException("Cannot found section for property line " + lineNumber + " : " + line);
+                        throw new InternalException("Cannot found section for property line " + lineNumber + " : " + line);
                     }
                     // set section for property
                     property.setSection(lastSection);
@@ -121,7 +121,7 @@ public class DefaultFormatter implements Format {
                     element = property;
                 } else {
                     // None of them
-                    throw new InstrumentException("No matching element type found for line " + lineNumber + " : " + line);
+                    throw new InternalException("No matching element type found for line " + lineNumber + " : " + line);
                 }
 
         // if no throw, update effective line number.

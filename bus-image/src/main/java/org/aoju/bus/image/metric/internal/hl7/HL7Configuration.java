@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 /**
  * @author Kimi Liu
@@ -33,21 +33,21 @@ import org.aoju.bus.core.exception.InstrumentException;
  */
 public interface HL7Configuration {
 
-    boolean registerHL7Application(String name) throws InstrumentException;
+    boolean registerHL7Application(String name) throws InternalException;
 
-    void unregisterHL7Application(String name) throws InstrumentException;
+    void unregisterHL7Application(String name) throws InternalException;
 
-    HL7Application findHL7Application(String name) throws InstrumentException;
+    HL7Application findHL7Application(String name) throws InternalException;
 
-    String[] listRegisteredHL7ApplicationNames() throws InstrumentException;
+    String[] listRegisteredHL7ApplicationNames() throws InternalException;
 
     /**
      * 查询具有指定属性的HL7应用程序
      *
      * @param keys HL7应用程序属性，该属性应匹配或为*以获取所有已配置的HL7应用程序的信息
      * @return 具有匹配属性的已配置HL7 Application *的HL7ApplicationInfo对象的数组
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    HL7ApplicationInfo[] listHL7AppInfos(HL7ApplicationInfo keys) throws InstrumentException;
+    HL7ApplicationInfo[] listHL7AppInfos(HL7ApplicationInfo keys) throws InternalException;
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.channel;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
@@ -62,7 +62,7 @@ public class AsynchronousChannelProvider extends java.nio.channels.spi.Asynchron
 
     private AsynchronousChannelGroup checkAndGet(java.nio.channels.AsynchronousChannelGroup group) {
         if (!(group instanceof AsynchronousChannelGroup)) {
-            throw new InstrumentException("invalid class");
+            throw new InternalException("invalid class");
         }
         return (AsynchronousChannelGroup) group;
     }

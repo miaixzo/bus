@@ -27,7 +27,7 @@ package org.aoju.bus.validate;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -274,11 +274,11 @@ public class Validated extends Provider {
                 }
             }
             if (ObjectKit.isEmpty(property.getClazz()) || StringKit.isEmpty(property.getName())) {
-                throw new InstrumentException("非法的校验注解,没有使用Complex元注解表示校验器:" + annotationType.getName());
+                throw new InternalException("非法的校验注解,没有使用Complex元注解表示校验器:" + annotationType.getName());
             }
             return property;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new InstrumentException("非法的校验注解,没有定义通用的校验属性:" + annotationType.getName(), e);
+            throw new InternalException("非法的校验注解,没有定义通用的校验属性:" + annotationType.getName(), e);
         }
     }
 

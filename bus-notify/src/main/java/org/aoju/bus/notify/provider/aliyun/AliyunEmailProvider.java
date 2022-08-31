@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.ZoneId;
 import org.aoju.bus.core.toolkit.DateKit;
@@ -57,16 +57,16 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunProperty, Context>
      *
      * @param entity 请求对象
      * @return 处理结果响应
-     * @throws InstrumentException 异常信息
+     * @throws InternalException 异常信息
      */
     @Override
-    public Message send(AliyunProperty entity) throws InstrumentException {
+    public Message send(AliyunProperty entity) throws InternalException {
         if (StringKit.isEmpty(entity.getContent())) {
-            throw new InstrumentException("Email content cannot be empty");
+            throw new InternalException("Email content cannot be empty");
         } else if (StringKit.isEmpty(entity.getReceive())) {
-            throw new InstrumentException("Email address cannot be empty");
+            throw new InternalException("Email address cannot be empty");
         } else if (StringKit.isEmpty(entity.getSubject())) {
-            throw new InstrumentException("Email subject cannot be empty");
+            throw new InternalException("Email subject cannot be empty");
         }
 
         Map<String, String> bodys = new HashMap<>();

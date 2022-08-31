@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.office.metric.TemporaryFileMaker;
@@ -76,7 +76,7 @@ public class TargetFromOutputStreamProvider extends AbstractTargetProvider
             }
 
         } catch (IOException ex) {
-            throw new InstrumentException("Could not write file '" + tempFile + "' to stream", ex);
+            throw new InternalException("Could not write file '" + tempFile + "' to stream", ex);
         } finally {
             FileKit.delete(tempFile);
         }

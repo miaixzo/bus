@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -154,7 +154,7 @@ public class Dcm2Dcm {
             Logger.error(
                     MessageFormat.format("failed {0} {1}",
                             src, e.getMessage()));
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

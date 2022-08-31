@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.thread.NamedThreadFactory;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.builtin.MadeInOffice;
@@ -58,7 +58,7 @@ public abstract class AbstractOfficeEntryManager implements OfficeManager {
     }
 
     @Override
-    public final void execute(final MadeInOffice task) throws InstrumentException {
+    public final void execute(final MadeInOffice task) throws InternalException {
         currentFuture =
                 taskExecutor.submit(
                         (Callable<Void>) () -> {
@@ -71,14 +71,14 @@ public abstract class AbstractOfficeEntryManager implements OfficeManager {
             Logger.debug("Task executed successfully");
         } catch (TimeoutException timeoutEx) {
             handleExecuteTimeoutException(timeoutEx);
-            throw new InstrumentException("Task did not complete within timeout", timeoutEx);
+            throw new InternalException("Task did not complete within timeout", timeoutEx);
         } catch (ExecutionException executionEx) {
-            if (executionEx.getCause() instanceof InstrumentException) {
-                throw (InstrumentException) executionEx.getCause();
+            if (executionEx.getCause() instanceof InternalException) {
+                throw (InternalException) executionEx.getCause();
             }
-            throw new InstrumentException("Task failed", executionEx.getCause());
+            throw new InternalException("Task failed", executionEx.getCause());
         } catch (Exception ex) {
-            throw new InstrumentException("Task failed", ex);
+            throw new InternalException("Task failed", ex);
         } finally {
             currentFuture = null;
         }
@@ -107,7 +107,7 @@ public abstract class AbstractOfficeEntryManager implements OfficeManager {
     }
 
     @Override
-    public final void start() throws InstrumentException {
+    public final void start() throws InternalException {
         if (taskExecutor.isShutdown()) {
             throw new IllegalStateException("This office manager (pool entry) has been shutdown.");
         }
@@ -117,12 +117,12 @@ public abstract class AbstractOfficeEntryManager implements OfficeManager {
     /**
      * 当office管理器启动时，允许子类执行操作.
      *
-     * @throws InstrumentException 如果启动管理器时发生错误.
+     * @throws InternalException 如果启动管理器时发生错误.
      */
-    protected abstract void doStart() throws InstrumentException;
+    protected abstract void doStart() throws InternalException;
 
     @Override
-    public final void stop() throws InstrumentException {
+    public final void stop() throws InternalException {
         taskExecutor.setAvailable(false);
         taskExecutor.shutdownNow();
         doStop();
@@ -131,8 +131,8 @@ public abstract class AbstractOfficeEntryManager implements OfficeManager {
     /**
      * 当office管理器停止时，允许子类执行操作.
      *
-     * @throws InstrumentException 如果在停止管理器时发生错误.
+     * @throws InternalException 如果在停止管理器时发生错误.
      */
-    protected abstract void doStop() throws InstrumentException;
+    protected abstract void doStop() throws InternalException;
 
 }

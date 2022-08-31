@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -906,9 +906,9 @@ public class FileType {
      *
      * @param in {@link InputStream}
      * @return 类型, 文件的扩展名, 未找到为<code>null</code>
-     * @throws InstrumentException 读取流引起的异常
+     * @throws InternalException 读取流引起的异常
      */
-    public static String getType(InputStream in) throws InstrumentException {
+    public static String getType(InputStream in) throws InternalException {
         return getType(IoKit.readHex28Upper(in));
     }
 
@@ -917,9 +917,9 @@ public class FileType {
      *
      * @param file 文件 {@link File}
      * @return 类型, 文件的扩展名, 未找到为<code>null</code>
-     * @throws InstrumentException 读取文件引起的异常
+     * @throws InternalException 读取文件引起的异常
      */
-    public static String getType(File file) throws InstrumentException {
+    public static String getType(File file) throws InternalException {
         FileInputStream in = null;
         try {
             in = IoKit.toStream(file);
@@ -997,9 +997,9 @@ public class FileType {
      *
      * @param path 路径,绝对路径或相对ClassPath的路径
      * @return 类型
-     * @throws InstrumentException 读取文件引起的异常
+     * @throws InternalException 读取文件引起的异常
      */
-    public static String getTypeByPath(String path) throws InstrumentException {
+    public static String getTypeByPath(String path) throws InternalException {
         return getType(FileKit.file(path));
     }
 

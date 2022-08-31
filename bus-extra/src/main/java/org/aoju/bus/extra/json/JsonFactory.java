@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.json;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -59,7 +59,7 @@ public class JsonFactory {
     public static JsonProvider create() {
         final JsonProvider engine = ClassKit.loadFirstAvailable(JsonProvider.class);
         if (null == engine) {
-            throw new InstrumentException("No json jar found ! Please add one of it to your project !");
+            throw new InternalException("No json jar found ! Please add one of it to your project !");
         }
         Logger.debug("Use [{}] provider as default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Provider"));
         return engine;

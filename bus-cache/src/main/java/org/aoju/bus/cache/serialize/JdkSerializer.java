@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.serialize;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
@@ -47,7 +47,7 @@ public class JdkSerializer extends AbstractSerializer {
                 out = new ObjectOutputStream(outputStream);
                 out.writeObject(object);
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             } finally {
                 try {
                     if (null != out) {
@@ -71,7 +71,7 @@ public class JdkSerializer extends AbstractSerializer {
                 in = new ObjectInputStream(inputStream);
                 result = in.readObject();
             } catch (ClassCastException | IOException | ClassNotFoundException ce) {
-                throw new InstrumentException(ce);
+                throw new InternalException(ce);
             } finally {
                 try {
                     if (null != in) {

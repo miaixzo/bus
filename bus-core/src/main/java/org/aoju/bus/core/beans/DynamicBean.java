@@ -26,7 +26,7 @@
 package org.aoju.bus.core.beans;
 
 import org.aoju.bus.core.clone.Cloning;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.ClassKit;
@@ -130,15 +130,15 @@ public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
      * @param <T>       属性值类型
      * @param fieldName 字段名
      * @return 字段值
-     * @throws InstrumentException 反射获取属性值或字段值导致的异常
+     * @throws InternalException 反射获取属性值或字段值导致的异常
      */
-    public <T> T get(String fieldName) throws InstrumentException {
+    public <T> T get(String fieldName) throws InternalException {
         if (Map.class.isAssignableFrom(beanClass)) {
             return (T) ((Map<?, ?>) bean).get(fieldName);
         } else {
             final PropertyDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
             if (null == prop) {
-                throw new InstrumentException("No public field or get method for {}", fieldName);
+                throw new InternalException("No public field or get method for {}", fieldName);
             }
             return (T) prop.getValue(bean);
         }
@@ -149,15 +149,15 @@ public class DynamicBean extends Cloning<DynamicBean> implements Serializable {
      *
      * @param fieldName 字段名
      * @param value     字段值
-     * @throws InstrumentException 反射获取属性值或字段值导致的异常
+     * @throws InternalException 反射获取属性值或字段值导致的异常
      */
-    public void set(String fieldName, Object value) throws InstrumentException {
+    public void set(String fieldName, Object value) throws InternalException {
         if (Map.class.isAssignableFrom(beanClass)) {
             ((Map) bean).put(fieldName, value);
         } else {
             final PropertyDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
             if (null == prop) {
-                throw new InstrumentException("No public field or set method for {}", fieldName);
+                throw new InternalException("No public field or set method for {}", fieldName);
             }
             prop.setValue(bean, value);
         }

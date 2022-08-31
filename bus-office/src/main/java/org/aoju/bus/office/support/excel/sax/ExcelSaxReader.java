@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
@@ -55,9 +55,9 @@ public interface ExcelSaxReader<T> {
      * @param file    Excel文件
      * @param idOrRid Excel中的sheet id或者rid编号，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    T read(File file, String idOrRid) throws InstrumentException;
+    T read(File file, String idOrRid) throws InternalException;
 
     /**
      * 开始读取Excel，读取结束后并不关闭流
@@ -65,18 +65,18 @@ public interface ExcelSaxReader<T> {
      * @param in      Excel流
      * @param idOrRid Excel中的sheet id或者rid编号，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    T read(InputStream in, String idOrRid) throws InstrumentException;
+    T read(InputStream in, String idOrRid) throws InternalException;
 
     /**
      * 开始读取Excel，读取所有sheet
      *
      * @param path Excel文件路径
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    default T read(String path) throws InstrumentException {
+    default T read(String path) throws InternalException {
         return read(FileKit.file(path));
     }
 
@@ -85,9 +85,9 @@ public interface ExcelSaxReader<T> {
      *
      * @param file Excel文件
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    default T read(File file) throws InstrumentException {
+    default T read(File file) throws InternalException {
         return read(file, -1);
     }
 
@@ -96,9 +96,9 @@ public interface ExcelSaxReader<T> {
      *
      * @param in Excel包流
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    default T read(InputStream in) throws InstrumentException {
+    default T read(InputStream in) throws InternalException {
         return read(in, -1);
     }
 
@@ -108,9 +108,9 @@ public interface ExcelSaxReader<T> {
      * @param path 文件路径
      * @param rid  Excel中的sheet rid编号，如果为-1处理所有编号的sheet
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    default T read(String path, int rid) throws InstrumentException {
+    default T read(String path, int rid) throws InternalException {
         return read(FileKit.file(path), rid);
     }
 
@@ -120,9 +120,9 @@ public interface ExcelSaxReader<T> {
      * @param path 文件路径
      * @param rid  Excel中的sheet rid编号,如果为-1处理所有编号的sheet
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    default T read(String path, String rid) throws InstrumentException {
+    default T read(String path, String rid) throws InternalException {
         return read(FileKit.file(path), rid);
     }
 
@@ -132,9 +132,9 @@ public interface ExcelSaxReader<T> {
      * @param file Excel文件
      * @param rid  Excel中的sheet rid编号,如果为-1处理所有编号的sheet
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    default T read(File file, int rid) throws InstrumentException {
+    default T read(File file, int rid) throws InternalException {
         return read(file, String.valueOf(rid));
     }
 
@@ -144,9 +144,9 @@ public interface ExcelSaxReader<T> {
      * @param in  Excel流
      * @param rid Excel中的sheet rid编号,如果为-1处理所有编号的sheet
      * @return this
-     * @throws InstrumentException POI异常
+     * @throws InternalException POI异常
      */
-    default T read(InputStream in, int rid) throws InstrumentException {
+    default T read(InputStream in, int rid) throws InternalException {
         return read(in, String.valueOf(rid));
     }
 

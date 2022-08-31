@@ -28,7 +28,7 @@ package org.aoju.bus.core.beans;
 import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.annotation.Ignore;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.*;
 
 import java.beans.Transient;
@@ -195,7 +195,7 @@ public class PropertyDesc {
             result = getValue(bean);
         } catch (Exception e) {
             if (false == ignoreError) {
-                throw new InstrumentException("Get value of [{}] error!", getFieldName());
+                throw new InternalException("Get value of [{}] error!", getFieldName());
             }
         }
 
@@ -294,7 +294,7 @@ public class PropertyDesc {
                 this.setValue(bean, value);
             } catch (Exception e) {
                 if (false == ignoreError) {
-                    throw new InstrumentException("Set value of [{}] error!", getFieldName());
+                    throw new InternalException("Set value of [{}] error!", getFieldName());
                 }
                 // 忽略注入失败
             }

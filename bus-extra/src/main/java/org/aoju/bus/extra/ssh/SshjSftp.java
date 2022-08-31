@@ -31,7 +31,7 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.xfer.FileSystemFile;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -129,18 +129,18 @@ public class SshjSftp extends AbstractFtp {
             ssh.setRemoteCharset(ftpConfig.getCharset());
             this.sftp = ssh.newSFTPClient();
         } catch (IOException e) {
-            throw new InstrumentException("sftp 初始化失败", e);
+            throw new InternalException("sftp 初始化失败", e);
         }
     }
 
     @Override
     public AbstractFtp reconnectIfTimeout() {
         if (StringKit.isBlank(this.ftpConfig.getHost())) {
-            throw new InstrumentException("Host is blank!");
+            throw new InternalException("Host is blank!");
         }
         try {
             this.cd(Symbol.SLASH);
-        } catch (InstrumentException e) {
+        } catch (InternalException e) {
             close();
             init();
         }
@@ -165,7 +165,7 @@ public class SshjSftp extends AbstractFtp {
         try {
             sftp.mkdir(dir);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return containsFile(dir);
     }
@@ -176,7 +176,7 @@ public class SshjSftp extends AbstractFtp {
         try {
             infoList = sftp.ls(path);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         if (CollKit.isNotEmpty(infoList)) {
             return CollKit.map(infoList, RemoteResourceInfo::getName, true);
@@ -190,7 +190,7 @@ public class SshjSftp extends AbstractFtp {
             sftp.rm(path);
             return !containsFile(path);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -200,7 +200,7 @@ public class SshjSftp extends AbstractFtp {
             sftp.rmdir(dirPath);
             return !containsFile(dirPath);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -210,7 +210,7 @@ public class SshjSftp extends AbstractFtp {
             sftp.put(new FileSystemFile(file), destPath);
             return containsFile(destPath);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -219,7 +219,7 @@ public class SshjSftp extends AbstractFtp {
         try {
             sftp.get(path, new FileSystemFile(dest));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -237,7 +237,7 @@ public class SshjSftp extends AbstractFtp {
             sftp.close();
             ssh.disconnect();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -270,7 +270,7 @@ public class SshjSftp extends AbstractFtp {
             InputStream inputStream = command.getInputStream();
             return IoKit.read(inputStream, DEFAULT_CHARSET);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(session);
         }

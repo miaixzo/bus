@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.builtin.AbstractJob;
 import org.aoju.bus.office.builtin.AbstractNorm;
 import org.aoju.bus.office.builtin.OnlineMadeInOffice;
@@ -122,7 +122,7 @@ public class OnlineOfficeProvider extends AbstractProvider {
         }
 
         @Override
-        public void doExecute() throws InstrumentException {
+        public void doExecute() throws InternalException {
             final OnlineMadeInOffice task = new OnlineMadeInOffice(source, target);
             officeManager.execute(task);
         }

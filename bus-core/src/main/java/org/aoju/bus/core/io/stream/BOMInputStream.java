@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.stream;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 
 import java.io.IOException;
@@ -99,7 +99,7 @@ public class BOMInputStream extends InputStream {
             try {
                 init();
             } catch (IOException ex) {
-                throw new InstrumentException(ex);
+                throw new InternalException(ex);
             }
         }
         return charset;

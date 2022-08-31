@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpv;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Callback;
 
@@ -167,7 +167,7 @@ public class Downloads {
         } catch (FileNotFoundException e) {
             status = Control.STATUS__ERROR;
             IoKit.close(input);
-            throw new InstrumentException("Can't get file [" + file.getAbsolutePath() + "] Input stream", e);
+            throw new InternalException("Can't get file [" + file.getAbsolutePath() + "] Input stream", e);
         }
     }
 
@@ -211,7 +211,7 @@ public class Downloads {
                     onFailure.on(new Failure(e));
                 }, fOnIO);
             } else {
-                throw new InstrumentException("Streaming failed!", e);
+                throw new InternalException("Streaming failed!", e);
             }
         } finally {
             IoKit.close(raFile);

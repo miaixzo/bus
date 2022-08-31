@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.ByteArrayInputStream;
@@ -81,12 +81,12 @@ public class BytesResource implements Resource {
     }
 
     @Override
-    public String readString(Charset charset) throws InstrumentException {
+    public String readString(Charset charset) throws InternalException {
         return StringKit.toString(this.bytes, charset);
     }
 
     @Override
-    public byte[] readBytes() throws InstrumentException {
+    public byte[] readBytes() throws InternalException {
         return this.bytes;
     }
 

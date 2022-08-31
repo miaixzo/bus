@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.word;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -204,7 +204,7 @@ public class Word07Writer implements Closeable {
         try {
             run.addPicture(in, picType.getValue(), fileName, Units.toEMU(width), Units.toEMU(height));
         } catch (IOException | InvalidFormatException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(in);
         }
@@ -229,9 +229,9 @@ public class Word07Writer implements Closeable {
      * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义,或者通过构造定义
      *
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public Word07Writer flush() throws InstrumentException {
+    public Word07Writer flush() throws InternalException {
         return flush(this.destFile);
     }
 
@@ -241,9 +241,9 @@ public class Word07Writer implements Closeable {
      *
      * @param destFile 写出到的文件
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public Word07Writer flush(File destFile) throws InstrumentException {
+    public Word07Writer flush(File destFile) throws InternalException {
         Assert.notNull(destFile, "[destFile] is null, and you must call setDestFile(File) first or call flush(OutputStream).");
         return flush(FileKit.getOutputStream(destFile), true);
     }
@@ -253,9 +253,9 @@ public class Word07Writer implements Closeable {
      *
      * @param out 输出流
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public Word07Writer flush(OutputStream out) throws InstrumentException {
+    public Word07Writer flush(OutputStream out) throws InternalException {
         return flush(out, false);
     }
 
@@ -265,15 +265,15 @@ public class Word07Writer implements Closeable {
      * @param out        输出流
      * @param isCloseOut 是否关闭输出流
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public Word07Writer flush(OutputStream out, boolean isCloseOut) throws InstrumentException {
+    public Word07Writer flush(OutputStream out, boolean isCloseOut) throws InternalException {
         Assert.isFalse(this.isClosed, "WordWriter has been closed!");
         try {
             this.doc.write(out);
             out.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (isCloseOut) {
                 IoKit.close(out);

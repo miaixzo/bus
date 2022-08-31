@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.Device;
 
 /**
@@ -40,8 +40,8 @@ public interface IDeviceCache {
 
     void clear();
 
-    Device get(String deviceName) throws InstrumentException;
+    Device get(String deviceName) throws InternalException;
 
-    Device findDevice(String deviceName) throws InstrumentException;
+    Device findDevice(String deviceName) throws InternalException;
 
 }

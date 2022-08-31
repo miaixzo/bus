@@ -28,7 +28,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.collection.UniqueKeySet;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
@@ -517,9 +517,9 @@ public class ReflectKit {
      * @param object    对象
      * @param fieldName 字段名
      * @return 字段值
-     * @throws InstrumentException 包装IllegalAccessException异常
+     * @throws InternalException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(Object object, String fieldName) throws InstrumentException {
+    public static Object getFieldValue(Object object, String fieldName) throws InternalException {
         if (null == object || StringKit.isBlank(fieldName)) {
             return null;
         }
@@ -532,9 +532,9 @@ public class ReflectKit {
      * @param object 对象
      * @param field  字段
      * @return 字段值
-     * @throws InstrumentException 包装IllegalAccessException异常
+     * @throws InternalException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(Object object, Field field) throws InstrumentException {
+    public static Object getFieldValue(Object object, Field field) throws InternalException {
         if (null == field) {
             return null;
         }
@@ -548,7 +548,7 @@ public class ReflectKit {
         try {
             result = field.get(object);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for {}.{}", field.getDeclaringClass(), field.getName());
+            throw new InternalException("IllegalAccess for {}.{}", field.getDeclaringClass(), field.getName());
         }
         return result;
     }
@@ -581,9 +581,9 @@ public class ReflectKit {
      * @param object    对象,static字段则此处传Class
      * @param fieldName 字段名
      * @param value     值，当值类型与字段类型不匹配时，会尝试转换
-     * @throws InstrumentException 包装IllegalAccessException异常
+     * @throws InternalException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(Object object, String fieldName, Object value) throws InstrumentException {
+    public static void setFieldValue(Object object, String fieldName, Object value) throws InternalException {
         Assert.notNull(object);
         Assert.notBlank(fieldName);
 
@@ -600,9 +600,9 @@ public class ReflectKit {
      * @param object 对象，如果是static字段，此参数为null
      * @param field  字段
      * @param value  值，当值类型与字段类型不匹配时，会尝试转换
-     * @throws InstrumentException UtilException 包装IllegalAccessException异常
+     * @throws InternalException UtilException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(Object object, Field field, Object value) throws InstrumentException {
+    public static void setFieldValue(Object object, Field field, Object value) throws InternalException {
         Assert.notNull(field, "Field in [{}] not exist !", object);
 
         final Class<?> fieldType = field.getType();
@@ -623,7 +623,7 @@ public class ReflectKit {
         try {
             field.set(object instanceof Class ? null : object, value);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("IllegalAccess for {}.{}", object, field.getName());
+            throw new InternalException("IllegalAccess for {}.{}", object, field.getName());
         }
     }
 
@@ -901,13 +901,13 @@ public class ReflectKit {
      * @param <T>   对象类型
      * @param clazz 类名
      * @return 对象
-     * @throws InstrumentException 包装各类异常
+     * @throws InternalException 包装各类异常
      */
-    public static <T> T newInstance(String clazz) throws InstrumentException {
+    public static <T> T newInstance(String clazz) throws InternalException {
         try {
             return (T) Class.forName(clazz).newInstance();
         } catch (Exception e) {
-            throw new InstrumentException(StringKit.format("Instance class [{}] error!", clazz), e);
+            throw new InternalException(StringKit.format("Instance class [{}] error!", clazz), e);
         }
     }
 
@@ -918,30 +918,30 @@ public class ReflectKit {
      * @param clazz  类
      * @param params 构造函数参数
      * @return 对象
-     * @throws InstrumentException 包装各类异常
+     * @throws InternalException 包装各类异常
      */
-    public static <T> T newInstance(Class<T> clazz, Object... params) throws InstrumentException {
+    public static <T> T newInstance(Class<T> clazz, Object... params) throws InternalException {
         if (ArrayKit.isEmpty(params)) {
             final Constructor<T> constructor = getConstructor(clazz);
             if (null == constructor) {
-                throw new InstrumentException("No constructor for [{}]", clazz);
+                throw new InternalException("No constructor for [{}]", clazz);
             }
             try {
                 return constructor.newInstance();
             } catch (Exception e) {
-                throw new InstrumentException(e, "Instance class [{}] error!", clazz);
+                throw new InternalException(e, "Instance class [{}] error!", clazz);
             }
         }
 
         final Class<?>[] paramTypes = ClassKit.getClasses(params);
         final Constructor<T> constructor = getConstructor(clazz, paramTypes);
         if (null == constructor) {
-            throw new InstrumentException("No Constructor matched for parameter types: [{}]", new Object[]{paramTypes});
+            throw new InternalException("No Constructor matched for parameter types: [{}]", new Object[]{paramTypes});
         }
         try {
             return constructor.newInstance(params);
         } catch (Exception e) {
-            throw new InstrumentException(e, "Instance class [{}] error!", clazz);
+            throw new InternalException(e, "Instance class [{}] error!", clazz);
         }
     }
 
@@ -1009,9 +1009,9 @@ public class ReflectKit {
      * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
-     * @throws InstrumentException 多种异常包装
+     * @throws InternalException 多种异常包装
      */
-    public static <T> T invokeStatic(Method method, Object... args) throws InstrumentException {
+    public static <T> T invokeStatic(Method method, Object... args) throws InternalException {
         return invoke(null, method, args);
     }
 
@@ -1029,9 +1029,9 @@ public class ReflectKit {
      * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
-     * @throws InstrumentException 一些列异常的包装
+     * @throws InternalException 一些列异常的包装
      */
-    public static <T> T invokeWithCheck(Object object, Method method, Object... args) throws InstrumentException {
+    public static <T> T invokeWithCheck(Object object, Method method, Object... args) throws InternalException {
         final Class<?>[] types = method.getParameterTypes();
         if (null != types && null != args) {
             Assert.isTrue(args.length == types.length, "Params length [{}] is not fit for param length [{}] of method !", args.length, types.length);
@@ -1086,7 +1086,7 @@ public class ReflectKit {
         try {
             return (T) method.invoke(ClassKit.isStatic(method) ? null : object, actualArgs);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1102,7 +1102,7 @@ public class ReflectKit {
     public static <T> T invoke(Object object, String methodName, Object... args) {
         final Method method = getMethodOfObject(object, methodName, args);
         if (null == method) {
-            throw new InstrumentException(StringKit.format("No such method: [{}]", methodName));
+            throw new InternalException(StringKit.format("No such method: [{}]", methodName));
         }
         return invoke(object, method, args);
     }

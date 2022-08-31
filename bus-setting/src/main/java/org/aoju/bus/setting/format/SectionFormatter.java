@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.setting.format;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.setting.magic.IniComment;
 import org.aoju.bus.setting.magic.IniSection;
@@ -94,7 +94,7 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
     public IniSection format(String value, int line) {
         int indexOfEnd = value.indexOf(end);
         if (indexOfEnd <= 0) {
-            throw new InstrumentException("can not found the end character '" + end + "' for section line " + line + " : " + value);
+            throw new InternalException("can not found the end character '" + end + "' for section line " + line + " : " + value);
         }
 
         String sectionValue = value.substring(0, indexOfEnd + 1).trim();
@@ -105,7 +105,7 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
             if (commentElementFormatter.check(endOfValue)) {
                 comment = commentElementFormatter.format(endOfValue, line);
             } else {
-                throw new InstrumentException("can not format the value end of section value (" + line + Symbol.COLON + (indexOfEnd + 1) + ") :" + endOfValue);
+                throw new InternalException("can not format the value end of section value (" + line + Symbol.COLON + (indexOfEnd + 1) + ") :" + endOfValue);
             }
         }
 

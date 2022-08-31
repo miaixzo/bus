@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.Format;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
@@ -61,7 +61,7 @@ public class Dcm2String extends SimpleFileVisitor<Path> {
             Logger.error(format.format(dataset));
         } catch (IOException e) {
             Logger.error("Failed to parse DICOM file " + path);
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return FileVisitResult.CONTINUE;
     }

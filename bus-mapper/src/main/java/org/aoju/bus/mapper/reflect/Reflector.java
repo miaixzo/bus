@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.reflect;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.function.Fn;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.SoftCache;
@@ -67,7 +67,7 @@ public class Reflector {
             }
             return Introspector.decapitalize(getter);
         } catch (ReflectiveOperationException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -79,7 +79,7 @@ public class Reflector {
      */
     public static Class<?> getMapperClass(String msId) {
         if (msId.indexOf(".") == -1) {
-            throw new InstrumentException("当前MappedStatement的id=" + msId + ",不符合MappedStatement的规则!");
+            throw new InternalException("当前MappedStatement的id=" + msId + ",不符合MappedStatement的规则!");
         }
         String mapperClassStr = msId.substring(0, msId.lastIndexOf("."));
         // 由于一个接口中的每个方法都会进行下面的操作，因此缓存
@@ -102,7 +102,7 @@ public class Reflector {
             }
         }
         if (mapperClass == null) {
-            throw new InstrumentException("class loaders failed to locate the class " + mapperClassStr);
+            throw new InternalException("class loaders failed to locate the class " + mapperClassStr);
         }
         CLASS_CACHE.putObject(mapperClassStr, mapperClass);
         return mapperClass;

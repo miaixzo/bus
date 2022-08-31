@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.tracer;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.tracer.backend.TraceBackendProvider;
 
 import java.util.ArrayList;
@@ -60,12 +60,12 @@ public class Tracer {
         try {
             backendProviders = resolver.getBackendProviders();
         } catch (RuntimeException e) {
-            throw new InstrumentException("Unable to load available backend providers", e);
+            throw new InternalException("Unable to load available backend providers", e);
         }
         if (backendProviders.isEmpty()) {
             final Set<TraceBackendProvider> defaultProvider = resolver.getDefaultTraceBackendProvider();
             if (defaultProvider.isEmpty()) {
-                throw new InstrumentException("Unable to find a Builder backend provider. Make sure that you have " +
+                throw new InternalException("Unable to find a Builder backend provider. Make sure that you have " +
                         "Tracer(for slf4j) or any other backend implementation on the classpath.");
             }
             return defaultProvider.iterator().next().provideBackend();
@@ -76,7 +76,7 @@ public class Tracer {
                 providerClasses.add(backendProvider.getClass());
             }
             final String providerClassNames = Arrays.toString(providerClasses.toArray());
-            throw new InstrumentException("Multiple Builder backend providers found. Don't know which one of the following to use: "
+            throw new InternalException("Multiple Builder backend providers found. Don't know which one of the following to use: "
                     + providerClassNames);
         }
         return backendProviders.iterator().next().provideBackend();

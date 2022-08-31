@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.image.Removal;
 import org.aoju.bus.core.io.resource.Resource;
@@ -103,9 +103,9 @@ public class ImageKit {
      * @param srcImage 源图像来源流
      * @param destFile 缩放后的图像写出到的流
      * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void scale(java.awt.Image srcImage, File destFile, float scale) throws InstrumentException {
+    public static void scale(java.awt.Image srcImage, File destFile, float scale) throws InternalException {
         Images.from(srcImage).setTargetImageType(FileKit.getSuffix(destFile)).scale(scale).write(destFile);
     }
 
@@ -116,9 +116,9 @@ public class ImageKit {
      * @param srcImage 源图像来源流
      * @param out      缩放后的图像写出到的流
      * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void scale(java.awt.Image srcImage, OutputStream out, float scale) throws InstrumentException {
+    public static void scale(java.awt.Image srcImage, OutputStream out, float scale) throws InternalException {
         scale(srcImage, getImageOutputStream(out), scale);
     }
 
@@ -129,9 +129,9 @@ public class ImageKit {
      * @param srcImage        源图像来源流
      * @param destImageStream 缩放后的图像写出到的流
      * @param scale           缩放比例 比例大于1时为放大,小于1大于0为缩小
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void scale(java.awt.Image srcImage, ImageOutputStream destImageStream, float scale) throws InstrumentException {
+    public static void scale(java.awt.Image srcImage, ImageOutputStream destImageStream, float scale) throws InternalException {
         writeJpg(scale(srcImage, scale), destImageStream);
     }
 
@@ -168,9 +168,9 @@ public class ImageKit {
      * @param width         缩放后的宽度
      * @param height        缩放后的高度
      * @param fixedColor    比例不对时补充的颜色,不补充为<code>null</code>
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void scale(File srcImageFile, File destImageFile, int width, int height, Color fixedColor) throws InstrumentException {
+    public static void scale(File srcImageFile, File destImageFile, int width, int height, Color fixedColor) throws InternalException {
         write(scale(read(srcImageFile), width, height, fixedColor), destImageFile);
     }
 
@@ -183,9 +183,9 @@ public class ImageKit {
      * @param width      缩放后的宽度
      * @param height     缩放后的高度
      * @param fixedColor 比例不对时补充的颜色,不补充为<code>null</code>
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void scale(InputStream srcStream, OutputStream destStream, int width, int height, Color fixedColor) throws InstrumentException {
+    public static void scale(InputStream srcStream, OutputStream destStream, int width, int height, Color fixedColor) throws InternalException {
         scale(read(srcStream), getImageOutputStream(destStream), width, height, fixedColor);
     }
 
@@ -198,9 +198,9 @@ public class ImageKit {
      * @param width      缩放后的宽度
      * @param height     缩放后的高度
      * @param fixedColor 比例不对时补充的颜色,不补充为<code>null</code>
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void scale(ImageInputStream srcStream, ImageOutputStream destStream, int width, int height, Color fixedColor) throws InstrumentException {
+    public static void scale(ImageInputStream srcStream, ImageOutputStream destStream, int width, int height, Color fixedColor) throws InternalException {
         scale(read(srcStream), destStream, width, height, fixedColor);
     }
 
@@ -213,9 +213,9 @@ public class ImageKit {
      * @param width           缩放后的宽度
      * @param height          缩放后的高度
      * @param fixedColor      比例不对时补充的颜色,不补充为<code>null</code>
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void scale(java.awt.Image srcImage, ImageOutputStream destImageStream, int width, int height, Color fixedColor) throws InstrumentException {
+    public static void scale(java.awt.Image srcImage, ImageOutputStream destImageStream, int width, int height, Color fixedColor) throws InternalException {
         writeJpg(scale(srcImage, width, height, fixedColor), destImageStream);
     }
 
@@ -272,9 +272,9 @@ public class ImageKit {
      * @param srcImage  源图像
      * @param destFile  输出的文件
      * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void cut(java.awt.Image srcImage, File destFile, Rectangle rectangle) throws InstrumentException {
+    public static void cut(java.awt.Image srcImage, File destFile, Rectangle rectangle) throws InternalException {
         write(cut(srcImage, rectangle), destFile);
     }
 
@@ -284,9 +284,9 @@ public class ImageKit {
      * @param srcImage  源图像
      * @param out       切片后的图像输出流
      * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void cut(java.awt.Image srcImage, OutputStream out, Rectangle rectangle) throws InstrumentException {
+    public static void cut(java.awt.Image srcImage, OutputStream out, Rectangle rectangle) throws InternalException {
         cut(srcImage, getImageOutputStream(out), rectangle);
     }
 
@@ -296,9 +296,9 @@ public class ImageKit {
      * @param srcImage        源图像
      * @param destImageStream 切片后的图像输出流
      * @param rectangle       矩形对象,表示矩形区域的x,y,width,height
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void cut(java.awt.Image srcImage, ImageOutputStream destImageStream, Rectangle rectangle) throws InstrumentException {
+    public static void cut(java.awt.Image srcImage, ImageOutputStream destImageStream, Rectangle rectangle) throws InternalException {
         writeJpg(cut(srcImage, rectangle), destImageStream);
     }
 
@@ -413,7 +413,7 @@ public class ImageKit {
         try {
             sliceByRowsAndCols(ImageIO.read(srcImageFile), destDir, rows, cols);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -457,7 +457,7 @@ public class ImageKit {
                 }
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -514,7 +514,7 @@ public class ImageKit {
         try {
             ImageIO.write(isSrcPng ? copyImage(srcImage, BufferedImage.TYPE_INT_RGB) : toBufferedImage(srcImage), formatName, destImageStream);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -577,9 +577,9 @@ public class ImageKit {
      *
      * @param srcImage        源图像流
      * @param destImageStream 目标图像流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void gray(java.awt.Image srcImage, ImageOutputStream destImageStream) throws InstrumentException {
+    public static void gray(java.awt.Image srcImage, ImageOutputStream destImageStream) throws InternalException {
         writeJpg(gray(srcImage), destImageStream);
     }
 
@@ -656,9 +656,9 @@ public class ImageKit {
      * @param srcImage        源图像流
      * @param destImageStream 目标图像流
      * @param imageType       图片格式(扩展名)
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void binary(java.awt.Image srcImage, ImageOutputStream destImageStream, String imageType) throws InstrumentException {
+    public static void binary(java.awt.Image srcImage, ImageOutputStream destImageStream, String imageType) throws InternalException {
         write(binary(srcImage), imageType, destImageStream);
     }
 
@@ -734,9 +734,9 @@ public class ImageKit {
      * @param x         修正值  默认在中间,偏移量相对于中间偏移
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void pressText(java.awt.Image srcImage, File destFile, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
+    public static void pressText(java.awt.Image srcImage, File destFile, String pressText, Color color, Font font, int x, int y, float alpha) throws InternalException {
         write(pressText(srcImage, pressText, color, font, x, y, alpha), destFile);
     }
 
@@ -752,9 +752,9 @@ public class ImageKit {
      * @param x         修正值  默认在中间,偏移量相对于中间偏移
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void pressText(java.awt.Image srcImage, OutputStream to, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
+    public static void pressText(java.awt.Image srcImage, OutputStream to, String pressText, Color color, Font font, int x, int y, float alpha) throws InternalException {
         pressText(srcImage, getImageOutputStream(to), pressText, color, font, x, y, alpha);
     }
 
@@ -770,9 +770,9 @@ public class ImageKit {
      * @param x               修正值  默认在中间,偏移量相对于中间偏移
      * @param y               修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void pressText(java.awt.Image srcImage, ImageOutputStream destImageStream, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
+    public static void pressText(java.awt.Image srcImage, ImageOutputStream destImageStream, String pressText, Color color, Font font, int x, int y, float alpha) throws InternalException {
         writeJpg(pressText(srcImage, pressText, color, font, x, y, alpha), destImageStream);
     }
 
@@ -832,9 +832,9 @@ public class ImageKit {
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void pressImage(ImageInputStream srcStream, ImageOutputStream destStream, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
+    public static void pressImage(ImageInputStream srcStream, ImageOutputStream destStream, java.awt.Image pressImage, int x, int y, float alpha) throws InternalException {
         pressImage(read(srcStream), destStream, pressImage, x, y, alpha);
     }
 
@@ -848,9 +848,9 @@ public class ImageKit {
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void pressImage(java.awt.Image srcImage, File outFile, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
+    public static void pressImage(java.awt.Image srcImage, File outFile, java.awt.Image pressImage, int x, int y, float alpha) throws InternalException {
         write(pressImage(srcImage, pressImage, x, y, alpha), outFile);
     }
 
@@ -864,9 +864,9 @@ public class ImageKit {
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void pressImage(java.awt.Image srcImage, OutputStream out, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
+    public static void pressImage(java.awt.Image srcImage, OutputStream out, java.awt.Image pressImage, int x, int y, float alpha) throws InternalException {
         pressImage(srcImage, getImageOutputStream(out), pressImage, x, y, alpha);
     }
 
@@ -880,9 +880,9 @@ public class ImageKit {
      * @param x               修正值  默认在中间,偏移量相对于中间偏移
      * @param y               修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void pressImage(java.awt.Image srcImage, ImageOutputStream destImageStream, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
+    public static void pressImage(java.awt.Image srcImage, ImageOutputStream destImageStream, java.awt.Image pressImage, int x, int y, float alpha) throws InternalException {
         writeJpg(pressImage(srcImage, pressImage, x, y, alpha), destImageStream);
     }
 
@@ -922,9 +922,9 @@ public class ImageKit {
      * @param imageFile 被旋转图像文件
      * @param degree    旋转角度
      * @param outFile   输出文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void rotate(File imageFile, int degree, File outFile) throws InstrumentException {
+    public static void rotate(File imageFile, int degree, File outFile) throws InternalException {
         rotate(read(imageFile), degree, outFile);
     }
 
@@ -935,9 +935,9 @@ public class ImageKit {
      * @param image   目标图像
      * @param degree  旋转角度
      * @param outFile 输出文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void rotate(java.awt.Image image, int degree, File outFile) throws InstrumentException {
+    public static void rotate(java.awt.Image image, int degree, File outFile) throws InternalException {
         write(rotate(image, degree), outFile);
     }
 
@@ -948,9 +948,9 @@ public class ImageKit {
      * @param image  目标图像
      * @param degree 旋转角度
      * @param out    输出流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void rotate(java.awt.Image image, int degree, OutputStream out) throws InstrumentException {
+    public static void rotate(java.awt.Image image, int degree, OutputStream out) throws InternalException {
         writeJpg(rotate(image, degree), getImageOutputStream(out));
     }
 
@@ -961,9 +961,9 @@ public class ImageKit {
      * @param image  目标图像
      * @param degree 旋转角度
      * @param out    输出图像流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void rotate(java.awt.Image image, int degree, ImageOutputStream out) throws InstrumentException {
+    public static void rotate(java.awt.Image image, int degree, ImageOutputStream out) throws InternalException {
         writeJpg(rotate(image, degree), out);
     }
 
@@ -984,9 +984,9 @@ public class ImageKit {
      *
      * @param imageFile 图像文件
      * @param outFile   输出文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void flip(File imageFile, File outFile) throws InstrumentException {
+    public static void flip(File imageFile, File outFile) throws InternalException {
         flip(read(imageFile), outFile);
     }
 
@@ -995,9 +995,9 @@ public class ImageKit {
      *
      * @param image   图像
      * @param outFile 输出文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void flip(java.awt.Image image, File outFile) throws InstrumentException {
+    public static void flip(java.awt.Image image, File outFile) throws InternalException {
         write(flip(image), outFile);
     }
 
@@ -1006,9 +1006,9 @@ public class ImageKit {
      *
      * @param image 图像
      * @param out   输出
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void flip(java.awt.Image image, OutputStream out) throws InstrumentException {
+    public static void flip(java.awt.Image image, OutputStream out) throws InternalException {
         flip(image, getImageOutputStream(out));
     }
 
@@ -1017,9 +1017,9 @@ public class ImageKit {
      *
      * @param image 图像
      * @param out   输出
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void flip(java.awt.Image image, ImageOutputStream out) throws InstrumentException {
+    public static void flip(java.awt.Image image, ImageOutputStream out) throws InternalException {
         writeJpg(flip(image), out);
     }
 
@@ -1039,9 +1039,9 @@ public class ImageKit {
      * @param imageFile 图像文件
      * @param outFile   输出文件,只支持jpg文件
      * @param quality   质量
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void compress(File imageFile, File outFile, float quality) throws InstrumentException {
+    public static void compress(File imageFile, File outFile, float quality) throws InternalException {
         Images.from(imageFile).setQuality(quality).write(outFile);
     }
 
@@ -1172,9 +1172,9 @@ public class ImageKit {
      *
      * @param base64 图像的Base64表示
      * @return {@link BufferedImage}
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static BufferedImage toImage(String base64) throws InstrumentException {
+    public static BufferedImage toImage(String base64) throws InternalException {
         return toImage(Base64.decode(base64));
     }
 
@@ -1183,9 +1183,9 @@ public class ImageKit {
      *
      * @param imageBytes 图像bytes
      * @return {@link BufferedImage}
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static BufferedImage toImage(byte[] imageBytes) throws InstrumentException {
+    public static BufferedImage toImage(byte[] imageBytes) throws InternalException {
         return read(new ByteArrayInputStream(imageBytes));
     }
 
@@ -1303,9 +1303,9 @@ public class ImageKit {
      *
      * @param image           {@link java.awt.Image}
      * @param destImageStream 写出到的目标流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void writeJpg(java.awt.Image image, ImageOutputStream destImageStream) throws InstrumentException {
+    public static void writeJpg(java.awt.Image image, ImageOutputStream destImageStream) throws InternalException {
         write(image, FileType.TYPE_JPG, destImageStream);
     }
 
@@ -1314,9 +1314,9 @@ public class ImageKit {
      *
      * @param image           {@link java.awt.Image}
      * @param destImageStream 写出到的目标流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void writePng(java.awt.Image image, ImageOutputStream destImageStream) throws InstrumentException {
+    public static void writePng(java.awt.Image image, ImageOutputStream destImageStream) throws InternalException {
         write(image, FileType.TYPE_PNG, destImageStream);
     }
 
@@ -1325,9 +1325,9 @@ public class ImageKit {
      *
      * @param image {@link java.awt.Image}
      * @param out   写出到的目标流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void writeJpg(java.awt.Image image, OutputStream out) throws InstrumentException {
+    public static void writeJpg(java.awt.Image image, OutputStream out) throws InternalException {
         write(image, FileType.TYPE_JPG, out);
     }
 
@@ -1336,9 +1336,9 @@ public class ImageKit {
      *
      * @param image {@link java.awt.Image}
      * @param out   写出到的目标流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void writePng(java.awt.Image image, OutputStream out) throws InstrumentException {
+    public static void writePng(java.awt.Image image, OutputStream out) throws InternalException {
         write(image, FileType.TYPE_PNG, out);
     }
 
@@ -1348,9 +1348,9 @@ public class ImageKit {
      * @param image     {@link java.awt.Image}
      * @param imageType 图片类型(图片扩展名)
      * @param out       写出到的目标流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void write(java.awt.Image image, String imageType, OutputStream out) throws InstrumentException {
+    public static void write(java.awt.Image image, String imageType, OutputStream out) throws InternalException {
         write(image, imageType, getImageOutputStream(out));
     }
 
@@ -1361,9 +1361,9 @@ public class ImageKit {
      * @param imageType       图片类型(图片扩展名)
      * @param destImageStream 写出到的目标流
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static boolean write(java.awt.Image image, String imageType, ImageOutputStream destImageStream) throws InstrumentException {
+    public static boolean write(java.awt.Image image, String imageType, ImageOutputStream destImageStream) throws InternalException {
         return write(image, imageType, destImageStream, 1);
     }
 
@@ -1375,9 +1375,9 @@ public class ImageKit {
      * @param destImageStream 写出到的目标流
      * @param quality         质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static boolean write(java.awt.Image image, String imageType, ImageOutputStream destImageStream, float quality) throws InstrumentException {
+    public static boolean write(java.awt.Image image, String imageType, ImageOutputStream destImageStream, float quality) throws InternalException {
         if (StringKit.isBlank(imageType)) {
             imageType = FileType.TYPE_JPG;
         }
@@ -1392,9 +1392,9 @@ public class ImageKit {
      *
      * @param image      {@link java.awt.Image}
      * @param targetFile 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void write(java.awt.Image image, File targetFile) throws InstrumentException {
+    public static void write(java.awt.Image image, File targetFile) throws InternalException {
         FileKit.touch(targetFile);
         ImageOutputStream out = null;
         try {
@@ -1441,7 +1441,7 @@ public class ImageKit {
             }
             output.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             writer.dispose();
         }
@@ -1483,7 +1483,7 @@ public class ImageKit {
         try {
             result = ImageIO.read(imageFile);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == result) {
@@ -1514,7 +1514,7 @@ public class ImageKit {
         try {
             result = ImageIO.read(imageStream);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == result) {
@@ -1535,7 +1535,7 @@ public class ImageKit {
         try {
             result = ImageIO.read(imageStream);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == result) {
@@ -1556,7 +1556,7 @@ public class ImageKit {
         try {
             result = ImageIO.read(imageUrl);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == result) {
@@ -1571,14 +1571,14 @@ public class ImageKit {
      *
      * @param out {@link OutputStream}
      * @return {@link ImageOutputStream}
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static ImageOutputStream getImageOutputStream(OutputStream out) throws InstrumentException {
+    public static ImageOutputStream getImageOutputStream(OutputStream out) throws InternalException {
         ImageOutputStream result;
         try {
             result = ImageIO.createImageOutputStream(out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == result) {
@@ -1593,14 +1593,14 @@ public class ImageKit {
      *
      * @param outFile {@link File}
      * @return {@link ImageOutputStream}
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static ImageOutputStream getImageOutputStream(File outFile) throws InstrumentException {
+    public static ImageOutputStream getImageOutputStream(File outFile) throws InternalException {
         ImageOutputStream result;
         try {
             result = ImageIO.createImageOutputStream(outFile);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == result) {
@@ -1615,14 +1615,14 @@ public class ImageKit {
      *
      * @param in {@link InputStream}
      * @return {@link ImageInputStream}
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static ImageInputStream getImageInputStream(InputStream in) throws InstrumentException {
+    public static ImageInputStream getImageInputStream(InputStream in) throws InternalException {
         ImageOutputStream result;
         try {
             result = ImageIO.createImageOutputStream(in);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == result) {

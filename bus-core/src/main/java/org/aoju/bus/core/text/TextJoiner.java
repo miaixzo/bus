@@ -1,7 +1,7 @@
 package org.aoju.bus.core.text;
 
 import org.aoju.bus.core.collection.ArrayIterator;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.IterKit;
@@ -329,7 +329,7 @@ public class TextJoiner implements Appendable, Serializable {
                 appendable.append(suffix);
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }

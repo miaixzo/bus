@@ -1,6 +1,6 @@
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.awt.*;
 import java.io.File;
@@ -60,7 +60,7 @@ public class Fonts {
             try {
                 return Font.createFont(Font.TYPE1_FONT, fontFile);
             } catch (Exception e1) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -80,10 +80,10 @@ public class Fonts {
             try {
                 return Font.createFont(Font.TYPE1_FONT, fontStream);
             } catch (Exception e1) {
-                throw new InstrumentException(e1);
+                throw new InternalException(e1);
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

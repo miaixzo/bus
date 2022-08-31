@@ -212,7 +212,7 @@ public class NioServer {
                     IoKit.close(sc);
                 }
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         });
         server.listen();

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.apache.ibatis.mapping.ResultFlag;
@@ -111,7 +111,7 @@ public class EntityTable {
                 try {
                     builder.typeHandler(getInstance(entityColumn.getJavaType(), entityColumn.getTypeHandler()));
                 } catch (Exception e) {
-                    throw new InstrumentException(e);
+                    throw new InternalException(e);
                 }
             }
             List<ResultFlag> flags = new ArrayList<>();

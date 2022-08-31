@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.additional.delete;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -66,7 +66,7 @@ public class DeletePropertyProvider extends MapperTemplate {
         boolean isNull = false;
         if (safeDelete) {
             if (null == value) {
-                throw new InstrumentException("安全删除模式下，不允许执行不带查询条件的 delete 方法");
+                throw new InternalException("安全删除模式下，不允许执行不带查询条件的 delete 方法");
             }
         } else {
             if (null == value) {

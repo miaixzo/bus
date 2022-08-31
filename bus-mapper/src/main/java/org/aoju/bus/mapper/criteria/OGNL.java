@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.criteria;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.annotation.LogicDelete;
@@ -61,7 +61,7 @@ public abstract class OGNL {
             Condition condition = (Condition) parameter;
             Class<?> entityClass = condition.getEntityClass();
             if (!entityClass.getCanonicalName().equals(entityFullName)) {
-                throw new InstrumentException("当前 Condition 方法对应实体为:" + entityFullName
+                throw new InternalException("当前 Condition 方法对应实体为:" + entityFullName
                         + ", 但是参数 Condition 中的 entityClass 为:" + entityClass.getCanonicalName());
             }
         }
@@ -89,10 +89,10 @@ public abstract class OGNL {
                     }
                 }
             } catch (Exception e) {
-                throw new InstrumentException(SAFE_DELETE_ERROR, e);
+                throw new InternalException(SAFE_DELETE_ERROR, e);
             }
         }
-        throw new InstrumentException(SAFE_DELETE_EXCEPTION);
+        throw new InternalException(SAFE_DELETE_EXCEPTION);
     }
 
     /**
@@ -131,10 +131,10 @@ public abstract class OGNL {
                     }
                 }
             } catch (Exception e) {
-                throw new InstrumentException(SAFE_DELETE_ERROR, e);
+                throw new InternalException(SAFE_DELETE_ERROR, e);
             }
         }
-        throw new InstrumentException(SAFE_DELETE_EXCEPTION);
+        throw new InternalException(SAFE_DELETE_EXCEPTION);
     }
 
     /**

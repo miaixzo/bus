@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.compress.*;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -67,9 +67,9 @@ public class ZipKit {
      *
      * @param srcPath 源文件路径
      * @return 打包好的压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(String srcPath) throws InstrumentException {
+    public static File zip(String srcPath) throws InternalException {
         return zip(srcPath, DEFAULT_CHARSET);
     }
 
@@ -79,9 +79,9 @@ public class ZipKit {
      * @param srcPath 源文件路径
      * @param charset 编码
      * @return 打包好的压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(String srcPath, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File zip(String srcPath, java.nio.charset.Charset charset) throws InternalException {
         return zip(FileKit.file(srcPath), charset);
     }
 
@@ -90,9 +90,9 @@ public class ZipKit {
      *
      * @param srcFile 源文件或目录
      * @return 打包好的压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File srcFile) throws InstrumentException {
+    public static File zip(File srcFile) throws InternalException {
         return zip(srcFile, DEFAULT_CHARSET);
     }
 
@@ -102,9 +102,9 @@ public class ZipKit {
      * @param srcFile 源文件或目录
      * @param charset 编码
      * @return 打包好的压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File srcFile, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File zip(File srcFile, java.nio.charset.Charset charset) throws InternalException {
         final File zipFile = FileKit.file(srcFile.getParentFile(), FileKit.getPrefix(srcFile) + ".zip");
         zip(zipFile, charset, false, srcFile);
         return zipFile;
@@ -117,9 +117,9 @@ public class ZipKit {
      * @param srcPath 要压缩的源文件路径 如果压缩一个文件,则为该文件的全路径；如果压缩一个目录,则为该目录的顶层目录路径
      * @param zipPath 压缩文件保存的路径,包括文件名 注意：zipPath不能是srcPath路径下的子文件夹
      * @return 压缩好的Zip文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(String srcPath, String zipPath) throws InstrumentException {
+    public static File zip(String srcPath, String zipPath) throws InternalException {
         return zip(srcPath, zipPath, false);
     }
 
@@ -130,9 +130,9 @@ public class ZipKit {
      * @param zipPath    压缩文件保存的路径,包括文件名 注意：zipPath不能是srcPath路径下的子文件夹
      * @param withSrcDir 是否包含被打包目录
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(String srcPath, String zipPath, boolean withSrcDir) throws InstrumentException {
+    public static File zip(String srcPath, String zipPath, boolean withSrcDir) throws InternalException {
         return zip(srcPath, zipPath, DEFAULT_CHARSET, withSrcDir);
     }
 
@@ -144,9 +144,9 @@ public class ZipKit {
      * @param charset    编码
      * @param withSrcDir 是否包含被打包目录
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(String srcPath, String zipPath, java.nio.charset.Charset charset, boolean withSrcDir) throws InstrumentException {
+    public static File zip(String srcPath, String zipPath, java.nio.charset.Charset charset, boolean withSrcDir) throws InternalException {
         final File srcFile = FileKit.file(srcPath);
         final File zipFile = FileKit.file(zipPath);
         zip(zipFile, charset, withSrcDir, srcFile);
@@ -161,9 +161,9 @@ public class ZipKit {
      * @param withSrcDir 是否包含被打包目录,只针对压缩目录有效 若为false,则只压缩目录下的文件或目录,为true则将本目录也压缩
      * @param srcFiles   要压缩的源文件或目录
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, boolean withSrcDir, File... srcFiles) throws InstrumentException {
+    public static File zip(File zipFile, boolean withSrcDir, File... srcFiles) throws InternalException {
         return zip(zipFile, DEFAULT_CHARSET, withSrcDir, srcFiles);
     }
 
@@ -175,9 +175,9 @@ public class ZipKit {
      * @param withSrcDir 是否包含被打包目录,只针对压缩目录有效 若为false,则只压缩目录下的文件或目录,为true则将本目录也压缩
      * @param srcFiles   要压缩的源文件或目录 如果压缩一个文件,则为该文件的全路径；如果压缩一个目录,则为该目录的顶层目录路径
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, java.nio.charset.Charset charset, boolean withSrcDir, File... srcFiles) throws InstrumentException {
+    public static File zip(File zipFile, java.nio.charset.Charset charset, boolean withSrcDir, File... srcFiles) throws InternalException {
         return zip(zipFile, charset, withSrcDir, null, srcFiles);
     }
 
@@ -190,9 +190,9 @@ public class ZipKit {
      * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
      * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, java.nio.charset.Charset charset, boolean withSrcDir, FileFilter filter, File... srcFiles) throws InstrumentException {
+    public static File zip(File zipFile, java.nio.charset.Charset charset, boolean withSrcDir, FileFilter filter, File... srcFiles) throws InternalException {
         validateFiles(zipFile, srcFiles);
 
         ZipWriter.of(zipFile, charset).add(withSrcDir, filter, srcFiles).close();
@@ -233,9 +233,9 @@ public class ZipKit {
      * @param path    流数据在压缩文件中的路径或文件名
      * @param data    要压缩的数据
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, String path, String data) throws InstrumentException {
+    public static File zip(File zipFile, String path, String data) throws InternalException {
         return zip(zipFile, path, data, DEFAULT_CHARSET);
     }
 
@@ -247,9 +247,9 @@ public class ZipKit {
      * @param data    要压缩的数据
      * @param charset 编码
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, String path, String data, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File zip(File zipFile, String path, String data, java.nio.charset.Charset charset) throws InternalException {
         return zip(zipFile, path, IoKit.toStream(data, charset), charset);
     }
 
@@ -261,9 +261,9 @@ public class ZipKit {
      * @param path    流数据在压缩文件中的路径或文件名
      * @param in      要压缩的源
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, String path, InputStream in) throws InstrumentException {
+    public static File zip(File zipFile, String path, InputStream in) throws InternalException {
         return zip(zipFile, path, in, DEFAULT_CHARSET);
     }
 
@@ -275,9 +275,9 @@ public class ZipKit {
      * @param in      要压缩的源
      * @param charset 编码
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, String path, InputStream in, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File zip(File zipFile, String path, InputStream in, java.nio.charset.Charset charset) throws InternalException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
     }
 
@@ -289,9 +289,9 @@ public class ZipKit {
      * @param paths   流数据在压缩文件中的路径或文件名
      * @param ins     要压缩的源，添加完成后自动关闭流
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, String[] paths, InputStream[] ins) throws InstrumentException {
+    public static File zip(File zipFile, String[] paths, InputStream[] ins) throws InternalException {
         return zip(zipFile, paths, ins, DEFAULT_CHARSET);
     }
 
@@ -304,9 +304,9 @@ public class ZipKit {
      * @param ins     要压缩的源
      * @param charset 编码
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, String[] paths, InputStream[] ins, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File zip(File zipFile, String[] paths, InputStream[] ins, java.nio.charset.Charset charset) throws InternalException {
         if (ArrayKit.isEmpty(paths) || ArrayKit.isEmpty(ins)) {
             throw new IllegalArgumentException("Paths or ins is empty !");
         }
@@ -350,9 +350,9 @@ public class ZipKit {
      * @param zipOutputStream 目标流，压缩完成不关闭
      * @param paths           流数据在压缩文件中的路径或文件名
      * @param ins             要压缩的源，添加完成后自动关闭流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void zip(ZipOutputStream zipOutputStream, String[] paths, InputStream[] ins) throws InstrumentException {
+    public static void zip(ZipOutputStream zipOutputStream, String[] paths, InputStream[] ins) throws InternalException {
         if (ArrayKit.isEmpty(paths) || ArrayKit.isEmpty(ins)) {
             throw new IllegalArgumentException("Paths or ins is empty !");
         }
@@ -375,9 +375,9 @@ public class ZipKit {
      * @param charset   编码
      * @param resources 需要压缩的资源，资源的路径为{@link Resource#getName()}
      * @return 压缩文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File zip(File zipFile, Charset charset, Resource... resources) throws InstrumentException {
+    public static File zip(File zipFile, Charset charset, Resource... resources) throws InternalException {
         ZipWriter.of(zipFile, charset).add(resources).close();
         return zipFile;
     }
@@ -387,9 +387,9 @@ public class ZipKit {
      *
      * @param zipFilePath 压缩文件路径
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(String zipFilePath) throws InstrumentException {
+    public static File unzip(String zipFilePath) throws InternalException {
         return unzip(zipFilePath, DEFAULT_CHARSET);
     }
 
@@ -399,9 +399,9 @@ public class ZipKit {
      * @param zipFilePath 压缩文件路径
      * @param charset     编码
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(String zipFilePath, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File unzip(String zipFilePath, java.nio.charset.Charset charset) throws InternalException {
         return unzip(FileKit.file(zipFilePath), charset);
     }
 
@@ -410,9 +410,9 @@ public class ZipKit {
      *
      * @param zipFile 压缩文件
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(File zipFile) throws InstrumentException {
+    public static File unzip(File zipFile) throws InternalException {
         return unzip(zipFile, DEFAULT_CHARSET);
     }
 
@@ -422,9 +422,9 @@ public class ZipKit {
      * @param zipFile 压缩文件
      * @param charset 编码
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(File zipFile, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File unzip(File zipFile, java.nio.charset.Charset charset) throws InternalException {
         return unzip(zipFile, FileKit.file(zipFile.getParentFile(), FileKit.getPrefix(zipFile)), charset);
     }
 
@@ -434,9 +434,9 @@ public class ZipKit {
      * @param zipFilePath 压缩文件的路径
      * @param outFileDir  解压到的目录
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(String zipFilePath, String outFileDir) throws InstrumentException {
+    public static File unzip(String zipFilePath, String outFileDir) throws InternalException {
         return unzip(zipFilePath, outFileDir, DEFAULT_CHARSET);
     }
 
@@ -447,9 +447,9 @@ public class ZipKit {
      * @param outFileDir  解压到的目录
      * @param charset     编码
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(String zipFilePath, String outFileDir, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File unzip(String zipFilePath, String outFileDir, java.nio.charset.Charset charset) throws InternalException {
         return unzip(FileKit.file(zipFilePath), FileKit.mkdir(outFileDir), charset);
     }
 
@@ -459,9 +459,9 @@ public class ZipKit {
      * @param zipFile zip文件
      * @param outFile 解压到的目录
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(File zipFile, File outFile) throws InstrumentException {
+    public static File unzip(File zipFile, File outFile) throws InternalException {
         return unzip(zipFile, outFile, DEFAULT_CHARSET);
     }
 
@@ -472,9 +472,9 @@ public class ZipKit {
      * @param outFile 解压到的目录
      * @param charset 编码
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static File unzip(File zipFile, File outFile, java.nio.charset.Charset charset) throws InstrumentException {
+    public static File unzip(File zipFile, File outFile, java.nio.charset.Charset charset) throws InternalException {
         return unzip(zipFile(zipFile, charset), outFile);
     }
 
@@ -484,7 +484,7 @@ public class ZipKit {
      * @param zipFile zip文件,附带编码信息,使用完毕自动关闭
      * @param outFile 解压到的目录
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
     public static File unzip(ZipFile zipFile, File outFile) {
         return unzip(zipFile, outFile, -1);
@@ -607,9 +607,9 @@ public class ZipKit {
      * @param content 被压缩的字符串
      * @param charset 编码
      * @return 压缩后的字节流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] gzip(String content, String charset) throws InstrumentException {
+    public static byte[] gzip(String content, String charset) throws InternalException {
         return gzip(StringKit.bytes(content, charset));
     }
 
@@ -618,9 +618,9 @@ public class ZipKit {
      *
      * @param buf 被压缩的字节流
      * @return 压缩后的字节流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] gzip(byte[] buf) throws InstrumentException {
+    public static byte[] gzip(byte[] buf) throws InternalException {
         return gzip(new ByteArrayInputStream(buf), buf.length);
     }
 
@@ -629,9 +629,9 @@ public class ZipKit {
      *
      * @param file 被压缩的文件
      * @return 压缩后的字节流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] gzip(File file) throws InstrumentException {
+    public static byte[] gzip(File file) throws InternalException {
         BufferedInputStream in = null;
         try {
             in = FileKit.getInputStream(file);
@@ -646,9 +646,9 @@ public class ZipKit {
      *
      * @param in 被压缩的流
      * @return 压缩后的字节流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] gzip(InputStream in) throws InstrumentException {
+    public static byte[] gzip(InputStream in) throws InternalException {
         return gzip(in, DEFAULT_BYTE_ARRAY_LENGTH);
     }
 
@@ -658,9 +658,9 @@ public class ZipKit {
      * @param in     被压缩的流
      * @param length 预估长度
      * @return 压缩后的字节流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] gzip(InputStream in, int length) throws InstrumentException {
+    public static byte[] gzip(InputStream in, int length) throws InternalException {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
         Gzip.of(in, bos).gzip().close();
         return bos.toByteArray();
@@ -672,9 +672,9 @@ public class ZipKit {
      * @param buf     压缩过的字节流
      * @param charset 编码
      * @return 解压后的字符串
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static String unGzip(byte[] buf, String charset) throws InstrumentException {
+    public static String unGzip(byte[] buf, String charset) throws InternalException {
         return StringKit.toString(unGzip(buf), charset);
     }
 
@@ -683,9 +683,9 @@ public class ZipKit {
      *
      * @param buf buf
      * @return bytes
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] unGzip(byte[] buf) throws InstrumentException {
+    public static byte[] unGzip(byte[] buf) throws InternalException {
         return unGzip(new ByteArrayInputStream(buf), buf.length);
     }
 
@@ -694,9 +694,9 @@ public class ZipKit {
      *
      * @param in Gzip数据
      * @return 解压后的数据
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] unGzip(InputStream in) throws InstrumentException {
+    public static byte[] unGzip(InputStream in) throws InternalException {
         return unGzip(in, DEFAULT_BYTE_ARRAY_LENGTH);
     }
 
@@ -706,9 +706,9 @@ public class ZipKit {
      * @param in     Gzip数据
      * @param length 估算长度,如果无法确定请传入{@link #DEFAULT_BYTE_ARRAY_LENGTH}
      * @return 解压后的数据
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static byte[] unGzip(InputStream in, int length) throws InstrumentException {
+    public static byte[] unGzip(InputStream in, int length) throws InternalException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(length);
         Gzip.of(in, bos).unGzip().close();
         return bos.toByteArray();
@@ -861,7 +861,7 @@ public class ZipKit {
         try {
             return zipFile.getInputStream(zipEntry);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -914,7 +914,7 @@ public class ZipKit {
         try {
             return new ZipFile(file, ObjectKit.defaultIfNull(charset, org.aoju.bus.core.lang.Charset.UTF_8));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -979,14 +979,10 @@ public class ZipKit {
      * @param path 文件路径，可以是目录或Zip文件等
      * @return {@link FileSystem}
      */
-    public static FileSystem create(String path) {
-        try {
-            return FileSystems.newFileSystem(
-                    Paths.get(path).toUri(),
-                    MapKit.of("create", "true"));
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
+    public static FileSystem create(String path) throws IOException {
+        return FileSystems.newFileSystem(
+                Paths.get(path).toUri(),
+                MapKit.of("create", "true"));
     }
 
     /**
@@ -1018,7 +1014,7 @@ public class ZipKit {
             return FileSystems.newFileSystem(
                     URI.create("jar:" + Paths.get(path).toUri()), env);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1028,9 +1024,9 @@ public class ZipKit {
      * @param zipFile  压缩后的产生的文件路径
      * @param srcFiles 被压缩的文件或目录
      */
-    private static void validateFiles(File zipFile, File... srcFiles) throws InstrumentException {
+    private static void validateFiles(File zipFile, File... srcFiles) throws InternalException {
         if (zipFile.isDirectory()) {
-            throw new InstrumentException("Zip file [{}] must not be a directory !", zipFile.getAbsoluteFile());
+            throw new InternalException("Zip file [{}] must not be a directory !", zipFile.getAbsoluteFile());
         }
 
         for (File srcFile : srcFiles) {
@@ -1038,7 +1034,7 @@ public class ZipKit {
                 continue;
             }
             if (false == srcFile.exists()) {
-                throw new InstrumentException(StringKit.format("File [{}] not exist!", srcFile.getAbsolutePath()));
+                throw new InternalException(StringKit.format("File [{}] not exist!", srcFile.getAbsolutePath()));
             }
 
             // 当 zipFile =  new File("temp.zip") 时, zipFile.getParentFile() == null
@@ -1051,7 +1047,7 @@ public class ZipKit {
 
             // 压缩文件不能位于被压缩的目录内
             if (srcFile.isDirectory() && FileKit.isSub(srcFile, parentFile)) {
-                throw new InstrumentException("Zip file path [{}] must not be the child directory of [{}] !", zipFile.getPath(), srcFile.getPath());
+                throw new InternalException("Zip file path [{}] must not be the child directory of [{}] !", zipFile.getPath(), srcFile.getPath());
             }
         }
     }
@@ -1062,9 +1058,9 @@ public class ZipKit {
      * @param zipFile     Zip文件
      * @param zipEntry    zip文件中的子文件
      * @param outItemFile 输出到的文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private static void write(ZipFile zipFile, ZipEntry zipEntry, File outItemFile) throws InstrumentException {
+    private static void write(ZipFile zipFile, ZipEntry zipEntry, File outItemFile) throws InternalException {
         FileKit.writeFromStream(get(zipFile, zipEntry), outItemFile);
     }
 

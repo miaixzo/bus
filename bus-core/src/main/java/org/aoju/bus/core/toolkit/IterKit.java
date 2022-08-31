@@ -29,7 +29,7 @@ import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.collection.FilterIterator;
 import org.aoju.bus.core.collection.NodeListIterator;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Matcher;
@@ -854,7 +854,7 @@ public class IterKit {
             try {
                 map.put(keyFunc.call(element), valueFunc.call(element));
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         return map;

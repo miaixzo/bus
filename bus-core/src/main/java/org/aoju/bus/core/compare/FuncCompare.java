@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compare;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.function.Function;
@@ -62,7 +62,7 @@ public class FuncCompare<T> extends NullCompare<T> {
             v1 = func.apply(a);
             v2 = func.apply(b);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         return compare(a, b, v1, v2);

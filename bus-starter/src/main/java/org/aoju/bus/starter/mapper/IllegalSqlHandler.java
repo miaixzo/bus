@@ -42,7 +42,7 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
@@ -107,25 +107,25 @@ public class IllegalSqlHandler extends AbstractSqlParserHandler implements Inter
         //where条件使用了 or 关键字
         if (expression instanceof OrExpression) {
             OrExpression orExpression = (OrExpression) expression;
-            throw new InstrumentException("非法SQL，where条件中不能使用【or】关键字，错误or信息：" + orExpression.toString());
+            throw new InternalException("非法SQL，where条件中不能使用【or】关键字，错误or信息：" + orExpression.toString());
         } else if (expression instanceof NotEqualsTo) {
             NotEqualsTo notEqualsTo = (NotEqualsTo) expression;
-            throw new InstrumentException("非法SQL，where条件中不能使用【!=】关键字，错误!=信息：" + notEqualsTo.toString());
+            throw new InternalException("非法SQL，where条件中不能使用【!=】关键字，错误!=信息：" + notEqualsTo.toString());
         } else if (expression instanceof BinaryExpression) {
             BinaryExpression binaryExpression = (BinaryExpression) expression;
             if (binaryExpression.getLeftExpression() instanceof Function) {
                 Function function = (Function) binaryExpression.getLeftExpression();
-                throw new InstrumentException("非法SQL，where条件中不能使用数据库函数，错误函数信息：" + function.toString());
+                throw new InternalException("非法SQL，where条件中不能使用数据库函数，错误函数信息：" + function.toString());
             }
             if (binaryExpression.getRightExpression() instanceof SubSelect) {
                 SubSelect subSelect = (SubSelect) binaryExpression.getRightExpression();
-                throw new InstrumentException("非法SQL，where条件中不能使用子查询，错误子查询SQL信息：" + subSelect.toString());
+                throw new InternalException("非法SQL，where条件中不能使用子查询，错误子查询SQL信息：" + subSelect.toString());
             }
         } else if (expression instanceof InExpression) {
             InExpression inExpression = (InExpression) expression;
             if (inExpression.getRightItemsList() instanceof SubSelect) {
                 SubSelect subSelect = (SubSelect) inExpression.getRightItemsList();
-                throw new InstrumentException("非法SQL，where条件中不能使用子查询，错误子查询SQL信息：" + subSelect.toString());
+                throw new InternalException("非法SQL，where条件中不能使用子查询，错误子查询SQL信息：" + subSelect.toString());
             }
         }
 
@@ -179,7 +179,7 @@ public class IllegalSqlHandler extends AbstractSqlParserHandler implements Inter
             }
         }
         if (!useIndexFlag) {
-            throw new InstrumentException("非法SQL，SQL未使用到索引, table:" + table + ", columnName:" + columnName);
+            throw new InternalException("非法SQL，SQL未使用到索引, table:" + table + ", columnName:" + columnName);
         }
     }
 
@@ -332,7 +332,7 @@ public class IllegalSqlHandler extends AbstractSqlParserHandler implements Inter
         }
         //where条件不能为空
         if (null == where) {
-            throw new InstrumentException("非法SQL，必须要有where条件");
+            throw new InternalException("非法SQL，必须要有where条件");
         }
         validWhere(where, table, connection);
         validJoins(joins, table, connection);

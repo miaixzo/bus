@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.execute;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.shade.screw.Config;
 import org.aoju.bus.shade.screw.engine.EngineFactory;
@@ -57,7 +57,7 @@ public class ProduceExecute extends AbstractExecute {
             Logger.debug("database document generation complete time consuming:{}ms",
                     System.currentTimeMillis() - start);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

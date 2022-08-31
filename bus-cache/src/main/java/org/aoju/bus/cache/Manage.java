@@ -29,7 +29,7 @@ import org.aoju.bus.cache.magic.CacheKeys;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.annotation.Inject;
 import org.aoju.bus.core.annotation.Singleton;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 
@@ -163,7 +163,7 @@ public class Manage {
             return defaultCache;
         } else {
             return cachePool.computeIfAbsent(cacheName, (key) -> {
-                throw new InstrumentException(StringKit.format("no cache implementation named [%s].", key));
+                throw new InternalException(StringKit.format("no cache implementation named [%s].", key));
             });
         }
     }

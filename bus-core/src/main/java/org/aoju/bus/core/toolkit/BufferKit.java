@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
@@ -234,7 +234,7 @@ public class BufferKit {
             buffer.reset();
             return text;
         } catch (CharacterCodingException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

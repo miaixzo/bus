@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.criteria;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -118,7 +118,7 @@ public class SimpleType {
                 try {
                     SIMPLE_TYPE_SET.add(Class.forName(c));
                 } catch (ClassNotFoundException e) {
-                    throw new InstrumentException("注册类型出错:" + c, e);
+                    throw new InternalException("注册类型出错:" + c, e);
                 }
             }
         }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -474,7 +474,7 @@ public class Base64 {
                 out.write((byte) ((b3 << 6) | Normal.DECODE_64_TABLE[ch[off++]]));
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
     }

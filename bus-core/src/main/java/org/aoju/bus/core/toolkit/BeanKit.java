@@ -30,7 +30,7 @@ import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
@@ -330,14 +330,14 @@ public class BeanKit {
      *
      * @param clazz Bean类
      * @return 字段描述数组
-     * @throws InstrumentException 获取属性异常
+     * @throws InternalException 获取属性异常
      */
-    public static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws InstrumentException {
+    public static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws InternalException {
         BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(clazz);
         } catch (IntrospectionException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return ArrayKit.filter(beanInfo.getPropertyDescriptors(), (Filter<PropertyDescriptor>) t -> {
             // 过滤掉getClass方法
@@ -953,7 +953,7 @@ public class BeanKit {
                 }
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -980,7 +980,7 @@ public class BeanKit {
                 }
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

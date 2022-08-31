@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.management.ManagementFactory;
@@ -51,12 +51,12 @@ public enum Pid {
      * 获取当前进程ID，首先获取进程名称，读取@前的ID值，如果不存在，则读取进程名的hash值
      *
      * @return 进程ID
-     * @throws InstrumentException 进程名称为空
+     * @throws InternalException 进程名称为空
      */
-    private static int getPid() throws InstrumentException {
+    private static int getPid() throws InternalException {
         final String processName = ManagementFactory.getRuntimeMXBean().getName();
         if (StringKit.isBlank(processName)) {
-            throw new InstrumentException("Process name is blank!");
+            throw new InternalException("Process name is blank!");
         }
         final int atIndex = processName.indexOf('@');
         if (atIndex > 0) {

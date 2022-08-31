@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -221,9 +221,9 @@ public class Association {
         return state == State.Sta6;
     }
 
-    private void checkIsSCP(String cuid) throws InstrumentException {
+    private void checkIsSCP(String cuid) throws InternalException {
         if (!isSCPFor(cuid)) {
-            InstrumentException ex = new InstrumentException(cuid, TransferCapability.Role.SCP);
+            InternalException ex = new InternalException(cuid, TransferCapability.Role.SCP);
             if (ae.isRoleSelectionNegotiationLenient() && null == ac.getRoleSelectionFor(cuid))
                 Logger.info("{}: {}", this, ex.getMessage());
             else
@@ -238,9 +238,9 @@ public class Association {
         return requestor ? rolsel.isSCP() : rolsel.isSCU();
     }
 
-    private void checkIsSCU(String cuid) throws InstrumentException {
+    private void checkIsSCU(String cuid) throws InternalException {
         if (!isSCUFor(cuid)) {
-            InstrumentException ex = new InstrumentException(cuid, TransferCapability.Role.SCU);
+            InternalException ex = new InternalException(cuid, TransferCapability.Role.SCU);
             if (ae.isRoleSelectionNegotiationLenient() && null == ac.getRoleSelectionFor(cuid))
                 Logger.info("{}: {}", this, ex.getMessage());
             else
@@ -820,15 +820,15 @@ public class Association {
     }
 
     public Presentation pcFor(String cuid, String tsuid)
-            throws InstrumentException {
+            throws InternalException {
         Map<String, Presentation> tsMap = pcMap.get(cuid);
         if (null == tsMap)
-            throw new InstrumentException(cuid);
+            throw new InternalException(cuid);
         if (null == tsuid)
             return tsMap.values().iterator().next();
         Presentation pc = tsMap.get(tsuid);
         if (null == pc)
-            throw new InstrumentException(cuid, tsuid);
+            throw new InternalException(cuid, tsuid);
         return pc;
     }
 
@@ -1383,7 +1383,7 @@ public class Association {
         }
 
         void writeAReleaseRQ(Association as) throws IOException {
-            throw new InstrumentException(this.toString());
+            throw new InternalException(this.toString());
         }
 
         void write(Association as, AAbort aa) throws IOException {
@@ -1391,7 +1391,7 @@ public class Association {
         }
 
         public void writePDataTF(Association as) throws IOException {
-            throw new InstrumentException(this.toString());
+            throw new InternalException(this.toString());
         }
 
         void closeSocket(Association as) {

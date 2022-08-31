@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.watcher;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -280,7 +280,7 @@ public class WatchMonitor extends WatchServer {
         try {
             return createAll(Paths.get(url.toURI()), watcher);
         } catch (URISyntaxException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -327,10 +327,10 @@ public class WatchMonitor extends WatchServer {
      * 2、创建{@link WatchService} 对象
      * </pre>
      *
-     * @throws InstrumentException 监听异常，IO异常时抛出此异常
+     * @throws InternalException 监听异常，IO异常时抛出此异常
      */
     @Override
-    public void init() throws InstrumentException {
+    public void init() throws InternalException {
         //获取目录或文件路径
         if (false == Files.exists(this.path, LinkOption.NOFOLLOW_LINKS)) {
             // 不存在的路径
@@ -348,7 +348,7 @@ public class WatchMonitor extends WatchServer {
             try {
                 Files.createDirectories(this.path);
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         } else if (Files.isRegularFile(this.path, LinkOption.NOFOLLOW_LINKS)) {
             // 文件路径
@@ -387,11 +387,11 @@ public class WatchMonitor extends WatchServer {
      * 开始监听事件，阻塞当前进程
      *
      * @param watcher 监听
-     * @throws InstrumentException 监听异常，如果监听关闭抛出此异常
+     * @throws InternalException 监听异常，如果监听关闭抛出此异常
      */
-    public void watch(Watcher watcher) throws InstrumentException {
+    public void watch(Watcher watcher) throws InternalException {
         if (isClosed) {
-            throw new InstrumentException("Watch Monitor is closed !");
+            throw new InternalException("Watch Monitor is closed !");
         }
 
         // 按照层级注册路径及其子路径

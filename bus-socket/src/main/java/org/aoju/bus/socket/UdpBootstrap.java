@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.buffer.PageBuffer;
 import org.aoju.bus.core.io.buffer.VirtualBuffer;
 import org.aoju.bus.core.lang.Normal;
@@ -192,7 +192,7 @@ public class UdpBootstrap<R> {
             }
             // 理论上每个UDP包都是一个完整的消息
             if (null == request) {
-                config.getProcessor().stateEvent(aioSession, SocketStatus.DECODE_EXCEPTION, new InstrumentException("decode result is null"));
+                config.getProcessor().stateEvent(aioSession, SocketStatus.DECODE_EXCEPTION, new InternalException("decode result is null"));
             } else {
                 // 任务分发
                 workerGroup[(remote.hashCode() & Integer.MAX_VALUE) % workerGroup.length].dispatch(aioSession, request);

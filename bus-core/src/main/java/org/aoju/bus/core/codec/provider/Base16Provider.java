@@ -27,7 +27,7 @@ package org.aoju.bus.core.codec.provider;
 
 import org.aoju.bus.core.codec.Decoder;
 import org.aoju.bus.core.codec.Encoder;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.StringKit;
 
 /**
@@ -60,12 +60,12 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @param ch    十六进制char
      * @param index 十六进制字符在字符数组中的位置
      * @return 一个整数
-     * @throws InstrumentException 当ch不是一个合法的十六进制字符时，抛出运行时异常
+     * @throws InternalException 当ch不是一个合法的十六进制字符时，抛出运行时异常
      */
     private static int toDigit(char ch, int index) {
         int digit = Character.digit(ch, 16);
         if (digit < 0) {
-            throw new InstrumentException("Illegal hexadecimal character {} at index {}", ch, index);
+            throw new InternalException("Illegal hexadecimal character {} at index {}", ch, index);
         }
         return digit;
     }

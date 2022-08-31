@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.exception.VersionException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -481,7 +481,7 @@ public class SqlBuilder {
             }
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new InstrumentException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new InternalException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
@@ -530,7 +530,7 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new InstrumentException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new InternalException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
@@ -769,7 +769,7 @@ public class SqlBuilder {
      */
     public static int getLogicDeletedValue(EntityColumn column, boolean isDeleted) {
         if (!column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
-            throw new InstrumentException(column.getColumn() + " 没有 @LogicDelete 注解!");
+            throw new InternalException(column.getColumn() + " 没有 @LogicDelete 注解!");
         }
         LogicDelete logicDelete = column.getEntityField().getAnnotation(LogicDelete.class);
         if (isDeleted) {
@@ -801,7 +801,7 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (hasLogicDelete) {
-                    throw new InstrumentException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new InternalException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 hasLogicDelete = true;
                 logicDeleteColumn = column;

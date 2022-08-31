@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -1278,7 +1278,7 @@ public class MathKit {
         }
         // 加入逻辑判断,确保begin<end并且size不能大于该表示范围
         if ((end - begin) < size) {
-            throw new InstrumentException("Size is larger than range between begin and end!");
+            throw new InternalException("Size is larger than range between begin and end!");
         }
 
         Set<Integer> set = new HashSet<>(size, 1);

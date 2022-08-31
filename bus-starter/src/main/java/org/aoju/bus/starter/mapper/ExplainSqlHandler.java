@@ -29,7 +29,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.CallableStatementHandler;
@@ -85,7 +85,7 @@ public class ExplainSqlHandler extends AbstractSqlParserHandler implements Inter
                             sqlChangedFlag = true;
                         }
                     } catch (JSQLParserException e) {
-                        throw new InstrumentException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
+                        throw new InternalException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
                     }
                 }
                 if (sqlChangedFlag) {

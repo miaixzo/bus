@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.genid;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.mapper.reflect.MetaObject;
 
 import java.util.Map;
@@ -53,9 +53,9 @@ public interface GenId<T> {
      * @param genClass class
      * @param table    表
      * @param column   列
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    static void genId(Object target, String property, Class<? extends GenId> genClass, String table, String column) throws InstrumentException {
+    static void genId(Object target, String property, Class<? extends GenId> genClass, String table, String column) throws InternalException {
         try {
             GenId genId;
             if (CACHE.containsKey(genClass)) {
@@ -77,7 +77,7 @@ public interface GenId<T> {
                 metaObject.setValue(property, id);
             }
         } catch (Exception e) {
-            throw new InstrumentException("生成 ID 失败!", e);
+            throw new InternalException("生成 ID 失败!", e);
         }
     }
 

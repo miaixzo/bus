@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.CollKit;
@@ -112,7 +112,7 @@ public class LimitedResourceScanner implements LimitedResourceSource {
                 }
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

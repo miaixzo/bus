@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 /**
  * @author Kimi Liu
@@ -39,8 +39,8 @@ public interface IHL7ApplicationCache {
 
     void clear();
 
-    HL7Application get(String name) throws InstrumentException;
+    HL7Application get(String name) throws InternalException;
 
-    HL7Application findHL7Application(String name) throws InstrumentException;
+    HL7Application findHL7Application(String name) throws InternalException;
 
 }

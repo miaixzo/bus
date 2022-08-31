@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.factory;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.proxy.Factory;
@@ -91,11 +91,11 @@ public abstract class AbstractFactory extends Factory {
             case 1:
                 final Class superclass = superclasses[0];
                 if (Modifier.isFinal(superclass.getModifiers())) {
-                    throw new InstrumentException(
+                    throw new InternalException(
                             "Proxy class cannot extend " + superclass.getName() + " as it is final.");
                 }
                 if (!hasSuitableDefaultConstructor(superclass)) {
-                    throw new InstrumentException("Proxy class cannot extend " + superclass.getName() +
+                    throw new InternalException("Proxy class cannot extend " + superclass.getName() +
                             ", because it has no visible \"default\" constructor.");
                 }
                 return superclass;
@@ -109,7 +109,7 @@ public abstract class AbstractFactory extends Factory {
                     }
                 }
                 errorMessage.append("; multiple inheritance not allowed.");
-                throw new InstrumentException(errorMessage.toString());
+                throw new InternalException(errorMessage.toString());
         }
     }
 
@@ -199,7 +199,7 @@ public abstract class AbstractFactory extends Factory {
         try {
             getSuperclass(proxyClasses);
             return true;
-        } catch (InstrumentException e) {
+        } catch (InternalException e) {
             return false;
         }
     }

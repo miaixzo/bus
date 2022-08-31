@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -55,9 +55,9 @@ public class PunyCode {
      *
      * @param input 字符串
      * @return PunyCode字符串
-     * @throws InstrumentException 计算异常
+     * @throws InternalException 计算异常
      */
-    public static String encode(CharSequence input) throws InstrumentException {
+    public static String encode(CharSequence input) throws InternalException {
         return encode(input, false);
     }
 
@@ -67,9 +67,9 @@ public class PunyCode {
      * @param input      字符串
      * @param withPrefix 是否包含 "xn--"前缀
      * @return PunyCode字符串
-     * @throws InstrumentException 计算异常
+     * @throws InternalException 计算异常
      */
-    public static String encode(CharSequence input, boolean withPrefix) throws InstrumentException {
+    public static String encode(CharSequence input, boolean withPrefix) throws InternalException {
         Assert.notNull(input, "input must not be null!");
         int n = INITIAL_N;
         int delta = 0;
@@ -100,7 +100,7 @@ public class PunyCode {
                 }
             }
             if (m - n > (Integer.MAX_VALUE - delta) / (h + 1)) {
-                throw new InstrumentException("OVERFLOW");
+                throw new InternalException("OVERFLOW");
             }
             delta = delta + (m - n) * (h + 1);
             n = m;
@@ -109,7 +109,7 @@ public class PunyCode {
                 if (c < n) {
                     delta++;
                     if (0 == delta) {
-                        throw new InstrumentException("OVERFLOW");
+                        throw new InternalException("OVERFLOW");
                     }
                 }
                 if (c == n) {
@@ -150,9 +150,9 @@ public class PunyCode {
      *
      * @param input PunyCode
      * @return 字符串
-     * @throws InstrumentException 计算异常
+     * @throws InternalException 计算异常
      */
-    public static String decode(String input) throws InstrumentException {
+    public static String decode(String input) throws InternalException {
         Assert.notNull(input, "input must not be null!");
         input = StringKit.removePrefixIgnoreCase(input, PUNY_CODE_PREFIX);
 
@@ -178,12 +178,12 @@ public class PunyCode {
             int w = 1;
             for (int k = BASE; ; k += BASE) {
                 if (d == length) {
-                    throw new InstrumentException("BAD_INPUT");
+                    throw new InternalException("BAD_INPUT");
                 }
                 int c = input.charAt(d++);
                 int digit = codepoint2digit(c);
                 if (digit > (Integer.MAX_VALUE - i) / w) {
-                    throw new InstrumentException("OVERFLOW");
+                    throw new InternalException("OVERFLOW");
                 }
                 i = i + digit * w;
                 int t;
@@ -201,7 +201,7 @@ public class PunyCode {
             }
             bias = adapt(i - oldi, output.length() + 1, oldi == 0);
             if (i / (output.length() + 1) > Integer.MAX_VALUE - n) {
-                throw new InstrumentException("OVERFLOW");
+                throw new InternalException("OVERFLOW");
             }
             n = n + i / (output.length() + 1);
             i = i % (output.length() + 1);
@@ -245,9 +245,9 @@ public class PunyCode {
      *
      * @param d 输入字符
      * @return 转换后的字符
-     * @throws InstrumentException 无效字符
+     * @throws InternalException 无效字符
      */
-    private static int digit2codepoint(int d) throws InstrumentException {
+    private static int digit2codepoint(int d) throws InternalException {
         Assert.checkBetween(d, 0, 35);
         if (d < 26) {
             // 0..25 : 'a'..'z'
@@ -256,7 +256,7 @@ public class PunyCode {
             // 26..35 : '0'..'9';
             return d - 26 + '0';
         } else {
-            throw new InstrumentException("BAD_INPUT");
+            throw new InternalException("BAD_INPUT");
         }
     }
 
@@ -274,9 +274,9 @@ public class PunyCode {
      *
      * @param c 输入字符
      * @return 转换后的字符
-     * @throws InstrumentException 无效字符
+     * @throws InternalException 无效字符
      */
-    private static int codepoint2digit(int c) throws InstrumentException {
+    private static int codepoint2digit(int c) throws InternalException {
         if (c - '0' < 10) {
             // '0'..'9' : 26..35
             return c - '0' + 26;
@@ -284,7 +284,7 @@ public class PunyCode {
             // 'a'..'z' : 0..25
             return c - 'a';
         } else {
-            throw new InstrumentException("BAD_INPUT");
+            throw new InternalException("BAD_INPUT");
         }
     }
 

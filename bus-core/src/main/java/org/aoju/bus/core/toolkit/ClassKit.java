@@ -31,7 +31,7 @@ import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.compiler.JavaSourceCompiler;
 import org.aoju.bus.core.convert.BasicType;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
@@ -426,7 +426,7 @@ public class ClassKit {
      */
     public static <T> T invoke(String classNameWithMethodName, boolean isSingleton, Object... args) {
         if (StringKit.isBlank(classNameWithMethodName)) {
-            throw new InstrumentException("Blank classNameDotMethodName!");
+            throw new InternalException("Blank classNameDotMethodName!");
         }
 
         int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_SHAPE);
@@ -434,7 +434,7 @@ public class ClassKit {
             splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_DOT);
         }
         if (splitIndex <= 0) {
-            throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
+            throw new InternalException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
         final String className = classNameWithMethodName.substring(0, splitIndex);
@@ -484,7 +484,7 @@ public class ClassKit {
                 return ReflectKit.invoke(isSingleton ? Instances.singletion(clazz) : clazz.newInstance(), method, args);
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1031,10 +1031,10 @@ public class ClassKit {
      *
      * @param resource 资源(相对Classpath的路径)
      * @return 资源URL
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      * @see FileKit#getResource(String)
      */
-    public static URL getResourceURL(String resource) throws InstrumentException {
+    public static URL getResourceURL(String resource) throws InternalException {
         return FileKit.getResource(resource);
     }
 
@@ -1067,9 +1067,9 @@ public class ClassKit {
      * @param <T>  对象
      * @param name 类名
      * @return 类名对应的类
-     * @throws InstrumentException 没有类名对应的类时抛出此异常
+     * @throws InternalException 没有类名对应的类时抛出此异常
      */
-    public static <T> Class<T> loadClass(String name) throws InstrumentException {
+    public static <T> Class<T> loadClass(String name) throws InternalException {
         return loadClass(name, true);
     }
 
@@ -1087,9 +1087,9 @@ public class ClassKit {
      * @param name          类名
      * @param isInitialized 是否初始化类(调用static模块内容和初始化static属性)
      * @return 类名对应的类
-     * @throws InstrumentException 没有类名对应的类时抛出此异常
+     * @throws InternalException 没有类名对应的类时抛出此异常
      */
-    public static <T> Class<T> loadClass(String name, boolean isInitialized) throws InstrumentException {
+    public static <T> Class<T> loadClass(String name, boolean isInitialized) throws InternalException {
         return (Class<T>) loadClass(name, null, isInitialized);
     }
 
@@ -1109,9 +1109,9 @@ public class ClassKit {
      * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
      * @param isInitialized 是否初始化类(调用static模块内容和初始化static属性)
      * @return 类名对应的类
-     * @throws InstrumentException 没有类名对应的类时抛出此异常
+     * @throws InternalException 没有类名对应的类时抛出此异常
      */
-    public static Class<?> loadClass(String name, ClassLoader classLoader, boolean isInitialized) throws InstrumentException {
+    public static Class<?> loadClass(String name, ClassLoader classLoader, boolean isInitialized) throws InternalException {
         Assert.notNull(name, "Name must not be null");
 
         // 自动将包名中的"/"替换为"."
@@ -1168,7 +1168,7 @@ public class ClassKit {
         try {
             return getJarClassLoader(jarOrDir).loadClass(name);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -3482,7 +3482,7 @@ public class ClassKit {
         try {
             connection = url.openConnection();
         } catch (final IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (connection instanceof JarURLConnection) {
@@ -3497,16 +3497,16 @@ public class ClassKit {
      *
      * @param classpathItem 文件路径
      * @return Manifest
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static Manifest getManifest(File classpathItem) throws InstrumentException {
+    public static Manifest getManifest(File classpathItem) throws InternalException {
         Manifest manifest = null;
 
         if (classpathItem.isFile()) {
             try (JarFile jarFile = new JarFile(classpathItem)) {
                 manifest = getManifest(jarFile);
             } catch (final IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         } else {
             final File metaDir = new File(classpathItem, "META-INF");
@@ -3525,7 +3525,7 @@ public class ClassKit {
                 try (FileInputStream fis = new FileInputStream(manifestFile)) {
                     manifest = new Manifest(fis);
                 } catch (final IOException e) {
-                    throw new InstrumentException(e);
+                    throw new InternalException(e);
                 }
             }
         }
@@ -3538,14 +3538,14 @@ public class ClassKit {
      *
      * @param connection {@link JarURLConnection}
      * @return Manifest
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static Manifest getManifest(JarURLConnection connection) throws InstrumentException {
+    public static Manifest getManifest(JarURLConnection connection) throws InternalException {
         final JarFile jarFile;
         try {
             jarFile = connection.getJarFile();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return getManifest(jarFile);
     }
@@ -3555,13 +3555,13 @@ public class ClassKit {
      *
      * @param jarFile {@link JarURLConnection}
      * @return Manifest
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static Manifest getManifest(JarFile jarFile) throws InstrumentException {
+    public static Manifest getManifest(JarFile jarFile) throws InternalException {
         try {
             return jarFile.getManifest();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -3658,7 +3658,7 @@ public class ClassKit {
                 // 尝试获取内部类,例如java.lang.Thread.State = java.lang.Thread$State
                 clazz = tryLoadInnerClass(name, classLoader, isInitialized);
                 if (null == clazz) {
-                    throw new InstrumentException(ex);
+                    throw new InternalException(ex);
                 }
             }
         }

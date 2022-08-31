@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.WebApplication;
@@ -41,71 +41,71 @@ import java.util.EnumSet;
 public interface Configuration extends Closeable {
 
     WebApplication[] listWebApplicationInfos(WebApplication keys)
-            throws InstrumentException;
+            throws InternalException;
 
-    boolean configurationExists() throws InstrumentException;
+    boolean configurationExists() throws InternalException;
 
-    boolean purgeConfiguration() throws InstrumentException;
+    boolean purgeConfiguration() throws InternalException;
 
-    boolean registerAETitle(String aet) throws InstrumentException;
+    boolean registerAETitle(String aet) throws InternalException;
 
-    boolean registerWebAppName(String webAppName) throws InstrumentException;
+    boolean registerWebAppName(String webAppName) throws InternalException;
 
-    void unregisterAETitle(String aet) throws InstrumentException;
+    void unregisterAETitle(String aet) throws InternalException;
 
-    void unregisterWebAppName(String webAppName) throws InstrumentException;
+    void unregisterWebAppName(String webAppName) throws InternalException;
 
-    ApplicationEntity findApplicationEntity(String aet) throws InstrumentException;
+    ApplicationEntity findApplicationEntity(String aet) throws InternalException;
 
-    WebApplication findWebApplication(String name) throws InstrumentException;
+    WebApplication findWebApplication(String name) throws InternalException;
 
-    Device findDevice(String name) throws InstrumentException;
+    Device findDevice(String name) throws InternalException;
 
     /**
      * 查询具有指定属性的设备
      *
      * @param keys 设备属性必须与*匹配或为空，以获取所有已配置设备的信息
      * @return 具有匹配属性的已配置设备*的DeviceInfo对象数组
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    Device[] listDeviceInfos(Device keys) throws InstrumentException;
+    Device[] listDeviceInfos(Device keys) throws InternalException;
 
     /**
      * 查询具有指定属性的应用程序实体
      *
      * @param keys 应与匹配或为空的应用程序实体属性将获取所有已配置的应用程序实体的信息
      * @return 具有匹配属性的已配置应用程序实体*的ApplicationEntityInfo对象数组
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    ApplicationEntity[] listAETInfos(ApplicationEntity keys) throws InstrumentException;
+    ApplicationEntity[] listAETInfos(ApplicationEntity keys) throws InternalException;
 
-    String[] listDeviceNames() throws InstrumentException;
+    String[] listDeviceNames() throws InternalException;
 
-    String[] listRegisteredAETitles() throws InstrumentException;
+    String[] listRegisteredAETitles() throws InternalException;
 
-    String[] listRegisteredWebAppNames() throws InstrumentException;
+    String[] listRegisteredWebAppNames() throws InternalException;
 
-    ConfigurationChange persist(Device device, EnumSet<Option> options) throws InstrumentException;
+    ConfigurationChange persist(Device device, EnumSet<Option> options) throws InternalException;
 
-    ConfigurationChange merge(Device device, EnumSet<Option> options) throws InstrumentException;
+    ConfigurationChange merge(Device device, EnumSet<Option> options) throws InternalException;
 
-    ConfigurationChange removeDevice(String name, EnumSet<Option> options) throws InstrumentException;
+    ConfigurationChange removeDevice(String name, EnumSet<Option> options) throws InternalException;
 
-    byte[][] loadDeviceVendorData(String deviceName) throws InstrumentException;
+    byte[][] loadDeviceVendorData(String deviceName) throws InternalException;
 
-    ConfigurationChange updateDeviceVendorData(String deviceName, byte[]... vendorData) throws InstrumentException;
+    ConfigurationChange updateDeviceVendorData(String deviceName, byte[]... vendorData) throws InternalException;
 
     String deviceRef(String name);
 
-    void persistCertificates(String ref, X509Certificate... certs) throws InstrumentException;
+    void persistCertificates(String ref, X509Certificate... certs) throws InternalException;
 
-    void removeCertificates(String ref) throws InstrumentException;
+    void removeCertificates(String ref) throws InternalException;
 
-    X509Certificate[] findCertificates(String dn) throws InstrumentException;
+    X509Certificate[] findCertificates(String dn) throws InternalException;
 
     void close();
 
-    void sync() throws InstrumentException;
+    void sync() throws InternalException;
 
     <T> T getDicomConfigurationExtension(Class<T> clazz);
 

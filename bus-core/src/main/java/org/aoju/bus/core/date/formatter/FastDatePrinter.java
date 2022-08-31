@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.date.formatter;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.io.IOException;
@@ -484,7 +484,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
                 rule.appendTo(buf, calendar);
             }
         } catch (final IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return buf;
     }

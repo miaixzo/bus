@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.engine;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.shade.screw.metadata.DataSchema;
 
 import java.io.Serializable;
@@ -43,8 +43,8 @@ public interface TemplateEngine extends Serializable {
      *
      * @param info    {@link DataSchema}
      * @param docName {@link String}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    void produce(DataSchema info, String docName) throws InstrumentException;
+    void produce(DataSchema info, String docName) throws InternalException;
 
 }

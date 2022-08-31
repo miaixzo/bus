@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect.sqlserver;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.shade.screw.Builder;
@@ -68,7 +68,7 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
      * @return {@link Database} 数据库信息
      */
     @Override
-    public Database getDataBase() throws InstrumentException {
+    public Database getDataBase() throws InternalException {
         SqlServerDatabase model = new SqlServerDatabase();
         //当前数据库名称
         model.setDatabase(getCatalog());
@@ -106,7 +106,7 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
             }
             return list;
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet, this.connection);
         }
@@ -119,7 +119,7 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
      * @return {@link List} 表字段信息
      */
     @Override
-    public List<SqlServerColumn> getTableColumns(String table) throws InstrumentException {
+    public List<SqlServerColumn> getTableColumns(String table) throws InternalException {
         Assert.notEmpty(table, "Table name can not be empty!");
         ResultSet resultSet = null;
         try {
@@ -172,7 +172,7 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
             });
             return list;
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet, this.connection);
         }
@@ -182,10 +182,10 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
      * 获取所有列信息
      *
      * @return {@link List} 表字段信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends Column> getTableColumns() throws InstrumentException {
+    public List<? extends Column> getTableColumns() throws InternalException {
         return getTableColumns(Builder.PERCENT_SIGN);
     }
 
@@ -194,10 +194,10 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
      *
      * @param table {@link String}
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InstrumentException {
+    public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {
         ResultSet resultSet = null;
         try {
             //查询
@@ -205,7 +205,7 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
             //映射
             return Mapping.convertList(resultSet, SqlServerPrimaryKey.class);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet, this.connection);
         }
@@ -215,10 +215,10 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
      * 根据表名获取主键
      *
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends PrimaryKey> getPrimaryKeys() throws InstrumentException {
+    public List<? extends PrimaryKey> getPrimaryKeys() throws InternalException {
         ResultSet resultSet = null;
         try {
             // 由于单条循环查询存在性能问题，所以这里通过自定义SQL查询数据库主键信息
@@ -229,7 +229,7 @@ public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {
                     .executeQuery();
             return Mapping.convertList(resultSet, SqlServerPrimaryKey.class);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet);
         }

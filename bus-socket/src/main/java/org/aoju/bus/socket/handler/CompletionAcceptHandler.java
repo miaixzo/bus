@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.handler;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.NioQuickServer;
 
@@ -56,7 +56,7 @@ public class CompletionAcceptHandler implements CompletionHandler<ServerSocketCh
             // 注册通道
             channel.register(selector, ops);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -68,7 +68,7 @@ public class CompletionAcceptHandler implements CompletionHandler<ServerSocketCh
             socketChannel = serverSocketChannel.accept();
             Logger.debug("Client [{}] accepted.", socketChannel.getRemoteAddress());
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         // SocketChannel通道的可读事件注册到Selector中

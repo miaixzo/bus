@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.exception.NoSuchException;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -58,7 +58,7 @@ public class ReflectStrategy implements Matcher<Object, Reflect> {
             Object bean = ClassKit.getClass(clazz);
             result = ReflectKit.invokeMethod(method, bean);
         } catch (NoSuchMethodException e) {
-            throw new InstrumentException(e.getMessage(), e);
+            throw new InternalException(e.getMessage(), e);
         }
 
         for (String name : annotation.validator()) {

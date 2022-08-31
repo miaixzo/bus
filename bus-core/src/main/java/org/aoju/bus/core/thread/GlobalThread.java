@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.thread;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -91,7 +91,7 @@ public class GlobalThread {
         try {
             executor.execute(runnable);
         } catch (Exception e) {
-            throw new InstrumentException("Exception when running task!");
+            throw new InternalException("Exception when running task!");
         }
     }
 

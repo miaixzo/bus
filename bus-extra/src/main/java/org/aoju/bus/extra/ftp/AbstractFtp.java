@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.ftp;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CollKit;
@@ -140,7 +140,7 @@ public abstract class AbstractFtp implements Closeable {
         final List<String> names;
         try {
             names = ls(dir);
-        } catch (InstrumentException ignore) {
+        } catch (InternalException ignore) {
             return false;
         }
         return containsIgnoreCase(names, fileName);
@@ -190,7 +190,7 @@ public abstract class AbstractFtp implements Closeable {
                     if (false == cd(s)) {
                         exist = false;
                     }
-                } catch (InstrumentException e) {
+                } catch (InternalException e) {
                     exist = false;
                 }
                 if (false == exist) {
@@ -258,7 +258,7 @@ public abstract class AbstractFtp implements Closeable {
         } catch (Throwable e) {
             // 异常则删除临时文件
             FileKit.delete(outFile);
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

@@ -26,7 +26,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.collection.ComputeIterator;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.text.TextBuilder;
@@ -128,9 +128,9 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * 读取下一行数据
      *
      * @return CsvRow
-     * @throws InstrumentException IO读取异常
+     * @throws InternalException IO读取异常
      */
-    public CsvRow nextRow() throws InstrumentException {
+    public CsvRow nextRow() throws InternalException {
         long startingLineNo;
         List<String> currentFields;
         int fieldCount;
@@ -152,7 +152,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 if (firstLineFieldCount == -1) {
                     firstLineFieldCount = fieldCount;
                 } else if (fieldCount != firstLineFieldCount) {
-                    throw new InstrumentException(String.format("Line %d has %d fields, but first line has %d fields", lineNo, fieldCount, firstLineFieldCount));
+                    throw new InternalException(String.format("Line %d has %d fields, but first line has %d fields", lineNo, fieldCount, firstLineFieldCount));
                 }
             }
 
@@ -201,9 +201,9 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * 行号要考虑注释行和引号包装的内容中的换行
      *
      * @return 一行数据
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private List<String> readLine() throws InstrumentException {
+    private List<String> readLine() throws InternalException {
         // 矫正行号
         // 当一行内容包含多行数据时，记录首行行号，但是读取下一行时，需要把多行内容的行数加上
         if (inQuotesLineCount > 0) {
@@ -406,7 +406,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             try {
                 length = reader.read(this.buf);
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
             this.mark = 0;
             this.position = 0;

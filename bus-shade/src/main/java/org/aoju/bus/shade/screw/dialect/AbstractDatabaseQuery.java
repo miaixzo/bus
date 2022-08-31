@@ -26,7 +26,7 @@
 package org.aoju.bus.shade.screw.dialect;
 
 import lombok.Getter;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.shade.screw.Builder;
@@ -76,7 +76,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             try {
                 rs.close();
             } catch (SQLException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -91,7 +91,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             try {
                 conn.close();
             } catch (SQLException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -107,14 +107,14 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             try {
                 rs.close();
             } catch (SQLException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         if (!Objects.isNull(conn)) {
             try {
                 conn.close();
             } catch (SQLException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -131,21 +131,21 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             try {
                 rs.close();
             } catch (SQLException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         if (!Objects.isNull(st)) {
             try {
                 st.close();
             } catch (SQLException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         if (!Objects.isNull(conn)) {
             try {
                 conn.close();
             } catch (SQLException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -154,9 +154,9 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * 获取连接对象，单例模式，采用双重锁检查
      *
      * @return {@link Connection}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    private Connection getConnection() throws InstrumentException {
+    private Connection getConnection() throws InternalException {
         try {
             //不为空
             if (!Objects.isNull(connection) && !connection.isClosed()) {
@@ -171,7 +171,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             }
             return this.connection;
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -179,9 +179,9 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * 获取 getCatalog
      *
      * @return {@link String}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    protected String getCatalog() throws InstrumentException {
+    protected String getCatalog() throws InternalException {
         try {
             String catalog = this.getConnection().getCatalog();
             if (StringKit.isBlank(catalog)) {
@@ -189,7 +189,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             }
             return catalog;
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -197,9 +197,9 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * 获取 getSchema
      *
      * @return {@link String}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    protected String getSchema() throws InstrumentException {
+    protected String getSchema() throws InternalException {
         try {
             String schema;
             //获取数据库URL 用于判断数据库类型
@@ -217,7 +217,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
             }
             return schema;
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -248,13 +248,13 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * 获取 DatabaseMetaData
      *
      * @return {@link DatabaseMetaData}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    protected DatabaseMetaData getMetaData() throws InstrumentException {
+    protected DatabaseMetaData getMetaData() throws InternalException {
         try {
             return this.getConnection().getMetaData();
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -263,14 +263,14 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      *
      * @param sql {@link String} SQL
      * @return {@link PreparedStatement}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    protected PreparedStatement prepareStatement(String sql) throws InstrumentException {
+    protected PreparedStatement prepareStatement(String sql) throws InternalException {
         Assert.notEmpty(sql, "Sql can not be empty!");
         try {
             return this.getConnection().prepareStatement(sql);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -278,11 +278,11 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      * 根据表名获取主键
      *
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends PrimaryKey> getPrimaryKeys() throws InstrumentException {
-        throw new InstrumentException(Builder.NOT_SUPPORTED);
+    public List<? extends PrimaryKey> getPrimaryKeys() throws InternalException {
+        throw new InternalException(Builder.NOT_SUPPORTED);
     }
 
 }

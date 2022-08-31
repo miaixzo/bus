@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Console;
@@ -128,10 +128,10 @@ public class Tailer implements Serializable {
      */
     private static void checkFile(File file) {
         if (false == file.exists()) {
-            throw new InstrumentException("File [{}] not exist !", file.getAbsolutePath());
+            throw new InternalException("File [{}] not exist !", file.getAbsolutePath());
         }
         if (false == file.isFile()) {
-            throw new InstrumentException("Path [{}] is not a file !", file.getAbsolutePath());
+            throw new InternalException("Path [{}] is not a file !", file.getAbsolutePath());
         }
     }
 
@@ -152,7 +152,7 @@ public class Tailer implements Serializable {
         try {
             this.readTail();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         final LineReadWatcher lineReadWatcher = new LineReadWatcher(this.randomAccessFile, this.charset, this.lineHandler);
@@ -166,7 +166,7 @@ public class Tailer implements Serializable {
             try {
                 scheduledFuture.get();
             } catch (ExecutionException | InterruptedException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -231,7 +231,7 @@ public class Tailer implements Serializable {
         try {
             this.randomAccessFile.seek(len);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

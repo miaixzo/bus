@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.base.consts;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.util.Map;
@@ -301,7 +301,7 @@ public class ErrorCode {
      */
     public static void register(String key, String value) {
         if (ERRORCODE_CACHE.containsKey(key)) {
-            throw new InstrumentException("重复注册同名称的错误码：" + key);
+            throw new InternalException("重复注册同名称的错误码：" + key);
         }
         ERRORCODE_CACHE.putIfAbsent(key, value);
     }

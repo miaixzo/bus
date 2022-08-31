@@ -26,7 +26,7 @@
 package org.aoju.bus.core.instance;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -125,7 +125,7 @@ public final class InstanceFactory implements Instance {
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

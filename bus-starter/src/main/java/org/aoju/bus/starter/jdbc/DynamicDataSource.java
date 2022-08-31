@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.jdbc;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -131,7 +131,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
             keySet.addAll(sourceMap.keySet());
             sourceMapField.setAccessible(false);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

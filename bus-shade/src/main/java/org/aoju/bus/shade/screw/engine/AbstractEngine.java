@@ -26,7 +26,7 @@
 package org.aoju.bus.shade.screw.engine;
 
 import lombok.Data;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.shade.screw.Builder;
@@ -103,7 +103,7 @@ public abstract class AbstractEngine implements TemplateEngine {
                     }
                 }
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }

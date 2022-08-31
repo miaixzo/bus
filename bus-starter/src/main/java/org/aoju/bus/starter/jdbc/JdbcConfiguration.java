@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.jdbc;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -128,7 +128,7 @@ public class JdbcConfiguration {
     private DataSource bind(Map<String, Object> map) {
         String type = StringKit.toString(map.get("type"));
         if (StringKit.isEmpty(type)) {
-            throw new InstrumentException("The database type is empty");
+            throw new InternalException("The database type is empty");
         }
         try {
             return bind((Class<? extends DataSource>) Class.forName(type), map);

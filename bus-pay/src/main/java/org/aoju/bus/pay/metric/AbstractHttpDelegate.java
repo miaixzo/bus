@@ -1,6 +1,6 @@
 package org.aoju.bus.pay.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.http.Httpz;
@@ -296,7 +296,7 @@ public abstract class AbstractHttpDelegate {
                     .build()
                     .execute();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -317,7 +317,7 @@ public abstract class AbstractHttpDelegate {
                     .build()
                     .execute();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -338,7 +338,7 @@ public abstract class AbstractHttpDelegate {
                     .build()
                     .execute();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -392,7 +392,7 @@ public abstract class AbstractHttpDelegate {
                     .build()
                     .execute();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -526,7 +526,7 @@ public abstract class AbstractHttpDelegate {
                     .build()
                     .execute();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

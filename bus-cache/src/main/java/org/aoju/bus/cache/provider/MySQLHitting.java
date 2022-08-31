@@ -27,7 +27,7 @@ package org.aoju.bus.cache.provider;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -71,7 +71,7 @@ public class MySQLHitting extends AbstractHitting {
 
                 return template;
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         };
     }

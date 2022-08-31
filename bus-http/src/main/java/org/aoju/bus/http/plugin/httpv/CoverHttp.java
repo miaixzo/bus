@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.plugin.httpv;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
@@ -572,7 +572,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         try {
             return reqBody.length();
         } catch (IOException e) {
-            throw new InstrumentException("Cannot get the length of the request body", e);
+            throw new InternalException("Cannot get the length of the request body", e);
         }
     }
 
@@ -655,7 +655,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     private String buildUrlPath() {
         String url = urlPath;
         if (null == url || url.trim().isEmpty()) {
-            throw new InstrumentException("Url cannot be empty!");
+            throw new InternalException("Url cannot be empty!");
         }
         if (null != pathParams) {
             for (String name : pathParams.keySet()) {
@@ -663,12 +663,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                 if (url.contains(target)) {
                     url = url.replace(target, pathParams.get(name));
                 } else {
-                    throw new InstrumentException("pathParameter [ " + name + " ] Does not exist in url [ " + urlPath + " ]");
+                    throw new InternalException("pathParameter [ " + name + " ] Does not exist in url [ " + urlPath + " ]");
                 }
             }
         }
         if (url.matches(PATH_PARAM_REGEX)) {
-            throw new InstrumentException("There is no setting for pathParameter in url, you must first call addPathParam to set it!");
+            throw new InternalException("There is no setting for pathParameter in url, you must first call addPathParam to set it!");
         }
         if (null != urlParams) {
             url = buildUrl(url.trim());
@@ -681,7 +681,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (url.contains(Symbol.QUESTION_MARK)) {
             if (!url.endsWith(Symbol.QUESTION_MARK)) {
                 if (url.lastIndexOf(Symbol.EQUAL) < url.lastIndexOf(Symbol.QUESTION_MARK) + 2) {
-                    throw new InstrumentException("URL format error，'？' Not found after '='");
+                    throw new InternalException("URL format error，'？' Not found after '='");
                 }
                 if (!url.endsWith(Symbol.AND)) {
                     sb.append(Symbol.C_AND);
@@ -700,21 +700,21 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     protected void assertNotConflict(boolean bodyCantUsed) {
         if (bodyCantUsed) {
             if (ObjectKit.isNotEmpty(requestBody)) {
-                throw new InstrumentException("GET | HEAD request The setBodyPara method cannot be called!");
+                throw new InternalException("GET | HEAD request The setBodyPara method cannot be called!");
             }
             if (MapKit.isNotEmpty(bodyParams)) {
-                throw new InstrumentException("GET | HEAD request The addBodyPara method cannot be called!");
+                throw new InternalException("GET | HEAD request The addBodyPara method cannot be called!");
             }
             if (MapKit.isNotEmpty(files)) {
-                throw new InstrumentException("GET | HEAD request The addFilePara method cannot be called!");
+                throw new InternalException("GET | HEAD request The addFilePara method cannot be called!");
             }
         }
         if (ObjectKit.isNotEmpty(requestBody)) {
             if (MapKit.isNotEmpty(bodyParams)) {
-                throw new InstrumentException("The methods addBodyPara and setBodyPara cannot be called at the same time!");
+                throw new InternalException("The methods addBodyPara and setBodyPara cannot be called at the same time!");
             }
             if (MapKit.isNotEmpty(files)) {
-                throw new InstrumentException("The methods addFilePara and setBodyPara cannot be called at the same time!");
+                throw new InternalException("The methods addFilePara and setBodyPara cannot be called at the same time!");
             }
         }
     }
@@ -728,7 +728,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             return latch.await(httpv.preprocTimeoutMillis(),
                     TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            throw new InstrumentException("TimeOut " + CoverResult.State.TIMEOUT);
+            throw new InternalException("TimeOut " + CoverResult.State.TIMEOUT);
         }
     }
 
@@ -736,7 +736,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (nothrow) {
             return new CoverResult.Real(this, CoverResult.State.TIMEOUT);
         }
-        throw new InstrumentException("Execution timeout " + CoverResult.State.TIMEOUT);
+        throw new InternalException("Execution timeout " + CoverResult.State.TIMEOUT);
     }
 
     public Charset charset(Response response) {
@@ -879,7 +879,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             CoverResult.State state = result.getState();
             if (null != e && state != CoverResult.State.CANCELED
                     && !nothrow) {
-                throw new InstrumentException("Abnormal execution", e);
+                throw new InternalException("Abnormal execution", e);
             }
             return result;
         }
@@ -1055,7 +1055,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                         executor.executeOnComplete(Async.this, onComplete, state, cOnIO);
                         if (!executor.executeOnException(Async.this, onException, error, eOnIO)
                                 && !nothrow) {
-                            throw new InstrumentException(error.getMessage(), error);
+                            throw new InternalException(error.getMessage(), error);
                         }
                     });
                 }

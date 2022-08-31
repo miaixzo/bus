@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 import org.aoju.bus.core.annotation.Ignore;
 import org.aoju.bus.core.annotation.Values;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.resource.PropertySource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
@@ -159,7 +159,7 @@ public class Binder {
         try {
             object = clazz.getConstructor().newInstance();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         Class<?> actualClass = ClassKit.getCglibActualClass(clazz);

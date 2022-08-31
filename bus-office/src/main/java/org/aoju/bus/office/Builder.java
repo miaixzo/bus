@@ -28,7 +28,7 @@ package org.aoju.bus.office;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XServiceInfo;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -269,9 +269,9 @@ public final class Builder {
      *
      * @param document 文档类型.
      * @return 指定文档的{@link FamilyType}.
-     * @throws InstrumentException 如果无法检索文档族.
+     * @throws InternalException 如果无法检索文档族.
      */
-    public static FamilyType getDocumentFamily(final XComponent document) throws InstrumentException {
+    public static FamilyType getDocumentFamily(final XComponent document) throws InternalException {
         final XServiceInfo serviceInfo = Lo.qi(XServiceInfo.class, document);
         if (serviceInfo.supportsService("com.sun.star.text.GenericTextDocument")) {
             return FamilyType.TEXT;
@@ -283,7 +283,7 @@ public final class Builder {
             return FamilyType.DRAWING;
         }
 
-        throw new InstrumentException("Document of unknown family: " + serviceInfo.getImplementationName());
+        throw new InternalException("Document of unknown family: " + serviceInfo.getImplementationName());
     }
 
     /**
