@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
@@ -77,7 +77,7 @@ public class HL7Pix extends Device {
         this.charset = charset;
     }
 
-    public void open() throws IOException, InstrumentException, GeneralSecurityException {
+    public void open() throws IOException, InternalException, GeneralSecurityException {
         sock = conn.connect(remote);
         sock.setSoTimeout(conn.getResponseTimeout());
         mllp = new MLLPConnection(sock);

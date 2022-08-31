@@ -30,7 +30,7 @@ import jakarta.activation.DataSource;
 import jakarta.activation.FileDataSource;
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -92,7 +92,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
         try {
             addresses = InternetAddress.parse(address);
         } catch (AddressException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         //编码用户名
         if (ArrayKit.isNotEmpty(addresses)) {
@@ -100,7 +100,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
                 try {
                     internetAddress.setPersonal(internetAddress.getPersonal(), charset.name());
                 } catch (UnsupportedEncodingException e) {
-                    throw new InstrumentException(e);
+                    throw new InternalException(e);
                 }
             }
         }
@@ -143,7 +143,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericProperty, Cont
             try {
                 return new InternetAddress(address);
             } catch (AddressException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         return internetAddresses[0];

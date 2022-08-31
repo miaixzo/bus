@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.BufferedReader;
@@ -91,9 +91,9 @@ public interface Resource {
      *
      * @param charset 编码
      * @return 读取资源内容
-     * @throws InstrumentException 包装{@link IOException}
+     * @throws InternalException 包装{@link IOException}
      */
-    default String readString(Charset charset) throws InstrumentException {
+    default String readString(Charset charset) throws InternalException {
         return IoKit.read(getReader(charset));
     }
 
@@ -102,9 +102,9 @@ public interface Resource {
      * 关闭流并不影响下一次读取
      *
      * @return 读取资源内容
-     * @throws InstrumentException 包装IOException
+     * @throws InternalException 包装IOException
      */
-    default byte[] readBytes() throws InstrumentException {
+    default byte[] readBytes() throws InternalException {
         return IoKit.readBytes(getStream());
     }
 
@@ -112,13 +112,13 @@ public interface Resource {
      * 将资源内容写出到流，不关闭输出流，但是关闭资源流
      *
      * @param out 输出流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    default void writeTo(OutputStream out) throws InstrumentException {
+    default void writeTo(OutputStream out) throws InternalException {
         try (InputStream in = getStream()) {
             IoKit.copy(in, out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

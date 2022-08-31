@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.pinyin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -58,7 +58,7 @@ public class PinyinFactory {
     public static PinyinProvider create() {
         final PinyinProvider engine = ClassKit.loadFirstAvailable(PinyinProvider.class);
         if (null == engine) {
-            throw new InstrumentException("No pinyin jar found ! Please add one of it to your project !");
+            throw new InternalException("No pinyin jar found ! Please add one of it to your project !");
         }
         Logger.debug("Use [{}] provider as default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Provider"));
         return engine;

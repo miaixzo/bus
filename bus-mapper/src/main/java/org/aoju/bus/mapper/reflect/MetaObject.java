@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.reflect;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.lang.reflect.Method;
 
@@ -56,7 +56,7 @@ public class MetaObject {
                     Class<?> metaClass = Class.forName("org.apache.ibatis.reflection.MetaObject");
                     method = metaClass.getDeclaredMethod("forObject", Object.class);
                 } catch (Exception e3) {
-                    throw new InstrumentException(e3);
+                    throw new InternalException(e3);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class MetaObject {
         try {
             return (org.apache.ibatis.reflection.MetaObject) method.invoke(null, object);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

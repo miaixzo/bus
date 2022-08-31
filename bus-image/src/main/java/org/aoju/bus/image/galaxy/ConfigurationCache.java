@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +58,7 @@ public abstract class ConfigurationCache<C, T> {
         cache.clear();
     }
 
-    public T get(String key) throws InstrumentException {
+    public T get(String key) throws InternalException {
         long now = System.currentTimeMillis();
         CacheEntry<T> entry = cache.get(key);
         if (null == entry
@@ -66,7 +66,7 @@ public abstract class ConfigurationCache<C, T> {
             T value = null;
             try {
                 value = find(conf, key);
-            } catch (InstrumentException e) {
+            } catch (InternalException e) {
             }
             entry = new CacheEntry<T>(value, now);
             cache.put(key, entry);
@@ -75,7 +75,7 @@ public abstract class ConfigurationCache<C, T> {
     }
 
     protected abstract T find(C conf, String key)
-            throws InstrumentException;
+            throws InternalException;
 
     private static final class CacheEntry<T> {
         final T value;

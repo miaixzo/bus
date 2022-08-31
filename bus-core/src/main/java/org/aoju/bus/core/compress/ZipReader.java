@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -138,7 +138,7 @@ public class ZipReader implements Closeable {
                     }
                 }
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
 
@@ -150,9 +150,9 @@ public class ZipReader implements Closeable {
      *
      * @param outFile 解压到的目录
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File readTo(File outFile) throws InstrumentException {
+    public File readTo(File outFile) throws InternalException {
         return readTo(outFile, null);
     }
 
@@ -162,9 +162,9 @@ public class ZipReader implements Closeable {
      * @param outFile     解压到的目录
      * @param entryFilter 过滤器，排除不需要的文件
      * @return 解压的目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File readTo(File outFile, Filter<ZipEntry> entryFilter) throws InstrumentException {
+    public File readTo(File outFile, Filter<ZipEntry> entryFilter) throws InternalException {
         read((zipEntry) -> {
             if (null == entryFilter || entryFilter.accept(zipEntry)) {
                 String path = zipEntry.getName();
@@ -194,9 +194,9 @@ public class ZipReader implements Closeable {
      *
      * @param consumer {@link ZipEntry}处理器
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ZipReader read(Consumer<ZipEntry> consumer) throws InstrumentException {
+    public ZipReader read(Consumer<ZipEntry> consumer) throws InternalException {
         if (null != this.zipFile) {
             readFromZipFile(consumer);
         } else {
@@ -206,7 +206,7 @@ public class ZipReader implements Closeable {
     }
 
     @Override
-    public void close() throws InstrumentException {
+    public void close() throws InternalException {
         if (null != this.zipFile) {
             IoKit.close(this.zipFile);
         } else {
@@ -230,16 +230,16 @@ public class ZipReader implements Closeable {
      * 读取并处理Zip流中的每一个{@link ZipEntry}
      *
      * @param consumer {@link ZipEntry}处理器
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private void readFromStream(Consumer<ZipEntry> consumer) throws InstrumentException {
+    private void readFromStream(Consumer<ZipEntry> consumer) throws InternalException {
         try {
             ZipEntry zipEntry;
             while (null != (zipEntry = in.getNextEntry())) {
                 consumer.accept(zipEntry);
             }
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

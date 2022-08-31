@@ -26,7 +26,7 @@
 package org.aoju.bus.proxy.factory.javassist;
 
 import javassist.*;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.proxy.Builder;
 
@@ -65,7 +65,7 @@ class JavassistKit {
                 }
                 return classPool.get(Builder.getJavaClassName(clazz));
             } catch (NotFoundException e) {
-                throw new InstrumentException(
+                throw new InternalException(
                         "Unable to find class " + clazz.getName() + " in default Javassist class pool.", e);
             }
         }

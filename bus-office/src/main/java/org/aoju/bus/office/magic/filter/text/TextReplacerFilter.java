@@ -28,7 +28,7 @@ package org.aoju.bus.office.magic.filter.text;
 import com.sun.star.lang.XComponent;
 import com.sun.star.util.XReplaceDescriptor;
 import com.sun.star.util.XReplaceable;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Context;
@@ -63,7 +63,7 @@ public class TextReplacerFilter implements Filter {
     @Override
     public void doFilter(
             final Context context, final XComponent document, final FilterChain chain)
-            throws InstrumentException {
+            throws InternalException {
 
         Logger.debug("Applying the TextReplacerFilter");
 

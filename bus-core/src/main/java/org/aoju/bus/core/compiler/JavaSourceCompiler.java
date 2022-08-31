@@ -1,6 +1,6 @@
 package org.aoju.bus.core.compiler;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.StringResource;
@@ -189,7 +189,7 @@ public class JavaSourceCompiler {
             IoKit.close(javaFileManager);
         }
         //编译失败,收集错误信息
-        throw new InstrumentException(DiagnosticCollectors.getMessages(diagnosticCollector));
+        throw new InternalException(DiagnosticCollectors.getMessages(diagnosticCollector));
     }
 
     /**

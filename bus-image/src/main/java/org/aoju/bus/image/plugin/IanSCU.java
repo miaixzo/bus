@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Tag;
@@ -120,7 +120,7 @@ public class IanSCU {
     }
 
     public void open() throws IOException, InterruptedException,
-            InstrumentException, GeneralSecurityException {
+            InternalException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 

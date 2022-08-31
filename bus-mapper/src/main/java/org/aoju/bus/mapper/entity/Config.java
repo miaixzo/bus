@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.builder.resolve.EntityResolve;
@@ -385,7 +385,7 @@ public class Config {
             try {
                 this.style = Style.valueOf(styleStr);
             } catch (IllegalArgumentException e) {
-                throw new InstrumentException(styleStr + "不是合法的Style值!");
+                throw new InternalException(styleStr + "不是合法的Style值!");
             }
         } else {
             // 默认驼峰

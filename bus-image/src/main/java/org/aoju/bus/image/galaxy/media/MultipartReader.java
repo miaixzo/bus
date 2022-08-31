@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
@@ -97,7 +97,7 @@ public class MultipartReader {
             headBuffer = 0;
             tailBuffer = inputStream.read(buffer, headBuffer, bufferSize);
             if (tailBuffer == -1) {
-                throw new InstrumentException("No more data is available");
+                throw new InternalException("No more data is available");
             }
         }
         return buffer[headBuffer++];
@@ -113,7 +113,7 @@ public class MultipartReader {
         } else if (compareArrays(marker, MultipartParser.Separator.FIELD.getType(), 2)) {
             nextPart = true;
         } else {
-            throw new InstrumentException("Unexpected bytes after the boundary separator");
+            throw new InternalException("Unexpected bytes after the boundary separator");
         }
         return nextPart;
     }
@@ -128,7 +128,7 @@ public class MultipartReader {
             b = readByte();
             headerSize++;
             if (headerSize > HEADER_PART_MAX_SIZE) {
-                throw new InstrumentException(
+                throw new InternalException(
                         "Header content is larger than " + HEADER_PART_MAX_SIZE + " bytes (max size defined in reader)");
             }
             if (b == hsep[k]) {
@@ -252,7 +252,7 @@ public class MultipartReader {
             while (true) {
                 int readBytes = inputStream.read(buffer, tailBuffer, bufferSize - tailBuffer);
                 if (readBytes == -1) {
-                    throw new InstrumentException("Unexpect end of stream");
+                    throw new InternalException("Unexpect end of stream");
                 }
 
                 tailBuffer += readBytes;
@@ -271,7 +271,7 @@ public class MultipartReader {
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
             if (closed) {
-                throw new InstrumentException(STREAM_CLOSED_EX);
+                throw new InternalException(STREAM_CLOSED_EX);
             }
             if (len == 0) {
                 return 0;
@@ -293,7 +293,7 @@ public class MultipartReader {
         @Override
         public int read() throws IOException {
             if (closed) {
-                throw new InstrumentException(STREAM_CLOSED_EX);
+                throw new InternalException(STREAM_CLOSED_EX);
             }
             if (available() == 0 && readInputStream() == 0) {
                 return -1;
@@ -313,7 +313,7 @@ public class MultipartReader {
         @Override
         public long skip(long bytes) throws IOException {
             if (closed) {
-                throw new InstrumentException(STREAM_CLOSED_EX);
+                throw new InternalException(STREAM_CLOSED_EX);
             }
             int k = available();
             if (k == 0) {

@@ -31,6 +31,8 @@ import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.time.*;
+import java.time.chrono.Era;
+import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
@@ -139,6 +141,17 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
         if (StringKit.isBlank(value)) {
             return null;
         }
+
+        if (DayOfWeek.class.equals(this.targetType)) {
+            return DayOfWeek.valueOf(StringKit.toString(value));
+        } else if (Month.class.equals(this.targetType)) {
+            return Month.valueOf(StringKit.toString(value));
+        } else if (Era.class.equals(this.targetType)) {
+            return IsoEra.valueOf(StringKit.toString(value));
+        } else if (MonthDay.class.equals(this.targetType)) {
+            return MonthDay.parse(value);
+        }
+
         final Instant instant;
         ZoneId zoneId;
         if (null != this.format) {
@@ -160,6 +173,13 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      * @return java.time中的对象
      */
     private TemporalAccessor parseFromLong(Long time) {
+        if (DayOfWeek.class.equals(this.targetType)) {
+            return DayOfWeek.of(Math.toIntExact(time));
+        } else if (Month.class.equals(this.targetType)) {
+            return Month.of(Math.toIntExact(time));
+        } else if (Era.class.equals(this.targetType)) {
+            return IsoEra.of(Math.toIntExact(time));
+        }
         return parseFromInstant(Instant.ofEpochMilli(time), null);
     }
 
@@ -170,6 +190,14 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      * @return java.time中的对象
      */
     private TemporalAccessor parseFromTemporalAccessor(TemporalAccessor temporalAccessor) {
+        if (DayOfWeek.class.equals(this.targetType)) {
+            return DayOfWeek.from(temporalAccessor);
+        } else if (Month.class.equals(this.targetType)) {
+            return Month.from(temporalAccessor);
+        } else if (MonthDay.class.equals(this.targetType)) {
+            return MonthDay.from(temporalAccessor);
+        }
+
         TemporalAccessor result = null;
         if (temporalAccessor instanceof LocalDateTime) {
             result = parseFromLocalDateTime((LocalDateTime) temporalAccessor);

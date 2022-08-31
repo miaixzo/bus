@@ -29,7 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -142,7 +142,7 @@ public class JacksonProvider extends AbstractJsonProvider {
         try {
             return (T) objectMapper.readTree(json).get(field);
         } catch (JsonProcessingException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

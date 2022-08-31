@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.additional.idlist;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.mapper.builder.EntityBuilder;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.aoju.bus.mapper.builder.MapperTemplate;
@@ -57,7 +57,7 @@ public class IdListProvider extends MapperTemplate {
      */
     public static void notEmpty(List<?> list, String errorMsg) {
         if (list == null || list.size() == 0) {
-            throw new InstrumentException(errorMsg);
+            throw new InternalException(errorMsg);
         }
     }
 
@@ -115,7 +115,7 @@ public class IdListProvider extends MapperTemplate {
             sql.append("</foreach>");
             sql.append("</where>");
         } else {
-            throw new InstrumentException("继承 ByIdList 方法的实体类[" + entityClass.getCanonicalName() + "]中必须只有一个带有 @Id 注解的字段");
+            throw new InternalException("继承 ByIdList 方法的实体类[" + entityClass.getCanonicalName() + "]中必须只有一个带有 @Id 注解的字段");
         }
     }
 

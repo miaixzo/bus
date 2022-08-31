@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 /**
  * 该对象将尝试执行任务，直到任务成功或达到特定超时为止.
@@ -54,8 +54,8 @@ public abstract class AbstractRetryable {
      *
      * @param interval 每个任务执行尝试之间的间隔.
      * @param timeout  超时之后，我们将不再尝试再次执行任务.
-     * @throws InstrumentException 如果超时了.
-     * @throws Exception           对于所有其他错误条件.
+     * @throws InternalException 如果超时了.
+     * @throws Exception         对于所有其他错误条件.
      */
     public void execute(final long interval, final long timeout) throws Exception {
         final long start = System.currentTimeMillis();
@@ -63,11 +63,11 @@ public abstract class AbstractRetryable {
             try {
                 attempt();
                 return;
-            } catch (InstrumentException temporaryEx) {
+            } catch (InternalException temporaryEx) {
                 if (System.currentTimeMillis() - start < timeout) {
                     Thread.sleep(interval);
                 } else {
-                    throw new InstrumentException(temporaryEx.getCause());
+                    throw new InternalException(temporaryEx.getCause());
                 }
             }
         }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.proxy.Provider;
 
 /**
@@ -48,13 +48,13 @@ public class BeanProvider implements Provider {
     public Object getObject() {
         try {
             if (null == beanClass) {
-                throw new InstrumentException("No bean class provided.");
+                throw new InternalException("No bean class provided.");
             }
             return beanClass.newInstance();
         } catch (InstantiationException e) {
-            throw new InstrumentException("Class " + beanClass.getName() + " is not concrete.", e);
+            throw new InternalException("Class " + beanClass.getName() + " is not concrete.", e);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException("Constructor for class " + beanClass.getName() + " is not accessible.",
+            throw new InternalException("Constructor for class " + beanClass.getName() + " is not accessible.",
                     e);
         }
     }

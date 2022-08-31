@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
@@ -219,7 +219,7 @@ public class MapKit {
         } else {
             try {
                 return (Map<K, V>) ReflectKit.newInstance(mapType);
-            } catch (InstrumentException e) {
+            } catch (InternalException e) {
                 // 不支持的map类型，返回默认的HashMap
                 return new HashMap<>();
             }

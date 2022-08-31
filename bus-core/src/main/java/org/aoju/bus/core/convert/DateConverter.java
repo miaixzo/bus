@@ -26,7 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -110,7 +110,7 @@ public class DateConverter extends AbstractConverter<Date> {
                 return wrap(dateTime);
             }
         }
-        throw new InstrumentException("Can not convert {}:[{}] to {}", value.getClass().getName(), value, this.targetType.getName());
+        throw new InternalException("Can not convert {}:[{}] to {}", value.getClass().getName(), value, this.targetType.getName());
     }
 
     @Override

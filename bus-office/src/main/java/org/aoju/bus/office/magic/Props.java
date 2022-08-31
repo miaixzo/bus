@@ -29,7 +29,7 @@ import com.sun.star.beans.PropertyValue;
 import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.lang.WrappedTargetException;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.util.Optional;
 
@@ -47,7 +47,7 @@ public final class Props {
      * @param object   获取属性的对象.
      * @param propName 要获取的属性名.
      * @return 包含属性值的可选属性。如果无法检索属性，可选属性将为空.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static Optional<Object> getProperty(final Object object, final String propName) {
         return getProperty(Lo.qi(XPropertySet.class, object), propName);
@@ -59,13 +59,13 @@ public final class Props {
      * @param props    获取属性的{@link XPropertySet}.
      * @param propName 要获取的属性名.
      * @return 包含属性值的可选属性。如果无法检索属性，可选属性将为空.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static Optional<Object> getProperty(final XPropertySet props, final String propName) {
         try {
             return Optional.ofNullable(props.getPropertyValue(propName));
         } catch (UnknownPropertyException | WrappedTargetException ex) {
-            throw new InstrumentException(ex.getMessage(), ex);
+            throw new InternalException(ex.getMessage(), ex);
         }
     }
 

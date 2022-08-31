@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.key;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.NetKit;
@@ -181,7 +181,7 @@ public class ID {
         byte[] mac = null;
         try {
             mac = NetKit.getLocalHardwareAddress();
-        } catch (InstrumentException ignore) {
+        } catch (InternalException ignore) {
             // ignore
         }
         if (null != mac) {
@@ -210,7 +210,7 @@ public class ID {
         mpid.append(datacenterId);
         try {
             mpid.append(RuntimeKit.getPid());
-        } catch (InstrumentException igonre) {
+        } catch (InternalException igonre) {
             // ignore
         }
         // MAC + PID 的 hashcode 获取16个低位

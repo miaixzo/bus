@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.EnumerationIterator;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 
 import javax.naming.InitialContext;
@@ -202,7 +202,7 @@ public class NetKit {
             }
         }
 
-        throw new InstrumentException("Could not find an available port in the range [{}, {}] after {} attempts", minPort, maxPort, maxPort - minPort);
+        throw new InternalException("Could not find an available port in the range [{}, {}] after {} attempts", minPort, maxPort, maxPort - minPort);
     }
 
     /**
@@ -231,7 +231,7 @@ public class NetKit {
                 return networkInterface.getHardwareAddress();
             }
         } catch (SocketException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return null;
     }
@@ -253,7 +253,7 @@ public class NetKit {
         }
 
         if (availablePorts.size() != numRequested) {
-            throw new InstrumentException("Could not find {} available  ports in the range [{}, {}]", numRequested, minPort, maxPort);
+            throw new InternalException("Could not find {} available  ports in the range [{}, {}]", numRequested, minPort, maxPort);
         }
         return availablePorts;
     }
@@ -294,7 +294,7 @@ public class NetKit {
             URL absoluteUrl = new URL(absoluteBasePath);
             return new URL(absoluteUrl, relativePath).toString();
         } catch (Exception e) {
-            throw new InstrumentException("To absolute url [{}] base [{}] error!", relativePath, absoluteBasePath);
+            throw new InternalException("To absolute url [{}] base [{}] error!", relativePath, absoluteBasePath);
         }
     }
 
@@ -466,11 +466,11 @@ public class NetKit {
         try {
             networkInterfaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null == networkInterfaces) {
-            throw new InstrumentException("Get network interface error!");
+            throw new InternalException("Get network interface error!");
         }
 
         final LinkedHashSet<InetAddress> ipSet = new LinkedHashSet<>();
@@ -608,7 +608,7 @@ public class NetKit {
                 mac = networkInterface.getHardwareAddress();
             }
         } catch (SocketException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         if (null != mac) {
             final StringBuilder sb = new StringBuilder();
@@ -647,14 +647,14 @@ public class NetKit {
      * @param port    Server端口
      * @param isBlock 是否阻塞方式
      * @param data    需要发送的数据
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void netCat(String host, int port, boolean isBlock, ByteBuffer data) throws InstrumentException {
+    public static void netCat(String host, int port, boolean isBlock, ByteBuffer data) throws InternalException {
         try (SocketChannel channel = SocketChannel.open(createAddress(host, port))) {
             channel.configureBlocking(isBlock);
             channel.write(data);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -664,16 +664,16 @@ public class NetKit {
      * @param host Server主机
      * @param port Server端口
      * @param data 数据
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static void netCat(String host, int port, byte[] data) throws InstrumentException {
+    public static void netCat(String host, int port, byte[] data) throws InternalException {
         OutputStream out = null;
         try (Socket socket = new Socket(host, port)) {
             out = socket.getOutputStream();
             out.write(data);
             out.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(out);
         }
@@ -832,7 +832,7 @@ public class NetKit {
             }
             return new InitialDirContext(Convert.convert(Hashtable.class, environment));
         } catch (NamingException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -849,7 +849,7 @@ public class NetKit {
             }
             return new InitialContext(Convert.convert(Hashtable.class, environment));
         } catch (NamingException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -865,7 +865,7 @@ public class NetKit {
         try {
             return createInitialDirContext(null).getAttributes(uri, attrIds);
         } catch (NamingException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

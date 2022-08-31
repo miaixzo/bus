@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.metric.WebApplication;
 
 /**
@@ -40,17 +40,17 @@ public class WebApplicationCache extends ConfigurationCache<Configuration, WebAp
     }
 
     @Override
-    protected WebApplication find(Configuration conf, String key) throws InstrumentException {
+    protected WebApplication find(Configuration conf, String key) throws InternalException {
         return conf.findWebApplication(key);
     }
 
     @Override
-    public WebApplication findWebApplication(String name) throws InstrumentException {
+    public WebApplication findWebApplication(String name) throws InternalException {
         WebApplication webApp = get(name);
         if (null == webApp)
-            throw new InstrumentException("Unknown WebApplication: " + name);
+            throw new InternalException("Unknown WebApplication: " + name);
         if (!webApp.isInstalled())
-            throw new InstrumentException("WebApplication: " + name + " not installed");
+            throw new InternalException("WebApplication: " + name + " not installed");
         return webApp;
     }
 

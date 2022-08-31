@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.image;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.image.element.AbstractElement;
 import org.aoju.bus.core.image.element.ImageElement;
 import org.aoju.bus.core.image.element.RectangleElement;
@@ -190,7 +190,7 @@ public class Images implements Serializable {
                 this.canvasWidth = imageElement.getImage().getWidth();
                 this.canvasHeight = imageElement.getImage().getHeight();
             } catch (Exception e) {
-                throw new InstrumentException(e.getMessage());
+                throw new InternalException(e.getMessage());
             }
         } else {
             imageElement = new ImageElement(srcImage, 0, 0);
@@ -1063,9 +1063,9 @@ public class Images implements Serializable {
      *
      * @param out 写出到的目标流
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public boolean write(OutputStream out) throws InstrumentException {
+    public boolean write(OutputStream out) throws InternalException {
         return write(ImageKit.getImageOutputStream(out));
     }
 
@@ -1075,9 +1075,9 @@ public class Images implements Serializable {
      *
      * @param targetImageStream 写出到的目标流
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public boolean write(ImageOutputStream targetImageStream) throws InstrumentException {
+    public boolean write(ImageOutputStream targetImageStream) throws InternalException {
         Assert.notBlank(this.fileType, "Target image type is blank !");
         Assert.notNull(targetImageStream, "Target output stream is null !");
 
@@ -1092,9 +1092,9 @@ public class Images implements Serializable {
      *
      * @param targetFile 目标文件
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public boolean write(File targetFile) throws InstrumentException {
+    public boolean write(File targetFile) throws InternalException {
         final String formatName = FileKit.getSuffix(targetFile);
         if (StringKit.isNotBlank(formatName)) {
             this.fileType = formatName;

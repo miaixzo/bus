@@ -26,36 +26,36 @@
 package org.aoju.bus.core.exception;
 
 /**
- * 自定义异常: 令牌过期
+ * 自定义异常: 令牌过期/其他
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TokenExpiredException extends UncheckedException {
+public class TokenException extends UncheckedException {
 
     private static final long serialVersionUID = 1L;
 
-    public TokenExpiredException() {
+    public TokenException() {
         super();
     }
 
-    public TokenExpiredException(Throwable cause) {
+    public TokenException(Throwable cause) {
         super(cause);
     }
 
-    public TokenExpiredException(String format, Object... args) {
+    public TokenException(String format, Object... args) {
         super(format, args);
     }
 
-    public TokenExpiredException(String message) {
+    public TokenException(String message) {
         super(message);
     }
 
-    public TokenExpiredException(String message, Throwable cause) {
+    public TokenException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TokenExpiredException(String errcode, String errmsg) {
+    public TokenException(String errcode, String errmsg) {
         super(errcode, errmsg);
     }
 

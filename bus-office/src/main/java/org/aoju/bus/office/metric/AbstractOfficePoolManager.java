@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
@@ -75,7 +75,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     protected abstract OfficeManager[] createPoolEntries();
 
     @Override
-    public void execute(final MadeInOffice task) throws InstrumentException {
+    public void execute(final MadeInOffice task) throws InternalException {
         if (!isRunning()) {
             throw new IllegalStateException("This office manager is not running.");
         }
@@ -97,7 +97,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     }
 
     @Override
-    public void start() throws InstrumentException {
+    public void start() throws InternalException {
         synchronized (this) {
             if (poolState.get() == POOL_SHUTDOWN) {
                 throw new IllegalStateException("This office manager has been shutdown.");
@@ -118,7 +118,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     }
 
     @Override
-    public void stop() throws InstrumentException {
+    public void stop() throws InternalException {
         synchronized (this) {
             if (poolState.get() == POOL_SHUTDOWN) {
                 return;
@@ -136,18 +136,18 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
      * 获取管理器，等待配置的超时以使某个条目可用
      *
      * @return 一个有空的office管理器
-     * @throws InstrumentException 如果我们找不到管理器
+     * @throws InternalException 如果我们找不到管理器
      */
-    private OfficeManager acquireManager() throws InstrumentException {
+    private OfficeManager acquireManager() throws InternalException {
         try {
             final OfficeManager manager = pool.poll(config.getTaskQueueTimeout(), TimeUnit.MILLISECONDS);
             if (null == manager) {
-                throw new InstrumentException(
+                throw new InternalException(
                         "No office manager available after " + config.getTaskQueueTimeout() + " millisec.");
             }
             return manager;
         } catch (InterruptedException interruptedEx) {
-            throw new InstrumentException(
+            throw new InternalException(
                     "Thread has been interrupted while waiting for a manager to become available.",
                     interruptedEx);
         }
@@ -157,37 +157,37 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
      * 使给定的管理器可用于执行任务
      *
      * @param manager office管理器
-     * @throws InstrumentException 如果我们不能释放管理器
+     * @throws InternalException 如果我们不能释放管理器
      */
-    private void releaseManager(final OfficeManager manager) throws InstrumentException {
+    private void releaseManager(final OfficeManager manager) throws InternalException {
         try {
             pool.put(manager);
         } catch (InterruptedException interruptedEx) {
-            throw new InstrumentException("interrupted", interruptedEx);
+            throw new InternalException("interrupted", interruptedEx);
         }
     }
 
     /**
      * 允许基类在池启动时执行操作
      *
-     * @throws InstrumentException 如果发生错误
+     * @throws InternalException 如果发生错误
      */
-    protected void doStart() throws InstrumentException {
+    protected void doStart() throws InternalException {
         for (final OfficeManager manager : entries) {
             manager.start();
             releaseManager(manager);
         }
     }
 
-    private void doStop() throws InstrumentException {
+    private void doStop() throws InternalException {
         Logger.info("Stopping the office manager pool...");
         pool.clear();
 
-        InstrumentException firstException = null;
+        InternalException firstException = null;
         for (final OfficeManager manager : entries) {
             try {
                 manager.stop();
-            } catch (InstrumentException ex) {
+            } catch (InternalException ex) {
                 if (null == firstException) {
                     firstException = ex;
                 }

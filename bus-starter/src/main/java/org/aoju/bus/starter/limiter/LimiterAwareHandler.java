@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.limiter;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Handler;
 import org.aoju.bus.limiter.Parser;
@@ -91,7 +91,7 @@ public class LimiterAwareHandler extends AbstractLimiterAware implements Resourc
                 Class<Parser> parserClass = (Class<Parser>) Class.forName(parsersClassNames[i]);
                 parsers[i] = parserClass.newInstance();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                throw new InstrumentException("Class Not Found!");
+                throw new InternalException("Class Not Found!");
             }
         }
         return new DefaultLimitedResourceSource(parsers);

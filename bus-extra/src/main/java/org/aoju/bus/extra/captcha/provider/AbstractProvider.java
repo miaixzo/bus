@@ -26,7 +26,7 @@
 package org.aoju.bus.extra.captcha.provider;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.ImageKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -158,9 +158,9 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * 验证码写出到文件
      *
      * @param path 文件路径
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public void write(String path) throws InstrumentException {
+    public void write(String path) throws InternalException {
         this.write(FileKit.touch(path));
     }
 
@@ -168,13 +168,13 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * 验证码写出到文件
      *
      * @param file 文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public void write(File file) throws InstrumentException {
+    public void write(File file) throws InternalException {
         try (OutputStream out = FileKit.getOutputStream(file)) {
             this.write(out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

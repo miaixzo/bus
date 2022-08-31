@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.galaxy.io.BasicBulkDataDescriptor;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.io.SAXWriter;
@@ -76,12 +76,12 @@ public class Dcm2Xml {
     }
 
 
-    private static String fname(List<String> argList) throws InstrumentException {
+    private static String fname(List<String> argList) throws InternalException {
         int numArgs = argList.size();
         if (numArgs == 0)
-            throw new InstrumentException("missing file operand");
+            throw new InternalException("missing file operand");
         if (numArgs > 1)
-            throw new InstrumentException("too many arguments");
+            throw new InternalException("too many arguments");
         return argList.get(0);
     }
 

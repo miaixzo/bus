@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.entity;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.builder.EntityBuilder;
@@ -158,7 +158,7 @@ public class Condition implements DynamicTableName {
                 if (propertyMap.containsKey(property)) {
                     this.excludeColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new InstrumentException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new InternalException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
                 }
             }
         }
@@ -180,7 +180,7 @@ public class Condition implements DynamicTableName {
                 if (propertyMap.containsKey(property)) {
                     this.selectColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new InstrumentException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new InternalException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
                 }
             }
         }
@@ -324,11 +324,11 @@ public class Condition implements DynamicTableName {
 
         private String property(String property) {
             if (StringKit.isEmpty(property) || StringKit.isEmpty(property.trim())) {
-                throw new InstrumentException("接收的property为空！");
+                throw new InternalException("接收的property为空！");
             }
             property = property.trim();
             if (!propertyMap.containsKey(property)) {
-                throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
             }
             return propertyMap.get(property).getColumn();
         }
@@ -396,7 +396,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return propertyMap.get(property).getColumn();
             } else if (exists) {
-                throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -406,7 +406,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return property;
             } else if (exists) {
-                throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -414,7 +414,7 @@ public class Condition implements DynamicTableName {
 
         protected void addCriterion(String condition) {
             if (condition == null) {
-                throw new InstrumentException("Value for condition cannot be null");
+                throw new InternalException("Value for condition cannot be null");
             }
             if (condition.startsWith("null")) {
                 return;
@@ -425,7 +425,7 @@ public class Condition implements DynamicTableName {
         protected void addCriterion(String condition, Object value, String property) {
             if (value == null) {
                 if (notNull) {
-                    throw new InstrumentException("Value for " + property + " cannot be null");
+                    throw new InternalException("Value for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -439,7 +439,7 @@ public class Condition implements DynamicTableName {
         protected void addCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
                 if (notNull) {
-                    throw new InstrumentException("Between values for " + property + " cannot be null");
+                    throw new InternalException("Between values for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -452,7 +452,7 @@ public class Condition implements DynamicTableName {
 
         protected void addOrCriterion(String condition) {
             if (condition == null) {
-                throw new InstrumentException("Value for condition cannot be null");
+                throw new InternalException("Value for condition cannot be null");
             }
             if (condition.startsWith("null")) {
                 return;
@@ -463,7 +463,7 @@ public class Condition implements DynamicTableName {
         protected void addOrCriterion(String condition, Object value, String property) {
             if (value == null) {
                 if (notNull) {
-                    throw new InstrumentException("Value for " + property + " cannot be null");
+                    throw new InternalException("Value for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -477,7 +477,7 @@ public class Condition implements DynamicTableName {
         protected void addOrCriterion(String condition, Object value1, Object value2, String property) {
             if (value1 == null || value2 == null) {
                 if (notNull) {
-                    throw new InstrumentException("Between values for " + property + " cannot be null");
+                    throw new InternalException("Between values for " + property + " cannot be null");
                 } else {
                     return;
                 }
@@ -988,7 +988,7 @@ public class Condition implements DynamicTableName {
                     if (this.propertyMap.containsKey(property)) {
                         this.selectColumns.add(propertyMap.get(property).getColumn());
                     } else {
-                        throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                        throw new InternalException("当前实体类不包含名为" + property + "的属性!");
                     }
                 }
             }
@@ -1004,7 +1004,7 @@ public class Condition implements DynamicTableName {
                     if (propertyMap.containsKey(property)) {
                         this.excludeColumns.add(propertyMap.get(property).getColumn());
                     } else {
-                        throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                        throw new InternalException("当前实体类不包含名为" + property + "的属性!");
                     }
                 }
             }
@@ -1132,7 +1132,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return propertyMap.get(property).getColumn();
             } else if (exists) {
-                throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -1142,7 +1142,7 @@ public class Condition implements DynamicTableName {
             if (propertyMap.containsKey(property)) {
                 return property;
             } else if (exists) {
-                throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
             } else {
                 return null;
             }
@@ -1150,11 +1150,11 @@ public class Condition implements DynamicTableName {
 
         private String propertyforOderBy(String property) {
             if (StringKit.isEmpty(property) || StringKit.isEmpty(property.trim())) {
-                throw new InstrumentException("接收的property为空！");
+                throw new InternalException("接收的property为空！");
             }
             property = property.trim();
             if (!propertyMap.containsKey(property)) {
-                throw new InstrumentException("当前实体类不包含名为" + property + "的属性!");
+                throw new InternalException("当前实体类不包含名为" + property + "的属性!");
             }
             return propertyMap.get(property).getColumn();
         }

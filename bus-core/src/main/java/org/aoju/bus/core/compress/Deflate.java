@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.Closeable;
@@ -103,7 +103,7 @@ public class Deflate implements Closeable {
         try {
             ((DeflaterOutputStream) target).finish();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -120,7 +120,7 @@ public class Deflate implements Closeable {
         try {
             ((InflaterOutputStream) target).finish();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }

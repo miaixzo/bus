@@ -26,7 +26,7 @@
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.exception.CrontabException;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
@@ -72,7 +72,7 @@ public class Builder {
     public static void setCronSetting(String cronSettingPath) {
         try {
             crontabSetting = new PopSetting(cronSettingPath, Charset.UTF_8, false);
-        } catch (InstrumentException e) {
+        } catch (InternalException e) {
             // ignore setting file parse error and no config error
         }
     }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Align;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
@@ -1028,21 +1028,21 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 预定义文件可以通过{@link #setDestFile(File)} 方法预定义,或者通过构造定义
      *
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ExcelWriter flush() throws InstrumentException {
+    public ExcelWriter flush() throws InternalException {
         return flush(this.destFile);
     }
 
     /**
      * 将Excel Workbook刷出到文件
-     * 如果用户未自定义输出的文件,将抛出{@link InstrumentException}
+     * 如果用户未自定义输出的文件,将抛出{@link InternalException}
      *
      * @param destFile 写出到的文件
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ExcelWriter flush(File destFile) throws InstrumentException {
+    public ExcelWriter flush(File destFile) throws InternalException {
         Assert.notNull(destFile, "[destFile] is null, and you must call setDestFile(File) first or call flush(OutputStream).");
         return flush(FileKit.getOutputStream(destFile), true);
     }
@@ -1052,9 +1052,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @param out 输出流
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ExcelWriter flush(OutputStream out) throws InstrumentException {
+    public ExcelWriter flush(OutputStream out) throws InternalException {
         return flush(out, false);
     }
 
@@ -1064,15 +1064,15 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param out        输出流
      * @param isCloseOut 是否关闭输出流
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public ExcelWriter flush(OutputStream out, boolean isCloseOut) throws InstrumentException {
+    public ExcelWriter flush(OutputStream out, boolean isCloseOut) throws InternalException {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         try {
             this.workbook.write(out);
             out.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (isCloseOut) {
                 IoKit.close(out);

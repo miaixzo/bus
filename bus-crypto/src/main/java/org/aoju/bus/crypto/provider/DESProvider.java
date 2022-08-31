@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.symmetric.DES;
@@ -47,7 +47,7 @@ public class DESProvider implements Provider {
     @Override
     public byte[] encrypt(String key, byte[] content) {
         if (StringKit.isEmpty(key)) {
-            throw new InstrumentException("key is null!");
+            throw new InternalException("key is null!");
         }
         DES des = new DES(key.getBytes());
         return des.encrypt(content);
@@ -63,7 +63,7 @@ public class DESProvider implements Provider {
     @Override
     public byte[] decrypt(String key, byte[] content) {
         if (StringKit.isEmpty(key)) {
-            throw new InstrumentException("key is null!");
+            throw new InternalException("key is null!");
         }
         DES des = new DES(key.getBytes());
         return des.decrypt(content);

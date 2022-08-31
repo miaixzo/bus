@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.office.metric.TemporaryFileMaker;
@@ -76,7 +76,7 @@ public class SourceFromInputStreamProvider extends AbstractSourceProvider
                 outputStream.close();
             }
         } catch (IOException ex) {
-            throw new InstrumentException("Could not write stream to file " + tempFile, ex);
+            throw new InternalException("Could not write stream to file " + tempFile, ex);
         }
     }
 
@@ -87,7 +87,7 @@ public class SourceFromInputStreamProvider extends AbstractSourceProvider
             try {
                 inputStream.close();
             } catch (IOException ex) {
-                throw new InstrumentException("Could not close input stream", ex);
+                throw new InternalException("Could not close input stream", ex);
             }
         }
     }

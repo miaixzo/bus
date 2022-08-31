@@ -26,7 +26,7 @@
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.codec.provider.Base58Provider;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.lang.Algorithm;
 
@@ -169,7 +169,7 @@ public class Base58 {
         try {
             return MessageDigest.getInstance(Algorithm.SHA256.getValue()).digest(data);
         } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

@@ -1,6 +1,6 @@
 package org.aoju.bus.notify.provider.huawei;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.extra.json.JsonKit;
@@ -90,7 +90,7 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiProperty, Context>
             String passwordDigestBase64Str = Base64.getEncoder().encodeToString(hexDigest.getBytes());
             return String.format(WSSE_HEADER_FORMAT, context.getAppKey(), passwordDigestBase64Str, nonce, time);
         } catch (Exception e) {
-            throw new InstrumentException(e.getLocalizedMessage(), e);
+            throw new InternalException(e.getLocalizedMessage(), e);
         }
     }
 

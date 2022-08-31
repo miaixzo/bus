@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.reflect;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -84,7 +84,7 @@ public class LookupFactory {
             try {
                 return (MethodHandles.Lookup) privateLookupInMethod.invoke(MethodHandles.class, callerClass, MethodHandles.lookup());
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         // jdk 8

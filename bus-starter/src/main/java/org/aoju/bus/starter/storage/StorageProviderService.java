@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.storage;
 
 import org.aoju.bus.cache.metric.ExtendCache;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -70,7 +70,7 @@ public class StorageProviderService {
      */
     public static void register(Registry type, Context context) {
         if (CACHE.containsKey(type)) {
-            throw new InstrumentException("重复注册同名称的组件：" + type.name());
+            throw new InternalException("重复注册同名称的组件：" + type.name());
         }
         CACHE.putIfAbsent(type, context);
     }
@@ -99,7 +99,7 @@ public class StorageProviderService {
         } else if (Registry.LOCAL.equals(type)) {
             return new LocalFileProvider(context);
         }
-        throw new InstrumentException(Builder.ErrorCode.UNSUPPORTED.getMsg());
+        throw new InternalException(Builder.ErrorCode.UNSUPPORTED.getMsg());
     }
 
 }

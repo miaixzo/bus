@@ -26,7 +26,7 @@
 package org.aoju.bus.proxy.provider;
 
 import com.caucho.burlap.client.BurlapProxyFactory;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.proxy.Provider;
 
 import java.net.MalformedURLException;
@@ -55,7 +55,7 @@ public class BurlapProvider implements Provider {
         try {
             return new BurlapProxyFactory().create(serviceInterface, url);
         } catch (MalformedURLException e) {
-            throw new InstrumentException("Invalid url given.", e);
+            throw new InternalException("Invalid url given.", e);
         }
     }
 

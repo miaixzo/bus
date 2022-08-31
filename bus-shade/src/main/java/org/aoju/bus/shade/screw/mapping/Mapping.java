@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.mapping;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 
 import java.beans.BeanInfo;
@@ -57,9 +57,9 @@ public class Mapping {
      * @param resultSet {@link ResultSet} 对象
      * @param clazz     领域类型
      * @return 领域对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public static <T> T convert(ResultSet resultSet, Class<T> clazz) throws InstrumentException {
+    public static <T> T convert(ResultSet resultSet, Class<T> clazz) throws InternalException {
         // 存放列名和结果
         Map<String, Object> values = new HashMap<>(Normal._16);
         try {
@@ -83,7 +83,7 @@ public class Mapping {
             }
             return clazz.newInstance();
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -92,10 +92,10 @@ public class Mapping {
      * @param clazz     领域类型
      * @param <T>       领域泛型
      * @return 领域对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     public static <T> List<T> convertList(ResultSet resultSet,
-                                          Class<T> clazz) throws InstrumentException {
+                                          Class<T> clazz) throws InternalException {
         // 存放列名和结果
         List<Map<String, Object>> values = new ArrayList<>(Normal._16);
         // 结果集合
@@ -123,7 +123,7 @@ public class Mapping {
                 list.add(rsp);
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return list;
     }

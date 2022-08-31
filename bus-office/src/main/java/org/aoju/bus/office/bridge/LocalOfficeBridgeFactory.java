@@ -38,7 +38,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XEventListener;
 import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.XComponentContext;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
@@ -91,7 +91,7 @@ public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEvent
     /**
      * 建立到office实例的连接
      */
-    public void connect() throws InstrumentException {
+    public void connect() throws InternalException {
         synchronized (this) {
             final String connectPart = unoUrl.getConnectionAndParametersAsString();
             Logger.debug("Connecting with connectString '{}'", connectPart);
@@ -128,7 +128,7 @@ public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEvent
                 final Object bridgeInstance = bridge.getInstance(rootOid);
 
                 if (ObjectKit.isEmpty(bridgeInstance)) {
-                    throw new InstrumentException(
+                    throw new InternalException(
                             "Server didn't provide an instance for '" + rootOid + Symbol.SINGLE_QUOTE, connectPart);
                 }
 
@@ -148,7 +148,7 @@ public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEvent
                 componentLoader = Lo.qi(XComponentLoader.class, desktopService);
 
                 if (ObjectKit.isEmpty(componentLoader)) {
-                    throw new InstrumentException("Could not create a desktop service", connectPart);
+                    throw new InternalException("Could not create a desktop service", connectPart);
                 }
 
                 connected.set(true);
@@ -158,11 +158,11 @@ public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEvent
                 final OfficeConnectEvent connectionEvent = new OfficeConnectEvent(this);
                 connectionEventListeners.stream().forEach(listener -> listener.connected(connectionEvent));
 
-            } catch (InstrumentException connectionEx) {
+            } catch (InternalException connectionEx) {
                 throw connectionEx;
 
             } catch (Exception ex) {
-                throw new InstrumentException(
+                throw new InternalException(
                         String.format("Connection failed: '%s'; %s", connectPart, ex.getMessage()),
                         connectPart,
                         ex);

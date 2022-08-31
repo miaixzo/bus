@@ -29,7 +29,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.ContextValueFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.sensitive.annotation.Condition;
@@ -258,7 +258,7 @@ public class Provider<T> {
             }
 
         } catch (IllegalAccessException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -307,7 +307,7 @@ public class Provider<T> {
             }
             return entry;
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -352,7 +352,7 @@ public class Provider<T> {
                 }
             }
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

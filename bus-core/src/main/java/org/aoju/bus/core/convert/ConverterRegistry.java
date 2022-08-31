@@ -61,11 +61,11 @@ public class ConverterRegistry {
     /**
      * 默认类型转换器
      */
-    private Map<Type, Converter<?>> defaultConverterMap;
+    private Map<Type, Converter<?>> defaultMap;
     /**
      * 用户自定义类型转换器
      */
-    private volatile Map<Type, Converter<?>> customConverterMap;
+    private volatile Map<Type, Converter<?>> customMap;
 
     public ConverterRegistry() {
         defaultConverter();
@@ -100,14 +100,14 @@ public class ConverterRegistry {
      * @return {@link ConverterRegistry}
      */
     public ConverterRegistry putCustom(Type type, Converter<?> converter) {
-        if (null == customConverterMap) {
+        if (null == customMap) {
             synchronized (this) {
-                if (null == customConverterMap) {
-                    customConverterMap = new ConcurrentHashMap<>();
+                if (null == customMap) {
+                    customMap = new ConcurrentHashMap<>();
                 }
             }
         }
-        customConverterMap.put(type, converter);
+        customMap.put(type, converter);
         return this;
     }
 
@@ -143,7 +143,7 @@ public class ConverterRegistry {
      * @return 转换器
      */
     public <T> Converter<T> getDefaultConverter(Type type) {
-        return (null == defaultConverterMap) ? null : (Converter<T>) defaultConverterMap.get(type);
+        return (null == defaultMap) ? null : (Converter<T>) defaultMap.get(type);
     }
 
     /**
@@ -154,7 +154,7 @@ public class ConverterRegistry {
      * @return 转换器
      */
     public <T> Converter<T> getCustomConverter(Type type) {
-        return (null == customConverterMap) ? null : (Converter<T>) customConverterMap.get(type);
+        return (null == customMap) ? null : (Converter<T>) customMap.get(type);
     }
 
     /**
@@ -307,81 +307,84 @@ public class ConverterRegistry {
      * @return 转换器
      */
     private ConverterRegistry defaultConverter() {
-        defaultConverterMap = new ConcurrentHashMap<>();
+        defaultMap = new ConcurrentHashMap<>();
 
         // 原始类型转换器
-        defaultConverterMap.put(int.class, new PrimitiveConverter(int.class));
-        defaultConverterMap.put(long.class, new PrimitiveConverter(long.class));
-        defaultConverterMap.put(byte.class, new PrimitiveConverter(byte.class));
-        defaultConverterMap.put(short.class, new PrimitiveConverter(short.class));
-        defaultConverterMap.put(float.class, new PrimitiveConverter(float.class));
-        defaultConverterMap.put(double.class, new PrimitiveConverter(double.class));
-        defaultConverterMap.put(char.class, new PrimitiveConverter(char.class));
-        defaultConverterMap.put(boolean.class, new PrimitiveConverter(boolean.class));
+        defaultMap.put(int.class, new PrimitiveConverter(int.class));
+        defaultMap.put(long.class, new PrimitiveConverter(long.class));
+        defaultMap.put(byte.class, new PrimitiveConverter(byte.class));
+        defaultMap.put(short.class, new PrimitiveConverter(short.class));
+        defaultMap.put(float.class, new PrimitiveConverter(float.class));
+        defaultMap.put(double.class, new PrimitiveConverter(double.class));
+        defaultMap.put(char.class, new PrimitiveConverter(char.class));
+        defaultMap.put(boolean.class, new PrimitiveConverter(boolean.class));
 
         // 包装类转换器
-        defaultConverterMap.put(Number.class, new NumberConverter());
-        defaultConverterMap.put(Integer.class, new NumberConverter(Integer.class));
-        defaultConverterMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));
-        defaultConverterMap.put(Long.class, new NumberConverter(Long.class));
-        defaultConverterMap.put(LongAdder.class, new NumberConverter(LongAdder.class));
-        defaultConverterMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));
-        defaultConverterMap.put(Byte.class, new NumberConverter(Byte.class));
-        defaultConverterMap.put(Short.class, new NumberConverter(Short.class));
-        defaultConverterMap.put(Float.class, new NumberConverter(Float.class));
-        defaultConverterMap.put(Double.class, new NumberConverter(Double.class));
-        defaultConverterMap.put(DoubleAdder.class, new NumberConverter(DoubleAdder.class));
-        defaultConverterMap.put(Character.class, new CharacterConverter());
-        defaultConverterMap.put(Boolean.class, new BooleanConverter());
-        defaultConverterMap.put(AtomicBoolean.class, new AtomicBooleanConverter());
-        defaultConverterMap.put(BigDecimal.class, new NumberConverter(BigDecimal.class));
-        defaultConverterMap.put(BigInteger.class, new NumberConverter(BigInteger.class));
-        defaultConverterMap.put(CharSequence.class, new StringConverter());
-        defaultConverterMap.put(String.class, new StringConverter());
+        defaultMap.put(Number.class, new NumberConverter());
+        defaultMap.put(Integer.class, new NumberConverter(Integer.class));
+        defaultMap.put(AtomicInteger.class, new NumberConverter(AtomicInteger.class));
+        defaultMap.put(Long.class, new NumberConverter(Long.class));
+        defaultMap.put(LongAdder.class, new NumberConverter(LongAdder.class));
+        defaultMap.put(AtomicLong.class, new NumberConverter(AtomicLong.class));
+        defaultMap.put(Byte.class, new NumberConverter(Byte.class));
+        defaultMap.put(Short.class, new NumberConverter(Short.class));
+        defaultMap.put(Float.class, new NumberConverter(Float.class));
+        defaultMap.put(Double.class, new NumberConverter(Double.class));
+        defaultMap.put(DoubleAdder.class, new NumberConverter(DoubleAdder.class));
+        defaultMap.put(Character.class, new CharacterConverter());
+        defaultMap.put(Boolean.class, new BooleanConverter());
+        defaultMap.put(AtomicBoolean.class, new AtomicBooleanConverter());
+        defaultMap.put(BigDecimal.class, new NumberConverter(BigDecimal.class));
+        defaultMap.put(BigInteger.class, new NumberConverter(BigInteger.class));
+        defaultMap.put(CharSequence.class, new StringConverter());
+        defaultMap.put(String.class, new StringConverter());
 
         // URI and URL
-        defaultConverterMap.put(URI.class, new URIConverter());
-        defaultConverterMap.put(URL.class, new URLConverter());
+        defaultMap.put(URI.class, new URIConverter());
+        defaultMap.put(URL.class, new URLConverter());
 
         // 日期时间
-        defaultConverterMap.put(Calendar.class, new CalendarConverter());
-        defaultConverterMap.put(java.util.Date.class, new DateConverter(java.util.Date.class));
-        defaultConverterMap.put(DateTime.class, new DateConverter(DateTime.class));
-        defaultConverterMap.put(java.sql.Date.class, new DateConverter(java.sql.Date.class));
-        defaultConverterMap.put(java.sql.Time.class, new DateConverter(java.sql.Time.class));
-        defaultConverterMap.put(java.sql.Timestamp.class, new DateConverter(java.sql.Timestamp.class));
+        defaultMap.put(Calendar.class, new CalendarConverter());
+        defaultMap.put(java.util.Date.class, new DateConverter(java.util.Date.class));
+        defaultMap.put(DateTime.class, new DateConverter(DateTime.class));
+        defaultMap.put(java.sql.Date.class, new DateConverter(java.sql.Date.class));
+        defaultMap.put(java.sql.Time.class, new DateConverter(java.sql.Time.class));
+        defaultMap.put(java.sql.Timestamp.class, new DateConverter(java.sql.Timestamp.class));
 
         // 日期时间 JDK8+(since 5.0.0)
-        defaultConverterMap.put(TemporalAccessor.class, new TemporalConverter(Instant.class));
-        defaultConverterMap.put(Instant.class, new TemporalConverter(Instant.class));
-        defaultConverterMap.put(LocalDateTime.class, new TemporalConverter(LocalDateTime.class));
-        defaultConverterMap.put(LocalDate.class, new TemporalConverter(LocalDate.class));
-        defaultConverterMap.put(LocalTime.class, new TemporalConverter(LocalTime.class));
-        defaultConverterMap.put(ZonedDateTime.class, new TemporalConverter(ZonedDateTime.class));
-        defaultConverterMap.put(OffsetDateTime.class, new TemporalConverter(OffsetDateTime.class));
-        defaultConverterMap.put(OffsetTime.class, new TemporalConverter(OffsetTime.class));
-        defaultConverterMap.put(Period.class, new PeriodConverter());
-        defaultConverterMap.put(Duration.class, new DurationConverter());
+        defaultMap.put(TemporalAccessor.class, new TemporalConverter(Instant.class));
+        defaultMap.put(Instant.class, new TemporalConverter(Instant.class));
+        defaultMap.put(LocalDateTime.class, new TemporalConverter(LocalDateTime.class));
+        defaultMap.put(LocalDate.class, new TemporalConverter(LocalDate.class));
+        defaultMap.put(LocalTime.class, new TemporalConverter(LocalTime.class));
+        defaultMap.put(ZonedDateTime.class, new TemporalConverter(ZonedDateTime.class));
+        defaultMap.put(OffsetDateTime.class, new TemporalConverter(OffsetDateTime.class));
+        defaultMap.put(OffsetTime.class, new TemporalConverter(OffsetTime.class));
+        defaultMap.put(DayOfWeek.class, new TemporalConverter(DayOfWeek.class));
+        defaultMap.put(Month.class, new TemporalConverter(Month.class));
+        defaultMap.put(MonthDay.class, new TemporalConverter(MonthDay.class));
+        defaultMap.put(Period.class, new PeriodConverter());
+        defaultMap.put(Duration.class, new DurationConverter());
 
         // Reference
-        defaultConverterMap.put(WeakReference.class, new ReferenceConverter(WeakReference.class));
-        defaultConverterMap.put(SoftReference.class, new ReferenceConverter(SoftReference.class));
-        defaultConverterMap.put(AtomicReference.class, new AtomicReferenceConverter());
+        defaultMap.put(WeakReference.class, new ReferenceConverter(WeakReference.class));
+        defaultMap.put(SoftReference.class, new ReferenceConverter(SoftReference.class));
+        defaultMap.put(AtomicReference.class, new AtomicReferenceConverter());
 
-        defaultConverterMap.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
-        defaultConverterMap.put(AtomicLongArray.class, new AtomicLongArrayConverter());
+        defaultMap.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
+        defaultMap.put(AtomicLongArray.class, new AtomicLongArrayConverter());
 
         // 其它类型
-        defaultConverterMap.put(Class.class, new ClassConverter());
-        defaultConverterMap.put(TimeZone.class, new TimeZoneConverter());
-        defaultConverterMap.put(Locale.class, new LocaleConverter());
-        defaultConverterMap.put(Charset.class, new CharsetConverter());
-        defaultConverterMap.put(Path.class, new PathConverter());
-        defaultConverterMap.put(Currency.class, new CurrencyConverter());
-        defaultConverterMap.put(UUID.class, new UUIDConverter());
-        defaultConverterMap.put(StackTraceElement.class, new StackTraceConverter());
-        defaultConverterMap.put(Optional.class, new OptionalConverter());
-        defaultConverterMap.put(Optional.class, new OptionalConverter());
+        defaultMap.put(Class.class, new ClassConverter());
+        defaultMap.put(TimeZone.class, new TimeZoneConverter());
+        defaultMap.put(Locale.class, new LocaleConverter());
+        defaultMap.put(Charset.class, new CharsetConverter());
+        defaultMap.put(Path.class, new PathConverter());
+        defaultMap.put(Currency.class, new CurrencyConverter());
+        defaultMap.put(UUID.class, new UUIDConverter());
+        defaultMap.put(StackTraceElement.class, new StackTraceConverter());
+        defaultMap.put(Optional.class, new OptionalConverter());
+        defaultMap.put(Optional.class, new OptionalConverter());
 
         return this;
     }

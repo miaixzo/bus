@@ -28,7 +28,7 @@ package org.aoju.bus.extra.servlet;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.collection.ArrayIterator;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.toolkit.*;
@@ -86,7 +86,7 @@ public class ServletKit {
         try (final BufferedReader reader = request.getReader()) {
             return IoKit.read(reader);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -101,7 +101,7 @@ public class ServletKit {
         try {
             return IoKit.readBytes(request.getInputStream());
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -454,13 +454,13 @@ public class ServletKit {
      *
      * @param response 响应对象{@link HttpServletResponse}
      * @return 获得PrintWriter
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static PrintWriter getWriter(HttpServletResponse response) throws InstrumentException {
+    public static PrintWriter getWriter(HttpServletResponse response) throws InternalException {
         try {
             return response.getWriter();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -479,7 +479,7 @@ public class ServletKit {
             writer.write(text);
             writer.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(writer);
         }
@@ -553,7 +553,7 @@ public class ServletKit {
             out = response.getOutputStream();
             IoKit.copy(in, out, bufferSize);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(out);
             IoKit.close(in);

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.caller;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 /**
  * 通过StackTrace方式获取调用者 此方式效率最低,不推荐使用
@@ -47,7 +47,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException("[{}] not found!", className);
+            throw new InternalException("[{}] not found!", className);
         }
     }
 
@@ -61,7 +61,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException("[{}] not found!", className);
+            throw new InternalException("[{}] not found!", className);
         }
     }
 
@@ -75,7 +75,7 @@ public class StackTraceCaller implements Caller {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new InstrumentException("[{}] not found!", className);
+            throw new InternalException("[{}] not found!", className);
         }
     }
 

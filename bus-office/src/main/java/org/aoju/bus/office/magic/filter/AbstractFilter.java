@@ -26,7 +26,7 @@
 package org.aoju.bus.office.magic.filter;
 
 import com.sun.star.lang.XComponent;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.office.Context;
 
@@ -94,7 +94,7 @@ public abstract class AbstractFilter implements FilterChain {
 
     @Override
     public void doFilter(final Context context, final XComponent document)
-            throws InstrumentException {
+            throws InternalException {
 
         // 如果有下一个过滤器，则调用它
         if (pos < filters.size()) {
@@ -109,18 +109,18 @@ public abstract class AbstractFilter implements FilterChain {
      * @param filter   要执行的筛选器.
      * @param context  用于沿链传递的上下文.
      * @param document 被转换为沿链传递的文档.
-     * @throws InstrumentException 如果处理过滤器时发生错误.
+     * @throws InternalException 如果处理过滤器时发生错误.
      */
     protected void doFilter(
             final Filter filter, final Context context, final XComponent document)
-            throws InstrumentException {
+            throws InternalException {
 
         try {
             filter.doFilter(context, document, this);
-        } catch (InstrumentException ex) {
+        } catch (InternalException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new InstrumentException("Could not apply filter " + filter.getClass().getName() + Symbol.DOT, ex);
+            throw new InternalException("Could not apply filter " + filter.getClass().getName() + Symbol.DOT, ex);
         }
     }
 

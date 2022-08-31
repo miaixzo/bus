@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.util.Map;
 
@@ -129,7 +129,7 @@ public abstract class Lookups<V> {
                 try {
                     return System.getProperty(key);
                 } catch (SecurityException e) {
-                    throw new InstrumentException(e);
+                    throw new InternalException(e);
                 }
             }
             return null;

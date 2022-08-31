@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.bridge;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ClassKit;
@@ -107,7 +107,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
     }
 
     @Override
-    protected void doExecute(final MadeInOffice task) throws InstrumentException {
+    protected void doExecute(final MadeInOffice task) throws InternalException {
         try {
             final RequestBuilder requestBuilder =
                     new RequestBuilder(
@@ -117,17 +117,17 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
             task.execute(new OnlineOfficeBridgeFactory(requestBuilder));
 
         } catch (IOException ex) {
-            throw new InstrumentException("Unable to create the HTTP client", ex);
+            throw new InternalException("Unable to create the HTTP client", ex);
         }
     }
 
     @Override
-    protected void doStart() throws InstrumentException {
+    protected void doStart() throws InternalException {
         taskExecutor.setAvailable(true);
     }
 
     @Override
-    protected void doStop() throws InstrumentException {
+    protected void doStop() throws InternalException {
         // Nothing to stop here.
     }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.apache.poi.poifs.filesystem.FileMagic;
 
 import java.io.File;
@@ -75,7 +75,7 @@ public class ExcelFileKit {
         try {
             return FileMagic.valueOf(file) == FileMagic.OOXML;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -95,7 +95,7 @@ public class ExcelFileKit {
         try {
             magic = FileMagic.valueOf(in);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         return magic;

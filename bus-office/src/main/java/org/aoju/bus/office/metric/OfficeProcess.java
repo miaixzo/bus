@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -87,9 +87,9 @@ public class OfficeProcess {
      * 如果kill开关打开，进程将被终止.
      *
      * @param processQuery 要使用的连接字符串的查询
-     * @throws InstrumentException 如果验证失败.
+     * @throws InternalException 如果验证失败.
      */
-    private void checkForExistingProcess(final ProcessQuery processQuery) throws InstrumentException {
+    private void checkForExistingProcess(final ProcessQuery processQuery) throws InternalException {
         try {
             // 搜索现有进程，该进程将阻止我们使用相同的连接字符串启动新的office进程.
             final ProcessManager processManager = config.getProcessManager();
@@ -107,13 +107,13 @@ public class OfficeProcess {
             }
 
             if (existingPid != Builder.PID_NOT_FOUND && existingPid != Builder.PID_UNKNOWN) {
-                throw new InstrumentException(
+                throw new InternalException(
                         String.format("A process with acceptString '%s' is already running; pid %d",
                                 processQuery.getArgument(), existingPid));
             }
 
         } catch (IOException ioEx) {
-            throw new InstrumentException(
+            throw new InternalException(
                     String.format("Unable to check if there is already an existing process with acceptString '%s'",
                             processQuery.getArgument()),
                     ioEx);
@@ -127,7 +127,7 @@ public class OfficeProcess {
         Logger.debug("Deleting instance profile directory '{}'", instanceProfileDir);
         try {
             FileKit.delete(instanceProfileDir);
-        } catch (InstrumentException ioEx) {
+        } catch (InternalException ioEx) {
             final File oldProfileDir =
                     new File(
                             instanceProfileDir.getParentFile(),
@@ -147,10 +147,10 @@ public class OfficeProcess {
      * @param retryInterval 每次退出码检索尝试之间的间隔.
      * @param retryTimeout  超时之后，我们将不再尝试检索退出码.
      * @return pid信息
-     * @throws InstrumentException 如果我们无法获得进程的退出码.
+     * @throws InternalException 如果我们无法获得进程的退出码.
      */
     public int forciblyTerminate(final long retryInterval, final long retryTimeout)
-            throws InstrumentException {
+            throws InternalException {
         if (ObjectKit.isEmpty(process)) {
             return 0;
         }
@@ -164,7 +164,7 @@ public class OfficeProcess {
             config.getProcessManager().kill(process.getProcess(), pid);
             return getExitCode(retryInterval, retryTimeout);
         } catch (IOException ioEx) {
-            throw new InstrumentException("Unable to kill the process with pid: " + pid, ioEx);
+            throw new InternalException("Unable to kill the process with pid: " + pid, ioEx);
         }
     }
 
@@ -186,10 +186,10 @@ public class OfficeProcess {
      * @param retryInterval 每次退出码检索尝试之间的间隔
      * @param retryTimeout  超时之后，我们将不再尝试检索退出码
      * @return 进程的退出值。值0表示正常终止
-     * @throws InstrumentException 如果无法获得进程的退出码
+     * @throws InternalException 如果无法获得进程的退出码
      */
     public int getExitCode(final long retryInterval, final long retryTimeout)
-            throws InstrumentException {
+            throws InternalException {
         if (ObjectKit.isEmpty(process)) {
             return 0;
         }
@@ -198,7 +198,7 @@ public class OfficeProcess {
             retryable.execute(retryInterval, retryTimeout);
             return retryable.getExitCode();
         } catch (Exception ex) {
-            throw new InstrumentException("Could not get the process exit code", ex);
+            throw new InternalException("Could not get the process exit code", ex);
         }
     }
 
@@ -226,9 +226,9 @@ public class OfficeProcess {
     /**
      * 准备office流程的概要目录
      *
-     * @throws InstrumentException 如果模板配置文件目录不能复制到新的实例配置文件目录
+     * @throws InternalException 如果模板配置文件目录不能复制到新的实例配置文件目录
      */
-    private void prepareInstanceProfileDir() throws InstrumentException {
+    private void prepareInstanceProfileDir() throws InternalException {
         if (instanceProfileDir.exists()) {
             Logger.warn("Profile dir '{}' already exists; deleting", instanceProfileDir);
             deleteInstanceProfileDir();
@@ -236,8 +236,8 @@ public class OfficeProcess {
         if (null != config.getTemplateProfileDir()) {
             try {
                 FileKit.copyFile(config.getTemplateProfileDir(), instanceProfileDir);
-            } catch (InstrumentException ioEx) {
-                throw new InstrumentException("Failed to create the instance profile directory", ioEx);
+            } catch (InternalException ioEx) {
+                throw new InternalException("Failed to create the instance profile directory", ioEx);
             }
         }
     }
@@ -274,9 +274,9 @@ public class OfficeProcess {
     /**
      * 启动office流程
      *
-     * @throws InstrumentException 如果无法启动office进程
+     * @throws InternalException 如果无法启动office进程
      */
-    public void start() throws InstrumentException {
+    public void start() throws InternalException {
         start(false);
     }
 
@@ -285,9 +285,9 @@ public class OfficeProcess {
      *
      * @param restart 判断是否需要重新启动,重新启动将假定实例配置文件目录已经创建
      *                如果要重新创建实例配置文件目录,应该将{@code restart}设置为{@code false}
-     * @throws InstrumentException 如果无法启动office进程
+     * @throws InternalException 如果无法启动office进程
      */
-    public void start(final boolean restart) throws InstrumentException {
+    public void start(final boolean restart) throws InternalException {
         final String acceptString =
                 unoUrl.getConnectionAndParametersAsString()
                         + Symbol.SEMICOLON
@@ -319,13 +319,13 @@ public class OfficeProcess {
             pid = config.getProcessManager().find(processQuery);
             Logger.info("Started process{}", pid == Builder.PID_UNKNOWN ? Normal.EMPTY : "; pid = " + pid);
         } catch (IOException ioEx) {
-            throw new InstrumentException(
+            throw new InternalException(
                     String.format("An I/O error prevents us to start a process with acceptString '%s'", acceptString),
                     ioEx);
         }
 
         if (pid == Builder.PID_NOT_FOUND) {
-            throw new InstrumentException(
+            throw new InternalException(
                     String.format("A process with acceptString '%s' started but its pid could not be found",
                             acceptString));
         }

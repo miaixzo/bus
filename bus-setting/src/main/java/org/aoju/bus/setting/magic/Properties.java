@@ -26,7 +26,7 @@
 package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.getter.BasicType;
 import org.aoju.bus.core.getter.OptBasicType;
 import org.aoju.bus.core.io.resource.ClassPathResource;
@@ -288,7 +288,7 @@ public final class Properties extends java.util.Properties implements BasicType<
         try (final BufferedReader reader = resource.getReader(charset)) {
             super.load(reader);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -608,15 +608,15 @@ public final class Properties extends java.util.Properties implements BasicType<
      * 持久化当前设置,会覆盖掉之前的设置
      *
      * @param absolutePath 设置文件的绝对路径
-     * @throws InstrumentException IO异常,可能为文件未找到
+     * @throws InternalException IO异常,可能为文件未找到
      */
-    public void store(String absolutePath) throws InstrumentException {
+    public void store(String absolutePath) throws InternalException {
         Writer writer = null;
         try {
             writer = FileKit.getWriter(absolutePath, charset, false);
             super.store(writer, null);
         } catch (IOException e) {
-            throw new InstrumentException("Store properties to [{}] error!", absolutePath);
+            throw new InternalException("Store properties to [{}] error!", absolutePath);
         } finally {
             IoKit.close(writer);
         }

@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.map.TableMap;
 
@@ -201,17 +201,17 @@ public class UriKit {
      *
      * @param uri {@link URI}
      * @return URL对象
-     * @throws InstrumentException {@link MalformedURLException}包装，URI格式有问题时抛出
+     * @throws InternalException {@link MalformedURLException}包装，URI格式有问题时抛出
      * @see URI#toURL()
      */
-    public static URL url(URI uri) throws InstrumentException {
+    public static URL url(URI uri) throws InternalException {
         if (null == uri) {
             return null;
         }
         try {
             return uri.toURL();
         } catch (MalformedURLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -240,7 +240,7 @@ public class UriKit {
             try {
                 return new File(url).toURI().toURL();
             } catch (MalformedURLException ex2) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }
@@ -285,14 +285,14 @@ public class UriKit {
      *
      * @param file URL对应的文件对象
      * @return URL
-     * @throws InstrumentException MalformedURLException
+     * @throws InternalException MalformedURLException
      */
     public static URL getURL(File file) {
         Assert.notNull(file, "File is null !");
         try {
             return file.toURI().toURL();
         } catch (MalformedURLException e) {
-            throw new InstrumentException("Error occured when get URL!");
+            throw new InternalException("Error occured when get URL!");
         }
     }
 
@@ -301,7 +301,7 @@ public class UriKit {
      *
      * @param files URL对应的文件对象
      * @return URL
-     * @throws InstrumentException MalformedURLException
+     * @throws InternalException MalformedURLException
      */
     public static URL[] getURL(File... files) {
         final URL[] urls = new URL[files.length];
@@ -310,7 +310,7 @@ public class UriKit {
                 urls[i] = files[i].toURI().toURL();
             }
         } catch (MalformedURLException e) {
-            throw new InstrumentException("Error occured when get URL!");
+            throw new InternalException("Error occured when get URL!");
         }
 
         return urls;
@@ -345,7 +345,7 @@ public class UriKit {
      * @param baseUrl      基准URL
      * @param relativePath 相对URL
      * @return 相对路径
-     * @throws InstrumentException MalformedURLException
+     * @throws InternalException MalformedURLException
      */
     public static String complateUrl(String baseUrl, String relativePath) {
         baseUrl = formatUrl(baseUrl);
@@ -358,7 +358,7 @@ public class UriKit {
             final URL parseUrl = new URL(absoluteUrl, relativePath);
             return parseUrl.toString();
         } catch (MalformedURLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -368,9 +368,9 @@ public class UriKit {
      *
      * @param url URL
      * @return 编码后的URL
-     * @throws InstrumentException UnsupportedEncodingException
+     * @throws InternalException UnsupportedEncodingException
      */
-    public static String encode(String url) throws InstrumentException {
+    public static String encode(String url) throws InternalException {
         return encode(url, Charset.DEFAULT_UTF_8);
     }
 
@@ -400,7 +400,7 @@ public class UriKit {
             }
             return URLEncoder.encode(url, charset.toString());
         } catch (UnsupportedEncodingException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -409,7 +409,7 @@ public class UriKit {
      *
      * @param uriStr URI路径
      * @return path
-     * @throws InstrumentException 包装URISyntaxException
+     * @throws InternalException 包装URISyntaxException
      */
     public static String getPath(String uriStr) {
         return toURI(uriStr).getPath();
@@ -432,7 +432,7 @@ public class UriKit {
         try {
             // URL对象的getPath方法对于包含中文或空格的问题
             path = toURI(url).getPath();
-        } catch (InstrumentException e) {
+        } catch (InternalException e) {
             // ignore
         }
         return (null != path) ? path : url.getPath();
@@ -443,16 +443,16 @@ public class UriKit {
      *
      * @param url URL
      * @return URI
-     * @throws InstrumentException 包装URISyntaxException
+     * @throws InternalException 包装URISyntaxException
      */
-    public static URI toURI(URL url) throws InstrumentException {
+    public static URI toURI(URL url) throws InternalException {
         if (null == url) {
             return null;
         }
         try {
             return url.toURI();
         } catch (URISyntaxException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -461,13 +461,13 @@ public class UriKit {
      *
      * @param location 字符串路径
      * @return URI
-     * @throws InstrumentException 包装URISyntaxException
+     * @throws InternalException 包装URISyntaxException
      */
-    public static URI toURI(String location) throws InstrumentException {
+    public static URI toURI(String location) throws InternalException {
         try {
             return new URI(location.replace(Symbol.SPACE, "%20"));
         } catch (URISyntaxException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -522,7 +522,7 @@ public class UriKit {
         try {
             return url.openStream();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -548,7 +548,7 @@ public class UriKit {
             JarURLConnection urlConnection = (JarURLConnection) url.openConnection();
             return urlConnection.getJarFile();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1408,7 +1408,7 @@ public class UriKit {
         try {
             return new URI(url.getProtocol(), url.getHost(), null, null);
         } catch (URISyntaxException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -1941,7 +1941,7 @@ public class UriKit {
          * @return 节点列表
          */
         public List<String> getSegments() {
-            return this.segments;
+            return ObjectKit.defaultIfNull(this.segments, CollKit.empty());
         }
 
         /**

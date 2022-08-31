@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -400,7 +400,7 @@ public class StringKit extends CharsKit {
             }
             return Base64.getDecoder().decode(text);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -418,7 +418,7 @@ public class StringKit extends CharsKit {
             }
             return new String(base64ToByte(text), Charset.UTF_8);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -437,7 +437,7 @@ public class StringKit extends CharsKit {
             }
             return new String(base64ToByte(text), charset);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

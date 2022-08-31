@@ -32,7 +32,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.util.XChangesBatch;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.bridge.LocalOfficePoolManager;
 import org.aoju.bus.office.builtin.MadeInOffice;
@@ -123,7 +123,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
     }
 
     @Override
-    public void doExecute(final MadeInOffice task) throws InstrumentException {
+    public void doExecute(final MadeInOffice task) throws InternalException {
 
         final OfficeProcessManagerEntryBuilder entryConfig =
                 (OfficeProcessManagerEntryBuilder) config;
@@ -154,7 +154,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
     }
 
     @Override
-    public void doStart() throws InstrumentException {
+    public void doStart() throws InternalException {
 
         // 启动office流程并连接到它.
         officeProcessManager.startAndWait();
@@ -171,7 +171,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
     }
 
     @Override
-    public void doStop() throws InstrumentException {
+    public void doStop() throws InternalException {
         // 从这里开始，任何原因导致与Office进程的断开都是可能的
         disconnectExpected.set(true);
 
@@ -179,7 +179,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
         officeProcessManager.stopAndWait();
     }
 
-    private void restart() throws InstrumentException {
+    private void restart() throws InternalException {
         // 执行程序不再可用
         taskExecutor.setAvailable(false);
 
@@ -213,7 +213,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
                 "com.sun.star.configuration.ConfigurationUpdateAccess", arguments);
     }
 
-    private boolean disableOpengl(final XComponentContext officeContext) throws InstrumentException {
+    private boolean disableOpengl(final XComponentContext officeContext) throws InternalException {
         // 有关更多选项，请参见配置注册表.
         // e.g: C:\Program Files\LibreOffice 5\share\registry\main.xcd
         try {
@@ -255,7 +255,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
             return false;
 
         } catch (com.sun.star.uno.Exception ex) {
-            throw new InstrumentException("Unable to check if the Use OpenGL option is on.", ex);
+            throw new InternalException("Unable to check if the Use OpenGL option is on.", ex);
         }
     }
 

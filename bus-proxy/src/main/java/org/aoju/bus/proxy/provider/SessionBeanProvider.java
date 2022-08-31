@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.proxy.Builder;
 import org.aoju.bus.proxy.Provider;
@@ -70,16 +70,16 @@ public class SessionBeanProvider implements Provider {
             final Method createMethod = homeObject.getClass().getMethod("create", Builder.EMPTY_ARGUMENT_TYPES);
             return createMethod.invoke(homeObject, Builder.EMPTY_ARGUMENTS);
         } catch (NoSuchMethodException e) {
-            throw new InstrumentException(
+            throw new InternalException(
                     "Unable to find no-arg create() method on home interface " + clazz.getName() + Symbol.DOT, e);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException(
+            throw new InternalException(
                     "No-arg create() method on home interface " + clazz.getName() + " is not accessible.",
                     e);
         } catch (NamingException e) {
-            throw new InstrumentException("Unable to lookup EJB home object in JNDI.", e);
+            throw new InternalException("Unable to lookup EJB home object in JNDI.", e);
         } catch (InvocationTargetException e) {
-            throw new InstrumentException(
+            throw new InternalException(
                     "No-arg create() method on home interface " + clazz.getName() + " threw an exception.", e);
         }
     }

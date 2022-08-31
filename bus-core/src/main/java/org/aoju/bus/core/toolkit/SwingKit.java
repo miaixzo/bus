@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.swing.ClipboardListener;
 import org.aoju.bus.core.swing.ClipboardMonitor;
 import org.aoju.bus.core.swing.ImageSelection;
@@ -56,7 +56,7 @@ public class SwingKit {
         try {
             robot = new Robot();
         } catch (AWTException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -280,7 +280,7 @@ public class SwingKit {
         try {
             dsktop.browse(uri);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -294,7 +294,7 @@ public class SwingKit {
         try {
             dsktop.open(file);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -308,7 +308,7 @@ public class SwingKit {
         try {
             dsktop.edit(file);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -322,7 +322,7 @@ public class SwingKit {
         try {
             dsktop.print(file);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -336,7 +336,7 @@ public class SwingKit {
         try {
             dsktop.mail(UriKit.toURI(mailAddress));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -390,7 +390,7 @@ public class SwingKit {
             try {
                 return content.getTransferData(flavor);
             } catch (UnsupportedFlavorException | IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         return null;

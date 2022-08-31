@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.watcher.SimpleWatcher;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -90,7 +90,7 @@ public class LineReadWatcher extends SimpleWatcher implements Runnable {
             // 记录当前读到的位置
             randomAccessFile.seek(currentLength);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

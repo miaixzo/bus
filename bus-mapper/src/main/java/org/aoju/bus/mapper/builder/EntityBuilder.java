@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.mapper.builder.resolve.DefaultEntityResolve;
 import org.aoju.bus.mapper.builder.resolve.EntityResolve;
@@ -67,7 +67,7 @@ public class EntityBuilder {
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
         if (entityTable == null) {
-            throw new InstrumentException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
+            throw new InternalException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
         }
         return entityTable;
     }

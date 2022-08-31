@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.watcher;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -76,14 +76,14 @@ public class WatchServer extends Thread implements Closeable, Serializable {
      * 2、创建{@link WatchService} 对象
      * </pre>
      *
-     * @throws InstrumentException 监听异常，IO异常时抛出此异常
+     * @throws InternalException 监听异常，IO异常时抛出此异常
      */
-    public void init() throws InstrumentException {
+    public void init() throws InternalException {
         //初始化监听
         try {
             watchService = FileSystems.getDefault().newWatchService();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         isClosed = false;
@@ -132,7 +132,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
             }
         } catch (IOException e) {
             if (false == (e instanceof AccessDeniedException)) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
 
             //对于禁止访问的目录，跳过监听

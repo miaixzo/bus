@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.office;
 
 import lombok.RequiredArgsConstructor;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Provider;
 import org.aoju.bus.office.Registry;
@@ -59,7 +59,7 @@ public class OfficeProviderService {
                 return (OnlineOfficeProvider) Registry.getInstance().require(Registry.ONLINE);
             }
         }
-        throw new InstrumentException(Builder.FAILURE);
+        throw new InternalException(Builder.FAILURE);
     }
 
 }

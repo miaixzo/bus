@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.provider;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.symmetric.AES;
@@ -51,7 +51,7 @@ public class AESProvider implements Provider {
     @Override
     public byte[] encrypt(String key, byte[] content) {
         if (StringKit.isEmpty(key)) {
-            throw new InstrumentException("key is null!");
+            throw new InternalException("key is null!");
         }
         AES aes = new AES(key.getBytes());
         return aes.encrypt(content);
@@ -67,7 +67,7 @@ public class AESProvider implements Provider {
     @Override
     public byte[] decrypt(String key, byte[] content) {
         if (StringKit.isEmpty(key)) {
-            throw new InstrumentException("key is null!");
+            throw new InternalException("key is null!");
         }
         AES aes = new AES(key.getBytes());
         return aes.decrypt(content);

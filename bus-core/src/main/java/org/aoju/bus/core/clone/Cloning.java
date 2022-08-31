@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.clone;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 /**
  * 克隆支持类,提供默认的克隆方法
@@ -41,7 +41,7 @@ public class Cloning<T> implements Cloneable<T> {
         try {
             return (T) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

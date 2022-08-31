@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder.resolve;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.annotation.ColumnType;
@@ -285,7 +285,7 @@ public class DefaultEntityResolve implements EntityResolve {
                     entityColumn.setGenerator(generator);
                 }
             } else {
-                throw new InstrumentException(entityColumn.getProperty()
+                throw new InternalException(entityColumn.getProperty()
                         + " - 该字段@GeneratedValue配置只允许以下几种形式:" +
                         "\n1.useGeneratedKeys的@GeneratedValue(generator=\\\"JDBC\\\")  " +
                         "\n2.类似mysql数据库的@GeneratedValue(strategy=GenerationType.IDENTITY[,generator=\"Mysql\"])");
@@ -327,13 +327,13 @@ public class DefaultEntityResolve implements EntityResolve {
                 entityColumn.setGenerator(genSql.genSql(entityTable, entityColumn));
             } catch (Exception e) {
                 log.error("实例化 GenSql 失败: " + e, e);
-                throw new InstrumentException("实例化 GenSql 失败: " + e, e);
+                throw new InternalException("实例化 GenSql 失败: " + e, e);
             }
         } else if (keySql.genId() != GenId.NULL.class) {
             entityColumn.setIdentity(false);
             entityColumn.setGenIdClass(keySql.genId());
         } else {
-            throw new InstrumentException(entityTable.getEntityClass().getCanonicalName()
+            throw new InternalException(entityTable.getEntityClass().getCanonicalName()
                     + " 类中的 @KeySql 注解配置无效!");
         }
     }

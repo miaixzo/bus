@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.compress;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.Closeable;
@@ -90,7 +90,7 @@ public class Gzip implements Closeable {
             IoKit.copy(source, target);
             ((GZIPOutputStream) target).finish();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -106,7 +106,7 @@ public class Gzip implements Closeable {
                     (GZIPInputStream) source : new GZIPInputStream(source);
             IoKit.copy(source, target);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }

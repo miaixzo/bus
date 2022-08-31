@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.*;
@@ -86,7 +86,7 @@ public class StgSCU {
                         Attributes rsp = Commands.mkNEventReportRSP(cmd, status);
                         Attributes rspAttrs = StgSCU.this.eventRecord(as, cmd, data);
                         as.writeDimseRSP(pc, rsp, rspAttrs);
-                    } catch (InstrumentException e) {
+                    } catch (InternalException e) {
                         Logger.warn("{} << N-EVENT-RECORD-RSP failed: {}", as, e.getMessage());
                     } finally {
                         removeOutstandingResult(tuid);
@@ -180,7 +180,7 @@ public class StgSCU {
     }
 
     public void open() throws IOException, InterruptedException,
-            InstrumentException, GeneralSecurityException {
+            InternalException, GeneralSecurityException {
         as = ae.connect(remote, rq);
     }
 

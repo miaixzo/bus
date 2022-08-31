@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -853,7 +853,7 @@ public class Transcoder implements Closeable {
         Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}",
                 index + 1, end - start, maxDiff);
         if (maxDiff > maxPixelValueError)
-            throw new InstrumentException("Decompressed pixel data differs up to " + maxDiff
+            throw new InternalException("Decompressed pixel data differs up to " + maxDiff
                     + " from original pixel data" + maxDiff);
         cache.seek(prevStreamPosition);
         cache.setBitOffset(prevBitOffset);

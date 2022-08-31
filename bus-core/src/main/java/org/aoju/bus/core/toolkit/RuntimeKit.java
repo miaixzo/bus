@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.stream.FastByteOutputStream;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -57,9 +57,9 @@ public class RuntimeKit {
      *
      * @param cmds 命令列表,每个元素代表一条命令
      * @return 执行结果
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static String execForString(String... cmds) throws InstrumentException {
+    public static String execForString(String... cmds) throws InternalException {
         return execForString(Charset.systemCharset(), cmds);
     }
 
@@ -69,9 +69,9 @@ public class RuntimeKit {
      * @param charset 编码
      * @param cmds    命令列表,每个元素代表一条命令
      * @return 执行结果
-     * @throws InstrumentException 内部处理异常
+     * @throws InternalException 内部处理异常
      */
-    public static String execForString(java.nio.charset.Charset charset, String... cmds) throws InstrumentException {
+    public static String execForString(java.nio.charset.Charset charset, String... cmds) throws InternalException {
         return getResult(exec(cmds), charset);
     }
 
@@ -80,9 +80,9 @@ public class RuntimeKit {
      *
      * @param cmds 命令列表,每个元素代表一条命令
      * @return 执行结果, 按行区分
-     * @throws InstrumentException 内部处理异常
+     * @throws InternalException 内部处理异常
      */
-    public static List<String> execForLines(String... cmds) throws InstrumentException {
+    public static List<String> execForLines(String... cmds) throws InternalException {
         return execForLines(Charset.systemCharset(), cmds);
     }
 
@@ -92,9 +92,9 @@ public class RuntimeKit {
      * @param charset 编码
      * @param cmds    命令列表,每个元素代表一条命令
      * @return 执行结果, 按行区分
-     * @throws InstrumentException 内部处理异常
+     * @throws InternalException 内部处理异常
      */
-    public static List<String> execForLines(java.nio.charset.Charset charset, String... cmds) throws InstrumentException {
+    public static List<String> execForLines(java.nio.charset.Charset charset, String... cmds) throws InternalException {
         return getResultLines(exec(cmds), charset);
     }
 
@@ -122,7 +122,7 @@ public class RuntimeKit {
         try {
             process = new ProcessBuilder(cmds).redirectErrorStream(true).start();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return process;
     }
@@ -163,7 +163,7 @@ public class RuntimeKit {
         try {
             return Runtime.getRuntime().exec(cmds, envp, dir);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -280,7 +280,7 @@ public class RuntimeKit {
     public static int getPid() {
         final String processName = ManagementFactory.getRuntimeMXBean().getName();
         if (StringKit.isBlank(processName)) {
-            throw new InstrumentException("Process name is blank!");
+            throw new InternalException("Process name is blank!");
         }
         final int atIndex = processName.indexOf('@');
         if (atIndex > 0) {
@@ -495,7 +495,7 @@ public class RuntimeKit {
      * @return 堆栈转为的字符串
      */
     public static String getStackTrace(Throwable throwable) {
-        return getStackTrace(throwable, 3000);
+        return getStackTrace(throwable, -1);
     }
 
     /**

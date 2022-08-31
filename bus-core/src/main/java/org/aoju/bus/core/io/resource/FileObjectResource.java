@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import javax.tools.FileObject;
@@ -83,7 +83,7 @@ public class FileObjectResource implements Resource {
         try {
             return this.fileObject.openInputStream();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -92,7 +92,7 @@ public class FileObjectResource implements Resource {
         try {
             return IoKit.getReader(this.fileObject.openReader(false));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

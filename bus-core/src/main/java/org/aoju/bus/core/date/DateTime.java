@@ -28,7 +28,7 @@ package org.aoju.bus.core.date;
 import org.aoju.bus.core.date.formatter.DateParser;
 import org.aoju.bus.core.date.formatter.DatePrinter;
 import org.aoju.bus.core.date.formatter.FormatBuilder;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.System;
@@ -303,7 +303,7 @@ public class DateTime extends Date {
             } else {
                 pattern = dateFormat.toString();
             }
-            throw new InstrumentException(StringKit.format("Parse [{}] with format [{}] error!", dateStr, pattern), e);
+            throw new InternalException(StringKit.format("Parse [{}] with format [{}] error!", dateStr, pattern), e);
         }
     }
 
@@ -320,7 +320,7 @@ public class DateTime extends Date {
 
         final Calendar calendar = Formatter.parse(dateStr, lenient, parser);
         if (null == calendar) {
-            throw new InstrumentException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern());
+            throw new InternalException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern());
         }
         calendar.setFirstDayOfWeek(Fields.Week.Mon.getKey());
         return calendar;
@@ -465,7 +465,7 @@ public class DateTime extends Date {
         if (mutable) {
             super.setTime(time);
         } else {
-            throw new InstrumentException("This is not a mutable object !");
+            throw new InternalException("This is not a mutable object !");
         }
     }
 

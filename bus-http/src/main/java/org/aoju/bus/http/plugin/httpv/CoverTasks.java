@@ -1,6 +1,6 @@
 package org.aoju.bus.http.plugin.httpv;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.http.Callback;
@@ -141,10 +141,10 @@ public class CoverTasks {
                 return new Data<>(null, toMediaType(type));
             }
             if (null != cause) {
-                throw new InstrumentException("Conversion failed", cause);
+                throw new InternalException("Conversion failed", cause);
             }
 
-            throw new InstrumentException("No match[" + type + "]Type converter！");
+            throw new InternalException("No match[" + type + "]Type converter！");
         }
 
         private String toMediaType(String type) {

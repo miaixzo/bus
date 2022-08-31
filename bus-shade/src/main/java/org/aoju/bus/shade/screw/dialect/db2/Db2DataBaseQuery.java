@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect.db2;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.dialect.AbstractDatabaseQuery;
@@ -59,8 +59,8 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      * @return {@link Database} 数据库信息
      */
     @Override
-    public Database getDataBase() throws InstrumentException {
-        throw new InstrumentException(Builder.NOT_SUPPORTED);
+    public Database getDataBase() throws InternalException {
+        throw new InternalException(Builder.NOT_SUPPORTED);
     }
 
     /**
@@ -70,7 +70,7 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      */
     @Override
     public List<Table> getTables() {
-        throw new InstrumentException(Builder.NOT_SUPPORTED);
+        throw new InternalException(Builder.NOT_SUPPORTED);
     }
 
     /**
@@ -78,23 +78,23 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      *
      * @param table {@link String} 表名
      * @return {@link List} 表字段信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<Column> getTableColumns(String table) throws InstrumentException {
+    public List<Column> getTableColumns(String table) throws InternalException {
         Assert.notEmpty(table, "Table name can not be empty!");
-        throw new InstrumentException(Builder.NOT_SUPPORTED);
+        throw new InternalException(Builder.NOT_SUPPORTED);
     }
 
     /**
      * 获取所有列信息
      *
      * @return {@link List} 表字段信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends Column> getTableColumns() throws InstrumentException {
-        throw new InstrumentException(Builder.NOT_SUPPORTED);
+    public List<? extends Column> getTableColumns() throws InternalException {
+        throw new InternalException(Builder.NOT_SUPPORTED);
     }
 
     /**
@@ -102,11 +102,11 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      *
      * @param table {@link String}
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InstrumentException {
-        throw new InstrumentException(Builder.NOT_SUPPORTED);
+    public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {
+        throw new InternalException(Builder.NOT_SUPPORTED);
     }
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.handler.ChannelSocketHandler;
@@ -83,7 +83,7 @@ public class NioQuickServer implements Closeable {
             // 服务器套接字注册到Selector中 并指定Selector监控连接事件
             this.serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         Logger.debug("Server listen on: [{}]...", address);
@@ -127,7 +127,7 @@ public class NioQuickServer implements Closeable {
         try {
             doListen();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

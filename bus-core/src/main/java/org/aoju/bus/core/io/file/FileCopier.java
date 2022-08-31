@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.copier.Duplicate;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -197,26 +197,26 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      * </pre>
      *
      * @return 拷贝后目标的文件或目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
     @Override
-    public File copy() throws InstrumentException {
+    public File copy() throws InternalException {
         final File src = this.src;
         final File dest = this.dest;
         // check
         Assert.notNull(src, "Source File is null !");
         if (false == src.exists()) {
-            throw new InstrumentException("File not exist: " + src);
+            throw new InternalException("File not exist: " + src);
         }
         Assert.notNull(dest, "Destination File or directory is null !");
         if (FileKit.equals(src, dest)) {
-            throw new InstrumentException("Files '{" + src + "}' and '{" + dest + "}' are equal");
+            throw new InternalException("Files '{" + src + "}' and '{" + dest + "}' are equal");
         }
 
         if (src.isDirectory()) {// 复制目录
             if (dest.exists() && false == dest.isDirectory()) {
                 //源为目录,目标为文件,抛出IO异常
-                throw new InstrumentException("Src is a directory but dest is a file!");
+                throw new InternalException("Src is a directory but dest is a file!");
             }
             final File subTarget = isCopyContentIfDir ? dest : FileKit.mkdir(FileKit.file(dest, src.getName()));
             internalCopyDirContent(src, subTarget);
@@ -232,9 +232,9 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      *
      * @param src  源目录
      * @param dest 目标目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private void internalCopyDirContent(File src, File dest) throws InstrumentException {
+    private void internalCopyDirContent(File src, File dest) throws InternalException {
         if (null != predicate && false == predicate.test(src)) {
             //被过滤的目录跳过
             return;
@@ -244,7 +244,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
             //目标为不存在路径,创建为目录
             dest.mkdirs();
         } else if (false == dest.isDirectory()) {
-            throw new InstrumentException(StringKit.format("Src [{}] is a directory but dest [{}] is a file!", src.getPath(), dest.getPath()));
+            throw new InternalException(StringKit.format("Src [{}] is a directory but dest [{}] is a file!", src.getPath(), dest.getPath()));
         }
 
         final String[] files = src.list();
@@ -274,9 +274,9 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      *
      * @param src  源文件,必须为文件
      * @param dest 目标文件,如果非覆盖模式必须为目录
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private void internalCopyFile(File src, File dest) throws InstrumentException {
+    private void internalCopyFile(File src, File dest) throws InternalException {
         if (null != predicate && false == predicate.test(src)) {
             // 被过滤的文件跳过
             return;
@@ -309,7 +309,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
         try {
             Files.copy(src.toPath(), dest.toPath(), optionList.toArray(new CopyOption[0]));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

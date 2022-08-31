@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -75,49 +75,59 @@ public class FileType {
     public static final String TYPE_PPS = ".pps";
     public static final String TYPE_PPSX = ".ppsx";
     /**
-     * Photoshop的专用格式Photoshop
+     * psd格式，Photoshop的专用格式Photoshop
      */
     public static final String TYPE_PSD = "psd";
     /**
-     * 图形交换格式
+     * gif格式
      */
     public static final String TYPE_GIF = "gif";
     /**
-     * 联合照片
+     * jpg格式
      */
     public static final String TYPE_JPG = "jpg";
     /**
-     * 联合照片
+     * jpeg格式
      */
     public static final String TYPE_JPEG = "jpeg";
     /**
-     * 英文Bitmap(位图)的简写,它是Windows操作系统中的标准图像文件格式
+     * bmp格式
      */
     public static final String TYPE_BMP = "bmp";
     /**
-     * 可移植网络图形
+     * png格式
      */
     public static final String TYPE_PNG = "png";
 
     /**
-     * 纯文本文件
+     * csv格式
      */
     public static final String TYPE_CSV = "csv";
 
     /**
-     * PDF文件
+     * pdf格式
      */
     public static final String TYPE_PDF = "pdf";
 
     /**
-     * 影像文件
+     * dcm格式
      */
     public static final String TYPE_DCM = "dcm";
 
     /**
-     * 图片
+     * svg格式
      */
-    public static final Map<String, String> PICS = new HashMap<String, String>() {
+    public static final String TYPE_SVG = "svg";
+
+    /**
+     * txt格式
+     */
+    public static final String TYPE_TXT = "txt";
+
+    /**
+     * 图片格式
+     */
+    public static final Map<String, String> PICS = new HashMap<>() {
         {
             put(".jpe", "image/jpeg");
             put(".jpeg", "image/jpeg");
@@ -161,7 +171,7 @@ public class FileType {
     /**
      * 文档
      */
-    public static final Map<String, String> DOCS = new HashMap<String, String>() {
+    public static final Map<String, String> DOCS = new HashMap<>() {
         {
             // txt
             put(".txt", "text/plain");
@@ -388,7 +398,7 @@ public class FileType {
     /**
      * 压缩文档
      */
-    public static final Map<String, String> ZIPDOCS = new HashMap<String, String>() {
+    public static final Map<String, String> ZIPDOCS = new HashMap<>() {
         {
             put(".7z", "application/x-7z-compressed");
             put(".z", "application/x-compress");
@@ -404,7 +414,7 @@ public class FileType {
     /**
      * 视频
      */
-    public static final Map<String, String> VIDEOS = new HashMap<String, String>() {
+    public static final Map<String, String> VIDEOS = new HashMap<>() {
         {
             put(".flv", "video/x-flv");
             put(".3gp", "video/3gpp");
@@ -455,7 +465,7 @@ public class FileType {
     /**
      * 音频
      */
-    public static final Map<String, String> AUDIOS = new HashMap<String, String>() {
+    public static final Map<String, String> AUDIOS = new HashMap<>() {
         {
             put(".mp3", "audio/mpeg");
             put(".wma", "audio/x-ms-wma");
@@ -499,7 +509,7 @@ public class FileType {
     /**
      * 其他
      */
-    public static final Map<String, String> OTHER = new HashMap<String, String>() {
+    public static final Map<String, String> OTHER = new HashMap<>() {
         {
             // xml类型文件
             put(".asa", "application/xml");
@@ -747,7 +757,7 @@ public class FileType {
     /**
      * 文件信息头
      */
-    public static final Map<String, String> IHDR = new HashMap<String, String>() {
+    public static final Map<String, String> IHDR = new HashMap<>() {
         {
             // JPEG (jpg)
             put("ffd8ffe", "jpg");
@@ -896,9 +906,9 @@ public class FileType {
      *
      * @param in {@link InputStream}
      * @return 类型, 文件的扩展名, 未找到为<code>null</code>
-     * @throws InstrumentException 读取流引起的异常
+     * @throws InternalException 读取流引起的异常
      */
-    public static String getType(InputStream in) throws InstrumentException {
+    public static String getType(InputStream in) throws InternalException {
         return getType(IoKit.readHex28Upper(in));
     }
 
@@ -907,9 +917,9 @@ public class FileType {
      *
      * @param file 文件 {@link File}
      * @return 类型, 文件的扩展名, 未找到为<code>null</code>
-     * @throws InstrumentException 读取文件引起的异常
+     * @throws InternalException 读取文件引起的异常
      */
-    public static String getType(File file) throws InstrumentException {
+    public static String getType(File file) throws InternalException {
         FileInputStream in = null;
         try {
             in = IoKit.toStream(file);
@@ -961,6 +971,8 @@ public class FileType {
                 typeName = "war";
             } else if ("ofd".equalsIgnoreCase(extName)) {
                 typeName = "ofd";
+            } else if ("apk".equalsIgnoreCase(extName)) {
+                typeName = "apk";
             }
         } else if ("jar".equals(typeName)) {
             // wps编辑过的.xlsx文件与.jar的开头相同,通过扩展名判断
@@ -971,6 +983,10 @@ public class FileType {
                 typeName = "docx";
             } else if ("pptx".equalsIgnoreCase(extName)) {
                 typeName = "pptx";
+            } else if ("zip".equalsIgnoreCase(extName)) {
+                typeName = "zip";
+            } else if ("apk".equalsIgnoreCase(extName)) {
+                typeName = "apk";
             }
         }
         return typeName;
@@ -981,9 +997,9 @@ public class FileType {
      *
      * @param path 路径,绝对路径或相对ClassPath的路径
      * @return 类型
-     * @throws InstrumentException 读取文件引起的异常
+     * @throws InternalException 读取文件引起的异常
      */
-    public static String getTypeByPath(String path) throws InstrumentException {
+    public static String getTypeByPath(String path) throws InternalException {
         return getType(FileKit.file(path));
     }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.metric.WebApplication;
 
 /**
@@ -40,8 +40,8 @@ public interface ApplicationCache {
 
     void clear();
 
-    WebApplication get(String aet) throws InstrumentException;
+    WebApplication get(String aet) throws InternalException;
 
-    WebApplication findWebApplication(String name) throws InstrumentException;
+    WebApplication findWebApplication(String name) throws InternalException;
 
 }

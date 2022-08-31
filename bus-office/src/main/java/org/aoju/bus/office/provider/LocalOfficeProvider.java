@@ -26,7 +26,7 @@
 package org.aoju.bus.office.provider;
 
 import com.sun.star.document.UpdateDocMode;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.builtin.AbstractJob;
 import org.aoju.bus.office.builtin.AbstractNorm;
 import org.aoju.bus.office.builtin.LocalMadeInOffice;
@@ -239,7 +239,7 @@ public class LocalOfficeProvider extends AbstractProvider {
         }
 
         @Override
-        public void doExecute() throws InstrumentException {
+        public void doExecute() throws InternalException {
             final LocalMadeInOffice task = new LocalMadeInOffice(source, target, loadProperties, filterChain, storeProperties);
             officeManager.execute(task);
         }

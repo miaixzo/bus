@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -69,11 +69,11 @@ public class Dcm2Jpg {
     private int overlayActivationMask = 0xffff;
     private int overlayGrayscaleValue = 0xffff;
 
-    private static int parseHex(String s) throws InstrumentException {
+    private static int parseHex(String s) throws InternalException {
         try {
             return Integer.parseInt(s, Normal._16);
         } catch (NumberFormatException e) {
-            throw new InstrumentException(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
     }
 
@@ -204,7 +204,7 @@ public class Dcm2Jpg {
             Logger.error(
                     MessageFormat.format("Failed to convert {0}: {1}",
                             src, e.getMessage()));
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -227,7 +227,7 @@ public class Dcm2Jpg {
             try {
                 iis.close();
             } catch (IOException e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
     }

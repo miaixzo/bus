@@ -28,7 +28,7 @@ package org.aoju.bus.starter.sensitive;
 import org.aoju.bus.base.advice.BaseAdvice;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.entity.Result;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -181,7 +181,7 @@ public class ResponseBodyAdvice extends BaseAdvice
                         String value = (String) getValue(object, property);
                         if (StringKit.isNotEmpty(value)) {
                             if (ObjectKit.isEmpty(this.properties)) {
-                                throw new InstrumentException("Please check the request.crypto.encrypt");
+                                throw new InternalException("Please check the request.crypto.encrypt");
                             }
                             Logger.debug("Response data encryption enabled ...");
                             value = org.aoju.bus.crypto.Builder.encrypt(this.properties.getEncrypt().getType(), this.properties.getEncrypt().getKey(), value, Charset.UTF_8);

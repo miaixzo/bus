@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -132,16 +132,16 @@ public class FileWriter extends FileWrapper {
      * @param content  写入的内容
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File write(String content, boolean isAppend) throws InstrumentException {
+    public File write(String content, boolean isAppend) throws InternalException {
         BufferedWriter writer = null;
         try {
             writer = getWriter(isAppend);
             writer.write(content);
             writer.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(writer);
         }
@@ -153,9 +153,9 @@ public class FileWriter extends FileWrapper {
      *
      * @param content 写入的内容
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File write(String content) throws InstrumentException {
+    public File write(String content) throws InternalException {
         return write(content, false);
     }
 
@@ -164,9 +164,9 @@ public class FileWriter extends FileWrapper {
      *
      * @param content 写入的内容
      * @return 写入的文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File append(String content) throws InstrumentException {
+    public File append(String content) throws InternalException {
         return write(content, true);
     }
 
@@ -176,9 +176,9 @@ public class FileWriter extends FileWrapper {
      * @param <T>  集合元素类型
      * @param list 列表
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public <T> File writeLines(Iterable<T> list) throws InstrumentException {
+    public <T> File writeLines(Iterable<T> list) throws InternalException {
         return writeLines(list, false);
     }
 
@@ -188,9 +188,9 @@ public class FileWriter extends FileWrapper {
      * @param <T>  集合元素类型
      * @param list 列表
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public <T> File appendLines(Iterable<T> list) throws InstrumentException {
+    public <T> File appendLines(Iterable<T> list) throws InternalException {
         return writeLines(list, true);
     }
 
@@ -201,9 +201,9 @@ public class FileWriter extends FileWrapper {
      * @param list     列表
      * @param isAppend 是否追加
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public <T> File writeLines(Iterable<T> list, boolean isAppend) throws InstrumentException {
+    public <T> File writeLines(Iterable<T> list, boolean isAppend) throws InternalException {
         return writeLines(list, null, isAppend);
     }
 
@@ -215,9 +215,9 @@ public class FileWriter extends FileWrapper {
      * @param lineSeparator 换行符枚举(Windows、Mac或Linux换行符)
      * @param isAppend      是否追加
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public <T> File writeLines(Iterable<T> list, LineSeparator lineSeparator, boolean isAppend) throws InstrumentException {
+    public <T> File writeLines(Iterable<T> list, LineSeparator lineSeparator, boolean isAppend) throws InternalException {
         try (PrintWriter writer = getPrintWriter(isAppend)) {
             boolean isFirst = true;
             for (T t : list) {
@@ -247,9 +247,9 @@ public class FileWriter extends FileWrapper {
      * @param kvSeparator 键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend    是否追加
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File writeMap(Map<?, ?> map, String kvSeparator, boolean isAppend) throws InstrumentException {
+    public File writeMap(Map<?, ?> map, String kvSeparator, boolean isAppend) throws InternalException {
         return writeMap(map, null, kvSeparator, isAppend);
     }
 
@@ -261,9 +261,9 @@ public class FileWriter extends FileWrapper {
      * @param kvSeparator   键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend      是否追加
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File writeMap(Map<?, ?> map, LineSeparator lineSeparator, String kvSeparator, boolean isAppend) throws InstrumentException {
+    public File writeMap(Map<?, ?> map, LineSeparator lineSeparator, String kvSeparator, boolean isAppend) throws InternalException {
         if (null == kvSeparator) {
             kvSeparator = " = ";
         }
@@ -286,9 +286,9 @@ public class FileWriter extends FileWrapper {
      * @param off  数据开始位置
      * @param len  数据长度
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File write(byte[] data, int off, int len) throws InstrumentException {
+    public File write(byte[] data, int off, int len) throws InternalException {
         return write(data, off, len, false);
     }
 
@@ -299,9 +299,9 @@ public class FileWriter extends FileWrapper {
      * @param off  数据开始位置
      * @param len  数据长度
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File append(byte[] data, int off, int len) throws InstrumentException {
+    public File append(byte[] data, int off, int len) throws InternalException {
         return write(data, off, len, true);
     }
 
@@ -313,16 +313,16 @@ public class FileWriter extends FileWrapper {
      * @param len      数据长度
      * @param isAppend 是否追加模式
      * @return 目标文件
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File write(byte[] data, int off, int len, boolean isAppend) throws InstrumentException {
+    public File write(byte[] data, int off, int len, boolean isAppend) throws InternalException {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(FileKit.touch(file), isAppend);
             out.write(data, off, len);
             out.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(out);
         }
@@ -335,9 +335,9 @@ public class FileWriter extends FileWrapper {
      *
      * @param in 输入流，不关闭
      * @return dest
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File writeFromStream(InputStream in) throws InstrumentException {
+    public File writeFromStream(InputStream in) throws InternalException {
         return writeFromStream(in, true);
     }
 
@@ -347,15 +347,15 @@ public class FileWriter extends FileWrapper {
      * @param in      输入流，不关闭
      * @param isClose 是否关闭输入流
      * @return dest
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public File writeFromStream(InputStream in, boolean isClose) throws InstrumentException {
+    public File writeFromStream(InputStream in, boolean isClose) throws InternalException {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(FileKit.touch(file));
             IoKit.copy(in, out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(out);
             if (isClose) {
@@ -369,13 +369,13 @@ public class FileWriter extends FileWrapper {
      * 获得一个输出流对象
      *
      * @return 输出流对象
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public BufferedOutputStream getOutputStream() throws InstrumentException {
+    public BufferedOutputStream getOutputStream() throws InternalException {
         try {
             return new BufferedOutputStream(new FileOutputStream(FileKit.touch(file)));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -384,13 +384,13 @@ public class FileWriter extends FileWrapper {
      *
      * @param isAppend 是否追加
      * @return BufferedReader对象
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public BufferedWriter getWriter(boolean isAppend) throws InstrumentException {
+    public BufferedWriter getWriter(boolean isAppend) throws InternalException {
         try {
             return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FileKit.touch(file), isAppend), charset));
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -399,21 +399,21 @@ public class FileWriter extends FileWrapper {
      *
      * @param isAppend 是否追加
      * @return 打印对象
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public PrintWriter getPrintWriter(boolean isAppend) throws InstrumentException {
+    public PrintWriter getPrintWriter(boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(isAppend));
     }
 
     /**
      * 检查文件
      *
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private void checkFile() throws InstrumentException {
+    private void checkFile() throws InternalException {
         Assert.notNull(file, "File to write content is null !");
         if (this.file.exists() && false == file.isFile()) {
-            throw new InstrumentException("File [{}] is not a file !", this.file.getAbsoluteFile());
+            throw new InternalException("File [{}] is not a file !", this.file.getAbsoluteFile());
         }
     }
 

@@ -26,7 +26,7 @@
 package org.aoju.bus.starter.oauth;
 
 import org.aoju.bus.cache.metric.ExtendCache;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -70,7 +70,7 @@ public class AuthProviderService {
      */
     public static void register(Registry type, Context context) {
         if (CACHE.containsKey(type)) {
-            throw new InstrumentException("重复注册同名称的组件：" + type.name());
+            throw new InternalException("重复注册同名称的组件：" + type.name());
         }
         CACHE.putIfAbsent(type, context);
     }
@@ -152,7 +152,7 @@ public class AuthProviderService {
         } else if (Registry.WEIBO.equals(type)) {
             return new WeiboProvider(context, extendCache);
         }
-        throw new InstrumentException(Builder.ErrorCode.UNSUPPORTED.getMsg());
+        throw new InternalException(Builder.ErrorCode.UNSUPPORTED.getMsg());
     }
 
 }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -169,9 +169,9 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      *
      * @param file CSV文件
      * @return {@link CsvData},包含数据列表和行信息
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvData read(File file) throws InstrumentException {
+    public CsvData read(File file) throws InternalException {
         return read(file, Charset.UTF_8);
     }
 
@@ -201,9 +201,9 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param file    CSV文件
      * @param charset 文件编码,默认系统编码
      * @return {@link CsvData},包含数据列表和行信息
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvData read(File file, java.nio.charset.Charset charset) throws InstrumentException {
+    public CsvData read(File file, java.nio.charset.Charset charset) throws InternalException {
         return read(Objects.requireNonNull(file.toPath(), "file must not be null"), charset);
     }
 
@@ -212,9 +212,9 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      *
      * @param path CSV文件
      * @return {@link CsvData},包含数据列表和行信息
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvData read(Path path) throws InstrumentException {
+    public CsvData read(Path path) throws InternalException {
         return read(path, Charset.UTF_8);
     }
 
@@ -224,14 +224,14 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param path    CSV文件
      * @param charset 文件编码,默认系统编码
      * @return {@link CsvData},包含数据列表和行信息
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvData read(Path path, java.nio.charset.Charset charset) throws InstrumentException {
+    public CsvData read(Path path, java.nio.charset.Charset charset) throws InternalException {
         Assert.notNull(path, "path must not be null");
         try (Reader reader = FileKit.getReader(path, charset)) {
             return read(reader);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -240,9 +240,9 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      *
      * @param reader Reader
      * @return {@link CsvData},包含数据列表和行信息
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvData read(Reader reader) throws InstrumentException {
+    public CsvData read(Reader reader) throws InternalException {
         final CsvParser csvParser = parse(reader);
         final List<CsvRow> rows = new ArrayList<>();
         read(csvParser, rows::add);
@@ -301,9 +301,9 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      *
      * @param reader Reader
      * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public List<Map<String, String>> readMapList(Reader reader) throws InstrumentException {
+    public List<Map<String, String>> readMapList(Reader reader) throws InternalException {
         // 此方法必须包含标题
         this.config.setContainsHeader(true);
 
@@ -335,9 +335,9 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      *
      * @param reader Reader
      * @return CsvParser
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private CsvParser parse(Reader reader) throws InstrumentException {
+    private CsvParser parse(Reader reader) throws InternalException {
         return new CsvParser(reader, config);
     }
 
@@ -378,7 +378,7 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
                     try {
                         close();
                     } catch (final IOException e) {
-                        throw new InstrumentException(e);
+                        throw new InternalException(e);
                     }
                 });
     }

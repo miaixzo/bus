@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
@@ -232,7 +232,7 @@ public class AbstractStowrs implements AutoCloseable {
         if (code == HttpURLConnection.HTTP_OK) {
             Logger.info("STOWRS server response message: HTTP Status-Code 200: OK for {}", iuid);
         } else {
-            throw new InstrumentException(
+            throw new InternalException(
                     String.format("STOWRS server response message: %s", httpPost.getResponseMessage()));
         }
     }
@@ -248,7 +248,7 @@ public class AbstractStowrs implements AutoCloseable {
             Logger.warn("STOWRS server response message: HTTP Status-Code {}: {}", code, httpPost.getResponseMessage());
             return SAXReader.parse(httpPost.getInputStream());
         } else {
-            throw new InstrumentException(String.format("STOWRS server response message: HTTP Status-Code %d: %s",
+            throw new InternalException(String.format("STOWRS server response message: HTTP Status-Code %d: %s",
                     code, httpPost.getResponseMessage()));
         }
         return null;

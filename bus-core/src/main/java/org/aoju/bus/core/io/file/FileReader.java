@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -132,12 +132,12 @@ public class FileReader extends FileWrapper {
      * 文件的长度不能超过 {@link Integer#MAX_VALUE}
      *
      * @return 字节码
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public byte[] readBytes() throws InstrumentException {
+    public byte[] readBytes() throws InternalException {
         long len = file.length();
         if (len >= Integer.MAX_VALUE) {
-            throw new InstrumentException("File is larger then max array size");
+            throw new InternalException("File is larger then max array size");
         }
 
         byte[] bytes = new byte[(int) len];
@@ -150,7 +150,7 @@ public class FileReader extends FileWrapper {
                 throw new IOException(StringKit.format("File length is [{}] but read [{}]!", len, readLength));
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(in);
         }
@@ -162,9 +162,9 @@ public class FileReader extends FileWrapper {
      * 读取文件内容
      *
      * @return 内容
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public String readString() throws InstrumentException {
+    public String readString() throws InternalException {
         return new String(readBytes(), this.charset);
     }
 
@@ -174,9 +174,9 @@ public class FileReader extends FileWrapper {
      * @param <T>        集合类型
      * @param collection 集合
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public <T extends Collection<String>> T readLines(T collection) throws InstrumentException {
+    public <T extends Collection<String>> T readLines(T collection) throws InternalException {
         BufferedReader reader = null;
         try {
             reader = FileKit.getReader(file, charset);
@@ -190,7 +190,7 @@ public class FileReader extends FileWrapper {
             }
             return collection;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(reader);
         }
@@ -200,9 +200,9 @@ public class FileReader extends FileWrapper {
      * 按照行处理文件内容
      *
      * @param lineHandler 行处理器
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public void readLines(LineHandler lineHandler) throws InstrumentException {
+    public void readLines(LineHandler lineHandler) throws InternalException {
         BufferedReader reader = null;
         try {
             reader = FileKit.getReader(file, charset);
@@ -216,9 +216,9 @@ public class FileReader extends FileWrapper {
      * 从文件中读取每一行数据
      *
      * @return 文件中的每行内容的集合
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public List<String> readLines() throws InstrumentException {
+    public List<String> readLines() throws InternalException {
         return readLines(new ArrayList<>());
     }
 
@@ -228,16 +228,16 @@ public class FileReader extends FileWrapper {
      * @param <T>           读取的结果对象类型
      * @param readerHandler Reader处理类
      * @return 从文件中read出的数据
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public <T> T read(ReaderHandler<T> readerHandler) throws InstrumentException {
+    public <T> T read(ReaderHandler<T> readerHandler) throws InternalException {
         BufferedReader reader = null;
         T result;
         try {
             reader = FileKit.getReader(this.file, charset);
             result = readerHandler.handle(reader);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(reader);
         }
@@ -248,9 +248,9 @@ public class FileReader extends FileWrapper {
      * 获得一个文件读取器
      *
      * @return BufferedReader对象
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public BufferedReader getReader() throws InstrumentException {
+    public BufferedReader getReader() throws InternalException {
         return IoKit.getReader(getInputStream(), this.charset);
     }
 
@@ -258,13 +258,13 @@ public class FileReader extends FileWrapper {
      * 获得输入流
      *
      * @return 输入流
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    public BufferedInputStream getInputStream() throws InstrumentException {
+    public BufferedInputStream getInputStream() throws InternalException {
         try {
             return new BufferedInputStream(new FileInputStream(this.file));
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -273,9 +273,9 @@ public class FileReader extends FileWrapper {
      *
      * @param out 流
      * @return 写出的流byte数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public long writeToStream(OutputStream out) throws InstrumentException {
+    public long writeToStream(OutputStream out) throws InternalException {
         return writeToStream(out, false);
     }
 
@@ -285,13 +285,13 @@ public class FileReader extends FileWrapper {
      * @param out     流
      * @param isClose 是否关闭输出流
      * @return 写出的流byte数
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public long writeToStream(OutputStream out, boolean isClose) throws InstrumentException {
+    public long writeToStream(OutputStream out, boolean isClose) throws InternalException {
         try (FileInputStream in = new FileInputStream(this.file)) {
             return IoKit.copy(in, out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             if (isClose) {
                 IoKit.close(out);
@@ -302,14 +302,14 @@ public class FileReader extends FileWrapper {
     /**
      * 检查文件
      *
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    private void checkFile() throws InstrumentException {
+    private void checkFile() throws InternalException {
         if (false == file.exists()) {
-            throw new InstrumentException("File not exist : " + file);
+            throw new InternalException("File not exist : " + file);
         }
         if (false == file.isFile()) {
-            throw new InstrumentException("Not a file :" + file);
+            throw new InternalException("Not a file :" + file);
         }
     }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -79,9 +79,9 @@ public class SheetRidReader extends DefaultHandler {
             workbookData = xssfReader.getWorkbookData();
             ExcelSaxKit.readFrom(workbookData, this);
         } catch (InvalidFormatException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(workbookData);
         }

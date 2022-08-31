@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -118,7 +118,7 @@ public class MapperBuilder {
                 templateClass = tempClass;
             } else if (templateClass != tempClass) {
                 Logger.error("一个通用Mapper中只允许存在一个MapperTemplate子类!");
-                throw new InstrumentException("一个通用Mapper中只允许存在一个MapperTemplate子类!");
+                throw new InternalException("一个通用Mapper中只允许存在一个MapperTemplate子类!");
             }
         }
         if (templateClass == null || !MapperTemplate.class.isAssignableFrom(templateClass)) {
@@ -129,7 +129,7 @@ public class MapperBuilder {
             mapperTemplate = (MapperTemplate) templateClass.getConstructor(Class.class, MapperBuilder.class).newInstance(mapperClass, this);
         } catch (Exception e) {
             Logger.error("实例化MapperTemplate对象失败:" + e, e);
-            throw new InstrumentException("实例化MapperTemplate对象失败:" + e.getMessage());
+            throw new InternalException("实例化MapperTemplate对象失败:" + e.getMessage());
         }
         //注册方法
         for (String methodName : methodSet) {
@@ -137,7 +137,7 @@ public class MapperBuilder {
                 mapperTemplate.addMethodMap(methodName, templateClass.getMethod(methodName, MappedStatement.class));
             } catch (NoSuchMethodException e) {
                 Logger.error(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!", e);
-                throw new InstrumentException(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!");
+                throw new InternalException(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!");
             }
         }
         return mapperTemplate;
@@ -172,7 +172,7 @@ public class MapperBuilder {
             registerMapper(Class.forName(mapperClass));
         } catch (ClassNotFoundException e) {
             Logger.error("注册通用Mapper[" + mapperClass + "]失败，找不到该通用Mapper!", e);
-            throw new InstrumentException("注册通用Mapper[" + mapperClass + "]失败，找不到该通用Mapper!");
+            throw new InternalException("注册通用Mapper[" + mapperClass + "]失败，找不到该通用Mapper!");
         }
     }
 
@@ -325,7 +325,7 @@ public class MapperBuilder {
             } catch (Exception e) {
                 Logger.error("创建 " + config.getResolveClass().getCanonicalName()
                         + " 实例失败，请保证该类有默认的构造方法!", e);
-                throw new InstrumentException("创建 " + config.getResolveClass().getCanonicalName()
+                throw new InternalException("创建 " + config.getResolveClass().getCanonicalName()
                         + " 实例失败，请保证该类有默认的构造方法!", e);
             }
         }
@@ -351,7 +351,7 @@ public class MapperBuilder {
                     EntityBuilder.setResolve((EntityResolve) Class.forName(resolveClass).newInstance());
                 } catch (Exception e) {
                     Logger.error("创建 " + resolveClass + " 实例失败!", e);
-                    throw new InstrumentException("创建 " + resolveClass + " 实例失败!", e);
+                    throw new InternalException("创建 " + resolveClass + " 实例失败!", e);
                 }
             }
         }
@@ -382,7 +382,7 @@ public class MapperBuilder {
                 mapperTemplate.setSqlSource(ms);
             }
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

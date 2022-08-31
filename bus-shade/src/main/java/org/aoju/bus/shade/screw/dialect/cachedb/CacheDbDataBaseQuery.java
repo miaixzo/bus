@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect.cachedb;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.shade.screw.Builder;
@@ -65,10 +65,10 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
      * 获取数据库
      *
      * @return {@link Database} 数据库信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public Database getDataBase() throws InstrumentException {
+    public Database getDataBase() throws InternalException {
         CacheDbDatabase model = new CacheDbDatabase();
         //当前数据库名称
         model.setDatabase(getSchema());
@@ -79,10 +79,10 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
      * 获取表信息
      *
      * @return {@link List} 所有表信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends Table> getTables() throws InstrumentException {
+    public List<? extends Table> getTables() throws InternalException {
         ResultSet resultSet = null;
         try {
             //查询
@@ -91,7 +91,7 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
             //映射
             return Mapping.convertList(resultSet, CacheDbTable.class);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet);
         }
@@ -102,10 +102,10 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
      *
      * @param table {@link String} 表名
      * @return {@link List} 表字段信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends Column> getTableColumns(String table) throws InstrumentException {
+    public List<? extends Column> getTableColumns(String table) throws InternalException {
         Assert.notEmpty(table, "Table name can not be empty!");
         ResultSet resultSet = null;
         try {
@@ -172,7 +172,7 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
             });
             return list;
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet);
         }
@@ -182,10 +182,10 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
      * 获取所有列信息
      *
      * @return {@link List} 表字段信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends Column> getTableColumns() throws InstrumentException {
+    public List<? extends Column> getTableColumns() throws InternalException {
         //获取全部列
         return getTableColumns(Builder.PERCENT_SIGN);
     }
@@ -195,10 +195,10 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
      *
      * @param table {@link String}
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InstrumentException {
+    public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {
         ResultSet resultSet = null;
         try {
             //查询
@@ -206,7 +206,7 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
             //映射
             return Mapping.convertList(resultSet, CacheDbPrimaryKey.class);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet, this.connection);
         }
@@ -216,10 +216,10 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
      * 根据表名获取主键信息
      *
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public List<? extends PrimaryKey> getPrimaryKeys() throws InstrumentException {
+    public List<? extends PrimaryKey> getPrimaryKeys() throws InternalException {
         ResultSet resultSet = null;
         try {
             // 由于单条循环查询存在性能问题，所以这里通过自定义SQL查询数据库主键信息
@@ -229,7 +229,7 @@ public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {
                     .executeQuery();
             return Mapping.convertList(resultSet, CacheDbPrimaryKey.class);
         } catch (SQLException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             close(resultSet);
         }

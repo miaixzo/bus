@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
@@ -64,22 +64,22 @@ public class ConnectRetryable extends AbstractRetryable {
     }
 
     @Override
-    protected void attempt() throws InstrumentException {
+    protected void attempt() throws InternalException {
         try {
             localOffice.connect();
-        } catch (InstrumentException connectionEx) {
+        } catch (InternalException connectionEx) {
             if (ObjectKit.isEmpty(process)) {
-                throw new InstrumentException(connectionEx);
+                throw new InternalException(connectionEx);
             }
             final Integer exitCode = process.getExitCode();
             if (ObjectKit.isEmpty(exitCode)) {
-                throw new InstrumentException(connectionEx);
+                throw new InternalException(connectionEx);
             } else if (exitCode.equals(Integer.valueOf(81))) {
                 Logger.warn("Office process died with exit code 81; restarting it");
                 process.start(true);
-                throw new InstrumentException(connectionEx);
+                throw new InternalException(connectionEx);
             } else {
-                throw new InstrumentException("Office process died with exit code " + exitCode, connectionEx);
+                throw new InternalException("Office process died with exit code " + exitCode, connectionEx);
             }
         }
     }

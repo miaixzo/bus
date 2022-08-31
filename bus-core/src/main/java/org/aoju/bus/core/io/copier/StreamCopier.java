@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.copier;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.Progress;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -93,7 +93,7 @@ public class StreamCopier extends IoCopier<InputStream, OutputStream> {
             size = doCopy(source, target, new byte[bufferSize(this.count)], progress);
             target.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
 
         if (null != progress) {

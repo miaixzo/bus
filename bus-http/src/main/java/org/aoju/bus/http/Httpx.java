@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.MapKit;
@@ -537,7 +537,7 @@ public class Httpx {
                 request.method(method, form.build());
             }
         } else {
-            throw new InstrumentException(String.format(">>>>>>>>Request Method Not found[%s]<<<<<<<<", method));
+            throw new InternalException(String.format(">>>>>>>>Request Method Not found[%s]<<<<<<<<", method));
         }
         return request;
     }

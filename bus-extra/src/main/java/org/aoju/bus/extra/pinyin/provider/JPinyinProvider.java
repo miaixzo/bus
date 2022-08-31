@@ -28,7 +28,7 @@ package org.aoju.bus.extra.pinyin.provider;
 import com.github.stuxuhai.jpinyin.PinyinException;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ArrayKit;
 
 /**
@@ -71,7 +71,7 @@ public class JPinyinProvider extends AbstractPinyinProvider {
         try {
             return PinyinHelper.convertToPinyinString(text, separator, format);
         } catch (PinyinException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

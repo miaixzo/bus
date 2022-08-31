@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -121,7 +121,7 @@ public class Almanac extends Converter {
                 list.add(text);
             }
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return list;
     }
@@ -236,7 +236,7 @@ public class Almanac extends Converter {
                             + Symbol.MINUS
                             + getMonthOfQuarter(1, Integer.parseInt(map.get(endWkey))));
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return map;
     }
@@ -281,7 +281,7 @@ public class Almanac extends Converter {
             } while (true);
 
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -364,7 +364,7 @@ public class Almanac extends Converter {
                 list.add(text);
             }
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return list;
     }
@@ -416,7 +416,7 @@ public class Almanac extends Converter {
             map.put(beginkey, sdf.format(calBegin.getTime()));
             map.put(endkey, sdf.format(calEnd.getTime()));
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return map;
     }
@@ -741,7 +741,7 @@ public class Almanac extends Converter {
                 beginww++;
             } while (beginY <= endY);
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return lDate;
     }
@@ -757,7 +757,7 @@ public class Almanac extends Converter {
         try {
             calendar.setTime(Fields.PURE_DATETIME_FORMAT.parse(year + "-12-31"));
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         calendar.setFirstDayOfWeek(Calendar.MONDAY);
         int week = calendar.get(Calendar.WEEK_OF_YEAR);
@@ -1455,7 +1455,7 @@ public class Almanac extends Converter {
             map.put(beginkey, Fields.PURE_DATETIME_FORMAT.format(calBegin.getTime()));
             map.put(endkey, Fields.PURE_DATETIME_FORMAT.format(calEnd.getTime()));
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return map;
     }
@@ -1485,7 +1485,7 @@ public class Almanac extends Converter {
                 lDate.add(Fields.PURE_DATETIME_FORMAT.format(calBegin.getTime()));
             }
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return lDate;
     }
@@ -1558,7 +1558,7 @@ public class Almanac extends Converter {
             map.put(beginkey, Fields.PURE_DATETIME_FORMAT.format(calBegin.getTime()));
             map.put(endkey, Fields.PURE_DATETIME_FORMAT.format(calEnd.getTime()));
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return map;
     }
@@ -1591,7 +1591,7 @@ public class Almanac extends Converter {
             map.put(beginkey, Fields.NORM_YEAR_FORMAT.format(calBegin.getTime()));
             map.put(endkey, Fields.NORM_YEAR_FORMAT.format(calEnd.getTime()));
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return map;
     }

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.pinyin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -125,7 +125,7 @@ public class PinyinKit {
                 asc = (Normal._256 * hightByte + lowByte) - Normal._256 * Normal._256;
                 break;
             default:
-                throw new InstrumentException("Illegal resource string");
+                throw new InternalException("Illegal resource string");
         }
         return asc;
     }

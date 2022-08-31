@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.builtin.Multiframe;
@@ -48,7 +48,7 @@ public class Emf2sf {
     private DecimalFormat outFileFormat;
     private File outDir;
 
-    private static int[] toFrames(String[] ss) throws InstrumentException {
+    private static int[] toFrames(String[] ss) throws InternalException {
         if (null == ss)
             return null;
 
@@ -57,7 +57,7 @@ public class Emf2sf {
             try {
                 is[i] = Integer.parseInt(ss[i]) - 1;
             } catch (NumberFormatException e) {
-                throw new InstrumentException(
+                throw new InternalException(
                         "Invalid argument of option --frame: " + ss[i]);
             }
 

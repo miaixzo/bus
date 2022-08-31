@@ -31,7 +31,7 @@ import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.lang.XServiceInfo;
 import com.sun.star.uno.Exception;
 import com.sun.star.uno.XComponentContext;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
@@ -56,7 +56,7 @@ public final class Info {
      *
      * @param context 上下文.
      * @return 如果指定的上下文用于OpenOffice安装，则为{@code true}，否则为{@code false}.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static boolean isOpenOffice(final XComponentContext context) {
         return "openoffice".equalsIgnoreCase(getOfficeName(context));
@@ -67,7 +67,7 @@ public final class Info {
      *
      * @param context 上下文.
      * @return 如果指定的上下文用于LibreOffice安装，则为{@code true}，否则为{@code false}.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static boolean isLibreOffice(final XComponentContext context) {
         return "libreoffice".equalsIgnoreCase(getOfficeName(context));
@@ -78,7 +78,7 @@ public final class Info {
      *
      * @param context 上下文.
      * @return 如果无法检索office产品名称，则为{@code null}.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static String getOfficeName(final XComponentContext context) {
         return getConfig(context, "ooName").orElse(null);
@@ -89,7 +89,7 @@ public final class Info {
      *
      * @param context 上下文.
      * @return office产品版本，如果无法检索，则为{@code null}.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static String getOfficeVersionLong(final XComponentContext context) {
         return getConfig(context, "ooSetupVersionAboutBox").orElse(null);
@@ -100,7 +100,7 @@ public final class Info {
      *
      * @param context The 上下文.
      * @return ffice产品版本，如果无法检索，则为{@code null}.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static String getOfficeVersionShort(final XComponentContext context) {
         return getConfig(context, "ooSetupVersion").orElse(null);
@@ -158,7 +158,7 @@ public final class Info {
      * @param context  上下文信息.
      * @param propName 要获取的属性值的属性名.
      * @return 包含属性值的可选属性.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static Optional<String> getConfig(final XComponentContext context, final String propName) {
         for (String nodePath : Builder.NODE_PATHS) {
@@ -177,7 +177,7 @@ public final class Info {
      * @param nodePath 属性获取的路径.
      * @param propName 要获取的属性值的属性名.
      * @return 包含属性值的可选属性.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致 {@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致 {@link InternalException}.
      */
     public static Optional<Object> getConfig(
             final XComponentContext context, final String nodePath, final String propName) {

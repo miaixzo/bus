@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -727,7 +727,7 @@ public class MathKit {
      * @return 新值
      */
     public static String roundString(double v, int scale) {
-        return round(v, scale).toString();
+        return round(v, scale).toPlainString();
     }
 
     /**
@@ -735,12 +735,12 @@ public class MathKit {
      * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =  123.46
      *
-     * @param numberStr 数字值的字符串表现形式
-     * @param scale     保留小数位数
+     * @param number 数字值的字符串表现形式
+     * @param scale  保留小数位数
      * @return 新值
      */
-    public static BigDecimal round(String numberStr, int scale) {
-        return round(numberStr, scale, RoundingMode.HALF_UP);
+    public static BigDecimal round(String number, int scale) {
+        return round(number, scale, RoundingMode.HALF_UP);
     }
 
     /**
@@ -761,12 +761,12 @@ public class MathKit {
      * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
      * 例如保留2位小数：123.456789 =  123.46
      *
-     * @param numberStr 数字值的字符串表现形式
+     * @param number 数字值的字符串表现形式
      * @param scale     保留小数位数
      * @return 新值
      */
-    public static String roundString(String numberStr, int scale) {
-        return round(numberStr, scale).toString();
+    public static String roundString(String number, int scale) {
+        return round(number, scale).toPlainString();
     }
 
     /**
@@ -792,24 +792,24 @@ public class MathKit {
      * @return 新值
      */
     public static String roundString(double v, int scale, RoundingMode roundingMode) {
-        return round(v, scale, roundingMode).toString();
+        return round(v, scale, roundingMode).toPlainString();
     }
 
     /**
      * 保留固定位数小数
      * 例如保留四位小数：123.456789 =  123.4567
      *
-     * @param numberStr    数字值的字符串表现形式
+     * @param number    数字值的字符串表现形式
      * @param scale        保留小数位数,如果传入小于0,则默认0
      * @param roundingMode 保留小数的模式 {@link RoundingMode},如果传入null则默认四舍五入
      * @return 新值
      */
-    public static BigDecimal round(String numberStr, int scale, RoundingMode roundingMode) {
-        Assert.notBlank(numberStr);
+    public static BigDecimal round(String number, int scale, RoundingMode roundingMode) {
+        Assert.notBlank(number);
         if (scale < 0) {
             scale = 0;
         }
-        return round(toBigDecimal(numberStr), scale, roundingMode);
+        return round(toBigDecimal(number), scale, roundingMode);
     }
 
     /**
@@ -839,13 +839,13 @@ public class MathKit {
      * 保留固定位数小数
      * 例如保留四位小数：123.456789 =  123.4567
      *
-     * @param numberStr    数字值的字符串表现形式
+     * @param number    数字值的字符串表现形式
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
      */
-    public static String roundString(String numberStr, int scale, RoundingMode roundingMode) {
-        return round(numberStr, scale, roundingMode).toString();
+    public static String roundString(String number, int scale, RoundingMode roundingMode) {
+        return round(number, scale, roundingMode).toPlainString();
     }
 
     /**
@@ -1278,7 +1278,7 @@ public class MathKit {
         }
         // 加入逻辑判断,确保begin<end并且size不能大于该表示范围
         if ((end - begin) < size) {
-            throw new InstrumentException("Size is larger than range between begin and end!");
+            throw new InternalException("Size is larger than range between begin and end!");
         }
 
         Set<Integer> set = new HashSet<>(size, 1);
@@ -2249,6 +2249,11 @@ public class MathKit {
             return 0;
         }
 
+        if (StringKit.containsIgnoreCase(number, "E")) {
+            // 科学计数法忽略支持，科学计数法一般用于表示非常小和非常大的数字，这类数字转换为int后精度丢失，没有意义
+            throw new NumberFormatException(StringKit.format("Unsupported int format: [{}]", number));
+        }
+
         if (StringKit.startWithIgnoreCase(number, "0x")) {
             // 0x04表示16进制数
             return Integer.parseInt(number.substring(2), Normal._16);
@@ -2345,14 +2350,14 @@ public class MathKit {
      * 将指定字符串转换为{@link Number} 对象
      * 此方法不支持科学计数法
      *
-     * @param numberStr Number字符串
+     * @param number Number字符串
      * @return Number对象
      * @throws NumberFormatException 包装了{@link ParseException}，当给定的数字字符串无法解析时抛出
      */
-    public static Number parseNumber(String numberStr) throws NumberFormatException {
-        if (StringKit.startWithIgnoreCase(numberStr, "0x")) {
+    public static Number parseNumber(String number) throws NumberFormatException {
+        if (StringKit.startWithIgnoreCase(number, "0x")) {
             // 0x04表示16进制数
-            return Long.parseLong(numberStr.substring(2), 16);
+            return Long.parseLong(number.substring(2), 16);
         }
 
         try {
@@ -2361,7 +2366,7 @@ public class MathKit {
                 // 当字符串数字超出double的长度时，会导致截断，此处使用BigDecimal接收
                 ((DecimalFormat) format).setParseBigDecimal(true);
             }
-            return format.parse(numberStr);
+            return format.parse(number);
         } catch (ParseException e) {
             final NumberFormatException nfe = new NumberFormatException(e.getMessage());
             nfe.initCause(e);

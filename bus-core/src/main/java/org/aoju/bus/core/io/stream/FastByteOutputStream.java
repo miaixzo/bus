@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.stream;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.buffer.FastByteBuffer;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
@@ -89,9 +89,9 @@ public class FastByteOutputStream extends OutputStream {
      * 写出
      *
      * @param out 输出流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public void writeTo(OutputStream out) throws InstrumentException {
+    public void writeTo(OutputStream out) throws InternalException {
         final int index = buffer.index();
         if (index < 0) {
             return;
@@ -104,7 +104,7 @@ public class FastByteOutputStream extends OutputStream {
             }
             out.write(buffer.array(index), 0, buffer.offset());
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

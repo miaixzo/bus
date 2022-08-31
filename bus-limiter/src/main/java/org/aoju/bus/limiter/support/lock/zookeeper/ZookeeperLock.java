@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.support.lock.zookeeper;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.limiter.support.lock.Lock;
 import org.aoju.bus.logger.Logger;
 import org.apache.curator.framework.CuratorFramework;
@@ -82,7 +82,7 @@ public class ZookeeperLock extends Lock {
         } catch (KeeperException.NodeExistsException e) {
             throw new IllegalMonitorStateException("You do not own the lock: " + key);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

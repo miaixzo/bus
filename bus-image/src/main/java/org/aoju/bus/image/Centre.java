@@ -27,7 +27,7 @@ package org.aoju.bus.image;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -114,7 +114,7 @@ public class Centre {
         }
 
         if (storeSCP.getConnection().isListening()) {
-            throw new InstrumentException("Cannot start a Listener because it is already running.");
+            throw new InternalException("Cannot start a Listener because it is already running.");
         }
 
         if (ObjectKit.isEmpty(storeSCP)) {

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -109,20 +109,20 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     @Override
-    public Excel03SaxReader read(File file, String idOrRid) throws InstrumentException {
+    public Excel03SaxReader read(File file, String idOrRid) throws InternalException {
         try {
             return read(new POIFSFileSystem(file), idOrRid);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
     @Override
-    public Excel03SaxReader read(InputStream excelStream, String idOrRid) throws InstrumentException {
+    public Excel03SaxReader read(InputStream excelStream, String idOrRid) throws InternalException {
         try {
             return read(new POIFSFileSystem(excelStream), idOrRid);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -132,9 +132,9 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * @param fs {@link POIFSFileSystem}
      * @param id sheet序号
      * @return this
-     * @throws InstrumentException IO异常包装
+     * @throws InternalException IO异常包装
      */
-    public Excel03SaxReader read(POIFSFileSystem fs, String id) throws InstrumentException {
+    public Excel03SaxReader read(POIFSFileSystem fs, String id) throws InternalException {
         this.rid = Integer.parseInt(id);
 
         formatListener = new FormatTrackingHSSFListener(new MissingRecordAwareHSSFListener(this));
@@ -149,7 +149,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         try {
             factory.processWorkbookEvents(request, fs);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(fs);
         }
@@ -214,7 +214,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             }
         } else if (record instanceof EOFRecord) {
             if (this.rid < 0 && null != this.sheetName) {
-                throw new InstrumentException("Sheet [{}] not exist!", this.sheetName);
+                throw new InternalException("Sheet [{}] not exist!", this.sheetName);
             }
             processLastCellSheet();
         } else if (isProcessCurrentSheet()) {

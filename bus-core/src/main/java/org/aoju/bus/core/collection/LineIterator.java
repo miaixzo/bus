@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.collection;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.IoKit;
 
@@ -81,7 +81,7 @@ public class LineIterator extends ComputeIterator<String> implements IterableIte
             }
         } catch (IOException ioe) {
             close();
-            throw new InstrumentException(ioe);
+            throw new InternalException(ioe);
         }
     }
 

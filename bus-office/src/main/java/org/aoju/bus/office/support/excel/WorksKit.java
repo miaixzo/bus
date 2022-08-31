@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -124,7 +124,7 @@ public class WorksKit {
         try {
             return WorkbookFactory.create(isXlsx);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -160,7 +160,7 @@ public class WorksKit {
         try {
             return WorkbookFactory.create(IoKit.toMarkSupportStream(in), password);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         } finally {
             IoKit.close(in);
         }
@@ -178,7 +178,7 @@ public class WorksKit {
         try {
             return WorkbookFactory.create(excelFile, password, readOnly);
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -304,13 +304,13 @@ public class WorksKit {
      *
      * @param book {@link Workbook}
      * @param out  输出流
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public static void writeBook(Workbook book, OutputStream out) throws InstrumentException {
+    public static void writeBook(Workbook book, OutputStream out) throws InternalException {
         try {
             book.write(out);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -379,7 +379,7 @@ public class WorksKit {
         if (book instanceof XSSFWorkbook) {
             return new SXSSFWorkbook((XSSFWorkbook) book);
         }
-        throw new InstrumentException("The input is not a [xlsx] format.");
+        throw new InternalException("The input is not a [xlsx] format.");
     }
 
 }

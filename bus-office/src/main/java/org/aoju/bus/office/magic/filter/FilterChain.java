@@ -26,7 +26,7 @@
 package org.aoju.bus.office.magic.filter;
 
 import com.sun.star.lang.XComponent;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Context;
 
 /**
@@ -51,9 +51,9 @@ public interface FilterChain {
      *
      * @param context  用于沿链传递的OfficeContext.
      * @param document 被转换为沿链传递的XComponent.
-     * @throws InstrumentException 如果处理过滤器时发生错误.
+     * @throws InternalException 如果处理过滤器时发生错误.
      */
-    void doFilter(final Context context, final XComponent document) throws InstrumentException;
+    void doFilter(final Context context, final XComponent document) throws InternalException;
 
     /**
      * 创建并返回此对象的副本。"copy"的确切含义可能取决于链的类别

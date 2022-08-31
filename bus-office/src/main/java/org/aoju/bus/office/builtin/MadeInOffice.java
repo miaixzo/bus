@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.metric.OfficeManager;
 
@@ -41,8 +41,8 @@ public interface MadeInOffice {
      * 在上下文中执行任务.
      *
      * @param context office环境上下文.
-     * @throws InstrumentException 如果发生错误.
+     * @throws InternalException 如果发生错误.
      */
-    void execute(Context context) throws InstrumentException;
+    void execute(Context context) throws InternalException;
 
 }

@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -319,7 +319,7 @@ public class PatternKit {
             }
             return result;
         } catch (InvocationTargetException | IllegalAccessException ex) {
-            throw new InstrumentException("call getAllGroupNames(...) method error: " + ex.getMessage());
+            throw new InternalException("call getAllGroupNames(...) method error: " + ex.getMessage());
         }
     }
 
@@ -843,7 +843,7 @@ public class PatternKit {
             try {
                 matcher.appendReplacement(buffer, replaceFun.call(matcher));
             } catch (Exception e) {
-                throw new InstrumentException(e);
+                throw new InternalException(e);
             }
         }
         matcher.appendTail(buffer);

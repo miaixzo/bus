@@ -29,7 +29,7 @@ import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.exception.BusinessException;
 import org.aoju.bus.core.exception.CrontabException;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.exception.ValidateException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -97,8 +97,8 @@ public class BaseAdvice extends Controller {
      * @return 异常提示
      */
     @ResponseBody
-    @ExceptionHandler(value = InstrumentException.class)
-    public Object instrumentException(InstrumentException e) {
+    @ExceptionHandler(value = InternalException.class)
+    public Object InternalException(InternalException e) {
         this.defaultExceptionHandler(e);
         if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode.EM_100510);

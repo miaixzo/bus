@@ -31,7 +31,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.util.CloseVetoException;
 import com.sun.star.util.XCloseable;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.bridge.LocalOfficeContextAware;
@@ -103,7 +103,7 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
      * @return 文档信息
      */
     protected XComponent loadDocument(final LocalOfficeContextAware context, final File sourceFile)
-            throws InstrumentException {
+            throws InternalException {
         try {
             final XComponent document = context.getComponentLoader()
                     .loadComponentFromURL(
@@ -111,11 +111,11 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
                             Builder.toUnoProperties(getLoadProperties()));
             return document;
         } catch (ErrorCodeIOException exception) {
-            throw new InstrumentException(
+            throw new InternalException(
                     ERROR_MESSAGE_LOAD + sourceFile.getName() + "; errorCode: " + exception.ErrCode,
                     exception);
         } catch (IllegalArgumentException | IOException exception) {
-            throw new InstrumentException(ERROR_MESSAGE_LOAD + sourceFile.getName(), exception);
+            throw new InternalException(ERROR_MESSAGE_LOAD + sourceFile.getName(), exception);
         }
     }
 
@@ -140,7 +140,7 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
                     closeable.close(true);
                 } catch (CloseVetoException closeVetoEx) {
                     // 无论谁提出否决，都应结束该文件
-                    throw new InstrumentException(closeVetoEx);
+                    throw new InternalException(closeVetoEx);
                 }
             }
         }

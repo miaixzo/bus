@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.CollKit;
 
 import java.io.BufferedReader;
@@ -97,12 +97,12 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     @Override
-    public String readString(Charset charset) throws InstrumentException {
+    public String readString(Charset charset) throws InternalException {
         return resources.get(cursor).readString(charset);
     }
 
     @Override
-    public byte[] readBytes() throws InstrumentException {
+    public byte[] readBytes() throws InternalException {
         return resources.get(cursor).readBytes();
     }
 

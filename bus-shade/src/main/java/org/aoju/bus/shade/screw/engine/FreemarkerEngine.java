@@ -29,7 +29,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -75,7 +75,7 @@ public class FreemarkerEngine extends AbstractEngine {
             //国际化
             configuration.setLocale(new Locale(Builder.DEFAULT_LOCALE));
         } catch (Exception e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -87,10 +87,10 @@ public class FreemarkerEngine extends AbstractEngine {
      * 生成文档
      *
      * @param info {@link DataSchema}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
     @Override
-    public void produce(DataSchema info, String docName) throws InstrumentException {
+    public void produce(DataSchema info, String docName) throws InternalException {
         Assert.notNull(info, "DataModel can not be empty!");
         String path = getEngineConfig().getCustomTemplate();
         try {
@@ -119,7 +119,7 @@ public class FreemarkerEngine extends AbstractEngine {
                 openOutputDir();
             }
         } catch (IOException | TemplateException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

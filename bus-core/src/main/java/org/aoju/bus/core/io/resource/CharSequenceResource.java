@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -101,12 +101,12 @@ public class CharSequenceResource implements Resource {
     }
 
     @Override
-    public String readString(Charset charset) throws InstrumentException {
+    public String readString(Charset charset) throws InternalException {
         return this.data.toString();
     }
 
     @Override
-    public byte[] readBytes() throws InstrumentException {
+    public byte[] readBytes() throws InternalException {
         return this.data.toString().getBytes(this.charset);
     }
 

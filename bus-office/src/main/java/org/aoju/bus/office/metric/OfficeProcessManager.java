@@ -26,7 +26,7 @@
 package org.aoju.bus.office.metric;
 
 import com.sun.star.lang.DisposedException;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.thread.NamedThreadFactory;
 import org.aoju.bus.logger.Logger;
@@ -66,16 +66,16 @@ public class OfficeProcessManager {
      *
      * @param deleteInstanceProfileDir 如果{@code true}，实例配置文件目录将被删除
      *                                 我们并不总是希望在重新启动时删除实例配置文件目录，
-     * @throws InstrumentException 如果发生异常
+     * @throws InternalException 如果发生异常
      */
     private void doEnsureProcessExited(final boolean deleteInstanceProfileDir)
-            throws InstrumentException {
+            throws InternalException {
         try {
             final int exitCode =
                     process.getExitCode(config.getProcessRetryInterval(), config.getProcessTimeout());
             Logger.info("process exited with code {}", exitCode);
 
-        } catch (InstrumentException retryTimeoutEx) {
+        } catch (InternalException retryTimeoutEx) {
 
             Logger.debug("doEnsureProcessExited times out", retryTimeoutEx);
             doTerminateProcess();
@@ -94,7 +94,7 @@ public class OfficeProcessManager {
      *                重新启动将假定实例配置文件目录已经创建. 要重新创建实例配置文件目录，
      *                应该将{@code restart}设置为{@code false}
      */
-    private void doStartProcessAndConnect(final boolean restart) throws InstrumentException {
+    private void doStartProcessAndConnect(final boolean restart) throws InternalException {
         process.start(restart);
 
         try {
@@ -102,10 +102,10 @@ public class OfficeProcessManager {
                     .execute(config.getProcessRetryInterval(), config.getProcessTimeout());
 
         } catch (Exception ex) {
-            if (ex instanceof InstrumentException) {
-                throw (InstrumentException) ex;
+            if (ex instanceof InternalException) {
+                throw (InternalException) ex;
             }
-            throw new InstrumentException("Could not establish connection", ex);
+            throw new InternalException("Could not establish connection", ex);
         }
     }
 
@@ -115,7 +115,7 @@ public class OfficeProcessManager {
      * @param deleteInstanceProfileDir 如果{@code true}，实例配置文件目录将被删除
      *                                 我们并不总是希望在重新启动时删除实例配置文件目录
      */
-    private void doStopProcess(final boolean deleteInstanceProfileDir) throws InstrumentException {
+    private void doStopProcess(final boolean deleteInstanceProfileDir) throws InternalException {
         try {
             final boolean terminated = localOffice.getDesktop().terminate();
             // 再一次:尝试终止
@@ -140,16 +140,16 @@ public class OfficeProcessManager {
     /**
      * 确保进程退出
      *
-     * @throws InstrumentException 如果发生异常
+     * @throws InternalException 如果发生异常
      */
-    private void doTerminateProcess() throws InstrumentException {
+    private void doTerminateProcess() throws InternalException {
         try {
             final int exitCode =
                     process.forciblyTerminate(config.getProcessRetryInterval(), config.getProcessTimeout());
             Logger.info("process forcibly terminated with code {}", exitCode);
 
         } catch (Exception ex) {
-            throw new InstrumentException("Could not terminate process", ex);
+            throw new InternalException("Could not terminate process", ex);
         }
     }
 
@@ -165,9 +165,9 @@ public class OfficeProcessManager {
     /**
      * 新启动office进程，并等待连接到重新启动的进程
      *
-     * @throws InstrumentException 如果我们不能重新启动office进程
+     * @throws InternalException 如果我们不能重新启动office进程
      */
-    public void restartAndWait() throws InstrumentException {
+    public void restartAndWait() throws InternalException {
         submitAndWait(
                 "Restart",
                 () -> {
@@ -189,7 +189,7 @@ public class OfficeProcessManager {
                     try {
                         doEnsureProcessExited(true);
                         doStartProcessAndConnect(false);
-                    } catch (InstrumentException officeEx) {
+                    } catch (InternalException officeEx) {
                         Logger.error("Could not restart process after connection lost.", officeEx);
                     }
                 });
@@ -204,7 +204,7 @@ public class OfficeProcessManager {
                 () -> {
                     try {
                         doTerminateProcess();
-                    } catch (InstrumentException officeException) {
+                    } catch (InternalException officeException) {
                         Logger.error("Could not terminate process after task timeout.", officeException);
                     }
                 });
@@ -213,9 +213,9 @@ public class OfficeProcessManager {
     /**
      * 启动一个office进程，并等待连接到正在运行的进程
      *
-     * @throws InstrumentException 如果不能启动并连接到office进程
+     * @throws InternalException 如果不能启动并连接到office进程
      */
-    public void startAndWait() throws InstrumentException {
+    public void startAndWait() throws InternalException {
         // 将启动任务提交给执行程序并等待
         submitAndWait(
                 "Start",
@@ -228,9 +228,9 @@ public class OfficeProcessManager {
     /**
      * 停止office进程并等待该进程停止
      *
-     * @throws InstrumentException 如果我们不能停止office程序
+     * @throws InternalException 如果我们不能停止office程序
      */
-    public void stopAndWait() throws InstrumentException {
+    public void stopAndWait() throws InternalException {
         // 将停止任务提交给执行程序并等待
         submitAndWait(
                 "Stop",
@@ -242,7 +242,7 @@ public class OfficeProcessManager {
 
     // 将指定的任务提交给执行程序并等待其完成
     private void submitAndWait(final String taskName, final Callable<Void> task)
-            throws InstrumentException {
+            throws InternalException {
 
         Logger.info("Submitting task '{}' and waiting...", taskName);
         final Future<Void> future = executor.submit(task);
@@ -256,10 +256,10 @@ public class OfficeProcessManager {
             Logger.debug("ExecutionException catched in submitAndWait", executionEx);
 
             // 重新抛出原来的(原因)异常
-            if (executionEx.getCause() instanceof InstrumentException) {
-                throw (InstrumentException) executionEx.getCause();
+            if (executionEx.getCause() instanceof InternalException) {
+                throw (InternalException) executionEx.getCause();
             }
-            throw new InstrumentException(
+            throw new InternalException(
                     "Failed to execute task '" + taskName + Symbol.SINGLE_QUOTE, executionEx.getCause());
 
         } catch (InterruptedException interruptedEx) {

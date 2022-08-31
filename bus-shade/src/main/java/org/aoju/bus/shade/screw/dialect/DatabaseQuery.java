@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.shade.screw.metadata.Column;
 import org.aoju.bus.shade.screw.metadata.Database;
 import org.aoju.bus.shade.screw.metadata.PrimaryKey;
@@ -46,50 +46,50 @@ public interface DatabaseQuery {
      * 获取数据库
      *
      * @return {@link Database} 数据库信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    Database getDataBase() throws InstrumentException;
+    Database getDataBase() throws InternalException;
 
     /**
      * 获取表信息
      *
      * @return {@link List} 所有表信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    List<? extends Table> getTables() throws InstrumentException;
+    List<? extends Table> getTables() throws InternalException;
 
     /**
      * 获取列信息
      *
      * @param table {@link String} 表名
      * @return {@link List} 表字段信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    List<? extends Column> getTableColumns(String table) throws InstrumentException;
+    List<? extends Column> getTableColumns(String table) throws InternalException;
 
     /**
      * 获取所有列信息
      *
      * @return {@link List} 表字段信息
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    List<? extends Column> getTableColumns() throws InstrumentException;
+    List<? extends Column> getTableColumns() throws InternalException;
 
     /**
      * 根据表名获取主键
      *
      * @param table {@link String}
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    List<? extends PrimaryKey> getPrimaryKeys(String table) throws InstrumentException;
+    List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException;
 
     /**
      * 获取主键
      *
      * @return {@link List}
-     * @throws InstrumentException 异常
+     * @throws InternalException 异常
      */
-    List<? extends PrimaryKey> getPrimaryKeys() throws InstrumentException;
+    List<? extends PrimaryKey> getPrimaryKeys() throws InternalException;
 
 }

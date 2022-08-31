@@ -27,7 +27,7 @@ package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
@@ -190,9 +190,9 @@ public final class CsvWriter implements Closeable, Flushable {
      *
      * @param lines 多行数据
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvWriter write(String[]... lines) throws InstrumentException {
+    public CsvWriter write(String[]... lines) throws InternalException {
         return write(new ArrayIterator<>(lines));
     }
 
@@ -260,9 +260,9 @@ public final class CsvWriter implements Closeable, Flushable {
      *
      * @param fields 字段列表 ({@code null} 值会被做为空值追加)
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvWriter writeLine(String... fields) throws InstrumentException {
+    public CsvWriter writeLine(String... fields) throws InternalException {
         if (ArrayKit.isEmpty(fields)) {
             return writeLine();
         }
@@ -274,13 +274,13 @@ public final class CsvWriter implements Closeable, Flushable {
      * 追加新行(换行)
      *
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvWriter writeLine() throws InstrumentException {
+    public CsvWriter writeLine() throws InternalException {
         try {
             writer.write(config.lineDelimiter);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         newline = true;
         return this;
@@ -306,7 +306,7 @@ public final class CsvWriter implements Closeable, Flushable {
             writer.write(comment);
             newline = true;
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
         return this;
     }
@@ -317,11 +317,11 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     @Override
-    public void flush() throws InstrumentException {
+    public void flush() throws InternalException {
         try {
             writer.flush();
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 
@@ -330,9 +330,9 @@ public final class CsvWriter implements Closeable, Flushable {
      *
      * @param fields 字段列表 ({@code null} 值会被做为空值追加
      * @return this
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    public CsvWriter writeHeaderLine(String... fields) throws InstrumentException {
+    public CsvWriter writeHeaderLine(String... fields) throws InternalException {
         final Map<String, String> headerAlias = this.config.headerAlias;
         if (MapKit.isNotEmpty(headerAlias)) {
             // 标题别名替换
@@ -351,13 +351,13 @@ public final class CsvWriter implements Closeable, Flushable {
      * 追加一行,末尾会自动换行,但是追加前不会换行
      *
      * @param fields 字段列表 ({@code null} 值会被做为空值追加)
-     * @throws InstrumentException IO异常
+     * @throws InternalException IO异常
      */
-    private void appendLine(final String... fields) throws InstrumentException {
+    private void appendLine(final String... fields) throws InternalException {
         try {
             doAppendLine(fields);
         } catch (IOException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

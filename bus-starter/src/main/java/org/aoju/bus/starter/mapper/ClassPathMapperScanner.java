@@ -1,6 +1,6 @@
 package org.aoju.bus.starter.mapper;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.mapper.builder.MapperBuilder;
@@ -256,7 +256,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             property = property.trim();
             int index = property.indexOf("=");
             if (index < 0) {
-                throw new InstrumentException("通过 @EnableMapper 注解的 properties 参数配置出错:" + property + " !\n"
+                throw new InternalException("通过 @EnableMapper 注解的 properties 参数配置出错:" + property + " !\n"
                         + "请保证配置项按 properties 文件格式要求进行配置，例如：\n"
                         + "properties = {\n"
                         + "\t\"mappers=org.aoju.bus.mapper.Mapper\",\n"

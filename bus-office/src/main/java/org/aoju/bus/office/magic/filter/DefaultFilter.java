@@ -26,7 +26,7 @@
 package org.aoju.bus.office.magic.filter;
 
 import com.sun.star.lang.XComponent;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Context;
 
 /**
@@ -86,7 +86,7 @@ public class DefaultFilter extends AbstractFilter {
 
     @Override
     public void doFilter(final Context context, final XComponent document)
-            throws InstrumentException {
+            throws InternalException {
 
         // 如果在链的末端，调用RefreshFilter
         if (pos == filters.size() && endsWithRefreshFilter) {

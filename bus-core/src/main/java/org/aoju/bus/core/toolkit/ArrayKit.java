@@ -29,7 +29,7 @@ import org.aoju.bus.core.builder.HashCodeBuilder;
 import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.collection.UniqueKeySet;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.mutable.MutableInt;
@@ -7612,7 +7612,7 @@ public class ArrayKit {
      *
      * @param object 对象,可以是对象数组或者基本类型数组
      * @return 包装类型数组或对象数组
-     * @throws InstrumentException 对象为非数组
+     * @throws InternalException 对象为非数组
      */
     public static Object[] wrap(Object object) {
         if (null == object) {
@@ -7641,11 +7641,11 @@ public class ArrayKit {
                     case "double":
                         return wrap((double[]) object);
                     default:
-                        throw new InstrumentException(e);
+                        throw new InternalException(e);
                 }
             }
         }
-        throw new InstrumentException("is not Array!");
+        throw new InternalException("is not Array!");
     }
 
     /**

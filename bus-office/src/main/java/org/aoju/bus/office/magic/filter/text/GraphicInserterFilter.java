@@ -36,7 +36,7 @@ import com.sun.star.text.XTextContent;
 import com.sun.star.text.XTextCursor;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.XComponentContext;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.bridge.LocalOfficeContextAware;
@@ -72,11 +72,11 @@ public class GraphicInserterFilter extends AbstractTextContentInserterFilter {
      * @param imagePath          到磁盘上的映像(文件)的路径.
      * @param horizontalPosition 在文档上插入图像的水平位置(毫米).
      * @param verticalPosition   在文档上插入图像的垂直位置(毫米).
-     * @throws InstrumentException 如果无法检测到图像的大小.
+     * @throws InternalException 如果无法检测到图像的大小.
      */
     public GraphicInserterFilter(
             final String imagePath, final int horizontalPosition, final int verticalPosition)
-            throws InstrumentException {
+            throws InternalException {
         super(getImageSize(new File(imagePath)), horizontalPosition, verticalPosition);
 
         this.imagePath = imagePath;
@@ -125,10 +125,10 @@ public class GraphicInserterFilter extends AbstractTextContentInserterFilter {
      *
      * @param imagePath       到磁盘上的映像(文件)的路径.
      * @param shapeProperties 要应用于创建的图形形状的属性
-     * @throws InstrumentException 如果无法检测到图像的大小.
+     * @throws InternalException 如果无法检测到图像的大小.
      */
     public GraphicInserterFilter(final String imagePath, final Map<String, Object> shapeProperties)
-            throws InstrumentException {
+            throws InternalException {
         super(getImageSize(new File(imagePath)), shapeProperties);
 
         this.imagePath = imagePath;
@@ -139,9 +139,9 @@ public class GraphicInserterFilter extends AbstractTextContentInserterFilter {
      *
      * @param image 文件信息
      * @return 图像精度信息
-     * @throws InstrumentException 如果无法检测到图像的大小
+     * @throws InternalException 如果无法检测到图像的大小
      */
-    private static Dimension getImageSize(final File image) throws InstrumentException {
+    private static Dimension getImageSize(final File image) throws InternalException {
         try {
             try (ImageInputStream inputStream = ImageIO.createImageInputStream(image)) {
                 final Iterator<ImageReader> readers = ImageIO.getImageReaders(inputStream);
@@ -157,11 +157,11 @@ public class GraphicInserterFilter extends AbstractTextContentInserterFilter {
                         reader.dispose();
                     }
                 } else {
-                    throw new InstrumentException("Unable to detect the image size: No reader found");
+                    throw new InternalException("Unable to detect the image size: No reader found");
                 }
             }
         } catch (IOException ioEx) {
-            throw new InstrumentException("Unable to detect the image size", ioEx);
+            throw new InternalException("Unable to detect the image size", ioEx);
         }
     }
 

@@ -36,7 +36,7 @@ import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
@@ -77,7 +77,7 @@ public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
                     return sqlStringBuilder.toString();
                 }
             } catch (JSQLParserException e) {
-                throw new InstrumentException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
+                throw new InternalException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
             }
         }
         return null;

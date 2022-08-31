@@ -26,7 +26,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.codec.Base64;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -914,9 +914,9 @@ public class Connection implements Serializable {
             throw new IllegalStateException("Not installed");
     }
 
-    private void checkCompatible(Connection remoteConn) throws InstrumentException {
+    private void checkCompatible(Connection remoteConn) throws InternalException {
         if (!isCompatible(remoteConn))
-            throw new InstrumentException(remoteConn.toString());
+            throw new InternalException(remoteConn.toString());
     }
 
     /**
@@ -976,7 +976,7 @@ public class Connection implements Serializable {
     }
 
     public Socket connect(Connection remoteConn)
-            throws IOException, InstrumentException, GeneralSecurityException {
+            throws IOException, InternalException, GeneralSecurityException {
         checkInstalled();
         if (!protocol.isTCP())
             throw new IllegalStateException("Not a TCP Connection");

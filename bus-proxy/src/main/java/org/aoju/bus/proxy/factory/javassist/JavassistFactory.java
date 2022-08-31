@@ -29,7 +29,7 @@ import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtMethod;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.proxy.Interceptor;
 import org.aoju.bus.proxy.Invoker;
 import org.aoju.bus.proxy.Provider;
@@ -71,7 +71,7 @@ public class JavassistFactory extends AbstractFactory {
             return clazz.getConstructor(new Class[]{Provider.class})
                     .newInstance(targetProvider);
         } catch (Exception e) {
-            throw new InstrumentException("Unable to instantiate proxy from generated proxy class.", e);
+            throw new InternalException("Unable to instantiate proxy from generated proxy class.", e);
         }
     }
 
@@ -83,7 +83,7 @@ public class JavassistFactory extends AbstractFactory {
             return clazz.getConstructor(new Class[]{Method[].class, Object.class, Interceptor.class})
                     .newInstance(methods, target, interceptor);
         } catch (Exception e) {
-            throw new InstrumentException("Unable to instantiate proxy class instance.", e);
+            throw new InternalException("Unable to instantiate proxy class instance.", e);
         }
     }
 
@@ -95,7 +95,7 @@ public class JavassistFactory extends AbstractFactory {
             return clazz.getConstructor(new Class[]{Method[].class, Invoker.class})
                     .newInstance(methods, invoker);
         } catch (Exception e) {
-            throw new InstrumentException("Unable to instantiate proxy from generated proxy class.", e);
+            throw new InternalException("Unable to instantiate proxy from generated proxy class.", e);
         }
     }
 
@@ -127,7 +127,7 @@ public class JavassistFactory extends AbstractFactory {
                 }
                 return proxyClass.toClass(classLoader, null);
             } catch (CannotCompileException e) {
-                throw new InstrumentException("Could not compile class.", e);
+                throw new InternalException("Could not compile class.", e);
             }
         }
 
@@ -166,7 +166,7 @@ public class JavassistFactory extends AbstractFactory {
                 }
                 return proxyClass.toClass(classLoader, null);
             } catch (CannotCompileException e) {
-                throw new InstrumentException("Could not compile class.", e);
+                throw new InternalException("Could not compile class.", e);
             }
         }
 
@@ -200,7 +200,7 @@ public class JavassistFactory extends AbstractFactory {
                 }
                 return proxyClass.toClass(classLoader, null);
             } catch (CannotCompileException e) {
-                throw new InstrumentException("Could not compile class.", e);
+                throw new InternalException("Could not compile class.", e);
             }
         }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
@@ -188,7 +188,7 @@ public class Modality {
     }
 
     private static void sendStgCmt(StgSCU stgcmtscu) throws IOException,
-            InterruptedException, InstrumentException, GeneralSecurityException {
+            InterruptedException, InternalException, GeneralSecurityException {
         printNextStepMessage("Will now send Storage Commitment to " + calledAET);
         try {
             stgcmtscu.open();
@@ -199,7 +199,7 @@ public class Modality {
     }
 
     private static void sendMpps(MppsSCU mppsscu, boolean sendNSet) throws IOException,
-            InterruptedException, InstrumentException, GeneralSecurityException {
+            InterruptedException, InternalException, GeneralSecurityException {
         try {
             printNextStepMessage("Will now send MPPS N-CREATE to " + calledAET);
             mppsscu.open();
@@ -214,7 +214,7 @@ public class Modality {
     }
 
     private static void sendMppsNSet(MppsSCU mppsscu) throws IOException, InterruptedException,
-            InstrumentException, GeneralSecurityException {
+            InternalException, GeneralSecurityException {
         try {
             printNextStepMessage("Will now send MPPS N-SET to " + calledAET);
             mppsscu.open();
@@ -232,7 +232,7 @@ public class Modality {
     }
 
     private static void sendObjects(StoreSCU storescu) throws IOException,
-            InterruptedException, InstrumentException, GeneralSecurityException {
+            InterruptedException, InternalException, GeneralSecurityException {
         printNextStepMessage("Will now send DICOM object(s) to " + calledAET);
         try {
             storescu.open();

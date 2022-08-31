@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -95,7 +95,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
     }
 
     @Override
-    public void execute(final Context context) throws InstrumentException {
+    public void execute(final Context context) throws InternalException {
 
         Logger.info("Executing online conversion task...");
         final OnlineOfficeContextAware onlineOfficeContextAware = (OnlineOfficeContextAware) context;
@@ -141,7 +141,7 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
 
             } catch (Exception ex) {
                 Logger.error("Online conversion failed.", ex);
-                final InstrumentException officeEx = new InstrumentException("Online conversion failed", ex);
+                final InternalException officeEx = new InternalException("Online conversion failed", ex);
                 target.onFailure(targetFile, officeEx);
                 throw officeEx;
             }

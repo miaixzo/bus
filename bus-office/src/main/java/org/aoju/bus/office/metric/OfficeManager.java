@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.builtin.MadeInOffice;
 
 /**
@@ -41,9 +41,9 @@ public interface OfficeManager {
      * 执行指定的任务并阻塞，直到任务终止
      *
      * @param task 要执行的任务
-     * @throws InstrumentException 如果发生错误
+     * @throws InternalException 如果发生错误
      */
-    void execute(MadeInOffice task) throws InstrumentException;
+    void execute(MadeInOffice task) throws InternalException;
 
     /**
      * 获取管理器是否正在运行
@@ -55,15 +55,15 @@ public interface OfficeManager {
     /**
      * 启动管理器
      *
-     * @throws InstrumentException 如果管理器不能启动
+     * @throws InternalException 如果管理器不能启动
      */
-    void start() throws InstrumentException;
+    void start() throws InternalException;
 
     /**
      * 停止管理器
      *
-     * @throws InstrumentException 如果管理器不能停止
+     * @throws InternalException 如果管理器不能停止
      */
-    void stop() throws InstrumentException;
+    void stop() throws InternalException;
 
 }

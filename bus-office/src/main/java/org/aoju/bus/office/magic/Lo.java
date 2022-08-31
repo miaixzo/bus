@@ -30,7 +30,7 @@ import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.uno.Exception;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 
 import java.util.Optional;
 
@@ -87,7 +87,7 @@ public final class Lo {
      * @param type        表示UNO接口类型的Java类.
      * @param serviceName 服务名称.
      * @return 对请求的UNO接口类型的引用(如果可用)，否则null.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致{@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致{@link InternalException}.
      */
     public static <T> T createInstanceMSF(
             final XComponent component, final Class<T> type, final String serviceName) {
@@ -102,14 +102,14 @@ public final class Lo {
      * @param type        表示UNO接口类型的Java类.
      * @param serviceName 服务名称.
      * @return 对请求的UNO接口类型的引用(如果可用)，否则null.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致{@link InstrumentException}
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致{@link InternalException}
      */
     public static <T> T createInstanceMSF(
             final XMultiServiceFactory factory, final Class<T> type, final String serviceName) {
         try {
             return qi(type, factory.createInstance(serviceName));
         } catch (Exception ex) {
-            throw new InstrumentException(ex.getMessage(), ex);
+            throw new InternalException(ex.getMessage(), ex);
         }
     }
 
@@ -123,15 +123,15 @@ public final class Lo {
      * @param type        表示UNO接口类型的Java类.
      * @param serviceName 服务名称.
      * @return 对请求的UNO接口类型的引用(如果可用)，否则null.
-     * @throws InstrumentException 如果发生UNO异常。UNO异常将导致{@link InstrumentException}.
+     * @throws InternalException 如果发生UNO异常。UNO异常将导致{@link InternalException}.
      */
     public static <T> T createInstanceMCF(
             final XComponentContext context, final Class<T> type, final String serviceName)
-            throws InstrumentException {
+            throws InternalException {
         try {
             return qi(type, context.getServiceManager().createInstanceWithContext(serviceName, context));
         } catch (Exception ex) {
-            throw new InstrumentException(ex);
+            throw new InternalException(ex);
         }
     }
 

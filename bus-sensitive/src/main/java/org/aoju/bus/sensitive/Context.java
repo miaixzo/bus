@@ -26,7 +26,7 @@
 package org.aoju.bus.sensitive;
 
 import lombok.Data;
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.sensitive.annotation.Shield;
 
 import java.lang.reflect.Field;
@@ -100,7 +100,7 @@ public class Context {
         try {
             return this.currentField.get(this.currentObject);
         } catch (IllegalAccessException e) {
-            throw new InstrumentException(e);
+            throw new InternalException(e);
         }
     }
 

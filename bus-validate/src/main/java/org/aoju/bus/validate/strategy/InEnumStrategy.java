@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.validate.Context;
@@ -60,7 +60,7 @@ public class InEnumStrategy implements Matcher<Object, InEnum> {
             }
             return false;
         } catch (NoSuchMethodException e) {
-            throw new InstrumentException(e.getMessage());
+            throw new InternalException(e.getMessage());
         }
     }
 

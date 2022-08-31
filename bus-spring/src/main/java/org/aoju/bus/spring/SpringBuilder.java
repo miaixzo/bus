@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.spring;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -248,7 +248,7 @@ public class SpringBuilder implements ApplicationContextAware {
             DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) factory;
             registry.destroySingleton(beanName);
         } else {
-            throw new InstrumentException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
+            throw new InternalException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
         }
     }
 

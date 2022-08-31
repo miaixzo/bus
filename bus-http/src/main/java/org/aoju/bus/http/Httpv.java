@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.core.exception.InstrumentException;
+import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
@@ -246,7 +246,7 @@ public class Httpv {
             if (null != baseUrl) {
                 fullUrl = baseUrl;
             } else {
-                throw new InstrumentException("Before setting BaseUrl, you must specify a specific path to initiate a request!");
+                throw new InternalException("Before setting BaseUrl, you must specify a specific path to initiate a request!");
             }
         } else {
             boolean isFullPath = urlPath.startsWith(Http.HTTPS_PREFIX)
@@ -258,7 +258,7 @@ public class Httpv {
             } else if (null != baseUrl) {
                 fullUrl = baseUrl + urlPath;
             } else {
-                throw new InstrumentException("Before setting BaseUrl, you must use the full path URL to initiate the request. The current URL is：" + urlPath);
+                throw new InternalException("Before setting BaseUrl, you must use the full path URL to initiate the request. The current URL is：" + urlPath);
             }
         }
         if (websocket && fullUrl.startsWith(Http.HTTP)) {
