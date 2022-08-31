@@ -65,7 +65,9 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
         if (headerRowIndex < firstRowNum) {
             throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is lower than first row index {}.", headerRowIndex, firstRowNum));
         } else if (headerRowIndex > lastRowNum) {
-            throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is greater than last row index {}.", headerRowIndex, firstRowNum));
+            throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is greater than last row index {}.", headerRowIndex, lastRowNum));
+        } else if (startRowIndex > lastRowNum) {
+            throw new IndexOutOfBoundsException(StringKit.format("startRowIndex row index {} is greater than last row index {}.", startRowIndex, lastRowNum));
         }
 
         if (lastRowNum < 0) {

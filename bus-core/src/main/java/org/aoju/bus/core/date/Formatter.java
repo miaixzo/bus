@@ -39,6 +39,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.chrono.Era;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
@@ -305,6 +306,13 @@ public class Formatter {
         }
 
         if (time instanceof Month) {
+            return time.toString();
+        }
+
+        if (time instanceof DayOfWeek
+                || time instanceof Month
+                || time instanceof Era
+                || time instanceof MonthDay) {
             return time.toString();
         }
 
