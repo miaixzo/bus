@@ -26,6 +26,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.date.DateTime;
+import org.aoju.bus.core.exception.ConvertException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -37,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -126,6 +128,17 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
         } else if (value instanceof Calendar) {
             final Calendar calendar = (Calendar) value;
             return parseFromInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
+        } else if (value instanceof Map) {
+            final Map<?, ?> map = (Map<?, ?>) value;
+            if (LocalDate.class.equals(this.targetType)) {
+                return LocalDate.of(Convert.toInt(map.get("year")), Convert.toInt(map.get("month")), Convert.toInt(map.get("day")));
+            } else if (LocalDateTime.class.equals(this.targetType)) {
+                return LocalDateTime.of(Convert.toInt(map.get("year")), Convert.toInt(map.get("month")), Convert.toInt(map.get("day")),
+                        Convert.toInt(map.get("hour")), Convert.toInt(map.get("minute")), Convert.toInt(map.get("second")), Convert.toInt(map.get("second")));
+            } else if (LocalTime.class.equals(this.targetType)) {
+                return LocalTime.of(Convert.toInt(map.get("hour")), Convert.toInt(map.get("minute")), Convert.toInt(map.get("second")), Convert.toInt(map.get("nano")));
+            }
+            throw new ConvertException("Unsupported type: [{}] from map: [{}]", this.targetType, map);
         } else {
             return parseFromCharSequence(convertString(value));
         }

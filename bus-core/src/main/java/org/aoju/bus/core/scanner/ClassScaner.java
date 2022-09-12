@@ -116,7 +116,7 @@ public class ClassScaner {
      * @param charset     编码
      */
     public ClassScaner(String packageName, Predicate<Class<?>> predicate, java.nio.charset.Charset charset) {
-        packageName = StringKit.nullToEmpty(packageName);
+        packageName = StringKit.emptyIfNull(packageName);
         this.packageName = packageName;
         this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
         this.packageDirName = packageName.replace(Symbol.C_DOT, File.separatorChar);

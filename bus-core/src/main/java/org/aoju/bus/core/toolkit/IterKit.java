@@ -270,20 +270,34 @@ public class IterKit {
     }
 
     /**
+     * 获取指定Bean列表中某个字段，生成新的列表
+     *
+     * @param <R>       返回元素类型
+     * @param <V>       对象类型
+     * @param iterable  对象列表
+     * @param fieldName 字段名（会通过反射获取其值）
+     * @return 某个字段值与对象对应Map
+     */
+    public static <V, R> List<R> fieldValueList(final Iterable<V> iterable, final String fieldName) {
+        return fieldValueList(get(iterable), fieldName);
+    }
+
+    /**
      * 获取指定Bean列表中某个字段,生成新的列表
      *
+     * @param <R>       返回元素类型
      * @param <V>       对象类型
      * @param iterator  对象列表
      * @param fieldName 字段名(会通过反射获取其值)
      * @return 某个字段值与对象对应Map
      */
-    public static <V> List<Object> fieldValueList(Iterator<V> iterator, String fieldName) {
-        final List<Object> result = new ArrayList<>();
+    public static <V, R> List<R> fieldValueList(final Iterator<V> iterator, final String fieldName) {
+        final List<R> result = new ArrayList<>();
         if (null != iterator) {
             V value;
             while (iterator.hasNext()) {
                 value = iterator.next();
-                result.add(ReflectKit.getFieldValue(value, fieldName));
+                result.add((R) ReflectKit.getFieldValue(value, fieldName));
             }
         }
         return result;

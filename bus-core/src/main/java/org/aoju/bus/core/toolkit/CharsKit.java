@@ -678,7 +678,7 @@ public class CharsKit {
      * @see #nullToEmpty(CharSequence)
      */
     public static String emptyIfNull(CharSequence text) {
-        return nullToEmpty(text);
+        return ObjectKit.defaultIfNull(text, Normal.EMPTY).toString();
     }
 
     /**

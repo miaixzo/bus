@@ -4057,7 +4057,7 @@ public class FileKit {
      * @return {@link URL}
      */
     public static URL getResource(String resource, Class<?> baseClass) {
-        resource = StringKit.nullToEmpty(resource);
+        resource = StringKit.emptyIfNull(resource);
         URL url = (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
         return null != url ? url : baseClass.getClassLoader().getResource(resource);
     }

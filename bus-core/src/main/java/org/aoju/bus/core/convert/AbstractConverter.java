@@ -51,6 +51,7 @@ public abstract class AbstractConverter<T> implements Converter<T>, Serializable
             throw new NullPointerException(StringKit.format("[type] and [defaultValue] are both null for Converter [{}], we can not know what type to convert !", this.getClass().getName()));
         }
         if (null == targetType) {
+            // 目标类型不确定时使用默认值的类型
             targetType = (Class<T>) defaultValue.getClass();
         }
         if (null == value) {
@@ -62,17 +63,11 @@ public abstract class AbstractConverter<T> implements Converter<T>, Serializable
                 // 除Map外,已经是目标类型,不需要转换(Map类型涉及参数类型,需要单独转换)
                 return targetType.cast(value);
             }
-            T result;
-            try {
-                result = convertInternal(value);
-            } catch (RuntimeException e) {
-                return defaultValue;
-            }
+            final T result = convertInternal(value);
             return ((null == result) ? defaultValue : result);
         } else {
             throw new IllegalArgumentException(
                     StringKit.format("Default value [{}]({}) is not the instance of [{}]", defaultValue, defaultValue.getClass(), targetType));
-
         }
     }
 

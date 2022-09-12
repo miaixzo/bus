@@ -169,8 +169,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     cpuVendor = splitLine[1];
                     break;
                 case "model name":
-                case "Processor": // for Orange Pi
-                    cpuName = splitLine[1];
+                case "Processor": // some ARM chips
+                    // May be a processor number. Check for a space.
+                    if (splitLine[1].indexOf(' ') > 0) {
+                        cpuName = splitLine[1];
+                    }
                     break;
                 case "flags":
                     flags = splitLine[1].toLowerCase().split(" ");
@@ -186,7 +189,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     break;
                 case "CPU variant":
                     if (!armStepping.toString().startsWith("r")) {
-                        armStepping.insert(0, "r" + splitLine[1]);
+                        // CPU variant format always starts with 0x
+                        int rev = Builder.parseLastInt(splitLine[1], 0);
+                        armStepping.insert(0, "r" + rev);
                     }
                     break;
                 case "CPU revision":
@@ -207,6 +212,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 default:
                     // Do nothing
             }
+        }
+        if (cpuName.isEmpty()) {
+            cpuName = Builder.getStringFromFile(ProcPath.MODEL);
         }
         if (cpuName.contains("Hz")) {
             // if Name contains CPU vendor frequency, ignore cpuinfo and use it

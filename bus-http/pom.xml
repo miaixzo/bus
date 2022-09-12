@@ -44,7 +44,7 @@
         <project.compiler.version>17</project.compiler.version>
         <lombok.version>1.18.24</lombok.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <logback.version>1.2.11</logback.version>
+        <logback.version>1.4.0</logback.version>
     </properties>
 
     <dependencies>
