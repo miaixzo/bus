@@ -135,7 +135,7 @@ public class ConsoleLog extends AbstractAware {
             return;
         }
 
-        final Dictionary dictionary = Dictionary.create()
+        final Dictionary dictionary = Dictionary.of()
                 .set("date", DateKit.now())
                 .set("level", level.toString())
                 .set("name", this.name)

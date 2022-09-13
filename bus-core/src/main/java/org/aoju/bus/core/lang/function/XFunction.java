@@ -25,39 +25,64 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.function;
 
+import org.aoju.bus.core.exception.InternalException;
+
 import java.io.Serializable;
+import java.util.function.Function;
 
 /**
- * 无参数的函数对象
- * 一个函数接口代表一个一个函数，用于包装一个函数为对象
- * 在JDK8之前，Java的函数并不能作为参数传递，也不能作为返回值存在
- * 此接口用于将一个函数包装成为一个对象，从而传递对象
+ * 表示接受一个参数并产生结果的函数
  *
- * @param <R> 返回值类型
+ * @param <T> 函数的输入类型
+ * @param <R> 函数结果的类型
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface Func0<R> extends Serializable {
+public interface XFunction<T, R> extends Function<T, R>, Serializable {
+
+    /**
+     * 返回一个始终返回其输入参数的函数
+     *
+     * @param <T> 函数的输入和输出对象的类型
+     * @return 始终返回其输入参数的函数
+     */
+    static <T> XFunction<T, T> identity() {
+        return t -> t;
+    }
 
     /**
      * 执行函数
      *
-     * @return 函数执行结果
-     * @throws Exception 自定义异常
+     * @param <T> 函数的输入类型
+     * @param <R> 函数结果的类型
+     * @return 执行后的结果
      */
-    R call() throws Exception;
+    static <T, R> Function<T, R> castingIdentity() {
+        return t -> (R) t;
+    }
 
     /**
-     * 执行函数，异常包装为RuntimeException
+     * 将此函数应用于给定的参数
      *
-     * @return 函数执行结果
+     * @param t 函数参数
+     * @return 函数结果
+     * @throws Exception 包装的检查异常
      */
-    default R callWithRuntimeException() {
+    R applying(T t) throws Exception;
+
+    /**
+     * 将此函数应用于给定的参数
+     *
+     * @param t 函数参数
+     * @return 函数结果
+     */
+    @Override
+    default R apply(T t) {
         try {
-            return call();
+            return applying(t);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new InternalException(e);
         }
     }
 

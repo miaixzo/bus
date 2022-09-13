@@ -25,40 +25,64 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.function;
 
+import org.aoju.bus.core.exception.InternalException;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
- * 函数对象
- * 一个函数接口代表一个一个函数，用于包装一个函数为对象
- * 在JDK8之前，Java的函数并不能作为参数传递，也不能作为返回值存在
- * 此接口用于将一个函数包装成为一个对象，从而传递对象
+ * 表示接受三个参数且不返回结果的操作
+ * 与大多数其他功能接口不同，消费者预计将通过副作用进行操作
  *
- * @param <P> 参数类型
+ * @param <L> 左元素类型
+ * @param <M> 中间元素类型
+ * @param <R> 右元素类型
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface VoidFunc<P> extends Serializable {
+public interface XMultiple<L, M, R> extends Serializable {
 
     /**
-     * 执行函数
+     * 接收参数方法
      *
-     * @param parameters 参数列表
-     * @throws Exception 自定义异常
+     * @param l 左元素类型
+     * @param m 中间元素类型
+     * @param r 右元素类型
+     * @throws Exception w包装的检查异常
      */
-    void call(P... parameters) throws Exception;
+    void accepting(L l, M m, R r) throws Exception;
 
     /**
-     * 执行函数，异常包装为RuntimeException
+     * 接收参数方法
      *
-     * @param parameters 参数列表
+     * @param l 左元素类型
+     * @param m 中间元素类型
+     * @param r 右元素类型
      */
-    default void callWithRuntimeException(P... parameters) {
+    default void accept(L l, M m, R r) {
         try {
-            call(parameters);
+            accepting(l, m, r);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new InternalException(e);
         }
+    }
+
+    /**
+     * 返回一个组合的 {@code XMultiple}，它按顺序执行此操作，然后是 {@code after} 操作
+     * 如果执行任一操作引发异常，则将其转发给组合操作的调用者
+     * 如果执行此操作引发异常，则不会执行 {@code after} 操作
+     *
+     * @param after 此操作后要执行的操作
+     * @return 一个组合的 {@code XMultiple} 按顺序执行此操作，然后是 {@code after} 操作
+     * @throws NullPointerException 如果 {@code after} 为空
+     */
+    default XMultiple<L, M, R> andThen(XMultiple<L, M, R> after) {
+        Objects.requireNonNull(after);
+        return (L l, M m, R r) -> {
+            accept(l, m, r);
+            after.accept(l, m, r);
+        };
     }
 
 }

@@ -25,42 +25,49 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.function;
 
+import org.aoju.bus.core.exception.InternalException;
+
 import java.io.Serializable;
+import java.util.stream.Stream;
 
 /**
- * 只有一个参数的函数对象
- * 一个函数接口代表一个一个函数，用于包装一个函数为对象
- * 在JDK8之前，Java的函数并不能作为参数传递，也不能作为返回值存在
- * 此接口用于将一个函数包装成为一个对象，从而传递对象
+ * 该接口旨在为希望在活动时执行代码的对象提供通用协议
+ * 例如，Runnable 是由类 Thread 实现的，处于活动状态仅意味着线程已启动且尚未停止
  *
- * @param <P> 参数类型
- * @param <R> 返回值类型
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface Func1<P, R> extends Serializable {
+public interface XRunnable extends Runnable, Serializable {
 
     /**
-     * 执行函数
+     * 执行参数操作
      *
-     * @param parameter 参数
-     * @return 函数执行结果
-     * @throws Exception 自定义异常
+     * @param args 参数信息
+     * @return the object
      */
-    R call(P parameter) throws Exception;
+    static XRunnable multi(final XRunnable... args) {
+        return () -> Stream.of(args).forEach(XRunnable::run);
+    }
 
     /**
-     * 执行函数，异常包装为RuntimeException
+     * 当使用实现接口 <code>Runnable</code> 的对象来创建线程时，
+     * 启动线程会导致在该单独执行的线程中调用对象的 <code>run</code> 方法
      *
-     * @param parameter 参数
-     * @return 函数执行结果
+     * @throws Exception 包装的检查异常
      */
-    default R callWithRuntimeException(P parameter) {
+    void running() throws Exception;
+
+    /**
+     * 当使用实现接口 <code>Runnable</code> 的对象来创建线程时，
+     * 启动线程会导致在该单独执行的线程中调用对象的 <code>run</code> 方法
+     */
+    @Override
+    default void run() {
         try {
-            return call(parameter);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            running();
+        } catch (final Exception e) {
+            throw new InternalException(e);
         }
     }
 

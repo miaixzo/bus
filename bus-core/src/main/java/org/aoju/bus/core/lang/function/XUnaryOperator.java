@@ -25,21 +25,67 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.function;
 
+import org.aoju.bus.core.exception.InternalException;
+
 import java.io.Serializable;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
- * 只有一个参数的函数对象
- * 一个函数接口代表一个一个函数，用于包装一个函数为对象
- * 在JDK8之前，Java的函数并不能作为参数传递，也不能作为返回值存在
- * 此接口用于将一个函数包装成为一个对象，从而传递对象
+ * 表示对单个操作数的操作，该操作产生与其操作数相同类型的结果
+ * 对于操作数和结果类型相同的情况，这是 Function 的一种特殊化
  *
- * @param <T> 参数类型
- * @param <R> 返回值类型
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface Fn<T, R> extends Function<T, R>, Serializable {
+public interface XUnaryOperator<T> extends UnaryOperator<T>, Serializable {
+
+    /**
+     * 返回始终返回其输入参数的一元运算符
+     *
+     * @param <T> 输入输出类型
+     * @return 始终返回其输入参数的一元运算符
+     */
+    static <T> XUnaryOperator<T> identity() {
+        return t -> t;
+    }
+
+    /**
+     * 执行函数操作
+     *
+     * @param function 源函数
+     * @param <T>      参数类型
+     * @param <R>      结果类型
+     * @param <F>      函数类型
+     * @return 函数结果
+     */
+    static <T, R, F extends Function<T, R>> XUnaryOperator<T> casting(final F function) {
+        return t -> (T) function.apply(t);
+    }
+
+    /**
+     * 将此函数应用于给定的参数
+     *
+     * @param t 函数参数
+     * @return 函数结果
+     * @throws Exception 包装的检查异常
+     */
+    T applying(T t) throws Exception;
+
+    /**
+     * 将此函数应用于给定的参数
+     *
+     * @param t 函数参数
+     * @return 函数结果
+     */
+    @Override
+    default T apply(final T t) {
+        try {
+            return applying(t);
+        } catch (final Exception e) {
+            throw new InternalException(e);
+        }
+    }
 
 }
