@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.lang.function.Func0;
+import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -77,9 +77,9 @@ public class Assert {
      * @param supplier   指定断言不通过时抛出的异常
      * @throws X if expression is {@code false}
      */
-    public static <X extends Throwable> void isTrue(boolean expression, Func0<? extends X> supplier) throws X {
+    public static <X extends Throwable> void isTrue(boolean expression, XSupplier<? extends X> supplier) throws X {
         if (false == expression) {
-            throw supplier.callWithRuntimeException();
+            throw supplier.get();
         }
     }
 

@@ -23,28 +23,65 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.convert;
+package org.aoju.bus.core.lang.function;
 
-import java.lang.reflect.Type;
+import org.aoju.bus.core.exception.InternalException;
+
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.function.BiFunction;
 
 /**
- * 类型转换接口函数，根据给定的值和目标类型，由用户自定义转换规则。
+ * 接受两个参数并产生结果的函数
  *
+ * @param <T> 第一个参数的类型
+ * @param <U> 第二个参数的类型
+ * @param <R> 函数结果的类型
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface TypeConverter {
+public interface XBiFunction<T, U, R> extends BiFunction<T, U, R>, Serializable {
 
     /**
-     * 转换为指定类型
-     * 如果类型无法确定，将读取默认值的类型做为目标类型
+     * 将此函数应用于给定的参数
      *
-     * @param targetType 目标Type，非泛型类使用
-     * @param value      原始值
-     * @return 转换后的值
-     * @throws IllegalArgumentException 无法确定目标类型，且默认值为{@code null}，无法确定类型
+     * @param t 参数1类型
+     * @param u 参数2类型
+     * @return 函数的结果
+     * @throws Exception 包裹已检查的异常
      */
-    Object convert(Type targetType, Object value);
+    R applying(T t, U u) throws Exception;
+
+    /**
+     * 将此函数应用于给定的参数
+     *
+     * @param t 参数1类型
+     * @param u 参数2类型
+     * @return 函数的结果
+     */
+    @Override
+    default R apply(final T t, final U u) {
+        try {
+            return this.applying(t, u);
+        } catch (final Exception e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 返回一个复合函数，该函数首先将该函数应用于其输入，然后将{@code after}函数应用于结果。
+     * 如果任意一个函数的求值引发异常，则将其传递给组合函数的调用方
+     *
+     * @param <V>   {@code after}函数和复合函数的输出类型
+     * @param after 应用此函数后要应用的函数
+     * @return 一个组合函数，它首先应用这个函数，然后应用{@code after}函数
+     * @throws NullPointerException 如果after为null
+     */
+    default <V> XBiFunction<T, U, V> andThen(final XFunction<? super R, ? extends V> after) {
+        Objects.requireNonNull(after);
+        return (T t, U u) -> after.apply(this.apply(t, u));
+    }
 
 }
+

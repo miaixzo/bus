@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.tuple;
 
+import lombok.Getter;
 import org.aoju.bus.core.annotation.ThreadSafe;
 
 /**
@@ -37,6 +38,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
 @ThreadSafe
 public class Quartet<A, B, C, D> {
 
@@ -46,12 +48,12 @@ public class Quartet<A, B, C, D> {
     private final D d;
 
     /**
-     * Create a quartet and store four objects.
+     * 创建一个四重奏并存储四个对象
      *
-     * @param a the first object to store
-     * @param b the second object to store
-     * @param c the third object to store
-     * @param d the fourth object to store
+     * @param a 要存储的第一个对象
+     * @param b 要存储的第二个对象
+     * @param c 要存储的第三个对象
+     * @param d 要存储的第四个对象
      */
     public Quartet(A a, B b, C c, D d) {
         this.a = a;
@@ -61,36 +63,36 @@ public class Quartet<A, B, C, D> {
     }
 
     /**
-     * Returns the first stored object.
+     * 返回第一个存储的对象
      *
-     * @return first object stored
+     * @return 第一个对象存储
      */
     public final A getA() {
         return a;
     }
 
     /**
-     * Returns the second stored object.
+     * 返回第二个存储对象
      *
-     * @return second object stored
+     * @return 第二个对象存储
      */
     public final B getB() {
         return b;
     }
 
     /**
-     * Returns the third stored object.
+     * 返回第三个存储对象
      *
-     * @return third object stored
+     * @return 第三个对象存储
      */
     public final C getC() {
         return c;
     }
 
     /**
-     * Returns the fourth stored object.
+     * 返回第四个存储对象
      *
-     * @return fourth object stored
+     * @return 第四个对象存储
      */
     public final D getD() {
         return d;

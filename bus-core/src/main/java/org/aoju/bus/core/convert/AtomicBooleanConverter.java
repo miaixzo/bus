@@ -35,16 +35,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AtomicBooleanConverter extends AbstractConverter<AtomicBoolean> {
+public class AtomicBooleanConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected AtomicBoolean convertInternal(Object value) {
+    protected AtomicBoolean convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Boolean) {
             return new AtomicBoolean((Boolean) value);
         }
-        final String valueStr = convertString(value);
+        final String valueStr = convertToString(value);
         return new AtomicBoolean(BooleanKit.toBoolean(valueStr));
     }
 

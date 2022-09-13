@@ -25,47 +25,85 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.function;
 
-import java.util.function.Supplier;
+import org.aoju.bus.core.exception.InternalException;
+
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
- * 参数Supplier
+ * 表示接受单个输入参数且不返回结果的操作
+ * 与大多数其他功能接口不同，消费者预计将通过副作用进行操作
  *
- * @param <T>  目标   类型
- * @param <P1> 参数一 类型
- * @param <P2> 参数二 类型
- * @param <P3> 参数三 类型
- * @param <P4> 参数四 类型
- * @param <P5> 参数五 类型
+ * @param <T> 操作的输入类型
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface Supplier5<T, P1, P2, P3, P4, P5> {
+public interface XConsumer<T> extends Consumer<T>, Serializable {
 
     /**
-     * 生成实例的方法
+     * multi
      *
-     * @param p1 参数一
-     * @param p2 参数二
-     * @param p3 参数三
-     * @param p4 参数四
-     * @param p5 参数五
-     * @return 目标对象
+     * @param consumers lambda
+     * @param <T>       type
+     * @return lambda
      */
-    T get(P1 p1, P2 p2, P3 p3, P4 p4, P5 p5);
+    @SafeVarargs
+    static <T> XConsumer<T> multi(final XConsumer<T>... consumers) {
+        return Stream.of(consumers).reduce(XConsumer::andThen).orElseGet(() -> o -> {
+        });
+    }
 
     /**
-     * 将带有参数的Supplier转换为无参{@link Supplier}
+     * 不执行任何操作
      *
-     * @param p1 参数1
-     * @param p2 参数2
-     * @param p3 参数3
-     * @param p4 参数4
-     * @param p5 参数5
-     * @return {@link Supplier}
+     * @param <T> 操作的输入类型
+     * @return nothing
      */
-    default Supplier<T> toSupplier(P1 p1, P2 p2, P3 p3, P4 p4, P5 p5) {
-        return () -> get(p1, p2, p3, p4, p5);
+    static <T> XConsumer<T> nothing() {
+        return t -> {
+        };
+    }
+
+    /**
+     * 对给定参数执行此操作
+     *
+     * @param t 输入参数
+     * @throws Exception 包装的检查异常
+     */
+    void accepting(T t) throws Exception;
+
+    /**
+     * 对给定参数执行此操作
+     *
+     * @param t 输入参数
+     */
+    @Override
+    default void accept(final T t) {
+        try {
+            accepting(t);
+        } catch (final Exception e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 返回一个组合的 {@code Consumer}，它按顺序执行此操作，然后是 {@code after} 操作
+     * 如果执行任一操作引发异常，则将其转发给组合操作的调用者
+     * 如果执行此操作引发异常，则不会执行 {@code after} 操作
+     *
+     * @param after 此操作后要执行的操作
+     * @return 一个组合的 {@code Consumer} 按顺序执行此操作，然后是 {@code after} 操作
+     * @throws NullPointerException 如果 {@code after} 为空
+     */
+    default XConsumer<T> andThen(final XConsumer<? super T> after) {
+        Objects.requireNonNull(after);
+        return (T t) -> {
+            accept(t);
+            after.accept(t);
+        };
     }
 
 }

@@ -26,9 +26,9 @@
 package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.convert.TypeConverter;
+import org.aoju.bus.core.convert.Converter;
 import org.aoju.bus.core.lang.Editor;
-import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.LambdaKit;
 
@@ -86,7 +86,7 @@ public class CopyOptions implements Serializable {
     /**
      * 自定义类型转换器，默认使用全局万能转换器转换
      */
-    protected TypeConverter converter = (type, value) ->
+    protected Converter converter = (type, value) ->
             Convert.convertWithCheck(type, value, null, ignoreError);
     /**
      * 属性过滤器，断言通过的属性才会被复制
@@ -202,7 +202,7 @@ public class CopyOptions implements Serializable {
      * @param funcs 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
      * @return this
      */
-    public <P, R> CopyOptions setIgnoreProperties(Func1<P, R>... funcs) {
+    public <P, R> CopyOptions setIgnoreProperties(XFunction<P, R>... funcs) {
         final Set<String> ignoreProperties = ArrayKit.mapToSet(funcs, LambdaKit::getFieldName);
         return setPropertiesFilter((field, o) -> false == ignoreProperties.contains(field.getName()));
     }
@@ -323,7 +323,7 @@ public class CopyOptions implements Serializable {
      * @param converter 转换器
      * @return this
      */
-    public CopyOptions setConverter(TypeConverter converter) {
+    public CopyOptions setConverter(Converter converter) {
         this.converter = converter;
         return this;
     }

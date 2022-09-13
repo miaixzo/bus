@@ -100,7 +100,7 @@ public enum BasicType {
         WRAPPER_PRIMITIVE_MAP.put(Long.class, long.class);
         WRAPPER_PRIMITIVE_MAP.put(Short.class, short.class);
 
-        for (Map.Entry<Class<?>, Class<?>> entry : WRAPPER_PRIMITIVE_MAP.entrySet()) {
+        for (final Map.Entry<Class<?>, Class<?>> entry : WRAPPER_PRIMITIVE_MAP.entrySet()) {
             PRIMITIVE_WRAPPER_MAP.put(entry.getValue(), entry.getKey());
         }
     }

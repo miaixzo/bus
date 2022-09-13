@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans;
 
-import org.aoju.bus.core.lang.function.Func0;
+import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.map.ReferenceMap;
 import org.aoju.bus.core.map.WeakMap;
 
@@ -68,8 +68,8 @@ public enum PropertyCache {
     public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
             Class<?> beanClass,
             boolean ignoreCase,
-            Func0<Map<String, PropertyDescriptor>> supplier) {
-        return getCache(ignoreCase).computeIfAbsent(beanClass, (key) -> supplier.callWithRuntimeException());
+            XSupplier<Map<String, PropertyDescriptor>> supplier) {
+        return getCache(ignoreCase).computeIfAbsent(beanClass, (key) -> supplier.get());
     }
 
     /**

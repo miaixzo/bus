@@ -33,16 +33,13 @@ import java.nio.file.Paths;
 
 /**
  * 字符串转换器
- *
- * @author Kimi Liu
- * @since Java 17+
  */
-public class PathConverter extends AbstractConverter<Path> {
+public class PathConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Path convertInternal(Object value) {
+    protected Path convertInternal(final Class<?> targetClass, final Object value) {
         try {
             if (value instanceof URI) {
                 return Paths.get((URI) value);
@@ -56,8 +53,8 @@ public class PathConverter extends AbstractConverter<Path> {
                 return ((File) value).toPath();
             }
 
-            return Paths.get(convertString(value));
-        } catch (Exception e) {
+            return Paths.get(convertToString(value));
+        } catch (final Exception e) {
             // Ignore Exception
         }
         return null;

@@ -25,36 +25,89 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.function;
 
+import org.aoju.bus.core.exception.InternalException;
+
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 /**
- * 函数对象
- * 一个函数接口代表一个一个函数，用于包装一个函数为对象
- * 在JDK8之前，Java的函数并不能作为参数传递，也不能作为返回值存在
- * 此接口用于将一个函数包装成为一个对象，从而传递对象
+ * 表示接受两个输入参数且不返回结果的操作
  *
+ * @param <T> 第一个参数的类型
+ * @param <U> 第二个参数的类型
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface VoidFunc0 extends Serializable {
+public interface XBiConsumer<T, U> extends BiConsumer<T, U>, Serializable {
 
     /**
-     * 执行函数
+     * multi
      *
-     * @throws Exception 自定义异常
+     * @param consumers lambda
+     * @param <T>       type
+     * @param <U>       return type
+     * @return lambda
      */
-    void call() throws Exception;
+    @SafeVarargs
+    static <T, U> XBiConsumer<T, U> multi(final XBiConsumer<T, U>... consumers) {
+        return Stream.of(consumers).reduce(XBiConsumer::andThen).orElseGet(() -> (o, q) -> {
+        });
+    }
 
     /**
-     * 执行函数，异常包装为RuntimeException
+     * 什么也不做，用于一些需要传入lambda的方法占位使用
+     *
+     * @param <T> 参数1类型
+     * @param <U> 参数2类型
+     * @return 什么也不做
      */
-    default void callWithRuntimeException() {
+    static <T, U> XBiConsumer<T, U> nothing() {
+        return (l, r) -> {
+        };
+    }
+
+    /**
+     * 对给定参数执行此操作
+     *
+     * @param t 第一个输入参数
+     * @param u 第二个输入参数
+     * @throws Exception 包装检查异常，方便使用
+     */
+    void accepting(T t, U u) throws Exception;
+
+    /**
+     * 对给定参数执行此操作
+     *
+     * @param t 第一个输入参数
+     * @param u 第二个输入参数
+     */
+    @Override
+    default void accept(final T t, final U u) {
         try {
-            call();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            accepting(t, u);
+        } catch (final Exception e) {
+            throw new InternalException(e);
         }
+    }
+
+    /**
+     * 返回一个组合的{@code XBiConsumer}，它依次执行该操作和{@code after}操作
+     * 如果执行任一操作引发异常，则将其传递给组合操作的调用方
+     * 如果执行此操作引发异常，则不会执行{@code after}操作
+     *
+     * @param after 执行该操作后需要执行的操作
+     * @return 一个组合的{@code XBiConsumer}，它按顺序执行此操作，然后执行{@code after}操作
+     * @throws NullPointerException 如果{@code after}为空
+     */
+    default XBiConsumer<T, U> andThen(final XBiConsumer<? super T, ? super U> after) {
+        Objects.requireNonNull(after);
+        return (l, r) -> {
+            accepting(l, r);
+            after.accepting(l, r);
+        };
     }
 
 }

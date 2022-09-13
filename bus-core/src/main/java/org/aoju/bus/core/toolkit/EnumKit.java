@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.function.XFunction;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -269,12 +269,12 @@ public class EnumKit {
      * @param <C>       字段类型
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, C> E getBy(Func1<E, C> condition, C value) {
+    public static <E extends Enum<E>, C> E getBy(XFunction<E, C> condition, C value) {
         Class<E> implClass = LambdaKit.getRealClass(condition);
         if (Enum.class.equals(implClass)) {
             implClass = LambdaKit.getRealClass(condition);
         }
-        return Arrays.stream(implClass.getEnumConstants()).filter(e -> condition.callWithRuntimeException(e).equals(value)).findAny().orElse(null);
+        return Arrays.stream(implClass.getEnumConstants()).filter(e -> condition.apply(e).equals(value)).findAny().orElse(null);
     }
 
     /**
@@ -288,7 +288,7 @@ public class EnumKit {
      * @param <C>       条件字段类型
      * @return 对应枚举中另一字段值 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, F, C> F getFieldBy(Func1<E, F> field,
+    public static <E extends Enum<E>, F, C> F getFieldBy(XFunction<E, F> field,
                                                          Function<E, C> condition, C value) {
         Class<E> implClass = LambdaKit.getRealClass(field);
         if (Enum.class.equals(implClass)) {
@@ -298,7 +298,7 @@ public class EnumKit {
                 // 过滤
                 .filter(e -> condition.apply(e).equals(value))
                 // 获取第一个并转换为结果
-                .findFirst().map(field::callWithRuntimeException).orElse(null);
+                .findFirst().map(field).orElse(null);
     }
 
     /**

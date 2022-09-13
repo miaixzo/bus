@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.tuple;
 
+import lombok.Getter;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.builder.CompareBuilder;
 import org.aoju.bus.core.lang.Symbol;
@@ -46,6 +47,7 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
 @ThreadSafe
 public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Serializable {
 

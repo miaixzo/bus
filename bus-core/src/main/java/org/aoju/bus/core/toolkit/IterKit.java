@@ -33,7 +33,7 @@ import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Matcher;
-import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.text.TextJoiner;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -836,7 +836,7 @@ public class IterKit {
      * @param keyFunc  生成key的函数
      * @return 生成的map
      */
-    public static <K, V> Map<K, V> toMap(Iterator<V> iterator, Map<K, V> map, Func1<V, K> keyFunc) {
+    public static <K, V> Map<K, V> toMap(Iterator<V> iterator, Map<K, V> map, XFunction<V, K> keyFunc) {
         return toMap(iterator, map, keyFunc, (value) -> value);
     }
 
@@ -853,7 +853,7 @@ public class IterKit {
      * @param valueFunc 生成值的策略函数
      * @return 生成的map
      */
-    public static <K, V, E> Map<K, V> toMap(Iterator<E> iterator, Map<K, V> map, Func1<E, K> keyFunc, Func1<E, V> valueFunc) {
+    public static <K, V, E> Map<K, V> toMap(Iterator<E> iterator, Map<K, V> map, XFunction<E, K> keyFunc, XFunction<E, V> valueFunc) {
         if (null == iterator) {
             return map;
         }
@@ -866,7 +866,7 @@ public class IterKit {
         while (iterator.hasNext()) {
             element = iterator.next();
             try {
-                map.put(keyFunc.call(element), valueFunc.call(element));
+                map.put(keyFunc.applying(element), valueFunc.applying(element));
             } catch (Exception e) {
                 throw new InternalException(e);
             }

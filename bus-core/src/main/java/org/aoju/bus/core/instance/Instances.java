@@ -28,7 +28,7 @@ package org.aoju.bus.core.instance;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.function.Func0;
+import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
@@ -140,10 +140,10 @@ public final class Instances {
      * @param supplier 单例对象的创建函数
      * @return 单例对象
      */
-    public static <T> T singletion(String key, Func0<T> supplier) {
+    public static <T> T singletion(String key, XSupplier<T> supplier) {
         Object value = POOL.get(key);
         if (null == value) {
-            POOL.putIfAbsent(key, supplier.callWithRuntimeException());
+            POOL.putIfAbsent(key, supplier.get());
             value = POOL.get(key);
         }
         return (T) value;

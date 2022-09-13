@@ -26,7 +26,7 @@
 package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.function.XFunction;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
     /**
      * 行数据转换函数
      */
-    protected Func1<List<Object>, T> convertFunc;
+    protected XFunction<List<Object>, T> convertFunc;
 
     /**
      * 构造
@@ -70,7 +70,7 @@ public abstract class AbstractRowHandler<T> implements RowHandler {
         if (rowIndex < this.startRowIndex || rowIndex > this.endRowIndex) {
             return;
         }
-        handleData(sheetIndex, rowIndex, convertFunc.callWithRuntimeException(rowCells));
+        handleData(sheetIndex, rowIndex, convertFunc.apply(rowCells));
     }
 
     /**

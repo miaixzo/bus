@@ -2384,7 +2384,7 @@ public class CollKit {
 
         final ConverterRegistry convert = ConverterRegistry.getInstance();
         while (iter.hasNext()) {
-            collection.add(convert.convert(elementType, iter.next()));
+            collection.add((T) convert.convert(elementType, iter.next()));
         }
 
         return collection;

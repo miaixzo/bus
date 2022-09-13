@@ -25,12 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
+import org.aoju.bus.core.exception.ConvertException;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.CharsKit;
-import org.aoju.bus.core.toolkit.ClassKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -40,69 +42,47 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractConverter<T> implements Converter<T>, Serializable {
+public abstract class AbstractConverter implements Converter, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    public T convert(Object value, T defaultValue) {
-        Class<T> targetType = getTargetType();
-        if (null == targetType && null == defaultValue) {
-            throw new NullPointerException(StringKit.format("[type] and [defaultValue] are both null for Converter [{}], we can not know what type to convert !", this.getClass().getName()));
-        }
-        if (null == targetType) {
-            // 目标类型不确定时使用默认值的类型
-            targetType = (Class<T>) defaultValue.getClass();
-        }
+    public Object convert(final Type targetType, final Object value) {
         if (null == value) {
-            return defaultValue;
+            return null;
+        }
+        if (TypeKit.isUnknown(targetType)) {
+            throw new ConvertException("Unsupported convert to unKnow type: {}", targetType);
         }
 
-        if (null == defaultValue || targetType.isInstance(defaultValue)) {
-            if (targetType.isInstance(value) && false == Map.class.isAssignableFrom(targetType)) {
-                // 除Map外,已经是目标类型,不需要转换(Map类型涉及参数类型,需要单独转换)
-                return targetType.cast(value);
-            }
-            final T result = convertInternal(value);
-            return ((null == result) ? defaultValue : result);
-        } else {
-            throw new IllegalArgumentException(
-                    StringKit.format("Default value [{}]({}) is not the instance of [{}]", defaultValue, defaultValue.getClass(), targetType));
+        final Class<?> targetClass = TypeKit.getClass(targetType);
+        Assert.notNull(targetClass, "Target type is not a class!");
+
+        // 尝试强转
+        if (targetClass.isInstance(value) && !Map.class.isAssignableFrom(targetClass)) {
+            // 除Map外，已经是目标类型，不需要转换（Map类型涉及参数类型，需要单独转换）
+            return Assert.notNull(targetClass).cast(value);
         }
+        return convertInternal(targetClass, value);
     }
 
     /**
-     * 不抛异常转换
-     * 当转换失败时返回默认值
-     *
-     * @param value        被转换的值
-     * @param defaultValue 默认值
-     * @return 转换后的值
-     */
-    public T convertQuietly(Object value, T defaultValue) {
-        try {
-            return convert(value, defaultValue);
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
-
-    /**
-     * 内部转换器,被 {@link AbstractConverter#convert(Object, Object)} 调用,实现基本转换逻辑
-     * 内部转换器转换后如果转换失败可以做如下操作,处理结果都为返回默认值：
+     * 内部转换器，被 {@link AbstractConverter#convert(Type, Object)} 调用，实现基本转换逻辑<br>
+     * 内部转换器转换后如果转换失败可以做如下操作，处理结果都为返回默认值：
      *
      * <pre>
      * 1、返回{@code null}
      * 2、抛出一个{@link RuntimeException}异常
      * </pre>
      *
-     * @param value 值
+     * @param targetClass 目标类型
+     * @param value       值
      * @return 转换后的类型
      */
-    protected abstract T convertInternal(Object value);
+    protected abstract Object convertInternal(Class<?> targetClass, Object value);
 
     /**
-     * 值转为String
+     * 值转为String，用于内部转换中需要使用String中转的情况<br>
      * 转换规则为：
      *
      * <pre>
@@ -114,7 +94,7 @@ public abstract class AbstractConverter<T> implements Converter<T>, Serializable
      * @param value 值
      * @return String
      */
-    protected String convertString(Object value) {
+    protected String convertToString(final Object value) {
         if (null == value) {
             return null;
         }
@@ -127,15 +107,6 @@ public abstract class AbstractConverter<T> implements Converter<T>, Serializable
             return CharsKit.toString((char) value);
         }
         return value.toString();
-    }
-
-    /**
-     * 获得此类实现类的泛型类型
-     *
-     * @return 此类的泛型类型, 可能为{@code null}
-     */
-    public Class<T> getTargetType() {
-        return (Class<T>) ClassKit.getTypeArgument(getClass());
     }
 
 }

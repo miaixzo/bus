@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.criteria;
 
-import org.aoju.bus.core.lang.function.Fn;
+import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.mapper.entity.Condition;
 import org.aoju.bus.mapper.reflect.Reflector;
 
@@ -81,7 +81,7 @@ public class Weekend<T> extends Condition {
      * @param fns 属性名的可变参数
      * @return the object
      */
-    public Weekend<T> excludeProperties(Fn<T, ?>... fns) {
+    public Weekend<T> excludeProperties(XFunction<T, ?>... fns) {
         String[] properties = Stream.of(fns).map(Reflector::fnToFieldName).toArray(String[]::new);
         this.excludeProperties(properties);
         return this;
@@ -93,13 +93,13 @@ public class Weekend<T> extends Condition {
      * @param fns 函数
      * @return the object
      */
-    public Weekend<T> selectProperties(Fn<T, ?>... fns) {
+    public Weekend<T> selectProperties(XFunction<T, ?>... fns) {
         String[] properties = Stream.of(fns).map(Reflector::fnToFieldName).toArray(String[]::new);
         this.selectProperties(properties);
         return this;
     }
 
-    public OrderBy orderBy(Fn<T, ?> fn) {
+    public OrderBy orderBy(XFunction<T, ?> fn) {
         return this.orderBy(Reflector.fnToFieldName(fn));
     }
 
@@ -113,7 +113,7 @@ public class Weekend<T> extends Condition {
         return this;
     }
 
-    public Weekend<T> withCountProperty(Fn<T, ?> fn) {
+    public Weekend<T> withCountProperty(XFunction<T, ?> fn) {
         this.setCountProperty(Reflector.fnToFieldName(fn));
         return this;
     }

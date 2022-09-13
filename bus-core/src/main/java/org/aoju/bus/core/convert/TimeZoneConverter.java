@@ -25,6 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
+import org.aoju.bus.core.toolkit.ZoneKit;
+
+import java.time.ZoneId;
 import java.util.TimeZone;
 
 /**
@@ -33,13 +36,16 @@ import java.util.TimeZone;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TimeZoneConverter extends AbstractConverter<TimeZone> {
+public class TimeZoneConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected TimeZone convertInternal(Object value) {
-        return TimeZone.getTimeZone(convertString(value));
+    protected TimeZone convertInternal(final Class<?> targetClass, final Object value) {
+        if (value instanceof ZoneId) {
+            return ZoneKit.toTimeZone((ZoneId) value);
+        }
+        return TimeZone.getTimeZone(convertToString(value));
     }
 
 }

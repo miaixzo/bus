@@ -28,6 +28,7 @@ package org.aoju.bus.core.convert;
 import org.aoju.bus.core.exception.ConvertException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.core.toolkit.XmlKit;
 
 import java.io.InputStream;
@@ -36,7 +37,10 @@ import java.lang.reflect.Type;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.function.Function;
 
 /**
  * 字符串转换器
@@ -44,9 +48,11 @@ import java.util.TimeZone;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StringConverter extends AbstractConverter<String> {
+public class StringConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
+
+    private Map<Class<?>, Function<Object, String>> stringer;
 
     /**
      * Clob字段值转字符串
@@ -54,12 +60,12 @@ public class StringConverter extends AbstractConverter<String> {
      * @param clob {@link Clob}
      * @return 字符串
      */
-    private static String clobToString(Clob clob) {
+    private static String clobToString(final Clob clob) {
         Reader reader = null;
         try {
             reader = clob.getCharacterStream();
             return IoKit.read(reader);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new ConvertException(e);
         } finally {
             IoKit.close(reader);
@@ -72,12 +78,12 @@ public class StringConverter extends AbstractConverter<String> {
      * @param blob {@link Blob}
      * @return 字符串
      */
-    private static String blobToString(Blob blob) {
+    private static String blobToString(final Blob blob) {
         InputStream in = null;
         try {
             in = blob.getBinaryStream();
             return IoKit.read(in, Charset.UTF_8);
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             throw new ConvertException(e);
         } finally {
             IoKit.close(in);
@@ -85,7 +91,14 @@ public class StringConverter extends AbstractConverter<String> {
     }
 
     @Override
-    protected String convertInternal(Object value) {
+    protected String convertInternal(final Class<?> targetClass, final Object value) {
+        if (MapKit.isNotEmpty(stringer)) {
+            final Function<Object, String> stringFunction = stringer.get(targetClass);
+            if (null != stringFunction) {
+                return stringFunction.apply(value);
+            }
+        }
+
         if (value instanceof TimeZone) {
             return ((TimeZone) value).getID();
         } else if (value instanceof org.w3c.dom.Node) {
@@ -97,8 +110,22 @@ public class StringConverter extends AbstractConverter<String> {
         } else if (value instanceof Type) {
             return ((Type) value).getTypeName();
         }
+        return convertToString(value);
+    }
 
-        return convertString(value);
+    /**
+     * 加入自定义对象类型的toString规则
+     *
+     * @param clazz          类型
+     * @param stringFunction 序列化函数
+     * @return this
+     */
+    public StringConverter putStringer(Class<?> clazz, Function<Object, String> stringFunction) {
+        if (null == stringer) {
+            stringer = new HashMap<>();
+        }
+        stringer.put(clazz, stringFunction);
+        return this;
     }
 
 }

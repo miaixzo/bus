@@ -37,12 +37,12 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StackTraceConverter extends AbstractConverter<StackTraceElement> {
+public class StackTraceConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected StackTraceElement convertInternal(Object value) {
+    protected StackTraceElement convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Map) {
             final Map<?, ?> map = (Map<?, ?>) value;
 

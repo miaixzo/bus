@@ -26,7 +26,6 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.exception.ConvertException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -38,7 +37,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -58,14 +56,12 @@ import java.util.Objects;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
+public class TemporalConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 目标类型
-     */
-    private final Class<?> targetType;
+    public static final TemporalConverter INSTANCE = new TemporalConverter();
+
     /**
      * 日期格式化
      */
@@ -73,21 +69,17 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
 
     /**
      * 构造
-     *
-     * @param targetType 目标类型
      */
-    public TemporalConverter(Class<?> targetType) {
-        this(targetType, null);
+    public TemporalConverter() {
+        this(null);
     }
 
     /**
      * 构造
      *
-     * @param targetType 目标类型
-     * @param format     日期格式
+     * @param format 日期格式
      */
-    public TemporalConverter(Class<?> targetType, String format) {
-        this.targetType = targetType;
+    public TemporalConverter(final String format) {
         this.format = format;
     }
 
@@ -105,42 +97,26 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      *
      * @param format 日期格式
      */
-    public void setFormat(String format) {
+    public void setFormat(final String format) {
         this.format = format;
     }
 
     @Override
-    public Class<TemporalAccessor> getTargetType() {
-        return (Class<TemporalAccessor>) this.targetType;
-    }
-
-    @Override
-    protected TemporalAccessor convertInternal(Object value) {
+    protected TemporalAccessor convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Long) {
-            return parseFromLong((Long) value);
+            return parseFromLong(targetClass, (Long) value);
         } else if (value instanceof Integer) {
-            return parseFromLong((long) (Integer) value);
+            return parseFromLong(targetClass, ((Integer) value).longValue());
         } else if (value instanceof TemporalAccessor) {
-            return parseFromTemporalAccessor((TemporalAccessor) value);
+            return parseFromTemporalAccessor(targetClass, (TemporalAccessor) value);
         } else if (value instanceof Date) {
             final DateTime dateTime = DateKit.date((Date) value);
-            return parseFromInstant(dateTime.toInstant(), dateTime.getZoneId());
+            return parseFromInstant(targetClass, dateTime.toInstant(), dateTime.getZoneId());
         } else if (value instanceof Calendar) {
             final Calendar calendar = (Calendar) value;
-            return parseFromInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
-        } else if (value instanceof Map) {
-            final Map<?, ?> map = (Map<?, ?>) value;
-            if (LocalDate.class.equals(this.targetType)) {
-                return LocalDate.of(Convert.toInt(map.get("year")), Convert.toInt(map.get("month")), Convert.toInt(map.get("day")));
-            } else if (LocalDateTime.class.equals(this.targetType)) {
-                return LocalDateTime.of(Convert.toInt(map.get("year")), Convert.toInt(map.get("month")), Convert.toInt(map.get("day")),
-                        Convert.toInt(map.get("hour")), Convert.toInt(map.get("minute")), Convert.toInt(map.get("second")), Convert.toInt(map.get("second")));
-            } else if (LocalTime.class.equals(this.targetType)) {
-                return LocalTime.of(Convert.toInt(map.get("hour")), Convert.toInt(map.get("minute")), Convert.toInt(map.get("second")), Convert.toInt(map.get("nano")));
-            }
-            throw new ConvertException("Unsupported type: [{}] from map: [{}]", this.targetType, map);
+            return parseFromInstant(targetClass, calendar.toInstant(), calendar.getTimeZone().toZoneId());
         } else {
-            return parseFromCharSequence(convertString(value));
+            return parseFromCharSequence(targetClass, convertToString(value));
         }
     }
 
@@ -150,23 +126,23 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      * @param value 字符串值
      * @return 日期对象
      */
-    private TemporalAccessor parseFromCharSequence(CharSequence value) {
+    private TemporalAccessor parseFromCharSequence(final Class<?> targetClass, final CharSequence value) {
         if (StringKit.isBlank(value)) {
             return null;
         }
 
-        if (DayOfWeek.class.equals(this.targetType)) {
+        if (DayOfWeek.class == targetClass) {
             return DayOfWeek.valueOf(StringKit.toString(value));
-        } else if (Month.class.equals(this.targetType)) {
+        } else if (Month.class == targetClass) {
             return Month.valueOf(StringKit.toString(value));
-        } else if (Era.class.equals(this.targetType)) {
+        } else if (Era.class == targetClass) {
             return IsoEra.valueOf(StringKit.toString(value));
-        } else if (MonthDay.class.equals(this.targetType)) {
+        } else if (MonthDay.class == targetClass) {
             return MonthDay.parse(value);
         }
 
         final Instant instant;
-        ZoneId zoneId;
+        final ZoneId zoneId;
         if (null != this.format) {
             final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(this.format);
             instant = formatter.parse(value, Instant::from);
@@ -176,24 +152,26 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
             instant = Objects.requireNonNull(dateTime).toInstant();
             zoneId = dateTime.getZoneId();
         }
-        return parseFromInstant(instant, zoneId);
+        return parseFromInstant(targetClass, instant, zoneId);
     }
 
     /**
      * 将Long型时间戳转换为java.time中的对象
      *
-     * @param time 时间戳
+     * @param targetClass 目标类型
+     * @param time        时间戳
      * @return java.time中的对象
      */
-    private TemporalAccessor parseFromLong(Long time) {
-        if (DayOfWeek.class.equals(this.targetType)) {
-            return DayOfWeek.of(Math.toIntExact(time));
-        } else if (Month.class.equals(this.targetType)) {
+    private TemporalAccessor parseFromLong(final Class<?> targetClass, final Long time) {
+        if (targetClass == Month.class) {
             return Month.of(Math.toIntExact(time));
-        } else if (Era.class.equals(this.targetType)) {
+        } else if (targetClass == DayOfWeek.class) {
+            return DayOfWeek.of(Math.toIntExact(time));
+        } else if (Era.class == targetClass) {
             return IsoEra.of(Math.toIntExact(time));
         }
-        return parseFromInstant(Instant.ofEpochMilli(time), null);
+
+        return parseFromInstant(targetClass, Instant.ofEpochMilli(time), null);
     }
 
     /**
@@ -202,24 +180,24 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      * @param temporalAccessor TemporalAccessor对象
      * @return java.time中的对象
      */
-    private TemporalAccessor parseFromTemporalAccessor(TemporalAccessor temporalAccessor) {
-        if (DayOfWeek.class.equals(this.targetType)) {
+    private TemporalAccessor parseFromTemporalAccessor(final Class<?> targetClass, final TemporalAccessor temporalAccessor) {
+        if (DayOfWeek.class == targetClass) {
             return DayOfWeek.from(temporalAccessor);
-        } else if (Month.class.equals(this.targetType)) {
+        } else if (Month.class == targetClass) {
             return Month.from(temporalAccessor);
-        } else if (MonthDay.class.equals(this.targetType)) {
+        } else if (MonthDay.class == targetClass) {
             return MonthDay.from(temporalAccessor);
         }
 
         TemporalAccessor result = null;
         if (temporalAccessor instanceof LocalDateTime) {
-            result = parseFromLocalDateTime((LocalDateTime) temporalAccessor);
+            result = parseFromLocalDateTime(targetClass, (LocalDateTime) temporalAccessor);
         } else if (temporalAccessor instanceof ZonedDateTime) {
-            result = parseFromZonedDateTime((ZonedDateTime) temporalAccessor);
+            result = parseFromZonedDateTime(targetClass, (ZonedDateTime) temporalAccessor);
         }
 
         if (null == result) {
-            result = parseFromInstant(DateKit.toInstant(temporalAccessor), null);
+            result = parseFromInstant(targetClass, DateKit.toInstant(temporalAccessor), null);
         }
 
         return result;
@@ -228,26 +206,27 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
     /**
      * 将TemporalAccessor型时间戳转换为java.time中的对象
      *
+     * @param targetClass   目标类
      * @param localDateTime {@link LocalDateTime}对象
      * @return java.time中的对象
      */
-    private TemporalAccessor parseFromLocalDateTime(LocalDateTime localDateTime) {
-        if (Instant.class.equals(this.targetType)) {
+    private TemporalAccessor parseFromLocalDateTime(final Class<?> targetClass, final LocalDateTime localDateTime) {
+        if (Instant.class.equals(targetClass)) {
             return DateKit.toInstant(localDateTime);
         }
-        if (LocalDate.class.equals(this.targetType)) {
+        if (LocalDate.class.equals(targetClass)) {
             return localDateTime.toLocalDate();
         }
-        if (LocalTime.class.equals(this.targetType)) {
+        if (LocalTime.class.equals(targetClass)) {
             return localDateTime.toLocalTime();
         }
-        if (ZonedDateTime.class.equals(this.targetType)) {
+        if (ZonedDateTime.class.equals(targetClass)) {
             return localDateTime.atZone(ZoneId.systemDefault());
         }
-        if (OffsetDateTime.class.equals(this.targetType)) {
+        if (OffsetDateTime.class.equals(targetClass)) {
             return localDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime();
         }
-        if (OffsetTime.class.equals(this.targetType)) {
+        if (OffsetTime.class.equals(targetClass)) {
             return localDateTime.atZone(ZoneId.systemDefault()).toOffsetDateTime().toOffsetTime();
         }
 
@@ -260,23 +239,23 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      * @param zonedDateTime {@link ZonedDateTime}对象
      * @return java.time中的对象
      */
-    private TemporalAccessor parseFromZonedDateTime(ZonedDateTime zonedDateTime) {
-        if (Instant.class.equals(this.targetType)) {
+    private TemporalAccessor parseFromZonedDateTime(final Class<?> targetClass, final ZonedDateTime zonedDateTime) {
+        if (Instant.class.equals(targetClass)) {
             return DateKit.toInstant(zonedDateTime);
         }
-        if (LocalDateTime.class.equals(this.targetType)) {
+        if (LocalDateTime.class.equals(targetClass)) {
             return zonedDateTime.toLocalDateTime();
         }
-        if (LocalDate.class.equals(this.targetType)) {
+        if (LocalDate.class.equals(targetClass)) {
             return zonedDateTime.toLocalDate();
         }
-        if (LocalTime.class.equals(this.targetType)) {
+        if (LocalTime.class.equals(targetClass)) {
             return zonedDateTime.toLocalTime();
         }
-        if (OffsetDateTime.class.equals(this.targetType)) {
+        if (OffsetDateTime.class.equals(targetClass)) {
             return zonedDateTime.toOffsetDateTime();
         }
-        if (OffsetTime.class.equals(this.targetType)) {
+        if (OffsetTime.class.equals(targetClass)) {
             return zonedDateTime.toOffsetDateTime().toOffsetTime();
         }
 
@@ -290,25 +269,25 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      * @param zoneId  时区ID，null表示当前系统默认的时区
      * @return java.time中的对象
      */
-    private TemporalAccessor parseFromInstant(Instant instant, ZoneId zoneId) {
-        if (Instant.class.equals(this.targetType)) {
+    private TemporalAccessor parseFromInstant(final Class<?> targetClass, final Instant instant, ZoneId zoneId) {
+        if (Instant.class.equals(targetClass)) {
             return instant;
         }
 
         zoneId = ObjectKit.defaultIfNull(zoneId, ZoneId::systemDefault);
 
         TemporalAccessor result = null;
-        if (LocalDateTime.class.equals(this.targetType)) {
+        if (LocalDateTime.class.equals(targetClass)) {
             result = LocalDateTime.ofInstant(instant, zoneId);
-        } else if (LocalDate.class.equals(this.targetType)) {
+        } else if (LocalDate.class.equals(targetClass)) {
             result = instant.atZone(zoneId).toLocalDate();
-        } else if (LocalTime.class.equals(this.targetType)) {
+        } else if (LocalTime.class.equals(targetClass)) {
             result = instant.atZone(zoneId).toLocalTime();
-        } else if (ZonedDateTime.class.equals(this.targetType)) {
+        } else if (ZonedDateTime.class.equals(targetClass)) {
             result = instant.atZone(zoneId);
-        } else if (OffsetDateTime.class.equals(this.targetType)) {
+        } else if (OffsetDateTime.class.equals(targetClass)) {
             result = OffsetDateTime.ofInstant(instant, zoneId);
-        } else if (OffsetTime.class.equals(this.targetType)) {
+        } else if (OffsetTime.class.equals(targetClass)) {
             result = OffsetTime.ofInstant(instant, zoneId);
         }
         return result;

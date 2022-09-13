@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.text.ASCIICache;
 import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.text.TextFormatter;
@@ -2811,7 +2811,7 @@ public class CharsKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, String regex, Func1<java.util.regex.Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, String regex, XFunction<java.util.regex.Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, regex, replaceFun);
     }
 
@@ -2868,7 +2868,7 @@ public class CharsKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, Pattern pattern, Func1<java.util.regex.Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, Pattern pattern, XFunction<java.util.regex.Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, pattern, replaceFun);
     }
 

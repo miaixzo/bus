@@ -26,7 +26,7 @@
 package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.lang.Optional;
-import org.aoju.bus.core.lang.function.Consumer3;
+import org.aoju.bus.core.lang.function.XMultiple;
 import org.aoju.bus.core.toolkit.MapKit;
 
 import java.util.*;
@@ -254,7 +254,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      *
      * @param consumer 单元格值处理器
      */
-    default void forEach(Consumer3<? super R, ? super C, ? super V> consumer) {
+    default void forEach(XMultiple<? super R, ? super C, ? super V> consumer) {
         for (Cell<R, C, V> cell : this) {
             consumer.accept(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         }

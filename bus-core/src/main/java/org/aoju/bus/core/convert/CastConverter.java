@@ -34,23 +34,13 @@ import org.aoju.bus.core.exception.ConvertException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CastConverter<T> extends AbstractConverter<T> {
+public class CastConverter<T> extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 目标类型
-     */
-    private Class<T> targetType;
-
     @Override
-    protected T convertInternal(Object value) {
-        throw new ConvertException("Can not cast value to [{}]", this.targetType);
-    }
-
-    @Override
-    public Class<T> getTargetType() {
-        return this.targetType;
+    protected T convertInternal(final Class<?> targetClass, final Object value) {
+        throw new ConvertException("Can not cast value to [{}]", targetClass);
     }
 
 }

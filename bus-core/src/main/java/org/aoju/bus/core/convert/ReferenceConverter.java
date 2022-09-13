@@ -39,42 +39,31 @@ import java.lang.reflect.Type;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ReferenceConverter extends AbstractConverter<Reference> {
+public class ReferenceConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 目标类型
-     */
-    private final Class<? extends Reference> targetType;
-
-    /**
-     * 构造
-     *
-     * @param targetType {@link Reference}实现类型
-     */
-    public ReferenceConverter(Class<? extends Reference> targetType) {
-        this.targetType = targetType;
-    }
+    public static ReferenceConverter INSTANCE = new ReferenceConverter();
 
     @Override
-    protected Reference<?> convertInternal(Object value) {
+    protected Reference<?> convertInternal(final Class<?> targetClass, final Object value) {
         // 尝试将值转换为Reference泛型的类型
         Object targetValue = null;
-        final Type paramType = TypeKit.getTypeArgument(targetType);
+        final Type paramType = TypeKit.getTypeArgument(targetClass);
         if (false == TypeKit.isUnknown(paramType)) {
-            targetValue = ConverterRegistry.getInstance().convert(paramType, value);
+            targetValue = CompositeRegister.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {
             targetValue = value;
         }
 
-        if (this.targetType == WeakReference.class) {
+        if (targetClass == WeakReference.class) {
             return new WeakReference(targetValue);
-        } else if (this.targetType == SoftReference.class) {
+        } else if (targetClass == SoftReference.class) {
             return new SoftReference(targetValue);
         }
-        throw new UnsupportedOperationException(StringKit.format("Unsupport Reference type: {}", this.targetType.getName()));
+
+        throw new UnsupportedOperationException(StringKit.format("Unsupport Reference type: {}", targetClass.getName()));
     }
 
 }
