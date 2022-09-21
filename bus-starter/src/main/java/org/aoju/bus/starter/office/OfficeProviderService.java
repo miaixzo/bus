@@ -30,8 +30,8 @@ import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Provider;
 import org.aoju.bus.office.Registry;
-import org.aoju.bus.office.provider.LocalOfficeProvider;
-import org.aoju.bus.office.provider.OnlineOfficeProvider;
+import org.aoju.bus.office.builtin.provider.LocalOfficeProvider;
+import org.aoju.bus.office.builtin.provider.OnlineOfficeProvider;
 import org.springframework.stereotype.Component;
 
 /**

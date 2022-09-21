@@ -26,6 +26,7 @@
 package org.aoju.bus.core.lang.ansi;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 /**
  * ANSI 8-bit前景或背景色（即8位编码，共256种颜色（2^8） ）
@@ -36,8 +37,6 @@ import org.aoju.bus.core.lang.Assert;
  *     <li>232-255：                    从黑到白的24阶灰度色</li>
  * </ul>
  *
- * <p>来自Spring Boot</p>
- *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,22 +44,6 @@ public final class Ansi8BitColor implements AnsiElement {
 
     private static final String PREFIX_FORE = "38;5;";
     private static final String PREFIX_BACK = "48;5;";
-
-    private final String prefix;
-    private final int code;
-
-    /**
-     * 构造
-     *
-     * @param prefix 前缀
-     * @param code   颜色代码(0-255)
-     * @throws IllegalArgumentException 颜色代码不在0~255范围内
-     */
-    private Ansi8BitColor(String prefix, int code) {
-        Assert.isTrue(code >= 0 && code <= 255, "Code must be between 0 and 255");
-        this.prefix = prefix;
-        this.code = code;
-    }
 
     /**
      * 前景色ANSI颜色实例
@@ -82,16 +65,66 @@ public final class Ansi8BitColor implements AnsiElement {
         return new Ansi8BitColor(PREFIX_BACK, code);
     }
 
+    private final String prefix;
+    private final int code;
+
+    /**
+     * 构造
+     *
+     * @param prefix 前缀
+     * @param code   颜色代码(0-255)
+     * @throws IllegalArgumentException 颜色代码不在0~255范围内
+     */
+    private Ansi8BitColor(String prefix, int code) {
+        Assert.isTrue(code >= 0 && code <= 255, "Code must be between 0 and 255");
+        this.prefix = prefix;
+        this.code = code;
+    }
+
+    /**
+     * 获取颜色代码(0-255)
+     *
+     * @return 颜色代码(0 - 255)
+     */
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
+    public int getCode() {
+        return this.code;
+    }
+
+    /**
+     * 转换为前景色
+     *
+     * @return 前景色
+     */
+    public Ansi8BitColor asForeground() {
+        if (PREFIX_FORE.equals(this.prefix)) {
+            return this;
+        }
+        return Ansi8BitColor.foreground(this.code);
+    }
+
+    /**
+     * 转换为背景色
+     *
+     * @return 背景色
+     */
+    public Ansi8BitColor asBackground() {
+        if (PREFIX_BACK.equals(this.prefix)) {
+            return this;
+        }
+        return Ansi8BitColor.background(this.code);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (object == null || getClass() != object.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Ansi8BitColor other = (Ansi8BitColor) object;
-        return this.prefix.equals(other.prefix) && this.code == other.code;
+        Ansi8BitColor other = (Ansi8BitColor) obj;
+        return ObjectKit.equals(this.prefix, other.prefix) && this.code == other.code;
     }
 
     @Override

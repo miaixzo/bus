@@ -26,6 +26,7 @@
 package org.aoju.bus.office;
 
 import org.aoju.bus.core.exception.InternalException;
+import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.Map;
@@ -125,6 +126,22 @@ public class Registry {
             object = this.require(clazz.getSimpleName());
         }
         return object;
+    }
+
+    /**
+     * 没有引入POI的错误消息
+     */
+    public static final String NO_POI_ERROR_MSG = "You need to add dependency of 'poi-ooxml' to your project, and version >= 4.1.2";
+
+    /**
+     * 检查POI包的引入情况
+     */
+    public static void check() {
+        try {
+            Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+            throw new InternalException(NO_POI_ERROR_MSG);
+        }
     }
 
 }

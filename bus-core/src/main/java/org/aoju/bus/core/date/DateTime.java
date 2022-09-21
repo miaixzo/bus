@@ -25,9 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.date.formatter.DateParser;
 import org.aoju.bus.core.date.formatter.DatePrinter;
 import org.aoju.bus.core.date.formatter.FormatBuilder;
+import org.aoju.bus.core.date.formatter.parser.DateParser;
+import org.aoju.bus.core.date.formatter.parser.PositionDateParser;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
@@ -182,54 +183,85 @@ public class DateTime extends Date {
     }
 
     /**
-     * 构造
+     * 构造格式：
+     * <ol>
+     * <li>yyyy-MM-dd HH:mm:ss</li>
+     * <li>yyyy/MM/dd HH:mm:ss</li>
+     * <li>yyyy.MM.dd HH:mm:ss</li>
+     * <li>yyyy年MM月dd日 HH时mm分ss秒</li>
+     * <li>yyyy-MM-dd</li>
+     * <li>yyyy/MM/dd</li>
+     * <li>yyyy.MM.dd</li>
+     * <li>HH:mm:ss</li>
+     * <li>HH时mm分ss秒</li>
+     * <li>yyyy-MM-dd HH:mm</li>
+     * <li>yyyy-MM-dd HH:mm:ss.SSS</li>
+     * <li>yyyyMMddHHmmss</li>
+     * <li>yyyyMMddHHmmssSSS</li>
+     * <li>yyyyMMdd</li>
+     * <li>EEE, dd MMM yyyy HH:mm:ss z</li>
+     * <li>EEE MMM dd HH:mm:ss zzz yyyy</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ssZ</li>
+     * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
+     * </ol>
      *
-     * @param dateStr Date字符串
-     * @param format  格式
+     * @param text Date字符串
      */
-    public DateTime(CharSequence dateStr, String format) {
-        this(dateStr, Formatter.newSimpleFormat(format));
+    public DateTime(final CharSequence text) {
+        this(Formatter.parse(text));
     }
 
     /**
      * 构造
      *
-     * @param dateStr    Date字符串
-     * @param dateFormat 格式化器 {@link SimpleDateFormat}
+     * @param text   Date字符串
+     * @param format 格式
      */
-    public DateTime(CharSequence dateStr, DateFormat dateFormat) {
-        this(parse(dateStr, dateFormat), dateFormat.getTimeZone());
+    public DateTime(final CharSequence text, final String format) {
+        this(text, Formatter.newSimpleFormat(format));
+    }
+
+    /**
+     * 构造
+     *
+     * @param text   Date字符串
+     * @param format 格式化器 {@link SimpleDateFormat}
+     */
+    public DateTime(final CharSequence text, final DateFormat format) {
+        this(parse(text, format), format.getTimeZone());
     }
 
     /**
      * 构建DateTime对象
      *
-     * @param dateStr   Date字符串
+     * @param text      Date字符串
      * @param formatter 格式化器,{@link DateTimeFormatter}
      */
-    public DateTime(CharSequence dateStr, DateTimeFormatter formatter) {
-        this(Converter.toInstant(formatter.parse(dateStr)), formatter.getZone());
+    public DateTime(final CharSequence text, final DateTimeFormatter formatter) {
+        this(Converter.toInstant(formatter.parse(text)), formatter.getZone());
     }
 
     /**
      * 构造
      *
-     * @param dateStr    Date字符串
-     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
+     * @param text   Date字符串
+     * @param parser 格式化器 {@link DateParser}，可以使用 {@link FormatBuilder}
      */
-    public DateTime(CharSequence dateStr, DateParser dateParser) {
-        this(dateStr, dateParser, System.getBoolean(System.BUS_DATE_LENIENT, true));
+    public DateTime(final CharSequence text, final PositionDateParser parser) {
+        this(text, parser, System.getBoolean(System.BUS_DATE_LENIENT, true));
     }
 
     /**
      * 构造
      *
-     * @param dateStr    Date字符串
-     * @param dateParser 格式化器 {@link DateParser}，可以使用 {@link Fields}
-     * @param lenient    是否宽容模式
+     * @param text    Date字符串
+     * @param parser  格式化器 {@link DateParser}，可以使用 {@link Fields}
+     * @param lenient 是否宽容模式
      */
-    public DateTime(CharSequence dateStr, DateParser dateParser, boolean lenient) {
-        this(parse(dateStr, dateParser, lenient));
+    public DateTime(final CharSequence text, final PositionDateParser parser, final boolean lenient) {
+        this(parse(text, parser, lenient));
     }
 
     /**
@@ -268,12 +300,12 @@ public class DateTime extends Date {
     /**
      * 构造
      *
-     * @param dateStr Date字符串
-     * @param format  格式
+     * @param text   Date字符串
+     * @param format 格式
      * @return {@link DateTime}
      */
-    public static DateTime of(String dateStr, String format) {
-        return new DateTime(dateStr, format);
+    public static DateTime of(String text, String format) {
+        return new DateTime(text, format);
     }
 
     /**
@@ -288,39 +320,40 @@ public class DateTime extends Date {
     /**
      * 转换字符串为Date
      *
-     * @param dateStr    日期字符串
+     * @param text       日期字符串
      * @param dateFormat {@link SimpleDateFormat}
      * @return {@link Date}
      */
-    private static Date parse(CharSequence dateStr, DateFormat dateFormat) {
-        Assert.notBlank(dateStr, "Date String must be not blank !");
+    private static Date parse(final CharSequence text, final DateFormat dateFormat) {
+        Assert.notBlank(text, "Date String must be not blank !");
         try {
-            return dateFormat.parse(dateStr.toString());
-        } catch (Exception e) {
-            String pattern;
+            return dateFormat.parse(text.toString());
+        } catch (final Exception e) {
+            final String pattern;
             if (dateFormat instanceof SimpleDateFormat) {
                 pattern = ((SimpleDateFormat) dateFormat).toPattern();
             } else {
                 pattern = dateFormat.toString();
             }
-            throw new InternalException(StringKit.format("Parse [{}] with format [{}] error!", dateStr, pattern), e);
+            throw new InternalException(StringKit.format("Parse [{}] with format [{}] error!", text, pattern), e);
         }
     }
 
     /**
      * 转换字符串为Date
      *
-     * @param dateStr 日期字符串
+     * @param text    日期字符串
      * @param parser  {@link FormatBuilder}
-     * @return {@link Date}
+     * @param lenient 是否宽容模式
+     * @return {@link Calendar}
      */
-    private static Calendar parse(CharSequence dateStr, DateParser parser, boolean lenient) {
+    private static Calendar parse(final CharSequence text, final PositionDateParser parser, final boolean lenient) {
         Assert.notNull(parser, "Parser or DateFromat must be not null !");
-        Assert.notBlank(dateStr, "Date String must be not blank !");
+        Assert.notBlank(text, "Date String must be not blank !");
 
-        final Calendar calendar = Formatter.parse(dateStr, lenient, parser);
+        final Calendar calendar = Formatter.parseByPatterns(text, lenient, parser);
         if (null == calendar) {
-            throw new InternalException("Parse [{}] with format [{}] error!", dateStr, parser.getPattern());
+            throw new InternalException("Parse [{}] with format [{}] error!", text, parser.getPattern());
         }
         calendar.setFirstDayOfWeek(Fields.Week.Mon.getKey());
         return calendar;

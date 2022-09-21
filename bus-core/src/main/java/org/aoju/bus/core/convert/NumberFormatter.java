@@ -346,8 +346,8 @@ public class NumberFormatter {
             }
 
             BigDecimal amount = new BigDecimal(y);
-            amount = amount.add(BigDecimal.valueOf(j).divide(BigDecimal.TEN, RoundingMode.HALF_UP));
-            amount = amount.add(BigDecimal.valueOf(f).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP));
+            amount = amount.add(BigDecimal.valueOf(j).divide(BigDecimal.TEN, 2, RoundingMode.HALF_UP));
+            amount = amount.add(BigDecimal.valueOf(f).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
             return amount;
         }
 

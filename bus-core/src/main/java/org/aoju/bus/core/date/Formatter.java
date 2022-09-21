@@ -26,13 +26,19 @@
 package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.convert.NumberFormatter;
-import org.aoju.bus.core.date.formatter.*;
+import org.aoju.bus.core.date.formatter.DatePeriod;
+import org.aoju.bus.core.date.formatter.DatePrinter;
+import org.aoju.bus.core.date.formatter.FormatBuilder;
+import org.aoju.bus.core.date.formatter.parser.*;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.*;
+import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.PatternKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -41,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.chrono.Era;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.*;
@@ -162,16 +167,16 @@ public class Formatter {
     /**
      * 按照给定的通配模式,格式化成相应的时间字符串
      *
-     * @param srcDate     原始时间字符串
+     * @param text        原始时间字符串
      * @param srcPattern  原始时间通配符
      * @param destPattern 格式化成的时间通配符
      * @return 格式化成功返回成功后的字符串, 失败返回<b>""</b>
      */
-    public static String format(String srcDate, String srcPattern, String destPattern) {
+    public static String format(String text, String srcPattern, String destPattern) {
         try {
             SimpleDateFormat srcSdf = new SimpleDateFormat(srcPattern);
             SimpleDateFormat dstSdf = new SimpleDateFormat(destPattern);
-            return dstSdf.format(srcSdf.parse(srcDate));
+            return dstSdf.format(srcSdf.parse(text));
         } catch (ParseException e) {
             return Normal.EMPTY;
         }
@@ -180,12 +185,12 @@ public class Formatter {
     /**
      * 将指定的日期转换成Unix时间戳
      *
-     * @param date 需要转换的日期 yyyy-MM-dd HH:mm:ss
+     * @param text 需要转换的日期 yyyy-MM-dd HH:mm:ss
      * @return long 时间戳
      */
-    public static long format(String date) {
+    public static long format(String text) {
         try {
-            return Fields.NORM_DATETIME_FORMAT.parse(date).getTime();
+            return Fields.NORM_DATETIME_FORMAT.parse(text).getTime();
         } catch (ParseException e) {
             throw new InternalException(e);
         }
@@ -216,13 +221,13 @@ public class Formatter {
     /**
      * 将指定的日期转换成Unix时间戳
      *
-     * @param date   需要转换的日期
+     * @param text   需要转换的日期
      * @param format 格式
      * @return long 时间戳
      */
-    public static long format(String date, String format) {
+    public static long format(String text, String format) {
         try {
-            return new SimpleDateFormat(format).parse(date).getTime();
+            return new SimpleDateFormat(format).parse(text).getTime();
         } catch (ParseException e) {
             throw new InternalException(e);
         }
@@ -489,6 +494,88 @@ public class Formatter {
     }
 
     /**
+     * 构建DateTime对象
+     *
+     * @param text       Date字符串
+     * @param dateFormat 格式化器 {@link SimpleDateFormat}
+     * @return DateTime对象
+     */
+    public static DateTime parse(final CharSequence text, final DateFormat dateFormat) {
+        return new DateTime(text, dateFormat);
+    }
+
+    /**
+     * 构建DateTime对象
+     *
+     * @param text   Date字符串
+     * @param parser 格式化器,{@link FormatBuilder}
+     * @return DateTime对象
+     */
+    public static DateTime parse(final CharSequence text, final PositionDateParser parser) {
+        return new DateTime(text, parser);
+    }
+
+    /**
+     * 构建DateTime对象
+     *
+     * @param text    Date字符串
+     * @param parser  格式化器,{@link FormatBuilder}
+     * @param lenient 是否宽容模式
+     * @return DateTime对象
+     */
+    public static DateTime parse(final CharSequence text, final PositionDateParser parser, final boolean lenient) {
+        return new DateTime(text, parser, lenient);
+    }
+
+    /**
+     * 构建DateTime对象
+     *
+     * @param text      Date字符串
+     * @param formatter 格式化器,{@link DateTimeFormatter}
+     * @return DateTime对象
+     */
+    public static DateTime parse(final CharSequence text, final DateTimeFormatter formatter) {
+        return new DateTime(text, formatter);
+    }
+
+    /**
+     * 将特定格式的日期转换为Date对象
+     *
+     * @param text   特定格式的日期
+     * @param format 格式，例如yyyy-MM-dd
+     * @return 日期对象
+     */
+    public static DateTime parse(final CharSequence text, final String format) {
+        return new DateTime(text, format);
+    }
+
+    /**
+     * 将特定格式的日期转换为Date对象
+     *
+     * @param text   特定格式的日期
+     * @param format 格式，例如yyyy-MM-dd
+     * @param locale 区域信息
+     * @return 日期对象
+     */
+    public static DateTime parse(final CharSequence text, final String format, final Locale locale) {
+        return new DateTime(text, newSimpleFormat(format, locale, null));
+    }
+
+    /**
+     * 通过给定的日期格式解析日期时间字符串
+     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link DateTime}对象，否则抛出{@link InternalException}异常
+     *
+     * @param text   日期时间字符串，非空
+     * @param format 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
+     * @return 解析后的Date
+     * @throws IllegalArgumentException if the date string or pattern array is null
+     * @throws InternalException        if none of the date patterns were suitable
+     */
+    public static DateTime parse(final String text, final String... format) throws InternalException {
+        return new DateTime(Formatter.parseByPatterns(text, format));
+    }
+
+    /**
      * 将日期字符串转换为{@link DateTime}对象，格式：
      * <ol>
      * <li>yyyy-MM-dd HH:mm:ss</li>
@@ -517,352 +604,39 @@ public class Formatter {
      * @param text 日期字符串
      * @return 日期
      */
-    public static DateTime parse(CharSequence text) {
+    public static DateTime parse(final CharSequence text) {
         if (StringKit.isBlank(text)) {
             return null;
         }
-        String dateStr = text.toString();
+        String dateText = text.toString();
         // 去掉两边空格并去掉中文日期中的“日”和“秒”，以规范长度
-        dateStr = StringKit.removeAll(dateStr.trim(), '日', '秒');
-        int length = dateStr.length();
+        dateText = StringKit.removeAll(dateText.trim(), '日', '秒');
 
-        if (MathKit.isNumber(dateStr)) {
+        if (MathKit.isNumber(dateText)) {
             // 纯数字形式
-            if (length == Fields.PURE_DATETIME_PATTERN.length()) {
-                return parse(dateStr, Fields.PURE_DATETIME_FORMAT);
-            } else if (length == Fields.PURE_DATETIME_MS_PATTERN.length()) {
-                return parse(dateStr, Fields.PURE_DATETIME_MS_FORMAT);
-            } else if (length == Fields.PURE_DATE_PATTERN.length()) {
-                return parse(dateStr, Fields.PURE_DATE_FORMAT);
-            } else if (length == Fields.PURE_TIME_PATTERN.length()) {
-                return parse(dateStr, Fields.PURE_TIME_FORMAT);
-            }
-        } else if (PatternKit.isMatch(RegEx.TIME, dateStr)) {
+            return PureDateParser.INSTANCE.parse(dateText);
+        } else if (PatternKit.isMatch(RegEx.TIME, dateText)) {
             // HH:mm:ss 或者 HH:mm 时间格式匹配单独解析
-            return parseTimeToday(dateStr);
-        } else if (StringKit.containsAnyIgnoreCase(dateStr, Fields.WTB)) {
+            return FastTimeParser.INSTANCE.parse(dateText);
+        } else if (StringKit.containsAnyIgnoreCase(dateText, Fields.WTB)) {
             // JDK的Date对象toString默认格式，类似于：
-            // Tue Jan 07 15:22:15 +0800 2020
-            // Wed Jan 08 00:00:00 CST 2020
-            // Thu Jan 09 17:51:10 GMT+08:00 2020
-            return parseCST(dateStr);
-        } else if (StringKit.contains(dateStr, 'T')) {
+            // Tue Jun 4 16:25:15 +0800 2019
+            // Thu May 16 17:57:18 GMT+08:00 2019
+            // Wed Aug 01 00:00:00 CST 2012
+            return CSTDateParser.INSTANCE.parse(dateText);
+        } else if (StringKit.contains(dateText, 'T')) {
             // UTC时间
-            return parseUTC(dateStr);
+            return UTCDateParser.INSTANCE.parse(dateText);
         }
 
-        // 含有单个位数数字的日期时间格式
-        dateStr = normalize(dateStr);
-        if (PatternKit.isMatch(Fields.REGEX_NORM, dateStr)) {
-            final int colonCount = CharsKit.count(dateStr, Symbol.COLON);
-            switch (colonCount) {
-                case 0:
-                    // yyyy-MM-dd
-                    return parse(dateStr, Fields.NORM_DATE_FORMAT);
-                case 1:
-                    // yyyy-MM-dd HH:mm
-                    return parse(dateStr, Fields.NORM_DATETIME_MINUTE_FORMAT);
-                case 2:
-                    final int indexOfDot = StringKit.indexOf(dateStr, Symbol.C_DOT);
-                    if (indexOfDot > 0) {
-                        final int length1 = dateStr.length();
-                        // yyyy-MM-dd HH:mm:ss.SSS 或者 yyyy-MM-dd HH:mm:ss.SSSSSS
-                        if (length1 - indexOfDot > 4) {
-                            // 类似yyyy-MM-dd HH:mm:ss.SSSSSS，采取截断操作
-                            dateStr = StringKit.subPre(dateStr, indexOfDot + 4);
-                        }
-                        return parse(dateStr, Fields.NORM_DATETIME_MS_FORMAT);
-                    }
-                    // yyyy-MM-dd HH:mm:ss
-                    return parse(dateStr, Fields.NORM_DATETIME_FORMAT);
-            }
+        //标准日期格式（包括单个数字的日期时间）
+        dateText = normalize(dateText);
+        if (PatternKit.isMatch(Fields.REGEX_NORM, dateText)) {
+            return NormalDateParser.INSTANCE.parse(dateText);
         }
 
         // 没有更多匹配的时间格式
-        throw new InternalException("No format fit for date String [{}] !", dateStr);
-    }
-
-    /**
-     * 构建LocalDateTime对象
-     *
-     * @param text    时间字符串(带格式)
-     * @param pattern 使用{@link Fields}定义的格式
-     * @return LocalDateTime对象
-     */
-    public static LocalDateTime parse(CharSequence text, String pattern) {
-        text = normalize(text);
-        DateTimeFormatter df = DateTimeFormatter.ofPattern(pattern);
-        try {
-            return LocalDateTime.parse(text, df);
-        } catch (DateTimeParseException e) {
-            // 在给定日期字符串没有时间部分时，LocalDateTime会报错，此时使用LocalDate中转转换
-            return LocalDate.parse(text, df).atStartOfDay();
-        }
-    }
-
-    /**
-     * 构建DateTime对象
-     *
-     * @param text   Date字符串
-     * @param format 格式化器 {@link SimpleDateFormat}
-     * @return DateTime对象
-     */
-    public static DateTime parse(String text, DateFormat format) {
-        return new DateTime(text, format);
-    }
-
-    /**
-     * 构建DateTime对象
-     *
-     * @param text   Date字符串
-     * @param parser 格式化器,{@link FormatBuilder}
-     * @return DateTime对象
-     */
-    public static DateTime parse(String text, DateParser parser) {
-        return new DateTime(text, parser);
-    }
-
-    /**
-     * 将特定格式的日期转换为Date对象
-     *
-     * @param text    特定格式的日期
-     * @param pattern 格式,例如yyyy-MM-dd
-     * @return 日期对象
-     */
-    public static DateTime parse(String text, String pattern) {
-        return new DateTime(text, pattern);
-    }
-
-    /**
-     * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
-     *
-     * @param text   日期时间字符串，非空
-     * @param format 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的 {@link Calendar}
-     */
-    public static Calendar parse(String text, String... format) {
-        return parseByPatterns(text, null, format);
-    }
-
-    /**
-     * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
-     *
-     * @param text    日期时间字符串，非空
-     * @param locale  地区，当为{@code null}时使用{@link Locale#getDefault()}
-     * @param pattern 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的 {@link Calendar}
-     */
-    public static Calendar parse(String text, Locale locale, String... pattern) {
-        return parseByPatterns(text, locale, true, pattern);
-    }
-
-    /**
-     * 构建DateTime对象
-     *
-     * @param text    Date字符串
-     * @param parser  格式化器,{@link DateParser}
-     * @param lenient 是否宽容模式
-     * @return DateTime对象
-     */
-    public static DateTime parse(CharSequence text, DateParser parser, boolean lenient) {
-        return new DateTime(text, parser, lenient);
-    }
-
-    /**
-     * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
-     *
-     * @param text    日期时间字符串，非空
-     * @param locale  地区，当为{@code null}时使用{@link Locale#getDefault()}
-     * @param lenient 日期时间解析是否使用严格模式
-     * @param pattern 需要尝试的日期时间格式数组，非空
-     * @return 解析后的 {@link Calendar}
-     * @see java.util.Calendar#isLenient()
-     */
-    public static Calendar parse(String text, Locale locale, boolean lenient, String... pattern) {
-        if (null == text || null == pattern) {
-            throw new IllegalArgumentException("Date and Patterns must not be null");
-        }
-
-        final TimeZone tz = TimeZone.getDefault();
-        final Locale lcl = ObjectKit.defaultIfNull(locale, Locale.getDefault());
-        final ParsePosition pos = new ParsePosition(0);
-        final Calendar calendar = Calendar.getInstance(tz, lcl);
-        calendar.setLenient(lenient);
-
-        for (final String parsePattern : pattern) {
-            final FastDateParser fdp = new FastDateParser(parsePattern, tz, lcl);
-            calendar.clear();
-            try {
-                if (fdp.parse(text, pos, calendar) && pos.getIndex() == text.length()) {
-                    return calendar;
-                }
-            } catch (final IllegalArgumentException ignore) {
-                // leniency is preventing calendar from being set
-            }
-            pos.setIndex(0);
-        }
-        throw new InternalException("Unable to parse the date: {}", text);
-    }
-
-    /**
-     * 解析日期字符串，忽略时分秒，支持的格式包括：
-     * <pre>
-     * yyyy-MM-dd
-     * yyyy/MM/dd
-     * yyyy.MM.dd
-     * yyyy年MM月dd日
-     * </pre>
-     *
-     * @param text 标准形式的日期字符串
-     * @return 日期对象
-     */
-    public static DateTime parseDate(String text) {
-        return parse(normalize(text), Fields.NORM_DATE_FORMAT);
-    }
-
-    /**
-     * 解析时间,格式HH:mm:ss,默认为1970-01-01
-     *
-     * @param text 标准形式的日期字符串
-     * @return 日期对象
-     */
-    public static DateTime parseTime(String text) {
-        return parse(normalize(text), Fields.NORM_TIME_FORMAT);
-    }
-
-    /**
-     * 解析日期时间字符串，格式支持：
-     *
-     * <pre>
-     * yyyy-MM-dd HH:mm:ss
-     * yyyy/MM/dd HH:mm:ss
-     * yyyy.MM.dd HH:mm:ss
-     * yyyy年MM月dd日 HH:mm:ss
-     * </pre>
-     *
-     * @param text 标准形式的时间字符串
-     * @return 日期对象
-     */
-    public static DateTime parseDateTime(String text) {
-        return parse(normalize(text), Fields.NORM_DATETIME_FORMAT);
-    }
-
-    /**
-     * 解析时间,格式HH:mm:ss,日期默认为今天
-     *
-     * @param text 标准形式的日期字符串
-     * @return 日期对象
-     */
-    public static DateTime parseTimeToday(String text) {
-        text = StringKit.format("{} {}", formatDate(new DateTime()), text);
-        if (1 == StringKit.count(text, Symbol.C_COLON)) {
-            // 时间格式为 HH:mm
-            return parse(text, Fields.NORM_DATETIME_MINUTE_PATTERN);
-        } else {
-            // 时间格式为 HH:mm:ss
-            return parse(text, Fields.NORM_DATETIME_FORMAT);
-        }
-    }
-
-    /**
-     * 使用指定{@link DateParser}解析字符串为{@link Calendar}
-     *
-     * @param text    日期字符串
-     * @param lenient 是否宽容模式
-     * @param parser  {@link DateParser}
-     * @return 解析后的 {@link Calendar}，解析失败返回{@code null}
-     */
-    public static Calendar parse(CharSequence text, boolean lenient, DateParser parser) {
-        final Calendar calendar = Calendar.getInstance(parser.getTimeZone(), parser.getLocale());
-        calendar.clear();
-        calendar.setLenient(lenient);
-
-        return parser.parse(StringKit.toString(text), new ParsePosition(0), calendar) ? calendar : null;
-    }
-
-    /**
-     * 解析CST时间，格式：
-     * <ol>
-     * <li>EEE MMM dd HH:mm:ss z yyyy(例如：Wed Aug 01 00:00:00 CST 2020)</li>
-     * </ol>
-     *
-     * @param text UTC时间
-     * @return 日期对象
-     */
-    public static DateTime parseCST(CharSequence text) {
-        if (null == text) {
-            return null;
-        }
-
-        return parse((String) text, Fields.JDK_DATETIME_FORMAT);
-    }
-
-    /**
-     * 解析UTC时间，格式：
-     * <ol>
-     * <li>yyyy-MM-dd'T'HH:mm:ss'Z'</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ssZ</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ss+0800</li>
-     * <li>yyyy-MM-dd'T'HH:mm:ss+08:00</li>
-     * </ol>
-     *
-     * @param text UTC时间
-     * @return 日期对象
-     */
-    public static DateTime parseUTC(String text) {
-        if (null == text) {
-            return null;
-        }
-        final int length = text.length();
-        if (StringKit.contains(text, 'Z')) {
-            if (length == Fields.UTC_PATTERN.length() - 4) {
-                // 格式类似：2020-09-11T06:34:32Z，-4表示减去4个单引号的长度
-                return parse(text, Fields.UTC_FORMAT);
-            }
-
-            final int patternLength = Fields.OUTPUT_MSEC_PATTERN.length();
-            // 格式类似：2020-09-11T06:34:32.999Z，-4表示减去4个单引号的长度
-            // -4 ~ -6范围表示匹配毫秒1~3位的情况
-            if (length <= patternLength - 4 && length >= patternLength - 6) {
-                return parse(text, Fields.OUTPUT_MSEC_FORMAT);
-            }
-        } else if (StringKit.contains(text, Symbol.C_PLUS)) {
-            // 去除类似2021-08-17T19:45:43 +08:00加号前的空格
-            text = text.replace(Symbol.SPACE + Symbol.PLUS, Symbol.PLUS);
-            final String zoneOffset = StringKit.subAfter(text, Symbol.C_PLUS, true);
-            if (StringKit.isBlank(zoneOffset)) {
-                throw new InternalException("Invalid format: [{}]", text);
-            }
-            if (false == StringKit.contains(zoneOffset, Symbol.C_COLON)) {
-                // +0800转换为+08:00
-                final String pre = StringKit.subBefore(text, Symbol.C_PLUS, true);
-                text = pre + Symbol.PLUS + zoneOffset.substring(0, 2) + Symbol.C_COLON + Symbol.ZERO + Symbol.ZERO;
-            }
-
-            if (StringKit.contains(text, Symbol.DOT)) {
-                // 带毫秒，格式类似：2021-08-17T05:34:31.999+08:00
-                return parse(text, Fields.WITH_XXX_OFFSET_FORMAT);
-            } else {
-                // 格式类似：2021-08-17T05:30:21+08:00
-                return parse(text, Fields.WITH_XXX_OFFSET_FORMAT);
-            }
-        } else {
-            if (length == Fields.SIMPLE_PATTERN.length() - 2) {
-                // 格式类似：2021-08-13T05:30:21
-                return parse(text, Fields.SIMPLE_FORMAT);
-            } else if (StringKit.contains(text, Symbol.DOT)) {
-                // 可能为：  2021-08-17T06:31:33.99
-                return parse(text, Fields.SIMPLE_MS_FORMAT);
-            }
-        }
-
-        // 没有更多匹配的时间格式
-        throw new InternalException("No format fit for date String [{}] !", text);
+        throw new InternalException("No format fit for date String [{}] !", dateText);
     }
 
     /**
@@ -888,6 +662,22 @@ public class Formatter {
      */
     public static Calendar parseByPatterns(String text, Locale locale, String... pattern) {
         return parseByPatterns(text, locale, true, pattern);
+    }
+
+    /**
+     * 使用指定{@link DateParser}解析字符串为{@link Calendar}
+     *
+     * @param text    日期字符串
+     * @param lenient 是否宽容模式
+     * @param parser  {@link DateParser}
+     * @return 解析后的 {@link Calendar}，解析失败返回{@code null}
+     */
+    public static Calendar parseByPatterns(final CharSequence text, final boolean lenient, final PositionDateParser parser) {
+        final Calendar calendar = Calendar.getInstance(parser.getTimeZone(), parser.getLocale());
+        calendar.clear();
+        calendar.setLenient(lenient);
+
+        return parser.parse(StringKit.toString(text), new ParsePosition(0), calendar) ? calendar : null;
     }
 
     /**
@@ -1031,20 +821,20 @@ public class Formatter {
      * <p>
      * 当末位是":"时去除之(不存在毫秒时)
      *
-     * @param dateStr 日期时间字符串
+     * @param text 日期时间字符串
      * @return 格式化后的日期字符串
      */
-    private static String normalize(CharSequence dateStr) {
-        if (StringKit.isBlank(dateStr)) {
-            return StringKit.toString(dateStr);
+    private static String normalize(CharSequence text) {
+        if (StringKit.isBlank(text)) {
+            return StringKit.toString(text);
         }
 
         // 日期时间分开处理
-        final List<String> dateAndTime = StringKit.splitTrim(dateStr, Symbol.C_SPACE);
+        final List<String> dateAndTime = StringKit.splitTrim(text, Symbol.C_SPACE);
         final int size = dateAndTime.size();
         if (size < 1 || size > 2) {
             // 非可被标准处理的格式
-            return StringKit.toString(dateStr);
+            return StringKit.toString(text);
         }
 
         final StringBuilder builder = StringKit.builder();

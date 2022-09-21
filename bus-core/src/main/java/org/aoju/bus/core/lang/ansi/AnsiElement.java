@@ -28,12 +28,17 @@ package org.aoju.bus.core.lang.ansi;
 /**
  * ANSI可转义节点接口，实现为ANSI颜色等
  *
- * <p>来自Spring Boot</p>
- *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface AnsiElement {
+
+    /**
+     * 获取ANSI代码
+     *
+     * @return ANSI代码
+     */
+    int getCode();
 
     /**
      * @return ANSI转义编码

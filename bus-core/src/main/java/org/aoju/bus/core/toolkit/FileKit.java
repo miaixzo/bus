@@ -65,7 +65,7 @@ public class FileKit {
     /**
      * Windows下文件名中的无效字符
      */
-    private static final Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|]");
+    private static final Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|\r\n]");
 
     /**
      * 是否为Windows环境
@@ -2072,12 +2072,12 @@ public class FileKit {
         if (null == fileName) {
             return null;
         }
-        int index = fileName.lastIndexOf(Symbol.DOT);
+        final int index = fileName.lastIndexOf(Symbol.DOT);
         if (index == Normal.__1) {
             return Normal.EMPTY;
         } else {
-            int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
-            String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
+            final int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
+            final String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
             if (StringKit.containsAny(substr, new String[]{"tar.bz2", "tar.Z", "tar.gz", "tar.xz"})) {
                 return substr;
             }
