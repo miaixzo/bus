@@ -43,23 +43,23 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CompositeRegister extends ConverterRegistry {
+public class CompositeConverter extends RegistryConverter {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 构造
      */
-    public CompositeRegister() {
+    public CompositeConverter() {
         super();
     }
 
     /**
-     * 获得单例的 ConverterRegistry
+     * 获得单例的 RegistryConverter
      *
-     * @return ConverterRegistry
+     * @return RegistryConverter
      */
-    public static CompositeRegister getInstance() {
+    public static CompositeConverter getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
@@ -222,7 +222,7 @@ public class CompositeRegister extends ConverterRegistry {
         /**
          * 静态初始化器，由JVM来保证线程安全
          */
-        private static final CompositeRegister INSTANCE = new CompositeRegister();
+        private static final CompositeConverter INSTANCE = new CompositeConverter();
     }
 
 }

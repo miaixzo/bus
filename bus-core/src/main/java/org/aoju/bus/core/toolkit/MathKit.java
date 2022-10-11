@@ -1725,13 +1725,7 @@ public class MathKit {
      * @return 是否相等
      */
     public static boolean equals(BigDecimal bigNum1, BigDecimal bigNum2) {
-        if (bigNum1 == bigNum2) {
-            return true;
-        }
-        if (null == bigNum1 || null == bigNum2) {
-            return false;
-        }
-        return 0 == bigNum1.compareTo(bigNum2);
+        return ObjectKit.equals(bigNum1, bigNum2);
     }
 
     /**

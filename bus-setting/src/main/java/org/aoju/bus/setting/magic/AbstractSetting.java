@@ -27,13 +27,12 @@ package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
-import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.getter.OptNullString;
+import org.aoju.bus.core.getter.GroupedGetter;
+import org.aoju.bus.core.getter.TypeGetter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.BeanKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.lang.function.XFunction;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -44,23 +43,25 @@ import java.lang.reflect.Type;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractSetting implements OptNullString<String>, Serializable {
+public abstract class AbstractSetting implements TypeGetter<CharSequence>,
+        GroupedGetter<CharSequence, CharSequence>, Serializable {
 
     @Override
-    public String getString(String key, String defaultValue) {
-        return getString(key, Normal.EMPTY, defaultValue);
+    public Object getObject(final CharSequence key, final Object defaultValue) {
+        return ObjectKit.defaultIfNull(getObjectByGroup(key, Normal.EMPTY), defaultValue);
     }
 
     /**
-     * 获得字符串类型值
+     * 根据lambda的方法引用，获取
      *
-     * @param key          KEY
-     * @param group        分组
-     * @param defaultValue 默认值
-     * @return 值，如果字符串为{@code null}返回默认值
+     * @param func 方法引用
+     * @param <P>  参数类型
+     * @param <T>  返回值类型
+     * @return 获取表达式对应属性和返回的对象
      */
-    public String getString(String key, String group, String defaultValue) {
-        return ObjectKit.defaultIfNull(getByGroup(key, group), defaultValue);
+    public <P, T> T get(final XFunction<P, T> func) {
+        final LambdaKit.Info lambdaInfo = LambdaKit.resolve(func);
+        return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
     }
 
     /**
@@ -71,38 +72,9 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * @param defaultValue 默认值
      * @return 值，如果字符串为{@code null}或者""返回默认值
      */
-    public String getStrNotEmpty(String key, String group, String defaultValue) {
-        return ObjectKit.defaultIfEmpty(getByGroup(key, group), defaultValue);
-    }
-
-    /**
-     * 获得指定分组的键对应值
-     *
-     * @param key   键
-     * @param group 分组
-     * @return 值
-     */
-    public abstract String getByGroup(String key, String group);
-
-    /**
-     * 带有日志提示的get,如果没有定义指定的KEY,则打印debug日志
-     *
-     * @param key 键
-     * @return 值
-     */
-    public String getWithLog(String key) {
-        return getString(key);
-    }
-
-    /**
-     * 带有日志提示的get,如果没有定义指定的KEY,则打印debug日志
-     *
-     * @param key   键
-     * @param group 分组
-     * @return 值
-     */
-    public String getByGroupWithLog(String key, String group) {
-        return getByGroup(key, group);
+    public String getByGroupNotEmpty(final String key, final String group, final String defaultValue) {
+        final String value = getStringByGroup(key, group);
+        return ObjectKit.defaultIfEmpty(value, defaultValue);
     }
 
     /**
@@ -111,8 +83,8 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * @param key 属性名
      * @return 属性值
      */
-    public String[] getStrings(String key) {
-        return getStrings(key, null);
+    public String[] getStrs(final String key) {
+        return getStrs(key, null);
     }
 
     /**
@@ -122,8 +94,8 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * @param defaultValue 默认的值
      * @return 属性值
      */
-    public String[] getStringsWithDefault(String key, String[] defaultValue) {
-        String[] value = getStrings(key, null);
+    public String[] getStrs(final CharSequence key, final String[] defaultValue) {
+        String[] value = getStrsByGroup(key, null);
         if (null == value) {
             value = defaultValue;
         }
@@ -132,26 +104,36 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
     }
 
     /**
-     * 获得数组型
+     * 获得数组型默认逗号分隔
+     * 若配置文件中键值对类似于：
+     * <pre>
+     *     a = 1,2,3,4
+     * </pre>
+     * 则获取结果为：[1, 2, 3, 4]
      *
      * @param key   属性名
      * @param group 分组名
      * @return 属性值
      */
-    public String[] getStrings(String key, String group) {
-        return getStrings(key, group, Symbol.COMMA);
+    public String[] getStrsByGroup(final CharSequence key, final CharSequence group) {
+        return getStrsByGroup(key, group, Symbol.COMMA);
     }
 
     /**
-     * 获得数组型
+     * 获得数组型，可自定义分隔符
+     * 假定分隔符为逗号，若配置文件中键值对类似于：
+     * <pre>
+     *     a = 1,2,3,4
+     * </pre>
+     * 则获取结果为：[1, 2, 3, 4]
      *
      * @param key       属性名
      * @param group     分组名
      * @param delimiter 分隔符
      * @return 属性值
      */
-    public String[] getStrings(String key, String group, String delimiter) {
-        final String value = getByGroup(key, group);
+    public String[] getStrsByGroup(final CharSequence key, final CharSequence group, final CharSequence delimiter) {
+        final String value = getStringByGroup(key, group);
         if (StringKit.isBlank(value)) {
             return null;
         }
@@ -159,131 +141,25 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
     }
 
     /**
-     * 获取数字型型属性值
-     *
-     * @param key   属性名
-     * @param group 分组名
-     * @return 属性值
-     */
-    public Integer getInt(String key, String group) {
-        return getInt(key, group, null);
-    }
-
-    /**
-     * 获取数字型型属性值
-     *
-     * @param key          属性名
-     * @param group        分组名
-     * @param defaultValue 默认值
-     * @return 属性值
-     */
-    public Integer getInt(String key, String group, Integer defaultValue) {
-        return Convert.toInt(getByGroup(key, group), defaultValue);
-    }
-
-    /**
-     * 获取布尔型属性值
-     *
-     * @param key   属性名
-     * @param group 分组名
-     * @return 属性值
-     */
-    public Boolean getBoolean(String key, String group) {
-        return getBoolean(key, group, null);
-    }
-
-    /**
-     * 获取布尔型型属性值
-     *
-     * @param key          属性名
-     * @param group        分组名
-     * @param defaultValue 默认值
-     * @return 属性值
-     */
-    public Boolean getBoolean(String key, String group, Boolean defaultValue) {
-        return Convert.toBoolean(getByGroup(key, group), defaultValue);
-    }
-
-    /**
-     * 获取long类型属性值
-     *
-     * @param key   属性名
-     * @param group 分组名
-     * @return 属性值
-     */
-    public Long getLong(String key, String group) {
-        return getLong(key, group, null);
-    }
-
-    /**
-     * 获取long类型属性值
-     *
-     * @param key          属性名
-     * @param group        分组名
-     * @param defaultValue 默认值
-     * @return 属性值
-     */
-    public Long getLong(String key, String group, Long defaultValue) {
-        return Convert.toLong(getByGroup(key, group), defaultValue);
-    }
-
-    /**
-     * 获取char类型属性值
-     *
-     * @param key   属性名
-     * @param group 分组名
-     * @return 属性值
-     */
-    public Character getChar(String key, String group) {
-        final String value = getByGroup(key, group);
-        if (StringKit.isBlank(value)) {
-            return null;
-        }
-        return value.charAt(0);
-    }
-
-    /**
-     * 获取double类型属性值
-     *
-     * @param key   属性名
-     * @param group 分组名
-     * @return 属性值
-     */
-    public Double getDouble(String key, String group) {
-        return getDouble(key, group, null);
-    }
-
-    /**
-     * 获取double类型属性值
-     *
-     * @param key          属性名
-     * @param group        分组名
-     * @param defaultValue 默认值
-     * @return 属性值
-     */
-    public Double getDouble(String key, String group, Double defaultValue) {
-        return Convert.toDouble(getByGroup(key, group), defaultValue);
-    }
-
-    /**
      * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
      * 只支持基本类型的转换
      *
-     * @param <T>   对象
+     * @param <T>   Bean类型
      * @param group 分组
      * @param bean  Bean对象
      * @return Bean
      */
-    public <T> T toBean(final String group, T bean) {
-        return BeanKit.fillBean(bean, new ValueProvider<String>() {
+    public <T> T toBean(final CharSequence group, final T bean) {
+        return BeanKit.fillBean(bean, new ValueProvider<>() {
+
             @Override
-            public Object value(String key, Type valueType) {
-                return getByGroup(key, group);
+            public Object value(final String key, final Type valueType) {
+                return getObjectByGroup(key, group);
             }
 
             @Override
-            public boolean containsKey(String key) {
-                return null != getByGroup(key, group);
+            public boolean containsKey(final String key) {
+                return null != getObjectByGroup(key, group);
             }
         }, CopyOptions.create());
     }
@@ -292,12 +168,37 @@ public abstract class AbstractSetting implements OptNullString<String>, Serializ
      * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
      * 只支持基本类型的转换
      *
-     * @param <T>  对象
+     * @param <T>       Bean类型
+     * @param group     分组
+     * @param beanClass Bean类型
+     * @return Bean
+     */
+    public <T> T toBean(final CharSequence group, final Class<T> beanClass) {
+        return toBean(group, ReflectKit.newInstanceIfPossible(beanClass));
+    }
+
+    /**
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
+     * 只支持基本类型的转换
+     *
+     * @param <T>  bean类型
      * @param bean Bean
      * @return Bean
      */
-    public <T> T toBean(T bean) {
+    public <T> T toBean(final T bean) {
         return toBean(null, bean);
+    }
+
+    /**
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
+     * 只支持基本类型的转换
+     *
+     * @param <T>       bean类型
+     * @param beanClass Bean类型
+     * @return Bean
+     */
+    public <T> T toBean(final Class<T> beanClass) {
+        return toBean(null, beanClass);
     }
 
 }

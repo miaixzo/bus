@@ -261,7 +261,7 @@ public class CharsKit {
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
      */
-    public static boolean isBlankChar(char args) {
+    public static boolean isBlankChar(final char args) {
         return isBlankChar((int) args);
     }
 
@@ -274,12 +274,13 @@ public class CharsKit {
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
      */
-    public static boolean isBlankChar(int args) {
+    public static boolean isBlankChar(final int args) {
         return Character.isWhitespace(args)
                 || Character.isSpaceChar(args)
                 || args == '\ufeff'
                 || args == '\u202a'
-                || args == '\u0000';
+                || args == '\u0000'
+                || args == '\u3164';
     }
 
     /**
@@ -2822,15 +2823,15 @@ public class CharsKit {
      * @param text         字符串
      * @param startInclude 开始位置（包含）
      * @param endExclude   结束位置（不包含）
-     * @param replacedStr  被替换的字符串
+     * @param replacedChar 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, int startInclude, int endExclude, CharSequence replacedStr) {
+    public static String replace(CharSequence text, int startInclude, int endExclude, CharSequence replacedChar) {
         if (isEmpty(text)) {
             return toString(text);
         }
         final String originalStr = toString(text);
-        int[] strCodePoints = originalStr.codePoints().toArray();
+        final int[] strCodePoints = originalStr.codePoints().toArray();
         final int strLength = strCodePoints.length;
         if (startInclude > strLength) {
             return originalStr;
@@ -2843,13 +2844,14 @@ public class CharsKit {
             return originalStr;
         }
 
-        final StringBuilder stringBuilder = new StringBuilder();
+        // 新字符串长度 <= 旧长度 - (被替换区间codePoints数量) + 替换字符串长度
+        final StringBuilder stringBuilder = new StringBuilder(originalStr.length() - (endExclude - startInclude) + replacedChar.length());
         for (int i = 0; i < startInclude; i++) {
-            stringBuilder.append(new String(strCodePoints, i, 1));
+            stringBuilder.appendCodePoint(strCodePoints[i]);
         }
-        stringBuilder.append(replacedStr);
+        stringBuilder.append(replacedChar);
         for (int i = endExclude; i < strLength; i++) {
-            stringBuilder.append(new String(strCodePoints, i, 1));
+            stringBuilder.appendCodePoint(strCodePoints[i]);
         }
         return stringBuilder.toString();
     }
@@ -2885,8 +2887,8 @@ public class CharsKit {
         if (isEmpty(text)) {
             return toString(text);
         }
-        String original = toString(text);
-        int[] strCodePoints = original.codePoints().toArray();
+        final String original = toString(text);
+        final int[] strCodePoints = original.codePoints().toArray();
         final int strLength = strCodePoints.length;
         if (startInclude > strLength) {
             return original;
@@ -2895,16 +2897,16 @@ public class CharsKit {
             endExclude = strLength;
         }
         if (startInclude > endExclude) {
-            // 如果起始位置大于结束位置,不替换
+            // 如果起始位置大于结束位置，不替换
             return original;
         }
 
-        final StringBuilder stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder(original.length());
         for (int i = 0; i < strLength; i++) {
             if (i >= startInclude && i < endExclude) {
                 stringBuilder.append(replacedChar);
             } else {
-                stringBuilder.append(new String(strCodePoints, i, 1));
+                stringBuilder.appendCodePoint(strCodePoints[i]);
             }
         }
         return stringBuilder.toString();

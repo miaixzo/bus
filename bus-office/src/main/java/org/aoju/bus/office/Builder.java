@@ -48,8 +48,18 @@ public final class Builder {
      */
     private static final int[] CUSTOM_FORMATS = new int[]{28, 30, 31, 32, 33, 55, 56, 57, 58};
 
+    /**
+     * 某些特殊的自定义日期格式
+     */
+    private static final int[] customFormats = new int[]{28, 30, 31, 32, 33, 55, 56, 57, 58};
 
-    public static boolean isDateFormat(Cell cell) {
+    /**
+     * 是否日期格式
+     *
+     * @param cell 单元格
+     * @return 是否日期格式
+     */
+    public static boolean isDateFormat(final Cell cell) {
         return isDateFormat(cell, null);
     }
 
@@ -60,9 +70,19 @@ public final class Builder {
      * @param cfEvaluator {@link ConditionalFormattingEvaluator}
      * @return 是否日期格式
      */
-    public static boolean isDateFormat(Cell cell, ConditionalFormattingEvaluator cfEvaluator) {
+    public static boolean isDateFormat(final Cell cell, final ConditionalFormattingEvaluator cfEvaluator) {
         final ExcelNumberFormat nf = ExcelNumberFormat.from(cell, cfEvaluator);
-        return isDateFormat(nf.getIdx(), nf.getFormat());
+        return isDateFormat(nf);
+    }
+
+    /**
+     * 判断是否日期格式
+     *
+     * @param numFmt {@link ExcelNumberFormat}
+     * @return 是否日期格式
+     */
+    public static boolean isDateFormat(final ExcelNumberFormat numFmt) {
+        return isDateFormat(numFmt.getIdx(), numFmt.getFormat());
     }
 
     /**
@@ -72,10 +92,11 @@ public final class Builder {
      * @param formatString 格式字符串
      * @return 是否为日期格式
      */
-    public static boolean isDateFormat(int formatIndex, String formatString) {
-        if (ArrayKit.contains(CUSTOM_FORMATS, formatIndex)) {
+    public static boolean isDateFormat(final int formatIndex, final String formatString) {
+        if (ArrayKit.contains(customFormats, formatIndex)) {
             return true;
         }
+
         // 自定义格式判断
         if (StringKit.isNotEmpty(formatString) &&
                 StringKit.containsAny(formatString, "周", "星期", "aa")) {
@@ -83,6 +104,7 @@ public final class Builder {
             // aaa -> 星期一
             return true;
         }
+
         return org.apache.poi.ss.usermodel.DateUtil.isADateFormat(formatIndex, formatString);
     }
 

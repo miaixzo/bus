@@ -1161,7 +1161,6 @@ public class StringKit extends CharsKit {
      *
      * @param text 排序字段
      * @return {@link String}
-     * @author sixawn.zheng
      */
     public static String sort(String text) {
         if (CharsKit.isEmpty(text) || Normal.EMPTY.equalsIgnoreCase(text)) {

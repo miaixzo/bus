@@ -23,106 +23,134 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.getter;
+package org.aoju.bus.core.lock;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
+import org.aoju.bus.core.lang.Console;
+
+import java.io.Serializable;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 /**
- * 列表类型的Get接口
+ * Object对象读写锁
  *
+ * @param <T> 所涉及对象的类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface ListType {
+public class ObjectWithLock<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 获取Object型属性值列表
-     *
-     * @param key 属性名
-     * @return 属性值列表
+     * 读写锁
      */
-    List<Object> getObjList(String key);
+    private final ReentrantReadWriteLock lock;
 
     /**
-     * 获取String型属性值列表
-     *
-     * @param key 属性名
-     * @return 属性值列表
+     * 对象信息
      */
-    List<String> getStrList(String key);
+    private T object;
 
     /**
-     * 获取Integer型属性值列表
+     * 构造对象
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @param object 对象信息
      */
-    List<Integer> getIntList(String key);
+    public ObjectWithLock(T object) {
+        this(object, new ReentrantReadWriteLock());
+    }
 
     /**
-     * 获取Short型属性值列表
+     * 构造对象
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @param object 对象信息
+     * @param lock   读写锁
      */
-    List<Short> getShortList(String key);
+    public ObjectWithLock(T object, ReentrantReadWriteLock lock) {
+        super();
+        this.object = object;
+        this.lock = lock;
+    }
 
     /**
-     * 获取Boolean型属性值列表
+     * 获取读写锁
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @return 读写锁
      */
-    List<Boolean> getBoolList(String key);
+    public ReentrantReadWriteLock getLock() {
+        return lock;
+    }
 
     /**
-     * 获取BigDecimal型属性值列表
+     * 获取写锁
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @return 写锁信息
      */
-    List<Long> getLongList(String key);
+    public WriteLock writeLock() {
+        return lock.writeLock();
+    }
 
     /**
-     * 获取Character型属性值列表
+     * 获取读锁
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @return 读锁信息
      */
-    List<Character> getCharList(String key);
+    public ReadLock readLock() {
+        return lock.readLock();
+    }
 
     /**
-     * 获取Double型属性值列表
+     * 获取对象
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @return 对象
      */
-    List<Double> getDoubleList(String key);
+    public T getObject() {
+        return object;
+    }
 
     /**
-     * 获取Byte型属性值列表
+     * 设置对象
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @param object 对象信息
      */
-    List<Byte> getByteList(String key);
+    public void setObject(T object) {
+        this.object = object;
+    }
 
     /**
-     * 获取BigDecimal型属性值列表
+     * 操作对象，带上读锁
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @param readLockHandler 拦截锁
      */
-    List<BigDecimal> getBigDecimalList(String key);
+    public void read(LockHandler<T> readLockHandler) {
+        ReadLock readLock = lock.readLock();
+        readLock.lock();
+        try {
+            readLockHandler.read(object);
+        } catch (Throwable e) {
+            Console.error(e.getMessage(), e);
+        } finally {
+            readLock.unlock();
+        }
+    }
 
     /**
-     * 获取BigInteger型属性值列表
+     * 操作对象，带上写锁
      *
-     * @param key 属性名
-     * @return 属性值列表
+     * @param writeLockHandler 拦截锁
      */
-    List<BigInteger> getBigIntegerList(String key);
+    public void write(LockHandler<T> writeLockHandler) {
+        WriteLock writeLock = lock.writeLock();
+        writeLock.lock();
+        try {
+            writeLockHandler.write(object);
+        } catch (Throwable e) {
+            Console.error(e.getMessage(), e);
+        } finally {
+            writeLock.unlock();
+        }
+    }
 
 }

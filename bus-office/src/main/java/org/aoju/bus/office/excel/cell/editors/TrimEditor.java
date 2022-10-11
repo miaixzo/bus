@@ -23,28 +23,26 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.office.excel.cell;
+package org.aoju.bus.office.excel.cell.editors;
 
-
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * 单元格处理器接口
- * 用于在读取Excel单元格值时自定义结果值的获取，如在获取值的同时
- * 获取单元格样式、坐标等信息，或根据单元格信息，装饰转换结果值
+ * 去除String类型的单元格值两边的空格
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@FunctionalInterface
-public interface CellHandler {
+public class TrimEditor implements CellEditor {
 
-    /**
-     * 处理
-     *
-     * @param cell  单元格对象，可以获取单元格行、列样式等信息
-     * @param value 单元格值
-     */
-    void handle(Cell cell, Object value);
+    @Override
+    public Object edit(Cell cell, Object value) {
+        if (value instanceof String) {
+            return StringKit.trim((String) value);
+        }
+        return value;
+    }
 
 }

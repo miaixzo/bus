@@ -102,7 +102,7 @@ public class MapConverter implements Converter, Serializable {
      * @param targetMap 目标Map
      */
     private void convertMapToMap(final Type keyType, final Type valueType, final Map<?, ?> srcMap, final Map targetMap) {
-        final CompositeRegister convert = CompositeRegister.getInstance();
+        final CompositeConverter convert = CompositeConverter.getInstance();
         srcMap.forEach((key, value) -> {
             key = TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key, null);
             value = TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value, null);

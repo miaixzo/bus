@@ -29,7 +29,7 @@ import org.aoju.bus.core.collection.*;
 import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.convert.ConverterRegistry;
+import org.aoju.bus.core.convert.RegistryConverter;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.*;
 
@@ -1947,12 +1947,12 @@ public class CollKit {
             if (t instanceof Map) {
                 final Map<?, ?> map = (Map<?, ?>) t;
                 final Object value = map.get(fieldName);
-                return ObjectKit.equal(value, fieldValue);
+                return ObjectKit.equals(value, fieldValue);
             }
 
             // 普通Bean
             final Object value = ReflectKit.getFieldValue(t, fieldName);
-            return ObjectKit.equal(value, fieldValue);
+            return ObjectKit.equals(value, fieldValue);
         });
     }
 
@@ -2382,7 +2382,7 @@ public class CollKit {
             iter = CollKit.newArrayList(value).iterator();
         }
 
-        final ConverterRegistry convert = ConverterRegistry.getInstance();
+        final RegistryConverter convert = RegistryConverter.getInstance();
         while (iter.hasNext()) {
             collection.add((T) convert.convert(elementType, iter.next()));
         }
@@ -2489,7 +2489,6 @@ public class CollKit {
      * @param <T>        集合元素类型
      * @param <S>        要添加的元素类型【为集合元素类型的类型或子类型】
      * @return 是否添加成功
-     * @author Cloud-Style
      */
     public static <T, S extends T> boolean addIfAbsent(Collection<T> collection, S object) {
         if (object == null || collection == null || collection.contains(object)) {
@@ -2514,6 +2513,54 @@ public class CollKit {
             }
         }
         return list;
+    }
+
+    /**
+     * 通过删除或替换现有元素或者原地添加新的元素来修改列表
+     * 并以列表形式返回被修改的内容。此方法不会改变原列表
+     *
+     * @param <T>         元素类型
+     * @param list        列表
+     * @param start       指定修改的开始位置（从 0 计数）, 可以为负数, -1代表最后一个元素
+     * @param deleteCount 删除个数，必须是正整数
+     * @param items       放入的元素
+     * @return 结果列表
+     */
+    public static <T> List<T> splice(final List<T> list, int start, int deleteCount, final T... items) {
+        if (isEmpty(list)) {
+            return zero();
+        }
+        final int size = list.size();
+        // 从后往前查找
+        if (start < 0) {
+            start += size;
+        } else if (start >= size) {
+            // 直接在尾部追加，不删除
+            start = size;
+            deleteCount = 0;
+        }
+        // 起始位置 加上 删除的数量 超过 数据长度，需要重新计算需要删除的数量
+        if (start + deleteCount > size) {
+            deleteCount = size - start;
+        }
+
+        // 新列表的长度
+        final int newSize = size - deleteCount + items.length;
+        List<T> resList = list;
+        // 新列表的长度 大于 旧列表，创建新列表
+        if (newSize > size) {
+            resList = new ArrayList<>(newSize);
+            resList.addAll(list);
+        }
+        // 需要删除的部分
+        if (deleteCount > 0) {
+            resList.subList(start, start + deleteCount).clear();
+        }
+        // 新增的部分
+        if (ArrayKit.isNotEmpty(items)) {
+            resList.addAll(start, Arrays.asList(items));
+        }
+        return resList;
     }
 
     /**

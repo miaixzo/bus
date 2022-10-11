@@ -55,6 +55,7 @@ import org.aoju.bus.logger.Logger;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Microsoft Windows, commonly referred to as Windows, is a group of several
@@ -329,14 +330,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             return true;
         }
         HANDLE h = Kernel32.INSTANCE.GetCurrentProcess();
-        if (h != null) {
-            try {
-                return isWow(h);
-            } finally {
-                Kernel32.INSTANCE.CloseHandle(h);
-            }
-        }
-        return false;
+        return (h == null) ? false : isWow(h);
     }
 
     @Override
@@ -470,11 +464,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         Set<Integer> mapKeys = new HashSet<>(processWtsMap.keySet());
         mapKeys.retainAll(processMap.keySet());
 
-        List<OSProcess> processList = new ArrayList<>();
-        for (Integer pid : mapKeys) {
-            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap, threadMap));
-        }
-        return processList;
+        final Map<Integer, ProcessPerformanceData.PerfCounterBlock> finalProcessMap = processMap;
+        final Map<Integer, ThreadPerformanceData.PerfCounterBlock> finalThreadMap = threadMap;
+        return mapKeys.stream().parallel()
+                .map(pid -> new WindowsOSProcess(pid, this, finalProcessMap, processWtsMap, finalThreadMap))
+                .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());
     }
 
     @Override

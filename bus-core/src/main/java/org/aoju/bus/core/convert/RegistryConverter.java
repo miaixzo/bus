@@ -53,7 +53,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConverterRegistry implements Converter, Serializable {
+public class RegistryConverter implements Converter, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -69,16 +69,16 @@ public class ConverterRegistry implements Converter, Serializable {
     /**
      * 构造
      */
-    public ConverterRegistry() {
+    public RegistryConverter() {
         register();
     }
 
     /**
-     * 获得单例的 ConverterRegistry
+     * 获得单例的 RegistryConverter
      *
-     * @return ConverterRegistry
+     * @return RegistryConverter
      */
-    public static CompositeRegister getInstance() {
+    public static CompositeConverter getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
@@ -142,9 +142,9 @@ public class ConverterRegistry implements Converter, Serializable {
      *
      * @param type      转换的目标类型
      * @param converter 转换器
-     * @return ConverterRegistry
+     * @return RegistryConverter
      */
-    public ConverterRegistry putCustom(final Type type, final Converter converter) {
+    public RegistryConverter putCustom(final Type type, final Converter converter) {
         if (null == customConverterMap) {
             synchronized (this) {
                 if (null == customConverterMap) {
@@ -225,7 +225,7 @@ public class ConverterRegistry implements Converter, Serializable {
         /**
          * 静态初始化器，由JVM来保证线程安全
          */
-        private static final CompositeRegister INSTANCE = new CompositeRegister();
+        private static final CompositeConverter INSTANCE = new CompositeConverter();
     }
 
 }

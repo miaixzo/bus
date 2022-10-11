@@ -46,6 +46,7 @@ import org.aoju.bus.logger.Logger;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * OSProcess implementation
@@ -247,18 +248,12 @@ public class MacOSProcess extends AbstractOSProcess {
     @Override
     public List<OSThread> getThreadDetails() {
         long now = System.currentTimeMillis();
-        List<OSThread> details = new ArrayList<>();
-        List<ThreadInfo.ThreadStats> stats = ThreadInfo.queryTaskThreads(getProcessID());
-        for (ThreadInfo.ThreadStats stat : stats) {
+        return ThreadInfo.queryTaskThreads(getProcessID()).stream().parallel().map(stat -> {
             // For long running threads the start time calculation can overestimate
-            long start = now - stat.getUpTime();
-            if (start < this.getStartTime()) {
-                start = this.getStartTime();
-            }
-            details.add(new MacOSThread(getProcessID(), stat.getThreadId(), stat.getState(), stat.getSystemTime(),
-                    stat.getUserTime(), start, now - start, stat.getPriority()));
-        }
-        return details;
+            long start = Math.max(now - stat.getUpTime(), getStartTime());
+            return new MacOSThread(getProcessID(), stat.getThreadId(), stat.getState(), stat.getSystemTime(),
+                    stat.getUserTime(), start, now - start, stat.getPriority());
+        }).collect(Collectors.toList());
     }
 
     @Override

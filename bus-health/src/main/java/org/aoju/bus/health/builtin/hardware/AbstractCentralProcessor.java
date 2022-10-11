@@ -27,7 +27,7 @@ package org.aoju.bus.health.builtin.hardware;
 
 import com.sun.jna.Platform;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.linux.drivers.proc.Auxv;
@@ -64,12 +64,12 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     // Processor info, initialized in constructor
     private final List<LogicalProcessor> logicalProcessors;
     private final List<PhysicalProcessor> physicalProcessors;
-
+    private final List<ProcessorCache> processorCaches;
     /**
      * Create a Processor
      */
     protected AbstractCentralProcessor() {
-        Pair<List<LogicalProcessor>, List<PhysicalProcessor>> processorLists = initProcessorCounts();
+        Triple<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>> processorLists = initProcessorCounts();
         // Populate logical processor lists.
         this.logicalProcessors = Collections.unmodifiableList(processorLists.getLeft());
         if (processorLists.getRight() == null) {
@@ -80,8 +80,10 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
                     .map(k -> new PhysicalProcessor(k >> 16, k & 0xffff)).collect(Collectors.toList());
             this.physicalProcessors = Collections.unmodifiableList(physProcs);
         } else {
-            this.physicalProcessors = Collections.unmodifiableList(processorLists.getRight());
+            this.physicalProcessors = Collections.unmodifiableList(processorLists.getMiddle());
         }
+        this.processorCaches = processorLists.getRight() == null ? Collections.emptyList()
+                : Collections.unmodifiableList(processorLists.getRight());
         // Init processor counts
         Set<Integer> physPkgs = new HashSet<>();
         for (LogicalProcessor logProc : this.logicalProcessors) {
@@ -225,11 +227,16 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Updates logical and physical processor counts and arrays
+     * Filters a set of processor caches to an ordered list
      *
-     * @return An array of initialized Logical Processors and Physical Processors.
+     * @param caches A set of unique caches.
+     * @return A list sorted by level (desc), type, and size (desc)
      */
-    protected abstract Pair<List<LogicalProcessor>, List<PhysicalProcessor>> initProcessorCounts();
+    public static List<ProcessorCache> orderedProcCaches(Set<ProcessorCache> caches) {
+        return caches.stream().sorted(Comparator.comparing(
+                        c -> -1000 * c.getLevel() + 100 * c.getType().ordinal() - Integer.highestOneBit(c.getCacheSize())))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Updates logical and physical processor counts and arrays
@@ -306,6 +313,13 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     public List<PhysicalProcessor> getPhysicalProcessors() {
         return this.physicalProcessors;
     }
+
+    /**
+     * Updates logical and physical processor counts and arrays
+     *
+     * @return An array of initialized Logical Processors and Physical Processors.
+     */
+    protected abstract Triple<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>> initProcessorCounts();
 
     @Override
     public long[] getSystemCpuLoadTicks() {
@@ -390,6 +404,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         return this.physicalPackageCount;
     }
 
+    @Override
+    public List<ProcessorCache> getProcessorCaches() {
+        return this.processorCaches;
+    }
+
     protected List<PhysicalProcessor> createProcListFromDmesg(List<LogicalProcessor> logProcs,
                                                               Map<Integer, String> dmesg) {
         // Check if multiple CPU types
@@ -407,8 +426,10 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
                 // ARM v8 big.LITTLE chips just use the # for efficiency class
                 // High-performance CPU (big): Cortex-A73, Cortex-A75, Cortex-A76
                 // High-efficiency CPU (LITTLE): Cortex-A53, Cortex-A55
-                if (isHybrid && idStr.startsWith("ARM Cortex")) {
-                    efficiency = Builder.getFirstIntValue(idStr) >= 70 ? 1 : 0;
+                if (isHybrid && ((idStr.startsWith("ARM Cortex") && Builder.getFirstIntValue(idStr) >= 70)
+                        || (idStr.startsWith("Apple")
+                        && (idStr.contains("Firestorm") || (idStr.contains("Avalanche")))))) {
+                    efficiency = 1;
                 }
                 physProcs.add(new PhysicalProcessor(pkgId, coreId, efficiency, idStr));
             }

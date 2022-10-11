@@ -36,7 +36,7 @@ import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.health.Builder;
 
 /**
- * Wrapper classes for JNA clases which extend
+ * XWrapper classes for JNA clases which extend
  * {@link com.sun.jna.ptr.ByReference} intended for use in try-with-resources
  * blocks.
  */

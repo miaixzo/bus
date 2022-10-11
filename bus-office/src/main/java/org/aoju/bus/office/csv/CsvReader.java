@@ -28,6 +28,7 @@ package org.aoju.bus.office.csv;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.function.XConsumer;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
@@ -178,21 +179,21 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
     /**
      * 从字符串中读取CSV数据
      *
-     * @param csvStr CSV字符串
+     * @param text CSV字符串
      * @return {@link CsvData}，包含数据列表和行信息
      */
-    public CsvData read(String csvStr) {
-        return read(new StringReader(csvStr));
+    public CsvData read(String text) {
+        return read(new StringReader(text));
     }
 
     /**
      * 从字符串中读取CSV数据
      *
-     * @param csvStr     CSV字符串
+     * @param text       CSV字符串
      * @param rowHandler 行处理器，用于一行一行的处理数据
      */
-    public void read(String csvStr, CsvHandler rowHandler) {
-        read(parse(new StringReader(csvStr)), rowHandler);
+    public void read(String text, XConsumer<CsvRow> rowHandler) {
+        read(parse(new StringReader(text)), rowHandler);
     }
 
     /**
@@ -257,7 +258,7 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param reader     Reader
      * @param rowHandler 行处理器，用于一行一行的处理数据
      */
-    public void read(Reader reader, CsvHandler rowHandler) {
+    public void read(Reader reader, XConsumer<CsvRow> rowHandler) {
         read(parse(reader), rowHandler);
     }
 
@@ -267,10 +268,10 @@ public class CsvReader implements Iterable<CsvRow>, Closeable {
      * @param csvParser  CSV解析器
      * @param rowHandler 行处理器，用于一行一行的处理数据
      */
-    private void read(CsvParser csvParser, CsvHandler rowHandler) {
+    private void read(CsvParser csvParser, XConsumer<CsvRow> rowHandler) {
         try {
             while (csvParser.hasNext()) {
-                rowHandler.handle(csvParser.next());
+                rowHandler.accept(csvParser.next());
             }
         } finally {
             IoKit.close(csvParser);

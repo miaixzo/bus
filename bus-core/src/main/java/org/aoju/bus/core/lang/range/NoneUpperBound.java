@@ -23,133 +23,109 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.getter;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
+package org.aoju.bus.core.lang.range;
 
 /**
- * 基本类型的getter接口
- * 提供一个统一的接口定义返回不同类型的值(基本类型)
+ * 无限大的右边界
  *
+ * @param <T> 边界值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BasicType<K> {
+class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T> {
 
     /**
-     * 获取Object属性值
-     *
-     * @param key 属性名
-     * @return 属性值
+     * 无限大的右边界
      */
-    Object getObject(K key);
+
+    static final NoneUpperBound INSTANCE = new NoneUpperBound();
 
     /**
-     * 获取字符串型属性值
+     * 获取边界值
      *
-     * @param key 属性名
-     * @return 属性值
+     * @return 边界值
      */
-    String getString(K key);
+    @Override
+    public T getValue() {
+        return null;
+    }
 
     /**
-     * 获取int型属性值
+     * 获取边界类型
      *
-     * @param key 属性名
-     * @return 属性值
+     * @return 边界类型
      */
-    Integer getInt(K key);
+    @Override
+    public BoundType getType() {
+        return BoundType.OPEN_UPPER_BOUND;
+    }
 
     /**
-     * 获取short型属性值
+     * 检验指定值是否在当前边界表示的范围内
      *
-     * @param key 属性名
-     * @return 属性值
+     * @param t 要检验的值，不允许为{@code null}
+     * @return 是否
      */
-    Short getShort(K key);
+    @Override
+    public boolean test(final T t) {
+        return true;
+    }
 
     /**
-     * 获取boolean型属性值
+     * <p>比较另一边界与当前边界在坐标轴上位置的先后顺序
+     * 若令当前边界为<em>t1</em>，另一边界为<em>t2</em>，则有
+     * <ul>
+     *     <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>
+     *     <li>0：<em>t1</em>与<em>t2</em>的重合；</li>
+     *     <li>-1：<em>t1</em>在<em>t2</em>的右侧；</li>
+     * </ul>
      *
-     * @param key 属性名
-     * @return 属性值
+     * @param bound 边界
+     * @return 位置
      */
-    Boolean getBoolean(K key);
+    @Override
+    public int compareTo(final Bound<T> bound) {
+        return bound instanceof NoneUpperBound ? 0 : 1;
+    }
 
     /**
-     * 获取long型属性值
+     * 获取{@code "[value"}或{@code "(value"}格式的字符串
      *
-     * @param key 属性名
-     * @return 属性值
+     * @return 字符串
      */
-    Long getLong(K key);
+    @Override
+    public String descBound() {
+        return INFINITE_MAX + getType().getSymbol();
+    }
 
     /**
-     * 获取char型属性值
+     * 获得当前实例对应的{@code { x | x >= xxx}}格式的不等式字符串
      *
-     * @param key 属性名
-     * @return 属性值
+     * @return 字符串
      */
-    Character getChar(K key);
+    @Override
+    public String toString() {
+        return "{x | x < +\u221e}";
+    }
 
     /**
-     * 获取float型属性值
+     * 对当前边界取反
      *
-     * @param key 属性名
-     * @return 属性值
+     * @return 取反后的边界
      */
-    Float getFloat(K key);
+    @Override
+    public Bound<T> negate() {
+        return this;
+    }
 
     /**
-     * 获取double型属性值
+     * 将当前实例转为一个区间
      *
-     * @param key 属性名
-     * @return 属性值
+     * @return 区间
      */
-    Double getDouble(K key);
-
-    /**
-     * 获取byte型属性值
-     *
-     * @param key 属性名
-     * @return 属性值
-     */
-    Byte getByte(K key);
-
-    /**
-     * 获取BigDecimal型属性值
-     *
-     * @param key 属性名
-     * @return 属性值
-     */
-    BigDecimal getBigDecimal(K key);
-
-    /**
-     * 获取BigInteger型属性值
-     *
-     * @param key 属性名
-     * @return 属性值
-     */
-    BigInteger getBigInteger(K key);
-
-    /**
-     * 获得Enum类型的值
-     *
-     * @param <E>   枚举类型
-     * @param clazz Enum的Class
-     * @param key   KEY
-     * @return Enum类型的值, 无则返回Null
-     */
-    <E extends Enum<E>> E getEnum(Class<E> clazz, K key);
-
-    /**
-     * 获取Date类型值
-     *
-     * @param key 属性名
-     * @return Date类型属性值
-     */
-    Date getDate(K key);
+    @Override
+    public BoundedRange<T> toRange() {
+        return BoundedRange.all();
+    }
 
 }

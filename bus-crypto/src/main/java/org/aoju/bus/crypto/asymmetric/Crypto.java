@@ -294,7 +294,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @return 加密或解密
      */
     public Cipher getCipher() {
-        return this.ciphers.getCipher();
+        return this.ciphers.getRaw();
     }
 
     /**
@@ -366,7 +366,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @throws InvalidKeyException                异常KEY错误
      */
     private Cipher initMode(int mode, Key key) throws InvalidAlgorithmParameterException, InvalidKeyException {
-        return this.ciphers.initMode(mode, key).getCipher();
+        return this.ciphers.initMode(mode, key).getRaw();
     }
 
 }

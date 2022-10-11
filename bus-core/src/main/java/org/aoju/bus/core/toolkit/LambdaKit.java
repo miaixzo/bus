@@ -49,40 +49,18 @@ public class LambdaKit {
 
     /**
      * 通过对象的方法或类的静态方法引用，获取lambda实现类
-     * 传入lambda无参数但含有返回值的情况能够匹配到此方法：
-     * <ul>
-     * <li>引用特定对象的实例方法：<pre>{@code
-     * MyTeacher myTeacher = new MyTeacher();
-     * Class<MyTeacher> supplierClass = LambdaUtil.getRealClass(myTeacher::getAge);
-     * Assert.assertEquals(MyTeacher.class, supplierClass);
-     * }</pre></li>
-     * <li>引用静态无参方法：<pre>{@code
-     * Class<MyTeacher> staticSupplierClass = LambdaUtil.getRealClass(MyTeacher::takeAge);
-     * Assert.assertEquals(MyTeacher.class, staticSupplierClass);
-     * }</pre></li>
-     * </ul>
-     * 在以下场景无法获取到正确类型
-     * <pre>{@code
-     * // 枚举测试，只能获取到枚举类型
-     * Class<Enum<?>> enumSupplierClass = LambdaUtil.getRealClass(LambdaUtil.LambdaKindEnum.REF_NONE::ordinal);
-     * Assert.assertEquals(Enum.class, enumSupplierClass);
-     * // 调用父类方法，只能获取到父类类型
-     * Class<Entity<?>> superSupplierClass = LambdaUtil.getRealClass(myTeacher::getId);
-     * Assert.assertEquals(Entity.class, superSupplierClass);
-     * // 引用父类静态带参方法，只能获取到父类类型
-     * Class<Entity<?>> staticSuperFunctionClass = LambdaUtil.getRealClass(MyTeacher::takeId);
-     * Assert.assertEquals(Entity.class, staticSuperFunctionClass);
-     * }</pre>
      *
      * @param func lambda
      * @param <R>  类型
      * @param <T>  lambda的类型
      * @return lambda实现类
-     * @author VampireAchao
      */
     public static <R, T extends Serializable> Class<R> getRealClass(final T func) {
         final Info lambdaInfo = resolve(func);
-        return (Class<R>) Optional.of(lambdaInfo).map(Info::getInstantiatedMethodParameterTypes).filter(types -> types.length != 0).map(types -> types[types.length - 1]).orElseGet(lambdaInfo::getClazz);
+        return (Class<R>) Optional.of(lambdaInfo)
+                .map(Info::getInstantiatedMethodParameterTypes)
+                .filter(types -> types.length != 0).map(types -> types[types.length - 1])
+                .orElseGet(lambdaInfo::getClazz);
     }
 
     /**
@@ -186,15 +164,25 @@ public class LambdaKit {
     public static class Info {
 
         private static final Type[] EMPTY_TYPE = new Type[0];
+        // 实例对象的方法参数类型
         private final Type[] instantiatedMethodParameterTypes;
+        // 方法或构造的参数类型
         private final Type[] parameterTypes;
         private final Type returnType;
+        // 方法名或构造名称
         private final String name;
         private final Executable executable;
         private final Class<?> clazz;
         private final SerializedLambda lambda;
 
+        /**
+         * 构造
+         *
+         * @param executable 构造对象{@link Constructor}或方法对象{@link Method}
+         * @param lambda     实现了序列化接口的lambda表达式
+         */
         public Info(final Executable executable, final SerializedLambda lambda) {
+            Assert.notNull(executable, "executable must be not null!");
             // return type
             final boolean isMethod = executable instanceof Method;
             final boolean isConstructor = executable instanceof Constructor;
@@ -210,15 +198,16 @@ public class LambdaKit {
             this.lambda = lambda;
 
             // types
-            final int index = lambda.getInstantiatedMethodType().indexOf(";)");
-            this.instantiatedMethodParameterTypes = (index > -1) ? getInstantiatedMethodParamTypes(lambda, index) : EMPTY_TYPE;
+            final String instantiatedMethodType = lambda.getInstantiatedMethodType();
+            final int index = instantiatedMethodType.indexOf(";)");
+            this.instantiatedMethodParameterTypes = (index > -1) ?
+                    getInstantiatedMethodParamTypes(instantiatedMethodType.substring(1, index + 1)) : EMPTY_TYPE;
         }
 
         /**
          * 根据lambda对象的方法签名信息，解析获得实际的参数类型
          */
-        private Type[] getInstantiatedMethodParamTypes(SerializedLambda lambda, int index) {
-            final String className = lambda.getInstantiatedMethodType().substring(1, index + 1);
+        private static Type[] getInstantiatedMethodParamTypes(final String className) {
             final String[] instantiatedTypeNames = className.split(";");
             final Type[] types = new Type[instantiatedTypeNames.length];
             for (int i = 0; i < instantiatedTypeNames.length; i++) {
@@ -239,6 +228,78 @@ public class LambdaKit {
                 types[i] = ClassKit.loadClass(instantiatedTypeNames[i]);
             }
             return types;
+        }
+
+        /**
+         * 实例方法参数类型
+         *
+         * @return 实例方法参数类型
+         */
+        public Type[] getInstantiatedMethodParameterTypes() {
+            return instantiatedMethodParameterTypes;
+        }
+
+        /**
+         * 获得构造或方法参数类型列表
+         *
+         * @return 参数类型列表
+         */
+        public Type[] getParameterTypes() {
+            return parameterTypes;
+        }
+
+        /**
+         * 获取返回值类型（方法引用）
+         *
+         * @return 返回值类型
+         */
+        public Type getReturnType() {
+            return returnType;
+        }
+
+        /**
+         * 方法或构造名称
+         *
+         * @return 方法或构造名称
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * 字段名称，主要用于方法名称截取，方法名称必须为getXXX、isXXX、setXXX
+         *
+         * @return getter或setter对应的字段名称
+         */
+        public String getFieldName() {
+            return BeanKit.getFieldName(getName());
+        }
+
+        /**
+         * 方法或构造对象
+         *
+         * @return 方法或构造对象
+         */
+        public Executable getExecutable() {
+            return executable;
+        }
+
+        /**
+         * 方法或构造所在类
+         *
+         * @return 方法或构造所在类
+         */
+        public Class<?> getClazz() {
+            return clazz;
+        }
+
+        /**
+         * 获得Lambda表达式对象
+         *
+         * @return 获得Lambda表达式对象
+         */
+        public SerializedLambda getLambda() {
+            return lambda;
         }
 
     }

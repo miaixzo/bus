@@ -32,10 +32,10 @@ import org.aoju.bus.office.excel.cell.CellEditor;
 import org.aoju.bus.office.excel.cell.CellLocation;
 import org.aoju.bus.office.excel.cell.CellSetter;
 import org.aoju.bus.office.excel.cell.NullCell;
+import org.aoju.bus.office.excel.cell.editors.TrimEditor;
 import org.aoju.bus.office.excel.cell.setters.CellSetterFactory;
 import org.aoju.bus.office.excel.cell.values.ErrorCellValue;
 import org.aoju.bus.office.excel.cell.values.NumericCellValue;
-import org.aoju.bus.office.excel.editors.TrimEditor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
@@ -476,10 +476,7 @@ public class CellKit {
      * @return 合并单元格，如果非合并单元格，返回<code>null</code>
      */
     private static Cell getMergedCell(Sheet sheet, int x, int y) {
-        final int sheetMergeCount = sheet.getNumMergedRegions();
-        CellRangeAddress ca;
-        for (int i = 0; i < sheetMergeCount; i++) {
-            ca = sheet.getMergedRegion(i);
+        for (final CellRangeAddress ca : sheet.getMergedRegions()) {
             if (ca.isInRange(y, x)) {
                 return SheetUtil.getCell(sheet, ca.getFirstRow(), ca.getFirstColumn());
             }

@@ -26,9 +26,9 @@
 package org.aoju.bus.office.excel;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.function.XBiConsumer;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.excel.cell.CellEditor;
-import org.aoju.bus.office.excel.cell.CellHandler;
 import org.aoju.bus.office.excel.reader.ListSheetReader;
 import org.aoju.bus.office.excel.reader.SheetReader;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -258,7 +258,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @param cellHandler 单元格处理器，用于处理读到的单元格及其数据
      */
-    public void read(CellHandler cellHandler) {
+    public void read(XBiConsumer<Cell, Object> cellHandler) {
         read(0, Integer.MAX_VALUE, cellHandler);
     }
 
@@ -286,7 +286,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param endRowIndex   结束行（包含，从0开始计数）
      * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
      */
-    public void read(int startRowIndex, int endRowIndex, CellHandler cellHandler) {
+    public void read(int startRowIndex, int endRowIndex, XBiConsumer<Cell, Object> cellHandler) {
         checkNotClosed();
 
         // 读取起始行（包含）
@@ -303,7 +303,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
                 Cell cell;
                 for (short x = 0; x < columnSize; x++) {
                     cell = row.getCell(x);
-                    cellHandler.handle(cell, CellKit.getCellValue(cell));
+                    cellHandler.accept(cell, CellKit.getCellValue(cell));
                 }
             }
         }

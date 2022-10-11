@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.compare.LengthCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
@@ -783,7 +784,8 @@ public class PatternKit {
         final Matcher matcher = pattern.matcher(content);
         boolean result = matcher.find();
         if (result) {
-            final Set<String> varNums = findAll(RegEx.GROUP_VAR, replacementTemplate, 1, new HashSet<>());
+            final Set<String> varNums = findAll(RegEx.GROUP_VAR, replacementTemplate, 1,
+                    new TreeSet<>(LengthCompare.INSTANCE.reversed()));
             final StringBuffer sb = new StringBuffer();
             do {
                 String replacement = replacementTemplate;

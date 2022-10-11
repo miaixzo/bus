@@ -534,7 +534,7 @@ public class Convert {
      */
     public static <E extends Enum<E>> E toEnum(final Class<E> clazz, final Object value, final E defaultValue) {
         try {
-            return (E) (new EnumConverter()).convert(clazz, value);
+            return (E) EnumConverter.INSTANCE.convert(clazz, value);
         } catch (final Exception ignore) {
             return defaultValue;
         }
@@ -609,7 +609,7 @@ public class Convert {
      * @param value     被转换的值
      * @return {@link Map}
      */
-    public static <K, V> Map<K, V> toMap(Class<K> keyType, Class<V> valueType, Object value) {
+    public static <K, V> Map<K, V> toMap(final Class<K> keyType, final Class<V> valueType, final Object value) {
         if (value instanceof Map) {
             return toMap(value.getClass(), keyType, valueType, value);
         } else {
@@ -628,7 +628,7 @@ public class Convert {
      * @param value     被转换的值
      * @return {@link Map}
      */
-    public static <K, V> Map<K, V> toMap(Class<?> mapType, Class<K> keyType, Class<V> valueType, Object value) {
+    public static <K, V> Map<K, V> toMap(final Class<?> mapType, final Class<K> keyType, final Class<V> valueType, final Object value) {
         return (Map<K, V>) MapConverter.INSTANCE.convert(mapType, keyType, valueType, value);
     }
 
@@ -751,7 +751,7 @@ public class Convert {
      * @return 转换后的值
      */
     public static <T> T convertWithCheck(final Type type, final Object value, final T defaultValue, final boolean quietly) {
-        final CompositeRegister compositeConverter = CompositeRegister.getInstance();
+        final CompositeConverter compositeConverter = CompositeConverter.getInstance();
         try {
             return compositeConverter.convert(type, value, defaultValue);
         } catch (final Exception e) {

@@ -26,6 +26,7 @@
 package org.aoju.bus.mapper.additional.idlist;
 
 import org.aoju.bus.mapper.annotation.RegisterMapper;
+import org.aoju.bus.mapper.provider.IdListProvider;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 

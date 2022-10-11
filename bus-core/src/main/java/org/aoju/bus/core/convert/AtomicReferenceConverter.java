@@ -46,7 +46,7 @@ public class AtomicReferenceConverter extends AbstractConverter {
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(AtomicReference.class);
         if (false == TypeKit.isUnknown(paramType)) {
-            targetValue = CompositeRegister.getInstance().convert(paramType, value);
+            targetValue = CompositeConverter.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {
             targetValue = value;

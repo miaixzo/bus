@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.mapper.additional.idlist;
+package org.aoju.bus.mapper.provider;
 
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.mapper.builder.EntityBuilder;
@@ -88,7 +88,7 @@ public class IdListProvider extends MapperTemplate {
         StringBuilder sql = new StringBuilder();
         sql.append(SqlBuilder.selectAllColumns(entityClass));
         sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
-        appendWhereIdList(sql, entityClass, false);
+        appendWhereIdList(sql, entityClass, isNotEmpty());
         return sql.toString();
     }
 
@@ -103,7 +103,7 @@ public class IdListProvider extends MapperTemplate {
         if (columnList.size() == 1) {
             EntityColumn column = columnList.iterator().next();
             if (notEmpty) {
-                sql.append("<bind name=\"notEmptyListCheck\" value=\"@org.aoju.bus.mapper.additional.idlist.IdListProvider@notEmpty(");
+                sql.append("<bind name=\"notEmptyListCheck\" value=\"@org.aoju.bus.mapper.provider.IdListProvider@notEmpty(");
                 sql.append("idList, 'idList 不能为空')\"/>");
             }
             sql.append("<where>");

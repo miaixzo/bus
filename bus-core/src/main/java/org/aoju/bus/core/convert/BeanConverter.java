@@ -55,6 +55,9 @@ public class BeanConverter implements Converter, Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 单例对象
+     */
     public static BeanConverter INSTANCE = new BeanConverter();
 
     private final CopyOptions copyOptions;
@@ -76,7 +79,7 @@ public class BeanConverter implements Converter, Serializable {
     }
 
     @Override
-    public Object convert(Type targetType, Object value) throws ConvertException {
+    public Object convert(final Type targetType, final Object value) throws ConvertException {
         Assert.notNull(targetType);
         if (null == value) {
             return null;
@@ -87,7 +90,7 @@ public class BeanConverter implements Converter, Serializable {
             return ((Converter) value).convert(targetType, value);
         }
 
-        Class<?> targetClass = TypeKit.getClass(targetType);
+        final Class<?> targetClass = TypeKit.getClass(targetType);
         Assert.notNull(targetClass, "Target type is not a class!");
 
         return convertInternal(targetType, targetClass, value);

@@ -23,24 +23,20 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.lang;
+package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.beans.PathExpression;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.getter.BasicType;
+import org.aoju.bus.core.getter.TypeGetter;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.function.XSupplier;
-import org.aoju.bus.core.map.CustomKeyMap;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.LambdaKit;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -49,7 +45,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Dictionary extends CustomKeyMap<String, Object> implements BasicType<String> {
+public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
     private static final long serialVersionUID = 1L;
     private static final float DEFAULT_LOAD_FACTOR = 0.75f;
@@ -198,7 +194,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
      *
      * @param <T>  Bean类型
      * @param bean Bean
-     * @return Bean
+     * @return the object
      */
     public <T> T toBean(final T bean) {
         return toBean(bean, false);
@@ -264,7 +260,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
     }
 
     /**
-     * 将值对象转换为Dict<br>
+     * 将值对象转换为Dictionary
      * 类名会被当作表名，小写第一个字母
      *
      * @param <T>  Bean类型
@@ -278,7 +274,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
     }
 
     /**
-     * 将值对象转换为Dict<br>
+     * 将值对象转换为Dictionary
      * 类名会被当作表名，小写第一个字母
      *
      * @param <T>               Bean类型
@@ -294,7 +290,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
     }
 
     /**
-     * 与给定实体对比并去除相同的部分<br>
+     * 与给定实体对比并去除相同的部分
      * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
      *
      * @param <T>          字典对象类型
@@ -319,7 +315,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
      * 过滤Map保留指定键值对，如果键不存在跳过
      *
      * @param keys 键列表
-     * @return 结果
+     * @return this
      */
     public Dictionary filter(final String... keys) {
         final Dictionary result = new Dictionary(keys.length, 1);
@@ -359,8 +355,8 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
     }
 
     @Override
-    public Object getObject(final String key) {
-        return super.get(key);
+    public Object getObject(final String key, final Object defaultValue) {
+        return getOrDefault(key, defaultValue);
     }
 
     /**
@@ -369,143 +365,10 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
      * @param <T>  值类型
      * @param attr 字段名
      * @return 字段值
+
      */
     public <T> T getBean(final String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param <T>          值类型
-     * @param attr         字段名
-     * @param defaultValue 默认值
-     * @return 字段值
-     */
-    public <T> T get(final String attr, final T defaultValue) {
-        final Object result = get(attr);
-        return (T) (result != null ? result : defaultValue);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    @Override
-    public String getString(final String attr) {
-        return Convert.toString(get(attr), null);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    @Override
-    public Integer getInt(final String attr) {
-        return Convert.toInt(get(attr), null);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    @Override
-    public Long getLong(final String attr) {
-        return Convert.toLong(get(attr), null);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    @Override
-    public Float getFloat(final String attr) {
-        return Convert.toFloat(get(attr), null);
-    }
-
-    @Override
-    public Short getShort(final String attr) {
-        return Convert.toShort(get(attr), null);
-    }
-
-    @Override
-    public Character getChar(final String attr) {
-        return Convert.toChar(get(attr), null);
-    }
-
-    @Override
-    public Double getDouble(final String attr) {
-        return Convert.toDouble(get(attr), null);
-    }
-
-    @Override
-    public Byte getByte(final String attr) {
-        return Convert.toByte(get(attr), null);
-    }
-
-    @Override
-    public Boolean getBoolean(final String attr) {
-        return Convert.toBoolean(get(attr), null);
-    }
-
-    @Override
-    public BigDecimal getBigDecimal(final String attr) {
-        return Convert.toBigDecimal(get(attr));
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    @Override
-    public BigInteger getBigInteger(final String attr) {
-        return Convert.toBigInteger(get(attr));
-    }
-
-    @Override
-    public <E extends Enum<E>> E getEnum(final Class<E> clazz, final String key) {
-        return Convert.toEnum(clazz, get(key));
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public byte[] getBytes(final String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    @Override
-    public Date getDate(final String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Time getTime(final String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Timestamp getTimestamp(final String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Number getNumber(final String attr) {
-        return get(attr, null);
+        return (T) get(attr);
     }
 
     /**
@@ -526,7 +389,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
      *
      * @param <T>        目标类型
      * @param expression 表达式
-     * @return 对象
+     * @return the object
 
      */
     public <T> T getByPath(final String expression) {
@@ -554,8 +417,8 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
      * @param <T>        返回值类型
      * @param expression 表达式
      * @param resultType 返回值类型
-     * @return 对象
-     * @see PathExpression#get(Object)
+     * @return the object
+
      */
     public <T> T getByPath(final String expression, final Type resultType) {
         return Convert.convert(resultType, getByPath(expression));
@@ -583,7 +446,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements BasicTyp
      * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
      * <pre>
      *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
-     *      Dictionary.create().setFields(user::getNickname, user::getUsername);
+     *     Dictionary.create().setFields(user::getNickname, user::getUsername);
      * </pre>
      *
      * @param fields lambda,不能为空

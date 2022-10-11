@@ -26,8 +26,8 @@
 package org.aoju.bus.setting;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Dictionary;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.map.Dictionary;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;

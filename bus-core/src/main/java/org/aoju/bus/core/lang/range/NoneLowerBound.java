@@ -23,86 +23,108 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.getter;
-
-import org.aoju.bus.core.convert.Convert;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
+package org.aoju.bus.core.lang.range;
 
 /**
- * 基本类型的getter接口抽象实现,所有类型的值获取都是通过将String转换而来
- * 用户只需实现getStr方法即可,其他类型将会从String结果中转换 在不提供默认值的情况下, 如果值不存在或获取错误,返回null
+ * 无限小的左边界
  *
+ * @param <T> 边界值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface OptNullString<K> extends OptNullType<K> {
+class NoneLowerBound<T extends Comparable<? super T>> implements Bound<T> {
 
+    /**
+     * 无限小的左边界单例
+     */
+    static final NoneLowerBound INSTANCE = new NoneLowerBound();
+
+    /**
+     * 获取边界值
+     *
+     * @return 边界值
+     */
     @Override
-    default Object getObject(K key, Object defaultValue) {
-        return getString(key, null == defaultValue ? null : defaultValue.toString());
+    public T getValue() {
+        return null;
     }
 
+    /**
+     * 获取边界类型
+     *
+     * @return 边界类型
+     */
     @Override
-    default Integer getInt(K key, Integer defaultValue) {
-        return Convert.toInt(getString(key), defaultValue);
+    public BoundType getType() {
+        return BoundType.OPEN_LOWER_BOUND;
     }
 
+    /**
+     * 检验指定值是否在当前边界表示的范围内
+     *
+     * @param t 要检验的值，不允许为{@code null}
+     * @return 是否
+     */
     @Override
-    default Short getShort(K key, Short defaultValue) {
-        return Convert.toShort(getString(key), defaultValue);
+    public boolean test(final T t) {
+        return true;
     }
 
+    /**
+     * <p>比较另一边界与当前边界在坐标轴上位置的先后顺序
+     * 若令当前边界为<em>t1</em>，另一边界为<em>t2</em>，则有
+     * <ul>
+     *     <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>
+     *     <li>0：<em>t1</em>与<em>t2</em>的重合；</li>
+     *     <li>-1：<em>t1</em>在<em>t2</em>的右侧；</li>
+     * </ul>
+     *
+     * @param bound 边界
+     * @return 位置
+     */
     @Override
-    default Boolean getBoolean(K key, Boolean defaultValue) {
-        return Convert.toBoolean(getString(key), defaultValue);
+    public int compareTo(final Bound<T> bound) {
+        return bound instanceof NoneLowerBound ? 0 : -1;
     }
 
+    /**
+     * 获取{@code "[value"}或{@code "(value"}格式的字符串
+     *
+     * @return 字符串
+     */
     @Override
-    default Long getLong(K key, Long defaultValue) {
-        return Convert.toLong(getString(key), defaultValue);
+    public String descBound() {
+        return getType().getSymbol() + INFINITE_MIN;
     }
 
+    /**
+     * 对当前边界取反
+     *
+     * @return 取反后的边界
+     */
     @Override
-    default Character getChar(K key, Character defaultValue) {
-        return Convert.toChar(getString(key), defaultValue);
+    public Bound<T> negate() {
+        return this;
     }
 
+    /**
+     * 将当前实例转为一个区间
+     *
+     * @return 区间
+     */
     @Override
-    default Float getFloat(K key, Float defaultValue) {
-        return Convert.toFloat(getString(key), defaultValue);
+    public BoundedRange<T> toRange() {
+        return BoundedRange.all();
     }
 
+    /**
+     * 获得当前实例对应的{@code { x | x >= xxx}}格式的不等式字符串
+     *
+     * @return 字符串
+     */
     @Override
-    default Double getDouble(K key, Double defaultValue) {
-        return Convert.toDouble(getString(key), defaultValue);
-    }
-
-    @Override
-    default Byte getByte(K key, Byte defaultValue) {
-        return Convert.toByte(getString(key), defaultValue);
-    }
-
-    @Override
-    default BigDecimal getBigDecimal(K key, BigDecimal defaultValue) {
-        return Convert.toBigDecimal(getString(key), defaultValue);
-    }
-
-    @Override
-    default BigInteger getBigInteger(K key, BigInteger defaultValue) {
-        return Convert.toBigInteger(getString(key), defaultValue);
-    }
-
-    @Override
-    default <E extends Enum<E>> E getEnum(Class<E> clazz, K key, E defaultValue) {
-        return Convert.toEnum(clazz, getString(key), defaultValue);
-    }
-
-    @Override
-    default Date getDate(K key, Date defaultValue) {
-        return Convert.toDate(getString(key), defaultValue);
+    public String toString() {
+        return "{x | x > -\u221e}";
     }
 
 }

@@ -28,7 +28,7 @@ package org.aoju.bus.health.unix.solaris.hardware;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
@@ -234,11 +234,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Pair<List<LogicalProcessor>, List<PhysicalProcessor>> initProcessorCounts() {
+    protected Triple<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>> initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
         if (SolarisOperatingSystem.HAS_KSTAT2) {
             // Use Kstat2 implementation
-            return Pair.of(initProcessorCounts2(numaNodeMap), null);
+            return Triple.of(initProcessorCounts2(numaNodeMap), null, null);
         }
         List<LogicalProcessor> logProcs = new ArrayList<>();
         try (KstatKit.KstatChain kc = KstatKit.openChain()) {
@@ -272,10 +272,11 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
             }
         }
         if (dmesg.isEmpty()) {
-            return Pair.of(logProcs, null);
+            return Triple.of(logProcs, null, null);
         }
-        return Pair.of(logProcs, createProcListFromDmesg(logProcs, dmesg));
+        return Triple.of(logProcs, createProcListFromDmesg(logProcs, dmesg), null);
     }
+
 
     @Override
     public long[] querySystemCpuLoadTicks() {

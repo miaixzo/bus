@@ -37,10 +37,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 
 import java.beans.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -1041,23 +1038,27 @@ public class BeanKit {
     }
 
     /**
-     * 是否是Public字段
+     * 是否同时存在一个或多个修饰符（可能有多个修饰符，如果有指定的修饰符则返回true）
      *
-     * @param field 字段
-     * @return 是否是Public
+     * @param member        构造、字段或方法
+     * @param modifierTypes 修饰符枚举
+     * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
      */
-    public static boolean isPublic(Field field) {
-        return hasModifier(field, ModifierType.PUBLIC);
+    public static boolean hasModifier(Member member, final ModifierType... modifierTypes) {
+        if (null == member || ArrayKit.isEmpty(modifierTypes)) {
+            return false;
+        }
+        return 0 != (member.getModifiers() & modifiersToInt(modifierTypes));
     }
 
     /**
-     * 是否是Public方法
+     * 是否是Public成员，可检测包括构造、字段和方法
      *
-     * @param method 方法
+     * @param member 构造、字段或方法
      * @return 是否是Public
      */
-    public static boolean isPublic(Method method) {
-        return hasModifier(method, ModifierType.PUBLIC);
+    public static boolean isPublic(final Member member) {
+        return hasModifier(member, ModifierType.PUBLIC);
     }
 
     /**
@@ -1066,38 +1067,18 @@ public class BeanKit {
      * @param clazz 类
      * @return 是否是Public
      */
-    public static boolean isPublic(Class<?> clazz) {
+    public static boolean isPublic(final Class<?> clazz) {
         return hasModifier(clazz, ModifierType.PUBLIC);
     }
 
     /**
-     * 是否是Public构造
+     * 是否是static成员，包括构造、字段或方法
      *
-     * @param constructor 构造
-     * @return 是否是Public
-     */
-    public static boolean isPublic(Constructor<?> constructor) {
-        return hasModifier(constructor, ModifierType.PUBLIC);
-    }
-
-    /**
-     * 是否是static字段
-     *
-     * @param field 字段
+     * @param member 构造、字段或方法
      * @return 是否是static
      */
-    public static boolean isStatic(Field field) {
-        return hasModifier(field, ModifierType.STATIC);
-    }
-
-    /**
-     * 是否是static方法
-     *
-     * @param method 方法
-     * @return 是否是static
-     */
-    public static boolean isStatic(Method method) {
-        return hasModifier(method, ModifierType.STATIC);
+    public static boolean isStatic(final Member member) {
+        return hasModifier(member, ModifierType.STATIC);
     }
 
     /**
@@ -1106,8 +1087,58 @@ public class BeanKit {
      * @param clazz 类
      * @return 是否是static
      */
-    public static boolean isStatic(Class<?> clazz) {
+    public static boolean isStatic(final Class<?> clazz) {
         return hasModifier(clazz, ModifierType.STATIC);
+    }
+
+    /**
+     * 是否是合成成员（由java编译器生成的）
+     *
+     * @param member 构造、字段或方法
+     * @return 是否是合成字段
+     */
+    public static boolean isSynthetic(final Member member) {
+        return member.isSynthetic();
+    }
+
+    /**
+     * 是否是合成类（由java编译器生成的）
+     *
+     * @param clazz 类
+     * @return 是否是合成
+     */
+    public static boolean isSynthetic(final Class<?> clazz) {
+        return clazz.isSynthetic();
+    }
+
+    /**
+     * 是否抽象成员
+     *
+     * @param member 构造、字段或方法
+     * @return 是否抽象方法
+     */
+    public static boolean isAbstract(final Member member) {
+        return hasModifier(member, ModifierType.ABSTRACT);
+    }
+
+    /**
+     * 是否抽象类
+     *
+     * @param clazz 构造、字段或方法
+     * @return 是否抽象类
+     */
+    public static boolean isAbstract(final Class<?> clazz) {
+        return hasModifier(clazz, ModifierType.ABSTRACT);
+    }
+
+    /**
+     * 是否抽象类
+     *
+     * @param clazz 构造、字段或方法
+     * @return 是否抽象类
+     */
+    public static boolean isInterface(final Class<?> clazz) {
+        return null != clazz && clazz.isInterface();
     }
 
     /**
@@ -1204,7 +1235,7 @@ public class BeanKit {
         sourceFields.removeAll(Arrays.asList(ignoreProperties));
 
         for (String field : sourceFields) {
-            if (ObjectKit.notEqual(sourceFieldsMap.get(field), targetFieldsMap.get(field))) {
+            if (ObjectKit.notEquals(sourceFieldsMap.get(field), targetFieldsMap.get(field))) {
                 return false;
             }
         }

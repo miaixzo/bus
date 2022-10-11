@@ -67,7 +67,8 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
         } else if (headerRowIndex > lastRowNum) {
             throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is greater than last row index {}.", headerRowIndex, lastRowNum));
         } else if (startRowIndex > lastRowNum) {
-            throw new IndexOutOfBoundsException(StringKit.format("startRowIndex row index {} is greater than last row index {}.", startRowIndex, lastRowNum));
+            // 只有标题行的Excel，起始行是1，标题行（最后的行号是0）
+            return CollKit.empty();
         }
 
         if (lastRowNum < 0) {

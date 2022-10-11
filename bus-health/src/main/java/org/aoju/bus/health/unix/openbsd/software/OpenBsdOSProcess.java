@@ -42,6 +42,7 @@ import org.aoju.bus.health.unix.openbsd.FstatKit;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -328,26 +329,16 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
 
     @Override
     public List<OSThread> getThreadDetails() {
-        List<OSThread> threads = new ArrayList<>();
         String psCommand = "ps -aHwwxo " + PS_THREAD_COLUMNS;
         if (getProcessID() >= 0) {
             psCommand += " -p " + getProcessID();
         }
-        List<String> threadList = Executor.runNative(psCommand);
-        if (threadList.isEmpty() || threadList.size() < 2) {
-            return threads;
-        }
-        // remove header row
-        threadList.remove(0);
-        // Fill list
-        for (String thread : threadList) {
-            Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(),
-                    ' ');
-            if (threadMap.containsKey(PsThreadColumns.ARGS)) {
-                threads.add(new OpenBsdOSThread(getProcessID(), threadMap));
-            }
-        }
-        return threads;
+        Predicate<Map<PsThreadColumns, String>> hasColumnsArgs = threadMap -> threadMap
+                .containsKey(PsThreadColumns.ARGS);
+        return Executor.runNative(psCommand).stream().skip(1)
+                .map(thread -> Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(), ' '))
+                .filter(hasColumnsArgs).map(threadMap -> new OpenBsdOSThread(getProcessID(), threadMap))
+                .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
 
     @Override

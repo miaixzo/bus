@@ -26,16 +26,14 @@
 package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.io.resource.ClassPathResource;
-import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
-import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.watcher.SimpleWatcher;
 import org.aoju.bus.core.io.watcher.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.setting.Readers;
@@ -45,6 +43,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.util.Properties;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -64,6 +63,8 @@ import java.util.function.Consumer;
  */
 public class PopSetting extends AbstractSetting implements Map<String, String> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 附带分组的键值对存储
      */
@@ -82,13 +83,20 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      */
     protected Resource resource;
 
+    /**
+     * 当获取key对应值为{@code null}时是否打印debug日志提示用户，默认{@code false}
+     */
+    private boolean logIfNull;
+
     private Readers readers;
     private WatchMonitor watchMonitor;
+
 
     /**
      * 空构造
      */
     public PopSetting() {
+        this.charset = Charset.UTF_8;
     }
 
     /**
@@ -96,7 +104,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @param path 相对路径或绝对路径
      */
-    public PopSetting(String path) {
+    public PopSetting(final String path) {
         this(path, false);
     }
 
@@ -106,7 +114,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param path          相对路径或绝对路径
      * @param isUseVariable 是否使用变量
      */
-    public PopSetting(String path, boolean isUseVariable) {
+    public PopSetting(final String path, final boolean isUseVariable) {
         this(path, Charset.UTF_8, isUseVariable);
     }
 
@@ -117,7 +125,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public PopSetting(String path, java.nio.charset.Charset charset, boolean isUseVariable) {
+    public PopSetting(final String path, final java.nio.charset.Charset charset, final boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
         this.init(FileKit.getResourceObject(path), charset, isUseVariable);
     }
@@ -129,34 +137,29 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public PopSetting(File configFile, java.nio.charset.Charset charset, boolean isUseVariable) {
+    public PopSetting(final File configFile, final java.nio.charset.Charset charset, final boolean isUseVariable) {
         Assert.notNull(configFile, "Null setting file define!");
-        this.init(new FileResource(configFile), charset, isUseVariable);
-    }
-
-    /**
-     * 构造,相对于classes读取文件
-     *
-     * @param path          相对ClassPath路径或绝对路径
-     * @param clazz         基准类
-     * @param charset       字符集
-     * @param isUseVariable 是否使用变量
-     */
-    public PopSetting(String path, Class<?> clazz, java.nio.charset.Charset charset, boolean isUseVariable) {
-        Assert.notBlank(path, "Blank setting path !");
-        this.init(new ClassPathResource(path, clazz), charset, isUseVariable);
+        this.init(FileKit.getResource(configFile), charset, isUseVariable);
     }
 
     /**
      * 构造
      *
-     * @param url           设定文件的URL
+     * @param resource      {@link Resource}
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public PopSetting(URL url, java.nio.charset.Charset charset, boolean isUseVariable) {
-        Assert.notNull(url, "Null setting url define!");
-        this.init(new UriResource(url), charset, isUseVariable);
+    public PopSetting(final Resource resource, final java.nio.charset.Charset charset, final boolean isUseVariable) {
+        this.init(resource, charset, isUseVariable);
+    }
+
+    /**
+     * 构建一个空的Setting，用于手动加入参数
+     *
+     * @return this
+     */
+    public static PopSetting of() {
+        return new PopSetting();
     }
 
     /**
@@ -167,8 +170,8 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      * @return 成功初始化与否
      */
-    public boolean init(Resource resource, java.nio.charset.Charset charset, boolean isUseVariable) {
-        Assert.notNull(resource, "Setting resource must be not null!");
+    public boolean init(final Resource resource, final java.nio.charset.Charset charset, final boolean isUseVariable) {
+        Assert.notNull(resource, "PopSetting resource must be not null!");
         this.resource = resource;
         this.charset = charset;
         this.isUseVariable = isUseVariable;
@@ -193,7 +196,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @param autoReload 是否自动加载
      */
-    public void autoLoad(boolean autoReload) {
+    public void autoLoad(final boolean autoReload) {
         autoLoad(autoReload, null);
     }
 
@@ -203,19 +206,19 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param callback   加载完成回调
      * @param autoReload 是否自动加载
      */
-    public void autoLoad(boolean autoReload, Consumer<Boolean> callback) {
+    public void autoLoad(final boolean autoReload, final Consumer<Boolean> callback) {
         if (autoReload) {
-            Assert.notNull(this.resource, "Setting resource must be not null !");
+            Assert.notNull(this.resource, "PopSetting resource must be not null !");
             if (null != this.watchMonitor) {
                 // 先关闭之前的监听
                 this.watchMonitor.close();
             }
-            this.watchMonitor = WatchKit.createModify(this.resource.getUrl(), new SimpleWatcher() {
+            this.watchMonitor = WatchKit.createModify(resource.getUrl(), new SimpleWatcher() {
                 @Override
-                public void onModify(WatchEvent<?> event, Path currentPath) {
-                    boolean success = load();
+                public void onModify(final WatchEvent<?> event, final Path currentPath) {
+                    final boolean success = load();
                     // 如果有回调，加载完毕则执行回调
-                    if (null != callback) {
+                    if (callback != null) {
                         callback.accept(success);
                     }
                 }
@@ -238,6 +241,8 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
+     * 获得设定文件的路径
+     *
      * @return 获得设定文件的路径
      */
     public String getSettingPath() {
@@ -250,13 +255,18 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @return 键值总数
      */
+    @Override
     public int size() {
         return this.groupMap.size();
     }
 
     @Override
-    public String getByGroup(String key, String group) {
-        return this.groupMap.get(group, key);
+    public Object getObjectByGroup(final CharSequence key, final CharSequence group, final Object defaultValue) {
+        final String result = this.groupMap.get(group, key);
+        if (result == null && logIfNull) {
+            Logger.debug("No key [{}] in group [{}] !", key, group);
+        }
+        return result;
     }
 
     /**
@@ -265,9 +275,9 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param keys 键列表,常用于别名
      * @return 值
      */
-    public Object getAndRemove(String... keys) {
-        Object value = null;
-        for (String key : keys) {
+    public String getAndRemove(final String... keys) {
+        String value = null;
+        for (final String key : keys) {
             value = remove(key);
             if (null != value) {
                 break;
@@ -279,28 +289,12 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     /**
      * 获取并删除键值对,当指定键对应值非空时,返回并删除这个值,后边的键对应的值不再查找
      *
-     * @param keys 键列表,常用于别名
-     * @return 字符串值
-     */
-    public String getAndRemoveString(String... keys) {
-        Object value = null;
-        for (String key : keys) {
-            value = remove(key);
-            if (null != value) {
-                break;
-            }
-        }
-        return (String) value;
-    }
-
-    /**
-     * 获得指定分组的所有键值对,此方法获取的是原始键值对,获取的键值对可以被修改
-     *
      * @param group 分组
      * @return map
      */
-    public Map<String, String> getMap(String group) {
-        return this.groupMap.get(group);
+    public Map<String, String> getMap(final String group) {
+        final LinkedHashMap<String, String> map = this.groupMap.get(group);
+        return (null != map) ? map : new LinkedHashMap<>(0);
     }
 
     /**
@@ -309,20 +303,20 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return {@link PopSetting}
      */
-    public PopSetting getSetting(String group) {
-        final PopSetting popSetting = new PopSetting();
-        popSetting.putAll(this.getMap(group));
-        return popSetting;
+    public PopSetting getSetting(final String group) {
+        final PopSetting setting = new PopSetting();
+        setting.putAll(this.getMap(group));
+        return setting;
     }
 
     /**
      * 获得group对应的子Properties
      *
      * @param group 分组
-     * @return Properties对象
+     * @return {@link Properties}
      */
-    public java.util.Properties getProperties(String group) {
-        final java.util.Properties properties = new java.util.Properties();
+    public Properties getProperties(final String group) {
+        final Properties properties = new Properties();
         properties.putAll(getMap(group));
         return properties;
     }
@@ -331,12 +325,12 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * 获得group对应的子Props
      *
      * @param group 分组
-     * @return Props对象
+     * @return {@link Properties}
      */
-    public Properties getProps(String group) {
-        final Properties properties = new Properties();
-        properties.putAll(getMap(group));
-        return properties;
+    public Properties getProps(final String group) {
+        final Properties props = new Properties();
+        props.putAll(getMap(group));
+        return props;
     }
 
     /**
@@ -345,7 +339,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      */
     public void store() {
         final URL resourceUrl = getSettingUrl();
-        Assert.notNull(resourceUrl, "Setting path must be not null !");
+        Assert.notNull(resourceUrl, "PopSetting path must be not null !");
         store(FileKit.file(resourceUrl));
     }
 
@@ -355,7 +349,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @param absolutePath 设置文件的绝对路径
      */
-    public void store(String absolutePath) {
+    public void store(final String absolutePath) {
         store(FileKit.touch(absolutePath));
     }
 
@@ -365,7 +359,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @param file 设置文件
      */
-    public void store(File file) {
+    public void store(final File file) {
         if (null == this.readers) {
             readers = new Readers(this.groupMap, this.charset, this.isUseVariable);
         }
@@ -373,16 +367,16 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 转换为Properties对象,原分组变为前缀
+     * 转换为Properties对象，原分组变为前缀
      *
-     * @return Properties对象
+     * @return {@link Properties}
      */
     public java.util.Properties toProperties() {
         final java.util.Properties properties = new java.util.Properties();
         String group;
-        for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupMap.entrySet()) {
+        for (final Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupMap.entrySet()) {
             group = groupEntry.getKey();
-            for (Entry<String, String> entry : groupEntry.getValue().entrySet()) {
+            for (final Entry<String, String> entry : groupEntry.getValue().entrySet()) {
                 properties.setProperty(StringKit.isEmpty(group) ? entry.getKey() : group + Symbol.DOT + entry.getKey(), entry.getValue());
             }
         }
@@ -392,9 +386,9 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     /**
      * 获取GroupedMap
      *
-     * @return GroupedMap
+     * @return {@link GroupMap}
      */
-    public GroupMap getGroupMap() {
+    public GroupMap getGroupedMap() {
         return this.groupMap;
     }
 
@@ -409,15 +403,39 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
 
     /**
      * 设置变量的正则
-     * 正则只能有一个group表示变量本身,剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
+     * 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
      *
      * @param regex 正则
+     * @return this
      */
-    public void setVarRegex(String regex) {
+    public PopSetting setVarRegex(final String regex) {
         if (null == this.readers) {
             throw new NullPointerException("SettingLoader is null !");
         }
         this.readers.setVarRegex(regex);
+        return this;
+    }
+
+    /**
+     * 自定义字符编码
+     *
+     * @param charset 字符编码
+     * @return this
+     */
+    public PopSetting setCharset(final java.nio.charset.Charset charset) {
+        this.charset = charset;
+        return this;
+    }
+
+    /**
+     * 设置当获取key对应值为{@code null}时是否打印debug日志提示用户
+     *
+     * @param logIfNull 当获取key对应值为{@code null}时是否打印debug日志提示用户
+     * @return this
+     */
+    public PopSetting setLogIfNull(final boolean logIfNull) {
+        this.logIfNull = logIfNull;
+        return this;
     }
 
     /**
@@ -426,7 +444,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return 是否为空
      */
-    public boolean isEmpty(String group) {
+    public boolean isEmpty(final String group) {
         return this.groupMap.isEmpty(group);
     }
 
@@ -437,7 +455,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param key   键
      * @return 是否包含key
      */
-    public boolean containsKey(String group, String key) {
+    public boolean containsKey(final String group, final String key) {
         return this.groupMap.containsKey(group, key);
     }
 
@@ -448,30 +466,19 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param value 值
      * @return 是否包含值
      */
-    public boolean containsValue(String group, String value) {
+    public boolean containsValue(final String group, final String value) {
         return this.groupMap.containsValue(group, value);
-    }
-
-    /**
-     * 获取分组对应的值,如果分组不存在或者值不存在则返回null
-     *
-     * @param group 分组
-     * @param key   键
-     * @return 值, 如果分组不存在或者值不存在则返回null
-     */
-    public String get(String group, String key) {
-        return this.groupMap.get(group, key);
     }
 
     /**
      * 将键值对加入到对应分组中
      *
-     * @param group 分组
      * @param key   键
+     * @param group 分组
      * @param value 值
      * @return 此key之前存在的值, 如果没有返回null
      */
-    public String put(String group, String key, String value) {
+    public String putByGroup(final String key, final String group, final String value) {
         return this.groupMap.put(group, key, value);
     }
 
@@ -480,9 +487,9 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @param group 分组
      * @param key   键
-     * @return 被删除的值, 如果值不存在, 返回null
+     * @return 被删除的值，如果值不存在，返回null
      */
-    public String remove(String group, Object key) {
+    public String remove(final String group, final Object key) {
         return this.groupMap.remove(group, Convert.toString(key));
     }
 
@@ -493,8 +500,21 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param m     键值对
      * @return this
      */
-    public PopSetting putAll(String group, Map<? extends String, ? extends String> m) {
+    public PopSetting putAll(final String group, final Map<? extends String, ? extends String> m) {
         this.groupMap.putAll(group, m);
+        return this;
+    }
+
+    /**
+     * 添加一个Stting到主配置中
+     *
+     * @param setting Setting配置
+     * @return this
+     */
+    public PopSetting addSetting(final PopSetting setting) {
+        for (final Entry<String, LinkedHashMap<String, String>> e : setting.getGroupedMap().entrySet()) {
+            this.putAll(e.getKey(), e.getValue());
+        }
         return this;
     }
 
@@ -504,7 +524,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return this
      */
-    public PopSetting clear(String group) {
+    public PopSetting clear(final String group) {
         this.groupMap.clear(group);
         return this;
     }
@@ -515,7 +535,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return 键Set
      */
-    public Set<String> keySet(String group) {
+    public Set<String> keySet(final String group) {
         return this.groupMap.keySet(group);
     }
 
@@ -525,7 +545,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return 值
      */
-    public Collection<String> values(String group) {
+    public Collection<String> values(final String group) {
         return this.groupMap.values(group);
     }
 
@@ -535,7 +555,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return 键值对
      */
-    public Set<Entry<String, String>> entrySet(String group) {
+    public Set<Entry<String, String>> entrySet(final String group) {
         return this.groupMap.entrySet(group);
     }
 
@@ -546,8 +566,38 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param value 值
      * @return this
      */
-    public PopSetting set(String key, String value) {
-        this.groupMap.put(Normal.EMPTY, key, value);
+    public PopSetting set(final String key, final String value) {
+        this.put(key, value);
+        return this;
+    }
+
+    /**
+     * 通过lambda批量设置值
+     * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * <pre>
+     *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
+     *     PopSetting.of().setFields(user::getNickname, user::getUsername);
+     * </pre>
+     *
+     * @param fields lambda,不能为空
+     * @return this
+     */
+    public PopSetting setFields(final XSupplier<String>... fields) {
+        Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));
+        return this;
+    }
+
+    /**
+     * 将键值对加入到对应分组中
+     * 此方法用于与getXXX统一参数顺序
+     *
+     * @param key   键
+     * @param group 分组
+     * @param value 值
+     * @return 此key之前存在的值，如果没有返回null
+     */
+    public PopSetting setByGroup(final String key, final String group, final String value) {
+        this.putByGroup(key, group, value);
         return this;
     }
 
@@ -563,18 +613,18 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return 默认分组中是否包含指定key对应的值
      */
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         return this.groupMap.containsKey(Normal.EMPTY, Convert.toString(key));
     }
 
     /**
-     * 默认分组(空分组)中是否包含指定值
+     * 默认分组（空分组）中是否包含指定值
      *
      * @param value 值
      * @return 默认分组中是否包含指定值
      */
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         return this.groupMap.containsValue(Normal.EMPTY, Convert.toString(value));
     }
 
@@ -585,19 +635,19 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return 默认分组(空分组)中指定key对应的值
      */
     @Override
-    public String get(Object key) {
-        return this.groupMap.get(Normal.EMPTY, Convert.toString(key));
+    public String get(final Object key) {
+        return getString((String) key);
     }
 
     /**
-     * 将指定键值对加入到默认分组(空分组)中
+     * 将指定键值对加入到默认分组（空分组）中
      *
      * @param key   键
      * @param value 值
      * @return 加入的值
      */
     @Override
-    public String put(String key, String value) {
+    public String put(final String key, final String value) {
         return this.groupMap.put(Normal.EMPTY, key, value);
     }
 
@@ -608,17 +658,17 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return 移除的值
      */
     @Override
-    public String remove(Object key) {
-        return this.groupMap.remove(Normal.EMPTY, Convert.toString(key));
+    public String remove(final Object key) {
+        return remove(Normal.EMPTY, key);
     }
 
     /**
-     * 将键值对Map加入默认分组(空分组)中
+     * 将键值对Map加入默认分组（空分组）中
      *
      * @param m Map
      */
     @Override
-    public void putAll(Map<? extends String, ? extends String> m) {
+    public void putAll(final Map<? extends String, ? extends String> m) {
         this.groupMap.putAll(Normal.EMPTY, m);
     }
 

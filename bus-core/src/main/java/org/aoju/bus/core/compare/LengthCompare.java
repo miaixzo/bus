@@ -23,107 +23,32 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.getter;
+package org.aoju.bus.core.compare;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import org.aoju.bus.core.toolkit.ObjectKit;
+
+import java.util.Comparator;
 
 /**
- * 基于分组的Get接口
+ * 字符串长度比较器，短在前
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface GroupedType {
+public class LengthCompare implements Comparator<CharSequence> {
 
     /**
-     * 获取字符串型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
+     * 单例的字符串长度比较器，短在前
      */
-    String getStrByGroup(String key, String group);
+    public static final LengthCompare INSTANCE = new LengthCompare();
 
-    /**
-     * 获取int型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    Integer getIntByGroup(String key, String group);
-
-    /**
-     * 获取short型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    Short getShortByGroup(String key, String group);
-
-    /**
-     * 获取boolean型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    Boolean getBoolByGroup(String key, String group);
-
-    /**
-     * 获取Long型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    Long getLongByGroup(String key, String group);
-
-    /**
-     * 获取char型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    Character getCharByGroup(String key, String group);
-
-    /**
-     * 获取double型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    Double getDoubleByGroup(String key, String group);
-
-    /**
-     * 获取byte型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    Byte getByteByGroup(String key, String group);
-
-    /**
-     * 获取BigDecimal型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    BigDecimal getBigDecimalByGroup(String key, String group);
-
-    /**
-     * 获取BigInteger型属性值
-     *
-     * @param key   属性名
-     * @param group 分组
-     * @return 属性值
-     */
-    BigInteger getBigIntegerByGroup(String key, String group);
+    @Override
+    public int compare(final CharSequence o1, final CharSequence o2) {
+        int result = Integer.compare(o1.length(), o2.length());
+        if (0 == result) {
+            result = ObjectKit.compare(o1.toString(), o2.toString());
+        }
+        return result;
+    }
 
 }

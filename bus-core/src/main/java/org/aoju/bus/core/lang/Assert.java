@@ -777,7 +777,7 @@ public class Assert {
      * @throws X obj1 must be equals obj2
      */
     public static <X extends Throwable> void equals(Object obj1, Object obj2, Supplier<X> errorSupplier) throws X {
-        if (ObjectKit.notEqual(obj1, obj2)) {
+        if (ObjectKit.notEquals(obj1, obj2)) {
             throw errorSupplier.get();
         }
     }

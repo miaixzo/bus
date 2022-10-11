@@ -23,22 +23,25 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.office.csv;
+package org.aoju.bus.office.excel.cell.editors;
+
+import org.aoju.bus.office.excel.cell.CellEditor;
+import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * CSV的行处理器，实现此接口用于按照行处理数据
+ * POI中NUMRIC类型的值默认返回的是Double类型,此编辑器用于转换其为int型
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@FunctionalInterface
-public interface CsvHandler {
+public class NumericToIntEditor implements CellEditor {
 
-    /**
-     * 处理行数据
-     *
-     * @param row 行数据
-     */
-    void handle(CsvRow row);
+    @Override
+    public Object edit(Cell cell, Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        }
+        return value;
+    }
 
 }

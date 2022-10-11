@@ -42,7 +42,11 @@ import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.ProcstatKit;
 import org.aoju.bus.logger.Logger;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -311,25 +315,15 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
 
     @Override
     public List<OSThread> getThreadDetails() {
-        List<OSThread> threads = new ArrayList<>();
         String psCommand = "ps -awwxo " + PS_THREAD_COLUMNS + " -H";
         if (getProcessID() >= 0) {
             psCommand += " -p " + getProcessID();
         }
-        List<String> threadList = Executor.runNative(psCommand);
-        if (threadList.size() > 1) {
-            // remove header row
-            threadList.remove(0);
-            // Fill list
-            for (String thread : threadList) {
-                Map<PsThreadColumns, String> threadMap = Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(),
-                        ' ');
-                if (threadMap.containsKey(PsThreadColumns.PRI)) {
-                    threads.add(new FreeBsdOSThread(getProcessID(), threadMap));
-                }
-            }
-        }
-        return threads;
+        Predicate<Map<PsThreadColumns, String>> hasColumnsPri = threadMap -> threadMap.containsKey(PsThreadColumns.PRI);
+        return Executor.runNative(psCommand).stream().skip(1).parallel()
+                .map(thread -> Builder.stringToEnumMap(PsThreadColumns.class, thread.trim(), ' '))
+                .filter(hasColumnsPri).map(threadMap -> new FreeBsdOSThread(getProcessID(), threadMap))
+                .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
 
     @Override

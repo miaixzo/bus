@@ -25,12 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.setting.magic;
 
-import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.getter.BasicType;
-import org.aoju.bus.core.getter.OptBasicType;
-import org.aoju.bus.core.io.resource.ClassPathResource;
-import org.aoju.bus.core.io.resource.FileResource;
+import org.aoju.bus.core.getter.TypeGetter;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.watcher.SimpleWatcher;
@@ -38,6 +34,8 @@ import org.aoju.bus.core.io.watcher.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.function.XFunction;
+import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.logger.Logger;
 
@@ -45,13 +43,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
-import java.util.Date;
-import java.util.Map;
+import java.util.Arrays;
 
 /**
  * Properties文件读取封装类
@@ -59,19 +54,52 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Properties extends java.util.Properties implements BasicType<String>, OptBasicType<String> {
+public final class Properties extends java.util.Properties implements TypeGetter<CharSequence> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 属性文件的URL
+     * 属性文件的Resource
      */
     private Resource resource;
     private WatchMonitor watchMonitor;
     /**
-     * properties文件编码
+     * properties文件编码<br>
+     * issue#1701，此属性不能被序列化，故忽略序列化
      */
-    private java.nio.charset.Charset charset = Charset.ISO_8859_1;
+    private transient java.nio.charset.Charset charset = Charset.ISO_8859_1;
+
+    /**
+     * 构造，使用相对于Class文件根目录的相对路径
+     *
+     * @param path 配置文件路径，相对于ClassPath，或者使用绝对路径
+     */
+    public Properties(final String path) {
+        this(path, null);
+    }
+
+    /**
+     * 构造，使用相对于Class文件根目录的相对路径
+     *
+     * @param path    相对或绝对路径
+     * @param charset 自定义编码
+     */
+    public Properties(final String path, final java.nio.charset.Charset charset) {
+        Assert.notBlank(path, "Blank properties file path !");
+        if (null != charset) {
+            this.charset = charset;
+        }
+        this.load(FileKit.getResource(path));
+    }
+
+    /**
+     * 构造
+     *
+     * @param propertiesFile 配置文件对象
+     */
+    public Properties(final File propertiesFile) {
+        this(propertiesFile, null);
+    }
 
     /**
      * 构造
@@ -81,190 +109,72 @@ public final class Properties extends java.util.Properties implements BasicType<
     }
 
     /**
-     * 构造,使用相对于Class文件根目录的相对路径
-     *
-     * @param path 路径
-     */
-    public Properties(String path) {
-        this(path, Charset.ISO_8859_1);
-    }
-
-    /**
-     * 构造,使用相对于Class文件根目录的相对路径
-     *
-     * @param path        相对或绝对路径
-     * @param charsetName 字符集
-     */
-    public Properties(String path, String charsetName) {
-        this(path, Charset.charset(charsetName));
-    }
-
-    /**
-     * 构造,使用相对于Class文件根目录的相对路径
-     *
-     * @param path    相对或绝对路径
-     * @param charset 字符集
-     */
-    public Properties(String path, java.nio.charset.Charset charset) {
-        Assert.notBlank(path, "Blank properties file path !");
-        if (null != charset) {
-            this.charset = charset;
-        }
-        this.load(FileKit.getResourceObject(path));
-    }
-
-    /**
      * 构造
      *
      * @param propertiesFile 配置文件对象
+     * @param charset        自定义编码
      */
-    public Properties(File propertiesFile) {
-        this(propertiesFile, Charset.ISO_8859_1);
-    }
-
-    /**
-     * 构造
-     *
-     * @param propertiesFile 配置文件对象
-     * @param charsetName    字符集
-     */
-    public Properties(File propertiesFile, String charsetName) {
-        this(propertiesFile, java.nio.charset.Charset.forName(charsetName));
-    }
-
-    /**
-     * 构造
-     *
-     * @param propertiesFile 配置文件对象
-     * @param charset        字符集
-     */
-    public Properties(File propertiesFile, java.nio.charset.Charset charset) {
+    public Properties(final File propertiesFile, final java.nio.charset.Charset charset) {
         Assert.notNull(propertiesFile, "Null properties file!");
-        this.charset = charset;
-        this.load(new FileResource(propertiesFile));
-    }
-
-    /**
-     * 构造,相对于classes读取文件
-     *
-     * @param path  相对路径
-     * @param clazz 基准类
-     */
-    public Properties(String path, Class<?> clazz) {
-        this(path, clazz, Charset.ISO_8859_1);
-    }
-
-    /**
-     * 构造,相对于classes读取文件
-     *
-     * @param path        相对路径
-     * @param clazz       基准类
-     * @param charsetName 字符集
-     */
-    public Properties(String path, Class<?> clazz, String charsetName) {
-        this(path, clazz, Charset.charset(charsetName));
-    }
-
-    /**
-     * 构造,相对于classes读取文件
-     *
-     * @param path    相对路径
-     * @param clazz   基准类
-     * @param charset 字符集
-     */
-    public Properties(String path, Class<?> clazz, java.nio.charset.Charset charset) {
-        Assert.notBlank(path, "Blank properties file path !");
         if (null != charset) {
             this.charset = charset;
         }
-        this.load(new ClassPathResource(path, clazz));
+        this.load(FileKit.getResource(propertiesFile));
     }
 
     /**
-     * 构造,使用URL读取
+     * 构造，使用URL读取
      *
-     * @param propertiesUrl 属性文件路径
+     * @param resource {@link Resource}
+     * @param charset  自定义编码
      */
-    public Properties(URL propertiesUrl) {
-        this(propertiesUrl, Charset.ISO_8859_1);
-    }
-
-    /**
-     * 构造,使用URL读取
-     *
-     * @param propertiesUrl 属性文件路径
-     * @param charsetName   字符集
-     */
-    public Properties(URL propertiesUrl, String charsetName) {
-        this(propertiesUrl, Charset.charset(charsetName));
-    }
-
-    /**
-     * 构造,使用URL读取
-     *
-     * @param propertiesUrl 属性文件路径
-     * @param charset       字符集
-     */
-    public Properties(URL propertiesUrl, java.nio.charset.Charset charset) {
-        Assert.notNull(propertiesUrl, "Null properties URL !");
+    public Properties(final Resource resource, final java.nio.charset.Charset charset) {
+        Assert.notNull(resource, "Null properties URL !");
         if (null != charset) {
             this.charset = charset;
         }
-        this.load(new UriResource(propertiesUrl));
+        this.load(resource);
     }
 
     /**
-     * 构造,使用URL读取
+     * 构造，使用URL读取
      *
      * @param properties 属性文件路径
      */
-    public Properties(java.util.Properties properties) {
-        if (CollKit.isNotEmpty(properties)) {
+    public Properties(final java.util.Properties properties) {
+        if (MapKit.isNotEmpty(properties)) {
             this.putAll(properties);
         }
     }
 
     /**
-     * 获得Classpath下的Properties文件
+     * 构建一个空的Props，用于手动加入参数
      *
-     * @param resource 资源(相对Classpath的路径)
      * @return Properties
      */
-    public static java.util.Properties getProp(String resource) {
+    public static Properties of() {
+        return new Properties();
+    }
+
+    /**
+     * 获得Classpath下的Properties文件
+     *
+     * @param resource 资源（相对Classpath的路径）
+     * @return Props
+     */
+    public static Properties of(final String resource) {
         return new Properties(resource);
     }
 
     /**
      * 获得Classpath下的Properties文件
      *
-     * @param resource    资源(相对Classpath的路径)
-     * @param charsetName 字符集
+     * @param resource 资源（相对Classpath的路径）
+     * @param charset  自定义编码
      * @return Properties
      */
-    public static java.util.Properties getProp(String resource, String charsetName) {
-        return new Properties(resource, charsetName);
-    }
-
-    /**
-     * 获得Classpath下的Properties文件
-     *
-     * @param resource 资源(相对Classpath的路径)
-     * @param charset  字符集
-     * @return Properties
-     */
-    public static java.util.Properties getProp(String resource, java.nio.charset.Charset charset) {
+    public static Properties of(final String resource, final java.nio.charset.Charset charset) {
         return new Properties(resource, charset);
-    }
-
-    /**
-     * 获得Classpath下的Properties文件
-     *
-     * @param resource 资源(相对Classpath的路径)
-     * @param clazz    基准类
-     * @return Properties
-     */
-    public static java.util.Properties getProp(String resource, Class<?> clazz) {
-        return new Properties(resource, clazz);
     }
 
     /**
@@ -272,7 +182,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      *
      * @param url {@link URL}
      */
-    public void load(URL url) {
+    public void load(final URL url) {
         load(new UriResource(url));
     }
 
@@ -281,13 +191,13 @@ public final class Properties extends java.util.Properties implements BasicType<
      *
      * @param resource {@link Resource}
      */
-    public void load(Resource resource) {
+    public void load(final Resource resource) {
         Assert.notNull(resource, "Props resource must be not null!");
         this.resource = resource;
 
         try (final BufferedReader reader = resource.getReader(charset)) {
             super.load(reader);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
@@ -304,7 +214,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      *
      * @param autoReload 是否自动加载
      */
-    public void autoLoad(boolean autoReload) {
+    public void autoLoad(final boolean autoReload) {
         if (autoReload) {
             Assert.notNull(this.resource, "Properties resource must be not null!");
             if (null != this.watchMonitor) {
@@ -313,7 +223,7 @@ public final class Properties extends java.util.Properties implements BasicType<
             }
             this.watchMonitor = WatchKit.createModify(this.resource.getUrl(), new SimpleWatcher() {
                 @Override
-                public void onModify(WatchEvent<?> event, Path currentPath) {
+                public void onModify(final WatchEvent<?> event, final Path currentPath) {
                     load();
                 }
             });
@@ -325,165 +235,21 @@ public final class Properties extends java.util.Properties implements BasicType<
     }
 
     @Override
-    public Object getObject(String key, Object defaultValue) {
-        return getString(key, null == defaultValue ? null : defaultValue.toString());
+    public Object getObject(final CharSequence key, final Object defaultValue) {
+        return ObjectKit.defaultIfNull(getProperty(StringKit.toString(key)), defaultValue);
     }
 
-    @Override
-    public Object getObject(String key) {
-        return getObject(key, null);
-    }
-
-    @Override
-    public String getString(String key, String defaultValue) {
-        return super.getProperty(key, defaultValue);
-    }
-
-    @Override
-    public String getString(String key) {
-        return super.getProperty(key);
-    }
-
-    @Override
-    public Integer getInt(String key, Integer defaultValue) {
-        return Convert.toInt(getString(key), defaultValue);
-    }
-
-    @Override
-    public Integer getInt(String key) {
-        return getInt(key, null);
-    }
-
-    @Override
-    public Boolean getBoolean(String key, Boolean defaultValue) {
-        return Convert.toBoolean(getString(key), defaultValue);
-    }
-
-    @Override
-    public Boolean getBoolean(String key) {
-        return getBoolean(key, null);
-    }
-
-    @Override
-    public Long getLong(String key, Long defaultValue) {
-        return Convert.toLong(getString(key), defaultValue);
-    }
-
-    @Override
-    public Long getLong(String key) {
-        return getLong(key, null);
-    }
-
-    @Override
-    public Character getChar(String key, Character defaultValue) {
-        final String value = getString(key);
-        if (StringKit.isBlank(value)) {
-            return defaultValue;
-        }
-        return value.charAt(0);
-    }
-
-    @Override
-    public Character getChar(String key) {
-        return getChar(key, null);
-    }
-
-    @Override
-    public Float getFloat(String key) {
-        return getFloat(key, null);
-    }
-
-    @Override
-    public Float getFloat(String key, Float defaultValue) {
-        return Convert.toFloat(getString(key), defaultValue);
-    }
-
-    @Override
-    public Double getDouble(String key, Double defaultValue) throws NumberFormatException {
-        return Convert.toDouble(getString(key), defaultValue);
-    }
-
-    @Override
-    public Double getDouble(String key) throws NumberFormatException {
-        return getDouble(key, null);
-    }
-
-    @Override
-    public Short getShort(String key, Short defaultValue) {
-        return Convert.toShort(getString(key), defaultValue);
-    }
-
-    @Override
-    public Short getShort(String key) {
-        return getShort(key, null);
-    }
-
-    @Override
-    public Byte getByte(String key, Byte defaultValue) {
-        return Convert.toByte(getString(key), defaultValue);
-    }
-
-    @Override
-    public Byte getByte(String key) {
-        return getByte(key, null);
-    }
-
-    @Override
-    public BigDecimal getBigDecimal(String key, BigDecimal defaultValue) {
-        final String valueStr = getString(key);
-        if (StringKit.isBlank(valueStr)) {
-            return defaultValue;
-        }
-
-        try {
-            return new BigDecimal(valueStr);
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
-
-    @Override
-    public BigDecimal getBigDecimal(String key) {
-        return getBigDecimal(key, null);
-    }
-
-    @Override
-    public BigInteger getBigInteger(String key, BigInteger defaultValue) {
-        final String valueStr = getString(key);
-        if (StringKit.isBlank(valueStr)) {
-            return defaultValue;
-        }
-
-        try {
-            return new BigInteger(valueStr);
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
-
-    @Override
-    public BigInteger getBigInteger(String key) {
-        return getBigInteger(key, null);
-    }
-
-    @Override
-    public <E extends Enum<E>> E getEnum(Class<E> clazz, String key, E defaultValue) {
-        return Convert.toEnum(clazz, getString(key), defaultValue);
-    }
-
-    @Override
-    public <E extends Enum<E>> E getEnum(Class<E> clazz, String key) {
-        return getEnum(clazz, key, null);
-    }
-
-    @Override
-    public Date getDate(String key, Date defaultValue) {
-        return Convert.toDate(getString(key), defaultValue);
-    }
-
-    @Override
-    public Date getDate(String key) {
-        return getDate(key, null);
+    /**
+     * 根据lambda的方法引用，获取
+     *
+     * @param func 方法引用
+     * @param <P>  参数类型
+     * @param <T>  返回值类型
+     * @return 获取表达式对应属性和返回的对象
+     */
+    public <P, T> T get(final XFunction<P, T> func) {
+        final LambdaKit.Info lambdaInfo = LambdaKit.resolve(func);
+        return get(lambdaInfo.getFieldName(), lambdaInfo.getReturnType());
     }
 
     /**
@@ -492,9 +258,9 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param keys 键列表，常用于别名
      * @return 字符串值
      */
-    public String getAndRemoveString(String... keys) {
+    public String getAndRemoveStr(final String... keys) {
         Object value = null;
-        for (String key : keys) {
+        for (final String key : keys) {
             value = remove(key);
             if (null != value) {
                 break;
@@ -530,7 +296,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param beanClass Bean类
      * @return Bean对象
      */
-    public <T> T toBean(Class<T> beanClass) {
+    public <T> T toBean(final Class<T> beanClass) {
         return toBean(beanClass, null);
     }
 
@@ -551,7 +317,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param prefix    公共前缀，不指定前缀传null，当指定前缀后非此前缀的属性被忽略
      * @return Bean对象
      */
-    public <T> T toBean(Class<T> beanClass, String prefix) {
+    public <T> T toBean(final Class<T> beanClass, final String prefix) {
         final T bean = ReflectKit.newInstanceIfPossible(beanClass);
         return fillBean(bean, prefix);
     }
@@ -573,11 +339,11 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param prefix 公共前缀，不指定前缀传null，当指定前缀后非此前缀的属性被忽略
      * @return Bean对象
      */
-    public <T> T fillBean(T bean, String prefix) {
-        prefix = StringKit.nullToEmpty(StringKit.addSuffixIfNot(prefix, Symbol.DOT));
+    public <T> T fillBean(final T bean, String prefix) {
+        prefix = StringKit.emptyIfNull(StringKit.addSuffixIfNot(prefix, Symbol.DOT));
 
         String key;
-        for (Map.Entry<Object, Object> entry : this.entrySet()) {
+        for (final java.util.Map.Entry<Object, Object> entry : this.entrySet()) {
             key = (String) entry.getKey();
             if (false == StringKit.startWith(key, prefix)) {
                 // 非指定开头的属性忽略掉
@@ -585,8 +351,8 @@ public final class Properties extends java.util.Properties implements BasicType<
             }
             try {
                 BeanKit.setProperty(bean, StringKit.subSuf(key, prefix.length()), entry.getValue());
-            } catch (Exception e) {
-                // 忽略注入失败的字段(这些字段可能用于其它配置)
+            } catch (final Exception e) {
+                // 忽略注入失败的字段（这些字段可能用于其它配置）
                 Logger.debug("Ignore property: [{}]", key);
             }
         }
@@ -600,35 +366,51 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param key   属性键
      * @param value 属性值
      */
-    public void setProperty(String key, Object value) {
+    public void set(final String key, final Object value) {
         super.setProperty(key, value.toString());
     }
 
     /**
-     * 持久化当前设置,会覆盖掉之前的设置
+     * 通过lambda批量设置值
+     * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * <pre>
+     *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
+     *     Setting.of().setFields(user::getNickname, user::getUsername);
+     * </pre>
+     *
+     * @param fields lambda,不能为空
+     * @return this
+     */
+    public Properties setFields(final XSupplier<?>... fields) {
+        Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));
+        return this;
+    }
+
+    /**
+     * 持久化当前设置，会覆盖掉之前的设置
      *
      * @param absolutePath 设置文件的绝对路径
-     * @throws InternalException IO异常,可能为文件未找到
+     * @throws InternalException IO异常，可能为文件未找到
      */
-    public void store(String absolutePath) throws InternalException {
+    public void store(final String absolutePath) throws InternalException {
         Writer writer = null;
         try {
             writer = FileKit.getWriter(absolutePath, charset, false);
             super.store(writer, null);
-        } catch (IOException e) {
-            throw new InternalException("Store properties to [{}] error!", absolutePath);
+        } catch (final IOException e) {
+            throw new InternalException(e, "Store properties to [{}] error!", absolutePath);
         } finally {
             IoKit.close(writer);
         }
     }
 
     /**
-     * 存储当前设置,会覆盖掉以前的设置
+     * 存储当前设置，会覆盖掉以前的设置
      *
      * @param path  相对路径
      * @param clazz 相对的类
      */
-    public void store(String path, Class<?> clazz) {
+    public void store(final String path, final Class<?> clazz) {
         this.store(FileKit.getAbsolutePath(path, clazz));
     }
 

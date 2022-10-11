@@ -122,6 +122,11 @@ public class SheetSaxHandler extends DefaultHandler {
      */
     private List<Object> rowCellList = new ArrayList<>();
 
+    /**
+     * 构造
+     *
+     * @param rowHandler 行处理器
+     */
     public SheetSaxHandler(RowHandler rowHandler) {
         this.rowHandler = rowHandler;
     }

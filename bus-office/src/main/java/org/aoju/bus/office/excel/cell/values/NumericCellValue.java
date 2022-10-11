@@ -25,16 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.office.excel.cell.values;
 
-import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.excel.cell.CellValue;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.NumberToTextConverter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 数字类型单元格值
@@ -64,12 +62,12 @@ public class NumericCellValue implements CellValue<Object> {
         if (null != style) {
             // 判断是否为日期
             if (Builder.isDateFormat(cell)) {
+                final LocalDateTime date = cell.getLocalDateTimeCellValue();
                 // 1899年写入会导致数据错乱，读取到1899年证明这个单元格的信息不关注年月日
-                Date dateCellValue = cell.getDateCellValue();
-                if ("1899".equals(DateKit.format(dateCellValue, Fields.NORM_YEAR_PATTERN))) {
-                    return DateKit.format(dateCellValue, style.getDataFormatString());
+                if (1899 == date.getYear()) {
+                    return date.toLocalTime();
                 }
-                return DateKit.date(dateCellValue);
+                return date;
             }
 
             final String format = style.getDataFormatString();

@@ -33,8 +33,6 @@ import java.util.regex.Pattern;
  * <p>Node.js 版: https://gitee.com/javen205/TNWX</p>
  *
  * <p>商户二维码支付接口 Model</p>
- *
- * @author Javen
  */
 public class JdPayKit {
 

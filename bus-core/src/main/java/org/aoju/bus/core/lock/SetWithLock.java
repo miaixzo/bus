@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SetWithLock<T> extends ObjWithLock<Set<T>> {
+public class SetWithLock<T> extends ObjectWithLock<Set<T>> {
 
     private static final long serialVersionUID = 1L;
 

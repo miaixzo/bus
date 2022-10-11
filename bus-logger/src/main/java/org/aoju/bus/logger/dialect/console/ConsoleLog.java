@@ -27,8 +27,8 @@ package org.aoju.bus.logger.dialect.console;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Console;
-import org.aoju.bus.core.lang.Dictionary;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.map.Dictionary;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;

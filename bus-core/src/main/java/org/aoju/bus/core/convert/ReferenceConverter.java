@@ -51,7 +51,7 @@ public class ReferenceConverter extends AbstractConverter {
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(targetClass);
         if (false == TypeKit.isUnknown(paramType)) {
-            targetValue = CompositeRegister.getInstance().convert(paramType, value);
+            targetValue = CompositeConverter.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {
             targetValue = value;

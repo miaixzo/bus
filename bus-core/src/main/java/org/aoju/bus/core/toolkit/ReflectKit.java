@@ -41,7 +41,7 @@ import java.util.*;
 
 /**
  * 反射工具类.
- * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
+ * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -685,17 +685,18 @@ public class ReflectKit {
             return null;
         }
 
+        Method result = null;
         final Method[] methods = getMethods(clazz);
         if (ArrayKit.isNotEmpty(methods)) {
-            for (Method method : methods) {
-                if (StringKit.equals(methodName, method.getName(), ignoreCase)) {
-                    if (ArrayKit.isEmpty(paramTypes) || ClassKit.isAllAssignableFrom(method.getParameterTypes(), paramTypes)) {
-                        return method;
-                    }
+            for (final Method method : methods) {
+                if (StringKit.equals(methodName, method.getName(), ignoreCase)
+                        && ClassKit.isAllAssignableFrom(method.getParameterTypes(), paramTypes)
+                        && (result == null || result.getReturnType().isAssignableFrom(method.getReturnType()))) {
+                    result = method;
                 }
             }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -816,7 +817,7 @@ public class ReflectKit {
      * @return 是否为hashCode方法
      */
     public static boolean isHashCodeMethod(Method method) {
-        return (null != method && ObjectKit.equal(method.getName(), Normal.HASHCODE) && method.getParameterTypes().length == 0);
+        return (null != method && ObjectKit.equals(method.getName(), Normal.HASHCODE) && method.getParameterTypes().length == 0);
     }
 
     /**
@@ -826,7 +827,7 @@ public class ReflectKit {
      * @return 是否为toString方法
      */
     public static boolean isToStringMethod(Method method) {
-        return (null != method && ObjectKit.equal(method.getName(), Normal.TOSTRING) && method.getParameterTypes().length == 0);
+        return (null != method && ObjectKit.equals(method.getName(), Normal.TOSTRING) && method.getParameterTypes().length == 0);
     }
 
     /**
@@ -1201,7 +1202,7 @@ public class ReflectKit {
         if (currentClass.isPrimitive()) {
             // 只有下面九种基础数据类型以及数组，才有独立的描述符
             final char descriptor;
-            // see sun.invoke.util.Wrapper
+            // see sun.invoke.util.XWrapper
             // These must be in the order defined for widening primitive conversions in JLS 5.1.2
             if (currentClass == boolean.class) {
                 descriptor = 'Z';

@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.crypto;
 
+import org.aoju.bus.core.lang.function.XWrapper;
+
 import javax.crypto.Cipher;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -43,7 +45,7 @@ import java.security.spec.AlgorithmParameterSpec;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Ciphers {
+public class Ciphers implements XWrapper<Cipher> {
 
     /**
      * Cipher负责完成加密或解密工作
@@ -113,7 +115,8 @@ public class Ciphers {
      *
      * @return {@link Cipher}
      */
-    public Cipher getCipher() {
+    @Override
+    public Cipher getRaw() {
         return this.cipher;
     }
 

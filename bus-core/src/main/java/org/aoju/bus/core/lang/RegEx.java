@@ -148,34 +148,28 @@ public class RegEx {
 
     /**
      * 移动电话
+     * eg: 中国大陆： +86  139 1111 2222，2位区域码标示+13位数字
      */
     public static final String MOBILE_PATTERN = "(?:0|86|\\+86)?1[3-9]\\d{9}";
     public static final Pattern MOBILE = Pattern.compile(MOBILE_PATTERN);
 
     /**
      * 中国香港移动电话
-     * eg: 中国香港： +852 5100 4610， 三位区域码+10位数字, 中国香港手机号码8位数
-     * eg: 中国大陆： +86  178 2161 1399，2位区域码标示+13位数字
-     * 中国大陆 +86 Mainland China
-     * 中国香港 +852 Hong Kong
-     * 中国澳门 +853 Macao
-     * 中国台湾 +886 Taiwan
+     * eg: 中国香港： +852 5200 8810， 三位区域码+10位数字, 中国香港手机号码8位数
      */
     public final static String MOBILE_HK_PATTERN = "(?:0|852|\\+852)?\\d{8}";
     public final static Pattern MOBILE_HK = Pattern.compile(MOBILE_HK_PATTERN);
 
     /**
      * 中国澳门移动电话
-     * eg: 中国台湾： +853 68 00000， 三位区域码 +号码以数字6开头 + 7位数字, 中国台湾手机号码8位数
-     * 中国澳门 +853 Macao 国际域名缩写：MO
+     * eg: 中国台湾： +886 09 60 000000， 三位区域码+号码以数字09开头 + 8位数字, 中国台湾手机号码10位数
      */
     public final static String MOBILE_MO_PATTERN = "(?:0|853|\\+853)?(?:|-)6\\d{7}";
     public final static Pattern MOBILE_MO = Pattern.compile(MOBILE_MO_PATTERN);
 
     /**
      * 中国台湾移动电话
-     * eg: 中国台湾： +886 09 60 000000， 三位区域码+号码以数字09开头 + 8位数字, 中国台湾手机号码10位数
-     * 中国台湾 +886 Taiwan 国际域名缩写：TW
+     * eg: 中国澳门： +853 68 00000， 三位区域码 +号码以数字6开头 + 7位数字, 中国台湾手机号码8位数
      */
     public final static String MOBILE_TW_PATTERN = "(?:0|886|\\+886)?(?:|-)09\\d{8}";
     public final static Pattern MOBILE_TW = Pattern.compile(MOBILE_TW_PATTERN);

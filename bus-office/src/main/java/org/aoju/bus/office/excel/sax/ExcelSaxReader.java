@@ -41,11 +41,11 @@ import java.io.InputStream;
 public interface ExcelSaxReader<T> {
 
     /**
-     * sheet r:Id前缀
+     * sheet r:Id 前缀
      */
     String RID_PREFIX = "rId";
     /**
-     * sheet name前缀
+     * sheet name 前缀
      */
     String SHEET_NAME_PREFIX = "sheetName:";
 

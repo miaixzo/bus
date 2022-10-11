@@ -478,8 +478,8 @@ public class Ftp extends AbstractFtp {
             childPath = StringKit.format("{}/{}", dirPath, name);
             if (ftpFile.isDirectory()) {
                 // 上级和本级目录除外
-                if (false == ObjectKit.equal(name, Symbol.DOT)
-                        && false == ObjectKit.equal(name, Symbol.DOUBLE_DOT)) {
+                if (false == ObjectKit.equals(name, Symbol.DOT)
+                        && false == ObjectKit.equals(name, Symbol.DOUBLE_DOT)) {
                     delDir(childPath);
                 }
             } else {

@@ -210,7 +210,7 @@ public class Validator {
      * @return 当两值都为null或相等返回true
      */
     public static boolean equal(Object t1, Object t2) {
-        return ObjectKit.equal(t1, t2);
+        return ObjectKit.equals(t1, t2);
     }
 
     /**

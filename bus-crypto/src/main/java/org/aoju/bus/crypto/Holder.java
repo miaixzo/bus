@@ -54,7 +54,9 @@ public class Holder {
      * @return {@link  Provider}
      */
     public Provider createBouncyCastleProvider() {
-        return new org.bouncycastle.jce.provider.BouncyCastleProvider();
+        final org.bouncycastle.jce.provider.BouncyCastleProvider provider = new org.bouncycastle.jce.provider.BouncyCastleProvider();
+        Builder.addProvider(provider);
+        return provider;
     }
 
     /**

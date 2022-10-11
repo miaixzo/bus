@@ -48,7 +48,7 @@ public class GroupMap extends LinkedHashMap<String, LinkedHashMap<String, String
      * @param key   键
      * @return 值, 如果分组不存在或者值不存在则返回null
      */
-    public String get(String group, String key) {
+    public String get(CharSequence group, CharSequence key) {
         LinkedHashMap<String, String> map = this.get(StringKit.nullToEmpty(group));
         if (MapKit.isNotEmpty(map)) {
             return map.get(key);

@@ -1055,4 +1055,32 @@ public class DateTime extends Date {
         return this;
     }
 
+    /**
+     * 是否为本月最后一天
+     *
+     * @return 是否为本月最后一天
+     */
+    public boolean isLastDayOfMonth() {
+        return dayOfMonth() == getLastDayOfMonth();
+    }
+
+    /**
+     * 获得本月的最后一天
+     *
+     * @return 天
+     */
+    public int getLastDayOfMonth() {
+        return monthEnum().getLastDay(isLeapYear());
+    }
+
+    /**
+     * 是否闰年
+     *
+     * @return 是否闰年
+     * @see Almanac#isLeapYear(int)
+     */
+    public boolean isLeapYear() {
+        return Almanac.isLeapYear(year());
+    }
+
 }

@@ -26,9 +26,10 @@
 package org.aoju.bus.core.io.watcher;
 
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.function.XBiConsumer;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.nio.file.*;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * 文件监听服务，此服务可以同时监听多个路径
@@ -69,7 +71,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
     private WatchEvent.Modifier[] modifiers;
 
     /**
-     * 初始化
+     * 初始化<br>
      * 初始化包括：
      * <pre>
      * 1、解析传入的路径，判断其为目录还是文件
@@ -82,7 +84,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
         //初始化监听
         try {
             watchService = FileSystems.getDefault().newWatchService();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
 
@@ -99,7 +101,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
      *
      * @param modifiers 监听选项，例如监听频率等
      */
-    public void setModifiers(WatchEvent.Modifier[] modifiers) {
+    public void setModifiers(final WatchEvent.Modifier[] modifiers) {
         this.modifiers = modifiers;
     }
 
@@ -109,29 +111,30 @@ public class WatchServer extends Thread implements Closeable, Serializable {
      * @param path     路径
      * @param maxDepth 递归下层目录的最大深度
      */
-    public void registerPath(Path path, int maxDepth) {
+    public void registerPath(final Path path, final int maxDepth) {
+        final WatchEvent.Kind<?>[] kinds = ObjectKit.defaultIfEmpty(this.events, WatchKind.ALL);
         try {
             final WatchKey key;
             if (ArrayKit.isEmpty(this.modifiers)) {
-                key = path.register(this.watchService, this.events);
+                key = path.register(this.watchService, kinds);
             } else {
-                key = path.register(this.watchService, this.events, this.modifiers);
+                key = path.register(this.watchService, kinds, this.modifiers);
             }
             watchKeyPathMap.put(key, path);
 
             // 递归注册下一层层级的目录
             if (maxDepth > 1) {
                 //遍历所有子目录并加入监听
-                Files.walkFileTree(path, EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<Path>() {
+                Files.walkFileTree(path, EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<>() {
                     @Override
-                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
                         registerPath(dir, 0);//继续添加目录
                         return super.postVisitDirectory(dir, exc);
                     }
                 });
             }
-        } catch (IOException e) {
-            if (false == (e instanceof AccessDeniedException)) {
+        } catch (final IOException e) {
+            if (!(e instanceof AccessDeniedException)) {
                 throw new InternalException(e);
             }
 
@@ -142,39 +145,53 @@ public class WatchServer extends Thread implements Closeable, Serializable {
     /**
      * 执行事件获取并处理
      *
-     * @param watcher     {@link Watcher}
-     * @param watchFilter 监听过滤接口，通过实现此接口过滤掉不需要监听的情况，null表示不过滤
+     * @param action      监听回调函数，实现此函数接口用于处理WatchEvent事件
+     * @param watchFilter 监听过滤接口，通过实现此接口过滤掉不需要监听的情况，{@link Predicate#test(Object)}为{@code true}保留，null表示不过滤
      */
-    public void watch(Watcher watcher, Filter<WatchEvent<?>> watchFilter) {
-        WatchKey wk;
+    public void watch(final XBiConsumer<WatchEvent<?>, Path> action, final Predicate<WatchEvent<?>> watchFilter) {
+        final WatchKey wk;
         try {
             wk = watchService.take();
-        } catch (InterruptedException | ClosedWatchServiceException e) {
+        } catch (final InterruptedException | ClosedWatchServiceException e) {
             // 用户中断
+            close();
             return;
         }
 
         final Path currentPath = watchKeyPathMap.get(wk);
-        WatchEvent.Kind<?> kind;
-        for (WatchEvent<?> event : wk.pollEvents()) {
-            kind = event.kind();
 
+        for (final WatchEvent<?> event : wk.pollEvents()) {
             // 如果监听文件，检查当前事件是否与所监听文件关联
-            if (null != watchFilter && false == watchFilter.accept(event)) {
+            if (null != watchFilter && !watchFilter.test(event)) {
                 continue;
             }
 
-            if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+            action.accept(event, currentPath);
+        }
+
+        wk.reset();
+    }
+
+    /**
+     * 执行事件获取并处理
+     *
+     * @param watcher     {@link Watcher}
+     * @param watchFilter 监听过滤接口，通过实现此接口过滤掉不需要监听的情况，{@link Predicate#test(Object)}为{@code true}保留，null表示不过滤
+     */
+    public void watch(final Watcher watcher, final Predicate<WatchEvent<?>> watchFilter) {
+        watch((event, currentPath) -> {
+            final WatchEvent.Kind<?> kind = event.kind();
+
+            if (kind == WatchKind.CREATE.getValue()) {
                 watcher.onCreate(event, currentPath);
-            } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+            } else if (kind == WatchKind.MODIFY.getValue()) {
                 watcher.onModify(event, currentPath);
-            } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
+            } else if (kind == WatchKind.DELETE.getValue()) {
                 watcher.onDelete(event, currentPath);
-            } else if (kind == StandardWatchEventKinds.OVERFLOW) {
+            } else if (kind == WatchKind.OVERFLOW.getValue()) {
                 watcher.onOverflow(event, currentPath);
             }
-        }
-        wk.reset();
+        }, watchFilter);
     }
 
     /**

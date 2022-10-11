@@ -23,26 +23,22 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.office.excel.editors;
-
-import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.office.excel.cell.CellEditor;
-import org.apache.poi.ss.usermodel.Cell;
+package org.aoju.bus.core.lang.function;
 
 /**
- * 去除String类型的单元格值两边的空格
+ * 包装接口
  *
+ * @param <T> 原始对象类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TrimEditor implements CellEditor {
+public interface XWrapper<T> {
 
-    @Override
-    public Object edit(Cell cell, Object value) {
-        if (value instanceof String) {
-            return StringKit.trim((String) value);
-        }
-        return value;
-    }
+    /**
+     * 获取原始对象
+     *
+     * @return 原始对象
+     */
+    T getRaw();
 
 }

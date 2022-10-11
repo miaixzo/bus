@@ -32,6 +32,7 @@ import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
@@ -119,7 +120,7 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Pair<List<LogicalProcessor>, List<PhysicalProcessor>> initProcessorCounts() {
+    protected Triple<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>> initProcessorCounts() {
         this.config = PerfstatConfig.queryConfig();
 
         int physProcs = (int) config.numProcessors.max;
@@ -130,15 +131,48 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         if (lcpus < 1) {
             lcpus = 1;
         }
+        int lpPerPp = lcpus / physProcs;
         // Get node and package mapping
         Map<Integer, Pair<Integer, Integer>> nodePkgMap = Lssrad.queryNodesPackages();
         List<LogicalProcessor> logProcs = new ArrayList<>();
         for (int proc = 0; proc < lcpus; proc++) {
             Pair<Integer, Integer> nodePkg = nodePkgMap.get(proc);
-            logProcs.add(new LogicalProcessor(proc, proc / physProcs, nodePkg == null ? 0 : nodePkg.getRight(),
+            int physProc = proc / lpPerPp;
+            logProcs.add(new LogicalProcessor(proc, physProc, nodePkg == null ? 0 : nodePkg.getRight(),
                     nodePkg == null ? 0 : nodePkg.getLeft()));
         }
-        return Pair.of(logProcs, null);
+        return Triple.of(logProcs, null, getCachesForModel(physProcs));
+    }
+
+    private List<ProcessorCache> getCachesForModel(int cores) {
+        // The only info available in the OS is the L2 size
+        // But we can hardcode POWER7, POWER8, and POWER9 configs
+        List<ProcessorCache> caches = new ArrayList<>();
+        int powerVersion = Builder.getFirstIntValue(Executor.getFirstAnswer("uname -n"));
+        switch (powerVersion) {
+            case 7:
+                caches.add(new ProcessorCache(3, 8, 128, (2 * 32) << 20, ProcessorCache.Type.UNIFIED));
+                caches.add(new ProcessorCache(2, 8, 128, 256 << 10, ProcessorCache.Type.UNIFIED));
+                caches.add(new ProcessorCache(1, 8, 128, 32 << 10, ProcessorCache.Type.DATA));
+                caches.add(new ProcessorCache(1, 4, 128, 32 << 10, ProcessorCache.Type.INSTRUCTION));
+                break;
+            case 8:
+                caches.add(new ProcessorCache(4, 8, 128, (16 * 16) << 20, ProcessorCache.Type.UNIFIED));
+                caches.add(new ProcessorCache(3, 8, 128, 40 << 20, ProcessorCache.Type.UNIFIED));
+                caches.add(new ProcessorCache(2, 8, 128, 512 << 10, ProcessorCache.Type.UNIFIED));
+                caches.add(new ProcessorCache(1, 8, 128, 64 << 10, ProcessorCache.Type.DATA));
+                caches.add(new ProcessorCache(1, 8, 128, 32 << 10, ProcessorCache.Type.INSTRUCTION));
+                break;
+            case 9:
+                caches.add(new ProcessorCache(3, 20, 128, (cores * 10) << 20, ProcessorCache.Type.UNIFIED));
+                caches.add(new ProcessorCache(2, 8, 128, 512 << 10, ProcessorCache.Type.UNIFIED));
+                caches.add(new ProcessorCache(1, 8, 128, 32 << 10, ProcessorCache.Type.DATA));
+                caches.add(new ProcessorCache(1, 8, 128, 32 << 10, ProcessorCache.Type.INSTRUCTION));
+                break;
+            default:
+                // Don't guess
+        }
+        return caches;
     }
 
     @Override

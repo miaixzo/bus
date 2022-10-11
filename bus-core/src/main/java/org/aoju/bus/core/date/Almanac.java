@@ -5553,6 +5553,26 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 是否为本月最后一天
+     *
+     * @param date {@link Date}
+     * @return 是否为本月最后一天
+     */
+    public static boolean isLastDayOfMonth(final Date date) {
+        return date(date).isLastDayOfMonth();
+    }
+
+    /**
+     * 获得本月的最后一天
+     *
+     * @param date {@link Date}
+     * @return 天
+     */
+    public static int getLastDayOfMonth(final Date date) {
+        return date(date).getLastDayOfMonth();
+    }
+
+    /**
      * 当前时间,格式 yyyy-MM-dd HH:mm:ss
      *
      * @return 当前时间的标准形式字符串

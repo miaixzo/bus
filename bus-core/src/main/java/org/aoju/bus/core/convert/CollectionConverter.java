@@ -40,6 +40,9 @@ import java.util.Collection;
  */
 public class CollectionConverter implements Converter {
 
+    /**
+     * 单例对象
+     */
     public static CollectionConverter INSTANCE = new CollectionConverter();
 
     @Override

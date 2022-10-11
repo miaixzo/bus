@@ -8110,26 +8110,6 @@ public class ArrayKit {
     /**
      * 取最小值
      *
-     * @param <T>         元素类型
-     * @param numberArray 数字数组
-     * @return 最小值
-     */
-    public static <T extends Comparable<? super T>> T min(T[] numberArray) {
-        if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
-        }
-        T min = numberArray[0];
-        for (int i = 0; i < numberArray.length; i++) {
-            if (ObjectKit.compare(min, numberArray[i]) > 0) {
-                min = numberArray[i];
-            }
-        }
-        return min;
-    }
-
-    /**
-     * 取最小值
-     *
      * @param numberArray 数字数组
      * @return 最小值
      */
@@ -8261,24 +8241,37 @@ public class ArrayKit {
     }
 
     /**
-     * 取最大值
+     * 取最小值
      *
      * @param <T>         元素类型
      * @param numberArray 数字数组
-     * @return 最大值
+     * @return 最小值
      */
-    public static <T extends Comparable<? super T>> T max(T[] numberArray) {
+    public static <T extends Comparable<? super T>> T min(final T[] numberArray) {
+        return min(numberArray, null);
+    }
+
+    /**
+     * 取最小值
+     *
+     * @param <T>         元素类型
+     * @param numberArray 数字数组
+     * @param comparator  比较器，null按照默认比较
+     * @return 最小值
+     */
+    public static <T extends Comparable<? super T>> T min(final T[] numberArray, final Comparator<T> comparator) {
         if (isEmpty(numberArray)) {
             throw new IllegalArgumentException("Number array must not empty !");
         }
-        T max = numberArray[0];
-        for (int i = 0; i < numberArray.length; i++) {
-            if (ObjectKit.compare(max, numberArray[i]) < 0) {
-                max = numberArray[i];
+        T min = numberArray[0];
+        for (final T t : numberArray) {
+            if (ObjectKit.compare(min, t, comparator) > 0) {
+                min = t;
             }
         }
-        return max;
+        return min;
     }
+
 
     /**
      * 取最大值
@@ -8418,10 +8411,21 @@ public class ArrayKit {
      *
      * @param <T>         元素类型
      * @param numberArray 数字数组
+     * @return 最大值
+     */
+    public static <T extends Comparable<? super T>> T max(final T[] numberArray) {
+        return max(numberArray, null);
+    }
+
+    /**
+     * 取最大值
+     *
+     * @param <T>         元素类型
+     * @param numberArray 数字数组
      * @param comparator  比较器，null表示默认比较器
      * @return 最大值
      */
-    public static <T extends Comparable<? super T>> T max(T[] numberArray, Comparator<T> comparator) {
+    public static <T extends Comparable<? super T>> T max(final T[] numberArray, final Comparator<T> comparator) {
         if (isEmpty(numberArray)) {
             throw new IllegalArgumentException("Number array must not empty !");
         }
@@ -8820,7 +8824,7 @@ public class ArrayKit {
         }
 
         for (int i = 0; i < subArray.length; i++) {
-            if (false == ObjectKit.equal(array[i + firstIndex], subArray[i])) {
+            if (false == ObjectKit.equals(array[i + firstIndex], subArray[i])) {
                 return Normal.__1;
             }
         }
@@ -8847,7 +8851,7 @@ public class ArrayKit {
         }
 
         for (int i = 0; i < subArray.length; i++) {
-            if (false == ObjectKit.equal(array[i + firstIndex], subArray[i])) {
+            if (false == ObjectKit.equals(array[i + firstIndex], subArray[i])) {
                 return Normal.__1;
             }
         }
