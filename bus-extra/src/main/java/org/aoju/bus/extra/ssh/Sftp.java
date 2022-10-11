@@ -29,7 +29,6 @@ import com.jcraft.jsch.*;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -43,6 +42,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Predicate;
 
 /**
  * SFTP是Secure File Transfer Protocol的缩写,安全文件传送协议 可以为传输文件提供一种安全的加密方法
@@ -284,14 +284,14 @@ public class Sftp extends AbstractFtp {
      * @param filter 文件或目录过滤器,可以实现过滤器返回自己需要的文件或目录名列表
      * @return 目录或文件名列表
      */
-    public List<String> ls(String path, final Filter<LsEntry> filter) {
+    public List<String> ls(String path, final Predicate<LsEntry> filter) {
         final List<String> fileNames = new ArrayList<>();
         try {
             channel.ls(path, entry -> {
                 String fileName = entry.getFilename();
                 if (false == StringKit.equals(Symbol.DOT, fileName)
                         && false == StringKit.equals(Symbol.DOUBLE_DOT, fileName)) {
-                    if (null == filter || filter.accept(entry)) {
+                    if (null == filter || filter.test(entry)) {
                         fileNames.add(entry.getFilename());
                     }
                 }

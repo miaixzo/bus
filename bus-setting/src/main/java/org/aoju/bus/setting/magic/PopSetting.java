@@ -388,7 +388,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @return {@link GroupMap}
      */
-    public GroupMap getGroupedMap() {
+    public GroupMap getGroupMap() {
         return this.groupMap;
     }
 
@@ -512,7 +512,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return this
      */
     public PopSetting addSetting(final PopSetting setting) {
-        for (final Entry<String, LinkedHashMap<String, String>> e : setting.getGroupedMap().entrySet()) {
+        for (final Entry<String, LinkedHashMap<String, String>> e : setting.getGroupMap().entrySet()) {
             this.putAll(e.getKey(), e.getValue());
         }
         return this;
