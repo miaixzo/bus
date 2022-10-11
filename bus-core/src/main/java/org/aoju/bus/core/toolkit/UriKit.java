@@ -272,12 +272,12 @@ public class UriKit {
     /**
      * 获得URL
      *
-     * @param pathBaseClassLoader 相对路径(相对于classes)
+     * @param path 相对路径(相对于classes)
      * @return URL
      * @see FileKit#getResource(String)
      */
-    public static URL getURL(String pathBaseClassLoader) {
-        return FileKit.getResource(pathBaseClassLoader);
+    public static URL getURL(String path) {
+        return FileKit.getUrl(path);
     }
 
     /**
@@ -322,10 +322,10 @@ public class UriKit {
      * @param path  相对给定 class所在的路径
      * @param clazz 指定class
      * @return URL
-     * @see FileKit#getResource(String, Class)
+     * @see FileKit#getUrl(String, Class)
      */
     public static URL getURL(String path, Class<?> clazz) {
-        return FileKit.getResource(path, clazz);
+        return FileKit.getUrl(path, clazz);
     }
 
     /**

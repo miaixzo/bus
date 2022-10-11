@@ -32,7 +32,6 @@ import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Editor;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 
@@ -40,6 +39,7 @@ import java.beans.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -336,7 +336,7 @@ public class BeanKit {
         } catch (IntrospectionException e) {
             throw new InternalException(e);
         }
-        return ArrayKit.filter(beanInfo.getPropertyDescriptors(), (Filter<PropertyDescriptor>) t -> {
+        return ArrayKit.filter(beanInfo.getPropertyDescriptors(), (Predicate<PropertyDescriptor>) t -> {
             // 过滤掉getClass方法
             return false == "class".equals(t.getName());
         });

@@ -75,7 +75,7 @@ public class ImageReaderFactory implements Serializable {
 
     private static ImageReaderFactory initDefault() {
         ImageReaderFactory factory = new ImageReaderFactory();
-        URL url = FileKit.getResource("ImageReaderFactory.properties", ImageReaderFactory.class);
+        URL url = FileKit.getUrl("ImageReaderFactory.properties", ImageReaderFactory.class);
         try {
             factory.load(url.openStream());
         } catch (Exception e) {

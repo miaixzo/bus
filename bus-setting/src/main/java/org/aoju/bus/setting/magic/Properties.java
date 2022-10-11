@@ -89,7 +89,7 @@ public final class Properties extends java.util.Properties implements TypeGetter
         if (null != charset) {
             this.charset = charset;
         }
-        this.load(FileKit.getResource(path));
+        this.load(FileKit.getUrl(path, Properties.class));
     }
 
     /**
@@ -258,7 +258,7 @@ public final class Properties extends java.util.Properties implements TypeGetter
      * @param keys 键列表，常用于别名
      * @return 字符串值
      */
-    public String getAndRemoveStr(final String... keys) {
+    public String getAndRemoveString(final String... keys) {
         Object value = null;
         for (final String key : keys) {
             value = remove(key);

@@ -127,7 +127,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      */
     public PopSetting(final String path, final java.nio.charset.Charset charset, final boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
-        this.init(FileKit.getResourceObject(path), charset, isUseVariable);
+        this.init(FileKit.getResource(path), charset, isUseVariable);
     }
 
     /**

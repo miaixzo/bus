@@ -41,6 +41,7 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 
 /**
@@ -450,7 +451,7 @@ public class NetKit {
      * @param addressFilter 过滤器,null表示不过滤,获取所有地址
      * @return 过滤后的地址对象列表
      */
-    public static LinkedHashSet<InetAddress> localAddressList(Filter<InetAddress> addressFilter) {
+    public static LinkedHashSet<InetAddress> localAddressList(Predicate<InetAddress> addressFilter) {
         return localAddressList(addressFilter, null);
     }
 
@@ -461,7 +462,7 @@ public class NetKit {
      * @param networkInterfaceFilter 过滤器，null表示不过滤，获取所有网卡
      * @return 过滤后的地址对象列表
      */
-    public static LinkedHashSet<InetAddress> localAddressList(Filter<InetAddress> addressFilter, Filter<NetworkInterface> networkInterfaceFilter) {
+    public static LinkedHashSet<InetAddress> localAddressList(Predicate<InetAddress> addressFilter, Predicate<NetworkInterface> networkInterfaceFilter) {
         Enumeration<NetworkInterface> networkInterfaces;
         try {
             networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -477,13 +478,13 @@ public class NetKit {
 
         while (networkInterfaces.hasMoreElements()) {
             final NetworkInterface networkInterface = networkInterfaces.nextElement();
-            if (null != networkInterfaceFilter && false == networkInterfaceFilter.accept(networkInterface)) {
+            if (null != networkInterfaceFilter && false == networkInterfaceFilter.test(networkInterface)) {
                 continue;
             }
             final Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
             while (inetAddresses.hasMoreElements()) {
                 final InetAddress inetAddress = inetAddresses.nextElement();
-                if (null != inetAddress && (null == addressFilter || addressFilter.accept(inetAddress))) {
+                if (null != inetAddress && (null == addressFilter || addressFilter.test(inetAddress))) {
                     ipSet.add(inetAddress);
                 }
             }

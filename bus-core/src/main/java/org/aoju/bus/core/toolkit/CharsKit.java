@@ -4404,7 +4404,7 @@ public class CharsKit {
      * @param filter 过滤器
      * @return 过滤后的字符串
      */
-    public static String filter(CharSequence text, Filter<Character> filter) {
+    public static String filter(CharSequence text, Predicate<Character> filter) {
         if (null == text || null == filter) {
             return toString(text);
         }
@@ -4414,7 +4414,7 @@ public class CharsKit {
         char c;
         for (int i = 0; i < len; i++) {
             c = text.charAt(i);
-            if (filter.accept(c)) {
+            if (filter.test(c)) {
                 sb.append(c);
             }
         }

@@ -706,7 +706,7 @@ public class StreamKit {
 
     public static InputStream openFileOrURL(String name) throws IOException {
         if (name.startsWith("resource:")) {
-            URL url = FileKit.getResource(name.substring(9), StreamKit.class);
+            URL url = FileKit.getUrl(name.substring(9), StreamKit.class);
             if (null == url)
                 throw new FileNotFoundException(name);
             return url.openStream();

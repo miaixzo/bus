@@ -31,13 +31,13 @@ import org.aoju.bus.core.collection.UniqueKeySet;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.map.WeakMap;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * 反射工具类.
@@ -462,7 +462,7 @@ public class ReflectKit {
      * @return 字段列表
      * @throws SecurityException 安全检查异常
      */
-    public static Field[] getFields(Class<?> beanClass, Filter<Field> fieldFilter) throws SecurityException {
+    public static Field[] getFields(Class<?> beanClass, Predicate<Field> fieldFilter) throws SecurityException {
         return ArrayKit.filter(getFields(beanClass), fieldFilter);
     }
 
@@ -724,7 +724,7 @@ public class ReflectKit {
      * @return 过滤后的方法列表
      * @throws SecurityException 安全异常
      */
-    public static Method[] getMethods(Class<?> clazz, Filter<Method> filter) throws SecurityException {
+    public static Method[] getMethods(Class<?> clazz, Predicate<Method> filter) throws SecurityException {
         if (null == clazz) {
             return null;
         }
@@ -736,7 +736,7 @@ public class ReflectKit {
 
         final List<Method> methodList = new ArrayList<>();
         for (Method method : methods) {
-            if (filter.accept(method)) {
+            if (filter.test(method)) {
                 methodList.add(method);
             }
         }

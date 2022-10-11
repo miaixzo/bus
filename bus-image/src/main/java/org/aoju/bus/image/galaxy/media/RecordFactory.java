@@ -65,7 +65,7 @@ public class RecordFactory {
 
     public void loadDefaultConfiguration() {
         try {
-            loadConfiguration(FileKit.getResource("RecordFactory.xml", RecordFactory.class).toString());
+            loadConfiguration(FileKit.getUrl("RecordFactory.xml", RecordFactory.class).toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

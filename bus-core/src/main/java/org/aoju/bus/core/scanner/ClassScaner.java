@@ -241,7 +241,7 @@ public class ClassScaner {
      * @return 类集合
      */
     public Set<Class<?>> scan(boolean forceScanJavaClassPaths) {
-        for (URL url : FileKit.getResourceIter(this.packagePath)) {
+        for (URL url : FileKit.getUrls(this.packagePath)) {
             switch (url.getProtocol()) {
                 case "file":
                     scanFile(new File(UriKit.decode(url.getFile(), this.charset.name())), null);

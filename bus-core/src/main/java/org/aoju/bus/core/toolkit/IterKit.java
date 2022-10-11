@@ -31,7 +31,6 @@ import org.aoju.bus.core.collection.FilterIterator;
 import org.aoju.bus.core.collection.NodeListIterator;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Matcher;
 import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.text.TextJoiner;
@@ -41,6 +40,7 @@ import org.w3c.dom.NodeList;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * {@link Iterable} 和 {@link Iterator} 相关工具类
@@ -754,7 +754,7 @@ public class IterKit {
      * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 过滤出需要的对象，{@link Filter#accept(Object)}方法
+     * 过滤出需要的对象，{@link Predicate#test(Object)}方法
      * 返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
@@ -764,7 +764,7 @@ public class IterKit {
      * @param filter   过滤器接口
      * @return 编辑后的集合
      */
-    public static <T extends Iterable<E>, E> T filter(T iterable, Filter<E> filter) {
+    public static <T extends Iterable<E>, E> T filter(T iterable, Predicate<E> filter) {
         if (null == iterable) {
             return null;
         }
@@ -779,22 +779,22 @@ public class IterKit {
      * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 过滤出需要的对象，{@link Filter#accept(Object)}方法
+     * 过滤出需要的对象，{@link Predicate#test(Object)}方法
      * 返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
      * @param <E>      集合元素类型
      * @param iterator 集合
-     * @param filter   过滤器接口，删除{@link Filter#accept(Object)}为{@code false}的元素
+     * @param filter   过滤器接口，删除{@link Predicate#test(Object)}为{@code false}的元素
      * @return 编辑后的集合
      */
-    public static <E> Iterator<E> filter(Iterator<E> iterator, Filter<E> filter) {
+    public static <E> Iterator<E> filter(Iterator<E> iterator, Predicate<E> filter) {
         if (null == iterator || null == filter) {
             return iterator;
         }
 
         while (iterator.hasNext()) {
-            if (false == filter.accept(iterator.next())) {
+            if (false == filter.test(iterator.next())) {
                 iterator.remove();
             }
         }
@@ -806,10 +806,10 @@ public class IterKit {
      *
      * @param <E>    元素类型
      * @param iter   {@link Iterator}
-     * @param filter 过滤器，保留{@link Filter#accept(Object)}为{@code true}的元素
+     * @param filter 过滤器，保留{@link Predicate#test(Object)}为{@code true}的元素
      * @return the list
      */
-    public static <E> List<E> filterToList(Iterator<E> iter, Filter<E> filter) {
+    public static <E> List<E> filterToList(Iterator<E> iter, Predicate<E> filter) {
         return toList(filtered(iter, filter));
     }
 
@@ -817,11 +817,11 @@ public class IterKit {
      * 获取一个新的 {@link FilterIterator}，用于过滤指定元素
      *
      * @param iterator 被包装的 {@link Iterator}
-     * @param filter   过滤断言，当{@link Filter#accept(Object)}为{@code true}时保留元素，{@code false}抛弃元素
+     * @param filter   过滤断言，当{@link Predicate#test(Object)}为{@code true}时保留元素，{@code false}抛弃元素
      * @param <E>      元素类型
      * @return {@link FilterIterator}
      */
-    public static <E> FilterIterator<E> filtered(final Iterator<? extends E> iterator, final Filter<? super E> filter) {
+    public static <E> FilterIterator<E> filtered(final Iterator<? extends E> iterator, final Predicate<? super E> filter) {
         return new FilterIterator<>(iterator, filter);
     }
 

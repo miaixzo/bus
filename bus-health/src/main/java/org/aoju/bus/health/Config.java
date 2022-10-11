@@ -167,7 +167,7 @@ public final class Config {
      * @return A {@link java.util.Properties} object containing the properties.
      */
     public static Properties readProperties(String fileName) {
-        return org.aoju.bus.setting.magic.Properties.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/health/" + fileName, Builder.class);
+        return new org.aoju.bus.setting.magic.Properties(Symbol.SLASH + Normal.META_DATA_INF + "/health/" + fileName);
     }
 
     /**

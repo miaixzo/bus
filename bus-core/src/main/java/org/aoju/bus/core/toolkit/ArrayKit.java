@@ -40,6 +40,7 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -8473,14 +8474,14 @@ public class ArrayKit {
      * @param filter 过滤器接口,用于定义过滤规则
      * @return 过滤后的数组
      */
-    public static <T> T[] filter(T[] array, Filter<T> filter) {
+    public static <T> T[] filter(T[] array, Predicate<T> filter) {
         if (null == filter) {
             return array;
         }
 
         final ArrayList<T> list = new ArrayList<>(array.length);
         for (T t : array) {
-            if (filter.accept(t)) {
+            if (filter.test(t)) {
                 list.add(t);
             }
         }

@@ -75,7 +75,7 @@ public class ImageWriterFactory implements Serializable {
 
     private static ImageWriterFactory initDefault() {
         ImageWriterFactory factory = new ImageWriterFactory();
-        URL url = FileKit.getResource("ImageWriterFactory.properties", ImageWriterFactory.class);
+        URL url = FileKit.getUrl("ImageWriterFactory.properties", ImageWriterFactory.class);
         try {
             factory.load(url.openStream());
         } catch (Exception e) {

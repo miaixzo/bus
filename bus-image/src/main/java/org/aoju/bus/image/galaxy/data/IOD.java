@@ -56,7 +56,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public static IOD load(String uri) throws IOException {
         if (uri.startsWith("resource:")) {
             try {
-                uri = FileKit.getResource(uri.substring(9), IOD.class).toString();
+                uri = FileKit.getUrl(uri.substring(9), IOD.class).toString();
             } catch (NullPointerException npe) {
                 throw new FileNotFoundException(uri);
             }

@@ -1705,7 +1705,7 @@ public class CollKit {
      * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，{@link Filter#accept(Object)}方法返回false的对象将被使用{@link Iterator#remove()}方法移除
+     * 1、过滤出需要的对象，{@link Predicate#test(Object)}方法返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
      * @param <T>    集合类型
@@ -1714,7 +1714,7 @@ public class CollKit {
      * @param filter 过滤器接口
      * @return 编辑后的集合
      */
-    public static <T extends Iterable<E>, E> T filter(T iter, Filter<E> filter) {
+    public static <T extends Iterable<E>, E> T filter(T iter, Predicate<E> filter) {
         if (null == iter) {
             return null;
         }
@@ -1729,7 +1729,7 @@ public class CollKit {
      * 通过实现Filter接口，完成元素的过滤，这个Filter实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，{@link Filter#accept(Object)}方法返回false的对象将被使用{@link Iterator#remove()}方法移除
+     * 1、过滤出需要的对象，{@link Predicate#test(Object)}方法返回false的对象将被使用{@link Iterator#remove()}方法移除
      * </pre>
      *
      * @param <E>    集合元素类型
@@ -1737,13 +1737,13 @@ public class CollKit {
      * @param filter 过滤器接口
      * @return 编辑后的集合
      */
-    public static <E> Iterator<E> filter(Iterator<E> iter, Filter<E> filter) {
+    public static <E> Iterator<E> filter(Iterator<E> iter, Predicate<E> filter) {
         if (null == iter || null == filter) {
             return iter;
         }
 
         while (iter.hasNext()) {
-            if (false == filter.accept(iter.next())) {
+            if (false == filter.test(iter.next())) {
                 iter.remove();
             }
         }
@@ -1919,10 +1919,10 @@ public class CollKit {
      * @param filter     过滤器,满足过滤条件的第一个元素将被返回
      * @return 满足过滤条件的第一个元素
      */
-    public static <T> T findOne(Iterable<T> collection, Filter<T> filter) {
+    public static <T> T findOne(Iterable<T> collection, Predicate<T> filter) {
         if (null != collection) {
             for (T t : collection) {
-                if (filter.accept(t)) {
+                if (filter.test(t)) {
                     return t;
                 }
             }
@@ -1990,9 +1990,9 @@ public class CollKit {
      * @param map    Map
      * @param filter 编辑器接口
      * @return 过滤后的Map
-     * @see MapKit#filter(Map, Filter)
+     * @see MapKit#filter(Map, Predicate)
      */
-    public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Entry<K, V>> filter) {
+    public static <K, V> Map<K, V> filter(Map<K, V> map, Predicate<Entry<K, V>> filter) {
         return MapKit.filter(map, filter);
     }
 

@@ -51,6 +51,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -1306,7 +1307,7 @@ public class FileKit {
             }
         }
 
-        final URL url = getResource(normalPath, baseClass);
+        final URL url = getUrl(normalPath, baseClass);
         if (null != url) {
             return FileKit.normalize(UriKit.getDecodedPath(url));
         }
@@ -3939,7 +3940,7 @@ public class FileKit {
      * @return 资源内容
      */
     public static String readers(String resource) {
-        return getResourceObject(resource).readString(Charset.UTF_8);
+        return getResource(resource).readString(Charset.UTF_8);
     }
 
     /**
@@ -3991,19 +3992,86 @@ public class FileKit {
     }
 
     /**
-     * 获得资源的URL
-     * 路径用/分隔,例如:
+     * 获得资源的URL<br>
+     * 路径用/分隔，例如:
      *
      * <pre>
      * config/a/db.config
      * spring/xml/test.xml
      * </pre>
      *
-     * @param resource 资源(相对Classpath的路径)
+     * @param resource 资源（相对Classpath的路径）
      * @return 资源URL
      */
-    public static URL getResource(String resource) {
-        return getResource(resource, null);
+    public static URL getUrl(final String resource) {
+        return getUrl(resource, null);
+    }
+
+    /**
+     * 获得资源相对路径对应的URL
+     *
+     * @param resource  资源相对路径，{@code null}和""都表示classpath根路径
+     * @param baseClass 基准Class，获得的相对路径相对于此Class所在路径，如果为{@code null}则相对ClassPath
+     * @return {@link URL}
+     */
+    public static URL getUrl(String resource, final Class<?> baseClass) {
+        resource = StringKit.emptyIfNull(resource);
+        return (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
+    }
+
+    /**
+     * 获取指定路径下的资源列表<br>
+     * 路径格式必须为目录格式,用/分隔，例如:
+     *
+     * <pre>
+     * config/a
+     * spring/xml
+     * </pre>
+     *
+     * @param resource 资源路径
+     * @return 资源列表
+     */
+    public static List<URL> getUrls(final String resource) {
+        return getUrls(resource, null);
+    }
+
+    /**
+     * 获取指定路径下的资源列表<br>
+     * 路径格式必须为目录格式,用/分隔，例如:
+     *
+     * <pre>
+     * config/a
+     * spring/xml
+     * </pre>
+     *
+     * @param resource 资源路径
+     * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
+     * @return 资源列表
+     */
+    public static List<URL> getUrls(final String resource, final Predicate<URL> filter) {
+        final Enumeration<URL> resources;
+        try {
+            resources = ClassKit.getClassLoader().getResources(resource);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+        return IterKit.filterToList(new EnumerationIterator<>(resources), filter);
+    }
+
+    /**
+     * 获取{@link Resource} 资源对象
+     * 如果提供路径为绝对路径或路径以file:开头，返回{@link FileResource}，否则返回{@link ClassPathResource}
+     *
+     * @param path 路径，可以是绝对路径，也可以是相对路径（相对ClassPath）
+     * @return {@link Resource} 资源对象
+     */
+    public static Resource getResource(final String path) {
+        if (StringKit.isNotBlank(path)) {
+            if (path.startsWith(Normal.FILE_URL_PREFIX) || FileKit.isAbsolutePath(path)) {
+                return new FileResource(path);
+            }
+        }
+        return new ClassPathResource(path);
     }
 
     /**
@@ -4024,85 +4092,6 @@ public class FileKit {
      */
     public static Resource getResource(final File file) {
         return new FileResource(file);
-    }
-
-    /**
-     * 获取指定路径下的资源列表
-     * 路径格式必须为目录格式,用/分隔,例如:
-     *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource 资源路径
-     * @return 资源列表
-     */
-    public static List<URL> getResources(String resource) {
-        return getResources(resource, null);
-    }
-
-    /**
-     * 获取指定路径下的资源列表
-     * 路径格式必须为目录格式,用/分隔，例如:
-     *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource 资源路径
-     * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
-     * @return 资源列表
-     */
-    public static List<URL> getResources(String resource, Filter<URL> filter) {
-        return IterKit.filterToList(getResourceIter(resource), filter);
-    }
-
-    /**
-     * 获取指定路径下的资源Iterator
-     * 路径格式必须为目录格式,用/分隔,例如:
-     *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource 资源路径
-     * @return 资源列表
-     */
-    public static EnumerationIterator<URL> getResourceIter(String resource) {
-        final Enumeration<URL> resources;
-        try {
-            resources = ClassKit.getClassLoader().getResources(resource);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-        return new EnumerationIterator<>(resources);
-    }
-
-    /**
-     * 获得资源相对路径对应的URL
-     *
-     * @param resource  资源相对路径
-     * @param baseClass 基准Class,获得的相对路径相对于此Class所在路径,如果为{@code null}则相对ClassPath
-     * @return {@link URL}
-     */
-    public static URL getResource(String resource, Class<?> baseClass) {
-        resource = StringKit.emptyIfNull(resource);
-        URL url = (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
-        return null != url ? url : baseClass.getClassLoader().getResource(resource);
-    }
-
-    /**
-     * 获取{@link Resource} 资源对象
-     * 如果提供路径为绝对路径,返回{@link FileResource},否则返回{@link ClassPathResource}
-     *
-     * @param path 路径,可以是绝对路径,也可以是相对路径
-     * @return {@link Resource} 资源对象
-     */
-    public static Resource getResourceObject(String path) {
-        return FileKit.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);
     }
 
     /**
