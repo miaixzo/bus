@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * AWT中字体相关工具类
+ * AWT中字体相关类
  *
  * @author Kimi Liu
  * @since Java 17+

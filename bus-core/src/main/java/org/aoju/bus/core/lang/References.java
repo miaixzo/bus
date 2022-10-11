@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang;
 import java.lang.ref.*;
 
 /**
- * 主要针对{@link Reference} 工具化封装
+ * 主要针对{@link Reference} 封装
  * 主要封装包括：
  * <pre>
  * 1. {@link SoftReference} 软引用，在GC报告内存不足时会被GC回收
