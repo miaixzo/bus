@@ -43,7 +43,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Map;
@@ -216,10 +215,10 @@ public class SpringBuilder implements ApplicationContextAware {
      */
     public static void registerSingleton(Class clazz) {
         try {
-            registerSingleton(clazz, clazz.getConstructor().newInstance());
+            registerSingleton(clazz, clazz.newInstance());
         } catch (InstantiationException e) {
             Logger.error(e.getMessage(), e);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (IllegalAccessException e) {
             Logger.error(e.getMessage(), e);
         }
     }

@@ -27,8 +27,8 @@ package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.convert.Converter;
+import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.function.XFunction;
-import org.aoju.bus.core.lang.mutable.MutableEntry;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.LambdaKit;
 
@@ -37,8 +37,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.UnaryOperator;
 
 /**
  * 属性拷贝选项
@@ -72,15 +72,15 @@ public class CopyOptions implements Serializable {
      */
     protected boolean ignoreCase;
     /**
-     * 字段属性名和属性值编辑器，用于自定义属性转换规则（例如驼峰转下划线等），自定义属性值转换规则（例如null转""等）
+     * 字段属性值编辑器，用于自定义属性值转换规则，例如null转""等
      */
-    protected UnaryOperator<MutableEntry<String, Object>> fieldEditor;
+    protected BiFunction<String, Object, Object> fieldValueEditor;
     /**
      * 是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略
      */
     protected boolean transientSupport = true;
     /**
-     * 是否覆盖目标值，如果不覆盖，会先读取目标对象的值，为{@code null}则写，否则忽略。如果覆盖，则不判断直接写
+     * 是否覆盖目标值，如果不覆盖，会先读取目标对象的值，非{@code null}则写，否则忽略如果覆盖，则不判断直接写
      */
     protected boolean override = true;
     /**
@@ -93,6 +93,11 @@ public class CopyOptions implements Serializable {
      * 断言参数中Field为源对象的字段对象,如果源对象为Map，使用目标对象，Object为源对象的对应值
      */
     private BiPredicate<Field, Object> propertiesFilter;
+    /**
+     * 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
+     * 规则为，{@link Editor#edit(Object)}属性为源对象的字段名称或key，返回值为目标对象的字段名称或key
+     */
+    private Editor<String> fieldNameEditor;
 
     /**
      * 构造拷贝选项
@@ -108,7 +113,7 @@ public class CopyOptions implements Serializable {
      * @param ignoreNullValue  是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
      * @param ignoreProperties 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
      */
-    public CopyOptions(final Class<?> editable, final boolean ignoreNullValue, final String... ignoreProperties) {
+    public CopyOptions(Class<?> editable, boolean ignoreNullValue, String... ignoreProperties) {
         this.propertiesFilter = (f, v) -> true;
         this.editable = editable;
         this.ignoreNullValue = ignoreNullValue;
@@ -120,7 +125,7 @@ public class CopyOptions implements Serializable {
      *
      * @return 拷贝选项
      */
-    public static CopyOptions of() {
+    public static CopyOptions create() {
         return new CopyOptions();
     }
 
@@ -132,7 +137,7 @@ public class CopyOptions implements Serializable {
      * @param ignoreProperties 忽略的属性列表，设置一个属性列表，不拷贝这些属性值
      * @return 拷贝选项
      */
-    public static CopyOptions of(final Class<?> editable, final boolean ignoreNullValue, final String... ignoreProperties) {
+    public static CopyOptions create(Class<?> editable, boolean ignoreNullValue, String... ignoreProperties) {
         return new CopyOptions(editable, ignoreNullValue, ignoreProperties);
     }
 
@@ -140,9 +145,9 @@ public class CopyOptions implements Serializable {
      * 设置限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性
      *
      * @param editable 限制的类或接口
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public CopyOptions setEditable(final Class<?> editable) {
+    public CopyOptions setEditable(Class<?> editable) {
         this.editable = editable;
         return this;
     }
@@ -151,9 +156,9 @@ public class CopyOptions implements Serializable {
      * 设置是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
      *
      * @param ignoreNullVall 是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public CopyOptions setIgnoreNullValue(final boolean ignoreNullVall) {
+    public CopyOptions setIgnoreNullValue(boolean ignoreNullVall) {
         this.ignoreNullValue = ignoreNullVall;
         return this;
     }
@@ -161,7 +166,7 @@ public class CopyOptions implements Serializable {
     /**
      * 设置忽略空值，当源对象的值为null时，忽略而不注入此值
      *
-     * @return {@link CopyOptions}
+     * @return this
      */
     public CopyOptions ignoreNullValue() {
         return setIgnoreNullValue(true);
@@ -172,9 +177,9 @@ public class CopyOptions implements Serializable {
      * {@link BiPredicate#test(Object, Object)}返回{@code true}则属性通过，{@code false}不通过，抛弃之
      *
      * @param propertiesFilter 属性过滤器
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public CopyOptions setPropertiesFilter(final BiPredicate<Field, Object> propertiesFilter) {
+    public CopyOptions setPropertiesFilter(BiPredicate<Field, Object> propertiesFilter) {
         this.propertiesFilter = propertiesFilter;
         return this;
     }
@@ -183,10 +188,10 @@ public class CopyOptions implements Serializable {
      * 设置忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
      *
      * @param ignoreProperties 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public CopyOptions setIgnoreProperties(final String... ignoreProperties) {
-        return setPropertiesFilter((field, o) -> !ArrayKit.contains(ignoreProperties, field.getName()));
+    public CopyOptions setIgnoreProperties(String... ignoreProperties) {
+        return setPropertiesFilter((field, o) -> false == ArrayKit.contains(ignoreProperties, field.getName()));
     }
 
     /**
@@ -195,20 +200,20 @@ public class CopyOptions implements Serializable {
      * @param <P>   参数类型
      * @param <R>   返回值类型
      * @param funcs 忽略的目标对象中属性列表，设置一个属性列表，不拷贝这些属性值
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public <P, R> CopyOptions setIgnoreProperties(final XFunction<P, R>... funcs) {
+    public <P, R> CopyOptions setIgnoreProperties(XFunction<P, R>... funcs) {
         final Set<String> ignoreProperties = ArrayKit.mapToSet(funcs, LambdaKit::getFieldName);
-        return setPropertiesFilter((field, o) -> !ignoreProperties.contains(field.getName()));
+        return setPropertiesFilter((field, o) -> false == ignoreProperties.contains(field.getName()));
     }
 
     /**
      * 设置是否忽略字段的注入错误
      *
      * @param ignoreError 是否忽略注入错误
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public CopyOptions setIgnoreError(final boolean ignoreError) {
+    public CopyOptions setIgnoreError(boolean ignoreError) {
         this.ignoreError = ignoreError;
         return this;
     }
@@ -216,7 +221,7 @@ public class CopyOptions implements Serializable {
     /**
      * 设置忽略字段的注入错误
      *
-     * @return {@link CopyOptions}
+     * @return this
      */
     public CopyOptions ignoreError() {
         return setIgnoreError(true);
@@ -226,9 +231,9 @@ public class CopyOptions implements Serializable {
      * 设置是否忽略字段的大小写
      *
      * @param ignoreCase 是否忽略大小写
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public CopyOptions setIgnoreCase(final boolean ignoreCase) {
+    public CopyOptions setIgnoreCase(boolean ignoreCase) {
         this.ignoreCase = ignoreCase;
         return this;
     }
@@ -236,7 +241,7 @@ public class CopyOptions implements Serializable {
     /**
      * 设置忽略字段的大小写
      *
-     * @return {@link CopyOptions}
+     * @return this
      */
     public CopyOptions ignoreCase() {
         return setIgnoreCase(true);
@@ -247,27 +252,34 @@ public class CopyOptions implements Serializable {
      * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即fieldMapping中key为目标Bean的名称，而value是提供者中的key
      *
      * @param fieldMapping 拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
-     * @return {@link CopyOptions}
+     * @return this
      */
-    public CopyOptions setFieldMapping(final Map<String, String> fieldMapping) {
-        return setFieldEditor(entry -> {
-            final String key = entry.getKey();
-            entry.setKey(fieldMapping.getOrDefault(key, key));
-            return entry;
-        });
+    public CopyOptions setFieldMapping(Map<String, String> fieldMapping) {
+        return setFieldNameEditor((key -> fieldMapping.getOrDefault(key, key)));
     }
 
     /**
      * 设置字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
      * 此转换器只针对源端的字段做转换，请确认转换后与目标端字段一致
      * 当转换后的字段名为null时忽略这个字段
-     * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即参数中key为目标Bean的名称，而返回值是提供者中的key，并且对值的修改无效
+     * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即fieldMapping中key为目标Bean的名称，而value是提供者中的key
      *
-     * @param editor 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
-     * @return {@link CopyOptions}
+     * @param fieldNameEditor 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
+     * @return this
      */
-    public CopyOptions setFieldEditor(final UnaryOperator<MutableEntry<String, Object>> editor) {
-        this.fieldEditor = editor;
+    public CopyOptions setFieldNameEditor(Editor<String> fieldNameEditor) {
+        this.fieldNameEditor = fieldNameEditor;
+        return this;
+    }
+
+    /**
+     * 设置字段属性值编辑器，用于自定义属性值转换规则，例如null转""等
+     *
+     * @param fieldValueEditor 字段属性值编辑器，用于自定义属性值转换规则，例如null转""等
+     * @return this
+     */
+    public CopyOptions setFieldValueEditor(BiFunction<String, Object, Object> fieldValueEditor) {
+        this.fieldValueEditor = fieldValueEditor;
         return this;
     }
 
@@ -278,19 +290,18 @@ public class CopyOptions implements Serializable {
      * @param fieldValue 字段值
      * @return 编辑后的字段值
      */
-    protected MutableEntry<String, Object> editField(final String fieldName, final Object fieldValue) {
-        final MutableEntry<String, Object> entry = new MutableEntry<>(fieldName, fieldValue);
-        return (null != this.fieldEditor) ?
-                this.fieldEditor.apply(entry) : entry;
+    protected Object editFieldValue(String fieldName, Object fieldValue) {
+        return (null != this.fieldValueEditor) ?
+                this.fieldValueEditor.apply(fieldName, fieldValue) : fieldValue;
     }
 
     /**
-     * 设置是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略。
+     * 设置是否支持transient关键字修饰和@Transient注解，如果支持，被修饰的字段或方法对应的字段将被忽略
      *
      * @param transientSupport 是否支持
      * @return this
      */
-    public CopyOptions setTransientSupport(final boolean transientSupport) {
+    public CopyOptions setTransientSupport(boolean transientSupport) {
         this.transientSupport = transientSupport;
         return this;
     }
@@ -301,33 +312,43 @@ public class CopyOptions implements Serializable {
      * @param override 是否覆盖目标值
      * @return this
      */
-    public CopyOptions setOverride(final boolean override) {
+    public CopyOptions setOverride(boolean override) {
         this.override = override;
         return this;
     }
 
     /**
-     * 设置自定义类型转换器，默认使用全局万能转换器转换。
+     * 设置自定义类型转换器，默认使用全局万能转换器转换
      *
      * @param converter 转换器
      * @return this
      */
-    public CopyOptions setConverter(final Converter converter) {
+    public CopyOptions setConverter(Converter converter) {
         this.converter = converter;
         return this;
     }
 
     /**
      * 使用自定义转换器转换字段值
-     * 如果自定义转换器为{@code null}，则返回原值。
+     * 如果自定义转换器为{@code null}，则返回原值
      *
      * @param targetType 目标类型
      * @param fieldValue 字段值
      * @return 编辑后的字段值
      */
-    protected Object convertField(final Type targetType, final Object fieldValue) {
+    protected Object convertField(Type targetType, Object fieldValue) {
         return (null != this.converter) ?
                 this.converter.convert(targetType, fieldValue) : fieldValue;
+    }
+
+    /**
+     * 转换字段名为编辑后的字段名
+     *
+     * @param fieldName 字段名
+     * @return 编辑后的字段名
+     */
+    protected String editFieldName(String fieldName) {
+        return (null != this.fieldNameEditor) ? this.fieldNameEditor.edit(fieldName) : fieldName;
     }
 
     /**
@@ -337,7 +358,7 @@ public class CopyOptions implements Serializable {
      * @param value 值
      * @return 是否保留
      */
-    protected boolean testPropertyFilter(final Field field, final Object value) {
+    protected boolean testPropertyFilter(Field field, Object value) {
         return null == this.propertiesFilter || this.propertiesFilter.test(field, value);
     }
 

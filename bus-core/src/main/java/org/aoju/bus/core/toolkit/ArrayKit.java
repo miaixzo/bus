@@ -29,7 +29,6 @@ import org.aoju.bus.core.builder.HashCodeBuilder;
 import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.collection.UniqueKeySet;
-import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.*;
@@ -6391,26 +6390,26 @@ public class ArrayKit {
      * @param newElements 新元素
      * @return 新数组
      */
-    public static <A, T> A insert(final A array, int index, final T... newElements) {
+    public static <T> Object insert(Object array, int index, T... newElements) {
         if (isEmpty(newElements)) {
             return array;
         }
         if (isEmpty(array)) {
-            return (A) Convert.convert(array.getClass(), newElements);
+            return newElements;
         }
 
-        final int len = length(array);
+        final int len = getLength(array);
         if (index < 0) {
             index = (index % len) + len;
         }
 
-        final Object result = Array.newInstance(array.getClass().getComponentType(), Math.max(len, index) + newElements.length);
+        final T[] result = newArray(array.getClass().getComponentType(), Math.max(len, index) + newElements.length);
         System.arraycopy(array, 0, result, 0, Math.min(len, index));
         System.arraycopy(newElements, 0, result, index, newElements.length);
         if (index < len) {
             System.arraycopy(array, index, result, index + newElements.length, len - index);
         }
-        return (A) result;
+        return result;
     }
 
     /**
@@ -6426,7 +6425,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static boolean[] insert(final int index, final boolean[] array, final boolean... values) {
         if (null == array) {
@@ -6464,7 +6463,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static byte[] insert(final int index, final byte[] array, final byte... values) {
         if (null == array) {
@@ -6502,7 +6501,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static char[] insert(final int index, final char[] array, final char... values) {
         if (null == array) {
@@ -6540,7 +6539,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static double[] insert(final int index, final double[] array, final double... values) {
         if (null == array) {
@@ -6578,7 +6577,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static float[] insert(final int index, final float[] array, final float... values) {
         if (null == array) {
@@ -6616,7 +6615,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static int[] insert(final int index, final int[] array, final int... values) {
         if (null == array) {
@@ -6654,7 +6653,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static long[] insert(final int index, final long[] array, final long... values) {
         if (null == array) {
@@ -6692,7 +6691,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static short[] insert(final int index, final short[] array, final short... values) {
         if (null == array) {
@@ -6731,7 +6730,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组
+     * @return 新数组.
      */
     public static <T> T[] insert(final int index, final T[] array, final T... values) {
         if (null == array) {

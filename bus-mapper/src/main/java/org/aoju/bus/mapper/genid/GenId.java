@@ -64,7 +64,7 @@ public interface GenId<T> {
                 LOCK.lock();
                 try {
                     if (!CACHE.containsKey(genClass)) {
-                        CACHE.put(genClass, genClass.getConstructor().newInstance());
+                        CACHE.put(genClass, genClass.newInstance());
                     }
                     genId = CACHE.get(genClass);
                 } finally {

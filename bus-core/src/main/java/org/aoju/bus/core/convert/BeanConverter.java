@@ -66,7 +66,7 @@ public class BeanConverter implements Converter, Serializable {
      * 构造
      */
     public BeanConverter() {
-        this(CopyOptions.of().setIgnoreError(true));
+        this(CopyOptions.create().setIgnoreError(true));
     }
 
     /**

@@ -31,7 +31,6 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -124,9 +123,8 @@ public final class InstanceFactory implements Instance {
         this.notNull(clazz);
 
         try {
-            return clazz.getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new InternalException(e);
         }
     }

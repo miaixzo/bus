@@ -25,10 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * 忽略大小写的Map
@@ -95,7 +93,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      * @param emptyMapBuilder 被包装的自定义Map创建器
      */
     CaseInsensitiveMap(MapBuilder<K, V> emptyMapBuilder) {
-        super(emptyMapBuilder.build(), (Function<Object, K> & Serializable) (key) -> {
+        super(emptyMapBuilder.build(), (key) -> {
             if (key instanceof CharSequence) {
                 key = key.toString().toLowerCase();
             }

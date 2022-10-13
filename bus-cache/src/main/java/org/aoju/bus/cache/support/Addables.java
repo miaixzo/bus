@@ -27,7 +27,6 @@ package org.aoju.bus.cache.support;
 
 import org.aoju.bus.core.toolkit.CollKit;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,26 +49,25 @@ public class Addables {
 
     public static Collection newCollection(Class<?> type, Collection initCollection) {
         try {
-            Collection collection = (Collection) type.getConstructor().newInstance();
+            Collection collection = (Collection) type.newInstance();
             if (CollKit.isNotEmpty(initCollection)) {
                 collection.addAll(initCollection);
             }
+
             return collection;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException("could not invoke collection: " + type.getName() + "'s no param (default) constructor!", e);
         }
     }
 
     public static Map newMap(Class<?> type, Map initMap) {
         try {
-            Map map = (Map) type.getConstructor().newInstance();
+            Map map = (Map) type.newInstance();
             if (CollKit.isNotEmpty(initMap)) {
                 map.putAll(initMap);
             }
             return map;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException("could not invoke map: " + type.getName() + "'s no param (default) constructor!", e);
         }
     }
@@ -115,9 +113,8 @@ public class Addables {
         @Override
         public Addable init(Class<Collection> type, int initSize) {
             try {
-                this.instance = type.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
+                this.instance = type.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("could not invoke collection: " + type.getName() + "'s no param (default) constructor!", e);
             }
 
@@ -143,9 +140,8 @@ public class Addables {
         @Override
         public Addable init(Class<Map> type, int initSize) {
             try {
-                this.instance = type.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
+                this.instance = type.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("could not invoke Map: " + type.getName() + "'s no param (default) constructor!", e);
             }
 

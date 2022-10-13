@@ -36,7 +36,6 @@ import org.aoju.bus.sensitive.provider.StrategyProvider;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -174,12 +173,12 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             Shield sensitive = field.getAnnotation(Shield.class);
             if (ObjectKit.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
-                ConditionProvider condition = conditionClass.getConstructor().newInstance();
+                ConditionProvider condition = conditionClass.newInstance();
                 if (condition.valid(context)) {
                     StrategyProvider strategy = Registry.require(sensitive.type());
                     if (ObjectKit.isEmpty(strategy)) {
                         Class<? extends StrategyProvider> strategyClass = sensitive.strategy();
-                        strategy = strategyClass.getConstructor().newInstance();
+                        strategy = strategyClass.newInstance();
                     }
                     sensitiveContext.setEntry(null);
                     return strategy.build(originalFieldVal, context);
@@ -200,8 +199,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             }
             sensitiveContext.setEntry(null);
             return originalFieldVal;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new InternalException(e);
         }
     }
