@@ -161,7 +161,7 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
             public boolean containsKey(final String key) {
                 return null != getObjectByGroup(key, group);
             }
-        }, CopyOptions.create());
+        }, CopyOptions.of());
     }
 
     /**
