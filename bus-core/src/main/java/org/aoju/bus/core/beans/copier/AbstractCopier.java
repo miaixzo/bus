@@ -61,7 +61,7 @@ public abstract class AbstractCopier<S, T> implements Copier<T> {
     public AbstractCopier(S source, T target, CopyOptions copyOptions) {
         this.source = source;
         this.target = target;
-        this.copyOptions = ObjectKit.defaultIfNull(copyOptions, CopyOptions::create);
+        this.copyOptions = ObjectKit.defaultIfNull(copyOptions, CopyOptions::of);
     }
 
 }

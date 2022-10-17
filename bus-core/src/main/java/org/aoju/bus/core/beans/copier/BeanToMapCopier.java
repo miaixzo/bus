@@ -27,6 +27,7 @@ package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.mutable.MutableEntry;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.TypeKit;
 
@@ -69,16 +70,10 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
             actualEditable = copyOptions.editable;
         }
 
-        final Map<String, PropertyDesc> sourcePropertyDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
-        sourcePropertyDescMap.forEach((sFieldName, sDesc) -> {
+        final Map<String, PropertyDesc> sourcePropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        sourcePropDescMap.forEach((sFieldName, sDesc) -> {
             if (null == sFieldName || false == sDesc.isReadable(copyOptions.transientSupport)) {
                 // 字段空或不可读，跳过
-                return;
-            }
-
-            sFieldName = copyOptions.editFieldName(sFieldName);
-            // 对key做转换，转换后为null的跳过
-            if (null == sFieldName) {
                 return;
             }
 
@@ -88,11 +83,22 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
                 return;
             }
 
+            // 编辑键值对
+            final MutableEntry<String, Object> entry = copyOptions.editField(sFieldName, sValue);
+            if (null == entry) {
+                return;
+            }
+            sFieldName = entry.getKey();
+            // 对key做转换，转换后为null的跳过
+            if (null == sFieldName) {
+                return;
+            }
+            sValue = entry.getValue();
+
             // 获取目标值真实类型并转换源值
             final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
             if (null != typeArguments) {
                 sValue = this.copyOptions.convertField(typeArguments[1], sValue);
-                sValue = copyOptions.editFieldValue(sFieldName, sValue);
             }
 
             // 目标赋值

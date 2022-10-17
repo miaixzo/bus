@@ -27,6 +27,7 @@ package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.mutable.MutableEntry;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.TypeKit;
 
@@ -70,25 +71,11 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
                     "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
-        final Map<String, PropertyDesc> targetPropertyDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
-
-        final Map<String, PropertyDesc> sourcePropertyDescMap = BeanKit.getBeanDesc(source.getClass()).getPropMap(copyOptions.ignoreCase);
-        sourcePropertyDescMap.forEach((sFieldName, sDesc) -> {
+        final Map<String, PropertyDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropertyDesc> sourcePropDescMap = BeanKit.getBeanDesc(source.getClass()).getPropMap(copyOptions.ignoreCase);
+        sourcePropDescMap.forEach((sFieldName, sDesc) -> {
             if (null == sFieldName || false == sDesc.isReadable(copyOptions.transientSupport)) {
                 // 字段空或不可读，跳过
-                return;
-            }
-
-            sFieldName = copyOptions.editFieldName(sFieldName);
-            // 对key做转换，转换后为null的跳过
-            if (null == sFieldName) {
-                return;
-            }
-
-            // 检查目标字段可写性
-            final PropertyDesc tDesc = targetPropertyDescMap.get(sFieldName);
-            if (null == tDesc || false == tDesc.isWritable(this.copyOptions.transientSupport)) {
-                // 字段不可写，跳过之
                 return;
             }
 
@@ -98,10 +85,29 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
                 return;
             }
 
+            // 编辑键值对
+            final MutableEntry<String, Object> entry = copyOptions.editField(sFieldName, sValue);
+            if (null == entry) {
+                return;
+            }
+            sFieldName = entry.getKey();
+            // 对key做转换，转换后为null的跳过
+            if (null == sFieldName) {
+                return;
+            }
+            sValue = entry.getValue();
+
+            // 检查目标字段可写性
+            // 目标字段检查放在键值对编辑之后，因为键可能被编辑修改
+            final PropertyDesc tDesc = targetPropDescMap.get(sFieldName);
+            if (null == tDesc || false == tDesc.isWritable(this.copyOptions.transientSupport)) {
+                // 字段不可写，跳过之
+                return;
+            }
+
             // 获取目标字段真实类型并转换源值
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
             sValue = this.copyOptions.convertField(fieldType, sValue);
-            sValue = copyOptions.editFieldValue(sFieldName, sValue);
 
             // 目标赋值
             tDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError, copyOptions.override);
