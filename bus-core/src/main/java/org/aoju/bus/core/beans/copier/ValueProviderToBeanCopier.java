@@ -27,6 +27,7 @@ package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.mutable.MutableEntry;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.TypeKit;
 
@@ -69,21 +70,9 @@ public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<S
                     "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
-        final Map<String, PropertyDesc> targetPropertyDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
-
-        targetPropertyDescMap.forEach((tFieldName, tDesc) -> {
+        final Map<String, PropertyDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        targetPropDescMap.forEach((tFieldName, tDesc) -> {
             if (null == tFieldName) {
-                return;
-            }
-
-            tFieldName = copyOptions.editFieldName(tFieldName);
-            // 对key做转换，转换后为null的跳过
-            if (null == tFieldName) {
-                return;
-            }
-
-            // 无字段内容跳过
-            if (false == source.containsKey(tFieldName)) {
                 return;
             }
 
@@ -95,13 +84,26 @@ public class ValueProviderToBeanCopier<T> extends AbstractCopier<ValueProvider<S
 
             // 获取目标字段真实类型
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
+            // 编辑键值对
+            final MutableEntry<String, Object> entry = copyOptions.editField(tFieldName, null);
+            if (null == entry) {
+                return;
+            }
+            tFieldName = entry.getKey();
+            // 对key做转换，转换后为null的跳过
+            if (null == tFieldName) {
+                return;
+            }
+            // 无字段内容跳过
+            if (false == source.containsKey(tFieldName)) {
+                return;
+            }
+            final Object sValue = source.value(tFieldName, fieldType);
 
             // 检查目标对象属性是否过滤属性
-            Object sValue = source.value(tFieldName, fieldType);
             if (false == copyOptions.testPropertyFilter(tDesc.getField(), sValue)) {
                 return;
             }
-            sValue = copyOptions.editFieldValue(tFieldName, sValue);
 
             // 目标赋值
             tDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError, copyOptions.override);

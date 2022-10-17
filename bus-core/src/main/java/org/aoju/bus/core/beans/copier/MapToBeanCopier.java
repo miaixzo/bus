@@ -27,6 +27,7 @@ package org.aoju.bus.core.beans.copier;
 
 import org.aoju.bus.core.beans.PropertyDesc;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.mutable.MutableEntry;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.map.MapWrapper;
 import org.aoju.bus.core.toolkit.BeanKit;
@@ -81,35 +82,41 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
                     "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
-        final Map<String, PropertyDesc> targetPropertyDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropertyDesc> targetPropDescMap = BeanKit.getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
 
         this.source.forEach((sKey, sValue) -> {
             if (null == sKey) {
                 return;
             }
-            String sKeyStr = copyOptions.editFieldName(sKey.toString());
+
+            // 编辑键值对
+            final MutableEntry<String, Object> entry = copyOptions.editField(sKey.toString(), sValue);
+            if (null == entry) {
+                return;
+            }
+            final String sFieldName = entry.getKey();
             // 对key做转换，转换后为null的跳过
-            if (null == sKeyStr) {
+            if (null == sFieldName) {
                 return;
             }
 
             // 检查目标字段可写性
-            final PropertyDesc tDesc = findPropertyDesc(targetPropertyDescMap, sKeyStr);
+            // 目标字段检查放在键值对编辑之后，因为键可能被编辑修改
+            final PropertyDesc tDesc = findPropDesc(targetPropDescMap, sFieldName);
             if (null == tDesc || false == tDesc.isWritable(this.copyOptions.transientSupport)) {
                 // 字段不可写，跳过之
                 return;
             }
-            sKeyStr = tDesc.getFieldName();
 
+            Object newValue = entry.getValue();
             // 检查目标是否过滤属性
-            if (false == copyOptions.testPropertyFilter(tDesc.getField(), sValue)) {
+            if (false == copyOptions.testPropertyFilter(tDesc.getField(), newValue)) {
                 return;
             }
 
             // 获取目标字段真实类型并转换源值
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
-            Object newValue = this.copyOptions.convertField(fieldType, sValue);
-            newValue = copyOptions.editFieldValue(sKeyStr, newValue);
+            newValue = this.copyOptions.convertField(fieldType, newValue);
 
             // 目标赋值
             tDesc.setValue(this.target, newValue, copyOptions.ignoreNullValue, copyOptions.ignoreError, copyOptions.override);
@@ -121,28 +128,28 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
      * 查找Map对应Bean的名称
      * 尝试原名称、转驼峰名称、isXxx去掉is的名称
      *
-     * @param targetPropertyDescMap 目标bean的属性描述Map
-     * @param sKeyStr               键或字段名
+     * @param map 目标bean的属性描述Map
+     * @param key 键或字段名
      * @return {@link PropertyDesc}
      */
-    private PropertyDesc findPropertyDesc(Map<String, PropertyDesc> targetPropertyDescMap, String sKeyStr) {
-        PropertyDesc PropertyDesc = targetPropertyDescMap.get(sKeyStr);
-        if (null != PropertyDesc) {
-            return PropertyDesc;
+    private PropertyDesc findPropDesc(final Map<String, PropertyDesc> map, String key) {
+        PropertyDesc propDesc = map.get(key);
+        if (null != propDesc) {
+            return propDesc;
         }
 
         // 转驼峰尝试查找
-        sKeyStr = StringKit.toCamelCase(sKeyStr);
-        PropertyDesc = targetPropertyDescMap.get(sKeyStr);
-        if (null != PropertyDesc) {
-            return PropertyDesc;
+        key = StringKit.toCamelCase(key);
+        propDesc = map.get(key);
+        if (null != propDesc) {
+            return propDesc;
         }
 
         // boolean类型参数名转换尝试查找
-        if (sKeyStr.startsWith("is")) {
-            sKeyStr = StringKit.removePreAndLowerFirst(sKeyStr, 2);
-            PropertyDesc = targetPropertyDescMap.get(sKeyStr);
-            return PropertyDesc;
+        if (key.startsWith("is")) {
+            key = StringKit.removePreAndLowerFirst(key, 2);
+            propDesc = map.get(key);
+            return propDesc;
         }
 
         return null;

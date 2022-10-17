@@ -28,9 +28,11 @@ package org.aoju.bus.goalie.handler;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Assets;
 import org.aoju.bus.goalie.Config;
 import org.aoju.bus.goalie.Context;
+import org.aoju.bus.logger.Logger;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -87,6 +89,7 @@ public class ApiRouterHandler {
                 .uri(builder.build().encode().toUri())
                 .headers(headers -> {
                     headers.addAll(request.headers().asHttpHeaders());
+                    headers.remove(HttpHeaders.HOST);
                     headers.clearContentHeaders();
                 });
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {

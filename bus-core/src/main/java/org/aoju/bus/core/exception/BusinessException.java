@@ -25,12 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.core.exception;
 
+import lombok.ToString;
+
 /**
  * 自定义异常: 业务异常
  *
  * @author Kimi Liu
  * @since Java 17+
  */
+@ToString
 public class BusinessException extends UncheckedException {
 
     private static final long serialVersionUID = 1L;
