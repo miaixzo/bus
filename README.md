@@ -6,7 +6,7 @@
 </p>
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v6.5.8-blue.svg?label=Maven%20Central" />
+		<img src="https://img.shields.io/badge/maven--central-v6.5.9-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.com/aoju/bus.svg?branch=main">
@@ -97,7 +97,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.5.8</version>
+    <version>6.5.9</version>
 </dependency>
 ```
 
