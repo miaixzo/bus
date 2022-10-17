@@ -66,7 +66,7 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
         }
 
         final List<T> beanList = new ArrayList<>(mapList.size());
-        final CopyOptions copyOptions = CopyOptions.create().setIgnoreError(true);
+        final CopyOptions copyOptions = CopyOptions.of().setIgnoreError(true);
         for (Map<String, Object> map : mapList) {
             beanList.add(BeanKit.toBean(map, this.beanClass, copyOptions));
         }

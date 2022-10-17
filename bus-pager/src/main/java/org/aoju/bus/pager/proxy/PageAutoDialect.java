@@ -170,7 +170,7 @@ public class PageAutoDialect {
         try {
             Class sqlDialectClass = resloveDialectClass(dialectClass);
             if (AbstractPaging.class.isAssignableFrom(sqlDialectClass)) {
-                dialect = (AbstractPaging) sqlDialectClass.newInstance();
+                dialect = (AbstractPaging) sqlDialectClass.getConstructor().newInstance();
             } else {
                 throw new PageException("使用 PageContext 时，方言必须是实现 " + AbstractPaging.class.getCanonicalName() + " 接口的实现类!");
             }

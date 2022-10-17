@@ -481,7 +481,7 @@ public class ClassKit {
             if (isStatic(method)) {
                 return ReflectKit.invoke(null, method, args);
             } else {
-                return ReflectKit.invoke(isSingleton ? Instances.singletion(clazz) : clazz.newInstance(), method, args);
+                return ReflectKit.invoke(isSingleton ? Instances.singletion(clazz) : clazz.getConstructor().newInstance(), method, args);
             }
         } catch (Exception e) {
             throw new InternalException(e);
@@ -1709,8 +1709,9 @@ public class ClassKit {
      */
     public static <T> T newInstance(final Class<T> clazz) {
         try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return clazz.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

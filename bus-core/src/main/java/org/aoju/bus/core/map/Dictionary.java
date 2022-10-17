@@ -256,7 +256,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @return the object
      */
     public <T> T toBeanIgnoreCase(final Class<T> clazz) {
-        return BeanKit.toBean(this, clazz, CopyOptions.create().setIgnoreCase(true));
+        return BeanKit.toBean(this, clazz, CopyOptions.of().setIgnoreCase(true));
     }
 
     /**

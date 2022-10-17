@@ -154,7 +154,7 @@ public class ServletKit {
      * @return the bean
      */
     public static <T> T fillBean(ServletRequest request, T bean, boolean isIgnoreError) {
-        return fillBean(request, bean, CopyOptions.create().setIgnoreError(isIgnoreError));
+        return fillBean(request, bean, CopyOptions.of().setIgnoreError(isIgnoreError));
     }
 
     /**

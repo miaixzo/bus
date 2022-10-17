@@ -41,6 +41,7 @@ import org.aoju.bus.sensitive.strategy.BuiltInStrategy;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -284,11 +285,11 @@ public class Provider<T> {
             Shield sensitive = field.getAnnotation(Shield.class);
             if (ObjectKit.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
-                ConditionProvider condition = conditionClass.newInstance();
+                ConditionProvider condition = conditionClass.getConstructor().newInstance();
                 if (condition.valid(context)) {
                     context.setShield(sensitive);
                     Class<? extends StrategyProvider> strategyClass = sensitive.strategy();
-                    StrategyProvider strategy = strategyClass.newInstance();
+                    StrategyProvider strategy = strategyClass.getConstructor().newInstance();
                     return strategy.build(entry, context);
                 }
             }
@@ -308,6 +309,8 @@ public class Provider<T> {
             return entry;
         } catch (InstantiationException | IllegalAccessException e) {
             throw new InternalException(e);
+        } catch (InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -326,11 +329,11 @@ public class Provider<T> {
             Shield sensitive = field.getAnnotation(Shield.class);
             if (null != sensitive) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
-                ConditionProvider condition = conditionClass.newInstance();
+                ConditionProvider condition = conditionClass.getConstructor().newInstance();
                 if (condition.valid(context)) {
                     context.setShield(sensitive);
                     Class<? extends StrategyProvider> strategyClass = sensitive.strategy();
-                    StrategyProvider strategy = strategyClass.newInstance();
+                    StrategyProvider strategy = strategyClass.getConstructor().newInstance();
                     final Object originalFieldVal = field.get(copyObject);
                     final Object result = strategy.build(originalFieldVal, context);
                     field.set(copyObject, result);
@@ -351,7 +354,8 @@ public class Provider<T> {
                     }
                 }
             }
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             throw new InternalException(e);
         }
     }

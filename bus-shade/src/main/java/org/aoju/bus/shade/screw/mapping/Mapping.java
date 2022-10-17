@@ -81,7 +81,7 @@ public class Mapping {
                 // 设置属性值
                 return getObject(clazz, fieldMethods, values);
             }
-            return clazz.newInstance();
+            return clazz.getConstructor().newInstance();
         } catch (Exception e) {
             throw new InternalException(e);
         }
@@ -143,8 +143,8 @@ public class Mapping {
     private static <T> T getObject(Class<T> clazz, List<FieldMethod> fieldMethods,
                                    Map<String, Object> map) throws InstantiationException,
             IllegalAccessException,
-            InvocationTargetException {
-        T rsp = clazz.newInstance();
+            InvocationTargetException, NoSuchMethodException {
+        T rsp = clazz.getConstructor().newInstance();
         // 设置属性值
         for (FieldMethod filed : fieldMethods) {
             Field field = filed.getField();

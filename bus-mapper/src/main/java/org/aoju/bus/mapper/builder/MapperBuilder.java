@@ -321,7 +321,7 @@ public class MapperBuilder {
         this.config = config;
         if (config.getResolveClass() != null) {
             try {
-                EntityBuilder.setResolve(config.getResolveClass().newInstance());
+                EntityBuilder.setResolve(config.getResolveClass().getConstructor().newInstance());
             } catch (Exception e) {
                 Logger.error("创建 " + config.getResolveClass().getCanonicalName()
                         + " 实例失败，请保证该类有默认的构造方法!", e);
@@ -348,7 +348,7 @@ public class MapperBuilder {
             String resolveClass = properties.getProperty("resolveClass");
             if (StringKit.isNotEmpty(resolveClass)) {
                 try {
-                    EntityBuilder.setResolve((EntityResolve) Class.forName(resolveClass).newInstance());
+                    EntityBuilder.setResolve((EntityResolve) Class.forName(resolveClass).getConstructor().newInstance());
                 } catch (Exception e) {
                     Logger.error("创建 " + resolveClass + " 实例失败!", e);
                     throw new InternalException("创建 " + resolveClass + " 实例失败!", e);

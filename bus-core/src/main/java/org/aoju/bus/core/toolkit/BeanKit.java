@@ -547,7 +547,7 @@ public class BeanKit {
      * @return Bean对象
      */
     public static <T> T toBeanIgnoreError(Object source, Class<T> clazz) {
-        return toBean(source, clazz, CopyOptions.create().setIgnoreError(true));
+        return toBean(source, clazz, CopyOptions.of().setIgnoreError(true));
     }
 
     /**
@@ -561,7 +561,7 @@ public class BeanKit {
      */
     public static <T> T toBeanIgnoreCase(Object source, Class<T> clazz, boolean ignoreError) {
         return toBean(source, clazz,
-                CopyOptions.create()
+                CopyOptions.of()
                         .setIgnoreCase(true)
                         .setIgnoreError(ignoreError));
     }
@@ -607,7 +607,7 @@ public class BeanKit {
      * @return Bean
      */
     public static <T> T fillBeanWithMap(Map<?, ?> map, T bean, boolean isToCamelCase, boolean isIgnoreError) {
-        return fillBeanWithMap(map, bean, isToCamelCase, CopyOptions.create().setIgnoreError(isIgnoreError));
+        return fillBeanWithMap(map, bean, isToCamelCase, CopyOptions.of().setIgnoreError(isIgnoreError));
     }
 
     /**
@@ -620,7 +620,7 @@ public class BeanKit {
      * @return Bean
      */
     public static <T> T fillBeanWithMapIgnoreCase(Map<?, ?> map, T bean, boolean isIgnoreError) {
-        return fillBeanWithMap(map, bean, CopyOptions.create().setIgnoreCase(true).setIgnoreError(isIgnoreError));
+        return fillBeanWithMap(map, bean, CopyOptions.of().setIgnoreCase(true).setIgnoreError(isIgnoreError));
     }
 
     /**
@@ -806,7 +806,7 @@ public class BeanKit {
             return null;
         }
         T target = ReflectKit.newInstanceIfPossible(clazz);
-        copyProperties(source, target, CopyOptions.create().setIgnoreProperties(ignoreProperties));
+        copyProperties(source, target, CopyOptions.of().setIgnoreProperties(ignoreProperties));
         return target;
     }
 
@@ -819,7 +819,7 @@ public class BeanKit {
      * @param ignoreProperties 不拷贝的的属性列表
      */
     public static void copyProperties(Object source, Object target, String... ignoreProperties) {
-        copyProperties(source, target, CopyOptions.create().setIgnoreProperties(ignoreProperties));
+        copyProperties(source, target, CopyOptions.of().setIgnoreProperties(ignoreProperties));
     }
 
     /**
@@ -830,7 +830,7 @@ public class BeanKit {
      * @param ignoreCase 是否忽略大小写
      */
     public static void copyProperties(Object source, Object target, boolean ignoreCase) {
-        BeanCopier.create(source, target, CopyOptions.create().setIgnoreCase(ignoreCase)).copy();
+        BeanCopier.create(source, target, CopyOptions.of().setIgnoreCase(ignoreCase)).copy();
     }
 
     /**
@@ -842,7 +842,7 @@ public class BeanKit {
      * @param copyOptions 拷贝选项,见 {@link CopyOptions}
      */
     public static void copyProperties(Object source, Object target, CopyOptions copyOptions) {
-        BeanCopier.create(source, target, ObjectKit.defaultIfNull(copyOptions, CopyOptions::create)).copy();
+        BeanCopier.create(source, target, ObjectKit.defaultIfNull(copyOptions, CopyOptions::of)).copy();
     }
 
     /**
@@ -879,7 +879,7 @@ public class BeanKit {
      * @return 复制后的List
      */
     public static <T> List<T> copyToList(Collection<?> collection, Class<T> targetType) {
-        return copyToList(collection, targetType, CopyOptions.create());
+        return copyToList(collection, targetType, CopyOptions.of());
     }
 
     /**

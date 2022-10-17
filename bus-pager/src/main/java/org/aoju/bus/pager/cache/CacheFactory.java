@@ -64,7 +64,7 @@ public abstract class CacheFactory {
                     Constructor<? extends Cache> constructor = clazz.getConstructor(Properties.class, String.class);
                     return constructor.newInstance(properties, prefix);
                 } catch (Exception e) {
-                    return clazz.newInstance();
+                    return clazz.getConstructor().newInstance();
                 }
             } catch (Throwable t) {
                 throw new PageException("Created Sql Cache [" + sqlCacheClass + "] Error", t);
