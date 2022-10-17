@@ -120,7 +120,7 @@ public class SqlServer extends AbstractPaging {
             this.replaceSql = new SimpleWithNolock();
         } else {
             try {
-                this.replaceSql = (ReplaceSql) Class.forName(replaceSql).newInstance();
+                this.replaceSql = (ReplaceSql) Class.forName(replaceSql).getConstructor().newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("replaceSql 参数配置的值不符合要求，可选值为 simple 和 regex，或者是实现了 "
                         + ReplaceSql.class.getCanonicalName() + " 接口的全限定类名", e);

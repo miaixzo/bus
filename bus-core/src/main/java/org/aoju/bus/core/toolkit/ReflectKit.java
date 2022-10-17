@@ -907,7 +907,7 @@ public class ReflectKit {
      */
     public static <T> T newInstance(String clazz) throws InternalException {
         try {
-            return (T) Class.forName(clazz).newInstance();
+            return (T) Class.forName(clazz).getConstructor().newInstance();
         } catch (Exception e) {
             throw new InternalException(StringKit.format("Instance class [{}] error!", clazz), e);
         }

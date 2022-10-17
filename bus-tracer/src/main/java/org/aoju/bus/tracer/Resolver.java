@@ -27,6 +27,7 @@ package org.aoju.bus.tracer;
 
 import org.aoju.bus.tracer.backend.TraceBackendProvider;
 
+import java.lang.reflect.InvocationTargetException;
 import java.security.PrivilegedAction;
 import java.util.*;
 
@@ -53,10 +54,11 @@ public class Resolver {
         try {
             final ClassLoader classLoader = GetClassLoader.fromContext();
             final Class<?> slf4jTraceBackendProviderClass = Class.forName("org.aoju.bus.tracer.backend.Slf4jTraceBackendProvider", true, classLoader);
-            final TraceBackendProvider instance = (TraceBackendProvider) slf4jTraceBackendProviderClass.newInstance();
+            final TraceBackendProvider instance = (TraceBackendProvider) slf4jTraceBackendProviderClass.getConstructor().newInstance();
             updatedCache(classLoader, Collections.singleton(instance));
             return Collections.singleton(instance);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
+        } catch (ClassNotFoundException | InstantiationException | InvocationTargetException | NoSuchMethodException |
+                 IllegalAccessException | ClassCastException e) {
             return Collections.emptySet();
         }
     }

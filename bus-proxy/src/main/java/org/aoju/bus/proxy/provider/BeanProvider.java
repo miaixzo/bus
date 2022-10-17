@@ -28,8 +28,10 @@ package org.aoju.bus.proxy.provider;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.proxy.Provider;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
- * 使用Class.newInstance()来实例化一个对象
+ * 使用Class..getConstructor().newInstance()来实例化一个对象
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,10 +52,10 @@ public class BeanProvider implements Provider {
             if (null == beanClass) {
                 throw new InternalException("No bean class provided.");
             }
-            return beanClass.newInstance();
+            return beanClass.getConstructor().newInstance();
         } catch (InstantiationException e) {
             throw new InternalException("Class " + beanClass.getName() + " is not concrete.", e);
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new InternalException("Constructor for class " + beanClass.getName() + " is not accessible.",
                     e);
         }

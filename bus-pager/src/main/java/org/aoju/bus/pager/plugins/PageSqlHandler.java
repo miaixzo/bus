@@ -132,7 +132,7 @@ public class PageSqlHandler implements Interceptor {
         }
         try {
             Class<?> aClass = Class.forName(dialectClass);
-            dialect = (Dialect) aClass.newInstance();
+            dialect = (Dialect) aClass.getConstructor().newInstance();
         } catch (Exception e) {
             throw new PageException(e);
         }

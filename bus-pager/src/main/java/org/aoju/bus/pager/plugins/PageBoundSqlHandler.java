@@ -47,7 +47,7 @@ public class PageBoundSqlHandler {
             List<BoundSqlHandler> list = new ArrayList<>();
             for (int i = 0; i < boundSqlInterceptors.length; i++) {
                 try {
-                    list.add((BoundSqlHandler) Class.forName(boundSqlInterceptors[i]).newInstance());
+                    list.add((BoundSqlHandler) Class.forName(boundSqlInterceptors[i]).getConstructor().newInstance());
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

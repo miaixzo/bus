@@ -597,7 +597,7 @@ public class ObjectKit {
      */
     public static <T> T initObject(Class<T> clazz, Map<String, Object> attrMap) {
         try {
-            T object = clazz.newInstance();
+            T object = clazz.getConstructor().newInstance();
             if (null != attrMap) {
                 // 移除所有的常量赋值
                 for (Class tempClass = clazz; !tempClass.equals(Object.class); tempClass = tempClass.getSuperclass()) {
@@ -1087,7 +1087,7 @@ public class ObjectKit {
         }
         try {
             Class<?> clazz = bean.getClass();
-            Object object = clazz.newInstance();
+            Object object = clazz.getConstructor().newInstance();
             for (; !clazz.equals(Object.class); clazz = clazz.getSuperclass()) {
                 Field[] fs = clazz.getDeclaredFields();
                 for (Field f : fs) {

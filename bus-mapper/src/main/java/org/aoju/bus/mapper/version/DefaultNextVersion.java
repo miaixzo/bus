@@ -61,7 +61,7 @@ public class DefaultNextVersion implements NextVersion {
                 LOCK.lock();
                 try {
                     if (!CACHE.containsKey(nextVersionClass)) {
-                        CACHE.put(nextVersionClass, nextVersionClass.newInstance());
+                        CACHE.put(nextVersionClass, nextVersionClass.getConstructor().newInstance());
                     }
                     nextVersion = CACHE.get(nextVersionClass);
                 } finally {

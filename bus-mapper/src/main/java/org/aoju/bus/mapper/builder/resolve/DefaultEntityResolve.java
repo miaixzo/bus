@@ -323,7 +323,7 @@ public class DefaultEntityResolve implements EntityResolve {
             entityColumn.setIdentity(true);
             entityColumn.setOrder(keySql.order());
             try {
-                GenSql genSql = keySql.genSql().newInstance();
+                GenSql genSql = keySql.genSql().getConstructor().newInstance();
                 entityColumn.setGenerator(genSql.genSql(entityTable, entityColumn));
             } catch (Exception e) {
                 log.error("实例化 GenSql 失败: " + e, e);

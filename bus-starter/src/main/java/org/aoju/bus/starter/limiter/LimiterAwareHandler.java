@@ -41,6 +41,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.io.ResourceLoader;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,8 +90,9 @@ public class LimiterAwareHandler extends AbstractLimiterAware implements Resourc
         for (int i = 0; i < parsersClassNames.length; i++) {
             try {
                 Class<Parser> parserClass = (Class<Parser>) Class.forName(parsersClassNames[i]);
-                parsers[i] = parserClass.newInstance();
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                parsers[i] = parserClass.getConstructor().newInstance();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
                 throw new InternalException("Class Not Found!");
             }
         }
