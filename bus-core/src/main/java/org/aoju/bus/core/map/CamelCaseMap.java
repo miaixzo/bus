@@ -27,8 +27,10 @@ package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.toolkit.StringKit;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * 驼峰Key风格的Map
@@ -93,8 +95,8 @@ public class CamelCaseMap<K, V> extends FuncKeyMap<K, V> {
      *
      * @param emptyMapBuilder Map构造器，必须构造空的Map
      */
-    CamelCaseMap(MapBuilder<K, V> emptyMapBuilder) {
-        super(emptyMapBuilder.build(), (key) -> {
+    CamelCaseMap(final MapBuilder<K, V> emptyMapBuilder) {
+        super(emptyMapBuilder.build(), (Function<Object, K> & Serializable) (key) -> {
             if (key instanceof CharSequence) {
                 key = StringKit.toCamelCase(key.toString());
             }

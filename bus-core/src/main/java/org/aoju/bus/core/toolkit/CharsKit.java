@@ -280,7 +280,8 @@ public class CharsKit {
                 || args == '\ufeff'
                 || args == '\u202a'
                 || args == '\u0000'
-                || args == '\u3164';
+                || args == '\u3164'
+                || args == '\u2800';
     }
 
     /**
@@ -4014,9 +4015,9 @@ public class CharsKit {
      * StringKit.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
      * </pre>
      *
-     * @param text     字符串
-     * @param suffix   附加到字符串末尾的后缀
-     * @param args 有效终止符的附加后缀(可选)
+     * @param text   字符串
+     * @param suffix 附加到字符串末尾的后缀
+     * @param args   有效终止符的附加后缀(可选)
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串
      */
     public static String appendIfMissing(final String text,
@@ -4050,9 +4051,9 @@ public class CharsKit {
      * StringKit.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
      * </pre>
      *
-     * @param text     字符串
-     * @param suffix   附加到字符串末尾的后缀
-     * @param args 有效终止符的附加后缀(可选)
+     * @param text   字符串
+     * @param suffix 附加到字符串末尾的后缀
+     * @param args   有效终止符的附加后缀(可选)
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串
      */
     public static String appendIfMissingIgnoreCase(final String text,
@@ -4112,9 +4113,9 @@ public class CharsKit {
      * StringKit.prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
      * </pre>
      *
-     * @param text     T字符串
-     * @param prefix   在字符串开始前的前缀
-     * @param args 有效的附加前缀(可选)
+     * @param text   T字符串
+     * @param prefix 在字符串开始前的前缀
+     * @param args   有效的附加前缀(可选)
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串
      */
     public static String prependIfMissing(final String text,
@@ -4148,9 +4149,9 @@ public class CharsKit {
      * StringKit.prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
      * </pre>
      *
-     * @param text     字符串
-     * @param prefix   在字符串开始前的前缀
-     * @param args 有效的附加前缀(可选)
+     * @param text   字符串
+     * @param prefix 在字符串开始前的前缀
+     * @param args   有效的附加前缀(可选)
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串
      */
     public static String prependIfMissingIgnoreCase(final String text,
@@ -4245,8 +4246,8 @@ public class CharsKit {
      * StringKit.center("abc", 7, "")   = "  abc  "
      * </pre>
      *
-     * @param text   字符串
-     * @param size   指定长度
+     * @param text    字符串
+     * @param size    指定长度
      * @param padText 两边补充的字符串
      * @return 补充后的字符串
      */

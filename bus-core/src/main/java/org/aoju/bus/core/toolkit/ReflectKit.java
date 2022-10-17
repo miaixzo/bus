@@ -753,7 +753,7 @@ public class ReflectKit {
     public static Method[] getMethods(Class<?> beanClass) throws SecurityException {
         Assert.notNull(beanClass);
         return METHODS_CACHE.computeIfAbsent(beanClass,
-                (key) -> getMethods(beanClass, true, true));
+                key -> getMethods(beanClass, false, Objects.equals(Object.class, beanClass)));
     }
 
     /**
@@ -1075,7 +1075,7 @@ public class ReflectKit {
                     actualArgs[i] = ClassKit.getDefaultValue(parameterTypes[i]);
                 } else if (false == parameterTypes[i].isAssignableFrom(args[i].getClass())) {
                     //对于类型不同的字段，尝试转换，转换失败则使用原对象类型
-                    final Object targetValue = Convert.convert(parameterTypes[i], args[i]);
+                    final Object targetValue = Convert.convertQuietly(parameterTypes[i], args[i], args[i]);
                     if (null != targetValue) {
                         actualArgs[i] = targetValue;
                     }
