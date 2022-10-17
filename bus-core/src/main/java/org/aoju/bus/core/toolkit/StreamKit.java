@@ -35,6 +35,8 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -704,7 +706,7 @@ public class StreamKit {
 
     public static InputStream openFileOrURL(String name) throws IOException {
         if (name.startsWith("resource:")) {
-            URL url = FileKit.getResource(name.substring(9), StreamKit.class);
+            URL url = FileKit.getUrl(name.substring(9), StreamKit.class);
             if (null == url)
                 throw new FileNotFoundException(name);
             return url.openStream();
@@ -753,9 +755,35 @@ public class StreamKit {
      */
     public static <T> Stream<T> of(Iterable<T> iterable, boolean parallel) {
         Assert.notNull(iterable, "Iterable must be not null!");
-        return StreamSupport.stream(
-                Spliterators.spliterator(CollKit.toCollection(iterable), 0),
-                parallel);
+        return iterable instanceof Collection ?
+                ((Collection<T>) iterable).stream() :
+                StreamSupport.stream(iterable.spliterator(), parallel);
+    }
+
+    /**
+     * {@link Iterator} 转换为 {@link Stream}
+     *
+     * @param iterator 迭代器
+     * @param <T>      集合元素类型
+     * @return {@link Stream}
+     * @throws IllegalArgumentException 如果iterator为null，抛出该异常
+     */
+    public static <T> Stream<T> of(Iterator<T> iterator) {
+        return of(iterator, false);
+    }
+
+    /**
+     * {@link Iterator} 转换为 {@link Stream}
+     *
+     * @param iterator 迭代器
+     * @param parallel 是否并行
+     * @param <T>      集合元素类型
+     * @return {@link Stream}
+     * @throws IllegalArgumentException 如果iterator为null，抛出该异常
+     */
+    public static <T> Stream<T> of(Iterator<T> iterator, boolean parallel) {
+        Assert.notNull(iterator, "iterator must not be null!");
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), parallel);
     }
 
     /**

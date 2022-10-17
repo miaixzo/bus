@@ -32,7 +32,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * {@link java.awt.Graphics}相关工具类
+ * {@link java.awt.Graphics}相关类
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -27,7 +27,6 @@ package org.aoju.bus.extra.ftp;
 
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
@@ -46,6 +45,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * FTP客户端封装
@@ -355,7 +355,7 @@ public class Ftp extends AbstractFtp {
      * @param filter 过滤器，null表示不过滤，默认去掉"."和".."两种目录
      * @return 文件或目录列表
      */
-    public List<FTPFile> lsFiles(String path, Filter<FTPFile> filter) {
+    public List<FTPFile> lsFiles(String path, Predicate<FTPFile> filter) {
         final FTPFile[] ftpFiles = lsFiles(path);
         if (ArrayKit.isEmpty(ftpFiles)) {
             return new ArrayList<>();
@@ -367,7 +367,7 @@ public class Ftp extends AbstractFtp {
             fileName = ftpFile.getName();
             if (false == StringKit.equals(Symbol.DOT, fileName)
                     && false == StringKit.equals(Symbol.DOT + Symbol.DOT, fileName)) {
-                if (null == filter || filter.accept(ftpFile)) {
+                if (null == filter || filter.test(ftpFile)) {
                     result.add(ftpFile);
                 }
             }
@@ -478,8 +478,8 @@ public class Ftp extends AbstractFtp {
             childPath = StringKit.format("{}/{}", dirPath, name);
             if (ftpFile.isDirectory()) {
                 // 上级和本级目录除外
-                if (false == ObjectKit.equal(name, Symbol.DOT)
-                        && false == ObjectKit.equal(name, Symbol.DOUBLE_DOT)) {
+                if (false == ObjectKit.equals(name, Symbol.DOT)
+                        && false == ObjectKit.equals(name, Symbol.DOUBLE_DOT)) {
                     delDir(childPath);
                 }
             } else {

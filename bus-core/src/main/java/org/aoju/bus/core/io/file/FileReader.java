@@ -26,8 +26,8 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.function.XConsumer;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -202,7 +202,7 @@ public class FileReader extends FileWrapper {
      * @param lineHandler 行处理器
      * @throws InternalException 异常
      */
-    public void readLines(LineHandler lineHandler) throws InternalException {
+    public void readLines(final XConsumer<String> lineHandler) throws InternalException {
         BufferedReader reader = null;
         try {
             reader = FileKit.getReader(file, charset);

@@ -26,7 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.function.XFunction;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -142,7 +142,7 @@ public class EnumKit {
                 continue;
             }
             for (Enum<?> enumObj : enums) {
-                if (ObjectKit.equal(value, ReflectKit.getFieldValue(enumObj, field))) {
+                if (ObjectKit.equals(value, ReflectKit.getFieldValue(enumObj, field))) {
                     return (E) enumObj;
                 }
             }
@@ -269,12 +269,26 @@ public class EnumKit {
      * @param <C>       字段类型
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, C> E getBy(Func1<E, C> condition, C value) {
+    public static <E extends Enum<E>, C> E getBy(XFunction<E, C> condition, C value) {
         Class<E> implClass = LambdaKit.getRealClass(condition);
         if (Enum.class.equals(implClass)) {
             implClass = LambdaKit.getRealClass(condition);
         }
-        return Arrays.stream(implClass.getEnumConstants()).filter(e -> condition.callWithRuntimeException(e).equals(value)).findAny().orElse(null);
+        return Arrays.stream(implClass.getEnumConstants()).filter(e -> condition.apply(e).equals(value)).findAny().orElse(null);
+    }
+
+    /**
+     * 通过 某字段对应值 获取 枚举，获取不到时为 {@code defaultEnum}
+     *
+     * @param condition   条件字段
+     * @param value       条件字段值
+     * @param defaultEnum 条件找不到则返回结果使用这个
+     * @param <E>         枚举类型
+     * @param <C>         值类型
+     * @return 对应枚举 ，获取不到时为 {@code null}
+     */
+    public static <E extends Enum<E>, C> E getBy(final XFunction<E, C> condition, final C value, final E defaultEnum) {
+        return ObjectKit.defaultIfNull(getBy(condition, value), defaultEnum);
     }
 
     /**
@@ -288,7 +302,7 @@ public class EnumKit {
      * @param <C>       条件字段类型
      * @return 对应枚举中另一字段值 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, F, C> F getFieldBy(Func1<E, F> field,
+    public static <E extends Enum<E>, F, C> F getFieldBy(XFunction<E, F> field,
                                                          Function<E, C> condition, C value) {
         Class<E> implClass = LambdaKit.getRealClass(field);
         if (Enum.class.equals(implClass)) {
@@ -298,7 +312,7 @@ public class EnumKit {
                 // 过滤
                 .filter(e -> condition.apply(e).equals(value))
                 // 获取第一个并转换为结果
-                .findFirst().map(field::callWithRuntimeException).orElse(null);
+                .findFirst().map(field).orElse(null);
     }
 
     /**
@@ -338,15 +352,15 @@ public class EnumKit {
     }
 
     /**
-     * 判断某个值是存在枚举中
+     * 判断指定名称的枚举是否存在
      *
      * @param <E>       枚举类型
      * @param enumClass 枚举类
-     * @param val       需要查找的值
+     * @param name      需要查找的枚举名
      * @return 是否存在
      */
-    public static <E extends Enum<E>> boolean contains(final Class<E> enumClass, String val) {
-        return getEnumMap(enumClass).containsKey(val);
+    public static <E extends Enum<E>> boolean contains(final Class<E> enumClass, String name) {
+        return getEnumMap(enumClass).containsKey(name);
     }
 
     /**

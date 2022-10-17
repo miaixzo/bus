@@ -33,13 +33,13 @@ import java.util.Currency;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CurrencyConverter extends AbstractConverter<Currency> {
+public class CurrencyConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Currency convertInternal(Object value) {
-        return Currency.getInstance(convertString(value));
+    protected Currency convertInternal(Class<?> targetClass, final Object value) {
+        return Currency.getInstance(convertToString(value));
     }
 
 }

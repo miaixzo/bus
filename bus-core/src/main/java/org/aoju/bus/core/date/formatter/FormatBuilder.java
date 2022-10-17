@@ -25,16 +25,21 @@
  ********************************************************************************/
 package org.aoju.bus.core.date.formatter;
 
+import org.aoju.bus.core.date.formatter.parser.FastDateParser;
+import org.aoju.bus.core.date.formatter.parser.PositionDateParser;
 import org.aoju.bus.core.lang.Symbol;
 
-import java.text.*;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * FastDateFormat 是一个线程安全的 {@link java.text.SimpleDateFormat}
+ * FormatBuilder 是一个线程安全的 {@link java.text.SimpleDateFormat}
  * 实现通过以下静态方法获得此对象:
  * {@link #getInstance(String, TimeZone, Locale)}
  * {@link #getDateInstance(int, TimeZone, Locale)}
@@ -44,26 +49,9 @@ import java.util.TimeZone;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FormatBuilder extends Format implements DateParser, DatePrinter {
+public class FormatBuilder extends Format implements PositionDateParser, DatePrinter {
 
-    /**
-     * 完全地区相关的日期或时间样式
-     */
-    public static final int FULL = DateFormat.FULL;
-    /**
-     * 长地区相关的日期或时间样式
-     */
-    public static final int LONG = DateFormat.LONG;
-    /**
-     * 中等地区相关的日期或时间样式
-     */
-    public static final int MEDIUM = DateFormat.MEDIUM;
-    /**
-     * 短地区相关的日期或时间样式
-     */
-    public static final int SHORT = DateFormat.SHORT;
-
-    private static final FormatCache<FormatBuilder> CACHE = new FormatCache<FormatBuilder>() {
+    private static final FormatCache<FormatBuilder> CACHE = new FormatCache<>() {
         @Override
         protected FormatBuilder createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
             return new FormatBuilder(pattern, timeZone, locale);
@@ -404,7 +392,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
 
     @Override
     public String toString() {
-        return "FastDateFormat[" + printer.getPattern() + Symbol.COMMA + printer.getLocale() + Symbol.COMMA + printer.getTimeZone().getID() + "]";
+        return "FormatBuilder[" + printer.getPattern() + Symbol.COMMA + printer.getLocale() + Symbol.COMMA + printer.getTimeZone().getID() + "]";
     }
 
 }

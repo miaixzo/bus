@@ -30,6 +30,7 @@ import org.aoju.bus.core.annotation.AnnoProxy;
 import org.aoju.bus.core.annotation.Annotated;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Optional;
+import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.scanner.AnnotationScanner;
 import org.aoju.bus.core.scanner.Synthetic;
 import org.aoju.bus.core.scanner.annotation.FieldScanner;
@@ -214,6 +215,27 @@ public class AnnoKit {
      */
     public static boolean hasAnnotation(AnnotatedElement annotationEle, Class<? extends Annotation> annotationType) {
         return null != getAnnotation(annotationEle, annotationType);
+    }
+
+    /**
+     * 获取指定注解属性的值
+     * 如果无指定的属性方法返回null
+     *
+     * @param <A>           注解类型
+     * @param <R>           注解类型值
+     * @param annotationEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param propertyName  属性名，例如注解中定义了name()方法，则 此处传入name
+     * @return 注解对象
+     */
+    public static <A extends Annotation, R> R getAnnotationValue(final AnnotatedElement annotationEle, final XFunction<A, R> propertyName) {
+        if (propertyName == null) {
+            return null;
+        } else {
+            final LambdaKit.Info lambda = LambdaKit.resolve(propertyName);
+            final String instantiatedMethodType = lambda.getLambda().getInstantiatedMethodType();
+            final Class<A> annotationClass = ClassKit.loadClass(StringKit.sub(instantiatedMethodType, 2, StringKit.indexOf(instantiatedMethodType, ';')));
+            return getAnnotationValue(annotationEle, annotationClass, lambda.getLambda().getImplMethodName());
+        }
     }
 
     /**

@@ -72,7 +72,7 @@ public class GlobalFactory {
      */
     public static LogFactory set(Class<? extends LogFactory> logFactoryClass) {
         try {
-            return set(logFactoryClass.newInstance());
+            return set(logFactoryClass.getConstructor().newInstance());
         } catch (Exception e) {
             throw new IllegalArgumentException("Can not instance LogFactory class!", e);
         }

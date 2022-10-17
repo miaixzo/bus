@@ -92,7 +92,7 @@ public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
     }
 
     /**
-     * <p>Obtains an immutable triple of three objects inferring the generic types.</p>
+     * Obtains an immutable triple of three objects inferring the generic types.
      *
      * <p>This factory allows the triple to be created using inference to
      * obtain the generic types.</p>
@@ -109,22 +109,20 @@ public final class ImmutableTriple<L, M, R> extends Triple<L, M, R> {
         return new ImmutableTriple<>(left, middle, right);
     }
 
-
     @Override
     public L getLeft() {
         return left;
     }
-
 
     @Override
     public M getMiddle() {
         return middle;
     }
 
-
     @Override
     public R getRight() {
         return right;
     }
+
 }
 

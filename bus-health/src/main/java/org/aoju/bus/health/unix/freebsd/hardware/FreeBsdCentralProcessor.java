@@ -31,7 +31,7 @@ import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.ByRef;
@@ -41,10 +41,7 @@ import org.aoju.bus.health.unix.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.logger.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -224,7 +221,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected Pair<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>> initProcessorCounts() {
+    protected Triple<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>> initProcessorCounts() {
         List<CentralProcessor.LogicalProcessor> logProcs = parseTopology();
         // Force at least one processor
         if (logProcs.isEmpty()) {
@@ -250,10 +247,29 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 }
             }
         }
-        if (dmesg.isEmpty()) {
-            return Pair.of(logProcs, null);
+        List<PhysicalProcessor> physProcs = dmesg.isEmpty() ? null : createProcListFromDmesg(logProcs, dmesg);
+        List<ProcessorCache> caches = getCacheInfoFromLscpu();
+        return Triple.of(logProcs, physProcs, caches);
+    }
+
+    private List<ProcessorCache> getCacheInfoFromLscpu() {
+        Set<ProcessorCache> caches = new HashSet<>();
+        for (String checkLine : Executor.runNative("lscpu")) {
+            if (checkLine.contains("L1d cache:")) {
+                caches.add(new ProcessorCache(1, 0, 0,
+                        Builder.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), ProcessorCache.Type.DATA));
+            } else if (checkLine.contains("L1i cache:")) {
+                caches.add(new ProcessorCache(1, 0, 0,
+                        Builder.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), ProcessorCache.Type.INSTRUCTION));
+            } else if (checkLine.contains("L2 cache:")) {
+                caches.add(new ProcessorCache(2, 0, 0,
+                        Builder.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), ProcessorCache.Type.UNIFIED));
+            } else if (checkLine.contains("L3 cache:")) {
+                caches.add(new ProcessorCache(3, 0, 0,
+                        Builder.parseDecimalMemorySizeToBinary(checkLine.split(":")[1].trim()), ProcessorCache.Type.UNIFIED));
+            }
         }
-        return Pair.of(logProcs, createProcListFromDmesg(logProcs, dmesg));
+        return orderedProcCaches(caches);
     }
 
     @Override

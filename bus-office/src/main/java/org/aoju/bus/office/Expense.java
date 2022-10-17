@@ -25,10 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.office;
 
-import org.aoju.bus.logger.Logger;
-import org.aoju.bus.office.process.PumpStreamHandler;
-import org.aoju.bus.office.process.StreamPumper;
-
 import java.util.Objects;
 
 /**
@@ -40,7 +36,6 @@ import java.util.Objects;
 public class Expense {
 
     private final Process process;
-    private final PumpStreamHandler streamHandler;
 
     /**
      * 为给定的流程创建一个新的包装器.
@@ -51,10 +46,6 @@ public class Expense {
         super();
         Objects.requireNonNull(process, "process must not be null");
         this.process = process;
-        this.streamHandler = new PumpStreamHandler(
-                new StreamPumper(process.getInputStream(), (line) -> Logger.info(line)),
-                new StreamPumper(process.getErrorStream(), (line) -> Logger.error(line)));
-        this.streamHandler.start();
     }
 
     /**
@@ -64,23 +55,6 @@ public class Expense {
      */
     public Process getProcess() {
         return this.process;
-    }
-
-    /**
-     * 获取进程的退出代码.
-     *
-     * @return 进程的退出码，如果尚未终止则为空.
-     */
-    public Integer getExitCode() {
-        try {
-            final int exitValue = this.process.exitValue();
-            this.streamHandler.stop();
-            return exitValue;
-
-        } catch (IllegalThreadStateException ex) {
-            Logger.trace("The Office process has not yet terminated.");
-            return null;
-        }
     }
 
 }

@@ -28,7 +28,6 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Editor;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.map.*;
@@ -37,6 +36,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 /**
  * Map相关工具类
@@ -132,7 +132,7 @@ public class MapKit {
      * @return HashMap对象
      */
     public static <K, V> HashMap<K, V> newHashMap(int size, boolean isLinked) {
-        int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR) + 1;
+        final int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR) + 1;
         return isLinked ? new LinkedHashMap<>(initialCapacity) : new HashMap<>(initialCapacity);
     }
 
@@ -678,7 +678,7 @@ public class MapKit {
      * @param filter 编辑器接口
      * @return 过滤后的Map
      */
-    public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Entry<K, V>> filter) {
+    public static <K, V> Map<K, V> filter(Map<K, V> map, Predicate<Entry<K, V>> filter) {
         final Map<K, V> map2 = ObjectKit.clone(map);
         if (isEmpty(map2)) {
             return map2;
@@ -686,7 +686,7 @@ public class MapKit {
 
         map2.clear();
         for (Entry<K, V> entry : map.entrySet()) {
-            if (filter.accept(entry)) {
+            if (filter.test(entry)) {
                 map2.put(entry.getKey(), entry.getValue());
             }
         }
@@ -924,7 +924,7 @@ public class MapKit {
      * @return 新Map, 只包含指定的key
      */
     public static <K, V> Map<K, V> getAny(Map<K, V> map, final K... keys) {
-        return filter(map, (Filter<Entry<K, V>>) entry -> ArrayKit.contains(keys, entry.getKey()));
+        return filter(map, (Predicate<Entry<K, V>>) entry -> ArrayKit.contains(keys, entry.getKey()));
     }
 
     /**
@@ -1338,6 +1338,26 @@ public class MapKit {
         return isImmutable ?
                 new AbstractMap.SimpleImmutableEntry<>(key, value) :
                 new AbstractMap.SimpleEntry<>(key, value);
+    }
+
+    /**
+     * 根据给定的entry列表，根据entry的key进行分组
+     *
+     * @param <K>     键类型
+     * @param <V>     值类型
+     * @param entries entry列表
+     * @return this map
+     */
+    public static <K, V> Map<K, List<V>> grouping(Iterable<Map.Entry<K, V>> entries) {
+        final Map<K, List<V>> map = new HashMap<>();
+        if (CollKit.isEmpty(entries)) {
+            return map;
+        }
+        for (final Map.Entry<K, V> pair : entries) {
+            final List<V> values = map.computeIfAbsent(pair.getKey(), k -> new ArrayList<>());
+            values.add(pair.getValue());
+        }
+        return map;
     }
 
 }

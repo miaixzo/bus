@@ -181,7 +181,7 @@ public class ZipWriter implements Closeable {
      * @throws InternalException IO异常
      */
     public ZipWriter add(String path, InputStream in) throws InternalException {
-        path = StringKit.nullToEmpty(path);
+        path = StringKit.emptyIfNull(path);
         if (null == in) {
             // 空目录需要检查路径规范性，目录以"/"结尾
             path = StringKit.addSuffixIfNot(path, Symbol.SLASH);

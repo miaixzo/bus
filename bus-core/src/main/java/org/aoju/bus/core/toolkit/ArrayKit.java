@@ -29,6 +29,7 @@ import org.aoju.bus.core.builder.HashCodeBuilder;
 import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.collection.UniqueKeySet;
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.lang.*;
@@ -40,6 +41,7 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -6389,26 +6391,26 @@ public class ArrayKit {
      * @param newElements 新元素
      * @return 新数组
      */
-    public static <T> Object insert(Object array, int index, T... newElements) {
+    public static <A, T> A insert(final A array, int index, final T... newElements) {
         if (isEmpty(newElements)) {
             return array;
         }
         if (isEmpty(array)) {
-            return newElements;
+            return (A) Convert.convert(array.getClass(), newElements);
         }
 
-        final int len = getLength(array);
+        final int len = length(array);
         if (index < 0) {
             index = (index % len) + len;
         }
 
-        final T[] result = newArray(array.getClass().getComponentType(), Math.max(len, index) + newElements.length);
+        final Object result = Array.newInstance(array.getClass().getComponentType(), Math.max(len, index) + newElements.length);
         System.arraycopy(array, 0, result, 0, Math.min(len, index));
         System.arraycopy(newElements, 0, result, index, newElements.length);
         if (index < len) {
             System.arraycopy(array, index, result, index + newElements.length, len - index);
         }
-        return result;
+        return (A) result;
     }
 
     /**
@@ -6424,7 +6426,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static boolean[] insert(final int index, final boolean[] array, final boolean... values) {
         if (null == array) {
@@ -6462,7 +6464,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static byte[] insert(final int index, final byte[] array, final byte... values) {
         if (null == array) {
@@ -6500,7 +6502,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static char[] insert(final int index, final char[] array, final char... values) {
         if (null == array) {
@@ -6538,7 +6540,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static double[] insert(final int index, final double[] array, final double... values) {
         if (null == array) {
@@ -6576,7 +6578,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static float[] insert(final int index, final float[] array, final float... values) {
         if (null == array) {
@@ -6614,7 +6616,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static int[] insert(final int index, final int[] array, final int... values) {
         if (null == array) {
@@ -6652,7 +6654,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static long[] insert(final int index, final long[] array, final long... values) {
         if (null == array) {
@@ -6690,7 +6692,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static short[] insert(final int index, final short[] array, final short... values) {
         if (null == array) {
@@ -6729,7 +6731,7 @@ public class ArrayKit {
      * @param index  插入位置,此位置为对应此位置元素之前的空档
      * @param array  已有数组
      * @param values 要插入的新值可以是{@code null}
-     * @return 新数组.
+     * @return 新数组
      */
     public static <T> T[] insert(final int index, final T[] array, final T... values) {
         if (null == array) {
@@ -8110,26 +8112,6 @@ public class ArrayKit {
     /**
      * 取最小值
      *
-     * @param <T>         元素类型
-     * @param numberArray 数字数组
-     * @return 最小值
-     */
-    public static <T extends Comparable<? super T>> T min(T[] numberArray) {
-        if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
-        }
-        T min = numberArray[0];
-        for (int i = 0; i < numberArray.length; i++) {
-            if (ObjectKit.compare(min, numberArray[i]) > 0) {
-                min = numberArray[i];
-            }
-        }
-        return min;
-    }
-
-    /**
-     * 取最小值
-     *
      * @param numberArray 数字数组
      * @return 最小值
      */
@@ -8261,24 +8243,37 @@ public class ArrayKit {
     }
 
     /**
-     * 取最大值
+     * 取最小值
      *
      * @param <T>         元素类型
      * @param numberArray 数字数组
-     * @return 最大值
+     * @return 最小值
      */
-    public static <T extends Comparable<? super T>> T max(T[] numberArray) {
+    public static <T extends Comparable<? super T>> T min(final T[] numberArray) {
+        return min(numberArray, null);
+    }
+
+    /**
+     * 取最小值
+     *
+     * @param <T>         元素类型
+     * @param numberArray 数字数组
+     * @param comparator  比较器，null按照默认比较
+     * @return 最小值
+     */
+    public static <T extends Comparable<? super T>> T min(final T[] numberArray, final Comparator<T> comparator) {
         if (isEmpty(numberArray)) {
             throw new IllegalArgumentException("Number array must not empty !");
         }
-        T max = numberArray[0];
-        for (int i = 0; i < numberArray.length; i++) {
-            if (ObjectKit.compare(max, numberArray[i]) < 0) {
-                max = numberArray[i];
+        T min = numberArray[0];
+        for (final T t : numberArray) {
+            if (ObjectKit.compare(min, t, comparator) > 0) {
+                min = t;
             }
         }
-        return max;
+        return min;
     }
+
 
     /**
      * 取最大值
@@ -8418,10 +8413,21 @@ public class ArrayKit {
      *
      * @param <T>         元素类型
      * @param numberArray 数字数组
+     * @return 最大值
+     */
+    public static <T extends Comparable<? super T>> T max(final T[] numberArray) {
+        return max(numberArray, null);
+    }
+
+    /**
+     * 取最大值
+     *
+     * @param <T>         元素类型
+     * @param numberArray 数字数组
      * @param comparator  比较器，null表示默认比较器
      * @return 最大值
      */
-    public static <T extends Comparable<? super T>> T max(T[] numberArray, Comparator<T> comparator) {
+    public static <T extends Comparable<? super T>> T max(final T[] numberArray, final Comparator<T> comparator) {
         if (isEmpty(numberArray)) {
             throw new IllegalArgumentException("Number array must not empty !");
         }
@@ -8469,14 +8475,14 @@ public class ArrayKit {
      * @param filter 过滤器接口,用于定义过滤规则
      * @return 过滤后的数组
      */
-    public static <T> T[] filter(T[] array, Filter<T> filter) {
+    public static <T> T[] filter(T[] array, Predicate<T> filter) {
         if (null == filter) {
             return array;
         }
 
         final ArrayList<T> list = new ArrayList<>(array.length);
         for (T t : array) {
-            if (filter.accept(t)) {
+            if (filter.test(t)) {
                 list.add(t);
             }
         }
@@ -8820,7 +8826,7 @@ public class ArrayKit {
         }
 
         for (int i = 0; i < subArray.length; i++) {
-            if (false == ObjectKit.equal(array[i + firstIndex], subArray[i])) {
+            if (false == ObjectKit.equals(array[i + firstIndex], subArray[i])) {
                 return Normal.__1;
             }
         }
@@ -8847,7 +8853,7 @@ public class ArrayKit {
         }
 
         for (int i = 0; i < subArray.length; i++) {
-            if (false == ObjectKit.equal(array[i + firstIndex], subArray[i])) {
+            if (false == ObjectKit.equals(array[i + firstIndex], subArray[i])) {
                 return Normal.__1;
             }
         }

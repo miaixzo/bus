@@ -29,17 +29,14 @@ import org.aoju.bus.core.lang.Charset;
 
 /**
  * 编码对象转换器
- *
- * @author Kimi Liu
- * @since Java 17+
  */
-public class CharsetConverter extends AbstractConverter<java.nio.charset.Charset> {
+public class CharsetConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected java.nio.charset.Charset convertInternal(Object value) {
-        return Charset.charset(convertString(value));
+    protected java.nio.charset.Charset convertInternal(final Class<?> targetClass, final Object value) {
+        return Charset.charset(convertToString(value));
     }
 
 }

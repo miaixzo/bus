@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
+import org.aoju.bus.core.lang.mutable.MutableEntry;
 import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
@@ -62,13 +63,24 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
             if (null == sKey) {
                 return;
             }
-            final String sKeyStr = copyOptions.editFieldName(sKey.toString());
+
+            // 编辑键值对
+            final MutableEntry<String, Object> entry = copyOptions.editField(sKey.toString(), sValue);
+            if (null == entry) {
+                return;
+            }
+            sKey = entry.getKey();
             // 对key做转换，转换后为null的跳过
-            if (null == sKeyStr) {
+            if (null == sKey) {
+                return;
+            }
+            sValue = entry.getValue();
+            // 忽略空值
+            if (copyOptions.ignoreNullValue && sValue == null) {
                 return;
             }
 
-            final Object targetValue = target.get(sKeyStr);
+            final Object targetValue = target.get(sKey);
             // 非覆盖模式下，如果目标值存在，则跳过
             if (false == copyOptions.override && null != targetValue) {
                 return;
@@ -78,11 +90,10 @@ public class MapToMapCopier extends AbstractCopier<Map, Map> {
             final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
             if (null != typeArguments) {
                 sValue = this.copyOptions.convertField(typeArguments[1], sValue);
-                sValue = copyOptions.editFieldValue(sKeyStr, sValue);
             }
 
             // 目标赋值
-            target.put(sKeyStr, sValue);
+            target.put(sKey, sValue);
         });
         return this.target;
     }

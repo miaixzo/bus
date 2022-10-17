@@ -363,6 +363,15 @@ public class Fields {
     public static final FormatBuilder WITH_XXX_OFFSET_FORMAT = FormatBuilder.getInstance(WITH_XXX_OFFSET_PATTERN);
 
     /**
+     * UTC时间：yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+     */
+    public static final String MS_WITH_XXX_OFFSET_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    /**
+     * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+     */
+    public static final FormatBuilder MS_WITH_XXX_OFFSET_FORMAT = FormatBuilder.getInstance(MS_WITH_XXX_OFFSET_PATTERN);
+
+    /**
      * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ssZ
      */
     public final static FormatBuilder WITH_ZONE_OFFSET_FORMAT = FormatBuilder.getInstance(WITH_ZONE_OFFSET_PATTERN, TimeZone.getTimeZone("UTC"));

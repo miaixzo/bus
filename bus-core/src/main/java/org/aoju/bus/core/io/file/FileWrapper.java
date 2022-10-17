@@ -25,9 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.lang.function.XWrapper;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 
 /**
@@ -36,7 +38,7 @@ import java.nio.charset.Charset;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FileWrapper {
+public class FileWrapper implements XWrapper<File>, Serializable {
 
     /**
      * 默认编码：UTF-8
@@ -61,7 +63,8 @@ public class FileWrapper {
      *
      * @return 文件
      */
-    public File getFile() {
+    @Override
+    public File getRaw() {
         return file;
     }
 

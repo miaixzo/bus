@@ -44,10 +44,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -340,24 +342,16 @@ public class SolarisOSProcess extends AbstractOSProcess {
 
     @Override
     public List<OSThread> getThreadDetails() {
-        List<OSThread> threads = new ArrayList<>();
-
         // Get process files in proc
         File directory = new File(String.format("/proc/%d/lwp", getProcessID()));
         File[] numericFiles = directory.listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches());
         if (numericFiles == null) {
-            return threads;
+            return Collections.emptyList();
         }
 
-        // Iterate files
-        for (File lwpidFile : numericFiles) {
-            int lwpidNum = Builder.parseIntOrDefault(lwpidFile.getName(), 0);
-            OSThread thread = new SolarisOSThread(getProcessID(), lwpidNum);
-            if (thread.getState() != State.INVALID) {
-                threads.add(thread);
-            }
-        }
-        return threads;
+        return Arrays.stream(numericFiles).parallel().map(
+                        lwpidFile -> new SolarisOSThread(getProcessID(), Builder.parseIntOrDefault(lwpidFile.getName(), 0)))
+                .filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
 
     @Override

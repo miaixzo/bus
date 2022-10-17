@@ -25,44 +25,43 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
+import org.aoju.bus.core.exception.ConvertException;
+import org.aoju.bus.core.toolkit.ObjectKit;
+
+import java.lang.reflect.Type;
+
 /**
  * 转换器接口,实现类型转换
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Converter<T> {
+@FunctionalInterface
+public interface Converter {
 
     /**
      * 转换为指定类型
-     * 如果类型无法确定,将读取默认值的类型做为目标类型
+     * 如果类型无法确定，将读取默认值的类型做为目标类型
      *
-     * @param value        原始值
-     * @param defaultValue 默认值
+     * @param targetType 目标Type，非泛型类使用
+     * @param value      原始值
      * @return 转换后的值
-     * @throws IllegalArgumentException 无法确定目标类型,且默认值为{@code null},无法确定类型
+     * @throws ConvertException 转换无法正常完成或转换异常时抛出此异常
      */
-    T convert(Object value, T defaultValue) throws IllegalArgumentException;
+    Object convert(Type targetType, Object value) throws ConvertException;
 
     /**
      * 转换值为指定类型，可选是否不抛异常转换
      * 当转换失败时返回默认值
      *
+     * @param <T>          目标类型
+     * @param targetType   目标类型
      * @param value        值
      * @param defaultValue 默认值
-     * @param quietly      是否静默转换，true不抛异常
      * @return 转换后的值
-     * @see #convert(Object, Object)
      */
-    default T convert(Object value, T defaultValue, boolean quietly) {
-        try {
-            return convert(value, defaultValue);
-        } catch (Exception e) {
-            if (quietly) {
-                return defaultValue;
-            }
-            throw e;
-        }
+    default <T> T convert(final Type targetType, final Object value, final T defaultValue) {
+        return (T) ObjectKit.defaultIfNull(convert(targetType, value), defaultValue);
     }
 
 }

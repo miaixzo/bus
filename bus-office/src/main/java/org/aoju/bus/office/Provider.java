@@ -25,10 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.office;
 
-import org.aoju.bus.office.builtin.OptionalSource;
-import org.aoju.bus.office.magic.family.DocumentFormat;
-import org.aoju.bus.office.magic.family.FormatRegistry;
-
 import java.io.File;
 import java.io.InputStream;
 
@@ -47,7 +43,7 @@ public interface Provider {
      * @param source 转换输入作为一个文件.
      * @return 当前转换规范.
      */
-    OptionalSource convert(File source);
+    Object convert(File source);
 
     /**
      * 转换源流输入流.
@@ -55,7 +51,7 @@ public interface Provider {
      * @param source 转换输入作为输入流.
      * @return 当前转换规范.
      */
-    OptionalSource convert(InputStream source);
+    Object convert(InputStream source);
 
     /**
      * 转换源流输入流.
@@ -64,13 +60,6 @@ public interface Provider {
      * @param closeStream 是否在转换结束后关闭{@link InputStream}.
      * @return 当前转换规范.
      */
-    OptionalSource convert(InputStream source, boolean closeStream);
-
-    /**
-     * 获取转换器支持的所有{@link DocumentFormat}.
-     *
-     * @return 包含支持格式的{@link FormatRegistry}.
-     */
-    FormatRegistry getFormatRegistry();
+    Object convert(InputStream source, boolean closeStream);
 
 }

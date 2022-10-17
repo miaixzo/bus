@@ -27,10 +27,9 @@ package org.aoju.bus.office.builtin;
 
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.office.Context;
-import org.aoju.bus.office.metric.OfficeManager;
 
 /**
- * 表示由{@link OfficeManager}执行的任务.
+ * 表示由执行的任务
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +37,10 @@ import org.aoju.bus.office.metric.OfficeManager;
 public interface MadeInOffice {
 
     /**
-     * 在上下文中执行任务.
+     * 在上下文中执行任务
      *
-     * @param context office环境上下文.
-     * @throws InternalException 如果发生错误.
+     * @param context office环境上下文
+     * @throws InternalException 如果发生错误
      */
     void execute(Context context) throws InternalException;
 

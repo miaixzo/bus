@@ -31,16 +31,13 @@ import java.net.URL;
 
 /**
  * URL对象转换器
- *
- * @author Kimi Liu
- * @since Java 17+
  */
-public class URLConverter extends AbstractConverter<URL> {
+public class URLConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected URL convertInternal(Object value) {
+    protected URL convertInternal(final Class<?> targetClass, final Object value) {
         try {
             if (value instanceof File) {
                 return ((File) value).toURI().toURL();
@@ -49,8 +46,8 @@ public class URLConverter extends AbstractConverter<URL> {
             if (value instanceof URI) {
                 return ((URI) value).toURL();
             }
-            return new URL(convertString(value));
-        } catch (Exception e) {
+            return new URL(convertToString(value));
+        } catch (final Exception e) {
             // Ignore Exception
         }
         return null;

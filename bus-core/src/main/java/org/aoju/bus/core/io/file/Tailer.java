@@ -26,17 +26,17 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.function.XConsumer;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.Stack;
 import java.util.concurrent.*;
 
@@ -57,7 +57,7 @@ public class Tailer implements Serializable {
     /**
      * 行处理器
      */
-    private final LineHandler lineHandler;
+    private final XConsumer<String> lineHandler;
     /**
      * 初始读取的行数
      */
@@ -76,7 +76,7 @@ public class Tailer implements Serializable {
      * @param file        文件
      * @param lineHandler 行处理器
      */
-    public Tailer(File file, LineHandler lineHandler) {
+    public Tailer(final File file, final XConsumer<String> lineHandler) {
         this(file, lineHandler, 0);
     }
 
@@ -87,8 +87,8 @@ public class Tailer implements Serializable {
      * @param lineHandler  行处理器
      * @param initReadLine 启动时预读取的行数
      */
-    public Tailer(File file, LineHandler lineHandler, int initReadLine) {
-        this(file, Charset.UTF_8, lineHandler, initReadLine, Fields.Units.SECOND.getUnit());
+    public Tailer(final File file, final XConsumer<String> lineHandler, final int initReadLine) {
+        this(file, org.aoju.bus.core.lang.Charset.UTF_8, lineHandler, initReadLine, Fields.Units.SECOND.getUnit());
     }
 
     /**
@@ -98,7 +98,7 @@ public class Tailer implements Serializable {
      * @param charset     编码
      * @param lineHandler 行处理器
      */
-    public Tailer(File file, java.nio.charset.Charset charset, LineHandler lineHandler) {
+    public Tailer(final File file, final java.nio.charset.Charset charset, final XConsumer<String> lineHandler) {
         this(file, charset, lineHandler, 0, Fields.Units.SECOND.getUnit());
     }
 
@@ -111,7 +111,7 @@ public class Tailer implements Serializable {
      * @param initReadLine 启动时预读取的行数
      * @param period       检查间隔
      */
-    public Tailer(File file, java.nio.charset.Charset charset, LineHandler lineHandler, int initReadLine, long period) {
+    public Tailer(final File file, final Charset charset, final XConsumer<String> lineHandler, final int initReadLine, final long period) {
         checkFile(file);
         this.charset = charset;
         this.lineHandler = lineHandler;
@@ -122,11 +122,18 @@ public class Tailer implements Serializable {
     }
 
     /**
+     * 开始监听
+     */
+    public void start() {
+        start(false);
+    }
+
+    /**
      * 检查文件有效性
      *
      * @param file 文件
      */
-    private static void checkFile(File file) {
+    private static void checkFile(final File file) {
         if (false == file.exists()) {
             throw new InternalException("File [{}] not exist !", file.getAbsolutePath());
         }
@@ -136,10 +143,10 @@ public class Tailer implements Serializable {
     }
 
     /**
-     * 开始监听
+     * 结束，此方法需在异步模式或
      */
-    public void start() {
-        start(false);
+    public void stop() {
+        this.executorService.shutdown();
     }
 
     /**
@@ -147,7 +154,7 @@ public class Tailer implements Serializable {
      *
      * @param async 是否异步执行
      */
-    public void start(boolean async) {
+    public void start(final boolean async) {
         // 初始读取
         try {
             this.readTail();
@@ -172,13 +179,6 @@ public class Tailer implements Serializable {
     }
 
     /**
-     * 结束，此方法需在异步模式或
-     */
-    public void stop() {
-        this.executorService.shutdown();
-    }
-
-    /**
      * 预读取行
      *
      * @throws IOException IO异常
@@ -187,9 +187,9 @@ public class Tailer implements Serializable {
         final long len = this.randomAccessFile.length();
 
         if (initReadLine > 0) {
-            Stack<String> stack = new Stack<>();
+            final Stack<String> stack = new Stack<>();
 
-            long start = this.randomAccessFile.getFilePointer();
+            final long start = this.randomAccessFile.getFilePointer();
             long nextEnd = (len - 1) < 0 ? 0 : len - 1;
             this.randomAccessFile.seek(nextEnd);
             int c;
@@ -223,14 +223,14 @@ public class Tailer implements Serializable {
 
             // 输出缓存栈中的内容
             while (false == stack.isEmpty()) {
-                this.lineHandler.handle(stack.pop());
+                this.lineHandler.accept(stack.pop());
             }
         }
 
         // 将指针置于末尾
         try {
             this.randomAccessFile.seek(len);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
     }
@@ -238,9 +238,12 @@ public class Tailer implements Serializable {
     /**
      * 命令行打印的行处理器
      */
-    public static class ConsoleLineHandler implements LineHandler {
+    public static class ConsoleLineHandler implements XConsumer<String> {
+
+        private static final long serialVersionUID = 1L;
+
         @Override
-        public void handle(String line) {
+        public void accepting(final String line) {
             Console.log(line);
         }
     }

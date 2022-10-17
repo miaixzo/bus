@@ -27,6 +27,7 @@ package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -841,6 +842,31 @@ public class FileType {
             // Real Audio (ram)
             put("2E7261FD", "ram");
             put("52494646", "webp");
+
+            // 2-byte signatures
+            // https://github.com/sindresorhus/file-type/blob/main/core.js#L90
+            put("424D", "bmp"); // 位图(bmp)
+            put("0B77", "ac3");
+            put("7801", "dmg");
+            put("4D5A", "exe");
+            put("1FA0", "Z");
+            put("1F9D", "Z");
+
+            // 3-byte signatures
+            // https://github.com/sindresorhus/file-type/blob/main/core.js#L149
+            put("474946", "gif"); // GIF (gif)
+            put("FFd8FF", "jpg"); // JPEG (jpg)
+            put("4949BC", "jxr"); // jxr
+            put("1F8B08", "gz"); //  gzip
+            put("425A68", "bz2"); // bz2
+
+            // check string
+            put(HexKit.encodeHexString("MP+"), "mpc");
+            put(HexKit.encodeHexString("FLIF"), "flif");
+            put(HexKit.encodeHexString("8BPS"), "psd");// Photoshop (psd)
+            put(HexKit.encodeHexString("MPCK"), "mpc");
+            put(HexKit.encodeHexString("FORM"), "aif");// Musepack, SV8
+            put(HexKit.encodeHexString("icns"), "icns");
         }
     };
 

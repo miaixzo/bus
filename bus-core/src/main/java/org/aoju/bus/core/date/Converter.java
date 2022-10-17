@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.ZoneKit;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.temporal.TemporalAccessor;
@@ -534,6 +535,16 @@ public class Converter extends Formatter {
             return calendar;
         }
         return toCalendar(date.getTime());
+    }
+
+    /**
+     * 转换为Calendar对象
+     *
+     * @param calendar 日期对象
+     * @return Calendar对象
+     */
+    public static Calendar toCalendar(final XMLGregorianCalendar calendar) {
+        return calendar.toGregorianCalendar();
     }
 
     /**

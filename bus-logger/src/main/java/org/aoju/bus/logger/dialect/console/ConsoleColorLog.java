@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.logger.dialect.console;
 
-import org.aoju.bus.core.lang.ansi.AnsiColor;
+import org.aoju.bus.core.lang.ansi.Ansi4BitColor;
 import org.aoju.bus.core.lang.ansi.AnsiEncoder;
 import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.DateKit;
@@ -45,29 +45,29 @@ public class ConsoleColorLog extends ConsoleLog {
     /**
      * 控制台打印类名的颜色代码
      */
-    private static final AnsiColor COLOR_CLASSNAME = AnsiColor.CYAN;
+    private static final Ansi4BitColor COLOR_CLASSNAME = Ansi4BitColor.CYAN;
 
     /**
      * 控制台打印时间的颜色代码
      */
-    private static final AnsiColor COLOR_TIME = AnsiColor.WHITE;
+    private static final Ansi4BitColor COLOR_TIME = Ansi4BitColor.WHITE;
 
     /**
      * 控制台打印正常信息的颜色代码
      */
-    private static final AnsiColor COLOR_NONE = AnsiColor.DEFAULT;
+    private static final Ansi4BitColor COLOR_NONE = Ansi4BitColor.DEFAULT;
 
-    private static Function<Level, AnsiColor> colorFactory = (level -> {
+    private static Function<Level, Ansi4BitColor> colorFactory = (level -> {
         switch (level) {
             case DEBUG:
             case INFO:
-                return AnsiColor.GREEN;
+                return Ansi4BitColor.GREEN;
             case WARN:
-                return AnsiColor.YELLOW;
+                return Ansi4BitColor.YELLOW;
             case ERROR:
-                return AnsiColor.RED;
+                return Ansi4BitColor.RED;
             case TRACE:
-                return AnsiColor.MAGENTA;
+                return Ansi4BitColor.MAGENTA;
             default:
                 return COLOR_NONE;
         }
@@ -96,7 +96,7 @@ public class ConsoleColorLog extends ConsoleLog {
      *
      * @param colorFactory 颜色工厂函数
      */
-    public static void setColorFactory(Function<Level, AnsiColor> colorFactory) {
+    public static void setColorFactory(Function<Level, Ansi4BitColor> colorFactory) {
         ConsoleColorLog.colorFactory = colorFactory;
     }
 

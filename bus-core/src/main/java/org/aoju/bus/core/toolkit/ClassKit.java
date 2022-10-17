@@ -34,7 +34,6 @@ import org.aoju.bus.core.convert.BasicType;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.mutable.MutableObject;
@@ -56,6 +55,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -237,7 +237,7 @@ public class ClassKit {
      * @param filter 过滤器
      * @return 过滤后的方法列表
      */
-    public static List<Method> getPublicMethods(Class<?> clazz, Filter<Method> filter) {
+    public static List<Method> getPublicMethods(Class<?> clazz, Predicate<Method> filter) {
         if (null == clazz) {
             return null;
         }
@@ -247,7 +247,7 @@ public class ClassKit {
         if (null != filter) {
             methodList = new ArrayList<>();
             for (Method method : methods) {
-                if (filter.accept(method)) {
+                if (filter.test(method)) {
                     methodList.add(method);
                 }
             }
@@ -481,7 +481,7 @@ public class ClassKit {
             if (isStatic(method)) {
                 return ReflectKit.invoke(null, method, args);
             } else {
-                return ReflectKit.invoke(isSingleton ? Instances.singletion(clazz) : clazz.newInstance(), method, args);
+                return ReflectKit.invoke(isSingleton ? Instances.singletion(clazz) : clazz.getConstructor().newInstance(), method, args);
             }
         } catch (Exception e) {
             throw new InternalException(e);
@@ -1006,36 +1006,9 @@ public class ClassKit {
      * @return ClassPath
      */
     public static String getClassPath(boolean isEncoded) {
-        final URL classPathURL = getClassPathURL();
+        final URL classPathURL = FileKit.getUrl(Normal.EMPTY);
         String url = isEncoded ? classPathURL.getPath() : UriKit.getDecodedPath(classPathURL);
         return FileKit.normalize(url);
-    }
-
-    /**
-     * 获得ClassPath URL
-     *
-     * @return ClassPath URL
-     */
-    public static URL getClassPathURL() {
-        return getResourceURL(Normal.EMPTY);
-    }
-
-    /**
-     * 获得资源的URL
-     * 路径用/分隔,例如:
-     *
-     * <pre>
-     * config/a/db.config
-     * spring/xml/test.xml
-     * </pre>
-     *
-     * @param resource 资源(相对Classpath的路径)
-     * @return 资源URL
-     * @throws InternalException 异常
-     * @see FileKit#getResource(String)
-     */
-    public static URL getResourceURL(String resource) throws InternalException {
-        return FileKit.getResource(resource);
     }
 
     /**
@@ -1736,8 +1709,9 @@ public class ClassKit {
      */
     public static <T> T newInstance(final Class<T> clazz) {
         try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return clazz.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
@@ -3477,7 +3451,7 @@ public class ClassKit {
      * @return Manifest
      */
     public static Manifest getManifest(Class<?> cls) {
-        URL url = FileKit.getResource(null, cls);
+        URL url = FileKit.getUrl(null, cls);
         URLConnection connection;
         try {
             connection = url.openConnection();

@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.ClassKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ClassConverter extends AbstractConverter<Class<?>> {
+public class ClassConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
@@ -52,13 +52,13 @@ public class ClassConverter extends AbstractConverter<Class<?>> {
      *
      * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
      */
-    public ClassConverter(boolean isInitialized) {
+    public ClassConverter(final boolean isInitialized) {
         this.isInitialized = isInitialized;
     }
 
     @Override
-    protected Class<?> convertInternal(Object value) {
-        return ClassKit.loadClass(convertString(value), isInitialized);
+    protected Class<?> convertInternal(final Class<?> targetClass, final Object value) {
+        return ClassKit.loadClass(convertToString(value), isInitialized);
     }
 
 }

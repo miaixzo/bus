@@ -92,7 +92,7 @@ public class MetaScanner implements AnnotationScanner {
 		final List<Annotation> annotations = new ArrayList<>();
 		scan(
 				(index, annotation) -> annotations.add(annotation), annotatedEle,
-				annotation -> ObjectKit.notEqual(annotation, annotatedEle)
+                annotation -> ObjectKit.notEquals(annotation, annotatedEle)
 		);
 		return annotations;
 	}

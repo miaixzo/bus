@@ -26,7 +26,6 @@
 package org.aoju.bus.core.compress;
 
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -39,6 +38,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -164,9 +164,9 @@ public class ZipReader implements Closeable {
      * @return 解压的目录
      * @throws InternalException IO异常
      */
-    public File readTo(File outFile, Filter<ZipEntry> entryFilter) throws InternalException {
+    public File readTo(File outFile, Predicate<ZipEntry> entryFilter) throws InternalException {
         read((zipEntry) -> {
-            if (null == entryFilter || entryFilter.accept(zipEntry)) {
+            if (null == entryFilter || entryFilter.test(zipEntry)) {
                 String path = zipEntry.getName();
                 if (FileKit.isWindows()) {
                     path = StringKit.replace(path, "*", "_");

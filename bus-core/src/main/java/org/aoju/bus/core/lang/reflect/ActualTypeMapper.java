@@ -52,7 +52,7 @@ public class ActualTypeMapper {
      * @return 泛型对应关系Map
      */
     public static Map<Type, Type> get(Type type) {
-        return CACHE.computeIfAbsent(type, () -> createTypeMap(type));
+        return CACHE.computeIfAbsent(type, (key) -> createTypeMap(type));
     }
 
     /**

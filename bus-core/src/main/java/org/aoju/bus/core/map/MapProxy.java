@@ -26,7 +26,7 @@
 package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.getter.OptNullObject;
+import org.aoju.bus.core.getter.TypeGetter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.BooleanKit;
@@ -47,7 +47,7 @@ import java.util.Set;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, InvocationHandler, Serializable {
+public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, InvocationHandler, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -74,8 +74,7 @@ public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, Inv
     }
 
     public Object getObject(Object key, Object defaultValue) {
-        final Object value = map.get(key);
-        return null != value ? value : defaultValue;
+        return map.getOrDefault(key, defaultValue);
     }
 
     @Override

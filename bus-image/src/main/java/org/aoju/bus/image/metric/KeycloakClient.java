@@ -30,7 +30,6 @@ import org.aoju.bus.image.Device;
 /**
  * @author Kimi Liu
  * @since Java 17+
- * @since April 2019
  */
 public class KeycloakClient {
 

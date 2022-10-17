@@ -41,7 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
+public class MapWithLock<K, V> extends ObjectWithLock<Map<K, V>> {
 
     private static final long serialVersionUID = 1L;
 

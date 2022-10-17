@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
-import org.aoju.bus.core.lang.function.Func1;
+import org.aoju.bus.core.lang.function.XFunction;
 import org.aoju.bus.core.text.ASCIICache;
 import org.aoju.bus.core.text.NamingCase;
 import org.aoju.bus.core.text.TextFormatter;
@@ -261,7 +261,7 @@ public class CharsKit {
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
      */
-    public static boolean isBlankChar(char args) {
+    public static boolean isBlankChar(final char args) {
         return isBlankChar((int) args);
     }
 
@@ -274,12 +274,14 @@ public class CharsKit {
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
      */
-    public static boolean isBlankChar(int args) {
+    public static boolean isBlankChar(final int args) {
         return Character.isWhitespace(args)
                 || Character.isSpaceChar(args)
                 || args == '\ufeff'
                 || args == '\u202a'
-                || args == '\u0000';
+                || args == '\u0000'
+                || args == '\u3164'
+                || args == '\u2800';
     }
 
     /**
@@ -678,7 +680,7 @@ public class CharsKit {
      * @see #nullToEmpty(CharSequence)
      */
     public static String emptyIfNull(CharSequence text) {
-        return nullToEmpty(text);
+        return ObjectKit.defaultIfNull(text, Normal.EMPTY).toString();
     }
 
     /**
@@ -2811,7 +2813,7 @@ public class CharsKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, String regex, Func1<java.util.regex.Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, String regex, XFunction<java.util.regex.Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, regex, replaceFun);
     }
 
@@ -2822,15 +2824,15 @@ public class CharsKit {
      * @param text         字符串
      * @param startInclude 开始位置（包含）
      * @param endExclude   结束位置（不包含）
-     * @param replacedStr  被替换的字符串
+     * @param replacedChar 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, int startInclude, int endExclude, CharSequence replacedStr) {
+    public static String replace(CharSequence text, int startInclude, int endExclude, CharSequence replacedChar) {
         if (isEmpty(text)) {
             return toString(text);
         }
         final String originalStr = toString(text);
-        int[] strCodePoints = originalStr.codePoints().toArray();
+        final int[] strCodePoints = originalStr.codePoints().toArray();
         final int strLength = strCodePoints.length;
         if (startInclude > strLength) {
             return originalStr;
@@ -2843,13 +2845,14 @@ public class CharsKit {
             return originalStr;
         }
 
-        final StringBuilder stringBuilder = new StringBuilder();
+        // 新字符串长度 <= 旧长度 - (被替换区间codePoints数量) + 替换字符串长度
+        final StringBuilder stringBuilder = new StringBuilder(originalStr.length() - (endExclude - startInclude) + replacedChar.length());
         for (int i = 0; i < startInclude; i++) {
-            stringBuilder.append(new String(strCodePoints, i, 1));
+            stringBuilder.appendCodePoint(strCodePoints[i]);
         }
-        stringBuilder.append(replacedStr);
+        stringBuilder.append(replacedChar);
         for (int i = endExclude; i < strLength; i++) {
-            stringBuilder.append(new String(strCodePoints, i, 1));
+            stringBuilder.appendCodePoint(strCodePoints[i]);
         }
         return stringBuilder.toString();
     }
@@ -2868,7 +2871,7 @@ public class CharsKit {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的字符串
      */
-    public static String replace(CharSequence text, Pattern pattern, Func1<java.util.regex.Matcher, String> replaceFun) {
+    public static String replace(CharSequence text, Pattern pattern, XFunction<java.util.regex.Matcher, String> replaceFun) {
         return PatternKit.replaceAll(text, pattern, replaceFun);
     }
 
@@ -2885,8 +2888,8 @@ public class CharsKit {
         if (isEmpty(text)) {
             return toString(text);
         }
-        String original = toString(text);
-        int[] strCodePoints = original.codePoints().toArray();
+        final String original = toString(text);
+        final int[] strCodePoints = original.codePoints().toArray();
         final int strLength = strCodePoints.length;
         if (startInclude > strLength) {
             return original;
@@ -2895,16 +2898,16 @@ public class CharsKit {
             endExclude = strLength;
         }
         if (startInclude > endExclude) {
-            // 如果起始位置大于结束位置,不替换
+            // 如果起始位置大于结束位置，不替换
             return original;
         }
 
-        final StringBuilder stringBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder(original.length());
         for (int i = 0; i < strLength; i++) {
             if (i >= startInclude && i < endExclude) {
                 stringBuilder.append(replacedChar);
             } else {
-                stringBuilder.append(new String(strCodePoints, i, 1));
+                stringBuilder.appendCodePoint(strCodePoints[i]);
             }
         }
         return stringBuilder.toString();
@@ -4012,9 +4015,9 @@ public class CharsKit {
      * StringKit.appendIfMissing("abcMNO", "xyz", "mno") = "abcMNOxyz"
      * </pre>
      *
-     * @param text     字符串
-     * @param suffix   附加到字符串末尾的后缀
-     * @param args 有效终止符的附加后缀(可选)
+     * @param text   字符串
+     * @param suffix 附加到字符串末尾的后缀
+     * @param args   有效终止符的附加后缀(可选)
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串
      */
     public static String appendIfMissing(final String text,
@@ -4048,9 +4051,9 @@ public class CharsKit {
      * StringKit.appendIfMissingIgnoreCase("abcMNO", "xyz", "mno") = "abcMNO"
      * </pre>
      *
-     * @param text     字符串
-     * @param suffix   附加到字符串末尾的后缀
-     * @param args 有效终止符的附加后缀(可选)
+     * @param text   字符串
+     * @param suffix 附加到字符串末尾的后缀
+     * @param args   有效终止符的附加后缀(可选)
      * @return 如果添加了后缀，则为新字符串，否则为相同的字符串
      */
     public static String appendIfMissingIgnoreCase(final String text,
@@ -4110,9 +4113,9 @@ public class CharsKit {
      * StringKit.prependIfMissing("MNOabc", "xyz", "mno") = "xyzMNOabc"
      * </pre>
      *
-     * @param text     T字符串
-     * @param prefix   在字符串开始前的前缀
-     * @param args 有效的附加前缀(可选)
+     * @param text   T字符串
+     * @param prefix 在字符串开始前的前缀
+     * @param args   有效的附加前缀(可选)
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串
      */
     public static String prependIfMissing(final String text,
@@ -4146,9 +4149,9 @@ public class CharsKit {
      * StringKit.prependIfMissingIgnoreCase("MNOabc", "xyz", "mno") = "MNOabc"
      * </pre>
      *
-     * @param text     字符串
-     * @param prefix   在字符串开始前的前缀
-     * @param args 有效的附加前缀(可选)
+     * @param text   字符串
+     * @param prefix 在字符串开始前的前缀
+     * @param args   有效的附加前缀(可选)
      * @return 如果前缀是前缀，则为新字符串，否则为相同的字符串
      */
     public static String prependIfMissingIgnoreCase(final String text,
@@ -4243,8 +4246,8 @@ public class CharsKit {
      * StringKit.center("abc", 7, "")   = "  abc  "
      * </pre>
      *
-     * @param text   字符串
-     * @param size   指定长度
+     * @param text    字符串
+     * @param size    指定长度
      * @param padText 两边补充的字符串
      * @return 补充后的字符串
      */
@@ -4402,7 +4405,7 @@ public class CharsKit {
      * @param filter 过滤器
      * @return 过滤后的字符串
      */
-    public static String filter(CharSequence text, Filter<Character> filter) {
+    public static String filter(CharSequence text, Predicate<Character> filter) {
         if (null == text || null == filter) {
             return toString(text);
         }
@@ -4412,7 +4415,7 @@ public class CharsKit {
         char c;
         for (int i = 0; i < len; i++) {
             c = text.charAt(i);
-            if (filter.accept(c)) {
+            if (filter.test(c)) {
                 sb.append(c);
             }
         }

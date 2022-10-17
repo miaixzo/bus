@@ -26,12 +26,8 @@
 package org.aoju.bus.starter.office;
 
 import lombok.RequiredArgsConstructor;
-import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Provider;
 import org.aoju.bus.office.Registry;
-import org.aoju.bus.office.provider.LocalOfficeProvider;
-import org.aoju.bus.office.provider.OnlineOfficeProvider;
 import org.springframework.stereotype.Component;
 
 /**
@@ -48,18 +44,6 @@ public class OfficeProviderService {
                                  Provider onlineProvider) {
         Registry.getInstance().register(Registry.LOCAL, localProvider);
         Registry.getInstance().register(Registry.ONLINE, onlineProvider);
-    }
-
-    public Provider require(String type) {
-        if (Registry.getInstance().contains(type)) {
-            if (Registry.LOCAL.equals(type)) {
-                return (LocalOfficeProvider) Registry.getInstance().require(Registry.LOCAL);
-            }
-            if (Registry.ONLINE.equals(type)) {
-                return (OnlineOfficeProvider) Registry.getInstance().require(Registry.ONLINE);
-            }
-        }
-        throw new InternalException(Builder.FAILURE);
     }
 
 }

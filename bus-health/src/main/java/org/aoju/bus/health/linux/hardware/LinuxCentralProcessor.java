@@ -32,7 +32,7 @@ import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
@@ -169,8 +169,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     cpuVendor = splitLine[1];
                     break;
                 case "model name":
-                case "Processor": // for Orange Pi
-                    cpuName = splitLine[1];
+                case "Processor": // some ARM chips
+                    // May be a processor number. Check for a space.
+                    if (splitLine[1].indexOf(' ') > 0) {
+                        cpuName = splitLine[1];
+                    }
                     break;
                 case "flags":
                     flags = splitLine[1].toLowerCase().split(" ");
@@ -186,7 +189,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     break;
                 case "CPU variant":
                     if (!armStepping.toString().startsWith("r")) {
-                        armStepping.insert(0, "r" + splitLine[1]);
+                        // CPU variant format always starts with 0x
+                        int rev = Builder.parseLastInt(splitLine[1], 0);
+                        armStepping.insert(0, "r" + rev);
                     }
                     break;
                 case "CPU revision":
@@ -207,6 +212,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 default:
                     // Do nothing
             }
+        }
+        if (cpuName.isEmpty()) {
+            cpuName = Builder.getStringFromFile(ProcPath.MODEL);
         }
         if (cpuName.contains("Hz")) {
             // if Name contains CPU vendor frequency, ignore cpuinfo and use it
@@ -234,34 +242,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 cpuFreq);
     }
 
-    @Override
-    protected Pair<List<CentralProcessor.LogicalProcessor>, List<CentralProcessor.PhysicalProcessor>> initProcessorCounts() {
-        Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> topology = LinuxOperatingSystem.HAS_UDEV
-                ? readTopologyFromUdev()
-                : readTopologyFromSysfs();
-        List<LogicalProcessor> logProcs = topology.getLeft();
-        Map<Integer, Integer> coreEfficiencyMap = topology.getMiddle();
-        Map<Integer, String> modAliasMap = topology.getRight();
-        // Failsafe
-        if (logProcs.isEmpty()) {
-            logProcs.add(new LogicalProcessor(0, 0, 0));
-            coreEfficiencyMap.put(0, 0);
-        }
-        // Sort
-        logProcs.sort(Comparator.comparingInt(LogicalProcessor::getProcessorNumber));
-
-        List<PhysicalProcessor> physProcs = coreEfficiencyMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                .map(e -> {
-                    int pkgId = e.getKey() >> 16;
-                    int coreId = e.getKey() & 0xffff;
-                    return new PhysicalProcessor(pkgId, coreId, e.getValue(), modAliasMap.getOrDefault(e.getKey(), ""));
-                }).collect(Collectors.toList());
-
-        return Pair.of(logProcs, physProcs);
-    }
-
-    private static Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
+    private static Quartet<List<LogicalProcessor>, List<ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromUdev() {
         List<LogicalProcessor> logProcs = new ArrayList<>();
+        Set<ProcessorCache> caches = new HashSet<>();
         Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
         Map<Integer, String> modAliasMap = new HashMap<>();
         // Enumerate CPU topology from sysfs via udev
@@ -282,7 +265,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                             device.unref();
                         }
                     }
-                    logProcs.add(getLogicalProcessorFromSyspath(syspath, modAlias, coreEfficiencyMap, modAliasMap));
+                    logProcs.add(
+                            getLogicalProcessorFromSyspath(syspath, caches, modAlias, coreEfficiencyMap, modAliasMap));
                 }
             } finally {
                 enumerate.unref();
@@ -290,11 +274,12 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         } finally {
             udev.unref();
         }
-        return Triple.of(logProcs, coreEfficiencyMap, modAliasMap);
+        return new Quartet<>(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }
 
-    private Triple<List<LogicalProcessor>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromSysfs() {
+    private static Quartet<List<LogicalProcessor>, List<ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> readTopologyFromSysfs() {
         List<LogicalProcessor> logProcs = new ArrayList<>();
+        Set<ProcessorCache> caches = new HashSet<>();
         Map<Integer, Integer> coreEfficiencyMap = new HashMap<>();
         Map<Integer, String> modAliasMap = new HashMap<>();
         String cpuPath = "/sys/devices/system/cpu/";
@@ -305,18 +290,20 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     String syspath = cpu.toString(); // /sys/devices/system/cpu/cpuX
                     Map<String, String> uevent = Builder.getKeyValueMapFromFile(syspath + "/uevent", "=");
                     String modAlias = uevent.get("MODALIAS");
-                    logProcs.add(getLogicalProcessorFromSyspath(syspath, modAlias, coreEfficiencyMap, modAliasMap));
+                    // updates caches as a side-effect
+                    logProcs.add(
+                            getLogicalProcessorFromSyspath(syspath, caches, modAlias, coreEfficiencyMap, modAliasMap));
                 });
             }
         } catch (IOException e) {
             // No udev and no cpu info in sysfs? Bad.
             Logger.warn("Unable to find CPU information in sysfs at path {}", cpuPath);
         }
-        return Triple.of(logProcs, coreEfficiencyMap, modAliasMap);
+        return new Quartet<>(logProcs, orderedProcCaches(caches), coreEfficiencyMap, modAliasMap);
     }
 
-    private static LogicalProcessor getLogicalProcessorFromSyspath(String syspath, String modAlias,
-                                                                   Map<Integer, Integer> coreEfficiencyMap, Map<Integer, String> modAliasMap) {
+    private static LogicalProcessor getLogicalProcessorFromSyspath(String syspath, Set<ProcessorCache> caches,
+                                                                   String modAlias, Map<Integer, Integer> coreEfficiencyMap, Map<Integer, String> modAliasMap) {
         int processor = Builder.getFirstIntValue(syspath);
         int coreId = Builder.getIntFromFile(syspath + "/topology/core_id");
         int pkgId = Builder.getIntFromFile(syspath + "/topology/physical_package_id");
@@ -327,16 +314,65 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             modAliasMap.put(pkgCoreKey, modAlias);
         }
         int nodeId = 0;
-        String prefix = syspath + "/node";
+        final String nodePrefix = syspath + "/node";
         try (Stream<Path> path = Files.list(Paths.get(syspath))) {
-            Optional<Path> first = path.filter(p -> p.toString().startsWith(prefix)).findFirst();
+            Optional<Path> first = path.filter(p -> p.toString().startsWith(nodePrefix)).findFirst();
             if (first.isPresent()) {
                 nodeId = Builder.getFirstIntValue(first.get().getFileName().toString());
             }
         } catch (IOException e) {
             // ignore
         }
+        final String cachePath = syspath + "/cache";
+        final String indexPrefix = cachePath + "/index";
+        try (Stream<Path> path = Files.list(Paths.get(cachePath))) {
+            path.filter(p -> p.toString().startsWith(indexPrefix)).forEach(c -> {
+                int level = Builder.getIntFromFile(c + "/level"); // 1
+                ProcessorCache.Type type = parseCacheType(Builder.getStringFromFile(c + "/type")); // Data
+                int associativity = Builder.getIntFromFile(c + "/ways_of_associativity"); // 8
+                int lineSize = Builder.getIntFromFile(c + "/coherency_line_size"); // 64
+                long size = Builder.parseDecimalMemorySizeToBinary(Builder.getStringFromFile(c + "/size")); // 32K
+                caches.add(new ProcessorCache(level, associativity, lineSize, size, type));
+            });
+        } catch (IOException e) {
+            // ignore
+        }
         return new LogicalProcessor(processor, coreId, pkgId, nodeId);
+    }
+
+    private static ProcessorCache.Type parseCacheType(String type) {
+        try {
+            return ProcessorCache.Type.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ProcessorCache.Type.UNIFIED;
+        }
+    }
+
+    @Override
+    protected Triple<List<LogicalProcessor>, List<PhysicalProcessor>, List<ProcessorCache>> initProcessorCounts() {
+        Quartet<List<LogicalProcessor>, List<ProcessorCache>, Map<Integer, Integer>, Map<Integer, String>> topology = LinuxOperatingSystem.HAS_UDEV
+                ? readTopologyFromUdev()
+                : readTopologyFromSysfs();
+        List<LogicalProcessor> logProcs = topology.getA();
+        List<ProcessorCache> caches = topology.getB();
+        Map<Integer, Integer> coreEfficiencyMap = topology.getC();
+        Map<Integer, String> modAliasMap = topology.getD();
+        // Failsafe
+        if (logProcs.isEmpty()) {
+            logProcs.add(new LogicalProcessor(0, 0, 0));
+            coreEfficiencyMap.put(0, 0);
+        }
+        // Sort
+        logProcs.sort(Comparator.comparingInt(LogicalProcessor::getProcessorNumber));
+
+        List<PhysicalProcessor> physProcs = coreEfficiencyMap.entrySet().stream().sorted(Map.Entry.comparingByKey())
+                .map(e -> {
+                    int pkgId = e.getKey() >> 16;
+                    int coreId = e.getKey() & 0xffff;
+                    return new PhysicalProcessor(pkgId, coreId, e.getValue(), modAliasMap.getOrDefault(e.getKey(), ""));
+                }).collect(Collectors.toList());
+
+        return Triple.of(logProcs, physProcs, caches);
     }
 
     @Override

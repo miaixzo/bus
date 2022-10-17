@@ -39,6 +39,7 @@ import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -59,27 +60,17 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     private static final long BOOTTIME = querySystemBootTime();
 
     private static List<OSProcess> getProcessListFromPS(int pid) {
-        List<OSProcess> procs = new ArrayList<>();
         String psCommand = "ps -awwxo " + PS_COMMAND_ARGS;
         if (pid >= 0) {
             psCommand += " -p " + pid;
         }
-        List<String> procList = Executor.runNative(psCommand);
-        if (procList.isEmpty() || procList.size() < 2) {
-            return procs;
-        }
-        // remove header row
-        procList.remove(0);
-        // Fill list
-        for (String proc : procList) {
-            Map<PsKeywords, String> psMap = Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ');
-            // Check if last (thus all) value populated
-            if (psMap.containsKey(PsKeywords.ARGS)) {
-                procs.add(new FreeBsdOSProcess(
-                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap));
-            }
-        }
-        return procs;
+
+        Predicate<Map<PsKeywords, String>> hasKeywordArgs = psMap -> psMap.containsKey(PsKeywords.ARGS);
+        return Executor.runNative(psCommand).stream().skip(1).parallel()
+                .map(proc -> Builder.stringToEnumMap(PsKeywords.class, proc.trim(), ' ')).filter(hasKeywordArgs)
+                .map(psMap -> new FreeBsdOSProcess(
+                        pid < 0 ? Builder.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap))
+                .filter(OperatingSystem.ProcessFiltering.VALID_PROCESS).collect(Collectors.toList());
     }
 
     private static long querySystemBootTime() {

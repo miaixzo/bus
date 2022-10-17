@@ -35,12 +35,12 @@ import java.net.URL;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class URIConverter extends AbstractConverter<URI> {
+public class URIConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected URI convertInternal(Object value) {
+    protected URI convertInternal(final Class<?> targetClass, final Object value) {
         try {
             if (value instanceof File) {
                 return ((File) value).toURI();
@@ -49,9 +49,9 @@ public class URIConverter extends AbstractConverter<URI> {
             if (value instanceof URL) {
                 return ((URL) value).toURI();
             }
-            return new URI(convertString(value));
-        } catch (Exception e) {
-            // ignore
+            return new URI(convertToString(value));
+        } catch (final Exception e) {
+            // Ignore Exception
         }
         return null;
     }

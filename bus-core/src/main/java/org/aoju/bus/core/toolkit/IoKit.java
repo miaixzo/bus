@@ -29,7 +29,6 @@ import org.aoju.bus.core.collection.LineIterator;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.io.LifeCycle;
-import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.Progress;
 import org.aoju.bus.core.io.Segment;
 import org.aoju.bus.core.io.buffer.Buffer;
@@ -51,6 +50,7 @@ import org.aoju.bus.core.io.timout.Timeout;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.function.XConsumer;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -835,7 +835,7 @@ public class IoKit {
      * @throws InternalException 异常
      */
     public static <T extends Collection<String>> T readLines(Reader reader, T collection) throws InternalException {
-        readLines(reader, (LineHandler) line -> collection.add(line));
+        readLines(reader, (XConsumer<String>) collection::add);
         return collection;
     }
 
@@ -843,10 +843,10 @@ public class IoKit {
      * 按行读取UTF-8编码数据,针对每行的数据做处理
      *
      * @param in          {@link InputStream}
-     * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
+     * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
      * @throws InternalException 异常
      */
-    public static void readUtf8Lines(InputStream in, LineHandler lineHandler) throws InternalException {
+    public static void readUtf8Lines(InputStream in, XConsumer<String> lineHandler) throws InternalException {
         readLines(in, Charset.UTF_8, lineHandler);
     }
 
@@ -855,10 +855,10 @@ public class IoKit {
      *
      * @param in          {@link InputStream}
      * @param charset     {@link java.nio.charset.Charset}编码
-     * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
+     * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
      * @throws InternalException 异常
      */
-    public static void readLines(InputStream in, java.nio.charset.Charset charset, LineHandler lineHandler) throws InternalException {
+    public static void readLines(InputStream in, java.nio.charset.Charset charset, XConsumer<String> lineHandler) throws InternalException {
         readLines(getReader(in, charset), lineHandler);
     }
 
@@ -867,15 +867,15 @@ public class IoKit {
      * {@link Reader}自带编码定义,因此读取数据的编码跟随其编码
      *
      * @param reader      {@link Reader}
-     * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
+     * @param lineHandler 行处理接口,实现accept方法用于编辑一行的数据后入到指定地方
      * @throws InternalException 异常
      */
-    public static void readLines(Reader reader, LineHandler lineHandler) throws InternalException {
+    public static void readLines(Reader reader, XConsumer<String> lineHandler) throws InternalException {
         Assert.notNull(reader);
         Assert.notNull(lineHandler);
 
         for (String line : new LineIterator(reader)) {
-            lineHandler.handle(line);
+            lineHandler.accept(line);
         }
     }
 

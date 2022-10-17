@@ -144,7 +144,7 @@ public class ThreadKit {
         }
 
         // 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)
-        int poolSize = (int) (Runtime.getRuntime().availableProcessors() / (1 - blockingCoefficient));
+        int poolSize = (int) (RuntimeKit.getProcessorCount() / (1 - blockingCoefficient));
         return ExecutorBuilder.create().setCorePoolSize(poolSize).setMaxPoolSize(poolSize).setKeepAliveTime(0L).build();
     }
 

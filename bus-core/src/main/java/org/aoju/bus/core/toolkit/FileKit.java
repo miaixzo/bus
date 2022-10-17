@@ -36,8 +36,10 @@ import org.aoju.bus.core.io.file.visitor.MoveVisitor;
 import org.aoju.bus.core.io.resource.ClassPathResource;
 import org.aoju.bus.core.io.resource.FileResource;
 import org.aoju.bus.core.io.resource.Resource;
+import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.stream.BOMInputStream;
 import org.aoju.bus.core.lang.*;
+import org.aoju.bus.core.lang.function.XConsumer;
 
 import java.io.*;
 import java.lang.System;
@@ -49,6 +51,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -65,7 +68,11 @@ public class FileKit {
     /**
      * Windows下文件名中的无效字符
      */
-    private static final Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|]");
+    private static final Pattern FILE_NAME_INVALID_PATTERN_WIN = Pattern.compile("[\\\\/:*?\"<>|\r\n]");
+    /**
+     * 特殊后缀
+     */
+    private static final CharSequence[] SPECIAL_SUFFIX = {"tar.bz2", "tar.Z", "tar.gz", "tar.xz"};
 
     /**
      * 是否为Windows环境
@@ -1300,7 +1307,7 @@ public class FileKit {
             }
         }
 
-        final URL url = getResource(normalPath, baseClass);
+        final URL url = getUrl(normalPath, baseClass);
         if (null != url) {
             return FileKit.normalize(UriKit.getDecodedPath(url));
         }
@@ -2072,13 +2079,13 @@ public class FileKit {
         if (null == fileName) {
             return null;
         }
-        int index = fileName.lastIndexOf(Symbol.DOT);
+        final int index = fileName.lastIndexOf(Symbol.DOT);
         if (index == Normal.__1) {
             return Normal.EMPTY;
         } else {
-            int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
-            String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
-            if (StringKit.containsAny(substr, new String[]{"tar.bz2", "tar.Z", "tar.gz", "tar.xz"})) {
+            final int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
+            final String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
+            if (StringKit.containsAny(substr, SPECIAL_SUFFIX)) {
                 return substr;
             }
             String ext = fileName.substring(index + 1);
@@ -2114,8 +2121,12 @@ public class FileKit {
         if (0 == len) {
             return fileName;
         }
-        if (CharsKit.isFileSeparator(fileName.charAt(len - 1))) {
-            len--;
+
+        // 多级扩展名的主文件名
+        for (final CharSequence specialSuffix : SPECIAL_SUFFIX) {
+            if (StringKit.endWith(fileName, "." + specialSuffix)) {
+                return StringKit.subPre(fileName, len - specialSuffix.length() - 1);
+            }
         }
 
         int begin = 0;
@@ -2700,7 +2711,7 @@ public class FileKit {
      * @param lineHandler {@link LineHandler}行处理器
      * @throws InternalException 异常
      */
-    public static void readLines(File file, LineHandler lineHandler) throws InternalException {
+    public static void readLines(File file, XConsumer<String> lineHandler) throws InternalException {
         readLines(file, Charset.UTF_8, lineHandler);
     }
 
@@ -2712,7 +2723,7 @@ public class FileKit {
      * @param lineHandler {@link LineHandler}行处理器
      * @throws InternalException 异常
      */
-    public static void readLines(File file, java.nio.charset.Charset charset, LineHandler lineHandler) throws InternalException {
+    public static void readLines(File file, java.nio.charset.Charset charset, XConsumer<String> lineHandler) throws InternalException {
         FileReader.create(file, charset).readLines(lineHandler);
     }
 
@@ -2724,11 +2735,11 @@ public class FileKit {
      * @param lineHandler {@link LineHandler}行处理器
      * @throws InternalException 异常
      */
-    public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, LineHandler lineHandler) {
+    public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, XConsumer<String> lineHandler) {
         String line;
         try {
             while (null != (line = file.readLine())) {
-                lineHandler.handle(Charset.convert(line, Charset.ISO_8859_1, charset));
+                lineHandler.accept(Charset.convert(line, Charset.ISO_8859_1, charset));
             }
         } catch (IOException e) {
             throw new InternalException(e);
@@ -2742,10 +2753,10 @@ public class FileKit {
      * @param charset     编码
      * @param lineHandler {@link LineHandler}行处理器
      */
-    public static void readLine(RandomAccessFile file, java.nio.charset.Charset charset, LineHandler lineHandler) {
+    public static void readLine(RandomAccessFile file, java.nio.charset.Charset charset, XConsumer<String> lineHandler) {
         final String line = readLine(file, charset);
         if (null != line) {
-            lineHandler.handle(line);
+            lineHandler.accept(line);
         }
     }
 
@@ -2951,7 +2962,7 @@ public class FileKit {
      * @return 打印对象
      * @throws InternalException 异常
      */
-    public static PrintWriter getPrintWriter(File file, String charset, boolean isAppend) throws InternalException {
+    public static PrintWriter getPrintWriter(final File file, final String charset, final boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(file, charset, isAppend));
     }
 
@@ -2964,7 +2975,7 @@ public class FileKit {
      * @return 打印对象
      * @throws InternalException 异常
      */
-    public static PrintWriter getPrintWriter(File file, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
+    public static PrintWriter getPrintWriter(final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(file, charset, isAppend));
     }
 
@@ -2991,7 +3002,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File writeString(String content, String path) throws InternalException {
+    public static File writeString(final String content, final String path) throws InternalException {
         return writeString(content, path, Charset.UTF_8);
     }
 
@@ -3003,7 +3014,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File writeString(String content, File file) throws InternalException {
+    public static File writeString(final String content, final File file) throws InternalException {
         return writeString(content, file, Charset.UTF_8);
     }
 
@@ -3016,7 +3027,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File writeString(String content, String path, String charset) throws InternalException {
+    public static File writeString(final String content, final String path, final String charset) throws InternalException {
         return writeString(content, touch(path), charset);
     }
 
@@ -3029,7 +3040,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File writeString(String content, String path, java.nio.charset.Charset charset) throws InternalException {
+    public static File writeString(final String content, final String path, final java.nio.charset.Charset charset) throws InternalException {
         return writeString(content, touch(path), charset);
     }
 
@@ -3042,7 +3053,7 @@ public class FileKit {
      * @return 被写入的文件
      * @throws InternalException 异常
      */
-    public static File writeString(String content, File file, String charset) throws InternalException {
+    public static File writeString(final String content, final File file, final String charset) throws InternalException {
         return FileWriter.create(file, Charset.charset(charset)).write(content);
     }
 
@@ -3055,7 +3066,7 @@ public class FileKit {
      * @return 被写入的文件
      * @throws InternalException 异常
      */
-    public static File writeString(String content, File file, java.nio.charset.Charset charset) throws InternalException {
+    public static File writeString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
         return FileWriter.create(file, charset).write(content);
     }
 
@@ -3067,7 +3078,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File appendString(String content, String path) throws InternalException {
+    public static File appendString(final String content, final String path) throws InternalException {
         return appendString(content, path, Charset.UTF_8);
     }
 
@@ -3080,7 +3091,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File appendString(String content, String path, String charset) throws InternalException {
+    public static File appendString(final String content, final String path, final String charset) throws InternalException {
         return appendString(content, touch(path), charset);
     }
 
@@ -3093,7 +3104,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File appendString(String content, String path, java.nio.charset.Charset charset) throws InternalException {
+    public static File appendString(final String content, final String path, final java.nio.charset.Charset charset) throws InternalException {
         return appendString(content, touch(path), charset);
     }
 
@@ -3105,7 +3116,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File appendString(String content, File file) throws InternalException {
+    public static File appendString(final String content, final File file) throws InternalException {
         return appendString(content, file, Charset.UTF_8);
     }
 
@@ -3118,7 +3129,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File appendString(String content, File file, String charset) throws InternalException {
+    public static File appendString(final String content, final File file, final String charset) throws InternalException {
         return FileWriter.create(file, Charset.charset(charset)).append(content);
     }
 
@@ -3131,7 +3142,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InternalException 异常
      */
-    public static File appendString(String content, File file, java.nio.charset.Charset charset) throws InternalException {
+    public static File appendString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
         return FileWriter.create(file, charset).append(content);
     }
 
@@ -3144,7 +3155,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final String path) throws InternalException {
         return writeLines(list, path, Charset.UTF_8);
     }
 
@@ -3157,7 +3168,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final File file) throws InternalException {
         return writeLines(list, file, Charset.UTF_8);
     }
 
@@ -3171,7 +3182,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, String charset) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final String path, final String charset) throws InternalException {
         return writeLines(list, path, charset, false);
     }
 
@@ -3185,7 +3196,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final String path, final java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, path, charset, false);
     }
 
@@ -3199,7 +3210,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, String charset) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, File file, final String charset) throws InternalException {
         return writeLines(list, file, charset, false);
     }
 
@@ -3213,7 +3224,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, File file, final java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, file, charset, false);
     }
 
@@ -3226,7 +3237,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, File file) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final File file) throws InternalException {
         return appendLines(list, file, Charset.UTF_8);
     }
 
@@ -3239,7 +3250,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, String path) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final String path) throws InternalException {
         return appendLines(list, path, Charset.UTF_8);
     }
 
@@ -3253,7 +3264,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, String path, String charset) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final String path, final String charset) throws InternalException {
         return writeLines(list, path, charset, true);
     }
 
@@ -3272,7 +3283,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, File file, String charset) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final File file, final String charset) throws InternalException {
         return writeLines(list, file, charset, true);
     }
 
@@ -3286,7 +3297,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, String path, java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final String path, final java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, path, charset, true);
     }
 
@@ -3300,7 +3311,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File appendLines(Collection<T> list, File file, java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, file, charset, true);
     }
 
@@ -3315,7 +3326,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, String charset, boolean isAppend) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final String path, final String charset, final boolean isAppend) throws InternalException {
         return writeLines(list, file(path), charset, isAppend);
     }
 
@@ -3330,7 +3341,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, String path, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final String path, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
         return writeLines(list, file(path), charset, isAppend);
     }
 
@@ -3345,7 +3356,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, String charset, boolean isAppend) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final File file, final String charset, final boolean isAppend) throws InternalException {
         return FileWriter.create(file, Charset.charset(charset)).writeLines(list, isAppend);
     }
 
@@ -3360,7 +3371,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static <T> File writeLines(Collection<T> list, File file, java.nio.charset.Charset charset, boolean isAppend) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
         return FileWriter.create(file, charset).writeLines(list, isAppend);
     }
 
@@ -3374,7 +3385,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static File writeMap(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws InternalException {
+    public static File writeMap(final Map<?, ?> map, final File file, final String kvSeparator, final boolean isAppend) throws InternalException {
         return FileWriter.create(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 
@@ -3389,7 +3400,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static File writeMap(Map<?, ?> map, File file, java.nio.charset.Charset charset, String kvSeparator, boolean isAppend) throws InternalException {
+    public static File writeMap(final Map<?, ?> map, final File file, final java.nio.charset.Charset charset, final String kvSeparator, final boolean isAppend) throws InternalException {
         return FileWriter.create(file, charset).writeMap(map, kvSeparator, isAppend);
     }
 
@@ -3401,7 +3412,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static File writeBytes(byte[] data, String path) throws InternalException {
+    public static File writeBytes(final byte[] data, final String path) throws InternalException {
         return writeBytes(data, touch(path));
     }
 
@@ -3413,7 +3424,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static File writeBytes(byte[] data, File dest) throws InternalException {
+    public static File writeBytes(final byte[] data, final File dest) throws InternalException {
         return writeBytes(data, dest, 0, data.length, false);
     }
 
@@ -3428,7 +3439,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static File writeBytes(byte[] data, File dest, int off, int len, boolean isAppend) throws InternalException {
+    public static File writeBytes(final byte[] data, final File dest, final int off, final int len, final boolean isAppend) throws InternalException {
         return FileWriter.create(dest).write(data, off, len, isAppend);
     }
 
@@ -3440,7 +3451,7 @@ public class FileKit {
      * @return dest
      * @throws InternalException 异常
      */
-    public static File writeFromStream(InputStream in, File dest) throws InternalException {
+    public static File writeFromStream(final InputStream in, final File dest) throws InternalException {
         return writeFromStream(in, dest, true);
     }
 
@@ -3453,7 +3464,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static File writeFromStream(InputStream in, File dest, boolean isCloseIn) throws InternalException {
+    public static File writeFromStream(final InputStream in, final File dest, final boolean isCloseIn) throws InternalException {
         return FileWriter.create(dest).writeFromStream(in, isCloseIn);
     }
 
@@ -3465,7 +3476,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InternalException 异常
      */
-    public static File writeFromStream(InputStream in, String path) throws InternalException {
+    public static File writeFromStream(final InputStream in, final String path) throws InternalException {
         return writeFromStream(in, touch(path));
     }
 
@@ -3477,7 +3488,7 @@ public class FileKit {
      * @return 写出的流byte数
      * @throws InternalException 异常
      */
-    public static long writeToStream(File file, OutputStream out) throws InternalException {
+    public static long writeToStream(final File file, final OutputStream out) throws InternalException {
         return FileReader.create(file).writeToStream(out);
     }
 
@@ -3489,7 +3500,7 @@ public class FileKit {
      * @return 写出的流byte数
      * @throws InternalException 异常
      */
-    public static long writeToStream(String path, OutputStream out) throws InternalException {
+    public static long writeToStream(final String path, final OutputStream out) throws InternalException {
         return writeToStream(touch(path), out);
     }
 
@@ -3499,7 +3510,7 @@ public class FileKit {
      * @param file 文件
      * @return 大小
      */
-    public static String readableFileSize(File file) {
+    public static String readableFileSize(final File file) {
         return readableFileSize(file.length());
     }
 
@@ -3510,7 +3521,7 @@ public class FileKit {
      * @param size Long类型大小
      * @return 大小
      */
-    public static String readableFileSize(long size) {
+    public static String readableFileSize(final long size) {
         if (size <= 0) {
             return Symbol.ZERO;
         }
@@ -3528,7 +3539,7 @@ public class FileKit {
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
      */
-    public static File convertCharset(File file, java.nio.charset.Charset srcCharset, java.nio.charset.Charset destCharset) {
+    public static File convertCharset(final File file, final java.nio.charset.Charset srcCharset, final java.nio.charset.Charset destCharset) {
         return Charset.convert(file, srcCharset, destCharset);
     }
 
@@ -3541,7 +3552,7 @@ public class FileKit {
      * @param lineSeparator 换行符枚举
      * @return 被修改的文件
      */
-    public static File convertLineSeparator(File file, java.nio.charset.Charset charset, LineSeparator lineSeparator) {
+    public static File convertLineSeparator(final File file, final java.nio.charset.Charset charset, final LineSeparator lineSeparator) {
         final List<String> lines = readLines(file, charset);
         return FileWriter.create(file, charset).writeLines(lines, lineSeparator, false);
     }
@@ -3552,7 +3563,7 @@ public class FileKit {
      * @param fileName 文件名(必须不包括路径,否则路径符将被替换)
      * @return 清理后的文件名
      */
-    public static String cleanInvalid(String fileName) {
+    public static String cleanInvalid(final String fileName) {
         return StringKit.isBlank(fileName) ? fileName : PatternKit.delAll(FILE_NAME_INVALID_PATTERN_WIN, fileName);
     }
 
@@ -3562,7 +3573,7 @@ public class FileKit {
      * @param fileName 文件名(必须不包括路径,否则路径符将被替换)
      * @return 是否包含非法字符
      */
-    public static boolean containsInvalid(String fileName) {
+    public static boolean containsInvalid(final String fileName) {
         return !StringKit.isBlank(fileName) && PatternKit.contains(FILE_NAME_INVALID_PATTERN_WIN, fileName);
     }
 
@@ -3573,7 +3584,7 @@ public class FileKit {
      * @return CRC32值
      * @throws InternalException 异常
      */
-    public static long checksumCRC32(File file) throws InternalException {
+    public static long checksumCRC32(final File file) throws InternalException {
         return checksum(file, new CRC32()).getValue();
     }
 
@@ -3585,7 +3596,7 @@ public class FileKit {
      * @return Checksum
      * @throws InternalException 异常
      */
-    public static Checksum checksum(File file, Checksum checksum) throws InternalException {
+    public static Checksum checksum(final File file, final Checksum checksum) throws InternalException {
         Assert.notNull(file, "File is null !");
         if (file.isDirectory()) {
             throw new IllegalArgumentException("Checksums can't be computed on directories");
@@ -3625,7 +3636,7 @@ public class FileKit {
      * @param level    层级
      * @return 路径File, 如果不存在返回null
      */
-    public static String getParent(String filePath, int level) {
+    public static String getParent(final String filePath, final int level) {
         final File parent = getParent(file(filePath), level);
         try {
             return null == parent ? null : parent.getCanonicalPath();
@@ -3648,7 +3659,7 @@ public class FileKit {
      * @param level 层级
      * @return 路径File, 如果不存在返回null
      */
-    public static File getParent(File file, int level) {
+    public static File getParent(final File file, final int level) {
         if (level < 1 || null == file) {
             return file;
         }
@@ -3675,7 +3686,7 @@ public class FileKit {
      * @return 子文件或目录
      * @throws IllegalArgumentException 检查创建的子文件不在父目录中抛出此异常
      */
-    public static File checkSlip(File parentFile, File file) throws IllegalArgumentException {
+    public static File checkSlip(final File parentFile, final File file) throws IllegalArgumentException {
         if (null != parentFile && null != file) {
             String parentCanonicalPath;
             String canonicalPath;
@@ -3700,7 +3711,7 @@ public class FileKit {
      * @param path 文件路径或文件名
      * @return the string {@link MediaType}
      */
-    public static String getMediaType(String path) {
+    public static String getMediaType(final String path) {
         String contentType = URLConnection.getFileNameMap().getContentTypeFor(path);
         if (null == contentType) {
             // 补充一些常用的mimeType
@@ -3712,6 +3723,8 @@ public class FileKit {
                 contentType = "application/x-rar-compressed";
             } else if (StringKit.endWithIgnoreCase(path, ".7z")) {
                 contentType = "application/x-7z-compressed";
+            } else if (StringKit.endWithIgnoreCase(path, ".wgt")) {
+                contentType = "application/widget";
             }
         }
 
@@ -3867,7 +3880,7 @@ public class FileKit {
      * @param file    文件
      * @param handler 行处理器
      */
-    public static void tail(File file, LineHandler handler) {
+    public static void tail(final File file, final XConsumer<String> handler) {
         tail(file, Charset.UTF_8, handler);
     }
 
@@ -3879,7 +3892,7 @@ public class FileKit {
      * @param charset 编码
      * @param handler 行处理器
      */
-    public static void tail(File file, java.nio.charset.Charset charset, LineHandler handler) {
+    public static void tail(final File file, final java.nio.charset.Charset charset, final XConsumer<String> handler) {
         new Tailer(file, charset, handler).start();
     }
 
@@ -3890,7 +3903,7 @@ public class FileKit {
      * @param file    文件
      * @param charset 编码
      */
-    public static void tail(File file, java.nio.charset.Charset charset) {
+    public static void tail(final File file, final java.nio.charset.Charset charset) {
         tail(file, charset, new Tailer.ConsoleLineHandler());
     }
 
@@ -3927,7 +3940,7 @@ public class FileKit {
      * @return 资源内容
      */
     public static String readers(String resource) {
-        return getResourceObject(resource).readString(Charset.UTF_8);
+        return getResource(resource).readString(Charset.UTF_8);
     }
 
     /**
@@ -3979,24 +3992,36 @@ public class FileKit {
     }
 
     /**
-     * 获得资源的URL
-     * 路径用/分隔,例如:
+     * 获得资源的URL<br>
+     * 路径用/分隔，例如:
      *
      * <pre>
      * config/a/db.config
      * spring/xml/test.xml
      * </pre>
      *
-     * @param resource 资源(相对Classpath的路径)
+     * @param resource 资源（相对Classpath的路径）
      * @return 资源URL
      */
-    public static URL getResource(String resource) {
-        return getResource(resource, null);
+    public static URL getUrl(final String resource) {
+        return getUrl(resource, null);
     }
 
     /**
-     * 获取指定路径下的资源列表
-     * 路径格式必须为目录格式,用/分隔,例如:
+     * 获得资源相对路径对应的URL
+     *
+     * @param resource  资源相对路径，{@code null}和""都表示classpath根路径
+     * @param baseClass 基准Class，获得的相对路径相对于此Class所在路径，如果为{@code null}则相对ClassPath
+     * @return {@link URL}
+     */
+    public static URL getUrl(String resource, final Class<?> baseClass) {
+        resource = StringKit.emptyIfNull(resource);
+        return (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
+    }
+
+    /**
+     * 获取指定路径下的资源列表<br>
+     * 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
      * config/a
@@ -4006,12 +4031,12 @@ public class FileKit {
      * @param resource 资源路径
      * @return 资源列表
      */
-    public static List<URL> getResources(String resource) {
-        return getResources(resource, null);
+    public static List<URL> getUrls(final String resource) {
+        return getUrls(resource, null);
     }
 
     /**
-     * 获取指定路径下的资源列表
+     * 获取指定路径下的资源列表<br>
      * 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
@@ -4023,54 +4048,50 @@ public class FileKit {
      * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
      * @return 资源列表
      */
-    public static List<URL> getResources(String resource, Filter<URL> filter) {
-        return IterKit.filterToList(getResourceIter(resource), filter);
-    }
-
-    /**
-     * 获取指定路径下的资源Iterator
-     * 路径格式必须为目录格式,用/分隔,例如:
-     *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource 资源路径
-     * @return 资源列表
-     */
-    public static EnumerationIterator<URL> getResourceIter(String resource) {
+    public static List<URL> getUrls(final String resource, final Predicate<URL> filter) {
         final Enumeration<URL> resources;
         try {
             resources = ClassKit.getClassLoader().getResources(resource);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new InternalException(e);
         }
-        return new EnumerationIterator<>(resources);
-    }
-
-    /**
-     * 获得资源相对路径对应的URL
-     *
-     * @param resource  资源相对路径
-     * @param baseClass 基准Class,获得的相对路径相对于此Class所在路径,如果为{@code null}则相对ClassPath
-     * @return {@link URL}
-     */
-    public static URL getResource(String resource, Class<?> baseClass) {
-        resource = StringKit.nullToEmpty(resource);
-        URL url = (null != baseClass) ? baseClass.getResource(resource) : ClassKit.getClassLoader().getResource(resource);
-        return null != url ? url : baseClass.getClassLoader().getResource(resource);
+        return IterKit.filterToList(new EnumerationIterator<>(resources), filter);
     }
 
     /**
      * 获取{@link Resource} 资源对象
-     * 如果提供路径为绝对路径,返回{@link FileResource},否则返回{@link ClassPathResource}
+     * 如果提供路径为绝对路径或路径以file:开头，返回{@link FileResource}，否则返回{@link ClassPathResource}
      *
-     * @param path 路径,可以是绝对路径,也可以是相对路径
+     * @param path 路径，可以是绝对路径，也可以是相对路径（相对ClassPath）
      * @return {@link Resource} 资源对象
      */
-    public static Resource getResourceObject(String path) {
-        return FileKit.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);
+    public static Resource getResource(final String path) {
+        if (StringKit.isNotBlank(path)) {
+            if (path.startsWith(Normal.FILE_URL_PREFIX) || FileKit.isAbsolutePath(path)) {
+                return new FileResource(path);
+            }
+        }
+        return new ClassPathResource(path);
+    }
+
+    /**
+     * 获取{@link UriResource} 资源对象
+     *
+     * @param url URL
+     * @return {@link Resource} 资源对象
+     */
+    public static Resource getResource(final URL url) {
+        return new UriResource(url);
+    }
+
+    /**
+     * 获取{@link FileResource} 资源对象
+     *
+     * @param file {@link File}
+     * @return {@link Resource} 资源对象
+     */
+    public static Resource getResource(final File file) {
+        return new FileResource(file);
     }
 
     /**

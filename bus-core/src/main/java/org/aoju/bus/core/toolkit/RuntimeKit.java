@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 系统运行时工具类
@@ -269,6 +270,60 @@ public class RuntimeKit {
      */
     public static void addShutdownHook(Runnable hook) {
         Runtime.getRuntime().addShutdownHook((hook instanceof Thread) ? (Thread) hook : new Thread(hook));
+    }
+
+    /**
+     * 获得JVM可用的处理器数量（一般为CPU核心数）
+     * <p>
+     * 这里做一个特殊的处理,在特殊的CPU上面，会有获取不到CPU数量的情况，所以这里做一个保护;
+     * 默认给一个7，真实的CPU基本都是偶数，方便区分。
+     * 如果不做处理，会出现创建线程池时{@link ThreadPoolExecutor}，抛出异常：{@link IllegalArgumentException}
+     *
+     * @return 可用的处理器数量
+     */
+    public static int getProcessorCount() {
+        int cpu = Runtime.getRuntime().availableProcessors();
+        if (cpu <= 0) {
+            cpu = 7;
+        }
+        return cpu;
+    }
+
+    /**
+     * 获得JVM中剩余的内存数，单位byte
+     *
+     * @return JVM中剩余的内存数，单位byte
+     */
+    public static long getFreeMemory() {
+        return Runtime.getRuntime().freeMemory();
+    }
+
+    /**
+     * 获得JVM已经从系统中获取到的总共的内存数，单位byte
+     *
+     * @return JVM中剩余的内存数，单位byte
+     */
+    public static long getTotalMemory() {
+        return Runtime.getRuntime().totalMemory();
+    }
+
+    /**
+     * 获得JVM中可以从系统中获取的最大的内存数，单位byte，以-Xmx参数为准
+     *
+     * @return JVM中剩余的内存数，单位byte
+     */
+    public static long getMaxMemory() {
+        return Runtime.getRuntime().maxMemory();
+    }
+
+    /**
+     * 获得JVM最大可用内存，计算方法为：<br>
+     * 最大内存-总内存+剩余内存
+     *
+     * @return 最大可用内存
+     */
+    public static long getUsableMemory() {
+        return getMaxMemory() - getTotalMemory() + getFreeMemory();
     }
 
     /**

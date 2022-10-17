@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans;
 
-import org.aoju.bus.core.lang.function.Func0;
+import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.map.WeakMap;
 
 /**
@@ -53,8 +53,8 @@ public enum BeanCache {
      * @param supplier  对象不存在时创建对象的函数
      * @return 属性名和{@link BeanDesc}映射
      */
-    public BeanDesc getBeanDesc(Class<?> beanClass, Func0<BeanDesc> supplier) {
-        return bdCache.computeIfAbsent(beanClass, supplier);
+    public BeanDesc getBeanDesc(Class<?> beanClass, XSupplier<BeanDesc> supplier) {
+        return bdCache.computeIfAbsent(beanClass, (key) -> supplier.get());
     }
 
     /**

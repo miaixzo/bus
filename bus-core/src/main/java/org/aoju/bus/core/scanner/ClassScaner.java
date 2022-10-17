@@ -116,7 +116,7 @@ public class ClassScaner {
      * @param charset     编码
      */
     public ClassScaner(String packageName, Predicate<Class<?>> predicate, java.nio.charset.Charset charset) {
-        packageName = StringKit.nullToEmpty(packageName);
+        packageName = StringKit.emptyIfNull(packageName);
         this.packageName = packageName;
         this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
         this.packageDirName = packageName.replace(Symbol.C_DOT, File.separatorChar);
@@ -241,7 +241,7 @@ public class ClassScaner {
      * @return 类集合
      */
     public Set<Class<?>> scan(boolean forceScanJavaClassPaths) {
-        for (URL url : FileKit.getResourceIter(this.packagePath)) {
+        for (URL url : FileKit.getUrls(this.packagePath)) {
             switch (url.getProtocol()) {
                 case "file":
                     scanFile(new File(UriKit.decode(url.getFile(), this.charset.name())), null);

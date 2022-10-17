@@ -25,23 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.starter.office;
 
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.MathKit;
-import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.office.Builder;
-import org.aoju.bus.office.bridge.LocalOfficePoolManager;
-import org.aoju.bus.office.bridge.OnlineOfficePoolManager;
-import org.aoju.bus.office.magic.family.RegistryInstanceHolder;
-import org.aoju.bus.office.metric.OfficeManager;
-import org.aoju.bus.office.provider.LocalOfficeProvider;
-import org.aoju.bus.office.provider.OnlineOfficeProvider;
+import org.aoju.bus.office.builtin.provider.LocalOfficeProvider;
+import org.aoju.bus.office.builtin.provider.OnlineOfficeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-
-import java.util.stream.Stream;
 
 /**
  * 文档在线预览配置
@@ -55,56 +43,5 @@ public class OfficeConfiguration {
 
     @Autowired
     OfficeProperties properties;
-
-    @Bean
-    public OfficeProviderService previewProviderFactory(final OfficeManager localOfficeManager,
-                                                        final OfficeManager onlineOfficeManager) {
-        return new OfficeProviderService(
-                LocalOfficeProvider.builder()
-                        .officeManager(localOfficeManager)
-                        .formatRegistry(RegistryInstanceHolder.getInstance())
-                        .build(),
-                OnlineOfficeProvider.make(onlineOfficeManager));
-    }
-
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public OfficeManager localOfficeManager() {
-        final LocalOfficePoolManager.Builder builder = LocalOfficePoolManager.builder();
-        if (!StringKit.isBlank(this.properties.getPortNumbers())) {
-            builder.portNumbers(
-                    ArrayKit.toPrimitive(
-                            Stream.of(StringKit.splitToArray(this.properties.getPortNumbers(), Symbol.COMMA))
-                                    .map(text -> MathKit.toInt(text, Builder.DEFAULT_PORT_NUMBER))
-                                    .toArray(Integer[]::new)));
-        }
-
-        builder.officeHome(this.properties.getOfficeHome());
-        builder.workingDir(this.properties.getWorkingDir());
-        builder.templateProfileDir(this.properties.getTemplateProfileDir());
-        builder.killExistingProcess(this.properties.isKillExistingProcess());
-        builder.processTimeout(this.properties.getProcessTimeout());
-        builder.processRetryInterval(this.properties.getProcessRetryInterval());
-        builder.taskExecutionTimeout(this.properties.getTaskExecutionTimeout());
-        builder.maxTasksPerProcess(this.properties.getMaxTasksPerProcess());
-        builder.taskQueueTimeout(this.properties.getTaskQueueTimeout());
-        final String processManagerClass = this.properties.getProcessManagerClass();
-        if (StringKit.isNotEmpty(processManagerClass)) {
-            builder.processManager(processManagerClass);
-        } else {
-            builder.processManager(Builder.findBestProcessManager());
-        }
-        return builder.build();
-    }
-
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    public OfficeManager onlineOfficeManager() {
-        final OnlineOfficePoolManager.Builder builder = OnlineOfficePoolManager.builder();
-        builder.urlConnection(this.properties.getUrl());
-        builder.poolSize(this.properties.getPoolSize());
-        builder.workingDir(this.properties.getWorkingDir());
-        builder.taskExecutionTimeout(this.properties.getTaskExecutionTimeout());
-        builder.taskQueueTimeout(this.properties.getTaskQueueTimeout());
-        return builder.build();
-    }
 
 }

@@ -28,10 +28,7 @@ package org.aoju.bus.health.linux.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.IdGroup;
-import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.*;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.linux.ProcPath;
@@ -65,6 +62,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     // Get a list of orders to pass to ParseUtil
     private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
+    private static final boolean LOG_PROCFS_WARNING = Config.get(Config.OS_LINUX_PROCFS_LOGWARNING,
+            false);
 
     static {
         for (ProcPidStat stat : ProcPidStat.values()) {
@@ -169,8 +168,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private Map<String, String> queryEnvironmentVariables() {
-        return Collections.unmodifiableMap(Builder
-                .parseByteArrayToStringMap(Builder.readAllBytes(String.format(ProcPath.PID_ENVIRON, getProcessID()))));
+        return Collections.unmodifiableMap(Builder.parseByteArrayToStringMap(
+                Builder.readAllBytes(String.format(ProcPath.PID_ENVIRON, getProcessID()), LOG_PROCFS_WARNING)));
     }
 
     @Override
@@ -269,8 +268,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     @Override
     public List<OSThread> getThreadDetails() {
-        return ProcessStat.getThreadIds(getProcessID()).stream().map(id -> new LinuxOSThread(getProcessID(), id))
-                .collect(Collectors.toList());
+        return ProcessStat.getThreadIds(getProcessID()).stream().parallel()
+                .map(id -> new LinuxOSThread(getProcessID(), id)).filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
     }
 
     @Override

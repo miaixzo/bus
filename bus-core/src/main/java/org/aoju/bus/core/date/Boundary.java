@@ -26,7 +26,7 @@
 package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Range;
+import org.aoju.bus.core.lang.range.Range;
 import org.aoju.bus.core.toolkit.DateKit;
 
 import java.util.Date;

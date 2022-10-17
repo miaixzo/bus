@@ -34,16 +34,16 @@ import org.aoju.bus.core.toolkit.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CharacterConverter extends AbstractConverter<Character> {
+public class CharacterConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Character convertInternal(Object value) {
+    protected Character convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Boolean) {
             return BooleanKit.toCharacter((Boolean) value);
         } else {
-            final String valueStr = convertString(value);
+            final String valueStr = convertToString(value);
             if (StringKit.isNotBlank(valueStr)) {
                 return valueStr.charAt(0);
             }

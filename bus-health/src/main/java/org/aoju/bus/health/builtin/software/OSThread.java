@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.health.builtin.software;
 
+import java.util.function.Predicate;
+
 /**
  * Represents a Thread/Task on the operating system.
  *
@@ -32,6 +34,20 @@ package org.aoju.bus.health.builtin.software;
  * @since Java 17+
  */
 public interface OSThread {
+
+    /**
+     * Constants which may be used to filter Thread lists
+     */
+    final class ThreadFiltering {
+        /**
+         * Exclude processes with {@link OSProcess.State#INVALID} process state.
+         */
+        public static final Predicate<OSThread> VALID_THREAD = p -> !p.getState().equals(OSProcess.State.INVALID);
+
+        private ThreadFiltering() {
+
+        }
+    }
 
     /**
      * The thread id. The meaning of this value is OS-dependent.

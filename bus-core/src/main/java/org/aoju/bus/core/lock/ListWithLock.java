@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ListWithLock<T> extends ObjWithLock<List<T>> {
+public class ListWithLock<T> extends ObjectWithLock<List<T>> {
 
     private static final long serialVersionUID = 1L;
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.lang.function.Func0;
+import org.aoju.bus.core.lang.function.XSupplier;
 import org.aoju.bus.core.lang.mutable.MutableObject;
 import org.aoju.bus.core.map.WeakMap;
 
@@ -99,42 +99,38 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     }
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期返回Func0回调产生的对象
+     * 从缓存中获得对象，当对象不在缓存中或已经过期返回XSupplier回调产生的对象
      *
      * @param key      键
      * @param supplier 如果不存在回调方法，用于生产值对象
      * @return 值对象
      */
-    public V get(K key, Func0<V> supplier) {
+    public V get(K key, XSupplier<V> supplier) {
         return get(key, null, supplier);
     }
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期返回Func0回调产生的对象
+     * 从缓存中获得对象，当对象不在缓存中或已经过期返回XSupplier回调产生的对象
      *
      * @param key            键
      * @param validPredicate 检查结果对象是否可用，如是否断开连接等
      * @param supplier       如果不存在回调方法或结果不可用，用于生产值对象
      * @return 值对象
      */
-    public V get(K key, Predicate<V> validPredicate, Func0<V> supplier) {
+    public V get(K key, Predicate<V> validPredicate, XSupplier<V> supplier) {
         V v = get(key);
         if ((null != validPredicate && null != v && false == validPredicate.test(v))) {
             v = null;
         }
         if (null == v && null != supplier) {
-            // 每个key单独获取一把锁，降低锁的粒度提高并发能力，see pr#1385@Github
+            //每个key单独获取一把锁，降低锁的粒度提高并发能力，see pr#1385@Github
             final Lock keyLock = keyLockMap.computeIfAbsent(key, k -> new ReentrantLock());
             keyLock.lock();
             try {
                 // 双重检查，防止在竞争锁的过程中已经有其它线程写入
                 v = get(key);
                 if (null == v || (null != validPredicate && false == validPredicate.test(v))) {
-                    try {
-                        v = supplier.call();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    v = supplier.get();
                     put(key, v);
                 }
             } finally {

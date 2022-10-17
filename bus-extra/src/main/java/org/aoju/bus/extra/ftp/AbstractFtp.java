@@ -28,6 +28,7 @@ package org.aoju.bus.extra.ftp;
 import org.aoju.bus.core.exception.InternalException;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.CharsKit;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -125,7 +126,12 @@ public abstract class AbstractFtp implements Closeable {
      * @return 是否为目录
      */
     public boolean isDir(String dir) {
-        return cd(dir);
+        final String workDir = pwd();
+        try {
+            return cd(dir);
+        } finally {
+            cd(workDir);
+        }
     }
 
     /**
@@ -135,8 +141,22 @@ public abstract class AbstractFtp implements Closeable {
      * @return 是否存在
      */
     public boolean exist(String path) {
+        if (StringKit.isBlank(path)) {
+            return false;
+        }
+        // 验证目录
+        if (isDir(path)) {
+            return true;
+        }
+        if (CharsKit.isFileSeparator(path.charAt(path.length() - 1))) {
+            return false;
+        }
         final String fileName = FileKit.getName(path);
-        final String dir = StringKit.removeSuffix(path, fileName);
+        if (Symbol.DOT.equals(fileName) || (Symbol.DOT + Symbol.DOT).equals(fileName)) {
+            return false;
+        }
+        // 验证文件
+        final String dir = StringKit.emptyToDefault(StringKit.removeSuffix(path, fileName), Symbol.DOT);
         final List<String> names;
         try {
             names = ls(dir);

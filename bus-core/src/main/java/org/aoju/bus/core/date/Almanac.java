@@ -4930,8 +4930,19 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 判断当前时间（默认时区）是否在指定范围内
+     * 起始日期和结束日期可以互换
+     *
+     * @param beginDate 起始日期
+     * @param endDate   结束日期
+     * @return 是否在范围内
+     */
+    public static boolean isIn(Date beginDate, Date endDate) {
+        return isIn(new Date(), beginDate, endDate);
+    }
+
+    /**
      * 判定在指定检查时间是否过期
-     * 当前日期是否在日期指定范围内
      * 起始日期和结束日期可以互换
      *
      * @param date      被检查的日期
@@ -4948,7 +4959,19 @@ public class Almanac extends Converter {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
+     * 判断当前时间（默认时区）是否在指定范围内
+     * 起始时间和结束时间可以互换
+     *
+     * @param beginDate 起始时间（包含）
+     * @param endDate   结束时间（包含）
+     * @return 是否在范围内
+     */
+    public static boolean isIn(ChronoLocalDateTime<?> beginDate, ChronoLocalDateTime<?> endDate) {
+        return isIn(LocalDateTime.now(), beginDate, endDate);
+    }
+
+    /**
+     * 判断指定时间是否在指定范围内
      * 起始日期和结束日期可以互换
      *
      * @param date      被检查的日期
@@ -4957,11 +4980,48 @@ public class Almanac extends Converter {
      * @return 是否在范围内
      */
     public static boolean isIn(TemporalAccessor date, TemporalAccessor beginDate, TemporalAccessor endDate) {
+        return isIn(date, beginDate, endDate, true, true);
+    }
+
+    /**
+     * 判断指定时间是否在指定范围内
+     * 起始日期和结束日期可以互换
+     * 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，
+     * 例如：传入参数：includeBegin=true, includeEnd=false，
+     * 则本方法会判断 date (beginDate, endDate) 是否成立
+     *
+     * @param date         被检查的日期
+     * @param beginDate    起始日期
+     * @param endDate      结束日期
+     * @param includeBegin 时间范围是否包含起始日期
+     * @param includeEnd   时间范围是否包含结束日期
+     * @return 是否在范围内
+     */
+    public static boolean isIn(TemporalAccessor date, TemporalAccessor beginDate, TemporalAccessor endDate,
+                               boolean includeBegin, boolean includeEnd) {
+        if (date == null || beginDate == null || endDate == null) {
+            throw new IllegalArgumentException("参数不可为null");
+        }
+
         final long thisMills = toEpochMilli(date);
         final long beginMills = toEpochMilli(beginDate);
         final long endMills = toEpochMilli(endDate);
+        final long rangeMin = Math.min(beginMills, endMills);
+        final long rangeMax = Math.max(beginMills, endMills);
 
-        return thisMills >= Math.min(beginMills, endMills) && thisMills <= Math.max(beginMills, endMills);
+        // 先判断是否满足 date (beginDate, endDate)
+        boolean isIn = rangeMin < thisMills && thisMills < rangeMax;
+
+        // 若不满足，则再判断是否在时间范围的边界上
+        if (!isIn && includeBegin) {
+            isIn = thisMills == rangeMin;
+        }
+
+        if (!isIn && includeEnd) {
+            isIn = thisMills == rangeMax;
+        }
+
+        return isIn;
     }
 
     /**
@@ -5090,7 +5150,7 @@ public class Almanac extends Converter {
 
     /**
      * Long类型时间转为{@link DateTime}
-     * 同时支持10位秒级别时间戳和13位毫秒级别时间戳
+     * 只支持毫秒级别时间戳，如果需要秒级别时间戳，请自行×1000L
      *
      * @param date Long类型Date(Unix时间戳)
      * @return 时间对象
@@ -5490,6 +5550,26 @@ public class Almanac extends Converter {
      */
     public static DateTime offset(Date date, Fields.Type type, int offset) {
         return new DateTime(date).offset(type, offset);
+    }
+
+    /**
+     * 是否为本月最后一天
+     *
+     * @param date {@link Date}
+     * @return 是否为本月最后一天
+     */
+    public static boolean isLastDayOfMonth(final Date date) {
+        return date(date).isLastDayOfMonth();
+    }
+
+    /**
+     * 获得本月的最后一天
+     *
+     * @param date {@link Date}
+     * @return 天
+     */
+    public static int getLastDayOfMonth(final Date date) {
+        return date(date).getLastDayOfMonth();
     }
 
     /**

@@ -36,7 +36,7 @@ public abstract class AnsiEncoder {
     private static final String ENCODE_JOIN = ";";
     private static final String ENCODE_START = "\033[";
     private static final String ENCODE_END = "m";
-    private static final String RESET = "0;" + AnsiColor.DEFAULT;
+    private static final String RESET = "0;" + Ansi4BitColor.DEFAULT;
 
     /**
      * 创建ANSI字符串，参数中的{@link AnsiElement}会被转换为编码形式。
@@ -44,7 +44,7 @@ public abstract class AnsiEncoder {
      * @param args 节点数组
      * @return ANSI字符串
      */
-    public static String encode(Object... args) {
+    public static String encode(final Object... args) {
         final StringBuilder sb = new StringBuilder();
         buildEnabled(sb, args);
         return sb.toString();
@@ -56,10 +56,10 @@ public abstract class AnsiEncoder {
      * @param sb   {@link StringBuilder}
      * @param args 节点列表
      */
-    private static void buildEnabled(StringBuilder sb, Object[] args) {
+    private static void buildEnabled(final StringBuilder sb, final Object[] args) {
         boolean writingAnsi = false;
         boolean containsEncoding = false;
-        for (Object element : args) {
+        for (final Object element : args) {
             if (null == element) {
                 continue;
             }

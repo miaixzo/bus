@@ -137,9 +137,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             }
             if (object instanceof Cell) {
                 Cell<?, ?, ?> other = (Cell<?, ?, ?>) object;
-                return ObjectKit.equal(rowKey, other.getRowKey())
-                        && ObjectKit.equal(columnKey, other.getColumnKey())
-                        && ObjectKit.equal(value, other.getValue());
+                return ObjectKit.equals(rowKey, other.getRowKey())
+                        && ObjectKit.equals(columnKey, other.getColumnKey())
+                        && ObjectKit.equals(value, other.getValue());
             }
             return false;
         }

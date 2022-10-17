@@ -34,18 +34,18 @@ import java.time.temporal.TemporalAmount;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DurationConverter extends AbstractConverter<Duration> {
+public class DurationConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Duration convertInternal(Object value) {
+    protected Duration convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof TemporalAmount) {
             return Duration.from((TemporalAmount) value);
         } else if (value instanceof Long) {
             return Duration.ofMillis((Long) value);
         } else {
-            return Duration.parse(convertString(value));
+            return Duration.parse(convertToString(value));
         }
     }
 

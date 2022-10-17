@@ -366,7 +366,7 @@ public class XmlKit {
      * @param doc                XML文档
      * @param charset            编码
      * @param isPretty           是否格式化输出
-     * @param omitXmlDeclaration 是否输出 xml Declaration
+     * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML字符串
      */
     public static String toString(Node doc, String charset, boolean isPretty, boolean omitXmlDeclaration) {
@@ -1129,6 +1129,32 @@ public class XmlKit {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 将XML内的所有属性大写或小写
+     *
+     * @param xml  XML字符串
+     * @param type 转换类型，即:大写 false / 小写 true
+     * @return 转换后的XML
+     */
+    public static String toCase(String xml, boolean type) {
+        Pattern pattern = Pattern.compile("<.+?>");
+        StringBuilder res = new StringBuilder();
+        int lastIdx = 0;
+
+        for (Matcher matchr = pattern.matcher(xml); matchr.find(); lastIdx = matchr.end()) {
+            String str = matchr.group();
+            res.append(xml, lastIdx, matchr.start());
+            if (type) {
+                res.append(str.toLowerCase());
+            } else {
+                res.append(str.toUpperCase());
+            }
+        }
+
+        res.append(xml.substring(lastIdx));
+        return res.toString();
     }
 
     /**

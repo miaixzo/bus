@@ -67,16 +67,16 @@ public class ImageConfiguration {
             }
             Args args = new Args(true);
             if (StringKit.isNotEmpty(this.properties.getNode().getRelClass())) {
-                args.setExtendSopClassesURL(FileKit.getResource(this.properties.getNode().getRelClass(), ImageConfiguration.class));
+                args.setExtendSopClassesURL(FileKit.getUrl(this.properties.getNode().getRelClass(), ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getRelClass())) {
-                args.setExtendSopClassesURL(FileKit.getResource(this.properties.getNode().getRelClass(), ImageConfiguration.class));
+                args.setExtendSopClassesURL(FileKit.getUrl(this.properties.getNode().getRelClass(), ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getSopClass())) {
-                args.setTransferCapabilityFile(FileKit.getResource(this.properties.getNode().getSopClass(), ImageConfiguration.class));
+                args.setTransferCapabilityFile(FileKit.getUrl(this.properties.getNode().getSopClass(), ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getTcsClass())) {
-                args.setExtendStorageSOPClass(FileKit.getResource(this.properties.getNode().getTcsClass(), ImageConfiguration.class));
+                args.setExtendStorageSOPClass(FileKit.getUrl(this.properties.getNode().getTcsClass(), ImageConfiguration.class));
             }
             return Centre.builder().args(args).efforts(efforts)
                     .node(new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(), Integer.valueOf(this.properties.getNode().getPort())))

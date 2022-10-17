@@ -36,17 +36,17 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AtomicReferenceConverter extends AbstractConverter<AtomicReference> {
+public class AtomicReferenceConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected AtomicReference<?> convertInternal(Object value) {
+    protected AtomicReference<?> convertInternal(final Class<?> targetClass, final Object value) {
         // 尝试将值转换为Reference泛型的类型
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(AtomicReference.class);
         if (false == TypeKit.isUnknown(paramType)) {
-            targetValue = ConverterRegistry.getInstance().convert(paramType, value);
+            targetValue = CompositeConverter.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {
             targetValue = value;

@@ -170,7 +170,7 @@ public class TreeKit {
      * @return 节点
      */
     public static <T> Tree<T> getNode(Tree<T> node, T id) {
-        if (ObjectKit.equal(id, node.getId())) {
+        if (ObjectKit.equals(id, node.getId())) {
             return node;
         }
 

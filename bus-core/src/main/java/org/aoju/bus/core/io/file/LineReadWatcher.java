@@ -26,8 +26,8 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.core.io.LineHandler;
-import org.aoju.bus.core.io.watcher.SimpleWatcher;
+import org.aoju.bus.core.io.watcher.IgnoreWatcher;
+import org.aoju.bus.core.lang.function.XConsumer;
 import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.IOException;
@@ -42,20 +42,20 @@ import java.nio.file.WatchEvent;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LineReadWatcher extends SimpleWatcher implements Runnable {
+public class LineReadWatcher extends IgnoreWatcher implements Runnable {
 
     private final RandomAccessFile randomAccessFile;
     private final Charset charset;
-    private final LineHandler lineHandler;
+    private final XConsumer<String> lineHandler;
 
     /**
      * 构造
      *
      * @param randomAccessFile {@link RandomAccessFile}
      * @param charset          编码
-     * @param lineHandler      行处理器{@link LineHandler}实现
+     * @param lineHandler      行处理器{@link XConsumer}实现
      */
-    public LineReadWatcher(RandomAccessFile randomAccessFile, Charset charset, LineHandler lineHandler) {
+    public LineReadWatcher(RandomAccessFile randomAccessFile, Charset charset, XConsumer<String> lineHandler) {
         this.randomAccessFile = randomAccessFile;
         this.charset = charset;
         this.lineHandler = lineHandler;
@@ -70,7 +70,7 @@ public class LineReadWatcher extends SimpleWatcher implements Runnable {
     public void onModify(WatchEvent<?> event, Path currentPath) {
         final RandomAccessFile randomAccessFile = this.randomAccessFile;
         final Charset charset = this.charset;
-        final LineHandler lineHandler = this.lineHandler;
+        final XConsumer<String> lineHandler = this.lineHandler;
 
         try {
             final long currentLength = randomAccessFile.length();

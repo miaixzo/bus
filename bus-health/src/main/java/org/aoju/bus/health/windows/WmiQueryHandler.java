@@ -64,9 +64,9 @@ public class WmiQueryHandler {
     }
 
     // Cache failed wmi classes
-    protected final Set<String> failedWmiClassNames = new HashSet<>();
+    private final Set<String> failedWmiClassNames = new HashSet<>();
     // Timeout for WMI queries
-    protected int wmiTimeout = globalTimeout;
+    private int wmiTimeout = globalTimeout;
     // Preferred threading model
     private int comThreading = Ole32.COINIT_MULTITHREADED;
     // Track initialization of Security

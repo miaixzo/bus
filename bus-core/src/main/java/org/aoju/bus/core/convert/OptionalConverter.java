@@ -33,12 +33,12 @@ import org.aoju.bus.core.lang.Optional;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class OptionalConverter extends AbstractConverter<Optional<?>> {
+public class OptionalConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Optional<?> convertInternal(Object value) {
+    protected Optional<?> convertInternal(final Class<?> targetClass, final Object value) {
         return Optional.ofNullable(value);
     }
 

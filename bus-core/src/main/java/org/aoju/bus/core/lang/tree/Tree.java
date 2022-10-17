@@ -26,7 +26,6 @@
 package org.aoju.bus.core.lang.tree;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
 
@@ -36,6 +35,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * 通过转换器将你的实体转化为TreeNodeMap节点实体 属性都存在此处,属性有序，可支持排序
@@ -280,26 +280,24 @@ public class Tree<T> extends LinkedHashMap<String, Object> implements Node<T> {
 
     /**
      * 递归过滤并生成新的树
-     * 通过{@link Filter}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
+     * 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
      *
      * @param filter 节点过滤规则函数，只需处理本级节点本身即可
      * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
-     * @see #filter(Filter)
      */
-    public Tree<T> filterNew(Filter<Tree<T>> filter) {
+    public Tree<T> filterNew(Predicate<Tree<T>> filter) {
         return cloneTree().filter(filter);
     }
 
     /**
      * 递归过滤当前树，注意此方法会修改当前树
-     * 通过{@link Filter}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
+     * 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
      *
      * @param filter 节点过滤规则函数，只需处理本级节点本身即可
      * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
-     * @see #filterNew(Filter)
      */
-    public Tree<T> filter(Filter<Tree<T>> filter) {
-        if (filter.accept(this)) {
+    public Tree<T> filter(Predicate<Tree<T>> filter) {
+        if (filter.test(this)) {
             // 本节点满足，则包括所有子节点都保留
             return this;
         }

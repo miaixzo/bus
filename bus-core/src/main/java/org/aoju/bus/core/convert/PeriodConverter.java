@@ -34,18 +34,18 @@ import java.time.temporal.TemporalAmount;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PeriodConverter extends AbstractConverter<Period> {
+public class PeriodConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Period convertInternal(Object value) {
+    protected Period convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof TemporalAmount) {
             return Period.from((TemporalAmount) value);
         } else if (value instanceof Integer) {
             return Period.ofDays((Integer) value);
         } else {
-            return Period.parse(convertString(value));
+            return Period.parse(convertToString(value));
         }
     }
 

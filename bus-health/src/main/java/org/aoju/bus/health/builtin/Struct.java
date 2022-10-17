@@ -37,7 +37,7 @@ import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import org.aoju.bus.health.Builder;
 
 /**
- * Wrapper classes for JNA clases which extend {@link com.sun.jna.Structure}
+ * XWrapper classes for JNA clases which extend {@link com.sun.jna.Structure}
  * intended for use in try-with-resources blocks.
  */
 public interface Struct {

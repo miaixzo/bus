@@ -39,7 +39,7 @@ public class DatePeriod {
     /**
      * 计算单位最大个数
      */
-    private final int unitMaxCount;
+    private final int maxCount;
     /**
      * 时长毫秒数
      */
@@ -62,14 +62,14 @@ public class DatePeriod {
     /**
      * 构造
      *
-     * @param betweenMs    日期间隔
-     * @param unit         级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
-     * @param unitMaxCount 格式化级别的最大个数,假如级别个数为1,但是级别到秒,那只显示一个级别
+     * @param betweenMs 日期间隔
+     * @param unit      级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
+     * @param maxCount  格式化级别的最大个数,假如级别个数为1,但是级别到秒,那只显示一个级别
      */
-    public DatePeriod(long betweenMs, Fields.Units unit, int unitMaxCount) {
+    public DatePeriod(long betweenMs, Fields.Units unit, int maxCount) {
         this.betweenMs = betweenMs;
         this.unit = unit;
-        this.unitMaxCount = unitMaxCount;
+        this.maxCount = maxCount;
     }
 
     /**
@@ -161,13 +161,13 @@ public class DatePeriod {
 
     /**
      * 等级数量是否有效
-     * 有效的定义是：unitMaxCount大于0(被设置),当前等级数量没有超过这个最大值
+     * 有效的定义是：maxCount大于0(被设置),当前等级数量没有超过这个最大值
      *
      * @param unitCount 登记数量
      * @return 是否有效
      */
     private boolean isUnitCountValid(int unitCount) {
-        return this.unitMaxCount <= 0 || unitCount < this.unitMaxCount;
+        return this.maxCount <= 0 || unitCount < this.maxCount;
     }
 
 }

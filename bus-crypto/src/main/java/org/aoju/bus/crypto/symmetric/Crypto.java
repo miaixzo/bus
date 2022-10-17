@@ -224,7 +224,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @return 加密或解密
      */
     public javax.crypto.Cipher getCipher() {
-        return this.ciphers.getCipher();
+        return this.ciphers.getRaw();
     }
 
     /**
@@ -296,7 +296,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @return update之后的bytes
      */
     public byte[] update(byte[] data) {
-        final Cipher cipher = this.ciphers.getCipher();
+        final Cipher cipher = this.ciphers.getRaw();
         lock.lock();
         try {
             return cipher.update(paddingDataWithZero(data, cipher.getBlockSize()));
@@ -425,7 +425,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     private Crypto initParams(String algorithm, AlgorithmParameterSpec paramsSpec) {
         if (null == paramsSpec) {
             byte[] iv = Optional.ofNullable(ciphers)
-                    .map(Ciphers::getCipher).map(Cipher::getIV).get();
+                    .map(Ciphers::getRaw).map(Cipher::getIV).get();
 
             // 随机IV
             if (StringKit.startWithIgnoreCase(algorithm, "PBE")) {
@@ -454,7 +454,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @throws InvalidAlgorithmParameterException 无效算法
      */
     private javax.crypto.Cipher initMode(int mode) throws InvalidKeyException, InvalidAlgorithmParameterException {
-        return this.ciphers.initMode(mode, this.secretKey).getCipher();
+        return this.ciphers.initMode(mode, this.secretKey).getRaw();
     }
 
     /**

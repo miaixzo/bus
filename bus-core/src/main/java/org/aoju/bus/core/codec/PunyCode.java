@@ -87,6 +87,10 @@ public class PunyCode {
         }
         // Append delimiter
         if (b > 0) {
+            if (b == length) {
+                // 无需要编码的字符
+                return output.toString();
+            }
             output.append(Symbol.C_MINUS);
         }
         int h = b;

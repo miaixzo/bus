@@ -28,6 +28,7 @@ package org.aoju.bus.core.convert;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -37,7 +38,7 @@ import java.util.Date;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CalendarConverter extends AbstractConverter<Calendar> {
+public class CalendarConverter extends AbstractConverter {
 
     private static final long serialVersionUID = 1L;
 
@@ -60,12 +61,12 @@ public class CalendarConverter extends AbstractConverter<Calendar> {
      *
      * @param format 日期格式
      */
-    public void setFormat(String format) {
+    public void setFormat(final String format) {
         this.format = format;
     }
 
     @Override
-    protected Calendar convertInternal(Object value) {
+    protected Calendar convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Date) {
             return DateKit.toCalendar((Date) value);
         }
@@ -74,7 +75,11 @@ public class CalendarConverter extends AbstractConverter<Calendar> {
             return DateKit.toCalendar((Long) value);
         }
 
-        final String valueStr = convertString(value);
+        if (value instanceof XMLGregorianCalendar) {
+            return DateKit.toCalendar((XMLGregorianCalendar) value);
+        }
+
+        final String valueStr = convertToString(value);
         return DateKit.toCalendar(StringKit.isBlank(format) ? DateKit.parse(valueStr) : DateKit.parse(valueStr, format));
     }
 

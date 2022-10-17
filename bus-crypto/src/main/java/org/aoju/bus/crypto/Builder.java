@@ -1060,7 +1060,6 @@ public class Builder {
      * @param data    被摘要数据
      * @param charset 编码
      * @return SHA-512摘要
-     * @since 3.0.8
      */
     public static byte[] sha512(final String data, final String charset) {
         return new Digester(Algorithm.SHA512).digest(data, charset);
