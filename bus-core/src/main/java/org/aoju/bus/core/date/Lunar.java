@@ -2413,6 +2413,9 @@ public class Lunar {
         this.second = second;
         Solar noon = Solar.from(m.getFirstJulianDay() + day - 1);
         this.solar = Solar.from(noon.getYear(), noon.getMonth(), noon.getDay(), hour, minute, second);
+        if (noon.getYear() != year) {
+            y = Year.from(noon.getYear());
+        }
         this.initialize(y);
     }
 
