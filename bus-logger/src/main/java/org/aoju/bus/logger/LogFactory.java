@@ -71,8 +71,8 @@ public abstract class LogFactory {
      *
      * @return 日志实现类
      */
-    public static LogFactory create() {
-        final LogFactory factory = doCreate();
+    public static LogFactory of() {
+        final LogFactory factory = create();
         factory.getLog(LogFactory.class).debug("Use [{}] Logger As Default.", factory.name);
         return factory;
     }
@@ -84,7 +84,7 @@ public abstract class LogFactory {
      *
      * @return 日志实现类
      */
-    private static LogFactory doCreate() {
+    private static LogFactory create() {
         final ServiceLoader<LogFactory> factories = ServiceLoader.load(LogFactory.class);
         for (LogFactory factory : factories) {
             try {

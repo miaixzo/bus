@@ -177,10 +177,10 @@ public class MemoryCache implements CacheX {
         private ScheduledExecutorService scheduler;
 
         CacheScheduler() {
-            create();
+            of();
         }
 
-        private void create() {
+        private void of() {
             this.shutdown();
             this.scheduler = new ScheduledThreadPoolExecutor(10, r -> new Thread(r, String.format("OAuth-Task-%s", cacheTaskNumber.getAndIncrement())));
         }

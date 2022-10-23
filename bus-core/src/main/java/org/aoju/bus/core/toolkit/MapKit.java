@@ -498,64 +498,10 @@ public class MapKit {
      * @param map               Map
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
+     * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 连接字符串
      */
-    public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator) {
-        return join(map, separator, keyValueSeparator, false);
-    }
-
-    /**
-     * 将map转成字符串,忽略null的键和值
-     *
-     * @param <K>               键类型
-     * @param <V>               值类型
-     * @param map               Map
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @return 连接后的字符串
-     */
-    public static <K, V> String joinIgnoreNull(Map<K, V> map, String separator, String keyValueSeparator) {
-        return join(map, separator, keyValueSeparator, true);
-    }
-
-    /**
-     * 将map转成字符串
-     *
-     * @param <K>               键类型
-     * @param <V>               值类型
-     * @param map               Map
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param isIgnoreNull      是否忽略null的键和值
-     * @return 连接后的字符串
-     */
-    public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, boolean isIgnoreNull) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        boolean isFirst = true;
-        for (Entry<K, V> entry : map.entrySet())
-            if (false == isIgnoreNull || null != entry.getKey() && null != entry.getValue()) {
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    stringBuilder.append(separator);
-                }
-                stringBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
-            }
-        return stringBuilder.toString();
-    }
-
-    /**
-     * 将map转成字符串
-     *
-     * @param <K>               键类型
-     * @param <V>               值类型
-     * @param map               Map
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param otherParams       其它附加参数字符串(例如密钥)
-     * @return 连接字符串
-     */
-    public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, String... otherParams) {
+    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator, final String... otherParams) {
         return join(map, separator, keyValueSeparator, false, otherParams);
     }
 
@@ -569,8 +515,8 @@ public class MapKit {
      * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 签名字符串
      */
-    public static String sortJoin(Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull,
-                                  String... otherParams) {
+    public static String sortJoin(final Map<?, ?> params, final String separator, final String keyValueSeparator, final boolean isIgnoreNull,
+                                  final String... otherParams) {
         return join(sort(params), separator, keyValueSeparator, isIgnoreNull, otherParams);
     }
 
@@ -585,7 +531,7 @@ public class MapKit {
      * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 连接后的字符串
      */
-    public static <K, V> String joinIgnoreNull(Map<K, V> map, String separator, String keyValueSeparator, String... otherParams) {
+    public static <K, V> String joinIgnoreNull(final Map<K, V> map, final String separator, final String keyValueSeparator, final String... otherParams) {
         return join(map, separator, keyValueSeparator, true, otherParams);
     }
 
@@ -601,28 +547,29 @@ public class MapKit {
      * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 连接后的字符串，map和otherParams为空返回""
      */
-    public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, boolean isIgnoreNull, String... otherParams) {
-        final StringBuilder stringBuilder = StringKit.builder();
-        boolean isFirst = true;
-        if (isNotEmpty(map)) {
-            for (Entry<K, V> entry : map.entrySet()) {
-                if (false == isIgnoreNull || null != entry.getKey() && null != entry.getValue()) {
-                    if (isFirst) {
-                        isFirst = false;
-                    } else {
-                        stringBuilder.append(separator);
-                    }
-                    stringBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
-                }
-            }
-        }
-        // 补充其它字符串到末尾，默认无分隔符
-        if (ArrayKit.isNotEmpty(otherParams)) {
-            for (String otherParam : otherParams) {
-                stringBuilder.append(otherParam);
-            }
-        }
-        return stringBuilder.toString();
+    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
+                                     final boolean isIgnoreNull, final String... otherParams) {
+        return join(map, separator, keyValueSeparator, (entry) -> false == isIgnoreNull || entry.getKey() != null && entry.getValue() != null, otherParams);
+    }
+
+    /**
+     * 将map转成字符串
+     *
+     * @param <K>               键类型
+     * @param <V>               值类型
+     * @param map               Map，为空返回otherParams拼接
+     * @param separator         entry之间的连接符
+     * @param keyValueSeparator kv之间的连接符
+     * @param predicate         键值对过滤
+     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @return 连接后的字符串，map和otherParams为空返回""
+     */
+    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
+                                     final Predicate<Entry<K, V>> predicate, final String... otherParams) {
+        return MapJoiner.of(separator, keyValueSeparator)
+                .append(map, predicate)
+                .append(otherParams)
+                .toString();
     }
 
     /**

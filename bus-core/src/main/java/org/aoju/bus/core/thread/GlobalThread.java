@@ -55,7 +55,7 @@ public class GlobalThread {
         if (null != executor) {
             executor.shutdownNow();
         }
-        executor = ExecutorBuilder.create().useSynchronousQueue().build();
+        executor = ExecutorBuilder.of().useSynchronousQueue().build();
     }
 
     /**

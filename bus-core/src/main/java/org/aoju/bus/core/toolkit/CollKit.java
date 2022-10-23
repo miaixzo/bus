@@ -3803,7 +3803,7 @@ public class CollKit {
      * @param <K>        实体中的分组依据对应类型，也是Map中key的类型
      * @return {@link Collector}
      */
-    public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends K> classifier) {
+    public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(final Function<? super T, ? extends K> classifier) {
         return groupingBy(classifier, Collectors.toList());
     }
 
@@ -3818,8 +3818,8 @@ public class CollKit {
      * @param <A>        下游操作在进行中间操作时对应类型
      * @return {@link Collector}
      */
-    public static <T, K, A, D> Collector<T, ?, Map<K, D>> groupingBy(Function<? super T, ? extends K> classifier,
-                                                                     Collector<? super T, A, D> downstream) {
+    public static <T, K, A, D> Collector<T, ?, Map<K, D>> groupingBy(final Function<? super T, ? extends K> classifier,
+                                                                     final Collector<? super T, A, D> downstream) {
         return groupingBy(classifier, HashMap::new, downstream);
     }
 
@@ -3836,15 +3836,18 @@ public class CollKit {
      * @param <M>        最后返回结果Map类型
      * @return {@link Collector}
      */
-    public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
-                                                                                  Supplier<M> mapFactory,
-                                                                                  Collector<? super T, A, D> downstream) {
+    public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(final Function<? super T, ? extends K> classifier,
+                                                                                  final Supplier<M> mapFactory,
+                                                                                  final Collector<? super T, A, D> downstream) {
         final Supplier<A> downstreamSupplier = downstream.supplier();
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
         final BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
             final K key = org.aoju.bus.core.lang.Optional.ofNullable(t).map(classifier).orElse(null);
             final A container = m.computeIfAbsent(key, k -> downstreamSupplier.get());
-            downstreamAccumulator.accept(container, t);
+            if (ArrayKit.isArray(container) || Objects.nonNull(t)) {
+                // 如果是数组类型，不需要判空，场景——分组后需要使用：java.util.unwrap.Collectors.counting 求null元素个数
+                downstreamAccumulator.accept(container, t);
+            }
         };
         final BinaryOperator<Map<K, A>> merger = mapMerger(downstream.combiner());
         final Supplier<Map<K, A>> mangledFactory = (Supplier<Map<K, A>>) mapFactory;
@@ -3861,6 +3864,68 @@ public class CollKit {
             };
             return new SimpleCollector<>(mangledFactory, accumulator, merger, finisher, Collections.emptySet());
         }
+    }
+
+    /**
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现，
+     * 对集合分组，然后对分组后的值集合进行映射
+     *
+     * @param classifier  分组依据
+     * @param valueMapper 值映射方法
+     * @param <T>         元素类型
+     * @param <K>         键类型
+     * @param <R>         值类型
+     * @return {@link Collector}
+     */
+    public static <T, K, R> Collector<T, ?, Map<K, List<R>>> groupingBy(
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper) {
+        return groupingBy(classifier, valueMapper, ArrayList::new, HashMap::new);
+    }
+
+    /**
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现，
+     * 对集合分组，然后对分组后的值集合进行映射
+     *
+     * @param classifier       分组依据
+     * @param valueMapper      值映射方法
+     * @param valueCollFactory 值集合的工厂方法
+     * @param <T>              元素类型
+     * @param <K>              键类型
+     * @param <R>              值类型
+     * @param <C>              值集合类型
+     * @return {@link Collector}
+     */
+    public static <T, K, R, C extends Collection<R>> Collector<T, ?, Map<K, C>> groupingBy(
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper,
+            final Supplier<C> valueCollFactory) {
+        return groupingBy(classifier, valueMapper, valueCollFactory, HashMap::new);
+    }
+
+    /**
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现，
+     * 对集合分组，然后对分组后的值集合进行映射
+     *
+     * @param classifier       分组依据
+     * @param valueMapper      值映射方法
+     * @param valueCollFactory 值集合的工厂方法
+     * @param mapFactory       Map集合的工厂方法
+     * @param <T>              元素类型
+     * @param <K>              键类型
+     * @param <R>              值类型
+     * @param <C>              值集合类型
+     * @param <M>              返回的Map集合类型
+     * @return {@link Collector}
+     */
+    public static <T, K, R, C extends Collection<R>, M extends Map<K, C>> Collector<T, ?, M> groupingBy(
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper,
+            final Supplier<C> valueCollFactory,
+            final Supplier<M> mapFactory) {
+        return groupingBy(classifier, mapFactory, Collectors.mapping(
+                valueMapper, Collectors.toCollection(valueCollFactory)
+        ));
     }
 
     /**

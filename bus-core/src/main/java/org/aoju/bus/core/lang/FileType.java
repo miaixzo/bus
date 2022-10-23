@@ -970,7 +970,6 @@ public class FileType {
      */
     public static String getType(InputStream in, String filename) {
         String typeName = getType(in);
-
         if (null == typeName) {
             // 未成功识别类型，扩展名辅助识别
             typeName = FileKit.getSuffix(filename);
@@ -981,6 +980,8 @@ public class FileType {
                 typeName = "doc";
             } else if ("msi".equalsIgnoreCase(extName)) {
                 typeName = "msi";
+            } else if ("ppt".equalsIgnoreCase(extName)) {
+                typeName = "ppt";
             }
         } else if ("zip".equals(typeName)) {
             // zip可能为docx、xlsx、pptx、jar、war、ofd等格式，扩展名辅助判断

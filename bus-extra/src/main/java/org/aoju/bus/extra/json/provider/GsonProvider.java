@@ -105,7 +105,7 @@ public class GsonProvider extends AbstractJsonProvider {
 
     @Override
     public <T> List<T> toList(String json) {
-        TypeToken<List<Object>> typeToken = new TypeToken<List<Object>>() {
+        TypeToken<List<Object>> typeToken = new TypeToken<>() {
         };
         return gson.fromJson(json, typeToken.getType());
     }
@@ -122,14 +122,14 @@ public class GsonProvider extends AbstractJsonProvider {
 
     @Override
     public <K, V> Map<K, V> toMap(String json) {
-        TypeToken<Map<Object, Object>> typeToken = new TypeToken<Map<Object, Object>>() {
+        TypeToken<Map<Object, Object>> typeToken = new TypeToken<>() {
         };
         return gson.fromJson(json, typeToken.getType());
     }
 
     @Override
     public <K, V> Map<K, V> toMap(Object object) {
-        TypeToken<Map<Object, Object>> typeToken = new TypeToken<Map<Object, Object>>() {
+        TypeToken<Map<Object, Object>> typeToken = new TypeToken<>() {
         };
         return gson.fromJson(gson.toJson(object), typeToken.getType());
     }

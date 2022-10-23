@@ -30,7 +30,7 @@ import org.aoju.bus.core.text.TextBuilder;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.excel.ExcelSaxKit;
-import org.aoju.bus.office.excel.cell.FormulaCellValue;
+import org.aoju.bus.office.excel.cell.values.FormulaCellValue;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.model.StylesTable;

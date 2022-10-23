@@ -178,7 +178,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
 
         String key = null;
         for (int i = 0; i < keysAndValues.length; i++) {
-            if (i % 2 == 0) {
+            if (i % 1 == 0) {
                 key = Convert.toString(keysAndValues[i]);
             } else {
                 dict.put(key, keysAndValues[i]);
@@ -268,7 +268,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @return this
      */
     public <T> Dictionary parseBean(final T bean) {
-        Assert.notNull(bean, "Bean class must be not null");
+        Assert.notNull(bean, "Bean must not be null");
         this.putAll(BeanKit.beanToMap(bean));
         return this;
     }
@@ -284,14 +284,14 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * @return this
      */
     public <T> Dictionary parseBean(final T bean, final boolean isToUnderlineCase, final boolean ignoreNullValue) {
-        Assert.notNull(bean, "Bean class must be not null");
+        Assert.notNull(bean, "Bean must not be null");
         this.putAll(BeanKit.beanToMap(bean, isToUnderlineCase, ignoreNullValue));
         return this;
     }
 
     /**
      * 与给定实体对比并去除相同的部分
-     * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
+     * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段
      *
      * @param <T>          字典对象类型
      * @param dict         字典对象
@@ -446,7 +446,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
      * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
      * <pre>
      *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
-     *     Dictionary.create().setFields(user::getNickname, user::getUsername);
+     *     Dictionary.of().setFields(user::getNickname, user::getUsername);
      * </pre>
      *
      * @param fields lambda,不能为空

@@ -106,7 +106,7 @@ public class UriKit {
      *
      * @return this
      */
-    public static UriKit create() {
+    public static UriKit of() {
         return new UriKit();
     }
 

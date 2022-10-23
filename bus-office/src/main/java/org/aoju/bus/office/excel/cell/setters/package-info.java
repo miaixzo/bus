@@ -1,5 +1,5 @@
 /**
- * Excel中单元格设置器
+ * 单元格值自定义设置器
  *
  * @author Kimi Liu
  * @since Java 17+

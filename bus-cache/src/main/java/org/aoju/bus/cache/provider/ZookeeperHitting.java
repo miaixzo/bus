@@ -91,8 +91,8 @@ public class ZookeeperHitting implements Hitting {
         this.hitPathPrefix = String.format("%s%s", uniqueProductName, "hit");
         this.requirePathPrefix = String.format("%s%s", uniqueProductName, "require");
         try {
-            client.create().creatingParentsIfNeeded().forPath(hitPathPrefix);
-            client.create().creatingParentsIfNeeded().forPath(requirePathPrefix);
+            client.of().creatingParentsIfNeeded().forPath(hitPathPrefix);
+            client.of().creatingParentsIfNeeded().forPath(requirePathPrefix);
         } catch (KeeperException.NodeExistsException ignored) {
         } catch (Exception e) {
             throw new RuntimeException("create path: " + hitPathPrefix + ", " + requirePathPrefix + " on namespace: " + NAME_SPACE + " error", e);

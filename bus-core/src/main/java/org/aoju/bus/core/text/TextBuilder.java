@@ -118,7 +118,7 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      *
      * @return {@link TextBuilder}
      */
-    public static TextBuilder create() {
+    public static TextBuilder of() {
         return new TextBuilder();
     }
 

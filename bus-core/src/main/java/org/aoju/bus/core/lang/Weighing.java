@@ -106,7 +106,7 @@ public class Weighing<T> implements Serializable {
      * @param <T> 对象
      * @return {@link Weighing}
      */
-    public static <T> Weighing<T> create() {
+    public static <T> Weighing<T> of() {
         return new Weighing<>();
     }
 

@@ -11,6 +11,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -211,6 +212,13 @@ public class TextJoiner implements Appendable, Serializable {
 
     /**
      * 追加对象到拼接器中
+     * <ul>
+     *     <li>null，按照 {@link #nullMode} 策略追加</li>
+     *     <li>array，逐个追加</li>
+     *     <li>{@link Iterator}，逐个追加</li>
+     *     <li>{@link Iterable}，逐个追加</li>
+     *     <li>{@link Map.Entry}，追加键，分隔符，再追加值</li>
+     * </ul>
      *
      * @param object 对象，支持数组、集合等
      * @return this
@@ -224,6 +232,9 @@ public class TextJoiner implements Appendable, Serializable {
             append((Iterator<?>) object);
         } else if (object instanceof Iterable) {
             append(((Iterable<?>) object).iterator());
+        } else if (object instanceof Map.Entry) {
+            final Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
+            append(entry.getKey()).append(entry.getValue());
         } else {
             append(ObjectKit.toString(object));
         }

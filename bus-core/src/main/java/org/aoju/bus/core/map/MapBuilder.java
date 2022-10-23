@@ -61,7 +61,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param <V> Value类型
      * @return MapBuilder
      */
-    public static <K, V> MapBuilder<K, V> create() {
+    public static <K, V> MapBuilder<K, V> of() {
         return create(false);
     }
 

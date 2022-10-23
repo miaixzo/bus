@@ -67,7 +67,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      *
      * @return SSLContextBuilder
      */
-    public static SSLContextBuilder create() {
+    public static SSLContextBuilder of() {
         return new SSLContextBuilder();
     }
 
@@ -79,7 +79,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @throws InternalException 包装 GeneralSecurityException异常
      */
     public static SSLContext createSSLContext(String protocol) throws InternalException {
-        return create().setProtocol(protocol).build();
+        return of().setProtocol(protocol).build();
     }
 
     /**
@@ -108,7 +108,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @throws InternalException 包装 GeneralSecurityException异常
      */
     public static SSLContext createSSLContext(String protocol, KeyManager[] keyManagers, TrustManager[] trustManagers) throws InternalException {
-        return SSLContextBuilder.create()
+        return SSLContextBuilder.of()
                 .setProtocol(protocol)
                 .setKeyManagers(keyManagers)
                 .setTrustManagers(trustManagers).build();

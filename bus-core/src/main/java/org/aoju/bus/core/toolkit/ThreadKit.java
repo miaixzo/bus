@@ -58,7 +58,7 @@ public class ThreadKit {
      * @return ExecutorService
      */
     public static ExecutorService newExecutor(int corePoolSize) {
-        return ExecutorBuilder.create().setCorePoolSize(corePoolSize).build();
+        return ExecutorBuilder.of().setCorePoolSize(corePoolSize).build();
     }
 
     /**
@@ -73,7 +73,7 @@ public class ThreadKit {
      * @return ExecutorService
      */
     public static ExecutorService newExecutor() {
-        return ExecutorBuilder.create().setWorkQueue(new SynchronousQueue<>()).build();
+        return ExecutorBuilder.of().setWorkQueue(new SynchronousQueue<>()).build();
     }
 
     /**
@@ -85,7 +85,7 @@ public class ThreadKit {
      * @return {@link ThreadPoolExecutor}
      */
     public static ThreadPoolExecutor newExecutor(int corePoolSize, int maximumPoolSize) {
-        return ExecutorBuilder.create()
+        return ExecutorBuilder.of()
                 .setCorePoolSize(corePoolSize)
                 .setMaxPoolSize(maximumPoolSize)
                 .build();
@@ -101,7 +101,7 @@ public class ThreadKit {
      * @return {@link ThreadPoolExecutor}
      */
     public static ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, int maximumQueueSize) {
-        return ExecutorBuilder.create()
+        return ExecutorBuilder.of()
                 .setCorePoolSize(corePoolSize)
                 .setMaxPoolSize(maximumPoolSize)
                 .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
@@ -120,7 +120,7 @@ public class ThreadKit {
      * @return ExecutorService
      */
     public static ExecutorService newSingleExecutor() {
-        return ExecutorBuilder.create()
+        return ExecutorBuilder.of()
                 .setCorePoolSize(1)
                 .setMaxPoolSize(1)
                 .setKeepAliveTime(0)
@@ -145,7 +145,7 @@ public class ThreadKit {
 
         // 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)
         int poolSize = (int) (RuntimeKit.getProcessorCount() / (1 - blockingCoefficient));
-        return ExecutorBuilder.create().setCorePoolSize(poolSize).setMaxPoolSize(poolSize).setKeepAliveTime(0L).build();
+        return ExecutorBuilder.of().setCorePoolSize(poolSize).setMaxPoolSize(poolSize).setKeepAliveTime(0L).build();
     }
 
     /**
@@ -201,7 +201,7 @@ public class ThreadKit {
                                                    int maximumQueueSize,
                                                    String threadNamePrefix,
                                                    RejectedExecutionHandler handler) {
-        return ExecutorBuilder.create()
+        return ExecutorBuilder.of()
                 .setCorePoolSize(nThreads).setMaxPoolSize(nThreads)
                 .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
                 .setThreadFactory(createThreadFactory(threadNamePrefix))
@@ -475,7 +475,7 @@ public class ThreadKit {
      * @see ThreadBuilder#build()
      */
     public static ThreadBuilder createThreadFactoryBuilder() {
-        return ThreadBuilder.create();
+        return ThreadBuilder.of();
     }
 
     /**
@@ -486,7 +486,7 @@ public class ThreadKit {
      * @see ThreadBuilder#build()
      */
     public static ThreadFactory createThreadFactory(String threadNamePrefix) {
-        return ThreadBuilder.create().setNamePrefix(threadNamePrefix).build();
+        return ThreadBuilder.of().setNamePrefix(threadNamePrefix).build();
     }
 
     /**

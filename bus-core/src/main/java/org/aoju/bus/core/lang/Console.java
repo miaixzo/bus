@@ -454,7 +454,7 @@ public class Console {
          *
          * @return Table
          */
-        public static Table create() {
+        public static Table of() {
             return new Table();
         }
 
