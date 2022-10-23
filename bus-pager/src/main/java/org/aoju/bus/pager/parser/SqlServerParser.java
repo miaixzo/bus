@@ -29,7 +29,6 @@ import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
@@ -93,6 +92,16 @@ public class SqlServerParser {
      */
     protected static final String PAGE_COLUMN_ALIAS_PREFIX = "ROW_ALIAS_";
 
+    private final JSqlParser jSqlParser;
+
+    public SqlServerParser() {
+        this.jSqlParser = JSqlParser.DEFAULT;
+    }
+
+    public SqlServerParser(JSqlParser jSqlParser) {
+        this.jSqlParser = jSqlParser;
+    }
+
     /**
      * 静态方法处理
      */
@@ -124,7 +133,7 @@ public class SqlServerParser {
         // 解析SQL
         Statement stmt;
         try {
-            stmt = CCJSqlParserUtil.parse(sql);
+            stmt = jSqlParser.parse(sql);
         } catch (Throwable e) {
             throw new PageException("不支持该SQL转换为分页查询!", e);
         }

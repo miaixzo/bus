@@ -93,6 +93,14 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     private boolean orderByOnly;
     /**
+     * 转换count查询时保留查询的 order by 排序
+     */
+    private Boolean keepOrderBy;
+    /**
+     * 转换count查询时保留子查询的 order by 排序
+     */
+    private Boolean keepSubSelectOrderBy;
+    /**
      * sql拦截处理
      */
     private BoundSqlHandler boundSqlHandler;
@@ -379,6 +387,31 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     public Page<E> countColumn(String columnName) {
         this.countColumn = columnName;
         return this;
+    }
+
+    public Page<E> keepOrderBy(boolean keepOrderBy) {
+        this.keepOrderBy = keepOrderBy;
+        return this;
+    }
+
+    public boolean keepOrderBy() {
+        return this.keepOrderBy != null && this.keepOrderBy;
+    }
+
+    public Boolean getKeepOrderBy() {
+        return keepOrderBy;
+    }
+
+    public void setKeepOrderBy(Boolean keepOrderBy) {
+        this.keepOrderBy = keepOrderBy;
+    }
+
+    public Boolean getKeepSubSelectOrderBy() {
+        return keepSubSelectOrderBy;
+    }
+
+    public void setKeepSubSelectOrderBy(Boolean keepSubSelectOrderBy) {
+        this.keepSubSelectOrderBy = keepSubSelectOrderBy;
     }
 
     public Paginating<E> toPageInfo() {

@@ -31,6 +31,8 @@ import org.apache.ibatis.annotations.SelectProvider;
 
 /**
  * 通用Mapper接口,其他接口继承该接口即可
+ * 需要在Entity类中为主键字段加上@javax.persistence.Id注解
+ * 声明主键否则无法确认实体类哪个属性是主键
  *
  * @param <T> 不能为空
  * @author Kimi Liu

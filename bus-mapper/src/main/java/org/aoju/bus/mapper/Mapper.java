@@ -26,10 +26,7 @@
 package org.aoju.bus.mapper;
 
 import org.aoju.bus.mapper.annotation.RegisterMapper;
-import org.aoju.bus.mapper.common.BasicMapper;
-import org.aoju.bus.mapper.common.ConditionMapper;
-import org.aoju.bus.mapper.common.IdsMapper;
-import org.aoju.bus.mapper.common.RowBoundsMapper;
+import org.aoju.bus.mapper.common.*;
 
 /**
  * 通用Mapper接口
@@ -43,6 +40,7 @@ public interface Mapper<T> extends
         ConditionMapper<T>,
         IdsMapper<T>,
         RowBoundsMapper<T>,
+        SaveMapper<T>,
         Marker {
 
 }

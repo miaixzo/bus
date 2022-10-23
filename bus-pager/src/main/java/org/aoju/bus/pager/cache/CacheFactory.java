@@ -27,6 +27,7 @@ package org.aoju.bus.pager.cache;
 
 import org.aoju.bus.core.exception.PageException;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.pager.Property;
 
 import java.lang.reflect.Constructor;
 import java.util.Properties;
@@ -64,7 +65,11 @@ public abstract class CacheFactory {
                     Constructor<? extends Cache> constructor = clazz.getConstructor(Properties.class, String.class);
                     return constructor.newInstance(properties, prefix);
                 } catch (Exception e) {
-                    return clazz.getConstructor().newInstance();
+                    Cache cache = clazz.getConstructor().newInstance();
+                    if (cache instanceof Property) {
+                        ((Property) cache).setProperties(properties);
+                    }
+                    return cache;
                 }
             } catch (Throwable t) {
                 throw new PageException("Created Sql Cache [" + sqlCacheClass + "] Error", t);

@@ -60,9 +60,9 @@ public abstract class OGNL {
         if (parameter != null && parameter instanceof Condition && StringKit.isNotEmpty(entityFullName)) {
             Condition condition = (Condition) parameter;
             Class<?> entityClass = condition.getEntityClass();
-            if (!entityClass.getCanonicalName().equals(entityFullName)) {
+            if (!entityClass.getName().equals(entityFullName)) {
                 throw new InternalException("当前 Condition 方法对应实体为:" + entityFullName
-                        + ", 但是参数 Condition 中的 entityClass 为:" + entityClass.getCanonicalName());
+                        + ", 但是参数 Condition 中的 entityClass 为:" + entityClass.getName());
             }
         }
         return true;
@@ -225,7 +225,7 @@ public abstract class OGNL {
             return ((Condition.Criteria) parameter).getAndOr();
         } else if (parameter instanceof Condition.Criterion) {
             return ((Condition.Criterion) parameter).getAndOr();
-        } else if (parameter.getClass().getCanonicalName().endsWith("Criteria")) {
+        } else if (parameter.getClass().getName().endsWith("Criteria")) {
             return "or";
         } else {
             return "and";
@@ -248,11 +248,35 @@ public abstract class OGNL {
                 EntityColumn column = entry.getValue();
                 if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                     // 未逻辑删除的条件
-                    result = "and " + column.getColumn() + " = " + SqlBuilder.getLogicDeletedValue(column, false);
+                    result = column.getColumn() + " = " + SqlBuilder.getLogicDeletedValue(column, false);
+
+                    // 如果Example中有条件，则拼接" and "，
+                    // 如果是空的oredCriteria，则where中只有逻辑删除注解的未删除条件
+                    if (hasWhereCause(condition)) {
+                        result += " and ";
+                    }
                 }
             }
         }
         return result;
+    }
+
+    /**
+     * 检查是否存在where条件，存在返回true，不存在返回false.
+     *
+     * @param example
+     * @return
+     */
+    private static boolean hasWhereCause(Condition condition) {
+        if (condition.getOredCriteria() == null || condition.getOredCriteria().size() == 0) {
+            return false;
+        }
+        for (Condition.Criteria oredCriterion : condition.getOredCriteria()) {
+            if (oredCriterion.getAllCriteria().size() != 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

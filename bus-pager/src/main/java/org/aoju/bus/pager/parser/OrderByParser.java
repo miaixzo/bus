@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.pager.parser;
 
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
 import org.aoju.bus.core.exception.PageException;
@@ -48,20 +47,20 @@ public class OrderByParser {
      * @param orderBy 排序
      * @return the string
      */
-    public static String converToOrderBySql(String sql, String orderBy) {
-        //解析SQL
+    public static String converToOrderBySql(String sql, String orderBy, JSqlParser jSqlParser) {
+        // 解析SQL
         Statement stmt;
         try {
-            stmt = CCJSqlParserUtil.parse(sql);
+            stmt = jSqlParser.parse(sql);
             Select select = (Select) stmt;
             SelectBody selectBody = select.getSelectBody();
-            //处理body-去最外层order by
+            // 处理body-去最外层order by
             List<OrderByElement> orderByElements = extraOrderBy(selectBody);
             String defaultOrderBy = PlainSelect.orderByToString(orderByElements);
             if (defaultOrderBy.indexOf('?') != -1) {
                 throw new PageException("原SQL[" + sql + "]中的order by包含参数，因此不能使用OrderBy插件进行修改!");
             }
-            //新的sql
+            // 新的sql
             sql = select.toString();
         } catch (Throwable e) {
             Logger.warn("处理排序失败: " + e + "，降级为直接拼接 order by 参数");
@@ -93,6 +92,17 @@ public class OrderByParser {
             }
         }
         return null;
+    }
+
+    /**
+     * convert to order by sql
+     *
+     * @param sql     SQL
+     * @param orderBy 排序属性
+     * @return the string
+     */
+    public static String converToOrderBySql(String sql, String orderBy) {
+        return converToOrderBySql(sql, orderBy, JSqlParser.DEFAULT);
     }
 
 }

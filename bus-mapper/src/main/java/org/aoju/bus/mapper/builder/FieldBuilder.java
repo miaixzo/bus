@@ -155,6 +155,7 @@ public class FieldBuilder {
         @Override
         public List<EntityField> getFields(Class<?> entityClass) {
             List<EntityField> fields = _getFields(entityClass, null, null);
+            fields = new ArrayList<>(new LinkedHashSet<>(fields));
             List<EntityField> properties = getProperties(entityClass);
             Set<EntityField> usedSet = new HashSet<>();
             for (EntityField field : fields) {

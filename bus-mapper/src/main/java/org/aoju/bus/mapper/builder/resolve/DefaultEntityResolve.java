@@ -120,15 +120,13 @@ public class DefaultEntityResolve implements EntityResolve {
         }
         for (EntityField field : fields) {
             // 如果启用了简单类型，就做简单类型校验，如果不是简单类型，直接跳过
-            if (config.isUseSimpleType()
-                    && !field.isAnnotationPresent(Column.class)
-                    && !field.isAnnotationPresent(ColumnType.class)
-                    && !(SimpleType.isSimpleType(field.getJavaType())
-                    ||
-                    (config.isEnumAsSimpleType() && Enum.class.isAssignableFrom(field.getJavaType())))) {
-                continue;
+            if (!config.isUseSimpleType() // 关闭简单类型限制时，所有字段都处理
+                    || (config.isUseSimpleType() && SimpleType.isSimpleType(field.getJavaType())) // 开启简单类型时只处理包含的简单类型
+                    || field.isAnnotationPresent(Column.class) // 有注解的处理，不考虑类型
+                    || field.isAnnotationPresent(ColumnType.class) // 有注解的处理，不考虑类型
+                    || (config.isEnumAsSimpleType() && Enum.class.isAssignableFrom(field.getJavaType()))) { //开启枚举作为简单类型时处理
+                processField(entityTable, field, config, style);
             }
-            processField(entityTable, field, config, style);
         }
         // 当pk.size=0的时候使用所有列作为主键
         if (entityTable.getEntityClassPKColumns().size() == 0) {
@@ -333,7 +331,7 @@ public class DefaultEntityResolve implements EntityResolve {
             entityColumn.setIdentity(false);
             entityColumn.setGenIdClass(keySql.genId());
         } else {
-            throw new InternalException(entityTable.getEntityClass().getCanonicalName()
+            throw new InternalException(entityTable.getEntityClass().getName()
                     + " 类中的 @KeySql 注解配置无效!");
         }
     }

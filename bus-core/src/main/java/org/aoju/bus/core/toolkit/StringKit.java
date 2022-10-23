@@ -334,7 +334,7 @@ public class StringKit extends CharsKit {
 
         StringBuilder builder = new StringBuilder();
         for (Class<?> clazz : parameterTypes) {
-            builder.append(Symbol.COMMA + clazz.getCanonicalName());
+            builder.append(Symbol.COMMA + clazz.getName());
         }
 
         String parameter = builder.toString().trim();

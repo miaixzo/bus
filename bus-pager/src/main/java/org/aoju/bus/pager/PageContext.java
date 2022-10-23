@@ -31,7 +31,6 @@ import org.aoju.bus.pager.parser.CountSqlParser;
 import org.aoju.bus.pager.plugins.BoundSqlChain;
 import org.aoju.bus.pager.plugins.BoundSqlHandler;
 import org.aoju.bus.pager.plugins.PageBoundSqlHandler;
-import org.aoju.bus.pager.proxy.CountMappedStatement;
 import org.aoju.bus.pager.proxy.PageAutoDialect;
 import org.aoju.bus.pager.proxy.PageMethod;
 import org.aoju.bus.pager.proxy.PageParams;
@@ -58,9 +57,6 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
 
     @Override
     public boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
-        if (ms.getId().endsWith(CountMappedStatement.COUNT)) {
-            throw new RuntimeException("在系统中发现了多个分页插件，请检查系统配置!");
-        }
         Page page = pageParams.getPage(parameterObject, rowBounds);
         if (page == null) {
             return true;

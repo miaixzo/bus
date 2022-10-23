@@ -128,6 +128,7 @@ public class Condition implements DynamicTableName {
         this.oredCriteria = builder.conditionCriterias;
         this.forUpdate = builder.forUpdate;
         this.tableName = builder.tableName;
+        this.ORDERBY = new OrderBy(this, propertyMap);
 
         if (!StringKit.isEmpty(builder.orderByClause.toString())) {
             this.orderByClause = builder.orderByClause.toString();

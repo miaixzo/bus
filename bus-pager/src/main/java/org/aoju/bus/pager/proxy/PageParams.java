@@ -66,6 +66,14 @@ public class PageParams {
      * 默认count(0)
      */
     protected String countColumn = Symbol.ZERO;
+    /**
+     * 转换count查询时保留 order by 排序
+     */
+    private boolean keepOrderBy = false;
+    /**
+     * 转换count查询时保留子查询的 order by 排序
+     */
+    private boolean keepSubSelectOrderBy = false;
 
     /**
      * 获取分页参数
@@ -109,6 +117,12 @@ public class PageParams {
         if (page.getPageSizeZero() == null) {
             page.setPageSizeZero(pageSizeZero);
         }
+        if (page.getKeepOrderBy() == null) {
+            page.setKeepOrderBy(keepOrderBy);
+        }
+        if (page.getKeepSubSelectOrderBy() == null) {
+            page.setKeepSubSelectOrderBy(keepSubSelectOrderBy);
+        }
         return page;
     }
 
@@ -134,6 +148,10 @@ public class PageParams {
         }
         // 当offsetAsPageNo=false的时候，不能参数映射
         PageObject.setParams(properties.getProperty("params"));
+        // count查询时，是否保留查询中的 order by
+        keepOrderBy = Boolean.parseBoolean(properties.getProperty("keepOrderBy"));
+        // count查询时，是否保留子查询中的 order by
+        keepSubSelectOrderBy = Boolean.parseBoolean(properties.getProperty("keepSubSelectOrderBy"));
     }
 
     public boolean isOffsetAsPageNo() {

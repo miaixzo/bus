@@ -115,14 +115,14 @@ public class AggregationProvider extends MapperTemplate {
             sql.append(SqlBuilder.conditionCheck(entityClass));
         }
         sql.append("SELECT ${@org.aoju.bus.mapper.additional.aggregation.AggregationProvider@aggregationSelectClause(");
-        sql.append("@").append(entityClass.getCanonicalName()).append("@class");
+        sql.append("@").append(entityClass.getName()).append("@class");
         sql.append(", '").append(getConfig().getWrapKeyword()).append("'");
         sql.append(", aggregateCondition");
         sql.append(")} ");
         sql.append(SqlBuilder.fromTable(entityClass, tableName(entityClass)));
         sql.append(SqlBuilder.updateByConditionWhereClause());
         sql.append(" ${@org.aoju.bus.mapper.additional.aggregation.AggregationProvider@aggregationGroupBy(");
-        sql.append("@").append(entityClass.getCanonicalName()).append("@class");
+        sql.append("@").append(entityClass.getName()).append("@class");
         sql.append(", '").append(getConfig().getWrapKeyword()).append("'");
         sql.append(", aggregateCondition");
         sql.append(")} ");

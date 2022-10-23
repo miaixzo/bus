@@ -92,7 +92,7 @@ public abstract class AbstractRowBounds extends AbstractDialect {
 
     @Override
     public void setProperties(Properties properties) {
-
+        super.setProperties(properties);
     }
 
 }

@@ -460,7 +460,7 @@ public class SqlBuilder {
      * @param entityName  实体映射名
      * @param notNull     是否判断!=null
      * @param notEmpty    是否判断String类型!=''
-     * @return the string
+     * @return XML中的SET语句块
      */
     public static String updateSetColumns(Class<?> entityClass, String entityName, boolean notNull, boolean notEmpty) {
         StringBuilder sql = new StringBuilder();
@@ -475,35 +475,35 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (versionColumn != null) {
-                    throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
             }
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new InternalException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new InternalException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
             if (!column.isId() && column.isUpdatable()) {
                 if (column == versionColumn) {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
-                    String versionClass = version.nextVersion().getCanonicalName();
+                    String versionClass = version.nextVersion().getName();
                     sql.append("<bind name=\"").append(column.getProperty()).append("Version\" value=\"");
                     sql.append("@org.aoju.bus.mapper.version.DefaultNextVersion@nextVersion(")
                             .append("@").append(versionClass).append("@class, ");
                     if (StringKit.isNotEmpty(entityName)) {
-                        sql.append(entityName).append(".");
+                        sql.append(entityName).append('.');
                     }
-                    sql.append(column.getProperty()).append(")\"/>");
-                    sql.append(column.getColumn()).append(" = #{").append(column.getProperty()).append("Version},");
-                } else if (column == logicDeleteColumn) {
-                    sql.append(logicDeleteColumnEqualsValue(column, false)).append(Symbol.COMMA);
+                    sql.append(column.getProperty()).append(")},");
                 } else if (notNull) {
-                    sql.append(SqlBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
+                    sql.append(getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + ",", notEmpty));
                 } else {
-                    sql.append(column.getColumnEqualsHolder(entityName) + Symbol.COMMA);
+                    sql.append(column.getColumnEqualsHolder(entityName)).append(",");
                 }
+            } else if (column.isId() && column.isUpdatable()) {
+                //set id = id,
+                sql.append(column.getColumn()).append(" = ").append(column.getColumn()).append(",");
             }
         }
         sql.append("</set>");
@@ -530,7 +530,7 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new InternalException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new InternalException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
@@ -694,6 +694,17 @@ public class SqlBuilder {
      * @return the string
      */
     public static String whereVersion(Class<?> entityClass) {
+        return whereVersion(entityClass, null);
+    }
+
+    /**
+     * 乐观锁字段条件
+     *
+     * @param entityClass
+     * @param entityName  实体名称
+     * @return the string
+     */
+    public static String whereVersion(Class<?> entityClass, String entityName) {
         Set<EntityColumn> columnSet = EntityBuilder.getColumns(entityClass);
         boolean hasVersion = false;
         String result = "";
@@ -703,7 +714,7 @@ public class SqlBuilder {
                     throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 hasVersion = true;
-                result = " AND " + column.getColumnEqualsHolder();
+                result = " AND " + column.getColumnEqualsHolder(entityName);
             }
         }
         return result;
@@ -801,7 +812,7 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (hasLogicDelete) {
-                    throw new InternalException(entityClass.getCanonicalName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new InternalException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 hasLogicDelete = true;
                 logicDeleteColumn = column;
@@ -930,7 +941,7 @@ public class SqlBuilder {
     public static String conditionCheck(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
         sql.append("<bind name=\"checkConditionEntityClass\" value=\"@org.aoju.bus.mapper.criteria.OGNL@checkConditionEntityClass(_parameter, '");
-        sql.append(entityClass.getCanonicalName());
+        sql.append(entityClass.getName());
         sql.append("')\"/>");
         return sql.toString();
     }
@@ -943,6 +954,7 @@ public class SqlBuilder {
     public static String conditionWhereClause() {
         return "<if test=\"_parameter != null\">" +
                 "<where>\n" +
+                " ${@org.aoju.bus.mapper.criteria.OGNL@andNotLogicDelete(_parameter)}" +
                 " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
                 "  <foreach collection=\"oredCriteria\" item=\"criteria\">\n" +
                 "    <if test=\"criteria.valid\">\n" +
@@ -971,7 +983,6 @@ public class SqlBuilder {
                 "    </if>\n" +
                 "  </foreach>\n" +
                 " </trim>\n" +
-                " ${@org.aoju.bus.mapper.criteria.OGNL@andNotLogicDelete(_parameter)}" +
                 "</where>" +
                 "</if>";
     }
@@ -983,6 +994,7 @@ public class SqlBuilder {
      */
     public static String updateByConditionWhereClause() {
         return "<where>\n" +
+                " ${@org.aoju.bus.mapper.criteria.OGNL@andNotLogicDelete(condition)}" +
                 " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
                 "  <foreach collection=\"condition.oredCriteria\" item=\"criteria\">\n" +
                 "    <if test=\"criteria.valid\">\n" +
@@ -1011,7 +1023,6 @@ public class SqlBuilder {
                 "    </if>\n" +
                 "  </foreach>\n" +
                 " </trim>\n" +
-                " ${@org.aoju.bus.mapper.criteria.OGNL@andNotLogicDelete(condition)}" +
                 "</where>";
     }
 

@@ -136,8 +136,8 @@ public class MapperBuilder {
             try {
                 mapperTemplate.addMethodMap(methodName, templateClass.getMethod(methodName, MappedStatement.class));
             } catch (NoSuchMethodException e) {
-                Logger.error(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!", e);
-                throw new InternalException(templateClass.getCanonicalName() + "中缺少" + methodName + "方法!");
+                Logger.error(templateClass.getName() + "中缺少" + methodName + "方法!", e);
+                throw new InternalException(templateClass.getName() + "中缺少" + methodName + "方法!");
             }
         }
         return mapperTemplate;
@@ -277,7 +277,7 @@ public class MapperBuilder {
     public void processConfiguration(Configuration configuration, Class<?> mapperInterface) {
         String prefix;
         if (mapperInterface != null) {
-            prefix = mapperInterface.getCanonicalName();
+            prefix = mapperInterface.getName();
         } else {
             prefix = "";
         }
@@ -323,9 +323,9 @@ public class MapperBuilder {
             try {
                 EntityBuilder.setResolve(config.getResolveClass().getConstructor().newInstance());
             } catch (Exception e) {
-                Logger.error("创建 " + config.getResolveClass().getCanonicalName()
+                Logger.error("创建 " + config.getResolveClass().getName()
                         + " 实例失败，请保证该类有默认的构造方法!", e);
-                throw new InternalException("创建 " + config.getResolveClass().getCanonicalName()
+                throw new InternalException("创建 " + config.getResolveClass().getName()
                         + " 实例失败，请保证该类有默认的构造方法!", e);
             }
         }

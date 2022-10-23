@@ -928,7 +928,8 @@ public class Words {
                 "VARYING",
                 "VCAT", // DB2 
                 "VERBOSE",
-                "VIEW", // DB2 
+                "VIEW", // DB2
+                "VIRTUAL", // MySQL
                 "VOLATILE",
                 "VOLUMES", // DB2 
                 "WAITFOR",
