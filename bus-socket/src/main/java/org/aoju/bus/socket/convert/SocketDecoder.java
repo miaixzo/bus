@@ -23,58 +23,29 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.handler;
+package org.aoju.bus.socket.convert;
 
-import org.aoju.bus.socket.NetMonitor;
-import org.aoju.bus.socket.SocketStatus;
-import org.aoju.bus.socket.TcpAioSession;
-
-import java.nio.channels.CompletionHandler;
+import java.nio.ByteBuffer;
 
 /**
- * 读写事件回调处理类
- *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
+public interface SocketDecoder {
 
     /**
-     * 处理消息读回调事件
+     * 解码算法
      *
-     * @param result     已读消息字节数
-     * @param aioSession 当前触发读回调的会话
+     * @param byteBuffer
+     * @return
      */
-    @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        try {
-            // 接收到的消息进行预处理
-            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (null != monitor) {
-                monitor.afterRead(aioSession, result);
-            }
-            // 触发读回调
-            //触发读回调
-            aioSession.flipRead(result == -1);
-            aioSession.signalRead();
-        } catch (Exception e) {
-            failed(e, aioSession);
-        }
-    }
+    boolean decode(ByteBuffer byteBuffer);
 
-    @Override
-    public final void failed(Throwable exc, TcpAioSession<T> aioSession) {
-        try {
-            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.INPUT_EXCEPTION, exc);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            // 兼容性处理，windows要强制关闭,其他系统优雅关闭
-            aioSession.close(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    /**
+     * 获取本次解析到的完整数据
+     *
+     * @return
+     */
+    ByteBuffer getBuffer();
 
 }

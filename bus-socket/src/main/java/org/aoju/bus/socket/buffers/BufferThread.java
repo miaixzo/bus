@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,61 +23,26 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.handler;
-
-import org.aoju.bus.core.exception.InternalException;
-import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.NioQuickServer;
-
-import java.io.IOException;
-import java.nio.channels.*;
+package org.aoju.bus.socket.buffers;
 
 /**
- * 接入完成回调，单例使用
- *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, NioQuickServer> {
+public final class BufferThread extends Thread {
 
-    /**
-     * 注册通道的指定操作到指定Selector上
-     *
-     * @param selector Selector
-     * @param channel  通道
-     * @param ops      注册的通道监听（操作）类型
-     */
-    public static void registerChannel(Selector selector, SelectableChannel channel, int ops) {
-        try {
-            if (null == channel) {
-                return;
-            }
-            channel.configureBlocking(false);
-            // 注册通道
-            channel.register(selector, ops);
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
+    private int pageIndex;
+
+    public BufferThread(Runnable target, String name) {
+        super(target, name);
     }
 
-    @Override
-    public void completed(ServerSocketChannel serverSocketChannel, NioQuickServer nioQuickServer) {
-        SocketChannel socketChannel;
-        try {
-            // 获取连接到此服务器的客户端通道
-            socketChannel = serverSocketChannel.accept();
-            Logger.debug("Client [{}] accepted.", socketChannel.getRemoteAddress());
-        } catch (IOException e) {
-            throw new InternalException(e);
-        }
-
-        // SocketChannel通道的可读事件注册到Selector中
-        registerChannel(nioQuickServer.getSelector(), socketChannel, SelectionKey.OP_READ);
+    public int getPageIndex() {
+        return pageIndex;
     }
 
-    @Override
-    public void failed(Throwable exc, NioQuickServer nioQuickServer) {
-        Logger.error(exc);
+    public void setPageIndex(int pageIndex) {
+        this.pageIndex = pageIndex;
     }
 
 }

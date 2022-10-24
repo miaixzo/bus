@@ -25,9 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.socket.channel;
 
-import org.aoju.bus.logger.Logger;
-
 import java.io.IOException;
+import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AsynchronousChannelProvider;
@@ -40,7 +39,7 @@ import java.util.function.Consumer;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGroup {
+public class EnhanceAsynchronousChannelGroup extends AsynchronousChannelGroup {
 
     /**
      * 递归回调次数上限
@@ -97,14 +96,14 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
      * @param threadNum           线程数量
      * @throws IOException 异常
      */
-    protected AsynchronousChannelGroup(AsynchronousChannelProvider provider, ExecutorService readExecutorService, int threadNum) throws IOException {
+    public EnhanceAsynchronousChannelGroup(AsynchronousChannelProvider provider, ExecutorService readExecutorService, int threadNum) throws IOException {
         super(provider);
         // init threadPool for read
         this.readExecutorService = readExecutorService;
         this.readWorkers = new Worker[threadNum];
         for (int i = 0; i < threadNum; i++) {
             readWorkers[i] = new Worker(Selector.open(), selectionKey -> {
-                AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
+                org.aoju.bus.socket.channel.EnhanceAsynchronousSocketChannel asynchronousSocketChannel = (EnhanceAsynchronousSocketChannel) selectionKey.attachment();
                 asynchronousSocketChannel.doRead(true);
             });
             this.readExecutorService.execute(readWorkers[i]);
@@ -118,26 +117,24 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
 
         for (int i = 0; i < writeThreadNum; i++) {
             writeWorkers[i] = new Worker(Selector.open(), selectionKey -> {
-                AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
-                if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) > 0) {
-                    asynchronousSocketChannel.doWrite();
-                } else {
-                    Logger.warn("ignore write");
-                }
+                EnhanceAsynchronousSocketChannel asynchronousSocketChannel = (EnhanceAsynchronousSocketChannel) selectionKey.attachment();
+                // 直接调用interestOps的效果比 removeOps(selectionKey, SelectionKey.OP_WRITE) 更好
+                selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_WRITE);
+                asynchronousSocketChannel.doWrite();
             });
             writeExecutorService.execute(writeWorkers[i]);
         }
 
-        // init threadPool for accept
+        //init threadPool for accept
         acceptExecutorService = getSingleThreadExecutor("bus-socket:connect");
         acceptWorkers = new Worker[acceptThreadNum];
         for (int i = 0; i < acceptThreadNum; i++) {
             acceptWorkers[i] = new Worker(Selector.open(), selectionKey -> {
                 if (selectionKey.isAcceptable()) {
-                    AsynchronousServerSocketChannel serverSocketChannel = (AsynchronousServerSocketChannel) selectionKey.attachment();
+                    EnhanceAsynchronousServerSocketChannel serverSocketChannel = (EnhanceAsynchronousServerSocketChannel) selectionKey.attachment();
                     serverSocketChannel.doAccept();
                 } else if (selectionKey.isConnectable()) {
-                    AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
+                    EnhanceAsynchronousSocketChannel asynchronousSocketChannel = (EnhanceAsynchronousSocketChannel) selectionKey.attachment();
                     asynchronousSocketChannel.doConnect();
                 }
             });
@@ -149,16 +146,12 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
 
     /**
      * 同步IO注册异步线程，防止主IO线程阻塞
-     *
-     * @param register 注册对象
-     * @param opType   类型
-     * @throws IOException 异常
      */
     public synchronized void registerFuture(Consumer<Selector> register, int opType) throws IOException {
         if (futureWorker == null) {
             futureExecutorService = getSingleThreadExecutor("bus-socket:future");
             futureWorker = new Worker(Selector.open(), selectionKey -> {
-                AsynchronousSocketChannel asynchronousSocketChannel = (AsynchronousSocketChannel) selectionKey.attachment();
+                EnhanceAsynchronousSocketChannel asynchronousSocketChannel = (EnhanceAsynchronousSocketChannel) selectionKey.attachment();
                 switch (opType) {
                     case SelectionKey.OP_READ:
                         removeOps(selectionKey, SelectionKey.OP_READ);
@@ -269,16 +262,16 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         }
     }
 
-    class Worker implements Runnable {
+    public class Worker implements Runnable {
 
         /**
          * 当前Worker绑定的Selector
          */
-        private final Selector selector;
-        private final Consumer<SelectionKey> consumer;
-        private final ConcurrentLinkedQueue<Consumer<Selector>> consumers = new ConcurrentLinkedQueue<>();
-        int invoker = 0;
-        private Thread workerThread;
+        public final Selector selector;
+        public final Consumer<SelectionKey> consumer;
+        public final ConcurrentLinkedQueue<Consumer<Selector>> consumers = new ConcurrentLinkedQueue<>();
+        public int invoker = 0;
+        public Thread workerThread;
 
         Worker(Selector selector, Consumer<SelectionKey> consumer) {
             this.selector = selector;
@@ -288,7 +281,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         /**
          * 注册事件
          */
-        final void addRegister(Consumer<Selector> register) {
+        public final void addRegister(Consumer<Selector> register) {
             consumers.offer(register);
             selector.wakeup();
         }

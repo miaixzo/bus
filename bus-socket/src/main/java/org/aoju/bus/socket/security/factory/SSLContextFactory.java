@@ -23,36 +23,16 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.security.factory;
 
-import org.aoju.bus.core.io.buffer.ByteBuffer;
-import org.aoju.bus.core.io.buffer.PageBuffer;
-import org.aoju.bus.core.io.buffer.VirtualBuffer;
+import javax.net.ssl.SSLContext;
 
 /**
- * 内存池工厂
- *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BufferFactory {
+public interface SSLContextFactory {
 
-    /**
-     * 禁用状态的内存池
-     */
-    BufferFactory DISABLED_BUFFER_FACTORY = () -> new ByteBuffer(0, 1, false);
-
-    /**
-     * 创建内存池
-     *
-     * @return 生成的内存池对象
-     */
-    ByteBuffer create();
-
-    interface VirtualBufferFactory {
-
-        VirtualBuffer newBuffer(PageBuffer bufferPage);
-
-    }
+    SSLContext create() throws Exception;
 
 }

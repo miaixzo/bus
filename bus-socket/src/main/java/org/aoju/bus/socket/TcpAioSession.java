@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import org.aoju.bus.core.io.buffer.PageBuffer;
-import org.aoju.bus.core.io.buffer.VirtualBuffer;
-import org.aoju.bus.core.io.buffer.WriteBuffer;
 import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.socket.handler.CompletionReadHandler;
-import org.aoju.bus.socket.handler.CompletionWriteHandler;
+import org.aoju.bus.socket.buffers.BufferPage;
+import org.aoju.bus.socket.buffers.VirtualBuffer;
+import org.aoju.bus.socket.buffers.WriteBuffer;
+import org.aoju.bus.socket.handler.ReadCompletionHandler;
+import org.aoju.bus.socket.handler.WriteCompletionHandler;
 import org.aoju.bus.socket.process.MessageProcessor;
 
 import java.io.IOException;
@@ -41,11 +41,11 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * AIO传输层会话
- * <p>
- * AioSession为bus-socket最核心的类，封装{@link AsynchronousSocketChannel} API接口，简化IO操作
+ * AioSession为smart-socket最核心的类，封装{@link AsynchronousSocketChannel} API接口，简化IO操作
  * 其中开放给用户使用的接口为：
  * <ol>
  * <li>{@link TcpAioSession#close()}</li>
@@ -57,13 +57,13 @@ import java.util.function.Consumer;
  * <li>{@link TcpAioSession#getRemoteAddress()} </li>
  * <li>{@link TcpAioSession#getSessionID()} </li>
  * <li>{@link TcpAioSession#isInvalid()} </li>
- * <li>{@link TcpAioSession#setAttachment(Object)}  </li>
+ * <li>{@link TcpAioSession#setAttachment(Object)} </li>
  * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TcpAioSession<T> extends AioSession {
+public class TcpAioSession extends AioSession {
 
     /**
      * 底层通信channel对象
@@ -80,15 +80,16 @@ public class TcpAioSession<T> extends AioSession {
     /**
      * 读回调
      */
-    private final CompletionReadHandler<T> completionReadHandler;
+    private final ReadCompletionHandler readCompletionHandler;
     /**
      * 写回调
      */
-    private final CompletionWriteHandler<T> completionWriteHandler;
+    private final WriteCompletionHandler writeCompletionHandler;
     /**
      * 服务配置
      */
     private final ServerConfig serverConfig;
+    private final Supplier<VirtualBuffer> function;
     /**
      * 是否读通道以至末尾
      */
@@ -112,56 +113,58 @@ public class TcpAioSession<T> extends AioSession {
     /**
      * @param channel                Socket通道
      * @param config                 配置项
-     * @param completionReadHandler  读回调
-     * @param completionWriteHandler 写回调
-     * @param pageBuffer             绑定内存页
+     * @param readCompletionHandler  读回调
+     * @param writeCompletionHandler 写回调
+     * @param bufferPage             绑定内存页
      */
-    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig config, CompletionReadHandler<T> completionReadHandler, CompletionWriteHandler<T> completionWriteHandler, PageBuffer pageBuffer) {
+    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig config, ReadCompletionHandler readCompletionHandler, WriteCompletionHandler writeCompletionHandler, BufferPage bufferPage, Supplier<VirtualBuffer> supplier) {
         this.channel = channel;
-        this.completionReadHandler = completionReadHandler;
-        this.completionWriteHandler = completionWriteHandler;
+        this.readCompletionHandler = readCompletionHandler;
+        this.writeCompletionHandler = writeCompletionHandler;
         this.serverConfig = config;
-
+        this.function = supplier;
         Consumer<WriteBuffer> flushConsumer = var -> {
             if (!semaphore.tryAcquire()) {
                 return;
             }
             TcpAioSession.this.writeBuffer = var.poll();
-            if (null == writeBuffer) {
+            if (writeBuffer == null) {
                 semaphore.release();
             } else {
                 continueWrite(writeBuffer);
             }
         };
-        byteBuf = new WriteBuffer(pageBuffer, flushConsumer, serverConfig.getWriteBufferSize(), serverConfig.getWriteBufferCapacity());
-        //触发状态机
+        byteBuf = new WriteBuffer(bufferPage, flushConsumer, serverConfig.getWriteBufferSize(), serverConfig.getWriteBufferCapacity());
+        // 触发状态机
         config.getProcessor().stateEvent(this, SocketStatus.NEW_SESSION, null);
+        doRead();
     }
 
-    /**
-     * 初始化AioSession
-     *
-     * @param readBuffer 缓存信息
-     */
-    void initSession(VirtualBuffer readBuffer) {
-        this.readBuffer = readBuffer;
+    public void doRead() {
+        this.readBuffer = function.get();
         this.readBuffer.buffer().flip();
         signalRead();
     }
 
+    public void suspendRead() {
+        this.readBuffer.clean();
+        this.readBuffer = null;
+    }
+
     /**
      * 触发AIO的写操作,
-     * 需要调用控制同步
+     * <p>需要调用控制同步</p>
      */
     public void writeCompleted() {
-        if (null == writeBuffer) {
-            writeBuffer = byteBuf.poll();
+        if (writeBuffer == null) {
+            writeBuffer = byteBuf.pollItem();
         } else if (!writeBuffer.buffer().hasRemaining()) {
             writeBuffer.clean();
-            writeBuffer = byteBuf.poll();
+//            byteBuf.reuse(writeBuffer);
+            writeBuffer = byteBuf.pollItem();
         }
 
-        if (null != writeBuffer) {
+        if (writeBuffer != null) {
             continueWrite(writeBuffer);
             return;
         }
@@ -178,7 +181,7 @@ public class TcpAioSession<T> extends AioSession {
     /**
      * @return 输入流
      */
-    public final WriteBuffer writeBuffer() {
+    public WriteBuffer writeBuffer() {
         return byteBuf;
     }
 
@@ -203,15 +206,18 @@ public class TcpAioSession<T> extends AioSession {
         }
         status = immediate ? SESSION_STATUS_CLOSED : SESSION_STATUS_CLOSING;
         if (immediate) {
-            byteBuf.close();
-            readBuffer.clean();
-            if (null != writeBuffer) {
-                writeBuffer.clean();
-                writeBuffer = null;
+            try {
+                byteBuf.close();
+                readBuffer.clean();
+                if (writeBuffer != null) {
+                    writeBuffer.clean();
+                    writeBuffer = null;
+                }
+            } finally {
+                IoKit.close(channel);
+                serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);
             }
-            IoKit.close(channel);
-            serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);
-        } else if ((null == writeBuffer || !writeBuffer.buffer().hasRemaining()) && !byteBuf.isEmpty()) {
+        } else if ((writeBuffer == null || !writeBuffer.buffer().hasRemaining()) && byteBuf.isEmpty()) {
             close(true);
         } else {
             serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSING, null);
@@ -260,7 +266,7 @@ public class TcpAioSession<T> extends AioSession {
                 messageProcessor.stateEvent(this, SocketStatus.DECODE_EXCEPTION, e);
                 throw e;
             }
-            if (null == dataEntry) {
+            if (dataEntry == null) {
                 break;
             }
 
@@ -296,10 +302,10 @@ public class TcpAioSession<T> extends AioSession {
 
         //read from channel
         NetMonitor monitor = getServerConfig().getMonitor();
-        if (null != monitor) {
+        if (monitor != null) {
             monitor.beforeRead(this);
         }
-        channel.read(readBuffer, 0L, TimeUnit.MILLISECONDS, this, completionReadHandler);
+        channel.read(readBuffer, 0L, TimeUnit.MILLISECONDS, this, readCompletionHandler);
     }
 
     /**
@@ -327,10 +333,10 @@ public class TcpAioSession<T> extends AioSession {
      */
     private void continueWrite(VirtualBuffer writeBuffer) {
         NetMonitor monitor = getServerConfig().getMonitor();
-        if (null != monitor) {
+        if (monitor != null) {
             monitor.beforeWrite(this);
         }
-        channel.write(writeBuffer.buffer(), 0L, TimeUnit.MILLISECONDS, this, completionWriteHandler);
+        channel.write(writeBuffer.buffer(), 0L, TimeUnit.MILLISECONDS, this, writeCompletionHandler);
     }
 
     /**

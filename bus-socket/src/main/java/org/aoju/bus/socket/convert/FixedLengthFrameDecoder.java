@@ -23,57 +23,52 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.handler;
+package org.aoju.bus.socket.convert;
 
-import org.aoju.bus.socket.TcpAioSession;
-
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.nio.ByteBuffer;
 
 /**
- * 读写事件回调处理类
+ * 指定长度的解码器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
+public class FixedLengthFrameDecoder implements SocketDecoder {
 
-    /**
-     * 读回调资源信号量
-     */
-    private final Semaphore semaphore;
+    private ByteBuffer buffer;
+    private boolean finishRead;
 
-    private final ThreadLocal<ConcurrentReadHandler> threadLocal = new ThreadLocal<>();
-
-    private final ThreadPoolExecutor threadPoolExecutor;
-
-    public ConcurrentReadHandler(final Semaphore semaphore, ThreadPoolExecutor threadPoolExecutor) {
-        this.semaphore = semaphore;
-        this.threadPoolExecutor = threadPoolExecutor;
+    public FixedLengthFrameDecoder(int frameLength) {
+        if (frameLength <= 0) {
+            throw new IllegalArgumentException("frameLength must be a positive integer: " + frameLength);
+        } else {
+            buffer = ByteBuffer.allocate(frameLength);
+        }
     }
 
-
-    @Override
-    public void completed(final Integer result, final TcpAioSession aioSession) {
-        if (threadLocal.get() != null) {
-            super.completed(result, aioSession);
-            return;
+    public boolean decode(ByteBuffer byteBuffer) {
+        if (finishRead) {
+            throw new RuntimeException("delimiter has finish read");
         }
-        if (semaphore.tryAcquire()) {
-            threadLocal.set(this);
-            //处理当前读回调任务
-            super.completed(result, aioSession);
-            Runnable task;
-            while ((task = threadPoolExecutor.getQueue().poll()) != null) {
-                task.run();
-            }
-            semaphore.release();
-            threadLocal.set(null);
-            return;
+        if (buffer.remaining() >= byteBuffer.remaining()) {
+            buffer.put(byteBuffer);
+        } else {
+            int limit = byteBuffer.limit();
+            byteBuffer.limit(byteBuffer.position() + buffer.remaining());
+            buffer.put(byteBuffer);
+            byteBuffer.limit(limit);
         }
-        //线程资源不足,暂时积压任务
-        threadPoolExecutor.execute(() -> ConcurrentReadHandler.super.completed(result, aioSession));
 
+        if (buffer.hasRemaining()) {
+            return false;
+        }
+        buffer.flip();
+        finishRead = true;
+        return true;
+    }
+
+    public ByteBuffer getBuffer() {
+        return buffer;
     }
 
 }

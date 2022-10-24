@@ -37,7 +37,7 @@ import java.util.concurrent.TimeoutException;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V>, Runnable {
+public final class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V>, Runnable {
 
     private CompletionHandler<V, A> completionHandler;
     private A attach;
@@ -61,7 +61,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
         synchronized (this) {
             this.notify();
         }
-        if (null != completionHandler) {
+        if (completionHandler != null) {
             completionHandler.completed(result, attach);
         }
     }
@@ -70,7 +70,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
     public void failed(Throwable exc, A attachment) {
         exception = exc;
         done = true;
-        if (null != completionHandler) {
+        if (completionHandler != null) {
             completionHandler.failed(exc, attachment);
         }
     }
@@ -101,7 +101,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
     @Override
     public synchronized V get() throws InterruptedException, ExecutionException {
         if (done) {
-            if (null != exception) {
+            if (exception != null) {
                 throw new ExecutionException(exception);
             }
             return result;

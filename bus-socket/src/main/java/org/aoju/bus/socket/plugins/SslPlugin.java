@@ -25,14 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.socket.plugins;
 
-import org.aoju.bus.core.io.buffer.ByteBuffer;
-import org.aoju.bus.socket.BufferFactory;
+import org.aoju.bus.socket.buffers.BufferFactory;
+import org.aoju.bus.socket.buffers.BufferPool;
+import org.aoju.bus.socket.channel.SslAsynchronousSocketChannel;
 import org.aoju.bus.socket.security.ClientAuth;
 import org.aoju.bus.socket.security.SslService;
-import org.aoju.bus.socket.security.SslSocketChannel;
+import org.aoju.bus.socket.security.factory.ClientSSLContextFactory;
+import org.aoju.bus.socket.security.factory.SSLContextFactory;
+import org.aoju.bus.socket.security.factory.ServerSSLContextFactory;
 
-import java.io.InputStream;
+import javax.net.ssl.SSLEngine;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.function.Consumer;
 
 /**
  * SSL/TLS通信插件
@@ -40,46 +44,53 @@ import java.nio.channels.AsynchronousSocketChannel;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SslPlugin<T> extends AbstractPlugin<T> {
+public final class SslPlugin<T> extends AbstractPlugin<T> {
 
-    private final ByteBuffer bufferPool;
-    private SslService sslService;
-    private boolean init = false;
+    private final SslService sslService;
+    private final BufferPool bufferPool;
 
-    public SslPlugin() {
-        this.bufferPool = BufferFactory.DISABLED_BUFFER_FACTORY.create();
+    public SslPlugin(SSLContextFactory factory, Consumer<SSLEngine> consumer) throws Exception {
+        this(factory, consumer, BufferFactory.DISABLED_BUFFER_FACTORY.create());
     }
 
-    public SslPlugin(ByteBuffer bufferPool) {
+    public SslPlugin(SSLContextFactory factory, Consumer<SSLEngine> consumer, BufferPool bufferPool) throws Exception {
         this.bufferPool = bufferPool;
+        sslService = new SslService(factory.create(), consumer);
     }
 
-    public void initForServer(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword, ClientAuth clientAuth) {
-        initCheck();
-        sslService = new SslService(false, clientAuth);
-        sslService.initKeyStore(keyStoreInputStream, keyStorePassword, keyPassword);
+    public SslPlugin(ClientSSLContextFactory factory) throws Exception {
+        this(factory, BufferFactory.DISABLED_BUFFER_FACTORY.create());
     }
 
-    public void initForClient() {
-        initForClient(null, null);
+    public SslPlugin(ClientSSLContextFactory factory, BufferPool bufferPool) throws Exception {
+        this(factory, sslEngine -> sslEngine.setUseClientMode(true), bufferPool);
     }
 
-    public void initForClient(InputStream trustInputStream, String trustPassword) {
-        initCheck();
-        sslService = new SslService(true, null);
-        sslService.initTrust(trustInputStream, trustPassword);
+    public SslPlugin(ServerSSLContextFactory factory, ClientAuth clientAuth) throws Exception {
+        this(factory, clientAuth, BufferFactory.DISABLED_BUFFER_FACTORY.create());
     }
 
-    private void initCheck() {
-        if (init) {
-            throw new RuntimeException("plugin is already init");
-        }
-        init = true;
+    public SslPlugin(ServerSSLContextFactory factory, ClientAuth clientAuth, BufferPool bufferPool) throws Exception {
+        this(factory, sslEngine -> {
+            sslEngine.setUseClientMode(false);
+            switch (clientAuth) {
+                case OPTIONAL:
+                    sslEngine.setWantClientAuth(true);
+                    break;
+                case REQUIRE:
+                    sslEngine.setNeedClientAuth(true);
+                    break;
+                case NONE:
+                    break;
+                default:
+                    throw new Error("Unknown auth " + clientAuth);
+            }
+        }, bufferPool);
     }
 
     @Override
-    public final AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
-        return new SslSocketChannel(channel, sslService, bufferPool.allocatePageBuffer());
+    public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
+        return new SslAsynchronousSocketChannel(channel, sslService, bufferPool.allocateBufferPage());
     }
 
 }

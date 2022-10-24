@@ -23,78 +23,38 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.security.factory;
 
-import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.process.MessageProcessor;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+public class ServerSSLContextFactory implements SSLContextFactory {
 
-/**
- * UDP消息分发器
- *
- * @author Kimi Liu
- * @since Java 17+
- */
-public class UdpDispatcher implements Runnable {
+    private final InputStream keyStoreInputStream;
+    private final String keyStorePassword;
+    private final String keyPassword;
 
-    public final static RequestTask EXECUTE_TASK_OR_SHUTDOWN = new RequestTask(null, null);
-    private final BlockingQueue<RequestTask> taskQueue = new LinkedBlockingQueue<>();
-    private final MessageProcessor processor;
-
-    public UdpDispatcher(MessageProcessor processor) {
-        this.processor = processor;
+    public ServerSSLContextFactory(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword) {
+        this.keyStoreInputStream = keyStoreInputStream;
+        this.keyStorePassword = keyStorePassword;
+        this.keyPassword = keyPassword;
     }
 
     @Override
-    public void run() {
-        while (true) {
-            try {
-                RequestTask unit = taskQueue.take();
-                if (unit == EXECUTE_TASK_OR_SHUTDOWN) {
-                    Logger.info("shutdown thread:{}", Thread.currentThread());
-                    break;
-                }
-                processor.process(unit.session, unit.request);
-                if (!unit.session.isInvalid()) {
-                    unit.session.writeBuffer().flush();
-                }
-            } catch (InterruptedException e) {
-                Logger.info("InterruptedException", e);
-            } catch (Exception e) {
-                Logger.error(e.getClass().getName(), e);
-            }
-        }
-    }
+    public SSLContext create() throws Exception {
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+        KeyStore ks = KeyStore.getInstance("JKS");
+        ks.load(keyStoreInputStream, keyStorePassword.toCharArray());
+        kmf.init(ks, keyPassword.toCharArray());
+        KeyManager[] keyManagers = kmf.getKeyManagers();
 
-    /**
-     * 任务分发
-     *
-     * @param session the session
-     * @param request the request
-     */
-    public void dispatch(UdpAioSession session, Object request) {
-        dispatch(new RequestTask(session, request));
-    }
-
-    /**
-     * 任务分发
-     *
-     * @param requestTask the requestTask
-     */
-    public void dispatch(RequestTask requestTask) {
-        taskQueue.offer(requestTask);
-    }
-
-    static class RequestTask {
-        UdpAioSession session;
-        Object request;
-
-        public RequestTask(UdpAioSession session, Object request) {
-            this.session = session;
-            this.request = request;
-        }
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(keyManagers, null, new SecureRandom());
+        return sslContext;
     }
 
 }

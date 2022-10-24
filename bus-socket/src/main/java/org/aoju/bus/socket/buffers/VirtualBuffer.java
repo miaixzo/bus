@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,9 +23,10 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.io.buffer;
+package org.aoju.bus.socket.buffers;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.Semaphore;
 
 /**
  * 虚拟ByteBuffer缓冲区
@@ -38,7 +39,7 @@ public final class VirtualBuffer {
     /**
      * 当前虚拟buffer的归属内存页
      */
-    private final PageBuffer pageBuffer;
+    private final BufferPage bufferPage;
     /**
      * 通过ByteBuffer.slice()隐射出来的虚拟ByteBuffer
      *
@@ -48,7 +49,7 @@ public final class VirtualBuffer {
     /**
      * 是否已回收
      */
-    private boolean clean = false;
+    private Semaphore clean = new Semaphore(1);
     /**
      * 当前虚拟buffer映射的实际buffer.position
      */
@@ -64,8 +65,8 @@ public final class VirtualBuffer {
      */
     private int capacity;
 
-    VirtualBuffer(PageBuffer pageBuffer, ByteBuffer buffer, int parentPosition, int parentLimit) {
-        this.pageBuffer = pageBuffer;
+    public VirtualBuffer(BufferPage bufferPage, ByteBuffer buffer, int parentPosition, int parentLimit) {
+        this.bufferPage = bufferPage;
         this.buffer = buffer;
         this.parentPosition = parentPosition;
         this.parentLimit = parentLimit;
@@ -76,20 +77,20 @@ public final class VirtualBuffer {
         return new VirtualBuffer(null, buffer, 0, 0);
     }
 
-    int getParentPosition() {
+    public int getParentPosition() {
         return parentPosition;
     }
 
-    void setParentPosition(int parentPosition) {
+    public void setParentPosition(int parentPosition) {
         this.parentPosition = parentPosition;
         updateCapacity();
     }
 
-    int getParentLimit() {
+    public int getParentLimit() {
         return parentLimit;
     }
 
-    void setParentLimit(int parentLimit) {
+    public void setParentLimit(int parentLimit) {
         this.parentLimit = parentLimit;
         updateCapacity();
     }
@@ -116,21 +117,21 @@ public final class VirtualBuffer {
      *
      * @param buffer 真实缓冲区
      */
-    void buffer(ByteBuffer buffer) {
+    public void buffer(ByteBuffer buffer) {
         this.buffer = buffer;
-        clean = false;
+        clean.release();
     }
 
     /**
      * 释放虚拟缓冲区
      */
     public void clean() {
-        if (clean) {
+        if (clean.tryAcquire()) {
+            if (bufferPage != null) {
+                bufferPage.clean(this);
+            }
+        } else {
             throw new UnsupportedOperationException("buffer has cleaned");
-        }
-        clean = true;
-        if (null != pageBuffer) {
-            pageBuffer.clean(this);
         }
     }
 

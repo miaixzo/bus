@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,25 +23,19 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.handler;
+package org.aoju.bus.socket.protocol;
 
-import java.nio.channels.SocketChannel;
+import org.aoju.bus.socket.AioSession;
 
 /**
- * NIO数据处理接口，通过实现此接口，可以从{@link SocketChannel}中读写数据
- *
  * @author Kimi Liu
  * @since Java 17+
  */
-@FunctionalInterface
-public interface ChannelSocketHandler {
+public class ByteArrayProtocol extends FixedLengthBytesProtocol<byte[]> {
 
-    /**
-     * 处理NIO数据
-     *
-     * @param socketChannel {@link SocketChannel}
-     * @throws Exception 可能的处理异常
-     */
-    void handle(SocketChannel socketChannel) throws Exception;
+    @Override
+    protected byte[] decode(byte[] bytes, AioSession session) {
+        return bytes;
+    }
 
 }

@@ -39,22 +39,22 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AsynchronousSocketChannelProxy extends java.nio.channels.AsynchronousSocketChannel {
+public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
 
-    protected final java.nio.channels.AsynchronousSocketChannel asynchronousSocketChannel;
+    protected final AsynchronousSocketChannel asynchronousSocketChannel;
 
-    public AsynchronousSocketChannelProxy(java.nio.channels.AsynchronousSocketChannel asynchronousSocketChannel) {
+    public AsynchronousSocketChannelProxy(AsynchronousSocketChannel asynchronousSocketChannel) {
         super(asynchronousSocketChannel.provider());
         this.asynchronousSocketChannel = asynchronousSocketChannel;
     }
 
     @Override
-    public java.nio.channels.AsynchronousSocketChannel bind(SocketAddress local) throws IOException {
+    public AsynchronousSocketChannel bind(SocketAddress local) throws IOException {
         return asynchronousSocketChannel.bind(local);
     }
 
     @Override
-    public <T> java.nio.channels.AsynchronousSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
+    public <T> AsynchronousSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
         return asynchronousSocketChannel.setOption(name, value);
     }
 
@@ -69,7 +69,7 @@ public class AsynchronousSocketChannelProxy extends java.nio.channels.Asynchrono
     }
 
     @Override
-    public java.nio.channels.AsynchronousSocketChannel shutdownInput() throws IOException {
+    public AsynchronousSocketChannel shutdownInput() throws IOException {
         return asynchronousSocketChannel.shutdownInput();
     }
 

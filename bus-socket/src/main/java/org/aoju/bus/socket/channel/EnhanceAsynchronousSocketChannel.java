@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.channel;
 
+import org.aoju.bus.socket.buffers.BufferArray;
 import org.aoju.bus.socket.handler.FutureCompletionHandler;
 
 import java.io.IOException;
@@ -42,8 +43,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSocketChannel {
-
+public final class EnhanceAsynchronousSocketChannel extends AsynchronousSocketChannel {
     /**
      * 实际的Socket通道
      */
@@ -51,19 +51,19 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     /**
      * 处理当前连接IO事件的资源组
      */
-    private final AsynchronousChannelGroup group;
+    private final EnhanceAsynchronousChannelGroup group;
     /**
      * 处理 read 事件的线程资源
      */
-    private final AsynchronousChannelGroup.Worker readWorker;
+    private final EnhanceAsynchronousChannelGroup.Worker readWorker;
     /**
      * 处理 write 事件的线程资源
      */
-    private final AsynchronousChannelGroup.Worker writeWorker;
+    private final EnhanceAsynchronousChannelGroup.Worker writeWorker;
     /**
      * 处理 connect 事件的线程资源
      */
-    private final AsynchronousChannelGroup.Worker connectWorker;
+    private final EnhanceAsynchronousChannelGroup.Worker connectWorker;
     /**
      * 用于接收 read 通道数据的缓冲区，经解码后腾出缓冲区以供下一批数据的读取
      */
@@ -71,7 +71,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     /**
      * 用于接收 read 通道数据的缓冲区集合
      */
-    private ByteBufferArray scatteringReadBuffer;
+    private BufferArray scatteringReadBuffer;
     /**
      * 存放待输出数据的缓冲区
      */
@@ -79,7 +79,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     /**
      * 存放待输出数据的缓冲区集合
      */
-    private ByteBufferArray gatheringWriteBuffer;
+    private BufferArray gatheringWriteBuffer;
     /**
      * read 回调事件处理器
      */
@@ -110,6 +110,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     private SelectionKey readSelectionKey;
     private SelectionKey readFutureSelectionKey;
     private SelectionKey writeSelectionKey;
+    private SelectionKey writeFutureSelectionKey;
     private SelectionKey connectSelectionKey;
     /**
      * 当前是否正在执行 write 操作
@@ -127,15 +128,18 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
      * 远程连接的地址
      */
     private SocketAddress remote;
+    private int writeInvoker;
 
-    public AsynchronousSocketChannel(AsynchronousChannelGroup group, SocketChannel channel) throws IOException {
+    private boolean lowMemory;
+
+    public EnhanceAsynchronousSocketChannel(EnhanceAsynchronousChannelGroup group, SocketChannel channel, boolean lowMemory) throws IOException {
         super(group.provider());
         this.group = group;
         this.channel = channel;
         readWorker = group.getReadWorker();
         writeWorker = group.getWriteWorker();
         connectWorker = group.getConnectWorker();
-        channel.configureBlocking(false);
+        this.lowMemory = lowMemory;
     }
 
     @Override
@@ -160,6 +164,10 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
             writeSelectionKey.cancel();
             writeSelectionKey = null;
         }
+        if (writeFutureSelectionKey != null) {
+            writeFutureSelectionKey.cancel();
+            writeFutureSelectionKey = null;
+        }
         if (connectSelectionKey != null) {
             connectSelectionKey.cancel();
             connectSelectionKey = null;
@@ -170,13 +178,13 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     }
 
     @Override
-    public java.nio.channels.AsynchronousSocketChannel bind(SocketAddress local) throws IOException {
+    public AsynchronousSocketChannel bind(SocketAddress local) throws IOException {
         channel.bind(local);
         return this;
     }
 
     @Override
-    public <T> java.nio.channels.AsynchronousSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
+    public <T> AsynchronousSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
         channel.setOption(name, value);
         return this;
     }
@@ -192,13 +200,13 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     }
 
     @Override
-    public java.nio.channels.AsynchronousSocketChannel shutdownInput() throws IOException {
+    public AsynchronousSocketChannel shutdownInput() throws IOException {
         channel.shutdownInput();
         return this;
     }
 
     @Override
-    public java.nio.channels.AsynchronousSocketChannel shutdownOutput() throws IOException {
+    public AsynchronousSocketChannel shutdownOutput() throws IOException {
         channel.shutdownOutput();
         return this;
     }
@@ -239,7 +247,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
         read0(dst, null, timeout, unit, attachment, handler);
     }
 
-    private <V extends Number, A> void read0(ByteBuffer readBuffer, ByteBufferArray scattering, long timeout, TimeUnit unit, A attachment, CompletionHandler<V, ? super A> handler) {
+    private <V extends Number, A> void read0(ByteBuffer readBuffer, BufferArray scattering, long timeout, TimeUnit unit, A attachment, CompletionHandler<V, ? super A> handler) {
         if (readPending) {
             throw new ReadPendingException();
         }
@@ -267,7 +275,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
 
     @Override
     public <A> void read(ByteBuffer[] dsts, int offset, int length, long timeout, TimeUnit unit, A attachment, CompletionHandler<Long, ? super A> handler) {
-        read0(null, new ByteBufferArray(dsts, offset, length), timeout, unit, attachment, handler);
+        read0(null, new BufferArray(dsts, offset, length), timeout, unit, attachment, handler);
     }
 
     @Override
@@ -275,7 +283,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
         write0(src, null, timeout, unit, attachment, handler);
     }
 
-    private <V extends Number, A> void write0(ByteBuffer writeBuffer, ByteBufferArray gathering, long timeout, TimeUnit unit, A attachment, CompletionHandler<V, ? super A> handler) {
+    private <V extends Number, A> void write0(ByteBuffer writeBuffer, BufferArray gathering, long timeout, TimeUnit unit, A attachment, CompletionHandler<V, ? super A> handler) {
         if (writePending) {
             throw new WritePendingException();
         }
@@ -304,7 +312,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
 
     @Override
     public <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment, CompletionHandler<Long, ? super A> handler) {
-        write0(null, new ByteBufferArray(srcs, offset, length), timeout, unit, attachment, handler);
+        write0(null, new BufferArray(srcs, offset, length), timeout, unit, attachment, handler);
     }
 
     @Override
@@ -323,6 +331,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
             if (connected || channel.connect(remote)) {
                 connected = channel.finishConnect();
             }
+            channel.configureBlocking(false);
             if (connected) {
                 CompletionHandler<Void, Object> completionHandler = connectCompletionHandler;
                 Object attach = connectAttachment;
@@ -331,7 +340,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
             } else if (connectSelectionKey == null) {
                 connectWorker.addRegister(selector -> {
                     try {
-                        connectSelectionKey = channel.register(selector, SelectionKey.OP_CONNECT);
+                        connectSelectionKey = channel.register(selector, SelectionKey.OP_CONNECT, EnhanceAsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         connectCompletionHandler.failed(e, connectAttachment);
                     }
@@ -354,14 +363,20 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
 
     public void doRead(boolean direct) {
         try {
-            //此前通过Future调用,且触发了cancel
+            // 此前通过Future调用,且触发了cancel
             if (readFuture != null && readFuture.isDone()) {
                 group.removeOps(readSelectionKey, SelectionKey.OP_READ);
                 resetRead();
                 return;
             }
-            boolean isReadWorkThread = Thread.currentThread() == readWorker.getWorkerThread();
-            boolean directRead = direct || (isReadWorkThread && readWorker.invoker++ < AsynchronousChannelGroup.MAX_INVOKER);
+            if (lowMemory && direct && readBuffer == null) {
+                CompletionHandler<Number, Object> completionHandler = readCompletionHandler;
+                Object attach = readAttachment;
+                resetRead();
+                completionHandler.completed(EnhanceAsynchronousChannelProvider.READABLE_SIGNAL, attach);
+                return;
+            }
+            boolean directRead = direct || (Thread.currentThread() == readWorker.getWorkerThread() && readWorker.invoker++ < EnhanceAsynchronousChannelGroup.MAX_INVOKER);
 
             long readSize = 0;
             boolean hasRemain = true;
@@ -373,18 +388,14 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                     readSize = channel.read(readBuffer);
                     hasRemain = readBuffer.hasRemaining();
                 }
-                //The read buffer is not full, there may be no readable data
-                if (hasRemain && isReadWorkThread) {
-                    readWorker.invoker = AsynchronousChannelGroup.MAX_INVOKER;
-                }
             }
 
-            //注册至异步线程
+            // 注册至异步线程
             if (readFuture != null && readSize == 0) {
                 group.removeOps(readSelectionKey, SelectionKey.OP_READ);
                 group.registerFuture(selector -> {
                     try {
-                        readFutureSelectionKey = channel.register(selector, SelectionKey.OP_READ);
+                        readFutureSelectionKey = channel.register(selector, SelectionKey.OP_READ, EnhanceAsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         e.printStackTrace();
                         doRead(true);
@@ -392,11 +403,16 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 }, SelectionKey.OP_READ);
                 return;
             }
+            // 释放内存
+            if (lowMemory && readSize == 0 && readBuffer.position() == 0) {
+                readBuffer = null;
+                readCompletionHandler.completed(EnhanceAsynchronousChannelProvider.READ_MONITOR_SIGNAL, readAttachment);
+            }
 
             if (readSize != 0 || !hasRemain) {
                 CompletionHandler<Number, Object> completionHandler = readCompletionHandler;
                 Object attach = readAttachment;
-                ByteBufferArray scattering = scatteringReadBuffer;
+                BufferArray scattering = scatteringReadBuffer;
                 resetRead();
                 if (scattering == null) {
                     completionHandler.completed((int) readSize, attach);
@@ -410,7 +426,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
             } else if (readSelectionKey == null) {
                 readWorker.addRegister(selector -> {
                     try {
-                        readSelectionKey = channel.register(selector, SelectionKey.OP_READ);
+                        readSelectionKey = channel.register(selector, SelectionKey.OP_READ, EnhanceAsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         readCompletionHandler.failed(e, readAttachment);
                     }
@@ -449,35 +465,33 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 resetWrite();
                 return;
             }
-            boolean directWrite;
-            boolean isWriteWorkThread = Thread.currentThread() == writeWorker.getWorkerThread();
-            if (isWriteWorkThread && writeFuture != null) {
-                directWrite = writeWorker.invoker++ < AsynchronousChannelGroup.MAX_INVOKER;
-            } else {
-                directWrite = true;
+            int invoker = 0;
+            // 防止无限递归导致堆栈溢出
+            if (writeWorker.getWorkerThread() == Thread.currentThread()) {
+                invoker = ++writeWorker.invoker;
+            } else if (readWorker.getWorkerThread() != Thread.currentThread()) {
+                invoker = ++writeInvoker;
             }
-            long writeSize = 0;
+            int writeSize = 0;
             boolean hasRemain = true;
-            if (directWrite) {
+            if (invoker < EnhanceAsynchronousChannelGroup.MAX_INVOKER) {
                 if (gatheringWriteBuffer != null) {
-                    writeSize = channel.write(gatheringWriteBuffer.getBuffers(), gatheringWriteBuffer.getOffset(), gatheringWriteBuffer.getLength());
+                    writeSize = (int) channel.write(gatheringWriteBuffer.getBuffers(), gatheringWriteBuffer.getOffset(), gatheringWriteBuffer.getLength());
                     hasRemain = hasRemaining(gatheringWriteBuffer);
                 } else {
                     writeSize = channel.write(writeBuffer);
                     hasRemain = writeBuffer.hasRemaining();
                 }
-                // The write buffer has not been emptied, there may be remaining data cannot be output
-                if (isWriteWorkThread && hasRemain) {
-                    writeWorker.invoker = AsynchronousChannelGroup.MAX_INVOKER;
-                }
+            } else {
+                writeInvoker = 0;
             }
 
-            // 注册至异步线程
+            //注册至异步线程
             if (writeFuture != null && writeSize == 0) {
                 group.removeOps(writeSelectionKey, SelectionKey.OP_WRITE);
                 group.registerFuture(selector -> {
                     try {
-                        SelectionKey readSelectionKey = channel.register(selector, SelectionKey.OP_WRITE);
+                        writeFutureSelectionKey = channel.register(selector, SelectionKey.OP_WRITE, EnhanceAsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         e.printStackTrace();
                         doWrite();
@@ -489,20 +503,12 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
             if (writeSize != 0 || !hasRemain) {
                 CompletionHandler<Number, Object> completionHandler = writeCompletionHandler;
                 Object attach = writeAttachment;
-                ByteBufferArray scattering = gatheringWriteBuffer;
                 resetWrite();
-                if (scattering == null) {
-                    completionHandler.completed((int) writeSize, attach);
-                } else {
-                    completionHandler.completed(writeSize, attach);
-                }
-                if (!writePending && writeSelectionKey != null) {
-                    group.removeOps(writeSelectionKey, SelectionKey.OP_WRITE);
-                }
+                completionHandler.completed(writeSize, attach);
             } else if (writeSelectionKey == null) {
                 writeWorker.addRegister(selector -> {
                     try {
-                        writeSelectionKey = channel.register(selector, SelectionKey.OP_WRITE);
+                        writeSelectionKey = channel.register(selector, SelectionKey.OP_WRITE, EnhanceAsynchronousSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         writeCompletionHandler.failed(e, writeAttachment);
                     }
@@ -524,7 +530,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
         }
     }
 
-    private boolean hasRemaining(ByteBufferArray scattering) {
+    private boolean hasRemaining(BufferArray scattering) {
         for (int i = 0; i < scattering.getLength(); i++) {
             if (scattering.getBuffers()[scattering.getOffset() + i].hasRemaining()) {
                 return true;
@@ -545,32 +551,6 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
     @Override
     public boolean isOpen() {
         return channel.isOpen();
-    }
-
-    final class ByteBufferArray {
-
-        private final ByteBuffer[] buffers;
-        private final int offset;
-        private final int length;
-
-        public ByteBufferArray(ByteBuffer[] buffers, int offset, int length) {
-            this.buffers = buffers;
-            this.offset = offset;
-            this.length = length;
-        }
-
-        public ByteBuffer[] getBuffers() {
-            return buffers;
-        }
-
-        public int getOffset() {
-            return offset;
-        }
-
-        public int getLength() {
-            return length;
-        }
-
     }
 
 }

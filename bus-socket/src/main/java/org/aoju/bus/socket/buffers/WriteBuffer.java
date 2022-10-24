@@ -23,7 +23,10 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.io.buffer;
+package org.aoju.bus.socket.buffers;
+
+import org.aoju.bus.socket.AioSession;
+import org.aoju.bus.socket.process.MessageProcessor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,17 +39,17 @@ import java.util.function.Consumer;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class WriteBuffer extends OutputStream {
+
+public class WriteBuffer extends OutputStream {
 
     /**
      * 存储已就绪待输出的数据
      */
     private final VirtualBuffer[] items;
-
     /**
      * 为当前 WriteBuffer 提供数据存放功能的缓存页
      */
-    private final PageBuffer pageBuffer;
+    private final BufferPage bufferPage;
     /**
      * 缓冲区数据刷新函数
      */
@@ -80,8 +83,8 @@ public final class WriteBuffer extends OutputStream {
      */
     private byte[] cacheByte;
 
-    public WriteBuffer(PageBuffer pageBuffer, Consumer<WriteBuffer> consumer, int chunkSize, int capacity) {
-        this.pageBuffer = pageBuffer;
+    public WriteBuffer(BufferPage bufferPage, Consumer<WriteBuffer> consumer, int chunkSize, int capacity) {
+        this.bufferPage = bufferPage;
         this.consumer = consumer;
         this.items = new VirtualBuffer[capacity];
         this.chunkSize = chunkSize;
@@ -117,7 +120,7 @@ public final class WriteBuffer extends OutputStream {
      */
     public synchronized void writeByte(byte b) {
         if (writeInBuf == null) {
-            writeInBuf = pageBuffer.allocate(chunkSize);
+            writeInBuf = bufferPage.allocate(chunkSize);
         }
         writeInBuf.buffer().put(b);
         flushWriteBuffer(false);
@@ -137,7 +140,7 @@ public final class WriteBuffer extends OutputStream {
         try {
             while (count == items.length) {
                 this.wait();
-                //防止因close诱发内存泄露
+                // 防止因close诱发内存泄露
                 if (closed) {
                     virtualBuffer.clean();
                     return;
@@ -191,7 +194,7 @@ public final class WriteBuffer extends OutputStream {
     @Override
     public synchronized void write(byte[] b, int off, int len) throws IOException {
         if (writeInBuf == null) {
-            writeInBuf = pageBuffer.allocate(Math.max(chunkSize, len));
+            writeInBuf = bufferPage.allocate(Math.max(chunkSize, len));
         }
         ByteBuffer writeBuffer = writeInBuf.buffer();
         if (closed) {
@@ -230,7 +233,17 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 写入内容并刷新缓冲区
+     * 初始化8字节的缓存数值
+     */
+    private void initCacheBytes() {
+        if (cacheByte == null) {
+            cacheByte = new byte[8];
+        }
+    }
+
+    /**
+     * 写入内容并刷新缓冲区。在{@link MessageProcessor#process(AioSession, Object)}执行的write操作可无需调用该方法，业务执行完毕后框架本身会自动触发flush
+     * 调用该方法后数据会及时的输出到对端，如果再循环体中通过该方法往某个通道中写入数据将无法获得最佳性能表现
      *
      * @param b 待输出数据
      * @throws IOException 如果发生 I/O 错误
@@ -291,19 +304,21 @@ public final class WriteBuffer extends OutputStream {
         return count == 0 && (writeInBuf == null || writeInBuf.buffer().position() == 0);
     }
 
-    public synchronized VirtualBuffer pollItem() {
+    public VirtualBuffer pollItem() {
         if (count == 0) {
             return null;
         }
-        VirtualBuffer x = items[takeIndex];
-        items[takeIndex] = null;
-        if (++takeIndex == items.length) {
-            takeIndex = 0;
+        synchronized (this) {
+            VirtualBuffer x = items[takeIndex];
+            items[takeIndex] = null;
+            if (++takeIndex == items.length) {
+                takeIndex = 0;
+            }
+            if (count-- == items.length) {
+                this.notifyAll();
+            }
+            return x;
         }
-        if (count-- == items.length) {
-            this.notifyAll();
-        }
-        return x;
     }
 
     /**
@@ -323,15 +338,6 @@ public final class WriteBuffer extends OutputStream {
             return buffer;
         } else {
             return null;
-        }
-    }
-
-    /**
-     * 初始化8字节的缓存数值
-     */
-    private void initCacheBytes() {
-        if (cacheByte == null) {
-            cacheByte = new byte[8];
         }
     }
 

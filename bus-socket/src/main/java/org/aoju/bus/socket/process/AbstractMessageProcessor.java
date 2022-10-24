@@ -38,7 +38,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractProcessor<T> implements MessageProcessor<T>, NetMonitor {
+public abstract class AbstractMessageProcessor<T> implements MessageProcessor<T>, NetMonitor {
 
     private final List<Plugin<T>> plugins = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public abstract class AbstractProcessor<T> implements MessageProcessor<T>, NetMo
         AsynchronousSocketChannel acceptChannel = channel;
         for (Plugin<T> plugin : plugins) {
             acceptChannel = plugin.shouldAccept(acceptChannel);
-            if (null == acceptChannel) {
+            if (acceptChannel == null) {
                 return null;
             }
         }
@@ -99,7 +99,7 @@ public abstract class AbstractProcessor<T> implements MessageProcessor<T>, NetMo
      * 处理接收到的消息
      *
      * @param session 会话
-     * @param msg     消息
+     * @param msg     消息信息
      * @see MessageProcessor#process(AioSession, Object)
      */
     public abstract void process0(AioSession session, T msg);
@@ -118,9 +118,9 @@ public abstract class AbstractProcessor<T> implements MessageProcessor<T>, NetMo
     }
 
     /**
-     * @param session      会话
-     * @param socketStatus 状态
-     * @param throwable    线程
+     * @param session
+     * @param socketStatus
+     * @param throwable
      * @see #stateEvent(AioSession, SocketStatus, Throwable)
      */
     public abstract void stateEvent0(AioSession session, SocketStatus socketStatus, Throwable throwable);

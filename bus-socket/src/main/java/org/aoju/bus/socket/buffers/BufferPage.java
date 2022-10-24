@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2022 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2022 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,10 +23,10 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.io.buffer;
+package org.aoju.bus.socket.buffers;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.toolkit.ThreadKit;
+import org.aoju.bus.logger.Logger;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -39,12 +39,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PageBuffer {
+public final class BufferPage {
 
     /**
      * 同组内存池中的各内存页
      */
-    private final PageBuffer[] pagePool;
+    private final BufferPage[] poolPages;
     /**
      * 条件锁
      */
@@ -70,8 +70,8 @@ public class PageBuffer {
      * @param size   缓存页大小
      * @param direct 是否使用堆外内存
      */
-    PageBuffer(PageBuffer[] pagePool, int size, boolean direct) {
-        this.pagePool = Objects.requireNonNull(pagePool);
+    BufferPage(BufferPage[] poolPages, int size, boolean direct) {
+        this.poolPages = Objects.requireNonNull(poolPages);
         availableBuffers = new LinkedList<>();
         this.buffer = allocate0(size, direct);
         availableBuffers.add(new VirtualBuffer(this, null, buffer.position(), buffer.limit()));
@@ -97,8 +97,9 @@ public class PageBuffer {
     public VirtualBuffer allocate(final int size) {
         VirtualBuffer virtualBuffer;
         Thread thread = Thread.currentThread();
-        if (thread instanceof ThreadKit.FastBufferThread) {
-            virtualBuffer = pagePool[((ThreadKit.FastBufferThread) thread).getPageIndex()].allocate0(size);
+        if (thread instanceof BufferThread) {
+            BufferThread bufferThread = (BufferThread) thread;
+            virtualBuffer = bufferThread.getPageIndex() < poolPages.length ? poolPages[bufferThread.getPageIndex()].allocate0(size) : allocate0(size);
         } else {
             virtualBuffer = allocate0(size);
         }
@@ -121,9 +122,9 @@ public class PageBuffer {
         }
         lock.lock();
         try {
-            if (null != cleanBuffer) {
+            if (cleanBuffer != null) {
                 clean0(cleanBuffer);
-                while (null != (cleanBuffer = cleanBuffers.poll())) {
+                while ((cleanBuffer = cleanBuffers.poll()) != null) {
                     if (cleanBuffer.getCapacity() >= size) {
                         cleanBuffer.buffer().clear();
                         cleanBuffer.buffer(cleanBuffer.buffer());
@@ -136,7 +137,7 @@ public class PageBuffer {
 
             int count = availableBuffers.size();
             VirtualBuffer bufferChunk = null;
-            //仅剩一个可用内存块的时候使用快速匹配算法
+            // 仅剩一个可用内存块的时候使用快速匹配算法
             if (count == 1) {
                 bufferChunk = fastAllocate(size);
             } else if (count > 1) {
@@ -152,7 +153,7 @@ public class PageBuffer {
      * 快速匹配
      *
      * @param size 申请内存大小
-     * @return 申请到的内存块, 若空间不足则范围null
+     * @return 申请到的内存块, 若空间不足则返回null
      */
     private VirtualBuffer fastAllocate(int size) {
         VirtualBuffer freeChunk = availableBuffers.get(0);
@@ -167,7 +168,7 @@ public class PageBuffer {
      * 迭代申请
      *
      * @param size 申请内存大小
-     * @return 申请到的内存块, 若空间不足则范围null
+     * @return 申请到的内存块, 若空间不足则返回null
      */
     private VirtualBuffer slowAllocate(int size) {
         Iterator<VirtualBuffer> iterator = availableBuffers.listIterator(0);
@@ -190,7 +191,7 @@ public class PageBuffer {
      *
      * @param size      申请内存大小
      * @param freeChunk 可用于申请的内存块
-     * @return 申请到的内存块, 若空间不足则范围null
+     * @return 申请到的内存块, 若空间不足则返回null
      */
     private VirtualBuffer allocate(int size, VirtualBuffer freeChunk) {
         final int capacity = freeChunk.getCapacity();
@@ -287,13 +288,14 @@ public class PageBuffer {
      */
     void release() {
         if (buffer.isDirect()) {
+            Logger.debug("clean direct buffer");
             buffer.clear();
         }
     }
 
     @Override
     public String toString() {
-        return "PageBuffer{availableBuffers=" + availableBuffers + ", cleanBuffers=" + cleanBuffers + '}';
+        return "BufferPage{availableBuffers=" + availableBuffers + ", cleanBuffers=" + cleanBuffers + '}';
     }
 
 }

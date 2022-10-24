@@ -23,12 +23,13 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.security;
+package org.aoju.bus.socket.channel;
 
-import org.aoju.bus.core.io.buffer.PageBuffer;
-import org.aoju.bus.core.io.buffer.VirtualBuffer;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.channel.AsynchronousSocketChannelProxy;
+import org.aoju.bus.socket.buffers.BufferPage;
+import org.aoju.bus.socket.buffers.VirtualBuffer;
+import org.aoju.bus.socket.security.HandshakeModel;
+import org.aoju.bus.socket.security.SslService;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
@@ -44,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SslSocketChannel extends AsynchronousSocketChannelProxy {
+public class SslAsynchronousSocketChannel extends AsynchronousSocketChannelProxy {
 
     private final VirtualBuffer netWriteBuffer;
     private final VirtualBuffer netReadBuffer;
@@ -64,9 +65,9 @@ public class SslSocketChannel extends AsynchronousSocketChannelProxy {
      */
     private int adaptiveWriteSize = -1;
 
-    public SslSocketChannel(AsynchronousSocketChannel asynchronousSocketChannel, SslService sslService, PageBuffer pageBuffer) {
+    public SslAsynchronousSocketChannel(AsynchronousSocketChannel asynchronousSocketChannel, SslService sslService, BufferPage bufferPage) {
         super(asynchronousSocketChannel);
-        this.handshakeModel = sslService.createSSLEngine(asynchronousSocketChannel, pageBuffer);
+        this.handshakeModel = sslService.createSSLEngine(asynchronousSocketChannel, bufferPage);
         this.sslService = sslService;
         this.sslEngine = handshakeModel.getSslEngine();
         this.netWriteBuffer = handshakeModel.getNetWriteBuffer();
@@ -79,18 +80,18 @@ public class SslSocketChannel extends AsynchronousSocketChannelProxy {
         if (handshake) {
             handshakeModel.setHandshakeCallback(() -> {
                 handshake = false;
-                synchronized (SslSocketChannel.this) {
+                synchronized (SslAsynchronousSocketChannel.this) {
                     //释放内存
                     handshakeModel.getAppWriteBuffer().clean();
                     netReadBuffer.buffer().clear();
                     netWriteBuffer.buffer().clear();
                     appReadBuffer.buffer().clear().flip();
-                    SslSocketChannel.this.notifyAll();
+                    SslAsynchronousSocketChannel.this.notifyAll();
                 }
                 if (handshakeModel.isEof()) {
                     handler.completed(-1, attachment);
                 } else {
-                    SslSocketChannel.this.read(dst, timeout, unit, attachment, handler);
+                    SslAsynchronousSocketChannel.this.read(dst, timeout, unit, attachment, handler);
                 }
                 handshakeModel = null;
             });
@@ -257,6 +258,7 @@ public class SslSocketChannel extends AsynchronousSocketChannelProxy {
                         netBuffer.clear();
                         writeBuffer.limit(writeBuffer.position() + ((writeBuffer.limit() - writeBuffer.position() >> 1)));
                         adaptiveWriteSize = writeBuffer.remaining();
+//                        logger.info("doWrap BUFFER_OVERFLOW maybeSize:{}", maybeWriteSize);
                         break;
                     case BUFFER_UNDERFLOW:
                         Logger.info("doWrap BUFFER_UNDERFLOW");
@@ -281,11 +283,6 @@ public class SslSocketChannel extends AsynchronousSocketChannelProxy {
     @Override
     public <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment, CompletionHandler<Long, ? super A> handler) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isOpen() {
-        return asynchronousSocketChannel.isOpen();
     }
 
     @Override

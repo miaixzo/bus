@@ -23,54 +23,47 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.convert;
+package org.aoju.bus.socket.handler;
 
-import org.aoju.bus.socket.SocketDecoder;
+import org.aoju.bus.socket.NetMonitor;
+import org.aoju.bus.socket.SocketStatus;
+import org.aoju.bus.socket.TcpAioSession;
 
-import java.nio.ByteBuffer;
+import java.nio.channels.CompletionHandler;
 
 /**
- * 指定长度的解码器
+ * 读写事件回调处理类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FixedLengthDecoder implements SocketDecoder {
+public class WriteCompletionHandler implements CompletionHandler<Integer, TcpAioSession> {
 
-    private final ByteBuffer buffer;
-    private boolean finishRead;
-
-    public FixedLengthDecoder(int frameLength) {
-        if (frameLength <= 0) {
-            throw new IllegalArgumentException("frameLength must be a positive integer: " + frameLength);
-        } else {
-            buffer = ByteBuffer.allocate(frameLength);
+    @Override
+    public void completed(final Integer result, final TcpAioSession aioSession) {
+        try {
+            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
+            if (monitor != null) {
+                monitor.afterWrite(aioSession, result);
+            }
+            aioSession.writeCompleted();
+        } catch (Exception e) {
+            failed(e, aioSession);
         }
     }
 
-    public boolean decode(ByteBuffer byteBuffer) {
-        if (finishRead) {
-            throw new RuntimeException("delimiter has finish read");
+    @Override
+    public void failed(Throwable exc, TcpAioSession aioSession) {
+        try {
+            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.OUTPUT_EXCEPTION, exc);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (buffer.remaining() >= byteBuffer.remaining()) {
-            buffer.put(byteBuffer);
-        } else {
-            int limit = byteBuffer.limit();
-            byteBuffer.limit(byteBuffer.position() + buffer.remaining());
-            buffer.put(byteBuffer);
-            byteBuffer.limit(limit);
+        try {
+            aioSession.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        if (buffer.hasRemaining()) {
-            return false;
-        }
-        buffer.flip();
-        finishRead = true;
-        return true;
-    }
-
-    public ByteBuffer getBuffer() {
-        return buffer;
     }
 
 }

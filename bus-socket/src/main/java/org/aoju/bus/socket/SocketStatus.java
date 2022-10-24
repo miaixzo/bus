@@ -62,7 +62,6 @@ public enum SocketStatus {
      * 执行{@link MessageProcessor#process(AioSession, Object)}期间发生用户未捕获的异常
      */
     PROCESS_EXCEPTION,
-
     /**
      * 协议解码异常
      * 执行{@link Protocol#decode(ByteBuffer, AioSession)}期间发生未捕获的异常
@@ -70,32 +69,29 @@ public enum SocketStatus {
     DECODE_EXCEPTION,
     /**
      * 读操作异常
-     * <p>
      * 在底层服务执行read操作期间因发生异常情况出发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
      * 未来该状态机可能会废除，并转移至NetMonitor
      */
     INPUT_EXCEPTION,
     /**
-     * 写操作异常。
+     * 写操作异常
      * 在底层服务执行write操作期间因发生异常情况出发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
      * 未来该状态机可能会废除，并转移至NetMonitor
      */
     OUTPUT_EXCEPTION,
     /**
      * 会话正在关闭中
-     * 执行了{@link AioSession#close(boolean)}方法，并且当前还存在待输出的数据
      */
     SESSION_CLOSING,
     /**
      * 会话关闭成功
+     * AioSession关闭成功
      */
     SESSION_CLOSED,
-
     /**
      * 拒绝接受连接,仅Server端有效
      */
     REJECT_ACCEPT,
-
     /**
      * 服务端接受连接异常
      */

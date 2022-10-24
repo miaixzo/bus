@@ -23,29 +23,26 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
-
-import java.nio.ByteBuffer;
+package org.aoju.bus.socket.buffers;
 
 /**
+ * 内存池工厂
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface SocketDecoder {
+public interface BufferFactory {
 
     /**
-     * 解码算法
-     *
-     * @param byteBuffer 缓冲信息
-     * @return the true/false
+     * 禁用状态的内存池
      */
-    boolean decode(ByteBuffer byteBuffer);
+    BufferFactory DISABLED_BUFFER_FACTORY = () -> new BufferPool(0, 1, false);
 
     /**
-     * 获取本次解析到的完整数据
+     * 创建内存池
      *
-     * @return the {@link ByteBuffer}
+     * @return 生成的内存池对象
      */
-    ByteBuffer getBuffer();
+    BufferPool create();
 
 }

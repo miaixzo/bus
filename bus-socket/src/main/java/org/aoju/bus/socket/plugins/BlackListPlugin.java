@@ -38,9 +38,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BlackListPlugin<T> extends AbstractPlugin<T> {
+public final class BlackListPlugin<T> extends AbstractPlugin<T> {
 
-    private final ConcurrentLinkedQueue<BlackListRule> ipBlackList = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<BlackListRule> ipBlackList = new ConcurrentLinkedQueue<>();
 
     @Override
     public AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {

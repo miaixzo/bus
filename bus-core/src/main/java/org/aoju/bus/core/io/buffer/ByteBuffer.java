@@ -28,16 +28,11 @@ package org.aoju.bus.core.io.buffer;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.Segment;
 import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 由字节数组段组成的不可变字节字符串 该类的存在是为了实现
@@ -49,25 +44,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ByteBuffer extends ByteString {
 
-    /**
-     * 守护线程在空闲时期回收内存资源
-     */
-    private static final ScheduledThreadPoolExecutor BUFFER_POOL_CLEAN = new ScheduledThreadPoolExecutor(1, r -> {
-        Thread thread = new Thread(r, "BufferPoolClean");
-        thread.setDaemon(true);
-        return thread;
-    });
-    /**
-     * 内存页游标
-     */
-    private final AtomicInteger cursor = new AtomicInteger(0);
     private transient byte[][] segments;
     private transient int[] directory;
-    /**
-     * 内存页组
-     */
-    private PageBuffer[] pageBuffers;
-    private boolean enabled = true;
 
     public ByteBuffer(Buffer buffer, int byteCount) {
         super(null);
@@ -98,21 +76,6 @@ public class ByteBuffer extends ByteString {
             directory[segmentCount + segments.length] = s.pos;
             s.shared = true;
             segmentCount++;
-        }
-    }
-
-    /**
-     * @param pageSize 内存页大小
-     * @param pageNo   内存页个数
-     * @param isDirect 是否使用直接缓冲区
-     */
-    public ByteBuffer(final int pageSize, final int pageNo, final boolean isDirect) {
-        pageBuffers = new PageBuffer[pageNo];
-        for (int i = 0; i < pageNo; i++) {
-            pageBuffers[i] = new PageBuffer(pageBuffers, pageSize, isDirect);
-        }
-        if (pageNo == 0 || pageSize == 0) {
-            future.cancel(false);
         }
     }
 
@@ -150,28 +113,6 @@ public class ByteBuffer extends ByteString {
     public ByteString md5() {
         return toByteString().md5();
     }
-
-    /**
-     * 内存回收任务
-     */
-    private final ScheduledFuture<?> future = BUFFER_POOL_CLEAN.scheduleWithFixedDelay(new Runnable() {
-        @Override
-        public void run() {
-            if (enabled) {
-                for (PageBuffer pageBuffer : pageBuffers) {
-                    pageBuffer.tryClean();
-                }
-            } else {
-                if (null != pageBuffers) {
-                    for (PageBuffer page : pageBuffers) {
-                        page.release();
-                    }
-                    pageBuffers = null;
-                }
-                future.cancel(false);
-            }
-        }
-    }, 500, 1000, TimeUnit.MILLISECONDS);
 
     @Override
     public ByteString sha1() {
@@ -371,43 +312,5 @@ public class ByteBuffer extends ByteString {
     private Object writeReplace() {
         return toByteString();
     }
-
-    /**
-     * 申请FastBufferThread的线程对象,配合线程池申请会有更好的性能表现
-     *
-     * @param target Runnable
-     * @param name   线程名
-     * @return FastBufferThread线程对象
-     */
-    public Thread newThread(Runnable target, String name) {
-        assertEnabled();
-        ThreadKit.FastBufferThread thread = new ThreadKit.FastBufferThread(target, name);
-        thread.setPageIndex((int) (thread.getId() % pageBuffers.length));
-        return thread;
-    }
-
-    /**
-     * 申请内存页
-     *
-     * @return 缓存页对象
-     */
-    public PageBuffer allocatePageBuffer() {
-        assertEnabled();
-        return pageBuffers[(cursor.getAndIncrement() & Integer.MAX_VALUE) % pageBuffers.length];
-    }
-
-    private void assertEnabled() {
-        if (!enabled) {
-            throw new IllegalStateException("buffer pool is disable");
-        }
-    }
-
-    /**
-     * 释放回收内存
-     */
-    public void release() {
-        enabled = false;
-    }
-
 
 }

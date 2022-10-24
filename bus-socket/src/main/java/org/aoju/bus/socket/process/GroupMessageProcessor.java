@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class GroupMessageProcessor<T> implements MessageProcessor<T>, GroupIo {
 
-    private final Map<String, GroupUnit> sessionGroup = new ConcurrentHashMap<>();
+    private Map<String, GroupUnit> sessionGroup = new ConcurrentHashMap<>();
 
     /**
      * 将AioSession加入群组group

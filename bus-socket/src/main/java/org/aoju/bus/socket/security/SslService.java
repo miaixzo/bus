@@ -25,18 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.socket.security;
 
-import org.aoju.bus.core.io.buffer.PageBuffer;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.socket.buffers.BufferPage;
 
 import javax.net.ssl.*;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.security.KeyStore;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.util.function.Consumer;
 
 /**
  * TLS/SSL服务
@@ -47,91 +43,30 @@ import java.security.cert.X509Certificate;
  */
 public class SslService {
 
-    private final boolean isClient;
-    private final ClientAuth clientAuth;
-    private SSLContext sslContext;
+    private final SSLContext sslContext;
 
-    public SslService(boolean isClient, ClientAuth clientAuth) {
-        this.isClient = isClient;
-        this.clientAuth = clientAuth;
+    private final Consumer<SSLEngine> consumer;
+
+    public SslService(SSLContext sslContext, Consumer<SSLEngine> consumer) {
+        this.sslContext = sslContext;
+        this.consumer = consumer;
     }
 
-    public void initKeyStore(InputStream keyStoreInputStream, String keyStorePassword, String keyPassword) {
-        try {
-
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            KeyStore ks = KeyStore.getInstance("JKS");
-            ks.load(keyStoreInputStream, keyStorePassword.toCharArray());
-            kmf.init(ks, keyPassword.toCharArray());
-            KeyManager[] keyManagers = kmf.getKeyManagers();
-
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagers, null, new SecureRandom());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void initTrust(InputStream trustInputStream, String trustPassword) {
-        try {
-            TrustManager[] trustManagers;
-            if (null != trustInputStream) {
-                KeyStore ts = KeyStore.getInstance("JKS");
-                ts.load(trustInputStream, trustPassword.toCharArray());
-                TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-                tmf.init(ts);
-                trustManagers = tmf.getTrustManagers();
-            } else {
-                trustManagers = new TrustManager[]{new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    }
-
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-                }};
-            }
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManagers, new SecureRandom());
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    HandshakeModel createSSLEngine(AsynchronousSocketChannel socketChannel, PageBuffer pageBuffer) {
+    public HandshakeModel createSSLEngine(AsynchronousSocketChannel socketChannel, BufferPage bufferPage) {
         try {
             HandshakeModel handshakeModel = new HandshakeModel();
             SSLEngine sslEngine = sslContext.createSSLEngine();
             SSLSession session = sslEngine.getSession();
-            sslEngine.setUseClientMode(isClient);
-            if (null != clientAuth) {
-                switch (clientAuth) {
-                    case OPTIONAL:
-                        sslEngine.setWantClientAuth(true);
-                        break;
-                    case REQUIRE:
-                        sslEngine.setNeedClientAuth(true);
-                        break;
-                    case NONE:
-                        break;
-                    default:
-                        throw new Error("Unknown auth " + clientAuth);
-                }
-            }
+
+            // 更新SSLEngine配置
+            consumer.accept(sslEngine);
+
             handshakeModel.setSslEngine(sslEngine);
-            handshakeModel.setAppWriteBuffer(pageBuffer.allocate(session.getApplicationBufferSize()));
-            handshakeModel.setNetWriteBuffer(pageBuffer.allocate(session.getPacketBufferSize()));
+            handshakeModel.setAppWriteBuffer(bufferPage.allocate(session.getApplicationBufferSize()));
+            handshakeModel.setNetWriteBuffer(bufferPage.allocate(session.getPacketBufferSize()));
             handshakeModel.getNetWriteBuffer().buffer().flip();
-            handshakeModel.setAppReadBuffer(pageBuffer.allocate(session.getApplicationBufferSize()));
-            handshakeModel.setNetReadBuffer(pageBuffer.allocate(session.getPacketBufferSize()));
+            handshakeModel.setAppReadBuffer(bufferPage.allocate(session.getApplicationBufferSize()));
+            handshakeModel.setNetReadBuffer(bufferPage.allocate(session.getPacketBufferSize()));
             sslEngine.beginHandshake();
 
             handshakeModel.setSocketChannel(socketChannel);
@@ -159,7 +94,7 @@ public class SslService {
             ByteBuffer appWriteBuffer = handshakeModel.getAppWriteBuffer().buffer();
             SSLEngine engine = handshakeModel.getSslEngine();
 
-            //握手阶段网络断链
+            // 握手阶段网络断链
             if (handshakeModel.isEof()) {
                 Logger.info("the ssl handshake is terminated");
                 handshakeModel.getHandshakeCallback().callback();
@@ -172,7 +107,7 @@ public class SslService {
                 }
                 switch (handshakeStatus) {
                     case NEED_UNWRAP:
-                        //解码
+                        // 解码
                         netReadBuffer.flip();
                         if (netReadBuffer.hasRemaining()) {
                             result = engine.unwrap(netReadBuffer, appReadBuffer);
@@ -193,7 +128,7 @@ public class SslService {
                             case BUFFER_OVERFLOW:
                                 Logger.warn("doHandshake BUFFER_OVERFLOW");
                                 break;
-                            //两种情况会触发BUFFER_UNDERFLOW,1:读到的数据不够,2:netReadBuffer空间太小
+                            // 两种情况会触发BUFFER_UNDERFLOW,1:读到的数据不够,2:netReadBuffer空间太小
                             case BUFFER_UNDERFLOW:
                                 Logger.warn("doHandshake BUFFER_UNDERFLOW");
                                 return;
@@ -252,6 +187,9 @@ public class SslService {
                         throw new IllegalStateException("Invalid SSL status: " + handshakeStatus);
                 }
             }
+            if (Logger.isDebug()) {
+                Logger.debug("握手完毕");
+            }
             handshakeModel.getHandshakeCallback().callback();
 
         } catch (Exception e) {
@@ -278,6 +216,5 @@ public class SslService {
             attachment.getHandshakeCallback().callback();
         }
     };
-
 
 }

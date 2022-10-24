@@ -38,33 +38,34 @@ import java.util.concurrent.Future;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AsynchronousServerSocketChannel extends java.nio.channels.AsynchronousServerSocketChannel {
-
+public final class EnhanceAsynchronousServerSocketChannel extends AsynchronousServerSocketChannel {
     private final ServerSocketChannel serverSocketChannel;
-    private final AsynchronousChannelGroup asynchronousChannelGroup;
-    private final AsynchronousChannelGroup.Worker acceptWorker;
-    private CompletionHandler<java.nio.channels.AsynchronousSocketChannel, Object> acceptCompletionHandler;
-    private FutureCompletionHandler<java.nio.channels.AsynchronousSocketChannel, Void> acceptFuture;
+    private final EnhanceAsynchronousChannelGroup enhanceAsynchronousChannelGroup;
+    private final EnhanceAsynchronousChannelGroup.Worker acceptWorker;
+    private final boolean lowMemory;
+    private CompletionHandler<AsynchronousSocketChannel, Object> acceptCompletionHandler;
+    private FutureCompletionHandler<AsynchronousSocketChannel, Void> acceptFuture;
     private Object attachment;
     private SelectionKey selectionKey;
     private boolean acceptPending;
 
-    protected AsynchronousServerSocketChannel(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
-        super(asynchronousChannelGroup.provider());
-        this.asynchronousChannelGroup = asynchronousChannelGroup;
+    EnhanceAsynchronousServerSocketChannel(EnhanceAsynchronousChannelGroup enhanceAsynchronousChannelGroup, boolean lowMemory) throws IOException {
+        super(enhanceAsynchronousChannelGroup.provider());
+        this.enhanceAsynchronousChannelGroup = enhanceAsynchronousChannelGroup;
         serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.configureBlocking(false);
-        acceptWorker = asynchronousChannelGroup.getAcceptWorker();
+        acceptWorker = enhanceAsynchronousChannelGroup.getAcceptWorker();
+        this.lowMemory = lowMemory;
     }
 
     @Override
-    public java.nio.channels.AsynchronousServerSocketChannel bind(SocketAddress local, int backlog) throws IOException {
+    public AsynchronousServerSocketChannel bind(SocketAddress local, int backlog) throws IOException {
         serverSocketChannel.bind(local, backlog);
         return this;
     }
 
     @Override
-    public <T> java.nio.channels.AsynchronousServerSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
+    public <T> AsynchronousServerSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
         serverSocketChannel.setOption(name, value);
         return this;
     }
@@ -80,52 +81,54 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
     }
 
     @Override
-    public <A> void accept(A attachment, CompletionHandler<java.nio.channels.AsynchronousSocketChannel, ? super A> handler) {
+    public <A> void accept(A attachment, CompletionHandler<AsynchronousSocketChannel, ? super A> handler) {
         if (acceptPending) {
             throw new AcceptPendingException();
         }
         acceptPending = true;
-        this.acceptCompletionHandler = (CompletionHandler<java.nio.channels.AsynchronousSocketChannel, Object>) handler;
+        this.acceptCompletionHandler = (CompletionHandler<AsynchronousSocketChannel, Object>) handler;
         this.attachment = attachment;
         doAccept();
     }
 
     public void doAccept() {
         try {
-            // 此前通过Future调用,且触发了cancel
-            if (null != acceptFuture && acceptFuture.isDone()) {
+            //此前通过Future调用,且触发了cancel
+            if (acceptFuture != null && acceptFuture.isDone()) {
                 resetAccept();
-                asynchronousChannelGroup.removeOps(selectionKey, SelectionKey.OP_ACCEPT);
+                enhanceAsynchronousChannelGroup.removeOps(selectionKey, SelectionKey.OP_ACCEPT);
                 return;
             }
             boolean directAccept = (acceptWorker.getWorkerThread() == Thread.currentThread()
-                    && acceptWorker.invoker++ < AsynchronousChannelGroup.MAX_INVOKER);
+                    && acceptWorker.invoker++ < EnhanceAsynchronousChannelGroup.MAX_INVOKER);
             SocketChannel socketChannel = null;
             if (directAccept) {
                 socketChannel = serverSocketChannel.accept();
             }
-            if (null != socketChannel) {
-                AsynchronousSocketChannel asynchronousSocketChannel = new AsynchronousSocketChannel(asynchronousChannelGroup, socketChannel);
+            if (socketChannel != null) {
+                EnhanceAsynchronousSocketChannel asynchronousSocketChannel = new EnhanceAsynchronousSocketChannel(enhanceAsynchronousChannelGroup, socketChannel, lowMemory);
+                socketChannel.configureBlocking(false);
                 socketChannel.finishConnect();
-                CompletionHandler<java.nio.channels.AsynchronousSocketChannel, Object> completionHandler = acceptCompletionHandler;
+                CompletionHandler<AsynchronousSocketChannel, Object> completionHandler = acceptCompletionHandler;
                 Object attach = attachment;
                 resetAccept();
                 completionHandler.completed(asynchronousSocketChannel, attach);
-                if (!acceptPending && null != selectionKey) {
-                    asynchronousChannelGroup.removeOps(selectionKey, SelectionKey.OP_ACCEPT);
+                if (!acceptPending && selectionKey != null) {
+                    enhanceAsynchronousChannelGroup.removeOps(selectionKey, SelectionKey.OP_ACCEPT);
                 }
             }
-            // 首次注册selector
-            else if (null == selectionKey) {
+            //首次注册selector
+            else if (selectionKey == null) {
                 acceptWorker.addRegister(selector -> {
                     try {
-                        selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+                        selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, EnhanceAsynchronousServerSocketChannel.this);
+//                        selectionKey.attach(EnhanceAsynchronousServerSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         acceptCompletionHandler.failed(e, attachment);
                     }
                 });
             } else {
-                asynchronousChannelGroup.interestOps(acceptWorker, selectionKey, SelectionKey.OP_ACCEPT);
+                enhanceAsynchronousChannelGroup.interestOps(acceptWorker, selectionKey, SelectionKey.OP_ACCEPT);
             }
         } catch (IOException e) {
             this.acceptCompletionHandler.failed(e, attachment);
@@ -141,8 +144,8 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
     }
 
     @Override
-    public Future<java.nio.channels.AsynchronousSocketChannel> accept() {
-        FutureCompletionHandler<java.nio.channels.AsynchronousSocketChannel, Void> acceptFuture = new FutureCompletionHandler<>();
+    public Future<AsynchronousSocketChannel> accept() {
+        FutureCompletionHandler<AsynchronousSocketChannel, Void> acceptFuture = new FutureCompletionHandler<>();
         accept(null, acceptFuture);
         this.acceptFuture = acceptFuture;
         return acceptFuture;
@@ -162,5 +165,4 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
     public void close() throws IOException {
         serverSocketChannel.close();
     }
-
 }

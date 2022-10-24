@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.security;
 
-import org.aoju.bus.core.io.buffer.VirtualBuffer;
+import org.aoju.bus.socket.buffers.VirtualBuffer;
 
 import javax.net.ssl.SSLEngine;
 import java.nio.channels.AsynchronousSocketChannel;

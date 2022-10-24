@@ -23,48 +23,62 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.handler;
+package org.aoju.bus.socket.security.factory;
 
-import org.aoju.bus.socket.NetMonitor;
-import org.aoju.bus.socket.SocketStatus;
-import org.aoju.bus.socket.TcpAioSession;
-
-import java.nio.channels.CompletionHandler;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
 /**
- * 读写事件回调处理类
- *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
+public class ClientSSLContextFactory implements SSLContextFactory {
 
-    @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        try {
-            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (null != monitor) {
-                monitor.afterWrite(aioSession, result);
-            }
-            aioSession.writeCompleted();
-        } catch (Exception e) {
-            failed(e, aioSession);
-        }
+    private InputStream trustInputStream;
+    private String trustPassword;
+
+    public ClientSSLContextFactory() {
     }
 
+    public ClientSSLContextFactory(InputStream trustInputStream, String trustPassword) {
+        this.trustInputStream = trustInputStream;
+        this.trustPassword = trustPassword;
+    }
 
     @Override
-    public void failed(Throwable exc, TcpAioSession<T> aioSession) {
-        try {
-            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.OUTPUT_EXCEPTION, exc);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public SSLContext create() throws Exception {
+        TrustManager[] trustManagers;
+        if (trustInputStream != null) {
+            KeyStore ts = KeyStore.getInstance("JKS");
+            ts.load(trustInputStream, trustPassword.toCharArray());
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ts);
+            trustManagers = tmf.getTrustManagers();
+        } else {
+            trustManagers = new TrustManager[]{new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+            }};
         }
-        try {
-            aioSession.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustManagers, new SecureRandom());
+        return sslContext;
     }
 
 }
