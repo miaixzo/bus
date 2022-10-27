@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Locale;
@@ -43,19 +44,19 @@ public class LocaleConverter extends AbstractConverter {
     @Override
     protected Locale convertInternal(final Class<?> targetClass, final Object value) {
         try {
-            final String str = convertToString(value);
-            if (StringKit.isEmpty(str)) {
+            final String text = convertToString(value);
+            if (StringKit.isEmpty(text)) {
                 return null;
             }
 
-            final String[] items = str.split("_");
+            final String[] items = text.split(Symbol.UNDERLINE);
             if (items.length == 1) {
-                return new Locale(items[0]);
+                return Locale.of(items[0]);
             }
             if (items.length == 2) {
-                return new Locale(items[0], items[1]);
+                return Locale.of(items[0], items[1]);
             }
-            return new Locale(items[0], items[1], items[2]);
+            return Locale.of(items[0], items[1], items[2]);
         } catch (final Exception e) {
             // Ignore Exception
         }

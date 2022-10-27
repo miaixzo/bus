@@ -182,7 +182,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
     @Override
     public void putAll(final Map<? extends K, ? extends V> m) {
-        for (final Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+        for (final Entry<? extends K, ? extends V> entry : m.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
     }
@@ -213,8 +213,8 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     @Override
-    public Set<Map.Entry<K, V>> entrySet() {
-        final Set<Map.Entry<K, V>> hashSet = new LinkedHashSet<>();
+    public Set<Entry<K, V>> entrySet() {
+        final Set<Entry<K, V>> hashSet = new LinkedHashSet<>();
         for (int i = 0; i < size(); i++) {
             hashSet.add(MapKit.entry(keys.get(i), values.get(i)));
         }
@@ -222,7 +222,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     @Override
-    public Iterator<Map.Entry<K, V>> iterator() {
+    public Iterator<Entry<K, V>> iterator() {
         return new Iterator<>() {
             private final Iterator<K> keysIter = keys.iterator();
             private final Iterator<V> valuesIter = values.iterator();
@@ -233,7 +233,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
             }
 
             @Override
-            public Map.Entry<K, V> next() {
+            public Entry<K, V> next() {
                 return MapKit.entry(keysIter.next(), valuesIter.next());
             }
 

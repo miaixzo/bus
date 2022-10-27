@@ -461,10 +461,10 @@ public class BeanKit {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @return Bean属性值
-     * @see PathExpression#get(Object)
+     * @see BeanPath#get(Object)
      */
     public static <T> T getProperty(Object bean, String expression) {
-        return (T) PathExpression.create(expression).get(bean);
+        return (T) BeanPath.of(expression).get(bean);
     }
 
     /**
@@ -473,10 +473,10 @@ public class BeanKit {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @param value      值
-     * @see PathExpression#get(Object)
+     * @see BeanPath#get(Object)
      */
     public static void setProperty(Object bean, String expression, Object value) {
-        PathExpression.create(expression).set(bean, value);
+        BeanPath.of(expression).set(bean, value);
     }
 
     /**

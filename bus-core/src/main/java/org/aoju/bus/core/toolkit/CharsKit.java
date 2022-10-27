@@ -2948,33 +2948,33 @@ public class CharsKit {
     /**
      * 替换字符串中第一个指定字符串
      *
-     * @param str         字符串
-     * @param searchStr   被查找的字符串
-     * @param replacedStr 被替换的字符串
+     * @param text         字符串
+     * @param searchText   被查找的字符串
+     * @param replacedText 被替换的字符串
      * @return 替换后的字符串
      */
-    public static String replaceFirst(CharSequence str, CharSequence searchStr, CharSequence replacedStr) {
-        return replaceFirst(str, searchStr, replacedStr, false);
+    public static String replaceFirst(CharSequence text, CharSequence searchText, CharSequence replacedText) {
+        return replaceFirst(text, searchText, replacedText, false);
     }
 
     /**
      * 替换字符串中第一个指定字符串
      *
-     * @param str         字符串
-     * @param searchStr   被查找的字符串
-     * @param replacedStr 被替换的字符串
-     * @param ignoreCase  是否忽略大小写
+     * @param text         字符串
+     * @param searchText   被查找的字符串
+     * @param replacedText 被替换的字符串
+     * @param ignoreCase   是否忽略大小写
      * @return 替换后的字符串
      */
-    public static String replaceFirst(CharSequence str, CharSequence searchStr, CharSequence replacedStr, boolean ignoreCase) {
-        if (isEmpty(str)) {
-            return toString(str);
+    public static String replaceFirst(CharSequence text, CharSequence searchText, CharSequence replacedText, boolean ignoreCase) {
+        if (isEmpty(text)) {
+            return toString(text);
         }
-        int startInclude = indexOf(str, searchStr, 0, ignoreCase);
+        int startInclude = indexOf(text, searchText, 0, ignoreCase);
         if (-1 == startInclude) {
-            return toString(str);
+            return toString(text);
         }
-        return replace(str, startInclude, startInclude + searchStr.length(), replacedStr);
+        return replace(text, startInclude, startInclude + searchText.length(), replacedText);
     }
 
     /**

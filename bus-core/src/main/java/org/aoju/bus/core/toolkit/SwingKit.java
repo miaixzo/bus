@@ -89,7 +89,7 @@ public class SwingKit {
 
     /**
      * 设置默认的延迟时间
-     * 当按键执行完后的等待时间,也可以用ThreadUtil.sleep方法代替
+     * 当按键执行完后的等待时间,也可以用ThreadKit.sleep方法代替
      *
      * @param delayMillis 等待毫秒数
      */

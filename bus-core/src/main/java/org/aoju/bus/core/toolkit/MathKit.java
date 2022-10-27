@@ -762,7 +762,7 @@ public class MathKit {
      * 例如保留2位小数：123.456789 =  123.46
      *
      * @param number 数字值的字符串表现形式
-     * @param scale     保留小数位数
+     * @param scale  保留小数位数
      * @return 新值
      */
     public static String roundString(String number, int scale) {
@@ -799,7 +799,7 @@ public class MathKit {
      * 保留固定位数小数
      * 例如保留四位小数：123.456789 =  123.4567
      *
-     * @param number    数字值的字符串表现形式
+     * @param number       数字值的字符串表现形式
      * @param scale        保留小数位数,如果传入小于0,则默认0
      * @param roundingMode 保留小数的模式 {@link RoundingMode},如果传入null则默认四舍五入
      * @return 新值
@@ -839,7 +839,7 @@ public class MathKit {
      * 保留固定位数小数
      * 例如保留四位小数：123.456789 =  123.4567
      *
-     * @param number    数字值的字符串表现形式
+     * @param number       数字值的字符串表现形式
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值

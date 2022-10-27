@@ -202,7 +202,7 @@ public class RegistryConverter implements Converter, Serializable {
         defaultConverterMap.put(SoftReference.class, ReferenceConverter.INSTANCE);
         defaultConverterMap.put(AtomicReference.class, new AtomicReferenceConverter());
 
-        //AtomicXXXArray，since 5.4.5
+        // AtomicXXXArray，since 5.4.5
         defaultConverterMap.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
         defaultConverterMap.put(AtomicLongArray.class, new AtomicLongArrayConverter());
 

@@ -41,6 +41,8 @@ import java.util.function.Function;
  */
 public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 构造
      */
@@ -53,7 +55,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      *
      * @param initialCapacity 初始大小
      */
-    public CaseInsensitiveMap(int initialCapacity) {
+    public CaseInsensitiveMap(final int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
@@ -63,7 +65,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      *
      * @param map 被包装的自定义Map创建器
      */
-    public CaseInsensitiveMap(Map<? extends K, ? extends V> map) {
+    public CaseInsensitiveMap(final Map<? extends K, ? extends V> map) {
         this(DEFAULT_LOAD_FACTOR, map);
     }
 
@@ -73,7 +75,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      * @param loadFactor 加载因子
      * @param map        Map
      */
-    public CaseInsensitiveMap(float loadFactor, Map<? extends K, ? extends V> map) {
+    public CaseInsensitiveMap(final float loadFactor, final Map<? extends K, ? extends V> map) {
         this(map.size(), loadFactor);
         this.putAll(map);
     }
@@ -84,8 +86,8 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      * @param initialCapacity 初始大小
      * @param loadFactor      加载因子
      */
-    public CaseInsensitiveMap(int initialCapacity, float loadFactor) {
-        this(MapBuilder.create(new HashMap<>(initialCapacity, loadFactor)));
+    public CaseInsensitiveMap(final int initialCapacity, final float loadFactor) {
+        this(MapBuilder.of(new HashMap<>(initialCapacity, loadFactor)));
     }
 
     /**
@@ -94,7 +96,7 @@ public class CaseInsensitiveMap<K, V> extends FuncKeyMap<K, V> {
      *
      * @param emptyMapBuilder 被包装的自定义Map创建器
      */
-    CaseInsensitiveMap(MapBuilder<K, V> emptyMapBuilder) {
+    CaseInsensitiveMap(final MapBuilder<K, V> emptyMapBuilder) {
         super(emptyMapBuilder.build(), (Function<Object, K> & Serializable) (key) -> {
             if (key instanceof CharSequence) {
                 key = key.toString().toLowerCase();

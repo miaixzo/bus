@@ -1219,7 +1219,7 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      * 如果物体比长度大，右边的部分就会丢失
      * 如果对象为空，则使用空文本值
      *
-     * @param object     要追加的对象null使用空文本
+     * @param object  要追加的对象null使用空文本
      * @param width   固定的字段宽度，零或负没有影响
      * @param padChar 要使用的填充字符
      * @return this
@@ -1264,8 +1264,8 @@ public class TextBuilder implements CharSequence, Appendable, Builder<String> {
      * 将对象的字符串表示形式插入到此生成器中
      * 插入null将使用存储的空文本值
      *
-     * @param index 要添加的索引必须有效
-     * @param object   要插入的对象
+     * @param index  要添加的索引必须有效
+     * @param object 要插入的对象
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */

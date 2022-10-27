@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since Java 17+
  */
 public enum BasicType {
+
     /**
      * byte
      */

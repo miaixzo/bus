@@ -23,32 +23,55 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.bloom;
+package org.aoju.bus.core.text.bloom;
 
-import java.io.Serializable;
+import java.util.BitSet;
 
 /**
- * Bloom filter 是由 Howard Bloom 在 1970 年提出的二进制向量数据结构，它具有很好的空间和时间效率，被用来检测一个元素是不是集合中的一个成员
- * 如果检测结果为是，该元素不一定在集合中；但如果检测结果为否，该元素一定不在集合中,因此Bloom filter具有100%的召回率
- * 这样每个检测请求返回有“在集合内（可能错误）”和“不在集合内（绝对不在集合内）”两种情况
+ * 抽象Bloom过滤器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BloomFilter extends Serializable {
+public abstract class AbstractFilter implements BloomFilter {
+
+    private static final long serialVersionUID = 1L;
+
+    private final BitSet bitSet;
+    protected int size;
 
     /**
-     * @param text 字符串
-     * @return 判断一个字符串是否bitMap中存在
+     * 构造
+     *
+     * @param size 容量
      */
-    boolean contains(String text);
+    public AbstractFilter(final int size) {
+        this.size = size;
+        this.bitSet = new BitSet(size);
+    }
+
+    @Override
+    public boolean contains(final String text) {
+        return bitSet.get(Math.abs(hash(text)));
+    }
+
+    @Override
+    public boolean add(final String text) {
+        final int hash = Math.abs(hash(text));
+        if (bitSet.get(hash)) {
+            return false;
+        }
+
+        bitSet.set(hash);
+        return true;
+    }
 
     /**
-     * 在boolean的bitMap中增加一个字符串
-     * 如果存在就返回<code>false</code>如果不存在先增加这个字符串.再返回<code>true</code>
+     * 自定义Hash方法
      *
      * @param text 字符串
-     * @return 是否加入成功，如果存在就返回<code>false</code>如果不存在返回<code>true</code>
+     * @return HashCode
      */
-    boolean add(String text);
+    public abstract int hash(String text);
+
 }

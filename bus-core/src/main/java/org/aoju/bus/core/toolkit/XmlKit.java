@@ -1144,12 +1144,12 @@ public class XmlKit {
         int lastIdx = 0;
 
         for (Matcher matchr = pattern.matcher(xml); matchr.find(); lastIdx = matchr.end()) {
-            String str = matchr.group();
+            String text = matchr.group();
             res.append(xml, lastIdx, matchr.start());
             if (type) {
-                res.append(str.toLowerCase());
+                res.append(text.toLowerCase());
             } else {
-                res.append(str.toUpperCase());
+                res.append(text.toUpperCase());
             }
         }
 

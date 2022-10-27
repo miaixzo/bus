@@ -29,6 +29,9 @@ import org.aoju.bus.core.lang.Charset;
 
 /**
  * 编码对象转换器
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class CharsetConverter extends AbstractConverter {
 

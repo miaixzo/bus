@@ -25,14 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.lang.Optional;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -82,28 +78,6 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
             }
         });
     }
-
-    /**
-     * 将指定节点从当前{@link Map}中删除
-     * <ul>
-     *     <li>若存在父节点或子节点，则将其断开其与父节点或子节点的引用关系；</li>
-     *     <li>
-     *         若同时存在父节点或子节点，则会在删除后将让子节点直接成为父节点的子节点，比如：<br>
-     *         现有引用关系 a -&gt; b -&gt; c，删除 b 后，将有 a -&gt; c
-     *     </li>
-     * </ul>
-     *
-     * @param key 节点的key
-     * @return 删除的节点，若key没有对应节点，则返回null
-     */
-    @Override
-    TreeEntry<K, V> remove(Object key);
-
-    /**
-     * 将当前集合清空，并清除全部节点间的引用关系
-     */
-    @Override
-    void clear();
 
     /**
      * 批量添加节点
@@ -320,7 +294,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
-     * 获取指定父节点直接关联的子节点 <br>
+     * 获取指定父节点直接关联的子节点
      * 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b
      *
      * @param key key

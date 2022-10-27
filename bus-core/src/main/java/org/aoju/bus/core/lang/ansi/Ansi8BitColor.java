@@ -44,6 +44,21 @@ public final class Ansi8BitColor implements AnsiElement {
 
     private static final String PREFIX_FORE = "38;5;";
     private static final String PREFIX_BACK = "48;5;";
+    private final String prefix;
+    private final int code;
+
+    /**
+     * 构造
+     *
+     * @param prefix 前缀
+     * @param code   颜色代码(0-255)
+     * @throws IllegalArgumentException 颜色代码不在0~255范围内
+     */
+    private Ansi8BitColor(String prefix, int code) {
+        Assert.isTrue(code >= 0 && code <= 255, "Code must be between 0 and 255");
+        this.prefix = prefix;
+        this.code = code;
+    }
 
     /**
      * 前景色ANSI颜色实例
@@ -63,22 +78,6 @@ public final class Ansi8BitColor implements AnsiElement {
      */
     public static Ansi8BitColor background(int code) {
         return new Ansi8BitColor(PREFIX_BACK, code);
-    }
-
-    private final String prefix;
-    private final int code;
-
-    /**
-     * 构造
-     *
-     * @param prefix 前缀
-     * @param code   颜色代码(0-255)
-     * @throws IllegalArgumentException 颜色代码不在0~255范围内
-     */
-    private Ansi8BitColor(String prefix, int code) {
-        Assert.isTrue(code >= 0 && code <= 255, "Code must be between 0 and 255");
-        this.prefix = prefix;
-        this.code = code;
     }
 
     /**

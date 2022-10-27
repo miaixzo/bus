@@ -197,29 +197,6 @@ public class NumberConverter extends AbstractConverter {
         throw new UnsupportedOperationException(StringKit.format("Unsupport Number type: {}", targetType.getName()));
     }
 
-    @Override
-    protected Number convertInternal(final Class<?> targetClass, final Object value) {
-        return convert(value, (Class<? extends Number>) targetClass, this::convertToString);
-    }
-
-    @Override
-    protected String convertToString(final Object value) {
-        final String result = StringKit.trim(super.convertToString(value));
-        if (null != result && result.length() > 1) {
-            // 非单个字符才判断末尾的标识符
-            final char c = Character.toUpperCase(result.charAt(result.length() - 1));
-            if (c == 'D' || c == 'L' || c == 'F') {
-                // 类型标识形式（例如123.6D）
-                return StringKit.subPre(result, -1);
-            }
-        }
-
-        if (StringKit.isEmpty(result)) {
-            throw new ConvertException("Can not convert empty value to Number!");
-        }
-        return result;
-    }
-
     /**
      * 转换为BigDecimal
      * 如果给定的值为空,或者转换失败,返回默认值
@@ -255,6 +232,29 @@ public class NumberConverter extends AbstractConverter {
         }
 
         return MathKit.toBigInteger(func.apply(value));
+    }
+
+    @Override
+    protected Number convertInternal(final Class<?> targetClass, final Object value) {
+        return convert(value, (Class<? extends Number>) targetClass, this::convertToString);
+    }
+
+    @Override
+    protected String convertToString(final Object value) {
+        final String result = StringKit.trim(super.convertToString(value));
+        if (null != result && result.length() > 1) {
+            // 非单个字符才判断末尾的标识符
+            final char c = Character.toUpperCase(result.charAt(result.length() - 1));
+            if (c == 'D' || c == 'L' || c == 'F') {
+                // 类型标识形式（例如123.6D）
+                return StringKit.subPre(result, -1);
+            }
+        }
+
+        if (StringKit.isEmpty(result)) {
+            throw new ConvertException("Can not convert empty value to Number!");
+        }
+        return result;
     }
 
 }

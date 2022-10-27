@@ -69,16 +69,12 @@ public class NeuQuant {
     /* defs for freq and bias */
     protected static final int INTBIASSHIFT = Normal._16; /* bias for fractions */
     protected static final int INTBIAS = (1 << INTBIASSHIFT);
-
-    protected static final int BETASHIFT = 10;
-
-    protected static final int GAMMASHIFT = 10; /* gamma = 1024 */
-
-    protected static final int GAMMA = (1 << GAMMASHIFT);
     protected static final int BETA = (INTBIAS >> BETASHIFT); /* beta = 1/1024 */
     protected static final int BETAGAMMA =
             (INTBIAS << (GAMMASHIFT - BETASHIFT));
-
+    protected static final int BETASHIFT = 10;
+    protected static final int GAMMASHIFT = 10; /* gamma = 1024 */
+    protected static final int GAMMA = (1 << GAMMASHIFT);
     /* defs for decreasing radius factor */
     protected static final int INITRAD = (NETSIZE >> 3); /* for 256 cols, radius starts */
     protected static final int RADIUSBIASSHIFT = 6; /* at 32.0 biased by 6 bits */

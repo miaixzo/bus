@@ -1957,46 +1957,6 @@ public class CollKit {
     }
 
     /**
-     * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
-     *
-     * <pre>
-     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象,返回集合中为修改后的对象
-     * </pre>
-     *
-     * @param <K>    Key类型
-     * @param <V>    Value类型
-     * @param map    Map
-     * @param editor 编辑器接口
-     * @return 过滤后的Map
-     * @see MapKit#filter(Map, Editor)
-     */
-    public static <K, V> Map<K, V> filter(Map<K, V> map, Editor<Entry<K, V>> editor) {
-        return MapKit.filter(map, editor);
-    }
-
-    /**
-     * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容,这个Editor实现可以实现以下功能：
-     *
-     * <pre>
-     * 1、过滤出需要的对象,如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象,返回集合中为修改后的对象
-     * </pre>
-     *
-     * @param <K>    Key类型
-     * @param <V>    Value类型
-     * @param map    Map
-     * @param filter 编辑器接口
-     * @return 过滤后的Map
-     * @see MapKit#filter(Map, Predicate)
-     */
-    public static <K, V> Map<K, V> filter(Map<K, V> map, Predicate<Entry<K, V>> filter) {
-        return MapKit.filter(map, filter);
-    }
-
-    /**
      * 集合中匹配规则的数量
      *
      * @param <T>      集合元素类型

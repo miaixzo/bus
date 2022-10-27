@@ -50,7 +50,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      *
      * @param map 要使用的Map实现类
      */
-    public MapBuilder(Map<K, V> map) {
+    public MapBuilder(final Map<K, V> map) {
         this.map = map;
     }
 
@@ -59,10 +59,10 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      *
      * @param <K> Key类型
      * @param <V> Value类型
-     * @return MapBuilder
+     * @return this
      */
     public static <K, V> MapBuilder<K, V> of() {
-        return create(false);
+        return of(false);
     }
 
     /**
@@ -71,10 +71,10 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param <K>      Key类型
      * @param <V>      Value类型
      * @param isLinked true创建LinkedHashMap，false创建HashMap
-     * @return MapBuilder
+     * @return this
      */
-    public static <K, V> MapBuilder<K, V> create(boolean isLinked) {
-        return create(MapKit.newHashMap(isLinked));
+    public static <K, V> MapBuilder<K, V> of(final boolean isLinked) {
+        return of(MapKit.newHashMap(isLinked));
     }
 
     /**
@@ -83,9 +83,9 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param <K> Key类型
      * @param <V> Value类型
      * @param map Map实体类
-     * @return MapBuilder
+     * @return this
      */
-    public static <K, V> MapBuilder<K, V> create(Map<K, V> map) {
+    public static <K, V> MapBuilder<K, V> of(final Map<K, V> map) {
         return new MapBuilder<>(map);
     }
 
@@ -94,22 +94,11 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      *
      * @param k Key类型
      * @param v Value类型
-     * @return 当前类
+     * @return this
      */
-    public MapBuilder<K, V> put(K k, V v) {
+    public MapBuilder<K, V> put(final K k, final V v) {
         map.put(k, v);
         return this;
-    }
-
-    /**
-     * 链式Map创建
-     *
-     * @param k        Key类型
-     * @param supplier Value类型结果提供方
-     * @return 当前类
-     */
-    public MapBuilder<K, V> put(K k, Supplier<V> supplier) {
-        return put(k, supplier.get());
     }
 
     /**
@@ -118,9 +107,9 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param condition put条件
      * @param k         Key类型
      * @param v         Value类型
-     * @return 当前类
+     * @return this
      */
-    public MapBuilder<K, V> put(boolean condition, K k, V v) {
+    public MapBuilder<K, V> put(final boolean condition, final K k, final V v) {
         if (condition) {
             put(k, v);
         }
@@ -133,11 +122,11 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param condition put条件
      * @param k         Key类型
      * @param supplier  Value类型结果提供方
-     * @return 当前类
+     * @return this
      */
-    public MapBuilder<K, V> put(boolean condition, K k, Supplier<V> supplier) {
+    public MapBuilder<K, V> put(final boolean condition, final K k, final Supplier<V> supplier) {
         if (condition) {
-            put(k, supplier);
+            put(k, supplier.get());
         }
         return this;
     }
@@ -146,9 +135,9 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * 链式Map创建
      *
      * @param map 合并map
-     * @return 当前类
+     * @return this
      */
-    public MapBuilder<K, V> putAll(Map<K, V> map) {
+    public MapBuilder<K, V> putAll(final Map<K, V> map) {
         this.map.putAll(map);
         return this;
     }
@@ -177,6 +166,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      *
      * @return 创建后的map
      */
+    @Override
     public Map<K, V> build() {
         return map();
     }
@@ -188,7 +178,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param keyValueSeparator kv之间的连接符
      * @return 连接字符串
      */
-    public String join(String separator, final String keyValueSeparator) {
+    public String join(final String separator, final String keyValueSeparator) {
         return MapKit.join(this.map, separator, keyValueSeparator);
     }
 
@@ -199,7 +189,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param keyValueSeparator kv之间的连接符
      * @return 连接后的字符串
      */
-    public String joinIgnoreNull(String separator, final String keyValueSeparator) {
+    public String joinIgnoreNull(final String separator, final String keyValueSeparator) {
         return MapKit.joinIgnoreNull(this.map, separator, keyValueSeparator);
     }
 
@@ -211,7 +201,7 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
      * @param isIgnoreNull      是否忽略null的键和值
      * @return 连接后的字符串
      */
-    public String join(String separator, final String keyValueSeparator, boolean isIgnoreNull) {
+    public String join(final String separator, final String keyValueSeparator, final boolean isIgnoreNull) {
         return MapKit.join(this.map, separator, keyValueSeparator, isIgnoreNull);
     }
 

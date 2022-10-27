@@ -103,7 +103,7 @@ public abstract class AbstractConverter implements Converter, Serializable {
         } else if (ArrayKit.isArray(value)) {
             return ArrayKit.toString(value);
         } else if (CharsKit.isChar(value)) {
-            //对于ASCII字符使用缓存加速转换，减少空间创建
+            // 对于ASCII字符使用缓存加速转换，减少空间创建
             return CharsKit.toString((char) value);
         }
         return value.toString();

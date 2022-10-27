@@ -23,29 +23,61 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.bloom.filter;
-
-import org.aoju.bus.core.toolkit.HashKit;
+package org.aoju.bus.core.text.bloom;
 
 /**
+ * 组合BloomFilter 实现
+ * 1.构建hash算法
+ * 2.散列hash映射到数组的bit位置
+ * 3.验证
+ * 此实现方式可以指定Hash算法
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ELFFilter extends AbstractFilter {
+public class CombinedFilter implements BloomFilter {
 
     private static final long serialVersionUID = 1L;
 
-    public ELFFilter(long maxValue, int machineNumber) {
-        super(maxValue, machineNumber);
+    private final BloomFilter[] filters;
+
+    /**
+     * 使用自定的多个过滤器建立BloomFilter
+     *
+     * @param filters Bloom过滤器列表
+     */
+    public CombinedFilter(final BloomFilter... filters) {
+        this.filters = filters;
     }
 
-    public ELFFilter(long maxValue) {
-        super(maxValue);
-    }
-
+    /**
+     * 增加字符串到Filter映射中
+     *
+     * @param text 字符串
+     */
     @Override
-    public long hash(String text) {
-        return HashKit.elfHash(text) % size;
+    public boolean add(final String text) {
+        boolean flag = false;
+        for (final BloomFilter filter : filters) {
+            flag |= filter.add(text);
+        }
+        return flag;
+    }
+
+    /**
+     * 是否可能包含此字符串，此处存在误判
+     *
+     * @param text 字符串
+     * @return 是否存在
+     */
+    @Override
+    public boolean contains(final String text) {
+        for (final BloomFilter filter : filters) {
+            if (filter.contains(text) == false) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

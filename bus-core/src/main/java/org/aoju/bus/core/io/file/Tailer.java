@@ -122,13 +122,6 @@ public class Tailer implements Serializable {
     }
 
     /**
-     * 开始监听
-     */
-    public void start() {
-        start(false);
-    }
-
-    /**
      * 检查文件有效性
      *
      * @param file 文件
@@ -140,6 +133,13 @@ public class Tailer implements Serializable {
         if (false == file.isFile()) {
             throw new InternalException("Path [{}] is not a file !", file.getAbsolutePath());
         }
+    }
+
+    /**
+     * 开始监听
+     */
+    public void start() {
+        start(false);
     }
 
     /**

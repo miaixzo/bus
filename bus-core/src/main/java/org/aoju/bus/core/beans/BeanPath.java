@@ -43,7 +43,7 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PathExpression implements Serializable {
+public class BeanPath implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,7 +59,7 @@ public class PathExpression implements Serializable {
      *
      * @param expression 表达式
      */
-    public PathExpression(final String expression) {
+    public BeanPath(final String expression) {
         init(expression);
     }
 
@@ -83,10 +83,10 @@ public class PathExpression implements Serializable {
      * </pre>
      *
      * @param expression 表达式
-     * @return {@link PathExpression}
+     * @return {@link BeanPath}
      */
-    public static PathExpression create(final String expression) {
-        return new PathExpression(expression);
+    public static BeanPath of(final String expression) {
+        return new BeanPath(expression);
     }
 
     private static Object getFieldValue(final Object bean, final String expression) {
@@ -149,6 +149,26 @@ public class PathExpression implements Serializable {
     }
 
     /**
+     * 判断path列表中末尾的标记是否为数字
+     *
+     * @param patternParts path列表
+     * @return 是否为数字
+     */
+    private static boolean lastIsNumber(List<String> patternParts) {
+        return MathKit.isInteger(patternParts.get(patternParts.size() - 1));
+    }
+
+    /**
+     * 获取父级路径列表
+     *
+     * @param patternParts 路径列表
+     * @return 父级路径列表
+     */
+    private static List<String> getParentParts(List<String> patternParts) {
+        return patternParts.subList(0, patternParts.size() - 1);
+    }
+
+    /**
      * 获取表达式解析后的分段列表
      *
      * @return 表达式分段列表
@@ -167,29 +187,9 @@ public class PathExpression implements Serializable {
         return get(this.patternParts, bean, false);
     }
 
-    /**
-     * 判断path列表中末尾的标记是否为数字
-     *
-     * @param patternParts path列表
-     * @return 是否为数字
-     */
-    private static boolean lastIsNumber(List<String> patternParts) {
-        return MathKit.isInteger(patternParts.get(patternParts.size() - 1));
-    }
-
     @Override
     public String toString() {
         return this.patternParts.toString();
-    }
-
-    /**
-     * 获取父级路径列表
-     *
-     * @param patternParts 路径列表
-     * @return 父级路径列表
-     */
-    private static List<String> getParentParts(List<String> patternParts) {
-        return patternParts.subList(0, patternParts.size() - 1);
     }
 
     /**

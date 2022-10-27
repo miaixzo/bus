@@ -149,7 +149,7 @@ public class MethodHandle {
      * </pre>
      *
      * @param <T>        返回结果类型
-     * @param object        接口的子对象或代理对象
+     * @param object     接口的子对象或代理对象
      * @param methodName 方法名称
      * @param args       参数
      * @return 结果
@@ -195,7 +195,7 @@ public class MethodHandle {
      * </pre>
      *
      * @param <T>    返回结果类型
-     * @param object    接口的子对象或代理对象
+     * @param object 接口的子对象或代理对象
      * @param method 方法
      * @param args   参数
      * @return 结果
@@ -215,14 +215,14 @@ public class MethodHandle {
      *     }
      *
      *     Duck duck = (Duck) Proxy.newProxyInstance(
-     *         ClassLoaderUtil.getClassLoader(),
+     *         ClassKit.getClassLoader(),
      *         new Class[] { Duck.class },
      *         MethodHandle::invoke);
      * </pre>
      *
      * @param <T>       返回结果类型
      * @param isSpecial 是否为特殊方法（private、static等）
-     * @param object       接口的子对象或代理对象
+     * @param object    接口的子对象或代理对象
      * @param method    方法
      * @param args      参数
      * @return 结果

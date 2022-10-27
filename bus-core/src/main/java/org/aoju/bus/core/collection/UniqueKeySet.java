@@ -68,7 +68,7 @@ public class UniqueKeySet<K, V> extends AbstractSet<V> implements Serializable {
      * @param uniqueGenerator 唯一键生成规则函数，用于生成对象对应的唯一键
      */
     public UniqueKeySet(boolean isLinked, Function<V, K> uniqueGenerator) {
-        this(MapBuilder.create(isLinked), uniqueGenerator);
+        this(MapBuilder.of(isLinked), uniqueGenerator);
     }
 
     /**
@@ -89,7 +89,7 @@ public class UniqueKeySet<K, V> extends AbstractSet<V> implements Serializable {
      * @param uniqueGenerator 唯一键生成规则函数，用于生成对象对应的唯一键
      */
     public UniqueKeySet(int initialCapacity, float loadFactor, Function<V, K> uniqueGenerator) {
-        this(MapBuilder.create(new HashMap<>(initialCapacity, loadFactor)), uniqueGenerator);
+        this(MapBuilder.of(new HashMap<>(initialCapacity, loadFactor)), uniqueGenerator);
     }
 
     /**

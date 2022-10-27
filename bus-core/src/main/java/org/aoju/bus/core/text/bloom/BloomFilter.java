@@ -23,57 +23,33 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.bloom.bitmap;
+package org.aoju.bus.core.text.bloom;
 
 import java.io.Serializable;
 
 /**
- * 过滤器BitMap在32位机器上.这个类能发生更好的效果.一般情况下建议使用此类
+ * Bloom filter 是由 Howard Bloom 在 1970 年提出的二进制向量数据结构，它具有很好的空间和时间效率，被用来检测一个元素是不是集合中的一个成员
+ * 如果检测结果为是，该元素不一定在集合中；但如果检测结果为否，该元素一定不在集合中
+ * 因此Bloom filter具有100%的召回率这样每个检测请求返回有“在集合内（可能错误）”和“不在集合内（绝对不在集合内）”两种情况
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class IntMap implements BitMap, Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private final int[] ints;
+public interface BloomFilter extends Serializable {
 
     /**
-     * 构造
+     * @param text 字符串
+     * @return 判断一个字符串是否bitMap中存在
      */
-    public IntMap() {
-        ints = new int[93750000];
-    }
+    boolean contains(String text);
 
     /**
-     * 构造
+     * 在boolean的bitMap中增加一个字符串
+     * 如果存在就返回{@code false} .如果不存在.先增加这个字符串.再返回{@code true}
      *
-     * @param size 容量
+     * @param text 字符串
+     * @return 是否加入成功，如果存在就返回{@code false} .如果不存在返回{@code true}
      */
-    public IntMap(int size) {
-        ints = new int[size];
-    }
-
-    @Override
-    public void add(long i) {
-        int r = (int) (i / BitMap.MACHINE32);
-        int c = (int) (i % BitMap.MACHINE32);
-        ints[r] = ints[r] | (1 << c);
-    }
-
-    @Override
-    public boolean contains(long i) {
-        int r = (int) (i / BitMap.MACHINE32);
-        int c = (int) (i % BitMap.MACHINE32);
-        return ((ints[r] >>> c) & 1) == 1;
-    }
-
-    @Override
-    public void remove(long i) {
-        int r = (int) (i / BitMap.MACHINE32);
-        int c = (int) (i % BitMap.MACHINE32);
-        ints[r] &= ~(1 << c);
-    }
+    boolean add(String text);
 
 }

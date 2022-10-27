@@ -23,57 +23,45 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.bloom.bitmap;
+package org.aoju.bus.core.text.bloom;
 
-import java.io.Serializable;
+import java.util.function.Function;
 
 /**
- * 过滤器BitMap在64位机器上.这个类能发生更好的效果.一般机器不建议使用
+ * 基于Hash函数方法的{@link BloomFilter}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LongMap implements BitMap, Serializable {
+public class FuncFilter extends AbstractFilter {
 
     private static final long serialVersionUID = 1L;
 
-    private final long[] longs;
+    private final Function<String, Number> hashFunc;
 
     /**
-     * 构造
+     * @param size     最大值
+     * @param hashFunc Hash函数
      */
-    public LongMap() {
-        longs = new long[93750000];
+    public FuncFilter(final int size, final Function<String, Number> hashFunc) {
+        super(size);
+        this.hashFunc = hashFunc;
     }
 
     /**
-     * 构造
+     * 创建FuncFilter
      *
-     * @param size 容量
+     * @param size     最大值
+     * @param hashFunc Hash函数
+     * @return FuncFilter
      */
-    public LongMap(int size) {
-        longs = new long[size];
+    public static FuncFilter of(final int size, final Function<String, Number> hashFunc) {
+        return new FuncFilter(size, hashFunc);
     }
 
     @Override
-    public void add(long i) {
-        int r = (int) (i / BitMap.MACHINE64);
-        long c = i % BitMap.MACHINE64;
-        longs[r] = longs[r] | (1L << c);
-    }
-
-    @Override
-    public boolean contains(long i) {
-        int r = (int) (i / BitMap.MACHINE64);
-        long c = i % BitMap.MACHINE64;
-        return ((longs[r] >>> c) & 1) == 1;
-    }
-
-    @Override
-    public void remove(long i) {
-        int r = (int) (i / BitMap.MACHINE64);
-        long c = i % BitMap.MACHINE64;
-        longs[r] &= ~(1L << c);
+    public int hash(final String text) {
+        return hashFunc.apply(text).intValue() % size;
     }
 
 }

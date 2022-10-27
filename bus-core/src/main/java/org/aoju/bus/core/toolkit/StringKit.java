@@ -182,7 +182,7 @@ public class StringKit extends CharsKit {
      * 将对象转为字符串
      * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组 2、对象数组会调用Arrays.toString方法
      *
-     * @param object     对象
+     * @param object  对象
      * @param charset 字符集
      * @return 字符串
      */

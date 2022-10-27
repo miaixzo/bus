@@ -49,7 +49,7 @@ public abstract class TransitionMap<K, V> extends MapWrapper<K, V> {
      *
      * @param mapFactory 空Map创建工厂
      */
-    public TransitionMap(Supplier<Map<K, V>> mapFactory) {
+    public TransitionMap(final Supplier<Map<K, V>> mapFactory) {
         super(mapFactory);
     }
 
@@ -59,67 +59,67 @@ public abstract class TransitionMap<K, V> extends MapWrapper<K, V> {
      *
      * @param emptyMap Map 被包装的Map，必须为空Map，否则自定义key会无效
      */
-    public TransitionMap(Map<K, V> emptyMap) {
+    public TransitionMap(final Map<K, V> emptyMap) {
         super(emptyMap);
     }
 
     @Override
-    public V get(Object key) {
+    public V get(final Object key) {
         return super.get(customKey(key));
     }
 
     @Override
-    public V put(K key, V value) {
+    public V put(final K key, final V value) {
         return super.put(customKey(key), customValue(value));
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
+    public void putAll(final Map<? extends K, ? extends V> m) {
         m.forEach(this::put);
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         return super.containsKey(customKey(key));
     }
 
     @Override
-    public V remove(Object key) {
+    public V remove(final Object key) {
         return super.remove(customKey(key));
     }
 
     @Override
-    public boolean remove(Object key, Object value) {
+    public boolean remove(final Object key, final Object value) {
         return super.remove(customKey(key), customValue(value));
     }
 
     @Override
-    public boolean replace(K key, V oldValue, V newValue) {
+    public boolean replace(final K key, final V oldValue, final V newValue) {
         return super.replace(customKey(key), customValue(oldValue), customValue(newValue));
     }
 
     @Override
-    public V replace(K key, V value) {
+    public V replace(final K key, final V value) {
         return super.replace(customKey(key), customValue(value));
     }
 
     @Override
-    public V getOrDefault(Object key, V defaultValue) {
+    public V getOrDefault(final Object key, final V defaultValue) {
         return super.getOrDefault(customKey(key), customValue(defaultValue));
     }
 
     @Override
-    public V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return super.computeIfPresent(customKey(key), (k, v) -> remappingFunction.apply(customKey(k), customValue(v)));
     }
 
     @Override
-    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return super.compute(customKey(key), (k, v) -> remappingFunction.apply(customKey(k), customValue(v)));
     }
 
     @Override
-    public V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+    public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         return super.merge(customKey(key), customValue(value), (v1, v2) -> remappingFunction.apply(customValue(v1), customValue(v2)));
     }
 

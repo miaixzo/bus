@@ -601,7 +601,7 @@ public class ReflectKit {
      * @param object 对象，如果是static字段，此参数为null
      * @param field  字段
      * @param value  值，当值类型与字段类型不匹配时，会尝试转换
-     * @throws InternalException UtilException 包装IllegalAccessException异常
+     * @throws InternalException 包装IllegalAccessException异常
      */
     public static void setFieldValue(Object object, Field field, Object value) throws InternalException {
         Assert.notNull(field, "Field in [{}] not exist !", object);
@@ -1155,8 +1155,8 @@ public class ReflectKit {
      *     <li>{@code getDescriptor(Object.class.getMethod("hashCode"))                                                           // "()I"}</li>
      *     <li>{@code getDescriptor(Object.class.getMethod("toString"))                                                           // "()Ljava/lang/String;"}</li>
      *     <li>{@code getDescriptor(Object.class.getMethod("equals", Object.class))                                               // "(Ljava/lang/Object;)Z"}</li>
-     *     <li>{@code getDescriptor(ReflectUtil.class.getDeclaredMethod("appendDescriptor", Class.clas, StringBuilder.class))     // "(Ljava/lang/Class;Ljava/lang/StringBuilder;)V"}</li>
-     *     <li>{@code getDescriptor(ArrayUtil.class.getMethod("isEmpty", Object[].class))                                         // "([Ljava/lang/Object;)Z"}</li>
+     *     <li>{@code getDescriptor(ReflectKit.class.getDeclaredMethod("appendDescriptor", Class.clas, StringBuilder.class))     // "(Ljava/lang/Class;Ljava/lang/StringBuilder;)V"}</li>
+     *     <li>{@code getDescriptor(ArrayKit.class.getMethod("isEmpty", Object[].class))                                         // "([Ljava/lang/Object;)Z"}</li>
      * </ul>
      */
     public static String getDescriptor(final Executable executable) {

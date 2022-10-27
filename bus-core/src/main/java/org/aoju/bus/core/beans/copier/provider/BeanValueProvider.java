@@ -45,78 +45,78 @@ import java.util.Map;
  */
 public class BeanValueProvider implements ValueProvider<String> {
 
-	final Map<String, PropertyDesc> sourcePdMap;
-	private final Object source;
-	private final boolean ignoreError;
+    final Map<String, PropertyDesc> sourcePdMap;
+    private final Object source;
+    private final boolean ignoreError;
 
-	/**
-	 * 构造
-	 *
-	 * @param bean        Bean
-	 * @param ignoreCase  是否忽略字段大小写
-	 * @param ignoreError 是否忽略字段值读取错误
-	 */
-	public BeanValueProvider(Object bean, boolean ignoreCase, boolean ignoreError) {
-		this(bean, ignoreCase, ignoreError, null);
-	}
+    /**
+     * 构造
+     *
+     * @param bean        Bean
+     * @param ignoreCase  是否忽略字段大小写
+     * @param ignoreError 是否忽略字段值读取错误
+     */
+    public BeanValueProvider(Object bean, boolean ignoreCase, boolean ignoreError) {
+        this(bean, ignoreCase, ignoreError, null);
+    }
 
-	/**
-	 * 构造
-	 *
-	 * @param bean        Bean
-	 * @param ignoreCase  是否忽略字段大小写
-	 * @param ignoreError 是否忽略字段值读取错误
-	 * @param keyEditor   键编辑器
-	 */
-	public BeanValueProvider(Object bean, boolean ignoreCase, boolean ignoreError, Editor<String> keyEditor) {
-		this.source = bean;
-		this.ignoreError = ignoreError;
-		final Map<String, PropertyDesc> sourcePdMap = BeanKit.getBeanDesc(source.getClass()).getPropMap(ignoreCase);
-		// 如果用户定义了键编辑器，则提供的map中的数据必须全部转换key
-		this.sourcePdMap = new FuncKeyMap<>(new HashMap<>(sourcePdMap.size(), 1), (key) -> {
-			if (ignoreCase && key instanceof CharSequence) {
-				key = key.toString().toLowerCase();
-			}
-			if (null != keyEditor) {
-				key = keyEditor.edit(key.toString());
-			}
-			return key.toString();
-		});
-		this.sourcePdMap.putAll(sourcePdMap);
-	}
+    /**
+     * 构造
+     *
+     * @param bean        Bean
+     * @param ignoreCase  是否忽略字段大小写
+     * @param ignoreError 是否忽略字段值读取错误
+     * @param keyEditor   键编辑器
+     */
+    public BeanValueProvider(Object bean, boolean ignoreCase, boolean ignoreError, Editor<String> keyEditor) {
+        this.source = bean;
+        this.ignoreError = ignoreError;
+        final Map<String, PropertyDesc> sourcePdMap = BeanKit.getBeanDesc(source.getClass()).getPropMap(ignoreCase);
+        // 如果用户定义了键编辑器，则提供的map中的数据必须全部转换key
+        this.sourcePdMap = new FuncKeyMap<>(new HashMap<>(sourcePdMap.size(), 1), (key) -> {
+            if (ignoreCase && key instanceof CharSequence) {
+                key = key.toString().toLowerCase();
+            }
+            if (null != keyEditor) {
+                key = keyEditor.edit(key.toString());
+            }
+            return key.toString();
+        });
+        this.sourcePdMap.putAll(sourcePdMap);
+    }
 
-	@Override
-	public Object value(String key, Type valueType) {
-		final PropertyDesc sourcePd = getPropertyDesc(key, valueType);
-		Object result = null;
-		if (null != sourcePd) {
-			result = sourcePd.getValue(this.source, valueType, this.ignoreError);
-		}
-		return result;
-	}
+    @Override
+    public Object value(String key, Type valueType) {
+        final PropertyDesc sourcePd = getPropertyDesc(key, valueType);
+        Object result = null;
+        if (null != sourcePd) {
+            result = sourcePd.getValue(this.source, valueType, this.ignoreError);
+        }
+        return result;
+    }
 
-	@Override
-	public boolean containsKey(String key) {
-		final PropertyDesc sourcePd = getPropertyDesc(key, null);
-		// 字段描述不存在或忽略读的情况下，表示不存在
-		return null != sourcePd && sourcePd.isReadable(false);
-	}
+    @Override
+    public boolean containsKey(String key) {
+        final PropertyDesc sourcePd = getPropertyDesc(key, null);
+        // 字段描述不存在或忽略读的情况下，表示不存在
+        return null != sourcePd && sourcePd.isReadable(false);
+    }
 
-	/**
-	 * 获得属性描述
-	 *
-	 * @param key       字段名
-	 * @param valueType 值类型，用于判断是否为Boolean，可以为null
-	 * @return 属性描述
-	 */
-	private PropertyDesc getPropertyDesc(String key, Type valueType) {
-		PropertyDesc sourcePd = sourcePdMap.get(key);
-		if (null == sourcePd && (null == valueType || Boolean.class == valueType || boolean.class == valueType)) {
-			// boolean类型字段字段名支持两种方式
-			sourcePd = sourcePdMap.get(StringKit.upperFirstAndAddPre(key, Normal.IS));
-		}
+    /**
+     * 获得属性描述
+     *
+     * @param key       字段名
+     * @param valueType 值类型，用于判断是否为Boolean，可以为null
+     * @return 属性描述
+     */
+    private PropertyDesc getPropertyDesc(String key, Type valueType) {
+        PropertyDesc sourcePd = sourcePdMap.get(key);
+        if (null == sourcePd && (null == valueType || Boolean.class == valueType || boolean.class == valueType)) {
+            // boolean类型字段字段名支持两种方式
+            sourcePd = sourcePdMap.get(StringKit.upperFirstAndAddPre(key, Normal.IS));
+        }
 
-		return sourcePd;
-	}
+        return sourcePd;
+    }
 
 }

@@ -44,25 +44,6 @@ import java.util.function.Consumer;
 public interface TreeEntry<K, V> extends Map.Entry<K, V> {
 
     /**
-     * 比较目标对象与当前{@link TreeEntry}是否相等。<br>
-     * 默认只要{@link TreeEntry#getKey()}的返回值相同，即认为两者相等
-     *
-     * @param o 目标对象
-     * @return 是否
-     */
-    @Override
-    boolean equals(Object o);
-
-    /**
-     * 返回当前{@link TreeEntry}的哈希值。<br>
-     * 默认总是返回{@link TreeEntry#getKey()}的哈希值
-     *
-     * @return 哈希值
-     */
-    @Override
-    int hashCode();
-
-    /**
      * 获取以当前节点作为叶子节点的树结构，然后获取当前节点与根节点的距离
      *
      * @return 当前节点与根节点的距离

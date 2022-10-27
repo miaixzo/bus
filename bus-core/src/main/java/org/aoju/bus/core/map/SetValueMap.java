@@ -26,6 +26,7 @@
 package org.aoju.bus.core.map;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * 值作为集合Set(LinkedHashSet)的Map实现,通过调用putValue可以在相同key时加入多个值,多个值用集合表示
@@ -35,56 +36,37 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SetValueMap<K, V> extends AbstractCollValueMap<K, V, Set<V>> {
+public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
+
+    private static final long serialVersionUID = 1L;
+
 
     /**
-     * 构造
+     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
      */
     public SetValueMap() {
-        this(DEFAULT_INITIAL_CAPACITY);
     }
 
     /**
-     * 构造
+     * 基于{@link HashMap}创建一个值为{@link Set}的多值映射集合
      *
-     * @param initialCapacity 初始大小
+     * @param map 提供数据的原始集合
      */
-    public SetValueMap(int initialCapacity) {
-        this(initialCapacity, DEFAULT_LOAD_FACTOR);
+    public SetValueMap(Map<K, Collection<V>> map) {
+        super(map);
     }
 
     /**
-     * 构造
+     * 基于{@code mapFactory}创建一个值为{@link Set}的多值映射集合
      *
-     * @param m Map
+     * @param mapFactory 创建集合的工厂反方
      */
-    public SetValueMap(Map<? extends K, ? extends Collection<V>> m) {
-        this(DEFAULT_LOAD_FACTOR, m);
-    }
-
-    /**
-     * 构造
-     *
-     * @param loadFactor 加载因子
-     * @param m          Map
-     */
-    public SetValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m) {
-        this(m.size(), loadFactor);
-        this.putAllValues(m);
-    }
-
-    /**
-     * 构造
-     *
-     * @param initialCapacity 初始大小
-     * @param loadFactor      加载因子
-     */
-    public SetValueMap(int initialCapacity, float loadFactor) {
-        super(new HashMap<>(initialCapacity, loadFactor));
+    public SetValueMap(Supplier<Map<K, Collection<V>>> mapFactory) {
+        super(mapFactory);
     }
 
     @Override
-    protected Set<V> createCollection() {
+    public Set<V> createCollection() {
         return new LinkedHashSet<>(DEFAULT_COLLECTION_INITIAL_CAPACITY);
     }
 

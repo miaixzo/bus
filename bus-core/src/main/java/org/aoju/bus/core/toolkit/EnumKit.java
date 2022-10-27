@@ -205,7 +205,7 @@ public class EnumKit {
      * 除用户自定义的字段名，也包括“name”字段，例如：
      *
      * <pre>
-     *   EnumUtil.getFieldNames(Color.class) == ["name", "index"]
+     *   EnumKit.getFieldNames(Color.class) == ["name", "index"]
      * </pre>
      *
      * @param clazz 枚举类

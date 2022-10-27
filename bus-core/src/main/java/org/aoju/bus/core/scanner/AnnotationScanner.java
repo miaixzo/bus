@@ -49,16 +49,6 @@ import java.util.stream.Stream;
 public interface AnnotationScanner {
 
     /**
-     * 判断是否支持扫描该注解元素
-     *
-     * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
-     * @return 是否支持扫描该注解元素
-     */
-    default boolean support(AnnotatedElement annotatedEle) {
-        return false;
-    }
-
-    /**
      * 给定一组扫描器，使用第一个支持处理该类型元素的扫描器获取元素上可能存在的注解
      *
      * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
@@ -77,6 +67,33 @@ public interface AnnotationScanner {
     }
 
     /**
+     * 根据指定的扫描器，扫描元素上可能存在的注解
+     *
+     * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param scanners     注解扫描器
+     * @return 注解
+     */
+    static List<Annotation> scanByAllScanner(AnnotatedElement annotatedEle, AnnotationScanner... scanners) {
+        if (ObjectKit.isNull(annotatedEle) && ArrayKit.isNotEmpty(scanners)) {
+            return Collections.emptyList();
+        }
+        return Stream.of(scanners)
+                .map(scanner -> scanner.getIfSupport(annotatedEle))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 判断是否支持扫描该注解元素
+     *
+     * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @return 是否支持扫描该注解元素
+     */
+    default boolean support(AnnotatedElement annotatedEle) {
+        return false;
+    }
+
+    /**
      * 若{@link #support(AnnotatedElement)}返回{@code true}，
      * 则调用并返回{@link #getAnnotations(AnnotatedElement)}结果，
      * 否则返回{@link Collections#emptyList()}
@@ -89,31 +106,14 @@ public interface AnnotationScanner {
     }
 
     /**
-     * 根据指定的扫描器，扫描元素上可能存在的注解
-     *
-     * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
-     * @param scanners     注解扫描器
-     * @return 注解
-     */
-    static List<Annotation> scanByAllScanner(AnnotatedElement annotatedEle, AnnotationScanner... scanners) {
-        if (ObjectKit.isNull(annotatedEle) && ArrayKit.isNotEmpty(scanners)) {
-			return Collections.emptyList();
-		}
-		return Stream.of(scanners)
-				.map(scanner -> scanner.getIfSupport(annotatedEle))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * 获取注解元素上的全部注解。调用该方法前，需要确保调用{@link #support(AnnotatedElement)}返回为true
      *
      * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
-	 * @return 注解
-	 */
-	default List<Annotation> getAnnotations(AnnotatedElement annotatedEle) {
-		final List<Annotation> annotations = new ArrayList<>();
-		scan((index, annotation) -> annotations.add(annotation), annotatedEle, null);
+     * @return 注解
+     */
+    default List<Annotation> getAnnotations(AnnotatedElement annotatedEle) {
+        final List<Annotation> annotations = new ArrayList<>();
+        scan((index, annotation) -> annotations.add(annotation), annotatedEle, null);
         return annotations;
     }
 
@@ -123,12 +123,12 @@ public interface AnnotationScanner {
      *
      * @param consumer     对获取到的注解和注解对应的层级索引的处理
      * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
-	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
-	 */
-	default void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
-		filter = ObjectKit.defaultIfNull(filter, annotation -> true);
-		for (final Annotation annotation : annotatedEle.getAnnotations()) {
-			if (AnnoKit.isNotJdkMateAnnotation(annotation.annotationType()) && filter.test(annotation)) {
+     * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
+     */
+    default void scan(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
+        filter = ObjectKit.defaultIfNull(filter, annotation -> true);
+        for (final Annotation annotation : annotatedEle.getAnnotations()) {
+            if (AnnoKit.isNotJdkMateAnnotation(annotation.annotationType()) && filter.test(annotation)) {
                 consumer.accept(0, annotation);
             }
         }
@@ -139,12 +139,12 @@ public interface AnnotationScanner {
      *
      * @param consumer     对获取到的注解和注解对应的层级索引的处理
      * @param annotatedEle {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
-	 * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
-	 */
-	default void scanIfSupport(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
-		if (support(annotatedEle)) {
-			scan(consumer, annotatedEle, filter);
-		}
-	}
+     * @param filter       注解过滤器，无法通过过滤器的注解不会被处理。该参数允许为空。
+     */
+    default void scanIfSupport(BiConsumer<Integer, Annotation> consumer, AnnotatedElement annotatedEle, Predicate<Annotation> filter) {
+        if (support(annotatedEle)) {
+            scan(consumer, annotatedEle, filter);
+        }
+    }
 
 }

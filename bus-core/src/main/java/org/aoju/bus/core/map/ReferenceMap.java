@@ -66,7 +66,7 @@ public class ReferenceMap<K, V> implements ConcurrentMap<K, V>, Iterable<Map.Ent
      * @param raw           {@link ConcurrentMap}实现
      * @param referenceType Reference类型
      */
-    public ReferenceMap(ConcurrentMap<Reference<K>, V> raw, References.Type referenceType) {
+    public ReferenceMap(final ConcurrentMap<Reference<K>, V> raw, final References.Type referenceType) {
         this.raw = raw;
         this.keyType = referenceType;
         lastQueue = new ReferenceQueue<>();
@@ -157,6 +157,7 @@ public class ReferenceMap<K, V> implements ConcurrentMap<K, V>, Iterable<Map.Ent
         return this.raw.computeIfPresent(ofKey(key, this.lastQueue), (kWeakKey, value) -> remappingFunction.apply(key, value));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public V remove(final Object key) {
         this.purgeStaleKeys();

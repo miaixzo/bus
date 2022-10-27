@@ -144,7 +144,7 @@ public class ClassKit {
     /**
      * 获取类名
      * 类名并不包含“.class”这个扩展名
-     * 例如：ClassUtil这个类
+     * 例如：ClassKit这个类
      *
      * <pre>
      * isSimple为false: "org.aoju.core.toolkit.ClassKit"

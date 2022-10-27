@@ -2243,7 +2243,7 @@ public class UriKit {
          * @return 查询的Map，只读
          */
         public Map<CharSequence, CharSequence> getQueryMap() {
-            return MapKit.unmodifiable(this.query);
+            return Collections.unmodifiableMap(this.query);
         }
 
         /**

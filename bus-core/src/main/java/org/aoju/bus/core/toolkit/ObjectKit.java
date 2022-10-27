@@ -445,7 +445,7 @@ public class ObjectKit {
      * 如果实现Serializable接口,执行深度克隆
      * 否则返回null
      *
-     * @param <T> 对象类型
+     * @param <T>    对象类型
      * @param object 被克隆对象
      * @return 克隆后的对象
      */
@@ -624,7 +624,7 @@ public class ObjectKit {
     /**
      * 给对象的属性赋值
      *
-     * @param object      对象
+     * @param object   对象
      * @param attrName 对象的属性名
      * @param value    对象的属性值
      */
@@ -650,7 +650,7 @@ public class ObjectKit {
     /**
      * 从对象中取值
      *
-     * @param object      对象
+     * @param object   对象
      * @param attrName 要取值的属性名
      * @return 值
      */
@@ -1326,7 +1326,7 @@ public class ObjectKit {
      * 对象序列化
      * 对象必须实现Serializable接口
      *
-     * @param <T> 对象类型
+     * @param <T>    对象类型
      * @param object 要被序列化的对象
      * @return 序列化后的字节码
      */
@@ -1429,8 +1429,8 @@ public class ObjectKit {
      *
      * <ul>
      *     <li>如需对null友好操作如下</li>
-     *     <li>{@code Comparator.nullsLast(CompareUtil.natural())}</li>
-     *     <li>{@code Comparator.nullsFirst(CompareUtil.natural())}</li>
+     *     <li>{@code Comparator.nullsLast(CompareKit.natural())}</li>
+     *     <li>{@code Comparator.nullsFirst(CompareKit.natural())}</li>
      * </ul>
      *
      * @param <E> 排序节点类型
@@ -1445,8 +1445,8 @@ public class ObjectKit {
      *
      * <ul>
      *     <li>如需对null友好操作如下</li>
-     *     <li>{@code Comparator.nullsLast(CompareUtil.naturalReverse())}</li>
-     *     <li>{@code Comparator.nullsFirst(CompareUtil.naturalReverse())}</li>
+     *     <li>{@code Comparator.nullsLast(CompareKit.naturalReverse())}</li>
+     *     <li>{@code Comparator.nullsFirst(CompareKit.naturalReverse())}</li>
      * </ul>
      *
      * @param <E> 排序节点类型
@@ -1461,8 +1461,8 @@ public class ObjectKit {
      *
      * <ul>
      *     <li>如需对null友好操作如下</li>
-     *     <li>{@code Comparator.nullsLast(CompareUtil.reverse())}</li>
-     *     <li>{@code Comparator.nullsFirst(CompareUtil.reverse())}</li>
+     *     <li>{@code Comparator.nullsLast(CompareKit.reverse())}</li>
+     *     <li>{@code Comparator.nullsFirst(CompareKit.reverse())}</li>
      * </ul>
      *
      * @param <E>        排序节点类型

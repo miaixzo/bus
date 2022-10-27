@@ -51,12 +51,12 @@ public class DuplexingMap<K, V> extends MapWrapper<K, V> {
      *
      * @param raw 被包装的Map
      */
-    public DuplexingMap(Map<K, V> raw) {
+    public DuplexingMap(final Map<K, V> raw) {
         super(raw);
     }
 
     @Override
-    public V put(K key, V value) {
+    public V put(final K key, final V value) {
         if (null != this.inverse) {
             this.inverse.put(value, key);
         }
@@ -64,7 +64,7 @@ public class DuplexingMap<K, V> extends MapWrapper<K, V> {
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
+    public void putAll(final Map<? extends K, ? extends V> m) {
         super.putAll(m);
         if (null != this.inverse) {
             m.forEach((key, value) -> this.inverse.put(value, key));
@@ -72,7 +72,7 @@ public class DuplexingMap<K, V> extends MapWrapper<K, V> {
     }
 
     @Override
-    public V remove(Object key) {
+    public V remove(final Object key) {
         final V v = super.remove(key);
         if (null != this.inverse && null != v) {
             this.inverse.remove(v);
@@ -81,7 +81,7 @@ public class DuplexingMap<K, V> extends MapWrapper<K, V> {
     }
 
     @Override
-    public boolean remove(Object key, Object value) {
+    public boolean remove(final Object key, final Object value) {
         return super.remove(key, value) && null != this.inverse && this.inverse.remove(value, key);
     }
 
@@ -109,7 +109,7 @@ public class DuplexingMap<K, V> extends MapWrapper<K, V> {
      * @param value 值
      * @return 键
      */
-    public K getKey(V value) {
+    public K getKey(final V value) {
         return getInverse().get(value);
     }
 
